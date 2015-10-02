@@ -1,0 +1,11 @@
+package com.onyx.reader.plugin;
+
+/**
+ * Created by zhuzeng on 10/2/15.
+ */
+public class ReaderOpenOptions {
+
+    public String password;
+    public String compressedPassword;
+
+}
