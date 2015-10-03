@@ -21,7 +21,14 @@ public interface ReaderDocumentPosition {
      * Get persistent string representation of object.
      * @return position persistent representation.
      */
-    public String getPersistentString();
+    public String save();
+
+
+    /**
+     * Restore the position from persistent string.
+     * @param string the persistent representation.
+     */
+    public void restore(final String string);
 
 
 

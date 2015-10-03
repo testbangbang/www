@@ -16,9 +16,19 @@ public interface ReaderHitTestManager {
     public boolean viewToDoc(final PointF viewPoint, final PointF documentPoint);
 
 
+    /**
+     * Select word by the point.
+     * @param viewPoint the user input point.
+     * @return the selection.
+     */
     public ReaderTextSelection selectWord(final PointF viewPoint);
 
-
+    /**
+     * Select text bwtween start point and end point.
+     * @param startPoint The start view point.
+     * @param endPoint The end view point.
+     * @return the selection.
+     */
     public ReaderTextSelection select(final PointF startPoint, final PointF endPoint);
 
 
