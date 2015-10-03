@@ -35,5 +35,10 @@ public interface ReaderPlugin {
     public void close(final ReaderDocument document);
 
 
+    /**
+     * DRM support
+     */
+    public ReaderDrmManager createDrmManager();
+
 
 }

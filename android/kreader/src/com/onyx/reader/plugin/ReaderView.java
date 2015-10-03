@@ -9,11 +9,7 @@ public interface ReaderView {
      * change view options, like margins
      * @param options
      */
-    public void changeViewOptions(final ReaderViewOptions options);
-
-    /**
-     *
-     */
+    public void setViewOptions(final ReaderViewOptions options);
 
     /**
      * Navigate to next page.
@@ -45,7 +41,45 @@ public interface ReaderView {
      */
     public boolean gotoPosition(final ReaderDocumentPosition position);
 
+    /**
+     * query if the view supports text style.
+     */
+    public boolean supportTextStyle();
 
+    /**
+     * Change the text style
+     * @param textStyle
+     * @return
+     */
+    public boolean setTextStyle(final ReaderTextStyle textStyle);
+
+
+    /**
+     * Check if the view supports scaling or not.
+     * @return
+     */
+    public boolean supportScaling();
+
+
+    /**
+     * Change the scaling style.
+     * @param scalingStyle
+     * @return
+     */
+    public boolean setScalingStyle(final ReaderScalingStyle scalingStyle);
+
+    /**
+     * Check if the view supports different page layout or not.
+     * @return
+     */
+    public boolean supportPageLayout();
+
+    /**
+     * Change page layout.
+     * @param pageLayout
+     * @return
+     */
+    public boolean setPageLayout(final ReaderPageLayout pageLayout);
 
 
 }

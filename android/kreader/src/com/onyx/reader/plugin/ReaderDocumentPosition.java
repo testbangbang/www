@@ -6,4 +6,5 @@ package com.onyx.reader.plugin;
 public class ReaderDocumentPosition {
 
 
+
 }
