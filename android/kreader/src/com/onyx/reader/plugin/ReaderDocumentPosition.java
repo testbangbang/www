@@ -18,7 +18,8 @@ public interface ReaderDocumentPosition {
     public String getPageName();
 
     /**
-     * Get persistent string representation of object.
+     * Get persistent string representation of object. For example, plugin may use json to persistent
+     * object into json string.
      * @return position persistent representation.
      */
     public String save();

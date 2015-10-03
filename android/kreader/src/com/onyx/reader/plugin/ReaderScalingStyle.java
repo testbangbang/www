@@ -18,6 +18,12 @@ public interface ReaderScalingStyle {
 
     public boolean isScaleToHeight();
 
+    public boolean isCropPage();
+
+    public boolean isCropWidth();
+
+
+    public double getActualScale();
 
 
 }

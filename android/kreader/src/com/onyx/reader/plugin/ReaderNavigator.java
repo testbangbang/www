@@ -1,5 +1,8 @@
 package com.onyx.reader.plugin;
 
+import android.graphics.PointF;
+import android.graphics.RectF;
+
 /**
  * Created by zhuzeng on 10/3/15.
  */
@@ -59,6 +62,15 @@ public interface ReaderNavigator {
      */
     public boolean gotoPosition(final ReaderDocumentPosition position);
 
+    /**
+     * Set viewport.
+     * @param viewport
+     */
+    public void setViewport(final RectF viewport);
 
-
+    /**
+     * Retrieve the viewport.
+     * @return the current viewport.
+     */
+    public RectF getViewport();
 }

@@ -99,6 +99,25 @@ public class ReaderPluginTest {
     }
 
 
+    public void testSubPageNavigation() throws Exception {
+        ReaderPlugin plugin = getPlugin();
+        ReaderDocument document = plugin.open("", null);
+        ReaderBitmap readerBitmap = defaultBitmap();
+
+        ReaderViewOptions viewOptions = defaultViewOptions();
+        ReaderView readerView = document.createView(viewOptions);
+
+        ReaderNavigator navigator = readerView.getNavigator();
+        ReaderRenderer renderer = readerView.getRenderer();
+
+
+        navigator.gotoPosition(navigator.getInitPosition());
+        navigator.setViewport();
+
+
+        document.close();
+    }
+
 
 
 }

@@ -5,6 +5,11 @@ package com.onyx.reader.plugin;
  */
 public interface ReaderDrmManager {
 
+    /**
+     * Check if drm manager accept the file or not.
+     * @param path
+     * @return
+     */
     public boolean acceptDRMFile(final String path);
 
     public boolean registerDRMCallback(final ReaderDRMCallback callback);

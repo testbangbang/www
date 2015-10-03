@@ -1,5 +1,7 @@
 package com.onyx.reader.plugin;
 
+import android.graphics.RectF;
+
 /**
  * Created by zhuzeng on 10/2/15.
  */
@@ -16,6 +18,13 @@ public interface ReaderDocument {
      * Retrieve cover image.
      */
     public boolean readCover(final ReaderBitmap bitmap);
+
+    /**
+     * Retrieve the page original size.
+     * @param position
+     * @return
+     */
+    public RectF getPageOriginalSize(final ReaderDocumentPosition position);
 
     /**
      * Read the document table of content.
