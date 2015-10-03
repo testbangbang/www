@@ -42,4 +42,10 @@ public interface ReaderView {
     public ReaderPageLayout getPageLayout();
 
 
+    /**
+     * Retrieve reader hit test.
+     */
+    public ReaderHitTest getReaderHitTest();
+
+
 }

@@ -20,8 +20,6 @@ public interface ReaderDocument {
      */
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc);
 
-
-
     /**
      * create corresponding view. TODO: support multiple type of view?
      * @return
