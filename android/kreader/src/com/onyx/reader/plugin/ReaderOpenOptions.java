@@ -3,9 +3,10 @@ package com.onyx.reader.plugin;
 /**
  * Created by zhuzeng on 10/2/15.
  */
-public class ReaderOpenOptions {
+public interface ReaderOpenOptions {
 
-    public String password;
-    public String compressedPassword;
+    public String getPassword();
+
+    public String getCompressedPassword();
 
 }

@@ -6,7 +6,18 @@ package com.onyx.reader.plugin;
  * * Reflow page
  * * Continuous page
  */
-public class ReaderPageLayout {
+public interface ReaderPageLayout {
 
+    public void setSinglePageLayout();
+
+    public boolean isSinglePageLayout();
+
+    public void setContinuousPageLayout();
+
+    public boolean isContinuousPageLayout();
+
+    public void setReflowLayout();
+
+    public boolean isReflowLayout();
 
 }

@@ -28,12 +28,12 @@ public interface ReaderPlugin {
      */
     public ReaderDocument open(final String path, final ReaderOpenOptions options) throws ReaderException;
 
-    /**
-     * Close the specified document.
-     * @param document the document opened by this plugin.
-     */
-    public void close(final ReaderDocument document);
 
+    /**
+     * Check if drm is supported or not.
+     * @return
+     */
+    public boolean supportDrm();
 
     /**
      * DRM support
