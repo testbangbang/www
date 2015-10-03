@@ -1,5 +1,7 @@
 package com.onyx.reader.plugin;
 
+import java.util.List;
+
 /**
  * Created by zhuzeng on 10/2/15.
  * Main features
@@ -17,6 +19,12 @@ public interface ReaderView {
      * Retrieve view options interface.
      */
     public ReaderViewOptions getViewOptions();
+
+    /**
+     * Retrieve renderer.
+     * @return the renderer.
+     */
+    public ReaderRenderer getRenderer();
 
     /**
      * Retrieve the navigator.
@@ -41,11 +49,21 @@ public interface ReaderView {
      */
     public ReaderPageLayout getPageLayout();
 
-
     /**
      * Retrieve reader hit test.
      */
-    public ReaderHitTest getReaderHitTest();
+    public ReaderHitTestManager getReaderHitTest();
 
+    /**
+     * Retrieve current visible links.
+     * @return
+     */
+    public List<ReaderLink> getVisibleLinks();
+
+    /**
+     * Retrieve search interface.
+     * @return
+     */
+    public ReaderSearchManager getSearchManager();
 
 }

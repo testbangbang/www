@@ -8,14 +8,23 @@ package com.onyx.reader.plugin;
  */
 public interface ReaderPageLayout {
 
+    /**
+     * Set single page layout.
+     */
     public void setSinglePageLayout();
 
     public boolean isSinglePageLayout();
 
+    /**
+     * Set continuous page layout.
+     */
     public void setContinuousPageLayout();
 
     public boolean isContinuousPageLayout();
 
+    /**
+     * Set reflow layout.
+     */
     public void setReflowLayout();
 
     public boolean isReflowLayout();

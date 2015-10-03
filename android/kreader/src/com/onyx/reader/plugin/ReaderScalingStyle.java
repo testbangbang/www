@@ -20,6 +20,4 @@ public interface ReaderScalingStyle {
 
 
 
-
-
 }

@@ -5,6 +5,17 @@ package com.onyx.reader.plugin;
  */
 public interface ReaderNavigator {
 
+
+    /**
+     * Navigate to next screen.
+     */
+    public boolean nextScreen();
+
+    /**
+     * Navigate to prev screen.
+     */
+    public boolean prevScreen();
+
     /**
      * Navigate to next page.
      * @return

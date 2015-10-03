@@ -6,4 +6,11 @@ package com.onyx.reader.plugin;
 public interface ReaderViewOptions {
 
     public int getTopMargin();
+    public int getLeftMargin();
+    public int getBottomMargin();
+    public int getRightMargin();
+
+
+
+
 }

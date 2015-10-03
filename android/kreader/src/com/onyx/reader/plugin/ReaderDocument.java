@@ -7,11 +7,15 @@ public interface ReaderDocument {
 
     /**
      * Read the document metadata.
-     * @param metadata
+     * @param metadata The metadata interface.
      * @return
      */
     public boolean readMetadata(final ReaderDocumentMetadata metadata);
 
+    /**
+     * Retrieve cover image.
+     */
+    public boolean readCover(final ReaderBitmap bitmap);
 
     /**
      * Read the document table of content.
@@ -21,11 +25,10 @@ public interface ReaderDocument {
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc);
 
     /**
-     * create corresponding view. TODO: support multiple type of view?
+     * create corresponding view.
      * @return
      */
     public ReaderView createView();
-
 
     /**
      * Close the document.
