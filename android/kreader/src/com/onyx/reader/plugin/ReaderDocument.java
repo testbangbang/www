@@ -26,9 +26,10 @@ public interface ReaderDocument {
 
     /**
      * create corresponding view.
+     * @param viewOptions The view options.
      * @return
      */
-    public ReaderView createView();
+    public ReaderView createView(final ReaderViewOptions viewOptions);
 
     /**
      * Close the document.

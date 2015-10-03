@@ -7,6 +7,19 @@ public interface ReaderNavigator {
 
 
     /**
+     * Retrieve the default init position.
+     * @return
+     */
+    public ReaderDocumentPosition getInitPosition();
+
+
+    /**
+     * Return total page number.
+     * @return 1 based total page number.
+     */
+    public int getTotalPage();
+
+    /**
      * Navigate to next screen.
      */
     public boolean nextScreen();
