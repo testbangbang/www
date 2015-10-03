@@ -5,9 +5,16 @@ package com.onyx.reader.plugin;
  */
 public interface ReaderScalingStyle {
 
+    public void setScaleToPage();
+
     public boolean isScaleToPage();
 
+    public void setScaleToWidth();
+
     public boolean isScaleToWidth();
+
+
+    public void setScaleToHeight();
 
     public boolean isScaleToHeight();
 
