@@ -39,7 +39,7 @@ public interface ReaderScalingManager {
     public void setActualScale(double scale);
 
     /**
-     * Set viewport.
+     * Set viewport. The behavior is different on different page layout.
      * @param viewport
      */
     public boolean setViewport(final RectF viewport);
@@ -49,5 +49,23 @@ public interface ReaderScalingManager {
      * @return the current viewport.
      */
     public RectF getViewport();
+
+
+    /**
+     * Convinent method to set scale and viewport directly.
+     * @param actualScale the actual scale
+     * @param x the viewport x position
+     * @param y the viewport y position
+     * @return
+     */
+    public boolean changeScale(double actualScale, float x, float y);
+
+    /**
+     * Return the page display rect on view coordinates.
+     * @param position the page position.
+     * @return
+     */
+    public RectF getPageDisplayRect(final ReaderDocumentPosition position);
+
 
 }

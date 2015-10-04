@@ -68,5 +68,4 @@ public interface ReaderNavigator {
      */
     public boolean gotoPosition(final ReaderDocumentPosition position);
 
-
 }

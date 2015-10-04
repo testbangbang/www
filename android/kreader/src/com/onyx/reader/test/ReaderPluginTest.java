@@ -177,7 +177,11 @@ public class ReaderPluginTest {
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
         matrix.mapRect(pageDisplayRect, size);
-        scalingManager.setViewport(viewportRect);
+        scalingManager.changeScale(scale, viewportRect.left, viewportRect.top);
+
+        // save current position, scale and viewport.
+
+
         renderer.draw(readerBitmap);
 
         // move viewport
@@ -188,5 +192,53 @@ public class ReaderPluginTest {
         document.close();
     }
 
+
+    /**
+     * Test page layout. page layout
+     * @throws Exception
+     */
+    public void testPageLayout() throws Exception {
+        ReaderPlugin plugin = getPlugin();
+        ReaderDocument document = plugin.open("", null);
+        ReaderBitmap readerBitmap = defaultBitmap();
+
+        ReaderViewOptions viewOptions = defaultViewOptions();
+        ReaderView readerView = document.createView(viewOptions);
+        ReaderScalingManager scalingManager = readerView.getScalingManager();
+        ReaderPageLayoutManager pageLayoutManager = readerView.getPageLayoutManager();
+
+        ReaderNavigator navigator = readerView.getNavigator();
+        ReaderRenderer renderer = readerView.getRenderer();
+        navigator.gotoPosition(navigator.getInitPosition());
+
+        // change position and scale at first.
+        float scale = 5.0f;
+        int pn = 3;
+        ReaderDocumentPosition position = navigator.getPositionByPageNumber(pn);
+        navigator.gotoPosition(position);
+        pageLayoutManager.setContinuousPageLayout();
+        readerView.getScalingManager().setActualScale(scale);
+
+        // calculate the viewport, according to original size, actual scale.
+        RectF size = document.getPageOriginalSize(position);
+        RectF pageDisplayRect = new RectF();
+        RectF viewportRect = new RectF();
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        matrix.mapRect(pageDisplayRect, size);
+        scalingManager.changeScale(scale, viewportRect.left, viewportRect.top);
+
+        // save current position, scale and viewport.
+
+
+        renderer.draw(readerBitmap);
+
+        // move viewport
+        viewportRect.offset(100, 0);
+        scalingManager.setViewport(viewportRect);
+        renderer.draw(readerBitmap);
+
+        document.close();
+    }
 
 }

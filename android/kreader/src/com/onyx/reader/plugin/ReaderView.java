@@ -52,7 +52,7 @@ public interface ReaderView {
     /**
      * Retrieve reader hit test.
      */
-    public ReaderHitTestManager getReaderHitTest();
+    public ReaderHitTestManager getReaderHitTestManager();
 
     /**
      * Retrieve current visible links.
