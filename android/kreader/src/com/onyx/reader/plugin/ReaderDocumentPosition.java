@@ -24,7 +24,6 @@ public interface ReaderDocumentPosition {
      */
     public String save();
 
-
     /**
      * Restore the position from persistent string.
      * @param string the persistent representation.

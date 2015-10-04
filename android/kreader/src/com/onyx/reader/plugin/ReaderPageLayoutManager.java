@@ -6,7 +6,7 @@ package com.onyx.reader.plugin;
  * * Reflow page
  * * Continuous page
  */
-public interface ReaderPageLayout {
+public interface ReaderPageLayoutManager {
 
     /**
      * Set single page layout.

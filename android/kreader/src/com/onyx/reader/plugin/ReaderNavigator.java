@@ -8,12 +8,18 @@ import android.graphics.RectF;
  */
 public interface ReaderNavigator {
 
-
     /**
      * Retrieve the default init position.
      * @return
      */
     public ReaderDocumentPosition getInitPosition();
+
+    /**
+     * Get position from page number
+     * @param pageNumber The 0 based page number.
+     * @return
+     */
+    public ReaderDocumentPosition getPositionByPageNumber(int pageNumber);
 
 
     /**
@@ -62,15 +68,5 @@ public interface ReaderNavigator {
      */
     public boolean gotoPosition(final ReaderDocumentPosition position);
 
-    /**
-     * Set viewport.
-     * @param viewport
-     */
-    public void setViewport(final RectF viewport);
 
-    /**
-     * Retrieve the viewport.
-     * @return the current viewport.
-     */
-    public RectF getViewport();
 }

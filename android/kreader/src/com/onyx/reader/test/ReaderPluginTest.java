@@ -1,5 +1,7 @@
 package com.onyx.reader.test;
 
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import com.onyx.reader.plugin.*;
 
 import java.util.List;
@@ -99,6 +101,13 @@ public class ReaderPluginTest {
     }
 
 
+    /**
+     * sub page navigation.
+     * 1. goto position
+     * 2. change scale
+     * 3. change viewport
+     * @throws Exception
+     */
     public void testSubPageNavigation() throws Exception {
         ReaderPlugin plugin = getPlugin();
         ReaderDocument document = plugin.open("", null);
@@ -106,18 +115,78 @@ public class ReaderPluginTest {
 
         ReaderViewOptions viewOptions = defaultViewOptions();
         ReaderView readerView = document.createView(viewOptions);
+        ReaderScalingManager scalingManager = readerView.getScalingManager();
 
         ReaderNavigator navigator = readerView.getNavigator();
         ReaderRenderer renderer = readerView.getRenderer();
-
-
         navigator.gotoPosition(navigator.getInitPosition());
-        navigator.setViewport();
 
+        // change position and scale at first.
+        float scale = 5.0f;
+        int pn = 3;
+        ReaderDocumentPosition position = navigator.getPositionByPageNumber(pn);
+        navigator.gotoPosition(position);
+        readerView.getScalingManager().setActualScale(scale);
+
+        // calculate the viewport, according to original size, actual scale.
+        RectF size = document.getPageOriginalSize(position);
+        RectF pageDisplayRect = new RectF();
+        RectF viewportRect = new RectF();
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        matrix.mapRect(pageDisplayRect, size);
+        scalingManager.setViewport(viewportRect);
+        renderer.draw(readerBitmap);
+
+        // move viewport
+        viewportRect.offset(100, 0);
+        scalingManager.setViewport(viewportRect);
+        renderer.draw(readerBitmap);
 
         document.close();
     }
 
+    /**
+     * position, scale and viewport stack.
+     * @throws Exception
+     */
+    public void testPrevNextView() throws Exception {
+        ReaderPlugin plugin = getPlugin();
+        ReaderDocument document = plugin.open("", null);
+        ReaderBitmap readerBitmap = defaultBitmap();
+
+        ReaderViewOptions viewOptions = defaultViewOptions();
+        ReaderView readerView = document.createView(viewOptions);
+        ReaderScalingManager scalingManager = readerView.getScalingManager();
+
+        ReaderNavigator navigator = readerView.getNavigator();
+        ReaderRenderer renderer = readerView.getRenderer();
+        navigator.gotoPosition(navigator.getInitPosition());
+
+        // change position and scale at first.
+        float scale = 5.0f;
+        int pn = 3;
+        ReaderDocumentPosition position = navigator.getPositionByPageNumber(pn);
+        navigator.gotoPosition(position);
+        readerView.getScalingManager().setActualScale(scale);
+
+        // calculate the viewport, according to original size, actual scale.
+        RectF size = document.getPageOriginalSize(position);
+        RectF pageDisplayRect = new RectF();
+        RectF viewportRect = new RectF();
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        matrix.mapRect(pageDisplayRect, size);
+        scalingManager.setViewport(viewportRect);
+        renderer.draw(readerBitmap);
+
+        // move viewport
+        viewportRect.offset(100, 0);
+        scalingManager.setViewport(viewportRect);
+        renderer.draw(readerBitmap);
+
+        document.close();
+    }
 
 
 }
