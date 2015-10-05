@@ -1,0 +1,176 @@
+package com.onyx.reader.host.wrapper;
+
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PowerManager;
+import android.util.Log;
+import com.onyx.reader.common.BaseCallback;
+import com.onyx.reader.common.BaseRequest;
+import com.onyx.reader.plugin.ReaderException;
+import com.onyx.reader.plugin.ReaderPlugin;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+
+/**
+ * Created by zhuzeng on 10/2/15.
+ */
+public class Reader {
+
+    private static final String TAG = Reader.class.getSimpleName();
+    private PowerManager.WakeLock wakeLock;
+    private int wakeLockCounting = 0;
+    private ExecutorService threadPool = null;
+    private boolean debugWakelock = false;
+    private List<BaseRequest> requestList;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private ReaderHelper readerHelper = new ReaderHelper();
+
+    public Reader() {
+        initRequestList();
+    }
+
+    private void initRequestList() {
+        requestList = Collections.synchronizedList(new ArrayList<BaseRequest>());
+    }
+
+    private void removeRequest(final BaseRequest request) {
+        synchronized (requestList) {
+            requestList.remove(request);
+        }
+    }
+
+    private void addRequest(final BaseRequest request) {
+        synchronized (requestList) {
+            requestList.add(request);
+        }
+    }
+
+    private void abortAllRequests() {
+        synchronized (requestList) {
+            for(BaseRequest request : requestList) {
+                request.setAbort();
+            }
+        }
+    }
+
+    public void acquireWakeLock(Context context) {
+        try {
+            if (wakeLock == null) {
+                PowerManager powerManager = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+                wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Reader: ");
+            }
+            wakeLock.acquire();
+            ++wakeLockCounting;
+        } catch (java.lang.Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void releaseWakeLock() {
+        try {
+            if (wakeLock != null) {
+                if (wakeLock.isHeld()) {
+                    wakeLock.release();
+                }
+                if (--wakeLockCounting <= 0) {
+                    wakeLock = null;
+                }
+            }
+        } catch (java.lang.Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void dumpWakelocks() {
+        if (debugWakelock) {
+            if (wakeLock != null || wakeLockCounting > 0) {
+                Log.w(TAG, "wake lock not released. check wake lock." + wakeLock.toString() + " counting: " + wakeLockCounting);
+            }
+        }
+    }
+
+    private ExecutorService getThreadPool()   {
+        if (threadPool == null) {
+            threadPool = Executors.newSingleThreadExecutor();
+        }
+        return threadPool;
+    }
+
+    private boolean beforeSubmitRequest(final Context context, final BaseRequest request, final BaseCallback callback) {
+        if (request == null) {
+            if (callback != null) {
+                callback.done(null,  null);
+            }
+            return false;
+        }
+        request.setContext(context);
+        request.setCallback(callback);
+        if (request.isAbortPendingTasks()) {
+            abortAllRequests();
+        }
+        addRequest(request);
+        return true;
+    }
+
+    private final Runnable generateRunnable(final BaseRequest request) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    request.beforeExecute(Reader.this);
+                    request.execute(Reader.this);
+                } catch (ReaderException exception) {
+                    request.setException(exception);
+                } catch (java.lang.Exception exception) {
+                    Log.d(TAG, Log.getStackTraceString(exception));
+                    request.setException(exception);
+                } finally {
+                    request.afterExecute(Reader.this);
+                    dumpWakelocks();
+                }
+            }
+        };
+        return runnable;
+    }
+
+    public boolean submitRequest(final Context context, final BaseRequest request, final BaseCallback callback) {
+        if (!beforeSubmitRequest(context, request, callback)) {
+            return false;
+        }
+
+        final Runnable runnable = generateRunnable(request);
+        if (request.isRunInBackground()) {
+            getThreadPool().submit(runnable);
+        } else {
+            runnable.run();
+        }
+        return true;
+    }
+
+    public Handler getHandler() {
+        return handler;
+    }
+
+    public ReaderPlugin getPlugin() {
+        return null;
+    }
+
+    public void setAbortFlag() {
+        getPlugin().abortCurrentJob();
+    }
+
+    public void clearAbortFlag() {
+        getPlugin().clearAbortFlag();
+    }
+
+    public ReaderHelper getReaderHelper() {
+        return readerHelper;
+    }
+
+}
