@@ -2,7 +2,7 @@ package com.onyx.reader.test;
 
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import com.onyx.reader.plugin.*;
+import com.onyx.reader.api.*;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class ReaderPluginTest {
 
     public void testDocument() throws Exception {
         ReaderPlugin plugin = getPlugin();
-        ReaderDocument document = plugin.open("", null);
+        ReaderDocument document = plugin.open("", null, null);
         ReaderDocumentMetadata metadata = defaultMetadata();
         document.readMetadata(metadata);
 
@@ -56,7 +56,7 @@ public class ReaderPluginTest {
 
     public void testPluginUsage() throws Exception {
         ReaderPlugin plugin = getPlugin();
-        ReaderDocument document = plugin.open("", null);
+        ReaderDocument document = plugin.open("", null, null);
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();
@@ -78,7 +78,7 @@ public class ReaderPluginTest {
 
     public void testViewSearch() throws Exception {
         ReaderPlugin plugin = getPlugin();
-        ReaderDocument document = plugin.open("", null);
+        ReaderDocument document = plugin.open("", null, null);
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();
@@ -110,7 +110,7 @@ public class ReaderPluginTest {
      */
     public void testSubPageNavigation() throws Exception {
         ReaderPlugin plugin = getPlugin();
-        ReaderDocument document = plugin.open("", null);
+        ReaderDocument document = plugin.open("", null, null);
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();
@@ -152,7 +152,7 @@ public class ReaderPluginTest {
      */
     public void testPrevNextView() throws Exception {
         ReaderPlugin plugin = getPlugin();
-        ReaderDocument document = plugin.open("", null);
+        ReaderDocument document = plugin.open("", null, null);
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();
@@ -199,7 +199,7 @@ public class ReaderPluginTest {
      */
     public void testPageLayout() throws Exception {
         ReaderPlugin plugin = getPlugin();
-        ReaderDocument document = plugin.open("", null);
+        ReaderDocument document = plugin.open("", null, null);
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();

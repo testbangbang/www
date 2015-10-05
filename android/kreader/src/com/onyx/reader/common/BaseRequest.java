@@ -17,6 +17,7 @@ public abstract class BaseRequest {
     private Context context;
     private Benchmark benchmark;
     private Exception exception;
+    private boolean saveOptions = true;
 
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
@@ -98,6 +99,10 @@ public abstract class BaseRequest {
 
     public boolean isRunInBackground() {
         return runInBackground;
+    }
+
+    public boolean isSaveOptions() {
+        return saveOptions;
     }
 
     public void setException(final Exception e) {

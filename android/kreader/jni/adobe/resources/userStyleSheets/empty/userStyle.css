@@ -1,0 +1,76 @@
+html {
+  direction: ltr;
+}
+ 
+text {
+  direction: ltr;
+}
+ 
+body {
+  margin-left: .5em;
+  margin-right: .5em;
+  text-align: justify;
+  direction: ltr;
+ 
+}
+ 
+.toctext, .tocnumber, p {
+  font-family: 'Times New Roman', Times, serif, 'sans serif';
+  text-align: justify;
+  text-indent: 1em;
+  margin-top: 0px;
+  margin-bottom: 1ex;
+  direction: ltr;
+ 
+}
+ 
+h1, h2, .mw-headline {
+  font-family: 'Times New Roman', Times, serif, 'sans serif';
+  font-style: italic;
+}
+ 
+h1.cover, h2.cover {
+  font-family: 'Times New Roman', Times, serif, 'sans serif';
+  font-style: italic;
+  text-align: center;
+}
+ 
+h1.cover {
+  font-size:3.5em;
+  margin-down:40px
+}
+ 
+h2.cover {
+  font-size:1.5em;
+}
+ 
+h1 {
+  margin-bottom: 2px;
+  direction: ltr;
+ 
+}
+ 
+h2, .mw-headline {
+  margin-top: -2px;
+  margin-bottom: 2px;
+  direction: ltr;
+ 
+}
+ 
+h4.warning {
+  font-family: 'Times New Roman', Times, serif, 'sans serif';
+  font-style: italic;
+  direction: ltr;
+ 
+}
+ 
+div.cover {
+  text-align: center;
+}
+ 
+img.cover {
+  margin-left:auto;
+  margin-right:auto;
+  margin-top:20px;
+  text-align: center;
+}

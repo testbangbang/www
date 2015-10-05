@@ -7,8 +7,8 @@ import android.os.PowerManager;
 import android.util.Log;
 import com.onyx.reader.common.BaseCallback;
 import com.onyx.reader.common.BaseRequest;
-import com.onyx.reader.plugin.ReaderException;
-import com.onyx.reader.plugin.ReaderPlugin;
+import com.onyx.reader.api.ReaderException;
+import com.onyx.reader.api.ReaderPlugin;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -133,6 +133,7 @@ public class Reader {
                 } finally {
                     request.afterExecute(Reader.this);
                     dumpWakelocks();
+                    removeRequest(request);
                 }
             }
         };
@@ -158,7 +159,7 @@ public class Reader {
     }
 
     public ReaderPlugin getPlugin() {
-        return null;
+        return getHelper().plugin;
     }
 
     public void setAbortFlag() {
@@ -169,7 +170,7 @@ public class Reader {
         getPlugin().clearAbortFlag();
     }
 
-    public ReaderHelper getReaderHelper() {
+    public ReaderHelper getHelper() {
         return readerHelper;
     }
 

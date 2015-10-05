@@ -1,7 +1,5 @@
 package com.onyx.reader.common;
 
-import com.onyx.reader.plugin.ReaderException;
-
 /**
  * Created by zhuzeng on 10/4/15.
  */
