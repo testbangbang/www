@@ -46,4 +46,21 @@ public class ReaderHelper {
         }
     }
 
+    public void renderToBitmap() {
+        renderer.draw(renderBitmap);
+    }
+
+    public ReaderPlugin getCurrentPlugin() {
+        return plugin;
+    }
+
+    public void setAbortFlag() {
+        getCurrentPlugin().abortCurrentJob();
+    }
+
+    public void clearAbortFlag() {
+        getCurrentPlugin().clearAbortFlag();
+    }
+
+
 }

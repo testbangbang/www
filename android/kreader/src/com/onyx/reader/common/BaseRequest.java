@@ -118,7 +118,7 @@ public abstract class BaseRequest {
         reader.acquireWakeLock(getContext());
         benchmarkStart();
         if (isAbort()) {
-            reader.setAbortFlag();
+            reader.getReaderHelper().setAbortFlag();
         }
         if (callback == null) {
             return;
@@ -143,7 +143,7 @@ public abstract class BaseRequest {
             exception.printStackTrace();
         }
         benchmarkEnd();
-        reader.clearAbortFlag();
+        reader.getReaderHelper().clearAbortFlag();
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {

@@ -25,7 +25,7 @@ public class AdobePluginImpl {
     public native void closeFile();
     public native int countPagesInternal();
     public native boolean gotoLocationInternal(int localActionPageNum, String internalLocation);
-    private native void pageSizeNative(int page, float [] size);
+    public native void pageSizeNative(int page, float [] size);
     private native float getPageWidth();
     private native float getPageHeight();
     public native long drawPage(int page,

@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 
 /**
  * Created by zhuzeng on 10/2/15.
+ * Job management.
  */
 public class Reader {
 
@@ -158,25 +159,12 @@ public class Reader {
         return handler;
     }
 
-    public void setAbortFlag() {
-        getCurrentPlugin().abortCurrentJob();
-    }
 
-    public void clearAbortFlag() {
-        getCurrentPlugin().clearAbortFlag();
-    }
-
-    public void renderToBitmap() {
-        getReaderHelper().renderer.draw(getReaderHelper().renderBitmap);
-    }
 
     public ReaderHelper getReaderHelper() {
         return readerHelper;
     }
 
-    public ReaderPlugin getCurrentPlugin() {
-        return getReaderHelper().plugin;
-    }
 
 
 

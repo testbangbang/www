@@ -18,7 +18,8 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderScalingManager,
         ReaderTextStyleManager,
-        ReaderDrmManager
+        ReaderDrmManager,
+        ReaderPageLayoutManager
 {
 
     private AdobePluginImpl impl;
@@ -133,7 +134,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public ReaderPageLayoutManager getPageLayoutManager() {
-        return null;
+        return this;
     }
 
     /**
@@ -186,7 +187,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return 1 based total page number.
      */
     public int getTotalPage() {
-        return 0;
+        return getPluginImpl().countPagesInternal();
     }
 
     /**
@@ -359,4 +360,38 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     public boolean fulfillDRMFile(String path) {
         return false;
     }
+
+    /**
+     * Set single page layout.
+     */
+    public void setSinglePageLayout() {
+
+    }
+
+    public boolean isSinglePageLayout() {
+        return false;
+    }
+
+    /**
+     * Set continuous page layout.
+     */
+    public void setContinuousPageLayout() {
+
+    }
+
+    public boolean isContinuousPageLayout() {
+        return false;
+    }
+
+    /**
+     * Set reflow layout.
+     */
+    public void setReflowLayout() {
+
+    }
+
+    public boolean isReflowLayout() {
+        return false;
+    }
+
 }

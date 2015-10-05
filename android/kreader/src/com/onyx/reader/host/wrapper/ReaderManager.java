@@ -5,6 +5,7 @@ import com.onyx.reader.api.ReaderViewOptions;
 
 /**
  * Created by zhuzeng on 10/5/15.
+ * Map between document and corresponding reader.
  */
 public class ReaderManager {
 

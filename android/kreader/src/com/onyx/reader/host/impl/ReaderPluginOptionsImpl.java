@@ -9,6 +9,10 @@ import java.util.List;
  */
 public class ReaderPluginOptionsImpl implements ReaderPluginOptions {
 
+    public ReaderPluginOptionsImpl() {
+
+    }
+
     public List<String> getFontDirectories() {
         return null;
     }
