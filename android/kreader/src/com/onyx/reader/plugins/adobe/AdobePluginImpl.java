@@ -24,18 +24,18 @@ public class AdobePluginImpl {
     public native long openFile(String filename, String password, String zipPassword);
     public native void closeFile();
     public native int countPagesInternal();
-    private native boolean gotoLocationInternal(int localActionPageNum, String internalLocation);
+    public native boolean gotoLocationInternal(int localActionPageNum, String internalLocation);
     private native void pageSizeNative(int page, float [] size);
     private native float getPageWidth();
     private native float getPageHeight();
-    private native long drawPage(int page,
+    public native long drawPage(int page,
                                  Bitmap bitmap,
                                  int displayLeft, int displayTop,
                                  int displayWidth, int displayHeight,
                                  int bmpX, int bmpY,
                                  double scale, boolean fill);
 
-    private native boolean drawVisiblePages(Bitmap bitmap,
+    public native boolean drawVisiblePages(Bitmap bitmap,
                                             int displayLeft, int displayTop,
                                             int displayWidth, int displayHeight,
                                             int bmpX, int bmpY,
@@ -55,8 +55,8 @@ public class AdobePluginImpl {
     private native int collectVisibleLinksNative(List<ReaderLink> list);
     private native int getPageNumberByLocationNative(String location);
 
-    private native void setAbortFlagNative(boolean abort);
-    private native boolean getAbortFlagNative();
+    public native void setAbortFlagNative(boolean abort);
+    public native boolean getAbortFlagNative();
 //    private native ReaderTextSelection hitTestNative(float x, float y, int type, ReaderTextSplitter splitter);
     private native double [] rectangles(String start, String end);
     private native double [] pageDisplayRectangles(int page, int count);

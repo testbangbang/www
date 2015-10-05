@@ -10,6 +10,11 @@ public class ReaderViewOptionsImpl implements ReaderViewOptions {
     private int width;
     private int height;
 
+    public ReaderViewOptionsImpl(int w, int h) {
+        width = w;
+        height = h;
+    }
+
     public int getViewWidth() {
         return width;
     }

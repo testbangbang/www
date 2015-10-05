@@ -1,5 +1,6 @@
 package com.onyx.reader.host.request;
 
+import com.onyx.reader.api.ReaderDocument;
 import com.onyx.reader.api.ReaderDocumentOptions;
 import com.onyx.reader.api.ReaderPluginOptions;
 import com.onyx.reader.common.BaseRequest;
@@ -22,7 +23,10 @@ public class OpenRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        reader.getHelper().document = reader.getCurrentPlugin().open(documentPath, documentOptions, pluginOptions);
+        ReaderDocument document = reader.getCurrentPlugin().open(documentPath, documentOptions, pluginOptions);
+        if (document != null) {
+            reader.getReaderHelper().onDocumentOpened(document);
+        }
     }
 
 

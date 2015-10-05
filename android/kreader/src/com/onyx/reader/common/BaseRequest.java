@@ -130,7 +130,7 @@ public abstract class BaseRequest {
             }
         };
         if (isRunInBackground()) {
-            reader.getHandler().post(runnable);
+            reader.getLooperHandler().post(runnable);
         } else {
             runnable.run();
         }
@@ -152,7 +152,7 @@ public abstract class BaseRequest {
                 }
             }};
         if (isRunInBackground()) {
-            reader.getHandler().post(runnable);
+            reader.getLooperHandler().post(runnable);
         } else {
             runnable.run();
         }

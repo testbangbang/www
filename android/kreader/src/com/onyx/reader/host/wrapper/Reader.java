@@ -154,7 +154,7 @@ public class Reader {
         return true;
     }
 
-    public Handler getHandler() {
+    public Handler getLooperHandler() {
         return handler;
     }
 
@@ -166,12 +166,16 @@ public class Reader {
         getCurrentPlugin().clearAbortFlag();
     }
 
-    public ReaderHelper getHelper() {
+    public void renderToBitmap() {
+        getReaderHelper().renderer.draw(getReaderHelper().renderBitmap);
+    }
+
+    public ReaderHelper getReaderHelper() {
         return readerHelper;
     }
 
     public ReaderPlugin getCurrentPlugin() {
-        return getHelper().plugin;
+        return getReaderHelper().plugin;
     }
 
 
