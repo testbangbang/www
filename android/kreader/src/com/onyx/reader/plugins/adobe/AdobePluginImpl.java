@@ -21,9 +21,9 @@ public class AdobePluginImpl {
     static public int PM_FLOW_PAGES = 2;
     static public int PM_SCROLL_PAGES = 3;
 
-    private native long openFile(String filename, String password, String zipPassword);
-    private native void closeFile();
-    private native int countPagesInternal();
+    public native long openFile(String filename, String password, String zipPassword);
+    public native void closeFile();
+    public native int countPagesInternal();
     private native boolean gotoLocationInternal(int localActionPageNum, String internalLocation);
     private native void pageSizeNative(int page, float [] size);
     private native float getPageWidth();

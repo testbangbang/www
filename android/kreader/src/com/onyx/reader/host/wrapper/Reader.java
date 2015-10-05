@@ -158,20 +158,22 @@ public class Reader {
         return handler;
     }
 
-    public ReaderPlugin getPlugin() {
-        return getHelper().plugin;
-    }
-
     public void setAbortFlag() {
-        getPlugin().abortCurrentJob();
+        getCurrentPlugin().abortCurrentJob();
     }
 
     public void clearAbortFlag() {
-        getPlugin().clearAbortFlag();
+        getCurrentPlugin().clearAbortFlag();
     }
 
     public ReaderHelper getHelper() {
         return readerHelper;
     }
+
+    public ReaderPlugin getCurrentPlugin() {
+        return getHelper().plugin;
+    }
+
+
 
 }

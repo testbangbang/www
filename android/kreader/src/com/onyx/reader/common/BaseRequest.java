@@ -12,12 +12,13 @@ public abstract class BaseRequest {
     private volatile boolean abort = false;
     private volatile boolean abortPendingTasks = false;
     private boolean useWakeLock = true;
-    private boolean runInBackground = false;
+    private boolean runInBackground = true;
+    private boolean saveOptions = true;
     private BaseCallback callback;
     private Context context;
     private Benchmark benchmark;
     private Exception exception;
-    private boolean saveOptions = true;
+
 
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;

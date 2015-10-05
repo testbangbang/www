@@ -22,7 +22,18 @@ public class AdobeReaderPlugin implements ReaderPlugin {
     }
 
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
-        return null;
+        AdobeDocument document = null;
+        String docPassword = "";
+        String archivePassword = "";
+        if (documentOptions != null) {
+            docPassword = documentOptions.getDocumentPassword();
+            archivePassword = documentOptions.getDocumentPassword();
+        }
+        long ret = getPluginImpl().openFile(path, docPassword, archivePassword);
+        if (ret == 0) {
+            document = new AdobeDocument(this);
+        }
+        return document;
     }
 
     public boolean supportDrm() {
@@ -41,7 +52,7 @@ public class AdobeReaderPlugin implements ReaderPlugin {
 
     }
 
-    private AdobePluginImpl getPluginImpl() {
+    public AdobePluginImpl getPluginImpl() {
         if (impl == null) {
             impl = new AdobePluginImpl();
         }

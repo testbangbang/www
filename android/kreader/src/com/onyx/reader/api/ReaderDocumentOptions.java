@@ -6,7 +6,7 @@ package com.onyx.reader.api;
  */
 public interface ReaderDocumentOptions {
 
-    public String getPassword();
+    public String getDocumentPassword();
 
     public String getCompressedPassword();
 

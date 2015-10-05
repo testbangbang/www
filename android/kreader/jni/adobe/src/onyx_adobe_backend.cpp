@@ -15,15 +15,17 @@
 #include "onyx_adobe_backend.h"
 
 namespace {
-static const char * deviceInfoClassName = "com/onyx/reader/ReaderDeviceInfo";
-static const char * entryClassName = "com/onyx/reader/ReaderTableOfContentEntry";
-static const char * readerLocationRangeClassName = "com/onyx/reader/ReaderLocationRange";
-static const char * hitTestResultClassName = "com/onyx/reader/ReaderSelection";
-static const char * metadataClassName = "com/onyx/reader/ReaderDocumentMetadata";
-static const char * readerLinkClassName = "com/onyx/reader/ReaderLink";
-static const char * readerPageInfoClassName = "com/onyx/reader/ReaderPageInfo";
-static const char * sentenceResultClassName = "com/onyx/reader/ReaderSentenceResult";
-static const char * splitterClassName = "com/onyx/reader/utils/ReaderTextSplitter";
+
+
+static const char * deviceInfoClassName = "com/onyx/reader/plugins/adobe/ReaderDeviceInfo";
+static const char * entryClassName = "com/onyx/reader/plugins/adobe/ReaderTableOfContentEntry";
+static const char * readerLocationRangeClassName = "com/onyx/reader/plugins/adobe/ReaderLocationRange";
+static const char * hitTestResultClassName = "com/onyx/reader/plugins/adobe/ReaderSelection";
+static const char * metadataClassName = "com/onyx/reader/plugins/adobe/ReaderDocumentMetadata";
+static const char * readerLinkClassName = "com/onyx/reader/plugins/adobe/ReaderLink";
+static const char * readerPageInfoClassName = "com/onyx/reader/plugins/adobe/ReaderPageInfo";
+static const char * sentenceResultClassName = "com/onyx/reader/plugins/adobe/ReaderSentenceResult";
+static const char * splitterClassName = "com/onyx/reader/plugins/adobe/utils/ReaderTextSplitter";
 
 static const int TOUCH = 2;
 static const int SELECT_WORD = 3;
