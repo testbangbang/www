@@ -12,9 +12,7 @@ public class ReaderManager {
 
 
     public static Reader createReader(final Context context, final String path, final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
-        Reader reader = new Reader();
-        reader.getReaderHelper().pluginOptions = pluginOptions;
-        reader.getReaderHelper().viewOptions = viewOptions;
+        Reader reader = new Reader(pluginOptions, viewOptions);
         reader.getReaderHelper().updateRenderBitmap(viewOptions.getViewWidth(), viewOptions.getViewHeight());
         reader.getReaderHelper().loadPlugin(context, path);
         return reader;

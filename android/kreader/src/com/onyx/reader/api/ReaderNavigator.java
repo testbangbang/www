@@ -12,6 +12,12 @@ public interface ReaderNavigator {
     public ReaderDocumentPosition getInitPosition();
 
     /**
+     * Retrieve current position.
+     * @return Current position.
+     */
+    public ReaderDocumentPosition getCurrentPosition();
+
+    /**
      * Get position from page number
      * @param pageNumber The 0 based page number.
      * @return

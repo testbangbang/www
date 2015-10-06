@@ -54,7 +54,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderRender() {
-        final ScaleRequest renderRequest = new ScaleRequest(3.0f, 0f, 0f);
+        final ScaleToPageRequest renderRequest = new ScaleToPageRequest();
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {

@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
+import com.onyx.reader.api.ReaderPluginOptions;
+import com.onyx.reader.api.ReaderViewOptions;
 import com.onyx.reader.common.BaseCallback;
 import com.onyx.reader.common.BaseRequest;
 import com.onyx.reader.api.ReaderException;
@@ -32,7 +34,9 @@ public class Reader {
     private Handler handler = new Handler(Looper.getMainLooper());
     private ReaderHelper readerHelper = new ReaderHelper();
 
-    public Reader() {
+    public Reader(final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
+        getReaderHelper().pluginOptions = pluginOptions;
+        getReaderHelper().viewOptions = viewOptions;
         initRequestList();
     }
 

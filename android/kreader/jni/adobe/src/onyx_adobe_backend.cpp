@@ -325,7 +325,7 @@ static jobject createPageInfoObject(JNIEnv * env, int pn, dp::ref<dpdoc::Locatio
         return 0;
     }
 
-    jmethodID mid = env->GetStaticMethodID(cls, "createInfo", "(ILjava/lang/String;DIIIIIIII)Lcom/onyx/reader/ReaderPageInfo;");
+    jmethodID mid = env->GetStaticMethodID(cls, "createInfo", "(ILjava/lang/String;DIIIIIIII)Lcom/onyx/reader/plugins/adobe/ReaderPageInfo;");
     if (mid == 0) {
         LOGE("Find method result failed");
         env->DeleteLocalRef(cls);

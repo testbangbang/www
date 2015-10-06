@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.impl.ReaderDocumentOptionsImpl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -85,7 +86,9 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     public RectF getPageOriginalSize(final ReaderDocumentPosition position) {
-        return null;
+        float size [] = {0, 0};
+        getPluginImpl().pageSizeNative(position.getPageNumber(), size);
+        return new RectF(0, 0, size[0], size[1]);
     }
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
@@ -97,7 +100,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     public void close() {
-
+        getPluginImpl().closeFile();
     }
 
     public ReaderViewOptions getViewOptions() {
@@ -180,6 +183,16 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      */
     public ReaderDocumentPosition getInitPosition() {
         return null;
+    }
+
+
+    public ReaderDocumentPosition getCurrentPosition() {
+        List<ReaderPageInfo> pageInfoList = new ArrayList<ReaderPageInfo>();
+        if (getPluginImpl().allVisiblePagesRectangle(pageInfoList) <= 0) {
+            return null;
+        }
+        ReaderPageInfo pageInfo = pageInfoList.get(0);
+        return new AdobeDocumentPositionImpl(pageInfo.pageNumber);
     }
 
     /**

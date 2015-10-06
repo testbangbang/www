@@ -26,8 +26,8 @@ public class AdobePluginImpl {
     public native int countPagesInternal();
     public native boolean gotoLocationInternal(int localActionPageNum, String internalLocation);
     public native void pageSizeNative(int page, float [] size);
-    private native float getPageWidth();
-    private native float getPageHeight();
+    public native float getPageWidth();
+    public native float getPageHeight();
     public native long drawPage(int page,
                                  Bitmap bitmap,
                                  int displayLeft, int displayTop,
@@ -56,7 +56,7 @@ public class AdobePluginImpl {
 //    private native ReaderTextSelection hitTestNative(float x, float y, int type, ReaderTextSplitter splitter);
     private native double [] rectangles(String start, String end);
     private native double [] pageDisplayRectangles(int page, int count);
-//    private native int allVisiblePagesRectangle(List<ReaderPageInfo> list);
+    public native int allVisiblePagesRectangle(List<ReaderPageInfo> list);
     private native double [] updateLocationNative();
     private native boolean changeNavigationMatrix(double scale, double dx, double dy);
     public native boolean setNavigationMatrix(double scale, double absX, double absY);
