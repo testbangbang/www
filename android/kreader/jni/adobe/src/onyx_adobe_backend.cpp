@@ -874,26 +874,13 @@ void AdobeLibrary::pageNaturalSize(int page, double & width, double & height) {
 }
 
 bool AdobeLibrary::drawPage(int page, const AndroidBitmapInfo & info, void * pixels,
-                            int displayLeft, int displayTop, int displayWidth, int displayHeight, int left, int top, double scale) {
+                            int displayLeft, int displayTop, int displayWidth, int displayHeight) {
     adobeClient->surfaceInstance().attach(info, pixels, true);
-    if (renderer->getPagingMode() != dpdoc::PM_FLOW_PAGES) {
-        if (MATRIX_DEBUG) {
-            LOGE("drawPage and set navigation matrix %d %d scale %lf", left, top, scale);
-        }
-        OnyxMatrix matrix;
-        renderer->getNavigationMatrix(&matrix);
-        matrix.setScale(scale);
-        matrix.setXY(-left, -top);
-        renderer->setNavigationMatrix(matrix);
-    }
     renderer->paint(displayLeft, displayTop, displayWidth, displayHeight, &adobeClient->surfaceInstance());
     return true;
 }
 
-bool AdobeLibrary::drawPages(const AndroidBitmapInfo & info, void * pixels, int displayLeft, int displayTop, int displayWidth, int displayHeight,  int left, int top, double scale) {
-    if (MATRIX_DEBUG) {
-        LOGE("drawPages without setting navigation matrix %d %d scale %lf", left, top, scale);
-    }
+bool AdobeLibrary::drawPages(const AndroidBitmapInfo & info, void * pixels, int displayLeft, int displayTop, int displayWidth, int displayHeight) {
     adobeClient->surfaceInstance().attach(info, pixels, true);
     renderer->paint(displayLeft, displayTop, displayWidth, displayHeight, &adobeClient->surfaceInstance());
     return true;

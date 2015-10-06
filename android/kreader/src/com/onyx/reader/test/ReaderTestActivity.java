@@ -8,10 +8,7 @@ import com.onyx.reader.common.BaseCallback;
 import com.onyx.reader.common.BaseRequest;
 import com.onyx.reader.common.Utils;
 import com.onyx.reader.host.impl.ReaderViewOptionsImpl;
-import com.onyx.reader.host.request.CloseRequest;
-import com.onyx.reader.host.request.GotoLocationRequest;
-import com.onyx.reader.host.request.OpenRequest;
-import com.onyx.reader.host.request.RenderRequest;
+import com.onyx.reader.host.request.*;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderManager;
 
@@ -36,7 +33,7 @@ public class ReaderTestActivity extends Activity {
 
     public void testReaderOpen() {
         BaseRequest open = new OpenRequest(path, null, null);
-        reader.submitRequest(null, open, new BaseCallback() {
+        reader.submitRequest(this, open, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
@@ -46,8 +43,8 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderGoto() {
-        BaseRequest gotoPosition = new GotoLocationRequest(1);
-        reader.submitRequest(null, gotoPosition, new BaseCallback() {
+        BaseRequest gotoPosition = new GotoLocationRequest(2);
+        reader.submitRequest(this, gotoPosition, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
@@ -57,12 +54,12 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderRender() {
-        final RenderRequest  renderRequest = new RenderRequest();
-        reader.submitRequest(null, renderRequest, new BaseCallback() {
+        final ScaleRequest renderRequest = new ScaleRequest(3.0f, 0f, 0f);
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                Utils.saveBitmap(renderRequest.getReaderBitmap().getBitmap(), "/mnt/sdcard/Books/temp.png");
+                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/temp.png");
                 testReaderClose();
             }
         });
@@ -71,7 +68,7 @@ public class ReaderTestActivity extends Activity {
 
     public void testReaderClose() {
         final CloseRequest closeRequest = new CloseRequest();
-        reader.submitRequest(null, closeRequest, new BaseCallback() {
+        reader.submitRequest(this, closeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);

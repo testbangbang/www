@@ -69,7 +69,7 @@ JNIEXPORT jfloat JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getP
  * Signature: (ILandroid/graphics/Bitmap;IIIIIIDZ)J
  */
 JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawPage
-  (JNIEnv *, jobject, jint, jobject, jint, jint, jint, jint, jint, jint, jdouble, jboolean);
+  (JNIEnv *, jobject, jint, jobject, jint, jint, jint, jint, jboolean);
 
 /*
  * Class:     com_onyx_reader_adobe_AdobeReaderPlugin
@@ -77,7 +77,7 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawP
  * Signature: (Landroid/graphics/Bitmap;IIIIIIDZ)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawVisiblePages
-  (JNIEnv *, jobject, jobject, jint, jint, jint, jint, jint, jint, jdouble, jboolean);
+  (JNIEnv *, jobject, jobject, jint, jint, jint, jint, jboolean);
 
 /*
  * Class:     com_onyx_reader_adobe_AdobeReaderPlugin

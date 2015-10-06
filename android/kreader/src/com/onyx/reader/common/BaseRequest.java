@@ -1,6 +1,7 @@
 package com.onyx.reader.common;
 
 import android.content.Context;
+import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.host.wrapper.Reader;
 
 /**
@@ -18,6 +19,7 @@ public abstract class BaseRequest {
     private Context context;
     private Benchmark benchmark;
     private Exception exception;
+    private ReaderBitmap renderBitmap;
 
 
     static private volatile int globalRequestSequence;
@@ -112,6 +114,14 @@ public abstract class BaseRequest {
 
     public Exception getException() {
         return exception;
+    }
+
+    public ReaderBitmap getRenderBitmap() {
+        return renderBitmap;
+    }
+
+    public void setRenderBitmap(final ReaderBitmap bmp) {
+        renderBitmap = bmp;
     }
 
     public void beforeExecute(final Reader reader) {

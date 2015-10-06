@@ -18,8 +18,15 @@ public interface ReaderScalingManager {
      */
     public boolean isScaleToPage();
 
+    /**
+     * Set scale to width.
+     */
     public void setScaleToWidth();
 
+    /**
+     * Check if it's scale to width.
+     * @return
+     */
     public boolean isScaleToWidth();
 
     public void setScaleToHeight();
@@ -34,8 +41,16 @@ public interface ReaderScalingManager {
 
     public void setCropWidth();
 
+    /**
+     * Retrieve actual scale.
+     * @return
+     */
     public double getActualScale();
 
+    /**
+     * Change scale.
+     * @param scale
+     */
     public void setActualScale(double scale);
 
     /**
@@ -58,7 +73,7 @@ public interface ReaderScalingManager {
      * @param y the viewport y position
      * @return
      */
-    public boolean changeScale(double actualScale, float x, float y);
+    public boolean changeScale(float actualScale, float x, float y);
 
     /**
      * Return the page display rect on view coordinates.

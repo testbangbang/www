@@ -67,7 +67,7 @@ JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_closeF
 }
 
 JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawPage(JNIEnv *env, jobject thiz, jint pageNumber,
-    jobject bitmap, int displayLeft, int displayTop, int displayWidth, int displayHeight,  int left, int top, jdouble scale, jboolean fill) {
+    jobject bitmap, int displayLeft, int displayTop, int displayWidth, int displayHeight,  jboolean fill) {
     AndroidBitmapInfo info;
 	void *pixels;
 	int ret;
@@ -87,12 +87,12 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawP
 		return -1;
 	}
 
-    library(env).drawPage(pageNumber, info, pixels, displayLeft, displayTop, displayWidth, displayHeight,  left, top, scale);
+    library(env).drawPage(pageNumber, info, pixels, displayLeft, displayTop, displayWidth, displayHeight);
     return 1;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawVisiblePages
-(JNIEnv *env, jobject thiz, jobject bitmap,  int displayLeft, int displayTop, int displayWidth, int displayHeight,  int left, int top, jdouble scale, jboolean fill) {
+(JNIEnv *env, jobject thiz, jobject bitmap,  int displayLeft, int displayTop, int displayWidth, int displayHeight, jboolean fill) {
     AndroidBitmapInfo info;
 	void *pixels;
 	int ret;
@@ -111,7 +111,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_dr
 		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
 		return false;
 	}
-    library(env).drawPages(info, pixels, displayLeft, displayTop, displayWidth, displayHeight,  left, top, scale);
+    library(env).drawPages(info, pixels, displayLeft, displayTop, displayWidth, displayHeight);
     return 1;
 }
 

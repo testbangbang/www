@@ -31,15 +31,11 @@ public class AdobePluginImpl {
     public native long drawPage(int page,
                                  Bitmap bitmap,
                                  int displayLeft, int displayTop,
-                                 int displayWidth, int displayHeight,
-                                 int bmpX, int bmpY,
-                                 double scale, boolean fill);
+                                 int displayWidth, int displayHeight, boolean fill);
 
     public native boolean drawVisiblePages(Bitmap bitmap,
                                             int displayLeft, int displayTop,
-                                            int displayWidth, int displayHeight,
-                                            int bmpX, int bmpY,
-                                            double scale, boolean fill);
+                                            int displayWidth, int displayHeight, boolean fill);
 
     private native int getPageNumberOfScreenPoint(double screenX, double screenY);
     private native double[] convertPointFromDeviceSpaceToDocumentSpace(double screenX, double screenY, int pageNum);
@@ -63,7 +59,7 @@ public class AdobePluginImpl {
 //    private native int allVisiblePagesRectangle(List<ReaderPageInfo> list);
     private native double [] updateLocationNative();
     private native boolean changeNavigationMatrix(double scale, double dx, double dy);
-    private native boolean setNavigationMatrix(double scale, double absX, double absY);
+    public native boolean setNavigationMatrix(double scale, double absX, double absY);
 
 //    private native boolean searchNextNative(String pattern, boolean caseSensitive, boolean matchWholeWord, int start, int end, List<ReaderLocationRange> list);
 //    private native boolean searchPrevNative(String pattern, boolean caseSensitive, boolean matchWholeWord, int start, int end, List<ReaderLocationRange> list);

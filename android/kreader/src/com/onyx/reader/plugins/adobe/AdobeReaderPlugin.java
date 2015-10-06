@@ -167,11 +167,11 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     public boolean draw(final ReaderBitmap bitmap) {
-        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), 0, 0, 3.0, false);
+        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), false);
     }
 
-    public boolean draw(final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp, int bitmapPositionX, int bitmapPositionY) {
-        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), xInBitmap, yInBitmap, widthInBitmap, heightInBitmp, bitmapPositionX, bitmapPositionY, 3.0, true);
+    public boolean draw(final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp) {
+        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), xInBitmap, yInBitmap, widthInBitmap, heightInBitmp,  true);
     }
 
     /**
@@ -335,8 +335,8 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @param y the viewport y position
      * @return
      */
-    public boolean changeScale(double actualScale, float x, float y) {
-        return false;
+    public boolean changeScale(float actualScale, float x, float y) {
+        return getPluginImpl().setNavigationMatrix(actualScale, x, y);
     }
 
     /**
@@ -371,9 +371,10 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    /**
-     * Set single page layout.
-     */
+    public boolean supportSinglePageLayout() {
+        return true;
+    }
+
     public void setSinglePageLayout() {
 
     }
@@ -382,9 +383,10 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    /**
-     * Set continuous page layout.
-     */
+    public boolean supportContinuousPageLayout() {
+        return true;
+    }
+
     public void setContinuousPageLayout() {
     }
 
@@ -392,9 +394,9 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    /**
-     * Set reflow layout.
-     */
+    public boolean supportReflowLayout() {
+        return true;
+    }
     public void setReflowLayout() {
 
     }

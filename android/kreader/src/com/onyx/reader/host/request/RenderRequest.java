@@ -10,18 +10,13 @@ import com.onyx.reader.host.wrapper.Reader;
  */
 public class RenderRequest extends BaseRequest {
 
-    private ReaderBitmap bitmap;
-
     public RenderRequest() {
         super();
     }
 
     public void execute(final Reader reader) throws Exception {
-        bitmap = reader.getReaderHelper().renderBitmap;
+        setRenderBitmap(reader.getReaderHelper().renderBitmap);
         reader.getReaderHelper().renderToBitmap();
     }
 
-    public ReaderBitmap getReaderBitmap() {
-        return bitmap;
-    }
 }

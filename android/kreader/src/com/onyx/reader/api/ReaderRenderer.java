@@ -19,11 +19,9 @@ public interface ReaderRenderer {
      * @param yInBitmap the position y in bitmap to draw.
      * @param widthInBitmap the width of content to draw.
      * @param heightInBitmp the height of content to draw.
-     * @param bitmapPositionX the position x of bitmap to display on screen.
-     * @param bitmapPositionY the position y of bitmap to display on screen.
      *
      *        bitmap  matrix
-     *          (bpx, bpy)
+     *          (viewportX, viewportY)
      *                |--------------|
      *                |              |
      *                | (x,y)        |
@@ -36,6 +34,6 @@ public interface ReaderRenderer {
      *
      * @return
      */
-    public boolean draw(final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp, int bitmapPositionX, int bitmapPositionY);
+    public boolean draw(final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp);
 
 }
