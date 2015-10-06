@@ -4,7 +4,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
+import com.onyx.reader.host.wrapper.ReaderPageInfo;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,25 +12,10 @@ import android.util.Log;
  * Date: 12/27/13
  * Time: 9:48 PM
  * To change this template use File | Settings | File Templates.
+ * javap -s com.onyx.reader.plugins.adobe.AdobePageInfo
+ * (ILjava/lang/String;FFFFFFFFF)Lcom/onyx/reader/host/wrapper/ReaderPageInfo;
  */
-public class ReaderPageInfo {
-    public int pageNaturalWidth;
-    public int pageNaturalHeight;
-    public RectF autoCropContentRegion;    // region when zoom to page.
-    public double autoCropScale;
-    public int orientation;
-    public RectF manualRegion;
-
-    // page position in document coordinate system.
-    public Rect pageRectInDoc = new Rect();
-
-    // viewport in document coordinate system.
-    public Rect viewportRectInDoc = new Rect();
-    public Rect pageRectInScreen = new Rect();
-    public double pageDisplayScale;
-    public int pageNumber;
-    public String location;
-
+public class AdobePageInfo extends ReaderPageInfo {
 
     /**
      *
@@ -47,14 +32,21 @@ public class ReaderPageInfo {
      * @param pageTop the page top position in document coordinate system. in single mode, it's 0 always.
      * @return
      */
-    public static ReaderPageInfo createInfo(int pn, String internalLocation, double scale, int viewportLeft, int viewportTop,
-                                            int viewportRight, int viewportBottom, int pageNaturalWidth, int pageNaturalHeight,
-                                            int pageLeft, int pageTop) {
+    public static ReaderPageInfo createInfo(int pn,
+                                            String internalLocation,
+                                            float scale,
+                                            float viewportLeft,
+                                            float viewportTop,
+                                            float viewportRight,
+                                            float viewportBottom,
+                                            float pageNaturalWidth,
+                                            float pageNaturalHeight,
+                                            float pageLeft,
+                                            float pageTop) {
         ReaderPageInfo info = new ReaderPageInfo();
         info.pageDisplayScale = scale;
         info.location = internalLocation;
-        info.pageNaturalWidth = pageNaturalWidth;
-        info.pageNaturalHeight = pageNaturalHeight;
+        info.pageNaturalRect.set(0, 0, pageNaturalWidth, pageNaturalHeight);
         info.pageNumber = pn;
         info.pageRectInDoc.set(pageLeft, pageTop, pageLeft + (int)(pageNaturalWidth * scale), pageTop + (int)(pageNaturalHeight * scale));
         info.viewportRectInDoc.set(viewportLeft, viewportTop, viewportRight, viewportBottom);
@@ -65,23 +57,5 @@ public class ReaderPageInfo {
         return info;
     }
 
-    public void clearAutoCropInfo() {
-        autoCropContentRegion = null;
-        autoCropScale = 0;
-    }
 
-    public int autoCropContentRegionHeight(double scale) {
-        return (int)(autoCropContentRegion.height() *  scale / autoCropScale);
-    }
-
-    // get document position from screen position
-    public PointF documentPointFromScreenPoint(float screenX, float screenY) {
-        return new PointF((float)((screenX - pageRectInScreen.left) / pageDisplayScale),
-                (float)((screenY - pageRectInScreen.top) / pageDisplayScale));
-    }
-
-    public Point screenPointFromDocument(int docX, int docY) {
-        return new Point(docX + pageRectInDoc.left - pageRectInScreen.left,
-                docY + pageRectInDoc.top - pageRectInScreen.top);
-    }
 }

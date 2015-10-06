@@ -45,13 +45,13 @@ public interface ReaderScalingManager {
      * Retrieve actual scale.
      * @return
      */
-    public double getActualScale();
+    public float getActualScale();
 
     /**
      * Change scale.
      * @param scale
      */
-    public void setActualScale(double scale);
+    public void setActualScale(final float scale);
 
     /**
      * Set viewport. The behavior is different on different page layout.

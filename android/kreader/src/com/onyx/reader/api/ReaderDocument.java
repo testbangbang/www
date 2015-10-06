@@ -20,11 +20,11 @@ public interface ReaderDocument {
     public boolean readCover(final ReaderBitmap bitmap);
 
     /**
-     * Retrieve the page original size.
+     * Retrieve the page natural size.
      * @param position
      * @return
      */
-    public RectF getPageOriginalSize(final ReaderDocumentPosition position);
+    public RectF getPageNaturalSize(final ReaderDocumentPosition position);
 
     /**
      * Read the document table of content.

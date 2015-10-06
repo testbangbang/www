@@ -2,6 +2,7 @@ package com.onyx.reader.plugins.adobe;
 
 import android.graphics.Bitmap;
 import com.onyx.reader.api.*;
+import com.onyx.reader.host.wrapper.ReaderPageInfo;
 
 import java.util.List;
 

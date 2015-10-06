@@ -3,11 +3,10 @@ package com.onyx.reader.plugins.adobe;
 import android.content.Context;
 import android.graphics.RectF;
 import com.onyx.reader.api.*;
-import com.onyx.reader.host.impl.ReaderDocumentOptionsImpl;
+import com.onyx.reader.host.wrapper.ReaderPageInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -85,7 +84,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public RectF getPageOriginalSize(final ReaderDocumentPosition position) {
+    public RectF getPageNaturalSize(final ReaderDocumentPosition position) {
         float size [] = {0, 0};
         getPluginImpl().pageSizeNative(position.getPageNumber(), size);
         return new RectF(0, 0, size[0], size[1]);
@@ -318,11 +317,11 @@ public class AdobeReaderPlugin implements ReaderPlugin,
 
     public void setCropWidth() {}
 
-    public double getActualScale() {
+    public float getActualScale() {
         return 0;
     }
 
-    public void setActualScale(double scale) {}
+    public void setActualScale(final float scale) {}
 
     /**
      * Set viewport. The behavior is different on different page layout.

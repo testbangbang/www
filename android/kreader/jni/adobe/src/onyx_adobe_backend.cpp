@@ -23,7 +23,7 @@ static const char * readerLocationRangeClassName = "com/onyx/reader/plugins/adob
 static const char * hitTestResultClassName = "com/onyx/reader/plugins/adobe/ReaderSelection";
 static const char * metadataClassName = "com/onyx/reader/plugins/adobe/ReaderDocumentMetadata";
 static const char * readerLinkClassName = "com/onyx/reader/plugins/adobe/ReaderLink";
-static const char * readerPageInfoClassName = "com/onyx/reader/plugins/adobe/ReaderPageInfo";
+static const char * readerPageInfoClassName = "com/onyx/reader/plugins/adobe/AdobePageInfo";
 static const char * sentenceResultClassName = "com/onyx/reader/plugins/adobe/ReaderSentenceResult";
 static const char * splitterClassName = "com/onyx/reader/plugins/adobe/utils/ReaderTextSplitter";
 
@@ -325,7 +325,7 @@ static jobject createPageInfoObject(JNIEnv * env, int pn, dp::ref<dpdoc::Locatio
         return 0;
     }
 
-    jmethodID mid = env->GetStaticMethodID(cls, "createInfo", "(ILjava/lang/String;DIIIIIIII)Lcom/onyx/reader/plugins/adobe/ReaderPageInfo;");
+    jmethodID mid = env->GetStaticMethodID(cls, "createInfo", "(ILjava/lang/String;FFFFFFFFF)Lcom/onyx/reader/host/wrapper/ReaderPageInfo;");
     if (mid == 0) {
         LOGE("Find method result failed");
         env->DeleteLocalRef(cls);
@@ -337,7 +337,7 @@ static jobject createPageInfoObject(JNIEnv * env, int pn, dp::ref<dpdoc::Locatio
         data = location->getBookmark().utf8();
     }
     jstring object = env->NewStringUTF(data);
-    jobject result = env->CallStaticObjectMethod(cls, mid, pn, object, scale, displayLeft, displayTop, displayRight, displayBottom, (int)width, (int)height, pageLeft, pageTop);
+    jobject result = env->CallStaticObjectMethod(cls, mid, pn, object, scale, displayLeft, displayTop, displayRight, displayBottom, width, height, pageLeft, pageTop);
     if (result == 0) {
         LOGE("OOM: env->CallStaticObjectMethod failed");
     }

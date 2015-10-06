@@ -129,7 +129,7 @@ public class ReaderPluginTest {
         readerView.getScalingManager().setActualScale(scale);
 
         // calculate the viewport, according to original size, actual scale.
-        RectF size = document.getPageOriginalSize(position);
+        RectF size = document.getPageNaturalSize(position);
         RectF pageDisplayRect = new RectF();
         RectF viewportRect = new RectF();
         Matrix matrix = new Matrix();
@@ -171,7 +171,7 @@ public class ReaderPluginTest {
         readerView.getScalingManager().setActualScale(scale);
 
         // calculate the viewport, according to original size, actual scale.
-        RectF size = document.getPageOriginalSize(position);
+        RectF size = document.getPageNaturalSize(position);
         RectF pageDisplayRect = new RectF();
         RectF viewportRect = new RectF();
         Matrix matrix = new Matrix();
@@ -220,7 +220,7 @@ public class ReaderPluginTest {
         readerView.getScalingManager().setActualScale(scale);
 
         // calculate the viewport, according to original size, actual scale.
-        RectF size = document.getPageOriginalSize(position);
+        RectF size = document.getPageNaturalSize(position);
         RectF pageDisplayRect = new RectF();
         RectF viewportRect = new RectF();
         Matrix matrix = new Matrix();

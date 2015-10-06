@@ -1,0 +1,20 @@
+package com.onyx.reader.host.wrapper;
+
+import android.graphics.RectF;
+
+/**
+ * Created by zhuzeng on 10/6/15.
+ * when calculating sub page navigation, we could consider the whole procedure as followings:
+ * 1. generate a list of navigation info.
+ * 2. navigate in the list
+ * 3. different navigation mode generates different navigation sequence.
+ * The navigation info can be calculated according to user behavior or automatically.
+ */
+public class ReaderNavigationInfo {
+
+    // the view port rect in doc coordinates system with scale.
+    public RectF viewportRectInDoc = new RectF();
+    public float scale;
+
+
+}
