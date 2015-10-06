@@ -8,6 +8,7 @@ import com.onyx.reader.common.BaseCallback;
 import com.onyx.reader.common.BaseRequest;
 import com.onyx.reader.common.Utils;
 import com.onyx.reader.host.impl.ReaderViewOptionsImpl;
+import com.onyx.reader.host.request.CloseRequest;
 import com.onyx.reader.host.request.GotoLocationRequest;
 import com.onyx.reader.host.request.OpenRequest;
 import com.onyx.reader.host.request.RenderRequest;
@@ -25,7 +26,7 @@ public class ReaderTestActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        reader = ReaderManager.createReader(path, null, getViewOptions());
+        reader = ReaderManager.createReader(this, path, null, getViewOptions());
         testReaderOpen();
     }
 
@@ -62,10 +63,22 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 Utils.saveBitmap(renderRequest.getReaderBitmap().getBitmap(), "/mnt/sdcard/Books/temp.png");
+                testReaderClose();
             }
         });
     }
 
+
+    public void testReaderClose() {
+        final CloseRequest closeRequest = new CloseRequest();
+        reader.submitRequest(null, closeRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                assert(e == null);
+                testReaderOpen();
+            }
+        });
+    }
 
 
 }

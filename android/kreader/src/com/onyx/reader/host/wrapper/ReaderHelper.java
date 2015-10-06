@@ -1,5 +1,6 @@
 package com.onyx.reader.host.wrapper;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.impl.ReaderBitmapImpl;
@@ -25,8 +26,9 @@ public class ReaderHelper {
     public ReaderBitmapImpl renderBitmap;
 
 
-    public void loadPlugin(final String path) {
-        plugin = new AdobeReaderPlugin();
+
+    public void loadPlugin(final Context context, final String path) {
+        plugin = new AdobeReaderPlugin(context);
     }
 
     public void onDocumentOpened(final ReaderDocument doc) {
@@ -35,6 +37,15 @@ public class ReaderHelper {
         renderer = view.getRenderer();
         navigator = view.getNavigator();
         scalingManager = view.getScalingManager();
+    }
+
+    public void onDocumentClosed() {
+        document = null;
+        view = null;
+        renderer = null;
+        navigator = null;
+        scalingManager = null;
+        searchManager = null;
     }
 
     public void updateRenderBitmap(int width, int height) {

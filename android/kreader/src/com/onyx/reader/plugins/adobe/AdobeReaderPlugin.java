@@ -1,10 +1,12 @@
 package com.onyx.reader.plugins.adobe;
 
+import android.content.Context;
 import android.graphics.RectF;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.impl.ReaderDocumentOptionsImpl;
 
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -23,6 +25,10 @@ public class AdobeReaderPlugin implements ReaderPlugin,
 {
 
     private AdobePluginImpl impl;
+
+    public AdobeReaderPlugin(final Context context) {
+        ReaderDeviceInfo.init(context);
+    }
 
     public AdobePluginImpl getPluginImpl() {
         if (impl == null) {
@@ -160,8 +166,12 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public void draw(final ReaderBitmap bitmap) {
-        getPluginImpl().drawVisiblePages(bitmap.getBitmap(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), 0, 0, 3.0, false);
+    public boolean draw(final ReaderBitmap bitmap) {
+        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), 0, 0, 3.0, false);
+    }
+
+    public boolean draw(final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp, int bitmapPositionX, int bitmapPositionY) {
+        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), xInBitmap, yInBitmap, widthInBitmap, heightInBitmp, bitmapPositionX, bitmapPositionY, 3.0, true);
     }
 
     /**
@@ -376,7 +386,6 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Set continuous page layout.
      */
     public void setContinuousPageLayout() {
-
     }
 
     public boolean isContinuousPageLayout() {

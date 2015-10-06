@@ -5,6 +5,37 @@ package com.onyx.reader.api;
  */
 public interface ReaderRenderer {
 
-    public void draw(final ReaderBitmap bitmap);
+    /**
+     * draw content.
+     * @param bitmap the target bitmap to draw page.
+     * @return false if not supported.
+     */
+    public boolean draw(final ReaderBitmap bitmap);
+
+    /**
+     * draw content.
+     * @param bitmap the target bitmap to draw content. Caller may use this method to draw part of content.
+     * @param xInBitmap the position x in bitmap to draw.
+     * @param yInBitmap the position y in bitmap to draw.
+     * @param widthInBitmap the width of content to draw.
+     * @param heightInBitmp the height of content to draw.
+     * @param bitmapPositionX the position x of bitmap to display on screen.
+     * @param bitmapPositionY the position y of bitmap to display on screen.
+     *
+     *        bitmap  matrix
+     *          (bpx, bpy)
+     *                |--------------|
+     *                |              |
+     *                | (x,y)        |
+     *                |  |------|    |
+     *                |  |      |    |
+     *                |  |      |    |
+     *                |  |------|    |
+     *                |        (w,h) |
+     *                |--------------|
+     *
+     * @return
+     */
+    public boolean draw(final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp, int bitmapPositionX, int bitmapPositionY);
 
 }

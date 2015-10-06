@@ -12,10 +12,15 @@ import com.onyx.reader.host.wrapper.Reader;
 public class GotoLocationRequest extends BaseRequest {
 
     private int page;
+    private String internalPosition;
 
     public GotoLocationRequest(int p) {
         super();
         page = p;
+    }
+
+    public GotoLocationRequest(final String p) {
+        internalPosition = p;
     }
 
     public void execute(final Reader reader) throws Exception {

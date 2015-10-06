@@ -159,8 +159,6 @@ public class Reader {
         return handler;
     }
 
-
-
     public ReaderHelper getReaderHelper() {
         return readerHelper;
     }

@@ -1,5 +1,6 @@
 package com.onyx.reader.host.wrapper;
 
+import android.content.Context;
 import com.onyx.reader.api.ReaderPluginOptions;
 import com.onyx.reader.api.ReaderViewOptions;
 
@@ -10,12 +11,12 @@ import com.onyx.reader.api.ReaderViewOptions;
 public class ReaderManager {
 
 
-    public static Reader createReader(final String path, final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
+    public static Reader createReader(final Context context, final String path, final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
         Reader reader = new Reader();
         reader.getReaderHelper().pluginOptions = pluginOptions;
         reader.getReaderHelper().viewOptions = viewOptions;
         reader.getReaderHelper().updateRenderBitmap(viewOptions.getViewWidth(), viewOptions.getViewHeight());
-        reader.getReaderHelper().loadPlugin(path);
+        reader.getReaderHelper().loadPlugin(context, path);
         return reader;
     }
 
