@@ -18,7 +18,8 @@ public class ScaleRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        reader.getReaderHelper().scalingManager.changeScale(scale, x, y);
+        reader.getReaderHelper().renderer.setScale(scale);
+        reader.getReaderHelper().renderer.setViewport(x, y);
         setRenderBitmap(reader.getReaderHelper().renderBitmap);
         reader.getReaderHelper().renderToBitmap();
     }

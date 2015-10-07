@@ -59,7 +59,7 @@ public class AdobePluginImpl {
     private native double [] pageDisplayRectangles(int page, int count);
     public native int allVisiblePagesRectangle(List<ReaderPageInfo> list);
     private native double [] updateLocationNative();
-    private native boolean changeNavigationMatrix(double scale, double dx, double dy);
+    public native boolean changeNavigationMatrix(double scale, double dx, double dy);
     public native boolean setNavigationMatrix(double scale, double absX, double absY);
 
 //    private native boolean searchNextNative(String pattern, boolean caseSensitive, boolean matchWholeWord, int start, int end, List<ReaderLocationRange> list);

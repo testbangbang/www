@@ -22,7 +22,8 @@ public class ScaleToPageRequest extends BaseRequest {
         float scale = Math.min(width / pageRect.width(), height / pageRect.height());
         float x = (width -  pageRect.width() * scale) / 2;
         float y = (height -  pageRect.height() * scale) / 2;
-        reader.getReaderHelper().scalingManager.changeScale(scale, -x, -y);
+        reader.getReaderHelper().renderer.setScale(scale);
+        reader.getReaderHelper().renderer.setViewport(-x, -y);
         setRenderBitmap(reader.getReaderHelper().renderBitmap);
         reader.getReaderHelper().renderToBitmap();
     }

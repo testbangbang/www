@@ -20,12 +20,6 @@ public interface ReaderNavigator {
     public ReaderDocumentPosition getVisibleBeginningPosition();
 
     /**
-     * Retrieve visible pages on screen.
-      * @return the visible page list.
-     */
-    public List<ReaderDocumentPosition> getVisiblePages();
-
-    /**
      * Get position from page number
      * @param pageNumber The 0 based page number.
      * @return
@@ -90,7 +84,7 @@ public interface ReaderNavigator {
      * Retrieve current visible links.
      * @return
      */
-    public List<ReaderLink> getVisibleLinks();
+    public List<ReaderLink> getLinks(final ReaderDocumentPosition position);
 
 
 }

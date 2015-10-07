@@ -38,18 +38,6 @@ public interface ReaderView {
     public ReaderTextStyleManager getTextStyleManager();
 
     /**
-     * Retrieve scaling manager interface.
-     * @return
-     */
-    public ReaderScalingManager getScalingManager();
-
-    /**
-     * Retrieve ReaderPageLayout manager interface.
-     * @return
-     */
-    public ReaderPageLayoutManager getPageLayoutManager();
-
-    /**
      * Retrieve reader hit test.
      */
     public ReaderHitTestManager getReaderHitTestManager();

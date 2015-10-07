@@ -21,7 +21,6 @@ public class ReaderHelper {
     public ReaderView view;
     public ReaderNavigator navigator;
     public ReaderRenderer renderer;
-    public ReaderScalingManager scalingManager;
     public ReaderSearchManager searchManager;
     public ReaderBitmapImpl renderBitmap;
 
@@ -36,7 +35,6 @@ public class ReaderHelper {
         view = document.createView(viewOptions);
         renderer = view.getRenderer();
         navigator = view.getNavigator();
-        scalingManager = view.getScalingManager();
     }
 
     public void onDocumentClosed() {
@@ -44,8 +42,11 @@ public class ReaderHelper {
         view = null;
         renderer = null;
         navigator = null;
-        scalingManager = null;
         searchManager = null;
+    }
+
+    public void onLayoutChanged() {
+
     }
 
     public void updateRenderBitmap(int width, int height) {

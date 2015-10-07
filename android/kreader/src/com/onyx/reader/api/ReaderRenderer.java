@@ -5,6 +5,28 @@ package com.onyx.reader.api;
  */
 public interface ReaderRenderer {
 
+
+    /**
+     * Get renderer features.
+     * @return renderer features interface.
+     */
+    public ReaderRendererFeatures getRendererFeatures();
+
+    /**
+     * Set scale.
+     * @param actualScale the actual scale
+     * @return false if not supported.
+     */
+    public boolean setScale(float actualScale);
+
+    /**
+     * set viewport
+     * @param x the viewport x position
+     * @param y the viewport y position
+     * @return false, if not supported.
+     */
+    public boolean setViewport(final float x, final float y);
+
     /**
      * draw content.
      * @param bitmap the target bitmap to draw page.

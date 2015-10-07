@@ -18,10 +18,8 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         ReaderRenderer,
         ReaderNavigator,
         ReaderSearchManager,
-        ReaderScalingManager,
         ReaderTextStyleManager,
-        ReaderDrmManager,
-        ReaderPageLayoutManager
+        ReaderDrmManager
 {
 
     private AdobePluginImpl impl;
@@ -98,6 +96,10 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    public ReaderRendererFeatures getRendererFeatures() {
+        return null;
+    }
+
     public void close() {
         getPluginImpl().closeFile();
     }
@@ -130,22 +132,6 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     /**
-     * Retrieve scaling manager interface.
-     * @return
-     */
-    public ReaderScalingManager getScalingManager() {
-        return this;
-    }
-
-    /**
-     * Retrieve ReaderPageLayout manager interface.
-     * @return
-     */
-    public ReaderPageLayoutManager getPageLayoutManager() {
-        return this;
-    }
-
-    /**
      * Retrieve reader hit test.
      */
     public ReaderHitTestManager getReaderHitTestManager() {
@@ -156,7 +142,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Retrieve current visible links.
      * @return
      */
-    public List<ReaderLink> getVisibleLinks() {
+    public List<ReaderLink> getLinks(final ReaderDocumentPosition position) {
         return null;
     }
 
@@ -350,12 +336,14 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     /**
      * Convinent method to set scale and viewport directly.
      * @param actualScale the actual scale
-     * @param x the viewport x position
-     * @param y the viewport y position
      * @return
      */
-    public boolean changeScale(float actualScale, float x, float y) {
-        return getPluginImpl().setNavigationMatrix(actualScale, x, y);
+    public boolean setScale(float actualScale) {
+        return getPluginImpl().changeNavigationMatrix(actualScale, 0, 0);
+    }
+
+    public boolean setViewport(final float x, final float y) {
+        return getPluginImpl().setNavigationMatrix(0, x, y);
     }
 
     /**

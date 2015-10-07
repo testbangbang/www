@@ -115,7 +115,7 @@ public class ReaderPluginTest {
 
         ReaderViewOptions viewOptions = defaultViewOptions();
         ReaderView readerView = document.createView(viewOptions);
-        ReaderScalingManager scalingManager = readerView.getScalingManager();
+
 
         ReaderNavigator navigator = readerView.getNavigator();
         ReaderRenderer renderer = readerView.getRenderer();
@@ -126,7 +126,7 @@ public class ReaderPluginTest {
         int pn = 3;
         ReaderDocumentPosition position = navigator.getPositionByPageNumber(pn);
         navigator.gotoPosition(position);
-        readerView.getScalingManager().setActualScale(scale);
+        readerView.getRenderer().setScale(scale);
 
         // calculate the viewport, according to original size, actual scale.
         RectF size = document.getPageNaturalSize(position);
@@ -135,12 +135,12 @@ public class ReaderPluginTest {
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
         matrix.mapRect(pageDisplayRect, size);
-        scalingManager.setViewport(viewportRect);
+        readerView.getRenderer().setViewport(viewportRect.left, viewportRect.top);
         renderer.draw(readerBitmap);
 
         // move viewport
         viewportRect.offset(100, 0);
-        scalingManager.setViewport(viewportRect);
+        readerView.getRenderer().setViewport(viewportRect.left, viewportRect.top);
         renderer.draw(readerBitmap);
 
         document.close();
@@ -157,7 +157,6 @@ public class ReaderPluginTest {
 
         ReaderViewOptions viewOptions = defaultViewOptions();
         ReaderView readerView = document.createView(viewOptions);
-        ReaderScalingManager scalingManager = readerView.getScalingManager();
 
         ReaderNavigator navigator = readerView.getNavigator();
         ReaderRenderer renderer = readerView.getRenderer();
@@ -168,7 +167,7 @@ public class ReaderPluginTest {
         int pn = 3;
         ReaderDocumentPosition position = navigator.getPositionByPageNumber(pn);
         navigator.gotoPosition(position);
-        readerView.getScalingManager().setActualScale(scale);
+        readerView.getRenderer().setScale(scale);
 
         // calculate the viewport, according to original size, actual scale.
         RectF size = document.getPageNaturalSize(position);
@@ -177,7 +176,7 @@ public class ReaderPluginTest {
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
         matrix.mapRect(pageDisplayRect, size);
-        scalingManager.changeScale(scale, viewportRect.left, viewportRect.top);
+
 
         // save current position, scale and viewport.
 
@@ -186,7 +185,6 @@ public class ReaderPluginTest {
 
         // move viewport
         viewportRect.offset(100, 0);
-        scalingManager.setViewport(viewportRect);
         renderer.draw(readerBitmap);
 
         document.close();
@@ -204,8 +202,6 @@ public class ReaderPluginTest {
 
         ReaderViewOptions viewOptions = defaultViewOptions();
         ReaderView readerView = document.createView(viewOptions);
-        ReaderScalingManager scalingManager = readerView.getScalingManager();
-        ReaderPageLayoutManager pageLayoutManager = readerView.getPageLayoutManager();
 
         ReaderNavigator navigator = readerView.getNavigator();
         ReaderRenderer renderer = readerView.getRenderer();
@@ -216,8 +212,7 @@ public class ReaderPluginTest {
         int pn = 3;
         ReaderDocumentPosition position = navigator.getPositionByPageNumber(pn);
         navigator.gotoPosition(position);
-        pageLayoutManager.setContinuousPageLayout();
-        readerView.getScalingManager().setActualScale(scale);
+        readerView.getRenderer().setScale(scale);
 
         // calculate the viewport, according to original size, actual scale.
         RectF size = document.getPageNaturalSize(position);
@@ -226,7 +221,8 @@ public class ReaderPluginTest {
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
         matrix.mapRect(pageDisplayRect, size);
-        scalingManager.changeScale(scale, viewportRect.left, viewportRect.top);
+        readerView.getRenderer().setScale(scale);
+        readerView.getRenderer().setViewport(viewportRect.left, viewportRect.top);
 
         // save current position, scale and viewport.
 
@@ -235,7 +231,7 @@ public class ReaderPluginTest {
 
         // move viewport
         viewportRect.offset(100, 0);
-        scalingManager.setViewport(viewportRect);
+        readerView.getRenderer().setViewport(viewportRect.left, viewportRect.top);
         renderer.draw(readerBitmap);
 
         document.close();
