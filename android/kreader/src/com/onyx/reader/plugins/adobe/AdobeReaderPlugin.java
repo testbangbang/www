@@ -185,13 +185,17 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
 
-    public ReaderDocumentPosition getCurrentPosition() {
+    public ReaderDocumentPosition getVisibleBeginningPosition() {
         List<ReaderPageInfo> pageInfoList = new ArrayList<ReaderPageInfo>();
         if (getPluginImpl().allVisiblePagesRectangle(pageInfoList) <= 0) {
             return null;
         }
         ReaderPageInfo pageInfo = pageInfoList.get(0);
         return new AdobeDocumentPositionImpl(pageInfo.pageNumber);
+    }
+
+    public List<ReaderDocumentPosition> getVisiblePages() {
+        return null;
     }
 
     /**
@@ -203,12 +207,15 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return new AdobeDocumentPositionImpl(pageNumber);
     }
 
+    public ReaderDocumentPosition getPositionByPageName(final String name) {
+        return null;
+    }
 
     /**
      * Return total page number.
      * @return 1 based total page number.
      */
-    public int getTotalPage() {
+    public int getTotalPageNumber() {
         return getPluginImpl().countPagesInternal();
     }
 

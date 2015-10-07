@@ -2,6 +2,7 @@ package com.onyx.reader.api;
 
 /**
  * Created by zhuzeng on 10/2/15.
+ * Represents a document location, it could be a page or certain location inside a page.
  */
 public interface ReaderDocumentPosition {
 

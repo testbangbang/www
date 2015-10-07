@@ -13,9 +13,9 @@ public class ScaleToPageRequest extends BaseRequest {
     public ScaleToPageRequest() {
     }
 
-    // in document coordinates system.
+    // in document coordinates system. forward to layout manager to scale
     public void execute(final Reader reader) throws Exception {
-        ReaderDocumentPosition documentPosition = reader.getReaderHelper().navigator.getCurrentPosition();
+        ReaderDocumentPosition documentPosition = reader.getReaderHelper().navigator.getVisibleBeginningPosition();
         RectF pageRect = reader.getReaderHelper().document.getPageNaturalSize(documentPosition);
         float width = reader.getReaderHelper().viewOptions.getViewWidth();
         float height = reader.getReaderHelper().viewOptions.getViewHeight();

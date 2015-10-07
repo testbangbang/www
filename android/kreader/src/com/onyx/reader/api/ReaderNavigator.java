@@ -1,5 +1,7 @@
 package com.onyx.reader.api;
 
+import java.util.List;
+
 /**
  * Created by zhuzeng on 10/3/15.
  */
@@ -12,10 +14,16 @@ public interface ReaderNavigator {
     public ReaderDocumentPosition getInitPosition();
 
     /**
-     * Retrieve current position.
+     * Retrieve current position of screen beginning.
      * @return Current position.
      */
-    public ReaderDocumentPosition getCurrentPosition();
+    public ReaderDocumentPosition getVisibleBeginningPosition();
+
+    /**
+     * Retrieve visible pages on screen.
+      * @return the visible page list.
+     */
+    public List<ReaderDocumentPosition> getVisiblePages();
 
     /**
      * Get position from page number
@@ -24,12 +32,19 @@ public interface ReaderNavigator {
      */
     public ReaderDocumentPosition getPositionByPageNumber(int pageNumber);
 
+    /**
+     * Get position from page name.
+     * @param name The page name.
+     * @return
+     */
+    public ReaderDocumentPosition getPositionByPageName(final String name);
+
 
     /**
      * Return total page number.
      * @return 1 based total page number.
      */
-    public int getTotalPage();
+    public int getTotalPageNumber();
 
     /**
      * Navigate to next screen.
@@ -70,5 +85,12 @@ public interface ReaderNavigator {
      * @return
      */
     public boolean gotoPosition(final ReaderDocumentPosition position);
+
+    /**
+     * Retrieve current visible links.
+     * @return
+     */
+    public List<ReaderLink> getVisibleLinks();
+
 
 }

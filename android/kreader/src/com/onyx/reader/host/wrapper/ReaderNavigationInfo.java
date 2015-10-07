@@ -13,7 +13,11 @@ import android.graphics.RectF;
 public class ReaderNavigationInfo {
 
     // the view port rect in doc coordinates system with scale.
+    // finalScale = scale * currentScale * scaleOf(viewportRect, viewRect)
+    // if we always refers to scale = 1.0, we could ignore scale here.
     public RectF viewportRectInDoc = new RectF();
+
+    // the scale that viewport calculated
     public float scale;
 
 

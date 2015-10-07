@@ -55,12 +55,6 @@ public interface ReaderView {
     public ReaderHitTestManager getReaderHitTestManager();
 
     /**
-     * Retrieve current visible links.
-     * @return
-     */
-    public List<ReaderLink> getVisibleLinks();
-
-    /**
      * Retrieve search interface.
      * @return
      */

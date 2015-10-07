@@ -48,12 +48,12 @@ public class AdobePageInfo extends ReaderPageInfo {
         info.location = internalLocation;
         info.pageNaturalRect.set(0, 0, pageNaturalWidth, pageNaturalHeight);
         info.pageNumber = pn;
-        info.pageRectInDoc.set(pageLeft, pageTop, pageLeft + (int)(pageNaturalWidth * scale), pageTop + (int)(pageNaturalHeight * scale));
+        info.pageRectInDoc.set(pageLeft, pageTop, pageLeft + (pageNaturalWidth * scale), pageTop + (pageNaturalHeight * scale));
         info.viewportRectInDoc.set(viewportLeft, viewportTop, viewportRight, viewportBottom);
         info.pageRectInScreen.set(info.pageRectInDoc.left - info.viewportRectInDoc.left,
                 info.pageRectInDoc.top - info.viewportRectInDoc.top,
-                info.pageRectInDoc.left - info.viewportRectInDoc.left + (int)(pageNaturalWidth * scale),
-                info.pageRectInDoc.top - info.viewportRectInDoc.top + (int)(pageNaturalHeight * scale));
+                info.pageRectInDoc.left - info.viewportRectInDoc.left + (pageNaturalWidth * scale),
+                info.pageRectInDoc.top - info.viewportRectInDoc.top + (pageNaturalHeight * scale));
         return info;
     }
 
