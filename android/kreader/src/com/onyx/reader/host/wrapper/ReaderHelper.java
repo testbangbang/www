@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.impl.ReaderBitmapImpl;
+import com.onyx.reader.host.layout.ReaderLayoutManager;
 import com.onyx.reader.plugins.adobe.AdobeReaderPlugin;
 
 /**
@@ -11,7 +12,7 @@ import com.onyx.reader.plugins.adobe.AdobeReaderPlugin;
  * Save all helper data objects in this class.
  */
 public class ReaderHelper {
-
+    public Reader reader;
     public ReaderViewOptions viewOptions;
     public ReaderPluginOptions pluginOptions;
     public ReaderDocumentOptions documentOptions;
@@ -23,8 +24,11 @@ public class ReaderHelper {
     public ReaderRenderer renderer;
     public ReaderSearchManager searchManager;
     public ReaderBitmapImpl renderBitmap;
+    private ReaderLayoutManager readerLayoutManager;
 
-
+    public ReaderHelper(final Reader r) {
+        reader = r;
+    }
 
     public void loadPlugin(final Context context, final String path) {
         plugin = new AdobeReaderPlugin(context);
@@ -62,16 +66,23 @@ public class ReaderHelper {
         renderer.draw(renderBitmap);
     }
 
-    public ReaderPlugin getCurrentPlugin() {
+    public ReaderPlugin getPlugin() {
         return plugin;
     }
 
     public void setAbortFlag() {
-        getCurrentPlugin().abortCurrentJob();
+        getPlugin().abortCurrentJob();
     }
 
     public void clearAbortFlag() {
-        getCurrentPlugin().clearAbortFlag();
+        getPlugin().clearAbortFlag();
+    }
+
+    public ReaderLayoutManager getReaderLayoutManager() {
+        if (readerLayoutManager == null) {
+            readerLayoutManager = new ReaderLayoutManager(reader);
+        }
+        return readerLayoutManager;
     }
 
 

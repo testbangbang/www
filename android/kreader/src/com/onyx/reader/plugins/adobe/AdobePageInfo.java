@@ -1,9 +1,5 @@
 package com.onyx.reader.plugins.adobe;
 
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import com.onyx.reader.host.wrapper.ReaderPageInfo;
 
 /**
@@ -48,12 +44,12 @@ public class AdobePageInfo extends ReaderPageInfo {
         info.location = internalLocation;
         info.pageNaturalRect.set(0, 0, pageNaturalWidth, pageNaturalHeight);
         info.pageNumber = pn;
-        info.pageRectInDoc.set(pageLeft, pageTop, pageLeft + (pageNaturalWidth * scale), pageTop + (pageNaturalHeight * scale));
-        info.viewportRectInDoc.set(viewportLeft, viewportTop, viewportRight, viewportBottom);
-        info.pageRectInScreen.set(info.pageRectInDoc.left - info.viewportRectInDoc.left,
-                info.pageRectInDoc.top - info.viewportRectInDoc.top,
-                info.pageRectInDoc.left - info.viewportRectInDoc.left + (pageNaturalWidth * scale),
-                info.pageRectInDoc.top - info.viewportRectInDoc.top + (pageNaturalHeight * scale));
+        info.pageRectInHost.set(pageLeft, pageTop, pageLeft + (pageNaturalWidth * scale), pageTop + (pageNaturalHeight * scale));
+        info.viewportRectInHost.set(viewportLeft, viewportTop, viewportRight, viewportBottom);
+        info.pageRectInScreen.set(info.pageRectInHost.left - info.viewportRectInHost.left,
+                info.pageRectInHost.top - info.viewportRectInHost.top,
+                info.pageRectInHost.left - info.viewportRectInHost.left + (pageNaturalWidth * scale),
+                info.pageRectInHost.top - info.viewportRectInHost.top + (pageNaturalHeight * scale));
         return info;
     }
 

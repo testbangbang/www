@@ -32,5 +32,15 @@ public interface ReaderDocumentPosition {
     public void restore(final String string);
 
 
+    /**
+     * Compare this position with another position.
+     * @param another another position.
+     * @return -1 if this position is before another position.
+     * 0 if they are equal
+     * 1 if this position after another position.
+     */
+    public int compare(final ReaderDocumentPosition another);
+
+
 
 }

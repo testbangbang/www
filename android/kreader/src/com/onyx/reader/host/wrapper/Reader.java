@@ -32,9 +32,10 @@ public class Reader {
     private boolean debugWakelock = false;
     private List<BaseRequest> requestList;
     private Handler handler = new Handler(Looper.getMainLooper());
-    private ReaderHelper readerHelper = new ReaderHelper();
+    private ReaderHelper readerHelper = null;
 
     public Reader(final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
+        readerHelper = new ReaderHelper(this);
         getReaderHelper().pluginOptions = pluginOptions;
         getReaderHelper().viewOptions = viewOptions;
         initRequestList();

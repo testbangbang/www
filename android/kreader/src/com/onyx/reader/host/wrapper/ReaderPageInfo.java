@@ -13,6 +13,7 @@ import android.graphics.RectF;
  * 4. screen rect (aka, viewport rect) in document coordinates system.
  * 5. page rect in screen coordinates system.
  * 6. page position.
+ * Host Coordinates system and plugin coordinates system.
  */
 public class ReaderPageInfo {
 
@@ -24,10 +25,10 @@ public class ReaderPageInfo {
     public RectF manualRegion;
 
     // page position in document coordinate system.
-    public RectF pageRectInDoc = new RectF();
+    public RectF pageRectInHost = new RectF();
 
     // viewport in document coordinate system.
-    public RectF viewportRectInDoc = new RectF();
+    public RectF viewportRectInHost = new RectF();
     public RectF pageRectInScreen = new RectF();
     public float pageDisplayScale;
     public int pageNumber;
@@ -51,7 +52,7 @@ public class ReaderPageInfo {
     }
 
     public PointF screenPointFromDocument(int docX, int docY) {
-        return new PointF(docX + pageRectInDoc.left - pageRectInScreen.left,
-                docY + pageRectInDoc.top - pageRectInScreen.top);
+        return new PointF(docX + pageRectInHost.left - pageRectInScreen.left,
+                docY + pageRectInHost.top - pageRectInScreen.top);
     }
 }
