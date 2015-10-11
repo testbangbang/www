@@ -28,6 +28,7 @@ public class EntryManager {
 
     public void setViewport(final float x, final float y) {
         viewportRect.offsetTo(x, y);
+        reboundViewport();
     }
 
     public void setViewportRect(final float left, final float top, final float right, final float bottom) {

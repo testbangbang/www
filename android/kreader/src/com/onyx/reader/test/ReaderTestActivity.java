@@ -26,6 +26,7 @@ import java.util.Random;
 public class ReaderTestActivity extends Activity {
     private Reader reader;
     final String path = "file:///mnt/sdcard/Books/ZerotoOne.pdf";
+    int pn = 0;
 
     public static int randInt(int min, int max) {
         Random rand = new Random();
@@ -59,7 +60,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderGoto() {
-        BaseRequest gotoPosition = new GotoLocationRequest(2);
+        BaseRequest gotoPosition = new GotoLocationRequest(pn++);
         reader.submitRequest(this, gotoPosition, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -70,7 +71,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderRender() {
-        final ScaleRequest renderRequest = new ScaleRequest(3.0f, 0, 0);
+        final ScaleRequest renderRequest = new ScaleRequest(3.0f, 5000, 5000);
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {

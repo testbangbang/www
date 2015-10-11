@@ -173,7 +173,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
 
     public ReaderDocumentPosition getVisibleBeginningPosition() {
         List<ReaderPageInfo> pageInfoList = new ArrayList<ReaderPageInfo>();
-        if (getPluginImpl().allVisiblePagesRectangle(pageInfoList) <= 0) {
+        if (getPluginImpl().allVisiblePagesRectangle(pageInfoList) < 0) {
             return null;
         }
         ReaderPageInfo pageInfo = pageInfoList.get(0);
@@ -256,7 +256,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public boolean gotoPosition(final ReaderDocumentPosition position) {
-        return getPluginImpl().gotoLocationInternal(position.getPageNumber(), position.save());
+        return getPluginImpl().gotoLocationInternal(position.getPageNumber(), null);
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {
