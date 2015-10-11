@@ -20,7 +20,7 @@ public interface ReaderNavigator {
     public ReaderDocumentPosition getVisibleBeginningPosition();
 
     /**
-     * Get position from page number
+     * Get position from page number. Page position can be retrieved by both index and name.
      * @param pageNumber The 0 based page number.
      * @return
      */

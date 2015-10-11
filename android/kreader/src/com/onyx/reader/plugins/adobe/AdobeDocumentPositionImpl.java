@@ -30,4 +30,8 @@ public class AdobeDocumentPositionImpl implements ReaderDocumentPosition {
 
     }
 
+    public int compare(final ReaderDocumentPosition another) {
+        return 0;
+    }
+
 }
