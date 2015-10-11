@@ -3,7 +3,9 @@ package com.onyx.reader.host.math;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 10/8/15.
@@ -17,6 +19,7 @@ public class EntryManager {
     private float spacing;
     private List<EntryInfo> visible = new ArrayList<EntryInfo>();
     private List<EntryInfo> entryInfoList = new ArrayList<EntryInfo>();
+    private Map<String, EntryInfo> entryInfoMap = new HashMap();
 
     public void clear() {
         entryInfoList.clear();
@@ -29,6 +32,7 @@ public class EntryManager {
 
     public void setViewportRect(final float left, final float top, final float right, final float bottom) {
         viewportRect.set(left, top, right, bottom);
+        reboundViewport();
     }
 
     public final RectF getViewportRect() {
@@ -48,7 +52,12 @@ public class EntryManager {
         EntryUtils.rebound(viewportRect, hostRect);
     }
 
-    public void add(final EntryInfo entryInfo) {
+    public boolean contains(final String name) {
+        return entryInfoMap.containsKey(name);
+    }
+
+    public void add(final String name, final EntryInfo entryInfo) {
+        entryInfoMap.put(name, entryInfo);
         entryInfoList.add(entryInfo);
     }
 
@@ -59,6 +68,10 @@ public class EntryManager {
     public void setScale(final float scale) {
         actualScale = scale;
         update();
+    }
+
+    public final float getActualScale() {
+        return actualScale;
     }
 
     public boolean scaleToPage() {
@@ -89,6 +102,19 @@ public class EntryManager {
         return true;
     }
 
+    public boolean scaleToViewport(final RectF child) {
+        updateVisiblePages();
+        if (visible.size() <= 0) {
+            return false;
+        }
+        if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
+            return false;
+        }
+        setScale(actualScale * EntryUtils.scaleToPage(child, viewportRect));
+        reboundViewport();
+        return true;
+    }
+
     /**
      * search in entry list to get
      */
@@ -109,7 +135,7 @@ public class EntryManager {
     /**
      * calculate the host rectangle
      */
-    private void update() {
+    public void update() {
         float y = topMargin, maxWidth = 0;
         for(EntryInfo entryInfo : entryInfoList) {
             entryInfo.update(actualScale, 0, y);
@@ -126,4 +152,24 @@ public class EntryManager {
             entryInfo.setX(x);
         }
     }
+
+    public boolean nextViewport() {
+        if (viewportRect.bottom >= hostRect.bottom) {
+            return false;
+        }
+        viewportRect.offset(0, viewportRect.height());
+        reboundViewport();
+        return true;
+    }
+
+    public boolean prevViewport() {
+        if (viewportRect.top <= hostRect.top) {
+            return false;
+        }
+        viewportRect.offset(0, -viewportRect.height());
+        reboundViewport();
+        return true;
+    }
+
+
 }

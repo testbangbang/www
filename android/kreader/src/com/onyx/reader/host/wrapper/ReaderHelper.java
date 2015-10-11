@@ -23,7 +23,7 @@ public class ReaderHelper {
     public ReaderNavigator navigator;
     public ReaderRenderer renderer;
     public ReaderSearchManager searchManager;
-    public ReaderBitmapImpl renderBitmap;
+    private ReaderBitmapImpl renderBitmap;
     private ReaderLayoutManager readerLayoutManager;
 
     public ReaderHelper(final Reader r) {
@@ -60,6 +60,11 @@ public class ReaderHelper {
         } else {
             renderBitmap.update(width, height, bitmapConfig);
         }
+    }
+
+    public final ReaderBitmap getRenderBitmap() {
+        updateRenderBitmap(viewOptions.getViewWidth(), viewOptions.getViewHeight());
+        return renderBitmap;
     }
 
     public void renderToBitmap() {

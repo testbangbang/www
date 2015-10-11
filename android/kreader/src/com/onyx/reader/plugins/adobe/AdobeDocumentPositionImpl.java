@@ -19,15 +19,15 @@ public class AdobeDocumentPositionImpl implements ReaderDocumentPosition {
     }
 
     public String getPageName() {
-        return "";
+        return save();
     }
 
     public String save() {
-        return "";
+        return String.valueOf(page);
     }
 
     public void restore(final String string) {
-
+        page = Integer.parseInt(string);
     }
 
     public int compare(final ReaderDocumentPosition another) {

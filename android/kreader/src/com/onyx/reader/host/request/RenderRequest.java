@@ -15,8 +15,7 @@ public class RenderRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        setRenderBitmap(reader.getReaderHelper().renderBitmap);
-        reader.getReaderHelper().renderToBitmap();
+        renderToBitmap(reader);
     }
 
 }

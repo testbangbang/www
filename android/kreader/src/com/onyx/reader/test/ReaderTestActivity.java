@@ -70,7 +70,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderRender() {
-        final ScaleToPageRequest renderRequest = new ScaleToPageRequest();
+        final ScaleRequest renderRequest = new ScaleRequest(3.0f, 0, 0);
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -112,7 +112,7 @@ public class ReaderTestActivity extends Activity {
         EntryManager entryManager = new EntryManager();
         for (int i = 0; i < 5000; ++i) {
             EntryInfo entryInfo = new EntryInfo(randInt(100, 2000), randInt(100, 2000));
-            entryManager.add(entryInfo);
+            entryManager.add(String.valueOf(i), entryInfo);
         }
         entryManager.setViewportRect(0, 0, 1024, 2000);
         long start = System.currentTimeMillis();
@@ -136,14 +136,17 @@ public class ReaderTestActivity extends Activity {
     public void testMath2() {
         EntryManager entryManager = new EntryManager();
         entryManager.clear();
-        entryManager.add(new EntryInfo(randInt(100, 2000), randInt(100, 2000)));
+        entryManager.add(String.valueOf(0), new EntryInfo(randInt(100, 2000), randInt(100, 2000)));
         entryManager.setScale(1.0f);
         entryManager.setViewportRect(0, 0, 2000, 2500);
         entryManager.scaleToPage();
-        EntryInfo entryInfo = entryManager.getEntryInfoList().get(0);
         assert(Float.compare(entryManager.getViewportRect().centerX(), entryManager.getHostRect().centerX()) == 0);
         assert(Float.compare(entryManager.getViewportRect().centerY(), entryManager.getHostRect().centerY()) == 0);
 
+        assert(entryManager.nextViewport() == false);
+        entryManager.nextViewport();
+        assert(entryManager.prevViewport() == false);
+        entryManager.prevViewport();
     }
 
 }

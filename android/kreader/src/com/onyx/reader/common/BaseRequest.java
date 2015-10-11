@@ -124,6 +124,11 @@ public abstract class BaseRequest {
         renderBitmap = bmp;
     }
 
+    public void renderToBitmap(final Reader reader) {
+        setRenderBitmap(reader.getReaderHelper().getRenderBitmap());
+        reader.getReaderHelper().renderToBitmap();
+    }
+
     public void beforeExecute(final Reader reader) {
         reader.acquireWakeLock(getContext());
         benchmarkStart();
