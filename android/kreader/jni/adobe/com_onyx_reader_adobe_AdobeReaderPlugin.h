@@ -79,6 +79,9 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawP
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawVisiblePages
   (JNIEnv *, jobject, jobject, jint, jint, jint, jint, jboolean);
 
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_clear
+  (JNIEnv *, jobject, jobject);
+
 /*
  * Class:     com_onyx_reader_adobe_AdobeReaderPlugin
  * Method:    getPageNumberOfScreenPoint

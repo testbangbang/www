@@ -874,16 +874,20 @@ void AdobeLibrary::pageNaturalSize(int page, double & width, double & height) {
 }
 
 bool AdobeLibrary::drawPage(int page, const AndroidBitmapInfo & info, void * pixels,
-                            int displayLeft, int displayTop, int displayWidth, int displayHeight) {
-    adobeClient->surfaceInstance().attach(info, pixels, true);
+                            int displayLeft, int displayTop, int displayWidth, int displayHeight, bool clear) {
+    adobeClient->surfaceInstance().attach(info, pixels, clear);
     renderer->paint(displayLeft, displayTop, displayWidth, displayHeight, &adobeClient->surfaceInstance());
     return true;
 }
 
-bool AdobeLibrary::drawPages(const AndroidBitmapInfo & info, void * pixels, int displayLeft, int displayTop, int displayWidth, int displayHeight) {
-    adobeClient->surfaceInstance().attach(info, pixels, true);
+bool AdobeLibrary::drawPages(const AndroidBitmapInfo & info, void * pixels, int displayLeft, int displayTop, int displayWidth, int displayHeight, bool clear) {
+    adobeClient->surfaceInstance().attach(info, pixels, clear);
     renderer->paint(displayLeft, displayTop, displayWidth, displayHeight, &adobeClient->surfaceInstance());
     return true;
+}
+
+bool AdobeLibrary::clear(const AndroidBitmapInfo & info, void *pixels) {
+   adobeClient->surfaceInstance().attach(info, pixels, true);
 }
 
 jobject AdobeLibrary::hitTest(JNIEnv * env, float x, float  y, int type, jobject splitter) {

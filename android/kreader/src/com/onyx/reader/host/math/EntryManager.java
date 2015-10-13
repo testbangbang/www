@@ -58,6 +58,7 @@ public class EntryManager {
     }
 
     public void add(final String name, final EntryInfo entryInfo) {
+        entryInfo.setName(name);
         entryInfoMap.put(name, entryInfo);
         entryInfoList.add(entryInfo);
     }

@@ -18,10 +18,10 @@ public class AdobePageInfo extends ReaderPageInfo {
      * @param pn page number
      * @param internalLocation the persistent page location
      * @param scale actual display scale.
-     * @param viewportLeft the viewport left in document coordinate system.
-     * @param viewportTop the viewport top in document coordinate system.
-     * @param viewportRight the viewport right in document coordinate system.
-     * @param viewportBottom the viewport bottom in document coordinate system.
+     * @param viewportLeft the viewportInPage left in document coordinate system.
+     * @param viewportTop the viewportInPage top in document coordinate system.
+     * @param viewportRight the viewportInPage right in document coordinate system.
+     * @param viewportBottom the viewportInPage bottom in document coordinate system.
      * @param pageNaturalWidth the page natural width.
      * @param pageNaturalHeight the page natural height;
      * @param pageLeft the page left position in document coordinate system. in single mode, it's 0 always.

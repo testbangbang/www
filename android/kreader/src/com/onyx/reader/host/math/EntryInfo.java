@@ -1,11 +1,14 @@
 package com.onyx.reader.host.math;
 
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
  * Created by zhuzeng on 10/8/15.
  */
 public class EntryInfo {
+
+    private String name;
 
     private int naturalOrientation;      // degree 0, 90, 180, 270.
     private RectF naturalRect = new RectF();
@@ -78,7 +81,26 @@ public class EntryInfo {
                 displayRect.top + naturalRect.height() * actualScale);
     }
 
+    public RectF visibleRectInViewport(final RectF viewport) {
+        RectF visible = new RectF(displayRect);
+        visible.intersect(viewport);
+        visible.offset(-viewport.left, -viewport.top);
+        return visible;
+    }
 
+    public RectF viewportInPage(final RectF viewport) {
+        RectF vp = new RectF(viewport);
+        vp.offset(-displayRect.left, -displayRect.top);
+        return vp;
+    }
+
+    public void setName(final String n) {
+        name = n;
+    }
+
+    public final String getName() {
+        return name;
+    }
 
 
 

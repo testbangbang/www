@@ -17,7 +17,7 @@ public class ReaderNavigationInfo {
     // if we always refers to scale = 1.0, we could ignore scale here.
     public RectF viewportRectInDoc = new RectF();
 
-    // the scale that viewport calculated
+    // the scale that viewportInPage calculated
     public float scale;
 
 

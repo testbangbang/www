@@ -1,6 +1,7 @@
 package com.onyx.reader.common;
 
 import android.content.Context;
+import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.host.wrapper.Reader;
 
@@ -127,6 +128,15 @@ public abstract class BaseRequest {
     public void renderToBitmap(final Reader reader) {
         setRenderBitmap(reader.getReaderHelper().getRenderBitmap());
         reader.getReaderHelper().renderToBitmap();
+    }
+
+    public void clearBitmap(final Reader reader) {
+        reader.getReaderHelper().renderer.clear(reader.getReaderHelper().getRenderBitmap());
+    }
+
+    public void renderToBitmap(final Reader reader, final RectF rect) {
+        setRenderBitmap(reader.getReaderHelper().getRenderBitmap());
+        reader.getReaderHelper().renderToBitmap((int) rect.left, (int) rect.top, (int)rect.right, (int)rect.bottom);
     }
 
     public void beforeExecute(final Reader reader) {

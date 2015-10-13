@@ -38,6 +38,8 @@ public class AdobePluginImpl {
                                             int displayLeft, int displayTop,
                                             int displayWidth, int displayHeight, boolean fill);
 
+    public native boolean clear(Bitmap bitmap);
+
     private native int getPageNumberOfScreenPoint(double screenX, double screenY);
     private native double[] convertPointFromDeviceSpaceToDocumentSpace(double screenX, double screenY, int pageNum);
     private native double[] convertPointFromDocumentSpaceToDeviceSpace(double docX, double docY, int pageNum);

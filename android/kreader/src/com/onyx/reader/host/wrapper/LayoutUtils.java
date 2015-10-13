@@ -15,7 +15,7 @@ public class LayoutUtils {
     private RectF hostRect = new RectF();
 
     /**
-     * Current viewport(screen) in host coordinates system.
+     * Current viewportInPage(screen) in host coordinates system.
      */
     private RectF viewportInHost = new RectF();
 

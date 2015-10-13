@@ -154,12 +154,16 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    public boolean clear(final ReaderBitmap bitmap) {
+        return getPluginImpl().clear(bitmap.getBitmap());
+    }
+
     public boolean draw(final ReaderBitmap bitmap) {
-        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), false);
+        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), true);
     }
 
     public boolean draw(final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp) {
-        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), xInBitmap, yInBitmap, widthInBitmap, heightInBitmp,  true);
+        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), xInBitmap, yInBitmap, widthInBitmap, heightInBitmp,  false);
     }
 
     /**
@@ -194,7 +198,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderDocumentPosition getPositionByPageName(final String name) {
-        return null;
+        return new AdobeDocumentPositionImpl(Integer.parseInt(name));
     }
 
     /**
@@ -317,7 +321,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     public void setActualScale(final float scale) {}
 
     /**
-     * Set viewport. The behavior is different on different page layout.
+     * Set viewportInPage. The behavior is different on different page layout.
      * @param viewport
      */
     public boolean setViewport(final RectF viewport) {
@@ -325,8 +329,8 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     /**
-     * Retrieve current viewport.
-     * @return the current viewport.
+     * Retrieve current viewportInPage.
+     * @return the current viewportInPage.
      */
     public RectF getViewport() {
         return null;
@@ -334,7 +338,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
 
 
     /**
-     * Convinent method to set scale and viewport directly.
+     * Convinent method to set scale and viewportInPage directly.
      * @param actualScale the actual scale
      * @return
      */

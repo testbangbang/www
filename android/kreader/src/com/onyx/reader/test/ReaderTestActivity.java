@@ -45,7 +45,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public ReaderViewOptions getViewOptions() {
-        return new ReaderViewOptionsImpl(500, 500);
+        return new ReaderViewOptionsImpl(500, 2000);
     }
 
     public void testReaderOpen() {
@@ -71,7 +71,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderRender() {
-        final ScaleRequest renderRequest = new ScaleRequest(3.0f, 5000, 5000);
+        final ScaleRequest renderRequest = new ScaleRequest(0.5f, 0, 0);
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {

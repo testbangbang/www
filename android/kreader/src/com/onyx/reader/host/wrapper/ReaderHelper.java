@@ -2,6 +2,7 @@ package com.onyx.reader.host.wrapper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.impl.ReaderBitmapImpl;
 import com.onyx.reader.host.layout.ReaderLayoutManager;
@@ -69,6 +70,10 @@ public class ReaderHelper {
 
     public void renderToBitmap() {
         renderer.draw(renderBitmap);
+    }
+
+    public void renderToBitmap(int left, int top, int right, int bottom) {
+        renderer.draw(renderBitmap, left, top, right, bottom);
     }
 
     public ReaderPlugin getPlugin() {

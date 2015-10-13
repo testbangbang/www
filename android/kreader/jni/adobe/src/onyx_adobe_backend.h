@@ -40,8 +40,9 @@ public:
     bool gotoLocation(int page, const char * location);
     int  getPageCount();
     void pageNaturalSize(int page, double & width, double & height);
-    bool drawPage(int page, const AndroidBitmapInfo & info, void * pixels, int displayLeft, int displayTop, int displayWidth, int displayHeight);
-    bool drawPages(const AndroidBitmapInfo & info, void * pixels, int displayLeft, int displayTop, int displayWidth, int displayHeight);
+    bool drawPage(int page, const AndroidBitmapInfo & info, void * pixels, int displayLeft, int displayTop, int displayWidth, int displayHeight, bool clear);
+    bool drawPages(const AndroidBitmapInfo & info, void * pixels, int displayLeft, int displayTop, int displayWidth, int displayHeight, bool clear);
+    bool clear(const AndroidBitmapInfo & info, void *pixels);
     jobject createSentenceResult(JNIEnv * env, const dp::ref<dpdoc::Location>  & startLocation, const dp::ref<dpdoc::Location>  & endLocation, const char * text, bool endOfScreen, bool endOfDocument);
     jobject createHitTestResult(JNIEnv * env, dp::ref<dpdoc::Location>  start, dp::ref<dpdoc::Location>  end, const char * text);
     jobject hitTest(JNIEnv * env, float x, float  y, int type, jobject splitter);

@@ -67,7 +67,7 @@ JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_closeF
 }
 
 JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawPage(JNIEnv *env, jobject thiz, jint pageNumber,
-    jobject bitmap, int displayLeft, int displayTop, int displayWidth, int displayHeight,  jboolean fill) {
+    jobject bitmap, int displayLeft, int displayTop, int displayWidth, int displayHeight,  jboolean clear) {
     AndroidBitmapInfo info;
 	void *pixels;
 	int ret;
@@ -87,12 +87,13 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawP
 		return -1;
 	}
 
-    library(env).drawPage(pageNumber, info, pixels, displayLeft, displayTop, displayWidth, displayHeight);
+    library(env).drawPage(pageNumber, info, pixels, displayLeft, displayTop, displayWidth, displayHeight, clear);
+    AndroidBitmap_unlockPixels(env, bitmap);
     return 1;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawVisiblePages
-(JNIEnv *env, jobject thiz, jobject bitmap,  int displayLeft, int displayTop, int displayWidth, int displayHeight, jboolean fill) {
+(JNIEnv *env, jobject thiz, jobject bitmap,  int displayLeft, int displayTop, int displayWidth, int displayHeight, jboolean clear) {
     AndroidBitmapInfo info;
 	void *pixels;
 	int ret;
@@ -111,8 +112,33 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_dr
 		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
 		return false;
 	}
-    library(env).drawPages(info, pixels, displayLeft, displayTop, displayWidth, displayHeight);
+    library(env).drawPages(info, pixels, displayLeft, displayTop, displayWidth, displayHeight, clear);
+    AndroidBitmap_unlockPixels(env, bitmap);
     return 1;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_clear
+  (JNIEnv *env, jobject thiz, jobject bitmap) {
+    AndroidBitmapInfo info;
+  	void *pixels;
+  	int ret;
+
+  	if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+  		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+  		return false;
+  	}
+
+  	if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+  		LOGE("Bitmap format is not RGBA_8888 !");
+  		return false;
+  	}
+
+  	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
+  		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+  		return false;
+  	}
+  	library(env).clear(info, pixels);
+  	return true;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_gotoLocationInternal

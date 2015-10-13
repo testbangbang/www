@@ -10,7 +10,7 @@ import android.graphics.RectF;
  * 1. page natural size
  * 2. page crop content region.
  * 3. page display rect in document coordinates system.
- * 4. screen rect (aka, viewport rect) in document coordinates system.
+ * 4. screen rect (aka, viewportInPage rect) in document coordinates system.
  * 5. page rect in screen coordinates system.
  * 6. page position.
  * Host Coordinates system and plugin coordinates system.
@@ -27,7 +27,7 @@ public class ReaderPageInfo {
     // page position in document coordinate system.
     public RectF pageRectInHost = new RectF();
 
-    // viewport in document coordinate system.
+    // viewportInPage in document coordinate system.
     public RectF viewportRectInHost = new RectF();
     public RectF pageRectInScreen = new RectF();
     public float pageDisplayScale;
