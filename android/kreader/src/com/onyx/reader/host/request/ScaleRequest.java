@@ -24,17 +24,17 @@ public class ScaleRequest extends BaseRequest {
         y = viewportY;
     }
 
-    public void execute(final Reader reader) throws Exception {
+    public void execute2(final Reader reader) throws Exception {
         reader.getReaderHelper().renderer.setScale(scale);
         reader.getReaderHelper().renderer.setViewport(x, y);
         renderToBitmap(reader);
     }
 
-    public void execute2(final Reader reader) throws Exception {
+    public void execute(final Reader reader) throws Exception {
         EntryManager manager = new EntryManager();
 
         for(int pn = 0; pn < 5; ++pn) {
-            AdobeDocumentPositionImpl documentPosition = new AdobeDocumentPositionImpl(pn);
+            ReaderDocumentPosition documentPosition = reader.getReaderHelper().navigator.getPositionByPageNumber(pn);
             RectF pageRect = reader.getReaderHelper().document.getPageNaturalSize(documentPosition);
             EntryInfo entryInfo = new EntryInfo(pageRect.width(), pageRect.height());
             manager.add(documentPosition.save(), entryInfo);

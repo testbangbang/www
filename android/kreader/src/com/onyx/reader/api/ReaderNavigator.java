@@ -33,7 +33,6 @@ public interface ReaderNavigator {
      */
     public ReaderDocumentPosition createPositionFromString(final String string);
 
-
     /**
      * Return total page number.
      * @return 1 based total page number.

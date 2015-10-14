@@ -40,7 +40,7 @@ public class AdobeSelectionImpl implements ReaderSelection {
     }
 
     public String getText() {
-        return null;
+        return text;
     }
 
     public void setRectangles(final List<RectF> list) {
@@ -48,7 +48,7 @@ public class AdobeSelectionImpl implements ReaderSelection {
     }
 
     public List<RectF> getRectangles() {
-        return null;
+        return rectangles;
     }
 
 

@@ -13,12 +13,6 @@ public interface ReaderDocumentPosition {
     public int getPageNumber();
 
     /**
-     * Get the page name.
-     * @return get page name string.
-     */
-    public String getPageName();
-
-    /**
      * Get persistent string representation of object. For example, plugin may use json to persistent
      * object into json string.
      * @return position persistent representation.
@@ -29,7 +23,7 @@ public interface ReaderDocumentPosition {
      * Restore the position from persistent string.
      * @param string the persistent representation.
      */
-    public void restore(final String string);
+    public boolean restore(final String string);
 
 
     /**

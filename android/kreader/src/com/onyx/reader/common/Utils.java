@@ -49,15 +49,6 @@ public class Utils {
         return true;
     }
 
-    static public boolean isNullOrEmpty(final String string) {
-        return (string == null || string.length() <= 0);
-    }
-
-    static public boolean isNonBlank(final String string) {
-        return (string != null && string.length() > 0);
-    }
-
-
     public static String getDeviceSerial(Context context) {
         UUID uuid = null;
 

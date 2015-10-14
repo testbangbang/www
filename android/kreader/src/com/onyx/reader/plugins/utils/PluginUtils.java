@@ -10,6 +10,14 @@ import java.util.List;
  */
 public class PluginUtils {
 
+    static public boolean isNullOrEmpty(final String string) {
+        return (string == null || string.length() <= 0);
+    }
+
+    static public boolean isNonBlank(final String string) {
+        return (string != null && string.length() > 0);
+    }
+
 
     public static List<RectF> rectangles(double result[]) {
         if (result == null || result.length <= 0) {

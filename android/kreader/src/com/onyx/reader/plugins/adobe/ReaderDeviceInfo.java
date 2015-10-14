@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import com.onyx.reader.common.Utils;
+import com.onyx.reader.plugins.utils.PluginUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class ReaderDeviceInfo {
 
     public static String infoEntry(final String key) {
         String info = infoMap.get(key);
-        if (Utils.isNullOrEmpty(info)) {
+        if (PluginUtils.isNullOrEmpty(info)) {
             return "";
         }
         return info;
@@ -43,7 +44,7 @@ public class ReaderDeviceInfo {
         String uuid = prefs.getString(PREFS_DEVICE_ID, null);
         if (uuid == null || uuid.length() <= 0) {
             uuid = Utils.getDeviceSerial(context);
-            if (!Utils.isNonBlank(uuid)) {
+            if (!PluginUtils.isNonBlank(uuid)) {
                 prefs.edit().putString(PREFS_DEVICE_ID, uuid).commit();
             }
         }

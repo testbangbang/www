@@ -52,7 +52,7 @@ public class AdobePluginImpl {
     private native boolean prevScreenNative();
     private native boolean setFontSizeNative(double width, double height, double size);
     private native int collectVisibleLinksNative(List<ReaderLink> list);
-    private native int getPageNumberByLocationNative(String location);
+    public native int getPageNumberByLocationNative(String location);
 
     public native void setAbortFlagNative(boolean abort);
     public native boolean getAbortFlagNative();
