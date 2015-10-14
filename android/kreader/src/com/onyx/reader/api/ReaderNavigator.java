@@ -37,7 +37,7 @@ public interface ReaderNavigator {
      * Return total page number.
      * @return 1 based total page number.
      */
-    public int getTotalPageNumber();
+    public int getTotalPage();
 
     /**
      * Navigate to next screen.

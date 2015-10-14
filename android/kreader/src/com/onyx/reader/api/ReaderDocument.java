@@ -36,7 +36,7 @@ public interface ReaderDocument {
     /**
      * create corresponding view.
      * @param viewOptions The view options.
-     * @return
+     * @return The created view. null if failed.
      */
     public ReaderView createView(final ReaderViewOptions viewOptions);
 

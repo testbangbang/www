@@ -18,12 +18,20 @@ public class AdobeDocumentPositionImpl implements ReaderDocumentPosition {
     @JSONField(serialize = false)
     private AdobeReaderPlugin parent;
 
-    public static AdobeDocumentPositionImpl create(final AdobeReaderPlugin p, final String s) {
+    public static AdobeDocumentPositionImpl createFromInternalString(final AdobeReaderPlugin p, final String s) {
         int pn = p.getPluginImpl().getPageNumberByLocationNative(s);
         return new AdobeDocumentPositionImpl(p, pn, s);
     }
 
-    public static AdobeDocumentPositionImpl create(final AdobeReaderPlugin p, int pn) {
+    public static AdobeDocumentPositionImpl createFromPersistentString(final AdobeReaderPlugin p, final String s) {
+        AdobeDocumentPositionImpl impl = JSON.parseObject(s, AdobeDocumentPositionImpl.class);
+        if (impl != null) {
+            impl.parent = p;
+        }
+        return impl;
+    }
+
+    public static AdobeDocumentPositionImpl createFromPageNumber(final AdobeReaderPlugin p, int pn) {
         return new AdobeDocumentPositionImpl(p, pn, null);
     }
 

@@ -184,7 +184,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
             return null;
         }
         ReaderPageInfo pageInfo = pageInfoList.get(0);
-        return AdobeDocumentPositionImpl.create(this, pageInfo.pageNumber);
+        return AdobeDocumentPositionImpl.createFromPageNumber(this, pageInfo.pageNumber);
     }
 
     public List<ReaderDocumentPosition> getVisiblePages() {
@@ -197,18 +197,18 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public ReaderDocumentPosition getPositionByPageNumber(int pageNumber) {
-        return AdobeDocumentPositionImpl.create(this, pageNumber);
+        return AdobeDocumentPositionImpl.createFromPageNumber(this, pageNumber);
     }
 
     public ReaderDocumentPosition createPositionFromString(final String name) {
-        return AdobeDocumentPositionImpl.create(this, name);
+        return AdobeDocumentPositionImpl.createFromPersistentString(this, name);
     }
 
     /**
      * Return total page number.
      * @return 1 based total page number.
      */
-    public int getTotalPageNumber() {
+    public int getTotalPage() {
         return getPluginImpl().countPagesInternal();
     }
 
@@ -431,7 +431,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
 
     public ReaderDocumentPosition position(final PointF point) {
         final String position = getPluginImpl().locationNative(point.x, point.y);
-        AdobeDocumentPositionImpl p = AdobeDocumentPositionImpl.create(this, 0);
+        AdobeDocumentPositionImpl p = AdobeDocumentPositionImpl.createFromPageNumber(this, 0);
         return p;
     }
 
@@ -439,8 +439,8 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         final String start = getPluginImpl().locationNative(startPoint.x, startPoint.y);
         final String end = getPluginImpl().locationNative(endPoint.x, endPoint.y);
         AdobeSelectionImpl selection = new AdobeSelectionImpl();
-        selection.setStartPosition(AdobeDocumentPositionImpl.create(this, start));
-        selection.setEndPosition(AdobeDocumentPositionImpl.create(this, end));
+        selection.setStartPosition(AdobeDocumentPositionImpl.createFromInternalString(this, start));
+        selection.setEndPosition(AdobeDocumentPositionImpl.createFromInternalString(this, end));
         selection.setText(getPluginImpl().getTextNative(start, end));
         selection.setRectangles(PluginUtils.rectangles(getPluginImpl().rectangles(start, end)));
         return selection;
