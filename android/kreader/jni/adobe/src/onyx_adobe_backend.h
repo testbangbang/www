@@ -46,6 +46,7 @@ public:
     jobject createSentenceResult(JNIEnv * env, const dp::ref<dpdoc::Location>  & startLocation, const dp::ref<dpdoc::Location>  & endLocation, const char * text, bool endOfScreen, bool endOfDocument);
     jobject createHitTestResult(JNIEnv * env, dp::ref<dpdoc::Location>  start, dp::ref<dpdoc::Location>  end, const char * text);
     jobject hitTest(JNIEnv * env, float x, float  y, int type, jobject splitter);
+    jstring locationFromHitTest(JNIEnv *env, float x, float y);
 
     int getPageNumberOfScreenPoint(double screenX, double screenY);
     bool convertPointFromDeviceSpaceToDocumentSpace(double screenX, double screenY, double *docX, double *docY, int pageNum);

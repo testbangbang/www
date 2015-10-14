@@ -89,7 +89,7 @@ public class ReaderPluginTest {
         ReaderSearchOptions searchOptions = defaultSearchOptions();
         ReaderSearchManager searchManager = readerView.getSearchManager();
         while (searchManager.searchNext(searchOptions)) {
-            List<ReaderTextSelection> selections = searchManager.searchResults();
+            List<ReaderSelection> selections = searchManager.searchResults();
             ReaderDocumentPosition startPosition = selections.get(0).getStartPosition();
             ReaderDocumentPosition endPosition = selections.get(0).getEndPosition();
             navigator.gotoPosition(startPosition);

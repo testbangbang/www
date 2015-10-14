@@ -11,6 +11,6 @@ public interface ReaderSearchManager {
 
     public boolean searchNext(final ReaderSearchOptions options);
 
-    public List<ReaderTextSelection> searchResults();
+    public List<ReaderSelection> searchResults();
 
 }

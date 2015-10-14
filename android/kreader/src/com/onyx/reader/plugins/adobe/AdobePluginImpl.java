@@ -45,7 +45,7 @@ public class AdobePluginImpl {
     private native double[] convertPointFromDocumentSpaceToDeviceSpace(double docX, double docY, int pageNum);
 
     private native boolean setPageMode(int m);
-    private native String getTextNative(String start, String end);
+    public native String getTextNative(String start, String end);
     private native String getPageTextNative(int pageNumber);
     private native boolean getMetadataNative(ReaderDocumentMetadata object, final List<String> tagList);
     private native boolean nextScreenNative();
@@ -56,8 +56,9 @@ public class AdobePluginImpl {
 
     public native void setAbortFlagNative(boolean abort);
     public native boolean getAbortFlagNative();
-//    private native ReaderTextSelection hitTestNative(float x, float y, int type, ReaderTextSplitter splitter);
-    private native double [] rectangles(String start, String end);
+    public native ReaderSelection hitTestNative(float x, float y, int type, ReaderTextSplitter splitter);
+    public native String locationNative(float x, float y);
+    public native double [] rectangles(String start, String end);
     private native double [] pageDisplayRectangles(int page, int count);
     public native int allVisiblePagesRectangle(List<ReaderPageInfo> list);
     private native double [] updateLocationNative();

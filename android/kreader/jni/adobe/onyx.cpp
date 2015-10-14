@@ -168,6 +168,11 @@ JNIEXPORT jobject JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_hit
     return library(env).hitTest(env, x, y, type, splitter);
 }
 
+JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_locationNative
+(JNIEnv * env, jobject thiz, jfloat x, jfloat y) {
+    return library(env).locationFromHitTest(env, x, y);
+}
+
 JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_abortCurrentTask
   (JNIEnv *, jobject) {
 

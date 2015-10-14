@@ -88,6 +88,11 @@ public class EntryInfo {
         return visible;
     }
 
+    /**
+     * Retrieve viewport in page coordinates system. it's viewport relate to current page.
+     * @param viewport
+     * @return
+     */
     public RectF viewportInPage(final RectF viewport) {
         RectF vp = new RectF(viewport);
         vp.offset(-displayRect.left, -displayRect.top);

@@ -8,11 +8,16 @@ import com.onyx.reader.api.ReaderDocumentPosition;
 public class AdobeDocumentPositionImpl implements ReaderDocumentPosition {
 
     private int page;
+    private String internal;
 
     public AdobeDocumentPositionImpl(int p) {
         page = p;
     }
 
+    public AdobeDocumentPositionImpl(final String string) {
+        page = -1;
+        internal = string;
+    }
 
     public int getPageNumber() {
         return page;

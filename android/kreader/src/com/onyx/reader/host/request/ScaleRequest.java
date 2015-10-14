@@ -24,13 +24,13 @@ public class ScaleRequest extends BaseRequest {
         y = viewportY;
     }
 
-    public void execute2(final Reader reader) throws Exception {
+    public void execute(final Reader reader) throws Exception {
         reader.getReaderHelper().renderer.setScale(scale);
         reader.getReaderHelper().renderer.setViewport(x, y);
         renderToBitmap(reader);
     }
 
-    public void execute(final Reader reader) throws Exception {
+    public void execute2(final Reader reader) throws Exception {
         EntryManager manager = new EntryManager();
 
         for(int pn = 0; pn < 5; ++pn) {
@@ -51,9 +51,8 @@ public class ScaleRequest extends BaseRequest {
 
         clearBitmap(reader);
         List<EntryInfo> visiblePages = manager.updateVisiblePages();
-        boolean single = true;
         for(EntryInfo entryInfo : visiblePages) {
-            ReaderDocumentPosition documentPosition = reader.getReaderHelper().navigator.getPositionByPageName(entryInfo.getName());
+            ReaderDocumentPosition documentPosition = reader.getReaderHelper().navigator.createPositionFromString(entryInfo.getName());
             reader.getReaderHelper().navigator.gotoPosition(documentPosition);
             reader.getReaderHelper().renderer.setScale(manager.getActualScale());
             final RectF entryViewport = entryInfo.viewportInPage(manager.getViewportRect());

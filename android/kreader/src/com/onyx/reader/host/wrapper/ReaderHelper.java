@@ -26,6 +26,7 @@ public class ReaderHelper {
     public ReaderSearchManager searchManager;
     private ReaderBitmapImpl renderBitmap;
     private ReaderLayoutManager readerLayoutManager;
+    private ReaderHitTestManager hitTestManager;
 
     public ReaderHelper(final Reader r) {
         reader = r;
@@ -40,6 +41,7 @@ public class ReaderHelper {
         view = document.createView(viewOptions);
         renderer = view.getRenderer();
         navigator = view.getNavigator();
+        hitTestManager = view.getReaderHitTestManager();
     }
 
     public void onDocumentClosed() {
@@ -48,6 +50,7 @@ public class ReaderHelper {
         renderer = null;
         navigator = null;
         searchManager = null;
+        hitTestManager = null;
     }
 
     public void onLayoutChanged() {
@@ -93,6 +96,10 @@ public class ReaderHelper {
             readerLayoutManager = new ReaderLayoutManager(reader);
         }
         return readerLayoutManager;
+    }
+
+    public ReaderHitTestManager getHitTestManager() {
+        return hitTestManager;
     }
 
 

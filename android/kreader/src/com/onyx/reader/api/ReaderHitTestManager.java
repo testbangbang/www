@@ -21,7 +21,15 @@ public interface ReaderHitTestManager {
      * @param viewPoint the user input point.
      * @return the selection.
      */
-    public ReaderTextSelection selectWord(final PointF viewPoint);
+    public ReaderSelection selectWord(final PointF viewPoint, final ReaderTextSplitter splitter);
+
+
+    /**
+     * Get document position for specified point.
+     * @param point
+     * @return
+     */
+    public ReaderDocumentPosition position(final PointF point);
 
     /**
      * Select text between start point and end point.
@@ -29,7 +37,7 @@ public interface ReaderHitTestManager {
      * @param endPoint The end view point.
      * @return the selection.
      */
-    public ReaderTextSelection select(final PointF startPoint, final PointF endPoint);
+    public ReaderSelection select(final PointF startPoint, final PointF endPoint);
 
 
 }

@@ -1,9 +1,11 @@
 package com.onyx.reader.plugins.adobe;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.wrapper.ReaderPageInfo;
+import com.onyx.reader.plugins.utils.PluginUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +21,8 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         ReaderNavigator,
         ReaderSearchManager,
         ReaderTextStyleManager,
-        ReaderDrmManager
+        ReaderDrmManager,
+        ReaderHitTestManager
 {
 
     private AdobePluginImpl impl;
@@ -135,7 +138,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Retrieve reader hit test.
      */
     public ReaderHitTestManager getReaderHitTestManager() {
-        return null;
+        return this;
     }
 
     /**
@@ -197,7 +200,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return new AdobeDocumentPositionImpl(pageNumber);
     }
 
-    public ReaderDocumentPosition getPositionByPageName(final String name) {
+    public ReaderDocumentPosition createPositionFromString(final String name) {
         return new AdobeDocumentPositionImpl(Integer.parseInt(name));
     }
 
@@ -271,7 +274,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public List<ReaderTextSelection> searchResults() {
+    public List<ReaderSelection> searchResults() {
         return null;
     }
 
@@ -414,6 +417,33 @@ public class AdobeReaderPlugin implements ReaderPlugin,
 
     public boolean isReflowLayout() {
         return false;
+    }
+
+    public boolean viewToDoc(final PointF viewPoint, final PointF documentPoint) {
+        return false;
+    }
+
+
+    public ReaderSelection selectWord(final PointF viewPoint, final ReaderTextSplitter splitter) {
+
+        return null;
+    }
+
+    public ReaderDocumentPosition position(final PointF point) {
+        final String position = getPluginImpl().locationNative(point.x, point.y);
+        AdobeDocumentPositionImpl p = new AdobeDocumentPositionImpl(0);
+        return p;
+    }
+
+    public ReaderSelection select(final PointF startPoint, final PointF endPoint) {
+        final String start = getPluginImpl().locationNative(startPoint.x, startPoint.y);
+        final String end = getPluginImpl().locationNative(endPoint.x, endPoint.y);
+        AdobeSelectionImpl selection = new AdobeSelectionImpl();
+        selection.setStartPosition(new AdobeDocumentPositionImpl(start));
+        selection.setEndPosition(new AdobeDocumentPositionImpl(end));
+        selection.setText(getPluginImpl().getTextNative(start, end));
+        selection.setRectangles(PluginUtils.rectangles(getPluginImpl().rectangles(start, end)));
+        return selection;
     }
 
 }

@@ -27,11 +27,11 @@ public interface ReaderNavigator {
     public ReaderDocumentPosition getPositionByPageNumber(int pageNumber);
 
     /**
-     * Get position from page name.
-     * @param name The page name.
+     * Create position from persistent string.
+     * @param string The persistent string.
      * @return
      */
-    public ReaderDocumentPosition getPositionByPageName(final String name);
+    public ReaderDocumentPosition createPositionFromString(final String string);
 
 
     /**

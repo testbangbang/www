@@ -3,12 +3,15 @@ package com.onyx.reader.common;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.RectF;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -77,4 +80,6 @@ public class Utils {
 
         return uuid.toString();
     }
+
+
 }

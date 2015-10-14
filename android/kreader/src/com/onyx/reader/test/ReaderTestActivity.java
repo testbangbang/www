@@ -1,6 +1,7 @@
 package com.onyx.reader.test;
 
 import android.app.Activity;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,7 +46,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public ReaderViewOptions getViewOptions() {
-        return new ReaderViewOptionsImpl(500, 2000);
+        return new ReaderViewOptionsImpl(1000, 2000);
     }
 
     public void testReaderOpen() {
@@ -71,12 +72,23 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderRender() {
-        final ScaleRequest renderRequest = new ScaleRequest(0.5f, 0, 0);
+        final ScaleRequest renderRequest = new ScaleRequest(1.0f, 0, 0);
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/temp.png");
+                testHitTestWithoutRendering();
+            }
+        });
+    }
+
+    public void testHitTestWithoutRendering() {
+        final SelectionRequest request = new SelectionRequest(new PointF(200, 200), new PointF(250, 300));
+        reader.submitRequest(this, request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                assert(e == null);
                 testReaderClose();
             }
         });

@@ -202,6 +202,11 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_ge
 JNIEXPORT jobject JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_hitTestNative
   (JNIEnv *, jobject, jfloat, jfloat, jint, jobject);
 
+
+JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_locationNative
+  (JNIEnv *, jobject, jfloat, jfloat);
+
+
 /*
  * Class:     com_onyx_reader_adobe_AdobeReaderPlugin
  * Method:    rectangles

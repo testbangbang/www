@@ -254,7 +254,7 @@ jobject AdobeLibrary::createHitTestResult(JNIEnv * env, dp::ref<dpdoc::Location>
         return 0;
     }
 
-    jmethodID mid = env->GetStaticMethodID(cls, "create", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[D)Lcom/onyx/reader/ReaderSelection;");
+    jmethodID mid = env->GetStaticMethodID(cls, "create", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[D)Lcom/onyx/reader/host/impl/ReaderSelectionImpl;");
     if (mid == 0) {
         LOGE("Find method result failed");
         env->DeleteLocalRef(cls);
@@ -904,6 +904,15 @@ jobject AdobeLibrary::hitTest(JNIEnv * env, float x, float  y, int type, jobject
         dp::ref<dpdoc::Location> start, end;
         dp::String word = getWord(current, current, start, end);
         return createHitTestResult(env, start, end, word.utf8());
+    }
+    return NULL;
+}
+
+jstring AdobeLibrary::locationFromHitTest(JNIEnv *env, float x, float y) {
+    dp::ref<dpdoc::Location> current = renderer->hitTest(x, y, dpdoc::HF_SELECT);
+    if (current) {
+        jstring jstrStart = env->NewStringUTF(current->getBookmark().utf8());
+        return jstrStart;
     }
     return NULL;
 }
