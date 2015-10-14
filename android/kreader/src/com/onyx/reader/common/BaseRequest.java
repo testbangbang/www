@@ -131,7 +131,7 @@ public abstract class BaseRequest {
     }
 
     public void clearBitmap(final Reader reader) {
-        reader.getReaderHelper().renderer.clear(reader.getReaderHelper().getRenderBitmap());
+        reader.getReaderHelper().getRenderer().clear(reader.getReaderHelper().getRenderBitmap());
     }
 
     public void renderToBitmap(final Reader reader, final RectF rect) {

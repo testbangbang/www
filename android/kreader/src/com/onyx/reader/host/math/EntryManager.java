@@ -12,11 +12,24 @@ import java.util.Map;
  */
 public class EntryManager {
 
+    public static final int SCALE_TO_PAGE = -1;
+    public static final int SCALE_TO_WIDTH = -2;
+    public static final int ZOOM_TO_HEIGHT = -3;
+    public static final int ZOOM_TO_PAGE_AUTO_CONTENT = -4;
+    public static final int ZOOM_TO_WIDTH_AUTO_CONTENT = -5;
+    public static final int ZOOM_TO_SCAN_REFLOW = -6;
+    public static final int ZOOM_TO_REFLOW = -7;
+    public static final int ZOOM_TO_COMICE = -8;
+    public static final int ZOOM_TO_PAPER = -9;
+
+    private int specialScale = 0;
     private float actualScale = 1.0f;
-    private RectF hostRect = new RectF();
-    private RectF viewportRect = new RectF();
     private float topMargin, leftMargin, rightMargin, bottomMargin;
     private float spacing;
+
+    private RectF hostRect = new RectF();
+    private RectF viewportRect = new RectF();
+
     private List<EntryInfo> visible = new ArrayList<EntryInfo>();
     private List<EntryInfo> entryInfoList = new ArrayList<EntryInfo>();
     private Map<String, EntryInfo> entryInfoMap = new HashMap();
@@ -63,6 +76,15 @@ public class EntryManager {
         entryInfoList.add(entryInfo);
     }
 
+    public boolean moveViewportByPosition(final String name) {
+        EntryInfo entryInfo = entryInfoMap.get(name);
+        if (entryInfo == null) {
+            return false;
+        }
+        setViewport(entryInfo.getDisplayRect().left, entryInfo.getDisplayRect().top);
+        return false;
+    }
+
     public final List<EntryInfo> getEntryInfoList() {
         return entryInfoList;
     }
@@ -72,11 +94,16 @@ public class EntryManager {
         update();
     }
 
+    public boolean isSpecialScale() {
+        return specialScale < 0;
+    }
+
     public final float getActualScale() {
         return actualScale;
     }
 
     public boolean scaleToPage() {
+        specialScale = SCALE_TO_PAGE;
         updateVisiblePages();
         if (visible.size() <= 0) {
             return false;
@@ -91,6 +118,7 @@ public class EntryManager {
     }
 
     public boolean scaleToWidth() {
+        specialScale = SCALE_TO_WIDTH;
         updateVisiblePages();
         if (visible.size() <= 0) {
             return false;

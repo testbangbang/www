@@ -10,6 +10,12 @@ import com.onyx.reader.api.ReaderException;
  */
 public class LayoutContinuousPageProvider implements LayoutProvider {
 
+    private ReaderLayoutManager layoutManager;
+
+    public LayoutContinuousPageProvider(final ReaderLayoutManager lm) {
+        layoutManager = lm;
+    }
+
     public void activate(final ReaderLayoutManager layoutManager) throws ReaderException {}
 
     public boolean prevScreen() throws ReaderException {
@@ -50,7 +56,7 @@ public class LayoutContinuousPageProvider implements LayoutProvider {
         return false;
     }
 
-    public boolean gotoLocation(final ReaderDocumentPosition location) throws ReaderException {
+    public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException {
         return false;
     }
 
@@ -84,4 +90,21 @@ public class LayoutContinuousPageProvider implements LayoutProvider {
     public String renderingString() throws ReaderException {
         return null;
     }
+
+    public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException {
+        return null;
+    }
+
+    public float getActualScale() throws ReaderException {
+        return 0.0f;
+    }
+
+    public RectF getHostRect() throws ReaderException {
+        return null;
+    }
+
+    public RectF getViewportRect() throws ReaderException {
+        return null;
+    }
+
 }

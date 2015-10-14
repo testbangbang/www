@@ -10,9 +10,15 @@ import com.onyx.reader.api.ReaderException;
  * forward to sub screen navigation
  */
 public class LayoutSinglePageProvider implements LayoutProvider {
+    private ReaderLayoutManager layoutManager;
 
+    public LayoutSinglePageProvider(final ReaderLayoutManager lm) {
+        layoutManager = lm;
+    }
 
-    public void activate(final ReaderLayoutManager layoutManager) throws ReaderException {}
+    public void activate(final ReaderLayoutManager lm) throws ReaderException {
+        layoutManager = lm;
+    }
 
     public boolean prevScreen() throws ReaderException {
         return false;
@@ -38,12 +44,16 @@ public class LayoutSinglePageProvider implements LayoutProvider {
 
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
-        return false;
+        LayoutProviderUtils.drawVisiblePages(layoutManager, bitmap);
+        return true;
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
-        return false;
+        layoutManager.getEntryManager().setScale(scale);
+        layoutManager.getEntryManager().setViewport(left, top);
+        return true;
     }
+
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
         return false;
     }
@@ -52,12 +62,19 @@ public class LayoutSinglePageProvider implements LayoutProvider {
         return false;
     }
 
-    public boolean gotoLocation(final ReaderDocumentPosition location) throws ReaderException {
-        return false;
+    public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException {
+        if (!layoutManager.getReaderHelper().getNavigator().gotoPosition(location)) {
+            return false;
+        }
+        LayoutProviderUtils.clear(layoutManager);
+        LayoutProviderUtils.addEntry(layoutManager, location);
+        LayoutProviderUtils.moveViewportByPosition(layoutManager, location);
+        return true;
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
-        return false;
+        LayoutProviderUtils.pan(layoutManager, dx, dy);
+        return true;
     }
 
     public boolean supportPreRender() throws ReaderException {
@@ -84,6 +101,22 @@ public class LayoutSinglePageProvider implements LayoutProvider {
     }
 
     public String renderingString() throws ReaderException {
+        return null;
+    }
+
+    public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException {
+        return null;
+    }
+
+    public float getActualScale() throws ReaderException {
+        return 0.0f;
+    }
+
+    public RectF getHostRect() throws ReaderException {
+        return null;
+    }
+
+    public RectF getViewportRect() throws ReaderException {
         return null;
     }
 }

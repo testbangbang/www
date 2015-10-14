@@ -25,11 +25,16 @@ public interface LayoutProvider {
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException;
 
     public boolean setScale(float scale, float left, float top) throws ReaderException;
+    public float getActualScale() throws ReaderException;
+    public RectF getHostRect() throws ReaderException;
+    public RectF getViewportRect() throws ReaderException;
+
     public boolean changeScaleWithDelta(float delta) throws ReaderException;
 
     public boolean changeScaleByRect(final ReaderDocumentPosition position, final RectF rect) throws ReaderException ;
 
-    public boolean gotoLocation(final ReaderDocumentPosition location) throws ReaderException;
+    public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException;
+    public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException;
 
     public boolean pan(int dx, int dy) throws ReaderException;
 

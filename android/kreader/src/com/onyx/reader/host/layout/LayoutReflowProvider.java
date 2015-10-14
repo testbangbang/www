@@ -12,31 +12,35 @@ public class LayoutReflowProvider  implements LayoutProvider {
 
     private ReaderLayoutManager layoutManager;
 
+    public LayoutReflowProvider(final ReaderLayoutManager lm) {
+        layoutManager = lm;
+    }
+
     public void activate(final ReaderLayoutManager manager) throws ReaderException {
         layoutManager = manager;
     }
 
     public boolean prevScreen() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().navigator.prevScreen();
+        return layoutManager.getReader().getReaderHelper().getNavigator().prevScreen();
     }
 
     public boolean nextScreen() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().navigator.nextScreen();
+        return layoutManager.getReader().getReaderHelper().getNavigator().nextScreen();
     }
 
     public boolean prevPage() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().navigator.prevPage();
+        return layoutManager.getReader().getReaderHelper().getNavigator().prevPage();
     }
     public boolean nextPage() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().navigator.nextPage();
+        return layoutManager.getReader().getReaderHelper().getNavigator().nextPage();
     }
 
     public boolean firstPage() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().navigator.firstPage();
+        return layoutManager.getReader().getReaderHelper().getNavigator().firstPage();
     }
 
     public boolean lastPage() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().navigator.lastPage();
+        return layoutManager.getReader().getReaderHelper().getNavigator().lastPage();
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
@@ -54,7 +58,7 @@ public class LayoutReflowProvider  implements LayoutProvider {
         return false;
     }
 
-    public boolean gotoLocation(final ReaderDocumentPosition location) throws ReaderException {
+    public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException {
         return false;
     }
 
@@ -88,4 +92,23 @@ public class LayoutReflowProvider  implements LayoutProvider {
     public String renderingString() throws ReaderException {
         return null;
     }
+
+    public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException {
+        return null;
+    }
+
+    public float getActualScale() throws ReaderException {
+        return 0.0f;
+    }
+
+    public RectF getHostRect() throws ReaderException {
+        return null;
+    }
+
+    public RectF getViewportRect() throws ReaderException {
+        return null;
+    }
+
+
+
 }

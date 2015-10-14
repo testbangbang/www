@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
 import com.onyx.reader.R;
+import com.onyx.reader.api.ReaderSelection;
 import com.onyx.reader.api.ReaderViewOptions;
 import com.onyx.reader.common.BaseCallback;
 import com.onyx.reader.common.BaseRequest;
@@ -87,8 +88,9 @@ public class ReaderTestActivity extends Activity {
         final SelectionRequest request = new SelectionRequest(new PointF(200, 200), new PointF(250, 300));
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest baseRequest, Exception e) {
                 assert(e == null);
+                ReaderSelection selection = request.getSelection();
                 testReaderClose();
             }
         });

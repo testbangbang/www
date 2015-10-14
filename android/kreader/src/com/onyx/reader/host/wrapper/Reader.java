@@ -5,12 +5,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
-import com.onyx.reader.api.ReaderPluginOptions;
-import com.onyx.reader.api.ReaderViewOptions;
+import com.onyx.reader.api.*;
 import com.onyx.reader.common.BaseCallback;
 import com.onyx.reader.common.BaseRequest;
-import com.onyx.reader.api.ReaderException;
-import com.onyx.reader.api.ReaderPlugin;
+import com.onyx.reader.host.layout.ReaderLayoutManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,8 +34,8 @@ public class Reader {
 
     public Reader(final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
         readerHelper = new ReaderHelper(this);
-        getReaderHelper().pluginOptions = pluginOptions;
-        getReaderHelper().viewOptions = viewOptions;
+        getReaderHelper().setPluginOptions(pluginOptions);
+        getReaderHelper().setViewOptions(viewOptions);
         initRequestList();
     }
 
@@ -168,7 +166,41 @@ public class Reader {
         return readerHelper;
     }
 
+    public ReaderDocument getDocument() {
+        return getReaderHelper().getDocument();
+    }
+
+    public ReaderView getView() {
+        return getReaderHelper().getView();
+    }
 
 
+    public ReaderNavigator getNavigator() {
+        return getReaderHelper().getNavigator();
+    }
+
+    public ReaderRenderer getRenderer() {
+        return getReaderHelper().getRenderer();
+    }
+
+    public ReaderSearchManager getSearchManager() {
+        return getReaderHelper().getSearchManager();
+    }
+
+    public ReaderPluginOptions getPluginOptions() {
+        return getReaderHelper().getPluginOptions();
+    }
+
+    public ReaderViewOptions getViewOptions() {
+        return getReaderHelper().getViewOptions();
+    }
+
+    public ReaderLayoutManager getReaderLayoutManager() {
+        return getReaderHelper().getReaderLayoutManager();
+    }
+
+    public ReaderBitmap getRenderBitmap() {
+        return getReaderHelper().getRenderBitmap();
+    }
 
 }

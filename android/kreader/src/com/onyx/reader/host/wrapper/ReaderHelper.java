@@ -6,6 +6,8 @@ import android.graphics.RectF;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.impl.ReaderBitmapImpl;
 import com.onyx.reader.host.layout.ReaderLayoutManager;
+import com.onyx.reader.host.math.EntryInfo;
+import com.onyx.reader.host.math.EntryManager;
 import com.onyx.reader.plugins.adobe.AdobeReaderPlugin;
 
 /**
@@ -14,16 +16,16 @@ import com.onyx.reader.plugins.adobe.AdobeReaderPlugin;
  */
 public class ReaderHelper {
     public Reader reader;
-    public ReaderViewOptions viewOptions;
-    public ReaderPluginOptions pluginOptions;
-    public ReaderDocumentOptions documentOptions;
+    private ReaderViewOptions viewOptions;
+    private ReaderPluginOptions pluginOptions;
+    private ReaderDocumentOptions documentOptions;
 
-    public ReaderPlugin plugin;
-    public ReaderDocument document;
-    public ReaderView view;
-    public ReaderNavigator navigator;
-    public ReaderRenderer renderer;
-    public ReaderSearchManager searchManager;
+    private ReaderPlugin plugin;
+    private ReaderDocument document;
+    private ReaderView view;
+    private ReaderNavigator navigator;
+    private ReaderRenderer renderer;
+    private ReaderSearchManager searchManager;
     private ReaderBitmapImpl renderBitmap;
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
@@ -42,6 +44,7 @@ public class ReaderHelper {
         renderer = view.getRenderer();
         navigator = view.getNavigator();
         hitTestManager = view.getReaderHitTestManager();
+        getReaderLayoutManager().init();
     }
 
     public void onDocumentClosed() {
@@ -101,6 +104,43 @@ public class ReaderHelper {
     public ReaderHitTestManager getHitTestManager() {
         return hitTestManager;
     }
+
+    public void setPluginOptions(final ReaderPluginOptions options) {
+        pluginOptions = options;
+    }
+
+    public ReaderPluginOptions getPluginOptions() {
+        return pluginOptions;
+    }
+
+    public void setViewOptions(final ReaderViewOptions options) {
+        viewOptions = options;
+    }
+
+    public ReaderViewOptions getViewOptions() {
+        return viewOptions;
+    }
+
+    public ReaderDocument getDocument() {
+        return document;
+    }
+
+    public ReaderView getView() {
+        return view;
+    }
+
+    public ReaderNavigator getNavigator() {
+        return navigator;
+    }
+
+    public ReaderRenderer getRenderer() {
+        return renderer;
+    }
+
+    public ReaderSearchManager getSearchManager() {
+        return searchManager;
+    }
+
 
 
 }

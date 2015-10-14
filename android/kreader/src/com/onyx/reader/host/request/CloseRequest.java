@@ -10,7 +10,7 @@ import com.onyx.reader.host.wrapper.Reader;
 public class CloseRequest extends BaseRequest {
 
     public void execute(final Reader reader) throws Exception {
-        reader.getReaderHelper().document.close();
+        reader.getDocument().close();
         reader.getReaderHelper().onDocumentClosed();
     }
 }
