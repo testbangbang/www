@@ -113,4 +113,8 @@ public class LayoutReflowProvider  implements LayoutProvider {
 
     }
 
+    public void scaleToWidth() throws ReaderException {
+
+    }
+
 }

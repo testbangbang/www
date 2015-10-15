@@ -63,6 +63,15 @@ public class ReaderLayoutManager {
         return currentProvider;
     }
 
+    public boolean setCurrentLayout(final String layoutName) throws ReaderException {
+        if (!provider.containsKey(layoutName)) {
+            return false;
+        }
+        currentProvider = layoutName;
+        getCurrentLayoutProvider().activate(this);
+        return true;
+    }
+
     public boolean isScaleToPage() {
         return false;
     }
@@ -121,4 +130,23 @@ public class ReaderLayoutManager {
     public void scaleToPage() throws ReaderException {
         getCurrentLayoutProvider().scaleToPage();
     }
+
+    public void scaleToWidth() throws ReaderException {
+        getCurrentLayoutProvider().scaleToWidth();
+    }
+
+    public boolean nextScreen() throws ReaderException {
+        if (!getCurrentLayoutProvider().nextScreen()) {
+            throw ReaderException.exceedLastPage();
+        }
+        return true;
+    }
+
+    public boolean prevScreen() throws ReaderException {
+        if (!getCurrentLayoutProvider().prevScreen()) {
+            throw ReaderException.exceedFirstPage();
+        }
+        return true;
+    }
+
 }

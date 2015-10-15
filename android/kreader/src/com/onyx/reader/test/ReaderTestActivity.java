@@ -12,6 +12,7 @@ import com.onyx.reader.common.BaseCallback;
 import com.onyx.reader.common.BaseRequest;
 import com.onyx.reader.common.Utils;
 import com.onyx.reader.host.impl.ReaderViewOptionsImpl;
+import com.onyx.reader.host.layout.ReaderLayoutManager;
 import com.onyx.reader.host.math.EntryInfo;
 import com.onyx.reader.host.math.EntryManager;
 import com.onyx.reader.host.request.*;
@@ -56,6 +57,17 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
+                testChangeLayout();
+            }
+        });
+    }
+
+    public void testChangeLayout() {
+        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.CONTINUOUS_PAGE);
+        reader.submitRequest(this, request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                assert(e == null);
                 testReaderGoto();
             }
         });
@@ -67,19 +79,58 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                testReaderRender();
+                testScaleToPage();
             }
         });
     }
 
-    public void testReaderRender() {
+    public void testScaleToPage() {
         final ScaleToPageRequest renderRequest = new ScaleToPageRequest();
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/temp.png");
-                testHitTestWithoutRendering();
+                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToPage.png");
+                testScaleToWidth();
+            }
+        });
+    }
+
+    public void testScaleToWidth() {
+        final ScaleToWidthRequest renderRequest = new ScaleToWidthRequest();
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                assert(e == null);
+                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToWidth.png");
+                testActualScale();
+            }
+        });
+    }
+
+    public void testActualScale() {
+        final ScaleRequest renderRequest = new ScaleRequest(0.5f, 0, 0);
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                assert(e == null);
+                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png");
+                testNextScreen();
+            }
+        });
+    }
+
+    public void testNextScreen() {
+        final NextScreenRequest renderRequest = new NextScreenRequest();
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                if (e == null) {
+                    Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png");
+                    testNextScreen();
+                } else {
+                    testHitTestWithoutRendering();
+                }
             }
         });
     }

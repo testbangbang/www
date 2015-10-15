@@ -1,6 +1,8 @@
 package com.onyx.reader.host.math;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
+import com.onyx.reader.api.ReaderDocumentPosition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +84,11 @@ public class EntryManager {
             return false;
         }
         setViewport(entryInfo.getDisplayRect().left, entryInfo.getDisplayRect().top);
-        return false;
+        return true;
+    }
+
+    public final EntryInfo getEntryInfo(final ReaderDocumentPosition position) {
+        return entryInfoMap.get(position);
     }
 
     public final List<EntryInfo> getEntryInfoList() {
@@ -132,6 +138,11 @@ public class EntryManager {
         return true;
     }
 
+    /**
+     * Scale the child rect to viewport.
+     * @param child The user selected rect in host coordinates system.
+     * @return true if succeed.
+     */
     public boolean scaleToViewport(final RectF child) {
         updateVisiblePages();
         if (visible.size() <= 0) {
@@ -141,8 +152,33 @@ public class EntryManager {
             return false;
         }
         setScale(actualScale * EntryUtils.scaleToPage(child, viewportRect));
+
         reboundViewport();
         return true;
+    }
+
+    public EntryInfo hitTest(final float x, final float y) {
+        for(EntryInfo entryInfo : visible) {
+            if (entryInfo.getDisplayRect().contains(x, y)) {
+                return entryInfo;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * viewport to point in entry coodinates system.
+     * @param viewportPoint
+     * @return
+     */
+    public PointF viewportToEntry(final PointF viewportPoint) {
+        for(EntryInfo entryInfo : visible) {
+            if (entryInfo.getDisplayRect().contains(viewportPoint.x, viewportPoint.y)) {
+                viewportPoint.offset(-entryInfo.getDisplayRect().left, -entryInfo.getDisplayRect().top);
+                return viewportPoint;
+            }
+        }
+        return null;
     }
 
     /**

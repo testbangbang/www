@@ -58,6 +58,10 @@ public class LayoutSinglePageProvider implements LayoutProvider {
         layoutManager.getEntryManager().scaleToPage();
     }
 
+    public void scaleToWidth() throws ReaderException {
+        layoutManager.getEntryManager().scaleToWidth();
+    }
+
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
         return false;
     }
@@ -114,14 +118,14 @@ public class LayoutSinglePageProvider implements LayoutProvider {
     }
 
     public float getActualScale() throws ReaderException {
-        return 0.0f;
+        return layoutManager.getEntryManager().getActualScale();
     }
 
     public RectF getHostRect() throws ReaderException {
-        return null;
+        return layoutManager.getEntryManager().getHostRect();
     }
 
     public RectF getViewportRect() throws ReaderException {
-        return null;
+        return layoutManager.getEntryManager().getViewportRect();
     }
 }

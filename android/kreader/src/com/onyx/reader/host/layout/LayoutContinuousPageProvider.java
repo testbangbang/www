@@ -4,6 +4,7 @@ import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
+import com.onyx.reader.host.math.EntryInfo;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -16,18 +17,28 @@ public class LayoutContinuousPageProvider implements LayoutProvider {
         layoutManager = lm;
     }
 
-    public void activate(final ReaderLayoutManager layoutManager) throws ReaderException {}
+    public void activate(final ReaderLayoutManager layoutManager) throws ReaderException {
+        int total = layoutManager.getReaderHelper().getNavigator().getTotalPage();
+        LayoutProviderUtils.clear(layoutManager);
+        for(int i = 0; i < total; ++i) {
+            final ReaderDocumentPosition position = layoutManager.getReaderHelper().getNavigator().getPositionByPageNumber(i);
+            LayoutProviderUtils.addEntry(layoutManager, position);
+        }
+        LayoutProviderUtils.update(layoutManager);
+    }
 
     public boolean prevScreen() throws ReaderException {
-        return false;
+        return layoutManager.getEntryManager().prevViewport();
     }
+
     public boolean nextScreen() throws ReaderException {
-        return false;
+        return layoutManager.getEntryManager().nextViewport();
     }
 
     public boolean prevPage() throws ReaderException {
         return false;
     }
+
     public boolean nextPage() throws ReaderException {
         return false;
     }
@@ -40,14 +51,15 @@ public class LayoutContinuousPageProvider implements LayoutProvider {
         return false;
     }
 
-
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
-        return false;
+        LayoutProviderUtils.drawVisiblePages(layoutManager, bitmap);
+        return true;
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
         return false;
     }
+
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
         return false;
     }
@@ -57,7 +69,7 @@ public class LayoutContinuousPageProvider implements LayoutProvider {
     }
 
     public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException {
-        return false;
+        return layoutManager.getEntryManager().moveViewportByPosition(location.save());
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
@@ -67,6 +79,7 @@ public class LayoutContinuousPageProvider implements LayoutProvider {
     public boolean supportPreRender() throws ReaderException {
         return false;
     }
+
     public boolean supportSubScreenNavigation() {
         return false;
     }
@@ -92,22 +105,30 @@ public class LayoutContinuousPageProvider implements LayoutProvider {
     }
 
     public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException {
+        final EntryInfo entryInfo = layoutManager.getEntryManager().getEntryInfo(position);
+        if (entryInfo != null) {
+            return entryInfo.getDisplayRect();
+        }
         return null;
     }
 
     public float getActualScale() throws ReaderException {
-        return 0.0f;
+        return layoutManager.getEntryManager().getActualScale();
     }
 
     public RectF getHostRect() throws ReaderException {
-        return null;
+        return layoutManager.getEntryManager().getHostRect();
     }
 
     public RectF getViewportRect() throws ReaderException {
-        return null;
+        return layoutManager.getEntryManager().getViewportRect();
     }
 
     public void scaleToPage() throws ReaderException  {
+
+    }
+
+    public void scaleToWidth() throws ReaderException {
 
     }
 
