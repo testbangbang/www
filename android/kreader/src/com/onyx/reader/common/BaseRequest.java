@@ -121,22 +121,12 @@ public abstract class BaseRequest {
         return renderBitmap;
     }
 
-    public void setRenderBitmap(final ReaderBitmap bmp) {
-        renderBitmap = bmp;
-    }
-
-    public void renderToBitmap(final Reader reader) {
-        setRenderBitmap(reader.getReaderHelper().getRenderBitmap());
-        reader.getReaderHelper().renderToBitmap();
+    public void useRenderBitmap(final Reader reader) {
+        renderBitmap = reader.getReaderHelper().getRenderBitmap();
     }
 
     public void clearBitmap(final Reader reader) {
         reader.getReaderHelper().getRenderer().clear(reader.getReaderHelper().getRenderBitmap());
-    }
-
-    public void renderToBitmap(final Reader reader, final RectF rect) {
-        setRenderBitmap(reader.getReaderHelper().getRenderBitmap());
-        reader.getReaderHelper().renderToBitmap((int) rect.left, (int) rect.top, (int)rect.right, (int)rect.bottom);
     }
 
     public void beforeExecute(final Reader reader) {

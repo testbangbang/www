@@ -109,6 +109,8 @@ public class LayoutReflowProvider  implements LayoutProvider {
         return null;
     }
 
+    public void scaleToPage() throws ReaderException {
 
+    }
 
 }

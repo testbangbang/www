@@ -25,6 +25,8 @@ public interface LayoutProvider {
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException;
 
     public boolean setScale(float scale, float left, float top) throws ReaderException;
+    public void scaleToPage() throws ReaderException;
+
     public float getActualScale() throws ReaderException;
     public RectF getHostRect() throws ReaderException;
     public RectF getViewportRect() throws ReaderException;

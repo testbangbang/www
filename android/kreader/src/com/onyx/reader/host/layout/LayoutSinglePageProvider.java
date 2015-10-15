@@ -54,6 +54,10 @@ public class LayoutSinglePageProvider implements LayoutProvider {
         return true;
     }
 
+    public void scaleToPage() throws ReaderException {
+        layoutManager.getEntryManager().scaleToPage();
+    }
+
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
         return false;
     }
@@ -68,6 +72,7 @@ public class LayoutSinglePageProvider implements LayoutProvider {
         }
         LayoutProviderUtils.clear(layoutManager);
         LayoutProviderUtils.addEntry(layoutManager, location);
+        LayoutProviderUtils.update(layoutManager);
         LayoutProviderUtils.moveViewportByPosition(layoutManager, location);
         return true;
     }

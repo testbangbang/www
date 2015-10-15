@@ -117,4 +117,8 @@ public class ReaderLayoutManager {
     public void setScale(final float scale, final float x, final float y) throws ReaderException {
         getCurrentLayoutProvider().setScale(scale, x, y);
     }
+
+    public void scaleToPage() throws ReaderException {
+        getCurrentLayoutProvider().scaleToPage();
+    }
 }

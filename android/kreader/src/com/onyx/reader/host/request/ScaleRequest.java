@@ -25,41 +25,8 @@ public class ScaleRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        useRenderBitmap(reader);
         reader.getReaderLayoutManager().setScale(scale, x, y);
-        setRenderBitmap(reader.getReaderHelper().getRenderBitmap());
         reader.getReaderLayoutManager().drawVisiblePages(getRenderBitmap());
-    }
-
-    public void execute2(final Reader reader) throws Exception {
-        EntryManager manager = new EntryManager();
-
-        for(int pn = 0; pn < 5; ++pn) {
-            ReaderDocumentPosition documentPosition = reader.getNavigator().getPositionByPageNumber(pn);
-            RectF pageRect = reader.getDocument().getPageNaturalSize(documentPosition);
-            EntryInfo entryInfo = new EntryInfo(pageRect.width(), pageRect.height());
-            manager.add(documentPosition.save(), entryInfo);
-        }
-        manager.update();
-
-
-        float width = reader.getViewOptions().getViewWidth();
-        float height = reader.getViewOptions().getViewHeight();
-        manager.setViewportRect(0, 0, width, height);
-
-        manager.setScale(scale);
-        manager.setViewport(x, y);
-
-        clearBitmap(reader);
-        List<EntryInfo> visiblePages = manager.updateVisiblePages();
-        for(EntryInfo entryInfo : visiblePages) {
-            ReaderDocumentPosition documentPosition = reader.getNavigator().createPositionFromString(entryInfo.getName());
-            reader.getNavigator().gotoPosition(documentPosition);
-            reader.getRenderer().setScale(manager.getActualScale());
-            final RectF entryViewport = entryInfo.viewportInPage(manager.getViewportRect());
-            reader.getRenderer().setViewport(entryViewport.left, entryViewport.top);
-            final RectF visibleRect = entryInfo.visibleRectInViewport(manager.getViewportRect());
-            renderToBitmap(reader, visibleRect);
-        }
-
     }
 }

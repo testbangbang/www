@@ -107,4 +107,8 @@ public class LayoutContinuousPageProvider implements LayoutProvider {
         return null;
     }
 
+    public void scaleToPage() throws ReaderException  {
+
+    }
+
 }
