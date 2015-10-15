@@ -117,4 +117,9 @@ public class LayoutReflowProvider  implements LayoutProvider {
 
     }
 
+    public void scaleByRect(final RectF child) throws ReaderException {
+
+    }
+
+
 }

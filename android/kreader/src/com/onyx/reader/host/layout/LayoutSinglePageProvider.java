@@ -128,4 +128,8 @@ public class LayoutSinglePageProvider implements LayoutProvider {
     public RectF getViewportRect() throws ReaderException {
         return layoutManager.getEntryManager().getViewportRect();
     }
+
+    public void scaleByRect(final RectF child) throws ReaderException {
+        layoutManager.getEntryManager().scaleToViewport(child);
+    }
 }

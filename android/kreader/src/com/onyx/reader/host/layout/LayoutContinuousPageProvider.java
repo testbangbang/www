@@ -132,4 +132,9 @@ public class LayoutContinuousPageProvider implements LayoutProvider {
 
     }
 
+    public void scaleByRect(final RectF child) throws ReaderException {
+        layoutManager.getEntryManager().scaleToViewport(child);
+    }
+
+
 }

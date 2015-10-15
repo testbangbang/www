@@ -152,7 +152,7 @@ public class EntryManager {
             return false;
         }
 
-        setScale(actualScale * EntryUtils.scaleByRect(child, viewportRect));
+        setScale(actualScale * EntryUtils.scaleByRect(child, viewportRect, false));
         reboundViewport();
         return true;
     }

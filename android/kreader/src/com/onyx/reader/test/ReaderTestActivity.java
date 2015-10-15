@@ -60,7 +60,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                testChangeLayout();
+                testReaderGoto();
             }
         });
     }
@@ -118,10 +118,23 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png");
+                testScaleByRect();
+            }
+        });
+    }
+
+    public void testScaleByRect() {
+        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(new RectF(100, 100, 200, 200));
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                assert(e == null);
+                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png");
                 testNextScreen();
             }
         });
     }
+
 
     public void testNextScreen() {
         final NextScreenRequest renderRequest = new NextScreenRequest();
@@ -226,7 +239,7 @@ public class ReaderTestActivity extends Activity {
         float centerX = parent.centerX();
         float centerY = parent.centerY();
 
-        float delta = EntryUtils.scaleByRect(child, parent);
+        float delta = EntryUtils.scaleByRect(child, parent, true);
         float newDistX = parent.left - child.left;
         float newDistY = parent.left - child.left;
         assert(delta > 0);
@@ -248,7 +261,7 @@ public class ReaderTestActivity extends Activity {
         float centerX = parent.centerX();
         float centerY = parent.centerY();
 
-        float delta = EntryUtils.scaleByRect(child, parent);
+        float delta = EntryUtils.scaleByRect(child, parent, true);
         float newDistX = parent.left - child.left;
         float newDistY = parent.left - child.left;
         assert(delta > 0);

@@ -26,7 +26,7 @@ public class EntryUtils {
      * @param parent
      * @return
      */
-    static public float scaleByRect(final RectF child, final RectF parent) {
+    static public float scaleByRect(final RectF child, final RectF parent, boolean adjustParent) {
         // delta scale
         float xScale = parent.width() / child.width();
         float yScale = parent.height() / child.height();
@@ -43,7 +43,9 @@ public class EntryUtils {
         float newParentTop = newChildTop - (child.top - parent.top) * deltaScale;
 
         child.set(newChildLeft, newChildTop, newChildLeft + child.width() * deltaScale, newChildTop + child.height() * deltaScale);
-        parent.set(newParentLeft, newParentTop, newParentLeft + parent.width() * deltaScale, newParentTop + parent.height() * deltaScale);
+        if (adjustParent) {
+            parent.set(newParentLeft, newParentTop, newParentLeft + parent.width() * deltaScale, newParentTop + parent.height() * deltaScale);
+        }
         return deltaScale;
     }
 

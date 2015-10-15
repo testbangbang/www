@@ -135,6 +135,11 @@ public class ReaderLayoutManager {
         getCurrentLayoutProvider().scaleToWidth();
     }
 
+    public void scaleByRect(final RectF child) throws ReaderException {
+        getCurrentLayoutProvider().scaleByRect(child);
+    }
+
+
     public boolean nextScreen() throws ReaderException {
         if (!getCurrentLayoutProvider().nextScreen()) {
             throw ReaderException.exceedLastPage();

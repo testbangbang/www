@@ -27,6 +27,7 @@ public interface LayoutProvider {
     public boolean setScale(float scale, float left, float top) throws ReaderException;
     public void scaleToPage() throws ReaderException;
     public void scaleToWidth() throws ReaderException;
+    public void scaleByRect(final RectF child) throws ReaderException;
 
     public float getActualScale() throws ReaderException;
     public RectF getHostRect() throws ReaderException;
