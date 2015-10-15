@@ -3,6 +3,8 @@ package com.onyx.reader.host.layout;
 import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
+import com.onyx.reader.api.ReaderNavigator;
+import com.onyx.reader.api.ReaderRenderer;
 import com.onyx.reader.host.math.EntryInfo;
 import com.onyx.reader.host.math.EntryManager;
 import com.onyx.reader.host.wrapper.Reader;
@@ -18,19 +20,29 @@ public class LayoutProviderUtils {
 
     }
 
+    /**
+     * draw all visible pages. For each page:
+     * 1. ask plugin to goto that location through navigator interface
+     * 2. set renderer scale and viewport
+     * 3. render the visible part of page.
+     * @param layoutManager
+     * @param bitmap
+     */
     static public void drawVisiblePages(final ReaderLayoutManager layoutManager, final ReaderBitmap bitmap) {
         final EntryManager entryManager = layoutManager.getEntryManager();
         final Reader reader = layoutManager.getReader();
+        final ReaderRenderer renderer = reader.getRenderer();
+        final ReaderNavigator navigator = reader.getNavigator();
         final List<EntryInfo> visiblePages = layoutManager.getEntryManager().updateVisiblePages();
-        reader.getRenderer().clear(bitmap);
+        renderer.clear(bitmap);
         for(EntryInfo entryInfo : visiblePages) {
             ReaderDocumentPosition documentPosition = reader.getNavigator().createPositionFromString(entryInfo.getName());
-            reader.getNavigator().gotoPosition(documentPosition);
-            reader.getRenderer().setScale(entryManager.getActualScale());
+            navigator.gotoPosition(documentPosition);
+            renderer.setScale(entryManager.getActualScale());
             final RectF entryViewport = entryInfo.viewportInPage(entryManager.getViewportRect());
-            reader.getRenderer().setViewport(entryViewport.left, entryViewport.top);
+            renderer.setViewport(entryViewport.left, entryViewport.top);
             final RectF rect = entryInfo.visibleRectInViewport(entryManager.getViewportRect());
-            reader.getRenderer().draw(bitmap, (int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom);
+            renderer.draw(bitmap, (int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom);
         }
     }
 

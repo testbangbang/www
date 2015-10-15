@@ -151,8 +151,8 @@ public class EntryManager {
         if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
             return false;
         }
-        setScale(actualScale * EntryUtils.scaleToPage(child, viewportRect));
 
+        setScale(actualScale * EntryUtils.scaleByRect(child, viewportRect));
         reboundViewport();
         return true;
     }

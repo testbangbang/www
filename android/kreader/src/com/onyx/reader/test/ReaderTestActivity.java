@@ -15,6 +15,7 @@ import com.onyx.reader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.reader.host.layout.ReaderLayoutManager;
 import com.onyx.reader.host.math.EntryInfo;
 import com.onyx.reader.host.math.EntryManager;
+import com.onyx.reader.host.math.EntryUtils;
 import com.onyx.reader.host.request.*;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderManager;
@@ -44,6 +45,8 @@ public class ReaderTestActivity extends Activity {
         reader = ReaderManager.createReader(this, path, null, getViewOptions());
         testMath();
         testMath2();
+        testMath3();
+        testMath4();
         testReaderOpen();
     }
 
@@ -213,6 +216,49 @@ public class ReaderTestActivity extends Activity {
         entryManager.nextViewport();
         assert(entryManager.prevViewport() == false);
         entryManager.prevViewport();
+    }
+
+    public void testMath3() {
+        RectF child = new RectF(100, 100, 200, 200);
+        RectF parent = new RectF(0, 0, 300, 300);
+        float distX = parent.left - child.left;
+        float distY = parent.top - child.top;
+        float centerX = parent.centerX();
+        float centerY = parent.centerY();
+
+        float delta = EntryUtils.scaleByRect(child, parent);
+        float newDistX = parent.left - child.left;
+        float newDistY = parent.left - child.left;
+        assert(delta > 0);
+        assert(Float.compare(delta  * distX, newDistX) == 0);
+        assert(Float.compare(delta  * distY, newDistY) == 0);
+
+        float newCenterX = child.centerX();
+        float newCenterY = child.centerY();
+        assert(Float.compare(centerX, newCenterX) == 0);
+        assert(Float.compare(centerY, newCenterY) == 0);
+    }
+
+
+    public void testMath4() {
+        RectF child = new RectF(randInt(200, 500), randInt(200, 500), randInt(800, 1200), randInt(800, 1200));
+        RectF parent = new RectF(randInt(0, 100), randInt(0, 100), randInt(1300, 2000), randInt(1300, 2000));
+        float distX = parent.left - child.left;
+        float distY = parent.top - child.top;
+        float centerX = parent.centerX();
+        float centerY = parent.centerY();
+
+        float delta = EntryUtils.scaleByRect(child, parent);
+        float newDistX = parent.left - child.left;
+        float newDistY = parent.left - child.left;
+        assert(delta > 0);
+        assert(Float.compare(delta  * distX, newDistX) == 0);
+        assert(Float.compare(delta  * distY, newDistY) == 0);
+
+        float newCenterX = child.centerX();
+        float newCenterY = child.centerY();
+        assert(Float.compare(centerX, newCenterX) == 0);
+        assert(Float.compare(centerY, newCenterY) == 0);
     }
 
 }
