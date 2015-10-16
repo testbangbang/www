@@ -10,15 +10,16 @@ import com.onyx.reader.api.ReaderSelection;
 import com.onyx.reader.api.ReaderViewOptions;
 import com.onyx.reader.common.BaseCallback;
 import com.onyx.reader.common.BaseRequest;
-import com.onyx.reader.common.Utils;
 import com.onyx.reader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.reader.host.layout.ReaderLayoutManager;
 import com.onyx.reader.host.math.EntryInfo;
 import com.onyx.reader.host.math.EntryManager;
+import com.onyx.reader.host.math.EntrySubScreenNavigator;
 import com.onyx.reader.host.math.EntryUtils;
 import com.onyx.reader.host.request.*;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderManager;
+import com.onyx.reader.utils.BitmapUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class ReaderTestActivity extends Activity {
         testMath2();
         testMath3();
         testMath4();
+        testMath5();
         testReaderOpen();
     }
 
@@ -93,7 +95,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToPage.png");
+                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToPage.png");
                 testScaleToWidth();
             }
         });
@@ -105,7 +107,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToWidth.png");
+                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToWidth.png");
                 testActualScale();
             }
         });
@@ -117,7 +119,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png");
+                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png");
                 testScaleByRect();
             }
         });
@@ -129,7 +131,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png");
+                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png");
                 testNextScreen();
             }
         });
@@ -142,7 +144,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (e == null) {
-                    Utils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png");
+                    BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png");
                     testNextScreen();
                 } else {
                     testHitTestWithoutRendering();
@@ -234,44 +236,79 @@ public class ReaderTestActivity extends Activity {
     public void testMath3() {
         RectF child = new RectF(100, 100, 200, 200);
         RectF parent = new RectF(0, 0, 300, 300);
-        float distX = parent.left - child.left;
-        float distY = parent.top - child.top;
+        float left = child.left;
+        float top = child.top;
+        float width = parent.width();
+        float height = parent.height();
+
+        float delta = EntryUtils.scaleByRect(child, parent);
+        assert(delta > 0);
+        assert(Float.compare(delta  * left, child.left) == 0);
+        assert(Float.compare(delta  * top, child.top) == 0);
+
+
         float centerX = parent.centerX();
         float centerY = parent.centerY();
-
-        float delta = EntryUtils.scaleByRect(child, parent, true);
-        float newDistX = parent.left - child.left;
-        float newDistY = parent.left - child.left;
-        assert(delta > 0);
-        assert(Float.compare(delta  * distX, newDistX) == 0);
-        assert(Float.compare(delta  * distY, newDistY) == 0);
-
         float newCenterX = child.centerX();
         float newCenterY = child.centerY();
         assert(Float.compare(centerX, newCenterX) == 0);
         assert(Float.compare(centerY, newCenterY) == 0);
+        assert(Float.compare(parent.width(), width) == 0);
+        assert(Float.compare(parent.height(), height) == 0);
     }
 
 
     public void testMath4() {
         RectF child = new RectF(randInt(200, 500), randInt(200, 500), randInt(800, 1200), randInt(800, 1200));
         RectF parent = new RectF(randInt(0, 100), randInt(0, 100), randInt(1300, 2000), randInt(1300, 2000));
-        float distX = parent.left - child.left;
-        float distY = parent.top - child.top;
+        float left = child.left;
+        float top = child.top;
+        float width = parent.width();
+        float height = parent.height();
+
+        float delta = EntryUtils.scaleByRect(child, parent);
+        assert(delta > 0);
+        assert(Float.compare(delta  * left, child.left) == 0);
+        assert(Float.compare(delta  * top, child.top) == 0);
+
+
         float centerX = parent.centerX();
         float centerY = parent.centerY();
-
-        float delta = EntryUtils.scaleByRect(child, parent, true);
-        float newDistX = parent.left - child.left;
-        float newDistY = parent.left - child.left;
-        assert(delta > 0);
-        assert(Float.compare(delta  * distX, newDistX) == 0);
-        assert(Float.compare(delta  * distY, newDistY) == 0);
-
         float newCenterX = child.centerX();
         float newCenterY = child.centerY();
         assert(Float.compare(centerX, newCenterX) == 0);
         assert(Float.compare(centerY, newCenterY) == 0);
+        assert(Float.compare(parent.width(), width) == 0);
+        assert(Float.compare(parent.height(), height) == 0);
+    }
+
+    public void testMath5() {
+        RectF child = new RectF(0, 0, 500, 500);
+        RectF parent = new RectF(0, 0, 1024, 768);
+        float scale = EntryUtils.scaleToPage(child, parent);
+        child.set(0, 0, child.width() * scale, child.height() * scale);
+        int rows = 3, cols = 3;
+        List<RectF> list = new ArrayList<RectF>();
+        for(int i = 0; i < rows; ++i) {
+            for(int j = 0; j < cols; ++j) {
+                float left = child.left + child.width() / cols * j;
+                float right = left + child.width() / cols;
+                float top = child.top + child.height() / rows * i;
+                float bottom = top + child.height() / rows;
+                RectF sub = new RectF(left, top, right, bottom);
+                list.add(sub);
+            }
+        }
+
+        EntrySubScreenNavigator navigator = new EntrySubScreenNavigator();
+        navigator.addAll(list);
+        navigator.setActualScale(scale);
+
+        while (navigator.next()) {
+            RectF entry = new RectF(navigator.getCurrent());
+            float newScale = scale * EntryUtils.scaleByRect(entry, parent);
+            scale = newScale;
+        }
     }
 
 }

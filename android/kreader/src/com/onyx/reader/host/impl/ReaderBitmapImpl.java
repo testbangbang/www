@@ -2,7 +2,9 @@ package com.onyx.reader.host.impl;
 
 import android.graphics.Bitmap;
 import com.onyx.reader.api.ReaderBitmap;
-import com.onyx.reader.common.Utils;
+import com.onyx.reader.utils.TimeUtils;
+
+import java.sql.Time;
 
 /**
  * Created by zhuzeng on 10/4/15.
@@ -39,12 +41,12 @@ public class ReaderBitmapImpl implements ReaderBitmap {
     }
 
     public long copyFrom(final ReaderBitmap src) {
-        long start = Utils.nanoTime();
+        long start = TimeUtils.nanoTime();
         if (bitmap != null) {
             bitmap.recycle();
         }
         bitmap = src.getBitmap().copy(src.getBitmap().getConfig(), true);
-        long end = Utils.nanoTime();
+        long end = TimeUtils.nanoTime();
         return (end - start);
     }
 

@@ -1,4 +1,4 @@
-package com.onyx.reader.plugins.utils;
+package com.onyx.reader.utils;
 
 import android.graphics.RectF;
 
@@ -6,17 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by zhuzeng on 10/14/15.
+ * Created by zhuzeng on 10/16/15.
  */
-public class PluginUtils {
-
-    static public boolean isNullOrEmpty(final String string) {
-        return (string == null || string.length() <= 0);
-    }
-
-    static public boolean isNonBlank(final String string) {
-        return (string != null && string.length() > 0);
-    }
+public class JniUtils {
 
 
     public static List<RectF> rectangles(double result[]) {
@@ -36,4 +28,5 @@ public class PluginUtils {
         }
         return list;
     }
+
 }

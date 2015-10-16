@@ -18,34 +18,31 @@ public class EntryUtils {
     }
 
     /**
-     * Scale the child to parent and adjust both child and parent position and size. Steps
-     * 1. calculate the delta scale
-     * 2. calculate the child new position and size, by the parent center point
-     * 3. adjust parent new position and size since the distance between the two rects should be the delta * distance.
-     * @param child
-     * @param parent
-     * @return
+     * Scale the child within parent and adjust child size and parent position. Steps
+     * 1. calculate the delta scale, by scale to page (child to parent)
+     * 2. calculate the child new position and size, by origin size, simply by delta scale.
+     * 3. adjust parent position, the center point is the child center point, by using center point to calculate
+     *    left and top.
+     * @param child the child rect within parent
+     * @param parent the viewport rect.
+     * @return delta scale
      */
-    static public float scaleByRect(final RectF child, final RectF parent, boolean adjustParent) {
+    static public float scaleByRect(final RectF child, final RectF parent) {
         // delta scale
         float xScale = parent.width() / child.width();
         float yScale = parent.height() / child.height();
         float deltaScale = Math.min(xScale, yScale);
 
         // the center point of child should be moved to center of parent.
-        // so we use the parent center x as new child center x to caluclate top, left
-        float newChildLeft = parent.centerX() - child.width() / 2 * deltaScale;
-        float newChildTop = parent.centerY() - child.height() / 2 * deltaScale;
-
-
-        // adjust parent by the distance between top left
-        float newParentLeft = newChildLeft - (child.left - parent.left) * deltaScale;
-        float newParentTop = newChildTop - (child.top - parent.top) * deltaScale;
-
+        // so we use the parent center x as new child center x to calculate top, left
+        float newChildLeft = child.left * deltaScale;
+        float newChildTop = child.top * deltaScale;
         child.set(newChildLeft, newChildTop, newChildLeft + child.width() * deltaScale, newChildTop + child.height() * deltaScale);
-        if (adjustParent) {
-            parent.set(newParentLeft, newParentTop, newParentLeft + parent.width() * deltaScale, newParentTop + parent.height() * deltaScale);
-        }
+
+        // adjust parent position.
+        float newParentLeft = child.centerX() - parent.width() / 2;
+        float newParentTop = child.centerY() - parent.height() / 2;
+        parent.offsetTo(newParentLeft, newParentTop);
         return deltaScale;
     }
 

@@ -5,7 +5,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.wrapper.ReaderPageInfo;
-import com.onyx.reader.plugins.utils.PluginUtils;
+import com.onyx.reader.utils.JniUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -442,7 +442,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         selection.setStartPosition(AdobeDocumentPositionImpl.createFromInternalString(this, start));
         selection.setEndPosition(AdobeDocumentPositionImpl.createFromInternalString(this, end));
         selection.setText(getPluginImpl().getTextNative(start, end));
-        selection.setRectangles(PluginUtils.rectangles(getPluginImpl().rectangles(start, end)));
+        selection.setRectangles(JniUtils.rectangles(getPluginImpl().rectangles(start, end)));
         return selection;
     }
 

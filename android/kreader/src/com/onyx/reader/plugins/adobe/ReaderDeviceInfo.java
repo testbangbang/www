@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import com.onyx.reader.common.Utils;
-import com.onyx.reader.plugins.utils.PluginUtils;
+import com.onyx.reader.utils.DeviceUtils;
+import com.onyx.reader.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class ReaderDeviceInfo {
 
     public static String infoEntry(final String key) {
         String info = infoMap.get(key);
-        if (PluginUtils.isNullOrEmpty(info)) {
+        if (StringUtils.isNullOrEmpty(info)) {
             return "";
         }
         return info;
@@ -43,8 +43,8 @@ public class ReaderDeviceInfo {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String uuid = prefs.getString(PREFS_DEVICE_ID, null);
         if (uuid == null || uuid.length() <= 0) {
-            uuid = Utils.getDeviceSerial(context);
-            if (!PluginUtils.isNonBlank(uuid)) {
+            uuid = DeviceUtils.getDeviceSerial(context);
+            if (!StringUtils.isNonBlank(uuid)) {
                 prefs.edit().putString(PREFS_DEVICE_ID, uuid).commit();
             }
         }
