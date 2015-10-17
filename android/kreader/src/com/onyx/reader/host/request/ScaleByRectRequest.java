@@ -9,15 +9,15 @@ import com.onyx.reader.host.wrapper.Reader;
  */
 public class ScaleByRectRequest extends BaseRequest  {
 
-    private RectF child;
+    private RectF childInHost;
 
     public ScaleByRectRequest(final RectF c) {
-        child = c;
+        childInHost = c;
     }
 
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
-        reader.getReaderLayoutManager().scaleByRect(child);
+        reader.getReaderLayoutManager().scaleByRect(childInHost);
         reader.getReaderLayoutManager().drawVisiblePages(getRenderBitmap());
     }
 }

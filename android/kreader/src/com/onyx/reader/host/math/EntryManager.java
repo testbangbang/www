@@ -157,6 +157,21 @@ public class EntryManager {
         return true;
     }
 
+
+    public boolean scaleByRatio(final RectF ratio) {
+        updateVisiblePages();
+        if (visible.size() <= 0) {
+            return false;
+        }
+        if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
+            return false;
+        }
+
+        setScale(EntryUtils.scaleByRatio(ratio, visible.get(0).getNaturalRect(), viewportRect));
+        reboundViewport();
+        return false;
+    }
+
     public EntryInfo hitTest(final float x, final float y) {
         for(EntryInfo entryInfo : visible) {
             if (entryInfo.getDisplayRect().contains(x, y)) {

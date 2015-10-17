@@ -5,6 +5,8 @@ import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 
+import java.util.List;
+
 /**
  * Created by zhuzeng on 10/7/15.
  */
@@ -18,6 +20,9 @@ public class LayoutReflowProvider  implements LayoutProvider {
 
     public void activate(final ReaderLayoutManager manager) throws ReaderException {
         layoutManager = manager;
+    }
+
+    public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException {
     }
 
     public boolean prevScreen() throws ReaderException {

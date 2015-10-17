@@ -6,6 +6,8 @@ import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.host.impl.ReaderDocumentOptionsImpl;
 
+import java.util.List;
+
 /**
  * Created by zhuzeng on 10/7/15.
  */
@@ -13,6 +15,7 @@ public interface LayoutProvider {
 
     public void activate(final ReaderLayoutManager layoutManager) throws ReaderException;
 
+    public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException;
     public boolean prevScreen() throws ReaderException;
     public boolean nextScreen() throws ReaderException;
 

@@ -84,7 +84,7 @@ public class EntryInfo {
     public RectF visibleRectInViewport(final RectF viewport) {
         RectF visible = new RectF(displayRect);
         visible.intersect(viewport);
-        visible.offset(-viewport.left, -viewport.top);
+        EntryUtils.translateCoordinates(visible, viewport);
         return visible;
     }
 
@@ -95,7 +95,7 @@ public class EntryInfo {
      */
     public RectF viewportInPage(final RectF viewport) {
         RectF vp = new RectF(viewport);
-        vp.offset(-displayRect.left, -displayRect.top);
+        EntryUtils.translateCoordinates(vp, displayRect);
         return vp;
     }
 

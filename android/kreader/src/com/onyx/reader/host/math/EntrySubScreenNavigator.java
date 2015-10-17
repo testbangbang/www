@@ -10,9 +10,9 @@ import java.util.List;
  */
 public class EntrySubScreenNavigator {
 
-
-    private float actualScale = 1.0f;   // actual scale when scale to page.
+    // ratio, range from [0, 1]
     private List<RectF> subScreenList = new ArrayList<RectF>();
+    private float actualScale = 1.0f;
     private int currentIndex = 0;
 
     public EntrySubScreenNavigator() {

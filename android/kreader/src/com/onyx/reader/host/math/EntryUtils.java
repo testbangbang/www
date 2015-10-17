@@ -7,6 +7,15 @@ import android.graphics.RectF;
  */
 public class EntryUtils {
 
+    /**
+     * Translate to parent coordinates.
+     * @param child
+     * @param parent
+     */
+    static public void translateCoordinates(final RectF child, final RectF parent) {
+        child.offset(-parent.left, -parent.top);
+    }
+
     static public float scaleToPage(final RectF entry, final RectF viewport) {
         float scale = Math.min(viewport.width() / entry.width(), viewport.height() / entry.height());
         return scale;
@@ -44,6 +53,14 @@ public class EntryUtils {
         float newParentTop = child.centerY() - parent.height() / 2;
         parent.offsetTo(newParentLeft, newParentTop);
         return deltaScale;
+    }
+
+    static public float scaleByRatio(final RectF ratio, final RectF child, final RectF parent) {
+        RectF actualEntry = new RectF(child.width() * ratio.left,
+                child.height() * ratio.top,
+                child.width() * ratio.right,
+                child.height() * ratio.bottom);
+        return scaleByRect(actualEntry, parent);
     }
 
     // make sure child is fully inside parent.

@@ -5,9 +5,11 @@ import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.host.math.EntryManager;
+import com.onyx.reader.host.math.EntrySubScreenNavigator;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderHelper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,6 +32,7 @@ public class ReaderLayoutManager {
     private Reader reader;
     private ReaderHelper readerHelper;
     private EntryManager entryManager;
+    private EntrySubScreenNavigator subScreenNavigator;
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new ConcurrentHashMap<String, LayoutProvider>();
 
@@ -115,6 +118,13 @@ public class ReaderLayoutManager {
         return entryManager;
     }
 
+    public EntrySubScreenNavigator getSubScreenNavigator() {
+        if (subScreenNavigator == null) {
+            subScreenNavigator = new EntrySubScreenNavigator();
+        }
+        return subScreenNavigator;
+    }
+
     public boolean gotoPosition(final ReaderDocumentPosition position) throws ReaderException {
         return getCurrentLayoutProvider().gotoPosition(position);
     }
@@ -152,6 +162,10 @@ public class ReaderLayoutManager {
             throw ReaderException.exceedFirstPage();
         }
         return true;
+    }
+
+    public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException {
+        getCurrentLayoutProvider().setSubScreenNavigation(scale, list);
     }
 
 }

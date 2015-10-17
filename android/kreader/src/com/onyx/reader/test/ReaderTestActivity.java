@@ -32,6 +32,7 @@ public class ReaderTestActivity extends Activity {
     private Reader reader;
     final String path = "file:///mnt/sdcard/Books/ZerotoOne.pdf";
     int pn = 0;
+    int next = 0;
 
     public static int randInt(int min, int max) {
         Random rand = new Random();
@@ -132,9 +133,36 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png");
+                testSubscreenNavigation();
+            }
+        });
+    }
+
+    public void testSubscreenNavigation() {
+        RectF child = new RectF(0, 0, 1, 1);
+        int rows = 3, cols = 3;
+        List<RectF> list = new ArrayList<RectF>();
+        for(int i = 0; i < rows; ++i) {
+            for(int j = 0; j < cols; ++j) {
+                float left = child.left + child.width() / cols * j;
+                float right = left + child.width() / cols;
+                float top = child.top + child.height() / rows * i;
+                float bottom = top + child.height() / rows;
+                RectF sub = new RectF(left, top, right, bottom);
+                list.add(sub);
+            }
+        }
+
+        final SubScreenNavigationRequest request = new SubScreenNavigationRequest(1.0f, list);
+        reader.submitRequest(this, request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                assert(e == null);
+                BitmapUtils.saveBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/subScreen.png");
                 testNextScreen();
             }
         });
+
     }
 
 
@@ -144,7 +172,8 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (e == null) {
-                    BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png");
+                    BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next" + next + ".png");
+                    ++next;
                     testNextScreen();
                 } else {
                     testHitTestWithoutRendering();
@@ -283,7 +312,8 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testMath5() {
-        RectF child = new RectF(0, 0, 500, 500);
+        RectF child = new RectF(0, 0, 1, 1);
+        RectF entry = new RectF(0, 0, 500, 500);
         RectF parent = new RectF(0, 0, 1024, 768);
         float scale = EntryUtils.scaleToPage(child, parent);
         child.set(0, 0, child.width() * scale, child.height() * scale);
@@ -305,8 +335,8 @@ public class ReaderTestActivity extends Activity {
         navigator.setActualScale(scale);
 
         while (navigator.next()) {
-            RectF entry = new RectF(navigator.getCurrent());
-            float newScale = scale * EntryUtils.scaleByRect(entry, parent);
+            RectF ratio = new RectF(navigator.getCurrent());
+            float newScale = scale * EntryUtils.scaleByRatio(ratio, entry, parent);
             scale = newScale;
         }
     }

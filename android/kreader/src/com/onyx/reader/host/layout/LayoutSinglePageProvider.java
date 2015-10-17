@@ -5,6 +5,8 @@ import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 
+import java.util.List;
+
 /**
  * Created by zhuzeng on 10/7/15.
  * forward to sub screen navigation
@@ -20,10 +22,23 @@ public class LayoutSinglePageProvider implements LayoutProvider {
         layoutManager = lm;
     }
 
-    public boolean prevScreen() throws ReaderException {
-        return false;
+    public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException {
+        layoutManager.getSubScreenNavigator().setActualScale(scale);
+        layoutManager.getSubScreenNavigator().addAll(list);
+        RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
+        layoutManager.getEntryManager().scaleByRatio(subScreen);
     }
+
+    public boolean prevScreen() throws ReaderException {
+        return layoutManager.getSubScreenNavigator().prev();
+    }
+
     public boolean nextScreen() throws ReaderException {
+         if (layoutManager.getSubScreenNavigator().next()) {
+             RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
+             layoutManager.getEntryManager().scaleByRatio(subScreen);
+             return true;
+         }
         return false;
     }
 
@@ -31,6 +46,9 @@ public class LayoutSinglePageProvider implements LayoutProvider {
         return false;
     }
     public boolean nextPage() throws ReaderException {
+        if (layoutManager.getReader().getNavigator().nextPage()) {
+
+        }
         return false;
     }
 
