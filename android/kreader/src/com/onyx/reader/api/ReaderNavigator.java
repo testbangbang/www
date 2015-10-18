@@ -14,12 +14,6 @@ public interface ReaderNavigator {
     public ReaderDocumentPosition getInitPosition();
 
     /**
-     * Retrieve current position of screen beginning.
-     * @return Current position.
-     */
-    public ReaderDocumentPosition getVisibleBeginningPosition();
-
-    /**
      * Get position from page number. Page position can be retrieved by both index and name.
      * @param pageNumber The 0 based page number.
      * @return
@@ -42,36 +36,36 @@ public interface ReaderNavigator {
     /**
      * Navigate to next screen.
      */
-    public boolean nextScreen();
+    public ReaderDocumentPosition nextScreen(final ReaderDocumentPosition position);
 
     /**
      * Navigate to prev screen.
      */
-    public boolean prevScreen();
+    public ReaderDocumentPosition prevScreen(final ReaderDocumentPosition position);
 
     /**
      * Navigate to next page.
      * @return
      */
-    public boolean nextPage();
+    public ReaderDocumentPosition nextPage(final ReaderDocumentPosition position);
 
     /**
      * Navigate to prev page.
      * @return
      */
-    public boolean prevPage();
+    public ReaderDocumentPosition prevPage(final ReaderDocumentPosition position);
 
     /**
      * Navigate to first page.
      * @return
      */
-    public boolean firstPage();
+    public ReaderDocumentPosition firstPage();
 
     /**
      * Navigate to last page.
      * @return
      */
-    public boolean lastPage();
+    public ReaderDocumentPosition lastPage();
 
     /**
      * Navigate to specified position.

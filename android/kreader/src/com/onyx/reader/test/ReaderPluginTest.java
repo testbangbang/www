@@ -66,11 +66,12 @@ public class ReaderPluginTest {
         ReaderRenderer renderer = readerView.getRenderer();
         ReaderDocumentPosition initPosition = navigator.getInitPosition();
         navigator.gotoPosition(initPosition);
+        ReaderDocumentPosition current = initPosition;
         renderer.draw(readerBitmap);
-        while (navigator.nextScreen()) {
+        while ((current = navigator.nextScreen(current)) != null) {
             renderer.draw(readerBitmap);
         }
-        while (navigator.prevScreen()) {
+        while ((current = navigator.prevScreen(current)) != null) {
             renderer.draw(readerBitmap);
         }
         document.close();

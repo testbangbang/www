@@ -68,4 +68,61 @@ public class LayoutProviderUtils {
         layoutManager.getEntryManager().panViewport(dx, dy);
     }
 
+    static public boolean firstSubScreen(final ReaderLayoutManager layoutManager) {
+        if (!layoutManager.getSubScreenNavigator().first()) {
+            return false;
+        }
+        RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
+        layoutManager.getEntryManager().scaleByRatio(subScreen);
+        return true;
+    }
+
+    static public boolean lastSubScreen(final ReaderLayoutManager layoutManager) {
+        if (!layoutManager.getSubScreenNavigator().last()) {
+            return false;
+        }
+        RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
+        layoutManager.getEntryManager().scaleByRatio(subScreen);
+        return true;
+    }
+
+    static public ReaderDocumentPosition nextPage(final ReaderLayoutManager layoutManager) {
+        EntryInfo entryInfo = layoutManager.getEntryManager().getFirstVisibleEntry();
+        if (entryInfo == null) {
+            return null;
+        }
+
+        ReaderDocumentPosition current = layoutManager.getReader().getNavigator().createPositionFromString(entryInfo.getName());
+        return layoutManager.getReader().getNavigator().nextPage(current);
+    }
+
+    static public ReaderDocumentPosition prevPage(final ReaderLayoutManager layoutManager) {
+        EntryInfo entryInfo = layoutManager.getEntryManager().getFirstVisibleEntry();
+        if (entryInfo == null) {
+            return null;
+        }
+
+        ReaderDocumentPosition current = layoutManager.getReader().getNavigator().createPositionFromString(entryInfo.getName());
+        return layoutManager.getReader().getNavigator().prevPage(current);
+    }
+
+    static public ReaderDocumentPosition nextScreen(final ReaderLayoutManager layoutManager) {
+        EntryInfo entryInfo = layoutManager.getEntryManager().getFirstVisibleEntry();
+        if (entryInfo == null) {
+            return null;
+        }
+
+        ReaderDocumentPosition current = layoutManager.getReader().getNavigator().createPositionFromString(entryInfo.getName());
+        return layoutManager.getReader().getNavigator().nextScreen(current);
+    }
+
+    static public ReaderDocumentPosition prevScreen(final ReaderLayoutManager layoutManager) {
+        EntryInfo entryInfo = layoutManager.getEntryManager().getFirstVisibleEntry();
+        if (entryInfo == null) {
+            return null;
+        }
+
+        ReaderDocumentPosition current = layoutManager.getReader().getNavigator().createPositionFromString(entryInfo.getName());
+        return layoutManager.getReader().getNavigator().prevScreen(current);
+    }
 }

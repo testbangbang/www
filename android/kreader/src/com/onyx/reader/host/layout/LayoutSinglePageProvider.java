@@ -2,6 +2,7 @@ package com.onyx.reader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
+import com.onyx.reader.api.ReaderDocument;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 
@@ -45,9 +46,14 @@ public class LayoutSinglePageProvider implements LayoutProvider {
     public boolean prevPage() throws ReaderException {
         return false;
     }
-    public boolean nextPage() throws ReaderException {
-        if (layoutManager.getReader().getNavigator().nextPage()) {
 
+    public boolean nextPage() throws ReaderException {
+        ReaderDocumentPosition position = LayoutProviderUtils.nextPage(layoutManager);
+        if (position != null) {
+            LayoutProviderUtils.clear(layoutManager);
+            LayoutProviderUtils.addEntry(layoutManager, position);
+            LayoutProviderUtils.firstSubScreen(layoutManager);
+            return true;
         }
         return false;
     }

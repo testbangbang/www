@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by zhuzeng on 10/5/15.
  */
-public class AdobePluginImpl {
+public class AdobeJniWrapper {
 
     /* load our native library */
     static {

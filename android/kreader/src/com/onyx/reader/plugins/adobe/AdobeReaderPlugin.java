@@ -25,15 +25,15 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         ReaderHitTestManager
 {
 
-    private AdobePluginImpl impl;
+    private AdobeJniWrapper impl;
 
     public AdobeReaderPlugin(final Context context) {
         ReaderDeviceInfo.init(context);
     }
 
-    public AdobePluginImpl getPluginImpl() {
+    public AdobeJniWrapper getPluginImpl() {
         if (impl == null) {
-            impl = new AdobePluginImpl();
+            impl = new AdobeJniWrapper();
         }
         return impl;
     }
@@ -215,47 +215,47 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     /**
      * Navigate to next screen.
      */
-    public boolean nextScreen() {
-        return false;
+    public ReaderDocumentPosition nextScreen(final ReaderDocumentPosition position) {
+        return null;
     }
 
     /**
      * Navigate to prev screen.
      */
-    public boolean prevScreen() {
-        return false;
+    public ReaderDocumentPosition prevScreen(final ReaderDocumentPosition position) {
+        return null;
     }
 
     /**
      * Navigate to next page.
      * @return
      */
-    public boolean nextPage() {
-        return false;
+    public ReaderDocumentPosition nextPage(final ReaderDocumentPosition position) {
+        return null;
     }
 
     /**
      * Navigate to prev page.
      * @return
      */
-    public boolean prevPage() {
-        return false;
+    public ReaderDocumentPosition prevPage(final ReaderDocumentPosition position) {
+        return null;
     }
 
     /**
      * Navigate to first page.
      * @return
      */
-    public boolean firstPage() {
-        return false;
+    public ReaderDocumentPosition firstPage() {
+        return null;
     }
 
     /**
      * Navigate to last page.
      * @return
      */
-    public boolean lastPage() {
-        return false;
+    public ReaderDocumentPosition lastPage() {
+        return null;
     }
 
     /**

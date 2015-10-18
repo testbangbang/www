@@ -159,15 +159,15 @@ public class EntryManager {
 
 
     public boolean scaleByRatio(final RectF ratio) {
-        updateVisiblePages();
-        if (visible.size() <= 0) {
+        EntryInfo entryInfo = getFirstVisibleEntry();
+        if (entryInfo == null) {
             return false;
         }
         if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
             return false;
         }
 
-        setScale(EntryUtils.scaleByRatio(ratio, visible.get(0).getNaturalRect(), viewportRect));
+        setScale(EntryUtils.scaleByRatio(ratio, entryInfo.getNaturalRect(), viewportRect));
         reboundViewport();
         return false;
     }
@@ -212,6 +212,15 @@ public class EntryManager {
         }
         return visible;
     }
+
+    public EntryInfo getFirstVisibleEntry() {
+        List<EntryInfo> list = updateVisiblePages();
+        if (list == null || list.size() <= 0) {
+            return null;
+        }
+        return list.get(0);
+    }
+
 
     /**
      * calculate the host rectangle

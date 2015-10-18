@@ -13,6 +13,7 @@ import java.util.List;
 public class LayoutReflowProvider  implements LayoutProvider {
 
     private ReaderLayoutManager layoutManager;
+    private ReaderDocumentPosition current;
 
     public LayoutReflowProvider(final ReaderLayoutManager lm) {
         layoutManager = lm;
@@ -26,26 +27,57 @@ public class LayoutReflowProvider  implements LayoutProvider {
     }
 
     public boolean prevScreen() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().getNavigator().prevScreen();
+        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().prevScreen(current);
+        if (newPosition != null) {
+            current = newPosition;
+            return true;
+        }
+        return false;
     }
 
     public boolean nextScreen() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().getNavigator().nextScreen();
+        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().nextScreen(current);
+        if (newPosition != null) {
+            current = newPosition;
+            return true;
+        }
+        return false;
     }
 
     public boolean prevPage() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().getNavigator().prevPage();
+        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().prevPage(current);
+        if (newPosition != null) {
+            current = newPosition;
+            return true;
+        }
+        return false;
     }
+
     public boolean nextPage() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().getNavigator().nextPage();
+        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().nextPage(current);
+        if (newPosition != null) {
+            current = newPosition;
+            return true;
+        }
+        return false;
     }
 
     public boolean firstPage() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().getNavigator().firstPage();
+        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().firstPage();
+        if (newPosition != null) {
+            current = newPosition;
+            return true;
+        }
+        return false;
     }
 
     public boolean lastPage() throws ReaderException {
-        return layoutManager.getReader().getReaderHelper().getNavigator().lastPage();
+        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().lastPage();
+        if (newPosition != null) {
+            current = newPosition;
+            return true;
+        }
+        return false;
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
@@ -55,6 +87,7 @@ public class LayoutReflowProvider  implements LayoutProvider {
     public boolean setScale(float scale, float left, float top) throws ReaderException {
         return false;
     }
+
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
         return false;
     }
