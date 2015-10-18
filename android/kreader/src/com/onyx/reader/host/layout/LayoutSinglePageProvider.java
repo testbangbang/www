@@ -113,13 +113,10 @@ public class LayoutSinglePageProvider implements LayoutProvider {
     }
 
     public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException {
-        if (!layoutManager.getReaderHelper().getNavigator().gotoPosition(location)) {
+        if (!layoutManager.getNavigator().gotoPosition(location)) {
             return false;
         }
-        LayoutProviderUtils.clear(layoutManager);
-        LayoutProviderUtils.addEntry(layoutManager, location);
-        LayoutProviderUtils.update(layoutManager);
-        LayoutProviderUtils.moveViewportByPosition(layoutManager, location);
+        onPageChanged(true);
         return true;
     }
 
