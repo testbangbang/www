@@ -4,6 +4,7 @@ import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
+import com.onyx.reader.api.ReaderNavigator;
 import com.onyx.reader.host.math.EntryManager;
 import com.onyx.reader.host.math.EntrySubScreenNavigator;
 import com.onyx.reader.host.wrapper.Reader;
@@ -33,6 +34,7 @@ public class ReaderLayoutManager {
     private ReaderHelper readerHelper;
     private EntryManager entryManager;
     private EntrySubScreenNavigator subScreenNavigator;
+    private ReaderPositionHolder positionHolder;
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new ConcurrentHashMap<String, LayoutProvider>();
 
@@ -48,6 +50,10 @@ public class ReaderLayoutManager {
 
     public Reader getReader() {
         return reader;
+    }
+
+    public ReaderNavigator getNavigator() {
+        return getReader().getNavigator();
     }
 
     public ReaderHelper getReaderHelper() {
@@ -123,6 +129,13 @@ public class ReaderLayoutManager {
             subScreenNavigator = new EntrySubScreenNavigator();
         }
         return subScreenNavigator;
+    }
+
+    public ReaderPositionHolder getPositionHolder() {
+        if (positionHolder == null) {
+            positionHolder = new ReaderPositionHolder(this);
+        }
+        return positionHolder;
     }
 
     public boolean gotoPosition(final ReaderDocumentPosition position) throws ReaderException {

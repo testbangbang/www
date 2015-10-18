@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Created by zhuzeng on 10/7/15.
+ * For reflow stream document.
  */
 public class LayoutReflowProvider  implements LayoutProvider {
 

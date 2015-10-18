@@ -2,7 +2,6 @@ package com.onyx.reader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
-import com.onyx.reader.api.ReaderDocument;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 
@@ -43,26 +42,45 @@ public class LayoutSinglePageProvider implements LayoutProvider {
         return false;
     }
 
+    private void onPageChanged(boolean first) {
+        LayoutProviderUtils.clear(layoutManager);
+        LayoutProviderUtils.addEntry(layoutManager, layoutManager.getPositionHolder().getPosition());
+        if (first) {
+            LayoutProviderUtils.firstSubScreen(layoutManager);
+        } else {
+            LayoutProviderUtils.lastSubScreen(layoutManager);
+        }
+    }
+
     public boolean prevPage() throws ReaderException {
+        if (layoutManager.getPositionHolder().prevPage()) {
+            onPageChanged(false);
+            return true;
+        }
         return false;
     }
 
     public boolean nextPage() throws ReaderException {
-        ReaderDocumentPosition position = LayoutProviderUtils.nextPage(layoutManager);
-        if (position != null) {
-            LayoutProviderUtils.clear(layoutManager);
-            LayoutProviderUtils.addEntry(layoutManager, position);
-            LayoutProviderUtils.firstSubScreen(layoutManager);
+        if (layoutManager.getPositionHolder().nextPage()) {
+            onPageChanged(true);
             return true;
         }
         return false;
     }
 
     public boolean firstPage() throws ReaderException {
+        if (layoutManager.getPositionHolder().firstPage()) {
+            onPageChanged(true);
+            return true;
+        }
         return false;
     }
 
     public boolean lastPage() throws ReaderException {
+        if (layoutManager.getPositionHolder().lastPage()) {
+            onPageChanged(true);
+            return true;
+        }
         return false;
     }
 
