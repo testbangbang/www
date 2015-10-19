@@ -6,7 +6,7 @@ import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.api.ReaderNavigator;
 import com.onyx.reader.host.math.EntryManager;
-import com.onyx.reader.host.math.EntrySubScreenNavigator;
+import com.onyx.reader.host.navigation.SubScreenListProvider;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderHelper;
 
@@ -33,7 +33,7 @@ public class ReaderLayoutManager {
     private Reader reader;
     private ReaderHelper readerHelper;
     private EntryManager entryManager;
-    private EntrySubScreenNavigator subScreenNavigator;
+    private SubScreenListProvider subScreenNavigator;
     private ReaderPositionHolder positionHolder;
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new ConcurrentHashMap<String, LayoutProvider>();
@@ -124,9 +124,9 @@ public class ReaderLayoutManager {
         return entryManager;
     }
 
-    public EntrySubScreenNavigator getSubScreenNavigator() {
+    public SubScreenListProvider getSubScreenNavigator() {
         if (subScreenNavigator == null) {
-            subScreenNavigator = new EntrySubScreenNavigator();
+            subScreenNavigator = new SubScreenListProvider();
         }
         return subScreenNavigator;
     }

@@ -1,4 +1,4 @@
-package com.onyx.reader.host.math;
+package com.onyx.reader.host.navigation;
 
 import android.graphics.RectF;
 
@@ -8,14 +8,14 @@ import java.util.List;
 /**
  * Created by zhuzeng on 10/16/15.
  */
-public class EntrySubScreenNavigator {
+public class SubScreenListProvider extends NavigationProviderBase {
 
     // ratio, range from [0, 1]
     private List<RectF> subScreenList = new ArrayList<RectF>();
     private float actualScale = 1.0f;
     private int currentIndex = 0;
 
-    public EntrySubScreenNavigator() {
+    public SubScreenListProvider() {
     }
 
     public void setActualScale(final float scale) {

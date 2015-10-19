@@ -14,7 +14,7 @@ import com.onyx.reader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.reader.host.layout.ReaderLayoutManager;
 import com.onyx.reader.host.math.EntryInfo;
 import com.onyx.reader.host.math.EntryManager;
-import com.onyx.reader.host.math.EntrySubScreenNavigator;
+import com.onyx.reader.host.navigation.SubScreenListProvider;
 import com.onyx.reader.host.math.EntryUtils;
 import com.onyx.reader.host.request.*;
 import com.onyx.reader.host.wrapper.Reader;
@@ -330,7 +330,7 @@ public class ReaderTestActivity extends Activity {
             }
         }
 
-        EntrySubScreenNavigator navigator = new EntrySubScreenNavigator();
+        SubScreenListProvider navigator = new SubScreenListProvider();
         navigator.addAll(list);
         navigator.setActualScale(scale);
 
