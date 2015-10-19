@@ -6,6 +6,7 @@ import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.api.ReaderNavigator;
 import com.onyx.reader.host.math.EntryManager;
+import com.onyx.reader.host.navigation.NavigationManager;
 import com.onyx.reader.host.navigation.SubScreenListProvider;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderHelper;
@@ -21,14 +22,13 @@ import java.util.concurrent.ConcurrentHashMap;
  *    visible pages and visible part in viewportInPage and render the visible rectangles.
  * 3. hitTest, convert pointInView to pointInHost and send the point to plugin for test.
  *
- * layout manager --> layout provider --> Plugin & EntryManager
+ * layout manager --> layout provider --> Navigation Manager -> Navigation provider -> EntryManager & plugin
  */
 public class ReaderLayoutManager {
 
-    public static final String SINGLE_PAGE = "singlePage";
+    public static final String HARD_PAGE = "hardPage";
     public static final String REFLOW_PAGE = "reflowPage";
-    public static final String CONTINUOUS_PAGE = "continuousPage";
-    public static final String SCANNED_PAGE_REFLOW = "scanPageReflow";
+    public static final String SCANNED_REFLOW_PAGE = "scanReflowPage";
 
     private Reader reader;
     private ReaderHelper readerHelper;
@@ -42,10 +42,9 @@ public class ReaderLayoutManager {
     public ReaderLayoutManager(final Reader r) {
         reader = r;
         readerHelper = reader.getReaderHelper();
-        provider.put(SINGLE_PAGE, new LayoutSinglePageProvider(this));
+        provider.put(HARD_PAGE, new LayoutHardPageProvider(this));
         provider.put(REFLOW_PAGE, new LayoutReflowProvider(this));
-        provider.put(CONTINUOUS_PAGE, new LayoutContinuousPageProvider(this));
-        currentProvider = SINGLE_PAGE;
+        currentProvider = HARD_PAGE;
     }
 
     public Reader getReader() {
@@ -178,7 +177,10 @@ public class ReaderLayoutManager {
     }
 
     public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException {
-        getCurrentLayoutProvider().setSubScreenNavigation(scale, list);
+        NavigationManager.NavigationArgs args = new NavigationManager.NavigationArgs();
+        args.list = list;
+        args.scale = scale;
+        getCurrentLayoutProvider().setNavigationMode(args);
     }
 
 }

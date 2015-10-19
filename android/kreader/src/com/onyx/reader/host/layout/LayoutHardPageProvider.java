@@ -4,17 +4,20 @@ import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
+import com.onyx.reader.host.navigation.NavigationManager;
 
 import java.util.List;
 
 /**
  * Created by zhuzeng on 10/7/15.
- * forward to sub screen navigation
+ * forward to navigation manager. in hard page mode, the page is defined by document, instead of rendering.
+ * In hard page mode, the navigation manager can still support single hard page and continuous page mode.
+ *
  */
-public class LayoutSinglePageProvider implements LayoutProvider {
+public class LayoutHardPageProvider implements LayoutProvider {
     private ReaderLayoutManager layoutManager;
 
-    public LayoutSinglePageProvider(final ReaderLayoutManager lm) {
+    public LayoutHardPageProvider(final ReaderLayoutManager lm) {
         layoutManager = lm;
     }
 
@@ -22,11 +25,12 @@ public class LayoutSinglePageProvider implements LayoutProvider {
         layoutManager = lm;
     }
 
-    public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException {
-        layoutManager.getSubScreenNavigator().setActualScale(scale);
-        layoutManager.getSubScreenNavigator().addAll(list);
+    public boolean setNavigationMode(final NavigationManager.NavigationArgs args) throws ReaderException {
+        layoutManager.getSubScreenNavigator().setActualScale(args.scale);
+        layoutManager.getSubScreenNavigator().addAll(args.list);
         RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
         layoutManager.getEntryManager().scaleByRatio(subScreen);
+        return true;
     }
 
     public boolean prevScreen() throws ReaderException {

@@ -4,6 +4,7 @@ import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
+import com.onyx.reader.host.navigation.NavigationManager;
 
 import java.util.List;
 
@@ -24,61 +25,32 @@ public class LayoutReflowProvider  implements LayoutProvider {
         layoutManager = manager;
     }
 
-    public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException {
+    public boolean setNavigationMode(final NavigationManager.NavigationArgs args) throws ReaderException {
+        return false;
     }
 
     public boolean prevScreen() throws ReaderException {
-        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().prevScreen(current);
-        if (newPosition != null) {
-            current = newPosition;
-            return true;
-        }
-        return false;
+        return layoutManager.getPositionHolder().prevScreen();
     }
 
     public boolean nextScreen() throws ReaderException {
-        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().nextScreen(current);
-        if (newPosition != null) {
-            current = newPosition;
-            return true;
-        }
-        return false;
+        return layoutManager.getPositionHolder().nextScreen();
     }
 
     public boolean prevPage() throws ReaderException {
-        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().prevPage(current);
-        if (newPosition != null) {
-            current = newPosition;
-            return true;
-        }
-        return false;
+        return layoutManager.getPositionHolder().prevPage();
     }
 
     public boolean nextPage() throws ReaderException {
-        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().nextPage(current);
-        if (newPosition != null) {
-            current = newPosition;
-            return true;
-        }
-        return false;
+        return layoutManager.getPositionHolder().nextPage();
     }
 
     public boolean firstPage() throws ReaderException {
-        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().firstPage();
-        if (newPosition != null) {
-            current = newPosition;
-            return true;
-        }
-        return false;
+        return layoutManager.getPositionHolder().firstPage();
     }
 
     public boolean lastPage() throws ReaderException {
-        ReaderDocumentPosition newPosition = layoutManager.getReader().getNavigator().lastPage();
-        if (newPosition != null) {
-            current = newPosition;
-            return true;
-        }
-        return false;
+        return layoutManager.getPositionHolder().lastPage();
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {

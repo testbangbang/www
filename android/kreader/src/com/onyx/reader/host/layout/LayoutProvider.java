@@ -5,6 +5,7 @@ import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.host.impl.ReaderDocumentOptionsImpl;
+import com.onyx.reader.host.navigation.NavigationManager;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface LayoutProvider {
 
     public void activate(final ReaderLayoutManager layoutManager) throws ReaderException;
 
-    public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException;
+    public boolean setNavigationMode(final NavigationManager.NavigationArgs args) throws ReaderException;
     public boolean prevScreen() throws ReaderException;
     public boolean nextScreen() throws ReaderException;
 

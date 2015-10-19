@@ -69,7 +69,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testChangeLayout() {
-        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.CONTINUOUS_PAGE);
+        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.HARD_PAGE);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {

@@ -1,10 +1,7 @@
 package com.onyx.reader.host.layout;
 
 import android.graphics.RectF;
-import com.onyx.reader.api.ReaderBitmap;
-import com.onyx.reader.api.ReaderDocumentPosition;
-import com.onyx.reader.api.ReaderNavigator;
-import com.onyx.reader.api.ReaderRenderer;
+import com.onyx.reader.api.*;
 import com.onyx.reader.host.math.EntryInfo;
 import com.onyx.reader.host.math.EntryManager;
 import com.onyx.reader.host.wrapper.Reader;
@@ -54,6 +51,16 @@ public class LayoutProviderUtils {
         RectF size = layoutManager.getReaderHelper().getDocument().getPageNaturalSize(location);
         EntryInfo entryInfo = new EntryInfo(size.width(), size.height());
         layoutManager.getEntryManager().add(location.save(), entryInfo);
+    }
+
+    static public void addAllEntry(final ReaderLayoutManager layoutManager) {
+        int total = layoutManager.getNavigator().getTotalPage();
+        LayoutProviderUtils.clear(layoutManager);
+        for(int i = 0; i < total; ++i) {
+            final ReaderDocumentPosition position = layoutManager.getReaderHelper().getNavigator().getPositionByPageNumber(i);
+            LayoutProviderUtils.addEntry(layoutManager, position);
+        }
+        LayoutProviderUtils.update(layoutManager);
     }
 
     static public void update(final ReaderLayoutManager layoutManager) {
