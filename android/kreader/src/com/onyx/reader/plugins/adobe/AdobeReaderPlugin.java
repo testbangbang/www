@@ -231,6 +231,10 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public ReaderDocumentPosition nextPage(final ReaderDocumentPosition position) {
+        int pn = position.getPageNumber();
+        if (pn + 1 < getTotalPage()) {
+            return new AdobeDocumentPositionImpl(this, pn + 1, null);
+        }
         return null;
     }
 
@@ -239,7 +243,12 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public ReaderDocumentPosition prevPage(final ReaderDocumentPosition position) {
+        int pn = position.getPageNumber();
+        if (pn > 0) {
+            return new AdobeDocumentPositionImpl(this, pn - 1, null);
+        }
         return null;
+
     }
 
     /**
