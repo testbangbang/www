@@ -4,6 +4,8 @@ import android.graphics.RectF;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.math.EntryInfo;
 import com.onyx.reader.host.math.EntryManager;
+import com.onyx.reader.host.navigation.NavigationList;
+import com.onyx.reader.host.navigation.NavigationManager;
 import com.onyx.reader.host.wrapper.Reader;
 
 import java.util.List;
@@ -67,6 +69,17 @@ public class LayoutProviderUtils {
         layoutManager.getEntryManager().update();
     }
 
+    static public void resetViewportPosition(final ReaderLayoutManager layoutManager) {
+        layoutManager.getEntryManager().setViewport(0, 0);
+    }
+
+    static public void addNewSingleEntry(final ReaderLayoutManager layoutManager, final ReaderDocumentPosition position) {
+        LayoutProviderUtils.clear(layoutManager);
+        LayoutProviderUtils.addEntry(layoutManager, position);
+        LayoutProviderUtils.update(layoutManager);
+        LayoutProviderUtils.resetViewportPosition(layoutManager);
+    }
+
     static public boolean moveViewportByPosition(final ReaderLayoutManager layoutManager, final ReaderDocumentPosition location) {
         return layoutManager.getEntryManager().moveViewportByPosition(location.save());
     }
@@ -75,20 +88,20 @@ public class LayoutProviderUtils {
         layoutManager.getEntryManager().panViewport(dx, dy);
     }
 
-    static public boolean firstSubScreen(final ReaderLayoutManager layoutManager) {
-        if (!layoutManager.getSubScreenNavigator().first()) {
+    static public boolean firstSubScreen(final ReaderLayoutManager layoutManager, final NavigationList navigationList) {
+        if (!navigationList.first()) {
             return false;
         }
-        RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
+        RectF subScreen = navigationList.getCurrent();
         layoutManager.getEntryManager().scaleByRatio(subScreen);
         return true;
     }
 
-    static public boolean lastSubScreen(final ReaderLayoutManager layoutManager) {
-        if (!layoutManager.getSubScreenNavigator().last()) {
+    static public boolean lastSubScreen(final ReaderLayoutManager layoutManager, final NavigationList navigationList) {
+        if (!navigationList.last()) {
             return false;
         }
-        RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
+        RectF subScreen = navigationList.getCurrent();
         layoutManager.getEntryManager().scaleByRatio(subScreen);
         return true;
     }

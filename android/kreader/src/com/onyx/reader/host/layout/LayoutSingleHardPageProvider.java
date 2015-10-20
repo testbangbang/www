@@ -1,10 +1,12 @@
 package com.onyx.reader.host.layout;
 
 import android.graphics.RectF;
+import android.os.DropBoxManager;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
-import com.onyx.reader.host.navigation.NavigationArgs;
+import com.onyx.reader.host.math.EntryManager;
+import com.onyx.reader.host.navigation.NavigationManager;
 
 
 /**
@@ -26,35 +28,30 @@ public class LayoutSingleHardPageProvider implements LayoutProvider {
         layoutManager = lm;
     }
 
-    public boolean setNavigationMode(final NavigationArgs args) throws ReaderException {
-        layoutManager.getSubScreenNavigator().setActualScale(args.getActualScale());
-        layoutManager.getSubScreenNavigator().addAll(null);
-        RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
-        layoutManager.getEntryManager().scaleByRatio(subScreen);
-        return true;
-    }
-
-    public boolean prevScreen() throws ReaderException {
-        return layoutManager.getSubScreenNavigator().prev();
-    }
-
-    public boolean nextScreen() throws ReaderException {
-         if (layoutManager.getSubScreenNavigator().next()) {
-             RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
-             layoutManager.getEntryManager().scaleByRatio(subScreen);
-             return true;
-         }
+    public boolean setNavigationMode(final NavigationManager args) throws ReaderException {
         return false;
     }
 
-    private void onPageChanged(boolean first) {
-        LayoutProviderUtils.clear(layoutManager);
-        LayoutProviderUtils.addEntry(layoutManager, layoutManager.getPositionHolder().getCurrentPosition());
-        if (first) {
-            LayoutProviderUtils.firstSubScreen(layoutManager);
-        } else {
-            LayoutProviderUtils.lastSubScreen(layoutManager);
+    private EntryManager getEntryManager() {
+        return layoutManager.getEntryManager();
+    }
+
+    public boolean prevScreen() throws ReaderException {
+        if (!getEntryManager().prevViewport()) {
+            return prevPage();
         }
+        return true;
+    }
+
+    public boolean nextScreen() throws ReaderException {
+        if (!getEntryManager().nextViewport()) {
+            return nextPage();
+        }
+        return true;
+    }
+
+    private void onPageChanged(boolean first) {
+        LayoutProviderUtils.addNewSingleEntry(layoutManager, layoutManager.getPositionHolder().getCurrentPosition());
     }
 
     public boolean prevPage() throws ReaderException {
@@ -88,7 +85,6 @@ public class LayoutSingleHardPageProvider implements LayoutProvider {
         }
         return false;
     }
-
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(layoutManager, bitmap);
@@ -133,6 +129,7 @@ public class LayoutSingleHardPageProvider implements LayoutProvider {
     public boolean supportPreRender() throws ReaderException {
         return false;
     }
+
     public boolean supportSubScreenNavigation() {
         return false;
     }

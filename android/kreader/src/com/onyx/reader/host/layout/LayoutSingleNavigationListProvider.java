@@ -4,8 +4,9 @@ import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
-import com.onyx.reader.host.navigation.NavigationArgs;
-import com.onyx.reader.host.navigation.SubScreenList;
+import com.onyx.reader.host.math.EntryManager;
+import com.onyx.reader.host.navigation.NavigationManager;
+import com.onyx.reader.host.navigation.NavigationList;
 
 /**
  * Created by zhuzeng on 10/19/15.
@@ -13,7 +14,7 @@ import com.onyx.reader.host.navigation.SubScreenList;
  */
 public class LayoutSingleNavigationListProvider implements LayoutProvider {
     private ReaderLayoutManager layoutManager;
-    private SubScreenList subScreenListProvider;
+    private NavigationManager navigationManager;
 
     public LayoutSingleNavigationListProvider(final ReaderLayoutManager lm) {
         layoutManager = lm;
@@ -23,21 +24,32 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
         layoutManager = lm;
     }
 
-    public boolean setNavigationMode(final NavigationArgs args) throws ReaderException {
-        layoutManager.getSubScreenNavigator().setActualScale(args.getActualScale());
-        layoutManager.getSubScreenNavigator().addAll(null);
-        RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
+    private NavigationManager getNavigationManager() {
+        if (navigationManager == null) {
+            navigationManager = new NavigationManager(null, null);
+        }
+        return navigationManager;
+    }
+
+    private NavigationList getNavigationList() {
+        return getNavigationManager().getList();
+    }
+
+    public boolean setNavigationMode(final NavigationManager args) throws ReaderException {
+        getNavigationList().setActualScale(args.getActualScale());
+        getNavigationList().addAll(null);
+        RectF subScreen = getNavigationList().getCurrent();
         layoutManager.getEntryManager().scaleByRatio(subScreen);
         return true;
     }
 
     public boolean prevScreen() throws ReaderException {
-        return layoutManager.getSubScreenNavigator().prev();
+        return getNavigationList().prev();
     }
 
     public boolean nextScreen() throws ReaderException {
-        if (layoutManager.getSubScreenNavigator().next()) {
-            RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
+        if (getNavigationList().next()) {
+            RectF subScreen = getNavigationList().getCurrent();
             layoutManager.getEntryManager().scaleByRatio(subScreen);
             return true;
         }
@@ -48,9 +60,9 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
         LayoutProviderUtils.clear(layoutManager);
         LayoutProviderUtils.addEntry(layoutManager, layoutManager.getPositionHolder().getCurrentPosition());
         if (first) {
-            LayoutProviderUtils.firstSubScreen(layoutManager);
+            LayoutProviderUtils.firstSubScreen(layoutManager, getNavigationList());
         } else {
-            LayoutProviderUtils.lastSubScreen(layoutManager);
+            LayoutProviderUtils.lastSubScreen(layoutManager, getNavigationList());
         }
     }
 

@@ -8,15 +8,15 @@ import java.util.List;
 /**
  * Created by zhuzeng on 10/16/15.
  */
-public class SubScreenList {
+public class NavigationList {
 
-    // ratio, range from [0, 1]
+    // normalized
     private List<RectF> subScreenList = new ArrayList<RectF>();
     private float actualScale = 1.0f;
     private int currentIndex = 0;
     private RectF limitedRect;
 
-    public SubScreenList() {
+    public NavigationList() {
     }
 
     public void setLimitedRect(final RectF limit) {

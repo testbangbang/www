@@ -6,21 +6,21 @@ import java.util.Map;
 /**
  * Created by zhuzeng on 10/19/15.
  */
-public class NavigationArgs {
+public class NavigationManager {
 
     private Type type;
-    private Map<Type, SubScreenList> map = new HashMap();
+    private Map<Type, NavigationList> map = new HashMap();
 
     public static enum Type {
         ALL, ODD, EVEN,
     }
 
-    public NavigationArgs(final Type t, final SubScreenList list) {
+    public NavigationManager(final Type t, final NavigationList list) {
         type = t;
         map.put(type, list);
     }
 
-    public SubScreenList getList() {
+    public NavigationList getList() {
         return map.get(type);
     }
 

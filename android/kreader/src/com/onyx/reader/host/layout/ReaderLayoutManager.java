@@ -6,8 +6,8 @@ import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.api.ReaderNavigator;
 import com.onyx.reader.host.math.EntryManager;
-import com.onyx.reader.host.navigation.NavigationArgs;
-import com.onyx.reader.host.navigation.SubScreenList;
+import com.onyx.reader.host.navigation.NavigationList;
+import com.onyx.reader.host.navigation.NavigationManager;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderHelper;
 
@@ -34,9 +34,8 @@ public class ReaderLayoutManager {
 
     private Reader reader;
     private ReaderHelper readerHelper;
-    private EntryManager entryManager;
-    private SubScreenList subScreenNavigator;
     private ReaderPositionHolder positionHolder;
+    private EntryManager entryManager;
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
 
@@ -126,13 +125,6 @@ public class ReaderLayoutManager {
         return entryManager;
     }
 
-    public SubScreenList getSubScreenNavigator() {
-        if (subScreenNavigator == null) {
-            subScreenNavigator = new SubScreenList();
-        }
-        return subScreenNavigator;
-    }
-
     public ReaderPositionHolder getPositionHolder() {
         if (positionHolder == null) {
             positionHolder = new ReaderPositionHolder(this);
@@ -172,8 +164,8 @@ public class ReaderLayoutManager {
         return getCurrentLayoutProvider().prevScreen();
     }
 
-    public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException {
-        NavigationArgs args = new NavigationArgs(NavigationArgs.Type.ALL, null);
+    public void setSubScreenNavigation(final NavigationManager.Type type, final NavigationList list) throws ReaderException {
+        NavigationManager args = new NavigationManager(type, list);
         getCurrentLayoutProvider().setNavigationMode(args);
     }
 
