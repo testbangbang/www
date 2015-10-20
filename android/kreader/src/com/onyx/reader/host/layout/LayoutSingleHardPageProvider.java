@@ -106,7 +106,8 @@ public class LayoutSingleHardPageProvider implements LayoutProvider {
     }
 
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
-        return false;
+        layoutManager.getEntryManager().setScaleWithDelta(delta);
+        return true;
     }
 
     public boolean changeScaleByRect(final ReaderDocumentPosition position, final RectF rect) throws ReaderException  {

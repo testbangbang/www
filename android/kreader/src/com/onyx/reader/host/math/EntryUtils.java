@@ -37,11 +37,11 @@ public class EntryUtils {
      * @return delta scale
      */
     static public float scaleByRect(final RectF child, final RectF parent) {
-        // delta scale
-        float xScale = parent.width() / child.width();
-        float yScale = parent.height() / child.height();
-        float deltaScale = Math.min(xScale, yScale);
+        float deltaScale = scaleToPage(child, parent);
+        return scaleWithDelta(child, parent, deltaScale);
+    }
 
+    static public float scaleWithDelta(final RectF child, final RectF parent, final float deltaScale) {
         // the center point of child should be moved to center of parent.
         // so we use the parent center x as new child center x to calculate top, left
         float newChildLeft = child.left * deltaScale;

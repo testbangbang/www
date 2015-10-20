@@ -97,7 +97,7 @@ public class EntryManager {
 
     public void setScale(final float scale) {
         actualScale = scale;
-        update();
+        updateHostRect();
     }
 
     public boolean isSpecialScale() {
@@ -153,6 +153,21 @@ public class EntryManager {
         }
 
         setScale(actualScale * EntryUtils.scaleByRect(child, viewportRect));
+        reboundViewport();
+        return true;
+    }
+
+    public boolean scaleWithDelta(final float delta) {
+        updateVisiblePages();
+        if (visible.size() <= 0) {
+            return false;
+        }
+        if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
+            return false;
+        }
+
+        actualScale += EntryUtils.scaleWithDelta(getFirstVisibleEntry().getDisplayRect(), getViewportRect(), delta);
+        setScale(actualScale);
         reboundViewport();
         return true;
     }
@@ -225,7 +240,7 @@ public class EntryManager {
     /**
      * calculate the host rectangle
      */
-    public void update() {
+    public void updateHostRect() {
         float y = topMargin, maxWidth = 0;
         for(EntryInfo entryInfo : entryInfoList) {
             entryInfo.update(actualScale, 0, y);
