@@ -77,7 +77,9 @@ public class NavigationList {
     public RectF getCurrent() {
         if (currentIndex >= 0 && currentIndex < subScreenList.size()) {
             RectF current = new RectF(subScreenList.get(currentIndex));
-            current.intersect(limitedRect);
+            if (limitedRect != null) {
+                current.intersect(limitedRect);
+            }
             return current;
         }
         return null;

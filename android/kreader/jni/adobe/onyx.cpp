@@ -40,7 +40,7 @@ static const char * getUtf8String(JNIEnv * env, jstring string) {
     return NULL;
 }
 
-JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_openFile(JNIEnv *env, jobject thiz, jstring jfilename,
+JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_openFile(JNIEnv *env, jobject thiz, jstring jfilename,
         jstring jpassword, jstring jZipPassword) {
 	const char *filename;
 	const char *password;
@@ -61,12 +61,12 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_openF
     return library(env).createDocument(filename, password, zipPassword);
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_closeFile
+JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_closeFile
   (JNIEnv * env, jobject) {
     library(env).closeDocument();
 }
 
-JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawPage(JNIEnv *env, jobject thiz, jint pageNumber,
+JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_drawPage(JNIEnv *env, jobject thiz, jint pageNumber,
     jobject bitmap, int displayLeft, int displayTop, int displayWidth, int displayHeight,  jboolean clear) {
     AndroidBitmapInfo info;
 	void *pixels;
@@ -92,7 +92,7 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawP
     return 1;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_drawVisiblePages
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_drawVisiblePages
 (JNIEnv *env, jobject thiz, jobject bitmap,  int displayLeft, int displayTop, int displayWidth, int displayHeight, jboolean clear) {
     AndroidBitmapInfo info;
 	void *pixels;
@@ -117,7 +117,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_dr
     return 1;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_clear
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_clear
   (JNIEnv *env, jobject thiz, jobject bitmap) {
     AndroidBitmapInfo info;
   	void *pixels;
@@ -141,7 +141,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_cl
   	return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_gotoLocationInternal
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_gotoLocationInternal
   (JNIEnv *env, jobject, jint page, jstring location) {
     const char * string = NULL;
     if (location != NULL) {
@@ -150,7 +150,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_go
     return library(env).gotoLocation(page, string);
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_pageSizeNative
+JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_pageSizeNative
   (JNIEnv *env, jobject, jint page, jfloatArray ret) {
     double width = 0.0, height = 0.0;
     library(env).pageNaturalSize(page, width, height);
@@ -158,42 +158,42 @@ JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_pageSi
     env->SetFloatArrayRegion(ret, 0, 2, size);
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_countPagesInternal
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_countPagesInternal
   (JNIEnv * env, jobject) {
     return library(env).getPageCount();
 }
 
-JNIEXPORT jobject JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_hitTestNative
+JNIEXPORT jobject JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_hitTestNative
   (JNIEnv * env, jobject, jfloat x, jfloat y, jint type, jobject splitter) {
     return library(env).hitTest(env, x, y, type, splitter);
 }
 
-JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_locationNative
+JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_locationNative
 (JNIEnv * env, jobject thiz, jfloat x, jfloat y) {
     return library(env).locationFromHitTest(env, x, y);
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_abortCurrentTask
+JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_abortCurrentTask
   (JNIEnv *, jobject) {
 
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_prevScreenNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_prevScreenNative
   (JNIEnv * env, jobject) {
     return library(env).prevScreen();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_nextScreenNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_nextScreenNative
   (JNIEnv * env, jobject) {
     return library(env).nextScreen();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_setFontSizeNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setFontSizeNative
   (JNIEnv *env, jobject, jdouble width, jdouble height, jdouble size) {
     return library(env).setFontSize(width, height, size);
 }
 
-JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getTextNative
+JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getTextNative
   (JNIEnv *env, jobject, jstring start, jstring end) {
   	const char * s = env->GetStringUTFChars(start, NULL);
   	const char * e = env->GetStringUTFChars(end, NULL);
@@ -201,7 +201,7 @@ JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_get
     return env->NewStringUTF(string.utf8());
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getPageNumberOfScreenPoint
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageNumberOfScreenPoint
   (JNIEnv *env, jobject, jdouble screenX, jdouble screenY) {
     return library(env).getPageNumberOfScreenPoint(screenX, screenY);
 }
@@ -215,7 +215,7 @@ jdoubleArray doubleArrayFromPoint(JNIEnv *env, double x, double y) {
     return array;
 }
 
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_convertPointFromDeviceSpaceToDocumentSpace
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_convertPointFromDeviceSpaceToDocumentSpace
   (JNIEnv *env, jobject, jdouble screenX, jdouble screenY, jint pageNum) {
     double docX = 0;
     double docY = 0;
@@ -225,7 +225,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImp
     return doubleArrayFromPoint(env, docX, docY);
 }
 
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_convertPointFromDocumentSpaceToDeviceSpace
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_convertPointFromDocumentSpaceToDeviceSpace
   (JNIEnv *env, jobject, jdouble docX, jdouble docY, jint pageNum) {
     double screenX = 0;
     double screenY = 0;
@@ -235,7 +235,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImp
     return doubleArrayFromPoint(env, screenX, screenY);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_setPageMode
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setPageMode
   (JNIEnv *env, jobject, jint mode) {
   return library(env).setPageMode(mode);
 }
@@ -271,7 +271,7 @@ jdoubleArray doubleArrayFromMatrix(JNIEnv * env, const onyx::OnyxMatrix & matrix
     return array;
 }
 
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_rectangles
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_rectangles
   (JNIEnv * env, jobject, jstring start , jstring end) {
     const char * s = env->GetStringUTFChars(start, NULL);
   	const char * e = env->GetStringUTFChars(end, NULL);
@@ -281,7 +281,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImp
 }
 
 
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_pageDisplayRectangles
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_pageDisplayRectangles
   (JNIEnv * env, jobject, jint page, jint count) {
   	std::vector<onyx::OnyxRectangle> rectangles;
   	std::vector<onyx::OnyxRectangle> size;
@@ -289,38 +289,38 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImp
   	return doubleArrayFromRectList(env, rectangles);
 }
 
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_updateLocationNative
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_updateLocationNative
   (JNIEnv * env, jobject thiz) {
     onyx::OnyxMatrix matrix = library(env).getCurrentLocation();
   	return doubleArrayFromMatrix(env, matrix);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_changeNavigationMatrix
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_changeNavigationMatrix
   (JNIEnv * env, jobject thiz, jdouble scale, jdouble dx, jdouble dy) {
     return library(env).changeNavigationMatrix(scale, dx, dy);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_setNavigationMatrix
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setNavigationMatrix
   (JNIEnv *env, jobject thiz, jdouble scale, jdouble absX, jdouble absY) {
   return library(env).setNavigationMatrix(scale, absX, absY);
 }
 
-JNIEXPORT int JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_allVisiblePagesRectangle
+JNIEXPORT int JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_allVisiblePagesRectangle
   (JNIEnv * env, jobject thiz, jobject list) {
     return library(env).allVisiblePagesRectangle(env, list);
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_setAbortFlagNative
+JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setAbortFlagNative
   (JNIEnv *env, jobject, jboolean value) {
     library(env).setAbortFlag(value);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getAbortFlagNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getAbortFlagNative
   (JNIEnv *env, jobject) {
     return library(env).getAbortFlag();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_searchNextNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_searchNextNative
   (JNIEnv * env, jobject thiz, jstring pattern, jboolean caseSensitive, jboolean matchWholeWord, jint from, jint end, jobject list) {
   return library(env).searchNextOccur(env, getUtf8String(env, pattern), caseSensitive, matchWholeWord, from, end, list);
 }
@@ -330,43 +330,43 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_se
  * Method:    searchPrevNative
  * Signature: (Ljava/lang/String;ZZLjava/lang/String;Ljava/lang/String;Ljava/util/List;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_searchPrevNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_searchPrevNative
   (JNIEnv * env, jobject, jstring pattern, jboolean caseSensitive, jboolean matchWholeWord, jint from, jint end, jobject list) {
   return library(env).searchPrevOccur(env, getUtf8String(env, pattern), caseSensitive, matchWholeWord,
                                     from, end, list);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_searchAllInPageNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_searchAllInPageNative
   (JNIEnv * env, jobject thiz, jstring pattern, jboolean caseSensitive, jboolean matchWholeWord, jint from, jint end, jobject list)  {
     return library(env).searchAllInPage(env, getUtf8String(env, pattern), caseSensitive, matchWholeWord, from, end, list);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_hasTableOfContent
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_hasTableOfContent
   (JNIEnv *env, jobject) {
     return library(env).hasTableOfContent();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getTableOfContent
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getTableOfContent
   (JNIEnv * env, jobject thiz, jobject toc) {
     return library(env).getTableOfContent(env, toc);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getMetadataNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getMetadataNative
   (JNIEnv * env, jobject thiz, jobject metadata, jobject tagList) {
     return library(env).getMetadata(env, metadata, tagList);
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_collectVisibleLinksNative
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_collectVisibleLinksNative
   (JNIEnv *env, jobject thiz, jobject list) {
     return library(env).collectVisibleLinks(env, list);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_isLocationInCurrentScreenNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_isLocationInCurrentScreenNative
   (JNIEnv *env, jobject thiz, jstring location) {
     return library(env).isLocationInCurrentScreen(env, location);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_setFontFaceInternal
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setFontFaceInternal
   (JNIEnv *env, jobject thiz, jstring font) {
     if (font == NULL) {
         onyx::AdobeLibrary::setFontFace("");
@@ -383,28 +383,28 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_se
     return true;
 }
 
-JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getPageTextNative
+JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageTextNative
   (JNIEnv *env, jobject thiz, jint pageNumber) {
     dp::String text = library(env).getPageText(pageNumber);
     return env->NewStringUTF(text.utf8());
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_setDisplayMarginsNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setDisplayMarginsNative
   (JNIEnv *env, jobject thiz, jdouble left, jdouble top, jdouble right, jdouble bottom) {
     return library(env).setDisplayMargins(left, top, right, bottom);
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getPageOrientationNative
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageOrientationNative
   (JNIEnv *env, jobject, jint page) {
   return library(env).getPageOrientation(page);
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_initDeviceForDRM
+JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_initDeviceForDRM
   (JNIEnv *env, jclass thiz, jstring deviceName, jstring deviceSerial, jstring applicationPrivateStorage) {
 
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_registerAdobeDRMCallback
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_registerAdobeDRMCallback
   (JNIEnv *env, jclass thiz, jobject jCallback) {
     shared_ptr<HostDRMCallback> callback(new HostDRMCallback());
     if (!callback->init(env, thiz, jCallback)) {
@@ -414,7 +414,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_re
     return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_fulfillByAcsm
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_fulfillByAcsm
   (JNIEnv *env, jclass thiz, jstring acsm_path) {
     const char *jstr = env->GetStringUTFChars(acsm_path, 0);
     if (jstr == 0) {
@@ -426,7 +426,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_fu
     return library(env).fulfillByAcsm(qstr_acsm_path);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_activateDevice
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_activateDevice
   (JNIEnv *env, jclass thiz, jstring adobeId, jstring password) {
     const char *jstr = env->GetStringUTFChars(adobeId, 0);
     if (jstr == 0) {
@@ -445,7 +445,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_ac
     return library(env).activateDevice(qstr_adobe_id, qstr_password);
 }
 
-JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getActivatedDRMAccount
+JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getActivatedDRMAccount
   (JNIEnv *env, jclass thiz) {
     jstring str_drm_account = env->NewStringUTF(library(env).getActivatedDRMAccount().c_str());
     if (str_drm_account == 0) {
@@ -455,13 +455,13 @@ JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_get
     return str_drm_account;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_deactivateDevice
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_deactivateDevice
   (JNIEnv *env, jclass thiz) {
     bool succeeded = library(env).deactivateDevice();
     return succeeded;
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getPageNumberByLocationNative
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageNumberByLocationNative
   (JNIEnv *env, jobject thiz, jstring location) {
     const char * string = NULL;
     if (location != NULL) {
@@ -472,7 +472,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getPag
     return library(env).getPageNumberByLocation(string);
 }
 
-JNIEXPORT jobject JNICALL Java_com_onyx_reader_plugins_adobe_AdobePluginImpl_getNextSentence
+JNIEXPORT jobject JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getNextSentence
   (JNIEnv *env, jclass thiz, jobject splitter, jstring location) {
     if (location == NULL) {
         return NULL;

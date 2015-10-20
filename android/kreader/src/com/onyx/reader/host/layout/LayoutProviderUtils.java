@@ -5,7 +5,6 @@ import com.onyx.reader.api.*;
 import com.onyx.reader.host.math.EntryInfo;
 import com.onyx.reader.host.math.EntryManager;
 import com.onyx.reader.host.navigation.NavigationList;
-import com.onyx.reader.host.navigation.NavigationManager;
 import com.onyx.reader.host.wrapper.Reader;
 
 import java.util.List;
@@ -62,11 +61,11 @@ public class LayoutProviderUtils {
             final ReaderDocumentPosition position = layoutManager.getReaderHelper().getNavigator().getPositionByPageNumber(i);
             LayoutProviderUtils.addEntry(layoutManager, position);
         }
-        LayoutProviderUtils.update(layoutManager);
+        LayoutProviderUtils.updateHostRect(layoutManager);
     }
 
-    static public void update(final ReaderLayoutManager layoutManager) {
-        layoutManager.getEntryManager().update();
+    static public void updateHostRect(final ReaderLayoutManager layoutManager) {
+        layoutManager.getEntryManager().updateHostRect();
     }
 
     static public void resetViewportPosition(final ReaderLayoutManager layoutManager) {
@@ -76,7 +75,7 @@ public class LayoutProviderUtils {
     static public void addNewSingleEntry(final ReaderLayoutManager layoutManager, final ReaderDocumentPosition position) {
         LayoutProviderUtils.clear(layoutManager);
         LayoutProviderUtils.addEntry(layoutManager, position);
-        LayoutProviderUtils.update(layoutManager);
+        LayoutProviderUtils.updateHostRect(layoutManager);
         LayoutProviderUtils.resetViewportPosition(layoutManager);
     }
 

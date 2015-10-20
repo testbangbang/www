@@ -106,7 +106,7 @@ public class LayoutSingleHardPageProvider implements LayoutProvider {
     }
 
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
-        layoutManager.getEntryManager().setScaleWithDelta(delta);
+        layoutManager.getEntryManager().scaleWithDelta(delta);
         return true;
     }
 
@@ -115,7 +115,7 @@ public class LayoutSingleHardPageProvider implements LayoutProvider {
     }
 
     public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException {
-        if (!layoutManager.getNavigator().gotoPosition(location)) {
+        if (!layoutManager.getPositionHolder().gotoPosition(location)) {
             return false;
         }
         onPageChanged(true);
