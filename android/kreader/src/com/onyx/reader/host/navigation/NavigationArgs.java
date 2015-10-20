@@ -24,9 +24,6 @@ public class NavigationArgs {
         return map.get(type);
     }
 
-    public float getActualScale() {
-        return getList().getActualScale();
-    }
 
 
 }

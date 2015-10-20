@@ -18,10 +18,10 @@ public interface ReaderHitTestManager {
 
     /**
      * Select word by the point. The plugin should automatically extend the selection to word boundary.
-     * @param viewPoint the user input point.
+     * @param docPoint the user input point in document coordinates system.
      * @return the selection.
      */
-    public ReaderSelection selectWord(final PointF viewPoint, final ReaderTextSplitter splitter);
+    public ReaderSelection selectWord(final PointF docPoint, final ReaderTextSplitter splitter);
 
 
     /**

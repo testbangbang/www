@@ -12,14 +12,34 @@ public interface ReaderViewOptions {
      */
     public int getViewWidth();
 
+    /**
+     * Retrieve the view height.
+     * @return view height in pixel.
+     */
     public int getViewHeight();
 
+    /**
+     * Retrieve the top margin.
+     * @return top margin in pixel.
+     */
     public int getTopMargin();
 
+    /**
+     * Retrieve the left margin.
+     * @return left margin in pixel.
+     */
     public int getLeftMargin();
 
+    /**
+     * Retrieve the bottom margin.
+     * @return bottom margin in pixel.
+     */
     public int getBottomMargin();
 
+    /**
+     * Retrieve the right margin.
+     * @return right margin in pixel.
+     */
     public int getRightMargin();
 
 

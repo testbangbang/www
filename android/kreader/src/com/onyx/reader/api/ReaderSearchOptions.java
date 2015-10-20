@@ -5,8 +5,16 @@ package com.onyx.reader.api;
  */
 public interface ReaderSearchOptions {
 
+    /**
+     * The pattern to search
+     * @return
+     */
     public String pattern();
 
+    /**
+     * Indicate the search is case sensitive or not.
+     * @return
+     */
     public boolean isCaseSensitive();
 
     /**

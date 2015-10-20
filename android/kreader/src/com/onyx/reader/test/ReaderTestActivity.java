@@ -64,7 +64,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                testReaderGoto();
+                testChangeLayout();
             }
         });
     }
@@ -315,32 +315,16 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testMath5() {
-        RectF child = new RectF(0, 0, 1, 1);
         RectF entry = new RectF(0, 0, 500, 500);
         RectF parent = new RectF(0, 0, 1024, 768);
-        float scale = EntryUtils.scaleToPage(child, parent);
-        child.set(0, 0, child.width() * scale, child.height() * scale);
-        int rows = 3, cols = 3;
-        List<RectF> list = new ArrayList<RectF>();
-        for(int i = 0; i < rows; ++i) {
-            for(int j = 0; j < cols; ++j) {
-                float left = child.left + child.width() / cols * j;
-                float right = left + child.width() / cols;
-                float top = child.top + child.height() / rows * i;
-                float bottom = top + child.height() / rows;
-                RectF sub = new RectF(left, top, right, bottom);
-                list.add(sub);
-            }
-        }
+        NavigationList navigator = NavigationList.rowsLeftToRight(3, 3, null);
+        float actualScale;
 
-        NavigationList navigator = new NavigationList();
-        navigator.addAll(list);
-        navigator.setActualScale(scale);
-
-        while (navigator.next()) {
-            RectF ratio = new RectF(navigator.getCurrent());
-            float newScale = scale * EntryUtils.scaleByRatio(ratio, entry, parent);
-            scale = newScale;
+        RectF ratio = new RectF(navigator.getCurrent());
+        while (ratio != null) {
+            actualScale = EntryUtils.scaleByRatio(ratio, entry, parent);
+            navigator.next();
+            ratio = new RectF(navigator.getCurrent());
         }
     }
 

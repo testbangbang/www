@@ -13,7 +13,7 @@ import com.onyx.reader.host.navigation.NavigationList;
  */
 public class LayoutSingleNavigationListProvider implements LayoutProvider {
     private ReaderLayoutManager layoutManager;
-    private NavigationArgs navigationManager;
+    private NavigationArgs navigationArgs;
 
     public LayoutSingleNavigationListProvider(final ReaderLayoutManager lm) {
         layoutManager = lm;
@@ -23,20 +23,19 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
         layoutManager = lm;
     }
 
-    private NavigationArgs getNavigationManager() {
-        if (navigationManager == null) {
-            navigationManager = new NavigationArgs(null, null);
+    private NavigationArgs getNavigationArgs() {
+        if (navigationArgs == null) {
+            navigationArgs = new NavigationArgs(null, null);
         }
-        return navigationManager;
+        return navigationArgs;
     }
 
     private NavigationList getNavigationList() {
-        return getNavigationManager().getList();
+        return getNavigationArgs().getList();
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
-        getNavigationList().setActualScale(args.getActualScale());
-        getNavigationList().addAll(null);
+        navigationArgs = args;
         RectF subScreen = getNavigationList().getCurrent();
         layoutManager.getEntryManager().scaleByRatio(subScreen);
         return true;
