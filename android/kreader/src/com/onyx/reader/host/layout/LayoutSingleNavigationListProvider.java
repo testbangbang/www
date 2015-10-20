@@ -4,8 +4,7 @@ import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
-import com.onyx.reader.host.math.EntryManager;
-import com.onyx.reader.host.navigation.NavigationManager;
+import com.onyx.reader.host.navigation.NavigationArgs;
 import com.onyx.reader.host.navigation.NavigationList;
 
 /**
@@ -14,7 +13,7 @@ import com.onyx.reader.host.navigation.NavigationList;
  */
 public class LayoutSingleNavigationListProvider implements LayoutProvider {
     private ReaderLayoutManager layoutManager;
-    private NavigationManager navigationManager;
+    private NavigationArgs navigationManager;
 
     public LayoutSingleNavigationListProvider(final ReaderLayoutManager lm) {
         layoutManager = lm;
@@ -24,9 +23,9 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
         layoutManager = lm;
     }
 
-    private NavigationManager getNavigationManager() {
+    private NavigationArgs getNavigationManager() {
         if (navigationManager == null) {
-            navigationManager = new NavigationManager(null, null);
+            navigationManager = new NavigationArgs(null, null);
         }
         return navigationManager;
     }
@@ -35,7 +34,7 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
         return getNavigationManager().getList();
     }
 
-    public boolean setNavigationMode(final NavigationManager args) throws ReaderException {
+    public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         getNavigationList().setActualScale(args.getActualScale());
         getNavigationList().addAll(null);
         RectF subScreen = getNavigationList().getCurrent();

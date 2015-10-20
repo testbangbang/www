@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by zhuzeng on 10/19/15.
  */
-public class NavigationManager {
+public class NavigationArgs {
 
     private Type type;
     private Map<Type, NavigationList> map = new HashMap();
@@ -15,7 +15,7 @@ public class NavigationManager {
         ALL, ODD, EVEN,
     }
 
-    public NavigationManager(final Type t, final NavigationList list) {
+    public NavigationArgs(final Type t, final NavigationList list) {
         type = t;
         map.put(type, list);
     }

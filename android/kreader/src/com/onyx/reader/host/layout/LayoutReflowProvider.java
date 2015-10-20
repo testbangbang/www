@@ -4,7 +4,7 @@ import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
-import com.onyx.reader.host.navigation.NavigationManager;
+import com.onyx.reader.host.navigation.NavigationArgs;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -26,7 +26,7 @@ public class LayoutReflowProvider  implements LayoutProvider {
         layoutManager = manager;
     }
 
-    public boolean setNavigationMode(final NavigationManager args) throws ReaderException {
+    public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         return false;
     }
 

@@ -16,7 +16,7 @@ import com.onyx.reader.host.math.EntryInfo;
 import com.onyx.reader.host.math.EntryManager;
 import com.onyx.reader.host.navigation.NavigationList;
 import com.onyx.reader.host.math.EntryUtils;
-import com.onyx.reader.host.navigation.NavigationManager;
+import com.onyx.reader.host.navigation.NavigationArgs;
 import com.onyx.reader.host.request.*;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderManager;
@@ -70,7 +70,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testChangeLayout() {
-        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.SINGLE_HARD_PAGE);
+        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.SINGLE_HARD_PAGE, null);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -153,10 +153,10 @@ public class ReaderTestActivity extends Activity {
                 list.add(sub);
             }
         }
-
         NavigationList navigationList = new NavigationList();
         navigationList.addAll(list);
-        final SubScreenNavigationRequest request = new SubScreenNavigationRequest(NavigationManager.Type.ALL, navigationList);
+        NavigationArgs navigationArgs = new NavigationArgs(NavigationArgs.Type.ALL, navigationList);
+        final SubScreenNavigationRequest request = new SubScreenNavigationRequest(navigationArgs);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {

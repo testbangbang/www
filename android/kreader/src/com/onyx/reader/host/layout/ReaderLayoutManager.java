@@ -6,13 +6,11 @@ import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.api.ReaderNavigator;
 import com.onyx.reader.host.math.EntryManager;
-import com.onyx.reader.host.navigation.NavigationList;
-import com.onyx.reader.host.navigation.NavigationManager;
+import com.onyx.reader.host.navigation.NavigationArgs;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderHelper;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -164,9 +162,8 @@ public class ReaderLayoutManager {
         return getCurrentLayoutProvider().prevScreen();
     }
 
-    public void setSubScreenNavigation(final NavigationManager.Type type, final NavigationList list) throws ReaderException {
-        NavigationManager args = new NavigationManager(type, list);
-        getCurrentLayoutProvider().setNavigationMode(args);
+    public void setNavigationArgs(final NavigationArgs args) throws ReaderException {
+        getCurrentLayoutProvider().setNavigationArgs(args);
     }
 
 }

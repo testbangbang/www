@@ -1,12 +1,11 @@
 package com.onyx.reader.host.layout;
 
 import android.graphics.RectF;
-import android.os.DropBoxManager;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.host.math.EntryManager;
-import com.onyx.reader.host.navigation.NavigationManager;
+import com.onyx.reader.host.navigation.NavigationArgs;
 
 
 /**
@@ -28,7 +27,7 @@ public class LayoutSingleHardPageProvider implements LayoutProvider {
         layoutManager = lm;
     }
 
-    public boolean setNavigationMode(final NavigationManager args) throws ReaderException {
+    public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         return false;
     }
 
