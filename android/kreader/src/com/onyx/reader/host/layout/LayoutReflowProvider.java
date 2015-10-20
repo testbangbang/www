@@ -4,7 +4,8 @@ import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
-import com.onyx.reader.host.navigation.NavigationManager;
+import com.onyx.reader.api.ReaderPluginOptions;
+import com.onyx.reader.host.navigation.NavigationArgs;
 
 import java.util.List;
 
@@ -15,7 +16,10 @@ import java.util.List;
 public class LayoutReflowProvider  implements LayoutProvider {
 
     private ReaderLayoutManager layoutManager;
-    private ReaderDocumentPosition current;
+
+    public ReaderPositionHolder getPositionHolder() {
+        return layoutManager.getPositionHolder();
+    }
 
     public LayoutReflowProvider(final ReaderLayoutManager lm) {
         layoutManager = lm;
@@ -25,36 +29,36 @@ public class LayoutReflowProvider  implements LayoutProvider {
         layoutManager = manager;
     }
 
-    public boolean setNavigationMode(final NavigationManager.NavigationArgs args) throws ReaderException {
+    public boolean setNavigationMode(final NavigationArgs args) throws ReaderException {
         return false;
     }
 
     public boolean prevScreen() throws ReaderException {
-        return layoutManager.getPositionHolder().prevScreen();
+        return getPositionHolder().prevScreen();
     }
 
     public boolean nextScreen() throws ReaderException {
-        return layoutManager.getPositionHolder().nextScreen();
+        return getPositionHolder().nextScreen();
     }
 
     public boolean prevPage() throws ReaderException {
-        return layoutManager.getPositionHolder().prevPage();
+        return getPositionHolder().prevPage();
     }
 
     public boolean nextPage() throws ReaderException {
-        return layoutManager.getPositionHolder().nextPage();
+        return getPositionHolder().nextPage();
     }
 
     public boolean firstPage() throws ReaderException {
-        return layoutManager.getPositionHolder().firstPage();
+        return getPositionHolder().firstPage();
     }
 
     public boolean lastPage() throws ReaderException {
-        return layoutManager.getPositionHolder().lastPage();
+        return getPositionHolder().lastPage();
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
-        return false;
+        return layoutManager.getReader().getRenderer().draw(bitmap);
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
@@ -69,8 +73,8 @@ public class LayoutReflowProvider  implements LayoutProvider {
         return false;
     }
 
-    public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException {
-        return false;
+    public boolean gotoPosition(final ReaderDocumentPosition position) throws ReaderException {
+        return getPositionHolder().gotoPosition(position);
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
@@ -80,6 +84,7 @@ public class LayoutReflowProvider  implements LayoutProvider {
     public boolean supportPreRender() throws ReaderException {
         return false;
     }
+
     public boolean supportSubScreenNavigation() {
         return false;
     }
@@ -93,7 +98,6 @@ public class LayoutReflowProvider  implements LayoutProvider {
     }
 
     public void save(int delta) throws ReaderException {
-
     }
 
     public void restore() throws ReaderException {
@@ -113,11 +117,12 @@ public class LayoutReflowProvider  implements LayoutProvider {
     }
 
     public RectF getHostRect() throws ReaderException {
-        return null;
+        return getViewportRect();
     }
 
     public RectF getViewportRect() throws ReaderException {
-        return null;
+        return new RectF(0, 0, layoutManager.getReader().getViewOptions().getViewWidth(),
+                layoutManager.getReader().getViewOptions().getViewHeight());
     }
 
     public void scaleToPage() throws ReaderException {

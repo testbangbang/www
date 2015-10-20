@@ -60,6 +60,10 @@ public class ReaderHelper {
 
     }
 
+    public void onPageChanged(final ReaderDocumentPosition oldPosition, final ReaderDocumentPosition newPosition) {
+
+    }
+
     public void updateRenderBitmap(int width, int height) {
         Bitmap.Config bitmapConfig = Bitmap.Config.ARGB_8888;
         if (renderBitmap == null) {

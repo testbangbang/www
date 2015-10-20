@@ -6,14 +6,14 @@ import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.api.ReaderNavigator;
 import com.onyx.reader.host.math.EntryManager;
-import com.onyx.reader.host.navigation.NavigationManager;
-import com.onyx.reader.host.navigation.SubScreenListProvider;
+import com.onyx.reader.host.navigation.NavigationArgs;
+import com.onyx.reader.host.navigation.SubScreenList;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderHelper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -23,28 +23,31 @@ import java.util.concurrent.ConcurrentHashMap;
  * 3. hitTest, convert pointInView to pointInHost and send the point to plugin for test.
  *
  * layout manager --> layout provider --> Navigation Manager -> Navigation provider -> EntryManager & plugin
+ * forward everything to layout provider impl.
  */
 public class ReaderLayoutManager {
 
-    public static final String HARD_PAGE = "hardPage";
+    public static final String SINGLE_HARD_PAGE = "singleHardPage";
+    public static final String SINGLE_NAVIGATION_LIST_PAGE = "singleNavigationListPage";
     public static final String REFLOW_PAGE = "reflowPage";
     public static final String SCANNED_REFLOW_PAGE = "scanReflowPage";
 
     private Reader reader;
     private ReaderHelper readerHelper;
     private EntryManager entryManager;
-    private SubScreenListProvider subScreenNavigator;
+    private SubScreenList subScreenNavigator;
     private ReaderPositionHolder positionHolder;
     private String currentProvider;
-    private Map<String, LayoutProvider> provider = new ConcurrentHashMap<String, LayoutProvider>();
+    private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
 
 
     public ReaderLayoutManager(final Reader r) {
         reader = r;
         readerHelper = reader.getReaderHelper();
-        provider.put(HARD_PAGE, new LayoutHardPageProvider(this));
+        provider.put(SINGLE_HARD_PAGE, new LayoutSingleHardPageProvider(this));
+        provider.put(SINGLE_NAVIGATION_LIST_PAGE, new LayoutSingleNavigationListProvider(this));
         provider.put(REFLOW_PAGE, new LayoutReflowProvider(this));
-        currentProvider = HARD_PAGE;
+        currentProvider = SINGLE_HARD_PAGE;
     }
 
     public Reader getReader() {
@@ -123,9 +126,9 @@ public class ReaderLayoutManager {
         return entryManager;
     }
 
-    public SubScreenListProvider getSubScreenNavigator() {
+    public SubScreenList getSubScreenNavigator() {
         if (subScreenNavigator == null) {
-            subScreenNavigator = new SubScreenListProvider();
+            subScreenNavigator = new SubScreenList();
         }
         return subScreenNavigator;
     }
@@ -161,25 +164,16 @@ public class ReaderLayoutManager {
         getCurrentLayoutProvider().scaleByRect(child);
     }
 
-
     public boolean nextScreen() throws ReaderException {
-        if (!getCurrentLayoutProvider().nextScreen()) {
-            throw ReaderException.exceedLastPage();
-        }
-        return true;
+        return getCurrentLayoutProvider().nextScreen();
     }
 
     public boolean prevScreen() throws ReaderException {
-        if (!getCurrentLayoutProvider().prevScreen()) {
-            throw ReaderException.exceedFirstPage();
-        }
-        return true;
+        return getCurrentLayoutProvider().prevScreen();
     }
 
     public void setSubScreenNavigation(final float scale, final List<RectF> list) throws ReaderException {
-        NavigationManager.NavigationArgs args = new NavigationManager.NavigationArgs();
-        args.list = list;
-        args.scale = scale;
+        NavigationArgs args = new NavigationArgs(NavigationArgs.Type.ALL, null);
         getCurrentLayoutProvider().setNavigationMode(args);
     }
 

@@ -5,7 +5,8 @@ import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
 import com.onyx.reader.host.impl.ReaderDocumentOptionsImpl;
-import com.onyx.reader.host.navigation.NavigationManager;
+import com.onyx.reader.host.navigation.NavigationArgs;
+import com.onyx.reader.host.navigation.SubScreenList;
 
 import java.util.List;
 
@@ -14,9 +15,10 @@ import java.util.List;
  */
 public interface LayoutProvider {
 
+
     public void activate(final ReaderLayoutManager layoutManager) throws ReaderException;
 
-    public boolean setNavigationMode(final NavigationManager.NavigationArgs args) throws ReaderException;
+    public boolean setNavigationMode(final NavigationArgs args) throws ReaderException;
     public boolean prevScreen() throws ReaderException;
     public boolean nextScreen() throws ReaderException;
 
@@ -25,6 +27,7 @@ public interface LayoutProvider {
 
     public boolean firstPage() throws ReaderException;
     public boolean lastPage() throws ReaderException;
+    public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException;
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException;
 
@@ -32,16 +35,13 @@ public interface LayoutProvider {
     public void scaleToPage() throws ReaderException;
     public void scaleToWidth() throws ReaderException;
     public void scaleByRect(final RectF child) throws ReaderException;
-
-    public float getActualScale() throws ReaderException;
-    public RectF getHostRect() throws ReaderException;
-    public RectF getViewportRect() throws ReaderException;
-
     public boolean changeScaleWithDelta(float delta) throws ReaderException;
 
     public boolean changeScaleByRect(final ReaderDocumentPosition position, final RectF rect) throws ReaderException ;
 
-    public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException;
+    public float getActualScale() throws ReaderException;
+    public RectF getHostRect() throws ReaderException;
+    public RectF getViewportRect() throws ReaderException;
     public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException;
 
     public boolean pan(int dx, int dy) throws ReaderException;

@@ -4,20 +4,21 @@ import android.graphics.RectF;
 import com.onyx.reader.api.ReaderBitmap;
 import com.onyx.reader.api.ReaderDocumentPosition;
 import com.onyx.reader.api.ReaderException;
-import com.onyx.reader.host.navigation.NavigationManager;
+import com.onyx.reader.host.navigation.NavigationArgs;
 
-import java.util.List;
 
 /**
  * Created by zhuzeng on 10/7/15.
  * forward to navigation manager. in hard page mode, the page is defined by document, instead of rendering.
  * In hard page mode, the navigation manager can still support single hard page and continuous page mode.
  *
+ * Normal single hard page provider, it could be scaled.
+ *
  */
-public class LayoutHardPageProvider implements LayoutProvider {
+public class LayoutSingleHardPageProvider implements LayoutProvider {
     private ReaderLayoutManager layoutManager;
 
-    public LayoutHardPageProvider(final ReaderLayoutManager lm) {
+    public LayoutSingleHardPageProvider(final ReaderLayoutManager lm) {
         layoutManager = lm;
     }
 
@@ -25,9 +26,9 @@ public class LayoutHardPageProvider implements LayoutProvider {
         layoutManager = lm;
     }
 
-    public boolean setNavigationMode(final NavigationManager.NavigationArgs args) throws ReaderException {
-        layoutManager.getSubScreenNavigator().setActualScale(args.scale);
-        layoutManager.getSubScreenNavigator().addAll(args.list);
+    public boolean setNavigationMode(final NavigationArgs args) throws ReaderException {
+        layoutManager.getSubScreenNavigator().setActualScale(args.getActualScale());
+        layoutManager.getSubScreenNavigator().addAll(null);
         RectF subScreen = layoutManager.getSubScreenNavigator().getCurrent();
         layoutManager.getEntryManager().scaleByRatio(subScreen);
         return true;
@@ -48,7 +49,7 @@ public class LayoutHardPageProvider implements LayoutProvider {
 
     private void onPageChanged(boolean first) {
         LayoutProviderUtils.clear(layoutManager);
-        LayoutProviderUtils.addEntry(layoutManager, layoutManager.getPositionHolder().getPosition());
+        LayoutProviderUtils.addEntry(layoutManager, layoutManager.getPositionHolder().getCurrentPosition());
         if (first) {
             LayoutProviderUtils.firstSubScreen(layoutManager);
         } else {

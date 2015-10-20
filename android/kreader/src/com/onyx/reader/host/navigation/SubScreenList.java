@@ -8,14 +8,23 @@ import java.util.List;
 /**
  * Created by zhuzeng on 10/16/15.
  */
-public class SubScreenListProvider extends NavigationProviderBase {
+public class SubScreenList {
 
     // ratio, range from [0, 1]
     private List<RectF> subScreenList = new ArrayList<RectF>();
     private float actualScale = 1.0f;
     private int currentIndex = 0;
+    private RectF limitedRect;
 
-    public SubScreenListProvider() {
+    public SubScreenList() {
+    }
+
+    public void setLimitedRect(final RectF limit) {
+        limitedRect = limit;
+    }
+
+    public final RectF getLimitedRect() {
+        return limitedRect;
     }
 
     public void setActualScale(final float scale) {
@@ -24,6 +33,11 @@ public class SubScreenListProvider extends NavigationProviderBase {
 
     public final float getActualScale() {
         return actualScale;
+    }
+
+    public void addAll(final List<RectF> list) {
+        subScreenList.clear();
+        subScreenList.addAll(list);
     }
 
     public boolean next() {
@@ -62,15 +76,13 @@ public class SubScreenListProvider extends NavigationProviderBase {
 
     public RectF getCurrent() {
         if (currentIndex >= 0 && currentIndex < subScreenList.size()) {
-            return subScreenList.get(currentIndex);
+            RectF current = new RectF(subScreenList.get(currentIndex));
+            current.intersect(limitedRect);
+            return current;
         }
         return null;
     }
 
-    public void addAll(final List<RectF> list) {
-        subScreenList.clear();
-        subScreenList.addAll(list);
-    }
 
 
 }
