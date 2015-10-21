@@ -118,7 +118,7 @@ public class EntryManager {
             return false;
         }
         EntryInfo current = visible.get(0);
-        setScale(EntryUtils.scaleToPage(current.getDisplayRect(), viewportRect));
+        setScale(EntryUtils.scaleToPage(current.getNaturalRect(), viewportRect));
         reboundViewport();
         return true;
     }
@@ -133,7 +133,7 @@ public class EntryManager {
             return false;
         }
         EntryInfo current = visible.get(0);
-        setScale(EntryUtils.scaleToWidth(current.getDisplayRect(), viewportRect));
+        setScale(EntryUtils.scaleToWidth(current.getNaturalRect(), viewportRect));
         reboundViewport();
         return true;
     }

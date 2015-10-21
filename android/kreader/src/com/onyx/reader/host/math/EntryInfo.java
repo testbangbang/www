@@ -22,6 +22,7 @@ public class EntryInfo {
 
     public EntryInfo(final float nw, final float nh) {
         naturalRect.set(0, 0, nw, nh);
+        displayRect.set(naturalRect);
     }
 
     public final RectF getNaturalRect() {
