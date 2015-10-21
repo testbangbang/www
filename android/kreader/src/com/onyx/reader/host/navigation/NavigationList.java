@@ -12,7 +12,7 @@ import java.util.List;
 public class NavigationList {
 
     private List<RectF> subScreenList = new ArrayList<RectF>();
-    private int currentIndex = 0;
+    private int currentIndex = -1;
     private RectF limitedRect;
 
     static public NavigationList rowsLeftToRight(int rows, int cols, final RectF limited) {
@@ -107,38 +107,52 @@ public class NavigationList {
         subScreenList.addAll(list);
     }
 
-    public boolean next() {
+    public boolean hasNext() {
         if (currentIndex >= subScreenList.size() - 1) {
             return false;
         }
-        ++currentIndex;
         return true;
     }
 
-    public boolean prev() {
+    public RectF next() {
+        if (hasNext()) {
+            ++currentIndex;
+            return getCurrent();
+        }
+        return null;
+    }
+
+    public boolean hasPrevious() {
         if (currentIndex <= 0) {
             return false;
         }
-        --currentIndex;
         return true;
     }
 
-    public boolean first() {
+    public RectF previous() {
+        if (hasPrevious()) {
+            --currentIndex;
+            return getCurrent();
+        }
+        return null;
+    }
+
+    public RectF first() {
         currentIndex = 0;
-        return true;
+        return getCurrent();
     }
 
-    public boolean last() {
+    public RectF last() {
         currentIndex = subScreenList.size() - 1;
-        return true;
+        return getCurrent();
     }
 
-    public boolean navigateTo(int index) {
+    public RectF navigateTo(int index) {
         if (index < 0 || index >= subScreenList.size()) {
-            return false;
+            return null;
         }
         currentIndex = index;
-        return true;
+        return getCurrent();
     }
 
     public RectF getCurrent() {

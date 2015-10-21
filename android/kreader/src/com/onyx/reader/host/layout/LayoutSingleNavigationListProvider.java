@@ -21,6 +21,7 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
 
     public void activate(final ReaderLayoutManager lm) throws ReaderException {
         layoutManager = lm;
+        LayoutProviderUtils.addEntry(layoutManager, layoutManager.getPositionHolder().getCurrentPosition());
     }
 
     private NavigationArgs getNavigationArgs() {
@@ -36,18 +37,23 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
-        RectF subScreen = getNavigationList().getCurrent();
+        RectF subScreen = getNavigationList().first();
         layoutManager.getEntryManager().scaleByRatio(subScreen);
         return true;
     }
 
     public boolean prevScreen() throws ReaderException {
-        return getNavigationList().prev();
+        if (getNavigationList().hasPrevious()) {
+            RectF subScreen = getNavigationList().previous();
+            layoutManager.getEntryManager().scaleByRatio(subScreen);
+            return true;
+        }
+        return false;
     }
 
     public boolean nextScreen() throws ReaderException {
-        if (getNavigationList().next()) {
-            RectF subScreen = getNavigationList().getCurrent();
+        if (getNavigationList().hasNext()) {
+            RectF subScreen = getNavigationList().next();
             layoutManager.getEntryManager().scaleByRatio(subScreen);
             return true;
         }

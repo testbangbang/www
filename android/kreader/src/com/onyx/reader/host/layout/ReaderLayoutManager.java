@@ -61,6 +61,7 @@ public class ReaderLayoutManager {
 
     public void init() {
         getEntryManager().setViewportRect(0, 0, reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight());
+        getPositionHolder().updatePosition(getReaderHelper().getNavigator().getInitPosition());
     }
 
     public LayoutProvider getCurrentLayoutProvider() {

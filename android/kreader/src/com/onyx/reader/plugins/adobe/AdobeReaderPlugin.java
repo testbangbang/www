@@ -174,7 +174,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public ReaderDocumentPosition getInitPosition() {
-        return null;
+        return AdobeDocumentPositionImpl.createFromPageNumber(this, 0);
     }
 
 
@@ -220,7 +220,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     /**
-     * Navigate to prev screen.
+     * Navigate to previous screen.
      */
     public ReaderDocumentPosition prevScreen(final ReaderDocumentPosition position) {
         return null;
@@ -239,7 +239,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     /**
-     * Navigate to prev page.
+     * Navigate to previous page.
      * @return
      */
     public ReaderDocumentPosition prevPage(final ReaderDocumentPosition position) {

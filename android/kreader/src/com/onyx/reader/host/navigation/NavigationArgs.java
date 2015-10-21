@@ -1,5 +1,7 @@
 package com.onyx.reader.host.navigation;
 
+import android.graphics.RectF;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +15,11 @@ public class NavigationArgs {
 
     public static enum Type {
         ALL, ODD, EVEN,
+    }
+
+    static public NavigationArgs rowsLeftToRight(final Type type, int rows, int cols, final RectF limit) {
+        NavigationArgs navigationArgs = new NavigationArgs(type, NavigationList.rowsLeftToRight(rows, cols, limit));
+        return navigationArgs;
     }
 
     public NavigationArgs(final Type t, final NavigationList list) {

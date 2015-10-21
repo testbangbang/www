@@ -88,19 +88,19 @@ public class LayoutProviderUtils {
     }
 
     static public boolean firstSubScreen(final ReaderLayoutManager layoutManager, final NavigationList navigationList) {
-        if (!navigationList.first()) {
+        RectF subScreen = navigationList.first();
+        if (subScreen == null) {
             return false;
         }
-        RectF subScreen = navigationList.getCurrent();
         layoutManager.getEntryManager().scaleByRatio(subScreen);
         return true;
     }
 
     static public boolean lastSubScreen(final ReaderLayoutManager layoutManager, final NavigationList navigationList) {
-        if (!navigationList.last()) {
+        RectF subScreen = navigationList.last();
+        if (subScreen == null) {
             return false;
         }
-        RectF subScreen = navigationList.getCurrent();
         layoutManager.getEntryManager().scaleByRatio(subScreen);
         return true;
     }

@@ -70,11 +70,13 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testChangeLayout() {
-        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.SINGLE_HARD_PAGE, null);
+        NavigationArgs navigationArgs = NavigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, null);
+        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.SINGLE_NAVIGATION_LIST_PAGE, navigationArgs);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
+                BitmapUtils.saveBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/listLayout.png");
                 testReaderGoto();
             }
         });
@@ -134,40 +136,10 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png");
-                testSubscreenNavigation();
-            }
-        });
-    }
-
-    public void testSubscreenNavigation() {
-        RectF child = new RectF(0, 0, 1, 1);
-        int rows = 3, cols = 3;
-        List<RectF> list = new ArrayList<RectF>();
-        for(int i = 0; i < rows; ++i) {
-            for(int j = 0; j < cols; ++j) {
-                float left = child.left + child.width() / cols * j;
-                float right = left + child.width() / cols;
-                float top = child.top + child.height() / rows * i;
-                float bottom = top + child.height() / rows;
-                RectF sub = new RectF(left, top, right, bottom);
-                list.add(sub);
-            }
-        }
-        NavigationList navigationList = new NavigationList();
-        navigationList.addAll(list);
-        NavigationArgs navigationArgs = new NavigationArgs(NavigationArgs.Type.ALL, navigationList);
-        final SubScreenNavigationRequest request = new SubScreenNavigationRequest(navigationArgs);
-        reader.submitRequest(this, request, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                assert(e == null);
-                BitmapUtils.saveBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/subScreen.png");
                 testNextScreen();
             }
         });
-
     }
-
 
     public void testNextScreen() {
         final NextScreenRequest renderRequest = new NextScreenRequest();
@@ -317,14 +289,19 @@ public class ReaderTestActivity extends Activity {
     public void testMath5() {
         RectF entry = new RectF(0, 0, 500, 500);
         RectF parent = new RectF(0, 0, 1024, 768);
+        int rows = 3, cols = 3;
         NavigationList navigator = NavigationList.rowsLeftToRight(3, 3, null);
         float actualScale;
 
-        RectF ratio = new RectF(navigator.getCurrent());
-        while (ratio != null) {
+        int index = 0;
+        while (navigator.hasNext()) {
+            RectF ratio = navigator.next();
+            float left = 1.0f / cols * (index % cols);
+            float top = 1.0f / rows * (index / cols);
+            assert(Float.compare(ratio.left, left) == 0);
+            assert(Float.compare(ratio.top, top) == 0);
+            ++index;
             actualScale = EntryUtils.scaleByRatio(ratio, entry, parent);
-            navigator.next();
-            ratio = new RectF(navigator.getCurrent());
         }
     }
 

@@ -39,7 +39,7 @@ public interface ReaderNavigator {
     public ReaderDocumentPosition nextScreen(final ReaderDocumentPosition position);
 
     /**
-     * Navigate to prev screen.
+     * Navigate to previous screen.
      */
     public ReaderDocumentPosition prevScreen(final ReaderDocumentPosition position);
 
@@ -50,7 +50,7 @@ public interface ReaderNavigator {
     public ReaderDocumentPosition nextPage(final ReaderDocumentPosition position);
 
     /**
-     * Navigate to prev page.
+     * Navigate to previous page.
      * @return
      */
     public ReaderDocumentPosition prevPage(final ReaderDocumentPosition position);

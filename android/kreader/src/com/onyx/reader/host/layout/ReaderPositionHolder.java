@@ -23,7 +23,7 @@ public class ReaderPositionHolder {
         return currentPosition;
     }
 
-    private boolean updatePosition(final ReaderDocumentPosition newPosition) {
+    public boolean updatePosition(final ReaderDocumentPosition newPosition) {
         if (newPosition != null) {
             lastPosition = currentPosition;
             currentPosition = newPosition;
