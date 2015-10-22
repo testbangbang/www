@@ -51,5 +51,8 @@ public class AdobeSelectionImpl implements ReaderSelection {
         return rectangles;
     }
 
+    public SelectionType getSelectionType() {
+        return null;
+    }
 
 }

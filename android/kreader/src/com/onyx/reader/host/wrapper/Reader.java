@@ -183,6 +183,10 @@ public class Reader {
         return getReaderHelper().getRenderer();
     }
 
+    public ReaderRendererFeatures getRendererFeatures() {
+        return getReaderHelper().getRendererFeatures();
+    }
+
     public ReaderSearchManager getSearchManager() {
         return getReaderHelper().getSearchManager();
     }

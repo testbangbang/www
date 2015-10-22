@@ -9,6 +9,15 @@ import java.util.List;
  */
 public interface ReaderSelection {
 
+    static public enum SelectionType {
+        TEXT,
+        INTERNAL_LINK,
+        EXTERNAL_LINK,
+        IMAGE,
+        AUDIO,
+        VIDEO,
+    }
+
     /**
      * Retrieve the start position.
      * @return
@@ -32,6 +41,13 @@ public interface ReaderSelection {
      * @return
      */
     public List<RectF> getRectangles();
+
+
+    /**
+     * Get selection type.
+     * @return
+     */
+    public SelectionType getSelectionType();
 
 
 

@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import com.onyx.reader.api.*;
 import com.onyx.reader.host.wrapper.ReaderPageInfo;
 import com.onyx.reader.utils.JniUtils;
+import com.onyx.reader.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +23,12 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
-        ReaderHitTestManager
+        ReaderHitTestManager,
+        ReaderRendererFeatures
 {
 
     private AdobeJniWrapper impl;
+    private String documentPath;
 
     public AdobeReaderPlugin(final Context context) {
         ReaderDeviceInfo.init(context);
@@ -50,6 +53,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
         String docPassword = "";
         String archivePassword = "";
+        documentPath = path;
         if (documentOptions != null) {
             docPassword = documentOptions.getDocumentPassword();
             archivePassword = documentOptions.getDocumentPassword();
@@ -100,7 +104,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderRendererFeatures getRendererFeatures() {
-        return null;
+        return this;
     }
 
     public void close() {
@@ -455,6 +459,23 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return selection;
     }
 
+    public boolean supportScale() {
+        if (StringUtils.isNullOrEmpty(documentPath)) {
+            return false;
+        }
+        return documentPath.toLowerCase().endsWith("pdf");
+    }
+
+    public boolean supportFontSizeAdjustment() {
+        return true;
+    }
+
+    public boolean supportTypefaceAdjustment() {
+        if (StringUtils.isNullOrEmpty(documentPath)) {
+            return false;
+        }
+        return documentPath.toLowerCase().endsWith("epub");
+    }
 
 
 }

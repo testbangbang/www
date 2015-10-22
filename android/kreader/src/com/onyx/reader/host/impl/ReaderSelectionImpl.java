@@ -68,4 +68,8 @@ public class ReaderSelectionImpl implements ReaderSelection {
         //return (result == null || result.getStartPosition().isBlankInternalLocation() || ReaderUtils.isBlankString(result.getText()));
     }
 
+    public SelectionType getSelectionType() {
+        return null;
+    }
+
 }

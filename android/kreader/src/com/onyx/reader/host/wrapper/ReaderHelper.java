@@ -25,6 +25,7 @@ public class ReaderHelper {
     private ReaderView view;
     private ReaderNavigator navigator;
     private ReaderRenderer renderer;
+    private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
     private ReaderBitmapImpl renderBitmap;
     private ReaderLayoutManager readerLayoutManager;
@@ -43,6 +44,7 @@ public class ReaderHelper {
         view = document.createView(viewOptions);
         renderer = view.getRenderer();
         navigator = view.getNavigator();
+        rendererFeatures = renderer.getRendererFeatures();
         hitTestManager = view.getReaderHitTestManager();
         getReaderLayoutManager().init();
     }
@@ -139,6 +141,10 @@ public class ReaderHelper {
 
     public ReaderRenderer getRenderer() {
         return renderer;
+    }
+
+    public ReaderRendererFeatures getRendererFeatures() {
+        return rendererFeatures;
     }
 
     public ReaderSearchManager getSearchManager() {

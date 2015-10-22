@@ -42,11 +42,6 @@ public class ReaderLayoutManager {
     public ReaderLayoutManager(final Reader r) {
         reader = r;
         readerHelper = reader.getReaderHelper();
-        provider.put(SINGLE_HARD_PAGE, new LayoutSingleHardPageProvider(this));
-        provider.put(SINGLE_NAVIGATION_LIST_PAGE, new LayoutSingleNavigationListProvider(this));
-        provider.put(REFLOW_PAGE, new LayoutReflowProvider(this));
-        provider.put(CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
-        currentProvider = SINGLE_HARD_PAGE;
     }
 
     public Reader getReader() {
@@ -64,6 +59,23 @@ public class ReaderLayoutManager {
     public void init() {
         getEntryManager().setViewportRect(0, 0, reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight());
         getPositionHolder().updatePosition(getReaderHelper().getNavigator().getInitPosition());
+
+        // check renderer features
+        boolean supportScale = reader.getRendererFeatures().supportScale();
+        boolean supportReflow = reader.getRendererFeatures().supportFontSizeAdjustment();
+        if (supportScale) {
+            provider.put(SINGLE_HARD_PAGE, new LayoutSingleHardPageProvider(this));
+            provider.put(SINGLE_NAVIGATION_LIST_PAGE, new LayoutSingleNavigationListProvider(this));
+            provider.put(CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
+        }
+        if (supportReflow) {
+            provider.put(REFLOW_PAGE, new LayoutReflowProvider(this));
+        }
+        if (supportScale) {
+            currentProvider = SINGLE_HARD_PAGE;
+        } else {
+            currentProvider = REFLOW_PAGE;
+        }
     }
 
     public LayoutProvider getCurrentLayoutProvider() {
