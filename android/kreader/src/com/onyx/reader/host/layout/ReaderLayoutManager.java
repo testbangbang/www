@@ -27,6 +27,7 @@ public class ReaderLayoutManager {
 
     public static final String SINGLE_HARD_PAGE = "singleHardPage";
     public static final String SINGLE_NAVIGATION_LIST_PAGE = "singleNavigationListPage";
+    public static final String CONTINUOUS_PAGE = "continuousPage";
     public static final String REFLOW_PAGE = "reflowPage";
     public static final String SCANNED_REFLOW_PAGE = "scanReflowPage";
 
@@ -44,6 +45,7 @@ public class ReaderLayoutManager {
         provider.put(SINGLE_HARD_PAGE, new LayoutSingleHardPageProvider(this));
         provider.put(SINGLE_NAVIGATION_LIST_PAGE, new LayoutSingleNavigationListProvider(this));
         provider.put(REFLOW_PAGE, new LayoutReflowProvider(this));
+        provider.put(CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
         currentProvider = SINGLE_HARD_PAGE;
     }
 

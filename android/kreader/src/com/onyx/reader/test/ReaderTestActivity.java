@@ -71,7 +71,7 @@ public class ReaderTestActivity extends Activity {
 
     public void testChangeLayout() {
         NavigationArgs navigationArgs = NavigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, null);
-        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.SINGLE_NAVIGATION_LIST_PAGE, navigationArgs);
+        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.CONTINUOUS_PAGE, navigationArgs);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -136,6 +136,18 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png");
+                testOriginScale();
+            }
+        });
+    }
+
+    public void testOriginScale() {
+        final ScaleRequest renderRequest = new ScaleRequest(0.3f, 0, 0);
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                assert(e == null);
+                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/originScale.png");
                 testNextScreen();
             }
         });
