@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.engbooktest2"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="16" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+    <application
+        android:name="com.example.engbooktest2.MainApp"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.example.engbooktest2.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|uiMode|fontScale|locale|touchscreen|keyboard|navigation"
+            android:hardwareAccelerated="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:stateNotNeeded="true" >
+- 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+- 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.PICK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host=""
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:scheme="file" />
+                <data android:mimeType="text/xml" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="text/html" />
+                <data android:mimeType="text/fb2+xml" />
+                <data android:mimeType="text/rtf" />
+                <data android:mimeType="text/richtext" />
+                <data android:mimeType="text/*" />
+                <data android:mimeType="application/text" />
+                <data android:mimeType="application/txt" />
+                <data android:mimeType="application/txt+zip" />
+                <data android:mimeType="application/txt.zip" />
+                <data android:mimeType="text/html" />
+                <data android:mimeType="application/html" />
+                <data android:mimeType="application/html+zip" />
+                <data android:mimeType="application/html.zip" />
+                <data android:mimeType="text/fb2+xml" />
+                <data android:mimeType="application/x-fb2" />
+                <data android:mimeType="application/fb2" />
+                <data android:mimeType="application/fb2.zip" />
+                <data android:mimeType="application/fb2+zip" />
+                <data android:mimeType="application/zip" />
+                <data android:mimeType="application/x-fictionbook" />
+                <data android:mimeType="application/x-fictionbook+xml" />
+                <data android:mimeType="application/x-fictionbook+zip" />
+                <data android:mimeType="application/epub+zip" />
+                <data android:mimeType="application/epub" />
+                <data android:mimeType="application/x-mobipocket-ebook" />
+                <data android:mimeType="application/azw3" />
+                <data android:mimeType="application/mobi" />
+                <data android:mimeType="application/prc" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/odt" />
+                <data android:mimeType="application/rtf" />
+                <data android:mimeType="application/x-rtf" />
+                <data android:mimeType="text/rtf" />
+                <data android:mimeType="text/richtext" />
+                <data android:mimeType="application/rtf+zip" />
+                <data android:mimeType="application/rtf.zip" />
+                <data android:mimeType="application/msword" />
+                <data android:mimeType="application/doc" />
+                <data android:mimeType="application/docx" />
+                <data android:mimeType="application/vnd.msword" />
+                <data android:mimeType="application/vnd.ms-word" />
+                <data android:mimeType="application/winword" />
+                <data android:mimeType="application/word" />
+                <data android:mimeType="application/x-msw6" />
+                <data android:mimeType="application/x-msword" />
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                <data android:mimeType="application/doc+zip" />
+                <data android:mimeType="application/doc.zip" />
+            </intent-filter>
+- 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.PICK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host=""
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:scheme="file" />
+                <data android:pathPattern=".*\\.fb2\\.zip" />
+                <data android:pathPattern=".*\\.epub\\.zip" />
+                <data android:pathPattern=".*\\.zip" />
+                <data android:pathPattern=".*\\.fbz" />
+                <data android:pathPattern=".*\\.fb2" />
+                <data android:pathPattern=".*\\.txt" />
+                <data android:pathPattern=".*\\.[eE][pP][uU][bB]" />
+                <data android:pathPattern=".*\\.epub" />
+                <data android:pathPattern=".*\\.rtf" />
+                <data android:pathPattern=".*\\.odt" />
+                <data android:pathPattern=".*\\.doc" />
+                <data android:pathPattern=".*\\.docx" />
+                <data android:pathPattern=".*\\.docm" />
+                <data android:pathPattern=".*\\.sxw" />
+                <data android:pathPattern=".*\\.pdb" />
+                <data android:pathPattern=".*\\.prc" />
+                <data android:pathPattern=".*\\.mobi" />
+                <data android:pathPattern=".*\\.azw" />
+                <data android:pathPattern=".*\\.azw3" />
+                <data android:pathPattern=".*\\.trc" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
