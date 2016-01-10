@@ -393,12 +393,14 @@ public class ReaderTestActivity extends Activity {
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setTextSize(40);
+        paint.setStyle(Paint.Style.STROKE);
 
         Canvas canvas = holder.lockCanvas();
         canvas.drawColor(Color.WHITE);
         for(Element element : list) {
             element.draw(canvas);
         }
+        canvas.drawRect(rectF, paint);
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -418,7 +420,7 @@ public class ReaderTestActivity extends Activity {
 
     private Style randStyle() {
         Paint paint = new Paint();
-        paint.setTextSize(40);
+        paint.setTextSize(randInt(30, 60));
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);

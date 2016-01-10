@@ -35,7 +35,7 @@ public class TextElement implements Element {
 
     public float measureWidth() {
         if (width <= 0) {
-            width = style.getPaint().measureText(text);
+            width = style.measureWidth(text);
         }
         return width;
     }
@@ -46,14 +46,13 @@ public class TextElement implements Element {
 
     public float measureHeight() {
         if (height <= 0) {
-            style.getPaint().getTextBounds(text, 0, text.length(), rect);
-            height = rect.height();
+            height = style.measureHeight(text);
         }
         return height;
     }
 
     public boolean layout(final TextLayoutContext textLayoutContext) {
-        if (measureWidth() < textLayoutContext.getLeftWidth() && measureHeight() < textLayoutContext.getLeftHeight()) {
+        if (measureWidth() < textLayoutContext.getAvailableWidth() && measureHeight() < textLayoutContext.getAvailableHeight()) {
             return true;
         }
         return false;
@@ -76,15 +75,15 @@ public class TextElement implements Element {
     }
 
 
-    public void setX(final float px) {
+    public void setElementX(final float px) {
         x = px;
     }
 
-    public void setY(final float py) {
+    public void setElementY(final float py) {
         y = py;
     }
 
-    public void setPosition(final float px, final float py) {
+    public void setElementPosition(final float px, final float py) {
         x = px;
         y = py;
     }

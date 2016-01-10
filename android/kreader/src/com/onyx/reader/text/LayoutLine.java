@@ -1,7 +1,6 @@
 package com.onyx.reader.text;
 
 import android.graphics.RectF;
-import com.onyx.reader.host.layout.LayoutContinuousProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +12,11 @@ public class LayoutLine {
 
     private List<Element> elementList = new ArrayList<Element>();
     private List<Float> spacingList = new ArrayList<Float>();
-    private float lineHeight = 0;
-    private float lineWidth = 0;
+    private float contentHeight = 0;
+    private float contentWidth = 0;
     private float totalSpacing = 0;
-    private float currentX;
-    private float currentY;
+    private float x;
+    private float y;
     private int direction = 1;
 
 
@@ -26,40 +25,40 @@ public class LayoutLine {
     }
 
     public void initialize(final RectF rect, int directionValue) {
-        currentX = rect.left;
-        currentY = rect.top;
+        x = rect.left;
+        y = rect.top;
         direction = directionValue;
-        lineWidth = 0;
+        contentWidth = 0;
     }
 
-    public void setLinePosition(final float x, final float y) {
-        currentX = x;
-        currentY = y;
+    public void setLinePosition(final float px, final float py) {
+        x = px;
+        y = py;
     }
 
-    public void addElement(final TextLayoutContext layoutContext, final Element element) {
-        element.setPosition(currentX, currentY);
+    public void addElement(final Element element) {
+        element.setElementPosition(x, y);
         elementList.add(element);
         spacingList.add(element.spacing());
         totalSpacing += element.spacing();
-        currentX += getDirection() * element.measureWidth();
-        currentX += getDirection() * element.spacing();
-        if (lineHeight < element.measureHeight()) {
-            lineHeight = element.measureHeight();
+        x += getDirection() * element.measureWidth();
+        x += getDirection() * element.spacing();
+        if (contentHeight < element.measureHeight()) {
+            contentHeight = element.measureHeight();
         }
-        lineWidth += element.measureWidth();
+        contentWidth += element.measureWidth();
     }
 
-    public float getLineWidth() {
-        return lineWidth;
+    public float getContentWidth() {
+        return contentWidth;
     }
 
-    public float getLineHeight() {
-        return lineHeight;
+    public float getContentHeight() {
+        return contentHeight;
     }
 
     public float getYPosition() {
-        return currentY;
+        return y;
     }
 
     public float totalSpacingWidth() {
@@ -71,7 +70,7 @@ public class LayoutLine {
     }
 
     public void averageSpacing(final float originLeft, final float totalWidth) {
-        float leftSpace = totalWidth - lineWidth;
+        float leftSpace = totalWidth - contentWidth;
         if (leftSpace <= 0) {
             return;
         }
@@ -81,7 +80,7 @@ public class LayoutLine {
         float average = leftSpace / (spacingCount() - 1);
         float left = originLeft;
         for(Element element : elementList) {
-            element.setX(left);
+            element.setElementX(left);
             left += element.measureWidth();
             left += average;
         }
