@@ -1,10 +1,15 @@
 package com.onyx.reader.test;
 
 import android.app.Activity;
-import android.graphics.PointF;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.os.Bundle;
+import android.text.TextPaint;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.Button;
 import com.onyx.reader.R;
 import com.onyx.reader.api.ReaderSelection;
 import com.onyx.reader.api.ReaderViewOptions;
@@ -20,11 +25,10 @@ import com.onyx.reader.host.navigation.NavigationArgs;
 import com.onyx.reader.host.request.*;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderManager;
+import com.onyx.reader.text.*;
 import com.onyx.reader.utils.BitmapUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -32,8 +36,12 @@ import java.util.Random;
 public class ReaderTestActivity extends Activity {
     private Reader reader;
     final String path = "file:///mnt/sdcard/Books/ZerotoOne.pdf";
-    int pn = 0;
-    int next = 0;
+    private int pn = 0;
+    private int next = 0;
+    private SurfaceView surfaceView;
+    private SurfaceHolder holder;
+    private SurfaceHolder.Callback surfaceHolderCallback;
+    private Button button;
 
     public static int randInt(int min, int max) {
         Random rand = new Random();
@@ -45,6 +53,7 @@ public class ReaderTestActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        initSurfaceView();
         reader = ReaderManager.createReader(this, path, null, getViewOptions());
         testMath();
         testMath2();
@@ -52,6 +61,51 @@ public class ReaderTestActivity extends Activity {
         testMath4();
         testMath5();
         testReaderOpen();
+    }
+
+    private void initSurfaceView() {
+        button = (Button)findViewById(R.id.update);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                testSpan();
+            }
+        });
+
+        surfaceView = (SurfaceView)findViewById(R.id.surfaceView);
+        surfaceHolderCallback = new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                Canvas canvas = holder.lockCanvas();
+                canvas.drawColor(Color.WHITE);
+                holder.unlockCanvasAndPost(canvas);
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                Canvas canvas = holder.lockCanvas();
+                canvas.drawColor(Color.WHITE);
+                holder.unlockCanvasAndPost(canvas);
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                holder.removeCallback(surfaceHolderCallback);
+            }
+        };
+
+        surfaceView.getHolder().addCallback(surfaceHolderCallback);
+        holder = surfaceView.getHolder();
+        surfaceView.setFocusable(true);
+        surfaceView.setFocusableInTouchMode(true);
+        surfaceView.requestFocusFromTouch();
+
+        surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
     }
 
     public ReaderViewOptions getViewOptions() {
@@ -317,4 +371,56 @@ public class ReaderTestActivity extends Activity {
         }
     }
 
+    // use span list to draw string
+    // split into word list
+    // get each word size
+    // adjust the spacing if necessary
+    // adjust the character finally
+
+    private void testSpan() {
+        TextLayout textLayout = new TextLayout();
+        Rect rect = new Rect();
+        surfaceView.getDrawingRect(rect);
+        rect.offset(0, 200);
+        List<Element> list = new ArrayList<Element>();
+        int count = randInt(10, 200);
+        for(int i = 0; i < count; ++i) {
+            list.add(randElement());
+        }
+        textLayout.layoutElementsAdjusted(new RectF(rect), list);
+
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(40);
+
+        Canvas canvas = holder.lockCanvas();
+        canvas.drawColor(Color.WHITE);
+        for(Element element : list) {
+            element.draw(canvas);
+        }
+        holder.unlockCanvasAndPost(canvas);
+    }
+
+    private String randString(int length) {
+        String source = "abcdefghijklmnopqrsturvexyz;ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        char[] text = new char[length];
+        for (int i = 0; i < length; i++) {
+            text[i] = source.charAt(randInt(0, source.length() - 1));
+        }
+        return new String(text);
+    }
+
+    private Element randElement() {
+        Element element = TextElement.create(randString(randInt(1, 10)), randStyle());
+        return element;
+    }
+
+    private Style randStyle() {
+        Paint paint = new Paint();
+        paint.setTextSize(randInt(13, 40));
+        paint.setColor(Color.BLACK);
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+        return TextStyle.create(paint);
+    }
 }
