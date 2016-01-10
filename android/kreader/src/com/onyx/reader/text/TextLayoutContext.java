@@ -22,6 +22,9 @@ public class TextLayoutContext {
     }
 
     public float addElement(final float width) {
+        if (leftWidth < width) {
+            leftWidth = 0;
+        }
         leftWidth -= width;
         return leftWidth;
     }

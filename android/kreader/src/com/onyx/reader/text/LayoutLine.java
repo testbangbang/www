@@ -1,6 +1,7 @@
 package com.onyx.reader.text;
 
 import android.graphics.RectF;
+import com.onyx.reader.host.layout.LayoutContinuousProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +15,11 @@ public class LayoutLine {
     private List<Float> spacingList = new ArrayList<Float>();
     private float lineHeight = 0;
     private float lineWidth = 0;
+    private float totalSpacing = 0;
     private float currentX;
     private float currentY;
     private int direction = 1;
+
 
     private int getDirection() {
         return direction;
@@ -24,7 +27,7 @@ public class LayoutLine {
 
     public void initialize(final RectF rect, int directionValue) {
         currentX = rect.left;
-        currentY = 0;
+        currentY = rect.top;
         direction = directionValue;
         lineWidth = 0;
     }
@@ -34,17 +37,21 @@ public class LayoutLine {
         currentY = y;
     }
 
-    public void addElement(final Element element) {
+    public void addElement(final TextLayoutContext layoutContext, final Element element) {
         element.setPosition(currentX, currentY);
         elementList.add(element);
         spacingList.add(element.spacing());
+        totalSpacing += element.spacing();
         currentX += getDirection() * element.measureWidth();
         currentX += getDirection() * element.spacing();
         if (lineHeight < element.measureHeight()) {
             lineHeight = element.measureHeight();
         }
         lineWidth += element.measureWidth();
-        lineWidth += element.spacing();
+    }
+
+    public float getLineWidth() {
+        return lineWidth;
     }
 
     public float getLineHeight() {
@@ -56,18 +63,14 @@ public class LayoutLine {
     }
 
     public float totalSpacingWidth() {
-        float width = 0.0f;
-        for(Float value : spacingList) {
-            width += value;
-        }
-        return width;
+        return totalSpacing;
     }
 
     public int spacingCount() {
         return spacingList.size();
     }
 
-    public void averageSpacing(final float totalWidth) {
+    public void averageSpacing(final float originLeft, final float totalWidth) {
         float leftSpace = totalWidth - lineWidth;
         if (leftSpace <= 0) {
             return;
@@ -76,7 +79,7 @@ public class LayoutLine {
             return;
         }
         float average = leftSpace / (spacingCount() - 1);
-        float left = 0;
+        float left = originLeft;
         for(Element element : elementList) {
             element.setX(left);
             left += element.measureWidth();

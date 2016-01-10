@@ -3,6 +3,7 @@ package com.onyx.reader.text;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -28,23 +29,29 @@ public class TextLayout {
         textLayoutContext.initializeOriginRect(rect);
         List<LayoutLine> layoutLines = new ArrayList<LayoutLine>();
         createLayoutLine().initialize(rect, 1);
-        for(Element element : list) {
+
+        Element element = null;
+        Iterator<Element> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            if (element == null) {
+                element = iterator.next();
+            }
             if (element.layout(textLayoutContext)) {
-                addElement(element);
-                continue;
-            } else if (possibleToAdjustSpacing(textLayoutContext, currentLine, element)) {
-                addElement(element);
-                nextLayoutLine();
-                continue;
-            } else if (element.breakElement(textLayoutContext.getLeftWidth(), textLayoutContext.getLeftHeight()) != null){
+                addElement(textLayoutContext, element);
+                element = iterator.next();
+            } else if (borrowFromSpacing(textLayoutContext, currentLine, element)) {
+                addElement(textLayoutContext, element);
                 averageLineSpacing(currentLine, textLayoutContext);
-                addElement(element);
                 nextLayoutLine();
-                continue;
+                element = iterator.next();
+            } else if (element.breakElement(textLayoutContext.getLeftWidth(), textLayoutContext.getLeftHeight()) != null){
+                addElement(textLayoutContext, element);
+                averageLineSpacing(currentLine, textLayoutContext);
+                nextLayoutLine();
+                element = iterator.next();
             } else {
                 averageLineSpacing(currentLine, textLayoutContext);
                 nextLayoutLine();
-                continue;
             }
         }
         processLastLine();
@@ -58,12 +65,15 @@ public class TextLayout {
         return currentLine;
     }
 
-    private void addElement(final Element element) {
-        currentLine.addElement(element);
+    private void addElement(final TextLayoutContext textLayoutContext, final Element element) {
+        currentLine.addElement(textLayoutContext, element);
         textLayoutContext.addElement(element.measureWidth());
     }
 
     private LayoutLine nextLayoutLine() {
+        if (currentLine.getLineWidth() > textLayoutContext.getOriginRect().width()) {
+            int i = 0;
+        }
         float lineHeight = currentLine.getLineHeight();
         textLayoutContext.addLine(lineHeight);
         float position = currentLine.getYPosition() + currentLine.getLineHeight();
@@ -84,19 +94,28 @@ public class TextLayout {
      * @param element current element to process.
      * @return possible or not.
      */
-    private boolean possibleToAdjustSpacing(final TextLayoutContext textLayoutContext, final LayoutLine layoutLine, final Element element) {
-        float requiredWidth = element.measureWidth() - textLayoutContext.getLeftWidth();
-        if (layoutLine.totalSpacingWidth() < requiredWidth) {
+    private boolean borrowFromSpacing(final TextLayoutContext textLayoutContext, final LayoutLine layoutLine, final Element element) {
+        if (layoutLine.getLineWidth() + element.measureWidth() >= textLayoutContext.getOriginRect().width()) {
             return false;
         }
-        if (layoutLine.totalSpacingWidth() - requiredWidth / layoutLine.spacingCount() < 5) {
+
+        float requiredWidth = element.measureWidth() - textLayoutContext.getLeftWidth();
+        float totalSpacingWidth = layoutLine.totalSpacingWidth();
+        if (totalSpacingWidth < requiredWidth) {
+            return false;
+        }
+        if ((totalSpacingWidth - requiredWidth) / (float)layoutLine.spacingCount() < minElementSpacing()) {
             return false;
         }
         return true;
     }
 
+    private float minElementSpacing() {
+        return 12;
+    }
+
     private void averageLineSpacing(final LayoutLine line, final TextLayoutContext textLayoutContext) {
-        line.averageSpacing(textLayoutContext.getOriginRect().width());
+        line.averageSpacing(textLayoutContext.getOriginRect().left, textLayoutContext.getOriginRect().width());
     }
 
     private void averageParagraphSpacing(final List<LayoutLine> list) {

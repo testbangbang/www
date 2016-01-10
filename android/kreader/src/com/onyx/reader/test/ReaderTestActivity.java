@@ -381,13 +381,14 @@ public class ReaderTestActivity extends Activity {
         TextLayout textLayout = new TextLayout();
         Rect rect = new Rect();
         surfaceView.getDrawingRect(rect);
-        rect.offset(0, 200);
         List<Element> list = new ArrayList<Element>();
-        int count = randInt(10, 200);
+        int count = randInt(500, 1000);
         for(int i = 0; i < count; ++i) {
             list.add(randElement());
         }
-        textLayout.layoutElementsAdjusted(new RectF(rect), list);
+        int offset = 100;
+        RectF rectF = new RectF(rect.left + offset, rect.top + offset, rect.right - offset, rect.bottom - offset);
+        textLayout.layoutElementsAdjusted(rectF, list);
 
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
@@ -402,7 +403,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     private String randString(int length) {
-        String source = "abcdefghijklmnopqrsturvexyz;ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String source = "【数据造假成常态，互联网行业自律出路在何处？】我是一名96年出生的创业者，虽然我今年才19岁，但其实我已经在互联网行业折腾近5年了。接触的越久，知道的越多。看到满大街的创业新闻，我忍不住吐槽一句“中国创业只有一个索尼展示360度4K视频，用了12部Xperia Z5 Compact完成】在今年的CES2016上索尼并没有展出新手机，所以在推广自家Xperia Z5系列手机的任务依旧艰难。最近索尼分享了一段用12部Xperia Z5 Compact拍摄的360度4K视频行业：互联网”。那么就接着这个话题继续吐槽吧";
         char[] text = new char[length];
         for (int i = 0; i < length; i++) {
             text[i] = source.charAt(randInt(0, source.length() - 1));
@@ -411,13 +412,13 @@ public class ReaderTestActivity extends Activity {
     }
 
     private Element randElement() {
-        Element element = TextElement.create(randString(randInt(1, 10)), randStyle());
+        Element element = TextElement.create(randString(1), randStyle());
         return element;
     }
 
     private Style randStyle() {
         Paint paint = new Paint();
-        paint.setTextSize(randInt(13, 40));
+        paint.setTextSize(40);
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
