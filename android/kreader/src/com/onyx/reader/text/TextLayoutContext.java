@@ -32,12 +32,16 @@ public class TextLayoutContext {
 
     public LayoutLine nextLayoutLine(){
         verify();
-        float prevLineHeight = currentLine.getContentHeight();
+        float prevLineHeight = currentLine.getContentHeight() * getLineSpacing();
         float newLinePosition = currentLine.getYPosition() + prevLineHeight;
         addLine(prevLineHeight);
         createLayoutLine();
         currentLine.setLinePosition(getLimitedRect().left, newLinePosition);
         return currentLine;
+    }
+
+    public float getLineSpacing() {
+        return 1.2f;
     }
 
     public LayoutLine getCurrentLine() {
@@ -48,7 +52,7 @@ public class TextLayoutContext {
         return layoutLines;
     }
 
-    public void averageLineSpacing() {
+    public void averageCurrentLineSpacing() {
         getCurrentLine().averageSpacing(getLimitedRect().left, getLimitedRect().width());
     }
 

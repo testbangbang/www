@@ -13,11 +13,11 @@ public class TextLayout {
     private TextLayoutContext textLayoutContext = new TextLayoutContext();
 
     /**
-     * Algorithm: try element at first, add the element if possible to layout
-     * if there is no enough measureWidth, try to compare spacing and required measureWidth
-     * if required measureWidth less than spacing * 0.3, reduce the spacing of this line
-     * otherwise try to hypernate and adjust spacing
-     * if hypernate is not possible, move to next line and adjust spacing
+     * Algorithm: try element at first, add the element to layout if possible.
+     * if there is no enough room, try to compare spacing and required width
+     * if required width less than spacing, reduce the spacing among words of this line
+     * otherwise try to break element if possible and adjust spacing
+     * if hyphenation is not possible, move to next line and adjust word spacing of current line.
      * @param rect the layout rect.
      * @param list the element list
      * @return layout lines
@@ -39,7 +39,7 @@ public class TextLayout {
             } else if (breakElementFilter(textLayoutContext, element)){
                 element = iterator.next();
             } else {
-                textLayoutContext.averageLineSpacing();
+                textLayoutContext.averageCurrentLineSpacing();
                 textLayoutContext.nextLayoutLine();
             }
         }
@@ -61,7 +61,7 @@ public class TextLayout {
             return false;
         }
         textLayoutContext.addElement(element);
-        textLayoutContext.averageLineSpacing();
+        textLayoutContext.averageCurrentLineSpacing();
         textLayoutContext.nextLayoutLine();
         return true;
     }
@@ -72,13 +72,13 @@ public class TextLayout {
             return false;
         }
         textLayoutContext.addElement(element);
-        textLayoutContext.averageLineSpacing();
+        textLayoutContext.averageCurrentLineSpacing();
         textLayoutContext.nextLayoutLine();
         return true;
     }
 
     private void processLastLine() {
-        textLayoutContext.averageLineSpacing();
+        textLayoutContext.averageCurrentLineSpacing();
     }
 
     private void averageParagraphSpacing(final TextLayoutContext textLayoutContext) {
