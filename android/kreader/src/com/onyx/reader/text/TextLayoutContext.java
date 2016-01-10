@@ -41,7 +41,7 @@ public class TextLayoutContext {
     }
 
     public float getLineSpacing() {
-        return 1.2f;
+        return 1.5f;
     }
 
     public LayoutLine getCurrentLine() {

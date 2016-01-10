@@ -420,7 +420,7 @@ public class ReaderTestActivity extends Activity {
 
     private Style randStyle() {
         Paint paint = new Paint();
-        paint.setTextSize(randInt(30, 60));
+        paint.setTextSize(35);
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
