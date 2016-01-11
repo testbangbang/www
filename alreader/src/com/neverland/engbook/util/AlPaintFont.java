@@ -4,6 +4,7 @@ import android.graphics.Paint;
 
 public class AlPaintFont {
 	public Paint	fnt = null;
+	public long		style;
 	
 	public int		height = 0;
 	public int		base_line_up = 0;

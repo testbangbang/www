@@ -2,6 +2,8 @@ package com.neverland.engbook.level1;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
 import com.neverland.engbook.forpublic.TAL_RESULT;
@@ -9,7 +11,7 @@ import com.neverland.engbook.forpublic.TAL_RESULT;
 
 public abstract class AlFiles {
 	
-	public static final int LEVEL1_FILE_BUF_SIZE =		32768;
+	public static final int LEVEL1_FILE_BUF_SIZE =		65536;//32768;
 	public static final int LEVEL1_FILE_BUF_MASK = 		((0xffffffff - LEVEL1_FILE_BUF_SIZE) + 1);
 	public static final int LEVEL1_FILE_BUF_MASK_DATA =	(LEVEL1_FILE_BUF_SIZE - 1);
 	public static final int LEVEL1_FILE_NAME_MAX_LENGTH	 = 256;
@@ -24,7 +26,7 @@ public abstract class AlFiles {
 	protected int[]		slot_end = {0, 0};
 	protected byte[] 	slot[] = {new byte[LEVEL1_FILE_BUF_SIZE], new byte[LEVEL1_FILE_BUF_SIZE]};
 	
-	static long			time_load;
+	public static long			time_load;
 	AlFiles				parent;
 	String				ident;	
 	
@@ -101,6 +103,8 @@ public abstract class AlFiles {
 				continue;
 			}
 						
+			//Log.e("slot read", Integer.toString(point & LEVEL1_FILE_BUF_MASK));
+			
 			slot_start[slot_active] = point & LEVEL1_FILE_BUF_MASK;
 			i = getBuffer(slot_start[slot_active], slot[slot_active], LEVEL1_FILE_BUF_SIZE);
 			if (i >= 0) {
@@ -266,6 +270,6 @@ public abstract class AlFiles {
 		return false;
 	}
 	
-	abstract int getBuffer(final int pos, byte[] dst, int cnt);
+	abstract protected int getBuffer(final int pos, byte[] dst, int cnt);
 
 }

@@ -57,6 +57,16 @@ public class AlUnicode {
 		return false;		
 	}
 	
+	public final static boolean isUpperCase(char ch) {
+		final int t = Character.getType(ch); 
+		switch (t) {
+		case Character.UPPERCASE_LETTER:
+		case Character.TITLECASE_LETTER:
+			return true;
+		}
+		return false;
+	}
+	
 	public final static boolean isRTFManage(char ch) {
 		return ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'));
 	}
@@ -174,8 +184,8 @@ public class AlUnicode {
 	}
 	
 	
-	public final static int readRealCodePage(String src) {
-		String test = src.toLowerCase();
+	public final static int readRealCodePage(StringBuilder src) {
+		String test = src.toString().toLowerCase();
 		
 		for (Entry<String, Integer> entry: encodingXMLMap.entrySet()) {
 		    if (test.indexOf(entry.getKey()) != -1) {
@@ -187,8 +197,85 @@ public class AlUnicode {
 		
 		return TAL_CODE_PAGES.AUTO;
 	}
+	
+	public static final char[] getDataCP(int cp) {
+		switch (cp) {
+		case TAL_CODE_PAGES.CP437: return data_437;
+		case TAL_CODE_PAGES.CP850: return data_850;
+		case TAL_CODE_PAGES.CP855: return data_855;
+		case TAL_CODE_PAGES.CP860: return data_860;
+		case TAL_CODE_PAGES.CP861: return data_861;
+		case TAL_CODE_PAGES.CP863: return data_863;
+		case TAL_CODE_PAGES.CP865: return data_865;
+		case TAL_CODE_PAGES.CP866: return data_866;
+		case TAL_CODE_PAGES.CP874: return data_874;
+		case TAL_CODE_PAGES.CP1250: return data_1250;
+		case TAL_CODE_PAGES.CP1251: return data_1251;
+		case TAL_CODE_PAGES.CP1252: return data_1252;
+		case TAL_CODE_PAGES.CP1253: return data_1253;
+		case TAL_CODE_PAGES.CP1254: return data_1254;
+		case TAL_CODE_PAGES.CP1255: return data_1255;
+		case TAL_CODE_PAGES.CP1256: return data_1256;
+		case TAL_CODE_PAGES.CP1257: return data_1257;
+		case TAL_CODE_PAGES.CP1258: return data_1258;
+		case TAL_CODE_PAGES.CP10007: return data_10007;
+		case TAL_CODE_PAGES.CP10017: return data_10017;
+		case TAL_CODE_PAGES.CP10079: return data_10079;
+		case TAL_CODE_PAGES.CP20127: return data_20127;
+		case TAL_CODE_PAGES.CP20866: return data_20866;
+		case TAL_CODE_PAGES.CP21866: return data_21866;
+		case TAL_CODE_PAGES.CP28591: return data_28591;
+		case TAL_CODE_PAGES.CP28592: return data_28592;
+		case TAL_CODE_PAGES.CP28595: return data_28595;
+		case TAL_CODE_PAGES.CP28605: return data_28605;		
+		}
+		return data_1251;
+	}
 
-	public static char byte2Wide(final int cp, final byte[] src, AlIntHolder src_pos) {
+	public static final int int2cp(int newcp) {
+		switch (newcp) {
+		case TAL_CODE_PAGES.CP65001:			
+		case TAL_CODE_PAGES.CP1201:
+		case TAL_CODE_PAGES.CP1200:			
+		case TAL_CODE_PAGES.CP932:
+		case TAL_CODE_PAGES.CP936:					
+		case TAL_CODE_PAGES.CP949:					
+		case TAL_CODE_PAGES.CP950:					
+		case TAL_CODE_PAGES.CP437:
+		case TAL_CODE_PAGES.CP850:
+		case TAL_CODE_PAGES.CP855:
+		case TAL_CODE_PAGES.CP860:
+		case TAL_CODE_PAGES.CP861:
+		case TAL_CODE_PAGES.CP863:
+		case TAL_CODE_PAGES.CP865:
+		case TAL_CODE_PAGES.CP866:
+		case TAL_CODE_PAGES.CP874:
+		case TAL_CODE_PAGES.CP1250:
+		case TAL_CODE_PAGES.CP1251:
+		case TAL_CODE_PAGES.CP1252:
+		case TAL_CODE_PAGES.CP1253:
+		case TAL_CODE_PAGES.CP1254:
+		case TAL_CODE_PAGES.CP1255:
+		case TAL_CODE_PAGES.CP1256:
+		case TAL_CODE_PAGES.CP1257:
+		case TAL_CODE_PAGES.CP1258:
+		case TAL_CODE_PAGES.CP10007:
+		case TAL_CODE_PAGES.CP10017:
+		case TAL_CODE_PAGES.CP10079:
+		case TAL_CODE_PAGES.CP20127:
+		case TAL_CODE_PAGES.CP20866:
+		case TAL_CODE_PAGES.CP21866:
+		case TAL_CODE_PAGES.CP28591:
+		case TAL_CODE_PAGES.CP28592:
+		case TAL_CODE_PAGES.CP28595:
+		case TAL_CODE_PAGES.CP28605:
+			return newcp;
+		}
+		return TAL_CODE_PAGES.AUTO;
+	}
+	
+	
+	public static final char byte2Wide(final int cp, final byte[] src, AlIntHolder src_pos) {
 		char ch = (char)src[src_pos.value++], ch1;
 					
 		ch &= 0xff;

@@ -114,12 +114,12 @@ public class AlFormatFB2 extends AlAXML {
 					
 		autoCodePage = bookOptions.codePage == TAL_CODE_PAGES.AUTO;		
 		if (autoCodePage) {
-			use_cpR = getBOMCodePage(true, true, true, false);		
+			setCP(getBOMCodePage(true, true, true, false));		
 		} else {
-			use_cpR = bookOptions.codePage;
+			setCP(bookOptions.codePage);
 		}
-		if (use_cpR == TAL_CODE_PAGES.AUTO)
-			use_cpR = bookOptions.codePageDefault;
+		if (use_cpR0 == TAL_CODE_PAGES.AUTO)
+			setCP(bookOptions.codePageDefault);
 		
 		allState.state_parser = STATE_XML_SKIP;
 		allState.state_skipped_flag = true;
@@ -166,7 +166,7 @@ public class AlFormatFB2 extends AlAXML {
 		StringBuilder s = new StringBuilder();
 		s.setLength(0);
 		
-		String s1 = tag.getATTRValue(AlFormatTag.TAG_NAME);
+		StringBuilder s1 = tag.getATTRValue(AlFormatTag.TAG_NAME);
 		if (s1 != null)
 			s.append(s1);
 
@@ -200,56 +200,56 @@ public class AlFormatFB2 extends AlAXML {
 
 	void setSpecialText(boolean flag) {
 		if (flag) {
-			allState.state_special_flag = true;
-			state_specialBuff.setLength(0);
+			allState.state_special_flag0 = true;
+			state_specialBuff0.setLength(0);
 		} else {
 			
 			if (isAuthorFirst) {
-				firstAuthor = state_specialBuff.toString();
+				firstAuthor = state_specialBuff0.toString();
 				isAuthorFirst = false;
 			} else 
 			if (isAuthorMiddle) {
-				middleAuthor = state_specialBuff.toString();
+				middleAuthor = state_specialBuff0.toString();
 				isAuthorMiddle = false;
 			} else
 			if (isAuthorLast) {
-				lastAuthor = state_specialBuff.toString();
+				lastAuthor = state_specialBuff0.toString();
 				isAuthorLast = false;
 			} else
 			if (isAuthorNick) {
-				if (state_specialBuff.length() > 0) {
-					nickAuthor = '\"' + state_specialBuff.toString() + '\"';
+				if (state_specialBuff0.length() > 0) {
+					nickAuthor = '\"' + state_specialBuff0.toString() + '\"';
 				}
 				isAuthorNick = false;
 			} else	
 			if (isGenre) {
 				if (allState.isOpened)
-					bookGenres.add(state_specialBuff.toString());
+					bookGenres.add(state_specialBuff0.toString());
 				isGenre = false;
 			} else
 			if (isBookTitle) {
 				if (allState.isOpened) {	
-					bookTitle = state_specialBuff.toString().trim();
+					bookTitle = state_specialBuff0.toString().trim();
 					addTestContent(bookTitle, section_count);
 				}
 				isBookTitle = false;
 			} else 
 			if (isTitle0) {
-				addTestContent(state_specialBuff.toString().trim(), section_count);
+				addTestContent(state_specialBuff0.toString().trim(), section_count);
 				isTitle0 = false;
 			} else
 			if (isTitle1) {
-				addTestContent(state_specialBuff.toString().trim(), section_count + 1);
+				addTestContent(state_specialBuff0.toString().trim(), section_count + 1);
 				isTitle1 = false;
 			} else	
 			if (isProgramUsed) {
 				if (program_used_position == -2) {
 					program_used_position = allState.start_position_par;				
-					if (state_specialBuff.indexOf(LEVEL2_PRGUSEDTEST) != -1) 
+					if (state_specialBuff0.indexOf(LEVEL2_PRGUSEDTEST) != -1) 
 						program_used_position = -1;
 				}
 			}
-			allState.state_special_flag = false;
+			allState.state_special_flag0 = false;
 		}
 	}
 
@@ -286,7 +286,7 @@ public class AlFormatFB2 extends AlAXML {
 	}
 
 	boolean addNotes() {
-		String s = null;
+		StringBuilder s = null;
 		
 		s = tag.getATTRValue(AlFormatTag.TAG_HREF);
 		
@@ -299,7 +299,8 @@ public class AlFormatFB2 extends AlAXML {
 				}*/
 			}
 			
-			s = (char)AlStyles.CHAR_LINK_S + s + (char)AlStyles.CHAR_LINK_E;
+			s.insert(0, (char)AlStyles.CHAR_LINK_S);
+			s.append((char)AlStyles.CHAR_LINK_E);
 			addTextFromTag(s, false);
 			return true;
 		}
@@ -310,35 +311,35 @@ public class AlFormatFB2 extends AlAXML {
 	 void testImage() {
 		image_start = -1;
 		if (allState.isOpened) {
-			String s1 = tag.getATTRValue(AlFormatTag.TAG_ID);
+			StringBuilder s1 = tag.getATTRValue(AlFormatTag.TAG_ID);
 			if (s1 != null) {
-				image_name = s1;
+				image_name = s1.toString();
 				image_start = allState.start_position;
 			}
 		}
 	}
 
 	int verifyBody() {
-		String s1 = tag.getATTRValue(AlFormatTag.TAG_NAME);
+		StringBuilder s1 = tag.getATTRValue(AlFormatTag.TAG_NAME);
 		if (s1 != null) {
-			if (s1.equalsIgnoreCase("notes"))
+			if (s1.toString().equalsIgnoreCase("notes"))
 				return FB2_BODY_NOTES;
-			if (s1.equalsIgnoreCase("footnotes"))
+			if (s1.toString().equalsIgnoreCase("footnotes"))
 				return FB2_BODY_NOTES;
-			if (s1.equalsIgnoreCase("comments"))
+			if (s1.toString().equalsIgnoreCase("comments"))
 				return FB2_BODY_COMMENT;
 		}
 		return FB2_BODY_TEXT;
 	}
 
 	boolean addImages() {
-		String s = tag.getATTRValue(AlFormatTag.TAG_HREF);
+		StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_HREF);
 				
 		if (s != null) {		
 			if ((paragraph & AlStyles.PAR_COVER) != 0) {
 				if (s.length() > 0 && s.charAt(0) == '#')
-					s = s.substring(1);
-				coverName = s;				
+					s.delete(0, 1);
+				coverName = s.toString();				
 			} else {
 				addCharFromTag((char)AlStyles.CHAR_IMAGE_S, false);
 				addTextFromTag(s, false);
@@ -571,9 +572,9 @@ public class AlFormatFB2 extends AlAXML {
 			}
 		} else {
 			if (allState.isOpened && tag.tag != AlFormatTag.TAG_BINARY) {
-				String s1 = tag.getATTRValue(AlFormatTag.TAG_ID);
+				StringBuilder s1 = tag.getATTRValue(AlFormatTag.TAG_ID);
 				if (s1 != null)
-					addtestLink(s1);	
+					addtestLink(s1.toString());	
 			}
 			
 			if (tag.ended == false) {
@@ -693,11 +694,9 @@ public class AlFormatFB2 extends AlAXML {
 						setParagraphStyle(AlStyles.PAR_TABLE);
 					} else {
 						String s1 = (char)AlStyles.CHAR_LINK_S + "table:" + Integer.toString(allState.start_position_par) + (char)AlStyles.CHAR_LINK_E;
-						String s2 = tag.getATTRValue(AlFormatTag.TAG_TITLE); ;
+						StringBuilder s2 = tag.getATTRValue(AlFormatTag.TAG_TITLE);
 						String s3 = (char)AlStyles.CHAR_IMAGE_S + LEVEL2_TABLETOTEXT + (char)AlStyles.CHAR_IMAGE_E;
 						
-						if (s2 == null)
-							s2 = "Table";
 						if (allState.isOpened) {
 							table_present++;
 							if (table_present == 1) {
@@ -707,7 +706,7 @@ public class AlFormatFB2 extends AlAXML {
 								addTextFromTag(s1, false);
 								setTextStyle(AlStyles.PAR_STYLE_LINK);
 								addTextFromTag(s3, false);								
-								addTextFromTag(s2, false);
+								addTextFromTag(s2 == null ? "Table" : s2.toString(), false);
 								clearTextStyle(AlStyles.PAR_STYLE_LINK);
 								clearParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_MASK);
 								newParagraph();
@@ -718,7 +717,7 @@ public class AlFormatFB2 extends AlAXML {
 							addTextFromTag(s1, false);
 							setTextStyle(AlStyles.PAR_STYLE_LINK);	
 							addTextFromTag(s3, false);
-							addTextFromTag(s2, false);
+							addTextFromTag(s2 == null ? "Table" : s2.toString(), false);
 							clearTextStyle(AlStyles.PAR_STYLE_LINK);
 						}
 

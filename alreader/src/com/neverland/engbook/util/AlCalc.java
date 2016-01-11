@@ -8,21 +8,47 @@ import android.graphics.PorterDuff;
 import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.EngBookMyType;
+import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_PAGES_COUNT;
 
 public class AlCalc {
 	
 	private Canvas 	canvas = null;
 	
-	private Rect 	rc = new Rect();
+	public static final char UNKNOWNWIDTH = 0xffff;
 	
-	private Paint 	linePaint = new Paint();
-	private Paint 	imagePaint = new Paint();
-	private char[] OneCharArray = new char[1];
+	public final char[] mainWidth = new char[0x10000]; 
 	
-	private float[] textWidths = new float[EngBookMyType.AL_WORD_LEN];
-
+	private final Rect 	rc = new Rect();
+	
+	private final Paint 	linePaint = new Paint();
+	private final Paint 	imagePaint = new Paint();
+	private final char[] 	oneCharArray = new char[1];
+	
+	private final float[] textWidths = new float[EngBookMyType.AL_WORD_LEN];
+	private int multiplexer = 1;
+	
+	private boolean isNeedQuickWidth = false;
+	
 	public void init(AlEngineOptions opt ) {		
 		
+		isNeedQuickWidth = opt.useScreenPages == TAL_SCREEN_PAGES_COUNT.SCREEN;
+		
+		switch (opt.DPI) {
+		case TAL_SCREEN_DPI_320:
+			multiplexer = 2;
+			break;
+		case TAL_SCREEN_DPI_480:
+			multiplexer = 3;
+			break;
+		case TAL_SCREEN_DPI_640:
+			multiplexer = 4;
+			break;
+		default:
+			break;
+		}
+		
+		linePaint.setAntiAlias(false);
+		linePaint.setStrokeWidth(multiplexer);
 	}
 	
 	public void beginMain(Canvas c, int colorBackground) {
@@ -69,7 +95,7 @@ public class AlCalc {
 			linePaint.setColor(fillColor);
 			canvas.drawRect(rc, linePaint);
 		}
-		
+				
 		canvas.drawBitmap(image.bmp, null, rc, imagePaint);		
 	}
 	
@@ -99,8 +125,8 @@ public class AlCalc {
 	public void drawText(int x, int y, char text, AlPaintFont fontParam) {
 		if (canvas == null)
 			return;
-		OneCharArray[0] = text;
-		canvas.drawText(OneCharArray, 0, 1, x, y, fontParam.fnt);
+		oneCharArray[0] = text;
+		canvas.drawText(oneCharArray, 0, 1, x, y, fontParam.fnt);
 	}
 	
 	public void drawText(int x, int y, char[] text, int start,  int count, AlPaintFont fontParam) {
@@ -110,18 +136,80 @@ public class AlCalc {
 		canvas.drawText(text, start, count, x, y, fontParam.fnt);
 	}
 	
-	public void getTextWidths(AlPaintFont fparam, 
-		char[] str, int start_text, int count, int[] widths, int start_width, boolean modeLight) {
+	public void clearMainWidth() {
+		for (int i = 0; i <= 0xffff; i++)
+			mainWidth[i] = UNKNOWNWIDTH;
+	}
+	
+	/*private void initMainWidth(AlPaintFont fparam) {
+		float[] testWidth 	= new float[2];		
 		
-		if (modeLight) {
-			widths[start_width] = (int) fparam.fnt.measureText(str, start_text, count);
-			for (int i = 1; i < count; i++)
-				widths[start_width + i] = 0;			
-		} else {		
-			fparam.fnt.getTextWidths(str, start_text, count, textWidths);
-			for (int i = 0; i < count; i++)
-				widths[start_width + i] = (int) textWidths[i];
+		AlRandomAccessFile rf = new AlRandomAccessFile();
+		rf.open("/sdcard/testletter", 1);
+		String ustr;
+		byte[] bb = null;
+		
+		for (char i = 'W'; i <= 'W'; i++) {
+		
+				test[0] = i;
+				fparam.fnt.getTextWidths(test, 0, 1, testWidth);
+				mainWidth[i]  = (char) testWidth[0];
+				for (char j = 0x21; j <= 0xfff0; j++) {
+					
+					test[1] = j;
+					fparam.fnt.getTextWidths(test, 0, 2, testWidth);
+												
+					
+					ustr = "\n\r" + (char)i + (char)j + " > " + Float.toString(testWidth[0]);
+					try {
+						bb = ustr.getBytes("UTF-8");
+					} catch (UnsupportedEncodingException e1) {
+						e1.printStackTrace();
+					}
+					rf.write(bb);
+					
+				}		
+
 		}
+		
+		rf.close();
+		rf = null;
+		
+		mainWidth[0] = COMPLETE;
+	}*/
+	
+	public final int getOneMainTextCharWidth(AlPaintFont fparam, char ch) {
+		oneCharArray[0] = ch;
+		fparam.fnt.getTextWidths(oneCharArray, 0, 1, textWidths);
+		mainWidth[ch] = (char) textWidths[0];
+		return (int) textWidths[0];
+	}
+	
+	public final void getTextWidths(AlPaintFont fparam, 
+		char[] text, int start, int count, int[] widths, boolean modeLight) {
+		
+		if (isNeedQuickWidth && modeLight && fparam.style == 0) {
+			char ch;
+			for (int i = 0; i < count; i++) {
+				ch = text[start + i];
+				if (mainWidth[ch] == UNKNOWNWIDTH) {
+					oneCharArray[0] = ch;
+					fparam.fnt.getTextWidths(oneCharArray, 0, 1, textWidths);
+					mainWidth[ch] = (char) textWidths[0];
+				}
+				widths[start + i] = mainWidth[ch];
+			}
+		} else
+		if (modeLight) {
+			widths[start] = (int) fparam.fnt.measureText(text, start, count);
+			for (int i = 1; i < count; i++)
+				widths[start + i] = 0;			
+		} else {		
+			fparam.fnt.getTextWidths(text, start, count, textWidths);
+			for (int i = 0; i < count; i++)
+				widths[start + i] = (int) textWidths[i];
+		}
+
 	}
 	
 	

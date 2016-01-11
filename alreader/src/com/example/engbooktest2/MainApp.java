@@ -21,16 +21,6 @@ public class MainApp extends Application {
 	
 	public int	dpiMultiplex = 1;
 	
-	public AlBookEng assignBookEngWithListenet(EngBookListener l) {
-		AlEngineNotifyForUI ui = new AlEngineNotifyForUI();
-		
-		ui.appInstance = ourInstance;
-		ui.hWND = l;		
-		bookEng.initializeOwner(ui);
-		
-		return bookEng;
-	}
-
 	public static MainApp getOurInstance() {
 		return ourInstance;
 	}
@@ -39,6 +29,10 @@ public class MainApp extends Application {
 		return globalRes;
 	}
 
+	public AlBookEng getBookEngine() {
+		return bookEng;
+	}
+	
 	public MainApp() {
 		ourInstance = this;
 	}
@@ -61,7 +55,7 @@ public class MainApp extends Application {
 		opt.font_catalog = "/sdcard/fonts";
 		opt.hyph_lang = TAL_HYPH_LANG.ENGRUS;
 		opt.useScreenPages = TAL_SCREEN_PAGES_COUNT.SIZE;	
-		opt.chinezeFormatting = true;
+		opt.chinezeFormatting = false;
 		
 		DisplayMetrics m = this.getResources().getDisplayMetrics();
 		dpiMultiplex = 1;

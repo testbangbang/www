@@ -62,7 +62,7 @@ public class EngBookMyType {
 
 	public enum TAL_THREAD_TASK {
 		OPENBOOK(10),
-		CLOSEBOOK(11),
+		//CLOSEBOOK(11),
 		CREATEDEBUG(12),
 		FIND(13),
 		NEWCALCPAGES(14);

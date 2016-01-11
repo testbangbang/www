@@ -29,12 +29,20 @@ public class AlRandomAccessFile {
 	public int open(String fileName, int needWrite){
 		modeWrite = needWrite != 0;
 
+		size = 0;
 		File f = new File(fileName);
-		if (modeWrite || (f.exists() && f.canRead() && f.isFile())) {
-			size = (int)f.length();	
-			//last_modifed = f.lastModified();
+		if (modeWrite) {				
 			try {
-				fh = new RandomAccessFile(fileName, modeWrite ? "rw" : "r");
+				fh = new RandomAccessFile(fileName, "rw");
+				fh.setLength(0);
+			} catch (Exception e) {
+				fh = null;
+				e.printStackTrace();
+			}
+		} else
+		if (f.exists() && f.canRead() && f.isFile()) {
+			try {
+				fh = new RandomAccessFile(fileName, "r");
 			} catch (Exception e) {
 				fh = null;
 				e.printStackTrace();
@@ -118,7 +126,7 @@ public class AlRandomAccessFile {
 	 	return cnt;
 	}
 
-	public int get_size() {
+	public int getSize() {
 		if (fh == null)
 			return -1;
 		

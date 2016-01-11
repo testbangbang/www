@@ -2,18 +2,24 @@ package com.neverland.engbook.level2;
 
 import java.util.HashMap;
 
+import android.util.Log;
+
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.unicode.AlUnicode;
+import com.neverland.engbook.unicode.CP932;
+import com.neverland.engbook.unicode.CP936;
+import com.neverland.engbook.unicode.CP949;
+import com.neverland.engbook.unicode.CP950;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.InternalConst;
 import com.neverland.engbook.util.InternalFunc;
 
 public abstract class AlAXML extends AlFormat {
 	
-	protected static final int LEVEL2_XML_PARAMETER_VALUE_LEN =	1024;
+	protected static final int LEVEL2_XML_PARAMETER_VALUE_LEN =	4096;
 
 	protected static final int STATE_XML_TEXT =  				0x0000;
 	protected static final int STATE_XML_STAG =  				0x0001;
@@ -55,7 +61,7 @@ public abstract class AlAXML extends AlFormat {
 	}
 
 	int readRealCodepage() {
-		String rcp;
+		StringBuilder rcp;
 		if (xml_mode) {
 			rcp = tag.getATTRValue(AlFormatTag.TAG_ENCODING);
 			if (rcp != null)
@@ -78,13 +84,18 @@ public abstract class AlAXML extends AlFormat {
 		if (autoCodePage && ((xml_mode && tag.tag == AlFormatTag.TAG_XML) || (!xml_mode && tag.tag == AlFormatTag.TAG_META))) {
 			int cp = readRealCodepage();
 			if (cp != TAL_CODE_PAGES.AUTO)
-				use_cpR = cp;
+				setCP(cp);
 		}
 	}
 
 	@Override
 	protected void doTextChar(char ch, boolean addSpecial) {
+		
+		
 		if (allState.state_skipped_flag) {
+			
+			if (allState.state_special_flag0 && addSpecial)
+				state_specialBuff0.append(ch);
 			
 		} else {
 			if (allState.isOpened) {
@@ -108,7 +119,11 @@ public abstract class AlAXML extends AlFormat {
 						size++;
 						parPositionE = allState.start_position;
 					}
-				}		
+				}	
+				
+				if (allState.state_special_flag0 && addSpecial)
+					state_specialBuff0.append(ch);	
+				
 			} else {
 				if (allState.text_present) {					
 					stored_par.data[stored_par.cpos++] = ch;
@@ -123,23 +138,21 @@ public abstract class AlAXML extends AlFormat {
 					}
 				}
 			}
-		}		
-		if (allState.state_special_flag && addSpecial) {
-			state_specialBuff.append(ch);
 		}
-
 	}
 
 	@Override
 	protected void parser(final int start_pos, final int stop_pos) {
 		// this code must be in any parser without change!!!
 		int 	buf_cnt = 0, i, j;
-		AlIntHolder jVal = new AlIntHolder(0);
+		//AlIntHolder jVal = new AlIntHolder(0);
 		char 	ch, ch1;
 
 		allState.text_present = false;
 
-		for (i = start_pos; i < stop_pos;) {			
+		for (i = start_pos; i < stop_pos;) {		
+			
+				//Log.e("xml read pos ", Integer.toString(i));
 							
 				buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
 				if (i + buf_cnt > stop_pos) {
@@ -156,14 +169,99 @@ public abstract class AlAXML extends AlFormat {
 				for (j = 0; j < buf_cnt;) {
 					allState.start_position = i + j;	
 
-					jVal.value = j;
-					ch = AlUnicode.byte2Wide(use_cpR, parser_inBuff, jVal);
-					j = jVal.value;
+					/*jVal.value = j;
+					ch = AlUnicode.byte2Wide(use_cpR0, parser_inBuff, jVal);
+					j = jVal.value;*/
+					
+					ch = (char)parser_inBuff[j++];
+					ch &= 0xff;
+					if (ch >= 0x80) {
+						switch (use_cpR0) {
+						case TAL_CODE_PAGES.CP65001:
+							if ((ch & 0x20) == 0) {				
+								ch = (char)((ch & 0x1f) << 6);				
+								ch1 = (char)parser_inBuff[j++];
+								ch += (char)(ch1 & 0x3f);
+							} else {
+								ch = (char)((ch & 0x1f) << 6);				
+								ch1 = (char)parser_inBuff[j++];							
+								ch += (char)(ch1 & 0x3f);											
+								ch <<= 6;				
+								ch1 = (char)parser_inBuff[j++];
+								ch += (char)(ch1 & 0x3f);
+							}
+							break;
+						case TAL_CODE_PAGES.CP1201:
+							ch <<= 8;
+							ch1 = (char)parser_inBuff[j++];
+							ch |= ch1 & 0xff;
+							break;
+						case TAL_CODE_PAGES.CP1200:			
+							ch1 = (char)parser_inBuff[j++];					
+							ch |= ch1 << 8;
+							break;
+						case 932:
+							switch (ch) {
+							case 0x80 :
+							case 0xfd :
+							case 0xfe :
+							case 0xff : ch = 0x0000; break;
+							default :
+								if (ch >= 0xa1 && ch <= 0xdf) {
+									ch = (char) (ch + 0xfec0);
+									break;
+								}
+								ch1 = (char) (parser_inBuff[j++] & 0xff);
+								ch = (ch1 >= 0x40 && ch1 <= 0xfc) ? CP932.getChar(ch, ch1) : 0x00;
+								break;
+							}
+							break;
+						case 936:
+							switch (ch) {
+							case 0x80 : ch = 0x20AC; break;
+							case 0xff : ch = 0x0000; break;
+							default :
+								ch1 = (char) (parser_inBuff[j++] & 0xff);
+								ch = (ch1 >= 0x40 && ch1 <= 0xfe) ? CP936.getChar(ch, ch1) : 0x00;
+								break;
+							}
+							break;	
+						case 949:
+							switch (ch) {
+							case 0x80 : 
+							case 0xff : ch = 0x0000; break;
+							default :
+								ch1 = (char) (parser_inBuff[j++] & 0xff);
+								ch = (ch1 >= 0x41 && ch1 <= 0xfe) ? CP949.getChar(ch, ch1) : 0x00;
+								break;
+							}
+							break;
+						case 950:					
+							switch (ch) {
+							case 0x80 : 
+							case 0xff : ch = 0x0000; break;
+							default :
+								ch1 = (char) (parser_inBuff[j++] & 0xff);
+								ch = (ch1 >= 0x40 && ch1 <= 0xfe) ? CP950.getChar(ch, ch1) : 0x00;
+								break;
+							}		
+							break;
+							
+						default:
+							ch = data_cp[ch - 0x80];
+							break;
+						}
+					}
 
 			// end must be code				
 					/////////////////// Begin Real Parser	
 
 
+					if (allState.start_position == 4927494) {
+						allState.start_position--;
+						allState.start_position++;
+					}
+					
 					label_repeat_letter:
 					while (true) {
 						switch (allState.state_parser) {				
@@ -295,7 +393,7 @@ public abstract class AlAXML extends AlFormat {
 								tag.resetTag(allState.start_position);	
 								continue label_get_next_char;
 							}
-							switch (use_cpR) {
+							switch (use_cpR0) {
 							case 1201:
 								for (; j < buf_cnt; j += 2)							
 									if (parser_inBuff[j + 1] == '<') {
@@ -362,7 +460,7 @@ public abstract class AlAXML extends AlFormat {
 							} else
 							if (ch == ':') {
 								AlIntHolder tmp_position = new AlIntHolder(i + j);						
-								ch = getConvertChar(use_cpR, tmp_position);
+								ch = getConvertChar(use_cpR0, tmp_position);
 								if (AlUnicode.isLetter(ch)) {					
 									tag.clearTag();
 								} else {						
@@ -427,7 +525,7 @@ public abstract class AlAXML extends AlFormat {
 							} else				
 							if (ch == ':') {
 								AlIntHolder tmp_position = new AlIntHolder(i + j);						
-								ch = getConvertChar(use_cpR, tmp_position);
+								ch = getConvertChar(use_cpR0, tmp_position);
 								if (AlUnicode.isLetter(ch)) {											
 									tag.clearAttrName();
 								} else {						
@@ -571,8 +669,7 @@ public abstract class AlAXML extends AlFormat {
 							if (ch < 0x20) {
 								
 							} else {
-								if (tag.aval.length() < LEVEL2_XML_PARAMETER_VALUE_LEN)
-									tag.add2AttrValue(ch);
+								tag.add2AttrValue(ch);
 							}					
 							continue label_get_next_char;
 						case STATE_XML_ATTRIBUTE_VALUE1:

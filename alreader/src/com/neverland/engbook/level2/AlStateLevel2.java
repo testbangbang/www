@@ -8,7 +8,7 @@ public class AlStateLevel2 {
 	public int 					start_position_par;
 
 	public boolean 				state_skipped_flag = false;
-	public boolean 				state_special_flag = false;
+	public boolean 				state_special_flag0 = false;
 	public boolean				state_code_flag = false;
 
 	public boolean 				insertFromTag = false;

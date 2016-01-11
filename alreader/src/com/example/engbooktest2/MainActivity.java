@@ -10,6 +10,7 @@ import com.neverland.engbook.bookobj.AlBookEng;
 import com.neverland.engbook.bookobj.AlUtilFunc;
 import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlBookOptions;
+import com.neverland.engbook.forpublic.AlEngineNotifyForUI;
 import com.neverland.engbook.forpublic.AlPublicProfileOptions;
 import com.neverland.engbook.forpublic.EngBookListener;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_GOTOCOMMAND;
@@ -40,7 +41,7 @@ public class MainActivity extends Activity implements EngBookListener {
     	setContentView(R.layout.main);
     	
     	appl = MainApp.getOurInstance();    	
-    	bookEng = appl.assignBookEngWithListenet(this);
+    	bookEng = appl.getBookEngine();
     	
     	textViewer = (MainView)findViewById(R.id.mainText);
     	textViewer.assignPaintViewWithBookEng(bookEng);
@@ -48,7 +49,7 @@ public class MainActivity extends Activity implements EngBookListener {
     	backDay_bitmap = AlUtilFunc.loadImageFromResources(appl.getGlobalResources(), R.drawable.backday);
     	profileDay.background = backDay_bitmap;
     	profileDay.bold = false;
-    	profileDay.font_name = "Tahoma";//"Serif";
+    	profileDay.font_name = "Serif";
     	profileDay.font_monospace = "Monospace";
     	profileDay.font_size = 18 * appl.dpiMultiplex;
     	profileDay.margin = -5; // negative - in percent, positive - in pixels
@@ -61,7 +62,7 @@ public class MainActivity extends Activity implements EngBookListener {
     	backNight_bitmap = AlUtilFunc.loadImageFromResources(appl.getGlobalResources(), R.drawable.backnight);
     	profileNight.background = backNight_bitmap;
     	profileNight.bold = false;
-    	profileNight.font_name = "Verdana";
+    	profileNight.font_name = "Serif";
     	profileNight.font_monospace = "Monospace";
     	profileNight.font_size = 18 * appl.dpiMultiplex;
     	profileNight.margin = -5;
@@ -78,6 +79,11 @@ public class MainActivity extends Activity implements EngBookListener {
     	
     	profileCurrent = profileDay;
     	bookEng.setNewProfileParameters(profileCurrent);
+    	
+    	AlEngineNotifyForUI engUI = new AlEngineNotifyForUI();		
+    	engUI.appInstance = appl;
+    	engUI.hWND = this;				
+    	bookEng.initializeOwner(engUI);
 	}
 	
 	@Override
@@ -96,6 +102,12 @@ public class MainActivity extends Activity implements EngBookListener {
 	}
 	
 	@Override
+	protected void onDestroy() {
+		bookEng.freeOwner();
+		super.onDestroy();
+	};
+	
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);    	
     	getMenuInflater().inflate(R.menu.mainmenu, menu);
@@ -106,14 +118,14 @@ public class MainActivity extends Activity implements EngBookListener {
 	public boolean onOptionsItemSelected(MenuItem item) { 
 		if (item == null)
 	    		return true;
-	    	    
+	    	    		
 		switch (item.getItemId()) {
 		case R.id.mainmenu_open_file:
 			bookOpt.codePage = TAL_CODE_PAGES.AUTO;
-			bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
+			bookOpt.codePageDefault = TAL_CODE_PAGES.CP1251;
 			bookOpt.formatOptions = 0;
 			bookOpt.readPosition = 0;
-			bookEng.openBook("/sdcard/85.zip", bookOpt);
+			bookEng.openBook("/sdcard/81.zip", bookOpt);
 			return true;
 		case R.id.mainmenu_page_next:
 			bookEng.gotoPosition(TAL_GOTOCOMMAND.NEXTPAGE);

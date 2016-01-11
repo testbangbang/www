@@ -12,9 +12,9 @@ public final class AlStyles {
 	public static final int CHAR_FONT = 		0x0006; // reserved - not use
 	public static final int CHAR_COVER = 		0x0007;
 	public static final int CHAR_ANYCHAR = 		0x0008; // for find text
-	public static final int CHAR_SOFTPAR =		0x000a;
+	public static final int CHAR_SOFTPAR =		0x000a;	
 	public static final int CHAR_TITLEIMG_START=0x000b;
-	public static final int CHAR_TITLEIMG_STOP =0x000c;
+	public static final int CHAR_TITLEIMG_STOP =0x000c;	
 
 	
 	// text style specific value

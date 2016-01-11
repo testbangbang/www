@@ -6,7 +6,7 @@ import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 
 class AlThread  implements Runnable {
 	
-	private AlThreadData param;	
+	private volatile AlThreadData param;	
 
 	public AlThread(AlThreadData p, TAL_THREAD_TASK t) {
 		param = p;
@@ -31,10 +31,10 @@ class AlThread  implements Runnable {
 	    		id = TAL_NOTIFY_ID.OPENBOOK;
 	    		res = param.book_object.openBookInThread(param.param_char1, param.param_void1);
 	    		break;
-	    	case CLOSEBOOK:
+	    	/*case CLOSEBOOK:
 	    		id = TAL_NOTIFY_ID.CLOSEBOOK;
 	    		res = param.book_object.closeBookInThread();
-	    		break;
+	    		break;*/
 	    	case CREATEDEBUG:
 	    		id = TAL_NOTIFY_ID.CREATEDEBUG;
 	    		res = param.book_object.createDebugFileInThread(param.param_char1);

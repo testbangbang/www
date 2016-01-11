@@ -51,6 +51,7 @@ public class MainView extends View {
 				if (bookEng.getPageCount(currPage, allPage, readPosition) == TAL_RESULT.OK) {
 					canvas.drawText("pages " + currPage.toString() + '/' + allPage.toString() + " position " + readPosition.toString(), 5, height - 5, paint);
 				}
+				bmp = null;
 			}			
 		}
 	}

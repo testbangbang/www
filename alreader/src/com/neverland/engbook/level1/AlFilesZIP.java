@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
+import android.util.Log;
+
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_FILE_TYPE;
 import com.neverland.engbook.forpublic.AlIntHolder;
@@ -223,7 +225,8 @@ public class AlFilesZIP extends AlFiles {
 		inflater = null;
 	}
 
-	int getBuffer(int pos, byte[] dst, int cnt) {
+	protected int getBuffer(int pos, byte[] dst, int cnt) {
+		//Log.e("ZIP read", Integer.toString(pos));
 		
 		int tmp = 0;
 		int res = 0;
@@ -252,7 +255,8 @@ public class AlFilesZIP extends AlFiles {
 					zip_total_out += zip_out_buff_size;
 
 					if (inflater.needsInput()) {
-						zip_in_buff_size = parent.getBuffer(
+						zip_in_buff_size = //parent.getBuffer(
+								parent.getByteBuffer(
 							inflater.getTotalIn() + zip_position, zip_in_buff, ZIP_CHUNK_SIZE);						
 						inflater.setInput(zip_in_buff, 0, zip_in_buff_size);
 					}

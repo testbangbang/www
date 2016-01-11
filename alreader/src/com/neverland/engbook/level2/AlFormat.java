@@ -3,6 +3,8 @@ package com.neverland.engbook.level2;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import com.neverland.engbook.bookobj.AlBookEng.PairTextStyle;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
@@ -45,7 +47,8 @@ public abstract class AlFormat {
 	AlStylesOptions			styles = new AlStylesOptions();
 	int						size;
 	
-	int				use_cpR;
+	protected int				use_cpR0;
+	protected char[]			data_cp = null;
 	
 	public ArrayList<String> 			bookAuthors = new ArrayList<String>(0);
 	ArrayList<String> 			bookGenres = new ArrayList<String>(0);
@@ -73,27 +76,20 @@ public abstract class AlFormat {
 	
 	AlStateLevel2				allState = new AlStateLevel2();
 	
-	int						shtamp_reread;
+	
 	long						paragraph;
 
 	AlStoredPar					stored_par = new AlStoredPar();
-	StringBuilder				state_specialBuff = new StringBuilder();
+	StringBuilder				state_specialBuff0 = new StringBuilder();
 	
-	int 					slot_active;
-	protected int[]			slot_start = {-1, -1};
-	protected int[]			slot_end = {0, 0};
+	private AlSlotData		slotText = new AlSlotData();
+	private AlSlotData		slotNote = new AlSlotData();
 
-	protected final char[] 	slot_txt[] 		= {new char[AlFiles.LEVEL1_FILE_BUF_SIZE], new char[AlFiles.LEVEL1_FILE_BUF_SIZE]};	
-	protected final long[] 	slot_style[] 	= {new long[AlFiles.LEVEL1_FILE_BUF_SIZE], new long[AlFiles.LEVEL1_FILE_BUF_SIZE]};
- 
 	int 					tune;
 	boolean						isFirstParagraph;
 
-	
-
 	int						program_used_position;
 	
-
 	String					ident;
 	
 	byte[]					parser_inBuff = new byte [AlFiles.LEVEL1_FILE_BUF_SIZE + 2];
@@ -104,10 +100,6 @@ public abstract class AlFormat {
 	
 	
 	public AlFormat() {
-		slot_active = 0;
-		slot_start[0] = slot_start[1] = 0;
-		slot_end[0] = slot_end[1] = 0;
-		
 		styleStack.clear();
 		//styleStack_point = 0;	
 		//styleStack.push_back(TAL_OneStyleStack(0, 0));
@@ -118,7 +110,7 @@ public abstract class AlFormat {
 		bookSeries.clear();
 		bookTitle = null;		
 
-		state_specialBuff.setLength(0);
+		state_specialBuff0.setLength(0);
 		program_used_position = -2;
 		tune = 0;		
 		
@@ -135,7 +127,6 @@ public abstract class AlFormat {
 
 		clearAllArray();
 
-		shtamp_reread = 0;
 		autoCodePage = true;
 	}
 
@@ -143,12 +134,6 @@ public abstract class AlFormat {
 	public void finalize() {
 		clearAllArray();
 		styleStack.clear();
-
-		slot_txt[0] = null;
-		slot_txt[1] = null;
-		slot_style[0] = null;
-		slot_style[1] = null;
-
 		stored_par.data = null;
 	}
 
@@ -172,35 +157,39 @@ public abstract class AlFormat {
 		allState.state_parser = 0;
 		int cp = ((addon & 0x80000000) != 0) ? -1 : addon & 0x0000ffff;
 		
-		if (cp != use_cpR) {
-			use_cpR = cp;
+		if (cp != use_cpR0) {
+			setCP(cp);
 		}
 		
 		allState.state_skipped_flag = (addon & LEVEL2_FRM_ADDON_SKIPPEDTEXT) != 0;
 		allState.state_code_flag = (addon & LEVEL2_FRM_ADDON_CODETEXT) != 0;
-		allState.state_special_flag = (addon & LEVEL2_FRM_ADDON_SPECIALTEXT) != 0;
+		//allState.state_special_flag = (addon & LEVEL2_FRM_ADDON_SPECIALTEXT) != 0;
 	}
 		
 	void formatAddonInt() {		
 		pariType = paragraph; 
-		parAddon = use_cpR & 0x8000ffff;
+		parAddon = use_cpR0 & 0x8000ffff;
 		if (allState.state_skipped_flag)
 			parAddon += LEVEL2_FRM_ADDON_SKIPPEDTEXT;
 		if (allState.state_code_flag)
 			parAddon += LEVEL2_FRM_ADDON_CODETEXT;
-		if (allState.state_special_flag)
-			parAddon += LEVEL2_FRM_ADDON_SPECIALTEXT;
+		/*if (allState.state_special_flag)
+			parAddon += LEVEL2_FRM_ADDON_SPECIALTEXT;*/
 	}
 
 
 	void newEmptyTextParagraph() {
 		paragraph |= AlStyles.PAR_PREVIOUS_EMPTY_1;
 		allState.text_present = false;
+		if (allState.state_special_flag0)
+			state_specialBuff0.append(' ');
 	}
 
 	void newEmptyStyleParagraph() {
 		paragraph |= AlStyles.PAR_PREVIOUS_EMPTY_0;
 		allState.text_present = false;
+		if (allState.state_special_flag0)
+			state_specialBuff0.append(' ');
 	}
 
 	boolean addTable(AlOneTable ap) {		
@@ -353,10 +342,15 @@ public abstract class AlFormat {
 		return TAL_CODE_PAGES.AUTO;
 	}
 
+	protected void setCP(int newcp) {
+		use_cpR0 = AlUnicode.int2cp(newcp);
+		data_cp = AlUnicode.getDataCP(use_cpR0);
+	}
+	
 	int getCP() {
 		if (autoCodePage)
 			return TAL_CODE_PAGES.AUTO;
-		return use_cpR;
+		return use_cpR0;
 	}
 
 	void addRealParagraph(AlOneParagraph a) {
@@ -422,6 +416,8 @@ public abstract class AlFormat {
 		}
 		allState.text_present = false;	
 		allState.letter_present = false;
+		if (allState.state_special_flag0)
+			state_specialBuff0.append(' ');
 	}
 
 	void addTextFromTag(String s, boolean addSpecial) {
@@ -587,40 +583,54 @@ public abstract class AlFormat {
 		}		
 	}
 
-	public int getTextBuffer_Notes(int pos, char[] text, long[] style, AlProfileOptions profiles) {
+	/*public int getTextBuffer_Notes(int pos, char[] text, long[] style, AlProfileOptions profiles) {
 		pos &= AlFiles.LEVEL1_FILE_BUF_MASK;
 		int end = pos + getParagraphSlot(pos, text, style, profiles);		
 		return end - pos;
-	}
+	}*/
 
-	public int getTextBuffer_Text(int pos, PairTextStyle textAndStyle, int shtamp, AlProfileOptions profiles) {
+	
+	
+	public int getNoteBuffer(int pos, PairTextStyle textAndStyle, int shtamp, AlProfileOptions profiles) {
+		return getAllBuffer(pos, textAndStyle, slotNote, shtamp, profiles);
+	}
+	
+	public int getTextBuffer(int pos, PairTextStyle textAndStyle, int shtamp, AlProfileOptions profiles) {
+		return getAllBuffer(pos, textAndStyle, slotText, shtamp, profiles);
+	}
+	
+	private int getAllBuffer(int pos, PairTextStyle textAndStyle, AlSlotData slot, int shtamp, AlProfileOptions profiles) {
 		pos &= AlFiles.LEVEL1_FILE_BUF_MASK;
 
-		if (shtamp != shtamp_reread) {
-			slot_end[0] = slot_end[1] = -1;
-			shtamp_reread = shtamp;
+		if (shtamp != slot.shtamp) {
+			slot.end[0] = slot.end[1] = -1;
+			slot.shtamp = shtamp;
 		}
 		
-		if (slot_start[slot_active] == pos && slot_end[slot_active] > slot_start[slot_active]) {		
-			textAndStyle.format_text = slot_txt[slot_active];
-			textAndStyle.format_style = slot_style[slot_active];
-			return slot_end[slot_active] - pos;			
+		if (slot.start[slot.active] == pos && slot.end[slot.active] > slot.start[slot.active]) {		
+			textAndStyle.txt = slot.txt[slot.active];
+			textAndStyle.stl = slot.stl[slot.active];
+			return slot.end[slot.active] - pos;			
 		}
 
-		slot_active = 1 - slot_active;
+		slot.active = 1 - slot.active;
 		
-		if (slot_start[slot_active] == pos && slot_end[slot_active] > slot_start[slot_active]) {			
-			textAndStyle.format_text = slot_txt[slot_active];
-			textAndStyle.format_style = slot_style[slot_active];
-			return slot_end[slot_active] - pos;
+		if (slot.start[slot.active] == pos && slot.end[slot.active] > slot.start[slot.active]) {			
+			textAndStyle.txt = slot.txt[slot.active];
+			textAndStyle.stl = slot.stl[slot.active];
+			return slot.end[slot.active] - pos;
 		}
 			
-		slot_start[slot_active] = pos;
-		slot_end[slot_active] = pos + getParagraphSlot(pos, slot_txt[slot_active], slot_style[slot_active], profiles);		
+		slot.initBuffer();
+		
+		//Log.e("fill buffer " + Integer.toString(pos), Integer.toString(slot.active) + '_' + slot.toString());
+		
+		slot.start[slot.active] = pos;
+		slot.end[slot.active] = pos + getParagraphSlot(pos, slot.txt[slot.active], slot.stl[slot.active], profiles);		
 
-		textAndStyle.format_text = slot_txt[slot_active];
-		textAndStyle.format_style = slot_style[slot_active];
-		return slot_end[slot_active] - pos;
+		textAndStyle.txt = slot.txt[slot.active];
+		textAndStyle.stl = slot.stl[slot.active];
+		return slot.end[slot.active] - pos;
 	}
 
 	int findParagraphByPos0(int start, int end, int pos) {
@@ -1091,8 +1101,8 @@ public abstract class AlFormat {
 								break;
 						case 0x03 :
 						case 0x01 :
-							if (Character.isUpperCase(ch) && 
-									(i == stored_par.cpos - 1 || !Character.isUpperCase(stored_par.data[i + 1]))) {
+							if (AlUnicode.isUpperCase(ch) && 
+									(i == stored_par.cpos - 1 || !AlUnicode.isUpperCase(stored_par.data[i + 1]))) {
 								slot_s[j] |= AlStyles.SL_MARKFIRTSTLETTER;
 								slot_s[j] &= AlStyles.SL_MASKSTYLESOVER;
 								if (extfl_pend)
@@ -1416,7 +1426,7 @@ public abstract class AlFormat {
 	@Override
 	public String toString() {		
 		return "\r\n" + ident + " " + size + " symbols " + par.size() + 
-			   " paragraph " + " cp:" + Integer.toString(use_cpR) + "\r\n";		
+			   " paragraph " + " cp:" + Integer.toString(use_cpR0) + "\r\n";		
 	}
 
 	public TAL_NOTIFY_RESULT findText(String find) {
@@ -1881,7 +1891,9 @@ public abstract class AlFormat {
 			}
 
 			//////////////////////////////
-			for (int i = 0; i < par.size(); i++) {			
+			int c = 0;
+			for (int i = 0; i < par.size(); i++) {
+				c++;
 				ustr = "\n\r\n\r" + par.get(i).toString() + "\n\r";
 				try {
 					bb = ustr.getBytes("UTF-8");
@@ -1899,6 +1911,7 @@ public abstract class AlFormat {
 				}
 				df.write(bb);			
 			}
+			c--;
 
 
 			df.close();

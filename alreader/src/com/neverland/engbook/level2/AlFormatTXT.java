@@ -6,6 +6,10 @@ import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.unicode.AlUnicode;
+import com.neverland.engbook.unicode.CP932;
+import com.neverland.engbook.unicode.CP936;
+import com.neverland.engbook.unicode.CP949;
+import com.neverland.engbook.unicode.CP950;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStylesOptions;
 
@@ -36,11 +40,11 @@ public class AlFormatTXT extends AlFormat {
 		
 		allState.state_parser = 0;
 		if (autoCodePage) {
-			use_cpR = getBOMCodePage(true, true, true, false);
-			if (use_cpR == TAL_CODE_PAGES.AUTO)
-				use_cpR = bookOptions.codePageDefault;
+			setCP(getBOMCodePage(true, true, true, false));
+			if (use_cpR0 == TAL_CODE_PAGES.AUTO)
+				setCP(bookOptions.codePageDefault);
 		} else {
-			use_cpR = bookOptions.codePage;
+			setCP(bookOptions.codePage);
 		}
 		
 		txt_mode = TXT_MODE_NORMAL;
@@ -188,11 +192,11 @@ public class AlFormatTXT extends AlFormat {
 	protected void parser(final int start_pos, final int stop_pos) {
 		// this code must be in any parser without change!!!
 		int 	buf_cnt = 0;
-		char 	ch;
+		char 	ch, ch1;
 
 		allState.text_present = false;
 		int j;
-		AlIntHolder jVal = new AlIntHolder(0);
+		//AlIntHolder jVal = new AlIntHolder(0);
 		
 		for (int i = start_pos; i < stop_pos;) {			
 			buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
@@ -208,9 +212,89 @@ public class AlFormatTXT extends AlFormat {
 			for (j = 0; j < buf_cnt;) {
 				allState.start_position = i + j;	
 				
-				jVal.value = j;
-				ch = AlUnicode.byte2Wide(use_cpR, parser_inBuff, jVal);
-				j = jVal.value;
+				/*jVal.value = j;
+				ch = AlUnicode.byte2Wide(use_cpR0, parser_inBuff, jVal);
+				j = jVal.value;*/
+				
+				ch = (char)parser_inBuff[j++];
+				ch &= 0xff;
+				if (ch >= 0x80) {
+					switch (use_cpR0) {
+					case TAL_CODE_PAGES.CP65001:
+						if ((ch & 0x20) == 0) {				
+							ch = (char)((ch & 0x1f) << 6);				
+							ch1 = (char)parser_inBuff[j++];
+							ch += (char)(ch1 & 0x3f);
+						} else {
+							ch = (char)((ch & 0x1f) << 6);				
+							ch1 = (char)parser_inBuff[j++];							
+							ch += (char)(ch1 & 0x3f);											
+							ch <<= 6;				
+							ch1 = (char)parser_inBuff[j++];
+							ch += (char)(ch1 & 0x3f);
+						}
+						break;
+					case TAL_CODE_PAGES.CP1201:
+						ch <<= 8;
+						ch1 = (char)parser_inBuff[j++];
+						ch |= ch1 & 0xff;
+						break;
+					case TAL_CODE_PAGES.CP1200:			
+						ch1 = (char)parser_inBuff[j++];					
+						ch |= ch1 << 8;
+						break;
+					case 932:
+						switch (ch) {
+						case 0x80 :
+						case 0xfd :
+						case 0xfe :
+						case 0xff : ch = 0x0000; break;
+						default :
+							if (ch >= 0xa1 && ch <= 0xdf) {
+								ch = (char) (ch + 0xfec0);
+								break;
+							}
+							ch1 = (char) (parser_inBuff[j++] & 0xff);
+							ch = (ch1 >= 0x40 && ch1 <= 0xfc) ? CP932.getChar(ch, ch1) : 0x00;
+							break;
+						}
+						break;
+					case 936:
+						switch (ch) {
+						case 0x80 : ch = 0x20AC; break;
+						case 0xff : ch = 0x0000; break;
+						default :
+							ch1 = (char) (parser_inBuff[j++] & 0xff);
+							ch = (ch1 >= 0x40 && ch1 <= 0xfe) ? CP936.getChar(ch, ch1) : 0x00;
+							break;
+						}
+						break;	
+					case 949:
+						switch (ch) {
+						case 0x80 : 
+						case 0xff : ch = 0x0000; break;
+						default :
+							ch1 = (char) (parser_inBuff[j++] & 0xff);
+							ch = (ch1 >= 0x41 && ch1 <= 0xfe) ? CP949.getChar(ch, ch1) : 0x00;
+							break;
+						}
+						break;
+					case 950:					
+						switch (ch) {
+						case 0x80 : 
+						case 0xff : ch = 0x0000; break;
+						default :
+							ch1 = (char) (parser_inBuff[j++] & 0xff);
+							ch = (ch1 >= 0x40 && ch1 <= 0xfe) ? CP950.getChar(ch, ch1) : 0x00;
+							break;
+						}		
+						break;
+						
+					default:
+						ch = data_cp[ch - 0x80];
+						break;
+					}
+				}
 				
 		// end must be code				
 				/////////////////// Begin Real Parser
