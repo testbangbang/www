@@ -36,6 +36,10 @@ public class LayoutLine {
         y = py;
     }
 
+    public final List<Element> getElementList() {
+        return elementList;
+    }
+
     public void addElement(final Element element) {
         element.setElementPosition(x, y);
         elementList.add(element);
@@ -70,6 +74,10 @@ public class LayoutLine {
         }
         spacingList.remove(size - 1);
         return elementList.remove(size - 1);
+    }
+
+    public boolean isEmpty() {
+        return elementList.isEmpty();
     }
 
     /**
@@ -113,6 +121,11 @@ public class LayoutLine {
         }
     }
 
+    /**
+     * TODO: consider latin
+     * @param originLeft
+     * @param totalWidth
+     */
     public void alignToLeft(final float originLeft, final float totalWidth) {
         updateContentWidth();
         float leftSpace = totalWidth - contentWidth;
@@ -124,8 +137,31 @@ public class LayoutLine {
         for(Element element : elementList) {
             element.setElementX(left);
             left += element.measureWidth();
-            left += element.spacing();
         }
+    }
+
+    public boolean hasElementCanBePlacedAtLineBegin() {
+        for(Element element : elementList) {
+            if (element.canBeLayoutedAtLineBegin()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Element> getElementListBeforeLineBegin() {
+        List<Element> temp = new ArrayList<Element>();
+        while (!isEmpty()) {
+            Element element = removeLastElement();
+            if (element == null) {
+                break;
+            }
+            temp.add(0, element);
+            if (element.canBeLayoutedAtLineBegin()) {
+                break;
+            }
+        }
+        return temp;
     }
 
 }

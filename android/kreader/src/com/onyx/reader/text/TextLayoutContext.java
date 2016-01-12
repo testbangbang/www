@@ -1,6 +1,7 @@
 package com.onyx.reader.text;
 
 import android.graphics.RectF;
+import android.text.Layout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,24 +157,30 @@ public class TextLayoutContext {
         return  elementPosition >= elementList.size();
     }
 
-    // adjust last element of last line to current line
-    public boolean adjustLastLine(final LayoutLine newLine, final RectF limitedRect) {
+    private LayoutLine prevLine(final LayoutLine newLine) {
         int lineIndex = layoutLines.indexOf(newLine);
         if (lineIndex <= 0) {
-            return false;
+            return null;
         }
         final LayoutLine lastLine = layoutLines.get(lineIndex - 1);
-        if (lastLine == null) {
+        return lastLine;
+    }
+
+    public boolean adjustPrevLine(final LayoutLine newLine, final RectF limitedRect) {
+        final LayoutLine prevLine = prevLine(newLine);
+        if (prevLine == null || prevLine.isEmpty() || !prevLine.hasElementCanBePlacedAtLineBegin()) {
             return false;
         }
 
-        final Element last = lastLine.removeLastElement();
-        if (last == null) {
+        final List<Element> temp = prevLine.getElementListBeforeLineBegin();
+        if (temp.isEmpty()) {
             return false;
         }
-
-        lastLine.averageSpacing(limitedRect.left, limitedRect.width());
-        addElement(last);
+        prevLine.averageSpacing(limitedRect.left, limitedRect.width());
+        for(Element element : temp) {
+            addElement(element);
+        }
+        temp.clear();
         return true;
     }
 

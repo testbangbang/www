@@ -87,11 +87,13 @@ public class TextLayoutJustify {
     private boolean onNewLine(final TextLayoutContext textLayoutContext, final Element lastElement) {
         textLayoutContext.averageCurrentLineSpacing();
         final LayoutLine newLayoutLine = textLayoutContext.nextLayoutLine();
-        final Element currentElement = textLayoutContext.getCurrentElement();
-        if (!currentElement.canBeLayoutedAtLineBegin()) {
-            textLayoutContext.adjustLastLine(newLayoutLine, textLayoutContext.getLimitedRect());
+        Element currentElement = textLayoutContext.getCurrentElement();
+        if (currentElement.canBeLayoutedAtLineBegin()) {
+            return true;
         }
-        return true;
+
+        textLayoutContext.adjustPrevLine(newLayoutLine, textLayoutContext.getLimitedRect());
+        return false;
     }
 
     private boolean breakElementFilter(final TextLayoutContext textLayoutContext, final Element element) {

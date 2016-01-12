@@ -18,7 +18,7 @@ public class TextElement implements Element {
     private float width;
     private float height;
     private Rect rect = new Rect();
-    static List<String> puncation = Arrays.asList(new String[]{"，", "?", "。", "”", "“"});
+    static List<String> puncation = Arrays.asList(new String[]{"，", "？", "。", "”", "“", "！", "·", "\""});
 
     public static TextElement create(final String string, final Style styleRef) {
         TextElement textElement = new TextElement();
@@ -68,7 +68,12 @@ public class TextElement implements Element {
     }
 
     public boolean canBeLayoutedAtLineBegin() {
-        return !puncation.contains(text);
+        for(String s : puncation) {
+            if (s.contains(text)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public List<Element> breakElement(final float leftWidth, final float additionalWidth) {
