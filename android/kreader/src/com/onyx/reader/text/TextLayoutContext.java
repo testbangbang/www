@@ -15,7 +15,8 @@ public class TextLayoutContext {
     private float availableHeight;
     private List<LayoutLine> layoutLines;
     private LayoutLine currentLine;
-
+    private List<Element> elementList;
+    private int elementPosition;
 
     public void initializeWithLimitedRect(final RectF rect) {
         limitedRect.set(rect);
@@ -27,6 +28,7 @@ public class TextLayoutContext {
     public LayoutLine createLayoutLine() {
         currentLine = new LayoutLine();
         currentLine.initialize(limitedRect, 1);
+        layoutLines.add(currentLine);
         return currentLine;
     }
 
@@ -54,6 +56,13 @@ public class TextLayoutContext {
 
     public void averageCurrentLineSpacing() {
         getCurrentLine().averageSpacing(getLimitedRect().left, getLimitedRect().width());
+    }
+
+    public void alignToLeft() {
+        getCurrentLine().alignToLeft(getLimitedRect().left, getLimitedRect().width());
+    }
+
+    public void averageVerticalLineSpacing() {
     }
 
     public final RectF getLimitedRect() {
@@ -109,8 +118,69 @@ public class TextLayoutContext {
         return availableHeight;
     }
 
+    public void setElementList(final List<Element> elements, int position) {
+        elementList = elements;
+        elementPosition = position;
+    }
+
+    private boolean isValidElementPosition(int position) {
+        if (position < 0 || position >= elementList.size()) {
+            return false;
+        }
+        return true;
+    }
+
+    public final Element getCurrentElement() {
+        if (!isValidElementPosition(elementPosition)) {
+            return null;
+        }
+        return elementList.get(elementPosition);
+    }
+
+    public Element nextElement() {
+        elementPosition++;
+        return getCurrentElement();
+    }
+
+    public Element prevElement() {
+        --elementPosition;
+        return getCurrentElement();
+    }
+
+    public boolean hasNextElement() {
+        int newPosition = elementPosition + 1;
+        return isValidElementPosition(newPosition);
+    }
+
+    public boolean afterLastElement() {
+        return  elementPosition >= elementList.size();
+    }
+
+    // adjust last element of last line to current line
+    public boolean adjustLastLine(final LayoutLine newLine, final RectF limitedRect) {
+        int lineIndex = layoutLines.indexOf(newLine);
+        if (lineIndex <= 0) {
+            return false;
+        }
+        final LayoutLine lastLine = layoutLines.get(lineIndex - 1);
+        if (lastLine == null) {
+            return false;
+        }
+
+        final Element last = lastLine.removeLastElement();
+        if (last == null) {
+            return false;
+        }
+
+        lastLine.averageSpacing(limitedRect.left, limitedRect.width());
+        addElement(last);
+        return true;
+    }
+
     private void verify() {
         if (currentLine.getContentWidth() > getLimitedRect().width()) {
         }
     }
+
+
 }

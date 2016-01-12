@@ -49,6 +49,32 @@ public class LayoutLine {
         contentWidth += element.measureWidth();
     }
 
+    private float updateContentWidth() {
+        contentWidth = 0;
+        contentHeight = 0;
+        totalSpacing = 0;
+        for(Element element : elementList) {
+            contentWidth += element.measureWidth();
+            totalSpacing += element.spacing();
+            if (contentHeight < element.measureHeight()) {
+                contentHeight = element.measureHeight();
+            }
+        }
+        return contentWidth;
+    }
+
+    public Element removeLastElement() {
+        int size = elementList.size();
+        if (size <= 0) {
+            return null;
+        }
+        spacingList.remove(size - 1);
+        return elementList.remove(size - 1);
+    }
+
+    /**
+     * @return content width without spacing.
+     */
     public float getContentWidth() {
         return contentWidth;
     }
@@ -70,6 +96,7 @@ public class LayoutLine {
     }
 
     public void averageSpacing(final float originLeft, final float totalWidth) {
+        updateContentWidth();
         float leftSpace = totalWidth - contentWidth;
         if (leftSpace <= 0) {
             return;
@@ -83,6 +110,21 @@ public class LayoutLine {
             element.setElementX(left);
             left += element.measureWidth();
             left += average;
+        }
+    }
+
+    public void alignToLeft(final float originLeft, final float totalWidth) {
+        updateContentWidth();
+        float leftSpace = totalWidth - contentWidth;
+        if (leftSpace <= 0) {
+            return;
+        }
+
+        float left = originLeft;
+        for(Element element : elementList) {
+            element.setElementX(left);
+            left += element.measureWidth();
+            left += element.spacing();
         }
     }
 

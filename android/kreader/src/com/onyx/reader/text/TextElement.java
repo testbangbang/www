@@ -3,13 +3,13 @@ package com.onyx.reader.text;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by zengzhu on 1/9/16.
  */
 public class TextElement implements Element {
-
 
     private Style style;
     private String text;
@@ -18,6 +18,7 @@ public class TextElement implements Element {
     private float width;
     private float height;
     private Rect rect = new Rect();
+    static List<String> puncation = Arrays.asList(new String[]{"，", "?", "。", "”", "“"});
 
     public static TextElement create(final String string, final Style styleRef) {
         TextElement textElement = new TextElement();
@@ -66,6 +67,10 @@ public class TextElement implements Element {
         return false;
     }
 
+    public boolean canBeLayoutedAtLineBegin() {
+        return !puncation.contains(text);
+    }
+
     public List<Element> breakElement(final float leftWidth, final float additionalWidth) {
         return null;
     }
@@ -73,7 +78,6 @@ public class TextElement implements Element {
     public Style style() {
         return style;
     }
-
 
     public void setElementX(final float px) {
         x = px;

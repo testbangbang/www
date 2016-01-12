@@ -23,6 +23,12 @@ public interface Element {
 
     public boolean canScale();
 
+    /**
+     * @return if this element can be placed at the beginning of line.
+     */
+    public boolean canBeLayoutedAtLineBegin();
+
+
     public List<Element> breakElement(final float leftWidth, final float additionalWidth);
 
     public Style style();
