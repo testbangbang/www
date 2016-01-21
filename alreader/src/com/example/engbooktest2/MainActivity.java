@@ -125,7 +125,7 @@ public class MainActivity extends Activity implements EngBookListener {
 			bookOpt.codePageDefault = TAL_CODE_PAGES.CP1251;
 			bookOpt.formatOptions = 0;
 			bookOpt.readPosition = 0;
-			bookEng.openBook("/sdcard/81.zip", bookOpt);
+			bookEng.openBook("/sdcard/31.zip", bookOpt);
 			return true;
 		case R.id.mainmenu_page_next:
 			bookEng.gotoPosition(TAL_GOTOCOMMAND.NEXTPAGE);

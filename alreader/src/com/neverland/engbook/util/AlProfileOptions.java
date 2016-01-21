@@ -26,7 +26,8 @@ public class AlProfileOptions {
 	public int						marginB;
 
 	public int						showFirstLetter;
-	public boolean					twoColumn;
+	public boolean					twoColumnRequest;
+	public boolean					twoColumnUsed;
 
 	public AlBitmap					background;
 

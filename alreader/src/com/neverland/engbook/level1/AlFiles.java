@@ -15,6 +15,7 @@ public abstract class AlFiles {
 	public static final int LEVEL1_FILE_BUF_MASK = 		((0xffffffff - LEVEL1_FILE_BUF_SIZE) + 1);
 	public static final int LEVEL1_FILE_BUF_MASK_DATA =	(LEVEL1_FILE_BUF_SIZE - 1);
 	public static final int LEVEL1_FILE_NAME_MAX_LENGTH	 = 256;
+	public static final int LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG = 0x80000000;
 	
 	int					read_pos;
 	
@@ -59,7 +60,7 @@ public abstract class AlFiles {
 		slot[0] = null;
 		slot[1] = null;	
 	}
-
+	
 	public long setLoadTime(boolean setStart) {
 		if (setStart) {
 			time_load = System.currentTimeMillis();
@@ -68,11 +69,27 @@ public abstract class AlFiles {
 		}	
 		return time_load;
 	}
-
+	
+	boolean				useUnpack = false;
+	byte[]				unpack_buffer = null;
+	public void	needUnpackData() {
+		if (parent != null)
+			parent.needUnpackData(); 		
+	}
+	
 	public int  getByteBuffer(int pos, byte[] dst, int len) {
 		int point = pos;
 		int res = 0x00;
 		int ready, i;
+		
+		if (useUnpack && unpack_buffer != null) {
+			ready = len;
+			if (pos + ready >= size)
+				ready = size - pos;
+
+			System.arraycopy(unpack_buffer, pos, dst, 0, ready);
+			return ready;
+		}
 		
 		while ((res < len) && (point < size)) {
 			if (slot_start[slot_active] <= point && slot_end[slot_active] > point) {

@@ -23,6 +23,7 @@ public class AlUtilFunc {
 	public static void freeImage(AlBitmap b) {
 		if (b != null) {
 			if (b.bmp != null) {
+				b.bmp.recycle();
 				b.bmp = null;
 				System.gc();				
 			}

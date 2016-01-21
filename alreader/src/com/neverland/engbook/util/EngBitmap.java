@@ -27,6 +27,7 @@ public class EngBitmap {
 
 		// ����������� ������, ���� ������ ��� ��� ������ �����
 		if (bmp.bmp != null) {
+			bmp.bmp.recycle();
 			bmp.bmp = null;
 			bmp.canvas = null;
 			System.gc();
@@ -53,6 +54,8 @@ public class EngBitmap {
 		}
 
 		if (bmp.bmp == null || bmp.canvas == null) {
+			if (bmp.bmp != null)
+				bmp.bmp.recycle();
 			bmp.bmp = null;
 			bmp.canvas = null;
 			System.gc();

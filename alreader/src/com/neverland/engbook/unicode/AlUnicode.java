@@ -274,6 +274,218 @@ public class AlUnicode {
 		return TAL_CODE_PAGES.AUTO;
 	}
 	
+	public static int byteArray2WideArray(final int cp, final byte[] src, final char[] dst, int cnt) {
+		int res = 0, i = 0;		
+		char ch, ch1;
+		while (i < cnt) {
+			ch = (char)src[i++];
+			ch &= 0xff;
+			if (ch >= 0x80) {
+				switch (cp) {
+				case TAL_CODE_PAGES.CP65001:
+					if ((ch & 0x80) == 0) { } else
+					if ((ch & 0x20) == 0) {				
+						ch = (char)((ch & 0x1f) << 6);				
+						ch1 = (char)src[i++];
+						ch += (char)(ch1 & 0x3f);						
+					} else {
+						ch = (char)((ch & 0x1f) << 6);				
+						ch1 = (char)src[i++];							
+						ch += (char)(ch1 & 0x3f);					
+						ch <<= 6;				
+						ch1 = (char)src[i++];				
+						ch += (char)(ch1 & 0x3f);
+					}
+					break;
+				case TAL_CODE_PAGES.CP1201:
+					ch <<= 8;
+					ch1 = (char)src[i++];
+					ch |= ch1 & 0xff;
+					break;
+				case TAL_CODE_PAGES.CP1200:			
+					ch1 = (char)src[i++];					
+					ch |= ch1 << 8;
+					break;
+					
+				case TAL_CODE_PAGES.CP932:
+					if (ch > 0x80) {
+						switch (ch) {
+						case 0x80 :
+						case 0xfd :
+						case 0xfe :
+						case 0xff : ch = 0x0000; break;
+						default :
+							if (ch >= 0xa1 && ch <= 0xdf) {
+								ch = (char) (ch + 0xfec0);
+								break;
+							}
+							ch1 = (char) (src[i++] & 0xff);
+							ch = (ch1 >= 0x40 && ch1 <= 0xfc) ? CP932.getChar(ch, ch1) : 0x00;
+							break;
+						}						
+					}				
+					break;
+				case TAL_CODE_PAGES.CP936:					
+					if (ch >= 0x80) {
+						switch (ch) {
+						case 0x80 : ch = 0x20AC; break;
+						case 0xff : ch = 0x0000; break;
+						default :
+							ch1 = (char) (src[i++] & 0xff);
+							ch = (ch1 >= 0x40 && ch1 <= 0xfe) ? CP936.getChar(ch, ch1) : 0x00;
+							break;
+						}
+					}				
+					break;	
+				case TAL_CODE_PAGES.CP949:					
+					if (ch >= 0x80) {
+						switch (ch) {
+						case 0x80 :
+						case 0xff : ch = 0x0000; break;
+						default :
+							ch1 = (char) (src[i++] & 0xff);
+							ch = (ch1 >= 0x41 && ch1 <= 0xfe) ? CP949.getChar(ch, ch1) : 0x00;
+							break;
+						}
+					}				
+					break;
+				case TAL_CODE_PAGES.CP950:					
+					if (ch >= 0x80) {
+						switch (ch) {
+						case 0x80 :
+						case 0xff : ch = 0x0000; break;
+						default :
+							ch1 = (char) (src[i++] & 0xff);
+							ch = (ch1 >= 0x40 && ch1 <= 0xfe) ? CP950.getChar(ch, ch1) : 0x00;
+							break;
+						}
+					}				
+					break;
+					
+				case TAL_CODE_PAGES.CP437:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP850:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP855:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP860:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP861:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP863:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP865:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP866:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP874:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP1250:
+					if (ch >= 0x80) 			
+						ch = data_1250[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP1251:
+					if (ch >= 0x80) 			
+						ch = data_1251[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP1252:
+					if (ch >= 0x80) 			
+						ch = data_1252[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP1253:
+					if (ch >= 0x80) 			
+						ch = data_1253[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP1254:
+					if (ch >= 0x80) 			
+						ch = data_1254[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP1255:
+					if (ch >= 0x80) 			
+						ch = data_1255[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP1256:
+					if (ch >= 0x80) 			
+						ch = data_1256[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP1257:
+					if (ch >= 0x80) 			
+						ch = data_1257[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP1258:
+					if (ch >= 0x80) 			
+						ch = data_1258[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP10007:
+					if (ch >= 0x80) 			
+						ch = data_10007[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP10017:
+					if (ch >= 0x80) 			
+						ch = data_10017[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP10079:
+					if (ch >= 0x80) 			
+						ch = data_10079[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP20127:
+					if (ch >= 0x80) 			
+						ch = data_20127[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP20866:
+					if (ch >= 0x80) 			
+						ch = data_20866[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP21866:
+					if (ch >= 0x80) 			
+						ch = data_21866[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP28591:
+					if (ch >= 0x80) 			
+						ch = data_28591[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP28592:
+					if (ch >= 0x80) 			
+						ch = data_28592[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP28595:
+					if (ch >= 0x80) 			
+						ch = data_28595[ch - 0x80];
+					break;
+				case TAL_CODE_PAGES.CP28605:
+					if (ch >= 0x80) 			
+						ch = data_28605[ch - 0x80];
+					break;
+					
+				default:
+					if (ch >= 0x80) 			
+						ch = data_1251[ch - 0x80];
+					break;
+				}
+			}
+			dst[res++] = ch;
+		}
+		return res;
+	}
+	
 	
 	public static final char byte2Wide(final int cp, final byte[] src, AlIntHolder src_pos) {
 		char ch = (char)src[src_pos.value++], ch1;

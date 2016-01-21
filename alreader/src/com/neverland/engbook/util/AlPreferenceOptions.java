@@ -16,6 +16,7 @@ public class AlPreferenceOptions {
 	public int			picture_need_tuneK;	
 	public boolean		justify;
 	public boolean		notesOnPage;
+	public boolean 		isASRoll;
 	
 	public int			maxNotesItemsOnPageRequest;
 	public int			maxNotesItemsOnPageUsed;

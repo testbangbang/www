@@ -59,7 +59,7 @@ public class AlBookEng{
 		
 	private static final int AL_COUNTPAGES_FOR_AUTOCALC = 64;
 	private static final int AL_COUNTPAGES_MAX_FORSCREEN = 512;
-	private static final int AL_TIMESCALC_MAX_FORSCREEN = 2000;
+	private static final int AL_TIMESCALC_MAX_FORSCREEN = 4000;
 	private static final int AL_FILESIZEMIN_FOR_AUTOCALC = (65536 << 1);
 
 	private int bookPosition;
@@ -272,7 +272,9 @@ public class AlBookEng{
 		profiles.marginR = prof.margin;
 		profiles.marginB = prof.margin;
 
-		profiles.twoColumn = prof.twoColumn;
+		profiles.twoColumnRequest = prof.twoColumn;
+		profiles.twoColumnUsed = profiles.twoColumnRequest;
+		
 		profiles.background = prof.background;
 
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT] = prof.colorText;
@@ -334,9 +336,20 @@ public class AlBookEng{
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOMB] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
 
 		profiles.DPIMultiplex = preferences.picture_need_tuneK;
+		
+		profiles.classicFirstLetter = false;
+		profiles.showFirstLetter = 0;
+		
+		if (preferences.isASRoll)
+			profiles.twoColumnUsed = false;
+		
+		profiles.isTransparentImage = 
+				(profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG] & 0xff) > 0xa0 &&
+				(profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG] & 0xff00) > 0xa000 &&
+				(profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG] & 0xff0000) > 0xa00000;
 
 		preferences.vjustifyUsed = preferences.vjustifyRequest;
-		if (preferences.vjustifyUsed && profiles.twoColumn)
+		if (preferences.vjustifyUsed && profiles.twoColumnUsed)
 			preferences.vjustifyUsed = false;
 
 		
@@ -395,7 +408,7 @@ public class AlBookEng{
 	    				AlStyles.SL_HYPH | AlStyles.SL_INTER_ADDTEXT;
 		styles.style[InternalConst.STYLES_STYLE_PRE] = AlStyles.SL_FONT_CODE | AlStyles.SL_SIZE_M1 | AlStyles.SL_JUST_LEFT | 
 			AlStyles.SL_COLOR_TEXT | AlStyles.SL_INTER_ADDFONT;
-		styles.style[InternalConst.STYLES_STYLE_POEM] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_0 | AlStyles.SL_COLOR_TEXT | 
+		styles.style[InternalConst.STYLES_STYLE_POEM] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_0 | AlStyles.SL_COLOR_TEXT | AlStyles.SL_REDLINE |
 			AlStyles.SL_JUST_LEFT | AlStyles.SL_JUSTIFY_POEM | AlStyles.SL_ITALIC | AlStyles.SL_INTER_ADDTEXT;
 		styles.style[InternalConst.STYLES_STYLE_BOLD] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_0 | AlStyles.SL_COLOR_TEXT | 
 			AlStyles.REMAP_NONEF | AlStyles.REMAP_NONEC;
@@ -448,12 +461,12 @@ public class AlBookEng{
 		screen_parameters.marginT = profiles.marginT;
 		screen_parameters.marginB = profiles.marginB;
 		int min_dim = Math.min(screenWidth >> 1, screenHeight);
-		if (screen_parameters.marginL < 0) screen_parameters.marginL = screen_parameters.marginL * (-1) * min_dim  / (profiles.twoColumn ? 100 : 100);
+		if (screen_parameters.marginL < 0) screen_parameters.marginL = screen_parameters.marginL * (-1) * min_dim  / (profiles.twoColumnUsed ? 100 : 100);
 		if (screen_parameters.marginT < 0) screen_parameters.marginT = screen_parameters.marginT * (-1) * min_dim  / 100;
-		if (screen_parameters.marginR < 0) screen_parameters.marginR = screen_parameters.marginR * (-1) * min_dim  / (profiles.twoColumn ? 100 : 100);
+		if (screen_parameters.marginR < 0) screen_parameters.marginR = screen_parameters.marginR * (-1) * min_dim  / (profiles.twoColumnUsed ? 100 : 100);
 		if (screen_parameters.marginB < 0) screen_parameters.marginB = screen_parameters.marginB * (-1) * min_dim  / 100;
 
-		if (profiles.twoColumn && screen_parameters.marginR < 30)
+		if (profiles.twoColumnUsed && screen_parameters.marginR < 30)
 			screen_parameters.marginR = 30;
 			
 		int tmp;
@@ -477,7 +490,7 @@ public class AlBookEng{
 
 		if (preferences.chinezeFormatting) {
 			while (true) {
-				screen_parameters.free_picture_width = (int)((screenWidth >> (profiles.twoColumn ? 1 : 0))) - 
+				screen_parameters.free_picture_width = (int)((screenWidth >> (profiles.twoColumnUsed ? 1 : 0))) - 
 					screen_parameters.marginL - screen_parameters.marginR - 1;
 				tmp = (int) (screen_parameters.free_picture_width % (fontParam.space_width_standart * 2));
 				if (tmp < 2)
@@ -487,7 +500,7 @@ public class AlBookEng{
 			}
 		}
 		
-		screen_parameters.free_picture_width = (int)((screenWidth >> (profiles.twoColumn ? 1 : 0))) - 
+		screen_parameters.free_picture_width = (int)((screenWidth >> (profiles.twoColumnUsed ? 1 : 0))) - 
 			screen_parameters.marginL - screen_parameters.marginR - 1;
 		screen_parameters.free_picture_height = screenHeight - screen_parameters.marginT - screen_parameters.marginB - 3;
 
@@ -562,6 +575,10 @@ public class AlBookEng{
 			screen_parameters.vikluchL = 0;
 			screen_parameters.vikluchR = 0;
 		}
+		
+		if (preferences.isASRoll) {
+			screen_parameters.marginT = screen_parameters.marginB = 0;
+		}
 	}
 
 	void initDefaultPreference() {
@@ -575,6 +592,7 @@ public class AlBookEng{
 		preferences.notesOnPage = true;
 		preferences.justify = true;
 		preferences.vjustifyRequest = true;
+		preferences.isASRoll = false;
 		preferences.calcPagesModeRequest = TAL_SCREEN_PAGES_COUNT.SIZE;
 	}
 
@@ -582,7 +600,7 @@ public class AlBookEng{
 		calc.drawBackground(screenWidth, screenHeight, profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG], profiles.background);
 
 		notesCounter++;
-		if (profiles.twoColumn) {
+		if (profiles.twoColumnUsed) {
 			recalcColumn(
 				(screenWidth >> 1) - screen_parameters.marginR - screen_parameters.marginL, 
 				screenHeight - screen_parameters.marginB - screen_parameters.marginT, 
@@ -658,7 +676,7 @@ public class AlBookEng{
 			if (openState.getState() != AlBookState.NOLOAD) {
 				int x = (width - waitBitmap.width) >> 1;
 				int y = (height - waitBitmap.height) >> 1;
-				calc.drawImage(x, y, waitBitmap.width, waitBitmap.height, waitBitmap, 0x00000000);
+				calc.drawImage(x, y, waitBitmap.width, waitBitmap.height, waitBitmap, profiles.isTransparentImage);
 			}
 			calc.endMain();
 			return bmp[1];
@@ -702,6 +720,13 @@ public class AlBookEng{
 		char ch;
 		
 		int col_count = page.countItems;
+		
+		if (preferences.isASRoll) {
+			oi = page.items.get(col_count);
+			if (oi.count > 0 && oi.pos[0] >= page.end_position &&
+				(profiles.classicFirstLetter || oi.isEnd || ((oi.style[0] & AlStyles.SL_MARKFIRTSTLETTER) == 0)))
+				col_count++;
+		}
 		
 		for (j = 0; j < col_count; j++) {
 			oi = page.items.get(j);
@@ -957,6 +982,14 @@ public class AlBookEng{
 		}
 		
 		page.overhead = 0;	
+		if (preferences.isASRoll) {
+			
+			oi = page.items.get(page.countItems);
+			if (oi != null && oi.count > 0 && oi.pos[0] >= page.end_position &&
+				(profiles.classicFirstLetter || oi.isEnd || ((oi.style[0] & AlStyles.SL_MARKFIRTSTLETTER) == 0)))
+				page.overhead = page.pageHeight - page.textHeight;
+		
+		} else		
 		if (preferences.vjustifyUsed && needVJust && !page.notePresent) {
 			ext_len = page.pageHeight - page.textHeight;
 			
@@ -1038,16 +1071,16 @@ public class AlBookEng{
 	}
 
 	void drawImage(int pos, long style, int widthImage, int x, int y) {
-		AlImage ai = null;
+		AlOneImage ai = null;
 		String link = null;		
 		int scale = (int) ((style & AlStyles.SL_COLOR_MASK) >> AlStyles.SL_COLOR_SHIFT);	
 			
-		/*if ((style & AlStyles.SL_IMAGE_MASK) == AlStyles.SL_IMAGE_OK) {
-			link = format.getImageNameByPos(pos);
+		if ((style & AlStyles.SL_IMAGE_MASK) == AlStyles.SL_IMAGE_OK) {
+			link = format.getLinkNameByPos(pos, false);
 			if (link != null)
 				ai = format.getImageByName(link);
 			if (ai != null) {
-				Bitmap b = getStoredImage(link, scale, ai);
+				AlBitmap b = images.getImage(ai, scale);
 				if (b != null) {
 					int th = ai.height;
 					int tw = ai.width;
@@ -1058,8 +1091,8 @@ public class AlBookEng{
 					
 					final int w;
 					final int h;
-					final float f = widthImage / tw;
-					if (f <= 1.01f && f >= 0.999f) {
+					final float f = (float)widthImage / tw;
+					if (f <= 1.02f && f >= 0.99f) {
 						w = (int) (tw);
 						h = (int) (th);
 					} else {
@@ -1067,35 +1100,21 @@ public class AlBookEng{
 						h = (int) (th * f);
 					}
 					
-					rImageDst.left = x; rImageDst.top = y - h;
-					rImageDst.right = x + w; rImageDst.bottom = y;
+					calc.drawImage(x, y - h, w, h, b, profiles.isTransparentImage);
 					
-					switch (ai.iType & AlImage.IMG_MASKTYPE) {
-					case AlImage.IMG_BMP:
-					case AlImage.IMG_JPG:
-						break;
-					default:
-						if (!profiles.isTransparentImage) {
-							linePaint.setColor(0xffffffff);	
-							canvas.drawRect(rImageDst, linePaint);
-						}
-					}
-					
-					canvas.drawBitmap(b, null, rImageDst, imagePaint);
-					
-					if ((style & AlStyles.SL_SELECT) != 0) {
+					/*if ((style & AlStyles.SL_SELECT) != 0) {
 						linePaint.setColor(ProfileManager.getColor(ProfileManager.COLOR_SELECT, false));						
 						canvas.drawRect(rImageDst, linePaint);
-					}
+					}*/
 					
 					return;
 				}
 			}
-		}*/
+		}
 		
 		imageParam.real_height = errorBitmap.height;
 		imageParam.real_width = errorBitmap.width;
-		calc.drawImage(x, y - imageParam.real_height, errorBitmap.width, errorBitmap.height, errorBitmap, 0x00000000);
+		calc.drawImage(x, y - imageParam.real_height, errorBitmap.width, errorBitmap.height, errorBitmap, profiles.isTransparentImage);
 	}
 
 
@@ -1241,6 +1260,13 @@ public class AlBookEng{
 		AlOneItem oi = null;
 		int x;
 		int col_count = page.countItems;
+		
+		if (preferences.isASRoll) {
+			oi = page.items.get(col_count);
+			if (oi.count > 0 && oi.pos[0] >= page.end_position &&
+				(profiles.classicFirstLetter || oi.isEnd || ((oi.style[0] & AlStyles.SL_MARKFIRTSTLETTER) == 0)))
+				col_count++;
+		}
 		
 		int z, i, j, y = y0 + page.topMarg, start = 0, end = 0;
 		for (z = 0; z < 2; z++) {
@@ -1400,6 +1426,10 @@ public class AlBookEng{
 		} else 
 			format = new AlFormatTXT();
 
+		bookOptions.formatOptions &= ~AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG;
+		if (preferences.calcPagesModeRequest != TAL_SCREEN_PAGES_COUNT.SIZE)
+			bookOptions.formatOptions |= AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG;
+		
 		//Log.e("files open end", Long.toString(System.currentTimeMillis()));
 		format.initState(bookOptions, activeFile, preferences, styles);
 		format.prepareAll();
@@ -1514,6 +1544,7 @@ public class AlBookEng{
 		openState.decState();	
 		openState.decState();
 		format = null;
+		images.resetStoredImages();
 		openState.decState();
 
 		return returnOkWithRedraw();
@@ -1695,7 +1726,7 @@ public class AlBookEng{
 				}
 			}
 			
-			if (addEmptyLine) {
+			if (addEmptyLine || preferences.isASRoll) {
 				
 				if ((poi != null) && (style & AlStyles.SL_STANZA) != 0 && (poi.style[0] & AlStyles.SL_STANZA) != 0) {
 
@@ -1734,11 +1765,13 @@ public class AlBookEng{
 				}
 				
 				
-				if ((style & AlStyles.SL_BREAK) != 0)
-					oi.height += InternalConst.BREAK_HEIGHT;
-				if (poi != null && poi.count == 1 && ((poi.style[0] & AlStyles.SL_IMAGE) != 0) && 
-						((poi.style[0] & AlStyles.SL_MARKCOVER) != 0)) {
-					oi.height += InternalConst.BREAK_HEIGHT;
+				if (!preferences.isASRoll) {
+					if ((style & AlStyles.SL_BREAK) != 0)
+						oi.height += InternalConst.BREAK_HEIGHT;
+					if (poi != null && poi.count == 1 && ((poi.style[0] & AlStyles.SL_IMAGE) != 0) && 
+							((poi.style[0] & AlStyles.SL_MARKCOVER) != 0)) {
+						oi.height += InternalConst.BREAK_HEIGHT;
+					}
 				}
 
 			}
@@ -1997,7 +2030,7 @@ public class AlBookEng{
 			for (k = 0; k < page.items.get(test_item).count; k++) {
 				if ((page.items.get(test_item).style[k] & AlStyles.SL_MARKNOTE0) != 0) {
 					AlOneLink al = null;
-					String link = format.getLinkNameByPos(page.items.get(test_item).pos[k]);
+					String link = format.getLinkNameByPos(page.items.get(test_item).pos[k], true);
 					if (link != null)
 						al = format.getLinkByName(link, true);
 					if (al != null && al.iType == 1 && al.positionE != -1) {
@@ -2398,7 +2431,7 @@ public class AlBookEng{
 				
 					(page.textHeight + oi.height + oi.base_line_down + oi.base_line_up + 
 					(calcMode == TAL_CALC_MODE.NOTES && !page.notePresent ? page.notesShift : 0) -					 
-					(screen_parameters.reservHeight0) <= page.pageHeight) || 
+					((preferences.isASRoll ? 0 : screen_parameters.reservHeight0)) <= page.pageHeight) || 
 
 					(page.countItems == 0))
 				) {
@@ -2440,150 +2473,74 @@ public class AlBookEng{
 			
 		tword.style[pos_in_word] &= AlStyles.SL_COLOR_IMASK & AlStyles.SL_IMAGE_IMASK;
 		AlOneImage ai = null;
-		String link = null;//format.getImageNameByPos(pos);
-		//if (link != null)
-		//	ai = format.getImageByName(link);
+		String link = format.getLinkNameByPos(pos, false);
+		if (link != null)
+			ai = format.getImageByName(link);
 
-		/*if (ai != null && ((ai.iType & IMG_MASKGET) != NOT_EXTERNAL_IMAGE)) {
+		if (ai != null && (ai.iType != AlOneImage.NOT_EXTERNAL_IMAGE)) {
 			if (ai.needScan) {
-				ai.needScan = false;
-				InputStream  is0 = null;
-				
-				boolean image_in_bytearray = false;
-				if (ai.isReadyStream()) {
-					image_in_bytearray = true;
-				} else {
-					switch (ai.iType & AlImage.IMG_MASKGET) {
-					case IMG_BASE64:					
-						is0 = new MIMEInputStream(format, ai.positionS, ai.positionE);
-						break;
-					case IMG_MEMO:					
-						is0 = new MEMOInputStream(format, ai.positionS, ai.positionE);
-						break;
-					case IMG_HEX:					
-						is0 = new HEXInputStream(format, ai.positionS, ai.positionE);
-						break;
-					case IMG_TABLE:
-						is0 = AlApp.main_resource.openRawResource(R.drawable.im025); 
-						break;
-					}
-					
-					if (ai.isAcceptedStream(false)) {
-						if (ai.fillStream(is0) && ai.isReadyStream()) {
-							image_in_bytearray = true;
-						}
-					}
-				}
-
-				if (is0 != null || image_in_bytearray) {
-					try {
-						BitmapFactory.Options opts = new BitmapFactory.Options();
-						opts.inJustDecodeBounds = true;
-						if (image_in_bytearray) {
-							BitmapFactory.decodeByteArray(ai.image_data, 0, ai.image_data.length, opts);
-						} else {
-							switch (ai.iType & AlImage.IMG_MASKGET) {
-							case AlImage.IMG_MEMO:
-								BitmapFactory.decodeByteArray(((MEMOInputStream)is0).mem, 0, ((MEMOInputStream)is0).memsz, opts);
-								break;
-							default:
-								BitmapFactory.decodeStream(is0, null, opts);
-								break;
-							}
-						}
-						if (opts.outMimeType != null)
-							if (opts.outHeight != -1 && opts.outWidth != -1) {					
-								imageParam.real_height = ai.height = opts.outHeight;
-								imageParam.real_width = ai.width = opts.outWidth;
-								tword.style[pos_in_word] |= AlStyles.SL_IMAGE_OK;
-								
-								ai.iType &= ~AlImage.IMG_MASKTYPE;
-								if (opts.outMimeType.equalsIgnoreCase("image/jpeg")) {
-									ai.iType |= AlImage.IMG_JPG;
-								} else
-								if (opts.outMimeType.equalsIgnoreCase("image/bmp")) {
-									ai.iType |= AlImage.IMG_BMP;
-								} else
-								if (opts.outMimeType.equalsIgnoreCase("image/gif")) {
-									ai.iType |= AlImage.IMG_GIF;
-								} else
-								if (opts.outMimeType.equalsIgnoreCase("image/png")) {
-									ai.iType |= AlImage.IMG_PNG;
-								}
-							}
-
-					} catch (Exception e) {
-						Log.e("read image error", Integer.toString(ai.positionS));
-					}
-				}
-			} else 
+				images.initWork(ai, format);
+				images.scanImage(ai);
+			}  
 			if (ai.width != -1) {
 				imageParam.real_height = ai.height;
 				imageParam.real_width = ai.width;
-				tword.style[pos_in_word] |= SL_IMAGE_OK;
-			}
-		}*/
+				tword.style[pos_in_word] |= AlStyles.SL_IMAGE_OK;
+			}		
+		}
 		
 		if ((tword.style[pos_in_word] & AlStyles.SL_IMAGE_OK) != 0) {
 			int scale = 0;
 			imageParam.height = imageParam.real_height;
 			imageParam.width = imageParam.real_width;
 			
-			while (imageParam.height > maxHeight || imageParam.width > maxWight) {
+			while ((imageParam.height > maxHeight || imageParam.width > maxWight) && scale < 31) {
 				imageParam.height >>= 1;
 				imageParam.width >>= 1;
 				scale++;
 			}
 			
-			if (preferences.picture_need_tune && 
-				((tword.style[pos_in_word] & AlStyles.SL_MARKCOVER) != 0 || scale != 0)) {
-				if (scale > 0) {
-					scale--;
+			if ((tword.style[pos_in_word] & AlStyles.SL_MARKCOVER) != 0) {
+				while (imageParam.height < maxHeight && imageParam.width < maxWight) {
 					imageParam.height <<= 1;
 					imageParam.width <<= 1;
+					if (scale > 0)
+						scale--;
 				}
-				
+			} else 
+			if (preferences.picture_need_tuneK > 1) {
+				int k = preferences.picture_need_tuneK - 1;
+				while (imageParam.height < maxHeight && imageParam.width < maxWight && k > 0) {
+					imageParam.height <<= 1;
+					imageParam.width <<= 1;
+					if (scale > 0)
+						scale--;
+					k--;
+				}
+			}
+
+			if (imageParam.height > maxHeight || imageParam.width > maxWight || scale > 0) {
 				float f = Math.min((float)maxHeight / (float)imageParam.height, 
 						(float)maxWight / (float)imageParam.width);
 				imageParam.height = (int) (imageParam.height * f);
 				imageParam.width = (int) (imageParam.width * f);
-			} else
-			if (preferences.picture_need_tuneK != 1.0f) { 
-				if (imageParam.height * preferences.picture_need_tuneK <= maxHeight && 
-						imageParam.width * preferences.picture_need_tuneK <= maxWight) {
-					
-					imageParam.height *= preferences.picture_need_tuneK;
-					imageParam.width *= preferences.picture_need_tuneK;
-					
-					if (scale > 0) scale--;
-					if (scale > 0 && preferences.picture_need_tuneK > 2.0f) scale--;
-					if (scale > 0 && preferences.picture_need_tuneK > 4.0f) scale--;
-				} else 
-				if (preferences.picture_need_tune) {
-					float f = Math.min((float)maxHeight / (float)imageParam.height, 
-							(float)maxWight / (float)imageParam.width);
-					
-					if (f > 1.1f) {
-						imageParam.height = (int) (imageParam.height * f);
-						imageParam.width = (int) (imageParam.width * f);
-					
-						if (scale > 0) scale--;
-						if (scale > 0 && f > 2.0f) scale--;
-						if (scale > 0 && f > 4.0f) scale--;
-					}
-				}
 			}
-			
-			if (scale <= 31) {
-				tword.style[pos_in_word] |= (long)(scale) << AlStyles.SL_COLOR_SHIFT;
+
+			if (scale <= 30) {
+				tword.style[pos_in_word] |= ((long)(scale)) << AlStyles.SL_COLOR_SHIFT;
 				return;
 			}
 			
 			tword.style[pos_in_word] &= AlStyles.SL_IMAGE_IMASK;
 		}
 
-		imageParam.height = errorBitmap.height;
-		imageParam.width = errorBitmap.width;
+		if (errorBitmap != null) {
+			imageParam.height = errorBitmap.height;
+			imageParam.width = errorBitmap.width;
+		} else {
+			imageParam.height = 16;
+			imageParam.width = 16;
+		}
 	}
 
 	void updateWordLength(final AlOneWord tword/*, final AlOnePage page, int width*/) {
@@ -2979,7 +2936,7 @@ public class AlBookEng{
 						
 							(page.textHeight + oi.height + oi.base_line_down + oi.base_line_up +
 							(calcMode == TAL_CALC_MODE.NOTES && !page.notePresent ? page.notesShift : 0) -
-							(screen_parameters.reservHeight0) <= page.pageHeight) ||
+							((preferences.isASRoll ? 0 : screen_parameters.reservHeight0)) <= page.pageHeight) ||
 							(page.countItems == 0))
 						) {
 						
@@ -3041,10 +2998,15 @@ public class AlBookEng{
 		page.start_position = start_point;
 		page.countItems = 0;
 		page.items.get(0).count = 0;
-		page.selectStart = page.selectEnd = -1;
-		page.pageHeight = height;
-		page.textHeight = 0;
-		page.topMarg = 0;			
+		page.selectStart = page.selectEnd = -1;		
+		page.pageHeight = height;		
+		if (preferences.isASRoll) {
+			page.topMarg = -page.overhead;
+			page.textHeight = -page.overhead;
+		} else {
+			page.topMarg = 0;
+			page.textHeight = 0;
+		}					
 		page.notePresent = false;
 		page.notesShift = (int) (screen_parameters.interFH_0[0] * 0.6f/* >> 1*/);
 		/*if (screen_parameters.interFI0[0] < 0)
@@ -3147,7 +3109,7 @@ public class AlBookEng{
 			//
 			
 			notesCounter++;
-			if (profiles.twoColumn) {
+			if (profiles.twoColumnUsed) {
 				recalcColumn(
 					(screenWidth >> 1) - screen_parameters.marginR - screen_parameters.marginL, 
 					screenHeight - screen_parameters.marginB - screen_parameters.marginT, 
@@ -3313,7 +3275,7 @@ public class AlBookEng{
 		calcScreenParameters();
 		
 		notesCounter++;
-		if (profiles.twoColumn) {
+		if (profiles.twoColumnUsed) {
 			res = calcPrevStartPoint(
 					(screenWidth >> 1) - screen_parameters.marginR - screen_parameters.marginL, 
 					screenHeight - screen_parameters.marginB - screen_parameters.marginT, 
@@ -3381,7 +3343,7 @@ public class AlBookEng{
 				switch (mode) {
 				case NEXTPAGE:
 					current_page = bookPosition;
-					if (profiles.twoColumn) {
+					if (profiles.twoColumnUsed) {
 						current_page = page1.end_position;
 						if (page0.end_position >= format.getSize()) 
 							current_page = page0.end_position;

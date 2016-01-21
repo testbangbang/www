@@ -21,7 +21,8 @@ public class AlCalc {
 	private final Rect 	rc = new Rect();
 	
 	private final Paint 	linePaint = new Paint();
-	private final Paint 	imagePaint = new Paint();
+	private final Paint 	imagePaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+
 	private final char[] 	oneCharArray = new char[1];
 	
 	private final float[] textWidths = new float[EngBookMyType.AL_WORD_LEN];
@@ -47,6 +48,7 @@ public class AlCalc {
 			break;
 		}
 		
+		linePaint.setDither(false);
 		linePaint.setAntiAlias(false);
 		linePaint.setStrokeWidth(multiplexer);
 	}
@@ -74,7 +76,7 @@ public class AlCalc {
 			while (x < width) {
 				y = 0;
 				while (y < height) {
-					drawImage(x, y, image.width, image.height, image, 0x00000000);
+					drawImage(x, y, image.width, image.height, image, true);
 					y += image.height;
 				}
 				x += image.width;
@@ -82,7 +84,7 @@ public class AlCalc {
 		}		
 	}
 	
-	public void drawImage(int x, int y, int width, int height, AlBitmap image, int fillColor) {
+	public void drawImage(int x, int y, int width, int height, AlBitmap image, boolean transparentEnable) {
 		if (canvas == null)
 			return;
 		
@@ -91,8 +93,8 @@ public class AlCalc {
 		rc.right = x + width;
 		rc.bottom = y + height;
 		
-		if ((fillColor & 0xff000000) != 0x00) {
-			linePaint.setColor(fillColor);
+		if (!transparentEnable) {
+			linePaint.setColor(0xffffffff);
 			canvas.drawRect(rc, linePaint);
 		}
 				
@@ -120,8 +122,6 @@ public class AlCalc {
 		canvas.drawRect(rc, linePaint);		
 	}
 	
-	
-	
 	public void drawText(int x, int y, char text, AlPaintFont fontParam) {
 		if (canvas == null)
 			return;
@@ -140,44 +140,7 @@ public class AlCalc {
 		for (int i = 0; i <= 0xffff; i++)
 			mainWidth[i] = UNKNOWNWIDTH;
 	}
-	
-	/*private void initMainWidth(AlPaintFont fparam) {
-		float[] testWidth 	= new float[2];		
 		
-		AlRandomAccessFile rf = new AlRandomAccessFile();
-		rf.open("/sdcard/testletter", 1);
-		String ustr;
-		byte[] bb = null;
-		
-		for (char i = 'W'; i <= 'W'; i++) {
-		
-				test[0] = i;
-				fparam.fnt.getTextWidths(test, 0, 1, testWidth);
-				mainWidth[i]  = (char) testWidth[0];
-				for (char j = 0x21; j <= 0xfff0; j++) {
-					
-					test[1] = j;
-					fparam.fnt.getTextWidths(test, 0, 2, testWidth);
-												
-					
-					ustr = "\n\r" + (char)i + (char)j + " > " + Float.toString(testWidth[0]);
-					try {
-						bb = ustr.getBytes("UTF-8");
-					} catch (UnsupportedEncodingException e1) {
-						e1.printStackTrace();
-					}
-					rf.write(bb);
-					
-				}		
-
-		}
-		
-		rf.close();
-		rf = null;
-		
-		mainWidth[0] = COMPLETE;
-	}*/
-	
 	public final int getOneMainTextCharWidth(AlPaintFont fparam, char ch) {
 		oneCharArray[0] = ch;
 		fparam.fnt.getTextWidths(oneCharArray, 0, 1, textWidths);
@@ -211,6 +174,5 @@ public class AlCalc {
 		}
 
 	}
-	
 	
 }

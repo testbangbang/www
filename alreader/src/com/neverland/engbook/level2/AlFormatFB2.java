@@ -107,6 +107,10 @@ public class AlFormatFB2 extends AlAXML {
 		ident = "FB2";
 
 		aFiles = myParent;
+		
+		if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
+			aFiles.needUnpackData();
+		
 		preference = pref;
 		styles = stl;
 
@@ -695,7 +699,7 @@ public class AlFormatFB2 extends AlAXML {
 					} else {
 						String s1 = (char)AlStyles.CHAR_LINK_S + "table:" + Integer.toString(allState.start_position_par) + (char)AlStyles.CHAR_LINK_E;
 						StringBuilder s2 = tag.getATTRValue(AlFormatTag.TAG_TITLE);
-						String s3 = (char)AlStyles.CHAR_IMAGE_S + LEVEL2_TABLETOTEXT + (char)AlStyles.CHAR_IMAGE_E;
+						String s3 = (char)AlStyles.CHAR_IMAGE_S + LEVEL2_TABLETOTEXT_STR + (char)AlStyles.CHAR_IMAGE_E;
 						
 						if (allState.isOpened) {
 							table_present++;

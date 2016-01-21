@@ -225,6 +225,25 @@ public class AlFilesZIP extends AlFiles {
 		inflater = null;
 	}
 
+	@Override
+	public void	needUnpackData() {
+		if (useUnpack)
+			return;
+		useUnpack = true;	
+		
+		try {
+			unpack_buffer = new byte[size];
+		} catch (Exception e) {
+			e.printStackTrace();
+			unpack_buffer = null;
+		}
+		if (unpack_buffer != null) {
+			getBuffer(0, unpack_buffer, size);
+		} else {
+			useUnpack = false;
+		}
+	}
+	
 	protected int getBuffer(int pos, byte[] dst, int cnt) {
 		//Log.e("ZIP read", Integer.toString(pos));
 		

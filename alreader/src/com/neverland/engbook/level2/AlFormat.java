@@ -28,8 +28,10 @@ import com.neverland.engbook.util.InternalConst;
 
 public abstract class AlFormat {
 	
-	public static final String LEVEL2_TABLETOTEXT	= 	":";
+	public static final char LEVEL2_TABLETOTEXT	= 	':';
+	public static final String LEVEL2_TABLETOTEXT_STR	= 	":";
 	public static final char  LEVEL2_COVERTOTEXT =	'*';
+	public static final String  LEVEL2_COVERTOTEXT_STR =	"*";
 	public static final char  LEVEL2_SPACE =			' ';
 	public static final String LEVEL2_LIST0TOTEXT =		"\u2022\u00a0";
 	public static final String LEVEL2_LIST1TOTEXT =		"\u25e6\u00a0";
@@ -54,7 +56,7 @@ public abstract class AlFormat {
 	ArrayList<String> 			bookGenres = new ArrayList<String>(0);
 	ArrayList<String> 			bookSeries = new ArrayList<String>(0);
 	public String			  		bookTitle = null;
-	AlFiles 					aFiles = null;
+	public AlFiles 					aFiles = null;
 	public ArrayList<AlOneSearchResult>	resfind = new ArrayList<AlOneSearchResult>(0);
 	
 	ArrayList<AlOneParagraph>		par = new ArrayList<AlOneParagraph>(0);
@@ -1618,11 +1620,14 @@ public abstract class AlFormat {
 		return par.get(num).iType;		
 	}
 	
-	public String getLinkNameByPos(int pos) {
+	public String getLinkNameByPos(int pos, boolean getLink) {
 		StringBuilder res = new StringBuilder();
 		
 		if (pos < 0 | pos >= size)
 			return null;
+		
+		final char startChar = (char) (getLink ? AlStyles.CHAR_LINK_S : AlStyles.CHAR_IMAGE_S);
+		final char endChar = (char) (getLink ? AlStyles.CHAR_LINK_E : AlStyles.CHAR_IMAGE_E);
 		
 		AlOneParagraph ap;
 		int par_num = findParagraphByPos(0, par.size(), pos);
@@ -1637,11 +1642,13 @@ public abstract class AlFormat {
 			
 			for (; j >= 0; j--) {				
 				if (fl) {
-					if (stored_par.data[j] == AlStyles.CHAR_LINK_S) {
-						if (res.length() < 2)
+					if (stored_par.data[j] == startChar) {
+						if (res.length() < 1)
 							return null;
 						if (res.charAt(0) == '#')
 							res.delete(0, 1);
+						if (res.length() < 1)
+							return null;
 						return res.toString();
 					} else {
 						if (res.length() == 0) {
@@ -1651,7 +1658,7 @@ public abstract class AlFormat {
 						}
 					}
 				} else {
-					if (stored_par.data[j] == AlStyles.CHAR_LINK_E)
+					if (stored_par.data[j] == endChar)
 						fl = true;
 				}
 			}
@@ -1661,6 +1668,36 @@ public abstract class AlFormat {
 			
 			par_num--;
 		}
+		
+		return null;
+	}
+
+	public AlOneImage getImageByName(String name) {
+		if (LEVEL2_COVERTOTEXT_STR.equalsIgnoreCase(name)) {
+			if (coverName == null)
+				return null;
+			name = coverName;
+		}
+		
+		if (im != null) {			
+			for (int i = 0; i < im.size(); i++) {
+				if (name.equalsIgnoreCase(im.get(i).name))
+					return im.get(i);
+			}
+		}
+		
+		/*if (tableToText.equalsIgnoreCase(name)) {
+			AlImage al = AlImage.addImage(tableToText, 0, 0, AlImage.IMG_TABLE + AlImage.IMG_UNKNOWN);
+			if (addImage(al))
+				return im0.get(im0.size() - 1);
+			return null;
+		}
+		
+		if (addImage(AlImage.addImage(name, 0, 0, AlImage.NOT_EXTERNAL_IMAGE))) {
+			if (aFiles.getExternalImage(im0.get(im0.size() - 1))) {
+				return im0.get(im0.size() - 1);
+			}
+		}*/
 		
 		return null;
 	}
