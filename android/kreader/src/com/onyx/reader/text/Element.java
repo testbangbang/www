@@ -13,15 +13,17 @@ public interface Element {
 
     public float measureWidth();
 
-    public float spacing();
-
     public float measureHeight();
+
+    public float spacing();
 
     public float baseLine();
 
-    public boolean layout(final TextLayoutContext textLayoutContext);
+    public boolean canLayout(final TextLayoutContext textLayoutContext);
 
     public boolean canScale();
+
+    public boolean useDedicatedParagraph();
 
     /**
      * @return if this element can be placed at the beginning of line.
@@ -29,7 +31,7 @@ public interface Element {
     public boolean canBeLayoutedAtLineBegin();
 
 
-    public List<Element> breakElement(final float leftWidth, final float additionalWidth);
+    public List<Element> breakElement(final float leftWidth, final float availableWidth);
 
     public Style style();
 

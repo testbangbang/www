@@ -389,6 +389,7 @@ public class ReaderTestActivity extends Activity {
         Rect rect = new Rect();
         surfaceView.getDrawingRect(rect);
         List<Element> list = new ArrayList<Element>();
+        list.add(LeadingElement.create(randStyle()));
         int count = randInt(100, 600);
         for(int i = 0; i < count; ++i) {
             list.add(randElement());

@@ -7,27 +7,25 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by zengzhu on 1/9/16.
+ * Created by zengzhu on 1/21/16.
  */
-public class TextElement implements Element {
+public class LeadingElement implements Element {
 
-    private Style style;
-    private String text;
     private float x;
     private float y;
     private float width;
     private float height;
-    private Rect rect = new Rect();
-    static List<String> puncation = Arrays.asList(new String[]{"，", "？", "。", "”", "“", "！", "·", "\""});
+    private Style style;
 
-    public static TextElement create(final String string, final Style styleRef) {
-        TextElement textElement = new TextElement();
-        textElement.style = styleRef;
-        textElement.text = string;
-        return textElement;
+    public static final String SPACE = " ";
+
+    public static LeadingElement create(final Style styleRef) {
+        LeadingElement leadingElement = new LeadingElement();
+        leadingElement.style = styleRef;
+        return leadingElement;
     }
 
-    public TextElement() {
+    public LeadingElement() {
     }
 
     public int type() {
@@ -36,18 +34,18 @@ public class TextElement implements Element {
 
     public float measureWidth() {
         if (width <= 0) {
-            width = style.measureWidth(text);
+            width = style.measureWidth(SPACE) * 8;
         }
         return width;
     }
 
     public float spacing() {
-        return style.getPaint().measureText(" ");
+        return 0;
     }
 
     public float measureHeight() {
         if (height <= 0) {
-            height = style.measureHeight(text);
+            height = style.measureHeight(SPACE);
         }
         return height;
     }
@@ -72,11 +70,6 @@ public class TextElement implements Element {
     }
 
     public boolean canBeLayoutedAtLineBegin() {
-        for(String s : puncation) {
-            if (s.contains(text)) {
-                return false;
-            }
-        }
         return true;
     }
 
@@ -102,7 +95,7 @@ public class TextElement implements Element {
     }
 
     public void draw(final Canvas canvas) {
-        canvas.drawText(text, x, y, style.getPaint());
+        canvas.drawText(SPACE, x, y, style.getPaint());
     }
 
 }

@@ -53,7 +53,7 @@ public class TextLayoutJustify {
     }
 
     private boolean onNewElement(final TextLayoutContext textLayoutContext, final Element element) {
-        if (!element.layout(textLayoutContext)) {
+        if (!element.canLayout(textLayoutContext)) {
             return false;
         }
         textLayoutContext.addElement(element);
@@ -93,7 +93,12 @@ public class TextLayoutJustify {
         }
 
         textLayoutContext.adjustPrevLine(newLayoutLine, textLayoutContext.getLimitedRect());
+        onLineFinished();
         return false;
+    }
+
+    private void onLineFinished() {
+
     }
 
     private boolean breakElementFilter(final TextLayoutContext textLayoutContext, final Element element) {
