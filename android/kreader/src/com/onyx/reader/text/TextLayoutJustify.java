@@ -74,7 +74,7 @@ public class TextLayoutJustify {
             textLayoutContext.averageCurrentLineSpacing();
             return true;
         }
-        return breakElementFilter(textLayoutContext, element);
+        return breakElement(textLayoutContext, element);
     }
 
     /**
@@ -101,7 +101,7 @@ public class TextLayoutJustify {
 
     }
 
-    private boolean breakElementFilter(final TextLayoutContext textLayoutContext, final Element element) {
+    private boolean breakElement(final TextLayoutContext textLayoutContext, final Element element) {
         List<Element> list = element.breakElement(textLayoutContext.getAvailableWidth(), textLayoutContext.getAvailableHeight());
         if (list == null) {
             return false;
