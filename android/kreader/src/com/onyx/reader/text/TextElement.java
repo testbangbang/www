@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 1/9/16.
+ * text including spacing and punctuation
  */
 public class TextElement implements Element {
 
@@ -18,7 +19,7 @@ public class TextElement implements Element {
     private float width;
     private float height;
     private Rect rect = new Rect();
-    static List<String> puncation = Arrays.asList(new String[]{"，", "？", "。", "”", "“", "！", "·", "\""});
+    static List<String> punctuation = Arrays.asList(new String[]{"，", "？", "。", "”", "“", "！", "·", "\""});
 
     public static TextElement create(final String string, final Style styleRef) {
         TextElement textElement = new TextElement();
@@ -42,7 +43,8 @@ public class TextElement implements Element {
     }
 
     public float spacing() {
-        return style.getPaint().measureText(" ");
+//        return style.getPaint().measureText(" ");
+        return 0;
     }
 
     public float measureHeight() {
@@ -72,7 +74,7 @@ public class TextElement implements Element {
     }
 
     public boolean canBeLayoutedAtLineBegin() {
-        for(String s : puncation) {
+        for(String s : punctuation) {
             if (s.contains(text)) {
                 return false;
             }
