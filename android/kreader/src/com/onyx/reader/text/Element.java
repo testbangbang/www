@@ -31,7 +31,7 @@ public interface Element {
     public boolean canBeLayoutedAtLineBegin();
 
 
-    public List<Element> breakElement(final float leftWidth, final float availableWidth);
+    public List<Element> breakElement(final float leftWidth);
 
     public Style style();
 

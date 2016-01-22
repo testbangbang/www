@@ -2,7 +2,10 @@ package com.onyx.reader.text;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Pair;
+import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -82,7 +85,21 @@ public class TextElement implements Element {
         return true;
     }
 
-    public List<Element> breakElement(final float leftWidth, final float availableWidth) {
+    public List<Element> breakElement(final float leftWidth) {
+        List<Pair<String, String>> list = OnyxHyphen.getHyphList(text);
+        if (list == null || list.size() <= 0) {
+            return null;
+        }
+        final String separator = "-";
+        List<Element> elementList = new ArrayList<Element>();
+        for(Pair<String, String> entry: list) {
+            String value = entry.first + separator;
+            if (style().measureWidth(value) < leftWidth) {
+                elementList.add(TextElement.create(value, style()));
+                elementList.add(TextElement.create(entry.second, style()));
+                return elementList;
+            }
+        }
         return null;
     }
 

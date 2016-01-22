@@ -73,7 +73,7 @@ public class LeadingElement implements Element {
         return true;
     }
 
-    public List<Element> breakElement(final float leftWidth, final float availableWidth) {
+    public List<Element> breakElement(final float leftWidth) {
         return null;
     }
 

@@ -105,6 +105,17 @@ public class TextLayoutContext {
         return availableWidth;
     }
 
+    public boolean replaceElement(final Element element, final List<Element> subList) {
+        int index = elementList.indexOf(element);
+        if (index < 0) {
+            return false;
+        }
+
+        elementList.addAll(index, subList);
+        elementList.remove(index + subList.size());
+        return true;
+    }
+
     public float addLine(final float height) {
         availableHeight -= height;
         availableWidth = limitedRect.width();

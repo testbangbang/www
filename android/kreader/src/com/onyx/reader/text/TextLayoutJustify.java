@@ -102,11 +102,12 @@ public class TextLayoutJustify {
     }
 
     private boolean breakElement(final TextLayoutContext textLayoutContext, final Element element) {
-        List<Element> list = element.breakElement(textLayoutContext.getAvailableWidth(), textLayoutContext.getAvailableHeight());
+        List<Element> list = element.breakElement(textLayoutContext.getAvailableWidth());
         if (list == null) {
             return false;
         }
-        textLayoutContext.addElement(element);
+        textLayoutContext.replaceElement(element, list);
+        textLayoutContext.addElement(list.get(0));
         textLayoutContext.averageCurrentLineSpacing();
         textLayoutContext.nextLayoutLine();
         return true;
