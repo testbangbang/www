@@ -7,20 +7,23 @@ import android.util.Log;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
 import com.neverland.engbook.forpublic.TAL_RESULT;
+import com.neverland.engbook.unicode.AlUnicode;
 
 
 public abstract class AlFiles {
-	
+
+	public static final int LEVEL1_FILE_NOT_FOUND = -1;
 	public static final int LEVEL1_FILE_BUF_SIZE =		65536;//32768;
 	public static final int LEVEL1_FILE_BUF_MASK = 		((0xffffffff - LEVEL1_FILE_BUF_SIZE) + 1);
 	public static final int LEVEL1_FILE_BUF_MASK_DATA =	(LEVEL1_FILE_BUF_SIZE - 1);
 	public static final int LEVEL1_FILE_NAME_MAX_LENGTH	 = 256;
+	public static final String LEVEL1_ZIP_FIRSTNAME_EPUB = "/META-INF/container.xml";
 	public static final int LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG = 0x80000000;
 	
 	int					read_pos;
 	
 	boolean				autoCodePage;
-	String				fileName;
+	public String		fileName;
 	int					size;
 	protected int 		slot_active = 0; 	
 	protected int[]		slot_start = {0, 0};
@@ -51,14 +54,16 @@ public abstract class AlFiles {
 	}
 
 	@Override
-	public void finalize() {
+	public void finalize() throws Throwable {
 		fileList.clear();
 		
 		parent = null;
 
 		fileName = null;
 		slot[0] = null;
-		slot[1] = null;	
+		slot[1] = null;
+
+		super.finalize();
 	}
 	
 	public long setLoadTime(boolean setStart) {
@@ -76,7 +81,63 @@ public abstract class AlFiles {
 		if (parent != null)
 			parent.needUnpackData(); 		
 	}
-	
+
+    public int  getByteBuffer(int pos, byte[] dst, int dst_pos, int len) {
+        int point = pos;
+        int res = 0x00;
+        int ready, i;
+
+        if (useUnpack && unpack_buffer != null) {
+            ready = len;
+            if (pos + ready >= size)
+                ready = size - pos;
+
+            System.arraycopy(unpack_buffer, pos, dst, dst_pos, ready);
+            return ready;
+        }
+
+        while ((res < len) && (point < size)) {
+            if (slot_start[slot_active] <= point && slot_end[slot_active] > point) {
+                ready = slot_end[slot_active] - point;
+                if (ready > len - res)
+                    ready = len - res;
+
+                System.arraycopy(slot[slot_active], point - slot_start[slot_active],
+                        dst, dst_pos + res, ready);
+
+                res += ready;
+                point += ready;
+                continue;
+            }
+
+            slot_active = 1 - slot_active;
+
+            if (slot_start[slot_active] <= point && slot_end[slot_active] > point) {
+                ready = slot_end[slot_active] - point - 1;
+                if (ready > len - res)
+                    ready = len - res;
+
+                System.arraycopy(slot[slot_active], point - slot_start[slot_active],
+                        dst, dst_pos + res, ready);
+
+                res += ready;
+                point += ready;
+                continue;
+            }
+
+            //Log.e("slot read", Integer.toString(point & LEVEL1_FILE_BUF_MASK));
+
+            slot_start[slot_active] = point & LEVEL1_FILE_BUF_MASK;
+            i = getBuffer(slot_start[slot_active], slot[slot_active], LEVEL1_FILE_BUF_SIZE);
+            if (i >= 0) {
+                slot_end[slot_active] = slot_start[slot_active] + i;
+                continue;
+            }
+        }
+
+        return res;
+    }
+
 	public int  getByteBuffer(int pos, byte[] dst, int len) {
 		int point = pos;
 		int res = 0x00;
@@ -284,6 +345,108 @@ public abstract class AlFiles {
 			return true;
 		}
 			
+		return false;
+	}
+
+	public static String getAbsoluteName(String baseName, String fileName) {
+        if (fileName == null)
+            return null;
+
+        if (fileName.length() > 0 && fileName.charAt(0) == EngBookMyType.AL_ROOT_RIGHTPATH)
+            return fileName.toString();
+
+        if (fileName.indexOf(':') != -1)
+            return fileName;
+
+        StringBuilder fName = new StringBuilder(fileName.trim());
+
+		if (fName.length() < 1)
+			return fName.toString();
+
+        for (int i = 0; i < fName.length(); i++) {
+            if (fName.charAt(i) == EngBookMyType.AL_ROOT_WRONGPATH)
+                fName.setCharAt(i, EngBookMyType.AL_ROOT_RIGHTPATH);
+        }
+
+		if (fName.charAt(0) == EngBookMyType.AL_ROOT_RIGHTPATH)
+			return fName.toString();
+
+		// need base
+        StringBuilder bName = new StringBuilder(baseName.trim());
+
+		if (bName.length() < 1)
+			return fName.toString();
+
+        for (int i = 0; i < bName.length(); i++) {
+            if (bName.charAt(i) == EngBookMyType.AL_ROOT_WRONGPATH)
+				bName.setCharAt(i, EngBookMyType.AL_ROOT_RIGHTPATH);
+        }
+		if (bName.charAt(0) != EngBookMyType.AL_ROOT_RIGHTPATH)
+			return fName.toString();
+
+		int	pos = bName.lastIndexOf(EngBookMyType.AL_ROOT_RIGHTPATH_STR);
+		if (pos == -1)
+			return fName.toString();
+
+		StringBuilder res = new StringBuilder();
+		res.append(bName.substring(0, pos));
+
+		String[] tok = fName.toString().split(EngBookMyType.AL_ROOT_RIGHTPATH_STR);
+
+		if (tok.length == 0) {
+			res.append(EngBookMyType.AL_ROOT_RIGHTPATH);
+			res.append(fileName);
+		} else
+			for (int i = 0; i < tok.length; i++) {
+				if (tok[i].length() == 0)
+					continue;
+				if (tok[i] == ".")
+					continue;
+				if (tok[i] == "..") {
+					pos = res.lastIndexOf(EngBookMyType.AL_ROOT_RIGHTPATH_STR);
+					if (pos == -1)
+						return fName.toString();
+					res.delete(pos, res.length());
+				} else {
+					res.append(EngBookMyType.AL_ROOT_RIGHTPATH);
+					res.append(tok[i]);
+				}
+			}
+
+		return res.toString();
+	}
+
+	public int getExternalFileNum(String fname) {
+		if (fname == null)
+			return LEVEL1_FILE_NOT_FOUND;
+
+        for (int j = 0; j < 2; j++) {
+            fname = j == 0 ? getAbsoluteName(fileName, fname) : AlUnicode.URLDecode(fname);
+
+            if (fname != null)
+                for (int i = 0; i < fileList.size(); i++) {
+                    if (fileList.get(i).name.contentEquals(fname)) {
+                        return i;
+                    }
+                }
+        }
+
+		return LEVEL1_FILE_NOT_FOUND;
+	}
+
+	public String getExternalAbsoluteFileName(int num) {
+		if (num >= 0 && num < fileList.size())
+			return fileList.get(num).name;
+		return null;
+	}
+
+	public int getExternalFileSize(int num) {
+		if (num >= 0 && num < fileList.size())
+			return fileList.get(num).uSize;
+		return 0;
+	}
+
+	public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt) {
 		return false;
 	}
 	

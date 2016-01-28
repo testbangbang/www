@@ -208,13 +208,13 @@ public class AlFonts {
 						profile.colors[InternalConst.TAL_PROFILE_COLOR_SHADOW] | 0xff000000);
 			} else {*/
 				switch (profile.font_weigths[fnt_num]) {
-				case 1:  fparam.fnt.setShadowLayer(0.03f * profile.DPIMultiplex, 0, 0, fparam.color); break;
-				case 2:  fparam.fnt.setShadowLayer(0.07f * profile.DPIMultiplex, 0, 0, fparam.color); break;
-				case 3:  fparam.fnt.setShadowLayer(0.11f * profile.DPIMultiplex, 0, 0, fparam.color); break;
-				case 4:  fparam.fnt.setShadowLayer(0.17f * profile.DPIMultiplex, 0, 0, fparam.color); break;
-				case 5:	 fparam.fnt.setShadowLayer(0.25f * profile.DPIMultiplex, 0, 0, fparam.color); break;
-				case 6:  fparam.fnt.setShadowLayer(0.40f * profile.DPIMultiplex, 0, 0, fparam.color); break;
-				case 7:  fparam.fnt.setShadowLayer(0.65f * profile.DPIMultiplex, 0, 0, fparam.color); break;	
+				case 1:  fparam.fnt.setShadowLayer(0.03f * multiplexer, 0, 0, fparam.color); break;
+				case 2:  fparam.fnt.setShadowLayer(0.07f * multiplexer, 0, 0, fparam.color); break;
+				case 3:  fparam.fnt.setShadowLayer(0.11f * multiplexer, 0, 0, fparam.color); break;
+				case 4:  fparam.fnt.setShadowLayer(0.17f * multiplexer, 0, 0, fparam.color); break;
+				case 5:	 fparam.fnt.setShadowLayer(0.25f * multiplexer, 0, 0, fparam.color); break;
+				case 6:  fparam.fnt.setShadowLayer(0.40f * multiplexer, 0, 0, fparam.color); break;
+				case 7:  fparam.fnt.setShadowLayer(0.65f * multiplexer, 0, 0, fparam.color); break;
 				default: fparam.fnt.clearShadowLayer();
 				}
 			//}

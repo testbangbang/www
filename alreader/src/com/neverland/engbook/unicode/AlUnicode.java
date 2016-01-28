@@ -182,8 +182,97 @@ public class AlUnicode {
                  ) & 1L
                 ) != 0);		
 	}
-	
-	
+
+	public static final int char2utf8(char[] src, int len, byte[] dst) {
+		int res = 0, i;
+
+		for (i = 0; i < len; i++) {
+			if (src[i] >= 0x07ff) {// 3
+				if (dst != null) {
+					dst[res++] = (byte) (0xe0 | ((src[i] >> 12) & 0x0f));
+					dst[res++] = (byte) (0x80 | ((src[i] >> 6) & 0x3f));
+					dst[res++] = (byte) (0x80 | (src[i] & 0x3f));
+				} else res += 3;
+			} else
+			if (src[i] >= 0x0080) {//2
+				if (dst != null) {
+					dst[res++] = (byte) (0xc0 | ((src[i] >> 6) & 0x1f));
+					dst[res++] = (byte) (0x80 |  (src[i] & 0x3f));
+				} else res += 2;
+			} else {
+				if (dst != null) {
+					dst[res++] = (byte) src[i];
+				} else res++;
+			}
+		}
+
+		if (dst != null)
+			dst[res] = 0x00;
+
+		return res;
+	}
+
+	public static final int string2utf8(String src, byte[] dst) {
+		return char2utf8(src.toCharArray(), src.length(), dst);
+	}
+
+	public static final int HEXChar2Int(char ch) {
+		switch (ch) {
+			case '0': return 0x00;
+			case '1': return 0x01;
+			case '2': return 0x02;
+			case '3': return 0x03;
+			case '4': return 0x04;
+			case '5': return 0x05;
+			case '6': return 0x06;
+			case '7': return 0x07;
+			case '8': return 0x08;
+			case '9': return 0x09;
+			case 'a': case 'A': return 0x0a;
+			case 'b': case 'B': return 0x0b;
+			case 'c': case 'C': return 0x0c;
+			case 'd': case 'D': return 0x0d;
+			case 'e': case 'E': return 0x0e;
+			case 'f': case 'F': return 0x0f;
+		}
+		return -1;
+	}
+
+	public static final String URLDecode(String src) {
+
+		int len = src.length(), pos_utf8 = 0;
+		byte[] utf8 = new byte[len + 1];
+
+		for (int i = 0; i < len; i++) {
+			if (src.charAt(i) == '%') {
+				if (i >= len - 2)
+					return null;
+				if (!isHEXDigit(src.charAt(i + 1)) || !isHEXDigit(src.charAt(i + 2)))
+					return null;
+
+				int hex = HEXChar2Int(src.charAt(i + 1));
+				hex <<= 4;
+				hex |= HEXChar2Int(src.charAt(i + 2));
+
+				utf8[pos_utf8++] = (byte) hex;
+
+				i += 2;
+			} else
+			if (src.charAt(i) < 0x80) {
+				utf8[pos_utf8++] = (byte) src.charAt(i);
+			} else {
+				return null;
+			}
+		}
+
+		utf8[pos_utf8] = 0x00;
+
+		char[] utf16 = new char[pos_utf8];
+		int cnt = byteArray2WideArray(TAL_CODE_PAGES.CP65001, utf8, utf16, pos_utf8);
+
+		return String.copyValueOf(utf16, 0, cnt);
+	}
+
 	public final static int readRealCodePage(StringBuilder src) {
 		String test = src.toString().toLowerCase();
 		

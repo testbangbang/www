@@ -8,22 +8,24 @@ import android.graphics.Bitmap;
 
 import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlEngineOptions;
+import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level2.AlFormat;
 
 public class AlImage {
 
 	private int			storeIndex = 0;
-	private AlOneImage	storeImage[] = {null, null};
+	private String		storeImage[] = {null, null};
 	private AlBitmap	storeBitmap[] = {new AlBitmap(), new AlBitmap()};
 	private int			storeScale[] = {0, 0};
 	
 	@Override
-	protected void finalize() {
+	protected void finalize() throws Throwable {
 		System.gc();
+		super.finalize();
 	};
 	
 	public void init(AlEngineOptions opt ) {			
-		opts.inPreferredConfig = Bitmap.Config.ARGB_4444;//ARGB_8888;
+		opts.inPreferredConfig = Bitmap.Config.ARGB_8888;//ARGB_4444;//ARGB_8888;
 		opts.inDither = true;
 		opts.inInputShareable = false;
 		opts.inPurgeable = true;
@@ -39,13 +41,17 @@ public class AlImage {
 
 	
 	public AlBitmap getImage(AlOneImage ai, int scale) {
-		if (storeImage[storeIndex] == ai && storeScale[storeIndex] <= scale) {
+		if (storeImage[storeIndex] != null &&
+				storeImage[storeIndex].contentEquals(ai.name) &&
+				storeScale[storeIndex] <= scale) {
 			return storeBitmap[storeIndex];
 		}
 		
 		storeIndex = 1 - storeIndex;
 		
-		if (storeImage[storeIndex] == ai && storeScale[storeIndex] <= scale) {
+		if (storeImage[storeIndex] != null &&
+				storeImage[storeIndex].contentEquals(ai.name) &&
+				storeScale[storeIndex] <= scale) {
 			return storeBitmap[storeIndex];
 		}
 		
@@ -75,7 +81,7 @@ public class AlImage {
 			storeBitmap[storeIndex].bmp = BitmapFactory.decodeByteArray(ai.data, 0, ai.data.length, opts);
 			storeBitmap[storeIndex].height = opts.outHeight; 
 			storeBitmap[storeIndex].width = opts.outWidth;
-			storeImage[storeIndex] = ai;
+			storeImage[storeIndex] = ai.name;
 			storeScale[storeIndex] = scale;
 		}
 		
@@ -176,6 +182,19 @@ public class AlImage {
 	}
 	
 	boolean openMemo(AlOneImage ai, AlFormat format) {
+		int num = format.aFiles.getExternalFileNum(ai.name);
+		if (num != AlFiles.LEVEL1_FILE_NOT_FOUND) {
+			int size = format.aFiles.getExternalFileSize(num);
+			if (size > 0) {
+				int data_size = size;
+				ai.data = new byte[data_size];
+				if (format.aFiles.fillBufFromExternalFile(num, 0, ai.data, 0, size)) {
+					return true;
+				} else {
+					ai.data = null;
+				}
+			}
+		}
 		return false;
 	}
 

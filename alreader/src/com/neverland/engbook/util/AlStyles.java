@@ -80,7 +80,7 @@ public final class AlStyles {
 	public static final int	PAR_DESCRIPTION1 =						0x10000000; // description 		// head
 	public static final int	PAR_DESCRIPTION2 =						0x20000000; // title-info		// 
 	public static final int	PAR_DESCRIPTION3 =						0x40000000; // document-info	//
-	public static final int	PAR_DESCRIPTION4 =						0x80000000; // publich-info		//
+	public static final long	PAR_DESCRIPTION4 =						0x80000000L; // publich-info		//
 	
 	public static final long	PAR_UL_BASE = 				0xf000000000000000L;
 	

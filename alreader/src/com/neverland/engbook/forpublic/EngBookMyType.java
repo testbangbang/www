@@ -12,11 +12,14 @@ public class EngBookMyType {
 	
 	public static final char AL_ROOT_WRONGPATH	= '\\';
 	public static final char AL_ROOT_RIGHTPATH = '/';
+	public static final String AL_ROOT_RIGHTPATH_STR = "/";
 	public static final int  AL_MAX_FILENAME_LENGTH = 255;
 	public static final char AL_FILENAMES_SEPARATOR = '\u0001';
 	public static final int  AL_MAX_PARAGRAPH_LEN = 16384;
 
 	public static final int  AL_DEFAULT_PAGESIZE = 2048;
+
+
 	
 	
 	//////////////////////////////////////////////
@@ -104,7 +107,8 @@ public class EngBookMyType {
 	public enum TAL_FILE_TYPE {
 		TXT,
 		ZIP,
-		DOC,		
+		DOC,
+		EPUB,
 	} ;
 	
 }

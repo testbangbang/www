@@ -114,12 +114,7 @@ public class AlFilesZIP extends AlFiles {
 					if (fname[i] == EngBookMyType.AL_ROOT_WRONGPATH)
 						fname[i] = EngBookMyType.AL_ROOT_RIGHTPATH;			
 				
-				/*if (ext != null && (ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && zipLCD.fName.equalsIgnoreCase(FIRSTNAME_ODT))
-					res = ArchiveType.ODT;
-				if (ext != null && ext.equalsIgnoreCase(".docx") && zipLCD.fName.equalsIgnoreCase(FIRSTNAME_DOCX))
-					res = ArchiveType.DOCX;
-				if (ext != null && ext.equalsIgnoreCase(".epub") && zipLCD.fName.equalsIgnoreCase(FIRSTNAME_EPUB))
-					res = ArchiveType.EPUB;*/
+
 
 				if (zipLCD.csize == 0xffffffff && zipLCD.usize == 0xffffffff) {
 					if (zipLCD.extralength >= 40) {
@@ -159,10 +154,21 @@ public class AlFilesZIP extends AlFiles {
 				of.time = 0;
 
 				AlIntHolder t = new AlIntHolder(0);
-				of.name = "";
+
+				StringBuilder newName = new StringBuilder();
+
 				int cp = ((zipLCD.flag & (1 << 11)) != 0) ? TAL_CODE_PAGES.CP65001 : TAL_CODE_PAGES.CP1252;
-				while (fname[t.value] != 0 && tmp < EngBookMyType.AL_MAX_FILENAME_LENGTH)				
-					of.name += AlUnicode.byte2Wide(cp, fname, t);
+				while (fname[t.value] != 0 && tmp < EngBookMyType.AL_MAX_FILENAME_LENGTH)
+					newName.append(AlUnicode.byte2Wide(cp, fname, t));
+
+				of.name = newName.toString();
+
+				/*if (ext != null && (ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && zipLCD.fName.equalsIgnoreCase(FIRSTNAME_ODT))
+					res = ArchiveType.ODT;
+				if (ext != null && ext.equalsIgnoreCase(".docx") && zipLCD.fName.equalsIgnoreCase(FIRSTNAME_DOCX))
+					res = ArchiveType.DOCX;*/
+				if ((ext == null || ext.equalsIgnoreCase(".epub")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB))
+					res = TAL_FILE_TYPE.EPUB;
 
 				fList.add(of);
 				
@@ -245,8 +251,7 @@ public class AlFilesZIP extends AlFiles {
 	}
 	
 	protected int getBuffer(int pos, byte[] dst, int cnt) {
-		//Log.e("ZIP read", Integer.toString(pos));
-		
+
 		int tmp = 0;
 		int res = 0;
 		
@@ -276,7 +281,7 @@ public class AlFilesZIP extends AlFiles {
 					if (inflater.needsInput()) {
 						zip_in_buff_size = //parent.getBuffer(
 								parent.getByteBuffer(
-							inflater.getTotalIn() + zip_position, zip_in_buff, ZIP_CHUNK_SIZE);						
+									inflater.getTotalIn() + zip_position, zip_in_buff, ZIP_CHUNK_SIZE);
 						inflater.setInput(zip_in_buff, 0, zip_in_buff_size);
 					}
 					
@@ -303,10 +308,75 @@ public class AlFilesZIP extends AlFiles {
 			res = parent.getBuffer(zip_position + pos, dst, Math.min(cnt, zip_csize - pos));
 		} else {
 			for (res = 0; res < Math.min(cnt, zip_csize - pos); res++)
-				dst[res] = 0x00;		
+				dst[res] = 0x00;
 		}
 
 		return res;
 	}
 
+	@Override
+	public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt) {
+		int res = 0;
+
+		if (num >= 0 && num < fileList.size()) {
+
+			if (fileList.get(num).name == fileName) {
+				res = getByteBuffer(pos, dst, dst_pos, cnt);
+			} else {
+
+				if (fileList.get(num).compress == 8) {
+
+					Inflater infl = new Inflater(true);
+					int	total_out = 0, in_buff_size = 0, out_buff_size = 0, tmp;
+					byte[] in_buff = new byte [ZIP_CHUNK_SIZE], out_buff = new byte [ZIP_CHUNK_SIZE];
+					int	position = fileList.get(num).position;
+
+					infl.reset();
+					total_out = out_buff_size = 0;
+
+					while (res < cnt && pos < fileList.get(num).uSize) {
+						if (pos >= total_out && pos < (total_out + out_buff_size)) {
+							tmp = Math.min((total_out + out_buff_size) - pos, cnt - res);
+							System.arraycopy(out_buff, pos - total_out, dst, res + dst_pos, tmp);
+							res += tmp;
+							pos += tmp;
+						} else {
+							total_out += out_buff_size;
+
+							if (infl.needsInput()) {
+								in_buff_size = //parent.getBuffer(
+										parent.getByteBuffer(
+												infl.getTotalIn() + position, in_buff, ZIP_CHUNK_SIZE);
+								infl.setInput(in_buff, 0, in_buff_size);
+							}
+
+							try {
+								out_buff_size = infl.inflate(out_buff, 0, ZIP_CHUNK_SIZE);
+
+								if (out_buff_size == 0 && infl.finished()) {
+									out_buff_size = out_buff.length;
+									for (int err = 0; err < out_buff_size; err++)
+										out_buff[err] = 0x00;
+								}
+
+							} catch (DataFormatException e) {
+								out_buff_size = out_buff.length;
+								for (int err = 0; err < out_buff_size; err++)
+									out_buff[err] = 0x00;
+								e.printStackTrace();
+							}
+
+						}
+					}
+
+					infl.finished();
+					infl = null;
+
+				} else if (fileList.get(num).compress == 0) {
+					res = parent.getByteBuffer(fileList.get(num).position + pos, dst, dst_pos, cnt);
+				}
+			}
+		}
+		return res == cnt;
+	}
 }

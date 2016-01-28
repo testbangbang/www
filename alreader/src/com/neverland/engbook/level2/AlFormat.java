@@ -67,7 +67,7 @@ public abstract class AlFormat {
 	
 	boolean						autoCodePage;
 	
-	String					coverName;
+	String					coverName = null;
 	
 	int 					parLength;
 	int 					parPositionS;
@@ -133,10 +133,11 @@ public abstract class AlFormat {
 	}
 
 	@Override
-	public void finalize() {
+	public void finalize() throws Throwable {
 		clearAllArray();
 		styleStack.clear();
 		stored_par.data = null;
+		super.finalize();
 	}
 
 	void clearAllArray() {
@@ -1345,6 +1346,11 @@ public abstract class AlFormat {
 			if ((s & AlStyles.PAR_ANNOTATION) != 0) {
 				res =  styles.style[InternalConst.STYLES_STYLE_ANNOTATION];
 			}
+
+			if ((s & AlStyles.PAR_COVER) != 0) {
+				res = AlStyles.SL_MARKCOVER;
+			}
+
 			res &= 0xffffffffffffffffL - AlStyles.SL_JUST_MASK;
 			res |= s & AlStyles.SL_JUST_MASK; 
 		} else
@@ -1691,15 +1697,20 @@ public abstract class AlFormat {
 			if (addImage(al))
 				return im0.get(im0.size() - 1);
 			return null;
-		}
-		
-		if (addImage(AlImage.addImage(name, 0, 0, AlImage.NOT_EXTERNAL_IMAGE))) {
-			if (aFiles.getExternalImage(im0.get(im0.size() - 1))) {
-				return im0.get(im0.size() - 1);
-			}
 		}*/
-		
-		return null;
+
+		AlOneImage a = new AlOneImage();
+		a.name = name;
+
+		int num = aFiles.getExternalFileNum(name);
+		if (num != AlFiles.LEVEL1_FILE_NOT_FOUND) {
+			a.positionE = aFiles.getExternalFileSize(num);
+			a.iType = AlOneImage.IMG_MEMO;
+		}
+
+		im.add(a);
+
+		return im.get(im.size() - 1);
 	}
 
 
@@ -1963,7 +1974,7 @@ public abstract class AlFormat {
 	
 	abstract protected 	void doTextChar(char ch, boolean addSpecial);
 	abstract protected  void prepareCustom();
-	abstract protected  void parser(final int start_pos, final int stop_pos);
+	abstract protected  void parser(final int start_pos, final int stop_posRequest);
 	
 	abstract public  void initState(AlBookOptions bookOptions, AlFiles myParent, 
 			AlPreferenceOptions pref, AlStylesOptions stl);

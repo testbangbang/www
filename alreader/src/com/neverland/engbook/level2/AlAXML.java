@@ -53,6 +53,9 @@ public abstract class AlAXML extends AlFormat {
 	AlXMLTag			tag = new AlXMLTag();
 	StringBuilder		entity = new StringBuilder();
 	boolean				xml_mode;
+
+	boolean				dinamicSize = false;
+	int					stop_posUsed;
 	
 	boolean isNeedAttribute(int atr) {
 		if (atr == AlFormatTag.TAG_ENCODING)
@@ -142,7 +145,10 @@ public abstract class AlAXML extends AlFormat {
 	}
 
 	@Override
-	protected void parser(final int start_pos, final int stop_pos) {
+	protected void parser(final int start_pos, final int stop_posRequest) {
+		dinamicSize = stop_posRequest == -1;
+		stop_posUsed = dinamicSize ? aFiles.getSize() : stop_posRequest;
+
 		// this code must be in any parser without change!!!
 		int 	buf_cnt = 0, i, j;
 		//AlIntHolder jVal = new AlIntHolder(0);
@@ -150,15 +156,15 @@ public abstract class AlAXML extends AlFormat {
 
 		allState.text_present = false;
 
-		for (i = start_pos; i < stop_pos;) {		
+		for (i = start_pos; i < stop_posUsed;) {
 			
 				//Log.e("xml read pos ", Integer.toString(i));
 							
 				buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
-				if (i + buf_cnt > stop_pos) {
-					buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_pos - i + 2);
-					if (buf_cnt > stop_pos - i)
-						buf_cnt = stop_pos - i;				
+				if (i + buf_cnt > stop_posUsed) {
+					buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_posUsed - i + 2);
+					if (buf_cnt > stop_posUsed - i)
+						buf_cnt = stop_posUsed - i;
 				} else {
 					buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, buf_cnt + 2);
 					buf_cnt -= 2;				

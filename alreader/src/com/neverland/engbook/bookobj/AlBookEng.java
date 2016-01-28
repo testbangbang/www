@@ -28,9 +28,12 @@ import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_PAGES_COUNT;
 import com.neverland.engbook.level1.AlFileZipEntry;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level1.AlFilesBypass;
+import com.neverland.engbook.level1.AlFilesEPUB;
 import com.neverland.engbook.level1.AlFilesZIP;
 import com.neverland.engbook.level2.AlFormat;
+import com.neverland.engbook.level2.AlFormatEPUB;
 import com.neverland.engbook.level2.AlFormatFB2;
+import com.neverland.engbook.level2.AlFormatNativeImages;
 import com.neverland.engbook.level2.AlFormatTXT;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlBookState;
@@ -1383,6 +1386,7 @@ public class AlBookEng{
 		AlFiles activeFile = new AlFilesBypass();
 		activeFile.setLoadTime(true);
 
+
 		activeFile.initState(currName, null, null);
 		while (true) {
 			if (activeFile.getSize() < 1) {
@@ -1417,13 +1421,27 @@ public class AlBookEng{
 				activeFile.initState(currName, a, fList);
 				continue;
 			}
+			if (ft == TAL_FILE_TYPE.EPUB) {
+				activeFile = new AlFilesZIP();
+				activeFile.initState(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB, a, fList);
+				a = activeFile;
+				activeFile = new AlFilesEPUB();
+				activeFile.initState(currName, a, fList);
+				break;
+			}
 
 			break;
 		}
 
+		if (AlFormatEPUB.isEPUB(activeFile)) {
+			format = new AlFormatEPUB();
+		} else
 		if (AlFormatFB2.isFB2(activeFile)) {
 			format = new AlFormatFB2();
-		} else 
+		} else
+		if (AlFormatNativeImages.isImage(activeFile, prevExt)) {
+			format = new AlFormatNativeImages();
+		} else
 			format = new AlFormatTXT();
 
 		bookOptions.formatOptions &= ~AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG;

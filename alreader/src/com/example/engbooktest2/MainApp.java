@@ -54,7 +54,7 @@ public class MainApp extends Application {
 		opt.appInstance = ourInstance;
 		opt.font_catalog = "/sdcard/fonts";
 		opt.hyph_lang = TAL_HYPH_LANG.ENGRUS;
-		opt.useScreenPages = TAL_SCREEN_PAGES_COUNT.SCREEN;	
+		opt.useScreenPages = TAL_SCREEN_PAGES_COUNT.SIZE;
 		opt.chinezeFormatting = false;
 		
 		DisplayMetrics m = this.getResources().getDisplayMetrics();

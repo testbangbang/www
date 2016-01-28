@@ -147,7 +147,7 @@ public class AlFormatTXT extends AlFormat {
 		items.clear();*/
 	}
 
-	void formatAddonInt() {		
+	void formatAddonInt() {
 		pariType = paragraph;
 	}
 
@@ -189,7 +189,7 @@ public class AlFormatTXT extends AlFormat {
 	}
 
 	@Override
-	protected void parser(final int start_pos, final int stop_pos) {
+	protected void parser(final int start_pos, final int stop_posRequest) {
 		// this code must be in any parser without change!!!
 		int 	buf_cnt = 0;
 		char 	ch, ch1;
@@ -198,12 +198,12 @@ public class AlFormatTXT extends AlFormat {
 		int j;
 		//AlIntHolder jVal = new AlIntHolder(0);
 		
-		for (int i = start_pos; i < stop_pos;) {			
+		for (int i = start_pos; i < stop_posRequest;) {
 			buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
-			if (i + buf_cnt > stop_pos) {
-				buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_pos - i + 2);
-				if (buf_cnt > stop_pos - i)
-					buf_cnt = stop_pos - i;	
+			if (i + buf_cnt > stop_posRequest) {
+				buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_posRequest - i + 2);
+				if (buf_cnt > stop_posRequest - i)
+					buf_cnt = stop_posRequest - i;
 			} else {
 				buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, buf_cnt + 2);
 				buf_cnt -= 2;				

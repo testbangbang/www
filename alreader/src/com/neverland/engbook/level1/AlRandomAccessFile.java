@@ -22,8 +22,9 @@ public class AlRandomAccessFile {
 	}
 
 	@Override
-	public void finalize(){
+	public void finalize() throws Throwable {
 		close();
+		super.finalize();
 	}
 
 	public int open(String fileName, int needWrite){
@@ -140,6 +141,16 @@ public class AlRandomAccessFile {
 		}
 		
 		return size;
+	}
+
+	public static int isFileExists(String fileName) {
+		File f = new File(fileName);
+
+		if (f.exists() && f.canRead() && f.isFile()) {
+			return (int) f.length();
+		}
+
+		return 0;
 	}
 	
 }
