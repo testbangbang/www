@@ -409,6 +409,7 @@ public class ReaderTestActivity extends Activity {
         int count = randInt(100, 600);
         for(int i = 0; i < count; ++i) {
             list.add(randElement());
+            list.add(spacingElement());
         }
         int offset = 50;
         RectF rectF = new RectF(rect.left + offset, rect.top + offset, rect.right - offset, rect.bottom - offset);
@@ -455,13 +456,18 @@ public class ReaderTestActivity extends Activity {
     }
 
     private Element randElement() {
-        Element element = TextElement.create(randString(randInt(5, 20)), randStyle());
+        Element element = TextElement.create(randString(randInt(3, 10)), randStyle());
+        return element;
+    }
+
+    private Element spacingElement() {
+        Element element = TextElement.create(" ", randStyle());
         return element;
     }
 
     private Style randStyle() {
         Paint paint = new Paint();
-        paint.setTextSize(randInt(30, 80));
+        paint.setTextSize(35);
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
         int value = randInt(10, 20);

@@ -6,6 +6,9 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 1/9/16.
+ * TODO:
+ * 1. reference to model
+ *
  */
 public interface Element {
 
