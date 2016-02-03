@@ -64,7 +64,7 @@ public class ReaderTestActivity extends Activity {
         initSurfaceView();
         reader = ReaderManager.createReader(this, path, null, getViewOptions());
 
-        testPdfiumWrapper();
+
 
         OnyxHyphen.reinit_hyph(this, OnyxHyphen.HYPH_ENGLISH);
         testHyphen();
@@ -74,7 +74,7 @@ public class ReaderTestActivity extends Activity {
         testMath3();
         testMath4();
         testMath5();
-        testReaderOpen();
+        //testReaderOpen();
     }
 
     private void initSurfaceView() {
@@ -94,6 +94,7 @@ public class ReaderTestActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                testPdfiumWrapper();
                 testHyphen();
             }
         });
@@ -495,6 +496,9 @@ public class ReaderTestActivity extends Activity {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         wrapper.nativeInitLibrary();
         long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/a.pdf", "");
+        Bitmap bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
+        wrapper.renderPage(1, bitmap);
+        BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/1.png");
         Log.e(TAG, "value: " + value);
     }
 }
