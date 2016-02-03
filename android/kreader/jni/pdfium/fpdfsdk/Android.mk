@@ -12,10 +12,10 @@ LOCAL_CXXFLAGS := -fPIC -std=c++11
 LOCAL_CXXFLAGS += -O3 -fstrict-aliasing -fprefetch-loop-arrays -fexceptions
 LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
 
-LOCAL_STATIC_LIBRARIES := libpdfiumcore
+#LOCAL_STATIC_LIBRARIES := libpdfiumcore
 
 # TODO: figure out why turning on exceptions requires manually linking libdl
-LOCAL_SHARED_LIBRARIES := libdl
+#LOCAL_SHARED_LIBRARIES := libdl
 
 LOCAL_SRC_FILES := \
     src/fpdf_dataavail.cpp \
@@ -40,4 +40,4 @@ LOCAL_C_INCLUDES := \
     $(MY_SRC_ROOT)
 
 
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)

@@ -25,6 +25,7 @@ import com.onyx.reader.host.navigation.NavigationArgs;
 import com.onyx.reader.host.request.*;
 import com.onyx.reader.host.wrapper.Reader;
 import com.onyx.reader.host.wrapper.ReaderManager;
+import com.onyx.reader.plugins.pdfium.PdfiumJniWrapper;
 import com.onyx.reader.text.*;
 import com.onyx.reader.utils.BitmapUtils;
 
@@ -62,6 +63,8 @@ public class ReaderTestActivity extends Activity {
         setContentView(R.layout.activity_test);
         initSurfaceView();
         reader = ReaderManager.createReader(this, path, null, getViewOptions());
+
+        testPdfiumWrapper();
 
         OnyxHyphen.reinit_hyph(this, OnyxHyphen.HYPH_ENGLISH);
         testHyphen();
@@ -486,6 +489,12 @@ public class ReaderTestActivity extends Activity {
         for(Pair<String, String> pair : list) {
             Log.d(TAG, "after: " + pair.first + "-" + pair.second);
         }
+    }
 
+    private void testPdfiumWrapper() {
+        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        wrapper.nativeInitLibrary();
+        long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/a.pdf", "");
+        Log.e(TAG, "value: " + value);
     }
 }

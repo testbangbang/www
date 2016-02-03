@@ -348,8 +348,8 @@ LOCAL_SRC_FILES := \
 
 
 MY_SRC_ROOT := $(LOCAL_PATH)/..
-    LOCAL_C_INCLUDES := \
-        $(MY_SRC_ROOT)
+LOCAL_C_INCLUDES := \
+    $(MY_SRC_ROOT)
 
 
 include $(BUILD_STATIC_LIBRARY)
