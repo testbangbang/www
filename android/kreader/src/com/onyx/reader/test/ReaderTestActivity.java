@@ -27,7 +27,6 @@ import com.onyx.reader.text.*;
 import com.onyx.reader.utils.BitmapUtils;
 
 import java.io.InvalidObjectException;
-import java.security.Key;
 import java.util.*;
 
 /**
@@ -505,7 +504,7 @@ public class ReaderTestActivity extends Activity {
         wrapper.nativeInitLibrary();
         long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/a.pdf", "");
         bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
-        wrapper.renderPage(currentPage, bitmap);
+        wrapper.nativeRenderPage(currentPage, bitmap);
         drawBitmap();
     }
 
@@ -513,10 +512,10 @@ public class ReaderTestActivity extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_PAGE_DOWN) {
             ++currentPage;
-            wrapper.renderPage(currentPage, bitmap);
+            wrapper.nativeRenderPage(currentPage, bitmap);
         } else if (keyCode == KeyEvent.KEYCODE_PAGE_UP) {
             --currentPage;
-            wrapper.renderPage(currentPage, bitmap);
+            wrapper.nativeRenderPage(currentPage, bitmap);
         }
         drawBitmap();
         return super.onKeyDown(keyCode, event);
