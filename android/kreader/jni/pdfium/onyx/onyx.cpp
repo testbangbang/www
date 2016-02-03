@@ -66,7 +66,7 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nat
     return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_renderPage
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
   (JNIEnv * env, jobject clazz, jint pageIndex, jobject bitmap) {
     LOGE("going to load page %d", pageIndex);
 

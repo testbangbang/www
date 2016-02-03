@@ -28,7 +28,7 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nat
  * Method:    renderPage
  * Signature: (ILandroid/graphics/Bitmap;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_renderPage
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
   (JNIEnv *, jobject, jint, jobject);
 
 #ifdef __cplusplus
