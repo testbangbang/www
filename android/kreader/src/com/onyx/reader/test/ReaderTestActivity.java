@@ -496,9 +496,12 @@ public class ReaderTestActivity extends Activity {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         wrapper.nativeInitLibrary();
         long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/a.pdf", "");
+
         Bitmap bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
-        wrapper.renderPage(1, bitmap);
-        BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/1.png");
-        Log.e(TAG, "value: " + value);
+        for(int i = 0; i < 100; ++i) {
+            wrapper.renderPage(i, bitmap);
+            BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/" + i + ".png");
+            Log.e(TAG, "value: " + value);
+        }
     }
 }

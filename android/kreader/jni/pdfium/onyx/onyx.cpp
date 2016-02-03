@@ -102,6 +102,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
         return false;
     }
     LOGE("going to render page");
-    FPDF_RenderPageBitmap(pdfBitmap, page, 0, 0, info.width, info.height, 0, 0);
+    FPDF_RenderPageBitmap(pdfBitmap, page, 0, 0, info.width, info.height, 0, FPDF_LCD_TEXT);
+    LOGE("render page finished");
     return true;
 }
