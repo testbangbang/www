@@ -10,6 +10,7 @@ LOCAL_CXXFLAGS := -fPIC -std=c++11
 LOCAL_CXXFLAGS += -O3 -fstrict-aliasing -fprefetch-loop-arrays -fexceptions
 LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
 
+
 LOCAL_STATIC_LIBRARIES := libpdfium libpdfiumcore
 
 # TODO: figure out why turning on exceptions requires manually linking libdl

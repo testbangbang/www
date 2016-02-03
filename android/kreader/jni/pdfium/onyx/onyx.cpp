@@ -1,33 +1,47 @@
-#include <jni.h>
-#include <time.h>
-#include <pthread.h>
-#include <android/log.h>
-#include <android/bitmap.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <list>
-
-#ifdef NDK_PROFILER
-#include "prof.h"
-#endif
-
-#include "log.h"
-#include "com_onyx_reader_plugins_pdfium_PdfiumJniWrapper.h"
-#include "fpdfview.h"
+#include "onyx.h"
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
-static FPDF_DOCUMENT document = NULL;
+std::map<jobject, OnyxPdfiumContext *> OnyxPdfiumContext::contextMap;
+
+OnyxPdfiumContext * OnyxPdfiumContext::getContext(jobject thiz) {
+    std::map<jobject, OnyxPdfiumContext *>::iterator iterator = contextMap.find(thiz);
+    if (iterator != contextMap.end()) {
+        return iterator->second;
+    }
+    return NULL;
+}
+
+OnyxPdfiumContext * OnyxPdfiumContext::createContext(jobject object, FPDF_DOCUMENT document) {
+    OnyxPdfiumContext * context = new OnyxPdfiumContext();
+    context->document = document;
+    contextMap.insert(std::pair<jobject, OnyxPdfiumContext *>(object, context));
+    return context;
+}
+
+void OnyxPdfiumContext::releaseContext(jobject thiz) {
+    std::map<jobject, OnyxPdfiumContext *>::iterator iterator = contextMap.find(thiz);
+    if (iterator != contextMap.end()) {
+        delete iterator->second;
+        contextMap.erase(iterator);
+    }
+}
+
 /*
  * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeInitLibrary
  * Signature: ()Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeInitLibrary
-  (JNIEnv *, jobject) {
+  (JNIEnv *, jobject thiz) {
     FPDF_InitLibrary(NULL);
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeDestroyLibrary
+  (JNIEnv *env, jobject thiz) {
+    FPDF_DestroyLibrary();
     return true;
 }
 
@@ -38,45 +52,61 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
  */
 JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeOpenDocument
   (JNIEnv *env, jobject thiz, jstring jfilename, jstring jpassword) {
-
-    const char *filename;
-  	const char *password;
+    const char *filename = NULL;
+  	const char *password = NULL;
   	filename = env->GetStringUTFChars(jfilename, NULL);
   	if (filename == NULL) {
   	    LOGE("invalid file name");
   		return -1;
   	}
 
-    password = env->GetStringUTFChars(jpassword, NULL);
-    document =  FPDF_LoadDocument(filename, NULL);
+    if (jpassword != NULL) {
+        password = env->GetStringUTFChars(jpassword, NULL);
+    }
+    FPDF_DOCUMENT document =  FPDF_LoadDocument(filename, password);
     if (document == NULL) {
         LOGE("load document failed");
         return -1;
     }
-    int count = FPDF_GetPageCount(document);
-    LOGE("page count %d", count);
-    for(int i = 0; i < count; ++i) {
-        double width, height;
-        FPDF_GetPageSizeByIndex(document, i, &width, &height);
-        LOGE("page %d width %lf height %lf", i, width, height);
-
-        FPDF_PAGE page = FPDF_LoadPage(document, i);
-        LOGE("load page %d width %lf height %lf", i, FPDF_GetPageWidth(page), FPDF_GetPageHeight(page));
-    }
+    OnyxPdfiumContext::createContext(thiz, document);
     return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
-  (JNIEnv * env, jobject clazz, jint pageIndex, jobject bitmap) {
-    LOGE("going to load page %d", pageIndex);
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeCloseDocument
+  (JNIEnv *env, jobject thiz) {
+    FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
+    if (document == NULL) {
+        return false;
+    }
+    FPDF_CloseDocument(document);
+    OnyxPdfiumContext::releaseContext(thiz);
+    return true;
+}
 
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativePageSize
+  (JNIEnv *env, jobject thiz, jint pageIndex, jfloatArray array) {
+    FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
+    if (document == NULL) {
+        return false;
+    }
+    double width = 0, height = 0;
+    if (!FPDF_GetPageSizeByIndex(document, pageIndex, &width, &height)) {
+        return false;
+    }
+    jfloat size[] = {(float)width, (float)height};
+    env->SetFloatArrayRegion(array, 0, 2, size);
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
+  (JNIEnv * env, jobject thiz, jint pageIndex, jobject bitmap) {
+
+    FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
     FPDF_PAGE page = FPDF_LoadPage(document, pageIndex);
     if (page == NULL) {
         LOGE("invalid page %d", pageIndex);
         return false;
     }
-    LOGE("load page %d finished", pageIndex);
-
     AndroidBitmapInfo info;
 	void *pixels;
 	int ret;
@@ -105,4 +135,11 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
     FPDF_RenderPageBitmap(pdfBitmap, page, 0, 0, info.width, info.height, 0, FPDF_LCD_TEXT);
     LOGE("render page finished");
     return true;
+}
+
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativePageCount
+  (JNIEnv * env, jobject thiz) {
+    FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
+    int count = FPDF_GetPageCount(document);
+    return count;
 }

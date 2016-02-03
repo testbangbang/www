@@ -14,6 +14,7 @@ public class PdfiumJniWrapper {
     }
 
     public native boolean nativeInitLibrary();
+    public native boolean nativeDestroyLibrary();
     public native long nativeOpenDocument(final String path, final String password);
     public native boolean nativeCloseDocument();
 

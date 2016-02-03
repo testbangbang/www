@@ -11,6 +11,7 @@ LOCAL_NDK_STL_VARIANT := gnustl_static
 LOCAL_CXXFLAGS := -fPIC -std=c++11
 LOCAL_CXXFLAGS += -O3 -fstrict-aliasing -fprefetch-loop-arrays -fexceptions
 LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
+#LOCAL_CXXFLAGS += -DAPI5 -D_GB1_CMAPS_ -D_GB1_CMAPS_4_ -D_CNS1_CMAPS_ -D_JPX_DECODER_ -D_FX_OS_=_FX_LINUX_EMBEDDED_
 
 #LOCAL_STATIC_LIBRARIES := libpdfiumcore
 

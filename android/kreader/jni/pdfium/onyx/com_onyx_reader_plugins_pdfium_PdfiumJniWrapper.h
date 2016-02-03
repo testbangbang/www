@@ -17,6 +17,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
 
 /*
  * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    nativeDestroyLibrary
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeDestroyLibrary
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeOpenDocument
  * Signature: (Ljava/lang/String;Ljava/lang/String;)J
  */
@@ -25,7 +33,31 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nat
 
 /*
  * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
- * Method:    renderPage
+ * Method:    nativeCloseDocument
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeCloseDocument
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    nativePageCount
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativePageCount
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    nativePageSize
+ * Signature: (I[F)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativePageSize
+  (JNIEnv *, jobject, jint, jfloatArray);
+
+/*
+ * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    nativeRenderPage
  * Signature: (ILandroid/graphics/Bitmap;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
