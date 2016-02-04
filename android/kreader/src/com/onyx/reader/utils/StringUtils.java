@@ -14,5 +14,13 @@ public class StringUtils {
         return (string != null && string.length() > 0);
     }
 
+    static public String utf16le(final byte [] data) {
+        String string = "";
+        try {
+            string = new String(data, "UTF-16LE");
+        } catch (Exception e) {
+        }
+        return string.trim();
+    }
 
 }

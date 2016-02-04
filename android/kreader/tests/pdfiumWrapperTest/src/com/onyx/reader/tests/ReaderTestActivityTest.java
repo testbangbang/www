@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.reader.plugins.pdfium.PdfiumJniWrapper;
 import com.onyx.reader.test.ReaderTestActivity;
+import com.onyx.reader.utils.StringUtils;
 
 /**
  * This is a simple framework for a test of an Application.  See
@@ -21,10 +22,12 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
         super("com.onyx.reader", ReaderTestActivity.class);
     }
 
-    public void testOpen() {
+    public void testOpen() throws Exception {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/a.pdf", null) == 0);
+        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/b.pdf", null) == 0);
+        String title = wrapper.metadataString("Title");
+        assertTrue(StringUtils.isNonBlank(title));
         assertTrue(wrapper.nativeCloseDocument());
         assertFalse(wrapper.nativeCloseDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
@@ -51,7 +54,7 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
         assertTrue(size[0] > 0);
         assertTrue(size[1] > 0);
         Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
-        assertTrue(wrapper.nativeRenderPage(page, bitmap));
+        assertTrue(wrapper.nativeRenderPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap));
         assertFalse(wrapper.nativePageSize(page + 1, size));
         assertTrue(wrapper.nativeCloseDocument());
         assertTrue(wrapper.nativeDestroyLibrary());

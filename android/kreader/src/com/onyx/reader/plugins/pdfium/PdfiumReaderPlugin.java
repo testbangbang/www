@@ -166,11 +166,11 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public boolean draw(final ReaderBitmap bitmap) {
-        return getPluginImpl().nativeRenderPage(0, bitmap.getBitmap());
+        return getPluginImpl().nativeRenderPage(0, 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), bitmap.getBitmap());
     }
 
     public boolean draw(final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp) {
-        return getPluginImpl().nativeRenderPage(0, bitmap.getBitmap());
+        return getPluginImpl().nativeRenderPage(0, xInBitmap, yInBitmap, widthInBitmap, heightInBitmp, bitmap.getBitmap());
     }
 
     /**

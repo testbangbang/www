@@ -83,6 +83,22 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
     return true;
 }
 
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeMetadata
+  (JNIEnv *env, jobject thiz, jstring jtag, jbyteArray array) {
+    FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
+    if (document == NULL) {
+        return 0;
+    }
+    const char * tag = env->GetStringUTFChars(jtag, NULL);
+    const unsigned long limit = 4096;
+    jbyte * buffer = new jbyte[limit];
+    memset(buffer, 0, limit);
+    unsigned long size = FPDF_GetMetaText(document, tag, buffer, limit);
+    env->SetByteArrayRegion(array, 0, limit - 1, buffer);
+    delete [] buffer;
+    return size;
+}
+
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativePageSize
   (JNIEnv *env, jobject thiz, jint pageIndex, jfloatArray array) {
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
@@ -99,7 +115,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
-  (JNIEnv * env, jobject thiz, jint pageIndex, jobject bitmap) {
+  (JNIEnv * env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jobject bitmap) {
 
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
     FPDF_PAGE page = FPDF_LoadPage(document, pageIndex);
@@ -125,15 +141,12 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
 		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
 		return false;
 	}
-    LOGE("going to create bitmap");
-    FPDF_BITMAP pdfBitmap = FPDFBitmap_CreateEx(info.width, info.height, FPDFBitmap_BGRA, pixels, info.stride);
+    FPDF_BITMAP pdfBitmap = OnyxPdfiumContext::getBitmap(thiz, info.width, info.height, pixels, info.stride);
     if (pdfBitmap == NULL) {
     	LOGE("create bitmap failed");
         return false;
     }
-    LOGE("going to render page");
-    FPDF_RenderPageBitmap(pdfBitmap, page, 0, 0, info.width, info.height, 0, FPDF_LCD_TEXT);
-    LOGE("render page finished");
+    FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, 0, FPDF_LCD_TEXT);
     return true;
 }
 
