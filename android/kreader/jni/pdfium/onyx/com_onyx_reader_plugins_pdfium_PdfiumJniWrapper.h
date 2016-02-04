@@ -42,7 +42,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
 /*
  * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeMetadata
- * Signature: (Ljava/lang/String;[B)Z
+ * Signature: (Ljava/lang/String;[B)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeMetadata
   (JNIEnv *, jobject, jstring, jbyteArray);
@@ -66,10 +66,18 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
 /*
  * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeRenderPage
- * Signature: (ILandroid/graphics/Bitmap;)Z
+ * Signature: (IIIIILandroid/graphics/Bitmap;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
   (JNIEnv *, jobject, jint, jint, jint, jint, jint, jobject);
+
+/*
+ * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    hitTest
+ * Signature: (IIIII[D)I
+ */
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_hitTest
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jdoubleArray);
 
 #ifdef __cplusplus
 }

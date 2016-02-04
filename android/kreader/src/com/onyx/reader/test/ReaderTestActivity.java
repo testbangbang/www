@@ -50,6 +50,7 @@ public class ReaderTestActivity extends Activity {
     private Bitmap bitmap;
     private int currentPage = 0;
     private PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+    private float xScale, yScale;
 
     public static int randInt(int min, int max) {
         Random rand = new Random();
@@ -492,32 +493,57 @@ public class ReaderTestActivity extends Activity {
         }
     }
 
-    private void drawBitmap() {
+    private void draw() {
         Canvas canvas = holder.lockCanvas();
-        canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(bitmap, 0, 0, null);
+        float [] size = new float[2];
+        wrapper.nativePageSize(currentPage, size);
+        xScale = bitmap.getWidth() / size[0];
+        yScale = bitmap.getHeight() / size[1];
+        xScale = Math.min(xScale, yScale);
+        yScale = xScale;
+        drawBitmap(canvas);
+        drawHitTest(canvas);
         holder.unlockCanvasAndPost(canvas);
     }
 
-    private void testPdfiumWrapper() {
+    private void drawBitmap(final Canvas canvas) {
+        canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+    }
 
+    private void testPdfiumWrapper() {
         wrapper.nativeInitLibrary();
-        long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/a.pdf", "");
+        long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/c.pdf", "");
         bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
-        wrapper.nativeRenderPage(currentPage, -100, -100, bitmap.getWidth() * 2, bitmap.getHeight() * 2, bitmap);
-        drawBitmap();
+        wrapper.nativeRenderPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
+        draw();
+    }
+
+    private void drawHitTest(final Canvas canvas) {
+        double []data = new double[4096];
+        int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 100, 100, 200, 200, data);
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
+        paint.setXfermode(xorMode);
+        xScale = yScale = 1;
+        for(int j = 0; j < data.length / 4; ++j) {
+            canvas.drawRect((float)data[j * 4] * xScale, (float)data[j * 4 + 1] * yScale, (float)data[j * 4 + 2] * xScale, (float)data[j * 4 + 3] * yScale, paint);
+        }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_PAGE_DOWN) {
             ++currentPage;
-            wrapper.nativeRenderPage(currentPage, -100, -100, bitmap.getWidth() * 2, bitmap.getHeight() * 2, bitmap);
+            wrapper.nativeRenderPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
         } else if (keyCode == KeyEvent.KEYCODE_PAGE_UP) {
             --currentPage;
-            wrapper.nativeRenderPage(currentPage, -100, -100, bitmap.getWidth() * 2, bitmap.getHeight() * 2, bitmap);
+            wrapper.nativeRenderPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
         }
-        drawBitmap();
+
+        draw();
         return super.onKeyDown(keyCode, event);
     }
 }

@@ -153,6 +153,46 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
 JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativePageCount
   (JNIEnv * env, jobject thiz) {
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
+    if (document == NULL) {
+        return 0;
+    }
     int count = FPDF_GetPageCount(document);
     return count;
+}
+
+JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_hitTest
+  (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jdoubleArray array) {
+    FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
+    FPDF_PAGE page = FPDF_LoadPage(document, pageIndex);
+    FPDF_TEXTPAGE textPage = FPDFText_LoadPage(page);
+
+    double tolerance = 10.0 / 72.0;
+    int startIndex = FPDFText_GetCharIndexAtPos(textPage, sx, sy, tolerance, tolerance);
+    int endIndex = FPDFText_GetCharIndexAtPos(textPage, ex, ey, tolerance, tolerance);
+
+    if (startIndex < 0 || endIndex < 0) {
+        LOGE("No selection found %d %d", startIndex, endIndex);
+        startIndex = 0;
+        endIndex = FPDFText_CountChars(textPage) / 5;
+    }
+
+    int start = startIndex < endIndex ? startIndex : endIndex;
+    int end = startIndex < endIndex ? endIndex : startIndex;
+    double left, right, bottom, top;
+    int newLeft, newRight, newBottom, newTop;
+    int limit = end - start + 1;
+    jdouble * buffer = new jdouble[limit * 4];
+    for(int i = start; i <= end; ++i) {
+        FPDFText_GetCharBox(textPage, i, &left, &right, &bottom, &top);
+        FPDF_PageToDevice(page, x, y, width, height, 0, left, top, &newLeft, &newTop);
+        FPDF_PageToDevice(page, x, y, width, height, 0, right, bottom, &newRight, &newBottom);
+        buffer[i * 4] = newLeft;
+        buffer[i * 4 + 1] = newTop;
+        buffer[i * 4 + 2] = newRight;
+        buffer[i * 4 + 3] = newBottom;
+    }
+
+    env->SetDoubleArrayRegion(array, 0, limit * 4, buffer);
+    delete [] buffer;
+    return limit;
 }

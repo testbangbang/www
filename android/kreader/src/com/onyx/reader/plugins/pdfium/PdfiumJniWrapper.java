@@ -26,6 +26,8 @@ public class PdfiumJniWrapper {
 
     public native boolean nativeRenderPage(int page, int x, int y, int width, int height, final Bitmap bitmap);
 
+    public native int hitTest(int page, int x, int y, int width, int height, int startX, int startY, int endX, int endY, double [] rects);
+
     public String metadataString(final String tag) {
         byte [] data  = new byte[4096];
         int size = nativeMetadata(tag, data);

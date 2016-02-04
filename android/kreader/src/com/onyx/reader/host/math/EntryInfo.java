@@ -5,6 +5,7 @@ import android.graphics.RectF;
 
 /**
  * Created by zhuzeng on 10/8/15.
+ * Represent each page, could be scalable and reflowable.
  */
 public class EntryInfo {
 
@@ -17,7 +18,7 @@ public class EntryInfo {
     private float autoCropScale;
 
 
-    private RectF displayRect = new RectF(); // page rect in host with actual scale.
+    private RectF displayRect = new RectF(); // page rect in host(screen) with actual scale.
     private float actualScale = 1.0f;
 
     public EntryInfo(final float nw, final float nh) {

@@ -60,4 +60,22 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 
+    public void testPageTextSelection() {
+        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        assertTrue(wrapper.nativeInitLibrary());
+        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/c.pdf", null) == 0);
+        int pageCount = wrapper.nativePageCount();
+        assertTrue(pageCount > 0);
+        int page = pageCount - 1;
+        float size[] = new float[2];
+        assertTrue(wrapper.nativePageSize(page, size));
+        assertTrue(size[0] > 0);
+        assertTrue(size[1] > 0);
+        Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
+        assertTrue(wrapper.nativeRenderPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap));
+        assertFalse(wrapper.nativePageSize(page + 1, size));
+        assertTrue(wrapper.nativeCloseDocument());
+        assertTrue(wrapper.nativeDestroyLibrary());
+    }
+
 }
