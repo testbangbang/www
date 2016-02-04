@@ -515,7 +515,7 @@ public class ReaderTestActivity extends Activity {
         wrapper.nativeInitLibrary();
         long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/c.pdf", "");
         bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
-        wrapper.nativeRenderPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
+        wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
         draw();
     }
 
@@ -537,10 +537,10 @@ public class ReaderTestActivity extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_PAGE_DOWN) {
             ++currentPage;
-            wrapper.nativeRenderPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
+            wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
         } else if (keyCode == KeyEvent.KEYCODE_PAGE_UP) {
             --currentPage;
-            wrapper.nativeRenderPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
+            wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
         }
 
         draw();

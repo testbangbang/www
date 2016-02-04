@@ -65,8 +65,9 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nat
     }
     FPDF_DOCUMENT document =  FPDF_LoadDocument(filename, password);
     if (document == NULL) {
-        LOGE("load document failed");
-        return -1;
+        int errorCode = FPDF_GetLastError();
+        LOGE("load document failed error code %d", errorCode);
+        return errorCode;
     }
     OnyxPdfiumContext::createContext(thiz, document);
     return 0;
