@@ -520,7 +520,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     private void drawHitTest(final Canvas canvas) {
-        double []data = new double[4096];
+        double []data = new double[40960];
         int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 100, 100, 200, 200, data);
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);

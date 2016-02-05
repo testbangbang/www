@@ -171,11 +171,14 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_hitT
     int startIndex = FPDFText_GetCharIndexAtPos(textPage, sx, sy, tolerance, tolerance);
     int endIndex = FPDFText_GetCharIndexAtPos(textPage, ex, ey, tolerance, tolerance);
 
-    if (startIndex < 0 || endIndex < 0) {
-        LOGE("No selection found %d %d", startIndex, endIndex);
+
+    if (startIndex < 0) {
         startIndex = 0;
-        endIndex = FPDFText_CountChars(textPage) / 5;
     }
+    if (endIndex < 0) {
+        endIndex = FPDFText_CountChars(textPage) / 2;
+    }
+
 
     int start = startIndex < endIndex ? startIndex : endIndex;
     int end = startIndex < endIndex ? endIndex : startIndex;
@@ -183,6 +186,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_hitT
     int newLeft, newRight, newBottom, newTop;
     int limit = end - start + 1;
     jdouble * buffer = new jdouble[limit * 4];
+    LOGE("start index %d end index %d limit %d count %d", start, end, limit, FPDFText_CountChars(textPage));
     for(int i = start; i <= end; ++i) {
         FPDFText_GetCharBox(textPage, i, &left, &right, &bottom, &top);
         FPDF_PageToDevice(page, x, y, width, height, 0, left, top, &newLeft, &newTop);
