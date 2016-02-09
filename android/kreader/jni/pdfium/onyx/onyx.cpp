@@ -33,13 +33,13 @@ void OnyxPdfiumContext::releaseContext(jobject thiz) {
  * Method:    nativeInitLibrary
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeInitLibrary
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeInitLibrary
   (JNIEnv *, jobject thiz) {
     FPDF_InitLibrary(NULL);
     return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeDestroyLibrary
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeDestroyLibrary
   (JNIEnv *env, jobject thiz) {
     FPDF_DestroyLibrary();
     return true;
@@ -50,7 +50,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
  * Method:    nativeOpenDocument
  * Signature: (Ljava/lang/String;Ljava/lang/String;)J
  */
-JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeOpenDocument
+JNIEXPORT jlong JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeOpenDocument
   (JNIEnv *env, jobject thiz, jstring jfilename, jstring jpassword) {
     const char *filename = NULL;
   	const char *password = NULL;
@@ -73,7 +73,7 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nat
     return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeCloseDocument
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeCloseDocument
   (JNIEnv *env, jobject thiz) {
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
     if (document == NULL) {
@@ -84,7 +84,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
     return true;
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeMetadata
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeMetadata
   (JNIEnv *env, jobject thiz, jstring jtag, jbyteArray array) {
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
     if (document == NULL) {
@@ -100,7 +100,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nati
     return size;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativePageSize
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativePageSize
   (JNIEnv *env, jobject thiz, jint pageIndex, jfloatArray array) {
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
     if (document == NULL) {
@@ -115,7 +115,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
     return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
   (JNIEnv * env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jobject bitmap) {
 
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
@@ -151,7 +151,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_
     return true;
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nativePageCount
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativePageCount
   (JNIEnv * env, jobject thiz) {
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
     if (document == NULL) {
@@ -161,7 +161,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_nati
     return count;
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_pdfium_PdfiumJniWrapper_hitTest
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hitTest
   (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jdoubleArray array) {
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
     FPDF_PAGE page = FPDF_LoadPage(document, pageIndex);

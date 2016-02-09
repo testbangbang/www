@@ -17,15 +17,15 @@
 namespace {
 
 
-static const char * deviceInfoClassName = "com/onyx/reader/plugins/adobe/ReaderDeviceInfo";
-static const char * entryClassName = "com/onyx/reader/plugins/adobe/ReaderTableOfContentEntry";
-static const char * readerLocationRangeClassName = "com/onyx/reader/plugins/adobe/ReaderLocationRange";
-static const char * hitTestResultClassName = "com/onyx/reader/plugins/adobe/ReaderSelection";
-static const char * metadataClassName = "com/onyx/reader/plugins/adobe/ReaderDocumentMetadata";
-static const char * readerLinkClassName = "com/onyx/reader/plugins/adobe/ReaderLink";
-static const char * readerPageInfoClassName = "com/onyx/reader/plugins/adobe/AdobePageInfo";
-static const char * sentenceResultClassName = "com/onyx/reader/plugins/adobe/ReaderSentenceResult";
-static const char * splitterClassName = "com/onyx/reader/plugins/adobe/utils/ReaderTextSplitter";
+static const char * deviceInfoClassName = "com/onyx/kreader/plugins/adobe/ReaderDeviceInfo";
+static const char * entryClassName = "com/onyx/kreader/plugins/adobe/ReaderTableOfContentEntry";
+static const char * readerLocationRangeClassName = "com/onyx/kreader/plugins/adobe/ReaderLocationRange";
+static const char * hitTestResultClassName = "com/onyx/kreader/plugins/adobe/ReaderSelection";
+static const char * metadataClassName = "com/onyx/kreader/plugins/adobe/ReaderDocumentMetadata";
+static const char * readerLinkClassName = "com/onyx/kreader/plugins/adobe/ReaderLink";
+static const char * readerPageInfoClassName = "com/onyx/kreader/plugins/adobe/AdobePageInfo";
+static const char * sentenceResultClassName = "com/onyx/kreader/plugins/adobe/ReaderSentenceResult";
+static const char * splitterClassName = "com/onyx/kreader/plugins/adobe/utils/ReaderTextSplitter";
 
 static const int TOUCH = 2;
 static const int SELECT_WORD = 3;
@@ -228,7 +228,7 @@ static jobject createReaderLocationRange(JNIEnv * env, const char * start, int s
         return 0;
     }
 
-    jmethodID mid = env->GetStaticMethodID(cls, "rangeFromString", "(Ljava/lang/String;ILjava/lang/String;I)Lcom/onyx/reader/ReaderLocationRange;");
+    jmethodID mid = env->GetStaticMethodID(cls, "rangeFromString", "(Ljava/lang/String;ILjava/lang/String;I)Lcom/onyx/kreader/ReaderLocationRange;");
     if (mid == 0) {
         LOGE("Find method rangeFromString failed");
         return 0;
@@ -254,7 +254,7 @@ jobject AdobeLibrary::createHitTestResult(JNIEnv * env, dp::ref<dpdoc::Location>
         return 0;
     }
 
-    jmethodID mid = env->GetStaticMethodID(cls, "create", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[D)Lcom/onyx/reader/host/impl/ReaderSelectionImpl;");
+    jmethodID mid = env->GetStaticMethodID(cls, "create", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[D)Lcom/onyx/kreader/host/impl/ReaderSelectionImpl;");
     if (mid == 0) {
         LOGE("Find method result failed");
         env->DeleteLocalRef(cls);
@@ -288,7 +288,7 @@ jobject AdobeLibrary::createSentenceResult(JNIEnv * env, const dp::ref<dpdoc::Lo
         LOGE("Could not find class: %s", sentenceResultClassName);
         return 0;
     }
-    jmethodID mid = env->GetStaticMethodID(cls, "create", "(Lcom/onyx/reader/ReaderSelection;ZZ)Lcom/onyx/reader/ReaderSentenceResult;");
+    jmethodID mid = env->GetStaticMethodID(cls, "create", "(Lcom/onyx/kreader/ReaderSelection;ZZ)Lcom/onyx/kreader/ReaderSentenceResult;");
     if (mid == 0) {
         LOGE("Get create method id failed");
         return 0;
@@ -325,7 +325,7 @@ static jobject createPageInfoObject(JNIEnv * env, int pn, dp::ref<dpdoc::Locatio
         return 0;
     }
 
-    jmethodID mid = env->GetStaticMethodID(cls, "createInfo", "(ILjava/lang/String;FFFFFFFFF)Lcom/onyx/reader/host/wrapper/ReaderPageInfo;");
+    jmethodID mid = env->GetStaticMethodID(cls, "createInfo", "(ILjava/lang/String;FFFFFFFFF)Lcom/onyx/kreader/host/wrapper/ReaderPageInfo;");
     if (mid == 0) {
         LOGE("Find method result failed");
         env->DeleteLocalRef(cls);
@@ -1744,7 +1744,7 @@ static jobject createTableOfContentEntry(JNIEnv * env, const char *title, int pa
         return 0;
     }
 
-    jmethodID mid = env->GetStaticMethodID(entry, "createEntry", "(Ljava/lang/String;I)Lcom/onyx/reader/ReaderTableOfContentEntry;");
+    jmethodID mid = env->GetStaticMethodID(entry, "createEntry", "(Ljava/lang/String;I)Lcom/onyx/kreader/ReaderTableOfContentEntry;");
     if (mid == 0) {
         LOGE("Find method createEntry failed");
         return 0;
@@ -1765,7 +1765,7 @@ static bool addTableOfContentEntry(JNIEnv * env, jobject parent, jobject  child)
         return false;
     }
 
-    jmethodID mid = env->GetStaticMethodID(entry, "addEntry", "(Lcom/onyx/reader/ReaderTableOfContentEntry;Lcom/onyx/reader/ReaderTableOfContentEntry;)V");
+    jmethodID mid = env->GetStaticMethodID(entry, "addEntry", "(Lcom/onyx/kreader/ReaderTableOfContentEntry;Lcom/onyx/kreader/ReaderTableOfContentEntry;)V");
     if (mid == 0) {
         LOGE("Find method addEntry failed");
         return false;

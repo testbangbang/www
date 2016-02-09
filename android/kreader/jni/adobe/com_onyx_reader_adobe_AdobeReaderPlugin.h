@@ -12,7 +12,7 @@ extern "C" {
  * Method:    openFile
  * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)J
  */
-JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_openFile
+JNIEXPORT jlong JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_openFile
   (JNIEnv *, jobject, jstring, jstring, jstring);
 
 /*
@@ -20,7 +20,7 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_openF
  * Method:    closeFile
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_closeFile
+JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_closeFile
   (JNIEnv *, jobject);
 
 /*
@@ -28,7 +28,7 @@ JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_closeF
  * Method:    countPagesInternal
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_countPagesInternal
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_countPagesInternal
   (JNIEnv *, jobject);
 
 /*
@@ -36,7 +36,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_countP
  * Method:    gotoLocationInternal
  * Signature: (ILjava/lang/String;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_gotoLocationInternal
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_gotoLocationInternal
   (JNIEnv *, jobject, jint, jstring);
 
 /*
@@ -44,7 +44,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_go
  * Method:    pageSizeNative
  * Signature: (I[F)V
  */
-JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_pageSizeNative
+JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_pageSizeNative
   (JNIEnv *, jobject, jint, jfloatArray);
 
 /*
@@ -52,7 +52,7 @@ JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_pageSi
  * Method:    getPageWidth
  * Signature: ()F
  */
-JNIEXPORT jfloat JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageWidth
+JNIEXPORT jfloat JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getPageWidth
   (JNIEnv *, jobject);
 
 /*
@@ -60,7 +60,7 @@ JNIEXPORT jfloat JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getP
  * Method:    getPageHeight
  * Signature: ()F
  */
-JNIEXPORT jfloat JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageHeight
+JNIEXPORT jfloat JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getPageHeight
   (JNIEnv *, jobject);
 
 /*
@@ -68,7 +68,7 @@ JNIEXPORT jfloat JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getP
  * Method:    drawPage
  * Signature: (ILandroid/graphics/Bitmap;IIIIIIDZ)J
  */
-JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_drawPage
+JNIEXPORT jlong JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_drawPage
   (JNIEnv *, jobject, jint, jobject, jint, jint, jint, jint, jboolean);
 
 /*
@@ -76,10 +76,10 @@ JNIEXPORT jlong JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_drawP
  * Method:    drawVisiblePages
  * Signature: (Landroid/graphics/Bitmap;IIIIIIDZ)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_drawVisiblePages
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_drawVisiblePages
   (JNIEnv *, jobject, jobject, jint, jint, jint, jint, jboolean);
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_clear
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_clear
   (JNIEnv *, jobject, jobject);
 
 /*
@@ -87,7 +87,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_cl
  * Method:    getPageNumberOfScreenPoint
  * Signature: (DD)I
  */
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageNumberOfScreenPoint
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getPageNumberOfScreenPoint
   (JNIEnv *, jobject, jdouble, jdouble);
 
 /*
@@ -95,7 +95,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPag
  * Method:    convertPointFromDeviceSpaceToDocumentSpace
  * Signature: (DDI)[D
  */
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_convertPointFromDeviceSpaceToDocumentSpace
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_convertPointFromDeviceSpaceToDocumentSpace
   (JNIEnv *, jobject, jdouble, jdouble, jint);
 
 /*
@@ -103,7 +103,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrappe
  * Method:    convertPointFromDocumentSpaceToDeviceSpace
  * Signature: (DDI)[D
  */
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_convertPointFromDocumentSpaceToDeviceSpace
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_convertPointFromDocumentSpaceToDeviceSpace
   (JNIEnv *, jobject, jdouble, jdouble, jint);
 
 /*
@@ -111,7 +111,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrappe
  * Method:    setPageMode
  * Signature: (I)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setPageMode
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_setPageMode
   (JNIEnv *, jobject, jint);
 
 /*
@@ -119,7 +119,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_se
  * Method:    getTextNative
  * Signature: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getTextNative
+JNIEXPORT jstring JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getTextNative
   (JNIEnv *, jobject, jstring, jstring);
 
 /*
@@ -127,7 +127,7 @@ JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_get
  * Method:    getPageTextNative
  * Signature: (I)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageTextNative
+JNIEXPORT jstring JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getPageTextNative
   (JNIEnv *, jobject, jint);
 
 /*
@@ -135,7 +135,7 @@ JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_get
  * Method:    getMetadataNative
  * Signature: (Lcom/onyx/reader/ReaderDocumentMetadata;Ljava/util/List;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getMetadataNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getMetadataNative
   (JNIEnv *, jobject, jobject, jobject);
 
 /*
@@ -143,7 +143,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_ge
  * Method:    nextScreenNative
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_nextScreenNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_nextScreenNative
   (JNIEnv *, jobject);
 
 /*
@@ -151,7 +151,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_ne
  * Method:    prevScreenNative
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_prevScreenNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_prevScreenNative
   (JNIEnv *, jobject);
 
 /*
@@ -159,7 +159,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_pr
  * Method:    setFontSizeNative
  * Signature: (DDD)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setFontSizeNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_setFontSizeNative
   (JNIEnv *, jobject, jdouble, jdouble, jdouble);
 
 /*
@@ -167,7 +167,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_se
  * Method:    collectVisibleLinksNative
  * Signature: (Ljava/util/List;)I
  */
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_collectVisibleLinksNative
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_collectVisibleLinksNative
   (JNIEnv *, jobject, jobject);
 
 /*
@@ -175,7 +175,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_collec
  * Method:    getPageNumberByLocationNative
  * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageNumberByLocationNative
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getPageNumberByLocationNative
   (JNIEnv *, jobject, jstring);
 
 /*
@@ -183,7 +183,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPag
  * Method:    setAbortFlagNative
  * Signature: (Z)V
  */
-JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setAbortFlagNative
+JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_setAbortFlagNative
   (JNIEnv *, jobject, jboolean);
 
 /*
@@ -191,7 +191,7 @@ JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setAbo
  * Method:    getAbortFlagNative
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getAbortFlagNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getAbortFlagNative
   (JNIEnv *, jobject);
 
 /*
@@ -199,11 +199,11 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_ge
  * Method:    hitTestNative
  * Signature: (FFILcom/onyx/reader/utils/ReaderTextSplitter;)Lcom/onyx/reader/ReaderSelection;
  */
-JNIEXPORT jobject JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_hitTestNative
+JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_hitTestNative
   (JNIEnv *, jobject, jfloat, jfloat, jint, jobject);
 
 
-JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_locationNative
+JNIEXPORT jstring JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_locationNative
   (JNIEnv *, jobject, jfloat, jfloat);
 
 
@@ -212,7 +212,7 @@ JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_loc
  * Method:    rectangles
  * Signature: (Ljava/lang/String;Ljava/lang/String;)[D
  */
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_rectangles
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_rectangles
   (JNIEnv *, jobject, jstring, jstring);
 
 /*
@@ -220,7 +220,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrappe
  * Method:    pageDisplayRectangles
  * Signature: (II)[D
  */
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_pageDisplayRectangles
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_pageDisplayRectangles
   (JNIEnv *, jobject, jint, jint);
 
 /*
@@ -228,7 +228,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrappe
  * Method:    allVisiblePagesRectangle
  * Signature: (Ljava/util/List;)I
  */
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_allVisiblePagesRectangle
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_allVisiblePagesRectangle
   (JNIEnv *, jobject, jobject);
 
 /*
@@ -236,7 +236,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_allVis
  * Method:    updateLocationNative
  * Signature: ()[D
  */
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_updateLocationNative
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_updateLocationNative
   (JNIEnv *, jobject);
 
 /*
@@ -244,7 +244,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrappe
  * Method:    changeNavigationMatrix
  * Signature: (DDD)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_changeNavigationMatrix
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_changeNavigationMatrix
   (JNIEnv *, jobject, jdouble, jdouble, jdouble);
 
 /*
@@ -252,7 +252,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_ch
  * Method:    setNavigationMatrix
  * Signature: (DDD)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setNavigationMatrix
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_setNavigationMatrix
   (JNIEnv *, jobject, jdouble, jdouble, jdouble);
 
 /*
@@ -260,7 +260,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_se
  * Method:    searchNextNative
  * Signature: (Ljava/lang/String;ZZIILjava/util/List;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_searchNextNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_searchNextNative
   (JNIEnv *, jobject, jstring, jboolean, jboolean, jint, jint, jobject);
 
 /*
@@ -268,7 +268,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_se
  * Method:    searchPrevNative
  * Signature: (Ljava/lang/String;ZZIILjava/util/List;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_searchPrevNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_searchPrevNative
   (JNIEnv *, jobject, jstring, jboolean, jboolean, jint, jint, jobject);
 
 /*
@@ -276,7 +276,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_se
  * Method:    searchAllInPageNative
  * Signature: (Ljava/lang/String;ZZIILjava/util/List;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_searchAllInPageNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_searchAllInPageNative
   (JNIEnv *, jobject, jstring, jboolean, jboolean, jint, jint, jobject);
 
 /*
@@ -284,7 +284,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_se
  * Method:    getPageOrientationNative
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPageOrientationNative
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getPageOrientationNative
   (JNIEnv *, jobject, jint);
 
 /*
@@ -292,7 +292,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getPag
  * Method:    hasTableOfContent
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_hasTableOfContent
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_hasTableOfContent
   (JNIEnv *, jobject);
 
 /*
@@ -300,7 +300,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_ha
  * Method:    getTableOfContent
  * Signature: (Lcom/onyx/reader/ReaderTableOfContentEntry;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getTableOfContent
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getTableOfContent
   (JNIEnv *, jobject, jobject);
 
 /*
@@ -308,7 +308,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_ge
  * Method:    isLocationInCurrentScreenNative
  * Signature: (Ljava/lang/String;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_isLocationInCurrentScreenNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_isLocationInCurrentScreenNative
   (JNIEnv *, jobject, jstring);
 
 /*
@@ -316,7 +316,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_is
  * Method:    setFontFaceInternal
  * Signature: (Ljava/lang/String;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setFontFaceInternal
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_setFontFaceInternal
   (JNIEnv *, jobject, jstring);
 
 /*
@@ -324,7 +324,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_se
  * Method:    setDisplayMarginsNative
  * Signature: (DDDD)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_setDisplayMarginsNative
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_setDisplayMarginsNative
   (JNIEnv *, jobject, jdouble, jdouble, jdouble, jdouble);
 
 /*
@@ -332,7 +332,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_se
  * Method:    initDeviceForDRM
  * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_initDeviceForDRM
+JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_initDeviceForDRM
   (JNIEnv *, jclass, jstring, jstring, jstring);
 
 /*
@@ -340,7 +340,7 @@ JNIEXPORT void JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_initDe
  * Method:    registerAdobeDRMCallback
  * Signature: (Lcom/onyx/reader/ReaderDRMCallback;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_registerAdobeDRMCallback
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_registerAdobeDRMCallback
   (JNIEnv *, jclass, jobject);
 
 /*
@@ -348,7 +348,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_re
  * Method:    fulfillByAcsm
  * Signature: (Ljava/lang/String;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_fulfillByAcsm
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_fulfillByAcsm
   (JNIEnv *, jclass, jstring);
 
 /*
@@ -356,7 +356,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_fu
  * Method:    activateDevice
  * Signature: (Ljava/lang/String;Ljava/lang/String;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_activateDevice
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_activateDevice
   (JNIEnv *, jclass, jstring, jstring);
 
 /*
@@ -364,7 +364,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_ac
  * Method:    getActivatedDRMAccount
  * Signature: ()Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getActivatedDRMAccount
+JNIEXPORT jstring JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getActivatedDRMAccount
   (JNIEnv *, jclass);
 
 /*
@@ -372,7 +372,7 @@ JNIEXPORT jstring JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_get
  * Method:    deactivateDevice
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_deactivateDevice
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_deactivateDevice
   (JNIEnv *, jclass);
 
 /*
@@ -380,7 +380,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_de
  * Method:    getNextSentence
  * Signature: (Lcom/onyx/reader/utils/ReaderTextSplitter;Ljava/lang/String;)Lcom/onyx/reader/ReaderSentenceResult;
  */
-JNIEXPORT jobject JNICALL Java_com_onyx_reader_plugins_adobe_AdobeJniWrapper_getNextSentence
+JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_adobe_AdobeJniWrapper_getNextSentence
   (JNIEnv *, jclass, jobject, jstring);
 
 #ifdef __cplusplus

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.onyx.reader">
+          package="com.onyx.kreader">
     <uses-sdk android:minSdkVersion="11"/>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -29,7 +29,7 @@
             <data android:mimeType="application/djvu" />
         </intent-filter>
 
-        <activity android:name=".test.ReaderTestActivity">
+        <activity android:name="com.onyx.kreader.test.ReaderTestActivity">
 
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
