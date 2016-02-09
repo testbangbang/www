@@ -130,24 +130,29 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 
 	if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
 		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+        FPDF_ClosePage(page);
 		return false;
 	}
 
 	if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
 		LOGE("Bitmap format is not RGBA_8888 !");
+        FPDF_ClosePage(page);
 		return false;
 	}
 
 	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
 		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        FPDF_ClosePage(page);
 		return false;
 	}
     FPDF_BITMAP pdfBitmap = OnyxPdfiumContext::getBitmap(thiz, info.width, info.height, pixels, info.stride);
     if (pdfBitmap == NULL) {
     	LOGE("create bitmap failed");
+        FPDF_ClosePage(page);
         return false;
     }
     FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, 0, FPDF_LCD_TEXT);
+    FPDF_ClosePage(page);
     return true;
 }
 
