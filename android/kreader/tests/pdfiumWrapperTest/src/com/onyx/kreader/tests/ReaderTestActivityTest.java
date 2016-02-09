@@ -97,9 +97,12 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
 
     public void testPageRenderPerformance() {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
-        assertTrue(wrapper.nativeInitLibrary());
-        String [] pathes = { "/mnt/sdcard/Books/b.pdf", "/mnt/sdcard/Books/a.pdf", "/mnt/sdcard/Books/c.pdf"};
+
+        String [] pathes = { "/mnt/sdcard/cityhunter/001.pdf", "/mnt/sdcard/cityhunter/002.pdf", "/mnt/sdcard/cityhunter/003.pdf",
+                "/mnt/sdcard/cityhunter/004.pdf", "/mnt/sdcard/cityhunter/005.pdf", "/mnt/sdcard/cityhunter/006.pdf",
+                "/mnt/sdcard/cityhunter/007.pdf"};
         for(String path : pathes) {
+            assertTrue(wrapper.nativeInitLibrary());
             assertTrue(wrapper.nativeOpenDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
             int pageCount = wrapper.nativePageCount();
             assertTrue(pageCount > 0);
@@ -122,9 +125,10 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
             }
             readerBitmap.recycleBitmap();
             assertTrue(wrapper.nativeCloseDocument());
+            assertTrue(wrapper.nativeDestroyLibrary());
         }
 
-        assertTrue(wrapper.nativeDestroyLibrary());
+
     }
 
 }

@@ -13,6 +13,7 @@
 #include <list>
 #include <map>
 
+
 #ifdef NDK_PROFILER
 #include "prof.h"
 #endif
@@ -76,6 +77,42 @@ public:
             bitmap = FPDFBitmap_CreateEx(width, height, FPDFBitmap_BGRA, pixels, stride);
         }
         return bitmap;
+    }
+};
+
+class OnyxPdfiumPage {
+
+private:
+    FPDF_PAGE page;
+    FPDF_TEXTPAGE textPage;
+
+public:
+    OnyxPdfiumPage(FPDF_DOCUMENT document, int pageIndex, bool loadTextPage) : page(NULL), textPage(NULL) {
+        if (document != NULL) {
+            page = FPDF_LoadPage(document, pageIndex);
+            if (loadTextPage && page != NULL) {
+                textPage = FPDFText_LoadPage(page);
+            }
+        }
+    }
+
+    ~OnyxPdfiumPage() {
+        if (textPage != NULL) {
+            FPDFText_ClosePage(textPage);
+            textPage = NULL;
+        }
+        if (page != NULL) {
+            FPDF_ClosePage(page);
+            page = NULL;
+        }
+    }
+
+    FPDF_PAGE getPage() {
+        return page;
+    }
+
+    FPDF_TEXTPAGE getTextPage() {
+        return textPage;
     }
 
 };

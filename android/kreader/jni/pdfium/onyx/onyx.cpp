@@ -119,7 +119,8 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
   (JNIEnv * env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jobject bitmap) {
 
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
-    FPDF_PAGE page = FPDF_LoadPage(document, pageIndex);
+    OnyxPdfiumPage pageWrapper(document, pageIndex, false);
+    FPDF_PAGE page = pageWrapper.getPage();
     if (page == NULL) {
         LOGE("invalid page %d", pageIndex);
         return false;
@@ -130,29 +131,24 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 
 	if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
 		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
-        FPDF_ClosePage(page);
 		return false;
 	}
 
 	if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
 		LOGE("Bitmap format is not RGBA_8888 !");
-        FPDF_ClosePage(page);
 		return false;
 	}
 
 	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
 		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
-        FPDF_ClosePage(page);
 		return false;
 	}
     FPDF_BITMAP pdfBitmap = OnyxPdfiumContext::getBitmap(thiz, info.width, info.height, pixels, info.stride);
     if (pdfBitmap == NULL) {
     	LOGE("create bitmap failed");
-        FPDF_ClosePage(page);
         return false;
     }
     FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, 0, FPDF_LCD_TEXT);
-    FPDF_ClosePage(page);
     return true;
 }
 
@@ -169,8 +165,9 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hitTest
   (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jdoubleArray array) {
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
-    FPDF_PAGE page = FPDF_LoadPage(document, pageIndex);
-    FPDF_TEXTPAGE textPage = FPDFText_LoadPage(page);
+    OnyxPdfiumPage pageWrapper(document, pageIndex, true);
+    FPDF_PAGE page = pageWrapper.getPage();
+    FPDF_TEXTPAGE textPage = pageWrapper.getTextPage();
 
     double tolerance = 10.0 / 72.0;
     int startIndex = FPDFText_GetCharIndexAtPos(textPage, sx, sy, tolerance, tolerance);
