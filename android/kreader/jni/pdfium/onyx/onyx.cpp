@@ -35,7 +35,7 @@ void OnyxPdfiumContext::releaseContext(jobject thiz) {
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeInitLibrary
   (JNIEnv *, jobject thiz) {
-    FPDF_InitLibrary(NULL);
+    FPDF_InitLibrary();
     return true;
 }
 

@@ -20,9 +20,9 @@
 
 #include "log.h"
 #include "com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper.h"
-#include "fpdfdoc.h"
+#include "fpdf_doc.h"
 #include "fpdfview.h"
-#include "fpdftext.h"
+#include "fpdf_text.h"
 
 
 class OnyxPdfiumContext;

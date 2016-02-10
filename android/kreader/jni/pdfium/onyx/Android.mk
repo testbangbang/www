@@ -24,7 +24,6 @@ LOCAL_SRC_FILES := \
 MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \
     $(MY_SRC_ROOT)                      \
-    $(MY_SRC_ROOT)/fpdfsdk              \
-    $(MY_SRC_ROOT)/fpdfsdk/include
+    $(MY_SRC_ROOT)/public
 
 include $(BUILD_SHARED_LIBRARY)

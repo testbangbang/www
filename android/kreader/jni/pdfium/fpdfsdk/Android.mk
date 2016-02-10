@@ -5,40 +5,39 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := libpdfium
 
 LOCAL_ARM_MODE := arm
-LOCAL_SDK_VERSION := 19
 LOCAL_NDK_STL_VARIANT := gnustl_static
 
-LOCAL_CXXFLAGS := -fPIC -std=c++11
-LOCAL_CXXFLAGS += -O3 -fstrict-aliasing -fprefetch-loop-arrays -fexceptions
-LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
-#LOCAL_CXXFLAGS += -DAPI5 -D_GB1_CMAPS_ -D_GB1_CMAPS_4_ -D_CNS1_CMAPS_ -D_JPX_DECODER_ -D_FX_OS_=_FX_LINUX_EMBEDDED_
+LOCAL_CFLAGS += -O3 -fstrict-aliasing -fprefetch-loop-arrays -fexceptions
+LOCAL_CFLAGS += -Wno-non-virtual-dtor -Wall
+LOCAL_CFLAGS += -DFOXIT_CHROME_BUILD
 
-#LOCAL_STATIC_LIBRARIES := libpdfiumcore
+# Mask some warnings. These are benign, but we probably want to fix them
+# upstream at some point.
+LOCAL_CFLAGS += -Wno-unused-parameter \
+                -Wno-sign-compare
+
+LOCAL_STATIC_LIBRARIES := libpdfiumcore
 
 # TODO: figure out why turning on exceptions requires manually linking libdl
-#LOCAL_SHARED_LIBRARIES := libdl
+LOCAL_SHARED_LIBRARIES := libdl libft2
 
 LOCAL_SRC_FILES := \
-    src/fpdf_dataavail.cpp \
-    src/fpdf_ext.cpp \
-    src/fpdf_flatten.cpp \
-    src/fsdk_rendercontext.cpp \
-    src/fpdf_progressive.cpp \
-    src/fpdf_searchex.cpp \
-    src/fpdf_sysfontinfo.cpp \
-    src/fpdf_transformpage.cpp \
     src/fpdfdoc.cpp \
     src/fpdfeditimg.cpp \
     src/fpdfeditpage.cpp \
-    src/fpdfoom.cpp \
     src/fpdfppo.cpp \
     src/fpdfsave.cpp \
+    src/fpdftext.cpp \
     src/fpdfview.cpp \
-    src/fpdftext.cpp
+    src/fpdf_dataavail.cpp \
+    src/fpdf_ext.cpp \
+    src/fpdf_flatten.cpp \
+    src/fpdf_progressive.cpp \
+    src/fpdf_searchex.cpp \
+    src/fpdf_transformpage.cpp \
+    src/fsdk_rendercontext.cpp
 
-MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \
-    $(MY_SRC_ROOT)
+    external/pdfium/core/include
 
-
-include $(BUILD_STATIC_LIBRARY)
+include $(BUILD_SHARED_LIBRARY)
