@@ -23,6 +23,7 @@ import com.onyx.kreader.utils.StringUtils;
 public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
     static private String TAG = ReaderTestActivityTest.class.getSimpleName();
+    private boolean performanceTest = false;
 
     public ReaderTestActivityTest() {
         super("com.onyx.reader", ReaderTestActivity.class);
@@ -96,8 +97,10 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testPageRenderPerformance() {
+        if (!performanceTest) {
+            return;
+        }
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
-
         String [] pathes = { "/mnt/sdcard/cityhunter/001.pdf", "/mnt/sdcard/cityhunter/002.pdf", "/mnt/sdcard/cityhunter/003.pdf",
                 "/mnt/sdcard/cityhunter/004.pdf", "/mnt/sdcard/cityhunter/005.pdf", "/mnt/sdcard/cityhunter/006.pdf",
                 "/mnt/sdcard/cityhunter/007.pdf"};
@@ -127,8 +130,36 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
             assertTrue(wrapper.nativeCloseDocument());
             assertTrue(wrapper.nativeDestroyLibrary());
         }
+    }
 
+    public void testStringEncoding() {
+        String pattern = "广州";
+        byte [] buffer = StringUtils.utf16leBuffer(pattern);
+        String result = StringUtils.utf16le(buffer);
+        assertTrue(result.equalsIgnoreCase(pattern));
+    }
 
+    public void testPageText() {
+        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        String path = "/mnt/sdcard/Books/text.pdf";
+        assertTrue(wrapper.nativeInitLibrary());
+        assertTrue(wrapper.nativeOpenDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
+        String text = wrapper.getPageText(0);
+        assertTrue(text.contains("广州"));
+        assertTrue(wrapper.nativeCloseDocument());
+        assertTrue(wrapper.nativeDestroyLibrary());
+    }
+
+    public void testSearch() {
+        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        String path = "/mnt/sdcard/Books/text.pdf";
+        assertTrue(wrapper.nativeInitLibrary());
+        assertTrue(wrapper.nativeOpenDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
+        String pattern = "广州";
+        int count = wrapper.searchInPage(0, pattern, false, true);
+        assertTrue(count > 0);
+        assertTrue(wrapper.nativeCloseDocument());
+        assertTrue(wrapper.nativeDestroyLibrary());
     }
 
 }

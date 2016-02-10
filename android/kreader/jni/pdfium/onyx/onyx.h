@@ -19,7 +19,7 @@
 #endif
 
 #include "log.h"
-#include "com_onyx_reader_plugins_pdfium_PdfiumJniWrapper.h"
+#include "com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper.h"
 #include "fpdfdoc.h"
 #include "fpdfview.h"
 #include "fpdftext.h"

@@ -5,8 +5,9 @@ import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zengzhu on 2/3/16.
- * javah -classpath ./:/opt/adt-bundle-linux/sdk/platforms/android-15/android.jar -jni PdfiumJniWrapper
+ * javah -classpath ./bin/classes:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/onyx/kreader/plugins/pdfium/ -jni com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper
  * http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
+ * https://src.chromium.org/svn/trunk/src/pdf/pdfium/
  */
 public class PdfiumJniWrapper {
 
@@ -36,6 +37,11 @@ public class PdfiumJniWrapper {
 
     public native int hitTest(int page, int x, int y, int width, int height, int startX, int startY, int endX, int endY, double [] rects);
 
+    public native int nativeSearchInPage(int page, final byte [] buffer, boolean caseSensitive, boolean matchWholeWord);
+
+    public native byte [] nativeGetPageText(int page);
+
+
     public String metadataString(final String tag) {
         byte [] data  = new byte[4096];
         int size = nativeMetadata(tag, data);
@@ -55,6 +61,18 @@ public class PdfiumJniWrapper {
      */
     public boolean drawPage(int page, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap, final Bitmap bitmap) {
         return nativeRenderPage(page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap);
+    }
+
+    public int searchInPage(int page, final String text, boolean caseSensitive, boolean matchWholeWord) {
+        return nativeSearchInPage(page, StringUtils.utf16leBuffer(text), caseSensitive, matchWholeWord);
+    }
+
+    public String getPageText(int page) {
+        byte [] data = nativeGetPageText(page);
+        if (data == null) {
+            return null;
+        }
+        return StringUtils.utf16le(data);
     }
 
 }
