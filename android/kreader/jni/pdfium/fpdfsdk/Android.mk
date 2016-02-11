@@ -46,4 +46,4 @@ LOCAL_C_INCLUDES := \
     $(MY_SRC_ROOT)/core/include
 
 
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)

@@ -229,16 +229,13 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
         flags |= FPDF_MATCHWHOLEWORD;
     }
 
-    LOGE("search content %d length %d", *stringData, env->GetArrayLength(buffer));
     int count = 0;
     FPDF_SCHHANDLE searchHandle = FPDFText_FindStart(textPage, (unsigned short *)stringData, flags, 0);
-    LOGE("search handle %p", searchHandle);
     while (FPDFText_FindNext(searchHandle)) {
         ++count;
         int index = FPDFText_GetSchResultIndex(searchHandle);
         // collect the rectangle and others
     }
-    LOGE("search count %d", count);
     FPDFText_FindClose(searchHandle);
     return count;
 }
@@ -260,7 +257,6 @@ JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapp
     jbyte * data = new jbyte[size];
     memset(data, 0, size);
     int written = FPDFText_GetText(textPage, 0,  count, (unsigned short *)data);
-    LOGE("written %d count %d data %d %d %d %d", count, written, *data, *(data + 1), *(data + 2), *(data + 3));
     jbyteArray array = env->NewByteArray(size);
     env->SetByteArrayRegion(array, 0, size, data);
     delete [] data;
