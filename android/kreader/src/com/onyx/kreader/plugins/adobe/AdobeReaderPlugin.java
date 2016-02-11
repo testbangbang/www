@@ -45,9 +45,12 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return AdobeReaderPlugin.class.getSimpleName();
     }
 
-    public List<String> supportedFileList() {
-        String [] array = {".epub", ".pdf"};
-        return Arrays.asList(array);
+    static public boolean accept(final String path) {
+        String string = path.toLowerCase();
+        if (string.endsWith(".epub") || string.endsWith(".pdf")) {
+            return true;
+        }
+        return false;
     }
 
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {

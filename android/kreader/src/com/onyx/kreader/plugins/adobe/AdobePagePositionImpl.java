@@ -61,11 +61,11 @@ public class AdobePagePositionImpl implements ReaderPagePosition {
         return internal;
     }
 
-    public String save() {
+    public String asString() {
         return JSON.toJSONString(this);
     }
 
-    public boolean restore(final String string) {
+    public boolean fromrString(final String string) {
         AdobePagePositionImpl impl = JSON.parseObject(string, AdobePagePositionImpl.class);
         if (impl != null) {
             pageNumber = impl.getPageNumber();

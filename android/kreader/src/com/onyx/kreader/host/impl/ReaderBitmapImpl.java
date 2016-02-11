@@ -11,6 +11,11 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     private Bitmap bitmap;
 
+    public static ReaderBitmapImpl create(int width, int height, Bitmap.Config config) {
+        ReaderBitmapImpl readerBitmap = new ReaderBitmapImpl(width, height, config);
+        return readerBitmap;
+    }
+
     public ReaderBitmapImpl(int width, int height, Bitmap.Config config) {
         super();
         recycleBitmap();

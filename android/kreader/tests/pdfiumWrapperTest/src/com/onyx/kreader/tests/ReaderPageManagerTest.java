@@ -24,12 +24,13 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
 
     public void testPageManager() throws Exception {
         PageManager pageManager = new PageManager();
-        pageManager.setViewportRect(0, 0, TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
+        RectF viewport = new RectF(0, 0, TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));;
+        pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
         PageInfo pageInfo = new PageInfo("1", TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
         pageManager.add(pageInfo);
         pageManager.scaleToPage();
         List<PageInfo> result = pageManager.getVisiblePages();
-        RectF viewport = pageManager.getViewportRect();
+
         for(PageInfo info : result) {
             float actualScale = info.getActualScale();
             float targetScale = PageUtils.scaleToPage(info.getOriginWidth(), info.getOriginHeight(), viewport.width(), viewport.height());

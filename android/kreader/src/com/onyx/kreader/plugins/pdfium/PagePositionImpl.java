@@ -59,11 +59,11 @@ public class PagePositionImpl implements ReaderPagePosition {
         return internal;
     }
 
-    public String save() {
+    public String asString() {
         return JSON.toJSONString(this);
     }
 
-    public boolean restore(final String string) {
+    public boolean fromrString(final String string) {
         PagePositionImpl impl = JSON.parseObject(string, PagePositionImpl.class);
         if (impl != null) {
             pageNumber = impl.getPageNumber();

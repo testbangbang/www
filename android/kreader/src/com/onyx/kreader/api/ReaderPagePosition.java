@@ -17,13 +17,13 @@ public interface ReaderPagePosition {
      * object into json string.
      * @return position persistent representation.
      */
-    public String save();
+    public String asString();
 
     /**
      * Restore the position from persistent string.
      * @param string the persistent representation.
      */
-    public boolean restore(final String string);
+    public boolean fromrString(final String string);
 
 
     /**

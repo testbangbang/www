@@ -125,6 +125,10 @@ public class PageInfo {
         return name;
     }
 
+    // TODO: use json
+    public String uniqueId() {
+        return name + actualScale + displayRect.toString();
+    }
 
 
 }

@@ -6,6 +6,7 @@ import com.onyx.kreader.api.*;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.plugins.adobe.AdobeReaderPlugin;
+import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -32,8 +33,13 @@ public class ReaderHelper {
         reader = r;
     }
 
-    public void loadPlugin(final Context context, final String path) {
-        plugin = new AdobeReaderPlugin(context);
+    public boolean selectPlugin(final Context context, final String path) {
+        if (PdfiumReaderPlugin.accept(path)) {
+            plugin = new PdfiumReaderPlugin(context);
+        } else if (AdobeReaderPlugin.accept(path)) {
+            plugin = new AdobeReaderPlugin(context);
+        }
+        return (plugin != null);
     }
 
     public void onDocumentOpened(final ReaderDocument doc) {
@@ -66,7 +72,7 @@ public class ReaderHelper {
     public void updateRenderBitmap(int width, int height) {
         Bitmap.Config bitmapConfig = Bitmap.Config.ARGB_8888;
         if (renderBitmap == null) {
-            renderBitmap = new ReaderBitmapImpl(width, height, bitmapConfig);
+            renderBitmap = ReaderBitmapImpl.create(width, height, bitmapConfig);
         } else {
             renderBitmap.update(width, height, bitmapConfig);
         }

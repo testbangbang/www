@@ -250,7 +250,7 @@ public class PageManager {
 
 
     /**
-     * calculate the host rectangle
+     * calculate the page bounding rectangle
      */
     public void updatePagesBoundingRect() {
         float y = topMargin, maxWidth = 0;

@@ -45,7 +45,7 @@ public class LayoutProviderUtils {
 
     static public void addEntry(final ReaderLayoutManager layoutManager, final ReaderPagePosition location) {
         RectF size = layoutManager.getReaderHelper().getDocument().getPageNaturalSize(location);
-        PageInfo pageInfo = new PageInfo(location.save(), size.width(), size.height());
+        PageInfo pageInfo = new PageInfo(location.asString(), size.width(), size.height());
         layoutManager.getPageManager().add(pageInfo);
     }
 
@@ -75,7 +75,7 @@ public class LayoutProviderUtils {
     }
 
     static public boolean moveViewportByPosition(final ReaderLayoutManager layoutManager, final ReaderPagePosition location) {
-        return layoutManager.getPageManager().moveViewportByPosition(location.save());
+        return layoutManager.getPageManager().moveViewportByPosition(location.asString());
     }
 
     static public void pan(final ReaderLayoutManager layoutManager, final float dx, final float dy) {

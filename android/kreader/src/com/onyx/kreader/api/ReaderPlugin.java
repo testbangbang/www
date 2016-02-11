@@ -14,12 +14,6 @@ public interface ReaderPlugin {
     public String displayName();
 
     /**
-     * Tell file type list the plugin supports.
-     * @return file extension name list.
-     */
-    public List<String> supportedFileList();
-
-    /**
      * Try to open the document specified by the path.
      * @param path The path in local file system.
      * @param documentOptions The document opening options.

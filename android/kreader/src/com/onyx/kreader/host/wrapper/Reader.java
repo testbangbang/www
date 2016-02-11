@@ -32,11 +32,15 @@ public class Reader {
     private Handler handler = new Handler(Looper.getMainLooper());
     private ReaderHelper readerHelper = null;
 
-    public Reader(final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
+    public Reader() {
         readerHelper = new ReaderHelper(this);
+        initRequestList();
+    }
+
+    public boolean init(final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
         getReaderHelper().setPluginOptions(pluginOptions);
         getReaderHelper().setViewOptions(viewOptions);
-        initRequestList();
+        return true;
     }
 
     private void initRequestList() {
@@ -173,7 +177,6 @@ public class Reader {
     public ReaderView getView() {
         return getReaderHelper().getView();
     }
-
 
     public ReaderNavigator getNavigator() {
         return getReaderHelper().getNavigator();

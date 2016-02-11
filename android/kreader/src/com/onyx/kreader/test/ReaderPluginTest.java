@@ -35,7 +35,6 @@ public class ReaderPluginTest {
         ReaderPlugin plugin = getPlugin();
         assert(plugin != null);
         assert(plugin.displayName() != null);
-        assert(plugin.supportedFileList() != null);
         if (plugin.supportDrm()) {
             assert(plugin.createDrmManager() != null);
         }
@@ -175,7 +174,7 @@ public class ReaderPluginTest {
         matrix.mapRect(pageDisplayRect, size);
 
 
-        // save current position, scale and viewportInPage.
+        // asString current position, scale and viewportInPage.
 
 
         renderer.draw(position,  -1, readerBitmap);
@@ -218,7 +217,7 @@ public class ReaderPluginTest {
         matrix.postScale(scale, scale);
         matrix.mapRect(pageDisplayRect, size);
 
-        // save current position, scale and viewportInPage.
+        // asString current position, scale and viewportInPage.
         renderer.draw(position,  -1, readerBitmap);
 
         // move viewportInPage

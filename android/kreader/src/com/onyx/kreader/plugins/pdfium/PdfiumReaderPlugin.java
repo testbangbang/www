@@ -42,10 +42,14 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return PdfiumReaderPlugin.class.getSimpleName();
     }
 
-    public List<String> supportedFileList() {
-        String [] array = {".pdf"};
-        return Arrays.asList(array);
+    static public boolean accept(final String path) {
+        String string = path.toLowerCase();
+        if (string.endsWith(".pdf")) {
+            return true;
+        }
+        return false;
     }
+
 
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
         String docPassword = "";
@@ -166,8 +170,8 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return getPluginImpl().drawPage(page.getPageNumber(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), bitmap.getBitmap());
     }
 
-    public boolean draw(final ReaderPagePosition page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp) {
-        return getPluginImpl().drawPage(0, xInBitmap, yInBitmap, widthInBitmap, heightInBitmp, bitmap.getBitmap());
+    public boolean draw(final ReaderPagePosition page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
+        return getPluginImpl().drawPage(page.getPageNumber(), xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap.getBitmap());
     }
 
     /**
