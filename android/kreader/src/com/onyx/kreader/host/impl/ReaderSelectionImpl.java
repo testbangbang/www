@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.impl;
 
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderDocumentPosition;
+import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderSelection;
 
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.List;
  */
 public class ReaderSelectionImpl implements ReaderSelection {
 
-    private ReaderDocumentPosition startPosition;
-    private ReaderDocumentPosition endPosition;
+    private ReaderPagePosition startPosition;
+    private ReaderPagePosition endPosition;
     private String text;
     private List<RectF> displayRects;
 
@@ -26,19 +26,19 @@ public class ReaderSelectionImpl implements ReaderSelection {
         return object;
     }
 
-    public final ReaderDocumentPosition getStartPosition() {
+    public final ReaderPagePosition getStartPosition() {
         return startPosition;
     }
 
-    public void setStartPosition(final ReaderDocumentPosition l) {
+    public void setStartPosition(final ReaderPagePosition l) {
         startPosition = l;
     }
 
-    public final ReaderDocumentPosition getEndPosition() {
+    public final ReaderPagePosition getEndPosition() {
         return endPosition;
     }
 
-    public void setEndPosition(final ReaderDocumentPosition l) {
+    public void setEndPosition(final ReaderPagePosition l) {
         endPosition = l;
     }
 

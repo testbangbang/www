@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.api.ReaderDocumentPosition;
+import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.StringUtils;
@@ -24,7 +24,7 @@ public class GotoLocationRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        ReaderDocumentPosition documentPosition;
+        ReaderPagePosition documentPosition;
         if (StringUtils.isNonBlank(persistentPosition)) {
             documentPosition = reader.getReaderHelper().getNavigator().createPositionFromString(persistentPosition);
         } else {

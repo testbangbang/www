@@ -101,8 +101,12 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
             return;
         }
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
-        String [] pathes = { "/mnt/sdcard/cityhunter/001.pdf", "/mnt/sdcard/cityhunter/002.pdf", "/mnt/sdcard/cityhunter/003.pdf",
-                "/mnt/sdcard/cityhunter/004.pdf", "/mnt/sdcard/cityhunter/005.pdf", "/mnt/sdcard/cityhunter/006.pdf",
+        String [] pathes = { "/mnt/sdcard/cityhunter/001.pdf",
+                "/mnt/sdcard/cityhunter/002.pdf",
+                "/mnt/sdcard/cityhunter/003.pdf",
+                "/mnt/sdcard/cityhunter/004.pdf",
+                "/mnt/sdcard/cityhunter/005.pdf",
+                "/mnt/sdcard/cityhunter/006.pdf",
                 "/mnt/sdcard/cityhunter/007.pdf"};
         for(String path : pathes) {
             assertTrue(wrapper.nativeInitLibrary());

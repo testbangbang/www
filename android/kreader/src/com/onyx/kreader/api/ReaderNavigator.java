@@ -8,76 +8,76 @@ import java.util.List;
 public interface ReaderNavigator {
 
     /**
-     * Retrieve the default init position.
+     * Retrieve the default start position.
      * @return
      */
-    public ReaderDocumentPosition getInitPosition();
+    public ReaderPagePosition getInitPosition();
 
     /**
      * Get position from page number. Page position can be retrieved by both index and name.
      * @param pageNumber The 0 based page number.
      * @return
      */
-    public ReaderDocumentPosition getPositionByPageNumber(int pageNumber);
+    public ReaderPagePosition getPositionByPageNumber(int pageNumber);
 
     /**
      * Create position from persistent string.
      * @param string The persistent string.
      * @return
      */
-    public ReaderDocumentPosition createPositionFromString(final String string);
+    public ReaderPagePosition createPositionFromString(final String string);
 
     /**
      * Return total page number.
-     * @return 1 based total page number.
+     * @return 1 based total page number. return -1 if not available yet.
      */
     public int getTotalPage();
 
     /**
      * Navigate to next screen.
      */
-    public ReaderDocumentPosition nextScreen(final ReaderDocumentPosition position);
+    public ReaderPagePosition nextScreen(final ReaderPagePosition position);
 
     /**
      * Navigate to previous screen.
      */
-    public ReaderDocumentPosition prevScreen(final ReaderDocumentPosition position);
+    public ReaderPagePosition prevScreen(final ReaderPagePosition position);
 
     /**
      * Navigate to next page.
      * @return
      */
-    public ReaderDocumentPosition nextPage(final ReaderDocumentPosition position);
+    public ReaderPagePosition nextPage(final ReaderPagePosition position);
 
     /**
      * Navigate to previous page.
      * @return
      */
-    public ReaderDocumentPosition prevPage(final ReaderDocumentPosition position);
+    public ReaderPagePosition prevPage(final ReaderPagePosition position);
 
     /**
      * Navigate to first page.
      * @return
      */
-    public ReaderDocumentPosition firstPage();
+    public ReaderPagePosition firstPage();
 
     /**
      * Navigate to last page.
      * @return
      */
-    public ReaderDocumentPosition lastPage();
+    public ReaderPagePosition lastPage();
 
     /**
      * Navigate to specified position.
      * @return
      */
-    public boolean gotoPosition(final ReaderDocumentPosition position);
+    public boolean gotoPosition(final ReaderPagePosition position);
 
     /**
-     * Retrieve current visible links.
-     * @return
+     * Retrieve links of specified page.
+     * @return link list.
      */
-    public List<ReaderLink> getLinks(final ReaderDocumentPosition position);
+    public List<ReaderLink> getLinks(final ReaderPagePosition position);
 
 
 }

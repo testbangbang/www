@@ -2,7 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderDocumentPosition;
+import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 
@@ -23,7 +23,7 @@ public interface LayoutProvider {
 
     public boolean firstPage() throws ReaderException;
     public boolean lastPage() throws ReaderException;
-    public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException;
+    public boolean gotoPosition(final ReaderPagePosition location) throws ReaderException;
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException;
 
@@ -33,12 +33,12 @@ public interface LayoutProvider {
     public void scaleByRect(final RectF child) throws ReaderException;
     public boolean changeScaleWithDelta(float delta) throws ReaderException;
 
-    public boolean changeScaleByRect(final ReaderDocumentPosition position, final RectF rect) throws ReaderException ;
+    public boolean changeScaleByRect(final ReaderPagePosition position, final RectF rect) throws ReaderException ;
 
     public float getActualScale() throws ReaderException;
     public RectF getHostRect() throws ReaderException;
     public RectF getViewportRect() throws ReaderException;
-    public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException;
+    public RectF getPageRect(final ReaderPagePosition position) throws ReaderException;
 
     public boolean pan(int dx, int dy) throws ReaderException;
 

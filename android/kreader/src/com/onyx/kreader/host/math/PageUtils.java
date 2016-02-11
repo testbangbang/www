@@ -5,7 +5,7 @@ import android.graphics.RectF;
 /**
  * Created by zhuzeng on 10/9/15.
  */
-public class EntryUtils {
+public class PageUtils {
 
     /**
      * Translate to parent coordinates.
@@ -16,13 +16,13 @@ public class EntryUtils {
         child.offset(-parent.left, -parent.top);
     }
 
-    static public float scaleToPage(final RectF entry, final RectF viewport) {
-        float scale = Math.min(viewport.width() / entry.width(), viewport.height() / entry.height());
+    static public float scaleToPage(final float pageWidth, final float pageHeight, final float viewportWidth, final float viewportHeight) {
+        float scale = Math.min(viewportWidth / pageWidth, viewportHeight / pageHeight);
         return scale;
     }
 
-    static public float scaleToWidth(final RectF entry, final RectF viewport) {
-        float scale = viewport.width() / entry.width();
+    static public float scaleToWidth(final float pageWidth, final RectF viewport) {
+        float scale = viewport.width() / pageWidth;
         return scale;
     }
 
@@ -37,7 +37,7 @@ public class EntryUtils {
      * @return delta scale
      */
     static public float scaleByRect(final RectF child, final RectF parent) {
-        float deltaScale = scaleToPage(child, parent);
+        float deltaScale = scaleToPage(child.width(), child.height(), parent.width(), parent.height());
         return scaleWithDelta(child, parent, deltaScale);
     }
 
@@ -49,17 +49,17 @@ public class EntryUtils {
         child.set(newChildLeft, newChildTop, newChildLeft + child.width() * deltaScale, newChildTop + child.height() * deltaScale);
 
         // adjust parent position.
-        float newParentLeft = child.centerX() - parent.width() / 2;
-        float newParentTop = child.centerY() - parent.height() / 2;
+        float newParentLeft = child.centerX() - parent.width() / 2.0f;
+        float newParentTop = child.centerY() - parent.height() / 2.0f;
         parent.offsetTo(newParentLeft, newParentTop);
         return deltaScale;
     }
 
-    static public float scaleByRatio(final RectF ratio, final RectF child, final RectF parent) {
-        RectF actualEntry = new RectF(child.width() * ratio.left,
-                child.height() * ratio.top,
-                child.width() * ratio.right,
-                child.height() * ratio.bottom);
+    static public float scaleByRatio(final RectF ratio, final float childWidth, final float childHeight, final RectF parent) {
+        RectF actualEntry = new RectF(childWidth * ratio.left,
+                childHeight * ratio.top,
+                childWidth * ratio.right,
+                childHeight * ratio.bottom);
         return scaleByRect(actualEntry, parent);
     }
 
@@ -73,7 +73,7 @@ public class EntryUtils {
                 child.offsetTo(parent.right - child.width(), child.top);
             }
         } else {
-            child.offsetTo((parent.width() - child.width()) / 2, child.top);
+            child.offsetTo((parent.width() - child.width()) / 2.0f, child.top);
         }
         if (child.height() < parent.height()) {
             if (child.top < parent.top) {
@@ -83,7 +83,7 @@ public class EntryUtils {
                 child.offsetTo(child.left, parent.bottom - child.height());
             }
         } else {
-            child.offsetTo(child.left, (parent.height() - child.height()) / 2);
+            child.offsetTo(child.left, (parent.height() - child.height()) / 2.0f);
         }
         return true;
     }

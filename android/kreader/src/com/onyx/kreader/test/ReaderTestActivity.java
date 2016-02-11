@@ -13,9 +13,9 @@ import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
-import com.onyx.kreader.host.math.EntryInfo;
-import com.onyx.kreader.host.math.EntryManager;
-import com.onyx.kreader.host.math.EntryUtils;
+import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.kreader.host.math.PageManager;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.request.*;
@@ -25,6 +25,7 @@ import com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.utils.TestUtils;
 
 import java.io.InvalidObjectException;
 import java.util.*;
@@ -52,11 +53,6 @@ public class ReaderTestActivity extends Activity {
     private PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
     private float xScale, yScale;
 
-    public static int randInt(int min, int max) {
-        Random rand = new Random();
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-        return randomNum;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,12 +65,6 @@ public class ReaderTestActivity extends Activity {
 
         OnyxHyphen.reinit_hyph(this, OnyxHyphen.HYPH_ENGLISH);
         testHyphen();
-
-        testMath();
-        testMath2();
-        testMath3();
-        testMath4();
-        testMath5();
         //testReaderOpen();
     }
 
@@ -275,129 +265,7 @@ public class ReaderTestActivity extends Activity {
         });
     }
 
-    private void compareList(final List<EntryInfo> a, final List<EntryInfo> b) {
-        assert(a.size() == b.size());
-        for(EntryInfo entryInfo : a) {
-            assert(b.contains(entryInfo));
-        }
-        for(EntryInfo entryInfo : b) {
-            assert(a.contains(entryInfo));
-        }
-    }
 
-    public void testMath() {
-        RectF a = new RectF(0, 0, 100, 100);
-        RectF b = new RectF(50, 50, 60, 60);
-        RectF.intersects(a, b);
-
-
-        EntryManager entryManager = new EntryManager();
-        for (int i = 0; i < 5000; ++i) {
-            EntryInfo entryInfo = new EntryInfo(randInt(100, 2000), randInt(100, 2000));
-            entryManager.add(String.valueOf(i), entryInfo);
-        }
-        entryManager.setViewportRect(0, 0, 1024, 2000);
-        long start = System.currentTimeMillis();
-        entryManager.setScale(1.0f);
-        long end = System.currentTimeMillis();
-        Log.i("TEST", "update takes: " + (end - start));
-        long end2 = System.currentTimeMillis();
-        List<EntryInfo> visiblePages = entryManager.updateVisiblePages();
-        Log.i("TEST", "update takes: " + (end2 - end));
-
-        List<EntryInfo> verify = new ArrayList<EntryInfo>();
-        List<EntryInfo> all = entryManager.getEntryInfoList();
-        for (EntryInfo entryInfo : all) {
-            if (RectF.intersects(entryManager.getViewportRect(), entryInfo.getDisplayRect())) {
-                verify.add(entryInfo);
-            }
-        }
-        compareList(verify, visiblePages);
-    }
-
-    public void testMath2() {
-        EntryManager entryManager = new EntryManager();
-        entryManager.clear();
-        entryManager.add(String.valueOf(0), new EntryInfo(randInt(100, 2000), randInt(100, 2000)));
-        entryManager.setScale(1.0f);
-        entryManager.setViewportRect(0, 0, 2000, 2500);
-        entryManager.scaleToPage();
-        assert(Float.compare(entryManager.getViewportRect().centerX(), entryManager.getHostRect().centerX()) == 0);
-        assert(Float.compare(entryManager.getViewportRect().centerY(), entryManager.getHostRect().centerY()) == 0);
-
-        assert(entryManager.nextViewport() == false);
-        entryManager.nextViewport();
-        assert(entryManager.prevViewport() == false);
-        entryManager.prevViewport();
-    }
-
-    public void testMath3() {
-        RectF child = new RectF(100, 100, 200, 200);
-        RectF parent = new RectF(0, 0, 300, 300);
-        float left = child.left;
-        float top = child.top;
-        float width = parent.width();
-        float height = parent.height();
-
-        float delta = EntryUtils.scaleByRect(child, parent);
-        assert(delta > 0);
-        assert(Float.compare(delta  * left, child.left) == 0);
-        assert(Float.compare(delta  * top, child.top) == 0);
-
-
-        float centerX = parent.centerX();
-        float centerY = parent.centerY();
-        float newCenterX = child.centerX();
-        float newCenterY = child.centerY();
-        assert(Float.compare(centerX, newCenterX) == 0);
-        assert(Float.compare(centerY, newCenterY) == 0);
-        assert(Float.compare(parent.width(), width) == 0);
-        assert(Float.compare(parent.height(), height) == 0);
-    }
-
-
-    public void testMath4() {
-        RectF child = new RectF(randInt(200, 500), randInt(200, 500), randInt(800, 1200), randInt(800, 1200));
-        RectF parent = new RectF(randInt(0, 100), randInt(0, 100), randInt(1300, 2000), randInt(1300, 2000));
-        float left = child.left;
-        float top = child.top;
-        float width = parent.width();
-        float height = parent.height();
-
-        float delta = EntryUtils.scaleByRect(child, parent);
-        assert(delta > 0);
-        assert(Float.compare(delta  * left, child.left) == 0);
-        assert(Float.compare(delta  * top, child.top) == 0);
-
-
-        float centerX = parent.centerX();
-        float centerY = parent.centerY();
-        float newCenterX = child.centerX();
-        float newCenterY = child.centerY();
-        assert(Float.compare(centerX, newCenterX) == 0);
-        assert(Float.compare(centerY, newCenterY) == 0);
-        assert(Float.compare(parent.width(), width) == 0);
-        assert(Float.compare(parent.height(), height) == 0);
-    }
-
-    public void testMath5() {
-        RectF entry = new RectF(0, 0, 500, 500);
-        RectF parent = new RectF(0, 0, 1024, 768);
-        int rows = 3, cols = 3;
-        NavigationList navigator = NavigationList.rowsLeftToRight(3, 3, null);
-        float actualScale;
-
-        int index = 0;
-        while (navigator.hasNext()) {
-            RectF ratio = navigator.next();
-            float left = 1.0f / cols * (index % cols);
-            float top = 1.0f / rows * (index / cols);
-            assert(Float.compare(ratio.left, left) == 0);
-            assert(Float.compare(ratio.top, top) == 0);
-            ++index;
-            actualScale = EntryUtils.scaleByRatio(ratio, entry, parent);
-        }
-    }
 
     // use span list to draw string
     // split into word list
@@ -411,7 +279,7 @@ public class ReaderTestActivity extends Activity {
         surfaceView.getDrawingRect(rect);
         List<Element> list = new ArrayList<Element>();
         list.add(LeadingElement.create(randStyle()));
-        int count = randInt(100, 600);
+        int count = TestUtils.randInt(100, 600);
         for(int i = 0; i < count; ++i) {
             list.add(randElement());
             list.add(spacingElement());
@@ -455,13 +323,13 @@ public class ReaderTestActivity extends Activity {
     private String randString(int length) {
         char[] text = new char[length];
         for (int i = 0; i < length; i++) {
-            text[i] = source.charAt(randInt(0, source.length() - 1));
+            text[i] = source.charAt(TestUtils.randInt(0, source.length() - 1));
         }
         return new String(text).trim();
     }
 
     private Element randElement() {
-        Element element = TextElement.create(randString(randInt(3, 10)), randStyle());
+        Element element = TextElement.create(randString(TestUtils.randInt(3, 10)), randStyle());
         return element;
     }
 
@@ -475,7 +343,7 @@ public class ReaderTestActivity extends Activity {
         paint.setTextSize(35);
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
-        int value = randInt(10, 20);
+        int value = TestUtils.randInt(10, 20);
         if (value > 10 && value < 13) {
             paint.setTypeface(Typeface.create(Typeface.SERIF,Typeface.ITALIC));
         } else if (value > 13 && value < 16) {

@@ -2,10 +2,10 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderDocumentPosition;
+import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderNavigator;
-import com.onyx.kreader.host.math.EntryManager;
+import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
@@ -34,7 +34,7 @@ public class ReaderLayoutManager {
     private Reader reader;
     private ReaderHelper readerHelper;
     private ReaderPositionHolder positionHolder;
-    private EntryManager entryManager;
+    private PageManager pageManager;
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
 
@@ -57,7 +57,7 @@ public class ReaderLayoutManager {
     }
 
     public void init() {
-        getEntryManager().setViewportRect(0, 0, reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight());
+        getPageManager().setViewportRect(0, 0, reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight());
         getPositionHolder().updatePosition(getReaderHelper().getNavigator().getInitPosition());
 
         // check renderer features
@@ -127,15 +127,15 @@ public class ReaderLayoutManager {
         return getCurrentLayoutProvider().getViewportRect();
     }
 
-    public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException {
+    public RectF getPageRect(final ReaderPagePosition position) throws ReaderException {
         return getCurrentLayoutProvider().getPageRect(position);
     }
 
-    public EntryManager getEntryManager() {
-        if (entryManager == null) {
-            entryManager = new EntryManager();
+    public PageManager getPageManager() {
+        if (pageManager == null) {
+            pageManager = new PageManager();
         }
-        return entryManager;
+        return pageManager;
     }
 
     public ReaderPositionHolder getPositionHolder() {
@@ -145,7 +145,7 @@ public class ReaderLayoutManager {
         return positionHolder;
     }
 
-    public boolean gotoPosition(final ReaderDocumentPosition position) throws ReaderException {
+    public boolean gotoPosition(final ReaderPagePosition position) throws ReaderException {
         return getCurrentLayoutProvider().gotoPosition(position);
     }
 

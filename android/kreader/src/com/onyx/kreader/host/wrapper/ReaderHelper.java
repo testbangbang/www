@@ -59,7 +59,7 @@ public class ReaderHelper {
 
     }
 
-    public void onPageChanged(final ReaderDocumentPosition oldPosition, final ReaderDocumentPosition newPosition) {
+    public void onPageChanged(final ReaderPagePosition oldPosition, final ReaderPagePosition newPosition) {
 
     }
 
@@ -75,14 +75,6 @@ public class ReaderHelper {
     public final ReaderBitmap getRenderBitmap() {
         updateRenderBitmap(viewOptions.getViewWidth(), viewOptions.getViewHeight());
         return renderBitmap;
-    }
-
-    public void renderToBitmap() {
-        renderer.draw(renderBitmap);
-    }
-
-    public void renderToBitmap(int left, int top, int right, int bottom) {
-        renderer.draw(renderBitmap, left, top, right, bottom);
     }
 
     public ReaderPlugin getPlugin() {

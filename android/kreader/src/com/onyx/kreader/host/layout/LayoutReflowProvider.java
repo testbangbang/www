@@ -2,7 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderDocumentPosition;
+import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 
@@ -55,7 +55,7 @@ public class LayoutReflowProvider  implements LayoutProvider {
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
-        return layoutManager.getReader().getRenderer().draw(bitmap);
+        return layoutManager.getReader().getRenderer().draw(null, -1.0f, bitmap);
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
@@ -66,11 +66,11 @@ public class LayoutReflowProvider  implements LayoutProvider {
         return false;
     }
 
-    public boolean changeScaleByRect(final ReaderDocumentPosition position, final RectF rect) throws ReaderException  {
+    public boolean changeScaleByRect(final ReaderPagePosition position, final RectF rect) throws ReaderException  {
         return false;
     }
 
-    public boolean gotoPosition(final ReaderDocumentPosition position) throws ReaderException {
+    public boolean gotoPosition(final ReaderPagePosition position) throws ReaderException {
         return getPositionHolder().gotoPosition(position);
     }
 
@@ -105,7 +105,7 @@ public class LayoutReflowProvider  implements LayoutProvider {
         return null;
     }
 
-    public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException {
+    public RectF getPageRect(final ReaderPagePosition position) throws ReaderException {
         return null;
     }
 

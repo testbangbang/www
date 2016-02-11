@@ -89,7 +89,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public RectF getPageNaturalSize(final ReaderDocumentPosition position) {
+    public RectF getPageNaturalSize(final ReaderPagePosition position) {
         float size [] = {0, 0};
         getPluginImpl().pageSizeNative(position.getPageNumber(), size);
         return new RectF(0, 0, size[0], size[1]);
@@ -149,7 +149,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Retrieve current visible links.
      * @return
      */
-    public List<ReaderLink> getLinks(final ReaderDocumentPosition position) {
+    public List<ReaderLink> getLinks(final ReaderPagePosition position) {
         return null;
     }
 
@@ -165,11 +165,11 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return getPluginImpl().clear(bitmap.getBitmap());
     }
 
-    public boolean draw(final ReaderBitmap bitmap) {
+    public boolean draw(final ReaderPagePosition page, final float scale, final ReaderBitmap bitmap) {
         return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), true);
     }
 
-    public boolean draw(final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp) {
+    public boolean draw(final ReaderPagePosition page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp) {
         return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), xInBitmap, yInBitmap, widthInBitmap, heightInBitmp,  false);
     }
 
@@ -177,21 +177,21 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Retrieve the default init position.
      * @return
      */
-    public ReaderDocumentPosition getInitPosition() {
-        return AdobeDocumentPositionImpl.createFromPageNumber(this, 0);
+    public ReaderPagePosition getInitPosition() {
+        return AdobePagePositionImpl.createFromPageNumber(this, 0);
     }
 
 
-    public ReaderDocumentPosition getVisibleBeginningPosition() {
+    public ReaderPagePosition getVisibleBeginningPosition() {
         List<ReaderPageInfo> pageInfoList = new ArrayList<ReaderPageInfo>();
         if (getPluginImpl().allVisiblePagesRectangle(pageInfoList) < 0) {
             return null;
         }
         ReaderPageInfo pageInfo = pageInfoList.get(0);
-        return AdobeDocumentPositionImpl.createFromPageNumber(this, pageInfo.pageNumber);
+        return AdobePagePositionImpl.createFromPageNumber(this, pageInfo.pageNumber);
     }
 
-    public List<ReaderDocumentPosition> getVisiblePages() {
+    public List<ReaderPagePosition> getVisiblePages() {
         return null;
     }
 
@@ -200,12 +200,12 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @param pageNumber The 0 based page number.
      * @return
      */
-    public ReaderDocumentPosition getPositionByPageNumber(int pageNumber) {
-        return AdobeDocumentPositionImpl.createFromPageNumber(this, pageNumber);
+    public ReaderPagePosition getPositionByPageNumber(int pageNumber) {
+        return AdobePagePositionImpl.createFromPageNumber(this, pageNumber);
     }
 
-    public ReaderDocumentPosition createPositionFromString(final String name) {
-        return AdobeDocumentPositionImpl.createFromPersistentString(this, name);
+    public ReaderPagePosition createPositionFromString(final String name) {
+        return AdobePagePositionImpl.createFromPersistentString(this, name);
     }
 
     /**
@@ -219,14 +219,14 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     /**
      * Navigate to next screen.
      */
-    public ReaderDocumentPosition nextScreen(final ReaderDocumentPosition position) {
+    public ReaderPagePosition nextScreen(final ReaderPagePosition position) {
         return null;
     }
 
     /**
      * Navigate to previous screen.
      */
-    public ReaderDocumentPosition prevScreen(final ReaderDocumentPosition position) {
+    public ReaderPagePosition prevScreen(final ReaderPagePosition position) {
         return null;
     }
 
@@ -234,10 +234,10 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Navigate to next page.
      * @return
      */
-    public ReaderDocumentPosition nextPage(final ReaderDocumentPosition position) {
+    public ReaderPagePosition nextPage(final ReaderPagePosition position) {
         int pn = position.getPageNumber();
         if (pn + 1 < getTotalPage()) {
-            return new AdobeDocumentPositionImpl(this, pn + 1, null);
+            return new AdobePagePositionImpl(this, pn + 1, null);
         }
         return null;
     }
@@ -246,10 +246,10 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Navigate to previous page.
      * @return
      */
-    public ReaderDocumentPosition prevPage(final ReaderDocumentPosition position) {
+    public ReaderPagePosition prevPage(final ReaderPagePosition position) {
         int pn = position.getPageNumber();
         if (pn > 0) {
-            return new AdobeDocumentPositionImpl(this, pn - 1, null);
+            return new AdobePagePositionImpl(this, pn - 1, null);
         }
         return null;
 
@@ -259,7 +259,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Navigate to first page.
      * @return
      */
-    public ReaderDocumentPosition firstPage() {
+    public ReaderPagePosition firstPage() {
         return null;
     }
 
@@ -267,7 +267,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Navigate to last page.
      * @return
      */
-    public ReaderDocumentPosition lastPage() {
+    public ReaderPagePosition lastPage() {
         return null;
     }
 
@@ -275,7 +275,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * Navigate to specified position.
      * @return
      */
-    public boolean gotoPosition(final ReaderDocumentPosition position) {
+    public boolean gotoPosition(final ReaderPagePosition position) {
         return getPluginImpl().gotoLocationInternal(position.getPageNumber(), null);
     }
 
@@ -371,7 +371,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @param position the page position.
      * @return
      */
-    public RectF getPageDisplayRect(final ReaderDocumentPosition position) {
+    public RectF getPageDisplayRect(final ReaderPagePosition position) {
         return null;
     }
 
@@ -442,9 +442,9 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    public ReaderDocumentPosition position(final PointF point) {
+    public ReaderPagePosition position(final PointF point) {
         final String position = getPluginImpl().locationNative(point.x, point.y);
-        AdobeDocumentPositionImpl p = AdobeDocumentPositionImpl.createFromPageNumber(this, 0);
+        AdobePagePositionImpl p = AdobePagePositionImpl.createFromPageNumber(this, 0);
         return p;
     }
 
@@ -452,8 +452,8 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         final String start = getPluginImpl().locationNative(startPoint.x, startPoint.y);
         final String end = getPluginImpl().locationNative(endPoint.x, endPoint.y);
         AdobeSelectionImpl selection = new AdobeSelectionImpl();
-        selection.setStartPosition(AdobeDocumentPositionImpl.createFromInternalString(this, start));
-        selection.setEndPosition(AdobeDocumentPositionImpl.createFromInternalString(this, end));
+        selection.setStartPosition(AdobePagePositionImpl.createFromInternalString(this, start));
+        selection.setEndPosition(AdobePagePositionImpl.createFromInternalString(this, end));
         selection.setText(getPluginImpl().getTextNative(start, end));
         selection.setRectangles(JniUtils.rectangles(getPluginImpl().rectangles(start, end)));
         return selection;

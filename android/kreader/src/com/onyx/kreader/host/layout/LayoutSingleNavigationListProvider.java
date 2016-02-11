@@ -2,7 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderDocumentPosition;
+import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.navigation.NavigationList;
@@ -38,14 +38,14 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
         RectF subScreen = getNavigationList().first();
-        layoutManager.getEntryManager().scaleByRatio(subScreen);
+        layoutManager.getPageManager().scaleByRatio(subScreen);
         return true;
     }
 
     public boolean prevScreen() throws ReaderException {
         if (getNavigationList().hasPrevious()) {
             RectF subScreen = getNavigationList().previous();
-            layoutManager.getEntryManager().scaleByRatio(subScreen);
+            layoutManager.getPageManager().scaleByRatio(subScreen);
             return true;
         }
         return false;
@@ -54,7 +54,7 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
     public boolean nextScreen() throws ReaderException {
         if (getNavigationList().hasNext()) {
             RectF subScreen = getNavigationList().next();
-            layoutManager.getEntryManager().scaleByRatio(subScreen);
+            layoutManager.getPageManager().scaleByRatio(subScreen);
             return true;
         }
         return false;
@@ -109,28 +109,28 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
-        layoutManager.getEntryManager().setScale(scale);
-        layoutManager.getEntryManager().setViewport(left, top);
+        layoutManager.getPageManager().setScale(scale);
+        layoutManager.getPageManager().setViewport(left, top);
         return true;
     }
 
     public void scaleToPage() throws ReaderException {
-        layoutManager.getEntryManager().scaleToPage();
+        layoutManager.getPageManager().scaleToPage();
     }
 
     public void scaleToWidth() throws ReaderException {
-        layoutManager.getEntryManager().scaleToWidth();
+        layoutManager.getPageManager().scaleToWidth();
     }
 
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
         return false;
     }
 
-    public boolean changeScaleByRect(final ReaderDocumentPosition position, final RectF rect) throws ReaderException  {
+    public boolean changeScaleByRect(final ReaderPagePosition position, final RectF rect) throws ReaderException  {
         return false;
     }
 
-    public boolean gotoPosition(final ReaderDocumentPosition location) throws ReaderException {
+    public boolean gotoPosition(final ReaderPagePosition location) throws ReaderException {
         if (!layoutManager.getNavigator().gotoPosition(location)) {
             return false;
         }
@@ -170,23 +170,23 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
         return null;
     }
 
-    public RectF getPageRect(final ReaderDocumentPosition position) throws ReaderException {
+    public RectF getPageRect(final ReaderPagePosition position) throws ReaderException {
         return null;
     }
 
     public float getActualScale() throws ReaderException {
-        return layoutManager.getEntryManager().getActualScale();
+        return layoutManager.getPageManager().getActualScale();
     }
 
     public RectF getHostRect() throws ReaderException {
-        return layoutManager.getEntryManager().getHostRect();
+        return layoutManager.getPageManager().getPagesBoundingRect();
     }
 
     public RectF getViewportRect() throws ReaderException {
-        return layoutManager.getEntryManager().getViewportRect();
+        return layoutManager.getPageManager().getViewportRect();
     }
 
     public void scaleByRect(final RectF child) throws ReaderException {
-        layoutManager.getEntryManager().scaleToViewport(child);
+        layoutManager.getPageManager().scaleToViewport(child);
     }
 }

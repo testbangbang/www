@@ -10,11 +10,11 @@ import java.util.List;
 public interface ReaderLink {
 
 
-    public ReaderDocumentPosition getStartPosition();
+    public ReaderPagePosition getStartPosition();
 
-    public ReaderDocumentPosition getEndPosition();
+    public ReaderPagePosition getEndPosition();
 
-    public ReaderDocumentPosition getTargetPosition();
+    public ReaderPagePosition getTargetPosition();
 
     public List<RectF> getDisplayRects();
 

@@ -4,7 +4,7 @@ package com.onyx.kreader.api;
  * Created by zhuzeng on 10/2/15.
  * Represents a document location, it could be a page or certain location inside a page.
  */
-public interface ReaderDocumentPosition {
+public interface ReaderPagePosition {
 
     /**
      * Get page number.
@@ -33,7 +33,7 @@ public interface ReaderDocumentPosition {
      * 0 if they are equal
      * 1 if this position after another position.
      */
-    public int compare(final ReaderDocumentPosition another);
+    public int compare(final ReaderPagePosition another);
 
 
 

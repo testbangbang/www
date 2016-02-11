@@ -2,7 +2,7 @@ package com.onyx.kreader.host.math;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderDocumentPosition;
+import com.onyx.kreader.api.ReaderPagePosition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +11,10 @@ import java.util.Map;
 
 /**
  * Created by zhuzeng on 10/8/15.
+ * All pages are arranged in page bounding coordinates system. The plugin needs to translate that
+ * into its own coordinates system, for example, document coordinates system.
  */
-public class EntryManager {
+public class PageManager {
 
     public static final int SCALE_TO_PAGE = -1;
     public static final int SCALE_TO_WIDTH = -2;
@@ -29,16 +31,16 @@ public class EntryManager {
     private float topMargin, leftMargin, rightMargin, bottomMargin;
     private float spacing;
 
-    private RectF hostRect = new RectF();
+    private RectF pagesBoundingRect = new RectF();
     private RectF viewportRect = new RectF();
 
-    private List<EntryInfo> visible = new ArrayList<EntryInfo>();
-    private List<EntryInfo> entryInfoList = new ArrayList<EntryInfo>();
-    private Map<String, EntryInfo> entryInfoMap = new HashMap();
+    private List<PageInfo> visible = new ArrayList<PageInfo>();
+    private List<PageInfo> pageInfoList = new ArrayList<PageInfo>();
+    private Map<String, PageInfo> pageInfoMap = new HashMap();
 
     public void clear() {
-        entryInfoList.clear();
-        hostRect.set(0, 0, 0, 0);
+        pageInfoList.clear();
+        pagesBoundingRect.set(0, 0, 0, 0);
     }
 
     public void setViewport(final float x, final float y) {
@@ -55,8 +57,8 @@ public class EntryManager {
         return viewportRect;
     }
 
-    public final RectF getHostRect() {
-        return hostRect;
+    public final RectF getPagesBoundingRect() {
+        return pagesBoundingRect;
     }
 
     public void panViewport(final float dx, final float dy) {
@@ -65,39 +67,38 @@ public class EntryManager {
     }
 
     private void reboundViewport() {
-        EntryUtils.rebound(viewportRect, hostRect);
+        PageUtils.rebound(viewportRect, pagesBoundingRect);
     }
 
     public boolean contains(final String name) {
-        return entryInfoMap.containsKey(name);
+        return pageInfoMap.containsKey(name);
     }
 
-    public void add(final String name, final EntryInfo entryInfo) {
-        entryInfo.setName(name);
-        entryInfoMap.put(name, entryInfo);
-        entryInfoList.add(entryInfo);
+    public void add(final PageInfo pageInfo) {
+        pageInfoMap.put(pageInfo.getName(), pageInfo);
+        pageInfoList.add(pageInfo);
     }
 
     public boolean moveViewportByPosition(final String name) {
-        EntryInfo entryInfo = entryInfoMap.get(name);
-        if (entryInfo == null) {
+        PageInfo pageInfo = pageInfoMap.get(name);
+        if (pageInfo == null) {
             return false;
         }
-        setViewport(entryInfo.getDisplayRect().left, entryInfo.getDisplayRect().top);
+        setViewport(pageInfo.getPositionRect().left, pageInfo.getPositionRect().top);
         return true;
     }
 
-    public final EntryInfo getEntryInfo(final ReaderDocumentPosition position) {
-        return entryInfoMap.get(position);
+    public final PageInfo getPageInfo(final ReaderPagePosition position) {
+        return pageInfoMap.get(position);
     }
 
-    public final List<EntryInfo> getEntryInfoList() {
-        return entryInfoList;
+    public final List<PageInfo> getPageInfoList() {
+        return pageInfoList;
     }
 
     public void setScale(final float scale) {
         actualScale = scale;
-        updateHostRect();
+        updatePagesBoundingRect();
     }
 
     public boolean isSpecialScale() {
@@ -117,8 +118,8 @@ public class EntryManager {
         if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
             return false;
         }
-        EntryInfo current = visible.get(0);
-        setScale(EntryUtils.scaleToPage(current.getNaturalRect(), viewportRect));
+        PageInfo current = visible.get(0);
+        setScale(PageUtils.scaleToPage(current.getOriginWidth(), current.getOriginHeight(), viewportRect.width(), viewportRect.height()));
         reboundViewport();
         return true;
     }
@@ -132,8 +133,8 @@ public class EntryManager {
         if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
             return false;
         }
-        EntryInfo current = visible.get(0);
-        setScale(EntryUtils.scaleToWidth(current.getNaturalRect(), viewportRect));
+        PageInfo current = visible.get(0);
+        setScale(PageUtils.scaleToWidth(current.getOriginWidth(), viewportRect));
         reboundViewport();
         return true;
     }
@@ -152,7 +153,7 @@ public class EntryManager {
             return false;
         }
 
-        setScale(actualScale * EntryUtils.scaleByRect(child, viewportRect));
+        setScale(actualScale * PageUtils.scaleByRect(child, viewportRect));
         reboundViewport();
         return true;
     }
@@ -166,7 +167,7 @@ public class EntryManager {
             return false;
         }
 
-        actualScale += EntryUtils.scaleWithDelta(getFirstVisibleEntry().getDisplayRect(), getViewportRect(), delta);
+        actualScale += PageUtils.scaleWithDelta(getFirstVisiblePage().getPositionRect(), getViewportRect(), delta);
         setScale(actualScale);
         reboundViewport();
         return true;
@@ -174,37 +175,37 @@ public class EntryManager {
 
 
     public boolean scaleByRatio(final RectF ratio) {
-        EntryInfo entryInfo = getFirstVisibleEntry();
-        if (entryInfo == null) {
+        PageInfo pageInfo = getFirstVisiblePage();
+        if (pageInfo == null) {
             return false;
         }
         if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
             return false;
         }
 
-        setScale(EntryUtils.scaleByRatio(ratio, entryInfo.getNaturalRect(), viewportRect));
+        setScale(PageUtils.scaleByRatio(ratio, pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect));
         reboundViewport();
         return false;
     }
 
-    public EntryInfo hitTest(final float x, final float y) {
-        for(EntryInfo entryInfo : visible) {
-            if (entryInfo.getDisplayRect().contains(x, y)) {
-                return entryInfo;
+    public PageInfo hitTest(final float x, final float y) {
+        for(PageInfo pageInfo : visible) {
+            if (pageInfo.getPositionRect().contains(x, y)) {
+                return pageInfo;
             }
         }
         return null;
     }
 
     /**
-     * viewport to point in entry coodinates system.
+     * viewport to point in page coordinates system.
      * @param viewportPoint
      * @return
      */
-    public PointF viewportToEntry(final PointF viewportPoint) {
-        for(EntryInfo entryInfo : visible) {
-            if (entryInfo.getDisplayRect().contains(viewportPoint.x, viewportPoint.y)) {
-                viewportPoint.offset(-entryInfo.getDisplayRect().left, -entryInfo.getDisplayRect().top);
+    public PointF viewportToPage(final PointF viewportPoint) {
+        for(PageInfo pageInfo : visible) {
+            if (pageInfo.getPositionRect().contains(viewportPoint.x, viewportPoint.y)) {
+                viewportPoint.offset(-pageInfo.getPositionRect().left, -pageInfo.getPositionRect().top);
                 return viewportPoint;
             }
         }
@@ -212,14 +213,14 @@ public class EntryManager {
     }
 
     /**
-     * search in entry list to get
+     * search in page list to get visible pages.
      */
-    public List<EntryInfo> updateVisiblePages() {
+    public List<PageInfo> updateVisiblePages() {
         visible.clear();
         boolean found = false;
-        for(EntryInfo entryInfo : entryInfoList) {
-            if (RectF.intersects(viewportRect, entryInfo.getDisplayRect())) {
-                visible.add(entryInfo);
+        for(PageInfo pageInfo : pageInfoList) {
+            if (RectF.intersects(viewportRect, pageInfo.getPositionRect())) {
+                visible.add(pageInfo);
                 found = true;
             } else if (found) {
                 break;
@@ -228,38 +229,49 @@ public class EntryManager {
         return visible;
     }
 
-    public EntryInfo getFirstVisibleEntry() {
-        List<EntryInfo> list = updateVisiblePages();
+    public PageInfo getFirstVisiblePage() {
+        List<PageInfo> list = getVisiblePages();
         if (list == null || list.size() <= 0) {
             return null;
         }
         return list.get(0);
     }
 
+    public List<PageInfo> getVisiblePages() {
+        List<PageInfo> list = visible;
+        if (list == null || list.size() <= 0) {
+            return null;
+        }
+        for(PageInfo pageInfo : list) {
+            pageInfo.updateDisplayRect(viewportRect);
+        }
+        return list;
+    }
+
 
     /**
      * calculate the host rectangle
      */
-    public void updateHostRect() {
+    public void updatePagesBoundingRect() {
         float y = topMargin, maxWidth = 0;
-        for(EntryInfo entryInfo : entryInfoList) {
-            entryInfo.update(actualScale, 0, y);
-            y += entryInfo.getDisplayHeight();
-            if (maxWidth < entryInfo.getDisplayWidth()) {
-                maxWidth = entryInfo.getDisplayWidth();
+        for(PageInfo pageInfo : pageInfoList) {
+            pageInfo.update(actualScale, 0, y);
+            y += pageInfo.getDisplayHeight();
+            if (maxWidth < pageInfo.getDisplayWidth()) {
+                maxWidth = pageInfo.getDisplayWidth();
             }
             y += spacing;
         }
         maxWidth += leftMargin + rightMargin;
-        hostRect.set(0, 0, maxWidth, y);
-        for(EntryInfo entryInfo : entryInfoList) {
-            float x = (maxWidth - entryInfo.getDisplayWidth()) / 2;
-            entryInfo.setX(x);
+        pagesBoundingRect.set(0, 0, maxWidth, y);
+        for(PageInfo pageInfo : pageInfoList) {
+            float x = (maxWidth - pageInfo.getDisplayWidth()) / 2;
+            pageInfo.setX(x);
         }
     }
 
     public boolean nextViewport() {
-        if (viewportRect.bottom >= hostRect.bottom) {
+        if (viewportRect.bottom >= pagesBoundingRect.bottom) {
             return false;
         }
         viewportRect.offset(0, viewportRect.height());
@@ -268,7 +280,7 @@ public class EntryManager {
     }
 
     public boolean prevViewport() {
-        if (viewportRect.top <= hostRect.top) {
+        if (viewportRect.top <= pagesBoundingRect.top) {
             return false;
         }
         viewportRect.offset(0, -viewportRect.height());

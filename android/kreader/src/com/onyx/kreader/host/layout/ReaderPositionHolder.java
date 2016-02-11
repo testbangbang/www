@@ -1,29 +1,29 @@
 package com.onyx.kreader.host.layout;
 
-import com.onyx.kreader.api.ReaderDocumentPosition;
+import com.onyx.kreader.api.ReaderPagePosition;
 
 /**
  * Created by zhuzeng on 10/18/15.
  */
 public class ReaderPositionHolder {
 
-    private ReaderDocumentPosition lastPosition;
-    private ReaderDocumentPosition currentPosition;
+    private ReaderPagePosition lastPosition;
+    private ReaderPagePosition currentPosition;
     private ReaderLayoutManager layoutManager;
 
     public ReaderPositionHolder(final ReaderLayoutManager lm) {
         layoutManager = lm;
     }
 
-    public ReaderDocumentPosition getLastPosition() {
+    public ReaderPagePosition getLastPosition() {
         return lastPosition;
     }
 
-    public ReaderDocumentPosition getCurrentPosition() {
+    public ReaderPagePosition getCurrentPosition() {
         return currentPosition;
     }
 
-    public boolean updatePosition(final ReaderDocumentPosition newPosition) {
+    public boolean updatePosition(final ReaderPagePosition newPosition) {
         if (newPosition != null) {
             lastPosition = currentPosition;
             currentPosition = newPosition;
@@ -33,36 +33,36 @@ public class ReaderPositionHolder {
     }
 
     public boolean firstPage() {
-        ReaderDocumentPosition newPosition = layoutManager.getNavigator().firstPage();
+        ReaderPagePosition newPosition = layoutManager.getNavigator().firstPage();
         return updatePosition(newPosition);
     }
 
     public boolean lastPage() {
-        ReaderDocumentPosition newPosition = layoutManager.getNavigator().lastPage();
+        ReaderPagePosition newPosition = layoutManager.getNavigator().lastPage();
         return updatePosition(newPosition);
     }
 
     public boolean nextPage() {
-        ReaderDocumentPosition newPosition = layoutManager.getNavigator().nextPage(currentPosition);
+        ReaderPagePosition newPosition = layoutManager.getNavigator().nextPage(currentPosition);
         return updatePosition(newPosition);
     }
 
     public boolean prevPage() {
-        ReaderDocumentPosition newPosition = layoutManager.getNavigator().prevPage(currentPosition);
+        ReaderPagePosition newPosition = layoutManager.getNavigator().prevPage(currentPosition);
         return updatePosition(newPosition);
     }
 
     public boolean nextScreen() {
-        ReaderDocumentPosition newPosition = layoutManager.getNavigator().nextScreen(currentPosition);
+        ReaderPagePosition newPosition = layoutManager.getNavigator().nextScreen(currentPosition);
         return updatePosition(newPosition);
     }
 
     public boolean prevScreen() {
-        ReaderDocumentPosition newPosition = layoutManager.getNavigator().prevScreen(currentPosition);
+        ReaderPagePosition newPosition = layoutManager.getNavigator().prevScreen(currentPosition);
         return updatePosition(newPosition);
     }
 
-    public boolean gotoPosition(final ReaderDocumentPosition position) {
+    public boolean gotoPosition(final ReaderPagePosition position) {
         if (layoutManager.getNavigator().gotoPosition(position)) {
             updatePosition(position);
             return true;

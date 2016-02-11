@@ -9,7 +9,7 @@ public interface ReaderDocumentTableOfContentEntry {
 
     public String title();
 
-    public ReaderDocumentPosition position();
+    public ReaderPagePosition position();
 
     public List<ReaderDocumentTableOfContentEntry> child();
 
