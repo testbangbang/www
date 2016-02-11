@@ -9,7 +9,7 @@ LOCAL_NDK_STL_VARIANT := gnustl_static
 
 LOCAL_CXXFLAGS += -O3 -fstrict-aliasing -fprefetch-loop-arrays -fexceptions
 LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
-LOCAL_CFLAGS += -DFOXIT_CHROME_BUILD
+LOCAL_CXXFLAGS += -DFOXIT_CHROME_BUILD
 
 # Mask some warnings. These are benign, but we probably want to fix them
 # upstream at some point.
@@ -20,8 +20,6 @@ LOCAL_STATIC_LIBRARIES := libpdfiumcore
 
 # TODO: figure out why turning on exceptions requires manually linking libdl
 LOCAL_SHARED_LIBRARIES := libdl
- #freetype2-static
-
 
 LOCAL_SRC_FILES := \
     src/fpdfdoc.cpp \
