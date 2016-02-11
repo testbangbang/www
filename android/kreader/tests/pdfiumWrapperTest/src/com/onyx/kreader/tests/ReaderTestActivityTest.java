@@ -23,7 +23,7 @@ import com.onyx.kreader.utils.StringUtils;
 public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
     static private String TAG = ReaderTestActivityTest.class.getSimpleName();
-    private boolean performanceTest = false;
+    private boolean performanceTest = true;
 
     public ReaderTestActivityTest() {
         super("com.onyx.reader", ReaderTestActivity.class);

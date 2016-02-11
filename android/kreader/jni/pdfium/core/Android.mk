@@ -24,6 +24,7 @@ LOCAL_CXXFLAGS += -Wno-unused-parameter \
 LOCAL_CXXCFLAGS += -Wno-overloaded-virtual
 LOCAL_CXXFLAGS += -DAPI5 -D_GB1_CMAPS_ -D_GB1_CMAPS_4_ -D_CNS1_CMAPS_ -D_JPX_DECODER_
 
+LOCAL_STATIC_LIBRARIES += libft2
 
 # Work around gcc text relocation bug. Fixed in gcc 4.9.
 # TODO: remove this line after we've upgraded to gcc 4.9.
@@ -31,7 +32,6 @@ LOCAL_CFLAGS_arm64 += -O2
 
 LOCAL_CFLAGS_arm64 += -D_FX_CPU_=_FX_X64_ -fPIC
 
-LOCAL_SHARED_LIBRARIES := libft2
 
 LOCAL_SRC_FILES := \
     src/fdrm/crypto/fx_crypt.cpp \

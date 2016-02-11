@@ -8,6 +8,7 @@ public class StringUtils {
 
     static public final String UTF16LE = "UTF-16LE";
     static public final String UTF16BE = "UTF-16BE";
+    static public final String UTF16 = "UTF-16";
 
     static public boolean isNullOrEmpty(final String string) {
         return (string == null || string.length() <= 0);
@@ -26,10 +27,10 @@ public class StringUtils {
         return string.trim();
     }
 
-    static public String utf16be(final byte [] data) {
+    static public String utf16(final byte [] data) {
         String string = "";
         try {
-            string = new String(data, UTF16BE);
+            string = new String(data, UTF16);
         } catch (Exception e) {
         }
         return string.trim();
