@@ -29,8 +29,8 @@ LOCAL_SRC_FILES:= \
 
 LOCAL_C_INCLUDES += \
    $(LOCAL_PATH)/include    \
-   $(LOCAL_PATH)/../libpng  \
-   $(LOCAL_PATH)/../zlib
+   $(LOCAL_PATH)/../../../common/libpng  \
+   $(LOCAL_PATH)/../../../common/zlib
 
 LOCAL_CFLAGS += -W -Wall
 LOCAL_CFLAGS += -fPIC -DPIC
