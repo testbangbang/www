@@ -22,13 +22,13 @@ public interface ReaderSelection {
      * Retrieve the start position.
      * @return
      */
-    public ReaderPagePosition getStartPosition();
+    public String getStartPosition();
 
     /**
      * Retrieve end position.
      * @return
      */
-    public ReaderPagePosition getEndPosition();
+    public String getEndPosition();
 
     /**
      * Retrieve selected text.

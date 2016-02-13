@@ -63,9 +63,9 @@ public class ReaderPluginTest {
 
         ReaderNavigator navigator = readerView.getNavigator();
         ReaderRenderer renderer = readerView.getRenderer();
-        ReaderPagePosition initPosition = navigator.getInitPosition();
+        String initPosition = navigator.getInitPosition();
         navigator.gotoPosition(initPosition);
-        ReaderPagePosition current = initPosition;
+        String current = initPosition;
         renderer.draw(null, -1, readerBitmap);
         while ((current = navigator.nextScreen(current)) != null) {
             renderer.draw(null,  -1, readerBitmap);
@@ -90,8 +90,8 @@ public class ReaderPluginTest {
         ReaderSearchManager searchManager = readerView.getSearchManager();
         while (searchManager.searchNext(searchOptions)) {
             List<ReaderSelection> selections = searchManager.searchResults();
-            ReaderPagePosition startPosition = selections.get(0).getStartPosition();
-            ReaderPagePosition endPosition = selections.get(0).getEndPosition();
+            String startPosition = selections.get(0).getStartPosition();
+            String endPosition = selections.get(0).getEndPosition();
             navigator.gotoPosition(startPosition);
             navigator.gotoPosition(endPosition);
             renderer.draw(startPosition, -1, readerBitmap);
@@ -124,11 +124,11 @@ public class ReaderPluginTest {
         // change position and scale at first.
         float scale = 5.0f;
         int pn = 3;
-        ReaderPagePosition position = navigator.getPositionByPageNumber(pn);
+        String position = navigator.getPositionByPageNumber(pn);
         navigator.gotoPosition(position);
 
         // calculate the viewportInPage, according to original size, actual scale.
-        RectF size = document.getPageNaturalSize(position);
+        RectF size = document.getPageOriginSize(position);
         RectF pageDisplayRect = new RectF();
         RectF viewportRect = new RectF();
         Matrix matrix = new Matrix();
@@ -162,11 +162,11 @@ public class ReaderPluginTest {
         // change position and scale at first.
         float scale = 5.0f;
         int pn = 3;
-        ReaderPagePosition position = navigator.getPositionByPageNumber(pn);
+        String position = navigator.getPositionByPageNumber(pn);
         navigator.gotoPosition(position);
 
         // calculate the viewportInPage, according to original size, actual scale.
-        RectF size = document.getPageNaturalSize(position);
+        RectF size = document.getPageOriginSize(position);
         RectF pageDisplayRect = new RectF();
         RectF viewportRect = new RectF();
         Matrix matrix = new Matrix();
@@ -206,11 +206,11 @@ public class ReaderPluginTest {
         // change position and scale at first.
         float scale = 5.0f;
         int pn = 3;
-        ReaderPagePosition position = navigator.getPositionByPageNumber(pn);
+        String position = navigator.getPositionByPageNumber(pn);
         navigator.gotoPosition(position);
 
         // calculate the viewportInPage, according to original size, actual scale.
-        RectF size = document.getPageNaturalSize(position);
+        RectF size = document.getPageOriginSize(position);
         RectF pageDisplayRect = new RectF();
         RectF viewportRect = new RectF();
         Matrix matrix = new Matrix();

@@ -66,7 +66,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         RectF viewport = new RectF(0, 0, viewOptions.getViewWidth(), viewOptions.getViewHeight());
         pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
 
-        RectF size = document.getPageNaturalSize(initPosition);
+        RectF size = document.getPageOriginSize(initPosition);
         PageInfo pageInfo = new PageInfo(initPosition.asString(), size.width(), size.height());
         pageManager.add(pageInfo);
         pageManager.scaleToPage();

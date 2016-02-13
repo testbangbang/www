@@ -37,7 +37,7 @@ public class ReaderTestActivity extends Activity {
 
 
     private Reader reader;
-    final String path = "file:///mnt/sdcard/Books/ZerotoOne.pdf";
+    final String path = "/mnt/sdcard/Books/a.pdf";
     private int pn = 0;
     private int next = 0;
     private SurfaceView surfaceView;
@@ -60,12 +60,9 @@ public class ReaderTestActivity extends Activity {
         setContentView(R.layout.activity_test);
         initSurfaceView();
         reader = ReaderManager.createReader(this, path, null, getViewOptions());
-
-
-
         OnyxHyphen.reinit_hyph(this, OnyxHyphen.HYPH_ENGLISH);
-        testHyphen();
-        //testReaderOpen();
+        //testHyphen();
+        testReaderOpen();
     }
 
     private void initSurfaceView() {
@@ -143,12 +140,12 @@ public class ReaderTestActivity extends Activity {
 
     public void testChangeLayout() {
         NavigationArgs navigationArgs = NavigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, null);
-        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.CONTINUOUS_PAGE, navigationArgs);
+        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.SINGLE_PAGE, navigationArgs);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                BitmapUtils.saveBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/listLayout.png");
+                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", true);
                 testReaderGoto();
             }
         });
@@ -160,6 +157,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
+                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/goto.png", true);
                 testScaleToPage();
             }
         });
@@ -171,7 +169,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToPage.png");
+                dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToPage.png", true);
                 testScaleToWidth();
             }
         });
@@ -183,7 +181,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToWidth.png");
+                dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToWidth.png", true);
                 testActualScale();
             }
         });
@@ -195,7 +193,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png");
+                dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png", true);
                 testScaleByRect();
             }
         });
@@ -207,7 +205,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png");
+                dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png", true);
                 testOriginScale();
             }
         });
@@ -219,7 +217,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/originScale.png");
+                dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/originScale.png", true);
                 testNextScreen();
             }
         });
@@ -231,7 +229,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (e == null) {
-                    BitmapUtils.saveBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png");
+                    dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
                     ++next;
                     testNextScreen();
                 } else {
@@ -359,6 +357,20 @@ public class ReaderTestActivity extends Activity {
         for(Pair<String, String> pair : list) {
             Log.d(TAG, "after: " + pair.first + "-" + pair.second);
         }
+    }
+
+    private void dumpBitmap(final Bitmap bitmap, final String path, boolean save) {
+        drawBitmap(bitmap);
+        if (save) {
+            BitmapUtils.saveBitmap(bitmap, path);
+        }
+    }
+
+    private void drawBitmap(final Bitmap bitmap) {
+        Canvas canvas = holder.lockCanvas();
+        canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        holder.unlockCanvasAndPost(canvas);
     }
 
     private void draw() {

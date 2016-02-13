@@ -24,7 +24,7 @@ public interface ReaderRenderer {
      * @param bitmap the target bitmap to draw page.
      * @return false if not supported.
      */
-    public boolean draw(final ReaderPagePosition page, final float scale, final ReaderBitmap bitmap);
+    public boolean draw(final String page, final float scale, final ReaderBitmap bitmap);
 
     /**
      * draw content. There are two coordinates system.
@@ -53,6 +53,6 @@ public interface ReaderRenderer {
      *
      * @return
      */
-    public boolean draw(final ReaderPagePosition page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap);
+    public boolean draw(final String page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap);
 
 }

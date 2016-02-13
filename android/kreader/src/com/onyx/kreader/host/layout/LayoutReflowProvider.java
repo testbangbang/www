@@ -2,7 +2,6 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 
@@ -10,20 +9,14 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
  * Created by zhuzeng on 10/7/15.
  * For reflow stream document.
  */
-public class LayoutReflowProvider  implements LayoutProvider {
+public class LayoutReflowProvider  extends LayoutProvider {
 
-    private ReaderLayoutManager layoutManager;
-
-    public ReaderPositionHolder getPositionHolder() {
-        return layoutManager.getPositionHolder();
-    }
 
     public LayoutReflowProvider(final ReaderLayoutManager lm) {
-        layoutManager = lm;
+        super(lm);
     }
 
-    public void activate(final ReaderLayoutManager manager) throws ReaderException {
-        layoutManager = manager;
+    public void activate() {
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
@@ -31,31 +24,32 @@ public class LayoutReflowProvider  implements LayoutProvider {
     }
 
     public boolean prevScreen() throws ReaderException {
-        return getPositionHolder().prevScreen();
+        return false;
     }
 
     public boolean nextScreen() throws ReaderException {
-        return getPositionHolder().nextScreen();
+        return false;
     }
 
     public boolean prevPage() throws ReaderException {
-        return getPositionHolder().prevPage();
+        return false;
     }
 
     public boolean nextPage() throws ReaderException {
-        return getPositionHolder().nextPage();
+        return false;
     }
 
     public boolean firstPage() throws ReaderException {
-        return getPositionHolder().firstPage();
+        return false;
     }
 
     public boolean lastPage() throws ReaderException {
-        return getPositionHolder().lastPage();
+        return false;
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
-        return layoutManager.getReader().getRenderer().draw(null, -1.0f, bitmap);
+        LayoutProviderUtils.drawVisiblePages(getLayoutManager(), bitmap);
+        return true;
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
@@ -66,12 +60,12 @@ public class LayoutReflowProvider  implements LayoutProvider {
         return false;
     }
 
-    public boolean changeScaleByRect(final ReaderPagePosition position, final RectF rect) throws ReaderException  {
+    public boolean changeScaleByRect(final String position, final RectF rect) throws ReaderException  {
         return false;
     }
 
-    public boolean gotoPosition(final ReaderPagePosition position) throws ReaderException {
-        return getPositionHolder().gotoPosition(position);
+    public boolean gotoPosition(final String position) throws ReaderException {
+        return false;
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
@@ -105,7 +99,7 @@ public class LayoutReflowProvider  implements LayoutProvider {
         return null;
     }
 
-    public RectF getPageRect(final ReaderPagePosition position) throws ReaderException {
+    public RectF getPageRectOnViewport(final String position) throws ReaderException {
         return null;
     }
 
@@ -113,13 +107,13 @@ public class LayoutReflowProvider  implements LayoutProvider {
         return 0.0f;
     }
 
-    public RectF getHostRect() throws ReaderException {
+    public RectF getPageBoundingRect() throws ReaderException {
         return getViewportRect();
     }
 
     public RectF getViewportRect() throws ReaderException {
-        return new RectF(0, 0, layoutManager.getReader().getViewOptions().getViewWidth(),
-                layoutManager.getReader().getViewOptions().getViewHeight());
+        return new RectF(0, 0, getLayoutManager().getReader().getViewOptions().getViewWidth(),
+                getLayoutManager().getReader().getViewOptions().getViewHeight());
     }
 
     public void scaleToPage() throws ReaderException {

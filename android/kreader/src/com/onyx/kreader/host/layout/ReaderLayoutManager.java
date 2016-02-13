@@ -2,7 +2,6 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.host.math.PageManager;
@@ -25,8 +24,8 @@ import java.util.Map;
  */
 public class ReaderLayoutManager {
 
-    public static final String SINGLE_HARD_PAGE = "singleHardPage";
-    public static final String SINGLE_NAVIGATION_LIST_PAGE = "singleNavigationListPage";
+    public static final String SINGLE_PAGE = "singlePage";
+    public static final String SINGLE_PAGE_NAVIGATION_LIST = "singlePageNavigationList";
     public static final String CONTINUOUS_PAGE = "continuousPage";
     public static final String REFLOW_PAGE = "reflowPage";
     public static final String SCANNED_REFLOW_PAGE = "scanReflowPage";
@@ -56,30 +55,30 @@ public class ReaderLayoutManager {
         return readerHelper;
     }
 
-    public void init() {
+    public void init()  {
         getPageManager().setViewportRect(0, 0, reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight());
-        getPositionHolder().updatePosition(getReaderHelper().getNavigator().getInitPosition());
 
         // check renderer features
         boolean supportScale = reader.getRendererFeatures().supportScale();
         boolean supportReflow = reader.getRendererFeatures().supportFontSizeAdjustment();
         if (supportScale) {
-            provider.put(SINGLE_HARD_PAGE, new LayoutSingleHardPageProvider(this));
-            provider.put(SINGLE_NAVIGATION_LIST_PAGE, new LayoutSingleNavigationListProvider(this));
+            provider.put(SINGLE_PAGE, new LayoutSinglePageProvider(this));
+            provider.put(SINGLE_PAGE_NAVIGATION_LIST, new LayoutSinglePageNavigationListProvider(this));
             provider.put(CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
         }
         if (supportReflow) {
             provider.put(REFLOW_PAGE, new LayoutReflowProvider(this));
         }
         if (supportScale) {
-            currentProvider = SINGLE_HARD_PAGE;
+            currentProvider = SINGLE_PAGE;
         } else {
             currentProvider = REFLOW_PAGE;
         }
+        getCurrentLayoutProvider().activate();
     }
 
     public LayoutProvider getCurrentLayoutProvider() {
-        return provider.get(currentProvider);
+        return provider.get(getCurrentLayout());
     }
 
     public final String getCurrentLayout() {
@@ -91,44 +90,44 @@ public class ReaderLayoutManager {
             return false;
         }
         currentProvider = layoutName;
-        getCurrentLayoutProvider().activate(this);
+        getCurrentLayoutProvider().activate();
         return true;
     }
 
     public boolean isScaleToPage() {
-        return false;
+        return getPageManager().isScaleToPage();
     }
 
     public boolean isScaleToWidth() {
-        return false;
+        return getPageManager().isScaleToWidth();
     }
 
     public boolean isScaleToHeight() {
-        return false;
+        return getPageManager().isScaleToHeight();
     }
 
     public boolean isPageCrop() {
-        return false;
+        return getPageManager().isPageCrop();
     }
 
     public boolean isWidthCrop() {
-        return false;
+        return getPageManager().isWidthCrop();
     }
 
     public float getActualScale() throws ReaderException {
         return getCurrentLayoutProvider().getActualScale();
     }
 
-    public RectF getHostRect() throws ReaderException {
-        return getCurrentLayoutProvider().getHostRect();
+    public RectF getPageBoundingRect() throws ReaderException {
+        return getCurrentLayoutProvider().getPageBoundingRect();
     }
 
     public RectF getViewportRect() throws ReaderException {
         return getCurrentLayoutProvider().getViewportRect();
     }
 
-    public RectF getPageRect(final ReaderPagePosition position) throws ReaderException {
-        return getCurrentLayoutProvider().getPageRect(position);
+    public RectF getPageRectOnViewport(final String position) throws ReaderException {
+        return getCurrentLayoutProvider().getPageRectOnViewport(position);
     }
 
     public PageManager getPageManager() {
@@ -145,8 +144,21 @@ public class ReaderLayoutManager {
         return positionHolder;
     }
 
-    public boolean gotoPosition(final ReaderPagePosition position) throws ReaderException {
-        return getCurrentLayoutProvider().gotoPosition(position);
+    public void onPositionChanged() {
+        // save current position into position stack
+        // make sure it's different from stack top.
+    }
+
+    public String getCurrentPagePosition() {
+        return getPageManager().getFirstVisiblePage().getName();
+    }
+
+    public boolean gotoPosition(final String position) throws ReaderException {
+        if (getCurrentLayoutProvider().gotoPosition(position)) {
+            onPositionChanged();
+            return true;
+        }
+        return false;
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
@@ -155,26 +167,38 @@ public class ReaderLayoutManager {
 
     public void setScale(final float scale, final float x, final float y) throws ReaderException {
         getCurrentLayoutProvider().setScale(scale, x, y);
+        onPositionChanged();
     }
 
     public void scaleToPage() throws ReaderException {
         getCurrentLayoutProvider().scaleToPage();
+        onPositionChanged();
     }
 
     public void scaleToWidth() throws ReaderException {
         getCurrentLayoutProvider().scaleToWidth();
+        onPositionChanged();
     }
 
     public void scaleByRect(final RectF child) throws ReaderException {
         getCurrentLayoutProvider().scaleByRect(child);
+        onPositionChanged();
     }
 
     public boolean nextScreen() throws ReaderException {
-        return getCurrentLayoutProvider().nextScreen();
+        if (getCurrentLayoutProvider().nextScreen()) {
+            onPositionChanged();
+            return true;
+        }
+        return false;
     }
 
     public boolean prevScreen() throws ReaderException {
-        return getCurrentLayoutProvider().prevScreen();
+        if (getCurrentLayoutProvider().prevScreen()) {
+            onPositionChanged();
+            return true;
+        }
+        return false;
     }
 
     public void setNavigationArgs(final NavigationArgs args) throws ReaderException {

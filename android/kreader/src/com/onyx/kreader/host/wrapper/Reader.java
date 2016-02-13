@@ -170,6 +170,10 @@ public class Reader {
         return readerHelper;
     }
 
+    public ReaderPlugin getPlugin() {
+        return getReaderHelper().getPlugin();
+    }
+
     public ReaderDocument getDocument() {
         return getReaderHelper().getDocument();
     }

@@ -29,7 +29,7 @@ public interface ReaderHitTestManager {
      * @param point
      * @return
      */
-    public ReaderPagePosition position(final PointF point);
+    public String position(final PointF point);
 
     /**
      * Select text between start point and end point.

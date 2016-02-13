@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.utils.PositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,8 +21,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         ReaderTextStyleManager,
         ReaderDrmManager,
         ReaderHitTestManager,
-        ReaderRendererFeatures
-{
+        ReaderRendererFeatures {
 
     private PdfiumJniWrapper impl;
     private String documentPath;
@@ -82,9 +81,9 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public RectF getPageNaturalSize(final ReaderPagePosition position) {
+    public RectF getPageOriginSize(final String position) {
         float size [] = {0, 0};
-        getPluginImpl().nativePageSize(position.getPageNumber(), size);
+        getPluginImpl().nativePageSize(Integer.parseInt(position), size);
         return new RectF(0, 0, size[0], size[1]);
     }
 
@@ -150,7 +149,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * Retrieve current visible links.
      * @return
      */
-    public List<ReaderLink> getLinks(final ReaderPagePosition position) {
+    public List<ReaderLink> getLinks(final String position) {
         return null;
     }
 
@@ -166,29 +165,20 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return true;
     }
 
-    public boolean draw(final ReaderPagePosition page, final float scale, final ReaderBitmap bitmap) {
-        return getPluginImpl().drawPage(page.getPageNumber(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), bitmap.getBitmap());
+    public boolean draw(final String page, final float scale, final ReaderBitmap bitmap) {
+        return getPluginImpl().drawPage(PositionUtils.getPageNumber(page), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), bitmap.getBitmap());
     }
 
-    public boolean draw(final ReaderPagePosition page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
-        return getPluginImpl().drawPage(page.getPageNumber(), xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap.getBitmap());
+    public boolean draw(final String page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
+        return getPluginImpl().drawPage(PositionUtils.getPageNumber(page), xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap.getBitmap());
     }
 
     /**
      * Retrieve the default init position.
      * @return
      */
-    public ReaderPagePosition getInitPosition() {
-        return PagePositionImpl.createFromPageNumber(this, 0);
-    }
-
-
-    public ReaderPagePosition getVisibleBeginningPosition() {
-        return null;
-    }
-
-    public List<ReaderPagePosition> getVisiblePages() {
-        return null;
+    public String getInitPosition() {
+        return firstPage();
     }
 
     /**
@@ -196,13 +186,10 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * @param pageNumber The 0 based page number.
      * @return
      */
-    public ReaderPagePosition getPositionByPageNumber(int pageNumber) {
-        return PagePositionImpl.createFromPageNumber(this, pageNumber);
+    public String getPositionByPageNumber(int pageNumber) {
+        return PositionUtils.fromPageNumber(pageNumber);
     }
 
-    public ReaderPagePosition createPositionFromString(final String name) {
-        return PagePositionImpl.createFromPersistentString(this, name);
-    }
 
     /**
      * Return total page number.
@@ -215,25 +202,25 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     /**
      * Navigate to next screen.
      */
-    public ReaderPagePosition nextScreen(final ReaderPagePosition position) {
-        return null;
+    public String nextScreen(final String position) {
+        return nextPage(position);
     }
 
     /**
      * Navigate to previous screen.
      */
-    public ReaderPagePosition prevScreen(final ReaderPagePosition position) {
-        return null;
+    public String prevScreen(final String position) {
+        return prevPage(position);
     }
 
     /**
      * Navigate to next page.
      * @return
      */
-    public ReaderPagePosition nextPage(final ReaderPagePosition position) {
-        int pn = position.getPageNumber();
+    public String nextPage(final String position) {
+        int pn = PositionUtils.getPageNumber(position);
         if (pn + 1 < getTotalPage()) {
-            return new PagePositionImpl(this, pn + 1, null);
+            return PositionUtils.fromPageNumber(pn + 1);
         }
         return null;
     }
@@ -242,10 +229,10 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * Navigate to previous page.
      * @return
      */
-    public ReaderPagePosition prevPage(final ReaderPagePosition position) {
-        int pn = position.getPageNumber();
+    public String prevPage(final String position) {
+        int pn = PositionUtils.getPageNumber(position);
         if (pn > 0) {
-            return new PagePositionImpl(this, pn - 1, null);
+            return PositionUtils.fromPageNumber(pn - 1);
         }
         return null;
 
@@ -255,23 +242,23 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * Navigate to first page.
      * @return
      */
-    public ReaderPagePosition firstPage() {
-        return null;
+    public String firstPage() {
+        return PositionUtils.fromPageNumber(0);
     }
 
     /**
      * Navigate to last page.
      * @return
      */
-    public ReaderPagePosition lastPage() {
-        return null;
+    public String lastPage() {
+        return PositionUtils.fromPageNumber(getTotalPage() - 1);
     }
 
     /**
      * Navigate to specified position.
      * @return
      */
-    public boolean gotoPosition(final ReaderPagePosition position) {
+    public boolean gotoPosition(final String position) {
         return false;
     }
 
@@ -287,89 +274,6 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    /**
-     * Scale to page.
-     */
-    public void setScaleToPage() {}
-
-    /**
-     * Check if scale to page.
-     * @return
-     */
-    public boolean isScaleToPage() {
-        return false;
-    }
-
-    public void setScaleToWidth() {
-
-    }
-
-    public boolean isScaleToWidth() {
-        return false;
-    }
-
-    public void setScaleToHeight() {}
-
-    public boolean isScaleToHeight() {
-        return false;
-    }
-
-    public boolean isCropPage() {
-        return false;
-    }
-
-    public void setCropPage() {}
-
-    public boolean isCropWidth() {
-        return false;
-    }
-
-    public void setCropWidth() {}
-
-    public float getActualScale() {
-        return 0;
-    }
-
-    public void setActualScale(final float scale) {}
-
-    /**
-     * Set viewportInPage. The behavior is different on different page layout.
-     * @param viewport
-     */
-    public boolean setViewport(final RectF viewport) {
-        return false;
-    }
-
-    /**
-     * Retrieve current viewportInPage.
-     * @return the current viewportInPage.
-     */
-    public RectF getViewport() {
-        return null;
-    }
-
-
-    /**
-     * Convinent method to set scale and viewportInPage directly.
-     * @param actualScale the actual scale
-     * @return
-     */
-    public boolean setScale(float actualScale) {
-        return false;
-    }
-
-    public boolean setViewport(final float x, final float y) {
-        return false;
-    }
-
-    /**
-     * Return the page display rect on view coordinates.
-     * @param position the page position.
-     * @return
-     */
-    public RectF getPageDisplayRect(final ReaderPagePosition position) {
-        return null;
-    }
 
     public boolean acceptDRMFile(final String path) {
         return false;
@@ -394,51 +298,17 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public boolean supportSinglePageLayout() {
-        return true;
-    }
-
-    public void setSinglePageLayout() {
-
-    }
-
-    public boolean isSinglePageLayout() {
-        return false;
-    }
-
-    public boolean supportContinuousPageLayout() {
-        return true;
-    }
-
-    public void setContinuousPageLayout() {
-    }
-
-    public boolean isContinuousPageLayout() {
-        return false;
-    }
-
-    public boolean supportReflowLayout() {
-        return true;
-    }
-    public void setReflowLayout() {
-
-    }
-
-    public boolean isReflowLayout() {
-        return false;
-    }
 
     public boolean viewToDoc(final PointF viewPoint, final PointF documentPoint) {
         return false;
     }
-
 
     public ReaderSelection selectWord(final PointF viewPoint, final ReaderTextSplitter splitter) {
 
         return null;
     }
 
-    public ReaderPagePosition position(final PointF point) {
+    public String position(final PointF point) {
         return null;
     }
 

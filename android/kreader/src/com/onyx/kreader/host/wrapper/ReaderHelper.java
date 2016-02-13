@@ -42,7 +42,7 @@ public class ReaderHelper {
         return (plugin != null);
     }
 
-    public void onDocumentOpened(final ReaderDocument doc) {
+    public void onDocumentOpened(final ReaderDocument doc)  {
         document = doc;
         view = document.createView(viewOptions);
         renderer = view.getRenderer();
@@ -65,7 +65,7 @@ public class ReaderHelper {
 
     }
 
-    public void onPageChanged(final ReaderPagePosition oldPosition, final ReaderPagePosition newPosition) {
+    public void onPositionChanged(final String oldPosition, final String newPosition) {
 
     }
 

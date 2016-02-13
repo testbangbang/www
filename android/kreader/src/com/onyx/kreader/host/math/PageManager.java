@@ -2,7 +2,6 @@ package com.onyx.kreader.host.math;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderPagePosition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,20 +17,24 @@ public class PageManager {
 
     public static final int SCALE_TO_PAGE = -1;
     public static final int SCALE_TO_WIDTH = -2;
-    public static final int ZOOM_TO_HEIGHT = -3;
-    public static final int ZOOM_TO_PAGE_AUTO_CONTENT = -4;
-    public static final int ZOOM_TO_WIDTH_AUTO_CONTENT = -5;
+    public static final int SCALE_TO_HEIGHT = -3;
+    public static final int SCALE_TO_PAGE_CONTENT = -4;
+    public static final int SCALE_TO_WIDTH_CONTENT = -5;
     public static final int ZOOM_TO_SCAN_REFLOW = -6;
     public static final int ZOOM_TO_REFLOW = -7;
     public static final int ZOOM_TO_COMICE = -8;
     public static final int ZOOM_TO_PAPER = -9;
 
-    private int specialScale = 0;
+    private int specialScale = SCALE_TO_PAGE;
     private float actualScale = 1.0f;
     private float topMargin, leftMargin, rightMargin, bottomMargin;
     private float spacing;
 
     private RectF pagesBoundingRect = new RectF();
+
+    /**
+     * screen viewport rectangle in page coordinates system.
+     */
     private RectF viewportRect = new RectF();
 
     private List<PageInfo> visible = new ArrayList<PageInfo>();
@@ -88,7 +91,7 @@ public class PageManager {
         return true;
     }
 
-    public final PageInfo getPageInfo(final ReaderPagePosition position) {
+    public final PageInfo getPageInfo(final String position) {
         return pageInfoMap.get(position);
     }
 
@@ -97,12 +100,12 @@ public class PageManager {
     }
 
     public void setScale(final float scale) {
+        if (scale < 0) {
+            return;
+        }
         actualScale = scale;
+        specialScale = 0;
         updatePagesBoundingRect();
-    }
-
-    public boolean isSpecialScale() {
-        return specialScale < 0;
     }
 
     public final float getActualScale() {
@@ -190,7 +193,7 @@ public class PageManager {
 
     public PageInfo hitTest(final float x, final float y) {
         for(PageInfo pageInfo : visible) {
-            if (pageInfo.getPositionRect().contains(x, y)) {
+            if (pageInfo.getDisplayRect().contains(x, y)) {
                 return pageInfo;
             }
         }
@@ -221,6 +224,7 @@ public class PageManager {
         for(PageInfo pageInfo : pageInfoList) {
             if (RectF.intersects(viewportRect, pageInfo.getPositionRect())) {
                 visible.add(pageInfo);
+                pageInfo.updateDisplayRect(viewportRect);
                 found = true;
             } else if (found) {
                 break;
@@ -237,17 +241,17 @@ public class PageManager {
         return list.get(0);
     }
 
-    public List<PageInfo> getVisiblePages() {
-        List<PageInfo> list = visible;
-        if (list == null || list.size() <= 0) {
+    public String getCurrentPageSignature() {
+        final PageInfo pageInfo = getFirstVisiblePage();
+        if (pageInfo == null) {
             return null;
         }
-        for(PageInfo pageInfo : list) {
-            pageInfo.updateDisplayRect(viewportRect);
-        }
-        return list;
+        return pageInfo.pageSignature();
     }
 
+    public List<PageInfo> getVisiblePages() {
+        return visible;
+    }
 
     /**
      * calculate the page bounding rectangle
@@ -288,5 +292,28 @@ public class PageManager {
         return true;
     }
 
+    public boolean isSpecialScale() {
+        return specialScale < 0;
+    }
+
+    public boolean isScaleToPage() {
+        return specialScale == SCALE_TO_PAGE;
+    }
+
+    public boolean isScaleToWidth() {
+        return specialScale == SCALE_TO_WIDTH;
+    }
+
+    public boolean isScaleToHeight() {
+        return specialScale == SCALE_TO_HEIGHT;
+    }
+
+    public boolean isPageCrop() {
+        return specialScale == SCALE_TO_PAGE_CONTENT;
+    }
+
+    public boolean isWidthCrop() {
+        return specialScale == SCALE_TO_WIDTH_CONTENT;
+    }
 
 }

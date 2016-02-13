@@ -24,7 +24,7 @@ public interface ReaderDocument {
      * @param position
      * @return
      */
-    public RectF getPageNaturalSize(final ReaderPagePosition position);
+    public RectF getPageOriginSize(final String position);
 
     /**
      * Read the document table of content.

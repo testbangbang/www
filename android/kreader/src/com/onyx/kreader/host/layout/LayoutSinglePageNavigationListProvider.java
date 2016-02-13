@@ -2,26 +2,27 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.navigation.NavigationList;
+import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 10/19/15.
  * Single hard page with sub screen navigation list support.
  */
-public class LayoutSingleNavigationListProvider implements LayoutProvider {
-    private ReaderLayoutManager layoutManager;
+public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
+
     private NavigationArgs navigationArgs;
 
-    public LayoutSingleNavigationListProvider(final ReaderLayoutManager lm) {
-        layoutManager = lm;
+    public LayoutSinglePageNavigationListProvider(final ReaderLayoutManager lm) {
+        super(lm);
     }
 
-    public void activate(final ReaderLayoutManager lm) throws ReaderException {
-        layoutManager = lm;
-        LayoutProviderUtils.addEntry(layoutManager, layoutManager.getPositionHolder().getCurrentPosition());
+    public void activate()  {
+
+        //LayoutProviderUtils.addPage(layoutManager, layoutManager.getPositionHolder().getCurrentPosition());
     }
 
     private NavigationArgs getNavigationArgs() {
@@ -38,14 +39,14 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
         RectF subScreen = getNavigationList().first();
-        layoutManager.getPageManager().scaleByRatio(subScreen);
+        getPageManager().scaleByRatio(subScreen);
         return true;
     }
 
     public boolean prevScreen() throws ReaderException {
         if (getNavigationList().hasPrevious()) {
             RectF subScreen = getNavigationList().previous();
-            layoutManager.getPageManager().scaleByRatio(subScreen);
+            getPageManager().scaleByRatio(subScreen);
             return true;
         }
         return false;
@@ -54,92 +55,65 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
     public boolean nextScreen() throws ReaderException {
         if (getNavigationList().hasNext()) {
             RectF subScreen = getNavigationList().next();
-            layoutManager.getPageManager().scaleByRatio(subScreen);
+            getPageManager().scaleByRatio(subScreen);
             return true;
         }
         return false;
-    }
-
-    private void onPageChanged(boolean first) {
-        LayoutProviderUtils.clear(layoutManager);
-        LayoutProviderUtils.addEntry(layoutManager, layoutManager.getPositionHolder().getCurrentPosition());
-        if (first) {
-            LayoutProviderUtils.firstSubScreen(layoutManager, getNavigationList());
-        } else {
-            LayoutProviderUtils.lastSubScreen(layoutManager, getNavigationList());
-        }
     }
 
     public boolean prevPage() throws ReaderException {
-        if (layoutManager.getPositionHolder().prevPage()) {
-            onPageChanged(false);
-            return true;
-        }
-        return false;
+        return gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
     }
 
     public boolean nextPage() throws ReaderException {
-        if (layoutManager.getPositionHolder().nextPage()) {
-            onPageChanged(true);
-            return true;
-        }
-        return false;
+        return gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()));
     }
 
     public boolean firstPage() throws ReaderException {
-        if (layoutManager.getPositionHolder().firstPage()) {
-            onPageChanged(true);
-            return true;
-        }
-        return false;
+        return gotoPosition(LayoutProviderUtils.firstPage(getLayoutManager()));
     }
 
     public boolean lastPage() throws ReaderException {
-        if (layoutManager.getPositionHolder().lastPage()) {
-            onPageChanged(true);
-            return true;
-        }
-        return false;
+        return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
-
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(layoutManager, bitmap);
+        LayoutProviderUtils.drawVisiblePages(getLayoutManager(), bitmap);
         return true;
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
-        layoutManager.getPageManager().setScale(scale);
-        layoutManager.getPageManager().setViewport(left, top);
+        getPageManager().setScale(scale);
+        getPageManager().setViewport(left, top);
         return true;
     }
 
     public void scaleToPage() throws ReaderException {
-        layoutManager.getPageManager().scaleToPage();
+        getPageManager().scaleToPage();
     }
 
     public void scaleToWidth() throws ReaderException {
-        layoutManager.getPageManager().scaleToWidth();
+        getPageManager().scaleToWidth();
     }
 
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
         return false;
     }
 
-    public boolean changeScaleByRect(final ReaderPagePosition position, final RectF rect) throws ReaderException  {
+    public boolean changeScaleByRect(final String position, final RectF rect) throws ReaderException  {
         return false;
     }
 
-    public boolean gotoPosition(final ReaderPagePosition location) throws ReaderException {
-        if (!layoutManager.getNavigator().gotoPosition(location)) {
+    public boolean gotoPosition(final String location) throws ReaderException {
+        if (StringUtils.isNullOrEmpty(location)) {
             return false;
         }
-        onPageChanged(true);
+        LayoutProviderUtils.addNewSinglePage(getLayoutManager(), location);
         return true;
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
-        LayoutProviderUtils.pan(layoutManager, dx, dy);
+        LayoutProviderUtils.pan(getLayoutManager(), dx, dy);
         return true;
     }
 
@@ -170,23 +144,23 @@ public class LayoutSingleNavigationListProvider implements LayoutProvider {
         return null;
     }
 
-    public RectF getPageRect(final ReaderPagePosition position) throws ReaderException {
+    public RectF getPageRectOnViewport(final String position) throws ReaderException {
         return null;
     }
 
     public float getActualScale() throws ReaderException {
-        return layoutManager.getPageManager().getActualScale();
+        return getPageManager().getActualScale();
     }
 
-    public RectF getHostRect() throws ReaderException {
-        return layoutManager.getPageManager().getPagesBoundingRect();
+    public RectF getPageBoundingRect() throws ReaderException {
+        return getPageManager().getPagesBoundingRect();
     }
 
     public RectF getViewportRect() throws ReaderException {
-        return layoutManager.getPageManager().getViewportRect();
+        return getPageManager().getViewportRect();
     }
 
     public void scaleByRect(final RectF child) throws ReaderException {
-        layoutManager.getPageManager().scaleToViewport(child);
+        getPageManager().scaleToViewport(child);
     }
 }

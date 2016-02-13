@@ -1,7 +1,6 @@
 package com.onyx.kreader.plugins.adobe;
 
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderSelection;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
  */
 public class AdobeSelectionImpl implements ReaderSelection {
 
-    private AdobePagePositionImpl start, end;
+    private String start, end;
     private String text;
     private List<RectF> rectangles;
 
@@ -19,19 +18,19 @@ public class AdobeSelectionImpl implements ReaderSelection {
 
     }
 
-    public void setStartPosition(final AdobePagePositionImpl s) {
+    public void setStartPosition(final String s) {
         start = s;
     }
 
-    public ReaderPagePosition getStartPosition() {
+    public String getStartPosition() {
         return start;
     }
 
-    public void setEndPosition(final AdobePagePositionImpl e) {
+    public void setEndPosition(final String e) {
         end = e;
     }
 
-    public ReaderPagePosition getEndPosition() {
+    public String getEndPosition() {
         return end;
     }
 

@@ -1,6 +1,8 @@
 package com.onyx.kreader.host.math;
 
 import android.graphics.RectF;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * Created by zhuzeng on 10/8/15.
@@ -13,7 +15,6 @@ public class PageInfo {
     private int pageOrientation;      // degree 0, 90, 180, 270.
     private float originWidth;
     private float originHeight;
-
     private RectF autoCropContentRegion;    // content region with auto crop scale.
     private float autoCropScale;
 
@@ -125,9 +126,8 @@ public class PageInfo {
         return name;
     }
 
-    // TODO: use json
-    public String uniqueId() {
-        return name + actualScale + displayRect.toString();
+    public String pageSignature() {
+        return JSON.toJSONString(this);
     }
 
 

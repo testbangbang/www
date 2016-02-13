@@ -11,21 +11,14 @@ public interface ReaderNavigator {
      * Retrieve the default start position.
      * @return
      */
-    public ReaderPagePosition getInitPosition();
+    public String getInitPosition();
 
     /**
      * Get position from page number. Page position can be retrieved by both index and name.
      * @param pageNumber The 0 based page number.
      * @return
      */
-    public ReaderPagePosition getPositionByPageNumber(int pageNumber);
-
-    /**
-     * Create position from persistent string.
-     * @param string The persistent string.
-     * @return
-     */
-    public ReaderPagePosition createPositionFromString(final String string);
+    public String getPositionByPageNumber(int pageNumber);
 
     /**
      * Return total page number.
@@ -36,48 +29,48 @@ public interface ReaderNavigator {
     /**
      * Navigate to next screen.
      */
-    public ReaderPagePosition nextScreen(final ReaderPagePosition position);
+    public String nextScreen(final String position);
 
     /**
      * Navigate to previous screen.
      */
-    public ReaderPagePosition prevScreen(final ReaderPagePosition position);
+    public String prevScreen(final String position);
 
     /**
      * Navigate to next page.
      * @return
      */
-    public ReaderPagePosition nextPage(final ReaderPagePosition position);
+    public String nextPage(final String position);
 
     /**
      * Navigate to previous page.
      * @return
      */
-    public ReaderPagePosition prevPage(final ReaderPagePosition position);
+    public String prevPage(final String position);
 
     /**
      * Navigate to first page.
      * @return
      */
-    public ReaderPagePosition firstPage();
+    public String firstPage();
 
     /**
      * Navigate to last page.
      * @return
      */
-    public ReaderPagePosition lastPage();
+    public String lastPage();
 
     /**
      * Navigate to specified position.
      * @return
      */
-    public boolean gotoPosition(final ReaderPagePosition position);
+    public boolean gotoPosition(final String position);
 
     /**
      * Retrieve links of specified page.
      * @return link list.
      */
-    public List<ReaderLink> getLinks(final ReaderPagePosition position);
+    public List<ReaderLink> getLinks(final String position);
 
 
 }

@@ -2,43 +2,38 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderPagePosition;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 10/22/15.
  */
-public class LayoutContinuousProvider implements LayoutProvider {
-    private ReaderLayoutManager layoutManager;
+public class LayoutContinuousProvider extends LayoutProvider {
+
 
     public LayoutContinuousProvider(final ReaderLayoutManager lm) {
-        layoutManager = lm;
+        super(lm);
     }
 
-    public void activate(final ReaderLayoutManager lm) throws ReaderException {
-        layoutManager = lm;
-        LayoutProviderUtils.addAllEntry(layoutManager);
+    public void activate() {
+        LayoutProviderUtils.addAllPage(getLayoutManager());
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         return false;
     }
 
-    private PageManager getEntryManager() {
-        return layoutManager.getPageManager();
-    }
-
     public boolean prevScreen() throws ReaderException {
-        if (!getEntryManager().prevViewport()) {
+        if (!getPageManager().prevViewport()) {
             return prevPage();
         }
         return true;
     }
 
     public boolean nextScreen() throws ReaderException {
-        if (!getEntryManager().nextViewport()) {
+        if (!getPageManager().nextViewport()) {
             return nextPage();
         }
         return true;
@@ -49,75 +44,63 @@ public class LayoutContinuousProvider implements LayoutProvider {
     }
 
     public boolean prevPage() throws ReaderException {
-        if (layoutManager.getPositionHolder().prevPage()) {
-            onPageChanged(false);
-            return true;
-        }
-        return false;
+        final String newPosition = LayoutProviderUtils.prevPage(getLayoutManager());
+        return gotoPosition(newPosition);
     }
 
     public boolean nextPage() throws ReaderException {
-        if (layoutManager.getPositionHolder().nextPage()) {
-            onPageChanged(true);
-            return true;
-        }
-        return false;
+        final String newPosition = LayoutProviderUtils.nextPage(getLayoutManager());
+        return gotoPosition(newPosition);
     }
 
     public boolean firstPage() throws ReaderException {
-        if (layoutManager.getPositionHolder().firstPage()) {
-            onPageChanged(true);
-            return true;
-        }
-        return false;
+        final String newPosition = LayoutProviderUtils.firstPage(getLayoutManager());
+        return gotoPosition(newPosition);
     }
 
     public boolean lastPage() throws ReaderException {
-        if (layoutManager.getPositionHolder().lastPage()) {
-            onPageChanged(true);
-            return true;
-        }
-        return false;
+        final String newPosition = LayoutProviderUtils.lastPage(getLayoutManager());
+        return gotoPosition(newPosition);
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(layoutManager, bitmap);
+        getPageManager().updateVisiblePages();
+        LayoutProviderUtils.drawVisiblePages(getLayoutManager(), bitmap);
         return true;
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
-        layoutManager.getPageManager().setScale(scale);
-        layoutManager.getPageManager().setViewport(left, top);
+        getPageManager().setScale(scale);
+        getPageManager().setViewport(left, top);
         return true;
     }
 
     public void scaleToPage() throws ReaderException {
-        layoutManager.getPageManager().scaleToPage();
+        getPageManager().scaleToPage();
     }
 
     public void scaleToWidth() throws ReaderException {
-        layoutManager.getPageManager().scaleToWidth();
+        getPageManager().scaleToWidth();
     }
 
     public boolean changeScaleWithDelta(float delta) throws ReaderException {
-        layoutManager.getPageManager().scaleWithDelta(delta);
+        getPageManager().scaleWithDelta(delta);
         return true;
     }
 
-    public boolean changeScaleByRect(final ReaderPagePosition position, final RectF rect) throws ReaderException  {
+    public boolean changeScaleByRect(final String position, final RectF rect) throws ReaderException  {
         return false;
     }
 
-    public boolean gotoPosition(final ReaderPagePosition location) throws ReaderException {
-        if (!layoutManager.getPositionHolder().gotoPosition(location)) {
+    public boolean gotoPosition(final String location) throws ReaderException {
+        if (StringUtils.isNonBlank(location)) {
             return false;
         }
-        onPageChanged(true);
-        return true;
+        return getPageManager().moveViewportByPosition(location);
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
-        LayoutProviderUtils.pan(layoutManager, dx, dy);
+        LayoutProviderUtils.pan(getLayoutManager(), dx, dy);
         return true;
     }
 
@@ -149,23 +132,23 @@ public class LayoutContinuousProvider implements LayoutProvider {
         return null;
     }
 
-    public RectF getPageRect(final ReaderPagePosition position) throws ReaderException {
+    public RectF getPageRectOnViewport(final String position) throws ReaderException {
         return null;
     }
 
     public float getActualScale() throws ReaderException {
-        return layoutManager.getPageManager().getActualScale();
+        return getPageManager().getActualScale();
     }
 
-    public RectF getHostRect() throws ReaderException {
-        return layoutManager.getPageManager().getPagesBoundingRect();
+    public RectF getPageBoundingRect() throws ReaderException {
+        return getPageManager().getPagesBoundingRect();
     }
 
     public RectF getViewportRect() throws ReaderException {
-        return layoutManager.getPageManager().getViewportRect();
+        return getPageManager().getViewportRect();
     }
 
     public void scaleByRect(final RectF child) throws ReaderException {
-        layoutManager.getPageManager().scaleToViewport(child);
+        getPageManager().scaleToViewport(child);
     }
 }
