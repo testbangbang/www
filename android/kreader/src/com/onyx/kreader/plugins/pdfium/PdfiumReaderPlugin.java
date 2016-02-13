@@ -304,16 +304,15 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public ReaderSelection selectWord(final PointF viewPoint, final ReaderTextSplitter splitter) {
-
+    public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
         return null;
     }
 
-    public String position(final PointF point) {
+    public String position(final ReaderHitTestArgs hitTest) {
         return null;
     }
 
-    public ReaderSelection select(final PointF startPoint, final PointF endPoint) {
+    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end) {
         return null;
     }
 

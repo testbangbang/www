@@ -1,5 +1,6 @@
 package com.onyx.kreader.host.math;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 /**
@@ -14,6 +15,14 @@ public class PageUtils {
      */
     static public void translateCoordinates(final RectF child, final RectF parent) {
         child.offset(-parent.left, -parent.top);
+    }
+
+    static public void translateCoordinates(final PointF child, final RectF parent) {
+        child.offset(-parent.left, -parent.top);
+    }
+
+    static public void translateCoordinates(final PointF child, final PointF parent) {
+        child.offset(-parent.x, -parent.y);
     }
 
     static public float scaleToPage(final float pageWidth, final float pageHeight, final float viewportWidth, final float viewportHeight) {

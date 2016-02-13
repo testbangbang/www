@@ -37,7 +37,7 @@ public interface ReaderSelection {
     public String getText();
 
     /**
-     * Retrieve selected rectangle list in document coordinates system.
+     * Retrieve selected rectangle list in page coordinates system.
      * @return
      */
     public List<RectF> getRectangles();

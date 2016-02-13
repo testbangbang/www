@@ -23,7 +23,7 @@ public class SelectionRequest extends BaseRequest {
     // check page at first. and then goto the location.
     public void execute(final Reader reader) throws Exception {
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
-        selection = hitTestManager.select(start, end);
+        //selection = hitTestManager.select(start, end);
     }
 
     public final ReaderSelection getSelection() {

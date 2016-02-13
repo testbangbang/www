@@ -27,7 +27,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
 
 
     public void testPluginUsage() throws Exception {
-        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity());
+        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/a.pdf", null, null);
         assertNotNull(document);
         ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl(1024, 768);
@@ -46,7 +46,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
 
 
     public void testPluginRendering() throws Exception {
-        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity());
+        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/a.pdf", null, null);
         assertNotNull(document);
 

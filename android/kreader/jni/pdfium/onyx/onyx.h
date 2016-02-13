@@ -12,6 +12,8 @@
 #include <math.h>
 #include <list>
 #include <map>
+#include <unordered_map>
+
 
 
 #ifdef NDK_PROFILER
@@ -25,6 +27,44 @@
 #include "fpdf_text.h"
 
 
+
+class OnyxPdfiumPage {
+
+private:
+    FPDF_PAGE page;
+    FPDF_TEXTPAGE textPage;
+
+public:
+    OnyxPdfiumPage(FPDF_DOCUMENT document, int pageIndex, bool loadTextPage) : page(NULL), textPage(NULL) {
+        if (document != NULL) {
+            page = FPDF_LoadPage(document, pageIndex);
+            if (loadTextPage && page != NULL) {
+                textPage = FPDFText_LoadPage(page);
+            }
+        }
+    }
+
+    ~OnyxPdfiumPage() {
+        if (textPage != NULL) {
+           FPDFText_ClosePage(textPage);
+            textPage = NULL;
+        }
+        if (page != NULL) {
+            FPDF_ClosePage(page);
+            page = NULL;
+        }
+    }
+
+    FPDF_PAGE getPage() {
+        return page;
+    }
+
+    FPDF_TEXTPAGE getTextPage() {
+        return textPage;
+    }
+
+};
+
 class OnyxPdfiumContext;
 
 class OnyxPdfiumContext {
@@ -33,6 +73,7 @@ private:
     static std::map<jobject, OnyxPdfiumContext *> contextMap;
     FPDF_DOCUMENT document;
     FPDF_BITMAP bitmap;
+    std::unordered_map<int, OnyxPdfiumPage *> pageMap;
 
 public:
     static OnyxPdfiumContext * getContext(jobject thiz);
@@ -55,6 +96,22 @@ public:
         return context->getBitmap(width, height, pixels, stride);
     }
 
+    static FPDF_PAGE getPage(jobject thiz, int pageIndex) {
+        OnyxPdfiumContext * context = getContext(thiz);
+        if (context == NULL) {
+            return NULL;
+        }
+        return context->getPage(pageIndex);
+    }
+
+    static FPDF_PAGE getTextPage(jobject thiz, int pageIndex) {
+        OnyxPdfiumContext * context = getContext(thiz);
+        if (context == NULL) {
+            return NULL;
+        }
+        return context->getTextPage(pageIndex);
+    }
+
 public:
     OnyxPdfiumContext()
         : document(NULL)
@@ -65,6 +122,7 @@ public:
             FPDFBitmap_Destroy(bitmap);
             bitmap = NULL;
         }
+        // clear page hash map.
     }
 
 public:
@@ -78,44 +136,31 @@ public:
         }
         return bitmap;
     }
-};
 
-class OnyxPdfiumPage {
-
-private:
-    FPDF_PAGE page;
-    FPDF_TEXTPAGE textPage;
-
-public:
-    OnyxPdfiumPage(FPDF_DOCUMENT document, int pageIndex, bool loadTextPage) : page(NULL), textPage(NULL) {
-        if (document != NULL) {
-            page = FPDF_LoadPage(document, pageIndex);
-            if (loadTextPage && page != NULL) {
-                textPage = FPDFText_LoadPage(page);
-            }
+    OnyxPdfiumPage * getPdfiumPage(int pageIndex) {
+        std::unordered_map<int, OnyxPdfiumPage *>::iterator iterator = pageMap.find(pageIndex);
+        OnyxPdfiumPage * page = NULL;
+        if (iterator == pageMap.end()) {
+            page = new OnyxPdfiumPage(getDocument(), pageIndex, true);
+            pageMap[pageIndex] = page;
+        } else {
+            page = iterator->second;
         }
-    }
-
-    ~OnyxPdfiumPage() {
-        if (textPage != NULL) {
-            FPDFText_ClosePage(textPage);
-            textPage = NULL;
-        }
-        if (page != NULL) {
-            FPDF_ClosePage(page);
-            page = NULL;
-        }
-    }
-
-    FPDF_PAGE getPage() {
         return page;
     }
 
-    FPDF_TEXTPAGE getTextPage() {
-        return textPage;
+    FPDF_PAGE getPage(int pageIndex) {
+        OnyxPdfiumPage * page = getPdfiumPage(pageIndex);
+        return page->getPage();
+    }
+
+    FPDF_TEXTPAGE getTextPage(int pageIndex) {
+        OnyxPdfiumPage * page = getPdfiumPage(pageIndex);
+        return page->getTextPage();
     }
 
 };
+
 
 
 #endif

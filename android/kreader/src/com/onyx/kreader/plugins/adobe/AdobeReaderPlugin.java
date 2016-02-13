@@ -423,19 +423,19 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
 
-    public ReaderSelection selectWord(final PointF viewPoint, final ReaderTextSplitter splitter) {
+    public ReaderSelection selectWord(final ReaderHitTestArgs args, final ReaderTextSplitter splitter) {
 
         return null;
     }
 
-    public String position(final PointF point) {
-        final String position = getPluginImpl().locationNative(point.x, point.y);
+    public String position(final ReaderHitTestArgs args) {
+        final String position = getPluginImpl().locationNative(args.point.x, args.point.y);
         return position;
     }
 
-    public ReaderSelection select(final PointF startPoint, final PointF endPoint) {
-        final String start = getPluginImpl().locationNative(startPoint.x, startPoint.y);
-        final String end = getPluginImpl().locationNative(endPoint.x, endPoint.y);
+    public ReaderSelection select(final ReaderHitTestArgs startArgs, final ReaderHitTestArgs endArgs) {
+        final String start = getPluginImpl().locationNative(startArgs.point.x, startArgs.point.y);
+        final String end = getPluginImpl().locationNative(endArgs.point.x, endArgs.point.y);
         AdobeSelectionImpl selection = new AdobeSelectionImpl();
         selection.setStartPosition(start);
         selection.setEndPosition(end);

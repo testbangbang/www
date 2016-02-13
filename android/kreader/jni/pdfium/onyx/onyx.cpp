@@ -117,7 +117,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeClearBitmap
   (JNIEnv *env, jobject thiz, jobject bitmap) {
-    FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
+
     AndroidBitmapInfo info;
 	void *pixels;
 	int ret;
@@ -191,42 +191,48 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hitTest
-  (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jdoubleArray array) {
+  (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jintArray array) {
+
     FPDF_DOCUMENT document = OnyxPdfiumContext::getDocument(thiz);
-    OnyxPdfiumPage pageWrapper(document, pageIndex, true);
-    FPDF_PAGE page = pageWrapper.getPage();
-    FPDF_TEXTPAGE textPage = pageWrapper.getTextPage();
+    FPDF_PAGE page = OnyxPdfiumContext::getPage(thiz, pageIndex);
+    FPDF_TEXTPAGE textPage = OnyxPdfiumContext::getTextPage(thiz, pageIndex);
 
-    double tolerance = 10.0 / 72.0;
-    int startIndex = FPDFText_GetCharIndexAtPos(textPage, sx, sy, tolerance, tolerance);
-    int endIndex = FPDFText_GetCharIndexAtPos(textPage, ex, ey, tolerance, tolerance);
+    double tolerance = 0;
+    double startPageX, startPageY, endPageX, endPageY;
+    FPDF_DeviceToPage(page, x, y, width, height, 0, sx, sy, &startPageX, &startPageY);
+    FPDF_DeviceToPage(page, x, y, width, height, 0, ex, ey, &endPageX, &endPageY);
 
-    if (startIndex < 0) {
-        startIndex = 0;
+    int startIndex = FPDFText_GetCharIndexAtPos(textPage, startPageX, startPageY, tolerance, tolerance);
+    int endIndex = FPDFText_GetCharIndexAtPos(textPage, endPageX, endPageY, tolerance, tolerance);
+
+    if (startIndex < 0 || endIndex < 0) {
+        LOGE("No selection %d %d", startIndex, endIndex);
+        return 0;
     }
-    if (endIndex < 0) {
-        endIndex = FPDFText_CountChars(textPage) / 2;
-    }
-
 
     int start = startIndex < endIndex ? startIndex : endIndex;
     int end = startIndex < endIndex ? endIndex : startIndex;
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
     int limit = end - start + 1;
-    jdouble * buffer = new jdouble[limit * 4];
-    LOGE("start index %d end index %d limit %d count %d", start, end, limit, FPDFText_CountChars(textPage));
-    for(int i = start; i <= end; ++i) {
-        FPDFText_GetCharBox(textPage, i, &left, &right, &bottom, &top);
+    jint * buffer = new jint[limit * 4];
+    for(int i = 0; i < limit; ++i) {
+        FPDFText_GetCharBox(textPage, i + start, &left, &right, &bottom, &top);
         FPDF_PageToDevice(page, x, y, width, height, 0, left, top, &newLeft, &newTop);
         FPDF_PageToDevice(page, x, y, width, height, 0, right, bottom, &newRight, &newBottom);
+        if (newRight < newLeft) {
+            std::swap(newRight, newLeft);
+        }
+        if (newBottom < newTop) {
+            std::swap(newBottom, newTop);
+        }
         buffer[i * 4] = newLeft;
         buffer[i * 4 + 1] = newTop;
         buffer[i * 4 + 2] = newRight;
         buffer[i * 4 + 3] = newBottom;
     }
 
-    env->SetDoubleArrayRegion(array, 0, limit * 4, buffer);
+    env->SetIntArrayRegion(array, 0, limit * 4, buffer);
     delete [] buffer;
     return limit;
 }
@@ -261,7 +267,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     FPDF_SCHHANDLE searchHandle = FPDFText_FindStart(textPage, (unsigned short *)stringData, flags, 0);
     while (FPDFText_FindNext(searchHandle)) {
         ++count;
-        int index = FPDFText_GetSchResultIndex(searchHandle);
+        FPDFText_GetSchResultIndex(searchHandle);
         // collect the rectangle and others
     }
     FPDFText_FindClose(searchHandle);
@@ -284,7 +290,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapp
     int size = 2 * (count + 1);
     jbyte * data = new jbyte[size];
     memset(data, 0, size);
-    int written = FPDFText_GetText(textPage, 0,  count, (unsigned short *)data);
+    FPDFText_GetText(textPage, 0,  count, (unsigned short *)data);
     jbyteArray array = env->NewByteArray(size);
     env->SetByteArrayRegion(array, 0, size, data);
     delete [] data;

@@ -37,7 +37,7 @@ public class PdfiumJniWrapper {
 
     private native boolean nativeRenderPage(int page, int x, int y, int width, int height, final Bitmap bitmap);
 
-    public native int hitTest(int page, int x, int y, int width, int height, int startX, int startY, int endX, int endY, double [] rects);
+    public native int hitTest(int page, int x, int y, int width, int height, int startX, int startY, int endX, int endY, int [] rects);
 
     public native int nativeSearchInPage(int page, final byte [] buffer, boolean caseSensitive, boolean matchWholeWord);
 

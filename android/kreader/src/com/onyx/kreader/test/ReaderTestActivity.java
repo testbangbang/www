@@ -52,6 +52,7 @@ public class ReaderTestActivity extends Activity {
     private int currentPage = 0;
     private PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
     private float xScale, yScale;
+    private float startX, startY, endX, endY;
 
 
     @Override
@@ -116,6 +117,20 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void onGlobalLayout() {
                 surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
+        surfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    startX = event.getX();
+                    startY = event.getY();
+                } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    endX = event.getX();
+                    endY = event.getY();
+                    draw();
+                }
+                return true;
             }
         });
     }
@@ -391,25 +406,29 @@ public class ReaderTestActivity extends Activity {
 
     private void testPdfiumWrapper() {
         wrapper.nativeInitLibrary();
-        long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/c.pdf", "");
+        long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/text.pdf", "");
         bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
         wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
         draw();
     }
 
     private void drawHitTest(final Canvas canvas) {
-        double []data = new double[40960];
-        int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 100, 100, 200, 200, data);
+        int []data = new int[40960];
+        int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), (int)startX, (int)startY, (int)endX, (int)endY, data);
+        if (size <= 0) {
+            return;
+        }
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
         PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
         paint.setXfermode(xorMode);
         xScale = yScale = 1;
-        for(int j = 0; j < data.length / 4; ++j) {
-            canvas.drawRect((float)data[j * 4] * xScale, (float)data[j * 4 + 1] * yScale, (float)data[j * 4 + 2] * xScale, (float)data[j * 4 + 3] * yScale, paint);
+        for(int j = 0; j < size; ++j) {
+            canvas.drawRect(data[j * 4] , data[j * 4 + 1] , data[j * 4 + 2], data[j * 4 + 3] , paint);
         }
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

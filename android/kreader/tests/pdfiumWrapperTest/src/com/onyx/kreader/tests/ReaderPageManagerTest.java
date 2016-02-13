@@ -1,5 +1,6 @@
 package com.onyx.kreader.tests;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
@@ -9,6 +10,7 @@ import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.test.ReaderTestActivity;
 import com.onyx.kreader.utils.TestUtils;
+import junit.framework.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,5 +155,14 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
             ++index;
             actualScale = PageUtils.scaleByRatio(ratio, entry.width(), entry.height(), parent);
         }
+    }
+
+    public void testMath6() {
+        PointF point = new PointF(TestUtils.randInt(100, 500), TestUtils.randInt(100, 500));
+        RectF parent = new RectF(TestUtils.randInt(100, 500), TestUtils.randInt(100, 500), 1024, 768);
+        PointF test = new PointF(point.x, point.y);
+        PageUtils.translateCoordinates(test, parent);
+        assertTrue(TestUtils.compareFloatWhole(test.x, point.x - parent.left));
+        assertTrue(TestUtils.compareFloatWhole(test.y, point.y - parent.top));
     }
 }
