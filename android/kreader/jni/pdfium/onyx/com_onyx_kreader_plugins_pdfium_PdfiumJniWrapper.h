@@ -65,6 +65,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    nativeClearBitmap
+ * Signature: (Landroid/graphics/Bitmap;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeClearBitmap
+  (JNIEnv *, jobject, jobject);
+
+/*
+ * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeRenderPage
  * Signature: (IIIIILandroid/graphics/Bitmap;)Z
  */
@@ -90,7 +98,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeGetPageText
- * Signature: (I[B)[B
+ * Signature: (I)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetPageText
   (JNIEnv *, jobject, jint);
