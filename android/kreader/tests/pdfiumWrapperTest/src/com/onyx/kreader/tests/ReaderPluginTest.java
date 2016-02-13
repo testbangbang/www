@@ -38,7 +38,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         assertNotNull(navigator);
         ReaderRenderer renderer = readerView.getRenderer();
         assertNotNull(renderer);
-        ReaderPagePosition initPosition = navigator.getInitPosition();
+        String initPosition = navigator.getInitPosition();
         assertNotNull(initPosition);
         assertTrue(renderer.draw(initPosition, -1, readerBitmap));
         document.close();
@@ -58,7 +58,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         assertNotNull(navigator);
         ReaderRenderer renderer = readerView.getRenderer();
         assertNotNull(renderer);
-        ReaderPagePosition initPosition = navigator.getInitPosition();
+        String initPosition = navigator.getInitPosition();
         assertNotNull(initPosition);
 
 
@@ -67,7 +67,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
 
         RectF size = document.getPageOriginSize(initPosition);
-        PageInfo pageInfo = new PageInfo(initPosition.asString(), size.width(), size.height());
+        PageInfo pageInfo = new PageInfo(initPosition, size.width(), size.height());
         pageManager.add(pageInfo);
         pageManager.scaleToPage();
         PageInfo result = pageManager.getFirstVisiblePage();

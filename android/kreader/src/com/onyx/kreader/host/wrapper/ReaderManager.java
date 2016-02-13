@@ -32,7 +32,7 @@ public class ReaderManager {
     public static Reader createReader(final Context context, final String path, final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
         Reader reader = new Reader();
         reader.init(pluginOptions, viewOptions);
-        reader.getReaderHelper().selectPlugin(context, path);
+        reader.getReaderHelper().selectPlugin(context, path, pluginOptions);
         readerHashMap.put(path, reader);
         return reader;
     }

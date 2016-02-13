@@ -49,11 +49,13 @@ public class PageManager {
     public void setViewport(final float x, final float y) {
         viewportRect.offsetTo(x, y);
         reboundViewport();
+        updateVisiblePages();
     }
 
     public void setViewportRect(final float left, final float top, final float right, final float bottom) {
         viewportRect.set(left, top, right, bottom);
         reboundViewport();
+        updateVisiblePages();
     }
 
     public final RectF getViewportRect() {
@@ -67,6 +69,7 @@ public class PageManager {
     public void panViewport(final float dx, final float dy) {
         viewportRect.offset(dx, dy);
         reboundViewport();
+        updateVisiblePages();
     }
 
     private void reboundViewport() {
@@ -106,6 +109,7 @@ public class PageManager {
         actualScale = scale;
         specialScale = 0;
         updatePagesBoundingRect();
+        updateVisiblePages();
     }
 
     public final float getActualScale() {
@@ -124,6 +128,7 @@ public class PageManager {
         PageInfo current = visible.get(0);
         setScale(PageUtils.scaleToPage(current.getOriginWidth(), current.getOriginHeight(), viewportRect.width(), viewportRect.height()));
         reboundViewport();
+        updateVisiblePages();
         return true;
     }
 
@@ -139,6 +144,7 @@ public class PageManager {
         PageInfo current = visible.get(0);
         setScale(PageUtils.scaleToWidth(current.getOriginWidth(), viewportRect));
         reboundViewport();
+        updateVisiblePages();
         return true;
     }
 
@@ -158,6 +164,7 @@ public class PageManager {
 
         setScale(actualScale * PageUtils.scaleByRect(child, viewportRect));
         reboundViewport();
+        updateVisiblePages();
         return true;
     }
 
@@ -173,6 +180,7 @@ public class PageManager {
         actualScale += PageUtils.scaleWithDelta(getFirstVisiblePage().getPositionRect(), getViewportRect(), delta);
         setScale(actualScale);
         reboundViewport();
+        updateVisiblePages();
         return true;
     }
 
@@ -188,6 +196,7 @@ public class PageManager {
 
         setScale(PageUtils.scaleByRatio(ratio, pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect));
         reboundViewport();
+        updateVisiblePages();
         return false;
     }
 
@@ -241,14 +250,6 @@ public class PageManager {
         return list.get(0);
     }
 
-    public String getCurrentPageSignature() {
-        final PageInfo pageInfo = getFirstVisiblePage();
-        if (pageInfo == null) {
-            return null;
-        }
-        return pageInfo.pageSignature();
-    }
-
     public List<PageInfo> getVisiblePages() {
         return visible;
     }
@@ -280,6 +281,7 @@ public class PageManager {
         }
         viewportRect.offset(0, viewportRect.height());
         reboundViewport();
+        updateVisiblePages();
         return true;
     }
 
@@ -289,6 +291,7 @@ public class PageManager {
         }
         viewportRect.offset(0, -viewportRect.height());
         reboundViewport();
+        updateVisiblePages();
         return true;
     }
 

@@ -30,7 +30,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     private AdobeJniWrapper impl;
     private String documentPath;
 
-    public AdobeReaderPlugin(final Context context) {
+    public AdobeReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
         ReaderDeviceInfo.init(context);
     }
 

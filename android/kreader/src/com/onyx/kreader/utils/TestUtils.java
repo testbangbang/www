@@ -1,5 +1,6 @@
 package com.onyx.kreader.utils;
 
+import android.util.Log;
 import com.onyx.kreader.host.math.PageInfo;
 
 import java.util.List;
@@ -34,7 +35,12 @@ public class TestUtils {
     }
 
     static public boolean compareFloatWhole(float a, float b) {
-        return ((int)a == (int)b);
+        if (Math.abs(a - b) < 0.001f) {
+            return true;
+        } else {
+            Log.e("Shit", "not equal");
+            return false;
+        }
     }
 
 }

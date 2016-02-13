@@ -33,11 +33,11 @@ public class ReaderHelper {
         reader = r;
     }
 
-    public boolean selectPlugin(final Context context, final String path) {
+    public boolean selectPlugin(final Context context, final String path, final ReaderPluginOptions pluginOptions) {
         if (PdfiumReaderPlugin.accept(path)) {
-            plugin = new PdfiumReaderPlugin(context);
+            plugin = new PdfiumReaderPlugin(context, pluginOptions);
         } else if (AdobeReaderPlugin.accept(path)) {
-            plugin = new AdobeReaderPlugin(context);
+            plugin = new AdobeReaderPlugin(context, pluginOptions);
         }
         return (plugin != null);
     }

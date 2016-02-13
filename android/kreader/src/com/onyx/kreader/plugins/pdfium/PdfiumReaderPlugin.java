@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.utils.PositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
@@ -26,7 +27,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     private PdfiumJniWrapper impl;
     private String documentPath;
 
-    public PdfiumReaderPlugin(final Context context) {
+    public PdfiumReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
     }
 
     public PdfiumJniWrapper getPluginImpl() {
@@ -162,7 +163,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public boolean clear(final ReaderBitmap bitmap) {
-        return true;
+        return getPluginImpl().nativeClearBitmap(bitmap.getBitmap());
     }
 
     public boolean draw(final String page, final float scale, final ReaderBitmap bitmap) {

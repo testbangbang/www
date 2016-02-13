@@ -38,8 +38,8 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
 
             float left = (viewport.width() - targetScale * pageInfo.getOriginWidth()) / 2;
             float top = (viewport.height() - targetScale * pageInfo.getOriginHeight()) / 2;
-            assertTrue(Float.compare(left, info.getDisplayRect().left) == 0);
-            assertTrue(Float.compare(top, info.getDisplayRect().top) == 0);
+            assertTrue(TestUtils.compareFloatWhole(left, info.getDisplayRect().left));
+            assertTrue(TestUtils.compareFloatWhole(top, info.getDisplayRect().top));
         }
     }
 

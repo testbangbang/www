@@ -25,7 +25,6 @@ public class LayoutProviderUtils {
     static public void drawVisiblePages(final ReaderLayoutManager layoutManager, final ReaderBitmap bitmap) {
         final Reader reader = layoutManager.getReader();
         final ReaderRenderer renderer = reader.getRenderer();
-        final ReaderNavigator navigator = reader.getNavigator();
         List<PageInfo> visiblePages = layoutManager.getPageManager().getVisiblePages();
         if (visiblePages == null || visiblePages.size() <= 0) {
             visiblePages = layoutManager.getPageManager().updateVisiblePages();
@@ -74,7 +73,6 @@ public class LayoutProviderUtils {
         LayoutProviderUtils.clear(layoutManager);
         LayoutProviderUtils.addPage(layoutManager, position);
         LayoutProviderUtils.updatePageBoundingRect(layoutManager);
-        LayoutProviderUtils.updateVisiblePages(layoutManager);
         LayoutProviderUtils.resetViewportPosition(layoutManager);
     }
 

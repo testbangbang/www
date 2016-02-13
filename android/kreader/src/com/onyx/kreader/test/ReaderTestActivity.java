@@ -59,10 +59,7 @@ public class ReaderTestActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         initSurfaceView();
-        reader = ReaderManager.createReader(this, path, null, getViewOptions());
         OnyxHyphen.reinit_hyph(this, OnyxHyphen.HYPH_ENGLISH);
-        //testHyphen();
-        testReaderOpen();
     }
 
     private void initSurfaceView() {
@@ -71,7 +68,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void onClick(View view) {
                 try {
-                    testSpan();
+                    testReaderOpen();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -124,10 +121,11 @@ public class ReaderTestActivity extends Activity {
     }
 
     public ReaderViewOptions getViewOptions() {
-        return new ReaderViewOptionsImpl(768, 1024);
+        return new ReaderViewOptionsImpl(surfaceView.getWidth(), surfaceView.getHeight());
     }
 
     public void testReaderOpen() {
+        reader = ReaderManager.createReader(this, path, null, getViewOptions());
         BaseRequest open = new OpenRequest(path, null, null);
         reader.submitRequest(this, open, new BaseCallback() {
             @Override
@@ -212,7 +210,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testOriginScale() {
-        final ScaleRequest renderRequest = new ScaleRequest(0.3f, 0, 0);
+        final ScaleToPageRequest renderRequest = new ScaleToPageRequest();
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
