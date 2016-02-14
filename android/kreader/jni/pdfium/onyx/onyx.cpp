@@ -1,6 +1,9 @@
 
+#include <vector>
+
 #include "onyx_context.h"
 #include "JNIUtils.h"
+
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
@@ -192,11 +195,11 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     return count;
 }
 
-static int reportSelection(JNIEnv *env, FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int start, int end, jobject selection) {
-    JNIUtils jniUtils(env, selectionClassName, "addRectangle", "(IIII)V");
+static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int start, int end, std::vector<int> & list) {
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
     int count = end - start + 1;
+    LOGE("get selection rectangles %d", count);
     for(int i = 0; i < count; ++i) {
         FPDFText_GetCharBox(textPage, i + start, &left, &right, &bottom, &top);
         FPDF_PageToDevice(page, x, y, width, height, 0, left, top, &newLeft, &newTop);
@@ -207,20 +210,38 @@ static int reportSelection(JNIEnv *env, FPDF_PAGE page, FPDF_TEXTPAGE textPage, 
         if (newBottom < newTop) {
             std::swap(newBottom, newTop);
         }
-        env->CallVoidMethod(selection, jniUtils.getMethodId(), newLeft, newTop, newRight, newBottom);
+        list.push_back(newLeft);
+        list.push_back(newTop);
+        list.push_back(newRight);
+        list.push_back(newBottom);
+    }
+    return count;
+}
+
+static int reportSelection(JNIEnv *env, FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int start, int end, jobject selection) {
+    int count = end - start + 1;
+    {
+        JNIUtils utils(env);
+        utils.findMethod(selectionClassName, "addRectangle", "(IIII)V");
+        std::vector<int> list;
+        getSelectionRectangles(page, textPage, x, y, width, height, start, end, list);
+        for(int i = 0; i < count; ++i) {
+            env->CallVoidMethod(selection, utils.getMethodId(), list[i * 4], list[i * 4 + 1], list[i * 4 + 2], list[i * 4 + 3]);
+        }
     }
 
     {
         int textSize = (count + 1) * sizeof(unsigned short);
         JNIByteArray arrayWrapper(env, textSize);
         FPDFText_GetText(textPage, start, count, (unsigned short *)arrayWrapper.getBuffer());
-        arrayWrapper.copyToJavaArray();
-        JNIUtils utils(env, selectionClassName, "setText", "([B)V");
-        env->CallVoidMethod(selection, utils.getMethodId(), arrayWrapper.getByteArray());
+        JNIUtils utils(env);
+        utils.findMethod(selectionClassName, "setText", "([B)V");
+        env->CallVoidMethod(selection, utils.getMethodId(), arrayWrapper.getByteArray(true));
     }
 
     {
-        JNIUtils utils(env, selectionClassName, "setRange", "(II)V");
+        JNIUtils utils(env);
+        utils.findMethod(selectionClassName, "setRange", "(II)V");
         env->CallVoidMethod(selection, utils.getMethodId(), start, end);
     }
 
@@ -263,18 +284,20 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSearchInPage
-  (JNIEnv *env, jobject thiz, jint pageIndex, jbyteArray buffer, jboolean caseSensitive, jboolean matchWholeWord) {
+  (JNIEnv *env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jbyteArray array, jboolean caseSensitive, jboolean matchWholeWord, jobject objectList) {
+
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
     if (textPage == NULL) {
         return -1;
     }
     jboolean isCopy = false;
-    jbyte* temp = env->GetByteArrayElements(buffer, &isCopy);
+    jbyte* temp = env->GetByteArrayElements(array, &isCopy);
     if (temp == NULL) {
         return -1;
     }
 
-    int length = env->GetArrayLength(buffer);
+    int length = env->GetArrayLength(array);
     jbyte * stringData = new jbyte[length + 2];
     memset(stringData, 0, length + 2);
     memcpy(stringData, temp, length);
@@ -288,12 +311,21 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 
     int count = 0;
     FPDF_SCHHANDLE searchHandle = FPDFText_FindStart(textPage, (unsigned short *)stringData, flags, 0);
-    while (FPDFText_FindNext(searchHandle)) {
+    JNIUtils utils(env);
+    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;[III)V");
+    while (searchHandle != NULL && FPDFText_FindNext(searchHandle)) {
         ++count;
-        FPDFText_GetSchResultIndex(searchHandle);
-        // collect the rectangle and others
+        int startIndex = FPDFText_GetSchResultIndex(searchHandle);
+        int endIndex = startIndex + FPDFText_GetSchCount(searchHandle);
+        std::vector<int> list;
+        LOGE("search before.... %d %d %d %d", count, startIndex, endIndex, list.size());
+        getSelectionRectangles(page, textPage, x, y, width, height, startIndex, endIndex, list);
+        LOGE("search after. %d %d %d %d", count, startIndex, endIndex, list.size());
+        JNIIntArray intArray(env, list.size(), &list[0]);
+        env->CallStaticObjectMethod(utils.getClazz(), utils.getMethodId(), objectList, intArray.getIntArray(true), startIndex, endIndex);
     }
     FPDFText_FindClose(searchHandle);
+    delete [] stringData;
     return count;
 }
 

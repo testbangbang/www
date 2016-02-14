@@ -1,7 +1,10 @@
 package com.onyx.kreader.plugins.pdfium;
 
 import android.graphics.Bitmap;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.utils.StringUtils;
+
+import java.util.List;
 
 /**
  * Created by zengzhu on 2/3/16.
@@ -41,7 +44,7 @@ public class PdfiumJniWrapper {
 
     public native int nativeSelection(int page, int x, int y, int width, int height, int startCharIndex, int endCharIndex, final PdfiumSelection selection);
 
-    public native int nativeSearchInPage(int page, final byte [] buffer, boolean caseSensitive, boolean matchWholeWord);
+    public native int nativeSearchInPage(int page, int x, int y, int width, int height, final byte [] buffer, boolean caseSensitive, boolean matchWholeWord, final List<ReaderSelection> list);
 
     public native byte [] nativeGetPageText(int page);
 
@@ -67,8 +70,8 @@ public class PdfiumJniWrapper {
         return nativeRenderPage(page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap);
     }
 
-    public int searchInPage(int page, final String text, boolean caseSensitive, boolean matchWholeWord) {
-        return nativeSearchInPage(page, StringUtils.utf16leBuffer(text), caseSensitive, matchWholeWord);
+    public void searchInPage(int page, int x, int y, int width, int height, final String text, boolean caseSensitive, boolean matchWholeWord, final List<ReaderSelection> list) {
+        nativeSearchInPage(page, x, y, width, height, StringUtils.utf16leBuffer(text), caseSensitive, matchWholeWord, list);
     }
 
     public String getPageText(int page) {

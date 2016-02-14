@@ -25,6 +25,10 @@ public class ReaderSelectionImpl implements ReaderSelection {
         return object;
     }
 
+    public String getPagePosition() {
+        return null;
+    }
+
     public final String getStartPosition() {
         return startPosition;
     }

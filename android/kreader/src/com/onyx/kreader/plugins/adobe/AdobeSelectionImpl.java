@@ -18,6 +18,10 @@ public class AdobeSelectionImpl implements ReaderSelection {
 
     }
 
+    public String getPagePosition() {
+        return null;
+    }
+
     public void setStartPosition(final String s) {
         start = s;
     }

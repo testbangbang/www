@@ -4,11 +4,16 @@ import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import com.onyx.kreader.api.ReaderBitmap;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper;
+import com.onyx.kreader.plugins.pdfium.PdfiumSelection;
 import com.onyx.kreader.test.ReaderTestActivity;
 import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a simple framework for a test of an Application.  See
@@ -160,8 +165,9 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
         assertTrue(wrapper.nativeInitLibrary());
         assertTrue(wrapper.nativeOpenDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
         String pattern = "广州";
-        int count = wrapper.searchInPage(0, pattern, false, true);
-        assertTrue(count > 0);
+        List<ReaderSelection> list = new ArrayList<ReaderSelection>();
+        wrapper.searchInPage(0, 0, 0, 1024, 768, pattern, false, true, list);
+        assertTrue(list.size() > 0);
         assertTrue(wrapper.nativeCloseDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }

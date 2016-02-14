@@ -30,6 +30,7 @@ import com.onyx.kreader.utils.TestUtils;
 
 import java.io.InvalidObjectException;
 import java.util.*;
+import java.util.concurrent.CancellationException;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -397,6 +398,7 @@ public class ReaderTestActivity extends Activity {
         yScale = xScale;
         drawBitmap(canvas);
         drawHitTest(canvas);
+        drawSearchResult(canvas);
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -415,7 +417,7 @@ public class ReaderTestActivity extends Activity {
 
     private void drawHitTest(final Canvas canvas) {
         PdfiumSelection selection = new PdfiumSelection();
-        int size = wrapper.nativeHitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), (int)startX, (int)startY, (int)endX, (int)endY, selection);
+        int size = wrapper.nativeHitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), (int) startX, (int) startY, (int) endX, (int) endY, selection);
         if (size <= 0) {
             return;
         }
@@ -429,7 +431,25 @@ public class ReaderTestActivity extends Activity {
             final RectF rectangle = selection.getRectangles().get(j);
             canvas.drawRect(rectangle, paint);
         }
-        Log.e(TAG, "select text:  " + selection.getText());
+    }
+
+    private void drawSearchResult(final Canvas canvas) {
+        List<ReaderSelection> list = new ArrayList<ReaderSelection>();
+        wrapper.searchInPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), "资料", false, false, list);
+        if (list.size() <= 0) {
+            return;
+        }
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
+        paint.setXfermode(xorMode);
+        for(ReaderSelection selection: list) {
+            for (int j = 0; j < selection.getRectangles().size(); ++j) {
+                final RectF rectangle = selection.getRectangles().get(j);
+                canvas.drawRect(rectangle, paint);
+            }
+        }
     }
 
 

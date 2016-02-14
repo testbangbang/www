@@ -18,6 +18,8 @@ public interface ReaderSelection {
         VIDEO,
     }
 
+    public String getPagePosition();
+
     /**
      * Retrieve the start position inside document.
      * @return

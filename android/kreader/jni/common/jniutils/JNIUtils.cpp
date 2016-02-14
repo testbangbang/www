@@ -9,17 +9,37 @@
 
 
 
-JNIUtils::JNIUtils(JNIEnv * env, const char * className, const char * method, const char * signature) : myEnv(env) {
-    clazz = env->FindClass(className);
+JNIUtils::JNIUtils(JNIEnv * env) : myEnv(env) {
+}
+
+bool JNIUtils::findMethod(const char * className, const char * method, const char *signature) {
+    clazz = myEnv->FindClass(className);
     if (clazz == 0) {
         LOGE("Could not find class: %s", className);
-        return;
+        return false;
     }
 
-    methodId = env->GetMethodID(clazz, method, signature);
+    methodId = myEnv->GetMethodID(clazz, method, signature);
     if (methodId == 0) {
         LOGE("Find method %s failed", method);
+        return false;
     }
+    return true;
+}
+
+bool JNIUtils::findStaticMethod(const char * className, const char * method, const char *signature) {
+    clazz = myEnv->FindClass(className);
+    if (clazz == 0) {
+        LOGE("Could not find class: %s", className);
+        return false;
+    }
+
+    methodId = myEnv->GetStaticMethodID(clazz, method, signature);
+    if (methodId == 0) {
+        LOGE("Find method %s failed", method);
+        return false;
+    }
+    return true;
 }
 
 JNIUtils::~JNIUtils() {
