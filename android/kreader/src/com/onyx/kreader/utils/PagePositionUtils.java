@@ -16,5 +16,13 @@ public class PagePositionUtils {
         return String.valueOf(pageNumber);
     }
 
+    public static int getPosition(final String position) {
+        return Integer.parseInt(position);
+    }
+
+    public static String fromPosition(int position) {
+        return String.valueOf(position);
+    }
+
 
 }

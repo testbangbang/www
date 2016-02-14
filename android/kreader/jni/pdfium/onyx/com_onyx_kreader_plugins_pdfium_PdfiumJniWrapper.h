@@ -81,11 +81,19 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
- * Method:    hitTest
+ * Method:    nativeHitTest
  * Signature: (IIIIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
  */
-JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hitTest
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
   (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
+
+/*
+ * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    nativeSelection
+ * Signature: (IIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
+ */
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSelection
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper

@@ -192,28 +192,8 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     return count;
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hitTest
-  (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jobject selection) {
-
-    FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
-    FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
-
-    double tolerance = 0;
-    double startPageX, startPageY, endPageX, endPageY;
-    FPDF_DeviceToPage(page, x, y, width, height, 0, sx, sy, &startPageX, &startPageY);
-    FPDF_DeviceToPage(page, x, y, width, height, 0, ex, ey, &endPageX, &endPageY);
-
-    int startIndex = FPDFText_GetCharIndexAtPos(textPage, startPageX, startPageY, tolerance, tolerance);
-    int endIndex = FPDFText_GetCharIndexAtPos(textPage, endPageX, endPageY, tolerance, tolerance);
-
-    if (startIndex < 0 || endIndex < 0) {
-        LOGE("No selection %d %d", startIndex, endIndex);
-        return 0;
-    }
-
+static int reportSelection(JNIEnv *env, FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int start, int end, jobject selection) {
     JNIUtils jniUtils(env, selectionClassName, "addRectangle", "(IIII)V");
-    int start = startIndex < endIndex ? startIndex : endIndex;
-    int end = startIndex < endIndex ? endIndex : startIndex;
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
     int count = end - start + 1;
@@ -233,7 +213,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hit
     {
         int textSize = (count + 1) * sizeof(unsigned short);
         JNIByteArray arrayWrapper(env, textSize);
-        FPDFText_GetText(textPage, startIndex, count, (unsigned short *)arrayWrapper.getBuffer());
+        FPDFText_GetText(textPage, start, count, (unsigned short *)arrayWrapper.getBuffer());
         arrayWrapper.copyToJavaArray();
         JNIUtils utils(env, selectionClassName, "setText", "([B)V");
         env->CallVoidMethod(selection, utils.getMethodId(), arrayWrapper.getByteArray());
@@ -245,6 +225,41 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hit
     }
 
     return count;
+}
+
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
+  (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jobject selection) {
+
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
+    FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
+
+    double tolerance = 0;
+    double startPageX, startPageY, endPageX, endPageY;
+
+    // convert from screen to page
+    FPDF_DeviceToPage(page, x, y, width, height, 0, sx, sy, &startPageX, &startPageY);
+    FPDF_DeviceToPage(page, x, y, width, height, 0, ex, ey, &endPageX, &endPageY);
+
+    // find char index in page
+    int startIndex = FPDFText_GetCharIndexAtPos(textPage, startPageX, startPageY, tolerance, tolerance);
+    int endIndex = FPDFText_GetCharIndexAtPos(textPage, endPageX, endPageY, tolerance, tolerance);
+
+    if (startIndex < 0 || endIndex < 0) {
+        LOGE("No selection %d %d", startIndex, endIndex);
+        return 0;
+    }
+
+    // normalize
+    int start = startIndex < endIndex ? startIndex : endIndex;
+    int end = startIndex < endIndex ? endIndex : startIndex;
+    return reportSelection(env, page, textPage, x, y, width, height, start, end, selection);
+}
+
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSelection
+  (JNIEnv *env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jint startIndex, jint endIndex, jobject selection) {
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
+    FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
+    return reportSelection(env, page, textPage, x, y, width, height, startIndex, endIndex, selection);
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSearchInPage

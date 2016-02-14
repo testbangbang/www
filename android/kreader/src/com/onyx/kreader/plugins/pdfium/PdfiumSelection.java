@@ -2,6 +2,7 @@ package com.onyx.kreader.plugins.pdfium;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -22,15 +23,23 @@ public class PdfiumSelection implements ReaderSelection {
     }
 
     public String getStartPosition() {
-        return null;
+        return PagePositionUtils.fromPosition(startCharIndex);
     }
 
     public String getEndPosition() {
-        return null;
+        return PagePositionUtils.fromPosition(endCharIndex);
     }
 
     public String getText() {
         return text;
+    }
+
+    public int getStartCharIndex() {
+        return startCharIndex;
+    }
+
+    public int getEndCharIndex() {
+        return endCharIndex;
     }
 
     public void setRange(int start, int end) {
