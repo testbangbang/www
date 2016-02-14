@@ -19,7 +19,7 @@ public interface ReaderSelection {
     }
 
     /**
-     * Retrieve the start position.
+     * Retrieve the start position inside document.
      * @return
      */
     public String getStartPosition();

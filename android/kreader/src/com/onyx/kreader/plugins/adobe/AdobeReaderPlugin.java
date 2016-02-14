@@ -4,12 +4,10 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import com.onyx.kreader.api.*;
-import com.onyx.kreader.host.wrapper.ReaderPageInfo;
 import com.onyx.kreader.utils.JniUtils;
-import com.onyx.kreader.utils.PositionUtils;
+import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -94,7 +92,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
 
     public RectF getPageOriginSize(final String position) {
         float size [] = {0, 0};
-        getPluginImpl().pageSizeNative(PositionUtils.getPageNumber(position), size);
+        getPluginImpl().pageSizeNative(PagePositionUtils.getPageNumber(position), size);
         return new RectF(0, 0, size[0], size[1]);
     }
 
@@ -181,7 +179,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String getInitPosition() {
-        return PositionUtils.fromPageNumber(0);
+        return PagePositionUtils.fromPageNumber(0);
     }
 
 
@@ -191,7 +189,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String getPositionByPageNumber(int pageNumber) {
-        return PositionUtils.fromPageNumber(pageNumber);
+        return PagePositionUtils.fromPageNumber(pageNumber);
     }
 
     /**
@@ -221,9 +219,9 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String nextPage(final String position) {
-        int pn = PositionUtils.getPageNumber(position);
+        int pn = PagePositionUtils.getPageNumber(position);
         if (pn + 1 < getTotalPage()) {
-            return PositionUtils.fromPageNumber(pn + 1);
+            return PagePositionUtils.fromPageNumber(pn + 1);
         }
         return null;
     }
@@ -233,9 +231,9 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String prevPage(final String position) {
-        int pn = PositionUtils.getPageNumber(position);
+        int pn = PagePositionUtils.getPageNumber(position);
         if (pn > 0) {
-            return PositionUtils.fromPageNumber(pn - 1);
+            return PagePositionUtils.fromPageNumber(pn - 1);
         }
         return null;
 
@@ -262,7 +260,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public boolean gotoPosition(final String position) {
-        return getPluginImpl().gotoLocationInternal(PositionUtils.getPageNumber(position), null);
+        return getPluginImpl().gotoLocationInternal(PagePositionUtils.getPageNumber(position), null);
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {

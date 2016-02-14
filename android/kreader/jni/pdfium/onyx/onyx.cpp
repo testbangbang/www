@@ -1,5 +1,6 @@
 
 #include "onyx_context.h"
+#include "JNIUtils.h"
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
@@ -26,6 +27,8 @@ void OnyxPdfiumManager::releaseContext(jobject thiz) {
         contextMap.erase(iterator);
     }
 }
+
+static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
 
 /*
  * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
@@ -190,7 +193,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hitTest
-  (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jintArray array) {
+  (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jobject selection) {
 
     FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
@@ -208,13 +211,13 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hit
         return 0;
     }
 
+    JNIUtils jniUtils(env, selectionClassName, "addRectangle", "(IIII)V");
     int start = startIndex < endIndex ? startIndex : endIndex;
     int end = startIndex < endIndex ? endIndex : startIndex;
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
-    int limit = end - start + 1;
-    jint * buffer = new jint[limit * 4];
-    for(int i = 0; i < limit; ++i) {
+    int count = end - start + 1;
+    for(int i = 0; i < count; ++i) {
         FPDFText_GetCharBox(textPage, i + start, &left, &right, &bottom, &top);
         FPDF_PageToDevice(page, x, y, width, height, 0, left, top, &newLeft, &newTop);
         FPDF_PageToDevice(page, x, y, width, height, 0, right, bottom, &newRight, &newBottom);
@@ -224,15 +227,19 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hit
         if (newBottom < newTop) {
             std::swap(newBottom, newTop);
         }
-        buffer[i * 4] = newLeft;
-        buffer[i * 4 + 1] = newTop;
-        buffer[i * 4 + 2] = newRight;
-        buffer[i * 4 + 3] = newBottom;
+        env->CallVoidMethod(selection, jniUtils.getMethodId(), newLeft, newTop, newRight, newBottom);
     }
 
-    env->SetIntArrayRegion(array, 0, limit * 4, buffer);
-    delete [] buffer;
-    return limit;
+    int textSize = (count + 1) * sizeof(unsigned short);
+    jbyte * result = new jbyte[textSize];
+    memset(result, 0, textSize);
+    FPDFText_GetText(textPage, startIndex, count, (unsigned short *)result);
+
+    JNIByteArray arrayWrapper(env, textSize, result);
+    JNIUtils utils(env, selectionClassName, "setText", "([B)V");
+    env->CallVoidMethod(selection, utils.getMethodId(), arrayWrapper.getByteArray());
+    delete [] result;
+    return count;
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSearchInPage

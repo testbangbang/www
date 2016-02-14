@@ -22,6 +22,7 @@ import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper;
+import com.onyx.kreader.plugins.pdfium.PdfiumSelection;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.R;
@@ -413,8 +414,8 @@ public class ReaderTestActivity extends Activity {
     }
 
     private void drawHitTest(final Canvas canvas) {
-        int []data = new int[40960];
-        int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), (int)startX, (int)startY, (int)endX, (int)endY, data);
+        PdfiumSelection selection = new PdfiumSelection();
+        int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), (int)startX, (int)startY, (int)endX, (int)endY, selection);
         if (size <= 0) {
             return;
         }
@@ -424,8 +425,9 @@ public class ReaderTestActivity extends Activity {
         PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
         paint.setXfermode(xorMode);
         xScale = yScale = 1;
-        for(int j = 0; j < size; ++j) {
-            canvas.drawRect(data[j * 4] , data[j * 4 + 1] , data[j * 4 + 2], data[j * 4 + 3] , paint);
+        for(int j = 0; j < selection.getRectangles().size(); ++j) {
+            final RectF rectangle = selection.getRectangles().get(j);
+            canvas.drawRect(rectangle, paint);
         }
     }
 

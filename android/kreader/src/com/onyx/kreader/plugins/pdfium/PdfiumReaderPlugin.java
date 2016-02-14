@@ -1,11 +1,9 @@
 package com.onyx.kreader.plugins.pdfium;
 
 import android.content.Context;
-import android.graphics.PointF;
 import android.graphics.RectF;
 import com.onyx.kreader.api.*;
-import com.onyx.kreader.host.layout.LayoutProviderUtils;
-import com.onyx.kreader.utils.PositionUtils;
+import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
@@ -167,11 +165,11 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public boolean draw(final String page, final float scale, final ReaderBitmap bitmap) {
-        return getPluginImpl().drawPage(PositionUtils.getPageNumber(page), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), bitmap.getBitmap());
+        return getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), bitmap.getBitmap());
     }
 
     public boolean draw(final String page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
-        return getPluginImpl().drawPage(PositionUtils.getPageNumber(page), xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap.getBitmap());
+        return getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap.getBitmap());
     }
 
     /**
@@ -188,7 +186,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String getPositionByPageNumber(int pageNumber) {
-        return PositionUtils.fromPageNumber(pageNumber);
+        return PagePositionUtils.fromPageNumber(pageNumber);
     }
 
 
@@ -219,9 +217,9 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String nextPage(final String position) {
-        int pn = PositionUtils.getPageNumber(position);
+        int pn = PagePositionUtils.getPageNumber(position);
         if (pn + 1 < getTotalPage()) {
-            return PositionUtils.fromPageNumber(pn + 1);
+            return PagePositionUtils.fromPageNumber(pn + 1);
         }
         return null;
     }
@@ -231,9 +229,9 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String prevPage(final String position) {
-        int pn = PositionUtils.getPageNumber(position);
+        int pn = PagePositionUtils.getPageNumber(position);
         if (pn > 0) {
-            return PositionUtils.fromPageNumber(pn - 1);
+            return PagePositionUtils.fromPageNumber(pn - 1);
         }
         return null;
 
@@ -244,7 +242,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String firstPage() {
-        return PositionUtils.fromPageNumber(0);
+        return PagePositionUtils.fromPageNumber(0);
     }
 
     /**
@@ -252,7 +250,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String lastPage() {
-        return PositionUtils.fromPageNumber(getTotalPage() - 1);
+        return PagePositionUtils.fromPageNumber(getTotalPage() - 1);
     }
 
     /**
@@ -299,12 +297,8 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-
-    public boolean viewToDoc(final PointF viewPoint, final PointF documentPoint) {
-        return false;
-    }
-
     public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
+
         return null;
     }
 
@@ -313,6 +307,19 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end) {
+
+        PdfiumSelection selection = new PdfiumSelection();
+
+        getPluginImpl().hitTest(PagePositionUtils.getPageNumber(start.pageName),
+                (int)start.pageDisplayRect.left,
+                (int)start.pageDisplayRect.top,
+                (int)start.pageDisplayRect.width(),
+                (int)start.pageDisplayRect.height(),
+                (int)start.point.x,
+                (int)start.point.y,
+                (int)end.point.x,
+                (int)end.point.y,
+                selection);
         return null;
     }
 

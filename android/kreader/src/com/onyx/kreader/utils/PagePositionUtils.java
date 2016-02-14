@@ -5,7 +5,7 @@ package com.onyx.kreader.utils;
 /**
  * Created by zhuzeng on 10/5/15.
  */
-public class PositionUtils {
+public class PagePositionUtils {
 
 
     public static int getPageNumber(final String position) {
