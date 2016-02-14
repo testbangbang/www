@@ -35,18 +35,15 @@ private:
     FPDF_TEXTPAGE textPage;
 
 public:
-    OnyxPdfiumPage(FPDF_DOCUMENT document, int pageIndex, bool loadTextPage) : page(NULL), textPage(NULL) {
+    OnyxPdfiumPage(FPDF_DOCUMENT document, int pageIndex) : page(NULL), textPage(NULL) {
         if (document != NULL) {
             page = FPDF_LoadPage(document, pageIndex);
-            if (loadTextPage && page != NULL) {
-                textPage = FPDFText_LoadPage(page);
-            }
         }
     }
 
     ~OnyxPdfiumPage() {
         if (textPage != NULL) {
-           FPDFText_ClosePage(textPage);
+            FPDFText_ClosePage(textPage);
             textPage = NULL;
         }
         if (page != NULL) {
@@ -60,20 +57,83 @@ public:
     }
 
     FPDF_TEXTPAGE getTextPage() {
+        if (textPage == NULL && page != NULL) {
+            textPage = FPDFText_LoadPage(page);
+        }
         return textPage;
     }
 
 };
 
-class OnyxPdfiumContext;
-
 class OnyxPdfiumContext {
 
 private:
-    static std::map<jobject, OnyxPdfiumContext *> contextMap;
     FPDF_DOCUMENT document;
     FPDF_BITMAP bitmap;
     std::unordered_map<int, OnyxPdfiumPage *> pageMap;
+
+public:
+    OnyxPdfiumContext(FPDF_DOCUMENT doc)
+        : document(doc)
+        , bitmap(NULL) {
+    }
+    ~OnyxPdfiumContext() {
+        document = NULL;
+        if (bitmap != NULL) {
+            FPDFBitmap_Destroy(bitmap);
+            bitmap = NULL;
+        }
+        clearPages();
+    }
+
+public:
+    FPDF_DOCUMENT getDocument() {
+        return document;
+    }
+
+    FPDF_BITMAP getBitmap(int width, int height, void * pixels, int stride) {
+        if (bitmap == NULL) {
+            bitmap = FPDFBitmap_CreateEx(width, height, FPDFBitmap_BGRA, pixels, stride);
+        }
+        return bitmap;
+    }
+
+    OnyxPdfiumPage * getPdfiumPage(int pageIndex) {
+        std::unordered_map<int, OnyxPdfiumPage *>::iterator iterator = pageMap.find(pageIndex);
+        OnyxPdfiumPage * page = NULL;
+        if (iterator == pageMap.end()) {
+            page = new OnyxPdfiumPage(getDocument(), pageIndex);
+            pageMap[pageIndex] = page;
+        } else {
+            page = iterator->second;
+        }
+        return page;
+    }
+
+    FPDF_PAGE getPage(int pageIndex) {
+        OnyxPdfiumPage * page = getPdfiumPage(pageIndex);
+        return page->getPage();
+    }
+
+    FPDF_TEXTPAGE getTextPage(int pageIndex) {
+        OnyxPdfiumPage * page = getPdfiumPage(pageIndex);
+        return page->getTextPage();
+    }
+
+private:
+    void clearPages() {
+        for(std::unordered_map<int, OnyxPdfiumPage *>::iterator iterator = pageMap.begin(); iterator != pageMap.end(); ++iterator) {
+            delete iterator->second;
+        }
+        pageMap.clear();
+    }
+};
+
+
+class OnyxPdfiumManager {
+
+private:
+    static std::map<jobject, OnyxPdfiumContext *> contextMap;
 
 public:
     static OnyxPdfiumContext * getContext(jobject thiz);
@@ -112,55 +172,7 @@ public:
         return context->getTextPage(pageIndex);
     }
 
-public:
-    OnyxPdfiumContext()
-        : document(NULL)
-        , bitmap(NULL) {
-    }
-    ~OnyxPdfiumContext() {
-        if (bitmap != NULL) {
-            FPDFBitmap_Destroy(bitmap);
-            bitmap = NULL;
-        }
-        // clear page hash map.
-    }
-
-public:
-    FPDF_DOCUMENT getDocument() {
-        return document;
-    }
-
-    FPDF_BITMAP getBitmap(int width, int height, void * pixels, int stride) {
-        if (bitmap == NULL) {
-            bitmap = FPDFBitmap_CreateEx(width, height, FPDFBitmap_BGRA, pixels, stride);
-        }
-        return bitmap;
-    }
-
-    OnyxPdfiumPage * getPdfiumPage(int pageIndex) {
-        std::unordered_map<int, OnyxPdfiumPage *>::iterator iterator = pageMap.find(pageIndex);
-        OnyxPdfiumPage * page = NULL;
-        if (iterator == pageMap.end()) {
-            page = new OnyxPdfiumPage(getDocument(), pageIndex, true);
-            pageMap[pageIndex] = page;
-        } else {
-            page = iterator->second;
-        }
-        return page;
-    }
-
-    FPDF_PAGE getPage(int pageIndex) {
-        OnyxPdfiumPage * page = getPdfiumPage(pageIndex);
-        return page->getPage();
-    }
-
-    FPDF_TEXTPAGE getTextPage(int pageIndex) {
-        OnyxPdfiumPage * page = getPdfiumPage(pageIndex);
-        return page->getTextPage();
-    }
-
 };
-
 
 
 #endif
