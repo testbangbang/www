@@ -199,7 +199,6 @@ static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x,
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
     int count = end - start + 1;
-    LOGE("get selection rectangles %d", count);
     for(int i = 0; i < count; ++i) {
         FPDFText_GetCharBox(textPage, i + start, &left, &right, &bottom, &top);
         FPDF_PageToDevice(page, x, y, width, height, 0, left, top, &newLeft, &newTop);
@@ -253,6 +252,9 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 
     FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
+    if (page == NULL || textPage == NULL) {
+        return 0;
+    }
 
     double tolerance = 0;
     double startPageX, startPageY, endPageX, endPageY;
@@ -280,6 +282,9 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
   (JNIEnv *env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jint startIndex, jint endIndex, jobject selection) {
     FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
+    if (page == NULL || textPage == NULL) {
+        return 0;
+    }
     return reportSelection(env, page, textPage, x, y, width, height, startIndex, endIndex, selection);
 }
 
@@ -318,9 +323,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
         int startIndex = FPDFText_GetSchResultIndex(searchHandle);
         int endIndex = startIndex + FPDFText_GetSchCount(searchHandle);
         std::vector<int> list;
-        LOGE("search before.... %d %d %d %d", count, startIndex, endIndex, list.size());
         getSelectionRectangles(page, textPage, x, y, width, height, startIndex, endIndex, list);
-        LOGE("search after. %d %d %d %d", count, startIndex, endIndex, list.size());
         JNIIntArray intArray(env, list.size(), &list[0]);
         env->CallStaticObjectMethod(utils.getClazz(), utils.getMethodId(), objectList, intArray.getIntArray(true), startIndex, endIndex);
     }

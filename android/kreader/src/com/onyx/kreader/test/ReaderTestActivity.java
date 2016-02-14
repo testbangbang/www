@@ -7,6 +7,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.*;
 import android.widget.Button;
+import android.widget.EditText;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderViewOptions;
 import com.onyx.kreader.common.BaseCallback;
@@ -42,6 +43,7 @@ public class ReaderTestActivity extends Activity {
     final String path = "/mnt/sdcard/Books/a.pdf";
     private int pn = 0;
     private int next = 0;
+    private EditText searchEdit;
     private SurfaceView surfaceView;
     private SurfaceHolder holder;
     private SurfaceHolder.Callback surfaceHolderCallback;
@@ -86,6 +88,9 @@ public class ReaderTestActivity extends Activity {
                 testHyphen();
             }
         });
+
+        searchEdit = (EditText)findViewById(R.id.search);
+
 
         surfaceView = (SurfaceView)findViewById(R.id.surfaceView);
         surfaceHolderCallback = new SurfaceHolder.Callback() {
@@ -435,7 +440,7 @@ public class ReaderTestActivity extends Activity {
 
     private void drawSearchResult(final Canvas canvas) {
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
-        wrapper.searchInPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), "资料", false, false, list);
+        wrapper.searchInPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), searchEdit.getText().toString(), false, false, list);
         if (list.size() <= 0) {
             return;
         }
