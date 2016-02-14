@@ -33,6 +33,11 @@ public class PdfiumSelection implements ReaderSelection {
         return text;
     }
 
+    public void setRange(int start, int end) {
+        startCharIndex = start;
+        endCharIndex = end;
+    }
+
     public void setText(final byte[] data) {
         text = StringUtils.utf16le(data);
     }

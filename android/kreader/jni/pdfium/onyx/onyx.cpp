@@ -230,15 +230,20 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_hit
         env->CallVoidMethod(selection, jniUtils.getMethodId(), newLeft, newTop, newRight, newBottom);
     }
 
-    int textSize = (count + 1) * sizeof(unsigned short);
-    jbyte * result = new jbyte[textSize];
-    memset(result, 0, textSize);
-    FPDFText_GetText(textPage, startIndex, count, (unsigned short *)result);
+    {
+        int textSize = (count + 1) * sizeof(unsigned short);
+        JNIByteArray arrayWrapper(env, textSize);
+        FPDFText_GetText(textPage, startIndex, count, (unsigned short *)arrayWrapper.getBuffer());
+        arrayWrapper.copyToJavaArray();
+        JNIUtils utils(env, selectionClassName, "setText", "([B)V");
+        env->CallVoidMethod(selection, utils.getMethodId(), arrayWrapper.getByteArray());
+    }
 
-    JNIByteArray arrayWrapper(env, textSize, result);
-    JNIUtils utils(env, selectionClassName, "setText", "([B)V");
-    env->CallVoidMethod(selection, utils.getMethodId(), arrayWrapper.getByteArray());
-    delete [] result;
+    {
+        JNIUtils utils(env, selectionClassName, "setRange", "(II)V");
+        env->CallVoidMethod(selection, utils.getMethodId(), start, end);
+    }
+
     return count;
 }
 

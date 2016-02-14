@@ -429,6 +429,7 @@ public class ReaderTestActivity extends Activity {
             final RectF rectangle = selection.getRectangles().get(j);
             canvas.drawRect(rectangle, paint);
         }
+        Log.e(TAG, "select text:  " + selection.getText());
     }
 
 

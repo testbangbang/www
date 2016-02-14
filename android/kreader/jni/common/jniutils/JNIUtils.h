@@ -33,23 +33,37 @@ class JNIByteArray {
 
 private:
 	JNIEnv * myEnv;
+    jbyte * buffer;
+    int size;
     jbyteArray array;
+
 
 public:
 
-	JNIByteArray(JNIEnv *env, int size, jbyte * buffer): myEnv(env), array(0) {
-	 	array = env->NewByteArray(size);
-        env->SetByteArrayRegion(array, 0, size, buffer);
-
+	JNIByteArray(JNIEnv *env, int s): myEnv(env), buffer(0), size(s), array(0) {
+		buffer = new jbyte[size];
+		array = env->NewByteArray(size);
 	}
+
     ~JNIByteArray() {
+    	if (buffer != 0) {
+    		delete [] buffer;
+    	}
     	if (array != 0) {
 			myEnv->DeleteLocalRef(array);
 		}
     }
 
+    jbyte * getBuffer() {
+    	return buffer;
+    }
+
     jbyteArray getByteArray() {
     	return array;
+    }
+
+    void copyToJavaArray() {
+		myEnv->SetByteArrayRegion(array, 0, size, buffer);
     }
 };
 
