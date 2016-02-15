@@ -23,6 +23,9 @@ public class OpenRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        if (!reader.getReaderHelper().selectPlugin(getContext(), documentPath, pluginOptions)) {
+            return;
+        }
         ReaderDocument document = reader.getPlugin().open(documentPath, documentOptions, pluginOptions);
         if (document != null) {
             reader.getReaderHelper().onDocumentOpened(document);

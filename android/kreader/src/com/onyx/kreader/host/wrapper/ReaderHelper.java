@@ -28,6 +28,7 @@ public class ReaderHelper {
     private ReaderBitmapImpl renderBitmap;
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
+    private ReaderCacheManager readerCacheManager = new ReaderCacheManager();
 
     public ReaderHelper(final Reader r) {
         reader = r;
@@ -42,14 +43,18 @@ public class ReaderHelper {
         return (plugin != null);
     }
 
-    public void onDocumentOpened(final ReaderDocument doc)  {
+    public void onDocumentOpened(final ReaderDocument doc) {
         document = doc;
-        view = document.createView(viewOptions);
+    }
+
+    public void onViewChanged() {
+        view = document.getView(viewOptions);
         renderer = view.getRenderer();
         navigator = view.getNavigator();
         rendererFeatures = renderer.getRendererFeatures();
         hitTestManager = view.getReaderHitTestManager();
         getReaderLayoutManager().init();
+        getReaderCacheManager().clear();
     }
 
     public void onDocumentClosed() {
@@ -59,6 +64,7 @@ public class ReaderHelper {
         navigator = null;
         searchManager = null;
         hitTestManager = null;
+        getReaderCacheManager().clear();
     }
 
     public void onLayoutChanged() {
@@ -100,6 +106,10 @@ public class ReaderHelper {
             readerLayoutManager = new ReaderLayoutManager(reader);
         }
         return readerLayoutManager;
+    }
+
+    public ReaderCacheManager getReaderCacheManager() {
+        return readerCacheManager;
     }
 
     public ReaderHitTestManager getHitTestManager() {

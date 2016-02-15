@@ -33,7 +33,7 @@ public class LayoutProviderUtils {
         for(PageInfo pageInfo : visiblePages) {
             String documentPosition = pageInfo.getName();
             final RectF rect = pageInfo.getDisplayRect();
-            renderer.draw(documentPosition, -1.0f, bitmap, (int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom);
+            renderer.draw(documentPosition, pageInfo.getActualScale(), bitmap, (int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom);
         }
     }
 

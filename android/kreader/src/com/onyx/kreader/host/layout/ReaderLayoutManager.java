@@ -6,6 +6,7 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
 
@@ -23,12 +24,6 @@ import java.util.Map;
  * forward everything to layout provider impl.
  */
 public class ReaderLayoutManager {
-
-    public static final String SINGLE_PAGE = "singlePage";
-    public static final String SINGLE_PAGE_NAVIGATION_LIST = "singlePageNavigationList";
-    public static final String CONTINUOUS_PAGE = "continuousPage";
-    public static final String REFLOW_PAGE = "reflowPage";
-    public static final String SCANNED_REFLOW_PAGE = "scanReflowPage";
 
     private Reader reader;
     private ReaderHelper readerHelper;
@@ -62,17 +57,17 @@ public class ReaderLayoutManager {
         boolean supportScale = reader.getRendererFeatures().supportScale();
         boolean supportReflow = reader.getRendererFeatures().supportFontSizeAdjustment();
         if (supportScale) {
-            provider.put(SINGLE_PAGE, new LayoutSinglePageProvider(this));
-            provider.put(SINGLE_PAGE_NAVIGATION_LIST, new LayoutSinglePageNavigationListProvider(this));
-            provider.put(CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
+            provider.put(ReaderConstants.SINGLE_PAGE, new LayoutSinglePageProvider(this));
+            provider.put(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, new LayoutSinglePageNavigationListProvider(this));
+            provider.put(ReaderConstants.CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
         }
         if (supportReflow) {
-            provider.put(REFLOW_PAGE, new LayoutReflowProvider(this));
+            provider.put(ReaderConstants.REFLOW_PAGE, new LayoutReflowProvider(this));
         }
         if (supportScale) {
-            currentProvider = SINGLE_PAGE;
+            currentProvider = ReaderConstants.SINGLE_PAGE;
         } else {
-            currentProvider = REFLOW_PAGE;
+            currentProvider = ReaderConstants.REFLOW_PAGE;
         }
         getCurrentLayoutProvider().activate();
     }

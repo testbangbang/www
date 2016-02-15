@@ -14,13 +14,6 @@ public class ReaderManager {
 
     static HashMap<String, Reader> readerHashMap = new HashMap<String, Reader>();
 
-    public static Reader getReader(final String path) {
-        if (readerHashMap.containsKey(path)) {
-            return readerHashMap.get(path);
-        }
-        return null;
-    }
-
     public static boolean releaseReader(final String path) {
         if (readerHashMap.containsKey(path)) {
             readerHashMap.remove(path);
@@ -29,11 +22,12 @@ public class ReaderManager {
         return false;
     }
 
-    public static Reader createReader(final Context context, final String path, final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
-        Reader reader = new Reader();
-        reader.init(pluginOptions, viewOptions);
-        reader.getReaderHelper().selectPlugin(context, path, pluginOptions);
-        readerHashMap.put(path, reader);
+    public static Reader getReader(final String path) {
+        Reader reader = readerHashMap.get(path);
+        if (reader == null) {
+            reader = new Reader();
+            readerHashMap.put(path, reader);
+        }
         return reader;
     }
 

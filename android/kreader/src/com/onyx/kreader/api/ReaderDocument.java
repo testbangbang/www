@@ -34,11 +34,11 @@ public interface ReaderDocument {
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc);
 
     /**
-     * create corresponding view.
+     * Get corresponding view.
      * @param viewOptions The view options.
      * @return The created view. null if failed.
      */
-    public ReaderView createView(final ReaderViewOptions viewOptions);
+    public ReaderView getView(final ReaderViewOptions viewOptions);
 
     /**
      * Close the document.

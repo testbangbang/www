@@ -31,7 +31,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/a.pdf", null, null);
         assertNotNull(document);
         ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl(1024, 768);
-        ReaderView readerView = document.createView(viewOptions);
+        ReaderView readerView = document.getView(viewOptions);
         assertNotNull(readerView);
         ReaderBitmap readerBitmap = new ReaderBitmapImpl(viewOptions.getViewWidth(), viewOptions.getViewHeight(), Bitmap.Config.ARGB_8888);
         ReaderNavigator navigator = readerView.getNavigator();
@@ -51,7 +51,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         assertNotNull(document);
 
         ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl(TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
-        ReaderView readerView = document.createView(viewOptions);
+        ReaderView readerView = document.getView(viewOptions);
         assertNotNull(readerView);
         ReaderBitmap readerBitmap = new ReaderBitmapImpl(viewOptions.getViewWidth(), viewOptions.getViewHeight(), Bitmap.Config.ARGB_8888);
         ReaderNavigator navigator = readerView.getNavigator();

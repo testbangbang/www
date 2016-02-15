@@ -100,7 +100,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public ReaderView createView(final ReaderViewOptions viewOptions) {
+    public ReaderView getView(final ReaderViewOptions viewOptions) {
         return this;
     }
 

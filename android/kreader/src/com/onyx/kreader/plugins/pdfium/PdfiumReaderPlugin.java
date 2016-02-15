@@ -98,7 +98,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public ReaderView createView(final ReaderViewOptions viewOptions) {
+    public ReaderView getView(final ReaderViewOptions viewOptions) {
         return this;
     }
 
@@ -309,14 +309,14 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end) {
         PdfiumSelection selection = new PdfiumSelection();
         getPluginImpl().nativeHitTest(PagePositionUtils.getPageNumber(start.pageName),
-                (int)start.pageDisplayRect.left,
-                (int)start.pageDisplayRect.top,
-                (int)start.pageDisplayRect.width(),
-                (int)start.pageDisplayRect.height(),
-                (int)start.point.x,
-                (int)start.point.y,
-                (int)end.point.x,
-                (int)end.point.y,
+                (int) start.pageDisplayRect.left,
+                (int) start.pageDisplayRect.top,
+                (int) start.pageDisplayRect.width(),
+                (int) start.pageDisplayRect.height(),
+                (int) start.point.x,
+                (int) start.point.y,
+                (int) end.point.x,
+                (int) end.point.y,
                 selection);
         return null;
     }

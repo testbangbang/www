@@ -8,17 +8,16 @@ import android.util.Pair;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
+import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderViewOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
-import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.host.math.PageManager;
-import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.navigation.NavigationList;
+import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
@@ -31,7 +30,6 @@ import com.onyx.kreader.utils.TestUtils;
 
 import java.io.InvalidObjectException;
 import java.util.*;
-import java.util.concurrent.CancellationException;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -146,13 +144,27 @@ public class ReaderTestActivity extends Activity {
         return new ReaderViewOptionsImpl(surfaceView.getWidth(), surfaceView.getHeight());
     }
 
+    public ReaderPluginOptions getPluginOptions() {
+        return new ReaderPluginOptionsImpl();
+    }
+
     public void testReaderOpen() {
-        reader = ReaderManager.createReader(this, path, null, getViewOptions());
-        BaseRequest open = new OpenRequest(path, null, null);
+        reader = ReaderManager.getReader(path);
+        BaseRequest open = new OpenRequest(path, null, getPluginOptions());
         reader.submitRequest(this, open, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
+                testConfigView();
+            }
+        });
+    }
+
+    public void testConfigView() {
+        BaseRequest config = new ConfigViewRequest(surfaceView.getWidth(), surfaceView.getHeight());
+        reader.submitRequest(this, config, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
                 testChangeLayout();
             }
         });
@@ -160,7 +172,7 @@ public class ReaderTestActivity extends Activity {
 
     public void testChangeLayout() {
         NavigationArgs navigationArgs = NavigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, null);
-        BaseRequest request = new ChangeLayoutRequest(ReaderLayoutManager.SINGLE_PAGE, navigationArgs);
+        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, navigationArgs);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {

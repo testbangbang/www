@@ -2,6 +2,7 @@ package com.onyx.kreader.host.math;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+import com.onyx.kreader.host.options.ReaderConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,17 +16,7 @@ import java.util.Map;
  */
 public class PageManager {
 
-    public static final int SCALE_TO_PAGE = -1;
-    public static final int SCALE_TO_WIDTH = -2;
-    public static final int SCALE_TO_HEIGHT = -3;
-    public static final int SCALE_TO_PAGE_CONTENT = -4;
-    public static final int SCALE_TO_WIDTH_CONTENT = -5;
-    public static final int ZOOM_TO_SCAN_REFLOW = -6;
-    public static final int ZOOM_TO_REFLOW = -7;
-    public static final int ZOOM_TO_COMICE = -8;
-    public static final int ZOOM_TO_PAPER = -9;
-
-    private int specialScale = SCALE_TO_PAGE;
+    private int specialScale = ReaderConstants.SCALE_TO_PAGE;
     private float actualScale = 1.0f;
     private float topMargin, leftMargin, rightMargin, bottomMargin;
     private float spacing;
@@ -117,7 +108,7 @@ public class PageManager {
     }
 
     public boolean scaleToPage() {
-        specialScale = SCALE_TO_PAGE;
+        specialScale = ReaderConstants.SCALE_TO_PAGE;
         updateVisiblePages();
         if (visible.size() <= 0) {
             return false;
@@ -133,7 +124,7 @@ public class PageManager {
     }
 
     public boolean scaleToWidth() {
-        specialScale = SCALE_TO_WIDTH;
+        specialScale = ReaderConstants.SCALE_TO_WIDTH;
         updateVisiblePages();
         if (visible.size() <= 0) {
             return false;
@@ -300,23 +291,23 @@ public class PageManager {
     }
 
     public boolean isScaleToPage() {
-        return specialScale == SCALE_TO_PAGE;
+        return specialScale == ReaderConstants.SCALE_TO_PAGE;
     }
 
     public boolean isScaleToWidth() {
-        return specialScale == SCALE_TO_WIDTH;
+        return specialScale == ReaderConstants.SCALE_TO_WIDTH;
     }
 
     public boolean isScaleToHeight() {
-        return specialScale == SCALE_TO_HEIGHT;
+        return specialScale == ReaderConstants.SCALE_TO_HEIGHT;
     }
 
     public boolean isPageCrop() {
-        return specialScale == SCALE_TO_PAGE_CONTENT;
+        return specialScale == ReaderConstants.SCALE_TO_PAGE_CONTENT;
     }
 
     public boolean isWidthCrop() {
-        return specialScale == SCALE_TO_WIDTH_CONTENT;
+        return specialScale == ReaderConstants.SCALE_TO_WIDTH_CONTENT;
     }
 
 }

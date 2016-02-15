@@ -1,0 +1,502 @@
+package com.onyx.kreader.host.options;
+
+import android.content.Context;
+import android.graphics.RectF;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.onyx.kreader.host.wrapper.ReaderPageInfo;
+import com.onyx.kreader.utils.GObject;
+
+import java.util.List;
+
+/**
+ * Key value map.
+ * User: zhuzeng
+ * Date: 12/27/13
+ * Time: 9:56 PM
+ * To change this template use File | Settings | File Templates.
+ */
+public class ReaderOptions  {
+
+    transient static public final String SCALE_TAG = "zoom";
+    transient static public final String ACTUAL_SCALE_TAG = "actual_zoom";
+    transient static public final String MANUAL_CROP_REGION_TAG = "manual_crop_region";
+    transient static public final String SCREEN_SPLIT_POINT_TAG = "screen_split_point";
+    transient static public final String FONT_SIZE_TAG = "font_size";
+    transient static public final String DEFAULT_FONT_SIZE = "default_font_size";
+    transient static public final String FONT_FACE_TAG = "font_face";
+    transient static public final String LINE_SPACING_TAG = "line_spacing";
+    transient static public final String PARAGRAPH_INDENT_TAG = "para_indent";
+    transient static public final String LAYOUT_TYPE_TAG = "layout_type";
+    transient static public final String LOCATION_TAG = "location";
+    transient static public final String PASSWORD_TAG = "ps";
+    transient static public final String ZIP_PASSWORD_TAG = "zip_pass";
+    transient static public final String PAGE_NUMBER_TAG = "pn";
+    transient static public final String READER_MATRIX_TAG = "rm";
+    transient static public final String READER_NAVIGATION_MATRIX_TAG = "nav_mode";
+    transient static public final String CURRENT_PAGE_TAG = "current_page";
+    transient static public final String TOTAL_PAGE_TAG = "total_page";
+    transient static public final String CROP_LIST = "crop_list";
+    transient static public final String CROP_VALUE = "crop_value";
+    transient static public final String GAMMA_LEVEL = "gamma_level";
+    transient static public final String ENHANCE_LEVEL = "enhance_level";
+    transient static public final String NAVIGATION_MODE = "navigation_mode";
+    transient static public final String NAVIGATION_ROWS = "navigation_rows";
+    transient static public final String NAVIGATION_COLUMNS = "navigation_columns";
+    transient static public final String NAVIGATION_CURRENT_ROW = "current_navigation_row";
+    transient static public final String NAVIGATION_CURRENT_COLUMN = "current_navigation_column";
+
+    transient static public final String PAGE_LEFT_MARGIN = "page_left_margin";
+    transient static public final String PAGE_TOP_MARGIN = "page_top_margin";
+    transient static public final String PAGE_RIGHT_MARGIN = "page_right_margin";
+    transient static public final String PAGE_BOTTOM_MARGIN = "page_bottom_margin";
+    transient static public final String REFLOW_SETTINGS = "reflow_settings";
+    transient static public final String WAVEFORM_MODE = "waveform";
+    transient static public final String RESET_SCALE = "reset_scale";
+    transient static public final String ORIENTATION = "orientation";
+
+    private GObject backend;
+    private static final double fallbackFontSize = 8.0;
+    public static double defaultFontSize = fallbackFontSize;
+
+    public ReaderOptions() {
+        super();
+        backend = new GObject();
+    }
+
+    public void clear() {
+        backend.getBackend().clear();
+    }
+
+    public GObject getBackend() {
+        return backend;
+    }
+
+    public void setBackend(final GObject b) {
+        backend = b;
+    }
+
+    static ReaderOptions optionFromJSONObject(final JSONObject object) {
+        ReaderOptions options = new ReaderOptions();
+        options.backend.setBackend(object);
+        return options;
+    }
+
+    public String getPassword() {
+        if (backend.hasKey(PASSWORD_TAG)) {
+            String password = backend.getString(PASSWORD_TAG);
+            if (password == null) {
+                return "";
+            }
+            return password;
+        }
+        return "";
+    }
+
+    public void setPassword(final String password) {
+        backend.putString(PASSWORD_TAG, password);
+    }
+
+    public String getZipPassword() {
+        if (backend.hasKey(ZIP_PASSWORD_TAG)) {
+            String zipPassword = backend.getString(ZIP_PASSWORD_TAG);
+            if (zipPassword == null) {
+                return "";
+            }
+            return zipPassword;
+        }
+        return "";
+    }
+
+    public void setZipPassword(final String zipPassword) {
+        backend.putString(ZIP_PASSWORD_TAG, zipPassword);
+    }
+
+    public void setLastAccessedLocation(final String location) {
+        backend.putString(LOCATION_TAG, location);
+    }
+
+    public final String getLastAccessedLocation() {
+        return backend.getString(LOCATION_TAG);
+    }
+
+    public void setCropThreshold(double value) {
+        backend.putDouble(CROP_VALUE, value);
+    }
+
+    public double getCropThreshold() {
+        if (!backend.hasKey(CROP_VALUE)) {
+            return 0.0;
+        }
+        return backend.getDouble(CROP_VALUE);
+    }
+
+    static public double getDefaultCropValue() {
+        return 0.01;
+    }
+
+    public float getGammaLevel() {
+        if (!backend.hasKey(GAMMA_LEVEL)) {
+            return ReaderConstants.DEFAULT_GAMMA;
+        }
+        return backend.getFloat(GAMMA_LEVEL);
+    }
+
+    public void setGamma(float gamma) {
+        backend.putFloat(GAMMA_LEVEL, gamma);
+    }
+
+    public int getEmboldenLevel() {
+        if (!backend.hasKey(ENHANCE_LEVEL)) {
+            return 0;
+        }
+        return backend.getInt(ENHANCE_LEVEL);
+    }
+
+    public void setEmboldenLevel(int level) {
+        backend.putInt(ENHANCE_LEVEL, level);
+    }
+
+    public String getLayoutType() {
+        return backend.getString(LAYOUT_TYPE_TAG);
+    }
+
+    public void setLayoutType(final String type) {
+        backend.putString(LAYOUT_TYPE_TAG, type);
+    }
+
+    public double getScale()  {
+        if (backend.hasKey(SCALE_TAG)) {
+            return backend.getDouble(SCALE_TAG);
+        }
+        return getDefaultScale();
+    }
+
+    public void setScale(double value) {
+        backend.putDouble(SCALE_TAG, value);
+    }
+
+    public double getActualScale() {
+        return backend.getDouble(ACTUAL_SCALE_TAG);
+    }
+
+    public List<RectF> getManualCropRegions() {
+        try {
+            return JSONObject.parseArray(backend.getString(MANUAL_CROP_REGION_TAG), RectF.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void setManualCropRegions(List<RectF> cropRegions) {
+        backend.putObject(MANUAL_CROP_REGION_TAG, cropRegions);
+    }
+
+
+    static public double getDefaultScale() {
+        return ReaderConstants.SCALE_TO_PAGE;
+    }
+
+    static public double getScaleDelta() {
+        return 0.5;
+    }
+
+    static public double getMaxFontSize() {
+        return 15;
+    }
+
+    static public double getMinFontSize() {
+        return 1.0;
+    }
+
+    public static double getDefaultStreamDocFontSize() {
+        return defaultFontSize;
+    }
+
+    public static double getDefaultFixedPageFontSize() {
+        return 1.1;
+    }
+
+    public static void setDefaultStreamDocFontSize(double fontSize) {
+        defaultFontSize = fontSize;
+    }
+
+    static public double getFontSizeDelta(boolean streamDoc) {
+        if (streamDoc) {
+            return getStreamDocFontSizeDelta();
+        }
+        return getFixedPageFontSizeDelta();
+    }
+
+    static public double getStreamDocFontSizeDelta() {
+        return 1;
+    }
+
+    static public double getFixedPageFontSizeDelta() {
+        return 1;
+    }
+
+    static public double fontSizeForStreamDoc(double size) {
+        return size * 6 + 6;
+    }
+
+    static public double fontSizeFromActualPixelSize(int pixelSize) {
+        return (pixelSize / 6) - 1;
+    }
+
+    public double getFontSize() {
+        if (!backend.hasKey(FONT_SIZE_TAG)) {
+            return getDefaultStreamDocFontSize();
+        }
+        double size = backend.getDouble(FONT_SIZE_TAG);
+        if (size <= 0) {
+            return getDefaultStreamDocFontSize();
+        }
+        return size;
+    }
+
+    public void setFontSize(double size) {
+        backend.putDouble(FONT_SIZE_TAG, size);
+    }
+
+    public String getFontFace() {
+        if (!backend.hasKey(FONT_FACE_TAG)) {
+            return null;
+        }
+        return backend.getString(FONT_FACE_TAG);
+    }
+
+    public int getLineSpacing() {
+        if (!backend.hasKey(LINE_SPACING_TAG)) {
+            return ReaderConstants.DEFAULT_LINE_SPACING;
+        }
+        return backend.getInt(LINE_SPACING_TAG);
+    }
+
+    public float getParagraphIndent() {
+        if (!backend.hasKey(PARAGRAPH_INDENT_TAG)) {
+            return ReaderConstants.DEFAULT_PARAGRAPH_INDENT;
+        }
+        return backend.getFloat(PARAGRAPH_INDENT_TAG);
+    }
+
+    public void setFontFace(String fontName) {
+        backend.putString(FONT_FACE_TAG, fontName);
+    }
+
+    public void setLineSpacing(int lineSpacing) {
+        backend.putInt(LINE_SPACING_TAG, lineSpacing);
+    }
+
+    public void setParagraphIndent(final float indent) {
+        backend.putFloat(PARAGRAPH_INDENT_TAG, indent);
+    }
+
+    public void setPageNumber(int pageNumber) {
+        backend.putInt(PAGE_NUMBER_TAG, pageNumber);
+    }
+
+    public int getPageNumber() {
+        return backend.getInt(PAGE_NUMBER_TAG);
+    }
+
+
+    public final String getReaderMatrix() {
+        return  backend.getString(READER_MATRIX_TAG);
+    }
+
+    public final String getReaderNavigationMatrix() {
+        return  backend.getString(READER_NAVIGATION_MATRIX_TAG);
+    }
+
+    public int getCurrentPage() {
+        return backend.getInt(CURRENT_PAGE_TAG);
+    }
+
+    public void setCurrentPage(int c) {
+        backend.putInt(CURRENT_PAGE_TAG, c);
+    }
+
+    public int getTotalPage() {
+        return backend.getInt(TOTAL_PAGE_TAG);
+    }
+
+    public void setTotalPage(int t) {
+        backend.putInt(TOTAL_PAGE_TAG, t);
+    }
+
+    public void setCropList(final List<ReaderPageInfo> list) {
+        backend.putList(CROP_LIST, list);
+    }
+
+    public final List<ReaderPageInfo> getCropList() {
+        return (List<ReaderPageInfo>)backend.getList(CROP_LIST);
+    }
+
+
+    public int getValue(final String key, int low, int up, int defaultValue) {
+        if (backend.hasKey(key)) {
+            int value = backend.getInt(key);
+            if (value >= low && value <= up) {
+                return value;
+            }
+        }
+        return defaultValue;
+    }
+
+    public int getNavigationRows() {
+        return getValue(NAVIGATION_ROWS, 1, 3, getDefaultNavigationRows());
+    }
+
+    public void setNavigationRows(int rows){
+        backend.putInt(NAVIGATION_ROWS, rows);
+    }
+
+    public int getNavigationColumns() {
+        return getValue(NAVIGATION_COLUMNS, 1,3, getDefaultNavigationRows());
+    }
+
+    public void setNavigationColumns(int columns){
+        backend.putInt(NAVIGATION_COLUMNS, columns);
+    }
+
+    public int getCurrentNavigationRow() {
+        return getValue(NAVIGATION_CURRENT_ROW, 0, 2, getDefaultNavigationInitRow());
+    }
+
+    public void setCurrentNavigationRow(int row) {
+        backend.putInt(NAVIGATION_CURRENT_ROW, row);
+    }
+
+    public int getCurrentNavigationColumn() {
+        return getValue(NAVIGATION_CURRENT_COLUMN, 0, 2, getDefaultNavigationInitColumn());
+    }
+
+    public void setCurrentNavigationColumn(int column) {
+        backend.putInt(NAVIGATION_CURRENT_COLUMN, column);
+    }
+
+
+    static public int getDefaultNavigationRows() {
+        return 1;
+    }
+
+    static public int getDefaultNavigationColumns() {
+        return 1;
+    }
+
+    static public int getDefaultNavigationInitRow() {
+        return 0;
+    }
+
+    static public int getDefaultNavigationInitColumn() {
+        return 0;
+    }
+
+    static public int maxEmboldenLevel() {
+        return 5;
+    }
+
+    static public int minEmboldenLevel() {
+        return 0;
+    }
+
+    static public int maxGammaLevel() {
+        return 200;
+    }
+
+    static public int minGammaLevel() {
+        return 100;
+    }
+
+    public int getLeftMargin() {
+        if (backend.hasKey(PAGE_LEFT_MARGIN)) {
+            return backend.getInt(PAGE_LEFT_MARGIN);
+        }
+        return getDefaultMargin();
+    }
+
+    public void setLeftMargin(int value) {
+        backend.putInt(PAGE_LEFT_MARGIN, value);
+    }
+
+    public int getTopMargin() {
+        if (backend.hasKey(PAGE_TOP_MARGIN)) {
+            return backend.getInt(PAGE_TOP_MARGIN);
+        }
+        return getDefaultMargin();
+    }
+
+    public void setTopMargin(int value) {
+        backend.putInt(PAGE_TOP_MARGIN, value);
+    }
+
+    public int getRightMargin() {
+        if (backend.hasKey(PAGE_RIGHT_MARGIN)) {
+            return backend.getInt(PAGE_RIGHT_MARGIN);
+        }
+        return getDefaultMargin();
+    }
+
+    public void setRightMargin(int value) {
+        backend.putInt(PAGE_RIGHT_MARGIN, value);
+    }
+
+    public int getBottomMargin() {
+        if (backend.hasKey(PAGE_BOTTOM_MARGIN)) {
+            return backend.getInt(PAGE_BOTTOM_MARGIN);
+        }
+        return getDefaultMargin();
+    }
+
+    public void setBottomMargin(int value) {
+        backend.putInt(PAGE_BOTTOM_MARGIN, value);
+    }
+
+    static public int getDefaultMargin() {
+        return 10;
+    }
+
+    public void setReflowOptions(final String settings) {
+        backend.putString(REFLOW_SETTINGS, settings);
+    }
+
+    public final String getReflowSettings() {
+        if (backend.hasKey(REFLOW_SETTINGS)) {
+            return backend.getString(REFLOW_SETTINGS);
+        }
+        return null;
+    }
+
+    public final String getWaveformMode() {
+        if (backend.hasKey(WAVEFORM_MODE)) {
+            return backend.getString(WAVEFORM_MODE);
+        }
+        return null;
+    }
+
+    public boolean getResetScale() {
+        if (backend.hasKey(RESET_SCALE)) {
+            return backend.getBoolean(RESET_SCALE);
+        }
+        return false;
+    }
+
+    public int getOrientation() {
+        if (backend.hasKey(ORIENTATION)) {
+            return backend.getInt(ORIENTATION);
+        }
+        return -1;
+    }
+
+    public void setOrientation(int orientation) {
+        backend.putInt(ORIENTATION, orientation);
+    }
+
+    public static double getFallbackFontSize(Context context){
+        double fallFontSize = fallbackFontSize;
+        fallFontSize = 0;//context.getResources().getInteger(R.integer.default_font_size);
+        return fallFontSize;
+    }
+}

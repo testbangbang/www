@@ -210,6 +210,10 @@ public class Reader {
         return getReaderHelper().getReaderLayoutManager();
     }
 
+    public ReaderCacheManager getReaderCacheManager() {
+        return getReaderHelper().getReaderCacheManager();
+    }
+
     public ReaderBitmap getRenderBitmap() {
         return getReaderHelper().getRenderBitmap();
     }

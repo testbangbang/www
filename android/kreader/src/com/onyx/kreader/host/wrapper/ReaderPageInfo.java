@@ -34,8 +34,6 @@ public class ReaderPageInfo {
     public int pageNumber;
     public String location;
 
-
-
     public void clearAutoCropInfo() {
         autoCropContentRegion = null;
         autoCropScale = 0;

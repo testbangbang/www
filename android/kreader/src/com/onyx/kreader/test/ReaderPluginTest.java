@@ -60,7 +60,7 @@ public class ReaderPluginTest {
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();
-        ReaderView readerView = document.createView(viewOptions);
+        ReaderView readerView = document.getView(viewOptions);
 
         ReaderNavigator navigator = readerView.getNavigator();
         ReaderRenderer renderer = readerView.getRenderer();
@@ -83,7 +83,7 @@ public class ReaderPluginTest {
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();
-        ReaderView readerView = document.createView(viewOptions);
+        ReaderView readerView = document.getView(viewOptions);
 
         ReaderNavigator navigator = readerView.getNavigator();
         ReaderRenderer renderer = readerView.getRenderer();
@@ -115,7 +115,7 @@ public class ReaderPluginTest {
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();
-        ReaderView readerView = document.createView(viewOptions);
+        ReaderView readerView = document.getView(viewOptions);
 
 
         ReaderNavigator navigator = readerView.getNavigator();
@@ -154,7 +154,7 @@ public class ReaderPluginTest {
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();
-        ReaderView readerView = document.createView(viewOptions);
+        ReaderView readerView = document.getView(viewOptions);
 
         ReaderNavigator navigator = readerView.getNavigator();
         ReaderRenderer renderer = readerView.getRenderer();
@@ -198,7 +198,7 @@ public class ReaderPluginTest {
         ReaderBitmap readerBitmap = defaultBitmap();
 
         ReaderViewOptions viewOptions = defaultViewOptions();
-        ReaderView readerView = document.createView(viewOptions);
+        ReaderView readerView = document.getView(viewOptions);
 
         ReaderNavigator navigator = readerView.getNavigator();
         ReaderRenderer renderer = readerView.getRenderer();
