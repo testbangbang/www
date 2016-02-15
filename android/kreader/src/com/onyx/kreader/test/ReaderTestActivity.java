@@ -404,6 +404,7 @@ public class ReaderTestActivity extends Activity {
         drawBitmap(canvas);
         drawHitTest(canvas);
         drawSearchResult(canvas);
+        drawSentences(canvas);
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -456,6 +457,31 @@ public class ReaderTestActivity extends Activity {
             }
         }
     }
+
+    private void drawSentences(final Canvas canvas) {
+        String text = wrapper.getPageText(currentPage);
+        int start = 0;
+        int end = -1;
+        List<ReaderSelection> list = new ArrayList<ReaderSelection>();
+        while ((end = text.indexOf("\n", start)) > 0) {
+            PdfiumSelection selection = new PdfiumSelection();
+            wrapper.nativeSelection(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), start, end, selection);
+            list.add(selection);
+            start = end + 1;
+        }
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
+        paint.setXfermode(xorMode);
+        for(ReaderSelection selection: list) {
+            for (int j = 0; j < selection.getRectangles().size(); ++j) {
+                final RectF rectangle = selection.getRectangles().get(j);
+                canvas.drawLine(rectangle.left, rectangle.bottom, rectangle.right, rectangle.bottom, paint);
+            }
+        }
+    }
+
 
 
     @Override
