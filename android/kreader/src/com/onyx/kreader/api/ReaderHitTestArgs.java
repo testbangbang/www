@@ -12,5 +12,10 @@ public class ReaderHitTestArgs {
     public RectF pageDisplayRect;
     public PointF point;
 
+    public ReaderHitTestArgs(final String name, final RectF rect, final PointF p) {
+        pageName = name;
+        pageDisplayRect = rect;
+        point = p;
+    }
 
 }

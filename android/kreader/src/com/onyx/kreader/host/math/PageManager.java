@@ -241,6 +241,14 @@ public class PageManager {
         return list.get(0);
     }
 
+    public String getFirstVisiblePageName() {
+        PageInfo pageInfo = getFirstVisiblePage();
+        if (pageInfo == null) {
+            return null;
+        }
+        return pageInfo.getName();
+    }
+
     public List<PageInfo> getVisiblePages() {
         return visible;
     }

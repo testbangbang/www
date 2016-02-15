@@ -2,6 +2,7 @@ package com.onyx.kreader.common;
 
 import android.content.Context;
 import com.onyx.kreader.api.ReaderBitmap;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -24,7 +25,7 @@ public abstract class BaseRequest {
     private Exception exception;
     private ReaderBitmap renderBitmap;
     private List<PageInfo> visiblePages;
-
+    private List<ReaderSelection> selectionList;
 
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
@@ -85,7 +86,6 @@ public abstract class BaseRequest {
         return enableBenchmarkDebug;
     }
 
-
     public void benchmarkStart() {
         if (!isEnableBenchmarkDebug()) {
             return;
@@ -128,8 +128,12 @@ public abstract class BaseRequest {
         renderBitmap = reader.getReaderHelper().getRenderBitmap();
     }
 
-    public void clearBitmap(final Reader reader) {
-        reader.getReaderHelper().getRenderer().clear(reader.getReaderHelper().getRenderBitmap());
+    public final List<PageInfo> getVisiblePages() {
+        return visiblePages;
+    }
+
+    public final List<ReaderSelection> getSelectionList() {
+        return selectionList;
     }
 
     public void beforeExecute(final Reader reader) {

@@ -15,7 +15,6 @@ import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
-import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
@@ -161,7 +160,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testConfigView() {
-        BaseRequest config = new ConfigViewRequest(surfaceView.getWidth(), surfaceView.getHeight());
+        BaseRequest config = new CreateViewRequest(surfaceView.getWidth(), surfaceView.getHeight());
         reader.submitRequest(this, config, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -272,7 +271,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testHitTestWithoutRendering() {
-        final SelectionRequest request = new SelectionRequest(new PointF(200, 200), new PointF(250, 300));
+        final AnnotationRequest request = new AnnotationRequest(String.valueOf(currentPage), new PointF(200, 200), new PointF(250, 300));
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest baseRequest, Exception e) {

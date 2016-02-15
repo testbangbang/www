@@ -47,7 +47,7 @@ public class ReaderHelper {
         document = doc;
     }
 
-    public void onViewChanged() {
+    public void onViewCreated() {
         view = document.getView(viewOptions);
         renderer = view.getRenderer();
         navigator = view.getNavigator();

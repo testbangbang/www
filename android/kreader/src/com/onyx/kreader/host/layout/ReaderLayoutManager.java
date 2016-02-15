@@ -9,6 +9,7 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
+import com.onyx.kreader.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,8 +85,17 @@ public class ReaderLayoutManager {
         if (!provider.containsKey(layoutName)) {
             return false;
         }
+
+        // before change layout, record current position.
+        String pagePosition = getCurrentPageName();
+
         currentProvider = layoutName;
         getCurrentLayoutProvider().activate();
+
+        // goto the stored page
+        if (StringUtils.isNonBlank(pagePosition)) {
+            getCurrentLayoutProvider().gotoPosition(pagePosition);
+        }
         return true;
     }
 
@@ -144,8 +154,8 @@ public class ReaderLayoutManager {
         // make sure it's different from stack top.
     }
 
-    public String getCurrentPagePosition() {
-        return getPageManager().getFirstVisiblePage().getName();
+    public String getCurrentPageName() {
+        return getPageManager().getFirstVisiblePageName();
     }
 
     public boolean gotoPosition(final String position) throws ReaderException {

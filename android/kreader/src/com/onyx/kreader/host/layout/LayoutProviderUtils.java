@@ -2,10 +2,8 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -112,12 +110,12 @@ public class LayoutProviderUtils {
     }
 
     static public String nextPage(final ReaderLayoutManager layoutManager) {
-        String currentPagePosition = layoutManager.getCurrentPagePosition();
+        String currentPagePosition = layoutManager.getCurrentPageName();
         return layoutManager.getReader().getNavigator().nextPage(currentPagePosition);
     }
 
     static public String prevPage(final ReaderLayoutManager layoutManager) {
-        String currentPagePosition = layoutManager.getCurrentPagePosition();
+        String currentPagePosition = layoutManager.getCurrentPageName();
         return layoutManager.getReader().getNavigator().prevPage(currentPagePosition);
     }
 
