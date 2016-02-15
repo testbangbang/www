@@ -52,9 +52,6 @@ public class ReaderLayoutManager {
     }
 
     public void init()  {
-        getPageManager().setViewportRect(0, 0, reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight());
-
-        // check renderer features
         boolean supportScale = reader.getRendererFeatures().supportScale();
         boolean supportReflow = reader.getRendererFeatures().supportFontSizeAdjustment();
         if (supportScale) {
@@ -71,6 +68,10 @@ public class ReaderLayoutManager {
             currentProvider = ReaderConstants.REFLOW_PAGE;
         }
         getCurrentLayoutProvider().activate();
+    }
+
+    public void updateViewportSize() {
+        getPageManager().setViewportRect(0, 0, reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight());
     }
 
     public LayoutProvider getCurrentLayoutProvider() {

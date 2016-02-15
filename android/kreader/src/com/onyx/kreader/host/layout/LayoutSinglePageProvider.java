@@ -23,7 +23,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public void activate()  {
-
+        getPageManager().scaleToPage();
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {

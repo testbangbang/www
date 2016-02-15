@@ -10,7 +10,7 @@ import java.util.List;
  * Created by zhuzeng on 10/3/15.
  * sample code to use plugin
  */
-public class ReaderPluginTest {
+public class SampleCode {
 
     public ReaderPlugin getPlugin() {
         return null;

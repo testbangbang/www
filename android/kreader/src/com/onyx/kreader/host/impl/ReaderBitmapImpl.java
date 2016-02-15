@@ -40,11 +40,8 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     public void update(int width, int height, Bitmap.Config config) {
         if (bitmap == null || bitmap.getWidth() != width || bitmap.getHeight() != height) {
-            Bitmap old = bitmap;
+            recycleBitmap();
             bitmap = Bitmap.createBitmap(width, height, config);
-            if (old != null) {
-                old.recycle();
-            }
         }
     }
 

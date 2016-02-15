@@ -3,6 +3,8 @@ package com.onyx.kreader.host.wrapper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
+import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.plugins.adobe.AdobeReaderPlugin;
@@ -14,8 +16,8 @@ import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
  */
 public class ReaderHelper {
     public Reader reader;
-    private ReaderViewOptions viewOptions;
-    private ReaderPluginOptions pluginOptions;
+    private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
+    private ReaderPluginOptionsImpl pluginOptions;
     private ReaderDocumentOptions documentOptions;
 
     private ReaderPlugin plugin;
@@ -67,6 +69,12 @@ public class ReaderHelper {
         getReaderCacheManager().clear();
     }
 
+    public void updateViewportSize(int newWidth, int newHeight) {
+        reader.getReaderHelper().getViewOptions().setSize(newWidth, newHeight);
+        reader.getReaderHelper().updateRenderBitmap(newWidth, newHeight);
+        reader.getReaderLayoutManager().updateViewportSize();
+    }
+
     public void onLayoutChanged() {
 
     }
@@ -116,19 +124,11 @@ public class ReaderHelper {
         return hitTestManager;
     }
 
-    public void setPluginOptions(final ReaderPluginOptions options) {
-        pluginOptions = options;
-    }
-
-    public ReaderPluginOptions getPluginOptions() {
+    public ReaderPluginOptionsImpl getPluginOptions() {
         return pluginOptions;
     }
 
-    public void setViewOptions(final ReaderViewOptions options) {
-        viewOptions = options;
-    }
-
-    public ReaderViewOptions getViewOptions() {
+    public ReaderViewOptionsImpl getViewOptions() {
         return viewOptions;
     }
 

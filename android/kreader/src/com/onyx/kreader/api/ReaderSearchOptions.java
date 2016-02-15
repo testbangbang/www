@@ -18,14 +18,15 @@ public interface ReaderSearchOptions {
     public boolean isCaseSensitive();
 
     /**
-     * Search page by page instead of one by one.
+     * Indicate match the whole word or not.
      * @return
      */
-    public boolean isPageByPage();
+    public boolean isMatchWholeWord();
+
 
     /**
-     * Search from beginning when reach end of document.
+     * From which page to search.
      * @return
      */
-    public boolean isRoundWrap();
+    public String fromPage();
 }

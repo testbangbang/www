@@ -10,7 +10,15 @@ public class ReaderViewOptionsImpl implements ReaderViewOptions {
     private int width;
     private int height;
 
+    public ReaderViewOptionsImpl() {
+    }
+
     public ReaderViewOptionsImpl(int w, int h) {
+        width = w;
+        height = h;
+    }
+
+    public void setSize(int w, int h) {
         width = w;
         height = h;
     }
@@ -23,20 +31,5 @@ public class ReaderViewOptionsImpl implements ReaderViewOptions {
         return height;
     }
 
-    public int getTopMargin(){
-        return 0;
-    }
-
-    public int getLeftMargin() {
-        return 0;
-    }
-
-    public int getBottomMargin() {
-        return 0;
-    }
-
-    public int getRightMargin() {
-        return 0;
-    }
 
 }

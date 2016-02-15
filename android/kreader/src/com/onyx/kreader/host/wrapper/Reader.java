@@ -7,6 +7,7 @@ import android.os.PowerManager;
 import android.util.Log;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.common.BaseCallback;
+import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.common.BaseRequest;
 
@@ -37,9 +38,7 @@ public class Reader {
         initRequestList();
     }
 
-    public boolean init(final ReaderPluginOptions pluginOptions, final ReaderViewOptions viewOptions) {
-        getReaderHelper().setPluginOptions(pluginOptions);
-        getReaderHelper().setViewOptions(viewOptions);
+    public boolean init() {
         return true;
     }
 
@@ -202,7 +201,7 @@ public class Reader {
         return getReaderHelper().getPluginOptions();
     }
 
-    public ReaderViewOptions getViewOptions() {
+    public ReaderViewOptionsImpl getViewOptions() {
         return getReaderHelper().getViewOptions();
     }
 

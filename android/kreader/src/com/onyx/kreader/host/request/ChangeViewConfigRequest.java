@@ -16,7 +16,7 @@ public class ChangeViewConfigRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        reader.getReaderHelper().updateRenderBitmap(newWidth, newHeight);
+        reader.getReaderHelper().updateViewportSize(newWidth, newHeight);
         reader.getReaderCacheManager().clear();
     }
 }
