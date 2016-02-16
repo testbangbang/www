@@ -1,4 +1,4 @@
-package com.onyx.kreader.test;
+package com.onyx.kreader.tests;
 
 import android.app.Activity;
 import android.graphics.*;
@@ -189,7 +189,7 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/goto.png", true);
-                testScaleToPage();
+//                testScaleToPage();
             }
         });
     }

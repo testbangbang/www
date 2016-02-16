@@ -20,6 +20,7 @@ public class PageManager {
     private float actualScale = 1.0f;
     private float topMargin, leftMargin, rightMargin, bottomMargin;
     private float spacing;
+    private boolean dirty = false;
 
     private RectF pagesBoundingRect = new RectF();
 
@@ -30,23 +31,29 @@ public class PageManager {
 
     private List<PageInfo> visible = new ArrayList<PageInfo>();
     private List<PageInfo> pageInfoList = new ArrayList<PageInfo>();
-    private Map<String, PageInfo> pageInfoMap = new HashMap();
+    private Map<String, PageInfo> pageInfoMap = new HashMap<String, PageInfo>();
+
+    private void setDirty() {
+        dirty = true;
+    }
+
+    private void clearDirty() {
+        dirty = false;
+    }
 
     public void clear() {
         pageInfoList.clear();
         pagesBoundingRect.set(0, 0, 0, 0);
     }
 
-    public void setViewport(final float x, final float y) {
+    public void setViewportPosition(final float x, final float y) {
         viewportRect.offsetTo(x, y);
-        reboundViewport();
-        updateVisiblePages();
+        setDirty();
     }
 
     public void setViewportRect(final float left, final float top, final float right, final float bottom) {
         viewportRect.set(left, top, right, bottom);
-        reboundViewport();
-        updateVisiblePages();
+        setDirty();
     }
 
     public final RectF getViewportRect() {
@@ -57,10 +64,9 @@ public class PageManager {
         return pagesBoundingRect;
     }
 
-    public void panViewport(final float dx, final float dy) {
+    public void panViewportPosition(final float dx, final float dy) {
         viewportRect.offset(dx, dy);
-        reboundViewport();
-        updateVisiblePages();
+        setDirty();
     }
 
     private void reboundViewport() {
@@ -74,14 +80,15 @@ public class PageManager {
     public void add(final PageInfo pageInfo) {
         pageInfoMap.put(pageInfo.getName(), pageInfo);
         pageInfoList.add(pageInfo);
+        setDirty();
     }
 
-    public boolean moveViewportByPosition(final String name) {
+    public boolean gotoPage(final String name) {
         PageInfo pageInfo = pageInfoMap.get(name);
         if (pageInfo == null) {
             return false;
         }
-        setViewport(pageInfo.getPositionRect().left, pageInfo.getPositionRect().top);
+        setViewportPosition(pageInfo.getPositionRect().left, pageInfo.getPositionRect().top);
         return true;
     }
 
@@ -99,8 +106,7 @@ public class PageManager {
         }
         actualScale = scale;
         specialScale = 0;
-        updatePagesBoundingRect();
-        updateVisiblePages();
+        setDirty();
     }
 
     public final float getActualScale() {
@@ -109,6 +115,7 @@ public class PageManager {
 
     public boolean scaleToPage() {
         specialScale = ReaderConstants.SCALE_TO_PAGE;
+        setDirty();
         updateVisiblePages();
         if (visible.size() <= 0) {
             return false;
@@ -176,7 +183,7 @@ public class PageManager {
     }
 
 
-    public boolean scaleByRatio(final RectF ratio) {
+    public boolean scaleByRect(final RectF ratio) {
         PageInfo pageInfo = getFirstVisiblePage();
         if (pageInfo == null) {
             return false;
@@ -260,16 +267,16 @@ public class PageManager {
         float y = topMargin, maxWidth = 0;
         for(PageInfo pageInfo : pageInfoList) {
             pageInfo.update(actualScale, 0, y);
-            y += pageInfo.getDisplayHeight();
-            if (maxWidth < pageInfo.getDisplayWidth()) {
-                maxWidth = pageInfo.getDisplayWidth();
+            y += pageInfo.getScaledHeight();
+            if (maxWidth < pageInfo.getScaledWidth()) {
+                maxWidth = pageInfo.getScaledWidth();
             }
             y += spacing;
         }
         maxWidth += leftMargin + rightMargin;
         pagesBoundingRect.set(0, 0, maxWidth, y);
         for(PageInfo pageInfo : pageInfoList) {
-            float x = (maxWidth - pageInfo.getDisplayWidth()) / 2;
+            float x = (maxWidth - pageInfo.getScaledWidth()) / 2;
             pageInfo.setX(x);
         }
     }

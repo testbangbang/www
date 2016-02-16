@@ -3,7 +3,6 @@ package com.onyx.kreader.host.layout;
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.utils.StringUtils;
 
@@ -69,7 +68,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
         getPageManager().setScale(scale);
-        getPageManager().setViewport(left, top);
+        getPageManager().setViewportPosition(left, top);
         getPageManager().updateVisiblePages();
         return true;
     }
@@ -88,7 +87,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public boolean changeScaleByRect(final String position, final RectF rect) throws ReaderException  {
-        getPageManager().scaleByRatio(rect);
+        getPageManager().scaleByRect(rect);
         return true;
     }
 
@@ -97,7 +96,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
             return false;
         }
         LayoutProviderUtils.addNewSinglePage(getLayoutManager(), location);
-        return getPageManager().moveViewportByPosition(location);
+        return getPageManager().gotoPage(location);
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {

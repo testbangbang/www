@@ -8,9 +8,7 @@ import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationList;
-import com.onyx.kreader.test.ReaderTestActivity;
 import com.onyx.kreader.utils.TestUtils;
-import junit.framework.Assert;
 
 import java.util.ArrayList;
 import java.util.List;

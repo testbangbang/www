@@ -3,7 +3,6 @@ package com.onyx.kreader.host.layout;
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.utils.StringUtils;
@@ -39,14 +38,14 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
         RectF subScreen = getNavigationList().first();
-        getPageManager().scaleByRatio(subScreen);
+        getPageManager().scaleByRect(subScreen);
         return true;
     }
 
     public boolean prevScreen() throws ReaderException {
         if (getNavigationList().hasPrevious()) {
             RectF subScreen = getNavigationList().previous();
-            getPageManager().scaleByRatio(subScreen);
+            getPageManager().scaleByRect(subScreen);
             return true;
         }
         return false;
@@ -55,7 +54,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     public boolean nextScreen() throws ReaderException {
         if (getNavigationList().hasNext()) {
             RectF subScreen = getNavigationList().next();
-            getPageManager().scaleByRatio(subScreen);
+            getPageManager().scaleByRect(subScreen);
             return true;
         }
         return false;
@@ -84,7 +83,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
         getPageManager().setScale(scale);
-        getPageManager().setViewport(left, top);
+        getPageManager().setViewportPosition(left, top);
         return true;
     }
 

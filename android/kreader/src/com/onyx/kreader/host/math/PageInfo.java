@@ -49,11 +49,11 @@ public class PageInfo {
         return positionRect;
     }
 
-    public final float getDisplayHeight() {
+    public final float getScaledHeight() {
         return positionRect.height();
     }
 
-    public final float getDisplayWidth() {
+    public final float getScaledWidth() {
         return positionRect.width();
     }
 

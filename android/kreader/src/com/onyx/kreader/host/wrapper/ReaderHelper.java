@@ -83,6 +83,12 @@ public class ReaderHelper {
 
     }
 
+    public void beforeDraw() {
+    }
+
+    public void afterDraw() {
+    }
+
     public void updateRenderBitmap(int width, int height) {
         Bitmap.Config bitmapConfig = Bitmap.Config.ARGB_8888;
         if (renderBitmap == null) {

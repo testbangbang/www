@@ -1,4 +1,4 @@
-package com.onyx.kreader.test;
+package com.onyx.kreader.tests;
 
 import android.graphics.Matrix;
 import android.graphics.RectF;

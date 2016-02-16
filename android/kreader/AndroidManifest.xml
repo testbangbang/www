@@ -29,7 +29,7 @@
             <data android:mimeType="application/djvu" />
         </intent-filter>
 
-        <activity android:name="com.onyx.kreader.test.ReaderTestActivity">
+        <activity android:name="com.onyx.kreader.tests.ReaderTestActivity">
 
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />

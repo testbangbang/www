@@ -168,7 +168,10 @@ public class ReaderLayoutManager {
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
-        return getCurrentLayoutProvider().drawVisiblePages(bitmap);
+        getReaderHelper().beforeDraw();
+        boolean ret = getCurrentLayoutProvider().drawVisiblePages(bitmap);
+        getReaderHelper().afterDraw();
+        return ret;
     }
 
     public void setScale(final float scale, final float x, final float y) throws ReaderException {

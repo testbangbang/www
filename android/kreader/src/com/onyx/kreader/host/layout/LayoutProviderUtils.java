@@ -23,15 +23,12 @@ public class LayoutProviderUtils {
     static public void drawVisiblePages(final ReaderLayoutManager layoutManager, final ReaderBitmap bitmap) {
         final Reader reader = layoutManager.getReader();
         final ReaderRenderer renderer = reader.getRenderer();
-        List<PageInfo> visiblePages = layoutManager.getPageManager().getVisiblePages();
-        if (visiblePages == null || visiblePages.size() <= 0) {
-            visiblePages = layoutManager.getPageManager().updateVisiblePages();
-        }
+        List<PageInfo> visiblePages = layoutManager.getPageManager().updateVisiblePages();
         renderer.clear(bitmap);
         for(PageInfo pageInfo : visiblePages) {
             String documentPosition = pageInfo.getName();
             final RectF rect = pageInfo.getDisplayRect();
-            renderer.draw(documentPosition, pageInfo.getActualScale(), bitmap, (int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom);
+            renderer.draw(documentPosition, pageInfo.getActualScale(), bitmap, (int) rect.left, (int) rect.top, (int) rect.width(), (int) rect.height());
         }
     }
 
@@ -64,7 +61,7 @@ public class LayoutProviderUtils {
     }
 
     static public void resetViewportPosition(final ReaderLayoutManager layoutManager) {
-        layoutManager.getPageManager().setViewport(0, 0);
+        layoutManager.getPageManager().setViewportPosition(0, 0);
     }
 
     static public void addNewSinglePage(final ReaderLayoutManager layoutManager, final String position) {
@@ -75,11 +72,11 @@ public class LayoutProviderUtils {
     }
 
     static public boolean moveViewportByPosition(final ReaderLayoutManager layoutManager, final String location) {
-        return layoutManager.getPageManager().moveViewportByPosition(location);
+        return layoutManager.getPageManager().gotoPage(location);
     }
 
     static public void pan(final ReaderLayoutManager layoutManager, final float dx, final float dy) {
-        layoutManager.getPageManager().panViewport(dx, dy);
+        layoutManager.getPageManager().panViewportPosition(dx, dy);
     }
 
     static public boolean firstSubScreen(final ReaderLayoutManager layoutManager, final NavigationList navigationList) {
@@ -87,7 +84,7 @@ public class LayoutProviderUtils {
         if (subScreen == null) {
             return false;
         }
-        layoutManager.getPageManager().scaleByRatio(subScreen);
+        layoutManager.getPageManager().scaleByRect(subScreen);
         return true;
     }
 
@@ -96,7 +93,7 @@ public class LayoutProviderUtils {
         if (subScreen == null) {
             return false;
         }
-        layoutManager.getPageManager().scaleByRatio(subScreen);
+        layoutManager.getPageManager().scaleByRect(subScreen);
         return true;
     }
 

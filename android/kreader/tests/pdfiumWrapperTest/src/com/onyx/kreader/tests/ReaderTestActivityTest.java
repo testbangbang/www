@@ -3,13 +3,9 @@ package com.onyx.kreader.tests;
 import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
-import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper;
-import com.onyx.kreader.plugins.pdfium.PdfiumSelection;
-import com.onyx.kreader.test.ReaderTestActivity;
-import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.ArrayList;
