@@ -28,13 +28,13 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
         pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
         PageInfo pageInfo = new PageInfo("1", TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
         pageManager.add(pageInfo);
-        pageManager.scaleToPage();
+        pageManager.scaleToPage(pageInfo.getName());
         List<PageInfo> result = pageManager.getVisiblePages();
 
         for(PageInfo info : result) {
             float actualScale = info.getActualScale();
             float targetScale = PageUtils.scaleToPage(info.getOriginWidth(), info.getOriginHeight(), viewport.width(), viewport.height());
-            assertTrue(Float.compare(actualScale, targetScale) == 0);
+            assertTrue(TestUtils.compareFloatWhole(actualScale, targetScale));
 
             float left = (viewport.width() - targetScale * pageInfo.getOriginWidth()) / 2;
             float top = (viewport.height() - targetScale * pageInfo.getOriginHeight()) / 2;
@@ -75,10 +75,11 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
     public void testMath2() {
         PageManager pageManager = new PageManager();
         pageManager.clear();
-        pageManager.add(new PageInfo(String.valueOf(0), TestUtils.randInt(100, 2000), TestUtils.randInt(100, 2000)));
+        PageInfo pageInfo = new PageInfo(String.valueOf(0), TestUtils.randInt(100, 2000), TestUtils.randInt(100, 2000));
+        pageManager.add(pageInfo);
         pageManager.setScale(1.0f);
         pageManager.setViewportRect(0, 0, 2000, 2500);
-        pageManager.scaleToPage();
+        pageManager.scaleToPage(pageInfo.getName());
         assertTrue(TestUtils.compareFloatWhole(pageManager.getViewportRect().centerX(), pageManager.getPagesBoundingRect().centerX()));
         assertTrue(TestUtils.compareFloatWhole(pageManager.getViewportRect().centerY(), pageManager.getPagesBoundingRect().centerY()));
 

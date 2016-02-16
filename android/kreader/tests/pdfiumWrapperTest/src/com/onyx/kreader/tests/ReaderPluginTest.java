@@ -68,7 +68,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         RectF size = document.getPageOriginSize(initPosition);
         PageInfo pageInfo = new PageInfo(initPosition, size.width(), size.height());
         pageManager.add(pageInfo);
-        pageManager.scaleToPage();
+        pageManager.scaleToPage(pageInfo.getName());
         PageInfo result = pageManager.getFirstVisiblePage();
         Rect displayRect = RectUtils.toRect(result.getDisplayRect());
         assertTrue(renderer.draw(initPosition, result.getActualScale(), readerBitmap, displayRect.left, displayRect.top,
