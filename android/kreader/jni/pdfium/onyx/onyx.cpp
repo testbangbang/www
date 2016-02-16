@@ -4,6 +4,8 @@
 #include "onyx_context.h"
 #include "JNIUtils.h"
 
+static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
+
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
@@ -31,8 +33,8 @@ void OnyxPdfiumManager::releaseContext(jobject thiz) {
     }
 }
 
-static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
 
+static int libraryReference = 0;
 /*
  * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeInitLibrary
@@ -40,13 +42,18 @@ static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/Pdfium
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeInitLibrary
   (JNIEnv *, jobject thiz) {
-    FPDF_InitLibrary();
+    if (libraryReference++ <= 0) {
+        FPDF_InitLibrary();
+    }
     return true;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeDestroyLibrary
   (JNIEnv *env, jobject thiz) {
-    FPDF_DestroyLibrary();
+    if (--libraryReference <= 0) {
+        FPDF_DestroyLibrary();
+        libraryReference = 0;
+    }
     return true;
 }
 
