@@ -8,13 +8,16 @@ import com.onyx.kreader.common.BaseRequest;
  */
 public class ScaleToPageRequest extends BaseRequest {
 
-    public ScaleToPageRequest() {
+    private String pageName;
+
+    public ScaleToPageRequest(final String name) {
+        pageName = name;
     }
 
     // in document coordinates system. forward to layout manager to scale
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
-        reader.getReaderLayoutManager().scaleToPage();
+        reader.getReaderLayoutManager().scaleToPage(pageName);
         reader.getReaderLayoutManager().drawVisiblePages(getRenderBitmap());
     }
 

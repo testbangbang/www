@@ -10,14 +10,16 @@ import com.onyx.kreader.host.wrapper.Reader;
 public class ScaleByRectRequest extends BaseRequest  {
 
     private RectF childInHost;
+    private String pageName;
 
-    public ScaleByRectRequest(final RectF c) {
+    public ScaleByRectRequest(final String name, final RectF c) {
+        pageName = name;
         childInHost = c;
     }
 
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
-        reader.getReaderLayoutManager().scaleByRect(childInHost);
+        reader.getReaderLayoutManager().scaleByRect(pageName, childInHost);
         reader.getReaderLayoutManager().drawVisiblePages(getRenderBitmap());
     }
 }

@@ -179,18 +179,18 @@ public class ReaderLayoutManager {
         onPositionChanged();
     }
 
-    public void scaleToPage() throws ReaderException {
-        getCurrentLayoutProvider().scaleToPage();
+    public void scaleToPage(final String pageName) throws ReaderException {
+        getCurrentLayoutProvider().scaleToPage(pageName);
         onPositionChanged();
     }
 
-    public void scaleToWidth() throws ReaderException {
-        getCurrentLayoutProvider().scaleToWidth();
+    public void scaleToWidth(final String pageName) throws ReaderException {
+        getCurrentLayoutProvider().scaleToWidth(pageName);
         onPositionChanged();
     }
 
-    public void scaleByRect(final RectF child) throws ReaderException {
-        getCurrentLayoutProvider().scaleByRect(child);
+    public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
+        getCurrentLayoutProvider().scaleByRect(pageName, child);
         onPositionChanged();
     }
 

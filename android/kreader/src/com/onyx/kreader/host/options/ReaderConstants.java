@@ -17,6 +17,7 @@ public class ReaderConstants {
     /**
      * scale
      */
+    public static final int SCALE_INVALID = 0;
     public static final int SCALE_TO_PAGE = -1;
     public static final int SCALE_TO_WIDTH = -2;
     public static final int SCALE_TO_HEIGHT = -3;

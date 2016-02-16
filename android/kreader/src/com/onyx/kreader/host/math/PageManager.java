@@ -16,11 +16,10 @@ import java.util.Map;
  */
 public class PageManager {
 
-    private int specialScale = ReaderConstants.SCALE_TO_PAGE;
+    private int specialScale = ReaderConstants.SCALE_INVALID;
     private float actualScale = 1.0f;
     private float topMargin, leftMargin, rightMargin, bottomMargin;
     private float spacing;
-    private boolean dirty = false;
 
     private RectF pagesBoundingRect = new RectF();
 
@@ -33,14 +32,6 @@ public class PageManager {
     private List<PageInfo> pageInfoList = new ArrayList<PageInfo>();
     private Map<String, PageInfo> pageInfoMap = new HashMap<String, PageInfo>();
 
-    private void setDirty() {
-        dirty = true;
-    }
-
-    private void clearDirty() {
-        dirty = false;
-    }
-
     public void clear() {
         pageInfoList.clear();
         pagesBoundingRect.set(0, 0, 0, 0);
@@ -48,12 +39,14 @@ public class PageManager {
 
     public void setViewportPosition(final float x, final float y) {
         viewportRect.offsetTo(x, y);
-        setDirty();
+        updateVisiblePages();
+        reboundViewport();
     }
 
     public void setViewportRect(final float left, final float top, final float right, final float bottom) {
         viewportRect.set(left, top, right, bottom);
-        setDirty();
+        updateVisiblePages();
+        reboundViewport();
     }
 
     public final RectF getViewportRect() {
@@ -66,7 +59,8 @@ public class PageManager {
 
     public void panViewportPosition(final float dx, final float dy) {
         viewportRect.offset(dx, dy);
-        setDirty();
+        updateVisiblePages();
+        reboundViewport();
     }
 
     private void reboundViewport() {
@@ -80,7 +74,6 @@ public class PageManager {
     public void add(final PageInfo pageInfo) {
         pageInfoMap.put(pageInfo.getName(), pageInfo);
         pageInfoList.add(pageInfo);
-        setDirty();
     }
 
     public boolean gotoPage(final String name) {
@@ -106,41 +99,42 @@ public class PageManager {
         }
         actualScale = scale;
         specialScale = 0;
-        setDirty();
     }
 
     public final float getActualScale() {
         return actualScale;
     }
 
-    public boolean scaleToPage() {
+    public boolean hasValidViewport() {
+        return (viewportRect.width() > 0 && viewportRect.height() > 0);
+    }
+
+    public boolean scaleToPage(final String pageName) {
         specialScale = ReaderConstants.SCALE_TO_PAGE;
-        setDirty();
-        updateVisiblePages();
-        if (visible.size() <= 0) {
+        PageInfo pageInfo = getPageInfo(pageName);
+        if (pageInfo == null) {
             return false;
         }
-        if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
+        if (!hasValidViewport()) {
             return false;
         }
-        PageInfo current = visible.get(0);
-        setScale(PageUtils.scaleToPage(current.getOriginWidth(), current.getOriginHeight(), viewportRect.width(), viewportRect.height()));
+
+        setScale(PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect.width(), viewportRect.height()));
         reboundViewport();
         updateVisiblePages();
         return true;
     }
 
-    public boolean scaleToWidth() {
+    public boolean scaleToWidth(final String pageName) {
         specialScale = ReaderConstants.SCALE_TO_WIDTH;
-        updateVisiblePages();
-        if (visible.size() <= 0) {
+        PageInfo pageInfo = getPageInfo(pageName);
+        if (pageInfo == null) {
             return false;
         }
-        if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
+        if (!hasValidViewport()) {
             return false;
         }
-        PageInfo current = visible.get(0);
-        setScale(PageUtils.scaleToWidth(current.getOriginWidth(), viewportRect));
+        setScale(PageUtils.scaleToWidth(pageInfo.getOriginWidth(), viewportRect.width()));
         reboundViewport();
         updateVisiblePages();
         return true;
@@ -151,7 +145,8 @@ public class PageManager {
      * @param child The user selected rect in host coordinates system.
      * @return true if succeed.
      */
-    public boolean scaleToViewport(final RectF child) {
+    public boolean scaleToViewport(final String pageName, final RectF child) {
+        specialScale = 0;
         updateVisiblePages();
         if (visible.size() <= 0) {
             return false;

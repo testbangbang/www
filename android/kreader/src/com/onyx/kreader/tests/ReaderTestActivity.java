@@ -37,7 +37,7 @@ public class ReaderTestActivity extends Activity {
 
 
     private Reader reader;
-    final String path = "/mnt/sdcard/Books/a.pdf";
+    final String path = "/mnt/sdcard/cityhunter/cityhunter02.pdf";
     private int pn = 0;
     private int next = 0;
     private EditText searchEdit;
@@ -176,7 +176,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", true);
+                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", false);
                 testReaderGoto();
             }
         });
@@ -188,14 +188,14 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/goto.png", true);
+                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/goto.png", false);
 //                testScaleToPage();
             }
         });
     }
 
     public void testScaleToPage() {
-        final ScaleToPageRequest renderRequest = new ScaleToPageRequest();
+        final ScaleToPageRequest renderRequest = new ScaleToPageRequest(String.valueOf(pn));
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -207,7 +207,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testScaleToWidth() {
-        final ScaleToWidthRequest renderRequest = new ScaleToWidthRequest();
+        final ScaleToWidthRequest renderRequest = new ScaleToWidthRequest(String.valueOf(pn));
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -231,7 +231,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testScaleByRect() {
-        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(new RectF(100, 100, 200, 200));
+        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(String.valueOf(pn), new RectF(100, 100, 200, 200));
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -243,7 +243,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testOriginScale() {
-        final ScaleToPageRequest renderRequest = new ScaleToPageRequest();
+        final ScaleToPageRequest renderRequest = new ScaleToPageRequest(String.valueOf(pn));
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -261,10 +261,18 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 if (e == null) {
                     dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
-                    ++next;
-                    testNextScreen();
-                } else {
-                    testHitTestWithoutRendering();
+                }
+            }
+        });
+    }
+
+    public void textPreviousScreen() {
+        final PreviousScreenRequest renderRequest = new PreviousScreenRequest();
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                if (e == null) {
+                    dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
                 }
             }
         });
@@ -498,14 +506,12 @@ public class ReaderTestActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_PAGE_DOWN) {
-            ++currentPage;
-            wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
+            testNextScreen();
         } else if (keyCode == KeyEvent.KEYCODE_PAGE_UP) {
-            --currentPage;
-            wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
+            textPreviousScreen();
         }
 
-        draw();
+        //draw();
         return super.onKeyDown(keyCode, event);
     }
 }

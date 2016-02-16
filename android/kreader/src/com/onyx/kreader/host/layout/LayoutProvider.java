@@ -68,20 +68,20 @@ public class LayoutProvider {
         return false;
     }
 
-    public void scaleToPage() throws ReaderException {
+    public void scaleToPage(final String pageName) throws ReaderException {
     }
 
-    public void scaleToWidth() throws ReaderException {
+    public void scaleToWidth(final String pageName) throws ReaderException {
     }
 
-    public void scaleByRect(final RectF child) throws ReaderException {
+    public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
     }
 
-    public boolean changeScaleWithDelta(float delta) throws ReaderException {
+    public boolean changeScaleWithDelta(final String pageName, float delta) throws ReaderException {
         return false;
     }
 
-    public boolean changeScaleByRect(final String position, final RectF rect) throws ReaderException {
+    public boolean changeScaleByRect(final String pageName, final RectF rect) throws ReaderException {
         return false;
     }
 
