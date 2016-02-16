@@ -30,8 +30,13 @@ public class PageUtils {
         return scale;
     }
 
-    static public float scaleToWidth(final float pageWidth, final RectF viewport) {
-        float scale = viewport.width() / pageWidth;
+    static public float scaleToWidth(final float pageWidth, final float viewportWidth) {
+        float scale = viewportWidth / pageWidth;
+        return scale;
+    }
+
+    static public float scaleToHeight(final float pageHeight, final float viewportHeight) {
+        float scale = viewportHeight / pageHeight;
         return scale;
     }
 
