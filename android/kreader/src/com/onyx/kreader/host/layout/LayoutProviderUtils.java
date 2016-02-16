@@ -23,7 +23,7 @@ public class LayoutProviderUtils {
     static public void drawVisiblePages(final ReaderLayoutManager layoutManager, final ReaderBitmap bitmap) {
         final Reader reader = layoutManager.getReader();
         final ReaderRenderer renderer = reader.getRenderer();
-        List<PageInfo> visiblePages = layoutManager.getPageManager().updateVisiblePages();
+        List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
         renderer.clear(bitmap);
         for(PageInfo pageInfo : visiblePages) {
             String documentPosition = pageInfo.getName();
@@ -57,7 +57,7 @@ public class LayoutProviderUtils {
     }
 
     static public void updateVisiblePages(final ReaderLayoutManager layoutManager) {
-        layoutManager.getPageManager().updateVisiblePages();
+        layoutManager.getPageManager().collectVisiblePages();
     }
 
     static public void resetViewportPosition(final ReaderLayoutManager layoutManager) {
@@ -79,21 +79,21 @@ public class LayoutProviderUtils {
         layoutManager.getPageManager().panViewportPosition(dx, dy);
     }
 
-    static public boolean firstSubScreen(final ReaderLayoutManager layoutManager, final NavigationList navigationList) {
+    static public boolean firstSubScreen(final ReaderLayoutManager layoutManager, final String pageName, final NavigationList navigationList) {
         RectF subScreen = navigationList.first();
         if (subScreen == null) {
             return false;
         }
-        layoutManager.getPageManager().scaleByRect(subScreen);
+        layoutManager.getPageManager().scaleByRect(pageName, subScreen);
         return true;
     }
 
-    static public boolean lastSubScreen(final ReaderLayoutManager layoutManager, final NavigationList navigationList) {
+    static public boolean lastSubScreen(final ReaderLayoutManager layoutManager, final String pageName, final NavigationList navigationList) {
         RectF subScreen = navigationList.last();
         if (subScreen == null) {
             return false;
         }
-        layoutManager.getPageManager().scaleByRect(subScreen);
+        layoutManager.getPageManager().scaleByRect(pageName, subScreen);
         return true;
     }
 

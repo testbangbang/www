@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class PageManager {
 
-    private int specialScale = ReaderConstants.SCALE_INVALID;
+    private int specialScale = ReaderConstants.SCALE_TO_PAGE;
     private float actualScale = 1.0f;
     private float topMargin, leftMargin, rightMargin, bottomMargin;
     private float spacing;
@@ -39,13 +39,13 @@ public class PageManager {
 
     public void setViewportPosition(final float x, final float y) {
         viewportRect.offsetTo(x, y);
-        updateVisiblePages();
+        collectVisiblePages();
         reboundViewport();
     }
 
     public void setViewportRect(final float left, final float top, final float right, final float bottom) {
         viewportRect.set(left, top, right, bottom);
-        updateVisiblePages();
+        collectVisiblePages();
         reboundViewport();
     }
 
@@ -59,7 +59,7 @@ public class PageManager {
 
     public void panViewportPosition(final float dx, final float dy) {
         viewportRect.offset(dx, dy);
-        updateVisiblePages();
+        collectVisiblePages();
         reboundViewport();
     }
 
@@ -81,7 +81,22 @@ public class PageManager {
         if (pageInfo == null) {
             return false;
         }
+        updateForSpecialScale(pageInfo);
         setViewportPosition(pageInfo.getPositionRect().left, pageInfo.getPositionRect().top);
+        return true;
+    }
+
+    private boolean updateForSpecialScale(final PageInfo pageInfo) {
+        if (!isSpecialScale()) {
+            return false;
+        }
+        if (isScaleToPage()) {
+            scaleToPage(pageInfo.getName());
+        } else if (isScaleToWidth()) {
+            scaleToWidth(pageInfo.getName());
+        } else if (isScaleToHeight()) {
+            scaleToHeight(pageInfo.getName());
+        }
         return true;
     }
 
@@ -94,12 +109,20 @@ public class PageManager {
     }
 
     public void setScale(final float scale) {
+        specialScale = ReaderConstants.SCALE_INVALID;
+        setScaleImpl(scale);
+    }
+
+    private void setScaleImpl(final float scale) {
         if (scale < 0) {
             return;
         }
         actualScale = scale;
-        specialScale = 0;
+        updatePagesBoundingRect();
+        reboundViewport();
+        collectVisiblePages();
     }
+
 
     public final float getActualScale() {
         return actualScale;
@@ -111,32 +134,31 @@ public class PageManager {
 
     public boolean scaleToPage(final String pageName) {
         specialScale = ReaderConstants.SCALE_TO_PAGE;
+        if (!contains(pageName) || !hasValidViewport()) {
+            return false;
+        }
         PageInfo pageInfo = getPageInfo(pageName);
-        if (pageInfo == null) {
-            return false;
-        }
-        if (!hasValidViewport()) {
-            return false;
-        }
-
-        setScale(PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect.width(), viewportRect.height()));
-        reboundViewport();
-        updateVisiblePages();
+        setScaleImpl(PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect.width(), viewportRect.height()));
         return true;
     }
 
     public boolean scaleToWidth(final String pageName) {
         specialScale = ReaderConstants.SCALE_TO_WIDTH;
+        if (!contains(pageName) || !hasValidViewport()) {
+            return false;
+        }
         PageInfo pageInfo = getPageInfo(pageName);
-        if (pageInfo == null) {
+        setScaleImpl(PageUtils.scaleToWidth(pageInfo.getOriginWidth(), viewportRect.width()));
+        return true;
+    }
+
+    public boolean scaleToHeight(final String pageName) {
+        specialScale = ReaderConstants.SCALE_TO_HEIGHT;
+        if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
-        if (!hasValidViewport()) {
-            return false;
-        }
-        setScale(PageUtils.scaleToWidth(pageInfo.getOriginWidth(), viewportRect.width()));
-        reboundViewport();
-        updateVisiblePages();
+        PageInfo pageInfo = getPageInfo(pageName);
+        setScaleImpl(PageUtils.scaleToHeight(pageInfo.getOriginHeight(), viewportRect.height()));
         return true;
     }
 
@@ -146,51 +168,33 @@ public class PageManager {
      * @return true if succeed.
      */
     public boolean scaleToViewport(final String pageName, final RectF child) {
-        specialScale = 0;
-        updateVisiblePages();
-        if (visible.size() <= 0) {
+        if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
-        if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
-            return false;
-        }
-
-        setScale(actualScale * PageUtils.scaleByRect(child, viewportRect));
-        reboundViewport();
-        updateVisiblePages();
+        PageInfo pageInfo = getPageInfo(pageName);
+        setScale(pageInfo.getActualScale() * PageUtils.scaleByRect(child, viewportRect));
         return true;
     }
 
-    public boolean scaleWithDelta(final float delta) {
-        updateVisiblePages();
-        if (visible.size() <= 0) {
+    public boolean scaleWithDelta(final String pageName, final float delta) {
+        if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
-        if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
-            return false;
-        }
-
-        actualScale += PageUtils.scaleWithDelta(getFirstVisiblePage().getPositionRect(), getViewportRect(), delta);
-        setScale(actualScale);
-        reboundViewport();
-        updateVisiblePages();
+        PageInfo pageInfo = getPageInfo(pageName);
+        float newScale = pageInfo.getActualScale() + PageUtils.scaleWithDelta(pageInfo.getPositionRect(), getViewportRect(), delta);
+        setScale(newScale);
         return true;
     }
 
 
-    public boolean scaleByRect(final RectF ratio) {
-        PageInfo pageInfo = getFirstVisiblePage();
-        if (pageInfo == null) {
+    public boolean scaleByRect(final String pageName, final RectF ratio) {
+        specialScale = ReaderConstants.SCALE_INVALID;
+        if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
-        if (viewportRect.width() <= 0 || viewportRect.height() <= 0) {
-            return false;
-        }
-
+        PageInfo pageInfo = getPageInfo(pageName);
         setScale(PageUtils.scaleByRatio(ratio, pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect));
-        reboundViewport();
-        updateVisiblePages();
-        return false;
+        return true;
     }
 
     public PageInfo hitTest(final float x, final float y) {
@@ -218,9 +222,9 @@ public class PageManager {
     }
 
     /**
-     * search in page list to get visible pages.
+     * collect visible page list in page list.
      */
-    public List<PageInfo> updateVisiblePages() {
+    public List<PageInfo> collectVisiblePages() {
         visible.clear();
         boolean found = false;
         for(PageInfo pageInfo : pageInfoList) {
@@ -282,7 +286,7 @@ public class PageManager {
         }
         viewportRect.offset(0, viewportRect.height());
         reboundViewport();
-        updateVisiblePages();
+        collectVisiblePages();
         return true;
     }
 
@@ -292,12 +296,12 @@ public class PageManager {
         }
         viewportRect.offset(0, -viewportRect.height());
         reboundViewport();
-        updateVisiblePages();
+        collectVisiblePages();
         return true;
     }
 
     public boolean isSpecialScale() {
-        return specialScale < 0;
+        return specialScale < ReaderConstants.SCALE_INVALID;
     }
 
     public boolean isScaleToPage() {

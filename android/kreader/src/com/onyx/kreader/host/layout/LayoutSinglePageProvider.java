@@ -33,7 +33,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         if (!getPageManager().prevViewport()) {
             return prevPage();
         }
-        getPageManager().updateVisiblePages();
+        getPageManager().collectVisiblePages();
         return true;
     }
 
@@ -41,7 +41,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         if (!getPageManager().nextViewport()) {
             return nextPage();
         }
-        getPageManager().updateVisiblePages();
+        getPageManager().collectVisiblePages();
         return true;
     }
 
@@ -69,7 +69,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     public boolean setScale(float scale, float left, float top) throws ReaderException {
         getPageManager().setScale(scale);
         getPageManager().setViewportPosition(left, top);
-        getPageManager().updateVisiblePages();
+        getPageManager().collectVisiblePages();
         return true;
     }
 
@@ -81,13 +81,13 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         getPageManager().scaleToWidth(pageName);
     }
 
-    public boolean changeScaleWithDelta(float delta) throws ReaderException {
-        getPageManager().scaleWithDelta(delta);
+    public boolean changeScaleWithDelta(final String pageName, float delta) throws ReaderException {
+        getPageManager().scaleWithDelta(pageName, delta);
         return true;
     }
 
     public boolean changeScaleByRect(final String pageName, final RectF rect) throws ReaderException  {
-        getPageManager().scaleByRect(rect);
+        getPageManager().scaleByRect(pageName, rect);
         return true;
     }
 

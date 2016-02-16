@@ -59,7 +59,7 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
         long end = System.currentTimeMillis();
         Log.i("TEST", "update takes: " + (end - start));
         long end2 = System.currentTimeMillis();
-        List<PageInfo> visiblePages = pageManager.updateVisiblePages();
+        List<PageInfo> visiblePages = pageManager.collectVisiblePages();
         Log.i("TEST", "update takes: " + (end2 - end));
 
         List<PageInfo> verify = new ArrayList<PageInfo>();

@@ -63,7 +63,7 @@ public class LayoutContinuousProvider extends LayoutProvider {
     }
 
     public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
-        getPageManager().updateVisiblePages();
+        getPageManager().collectVisiblePages();
         LayoutProviderUtils.drawVisiblePages(getLayoutManager(), bitmap);
         return true;
     }
@@ -82,8 +82,8 @@ public class LayoutContinuousProvider extends LayoutProvider {
         getPageManager().scaleToWidth(pageName);
     }
 
-    public boolean changeScaleWithDelta(float delta) throws ReaderException {
-        getPageManager().scaleWithDelta(delta);
+    public boolean changeScaleWithDelta(final String pageName, float delta) throws ReaderException {
+        getPageManager().scaleWithDelta(pageName, delta);
         return true;
     }
 

@@ -38,14 +38,14 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
         RectF subScreen = getNavigationList().first();
-        getPageManager().scaleByRect(subScreen);
+        getPageManager().scaleByRect(null, subScreen);
         return true;
     }
 
     public boolean prevScreen() throws ReaderException {
         if (getNavigationList().hasPrevious()) {
             RectF subScreen = getNavigationList().previous();
-            getPageManager().scaleByRect(subScreen);
+            getPageManager().scaleByRect(null, subScreen);
             return true;
         }
         return false;
@@ -54,7 +54,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     public boolean nextScreen() throws ReaderException {
         if (getNavigationList().hasNext()) {
             RectF subScreen = getNavigationList().next();
-            getPageManager().scaleByRect(subScreen);
+            getPageManager().scaleByRect(null, subScreen);
             return true;
         }
         return false;
