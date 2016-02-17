@@ -45,6 +45,18 @@ public class PageInfo {
         return autoCropContentRegion;
     }
 
+    public void setAutoCropContentRegion(final RectF region) {
+        autoCropContentRegion = region;
+    }
+
+    public float getAutoCropScale() {
+        return autoCropScale;
+    }
+
+    public void setAutoCropScale(final float value) {
+        autoCropScale = value;
+    }
+
     public final RectF getPositionRect() {
         return positionRect;
     }
@@ -140,9 +152,6 @@ public class PageInfo {
         return name;
     }
 
-    public String pageSignature() {
-        return JSON.toJSONString(this);
-    }
 
 
 }

@@ -83,10 +83,10 @@ public class ReaderHelper {
 
     }
 
-    public void beforeDraw() {
+    public void beforeDraw(ReaderBitmapImpl bitmap) {
     }
 
-    public void afterDraw() {
+    public void afterDraw(ReaderBitmapImpl bitmap) {
     }
 
     public void updateRenderBitmap(int width, int height) {
@@ -98,7 +98,7 @@ public class ReaderHelper {
         }
     }
 
-    public final ReaderBitmap getRenderBitmap() {
+    public final ReaderBitmapImpl getRenderBitmap() {
         updateRenderBitmap(viewOptions.getViewWidth(), viewOptions.getViewHeight());
         return renderBitmap;
     }

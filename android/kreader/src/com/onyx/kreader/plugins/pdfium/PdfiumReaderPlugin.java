@@ -2,7 +2,9 @@ package com.onyx.kreader.plugins.pdfium;
 
 import android.content.Context;
 import android.graphics.RectF;
+import android.util.Log;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.common.Benchmark;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
@@ -21,6 +23,9 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         ReaderDrmManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
+
+    private static final String TAG = PdfiumReaderPlugin.class.getSimpleName();
+    private Benchmark benchmark = new Benchmark();
 
     private PdfiumJniWrapper impl;
     private String documentPath;
@@ -165,11 +170,17 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public boolean draw(final String page, final float scale, final ReaderBitmap bitmap) {
-        return getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), bitmap.getBitmap());
+        benchmark.restart();
+        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), bitmap.getBitmap());
+        Log.e(TAG, "rendering takes: " + benchmark.duration());
+        return ret;
     }
 
     public boolean draw(final String page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
-        return getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap.getBitmap());
+        benchmark.restart();
+        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap.getBitmap());
+        Log.e(TAG, "rendering takes: " + benchmark.duration());
+        return ret;
     }
 
     /**

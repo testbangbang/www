@@ -1,11 +1,14 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.host.wrapper.ReaderCacheManager;
+import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
 
@@ -14,22 +17,54 @@ import java.util.List;
  */
 public class LayoutProviderUtils {
 
+    static boolean enableCache = true;
+
     /**
      * draw all visible pages. For each page:render the visible part of page. in screen coordinates system.
      * Before draw, make sure all visible pages have been calculated correctly.
      * @param layoutManager
      * @param bitmap
      */
-    static public void drawVisiblePages(final ReaderLayoutManager layoutManager, final ReaderBitmap bitmap) {
+    static public void drawVisiblePages(final ReaderLayoutManager layoutManager, final ReaderBitmapImpl bitmap) {
         final Reader reader = layoutManager.getReader();
         final ReaderRenderer renderer = reader.getRenderer();
+        final ReaderCacheManager cacheManager = reader.getReaderCacheManager();
+        final String layoutType = layoutManager.getCurrentLayoutType();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
+        final String key = PositionSnapshot.cacheKey(visiblePages);
+        if (enableCache && checkCache(cacheManager, key, bitmap)) {
+            return;
+        }
+
         renderer.clear(bitmap);
         for(PageInfo pageInfo : visiblePages) {
             String documentPosition = pageInfo.getName();
             final RectF rect = pageInfo.getDisplayRect();
             renderer.draw(documentPosition, pageInfo.getActualScale(), bitmap, (int) rect.left, (int) rect.top, (int) rect.width(), (int) rect.height());
         }
+
+        if (enableCache && StringUtils.isNonBlank(key)) {
+            addToCache(cacheManager, key, bitmap);
+        }
+    }
+
+    static public boolean addToCache(final ReaderCacheManager cacheManager, final String key, final ReaderBitmapImpl bitmap) {
+        final ReaderBitmapImpl cache = cacheManager.getBitmap(key);
+        if (cache == null) {
+            cacheManager.clear();
+            cacheManager.addBitmap(key, bitmap);
+            return true;
+        }
+        return false;
+    }
+
+    static public boolean checkCache(final ReaderCacheManager cacheManager, final String key, final ReaderBitmapImpl bitmap) {
+        final ReaderBitmapImpl cache = cacheManager.getBitmap(key);
+        if (cache == null) {
+            return false;
+        }
+        bitmap.copyFrom(cache);
+        return true;
     }
 
     static public void clear(final ReaderLayoutManager layoutManager) {

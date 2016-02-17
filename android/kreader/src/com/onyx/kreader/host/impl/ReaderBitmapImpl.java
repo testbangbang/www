@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.impl;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.utils.TimeUtils;
 
@@ -53,6 +54,10 @@ public class ReaderBitmapImpl implements ReaderBitmap {
         bitmap = src.getBitmap().copy(src.getBitmap().getConfig(), true);
         long end = TimeUtils.nanoTime();
         return (end - start);
+    }
+
+    public void copy(final ReaderBitmap source, final ReaderBitmap target, final Rect rect) {
+
     }
 
     public boolean replaceWithNewBitmap(final Bitmap src) {

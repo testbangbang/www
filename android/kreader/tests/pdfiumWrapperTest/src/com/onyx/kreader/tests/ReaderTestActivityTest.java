@@ -8,6 +8,9 @@ import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper;
 import com.onyx.kreader.utils.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,5 +170,7 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
         assertTrue(wrapper.nativeCloseDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
+
+
 
 }

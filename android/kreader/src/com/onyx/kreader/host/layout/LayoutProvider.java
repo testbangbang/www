@@ -3,6 +3,7 @@ package com.onyx.kreader.host.layout;
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 
@@ -60,7 +61,7 @@ public class LayoutProvider {
         return false;
     }
 
-    public boolean drawVisiblePages(ReaderBitmap bitmap) throws ReaderException {
+    public boolean drawVisiblePages(ReaderBitmapImpl bitmap) throws ReaderException {
         return false;
     }
 

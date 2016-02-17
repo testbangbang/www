@@ -37,7 +37,8 @@ public class ReaderTestActivity extends Activity {
 
 
     private Reader reader;
-    final String path = "/mnt/sdcard/cityhunter/cityhunter02.pdf";
+    final String path = "/mnt/sdcard/cityhunter/cityhunter10.pdf";
+//    final String path = "/mnt/sdcard/Books/a.pdf";
     private int pn = 0;
     private int next = 0;
     private EditText searchEdit;
@@ -261,6 +262,19 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 if (e == null) {
                     dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
+                    textPrerenderScreen();
+                }
+            }
+        });
+    }
+
+    public void textPrerenderScreen() {
+        final PrerenderRequest renderRequest = new PrerenderRequest();
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                if (e == null) {
+                    //dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
                 }
             }
         });
