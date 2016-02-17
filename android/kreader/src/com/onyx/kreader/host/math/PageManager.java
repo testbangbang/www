@@ -37,12 +37,6 @@ public class PageManager {
         pagesBoundingRect.set(0, 0, 0, 0);
     }
 
-    public void setViewportPosition(final float x, final float y) {
-        viewportRect.offsetTo(x, y);
-        collectVisiblePages();
-        reboundViewport();
-    }
-
     public void setViewportRect(final float left, final float top, final float right, final float bottom) {
         viewportRect.set(left, top, right, bottom);
         collectVisiblePages();
@@ -74,6 +68,18 @@ public class PageManager {
     public void add(final PageInfo pageInfo) {
         pageInfoMap.put(pageInfo.getName(), pageInfo);
         pageInfoList.add(pageInfo);
+    }
+
+    public void setViewportPosition(final float x, final float y) {
+        viewportRect.offsetTo(x, y);
+        collectVisiblePages();
+        reboundViewport();
+    }
+
+    private void setViewportPositionImpl(final float x, final float y) {
+        viewportRect.offsetTo(x, y);
+        collectVisiblePages();
+        reboundViewport();
     }
 
     public boolean gotoPage(final String name) {
@@ -185,7 +191,6 @@ public class PageManager {
         setScale(newScale);
         return true;
     }
-
 
     public boolean scaleByRect(final String pageName, final RectF ratio) {
         specialScale = ReaderConstants.SCALE_INVALID;
