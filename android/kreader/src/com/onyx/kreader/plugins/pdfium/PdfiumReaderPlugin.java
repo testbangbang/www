@@ -169,16 +169,16 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return getPluginImpl().nativeClearBitmap(bitmap.getBitmap());
     }
 
-    public boolean draw(final String page, final float scale, final ReaderBitmap bitmap) {
+    public boolean draw(final String page, final float scale,  final int rotation,  final ReaderBitmap bitmap) {
         benchmark.restart();
-        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), bitmap.getBitmap());
+        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), rotation, bitmap.getBitmap());
         Log.e(TAG, "rendering takes: " + benchmark.duration());
         return ret;
     }
 
-    public boolean draw(final String page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
+    public boolean draw(final String page, final float scale,  final int rotation, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
         benchmark.restart();
-        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap.getBitmap());
+        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, rotation, bitmap.getBitmap());
         Log.e(TAG, "rendering takes: " + benchmark.duration());
         return ret;
     }
@@ -324,6 +324,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
                 (int) start.pageDisplayRect.top,
                 (int) start.pageDisplayRect.width(),
                 (int) start.pageDisplayRect.height(),
+                start.pageDisplayOrientation,
                 (int) start.point.x,
                 (int) start.point.y,
                 (int) end.point.x,

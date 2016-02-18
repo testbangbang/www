@@ -10,12 +10,14 @@ public class ReaderHitTestArgs {
 
     public String pageName;
     public RectF pageDisplayRect;
+    public int pageDisplayOrientation;
     public PointF point;
 
-    public ReaderHitTestArgs(final String name, final RectF rect, final PointF p) {
+    public ReaderHitTestArgs(final String name, final RectF rect, int orientation, final PointF p) {
         pageName = name;
         pageDisplayRect = rect;
         point = p;
+        pageDisplayOrientation = orientation;
     }
 
 }

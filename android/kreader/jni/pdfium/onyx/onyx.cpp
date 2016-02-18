@@ -156,7 +156,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
-  (JNIEnv * env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jobject bitmap) {
+  (JNIEnv * env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jobject bitmap) {
 
     FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
     if (page == NULL) {
@@ -187,7 +187,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
     	AndroidBitmap_unlockPixels(env, bitmap);
         return false;
     }
-    FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, 0, FPDF_LCD_TEXT);
+    FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT);
     AndroidBitmap_unlockPixels(env, bitmap);
     return true;
 }
@@ -202,14 +202,14 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     return count;
 }
 
-static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int start, int end, std::vector<int> & list) {
+static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, std::vector<int> & list) {
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
     int count = end - start + 1;
     for(int i = 0; i < count; ++i) {
         FPDFText_GetCharBox(textPage, i + start, &left, &right, &bottom, &top);
-        FPDF_PageToDevice(page, x, y, width, height, 0, left, top, &newLeft, &newTop);
-        FPDF_PageToDevice(page, x, y, width, height, 0, right, bottom, &newRight, &newBottom);
+        FPDF_PageToDevice(page, x, y, width, height, rotation, left, top, &newLeft, &newTop);
+        FPDF_PageToDevice(page, x, y, width, height, rotation, right, bottom, &newRight, &newBottom);
         if (newRight < newLeft) {
             std::swap(newRight, newLeft);
         }
@@ -224,13 +224,13 @@ static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x,
     return count;
 }
 
-static int reportSelection(JNIEnv *env, FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int start, int end, jobject selection) {
+static int reportSelection(JNIEnv *env, FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, jobject selection) {
     int count = end - start + 1;
     {
         JNIUtils utils(env);
         utils.findMethod(selectionClassName, "addRectangle", "(IIII)V");
         std::vector<int> list;
-        getSelectionRectangles(page, textPage, x, y, width, height, start, end, list);
+        getSelectionRectangles(page, textPage, x, y, width, height, rotation, start, end, list);
         for(int i = 0; i < count; ++i) {
             env->CallVoidMethod(selection, utils.getMethodId(), list[i * 4], list[i * 4 + 1], list[i * 4 + 2], list[i * 4 + 3]);
         }
@@ -255,7 +255,7 @@ static int reportSelection(JNIEnv *env, FPDF_PAGE page, FPDF_TEXTPAGE textPage, 
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
-  (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint sx, jint sy, jint ex, jint ey, jobject selection) {
+  (JNIEnv *env, jobject thiz, jint pageIndex,  jint x, jint y, jint width, jint height, jint rotation, jint sx, jint sy, jint ex, jint ey, jobject selection) {
 
     FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
@@ -267,8 +267,8 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     double startPageX, startPageY, endPageX, endPageY;
 
     // convert from screen to page
-    FPDF_DeviceToPage(page, x, y, width, height, 0, sx, sy, &startPageX, &startPageY);
-    FPDF_DeviceToPage(page, x, y, width, height, 0, ex, ey, &endPageX, &endPageY);
+    FPDF_DeviceToPage(page, x, y, width, height, rotation, sx, sy, &startPageX, &startPageY);
+    FPDF_DeviceToPage(page, x, y, width, height, rotation, ex, ey, &endPageX, &endPageY);
 
     // find char index in page
     int startIndex = FPDFText_GetCharIndexAtPos(textPage, startPageX, startPageY, tolerance, tolerance);
@@ -282,21 +282,21 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     // normalize
     int start = startIndex < endIndex ? startIndex : endIndex;
     int end = startIndex < endIndex ? endIndex : startIndex;
-    return reportSelection(env, page, textPage, x, y, width, height, start, end, selection);
+    return reportSelection(env, page, textPage, x, y, width, height, rotation, start, end, selection);
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSelection
-  (JNIEnv *env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jint startIndex, jint endIndex, jobject selection) {
+  (JNIEnv *env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jint startIndex, jint endIndex, jobject selection) {
     FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
     if (page == NULL || textPage == NULL) {
         return 0;
     }
-    return reportSelection(env, page, textPage, x, y, width, height, startIndex, endIndex, selection);
+    return reportSelection(env, page, textPage, x, y, width, height, rotation, startIndex, endIndex, selection);
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSearchInPage
-  (JNIEnv *env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, jbyteArray array, jboolean caseSensitive, jboolean matchWholeWord, jobject objectList) {
+  (JNIEnv *env, jobject thiz, jint pageIndex, jint x, jint y, jint width, jint height, int rotation, jbyteArray array, jboolean caseSensitive, jboolean matchWholeWord, jobject objectList) {
 
     FPDF_PAGE page = OnyxPdfiumManager::getPage(thiz, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(thiz, pageIndex);
@@ -330,7 +330,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
         int startIndex = FPDFText_GetSchResultIndex(searchHandle);
         int endIndex = startIndex + FPDFText_GetSchCount(searchHandle);
         std::vector<int> list;
-        getSelectionRectangles(page, textPage, x, y, width, height, startIndex, endIndex, list);
+        getSelectionRectangles(page, textPage, x, y, width, height, rotation, startIndex, endIndex, list);
         JNIIntArray intArray(env, list.size(), &list[0]);
         env->CallStaticObjectMethod(utils.getClazz(), utils.getMethodId(), objectList, intArray.getIntArray(true), startIndex, endIndex);
     }

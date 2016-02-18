@@ -21,10 +21,11 @@ public interface ReaderRenderer {
     /**
      * draw content.
      * @param page the page position.
+     * @param rotation the rotation.
      * @param bitmap the target bitmap to draw page.
      * @return false if not supported.
      */
-    public boolean draw(final String page, final float scale, final ReaderBitmap bitmap);
+    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap);
 
     /**
      * draw content. There are two coordinates system.
@@ -33,6 +34,7 @@ public interface ReaderRenderer {
      * origin point(0, 0)
      * @param page the page position.
      * @param scale the actual scale used to render page.
+     * @param rotation the rotation.
      * @param bitmap the target bitmap to draw content. Caller may use this method to draw part of content.
      * @param xInBitmap the position x in bitmap to draw.
      * @param yInBitmap the position y in bitmap to draw.
@@ -53,6 +55,6 @@ public interface ReaderRenderer {
      *
      * @return
      */
-    public boolean draw(final String page, final float scale, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap);
+    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap);
 
 }

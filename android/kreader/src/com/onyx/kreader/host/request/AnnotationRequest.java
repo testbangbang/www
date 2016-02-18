@@ -28,8 +28,8 @@ public class AnnotationRequest extends BaseRequest {
     public void execute(final Reader reader) throws Exception {
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
         PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pageName);
-        ReaderHitTestArgs startArgs = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), start);
-        ReaderHitTestArgs endArgs = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), end);
+        ReaderHitTestArgs startArgs = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, start);
+        ReaderHitTestArgs endArgs = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, end);
         selection = hitTestManager.select(startArgs, endArgs);
     }
 

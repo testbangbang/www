@@ -17,6 +17,8 @@ public class PageInfo {
     private String name;
 
     private int pageOrientation;      // degree 0, 90, 180, 270.
+    private int pageDisplayOrientation = 0;
+
     private float originWidth;
     private float originHeight;
     private RectF autoCropContentRegion;    // content region with auto crop scale.
@@ -114,6 +116,10 @@ public class PageInfo {
 
     public RectF getDisplayRect() {
         return displayRect;
+    }
+
+    public int getPageDisplayOrientation() {
+        return pageDisplayOrientation;
     }
 
     public RectF visibleRectInViewport(final RectF viewport) {

@@ -74,34 +74,34 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeRenderPage
- * Signature: (IIIIILandroid/graphics/Bitmap;)Z
+ * Signature: (IIIIIILandroid/graphics/Bitmap;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeHitTest
- * Signature: (IIIIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
+ * Signature: (IIIIIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeSelection
- * Signature: (IIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
+ * Signature: (IIIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSelection
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeSearchInPage
- * Signature: (IIIII[BZZLjava/util/List;)I
+ * Signature: (IIIIII[BZZLjava/util/List;)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSearchInPage
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jbyteArray, jboolean, jboolean, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jbyteArray, jboolean, jboolean, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper

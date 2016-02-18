@@ -1,19 +1,23 @@
-package com.onyx.kreader.plugins.adobe;
+package com.onyx.kreader.plugins.images;
 
 import android.content.Context;
-import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 import com.onyx.kreader.api.*;
-import com.onyx.kreader.utils.JniUtils;
+import com.onyx.kreader.common.Benchmark;
+import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by zhuzeng on 10/5/15.
  */
-public class AdobeReaderPlugin implements ReaderPlugin,
+public class ImagesReaderPlugin implements ReaderPlugin,
         ReaderDocument,
         ReaderView,
         ReaderRenderer,
@@ -22,48 +26,52 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         ReaderTextStyleManager,
         ReaderDrmManager,
         ReaderHitTestManager,
-        ReaderRendererFeatures
-{
+        ReaderRendererFeatures {
 
-    private AdobeJniWrapper impl;
+    private static final String TAG = ImagesReaderPlugin.class.getSimpleName();
+    private Benchmark benchmark = new Benchmark();
+
+    private ImagesJniWrapper impl;
     private String documentPath;
+    private List<String> pageList = new ArrayList<String>();
+    static private Set<String> extensionFilters = new HashSet<String>();
 
-    public AdobeReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
-        ReaderDeviceInfo.init(context);
+    public ImagesReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
     }
 
-    public AdobeJniWrapper getPluginImpl() {
+    public ImagesJniWrapper getPluginImpl() {
         if (impl == null) {
-            impl = new AdobeJniWrapper();
+            impl = new ImagesJniWrapper();
         }
         return impl;
     }
 
     public String displayName() {
-        return AdobeReaderPlugin.class.getSimpleName();
+        return ImagesReaderPlugin.class.getSimpleName();
+    }
+
+    static public Set<String> getExtensionFilters() {
+        if (extensionFilters.size() <= 0) {
+            extensionFilters.add("png");
+            extensionFilters.add("jpg");
+            extensionFilters.add("jpeg");
+            extensionFilters.add("bmp");
+            extensionFilters.add("tiff");
+        }
+        return extensionFilters;
     }
 
     static public boolean accept(final String path) {
-        String string = path.toLowerCase();
-        if (string.endsWith(".epub") || string.endsWith(".pdf")) {
-            return true;
-        }
-        return false;
+        String extension = FileUtils.getFileExtension(path);
+        return getExtensionFilters().contains(extension);
     }
 
+
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
-        String docPassword = "";
-        String archivePassword = "";
         documentPath = path;
-        if (documentOptions != null) {
-            docPassword = documentOptions.getDocumentPassword();
-            archivePassword = documentOptions.getDocumentPassword();
-        }
-        long ret = getPluginImpl().openFile(path, docPassword, archivePassword);
-        if (ret == 0) {
-            return this;
-        }
-        return null;
+        final String baseDir = FileUtils.getParent(path);
+        FileUtils.collectFiles(baseDir, getExtensionFilters(), pageList);
+        return this;
     }
 
     public boolean supportDrm() {
@@ -72,14 +80,6 @@ public class AdobeReaderPlugin implements ReaderPlugin,
 
     public ReaderDrmManager createDrmManager() {
         return this;
-    }
-
-    public void abortCurrentJob() {
-        getPluginImpl().setAbortFlagNative(true);
-    }
-
-    public void clearAbortFlag() {
-        getPluginImpl().setAbortFlagNative(false);
     }
 
     public boolean readMetadata(final ReaderDocumentMetadata metadata) {
@@ -92,8 +92,16 @@ public class AdobeReaderPlugin implements ReaderPlugin,
 
     public RectF getPageOriginSize(final String position) {
         float size [] = {0, 0};
-        getPluginImpl().pageSizeNative(PagePositionUtils.getPageNumber(position), size);
+        getPluginImpl().nativePageSize(pageList.get(Integer.parseInt(position)), size);
         return new RectF(0, 0, size[0], size[1]);
+    }
+
+    public void abortCurrentJob() {
+
+    }
+
+    public void clearAbortFlag() {
+
     }
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
@@ -109,7 +117,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     public void close() {
-        getPluginImpl().closeFile();
+        pageList.clear();
     }
 
     public ReaderViewOptions getViewOptions() {
@@ -163,15 +171,15 @@ public class AdobeReaderPlugin implements ReaderPlugin,
     }
 
     public boolean clear(final ReaderBitmap bitmap) {
-        return getPluginImpl().clear(bitmap.getBitmap());
+        return getPluginImpl().nativeClearBitmap(bitmap.getBitmap());
     }
 
     public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap) {
-        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), true);
+        return false;
     }
 
-    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmp) {
-        return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), xInBitmap, yInBitmap, widthInBitmap, heightInBitmp,  false);
+    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
+        return false;
     }
 
     /**
@@ -179,9 +187,8 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String getInitPosition() {
-        return PagePositionUtils.fromPageNumber(0);
+        return firstPage();
     }
-
 
     /**
      * Get position from page number
@@ -192,26 +199,27 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return PagePositionUtils.fromPageNumber(pageNumber);
     }
 
+
     /**
      * Return total page number.
      * @return 1 based total page number.
      */
     public int getTotalPage() {
-        return getPluginImpl().countPagesInternal();
+        return pageList.size();
     }
 
     /**
      * Navigate to next screen.
      */
     public String nextScreen(final String position) {
-        return null;
+        return nextPage(position);
     }
 
     /**
      * Navigate to previous screen.
      */
     public String prevScreen(final String position) {
-        return null;
+        return prevPage(position);
     }
 
     /**
@@ -244,7 +252,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String firstPage() {
-        return null;
+        return PagePositionUtils.fromPageNumber(0);
     }
 
     /**
@@ -252,7 +260,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String lastPage() {
-        return null;
+        return PagePositionUtils.fromPageNumber(getTotalPage() - 1);
     }
 
     /**
@@ -260,7 +268,7 @@ public class AdobeReaderPlugin implements ReaderPlugin,
      * @return
      */
     public boolean gotoPosition(final String position) {
-        return getPluginImpl().gotoLocationInternal(PagePositionUtils.getPageNumber(position), null);
+        return false;
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {
@@ -275,89 +283,6 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    /**
-     * Scale to page.
-     */
-    public void setScaleToPage() {}
-
-    /**
-     * Check if scale to page.
-     * @return
-     */
-    public boolean isScaleToPage() {
-        return false;
-    }
-
-    public void setScaleToWidth() {
-
-    }
-
-    public boolean isScaleToWidth() {
-        return false;
-    }
-
-    public void setScaleToHeight() {}
-
-    public boolean isScaleToHeight() {
-        return false;
-    }
-
-    public boolean isCropPage() {
-        return false;
-    }
-
-    public void setCropPage() {}
-
-    public boolean isCropWidth() {
-        return false;
-    }
-
-    public void setCropWidth() {}
-
-    public float getActualScale() {
-        return 0;
-    }
-
-    public void setActualScale(final float scale) {}
-
-    /**
-     * Set viewportInPage. The behavior is different on different page layout.
-     * @param viewport
-     */
-    public boolean setViewport(final RectF viewport) {
-        return false;
-    }
-
-    /**
-     * Retrieve current viewportInPage.
-     * @return the current viewportInPage.
-     */
-    public RectF getViewport() {
-        return null;
-    }
-
-
-    /**
-     * Convinent method to set scale and viewportInPage directly.
-     * @param actualScale the actual scale
-     * @return
-     */
-    public boolean setScale(float actualScale) {
-        return getPluginImpl().changeNavigationMatrix(actualScale, 0, 0);
-    }
-
-    public boolean setViewport(final float x, final float y) {
-        return getPluginImpl().setNavigationMatrix(0, x, y);
-    }
-
-    /**
-     * Return the page display rect on view coordinates.
-     * @param position the page position.
-     * @return
-     */
-    public RectF getPageDisplayRect(final String position) {
-        return null;
-    }
 
     public boolean acceptDRMFile(final String path) {
         return false;
@@ -382,64 +307,17 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public boolean supportSinglePageLayout() {
-        return true;
-    }
-
-    public void setSinglePageLayout() {
-
-    }
-
-    public boolean isSinglePageLayout() {
-        return false;
-    }
-
-    public boolean supportContinuousPageLayout() {
-        return true;
-    }
-
-    public void setContinuousPageLayout() {
-    }
-
-    public boolean isContinuousPageLayout() {
-        return false;
-    }
-
-    public boolean supportReflowLayout() {
-        return true;
-    }
-    public void setReflowLayout() {
-
-    }
-
-    public boolean isReflowLayout() {
-        return false;
-    }
-
-    public boolean viewToDoc(final PointF viewPoint, final PointF documentPoint) {
-        return false;
-    }
-
-
-    public ReaderSelection selectWord(final ReaderHitTestArgs args, final ReaderTextSplitter splitter) {
+    public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
 
         return null;
     }
 
-    public String position(final ReaderHitTestArgs args) {
-        final String position = getPluginImpl().locationNative(args.point.x, args.point.y);
-        return position;
+    public String position(final ReaderHitTestArgs hitTest) {
+        return null;
     }
 
-    public ReaderSelection select(final ReaderHitTestArgs startArgs, final ReaderHitTestArgs endArgs) {
-        final String start = getPluginImpl().locationNative(startArgs.point.x, startArgs.point.y);
-        final String end = getPluginImpl().locationNative(endArgs.point.x, endArgs.point.y);
-        AdobeSelectionImpl selection = new AdobeSelectionImpl();
-        selection.setStartPosition(start);
-        selection.setEndPosition(end);
-        selection.setText(getPluginImpl().getTextNative(start, end));
-        selection.setRectangles(JniUtils.rectangles(getPluginImpl().rectangles(start, end)));
-        return selection;
+    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end) {
+        return null;
     }
 
     public boolean supportScale() {

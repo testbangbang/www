@@ -38,13 +38,13 @@ public class PdfiumJniWrapper {
 
     public native boolean nativeClearBitmap(final Bitmap bitmap);
 
-    private native boolean nativeRenderPage(int page, int x, int y, int width, int height, final Bitmap bitmap);
+    private native boolean nativeRenderPage(int page, int x, int y, int width, int height, int rotation, final Bitmap bitmap);
 
-    public native int nativeHitTest(int page, int x, int y, int width, int height, int startX, int startY, int endX, int endY, final PdfiumSelection selection);
+    public native int nativeHitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final PdfiumSelection selection);
 
-    public native int nativeSelection(int page, int x, int y, int width, int height, int startCharIndex, int endCharIndex, final PdfiumSelection selection);
+    public native int nativeSelection(int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final PdfiumSelection selection);
 
-    public native int nativeSearchInPage(int page, int x, int y, int width, int height, final byte [] buffer, boolean caseSensitive, boolean matchWholeWord, final List<ReaderSelection> list);
+    public native int nativeSearchInPage(int page, int x, int y, int width, int height, int rotation, final byte [] buffer, boolean caseSensitive, boolean matchWholeWord, final List<ReaderSelection> list);
 
     public native byte [] nativeGetPageText(int page);
 
@@ -66,12 +66,12 @@ public class PdfiumJniWrapper {
      * @param bitmap target bitmap
      * @return
      */
-    public boolean drawPage(int page, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap, final Bitmap bitmap) {
-        return nativeRenderPage(page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, bitmap);
+    public boolean drawPage(int page, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap, int rotation, final Bitmap bitmap) {
+        return nativeRenderPage(page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap,  rotation, bitmap);
     }
 
-    public void searchInPage(int page, int x, int y, int width, int height, final String text, boolean caseSensitive, boolean matchWholeWord, final List<ReaderSelection> list) {
-        nativeSearchInPage(page, x, y, width, height, StringUtils.utf16leBuffer(text), caseSensitive, matchWholeWord, list);
+    public void searchInPage(int page, int x, int y, int width, int height, int rotation, final String text, boolean caseSensitive, boolean matchWholeWord, final List<ReaderSelection> list) {
+        nativeSearchInPage(page, x, y, width, height, rotation, StringUtils.utf16leBuffer(text), caseSensitive, matchWholeWord, list);
     }
 
     public String getPageText(int page) {

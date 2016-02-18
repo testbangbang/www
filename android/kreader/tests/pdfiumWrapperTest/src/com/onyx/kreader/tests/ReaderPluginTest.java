@@ -39,7 +39,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         assertNotNull(renderer);
         String initPosition = navigator.getInitPosition();
         assertNotNull(initPosition);
-        assertTrue(renderer.draw(initPosition, -1, readerBitmap));
+        assertTrue(renderer.draw(initPosition, -1, 0, readerBitmap));
         document.close();
     }
 
@@ -71,7 +71,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         pageManager.scaleToPage(pageInfo.getName());
         PageInfo result = pageManager.getFirstVisiblePage();
         Rect displayRect = RectUtils.toRect(result.getDisplayRect());
-        assertTrue(renderer.draw(initPosition, result.getActualScale(), readerBitmap, displayRect.left, displayRect.top,
+        assertTrue(renderer.draw(initPosition, result.getActualScale(), result.getPageDisplayOrientation(), readerBitmap, displayRect.left, displayRect.top,
                 displayRect.width(), displayRect.height()));
         BitmapUtils.saveBitmap(readerBitmap.getBitmap(), "/mnt/sdcard/1.png");
         document.close();

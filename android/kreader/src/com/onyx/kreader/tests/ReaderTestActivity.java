@@ -450,13 +450,13 @@ public class ReaderTestActivity extends Activity {
         wrapper.nativeInitLibrary();
         long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/text.pdf", "");
         bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
-        wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap);
+        wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap);
         draw();
     }
 
     private void drawHitTest(final Canvas canvas) {
         PdfiumSelection selection = new PdfiumSelection();
-        int size = wrapper.nativeHitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), (int) startX, (int) startY, (int) endX, (int) endY, selection);
+        int size = wrapper.nativeHitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, (int) startX, (int) startY, (int) endX, (int) endY, selection);
         if (size <= 0) {
             return;
         }
@@ -474,7 +474,7 @@ public class ReaderTestActivity extends Activity {
 
     private void drawSearchResult(final Canvas canvas) {
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
-        wrapper.searchInPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), searchEdit.getText().toString(), false, false, list);
+        wrapper.searchInPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, searchEdit.getText().toString(), false, false, list);
         if (list.size() <= 0) {
             return;
         }
@@ -498,7 +498,7 @@ public class ReaderTestActivity extends Activity {
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
         while ((end = text.indexOf("\n", start)) > 0) {
             PdfiumSelection selection = new PdfiumSelection();
-            wrapper.nativeSelection(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), start, end, selection);
+            wrapper.nativeSelection(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, start, end, selection);
             list.add(selection);
             start = end + 1;
         }

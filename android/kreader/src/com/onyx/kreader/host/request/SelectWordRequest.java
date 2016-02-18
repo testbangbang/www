@@ -28,7 +28,7 @@ public class SelectWordRequest extends BaseRequest {
     public void execute(final Reader reader) throws Exception {
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
         PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pageName);
-        ReaderHitTestArgs args = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), start);
+        ReaderHitTestArgs args = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, start);
         selection = hitTestManager.selectWord(args, null);
     }
 
