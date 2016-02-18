@@ -285,6 +285,7 @@ public class PageManager {
             }
             y += spacing;
         }
+        y += bottomMargin;
         maxWidth += leftMargin + rightMargin;
         pagesBoundingRect.set(0, 0, maxWidth, y);
         for(PageInfo pageInfo : pageInfoList) {
