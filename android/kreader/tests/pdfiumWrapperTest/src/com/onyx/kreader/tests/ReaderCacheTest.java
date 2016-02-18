@@ -30,6 +30,7 @@ public class ReaderCacheTest extends ActivityInstrumentationTestCase2<ReaderTest
         RectF viewport = new RectF(0, 0, TestUtils.randInt(1000, 2000), TestUtils.randInt(10000, 20000));
         pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
         int count = TestUtils.randInt(1, 100);
+        pageManager.clear();
         for(int i = 0; i < count; ++i) {
             PageInfo pageInfo = new PageInfo(String.valueOf(i), TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
             pageManager.add(pageInfo);
@@ -47,27 +48,32 @@ public class ReaderCacheTest extends ActivityInstrumentationTestCase2<ReaderTest
     }
 
     public void testViewport() {
-        List<PageInfo> list = randPageList();
-        int index = TestUtils.randInt(0, list.size() - 1);
-        final PageInfo pageInfo = list.get(index);
-        pageManager.setViewportPosition(pageInfo.getName(), 0, 0);
-        List<PageInfo> visibleList = pageManager.getVisiblePages();
-        assertTrue(visibleList.size() > 0);
-        final PageInfo first = visibleList.get(0);
+        for(int i = 0; i < 1000; ++i) {
+            List<PageInfo> list = randPageList();
+            int index = TestUtils.randInt(0, list.size() - 1);
+            final PageInfo pageInfo = list.get(index);
+            pageManager.setViewportPosition(pageInfo.getName(), 0, 0);
+            List<PageInfo> visibleList = pageManager.getVisiblePages();
+            assertTrue(visibleList.size() > 0);
+            final PageInfo first = visibleList.get(0);
 
-        // in screen coordinates system, it should be on top
-        assertTrue(TestUtils.compareFloatWhole(first.getDisplayRect().top, 0));
-        assertTrue(TestUtils.compareFloatWhole(first.getPositionRect().top, pageManager.getViewportRect().top));
-        assertTrue(first.getName().equals(pageInfo.getName()));
-
-        for(PageInfo visiblePageInfo : visibleList) {
-            final RectF viewport = pageManager.getViewportRect();
-            final RectF position = visiblePageInfo.getPositionRect();
-            final RectF display = visiblePageInfo.getDisplayRect();
-            if (!RectF.intersects(viewport, position)) {
-                assertTrue(false);
+            // in screen coordinates system, it should be on top
+            if (pageManager.getViewportRect().height() <= pageManager.getPagesBoundingRect().height() &&
+                pageManager.getPagesBoundingRect().height() - first.getPositionRect().top <= pageManager.getViewportRect().height()) {
+                assertTrue(TestUtils.compareFloatWhole(first.getDisplayRect().top, 0));
+                assertTrue(TestUtils.compareFloatWhole(first.getPositionRect().top, pageManager.getViewportRect().top));
+                assertTrue(first.getName().equals(pageInfo.getName()));
             }
-            assertTrue(display.top <= viewport.height());
+
+            for (PageInfo visiblePageInfo : visibleList) {
+                final RectF viewport = pageManager.getViewportRect();
+                final RectF position = visiblePageInfo.getPositionRect();
+                final RectF display = visiblePageInfo.getDisplayRect();
+                if (!RectF.intersects(viewport, position)) {
+                    assertTrue(false);
+                }
+                assertTrue(display.top <= viewport.height());
+            }
         }
     }
 

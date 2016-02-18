@@ -2,8 +2,10 @@ package com.onyx.kreader.host.math;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.utils.StringUtils;
+import com.onyx.kreader.utils.TestUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +40,8 @@ public class PageManager {
     private Map<String, PageInfo> pageInfoMap = new HashMap<String, PageInfo>();
 
     public void clear() {
+        pageInfoMap.clear();
+        visible.clear();
         pageInfoList.clear();
         pagesBoundingRect.set(0, 0, 0, 0);
         firstVisiblePageName = null;
@@ -91,7 +95,9 @@ public class PageManager {
             return false;
         }
         firstVisiblePageName = name;
-        updateForSpecialScale(pageInfo);
+        if (updateForSpecialScale(pageInfo)) {
+            return true;
+        }
         gotoPageImpl(pageInfo);
         return true;
     }
@@ -108,12 +114,13 @@ public class PageManager {
      */
     private void onViewportChanged() {
         collectVisiblePages();
-        reboundViewport();
-        updateVisiblePageDisplayRect();
+        if (reboundViewport()) {
+            collectVisiblePages();
+        }
     }
 
-    private void reboundViewport() {
-        PageUtils.rebound(viewportRect, pagesBoundingRect);
+    private boolean reboundViewport() {
+        return PageUtils.rebound(viewportRect, pagesBoundingRect);
     }
 
     private boolean updateForSpecialScale(final PageInfo pageInfo) {
@@ -295,18 +302,13 @@ public class PageManager {
         for(PageInfo pageInfo : pageInfoList) {
             if (RectF.intersects(viewportRect, pageInfo.getPositionRect())) {
                 visible.add(pageInfo);
+                pageInfo.updateDisplayRect(viewportRect);
                 found = true;
             } else if (found) {
                 break;
             }
         }
         return visible;
-    }
-
-    private void updateVisiblePageDisplayRect() {
-        for(PageInfo pageInfo : pageInfoList) {
-            pageInfo.updateDisplayRect(viewportRect);
-        }
     }
 
     public boolean nextViewport() {

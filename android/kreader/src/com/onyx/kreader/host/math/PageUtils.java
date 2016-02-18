@@ -79,26 +79,33 @@ public class PageUtils {
 
     // make sure child is fully inside parent.
     static public boolean rebound(final RectF child, final RectF parent) {
+        boolean changed = false;
         if (child.width() < parent.width()) {
             if (child.left < parent.left) {
                 child.offsetTo(parent.left, child.top);
+                changed = true;
             }
             if (child.right > parent.right) {
                 child.offsetTo(parent.right - child.width(), child.top);
+                changed = true;
             }
         } else {
             child.offsetTo((parent.width() - child.width()) / 2.0f, child.top);
+            changed = true;
         }
         if (child.height() < parent.height()) {
             if (child.top < parent.top) {
                 child.offsetTo(child.left, parent.top);
+                changed = true;
             }
             if (child.bottom > parent.bottom) {
                 child.offsetTo(child.left, parent.bottom - child.height());
+                changed = true;
             }
         } else {
             child.offsetTo(child.left, (parent.height() - child.height()) / 2.0f);
+            changed = true;
         }
-        return true;
+        return changed;
     }
 }
