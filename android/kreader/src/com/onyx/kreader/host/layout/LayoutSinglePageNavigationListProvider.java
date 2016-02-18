@@ -82,9 +82,9 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return true;
     }
 
-    public boolean setScale(float scale, float left, float top) throws ReaderException {
-        getPageManager().setScale(scale);
-        getPageManager().setViewportPosition(left, top);
+    public boolean setScale(final String pageName, float scale, float left, float top) throws ReaderException {
+        getPageManager().setScale(pageName, scale);
+        getPageManager().setViewportPosition(pageName, left, top);
         return true;
     }
 

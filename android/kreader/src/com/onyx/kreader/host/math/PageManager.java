@@ -3,6 +3,7 @@ package com.onyx.kreader.host.math;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.kreader.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +19,12 @@ public class PageManager {
 
     private int specialScale = ReaderConstants.SCALE_TO_PAGE;
     private float actualScale = 1.0f;
-    private float topMargin, leftMargin, rightMargin, bottomMargin;
+    private float topMargin = 0;
+    private float leftMargin = 0;
+    private float rightMargin = 0;
+    private float bottomMargin = 0;
     private float spacing;
+    private String firstVisiblePageName;
 
     private RectF pagesBoundingRect = new RectF();
 
@@ -35,12 +40,12 @@ public class PageManager {
     public void clear() {
         pageInfoList.clear();
         pagesBoundingRect.set(0, 0, 0, 0);
+        firstVisiblePageName = null;
     }
 
     public void setViewportRect(final float left, final float top, final float right, final float bottom) {
         viewportRect.set(left, top, right, bottom);
-        collectVisiblePages();
-        reboundViewport();
+        onViewportChanged();
     }
 
     public final RectF getViewportRect() {
@@ -53,12 +58,7 @@ public class PageManager {
 
     public void panViewportPosition(final float dx, final float dy) {
         viewportRect.offset(dx, dy);
-        collectVisiblePages();
-        reboundViewport();
-    }
-
-    private void reboundViewport() {
-        PageUtils.rebound(viewportRect, pagesBoundingRect);
+        onViewportChanged();
     }
 
     public boolean contains(final String name) {
@@ -70,16 +70,19 @@ public class PageManager {
         pageInfoList.add(pageInfo);
     }
 
-    public void setViewportPosition(final float x, final float y) {
-        viewportRect.offsetTo(x, y);
-        collectVisiblePages();
-        reboundViewport();
+    public void setViewportPosition(final String pageName, final float x, final float y) {
+        if (!gotoPage(pageName)) {
+            return;
+        }
+        panViewportPosition(x, y);
     }
 
-    private void setViewportPositionImpl(final float x, final float y) {
-        viewportRect.offsetTo(x, y);
-        collectVisiblePages();
-        reboundViewport();
+    private void gotoPageImpl(final PageInfo pageInfo) {
+        if (pageInfo == null) {
+            return;
+        }
+        viewportRect.offsetTo(pageInfo.getPositionRect().left, pageInfo.getPositionRect().top);
+        onViewportChanged();
     }
 
     public boolean gotoPage(final String name) {
@@ -87,9 +90,30 @@ public class PageManager {
         if (pageInfo == null) {
             return false;
         }
+        firstVisiblePageName = name;
         updateForSpecialScale(pageInfo);
-        setViewportPosition(pageInfo.getPositionRect().left, pageInfo.getPositionRect().top);
+        gotoPageImpl(pageInfo);
         return true;
+    }
+
+    private void onScaleChanged() {
+        updatePagesBoundingRect();
+    }
+
+    /**
+     * when viewport changed,
+     * - we collect visible pages
+     * - rebound viewport
+     * - update visible pages display rectangle according to viewport
+     */
+    private void onViewportChanged() {
+        collectVisiblePages();
+        reboundViewport();
+        updateVisiblePageDisplayRect();
+    }
+
+    private void reboundViewport() {
+        PageUtils.rebound(viewportRect, pagesBoundingRect);
     }
 
     private boolean updateForSpecialScale(final PageInfo pageInfo) {
@@ -106,29 +130,28 @@ public class PageManager {
         return true;
     }
 
-    public final PageInfo getPageInfo(final String position) {
-        return pageInfoMap.get(position);
+    public final PageInfo getPageInfo(final String pageName) {
+        return pageInfoMap.get(pageName);
     }
 
     public final List<PageInfo> getPageInfoList() {
         return pageInfoList;
     }
 
-    public void setScale(final float scale) {
+    public void setScale(final String pageName, final float scale) {
         specialScale = ReaderConstants.SCALE_INVALID;
-        setScaleImpl(scale);
+        setScaleImpl(pageName, scale);
     }
 
-    private void setScaleImpl(final float scale) {
+    private void setScaleImpl(final String pageName, final float scale) {
         if (scale < 0) {
             return;
         }
+        firstVisiblePageName = pageName;
         actualScale = scale;
-        updatePagesBoundingRect();
-        reboundViewport();
-        collectVisiblePages();
+        onScaleChanged();
+        gotoPageImpl(getPageInfo(pageName));
     }
-
 
     public final float getActualScale() {
         return actualScale;
@@ -144,7 +167,7 @@ public class PageManager {
             return false;
         }
         PageInfo pageInfo = getPageInfo(pageName);
-        setScaleImpl(PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect.width(), viewportRect.height()));
+        setScaleImpl(pageName, PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect.width(), viewportRect.height()));
         return true;
     }
 
@@ -154,7 +177,7 @@ public class PageManager {
             return false;
         }
         PageInfo pageInfo = getPageInfo(pageName);
-        setScaleImpl(PageUtils.scaleToWidth(pageInfo.getOriginWidth(), viewportRect.width()));
+        setScaleImpl(pageName, PageUtils.scaleToWidth(pageInfo.getOriginWidth(), viewportRect.width()));
         return true;
     }
 
@@ -164,7 +187,7 @@ public class PageManager {
             return false;
         }
         PageInfo pageInfo = getPageInfo(pageName);
-        setScaleImpl(PageUtils.scaleToHeight(pageInfo.getOriginHeight(), viewportRect.height()));
+        setScaleImpl(pageName, PageUtils.scaleToHeight(pageInfo.getOriginHeight(), viewportRect.height()));
         return true;
     }
 
@@ -178,17 +201,18 @@ public class PageManager {
             return false;
         }
         PageInfo pageInfo = getPageInfo(pageName);
-        setScale(pageInfo.getActualScale() * PageUtils.scaleByRect(child, viewportRect));
+        setScale(pageName, pageInfo.getActualScale() * PageUtils.scaleByRect(child, viewportRect));
         return true;
     }
 
     public boolean scaleWithDelta(final String pageName, final float delta) {
+        specialScale = ReaderConstants.SCALE_INVALID;
         if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
         PageInfo pageInfo = getPageInfo(pageName);
         float newScale = pageInfo.getActualScale() + PageUtils.scaleWithDelta(pageInfo.getPositionRect(), getViewportRect(), delta);
-        setScale(newScale);
+        setScale(pageName, newScale);
         return true;
     }
 
@@ -198,7 +222,7 @@ public class PageManager {
             return false;
         }
         PageInfo pageInfo = getPageInfo(pageName);
-        setScale(PageUtils.scaleByRatio(ratio, pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect));
+        setScale(pageName, PageUtils.scaleByRatio(ratio, pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect));
         return true;
     }
 
@@ -226,38 +250,15 @@ public class PageManager {
         return null;
     }
 
-    /**
-     * collect visible page list in page list.
-     */
-    public List<PageInfo> collectVisiblePages() {
-        visible.clear();
-        boolean found = false;
-        for(PageInfo pageInfo : pageInfoList) {
-            if (RectF.intersects(viewportRect, pageInfo.getPositionRect())) {
-                visible.add(pageInfo);
-                pageInfo.updateDisplayRect(viewportRect);
-                found = true;
-            } else if (found) {
-                break;
-            }
-        }
-        return visible;
-    }
-
     public PageInfo getFirstVisiblePage() {
-        List<PageInfo> list = getVisiblePages();
-        if (list == null || list.size() <= 0) {
-            return null;
+        if (StringUtils.isNonBlank(firstVisiblePageName)) {
+            return pageInfoMap.get(firstVisiblePageName);
         }
-        return list.get(0);
+        return null;
     }
 
     public String getFirstVisiblePageName() {
-        PageInfo pageInfo = getFirstVisiblePage();
-        if (pageInfo == null) {
-            return null;
-        }
-        return pageInfo.getName();
+        return firstVisiblePageName;
     }
 
     public List<PageInfo> getVisiblePages() {
@@ -285,13 +286,35 @@ public class PageManager {
         }
     }
 
+    /**
+     * collect visible page list in page list.
+     */
+    public List<PageInfo> collectVisiblePages() {
+        visible.clear();
+        boolean found = false;
+        for(PageInfo pageInfo : pageInfoList) {
+            if (RectF.intersects(viewportRect, pageInfo.getPositionRect())) {
+                visible.add(pageInfo);
+                found = true;
+            } else if (found) {
+                break;
+            }
+        }
+        return visible;
+    }
+
+    private void updateVisiblePageDisplayRect() {
+        for(PageInfo pageInfo : pageInfoList) {
+            pageInfo.updateDisplayRect(viewportRect);
+        }
+    }
+
     public boolean nextViewport() {
         if (viewportRect.bottom >= pagesBoundingRect.bottom) {
             return false;
         }
         viewportRect.offset(0, viewportRect.height());
-        reboundViewport();
-        collectVisiblePages();
+        onViewportChanged();
         return true;
     }
 
@@ -300,8 +323,7 @@ public class PageManager {
             return false;
         }
         viewportRect.offset(0, -viewportRect.height());
-        reboundViewport();
-        collectVisiblePages();
+        onViewportChanged();
         return true;
     }
 

@@ -96,7 +96,7 @@ public class LayoutProviderUtils {
     }
 
     static public void resetViewportPosition(final ReaderLayoutManager layoutManager) {
-        layoutManager.getPageManager().setViewportPosition(0, 0);
+        layoutManager.getPageManager().setViewportPosition(null, 0, 0);
     }
 
     static public void addNewSinglePage(final ReaderLayoutManager layoutManager, final String position) {

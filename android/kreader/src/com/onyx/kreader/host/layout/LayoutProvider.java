@@ -65,7 +65,7 @@ public class LayoutProvider {
         return false;
     }
 
-    public boolean setScale(float scale, float left, float top) throws ReaderException {
+    public boolean setScale(final String pageName, float scale, float left, float top) throws ReaderException {
         return false;
     }
 

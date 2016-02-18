@@ -220,7 +220,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testActualScale() {
-        final ScaleRequest renderRequest = new ScaleRequest(0.5f, 0, 0);
+        final ScaleRequest renderRequest = new ScaleRequest(String.valueOf(pn), 0.5f, 0, 0);
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {

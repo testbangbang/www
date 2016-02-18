@@ -1,7 +1,6 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -69,9 +68,9 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return true;
     }
 
-    public boolean setScale(float scale, float left, float top) throws ReaderException {
-        getPageManager().setScale(scale);
-        getPageManager().setViewportPosition(left, top);
+    public boolean setScale(final String pageName, float scale, float left, float top) throws ReaderException {
+        getPageManager().setScale(pageName, scale);
+        getPageManager().setViewportPosition(pageName, left, top);
         return true;
     }
 

@@ -174,8 +174,8 @@ public class ReaderLayoutManager {
         return ret;
     }
 
-    public void setScale(final float scale, final float x, final float y) throws ReaderException {
-        getCurrentLayoutProvider().setScale(scale, x, y);
+    public void setScale(final String pageName, final float scale, final float x, final float y) throws ReaderException {
+        getCurrentLayoutProvider().setScale(pageName, scale, x, y);
         onPositionChanged();
     }
 

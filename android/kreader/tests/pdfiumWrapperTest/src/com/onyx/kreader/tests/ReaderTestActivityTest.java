@@ -27,7 +27,7 @@ import java.util.List;
 public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
     static private String TAG = ReaderTestActivityTest.class.getSimpleName();
-    private boolean performanceTest = true;
+    private boolean performanceTest = false;
 
     public ReaderTestActivityTest() {
         super("com.onyx.reader", ReaderTestActivity.class);

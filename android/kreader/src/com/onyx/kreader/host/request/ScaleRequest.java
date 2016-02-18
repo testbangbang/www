@@ -8,18 +8,20 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class ScaleRequest extends BaseRequest {
 
+    private String pageName;
     private float scale;
     private float x, y;
 
-    public ScaleRequest(float s, float viewportX, float viewportY) {
+    public ScaleRequest(final String name, float s, float viewportX, float viewportY) {
         scale = s;
         x = viewportX;
         y = viewportY;
+        pageName = name;
     }
 
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
-        reader.getReaderLayoutManager().setScale(scale, x, y);
+        reader.getReaderLayoutManager().setScale(pageName, scale, x, y);
         reader.getReaderLayoutManager().drawVisiblePages(getRenderBitmap());
     }
 }

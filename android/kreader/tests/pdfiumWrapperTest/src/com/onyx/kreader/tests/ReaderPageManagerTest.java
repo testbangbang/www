@@ -55,7 +55,7 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
         }
         pageManager.setViewportRect(0, 0, 1024, 2000);
         long start = System.currentTimeMillis();
-        pageManager.setScale(1.0f);
+        pageManager.setScale(String.valueOf(0), 1.0f);
         long end = System.currentTimeMillis();
         Log.i("TEST", "update takes: " + (end - start));
         long end2 = System.currentTimeMillis();
@@ -77,7 +77,7 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
         pageManager.clear();
         PageInfo pageInfo = new PageInfo(String.valueOf(0), TestUtils.randInt(100, 2000), TestUtils.randInt(100, 2000));
         pageManager.add(pageInfo);
-        pageManager.setScale(1.0f);
+        pageManager.setScale(pageInfo.getName(), 1.0f);
         pageManager.setViewportRect(0, 0, 2000, 2500);
         pageManager.scaleToPage(pageInfo.getName());
         assertTrue(TestUtils.compareFloatWhole(pageManager.getViewportRect().centerX(), pageManager.getPagesBoundingRect().centerX()));
