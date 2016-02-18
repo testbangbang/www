@@ -9,6 +9,7 @@ import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
+import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.utils.RectUtils;
@@ -17,9 +18,9 @@ import com.onyx.kreader.utils.TestUtils;
 /**
  * Created by zhuzeng on 10/5/15.
  */
-public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
-    public ReaderPluginTest() {
+    public ReaderPluginPdfiumTest() {
         super("com.onyx.reader", ReaderTestActivity.class);
     }
 
@@ -76,5 +77,7 @@ public class ReaderPluginTest extends ActivityInstrumentationTestCase2<ReaderTes
         BitmapUtils.saveBitmap(readerBitmap.getBitmap(), "/mnt/sdcard/1.png");
         document.close();
     }
+
+
 
 }

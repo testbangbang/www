@@ -76,7 +76,7 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
         assertTrue(size[0] > 0);
         assertTrue(size[1] > 0);
         Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
-        assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap));
+        assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
         assertFalse(wrapper.nativePageSize(page + 1, size));
         assertTrue(wrapper.nativeCloseDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
@@ -94,7 +94,7 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
         assertTrue(size[0] > 0);
         assertTrue(size[1] > 0);
         Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
-        assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap));
+        assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
         assertFalse(wrapper.nativePageSize(page + 1, size));
         assertTrue(wrapper.nativeCloseDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
@@ -130,7 +130,7 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
                 }
                 Bitmap bitmap = readerBitmap.getBitmap();
                 long start = System.currentTimeMillis();
-                assertTrue(wrapper.drawPage(i, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bitmap));
+                assertTrue(wrapper.drawPage(i, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0,  bitmap));
                 long end = System.currentTimeMillis();
                 Log.i(TAG, "Performance testing: " + path +  " page: " + i + " ts: " + (end - start));
             }
@@ -165,7 +165,7 @@ public class ReaderTestActivityTest extends ActivityInstrumentationTestCase2<Rea
         assertTrue(wrapper.nativeOpenDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
         String pattern = "广州";
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
-        wrapper.searchInPage(0, 0, 0, 1024, 768, pattern, false, true, list);
+        wrapper.searchInPage(0, 0, 0, 1024, 768, 0, pattern, false, true, list);
         assertTrue(list.size() > 0);
         assertTrue(wrapper.nativeCloseDocument());
         assertTrue(wrapper.nativeDestroyLibrary());

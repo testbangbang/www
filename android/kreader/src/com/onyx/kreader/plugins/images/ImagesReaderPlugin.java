@@ -1,6 +1,7 @@
 package com.onyx.kreader.plugins.images;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.util.Log;
 import com.onyx.kreader.api.*;
@@ -66,7 +67,6 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return getExtensionFilters().contains(extension);
     }
 
-
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
         documentPath = path;
         final String baseDir = FileUtils.getParent(path);
@@ -75,11 +75,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportDrm() {
-        return true;
+        return false;
     }
 
     public ReaderDrmManager createDrmManager() {
-        return this;
+        return null;
     }
 
     public boolean readMetadata(final ReaderDocumentMetadata metadata) {
@@ -175,11 +175,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap) {
-        return false;
+        return getPluginImpl().nativeDrawImage(page, 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), rotation, bitmap.getBitmap());
     }
 
     public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
-        return false;
+        return getPluginImpl().nativeDrawImage(page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, rotation, bitmap.getBitmap());
     }
 
     /**
