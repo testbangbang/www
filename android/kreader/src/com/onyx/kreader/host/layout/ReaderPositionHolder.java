@@ -68,10 +68,6 @@ public class ReaderPositionHolder {
     }
 
     public boolean gotoPosition(final String position) {
-        if (layoutManager.getNavigator().gotoPosition(position)) {
-            updatePosition(position);
-            return true;
-        }
         return false;
     }
 

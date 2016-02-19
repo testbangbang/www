@@ -1,6 +1,8 @@
 
 #include "image_wrapper.h"
 
+#include "log.h"
+
 ImageWrapper::ImageWrapper() : width(0), height(0), bpp(0), channels(0), colorType(0) {
 }
 
@@ -11,11 +13,19 @@ bool ImageWrapper::loadImage(const std::string &path) {
     return false;
 }
 
+bool ImageWrapper::draw(void *pixel, int x, int y, int width, int height, int bmpWidth, int bmpHeight, int stride) {
+    return false;
+}
+
 PNGWrapper::PNGWrapper() : fp(NULL), pngPtr(NULL), infoPtr(NULL)  {
 
 }
 
 PNGWrapper::~PNGWrapper() {
+    cleanup();
+}
+
+void PNGWrapper::cleanup() {
     if (pngPtr != NULL && infoPtr != NULL) {
         png_destroy_read_struct(&pngPtr, &infoPtr, NULL);
         pngPtr = NULL;
@@ -31,21 +41,27 @@ PNGWrapper::~PNGWrapper() {
 }
 
 bool PNGWrapper::loadImage(const std::string & path) {
+    myPath = path;
 
     if ((fp = fopen(path.c_str(), "rb")) == NULL) {
+        cleanup();
         return false;
     }
+
     pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (pngPtr == NULL) {
+        cleanup();
         return false;
     }
 
     infoPtr = png_create_info_struct(pngPtr);
     if (infoPtr == NULL) {
+        cleanup();
         return false;
     }
 
     if (setjmp(png_jmpbuf(pngPtr))) {
+        cleanup();
         return false;
     }
 
@@ -57,8 +73,23 @@ bool PNGWrapper::loadImage(const std::string & path) {
     bpp       = png_get_bit_depth(pngPtr, infoPtr);
     channels  = png_get_channels(pngPtr, infoPtr);
     colorType = png_get_color_type(pngPtr, infoPtr);
+
+    cleanup();
     return true;
 }
+
+bool PNGWrapper::draw(void *pixel, int x, int y, int width, int height, int bmpWidth, int bmpHeight, int stride) {
+    png_image image;
+    memset(&image, 0, (sizeof image));
+    image.version = PNG_IMAGE_VERSION;
+    if (!png_image_begin_read_from_file(&image, myPath.c_str())) {
+        LOGE("Read image %s failed", myPath.c_str());
+        return false;
+    }
+    image.format = PNG_FORMAT_RGBA;
+    return png_image_finish_read(&image, NULL, pixel, stride/*row_stride*/, NULL/*colormap*/);
+}
+
 
 ImageManager::ImageManager() {
 }
@@ -87,4 +118,11 @@ bool ImageManager::releaseImage(const std::string & path) {
         return true;
     }
     return false;
+}
+
+void ImageManager::clear() {
+    for(table_iterator iterator = imageTable.begin(); iterator != imageTable.end(); ++iterator) {
+        delete iterator->second;
+    }
+    imageTable.clear();
 }

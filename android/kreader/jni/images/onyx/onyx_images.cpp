@@ -62,19 +62,44 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper
 	}
 
 	ImageWrapper * imageWrapper = imageManager.getImage(filename);
-	LOGE("Image %s width %d height %d bpp %d", filename, imageWrapper->getWidth(), imageWrapper->getHeight(), imageWrapper->getBitPerPixel());
     jfloat size[] = {(float)imageWrapper->getWidth(), (float)imageWrapper->getHeight()};
     env->SetFloatArrayRegion(array, 0, 2, size);
 	return true;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeDrawImage
-  (JNIEnv *env, jobject, jstring, jint, jint, jint, jint, jint, jobject) {
-	return false;
+  (JNIEnv *env, jobject thiz, jstring jfilename, jint x, jint y, jint width, jint height, jint rotation, jobject bitmap) {
+
+ 	AndroidBitmapInfo info;
+	void *pixels;
+	int ret;
+
+	if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+		return false;
+	}
+
+	if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+		LOGE("Bitmap format is not RGBA_8888 !");
+		return false;
+	}
+
+	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
+		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+		return false;
+	}
+
+    JNIString stringWrapper(env, jfilename);
+    ImageWrapper * imageWrapper = imageManager.getImage(stringWrapper.getLocalString());
+	imageWrapper->draw(pixels, x, y, width, height, info.width, info.height, info.stride);
+    AndroidBitmap_unlockPixels(env, bitmap);
+	return true;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeCloseImage
   (JNIEnv *env, jobject thiz, jstring jfilename) {
+  	JNIString stringWrapper(env, jfilename);
+  	imageManager.releaseImage(stringWrapper.getLocalString());
 	return false;
 }
 
@@ -85,5 +110,5 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper
  */
 JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeCloseAll
   (JNIEnv *env, jobject thiz) {
-
+	imageManager.clear();
 }

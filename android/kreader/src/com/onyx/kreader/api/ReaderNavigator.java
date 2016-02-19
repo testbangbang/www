@@ -68,12 +68,6 @@ public interface ReaderNavigator {
     public String lastPage();
 
     /**
-     * Navigate to specified position.
-     * @return
-     */
-    public boolean gotoPosition(final String position);
-
-    /**
      * Retrieve links of specified page.
      * @return link list.
      */

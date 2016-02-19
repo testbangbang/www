@@ -15,13 +15,14 @@ protected:
     int bpp;
     int channels;
     unsigned int colorType;
-    unsigned char * buffer;
 
 public:
     ImageWrapper();
     virtual ~ImageWrapper();
 
+public:
     virtual bool loadImage(const std::string & path);
+    virtual bool draw(void *pixel, int x, int y, int width, int height, int bmpWidth, int bmpHeight, int stride);
 
     int getWidth() {
         return width;
@@ -51,15 +52,18 @@ private:
     FILE * fp;
     png_structp pngPtr;
     png_infop infoPtr;
-
+    std::string myPath;
 
 public:
     PNGWrapper();
     virtual ~PNGWrapper();
 
 public:
-    bool loadImage(const std::string & path);
+    virtual bool loadImage(const std::string & path);
+    virtual bool draw(void *pixel, int x, int y, int width, int height, int bmpWidth, int bmpHeight, int stride);
 
+private:
+    void cleanup();
 };
 
 class ImageManager {
@@ -75,6 +79,7 @@ public:
 public:
     ImageWrapper * getImage(const std::string & path);
     bool releaseImage(const std::string & path);
+    void clear();
 
 };
 

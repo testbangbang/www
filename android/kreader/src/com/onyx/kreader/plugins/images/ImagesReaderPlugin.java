@@ -176,11 +176,25 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap) {
-        return getPluginImpl().nativeDrawImage(page, 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), rotation, bitmap.getBitmap());
+        final String path = getImagePath(page);
+        if (StringUtils.isNullOrEmpty(path)) {
+            return false;
+        }
+        benchmark.restart();
+        boolean ret = getPluginImpl().nativeDrawImage(path, 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), rotation, bitmap.getBitmap());
+        Log.e(TAG, "rendering png:　" + benchmark.duration());
+        return ret;
     }
 
     public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
-        return getPluginImpl().nativeDrawImage(page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, rotation, bitmap.getBitmap());
+        final String path = getImagePath(page);
+        if (StringUtils.isNullOrEmpty(path)) {
+            return false;
+        }
+        benchmark.restart();
+        boolean ret = getPluginImpl().nativeDrawImage(path, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, rotation, bitmap.getBitmap());
+        Log.e(TAG, "rendering png:　"+ benchmark.duration());
+        return ret;
     }
 
     /**
@@ -206,6 +220,14 @@ public class ImagesReaderPlugin implements ReaderPlugin,
             return null;
         }
         return PagePositionUtils.fromPageNumber(index);
+    }
+
+    private String getImagePath(final String position) {
+        int index = PagePositionUtils.getPageNumber(position);
+        if (index < 0 || index >= pageList.size()) {
+            return null;
+        }
+        return pageList.get(index);
     }
 
     /**
@@ -271,14 +293,6 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return PagePositionUtils.fromPageNumber(getTotalPage() - 1);
     }
 
-    /**
-     * Navigate to specified position.
-     * @return
-     */
-    public boolean gotoPosition(final String position) {
-        return false;
-    }
-
     public boolean searchPrevious(final ReaderSearchOptions options) {
         return false;
     }
@@ -329,21 +343,15 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportScale() {
-        if (StringUtils.isNullOrEmpty(documentPath)) {
-            return false;
-        }
-        return documentPath.toLowerCase().endsWith("pdf");
-    }
-
-    public boolean supportFontSizeAdjustment() {
         return true;
     }
 
+    public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
     public boolean supportTypefaceAdjustment() {
-        if (StringUtils.isNullOrEmpty(documentPath)) {
-            return false;
-        }
-        return documentPath.toLowerCase().endsWith("epub");
+        return false;
     }
 
 
