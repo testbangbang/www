@@ -66,7 +66,7 @@ public class ReaderPluginImagesTest extends ActivityInstrumentationTestCase2<Rea
         assertNotNull(readerRenderer);
 
         ReaderBitmapImpl bitmap = ReaderBitmapImpl.create((int)rect.width(), (int)rect.height(), Bitmap.Config.ARGB_8888);
-        readerRenderer.draw(path, 1.0f, 0, bitmap);
+        readerRenderer.draw(String.valueOf(0), 1.0f, 0, bitmap);
         BitmapUtils.saveBitmap(bitmap.getBitmap(), "/mnt/sdcard/imagePlugin.png");
         document.close();
     }

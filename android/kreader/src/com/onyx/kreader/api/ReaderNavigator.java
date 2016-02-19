@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * Created by zhuzeng on 10/3/15.
+ * Page position is unique id of each page.
  */
 public interface ReaderNavigator {
 
@@ -22,8 +23,8 @@ public interface ReaderNavigator {
 
     /**
      * Get position from page name.
-     * @param pageName The page based page number.
-     * @return
+     * @param pageName The page name.
+     * @return page position.
      */
     public String getPositionByPageName(final String pageName);
 
