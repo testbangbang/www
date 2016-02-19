@@ -23,6 +23,30 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativePageSize
   (JNIEnv *, jobject, jstring, jfloatArray);
 
+/*
+ * Class:     com_onyx_kreader_plugins_images_ImagesJniWrapper
+ * Method:    nativeDrawImage
+ * Signature: (Ljava/lang/String;IIIIILandroid/graphics/Bitmap;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeDrawImage
+  (JNIEnv *, jobject, jstring, jint, jint, jint, jint, jint, jobject);
+
+/*
+ * Class:     com_onyx_kreader_plugins_images_ImagesJniWrapper
+ * Method:    nativeCloseImage
+ * Signature: (Ljava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeCloseImage
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_onyx_kreader_plugins_images_ImagesJniWrapper
+ * Method:    nativeCloseAll
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeCloseAll
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

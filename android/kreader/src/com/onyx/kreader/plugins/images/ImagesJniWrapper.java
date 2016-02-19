@@ -15,4 +15,7 @@ public class ImagesJniWrapper {
     public native boolean nativeClearBitmap(final Bitmap bitmap);
     public native boolean nativePageSize(final String path, float []size);
     public native boolean nativeDrawImage(final String imagePath, int x, int y, int width, int height, int rotation, final Bitmap bitmap);
+
+    public native boolean nativeCloseImage(final String path);
+    public native void nativeCloseAll();
 }

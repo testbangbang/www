@@ -19,8 +19,8 @@ LOCAL_SHARED_LIBRARIES := libdl
 LOCAL_LDLIBS := -llog -lz -ljnigraphics
 
 LOCAL_SRC_FILES := \
-    onyx.cpp        \
-    png_wrapper.cpp
+    onyx_images.cpp        \
+    image_wrapper.cpp
 
 MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \

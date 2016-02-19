@@ -192,6 +192,10 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return PagePositionUtils.fromPageNumber(pageNumber);
     }
 
+    public String getPositionByPageName(final String pageName) {
+        return pageName;
+    }
+
     /**
      * Return total page number.
      * @return 1 based total page number.

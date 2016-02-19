@@ -1,9 +1,13 @@
 #ifndef JNIUTILS_H_
 #define JNIUTILS_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <vector>
+
 #include <jni.h>
 #include <android/log.h>
-
 
 class JNIUtils {
 
@@ -46,6 +50,7 @@ public:
 
 	JNIByteArray(JNIEnv *env, int s): myEnv(env), buffer(0), size(s), array(0), allocate(true) {
 		buffer = new jbyte[size];
+		memset(buffer, 0, size);
 		array = env->NewByteArray(size);
 	}
 
@@ -88,6 +93,7 @@ public:
 
 	JNIIntArray(JNIEnv *env, int s): myEnv(env), buffer(0), size(s), array(0),  allocate(true) {
 		buffer = new jint[size];
+		memset(buffer, 0, size * sizeof(int));
 		array = env->NewIntArray(size);
 	}
 
@@ -118,6 +124,52 @@ public:
     void copyToJavaArray() {
 		myEnv->SetIntArrayRegion(array, 0, size, buffer);
     }
+};
+
+class JNIString {
+
+private:
+	JNIEnv * myEnv;
+	const jstring & javaString;
+   	const char * localString;
+
+public:
+	JNIString(JNIEnv *env, const jstring & string): myEnv(env), javaString(string), localString(0)  {
+		localString = env->GetStringUTFChars(string, 0);
+	}
+
+	~JNIString() {
+		if (localString != 0) {
+			myEnv->ReleaseStringUTFChars(javaString, localString);
+			localString = 0;
+		}
+	}
+
+public:
+	const char * getLocalString() {
+		return localString;
+	}
+
+};
+
+class JByteArray {
+
+private:
+	std::vector<jbyte> buffer;
+
+public:
+	JByteArray(const int limit) {
+		buffer.resize(limit);
+		memset(&buffer[0], 0, limit);
+	}
+
+	~JByteArray() {
+	}
+
+	jbyte * getRawBuffer() {
+		return &buffer[0];
+	}
+
 };
 
 #endif

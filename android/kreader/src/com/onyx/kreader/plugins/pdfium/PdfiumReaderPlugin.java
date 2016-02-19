@@ -200,6 +200,9 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return PagePositionUtils.fromPageNumber(pageNumber);
     }
 
+    public String getPositionByPageName(final String pageName) {
+        return pageName;
+    }
 
     /**
      * Return total page number.

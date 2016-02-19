@@ -70,7 +70,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
         documentPath = path;
         final String baseDir = FileUtils.getParent(path);
-        FileUtils.collectFiles(baseDir, getExtensionFilters(), pageList);
+        FileUtils.collectFiles(baseDir, getExtensionFilters(), false, pageList);
         return this;
     }
 
@@ -117,6 +117,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public void close() {
+        getPluginImpl().nativeCloseAll();
         pageList.clear();
     }
 
@@ -187,7 +188,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String getInitPosition() {
-        return firstPage();
+        return getPositionByPageName(documentPath);
     }
 
     /**
@@ -199,6 +200,13 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return PagePositionUtils.fromPageNumber(pageNumber);
     }
 
+    public String getPositionByPageName(final String pageName) {
+        int index = pageList.indexOf(pageName);
+        if (index < 0 || index >= pageList.size()) {
+            return null;
+        }
+        return PagePositionUtils.fromPageNumber(index);
+    }
 
     /**
      * Return total page number.

@@ -28,7 +28,7 @@ public class FileUtils {
         return "";
     }
 
-    public static void collectFiles(final String parentPath, final Set<String> extensionFilters, final List<String> fileList) {
+    public static void collectFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final List<String> fileList) {
         File parent = new File(parentPath);
         File[] files = parent.listFiles();
         if (files == null) {
@@ -42,8 +42,8 @@ public class FileUtils {
             final String extension = getFileExtension(absolutePath);
             if (file.isFile() && extensionFilters.contains(extension)) {
                 fileList.add(absolutePath);
-            } else if (file.isDirectory()) {
-                collectFiles(absolutePath, extensionFilters, fileList);
+            } else if (file.isDirectory() && recursive) {
+                collectFiles(absolutePath, extensionFilters, recursive, fileList);
             }
         }
     }

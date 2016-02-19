@@ -66,15 +66,15 @@ JNIEXPORT jlong JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_na
   (JNIEnv *env, jobject thiz, jstring jfilename, jstring jpassword) {
     const char *filename = NULL;
   	const char *password = NULL;
-  	filename = env->GetStringUTFChars(jfilename, NULL);
+  	JNIString fileString(env, jfilename);
+  	filename = fileString.getLocalString();
   	if (filename == NULL) {
   	    LOGE("invalid file name");
   		return -1;
   	}
 
-    if (jpassword != NULL) {
-        password = env->GetStringUTFChars(jpassword, NULL);
-    }
+  	JNIString passwordString(env, jpassword);
+  	password = passwordString.getLocalString();
     FPDF_DOCUMENT document =  FPDF_LoadDocument(filename, password);
     if (document == NULL) {
         int errorCode = FPDF_GetLastError();
@@ -104,13 +104,12 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     if (document == NULL) {
         return 0;
     }
-    const char * tag = env->GetStringUTFChars(jtag, NULL);
+    JNIString tagString(env, jtag);
+    const char * tag = tagString.getLocalString();
     const unsigned long limit = 4096;
-    jbyte * buffer = new jbyte[limit];
-    memset(buffer, 0, limit);
-    unsigned long size = FPDF_GetMetaText(document, tag, buffer, limit);
-    env->SetByteArrayRegion(array, 0, limit - 1, buffer);
-    delete [] buffer;
+    JByteArray buffer(limit);
+    unsigned long size = FPDF_GetMetaText(document, tag, buffer.getRawBuffer(), limit);
+    env->SetByteArrayRegion(array, 0, limit - 1, buffer.getRawBuffer());
     return size;
 }
 

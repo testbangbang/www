@@ -21,6 +21,13 @@ public interface ReaderNavigator {
     public String getPositionByPageNumber(int pageNumber);
 
     /**
+     * Get position from page name.
+     * @param pageName The page based page number.
+     * @return
+     */
+    public String getPositionByPageName(final String pageName);
+
+    /**
      * Return total page number.
      * @return 1 based total page number. return -1 if not available yet.
      */

@@ -16,13 +16,28 @@ public class ReaderPluginImagesTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testImagePlugin1() throws Exception {
+        final String path = "/mnt/sdcard/Books/scaleToWidth.png";
         ReaderPlugin plugin = new ImagesReaderPlugin(getActivity(), null);
-        ReaderDocument document = plugin.open("/mnt/sdcard/Books/a.png", null, null);
+        ReaderDocument document = plugin.open(path, null, null);
         assertNotNull(document);
-        RectF rect = document.getPageOriginSize(String.valueOf(0));
+        final String position = document.getView(null).getNavigator().getPositionByPageName(path);
+        RectF rect = document.getPageOriginSize(position);
         assertTrue(rect.width() > 0);
         assertTrue(rect.height() > 0);
         document.close();
     }
+
+    public void testImagePlugin2() throws Exception {
+        final String path = "/mnt/sdcard/Books/singlePage.png";
+        ReaderPlugin plugin = new ImagesReaderPlugin(getActivity(), null);
+        ReaderDocument document = plugin.open(path, null, null);
+        assertNotNull(document);
+        final String position = document.getView(null).getNavigator().getInitPosition();
+        RectF rect = document.getPageOriginSize(position);
+        assertTrue(rect.width() > 0);
+        assertTrue(rect.height() > 0);
+        document.close();
+    }
+
 
 }

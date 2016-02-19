@@ -7,14 +7,17 @@
 #include <math.h>
 #include <list>
 #include <map>
-#include <unordered_map>
+
 
 
 #include "com_onyx_kreader_plugins_images_ImagesJniWrapper.h"
 
 #include "log.h"
 #include "JNIUtils.h"
-#include "png_wrapper.h"
+#include "image_wrapper.h"
+
+
+static ImageManager imageManager;
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeClearBitmap
   (JNIEnv *env, jobject thiz, jobject bitmap) {
@@ -51,15 +54,36 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativePageSize
   (JNIEnv *env, jobject thiz, jstring jfilename, jfloatArray array) {
 
-	const char *filename = NULL;
-	filename = env->GetStringUTFChars(jfilename, NULL);
+	JNIString stringWrapper(env, jfilename);
+	const char * filename = stringWrapper.getLocalString();
 	if (filename == NULL) {
 		LOGE("invalid file name");
 		return false;
 	}
 
-	PNGWrapper wrapper(filename);
-    jfloat size[] = {(float)wrapper.getWidth(), (float)wrapper.getHeight()};
+	ImageWrapper * imageWrapper = imageManager.getImage(filename);
+	LOGE("Image %s width %d height %d bpp %d", filename, imageWrapper->getWidth(), imageWrapper->getHeight(), imageWrapper->getBitPerPixel());
+    jfloat size[] = {(float)imageWrapper->getWidth(), (float)imageWrapper->getHeight()};
     env->SetFloatArrayRegion(array, 0, 2, size);
 	return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeDrawImage
+  (JNIEnv *env, jobject, jstring, jint, jint, jint, jint, jint, jobject) {
+	return false;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeCloseImage
+  (JNIEnv *env, jobject thiz, jstring jfilename) {
+	return false;
+}
+
+/*
+ * Class:     com_onyx_kreader_plugins_images_ImagesJniWrapper
+ * Method:    nativeCloseAll
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper_nativeCloseAll
+  (JNIEnv *env, jobject thiz) {
+
 }
