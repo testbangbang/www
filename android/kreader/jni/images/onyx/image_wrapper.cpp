@@ -90,6 +90,58 @@ bool PNGWrapper::draw(void *pixel, int x, int y, int width, int height, int bmpW
     return png_image_finish_read(&image, NULL, pixel, stride/*row_stride*/, NULL/*colormap*/);
 }
 
+JPEGWrapper::JPEGWrapper() : fp(0) {
+
+}
+
+JPEGWrapper::~JPEGWrapper() {
+}
+
+static void myErrorExit (j_common_ptr cinfo) {
+}
+
+struct my_error_mgr {
+  struct jpeg_error_mgr pub;    /* "public" fields */
+  jmp_buf setjmp_buffer;        /* for return to caller */
+};
+
+bool JPEGWrapper::loadImage(const std::string & path) {
+/*
+    myPath = path;
+    if ((fp = fopen(path.c_str(), "rb")) == NULL) {
+        return false;
+    }
+    jpeg_decompress_struct cinfo;
+    my_error_mgr jerr;
+
+    cinfo.err = jpeg_std_error(&jerr.pub);
+    jerr.pub.error_exit = myErrorExit;
+
+    if (setjmp(jerr.setjmp_buffer)) {
+        jpeg_destroy_decompress(&cinfo);
+        cleanup();
+        return false;
+    }
+    jpeg_create_decompress(&cinfo);
+    jpeg_stdio_src(&cinfo, fp);
+    jpeg_read_header(&cinfo, TRUE);
+    */
+    return false;
+}
+
+bool JPEGWrapper::draw(void *pixel, int x, int y, int width, int height, int bmpWidth, int bmpHeight, int stride) {
+    return false;
+}
+
+void JPEGWrapper::cleanup() {
+    if (fp != 0) {
+        fclose(fp);
+        fp = 0;
+    }
+}
+
+
+
 
 ImageManager::ImageManager() {
 }

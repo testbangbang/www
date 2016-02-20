@@ -6,6 +6,7 @@
 
 #include <unordered_map>
 #include <png.h>
+#include <jpeglib.h>
 
 class ImageWrapper {
 
@@ -15,6 +16,7 @@ protected:
     int bpp;
     int channels;
     unsigned int colorType;
+    std::string myPath;
 
 public:
     ImageWrapper();
@@ -52,11 +54,27 @@ private:
     FILE * fp;
     png_structp pngPtr;
     png_infop infoPtr;
-    std::string myPath;
 
 public:
     PNGWrapper();
     virtual ~PNGWrapper();
+
+public:
+    virtual bool loadImage(const std::string & path);
+    virtual bool draw(void *pixel, int x, int y, int width, int height, int bmpWidth, int bmpHeight, int stride);
+
+private:
+    void cleanup();
+};
+
+class JPEGWrapper : public ImageWrapper {
+
+private:
+    FILE * fp;
+
+public:
+    JPEGWrapper();
+    virtual ~JPEGWrapper();
 
 public:
     virtual bool loadImage(const std::string & path);
