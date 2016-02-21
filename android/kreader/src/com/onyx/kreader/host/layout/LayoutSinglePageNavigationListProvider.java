@@ -22,7 +22,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     public void activate()  {
 
-        //LayoutProviderUtils.addPage(layoutManager, layoutManager.getPositionHolder().getCurrentPosition());
+        //LayoutProviderUtils.addPage(layoutManager, layoutManager.getPositionManager().getCurrentPosition());
     }
 
     private NavigationArgs getNavigationArgs() {

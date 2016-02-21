@@ -143,12 +143,12 @@ public class LayoutProviderUtils {
 
     static public String nextPage(final ReaderLayoutManager layoutManager) {
         String currentPagePosition = layoutManager.getCurrentPageName();
-        return layoutManager.getReader().getNavigator().nextPage(currentPagePosition);
+        return layoutManager.getNavigator().nextPage(currentPagePosition);
     }
 
     static public String prevPage(final ReaderLayoutManager layoutManager) {
         String currentPagePosition = layoutManager.getCurrentPageName();
-        return layoutManager.getReader().getNavigator().prevPage(currentPagePosition);
+        return layoutManager.getNavigator().prevPage(currentPagePosition);
     }
 
     static public String nextScreen(final ReaderLayoutManager layoutManager) {
@@ -157,7 +157,7 @@ public class LayoutProviderUtils {
             return null;
         }
 
-        return layoutManager.getReader().getNavigator().nextScreen(pageInfo.getName());
+        return layoutManager.getNavigator().nextScreen(pageInfo.getName());
     }
 
     static public String prevScreen(final ReaderLayoutManager layoutManager) {
@@ -166,6 +166,6 @@ public class LayoutProviderUtils {
             return null;
         }
 
-        return layoutManager.getReader().getNavigator().prevScreen(pageInfo.getName());
+        return layoutManager.getNavigator().prevScreen(pageInfo.getName());
     }
 }

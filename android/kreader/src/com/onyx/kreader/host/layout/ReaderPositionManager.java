@@ -8,15 +8,16 @@ import java.util.List;
 
 /**
  * Created by zhuzeng on 10/18/15.
+ * Manage position stack
  */
-public class ReaderPositionHolder {
+public class ReaderPositionManager {
 
     private PositionSnapshot lastPosition;
     private String currentPosition;
     private List<String> positionStack = new ArrayList<String>();
     private ReaderLayoutManager layoutManager;
 
-    public ReaderPositionHolder(final ReaderLayoutManager lm) {
+    public ReaderPositionManager(final ReaderLayoutManager lm) {
         layoutManager = lm;
     }
 
@@ -35,6 +36,18 @@ public class ReaderPositionHolder {
             return true;
         }
         return false;
+    }
+
+    public void savePosition(final String snapshot) {
+        if (StringUtils.isNonBlank(currentPosition) && currentPosition.equalsIgnoreCase(snapshot)) {
+            return;
+        }
+        currentPosition = snapshot;
+        positionStack.add(snapshot);
+    }
+
+    public final PositionSnapshot restorePosition() {
+        return null;
     }
 
     public boolean firstPage() {

@@ -28,7 +28,7 @@ public class ReaderLayoutManager {
 
     private Reader reader;
     private ReaderHelper readerHelper;
-    private ReaderPositionHolder positionHolder;
+    private ReaderPositionManager positionHolder;
     private PageManager pageManager;
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
@@ -136,6 +136,8 @@ public class ReaderLayoutManager {
         return getCurrentLayoutProvider().getPageRectOnViewport(position);
     }
 
+    // share the same instance for all providers. if necessary, we could change to use different
+    // instance for different providers.
     public PageManager getPageManager() {
         if (pageManager == null) {
             pageManager = new PageManager();
@@ -143,9 +145,9 @@ public class ReaderLayoutManager {
         return pageManager;
     }
 
-    public ReaderPositionHolder getPositionHolder() {
+    public ReaderPositionManager getPositionManager() {
         if (positionHolder == null) {
-            positionHolder = new ReaderPositionHolder(this);
+            positionHolder = new ReaderPositionManager(this);
         }
         return positionHolder;
     }
@@ -213,5 +215,15 @@ public class ReaderLayoutManager {
     public void setNavigationArgs(final NavigationArgs args) throws ReaderException {
         getCurrentLayoutProvider().setNavigationArgs(args);
     }
+
+    public void savePosition() {
+
+    }
+
+    public void restorePosition() {
+
+    }
+
+    public void updateStack() {}
 
 }
