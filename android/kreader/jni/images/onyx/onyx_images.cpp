@@ -57,11 +57,15 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper
 	JNIString stringWrapper(env, jfilename);
 	const char * filename = stringWrapper.getLocalString();
 	if (filename == NULL) {
-		LOGE("invalid file name");
+		LOGE("Invalid file name");
 		return false;
 	}
 
 	ImageWrapper * imageWrapper = imageManager.getImage(filename);
+	if (imageWrapper == 0) {
+	    LOGE("Cloud not create corresponding image instance for %s", filename);
+	    return false;
+	}
     jfloat size[] = {(float)imageWrapper->getWidth(), (float)imageWrapper->getHeight()};
     env->SetFloatArrayRegion(array, 0, 2, size);
 	return true;
@@ -91,7 +95,9 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper
 
     JNIString stringWrapper(env, jfilename);
     ImageWrapper * imageWrapper = imageManager.getImage(stringWrapper.getLocalString());
-	imageWrapper->draw(pixels, x, y, width, height, info.width, info.height, info.stride);
+    if (imageWrapper != 0) {
+	    imageWrapper->draw(pixels, x, y, width, height, info.width, info.height, info.stride);
+	}
     AndroidBitmap_unlockPixels(env, bitmap);
 	return true;
 }
@@ -100,7 +106,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_images_ImagesJniWrapper
   (JNIEnv *env, jobject thiz, jstring jfilename) {
   	JNIString stringWrapper(env, jfilename);
   	imageManager.releaseImage(stringWrapper.getLocalString());
-	return false;
+	return true;
 }
 
 /*

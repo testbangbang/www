@@ -102,6 +102,8 @@ private:
     std::unordered_map<std::string, ImageWrapper *> imageTable;
     typedef std::unordered_map<std::string, ImageWrapper *>::iterator table_iterator;
 
+    ImageWrapper * createInstance(const std::string &path);
+
 public:
     ImageManager();
     ~ImageManager();

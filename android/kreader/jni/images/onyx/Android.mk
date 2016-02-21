@@ -25,7 +25,7 @@ LOCAL_SRC_FILES := \
 MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \
     $(MY_SRC_ROOT)                      \
-    $(MY_SRC_ROOT)/../common/jniutils   \
+    $(MY_SRC_ROOT)/../common/utils   \
     $(MY_SRC_ROOT)/../common/libpng     \
     $(MY_SRC_ROOT)/../common/libjpeg
 

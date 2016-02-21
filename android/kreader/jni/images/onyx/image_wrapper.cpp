@@ -1,7 +1,8 @@
 
 #include "image_wrapper.h"
-
 #include "log.h"
+
+#include "JNIUtils.h"
 
 ImageWrapper::ImageWrapper() : width(0), height(0), bpp(0), channels(0), colorType(0) {
 }
@@ -104,6 +105,7 @@ void JPEGWrapper::errorExit (j_common_ptr cinfo) {
 bool JPEGWrapper::loadImage(const std::string & path) {
     myPath = path;
     if ((fp = fopen(path.c_str(), "rb")) == NULL) {
+        LOGE("Cloud not open file %s", path.c_str());
         return false;
     }
     jpeg_decompress_struct cinfo;
@@ -113,6 +115,7 @@ bool JPEGWrapper::loadImage(const std::string & path) {
     jerr.pub.error_exit = errorExit;
 
     if (setjmp(jerr.setjmp_buffer)) {
+        LOGE("Decode %s failed.", path.c_str());
         jpeg_destroy_decompress(&cinfo);
         cleanup();
         return false;
@@ -120,7 +123,10 @@ bool JPEGWrapper::loadImage(const std::string & path) {
     jpeg_create_decompress(&cinfo);
     jpeg_stdio_src(&cinfo, fp);
     jpeg_read_header(&cinfo, TRUE);
-    return false;
+    width = cinfo.image_width;
+    height = cinfo.image_height;
+    bpp = cinfo.num_components;
+    return true;
 }
 
 bool JPEGWrapper::draw(void *pixel, int x, int y, int width, int height, int bmpWidth, int bmpHeight, int stride) {
@@ -143,11 +149,23 @@ ImageManager::ImageManager() {
 ImageManager::~ImageManager() {
 }
 
+ImageWrapper * ImageManager::createInstance(const std::string &path) {
+    if (StringUtils::endsWith(path, ".png")) {
+        return new PNGWrapper();
+    } else if (StringUtils::endsWith(path, ".jpg") || StringUtils::endsWith(path, ".jpeg")) {
+        return new JPEGWrapper();
+    }
+    return 0;
+}
+
 ImageWrapper * ImageManager::getImage(const std::string & path) {
     table_iterator iterator = imageTable.find(path);
     ImageWrapper * imageWrapper = 0;
     if (iterator == imageTable.end()) {
-        imageWrapper = new PNGWrapper();
+        imageWrapper = createInstance(path);
+        if (imageWrapper == 0) {
+            return 0;
+        }
         imageWrapper->loadImage(path);
         imageTable[path] = imageWrapper;
     } else {

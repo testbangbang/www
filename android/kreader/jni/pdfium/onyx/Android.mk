@@ -11,7 +11,7 @@ LOCAL_CXXFLAGS += -O3 -fstrict-aliasing -fprefetch-loop-arrays -fexceptions
 LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
 
 
-LOCAL_STATIC_LIBRARIES := libpdfium libpdfiumcore libjniutils
+LOCAL_STATIC_LIBRARIES := libpdfium libpdfiumcore libutils
 
 # TODO: figure out why turning on exceptions requires manually linking libdl
 LOCAL_SHARED_LIBRARIES := libdl
@@ -25,6 +25,6 @@ MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \
     $(MY_SRC_ROOT)                      \
     $(MY_SRC_ROOT)/public               \
-    $(MY_SRC_ROOT)/../common/jniutils   \
+    $(MY_SRC_ROOT)/../common/utils   \
 
 include $(BUILD_SHARED_LIBRARY)
