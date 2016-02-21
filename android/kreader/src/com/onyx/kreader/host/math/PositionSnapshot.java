@@ -16,7 +16,7 @@ public class PositionSnapshot {
     public RectF displayRect; // page display rect in view port coordinates system with actual scale.
     public float actualScale = 1.0f;
 
-    static public PositionSnapshot createSnapshot(final String type, final PageInfo pageInfo, int specialScale)  {
+    static public PositionSnapshot createSnapshot(final String type, final PageInfo pageInfo)  {
         PositionSnapshot snapshot = new PositionSnapshot();
         snapshot.layoutType = type;
         snapshot.actualScale = pageInfo.getActualScale();
@@ -24,7 +24,7 @@ public class PositionSnapshot {
         return snapshot;
     }
 
-    static public String positionKey(final String type, final PageInfo pageInfo)  {
+    static public String snapshotKey(final String type, final PageInfo pageInfo)  {
         PositionSnapshot snapshot = new PositionSnapshot();
         snapshot.layoutType = type;
         snapshot.actualScale = pageInfo.getActualScale();

@@ -1,12 +1,9 @@
 package com.onyx.kreader.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
-import com.onyx.kreader.utils.StringUtils;
-import com.onyx.kreader.utils.UndoRedoManager;
+import com.onyx.kreader.utils.HistoryManager;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,7 +19,7 @@ public class ReaderUndoRedoTest extends ActivityInstrumentationTestCase2<ReaderT
     }
 
     public void testUndo1() {
-        UndoRedoManager manager = new UndoRedoManager();
+        HistoryManager manager = new HistoryManager();
         final String cmd = "1";
         manager.addToHistory(cmd, false);
 
@@ -38,7 +35,7 @@ public class ReaderUndoRedoTest extends ActivityInstrumentationTestCase2<ReaderT
     }
 
     public void testUndo2() {
-        UndoRedoManager manager = new UndoRedoManager();
+        HistoryManager manager = new HistoryManager();
         int limit = 10;
         for(int i = 0; i < limit; ++i) {
             manager.addToHistory(String.valueOf(i), false);
@@ -56,7 +53,7 @@ public class ReaderUndoRedoTest extends ActivityInstrumentationTestCase2<ReaderT
     }
 
     public void testUndo3() {
-        UndoRedoManager manager = new UndoRedoManager();
+        HistoryManager manager = new HistoryManager();
         int limit = 10;
         for(int i = 0; i < limit; ++i) {
             manager.addToHistory(String.valueOf(i), false);

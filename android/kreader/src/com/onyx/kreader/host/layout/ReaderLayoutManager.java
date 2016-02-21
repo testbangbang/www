@@ -5,11 +5,13 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageManager;
+import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
 import com.onyx.kreader.utils.StringUtils;
+import com.onyx.kreader.utils.HistoryManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +30,7 @@ public class ReaderLayoutManager {
 
     private Reader reader;
     private ReaderHelper readerHelper;
-    private ReaderPositionManager positionHolder;
+    private HistoryManager historyManager;
     private PageManager pageManager;
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
@@ -145,16 +147,18 @@ public class ReaderLayoutManager {
         return pageManager;
     }
 
-    public ReaderPositionManager getPositionManager() {
-        if (positionHolder == null) {
-            positionHolder = new ReaderPositionManager(this);
+    public HistoryManager getHistoryManager() {
+        if (historyManager == null) {
+            historyManager = new HistoryManager();
         }
-        return positionHolder;
+        return historyManager;
     }
 
     public void onPositionChanged() {
         // save current position into position stack
         // make sure it's different from stack top.
+        final String snapshot = PositionSnapshot.snapshotKey(getCurrentLayoutType(), getPageManager().getFirstVisiblePage());
+        getHistoryManager().addToHistory(snapshot, false);
     }
 
     public String getCurrentPageName() {

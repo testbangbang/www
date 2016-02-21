@@ -6,10 +6,10 @@ import java.util.List;
 /**
  * Created by zengzhu on 2/21/16.
  *
- * a b c d e  |  g h i j k
- *   back     p   forward
+ * a1 a2 a3 a4 a5  |  a6 a7 a8 a9 aa
+ *     back        p     forward
  */
-public class UndoRedoManager {
+public class HistoryManager {
 
     private String current;
     private List<String> back = new ArrayList<String>();
