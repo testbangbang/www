@@ -97,25 +97,20 @@ JPEGWrapper::JPEGWrapper() : fp(0) {
 JPEGWrapper::~JPEGWrapper() {
 }
 
-static void myErrorExit (j_common_ptr cinfo) {
+void JPEGWrapper::errorExit (j_common_ptr cinfo) {
+
 }
 
-struct my_error_mgr {
-  struct jpeg_error_mgr pub;    /* "public" fields */
-  jmp_buf setjmp_buffer;        /* for return to caller */
-};
-
 bool JPEGWrapper::loadImage(const std::string & path) {
-/*
     myPath = path;
     if ((fp = fopen(path.c_str(), "rb")) == NULL) {
         return false;
     }
     jpeg_decompress_struct cinfo;
-    my_error_mgr jerr;
+    ErrorManager jerr;
 
     cinfo.err = jpeg_std_error(&jerr.pub);
-    jerr.pub.error_exit = myErrorExit;
+    jerr.pub.error_exit = errorExit;
 
     if (setjmp(jerr.setjmp_buffer)) {
         jpeg_destroy_decompress(&cinfo);
@@ -125,7 +120,6 @@ bool JPEGWrapper::loadImage(const std::string & path) {
     jpeg_create_decompress(&cinfo);
     jpeg_stdio_src(&cinfo, fp);
     jpeg_read_header(&cinfo, TRUE);
-    */
     return false;
 }
 

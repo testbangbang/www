@@ -5,8 +5,12 @@
 
 
 #include <unordered_map>
+
+
+extern "C" {
 #include <png.h>
 #include <jpeglib.h>
+}
 
 class ImageWrapper {
 
@@ -72,6 +76,12 @@ class JPEGWrapper : public ImageWrapper {
 private:
     FILE * fp;
 
+    struct ErrorManager {
+        struct jpeg_error_mgr pub;    /* "public" fields */
+        jmp_buf setjmp_buffer;        /* for return to caller */
+    };
+    static void errorExit(j_common_ptr cinfo);
+
 public:
     JPEGWrapper();
     virtual ~JPEGWrapper();
@@ -82,6 +92,8 @@ public:
 
 private:
     void cleanup();
+
+
 };
 
 class ImageManager {
