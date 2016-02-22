@@ -38,7 +38,6 @@ public class PageManager {
     private Map<String, PageInfo> pageInfoMap = new HashMap<String, PageInfo>();
 
     public void clear() {
-        pageInfoMap.clear();
         visible.clear();
         pageInfoList.clear();
         pagesBoundingRect.set(0, 0, 0, 0);
@@ -125,13 +124,7 @@ public class PageManager {
         if (!isSpecialScale()) {
             return false;
         }
-        if (isScaleToPage()) {
-            scaleToPage(pageInfo.getName());
-        } else if (isScaleToWidth()) {
-            scaleToWidth(pageInfo.getName());
-        } else if (isScaleToHeight()) {
-            scaleToHeight(pageInfo.getName());
-        }
+        setSpecialScale(pageInfo.getName(), specialScale);
         return true;
     }
 
@@ -160,6 +153,23 @@ public class PageManager {
 
     public final float getActualScale() {
         return actualScale;
+    }
+
+    public int getSpecialScale() {
+        return specialScale;
+    }
+
+    public void setSpecialScale(final String pageName, int scale) {
+        if (ReaderConstants.isSpecialScale(scale)) {
+            specialScale = scale;
+        }
+        if (isScaleToPage()) {
+            scaleToPage(pageName);
+        } else if (isScaleToWidth()) {
+            scaleToWidth(pageName);
+        } else if (isScaleToHeight()) {
+            scaleToHeight(pageName);
+        }
     }
 
     public boolean hasValidViewport() {

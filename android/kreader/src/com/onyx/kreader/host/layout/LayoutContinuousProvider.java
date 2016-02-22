@@ -5,6 +5,7 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.StringUtils;
@@ -17,6 +18,10 @@ public class LayoutContinuousProvider extends LayoutProvider {
 
     public LayoutContinuousProvider(final ReaderLayoutManager lm) {
         super(lm);
+    }
+
+    public String getProviderName() {
+        return ReaderConstants.CONTINUOUS_PAGE;
     }
 
     public void activate() {
@@ -122,7 +127,8 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return null;
     }
 
-    public void restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
+    public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
+        return false;
     }
 
     public RectF getPageRectOnViewport(final String position) throws ReaderException {

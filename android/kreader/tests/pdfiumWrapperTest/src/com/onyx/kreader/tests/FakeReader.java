@@ -30,7 +30,8 @@ public class FakeReader implements ReaderDocument,
     }
 
     private final List<PageInfo> randPageList() {
-        int count = TestUtils.randInt(1, 1000);
+        pageInfoList.clear();
+        int count = TestUtils.randInt(10, 1000);
         for(int i = 0; i < count; ++i) {
             PageInfo pageInfo = new PageInfo(String.valueOf(i), TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
             pageInfoList.add(pageInfo);

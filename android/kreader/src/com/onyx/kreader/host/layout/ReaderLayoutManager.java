@@ -3,6 +3,7 @@ package com.onyx.kreader.host.layout;
 import android.graphics.RectF;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -174,6 +175,7 @@ public class ReaderLayoutManager {
     }
 
     public void beforePositionChange() {
+
     }
 
     public void onPositionChanged() {
@@ -184,6 +186,7 @@ public class ReaderLayoutManager {
         if (!canGoBack()) {
             return false;
         }
+
         restoreBySnapshot(getHistoryManager().backward());
         return true;
     }
@@ -196,12 +199,16 @@ public class ReaderLayoutManager {
         return true;
     }
 
-    private void savePositionSnapshot() {
+    private boolean savePositionSnapshot() {
         try {
             final PositionSnapshot snapshot = getCurrentLayoutProvider().saveSnapshot();
-            getHistoryManager().addToHistory(snapshot.key(), false);
+            if (snapshot != null) {
+                getHistoryManager().addToHistory(snapshot.key(), false);
+                return true;
+            }
         } catch (Exception e) {
         }
+        return false;
     }
 
     /**
@@ -223,6 +230,10 @@ public class ReaderLayoutManager {
 
     public String getCurrentPageName() {
         return getPageManager().getFirstVisiblePageName();
+    }
+
+    public final PageInfo getCurrentPageInfo() {
+        return getPageManager().getFirstVisiblePage();
     }
 
     public boolean gotoPosition(final String position) throws ReaderException {

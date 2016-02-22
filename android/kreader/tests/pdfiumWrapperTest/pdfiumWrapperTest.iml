@@ -17,5 +17,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="kreader" scope="PROVIDED" />
+    <orderEntry type="library" scope="PROVIDED" name="fastjson-1.1.34.android" level="project" />
   </component>
 </module>

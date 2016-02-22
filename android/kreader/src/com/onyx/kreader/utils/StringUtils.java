@@ -11,11 +11,11 @@ public class StringUtils {
     static public final String UTF16 = "UTF-16";
 
     static public boolean isNullOrEmpty(final String string) {
-        return (string == null || string.length() <= 0);
+        return (string == null || string.trim().length() <= 0);
     }
 
     static public boolean isNotBlank(final String string) {
-        return (string != null && string.length() > 0);
+        return (string != null && string.trim().length() > 0);
     }
 
     static public String utf16le(final byte [] data) {

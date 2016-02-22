@@ -21,6 +21,10 @@ public class LayoutProvider {
         layoutManager = lm;
     }
 
+    public String getProviderName() {
+        return null;
+    }
+
     public void activate() {
     }
 
@@ -130,7 +134,8 @@ public class LayoutProvider {
         return null;
     }
 
-    public void restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
+    public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
+        return false;
     }
 
 

@@ -21,7 +21,9 @@ public class ReaderUndoRedoTest extends ActivityInstrumentationTestCase2<ReaderT
     public void testUndo1() {
         HistoryManager manager = new HistoryManager();
         final String cmd = "1";
+        final String cmd2 = "2";
         manager.addToHistory(cmd, false);
+        manager.addToHistory(cmd2, false);
 
         for(int i = 0; i < 10; ++i) {
             String result = manager.undo();
@@ -29,7 +31,7 @@ public class ReaderUndoRedoTest extends ActivityInstrumentationTestCase2<ReaderT
             assertNull(manager.undo());
 
             result = manager.redo();
-            assertTrue(result.equals(cmd));
+            assertTrue(result.equals(cmd2));
             assertNull(manager.redo());
         }
     }
@@ -41,14 +43,14 @@ public class ReaderUndoRedoTest extends ActivityInstrumentationTestCase2<ReaderT
             manager.addToHistory(String.valueOf(i), false);
         }
 
-        for(int i = limit - 1; i >= 0; --i) {
+        for(int i = limit - 1; i >= 1; --i) {
             String result = manager.undo();
-            assertTrue(result.equals(String.valueOf(i)));
+            assertTrue(result.equals(String.valueOf(i - 1)));
         }
 
-        for(int i = 0; i < limit; ++i) {
+        for(int i = 0; i < limit - 2; ++i) {
             String result = manager.redo();
-            assertTrue(result.equals(String.valueOf(i)));
+            assertTrue(result.equals(String.valueOf(i + 1)));
         }
     }
 
@@ -62,9 +64,10 @@ public class ReaderUndoRedoTest extends ActivityInstrumentationTestCase2<ReaderT
         Set<String> set = new HashSet<String>();
         for(int i = limit - 1; i >= limit / 2; --i) {
             String result = manager.undo();
-            assertTrue(result.equals(String.valueOf(i)));
+            assertTrue(result.equals(String.valueOf(i - 1)));
             set.add(result);
         }
+        set.remove(manager.getCurrent());
 
         for(int i = limit; i < limit * 2; ++i) {
             manager.addToHistory(String.valueOf(i), false);

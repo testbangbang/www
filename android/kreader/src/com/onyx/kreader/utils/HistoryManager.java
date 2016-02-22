@@ -7,7 +7,7 @@ import java.util.List;
  * Created by zengzhu on 2/21/16.
  *
  * a1 a2 a3 a4 a5  |  a6 a7 a8 a9 aa
- *     back        p     forward
+ *     back     current    forward
  */
 public class HistoryManager {
 
@@ -23,9 +23,9 @@ public class HistoryManager {
         if (back.isEmpty()) {
             return null;
         }
-        final String value = back.remove(back.size() - 1);
-        forward.add(value);
-        return value;
+        add(forward, current);
+        current = back.remove(back.size() - 1);
+        return current;
     }
 
     /**
@@ -44,9 +44,9 @@ public class HistoryManager {
         if (forward.isEmpty()) {
             return null;
         }
-        final String value = forward.remove(forward.size() - 1);
-        back.add(value);
-        return value;
+        add(back, current);
+        current = forward.remove(forward.size() - 1);
+        return current;
     }
 
     /**
@@ -64,21 +64,36 @@ public class HistoryManager {
      * @return
      */
     public boolean addToHistory(final String item, boolean allowDuplicate) {
+        if (StringUtils.isNullOrEmpty(item)) {
+            return false;
+        }
         if (!allowDuplicate && StringUtils.isNotBlank(current) && current.equalsIgnoreCase(item)) {
             return false;
         }
+        add(back, current);
         current = item;
-        back.add(item);
         forward.clear();
         return true;
     }
 
+    public String getCurrent() {
+        return current;
+    }
+
     public boolean canGoBack() {
-        return back.isEmpty();
+        return !back.isEmpty();
     }
 
     public boolean canGoForward() {
-        return forward.isEmpty();
+        return !forward.isEmpty();
+    }
+
+    private boolean add(final List<String> list, final String value) {
+        if (StringUtils.isNotBlank(value)) {
+            list.add(value);
+            return true;
+        }
+        return false;
     }
 
 }

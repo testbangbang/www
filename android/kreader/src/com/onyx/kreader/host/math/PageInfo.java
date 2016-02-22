@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.kreader.api.ReaderHitTestArgs;
+import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.plugins.adobe.HitTest;
 
 /**
@@ -27,6 +28,7 @@ public class PageInfo {
     private RectF positionRect = new RectF(); // page position rect in pages bounding rectangle coordinates system with actual scale.
     private RectF displayRect = new RectF(); // page display rect in view port coordinates system with actual scale.
     private float actualScale = 1.0f;
+    private int specialScale = ReaderConstants.SCALE_INVALID;
 
     public PageInfo(final String string, final float nw, final float nh) {
         name = string;
