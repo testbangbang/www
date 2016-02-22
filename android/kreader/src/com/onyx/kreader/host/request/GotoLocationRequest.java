@@ -33,7 +33,7 @@ public class GotoLocationRequest extends BaseRequest {
             throw ReaderException.outOfRange();
         }
         useRenderBitmap(reader);
-        reader.getReaderLayoutManager().drawVisiblePages(getRenderBitmap());
+        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap());
     }
 
 }

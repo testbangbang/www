@@ -21,6 +21,6 @@ public class ChangeLayoutRequest extends BaseRequest {
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().setCurrentLayout(newLayout);
         reader.getReaderLayoutManager().setNavigationArgs(navigationArgs);
-        reader.getReaderLayoutManager().drawVisiblePages(getRenderBitmap());
+        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap());
     }
 }

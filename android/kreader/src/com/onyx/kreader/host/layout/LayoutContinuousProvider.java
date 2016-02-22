@@ -6,6 +6,7 @@ import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -64,9 +65,9 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return gotoPosition(newPosition);
     }
 
-    public boolean drawVisiblePages(ReaderBitmapImpl bitmap) throws ReaderException {
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap) throws ReaderException {
         getPageManager().collectVisiblePages();
-        LayoutProviderUtils.drawVisiblePages(getLayoutManager(), bitmap);
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap);
         return true;
     }
 

@@ -25,11 +25,9 @@ public class LayoutProviderUtils {
      * @param layoutManager
      * @param bitmap
      */
-    static public void drawVisiblePages(final ReaderLayoutManager layoutManager, final ReaderBitmapImpl bitmap) {
-        final Reader reader = layoutManager.getReader();
+    static public void drawVisiblePages(final Reader reader, final ReaderLayoutManager layoutManager, final ReaderBitmapImpl bitmap) {
         final ReaderRenderer renderer = reader.getRenderer();
         final ReaderCacheManager cacheManager = reader.getReaderCacheManager();
-        final String layoutType = layoutManager.getCurrentLayoutType();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
         final String key = PositionSnapshot.cacheKey(visiblePages);
         if (enableCache && checkCache(cacheManager, key, bitmap)) {
@@ -72,7 +70,7 @@ public class LayoutProviderUtils {
     }
 
     static public void addPage(final ReaderLayoutManager layoutManager, final String location) {
-        RectF size = layoutManager.getReaderHelper().getDocument().getPageOriginSize(location);
+        RectF size = layoutManager.getReaderDocument().getPageOriginSize(location);
         PageInfo pageInfo = new PageInfo(location, size.width(), size.height());
         layoutManager.getPageManager().add(pageInfo);
     }

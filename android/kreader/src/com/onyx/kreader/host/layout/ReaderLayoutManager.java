@@ -1,8 +1,7 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.api.ReaderNavigator;
+import com.onyx.kreader.api.*;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
@@ -29,34 +28,45 @@ import java.util.Map;
  */
 public class ReaderLayoutManager {
 
-    private Reader reader;
-    private ReaderHelper readerHelper;
+    private ReaderDocument readerDocument;
+    private ReaderNavigator readerNavigator;
+    private ReaderRendererFeatures readerRendererFeatures;
+    private ReaderViewOptions readerViewOptions;
     private HistoryManager historyManager;
     private PageManager pageManager;
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
 
 
-    public ReaderLayoutManager(final Reader r) {
-        reader = r;
-        readerHelper = reader.getReaderHelper();
-    }
-
-    public Reader getReader() {
-        return reader;
+    public ReaderLayoutManager(final ReaderDocument document,
+                               final ReaderNavigator navigator,
+                               final ReaderRendererFeatures features,
+                               final ReaderViewOptions viewOptions) {
+        readerDocument = document;
+        readerNavigator = navigator;
+        readerRendererFeatures = features;
+        readerViewOptions = viewOptions;
     }
 
     public ReaderNavigator getNavigator() {
-        return getReader().getNavigator();
+        return readerNavigator;
     }
 
-    public ReaderHelper getReaderHelper() {
-        return readerHelper;
+    public ReaderDocument getReaderDocument() {
+        return readerDocument;
+    }
+
+    public ReaderRendererFeatures getReaderRendererFeatures() {
+        return readerRendererFeatures;
+    }
+
+    public ReaderViewOptions getReaderViewOptions() {
+        return readerViewOptions;
     }
 
     public void init()  {
-        boolean supportScale = reader.getRendererFeatures().supportScale();
-        boolean supportReflow = reader.getRendererFeatures().supportFontSizeAdjustment();
+        boolean supportScale = getReaderRendererFeatures().supportScale();
+        boolean supportReflow = getReaderRendererFeatures().supportFontSizeAdjustment();
         if (supportScale) {
             provider.put(ReaderConstants.SINGLE_PAGE, new LayoutSinglePageProvider(this));
             provider.put(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, new LayoutSinglePageNavigationListProvider(this));
@@ -74,7 +84,7 @@ public class ReaderLayoutManager {
     }
 
     public void updateViewportSize() {
-        getPageManager().setViewportRect(0, 0, reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight());
+        getPageManager().setViewportRect(0, 0, getReaderViewOptions().getViewWidth(), getReaderViewOptions().getViewHeight());
     }
 
     public LayoutProvider getCurrentLayoutProvider() {
@@ -224,10 +234,8 @@ public class ReaderLayoutManager {
         return false;
     }
 
-    public boolean drawVisiblePages(ReaderBitmapImpl bitmap) throws ReaderException {
-        getReaderHelper().beforeDraw(bitmap);
-        boolean ret = getCurrentLayoutProvider().drawVisiblePages(bitmap);
-        getReaderHelper().afterDraw(bitmap);
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap) throws ReaderException {
+        boolean ret = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap);
         return ret;
     }
 

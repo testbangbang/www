@@ -7,6 +7,7 @@ import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -50,8 +51,8 @@ public class LayoutReflowProvider  extends LayoutProvider {
         return false;
     }
 
-    public boolean drawVisiblePages(ReaderBitmapImpl bitmap) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(getLayoutManager(), bitmap);
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap) throws ReaderException {
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap);
         return true;
     }
 
@@ -107,8 +108,9 @@ public class LayoutReflowProvider  extends LayoutProvider {
     }
 
     public RectF getViewportRect() throws ReaderException {
-        return new RectF(0, 0, getLayoutManager().getReader().getViewOptions().getViewWidth(),
-                getLayoutManager().getReader().getViewOptions().getViewHeight());
+        return new RectF(0, 0,
+                getLayoutManager().getReaderViewOptions().getViewWidth(),
+                getLayoutManager().getReaderViewOptions().getViewHeight());
     }
 
     public void scaleToPage() throws ReaderException {

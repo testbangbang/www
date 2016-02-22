@@ -8,6 +8,7 @@ import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -79,8 +80,8 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
-    public boolean drawVisiblePages(ReaderBitmapImpl bitmap) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(getLayoutManager(), bitmap);
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap) throws ReaderException {
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap);
         return true;
     }
 

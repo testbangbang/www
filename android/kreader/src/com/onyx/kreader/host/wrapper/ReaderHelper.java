@@ -121,7 +121,10 @@ public class ReaderHelper {
 
     public ReaderLayoutManager getReaderLayoutManager() {
         if (readerLayoutManager == null) {
-            readerLayoutManager = new ReaderLayoutManager(reader);
+            readerLayoutManager = new ReaderLayoutManager(reader.getDocument(),
+                    reader.getNavigator(),
+                    reader.getRendererFeatures(),
+                    reader.getViewOptions());
         }
         return readerLayoutManager;
     }
