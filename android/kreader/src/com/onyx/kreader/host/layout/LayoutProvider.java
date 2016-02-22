@@ -5,7 +5,9 @@ import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageManager;
+import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.kreader.host.options.ReaderStyle;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -61,10 +63,6 @@ public class LayoutProvider {
         return false;
     }
 
-    public boolean drawVisiblePages(ReaderBitmapImpl bitmap) throws ReaderException {
-        return false;
-    }
-
     public boolean setScale(final String pageName, float scale, float left, float top) throws ReaderException {
         return false;
     }
@@ -78,11 +76,15 @@ public class LayoutProvider {
     public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
     }
 
+    public boolean changeScaleByRect(final String pageName, final RectF rect) throws ReaderException {
+        return false;
+    }
+
     public boolean changeScaleWithDelta(final String pageName, float delta) throws ReaderException {
         return false;
     }
 
-    public boolean changeScaleByRect(final String pageName, final RectF rect) throws ReaderException {
+    public boolean drawVisiblePages(ReaderBitmapImpl bitmap) throws ReaderException {
         return false;
     }
 
@@ -114,19 +116,20 @@ public class LayoutProvider {
         return false;
     }
 
-    public boolean setFontSize(float fontSize) throws ReaderException {
+    public boolean setStyle(final ReaderStyle style) throws ReaderException {
         return false;
     }
 
-    public boolean setTypeface(final String typeface) throws ReaderException {
-        return false;
-    }
-
-    public void save(int delta) throws ReaderException {}
-    public void restore() throws ReaderException {}
-
-    public String renderingString() throws ReaderException {
+    /**
+     * save current position.
+     * @return position snapshot object.
+     * @throws ReaderException
+     */
+    public PositionSnapshot saveSnapshot() throws ReaderException {
         return null;
+    }
+
+    public void restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
     }
 
 

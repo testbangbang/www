@@ -14,7 +14,7 @@ public class StringUtils {
         return (string == null || string.length() <= 0);
     }
 
-    static public boolean isNonBlank(final String string) {
+    static public boolean isNotBlank(final String string) {
         return (string != null && string.length() > 0);
     }
 

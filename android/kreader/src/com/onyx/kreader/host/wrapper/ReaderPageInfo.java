@@ -6,7 +6,7 @@ import android.graphics.RectF;
 
 /**
  * Created by zhuzeng on 10/6/15.
- * This class is used to save
+ * This class is used to saveSnapshot
  * 1. page natural size
  * 2. page crop content region.
  * 3. page display rect in document coordinates system.

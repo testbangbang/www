@@ -18,7 +18,7 @@ public class RestoreRequest extends BaseRequest {
 
 
     public void execute(final Reader reader) throws Exception {
-        // save position
+        // saveSnapshot position
         // change layout
         // goto position
     }

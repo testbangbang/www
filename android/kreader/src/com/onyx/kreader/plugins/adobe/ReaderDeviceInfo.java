@@ -44,7 +44,7 @@ public class ReaderDeviceInfo {
         String uuid = prefs.getString(PREFS_DEVICE_ID, null);
         if (uuid == null || uuid.length() <= 0) {
             uuid = DeviceUtils.getDeviceSerial(context);
-            if (!StringUtils.isNonBlank(uuid)) {
+            if (!StringUtils.isNotBlank(uuid)) {
                 prefs.edit().putString(PREFS_DEVICE_ID, uuid).commit();
             }
         }

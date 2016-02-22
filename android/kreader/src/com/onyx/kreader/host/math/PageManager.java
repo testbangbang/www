@@ -2,10 +2,8 @@ package com.onyx.kreader.host.math;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.utils.StringUtils;
-import com.onyx.kreader.utils.TestUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -258,7 +256,7 @@ public class PageManager {
     }
 
     public PageInfo getFirstVisiblePage() {
-        if (StringUtils.isNonBlank(firstVisiblePageName)) {
+        if (StringUtils.isNotBlank(firstVisiblePageName)) {
             return pageInfoMap.get(firstVisiblePageName);
         }
         return null;

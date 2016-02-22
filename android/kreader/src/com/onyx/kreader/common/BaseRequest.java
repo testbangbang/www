@@ -25,8 +25,7 @@ public abstract class BaseRequest {
     private Benchmark benchmark;
     private Exception exception;
     private ReaderBitmapImpl renderBitmap;
-    private List<PageInfo> visiblePages;
-    private List<ReaderSelection> selectionList;
+    private AdditionalInfo additionalInfo;
 
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
@@ -129,14 +128,6 @@ public abstract class BaseRequest {
         renderBitmap = reader.getReaderHelper().getRenderBitmap();
     }
 
-    public final List<PageInfo> getVisiblePages() {
-        return visiblePages;
-    }
-
-    public final List<ReaderSelection> getSelectionList() {
-        return selectionList;
-    }
-
     public void beforeExecute(final Reader reader) {
         reader.acquireWakeLock(getContext());
         benchmarkStart();
@@ -182,5 +173,11 @@ public abstract class BaseRequest {
         reader.releaseWakeLock();
     }
 
+    public final AdditionalInfo getAdditionalInfo() {
+        if (additionalInfo == null) {
+            additionalInfo = new AdditionalInfo();
+        }
+        return additionalInfo;
+    }
 
 }

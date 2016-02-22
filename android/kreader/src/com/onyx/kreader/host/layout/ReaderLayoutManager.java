@@ -8,6 +8,7 @@ import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
 import com.onyx.kreader.utils.StringUtils;
@@ -96,7 +97,7 @@ public class ReaderLayoutManager {
         getCurrentLayoutProvider().activate();
 
         // goto the stored page
-        if (StringUtils.isNonBlank(pagePosition)) {
+        if (StringUtils.isNotBlank(pagePosition)) {
             getCurrentLayoutProvider().gotoPosition(pagePosition);
         }
         return true;
@@ -154,11 +155,60 @@ public class ReaderLayoutManager {
         return historyManager;
     }
 
+    public boolean canGoBack() {
+        return getHistoryManager().canGoBack();
+    }
+
+    public boolean canGoForward() {
+        return getHistoryManager().canGoForward();
+    }
+
+    public void beforePositionChange() {
+    }
+
     public void onPositionChanged() {
-        // save current position into position stack
-        // make sure it's different from stack top.
-        final String snapshot = PositionSnapshot.snapshotKey(getCurrentLayoutType(), getPageManager().getFirstVisiblePage());
-        getHistoryManager().addToHistory(snapshot, false);
+        savePositionSnapshot();
+    }
+
+    public boolean goBack() {
+        if (!canGoBack()) {
+            return false;
+        }
+        restoreBySnapshot(getHistoryManager().backward());
+        return true;
+    }
+
+    public boolean goForward() {
+        if (!canGoForward()) {
+            return false;
+        }
+        restoreBySnapshot(getHistoryManager().forward());
+        return true;
+    }
+
+    private void savePositionSnapshot() {
+        try {
+            final PositionSnapshot snapshot = getCurrentLayoutProvider().saveSnapshot();
+            getHistoryManager().addToHistory(snapshot.key(), false);
+        } catch (Exception e) {
+        }
+    }
+
+    /**
+     * internal method to change layout type and position without adding to history list.
+     * @param snapshot
+     * @return
+     */
+    private boolean restoreBySnapshot(final String snapshot) {
+        try {
+            PositionSnapshot positionSnapshot = PositionSnapshot.fromSnapshotKey(snapshot);
+            currentProvider = positionSnapshot.layoutType;
+            getCurrentLayoutProvider().activate();
+            getCurrentLayoutProvider().restoreBySnapshot(positionSnapshot);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public String getCurrentPageName() {
@@ -166,6 +216,7 @@ public class ReaderLayoutManager {
     }
 
     public boolean gotoPosition(final String position) throws ReaderException {
+        beforePositionChange();
         if (getCurrentLayoutProvider().gotoPosition(position)) {
             onPositionChanged();
             return true;
@@ -181,26 +232,31 @@ public class ReaderLayoutManager {
     }
 
     public void setScale(final String pageName, final float scale, final float x, final float y) throws ReaderException {
+        beforePositionChange();
         getCurrentLayoutProvider().setScale(pageName, scale, x, y);
         onPositionChanged();
     }
 
     public void scaleToPage(final String pageName) throws ReaderException {
+        beforePositionChange();
         getCurrentLayoutProvider().scaleToPage(pageName);
         onPositionChanged();
     }
 
     public void scaleToWidth(final String pageName) throws ReaderException {
+        beforePositionChange();
         getCurrentLayoutProvider().scaleToWidth(pageName);
         onPositionChanged();
     }
 
     public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
+        beforePositionChange();
         getCurrentLayoutProvider().scaleByRect(pageName, child);
         onPositionChanged();
     }
 
     public boolean nextScreen() throws ReaderException {
+        beforePositionChange();
         if (getCurrentLayoutProvider().nextScreen()) {
             onPositionChanged();
             return true;
@@ -209,6 +265,7 @@ public class ReaderLayoutManager {
     }
 
     public boolean prevScreen() throws ReaderException {
+        beforePositionChange();
         if (getCurrentLayoutProvider().prevScreen()) {
             onPositionChanged();
             return true;
@@ -220,14 +277,8 @@ public class ReaderLayoutManager {
         getCurrentLayoutProvider().setNavigationArgs(args);
     }
 
-    public void savePosition() {
-
+    public void setStyle(final ReaderStyle style) throws ReaderException {
+        getCurrentLayoutProvider().setStyle(style);
     }
-
-    public void restorePosition() {
-
-    }
-
-    public void updateStack() {}
 
 }

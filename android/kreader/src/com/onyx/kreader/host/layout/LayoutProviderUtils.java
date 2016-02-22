@@ -43,7 +43,7 @@ public class LayoutProviderUtils {
             renderer.draw(documentPosition, pageInfo.getActualScale(), pageInfo.getPageDisplayOrientation(), bitmap, (int) rect.left, (int) rect.top, (int) rect.width(), (int) rect.height());
         }
 
-        if (enableCache && StringUtils.isNonBlank(key)) {
+        if (enableCache && StringUtils.isNotBlank(key)) {
             addToCache(cacheManager, key, bitmap);
         }
     }

@@ -29,6 +29,14 @@ public class HistoryManager {
     }
 
     /**
+     * alias to undo
+     * @return
+     */
+    public String backward() {
+        return undo();
+    }
+
+    /**
      * move forward, redo. move from forward to back
      * @return
      */
@@ -42,19 +50,35 @@ public class HistoryManager {
     }
 
     /**
+     * alias to redo
+     * @return
+     */
+    public String forward() {
+        return redo();
+    }
+
+    /**
      * add to back list, so you can undo
      * @param item
      * @param allowDuplicate allow duplicated item or not.
      * @return
      */
     public boolean addToHistory(final String item, boolean allowDuplicate) {
-        if (!allowDuplicate && StringUtils.isNonBlank(current) && current.equalsIgnoreCase(item)) {
+        if (!allowDuplicate && StringUtils.isNotBlank(current) && current.equalsIgnoreCase(item)) {
             return false;
         }
         current = item;
         back.add(item);
         forward.clear();
         return true;
+    }
+
+    public boolean canGoBack() {
+        return back.isEmpty();
+    }
+
+    public boolean canGoForward() {
+        return forward.isEmpty();
     }
 
 }

@@ -4,8 +4,10 @@ import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.navigation.NavigationList;
+import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -124,20 +126,16 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean setFontSize(float fontSize) throws ReaderException {
+
+    public boolean setStyle(final ReaderStyle style) throws ReaderException {
         return false;
     }
 
-    public boolean setTypeface(final String typeface) throws ReaderException {
-        return false;
+    public PositionSnapshot saveSnapshot() throws ReaderException {
+        return null;
     }
 
-    public void save(int delta) throws ReaderException {
-
-    }
-
-    public void restore() throws ReaderException {
-
+    public void restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
     }
 
     public String renderingString() throws ReaderException {

@@ -35,7 +35,7 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
         assertTrue(wrapper.nativeInitLibrary());
         assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
         String title = wrapper.metadataString("Title");
-        assertTrue(StringUtils.isNonBlank(title));
+        assertTrue(StringUtils.isNotBlank(title));
         assertTrue(wrapper.nativeCloseDocument());
         assertFalse(wrapper.nativeCloseDocument());
         assertTrue(wrapper.nativeDestroyLibrary());

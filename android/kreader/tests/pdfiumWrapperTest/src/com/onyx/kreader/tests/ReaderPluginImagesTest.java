@@ -40,7 +40,7 @@ public class ReaderPluginImagesTest extends ActivityInstrumentationTestCase2<Rea
         assertNotNull(navigator);
         assertTrue(navigator.getTotalPage() > 0);
         final String position = navigator.getInitPosition();
-        assertTrue(StringUtils.isNonBlank(position));
+        assertTrue(StringUtils.isNotBlank(position));
         RectF rect = document.getPageOriginSize(position);
         assertTrue(rect.width() > 0);
         assertTrue(rect.height() > 0);
@@ -58,7 +58,7 @@ public class ReaderPluginImagesTest extends ActivityInstrumentationTestCase2<Rea
         assertNotNull(navigator);
         assertTrue(navigator.getTotalPage() > 0);
         final String position = navigator.getInitPosition();
-        assertTrue(StringUtils.isNonBlank(position));
+        assertTrue(StringUtils.isNotBlank(position));
         RectF rect = document.getPageOriginSize(position);
         assertTrue(rect.width() > 0);
         assertTrue(rect.height() > 0);

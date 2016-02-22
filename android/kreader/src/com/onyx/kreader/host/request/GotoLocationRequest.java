@@ -24,7 +24,7 @@ public class GotoLocationRequest extends BaseRequest {
 
     public void execute(final Reader reader) throws Exception {
         String documentPosition;
-        if (StringUtils.isNonBlank(persistentPosition)) {
+        if (StringUtils.isNotBlank(persistentPosition)) {
             documentPosition = persistentPosition;
         } else {
             documentPosition = reader.getReaderHelper().getNavigator().getPositionByPageNumber(page);
