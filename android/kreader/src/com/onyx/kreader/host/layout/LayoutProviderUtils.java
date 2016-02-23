@@ -85,6 +85,13 @@ public class LayoutProviderUtils {
         LayoutProviderUtils.updatePageBoundingRect(layoutManager);
     }
 
+    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String position) {
+        LayoutProviderUtils.clear(layoutManager);
+        LayoutProviderUtils.addPage(layoutManager, position);
+        LayoutProviderUtils.updatePageBoundingRect(layoutManager);
+        LayoutProviderUtils.resetViewportPosition(layoutManager);
+    }
+
     static public void updatePageBoundingRect(final ReaderLayoutManager layoutManager) {
         layoutManager.getPageManager().updatePagesBoundingRect();
     }
@@ -95,13 +102,6 @@ public class LayoutProviderUtils {
 
     static public void resetViewportPosition(final ReaderLayoutManager layoutManager) {
         layoutManager.getPageManager().setViewportPosition(null, 0, 0);
-    }
-
-    static public void addNewSinglePage(final ReaderLayoutManager layoutManager, final String position) {
-        LayoutProviderUtils.clear(layoutManager);
-        LayoutProviderUtils.addPage(layoutManager, position);
-        LayoutProviderUtils.updatePageBoundingRect(layoutManager);
-        LayoutProviderUtils.resetViewportPosition(layoutManager);
     }
 
     static public boolean moveViewportByPosition(final ReaderLayoutManager layoutManager, final String location) {

@@ -3,6 +3,7 @@ package com.onyx.kreader.host.layout;
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
@@ -75,6 +76,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public boolean setScale(final String pageName, float scale, float left, float top) throws ReaderException {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().setScale(pageName, scale);
         getPageManager().setViewportPosition(pageName, left, top);
         getPageManager().collectVisiblePages();
@@ -82,19 +84,23 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public void scaleToPage(final String pageName) throws ReaderException {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().scaleToPage(pageName);
     }
 
     public void scaleToWidth(final String pageName) throws ReaderException {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().scaleToWidth(pageName);
     }
 
     public boolean changeScaleWithDelta(final String pageName, float delta) throws ReaderException {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().scaleWithDelta(pageName, delta);
         return true;
     }
 
     public boolean changeScaleByRect(final String pageName, final RectF rect) throws ReaderException  {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().scaleByRect(pageName, rect);
         return true;
     }
@@ -103,7 +109,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         if (StringUtils.isNullOrEmpty(location)) {
             return false;
         }
-        LayoutProviderUtils.addNewSinglePage(getLayoutManager(), location);
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
         return getPageManager().gotoPage(location);
     }
 
@@ -113,7 +119,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public boolean supportPreRender() throws ReaderException {
-        return false;
+        return true;
     }
 
     public boolean supportSubScreenNavigation() {
@@ -137,11 +143,13 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         } else {
             getPageManager().setScale(snapshot.pageName, snapshot.actualScale);
         }
+        getPageManager().setViewportPosition(snapshot.pageName, snapshot.displayRect.left, snapshot.displayRect.top);
         return true;
     }
 
     public RectF getPageRectOnViewport(final String position) throws ReaderException {
-        return null;
+        final PageInfo pageInfo = getPageManager().getPageInfo(position);
+        return pageInfo.getDisplayRect();
     }
 
     public float getActualScale() throws ReaderException {

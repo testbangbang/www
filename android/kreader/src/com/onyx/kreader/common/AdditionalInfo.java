@@ -2,6 +2,7 @@ package com.onyx.kreader.common;
 
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.kreader.host.options.ReaderConstants;
 
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,9 @@ public class AdditionalInfo {
 
     private List<PageInfo> visiblePages;
     private List<ReaderSelection> selectionList;
-    private Map<String, Boolean> history;
-    public int specialScale = 0;
+    public boolean canGoBack;
+    public boolean canGoForward;
+    public int specialScale = ReaderConstants.SCALE_INVALID;
     public float actualScale;
 
     public final List<PageInfo> getVisiblePages() {

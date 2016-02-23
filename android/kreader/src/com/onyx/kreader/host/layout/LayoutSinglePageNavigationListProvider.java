@@ -1,7 +1,6 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PositionSnapshot;
@@ -116,7 +115,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         if (StringUtils.isNullOrEmpty(location)) {
             return false;
         }
-        LayoutProviderUtils.addNewSinglePage(getLayoutManager(), location);
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
         return true;
     }
 
