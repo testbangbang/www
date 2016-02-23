@@ -13,7 +13,7 @@ public class NavigationArgs {
     private Type type;
     private Map<Type, NavigationList> map = new HashMap();
 
-    public static enum Type {
+    public enum Type {
         ALL, ODD, EVEN,
     }
 

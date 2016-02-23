@@ -274,6 +274,13 @@ public class ReaderLayoutManager {
         onPositionChanged();
     }
 
+    public boolean changeScaleWithDelta(final String pageName, float delta) throws ReaderException {
+        beforePositionChange();
+        getCurrentLayoutProvider().changeScaleWithDelta(pageName, delta);
+        onPositionChanged();
+        return true;
+    }
+
     public boolean nextScreen() throws ReaderException {
         beforePositionChange();
         if (getCurrentLayoutProvider().nextScreen()) {

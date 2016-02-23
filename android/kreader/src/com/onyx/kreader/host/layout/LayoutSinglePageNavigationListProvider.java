@@ -69,6 +69,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     public boolean prevPage() throws ReaderException {
+        // goto previous page and scale by rect.
         return gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
     }
 
@@ -142,10 +143,6 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
         return false;
-    }
-
-    public String renderingString() throws ReaderException {
-        return null;
     }
 
     public RectF getPageRectOnViewport(final String position) throws ReaderException {
