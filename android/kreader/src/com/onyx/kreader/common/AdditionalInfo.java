@@ -18,6 +18,8 @@ public class AdditionalInfo {
     public boolean canGoForward;
     public int specialScale = ReaderConstants.SCALE_INVALID;
     public float actualScale;
+    public boolean reflowDocument;
+    public boolean pageScalable;
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;

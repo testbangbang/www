@@ -14,6 +14,8 @@ public class NavigationList {
     private List<RectF> subScreenList = new ArrayList<RectF>();
     private int currentIndex = -1;
     private RectF limitedRect;
+    private boolean autoCrop;
+    private float autoCropThreshold;
 
     static public NavigationList rowsLeftToRight(int rows, int cols, final RectF limited) {
         RectF child = new RectF(0, 0, 1, 1);
@@ -96,6 +98,10 @@ public class NavigationList {
 
     public void setLimitedRect(final RectF limit) {
         limitedRect = limit;
+    }
+
+    public int subScreenCount() {
+        return subScreenList.size();
     }
 
     public final RectF getLimitedRect() {

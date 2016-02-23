@@ -7,6 +7,7 @@ import com.onyx.kreader.host.layout.LayoutProvider;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
+import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.TestUtils;
@@ -19,6 +20,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
     public ReaderLayoutManagerTest() {
         super(ReaderTestActivity.class);
     }
+
 
     public void testSinglePage() throws Exception  {
         FakeReader reader = new FakeReader();

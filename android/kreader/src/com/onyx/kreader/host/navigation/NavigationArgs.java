@@ -22,6 +22,21 @@ public class NavigationArgs {
         return navigationArgs;
     }
 
+    static public NavigationArgs rowsRightToLeft(final Type type, int rows, int cols, final RectF limit) {
+        NavigationArgs navigationArgs = new NavigationArgs(type, NavigationList.rowsRightToLeft(rows, cols, limit));
+        return navigationArgs;
+    }
+
+    static public NavigationArgs columnsLeftToRight(final Type type, int rows, int cols, final RectF limit) {
+        NavigationArgs navigationArgs = new NavigationArgs(type, NavigationList.columnsLeftToRight(rows, cols, limit));
+        return navigationArgs;
+    }
+
+    static public NavigationArgs columnsRightToLeft(final Type type, int rows, int cols, final RectF limit) {
+        NavigationArgs navigationArgs = new NavigationArgs(type, NavigationList.columnsRightToLeft(rows, cols, limit));
+        return navigationArgs;
+    }
+
     public NavigationArgs(final Type t, final NavigationList list) {
         type = t;
         map.put(type, list);
