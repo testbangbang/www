@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.navigation;
 
 import android.graphics.RectF;
+import com.onyx.kreader.host.math.PageUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,20 @@ public class NavigationArgs {
 
     public NavigationList getList() {
         return map.get(type);
+    }
+
+    static public RectF rectInViewport(final RectF subScreen, final RectF limit, final RectF viewport) {
+        RectF result = new RectF(subScreen);
+        if (limit != null) {
+            result.intersect(limit);
+        }
+        float scale = PageUtils.scaleToPage(result.width(), result.height(), viewport.width(), viewport.height());
+        float left = (viewport.width() - result.width() * scale) / 2;
+        float top = (viewport.height() - result.height() * scale) / 2;
+        float right = left + result.width() * scale;
+        float bottom = top + result.height() * scale;
+        result.set(left, top, right, bottom);
+        return result;
     }
 
 
