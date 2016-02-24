@@ -22,7 +22,7 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         NavigationArgs navigationArgs = new NavigationArgs();
         navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
-        assertTrue(navigationArgs.getList().subScreenCount() == total);
+        assertTrue(navigationArgs.getList().getSubScreenCount() == total);
 
         int index = 0;
 
@@ -43,7 +43,7 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         NavigationArgs navigationArgs = new NavigationArgs();
         navigationArgs.rowsRightToLeft(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
-        assertTrue(navigationArgs.getList().subScreenCount() == total);
+        assertTrue(navigationArgs.getList().getSubScreenCount() == total);
 
         int index = 0;
         while (navigationArgs.getList().hasNext()) {
@@ -63,7 +63,7 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         NavigationArgs navigationArgs = new NavigationArgs();
         navigationArgs.columnsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
-        assertTrue(navigationArgs.getList().subScreenCount() == total);
+        assertTrue(navigationArgs.getList().getSubScreenCount() == total);
 
         int index = 0;
         while (navigationArgs.getList().hasNext()) {
@@ -83,7 +83,7 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         NavigationArgs navigationArgs = new NavigationArgs();
         navigationArgs.columnsRightToLeft(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
-        assertTrue(navigationArgs.getList().subScreenCount() == total);
+        assertTrue(navigationArgs.getList().getSubScreenCount() == total);
 
         int index = 0;
         while (navigationArgs.getList().hasNext()) {
@@ -103,7 +103,7 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         NavigationArgs navigationArgs = new NavigationArgs();
         navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
-        assertTrue(navigationArgs.getList().subScreenCount() == total);
+        assertTrue(navigationArgs.getList().getSubScreenCount() == total);
 
         RectF viewport = new RectF(0, 0, TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
         int index = 0;

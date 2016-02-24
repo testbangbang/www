@@ -100,8 +100,15 @@ public class NavigationList {
         limitedRect = limit;
     }
 
-    public int subScreenCount() {
+    public int getSubScreenCount() {
         return subScreenList.size();
+    }
+
+    public int getLastSubScreenIndex() {
+        if (subScreenList.size() > 0) {
+            return subScreenList.size() - 1;
+        }
+        return 0;
     }
 
     public final RectF getLimitedRect() {

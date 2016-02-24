@@ -54,7 +54,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
             getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
             return true;
         }
-        return false;
+        return prevPage();
     }
 
     public boolean nextScreen() throws ReaderException {
@@ -63,11 +63,11 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
             getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
             return true;
         }
-        return false;
+        return nextPage();
     }
 
     public boolean prevPage() throws ReaderException {
-        return gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
+        return gotoPositionImpl(LayoutProviderUtils.prevPage(getLayoutManager()), getNavigationList().getLastSubScreenIndex());
     }
 
     public boolean nextPage() throws ReaderException {
@@ -111,6 +111,10 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     public boolean gotoPosition(final String position) throws ReaderException {
+        return gotoPositionImpl(position, 0);
+    }
+
+    private boolean gotoPositionImpl(final String position, int index) throws ReaderException {
         if (StringUtils.isNullOrEmpty(position)) {
             return false;
         }
@@ -119,7 +123,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
             return false;
         }
 
-        RectF subScreen = getNavigationList().first();
+        RectF subScreen = getNavigationList().gotoSubScreen(index);
         getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
         return true;
     }
