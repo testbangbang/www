@@ -15,6 +15,6 @@ public class PreviousScreenRequest extends BaseRequest {
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().prevScreen();
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap());
+        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
 }

@@ -1,13 +1,8 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
-import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
-import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.Reader;
-
-import java.util.List;
 
 /**
  * Created by zhuzeng on 10/4/15.
@@ -25,7 +20,7 @@ public abstract class BaseRequest {
     private Benchmark benchmark;
     private Exception exception;
     private ReaderBitmapImpl renderBitmap;
-    private AdditionalInfo additionalInfo;
+    private ReaderViewInfo readerViewInfo;
 
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
@@ -173,11 +168,13 @@ public abstract class BaseRequest {
         reader.releaseWakeLock();
     }
 
-    public final AdditionalInfo getAdditionalInfo() {
-        if (additionalInfo == null) {
-            additionalInfo = new AdditionalInfo();
-        }
-        return additionalInfo;
+    public final ReaderViewInfo getReaderViewInfo() {
+        return readerViewInfo;
+    }
+
+    public ReaderViewInfo createReaderViewInfo() {
+        readerViewInfo = new ReaderViewInfo();
+        return readerViewInfo;
     }
 
 }

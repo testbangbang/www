@@ -3,12 +3,12 @@ package com.onyx.kreader.host.wrapper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.plugins.adobe.AdobeReaderPlugin;
-import com.onyx.kreader.plugins.images.ImagesJniWrapper;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 
@@ -168,7 +168,6 @@ public class ReaderHelper {
     public ReaderSearchManager getSearchManager() {
         return searchManager;
     }
-
 
 
 }

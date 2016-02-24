@@ -2,6 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PositionSnapshot;
@@ -25,7 +26,7 @@ public class LayoutProviderUtils {
      * @param layoutManager
      * @param bitmap
      */
-    static public void drawVisiblePages(final Reader reader, final ReaderLayoutManager layoutManager, final ReaderBitmapImpl bitmap) {
+    static public void drawVisiblePages(final Reader reader, final ReaderLayoutManager layoutManager, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) {
         final ReaderRenderer renderer = reader.getRenderer();
         final ReaderCacheManager cacheManager = reader.getReaderCacheManager();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
@@ -39,6 +40,7 @@ public class LayoutProviderUtils {
             String documentPosition = pageInfo.getName();
             final RectF rect = pageInfo.getDisplayRect();
             renderer.draw(documentPosition, pageInfo.getActualScale(), pageInfo.getPageDisplayOrientation(), bitmap, (int) rect.left, (int) rect.top, (int) rect.width(), (int) rect.height());
+            readerViewInfo.copyPageInfo(pageInfo);
         }
 
         if (enableCache && StringUtils.isNotBlank(key)) {

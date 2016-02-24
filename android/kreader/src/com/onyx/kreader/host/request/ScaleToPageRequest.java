@@ -18,7 +18,7 @@ public class ScaleToPageRequest extends BaseRequest {
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().scaleToPage(pageName);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap());
+        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
 
 }

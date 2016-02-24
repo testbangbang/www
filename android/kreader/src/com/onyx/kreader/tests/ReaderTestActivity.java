@@ -11,10 +11,13 @@ import android.widget.EditText;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderViewOptions;
+import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
+import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
@@ -56,6 +59,8 @@ public class ReaderTestActivity extends Activity {
     private PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
     private float xScale, yScale;
     private float startX, startY, endX, endY;
+    private ReaderViewInfo readerViewInfo;
+    private RectF selectionRect;
 
 
     @Override
@@ -138,6 +143,7 @@ public class ReaderTestActivity extends Activity {
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     endX = event.getX();
                     endY = event.getY();
+                    selectionRect = new RectF(startX, startY, endX, endY);
                     testScaleByRect();
                 }
                 return true;
@@ -195,6 +201,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
+                readerViewInfo = request.getReaderViewInfo();
                 dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/goto.png", false);
 //                testScaleToPage();
             }
@@ -238,7 +245,22 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testScaleByRect() {
-        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(String.valueOf(0), new RectF(200, 200, 500, 500));
+        if (readerViewInfo == null || readerViewInfo.getVisiblePages() == null) {
+            return;
+        }
+        String pn = null;
+        for(PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
+            if (pageInfo.getDisplayRect().contains(selectionRect)) {
+                pn = pageInfo.getName();
+                PageUtils.translateCoordinates(selectionRect, pageInfo.getDisplayRect());
+                break;
+            }
+        }
+        if (pn == null) {
+            return;
+        }
+
+        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(pn, selectionRect);
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -418,8 +440,12 @@ public class ReaderTestActivity extends Activity {
         }
     }
 
-    private void dumpBitmap(final Bitmap bitmap, final String path, boolean save) {
-        drawBitmap(bitmap);
+    private void dumpBitmap(final Bitmap bmp, final String path, boolean save) {
+        bitmap = bmp;
+        Canvas canvas = holder.lockCanvas();
+        drawBitmap(canvas);
+        drawPagesInfo(canvas);
+        holder.unlockCanvasAndPost(canvas);
         if (save) {
             BitmapUtils.saveBitmap(bitmap, path);
         }
@@ -444,12 +470,30 @@ public class ReaderTestActivity extends Activity {
         drawHitTest(canvas);
         drawSearchResult(canvas);
         drawSentences(canvas);
+
         holder.unlockCanvasAndPost(canvas);
     }
 
     private void drawBitmap(final Canvas canvas) {
         canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(bitmap, 0, 0, null);
+    }
+
+    private void drawPagesInfo(final Canvas canvas) {
+        if (readerViewInfo == null || readerViewInfo.getVisiblePages() == null) {
+            return;
+        }
+        Paint paint = new Paint();
+        paint.setStrokeWidth(3.0f);
+        paint.setStyle(Paint.Style.STROKE);
+        for(PageInfo pageInfo: readerViewInfo.getVisiblePages()) {
+            canvas.drawRect(pageInfo.getDisplayRect(), paint);
+            if (selectionRect != null) {
+                RectF rect = new RectF(selectionRect);
+                rect.offset(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
+                canvas.drawRect(rect, paint);
+            }
+        }
     }
 
     private void testPdfiumWrapper() {

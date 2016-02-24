@@ -20,6 +20,6 @@ public class ChangeScaleWithDeltaRequest extends BaseRequest {
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().changeScaleWithDelta(pageName, delta);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap());
+        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
 }

@@ -37,6 +37,16 @@ public class PageInfo {
         positionRect.set(0, 0, nw, nh);
     }
 
+    public PageInfo(final PageInfo pageInfo) {
+        name = pageInfo.getName();
+        originWidth = pageInfo.getOriginWidth();
+        originHeight = pageInfo.getOriginHeight();
+        positionRect.set(pageInfo.positionRect);
+        displayRect.set(pageInfo.displayRect);
+        actualScale = pageInfo.actualScale;
+        specialScale = pageInfo.specialScale;
+    }
+
     public final float getOriginWidth() {
         return originWidth;
     }

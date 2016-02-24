@@ -2,6 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
@@ -10,7 +11,6 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderHelper;
 import com.onyx.kreader.utils.StringUtils;
 import com.onyx.kreader.utils.HistoryManager;
 
@@ -245,8 +245,8 @@ public class ReaderLayoutManager {
         return false;
     }
 
-    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap) throws ReaderException {
-        boolean ret = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap);
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
+        boolean ret = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo);
         return ret;
     }
 
