@@ -21,10 +21,8 @@ import com.onyx.kreader.utils.TestUtils;
 public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
     public ReaderPluginPdfiumTest() {
-        super("com.onyx.reader", ReaderTestActivity.class);
+        super(ReaderTestActivity.class);
     }
-
-
 
     public void testPluginUsage() throws Exception {
         ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
@@ -64,7 +62,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
 
         PageManager pageManager = new PageManager();
         RectF viewport = new RectF(0, 0, viewOptions.getViewWidth(), viewOptions.getViewHeight());
-        pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
+        pageManager.setViewportRect(viewport);
 
         RectF size = document.getPageOriginSize(initPosition);
         PageInfo pageInfo = new PageInfo(initPosition, size.width(), size.height());

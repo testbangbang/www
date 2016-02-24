@@ -22,13 +22,13 @@ import java.util.List;
 public class ReaderCacheTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
     public ReaderCacheTest() {
-        super("com.onyx.reader", ReaderTestActivity.class);
+        super(ReaderTestActivity.class);
     }
     private PageManager pageManager = new PageManager();
 
     private List<PageInfo> randPageList() {
         RectF viewport = new RectF(0, 0, TestUtils.randInt(1000, 2000), TestUtils.randInt(10000, 20000));
-        pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
+        pageManager.setViewportRect(viewport);
         int count = TestUtils.randInt(1, 100);
         pageManager.clear();
         for(int i = 0; i < count; ++i) {

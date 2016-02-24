@@ -20,13 +20,13 @@ import java.util.List;
 public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
     public ReaderPageManagerTest() {
-        super("com.onyx.reader", ReaderTestActivity.class);
+        super(ReaderTestActivity.class);
     }
 
     public void testPageManager() throws Exception {
         PageManager pageManager = new PageManager();
         RectF viewport = new RectF(0, 0, TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));;
-        pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
+        pageManager.setViewportRect(viewport);
         PageInfo pageInfo = new PageInfo("1", TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
         pageManager.add(pageInfo);
         pageManager.scaleToPage(pageInfo.getName());
@@ -50,17 +50,26 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
      */
     public void testPageManager2() throws Exception {
         PageManager pageManager = new PageManager();
-        RectF viewport = new RectF(0, 0, TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
-        RectF childInViewport = new RectF(0, 0, TestUtils.randInt((int)viewport.width() / 3, (int)viewport.width() / 2),
-                TestUtils.randInt((int)viewport.height() / 3, (int)viewport.height() / 2));
+        RectF viewport = new RectF(TestUtils.randInt(10, 20),
+                TestUtils.randInt(10, 20),
+                TestUtils.randInt(1000, 2000),
+                TestUtils.randInt(1000, 2000));
+
+        int width = (int)viewport.width();
+        int height = (int)viewport.height();
+        RectF childInViewport = new RectF(
+                TestUtils.randInt(20, width / 10),
+                TestUtils.randInt(20, height / 10),
+                TestUtils.randInt(width / 4, width / 2),
+                TestUtils.randInt(height / 4, height / 2));
         RectF rectArg = new RectF(childInViewport);
-        pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
-        PageInfo pageInfo = new PageInfo("1", TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
+        pageManager.setViewportRect(viewport);
+        PageInfo pageInfo = new PageInfo("1", TestUtils.randInt(3000, 4000), TestUtils.randInt(3000, 4000));
         pageManager.add(pageInfo);
 
         pageManager.scaleToViewport(pageInfo.getName(), rectArg);
-        PageInfo info = pageManager.getFirstVisiblePage();
 
+        PageInfo info = pageManager.getFirstVisiblePage();
         float actualScale = info.getActualScale();
         float targetScale = PageUtils.scaleToPage(childInViewport.width(), childInViewport.height(), viewport.width(), viewport.height());
         assertTrue(TestUtils.compareFloatWhole(actualScale, targetScale));
@@ -70,6 +79,14 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
         float targetX = pageManager.getViewportRect().centerX();
         float targetY = pageManager.getViewportRect().centerY();
         assertTrue(TestUtils.compareFloatWhole(x, targetX) || TestUtils.compareFloatWhole(y, targetY));
+
+        assertTrue(TestUtils.compareFloatWhole(rectArg.left, childInViewport.left * actualScale));
+        assertTrue(TestUtils.compareFloatWhole(rectArg.top, childInViewport.top * actualScale));
+        assertTrue(TestUtils.compareFloatWhole(rectArg.right, childInViewport.right * actualScale));
+        assertTrue(TestUtils.compareFloatWhole(rectArg.bottom, childInViewport.bottom * actualScale));
+
+        RectF resultViewport = pageManager.getViewportRect();
+        assertTrue(resultViewport.contains(rectArg));
     }
 
 
@@ -82,7 +99,7 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
             PageInfo pageInfo = new PageInfo(String.valueOf(i), TestUtils.randInt(100, 2000), TestUtils.randInt(100, 2000));
             pageManager.add(pageInfo);
         }
-        pageManager.setViewportRect(0, 0, 1024, 2000);
+        pageManager.setViewportRect(new RectF(0, 0, 1024, 2000));
         long start = System.currentTimeMillis();
         pageManager.setScale(String.valueOf(0), 1.0f);
         long end = System.currentTimeMillis();
@@ -107,7 +124,7 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
         PageInfo pageInfo = new PageInfo(String.valueOf(0), TestUtils.randInt(100, 2000), TestUtils.randInt(100, 2000));
         pageManager.add(pageInfo);
         pageManager.setScale(pageInfo.getName(), 1.0f);
-        pageManager.setViewportRect(0, 0, 2000, 2500);
+        pageManager.setViewportRect(new RectF(0, 0, 2000, 2500));
         pageManager.scaleToPage(pageInfo.getName());
         assertTrue(TestUtils.compareFloatWhole(pageManager.getViewportRect().centerX(), pageManager.getPagesBoundingRect().centerX()));
         assertTrue(TestUtils.compareFloatWhole(pageManager.getViewportRect().centerY(), pageManager.getPagesBoundingRect().centerY()));

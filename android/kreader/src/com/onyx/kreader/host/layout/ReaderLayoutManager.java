@@ -85,7 +85,7 @@ public class ReaderLayoutManager {
     }
 
     public void updateViewportSize() {
-        getPageManager().setViewportRect(0, 0, getReaderViewOptions().getViewWidth(), getReaderViewOptions().getViewHeight());
+        getPageManager().setViewportRect(new RectF(0, 0, getReaderViewOptions().getViewWidth() - 1, getReaderViewOptions().getViewHeight() - 1));
     }
 
     public LayoutProvider getCurrentLayoutProvider() {

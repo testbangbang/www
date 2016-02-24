@@ -39,7 +39,7 @@ public class ReaderTestActivity extends Activity {
     private Reader reader;
     //final String path = "/mnt/sdcard/cityhunter/cityhunter10.pdf";
 //    final String path = "/mnt/sdcard/Books/a.pdf";
-    final String path = "/mnt/sdcard/Books/a.png";
+    final String path = "/mnt/sdcard/Pictures/normal.jpg";
     private int pn = 0;
     private int next = 0;
     private EditText searchEdit;

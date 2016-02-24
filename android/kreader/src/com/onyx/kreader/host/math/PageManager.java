@@ -44,8 +44,8 @@ public class PageManager {
         firstVisiblePageName = null;
     }
 
-    public void setViewportRect(final float left, final float top, final float right, final float bottom) {
-        viewportRect.set(left, top, right, bottom);
+    public void setViewportRect(final RectF rect) {
+        viewportRect.set(rect);
         onViewportChanged();
     }
 
