@@ -53,13 +53,14 @@ public class ReaderHelper {
         document = doc;
     }
 
-    public void onViewCreated() {
+    public void onViewSizeChanged() {
         view = document.getView(viewOptions);
         renderer = view.getRenderer();
         navigator = view.getNavigator();
         rendererFeatures = renderer.getRendererFeatures();
         hitTestManager = view.getReaderHitTestManager();
         getReaderLayoutManager().init();
+        getReaderLayoutManager().updateViewportSize();
         getReaderCacheManager().clear();
     }
 
@@ -76,7 +77,7 @@ public class ReaderHelper {
     public void updateViewportSize(int newWidth, int newHeight) {
         reader.getReaderHelper().getViewOptions().setSize(newWidth, newHeight);
         reader.getReaderHelper().updateRenderBitmap(newWidth, newHeight);
-        reader.getReaderLayoutManager().updateViewportSize();
+        onViewSizeChanged();
     }
 
     public void onLayoutChanged() {
