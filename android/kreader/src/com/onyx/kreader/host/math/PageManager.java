@@ -71,11 +71,17 @@ public class PageManager {
         pageInfoList.add(pageInfo);
     }
 
-    public void setViewportPosition(final String pageName, final float x, final float y) {
+    /**
+     * set viewport to page with specified offset in document coordinates system.
+     * @param pageName
+     * @param dx x offset inside page with document coordinates system.
+     * @param dy y offset inside page with document coordinates system.
+     */
+    public void setViewportPosition(final String pageName, final float dx, final float dy) {
         if (!gotoPage(pageName)) {
             return;
         }
-        panViewportPosition(x, y);
+        panViewportPosition(dx, dy);
     }
 
     private void gotoPageImpl(final PageInfo pageInfo) {
