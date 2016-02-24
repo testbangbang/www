@@ -17,39 +17,34 @@ import java.util.HashMap;
  * Created by joy on 2/22/16.
  */
 public class ImagesAndroidWrapper implements ImagesWrapper {
+
     private static final String TAG = ImagesAndroidWrapper.class.getSimpleName();
-
-    private static class BitmapInformation {
-        public float width = 0;
-        public float height = 0;
-    }
-
-    private static final HashMap<String, BitmapInformation> infoCache = new HashMap<String, BitmapInformation>();
+    private static final HashMap<String, ImageInformation> infoCache = new HashMap<String, ImageInformation>();
 
     @Override
     public boolean clearBitmap(Bitmap bitmap) {
         return false;
     }
 
-    public boolean pageSize(final String path, float[] size) {
+    public ImageInformation imageInfo(final String path) {
         if (!infoCache.containsKey(path)) {
-            if (!BitmapUtils.decodeBitmapSize(path, size)) {
-                return false;
+            ImageInformation imageInformation = new ImageInformation();
+            if (!BitmapUtils.decodeBitmapSize(path, imageInformation)) {
+                return null;
             }
-            saveBitmapInformation(path, size);
+            saveImageInformation(path, imageInformation);
         }
-        loadBitmapInformation(path, size);
-        return true;
+        return loadBitmapInformation(path);
     }
 
     public boolean drawImage(final String imagePath, int x, int y, int width, int height, int rotation, final Bitmap bitmap) {
         try {
-            float[] size = new float[2];
-            if (!pageSize(imagePath, size)) {
+            ImageInformation imageInformation;
+            if ((imageInformation = imageInfo(imagePath)) == null) {
                 return false;
             }
 
-            Rect bitmapRegion = locatePageRegion((int)widthOfSize(size), (int)heightOfSize(size),
+            Rect bitmapRegion = locatePageRegion((int)imageInformation.width, (int)imageInformation.height,
                     x, y, width, height, rotation, bitmap);
 
             BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imagePath, true);
@@ -87,25 +82,12 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
 
     }
 
-    private void saveBitmapInformation(String path, float[] size) {
-        BitmapInformation info = new BitmapInformation();
-        info.width = size[0];
-        info.height = size[1];
-        infoCache.put(path, info);
+    private void saveImageInformation(String path, ImageInformation imageInformation) {
+        infoCache.put(path, imageInformation);
     }
 
-    private void loadBitmapInformation(String path, float[] size) {
-        BitmapInformation info = infoCache.get(path);
-        size[0] = info.width;
-        size[1] = info.height;
-    }
-
-    private float widthOfSize(float[] size) {
-        return size[0];
-    }
-
-    private float heightOfSize(float[] size) {
-        return size[1];
+    private ImageInformation loadBitmapInformation(String path) {
+        return infoCache.get(path);
     }
 
     private void renderToBitmap(Bitmap src, Bitmap dst, int x, int y, int width, int height) {

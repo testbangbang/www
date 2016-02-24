@@ -23,8 +23,8 @@ public class ImagesJniWrapper implements ImagesWrapper {
         return nativeClearBitmap(bitmap);
     }
 
-    public boolean pageSize(final String path, float []size) {
-        return nativePageSize(path, size);
+    public ImageInformation imageInfo(final String path) {
+        return null;
     }
 
     public boolean drawImage(final String imagePath, int x, int y, int width, int height, int rotation, final Bitmap bitmap) {

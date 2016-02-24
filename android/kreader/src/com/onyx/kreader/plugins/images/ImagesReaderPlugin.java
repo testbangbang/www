@@ -92,9 +92,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public RectF getPageOriginSize(final String position) {
-        float size [] = {0, 0};
-        getPluginImpl().pageSize(pageList.get(Integer.parseInt(position)), size);
-        return new RectF(0, 0, size[0], size[1]);
+        ImagesWrapper.ImageInformation imageInformation = getPluginImpl().imageInfo(pageList.get(Integer.parseInt(position)));
+        if (imageInformation == null) {
+            return null;
+        }
+        return new RectF(0, 0, imageInformation.width, imageInformation.height);
     }
 
     public void abortCurrentJob() {
