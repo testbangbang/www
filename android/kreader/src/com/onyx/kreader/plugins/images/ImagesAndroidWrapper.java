@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import com.onyx.kreader.utils.BitmapUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Created by joy on 2/22/16.
@@ -18,13 +19,28 @@ import java.io.IOException;
 public class ImagesAndroidWrapper implements ImagesWrapper {
     private static final String TAG = ImagesAndroidWrapper.class.getSimpleName();
 
+    private static class BitmapInformation {
+        public float[] size = new float[2];
+    }
+
+    private static final HashMap<String, BitmapInformation> infoCache = new HashMap<String, BitmapInformation>();
+
     @Override
     public boolean clearBitmap(Bitmap bitmap) {
         return false;
     }
 
     public boolean pageSize(final String path, float[] size) {
-        return BitmapUtils.decodeBitmapSize(path, size);
+        synchronized (infoCache) {
+            if (!infoCache.containsKey(path)) {
+                if (!BitmapUtils.decodeBitmapSize(path, size)) {
+                    return false;
+                }
+                saveBitmapInformation(path, size);
+            }
+            loadBitmapInformation(path, size);
+            return true;
+        }
     }
 
     public boolean drawImage(final String imagePath, int x, int y, int width, int height, int rotation, final Bitmap bitmap) {
@@ -70,6 +86,19 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
     @Override
     public void closeAll() {
 
+    }
+
+    private void saveBitmapInformation(String path, float[] size) {
+        BitmapInformation info = new BitmapInformation();
+        info.size[0] = size[0];
+        info.size[1] = size[1];
+        infoCache.put(path, info);
+    }
+
+    private void loadBitmapInformation(String path, float[] size) {
+        BitmapInformation info = infoCache.get(path);
+        size[0] = info.size[0];
+        size[1] = info.size[1];
     }
 
     private float widthOfSize(float[] size) {
