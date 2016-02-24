@@ -34,7 +34,7 @@ public class Reader {
     private ReaderHelper readerHelper = null;
 
     public Reader() {
-        readerHelper = new ReaderHelper(this);
+        readerHelper = new ReaderHelper();
         initRequestList();
     }
 

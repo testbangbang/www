@@ -17,7 +17,7 @@ import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
  * Save all helper data objects in this class.
  */
 public class ReaderHelper {
-    public Reader reader;
+
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPluginOptionsImpl pluginOptions;
     private ReaderDocumentOptions documentOptions;
@@ -34,8 +34,7 @@ public class ReaderHelper {
     private ReaderHitTestManager hitTestManager;
     private ReaderCacheManager readerCacheManager = new ReaderCacheManager();
 
-    public ReaderHelper(final Reader r) {
-        reader = r;
+    public ReaderHelper() {
     }
 
     public boolean selectPlugin(final Context context, final String path, final ReaderPluginOptions pluginOptions) {
@@ -75,8 +74,8 @@ public class ReaderHelper {
     }
 
     public void updateViewportSize(int newWidth, int newHeight) {
-        reader.getReaderHelper().getViewOptions().setSize(newWidth, newHeight);
-        reader.getReaderHelper().updateRenderBitmap(newWidth, newHeight);
+        getViewOptions().setSize(newWidth, newHeight);
+        updateRenderBitmap(newWidth, newHeight);
         onViewSizeChanged();
     }
 
@@ -122,10 +121,10 @@ public class ReaderHelper {
 
     public ReaderLayoutManager getReaderLayoutManager() {
         if (readerLayoutManager == null) {
-            readerLayoutManager = new ReaderLayoutManager(reader.getDocument(),
-                    reader.getNavigator(),
-                    reader.getRendererFeatures(),
-                    reader.getViewOptions());
+            readerLayoutManager = new ReaderLayoutManager(getDocument(),
+                    getNavigator(),
+                    getRendererFeatures(),
+                    getViewOptions());
         }
         return readerLayoutManager;
     }
