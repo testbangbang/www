@@ -39,6 +39,9 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
 
             BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imagePath, true);
             Bitmap src = decoder.decodeRegion(bitmapRegion, null);
+            if (src == null) {
+                return false;
+            }
             try {
                 renderToBitmap(src, bitmap, x, y, width, height);
             } finally {
