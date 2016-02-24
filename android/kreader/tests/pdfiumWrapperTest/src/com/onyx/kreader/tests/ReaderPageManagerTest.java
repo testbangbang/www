@@ -87,6 +87,7 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
 
         RectF resultViewport = pageManager.getViewportRect();
         assertTrue(resultViewport.contains(rectArg));
+
     }
 
 

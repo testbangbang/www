@@ -81,10 +81,6 @@ public class LayoutProvider {
     public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
     }
 
-    public boolean changeScaleByRect(final String pageName, final RectF rect) throws ReaderException {
-        return false;
-    }
-
     public boolean changeScaleWithDelta(final String pageName, float delta) throws ReaderException {
         return false;
     }

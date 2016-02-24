@@ -99,12 +99,6 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         return true;
     }
 
-    public boolean changeScaleByRect(final String pageName, final RectF rect) throws ReaderException  {
-        LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
-        getPageManager().scaleByRatioRect(pageName, rect);
-        return true;
-    }
-
     public boolean gotoPosition(final String location) throws ReaderException {
         if (StringUtils.isNullOrEmpty(location)) {
             return false;
@@ -165,6 +159,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().scaleToViewport(pageName, child);
     }
 }

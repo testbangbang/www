@@ -38,8 +38,8 @@ public class ReaderTestActivity extends Activity {
 
     private Reader reader;
     //final String path = "/mnt/sdcard/cityhunter/cityhunter10.pdf";
-//    final String path = "/mnt/sdcard/Books/a.pdf";
-    final String path = "/mnt/sdcard/Pictures/normal.jpg";
+    final String path = "/mnt/sdcard/Books/a.pdf";
+//    final String path = "/mnt/sdcard/Pictures/normal.jpg";
     private int pn = 0;
     private int next = 0;
     private EditText searchEdit;
@@ -134,7 +134,11 @@ public class ReaderTestActivity extends Activity {
                 } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
                     endX = event.getX();
                     endY = event.getY();
-                    draw();
+//                    draw();
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    endX = event.getX();
+                    endY = event.getY();
+                    testScaleByRect();
                 }
                 return true;
             }
@@ -234,13 +238,13 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testScaleByRect() {
-        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(String.valueOf(pn), new RectF(100, 100, 200, 200));
+        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(String.valueOf(0), new RectF(200, 200, 500, 500));
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png", true);
-                testOriginScale();
+//                testOriginScale();
             }
         });
     }
@@ -451,6 +455,9 @@ public class ReaderTestActivity extends Activity {
     private void testPdfiumWrapper() {
         wrapper.nativeInitLibrary();
         long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/text.pdf", "");
+        if (value != PdfiumJniWrapper.NO_ERROR) {
+            return;
+        }
         bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
         wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap);
         draw();
