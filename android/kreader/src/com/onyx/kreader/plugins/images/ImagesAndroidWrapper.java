@@ -20,7 +20,8 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
     private static final String TAG = ImagesAndroidWrapper.class.getSimpleName();
 
     private static class BitmapInformation {
-        public float[] size = new float[2];
+        public float width = 0;
+        public float height = 0;
     }
 
     private static final HashMap<String, BitmapInformation> infoCache = new HashMap<String, BitmapInformation>();
@@ -31,16 +32,14 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
     }
 
     public boolean pageSize(final String path, float[] size) {
-        synchronized (infoCache) {
-            if (!infoCache.containsKey(path)) {
-                if (!BitmapUtils.decodeBitmapSize(path, size)) {
-                    return false;
-                }
-                saveBitmapInformation(path, size);
+        if (!infoCache.containsKey(path)) {
+            if (!BitmapUtils.decodeBitmapSize(path, size)) {
+                return false;
             }
-            loadBitmapInformation(path, size);
-            return true;
+            saveBitmapInformation(path, size);
         }
+        loadBitmapInformation(path, size);
+        return true;
     }
 
     public boolean drawImage(final String imagePath, int x, int y, int width, int height, int rotation, final Bitmap bitmap) {
@@ -90,15 +89,15 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
 
     private void saveBitmapInformation(String path, float[] size) {
         BitmapInformation info = new BitmapInformation();
-        info.size[0] = size[0];
-        info.size[1] = size[1];
+        info.width = size[0];
+        info.height = size[1];
         infoCache.put(path, info);
     }
 
     private void loadBitmapInformation(String path, float[] size) {
         BitmapInformation info = infoCache.get(path);
-        size[0] = info.size[0];
-        size[1] = info.size[1];
+        size[0] = info.width;
+        size[1] = info.height;
     }
 
     private float widthOfSize(float[] size) {
