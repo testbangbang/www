@@ -18,33 +18,43 @@ public class NavigationArgs {
         ALL, ODD, EVEN,
     }
 
-    static public NavigationArgs rowsLeftToRight(final Type type, int rows, int cols, final RectF limit) {
-        NavigationArgs navigationArgs = new NavigationArgs(type, NavigationList.rowsLeftToRight(rows, cols, limit));
-        return navigationArgs;
-    }
-
-    static public NavigationArgs rowsRightToLeft(final Type type, int rows, int cols, final RectF limit) {
-        NavigationArgs navigationArgs = new NavigationArgs(type, NavigationList.rowsRightToLeft(rows, cols, limit));
-        return navigationArgs;
-    }
-
-    static public NavigationArgs columnsLeftToRight(final Type type, int rows, int cols, final RectF limit) {
-        NavigationArgs navigationArgs = new NavigationArgs(type, NavigationList.columnsLeftToRight(rows, cols, limit));
-        return navigationArgs;
-    }
-
-    static public NavigationArgs columnsRightToLeft(final Type type, int rows, int cols, final RectF limit) {
-        NavigationArgs navigationArgs = new NavigationArgs(type, NavigationList.columnsRightToLeft(rows, cols, limit));
-        return navigationArgs;
-    }
-
-    public NavigationArgs(final Type t, final NavigationList list) {
+    public NavigationList rowsLeftToRight(final Type t, int rows, int cols, final RectF limit) {
+        NavigationList list = NavigationList.rowsLeftToRight(rows, cols, limit);
         type = t;
         map.put(type, list);
+        return list;
+    }
+
+    public NavigationList rowsRightToLeft(final Type t, int rows, int cols, final RectF limit) {
+        NavigationList list = NavigationList.rowsRightToLeft(rows, cols, limit);
+        type = t;
+        map.put(type, list);
+        return list;
+    }
+
+    public NavigationList columnsLeftToRight(final Type t, int rows, int cols, final RectF limit) {
+        NavigationList list = NavigationList.columnsLeftToRight(rows, cols, limit);
+        type = t;
+        map.put(type, list);
+        return list;
+    }
+
+    public NavigationList columnsRightToLeft(final Type t, int rows, int cols, final RectF limit) {
+        NavigationList list = NavigationList.columnsRightToLeft(rows, cols, limit);
+        type = t;
+        map.put(type, list);
+        return list;
+    }
+
+    public NavigationArgs() {
     }
 
     public NavigationList getList() {
         return map.get(type);
+    }
+
+    public NavigationList getListByType(final Type t) {
+        return map.get(t);
     }
 
     static public RectF rectInViewport(final RectF subScreen, final RectF limit, final RectF viewport) {

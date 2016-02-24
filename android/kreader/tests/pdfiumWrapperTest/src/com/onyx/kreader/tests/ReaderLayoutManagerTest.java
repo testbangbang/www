@@ -181,7 +181,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         int rows = TestUtils.randInt(2, 10);
         int cols = TestUtils.randInt(2, 10);
         int count = rows * cols;
-        NavigationArgs navigationArgs = NavigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
+        NavigationArgs navigationArgs = new NavigationArgs();
+        navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
         assertTrue(layoutManager.setNavigationArgs(navigationArgs));
 
         String position = reader.getInitPosition();
@@ -196,6 +197,17 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
             ++index;
         }
         assertTrue(index == count);
+
+        index = 1;
+        pageInfo = layoutManager.getCurrentPageInfo();
+        assertNotNull(pageInfo);
+        while (layoutManager.prevScreen()) {
+            pageInfo = layoutManager.getCurrentPageInfo();
+            assertNotNull(pageInfo);
+            ++index;
+        }
+        assertTrue(index == count);
+
     }
 
 }

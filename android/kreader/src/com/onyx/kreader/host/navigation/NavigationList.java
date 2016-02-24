@@ -153,7 +153,7 @@ public class NavigationList {
         return getCurrent();
     }
 
-    public RectF navigateTo(int index) {
+    public RectF gotoSubScreen(int index) {
         if (index < 0 || index >= subScreenList.size()) {
             return null;
         }

@@ -93,6 +93,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     public void scaleToPage(final String pageName) throws ReaderException {
+        // when scale to page, restore to single page mode?
         getPageManager().scaleToPage(pageName);
     }
 
@@ -108,12 +109,18 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean gotoPosition(final String location) throws ReaderException {
-        if (StringUtils.isNullOrEmpty(location)) {
+    public boolean gotoPosition(final String position) throws ReaderException {
+        if (StringUtils.isNullOrEmpty(position)) {
             return false;
         }
-        LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
-        return getPageManager().gotoPage(location);
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), position);
+        if (!getPageManager().gotoPage(position)) {
+            return false;
+        }
+
+        RectF subScreen = getNavigationList().first();
+        getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        return true;
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
@@ -135,11 +142,20 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     public PositionSnapshot saveSnapshot() throws ReaderException {
-        return null;
+        if (getPageManager().getFirstVisiblePage() == null) {
+            return null;
+        }
+        return PositionSnapshot.snapshot(getProviderName(), getPageManager().getFirstVisiblePage(), getPageManager().getSpecialScale());
     }
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
-        return false;
+        if (ReaderConstants.isSpecialScale(snapshot.specialScale)) {
+            getPageManager().setSpecialScale(snapshot.pageName, snapshot.specialScale);
+        } else {
+            getPageManager().setScale(snapshot.pageName, snapshot.actualScale);
+        }
+        getPageManager().setViewportPosition(snapshot.pageName, snapshot.displayRect.left, snapshot.displayRect.top);
+        return true;
     }
 
     public RectF getPageRectOnViewport(final String position) throws ReaderException {

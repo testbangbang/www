@@ -172,7 +172,8 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testChangeLayout() {
-        NavigationArgs navigationArgs = NavigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, null);
+        NavigationArgs navigationArgs = new NavigationArgs();
+        navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, null);
         BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, navigationArgs);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
@@ -270,7 +271,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void textPrerenderScreen() {
-        final PrerenderRequest renderRequest = new PrerenderRequest();
+        final PrerenderRequest renderRequest = new PrerenderRequest(true);
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {

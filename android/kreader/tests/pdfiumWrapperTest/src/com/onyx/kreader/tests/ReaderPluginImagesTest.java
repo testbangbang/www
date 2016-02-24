@@ -16,7 +16,7 @@ import com.onyx.kreader.utils.TestUtils;
 public class ReaderPluginImagesTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
     public ReaderPluginImagesTest() {
-        super("com.onyx.reader", ReaderTestActivity.class);
+        super(ReaderTestActivity.class);
     }
 
     public void testImagePluginPngBase1() throws Exception {

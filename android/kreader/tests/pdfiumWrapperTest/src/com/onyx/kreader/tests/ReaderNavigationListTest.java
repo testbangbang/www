@@ -19,7 +19,8 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         int rows = TestUtils.randInt(2, 10);
         int cols = TestUtils.randInt(2, 20);
         int total = rows * cols;
-        NavigationArgs navigationArgs = NavigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
+        NavigationArgs navigationArgs = new NavigationArgs();
+        navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
         assertTrue(navigationArgs.getList().subScreenCount() == total);
 
@@ -39,7 +40,8 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         int rows = TestUtils.randInt(2, 10);
         int cols = TestUtils.randInt(2, 20);
         int total = rows * cols;
-        NavigationArgs navigationArgs = NavigationArgs.rowsRightToLeft(NavigationArgs.Type.ALL, rows, cols, null);
+        NavigationArgs navigationArgs = new NavigationArgs();
+        navigationArgs.rowsRightToLeft(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
         assertTrue(navigationArgs.getList().subScreenCount() == total);
 
@@ -58,7 +60,8 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         int rows = TestUtils.randInt(2, 10);
         int cols = TestUtils.randInt(2, 20);
         int total = rows * cols;
-        NavigationArgs navigationArgs = NavigationArgs.columnsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
+        NavigationArgs navigationArgs = new NavigationArgs();
+        navigationArgs.columnsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
         assertTrue(navigationArgs.getList().subScreenCount() == total);
 
@@ -77,7 +80,8 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         int rows = TestUtils.randInt(2, 10);
         int cols = TestUtils.randInt(2, 10);
         int total = rows * cols;
-        NavigationArgs navigationArgs = NavigationArgs.columnsRightToLeft(NavigationArgs.Type.ALL, rows, cols, null);
+        NavigationArgs navigationArgs = new NavigationArgs();
+        navigationArgs.columnsRightToLeft(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
         assertTrue(navigationArgs.getList().subScreenCount() == total);
 
@@ -96,7 +100,8 @@ public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<
         int rows = TestUtils.randInt(2, 10);
         int cols = TestUtils.randInt(2, 20);
         int total = rows * cols;
-        NavigationArgs navigationArgs = NavigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
+        NavigationArgs navigationArgs = new NavigationArgs();
+        navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
         RectF rect;
         assertTrue(navigationArgs.getList().subScreenCount() == total);
 
