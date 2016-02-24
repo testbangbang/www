@@ -2,6 +2,7 @@ package com.onyx.kreader.plugins.images;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 import android.util.Log;
 import com.onyx.kreader.api.*;
@@ -32,7 +33,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     private static final String TAG = ImagesReaderPlugin.class.getSimpleName();
     private Benchmark benchmark = new Benchmark();
 
-    private ImagesJniWrapper impl;
+    private ImagesWrapper impl;
     private String documentPath;
     private List<String> pageList = new ArrayList<String>();
     static private Set<String> extensionFilters = new HashSet<String>();
@@ -40,9 +41,9 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     public ImagesReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
     }
 
-    public ImagesJniWrapper getPluginImpl() {
+    public ImagesWrapper getPluginImpl() {
         if (impl == null) {
-            impl = new ImagesJniWrapper();
+            impl = new ImagesAndroidWrapper();
         }
         return impl;
     }
@@ -92,7 +93,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     public RectF getPageOriginSize(final String position) {
         float size [] = {0, 0};
-        getPluginImpl().nativePageSize(pageList.get(Integer.parseInt(position)), size);
+        getPluginImpl().pageSize(pageList.get(Integer.parseInt(position)), size);
         return new RectF(0, 0, size[0], size[1]);
     }
 
@@ -117,7 +118,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public void close() {
-        getPluginImpl().nativeCloseAll();
+        getPluginImpl().closeAll();
         pageList.clear();
     }
 
@@ -172,7 +173,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public boolean clear(final ReaderBitmap bitmap) {
-        return getPluginImpl().nativeClearBitmap(bitmap.getBitmap());
+        return getPluginImpl().clearBitmap(bitmap.getBitmap());
     }
 
     public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap) {
@@ -181,7 +182,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
             return false;
         }
         benchmark.restart();
-        boolean ret = getPluginImpl().nativeDrawImage(path, 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), rotation, bitmap.getBitmap());
+        boolean ret = getPluginImpl().drawImage(path, 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), rotation, bitmap.getBitmap());
         Log.e(TAG, "rendering png:　" + benchmark.duration());
         return ret;
     }
@@ -192,7 +193,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
             return false;
         }
         benchmark.restart();
-        boolean ret = getPluginImpl().nativeDrawImage(path, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, rotation, bitmap.getBitmap());
+        boolean ret = getPluginImpl().drawImage(path, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, rotation, bitmap.getBitmap());
         Log.e(TAG, "rendering png:　"+ benchmark.duration());
         return ret;
     }

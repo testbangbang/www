@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
  * Created by zhuzeng on 2/18/16.
  * javah -classpath ./bin/classes:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/onyx/kreader/plugins/images/ -jni com.onyx.kreader.plugins.images.ImagesJniWrapper
  */
-public class ImagesJniWrapper {
+public class ImagesJniWrapper implements ImagesWrapper {
 
     static{
         System.loadLibrary("onyx_images");
@@ -18,4 +18,24 @@ public class ImagesJniWrapper {
 
     public native boolean nativeCloseImage(final String path);
     public native void nativeCloseAll();
+
+    public boolean clearBitmap(final Bitmap bitmap) {
+        return nativeClearBitmap(bitmap);
+    }
+
+    public boolean pageSize(final String path, float []size) {
+        return nativePageSize(path, size);
+    }
+
+    public boolean drawImage(final String imagePath, int x, int y, int width, int height, int rotation, final Bitmap bitmap) {
+        return nativeDrawImage(imagePath, x, y, width, height, rotation, bitmap);
+    }
+
+    public boolean closeImage(final String path) {
+        return nativeCloseImage(path);
+    }
+
+    public void closeAll() {
+        nativeCloseAll();
+    }
 }

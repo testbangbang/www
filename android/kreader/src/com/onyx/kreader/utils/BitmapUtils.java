@@ -2,6 +2,9 @@ package com.onyx.kreader.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
+import android.hardware.Camera;
+import android.util.Log;
 
 import java.io.FileOutputStream;
 
@@ -9,8 +12,7 @@ import java.io.FileOutputStream;
  * Created by zhuzeng on 10/16/15.
  */
 public class BitmapUtils {
-
-
+    private static final String TAG = BitmapUtils.class.getSimpleName();
 
     static public Bitmap loadBitmapFromFile(final String path) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -31,6 +33,20 @@ public class BitmapUtils {
             e.printStackTrace();
         }
         return true;
+    }
+
+    static public boolean decodeBitmapSize(final String path, float[] size) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        try {
+            BitmapFactory.decodeFile(path, options);
+            size[0] = options.outWidth;
+            size[1] = options.outHeight;
+            return true;
+        } catch (Throwable tr) {
+            Log.w(TAG, tr);
+            return false;
+        }
     }
 
 }
