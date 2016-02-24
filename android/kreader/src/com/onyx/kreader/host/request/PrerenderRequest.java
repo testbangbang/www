@@ -8,15 +8,21 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class PrerenderRequest extends BaseRequest {
 
-    public PrerenderRequest() {
+    private boolean forward;
+
+    public PrerenderRequest(boolean next) {
         super();
+        forward = next;
     }
 
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
-        if (reader.getReaderLayoutManager().nextScreen()) {
+        if (forward && reader.getReaderLayoutManager().nextScreen()) {
             reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap());
             reader.getReaderLayoutManager().prevScreen();
+        } else if (!forward && reader.getReaderLayoutManager().prevScreen()) {
+            reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap());
+            reader.getReaderLayoutManager().nextScreen();
         }
     }
 }
