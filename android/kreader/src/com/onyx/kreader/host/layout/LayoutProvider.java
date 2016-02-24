@@ -138,5 +138,8 @@ public class LayoutProvider {
         return false;
     }
 
+    public final String getCurrentPageName() {
+        return getLayoutManager().getCurrentPageName();
+    }
 
 }

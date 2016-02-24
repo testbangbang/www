@@ -299,8 +299,8 @@ public class ReaderLayoutManager {
         return false;
     }
 
-    public void setNavigationArgs(final NavigationArgs args) throws ReaderException {
-        getCurrentLayoutProvider().setNavigationArgs(args);
+    public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
+        return getCurrentLayoutProvider().setNavigationArgs(args);
     }
 
     public void setStyle(final ReaderStyle style) throws ReaderException {

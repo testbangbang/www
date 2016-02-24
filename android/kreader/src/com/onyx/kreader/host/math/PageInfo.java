@@ -25,8 +25,8 @@ public class PageInfo {
     private RectF autoCropContentRegion;    // content region with auto crop scale.
     private float autoCropScale;
 
-    private RectF positionRect = new RectF(); // page position rect in pages bounding rectangle coordinates system with actual scale.
-    private RectF displayRect = new RectF(); // page display rect in view port coordinates system with actual scale.
+    private RectF positionRect = new RectF(); // page position rect in document coordinates system with actual scale.
+    private RectF displayRect = new RectF(); // page display rect in viewport(screen) coordinates system with actual scale.
     private float actualScale = 1.0f;
     private int specialScale = ReaderConstants.SCALE_INVALID;
 
@@ -142,7 +142,7 @@ public class PageInfo {
     }
 
     /**
-     * Retrieve viewport in page coordinates system. it's viewport relate to current page.
+     * Retrieve viewport in document coordinates system. it's viewport relate to current page.
      * @param viewport
      * @return
      */

@@ -33,9 +33,6 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     private NavigationArgs getNavigationArgs() {
-        if (navigationArgs == null) {
-            navigationArgs = new NavigationArgs(null, null);
-        }
         return navigationArgs;
     }
 
@@ -46,14 +43,14 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
         RectF subScreen = getNavigationList().first();
-        getPageManager().scaleByRect(null, subScreen);
+        getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
         return true;
     }
 
     public boolean prevScreen() throws ReaderException {
         if (getNavigationList().hasPrevious()) {
             RectF subScreen = getNavigationList().previous();
-            getPageManager().scaleByRect(null, subScreen);
+            getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
             return true;
         }
         return false;
@@ -62,14 +59,13 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     public boolean nextScreen() throws ReaderException {
         if (getNavigationList().hasNext()) {
             RectF subScreen = getNavigationList().next();
-            getPageManager().scaleByRect(null, subScreen);
+            getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
             return true;
         }
         return false;
     }
 
     public boolean prevPage() throws ReaderException {
-        // goto previous page and scale by rect.
         return gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
     }
 
@@ -117,7 +113,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
             return false;
         }
         LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
-        return true;
+        return getPageManager().gotoPage(location);
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
@@ -128,8 +124,9 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     public boolean supportPreRender() throws ReaderException {
         return false;
     }
+
     public boolean supportSubScreenNavigation() {
-        return false;
+        return true;
     }
 
 

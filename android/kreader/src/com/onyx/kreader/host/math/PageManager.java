@@ -29,7 +29,7 @@ public class PageManager {
     private RectF pagesBoundingRect = new RectF();
 
     /**
-     * screen viewport rectangle in page coordinates system.
+     * screen viewport rectangle in document coordinates system.
      */
     private RectF viewportRect = new RectF();
 
@@ -208,7 +208,7 @@ public class PageManager {
 
     /**
      * Scale the child rect to viewport.
-     * @param child The user selected rect in host coordinates system.
+     * @param child The user selected rect in document coordinates system.
      * @return true if succeed.
      */
     public boolean scaleToViewport(final String pageName, final RectF child) {
@@ -216,7 +216,15 @@ public class PageManager {
             return false;
         }
         PageInfo pageInfo = getPageInfo(pageName);
-        setScale(pageName, pageInfo.getActualScale() * PageUtils.scaleByRect(child, viewportRect));
+        float deltaScale = PageUtils.scaleByRect(child, viewportRect);
+        float newScale = pageInfo.getActualScale() * deltaScale;
+        setScale(pageName, newScale);
+
+        // adjust viewport, since viewport is changed in setScale.
+        float viewportLeft  = child.centerX() - viewportRect.width() / 2;
+        float viewportTop = child.centerY() - viewportRect.height() / 2;
+        viewportRect.offsetTo(viewportLeft, viewportTop);
+        onViewportChanged();
         return true;
     }
 
@@ -231,13 +239,16 @@ public class PageManager {
         return true;
     }
 
-    public boolean scaleByRect(final String pageName, final RectF ratio) {
-        specialScale = ReaderConstants.SCALE_INVALID;
+    public boolean scaleByRatioRect(final String pageName, final RectF ratio) {
         if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
         PageInfo pageInfo = getPageInfo(pageName);
-        setScale(pageName, PageUtils.scaleByRatio(ratio, pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect));
+        RectF child = new RectF(pageInfo.getPositionRect().width() * ratio.left,
+                pageInfo.getPositionRect().height() * ratio.top,
+                pageInfo.getPositionRect().width() * ratio.right,
+                pageInfo.getPositionRect().height() * ratio.bottom);
+        scaleToViewport(pageName, child);
         return true;
     }
 

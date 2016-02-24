@@ -117,7 +117,7 @@ public class LayoutProviderUtils {
         if (subScreen == null) {
             return false;
         }
-        layoutManager.getPageManager().scaleByRect(pageName, subScreen);
+        layoutManager.getPageManager().scaleByRatioRect(pageName, subScreen);
         return true;
     }
 
@@ -126,7 +126,7 @@ public class LayoutProviderUtils {
         if (subScreen == null) {
             return false;
         }
-        layoutManager.getPageManager().scaleByRect(pageName, subScreen);
+        layoutManager.getPageManager().scaleByRatioRect(pageName, subScreen);
         return true;
     }
 

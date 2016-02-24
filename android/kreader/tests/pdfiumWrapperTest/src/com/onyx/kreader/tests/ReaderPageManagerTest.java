@@ -1,6 +1,7 @@
 package com.onyx.kreader.tests;
 
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
@@ -41,6 +42,34 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
             assertTrue(TestUtils.compareFloatWhole(left, info.getDisplayRect().left));
             assertTrue(TestUtils.compareFloatWhole(top, info.getDisplayRect().top));
         }
+    }
+
+    /**
+     * Test scaleToViewport. the final scale should be matched and viewport position should be correct.
+     * @throws Exception
+     */
+    public void testPageManager2() throws Exception {
+        PageManager pageManager = new PageManager();
+        RectF viewport = new RectF(0, 0, TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
+        RectF childInViewport = new RectF(0, 0, TestUtils.randInt((int)viewport.width() / 3, (int)viewport.width() / 2),
+                TestUtils.randInt((int)viewport.height() / 3, (int)viewport.height() / 2));
+        RectF rectArg = new RectF(childInViewport);
+        pageManager.setViewportRect(viewport.left, viewport.top, viewport.width(), viewport.height());
+        PageInfo pageInfo = new PageInfo("1", TestUtils.randInt(1000, 2000), TestUtils.randInt(1000, 2000));
+        pageManager.add(pageInfo);
+
+        pageManager.scaleToViewport(pageInfo.getName(), rectArg);
+        PageInfo info = pageManager.getFirstVisiblePage();
+
+        float actualScale = info.getActualScale();
+        float targetScale = PageUtils.scaleToPage(childInViewport.width(), childInViewport.height(), viewport.width(), viewport.height());
+        assertTrue(TestUtils.compareFloatWhole(actualScale, targetScale));
+
+        float x = rectArg.centerX();
+        float y = rectArg.centerY();
+        float targetX = pageManager.getViewportRect().centerX();
+        float targetY = pageManager.getViewportRect().centerY();
+        assertTrue(TestUtils.compareFloatWhole(x, targetX) || TestUtils.compareFloatWhole(y, targetY));
     }
 
 

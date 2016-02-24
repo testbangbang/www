@@ -161,4 +161,41 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         assertTrue(JSON.toJSONString(newBefore).equalsIgnoreCase(JSON.toJSONString(newAfter)));
     }
 
+    /**
+     * test single navigation list.
+     * @throws Exception
+     */
+    public void testSinglePageSnapshot3() throws Exception  {
+        FakeReader reader = new FakeReader();
+        reader.open();
+        ReaderLayoutManager layoutManager = new ReaderLayoutManager(reader,
+                reader,
+                reader,
+                reader);
+
+        layoutManager.init();
+        layoutManager.updateViewportSize();
+        assertTrue(layoutManager.setCurrentLayout(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST));
+        assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST));
+
+        int rows = TestUtils.randInt(2, 10);
+        int cols = TestUtils.randInt(2, 10);
+        int count = rows * cols;
+        NavigationArgs navigationArgs = NavigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, rows, cols, null);
+        assertTrue(layoutManager.setNavigationArgs(navigationArgs));
+
+        String position = reader.getInitPosition();
+        layoutManager.gotoPosition(position);
+
+        int index = 1;
+        PageInfo pageInfo = layoutManager.getCurrentPageInfo();
+        assertNotNull(pageInfo);
+        while (layoutManager.nextScreen()) {
+            pageInfo = layoutManager.getCurrentPageInfo();
+            assertNotNull(pageInfo);
+            ++index;
+        }
+        assertTrue(index == count);
+    }
+
 }

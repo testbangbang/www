@@ -41,6 +41,7 @@ public class PageUtils {
     }
 
     /**
+     * All in document coordinates system.
      * Scale the child within parent and adjust child size and parent position. Steps
      * 1. calculate the delta scale, by scale to page (child to parent)
      * 2. calculate the child new position and size, by origin size, simply by delta scale.

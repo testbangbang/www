@@ -101,7 +101,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
 
     public boolean changeScaleByRect(final String pageName, final RectF rect) throws ReaderException  {
         LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
-        getPageManager().scaleByRect(pageName, rect);
+        getPageManager().scaleByRatioRect(pageName, rect);
         return true;
     }
 
