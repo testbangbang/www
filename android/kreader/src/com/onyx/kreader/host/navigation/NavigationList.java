@@ -171,8 +171,8 @@ public class NavigationList {
     public RectF getCurrent() {
         if (currentIndex >= 0 && currentIndex < subScreenList.size()) {
             RectF current = new RectF(subScreenList.get(currentIndex));
-            if (limitedRect != null) {
-                current.intersect(limitedRect);
+            if (getLimitedRect() != null) {
+                current.intersect(getLimitedRect());
             }
             return current;
         }

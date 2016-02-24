@@ -41,8 +41,8 @@ public class ReaderTestActivity extends Activity {
 
     private Reader reader;
     //final String path = "/mnt/sdcard/cityhunter/cityhunter10.pdf";
-//    final String path = "/mnt/sdcard/Books/a.pdf";
-    final String path = "/mnt/sdcard/Pictures/normal.jpg";
+    final String path = "/mnt/sdcard/Books/a.pdf";
+//    final String path = "/mnt/sdcard/Pictures/normal.jpg";
     private int pn = 0;
     private int next = 0;
     private EditText searchEdit;
@@ -183,7 +183,8 @@ public class ReaderTestActivity extends Activity {
 
     public void testChangeLayout() {
         NavigationArgs navigationArgs = new NavigationArgs();
-        navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, null);
+        RectF limit = new RectF(0.3f, 0.05f, 0.7f, 0.95f);
+        navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, limit);
         BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
