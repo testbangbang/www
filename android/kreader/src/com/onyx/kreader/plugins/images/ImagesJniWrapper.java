@@ -19,9 +19,6 @@ public class ImagesJniWrapper implements ImagesWrapper {
     public native boolean nativeCloseImage(final String path);
     public native void nativeCloseAll();
 
-    public boolean clearBitmap(final Bitmap bitmap) {
-        return nativeClearBitmap(bitmap);
-    }
 
     public ImageInformation imageInfo(final String path) {
         return null;

@@ -12,13 +12,6 @@ public interface ReaderRenderer {
     public ReaderRendererFeatures getRendererFeatures();
 
     /**
-     * Clear the bitmap.
-     * @param bitmap
-     * @return
-     */
-    public boolean clear(final ReaderBitmap bitmap);
-
-    /**
      * draw content.
      * @param page the page position.
      * @param rotation the rotation.

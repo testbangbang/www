@@ -162,10 +162,6 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean clear(final ReaderBitmap bitmap) {
-        return getPluginImpl().clear(bitmap.getBitmap());
-    }
-
     public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap) {
         return getPluginImpl().drawVisiblePages(bitmap.getBitmap(), 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(), true);
     }

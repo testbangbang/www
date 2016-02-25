@@ -174,10 +174,6 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean clear(final ReaderBitmap bitmap) {
-        return getPluginImpl().clearBitmap(bitmap.getBitmap());
-    }
-
     public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap) {
         final String path = getImagePath(page);
         if (StringUtils.isNullOrEmpty(path)) {

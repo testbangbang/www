@@ -35,7 +35,7 @@ public class LayoutProviderUtils {
             return;
         }
 
-        renderer.clear(bitmap);
+        bitmap.clear();
         for(PageInfo pageInfo : visiblePages) {
             String documentPosition = pageInfo.getName();
             final RectF rect = pageInfo.getDisplayRect();

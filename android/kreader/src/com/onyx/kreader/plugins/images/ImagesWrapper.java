@@ -13,7 +13,6 @@ public interface ImagesWrapper {
 
     }
 
-    boolean clearBitmap(final Bitmap bitmap);
     ImageInformation imageInfo(final String path);
     boolean drawImage(final String imagePath, int x, int y, int width, int height, int rotation, final Bitmap bitmap);
 

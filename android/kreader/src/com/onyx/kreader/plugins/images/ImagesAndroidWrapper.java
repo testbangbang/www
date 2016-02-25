@@ -1,12 +1,6 @@
 package com.onyx.kreader.plugins.images;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.*;
 
 import com.onyx.kreader.utils.BitmapUtils;
 
@@ -20,11 +14,6 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
 
     private static final String TAG = ImagesAndroidWrapper.class.getSimpleName();
     private static final HashMap<String, ImageInformation> infoCache = new HashMap<String, ImageInformation>();
-
-    @Override
-    public boolean clearBitmap(Bitmap bitmap) {
-        return false;
-    }
 
     public ImageInformation imageInfo(final String path) {
         if (!infoCache.containsKey(path)) {
