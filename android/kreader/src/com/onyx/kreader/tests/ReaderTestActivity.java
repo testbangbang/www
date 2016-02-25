@@ -177,7 +177,7 @@ public class ReaderTestActivity extends Activity {
         reader.submitRequest(this, config, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
-                testContinuousList();
+                testPageNavigationList();
             }
         });
     }
@@ -280,7 +280,7 @@ public class ReaderTestActivity extends Activity {
         for(PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
             if (pageInfo.getDisplayRect().contains(selectionRect)) {
                 pn = pageInfo.getName();
-                PageUtils.translateCoordinates(selectionRect, pageInfo.getDisplayRect());
+                selectionRect = ScaleByRectRequest.rectInDocument(pageInfo, selectionRect);
                 break;
             }
         }
