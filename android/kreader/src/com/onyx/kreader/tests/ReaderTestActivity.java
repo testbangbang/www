@@ -41,8 +41,9 @@ public class ReaderTestActivity extends Activity {
 
     private Reader reader;
     //final String path = "/mnt/sdcard/cityhunter/cityhunter10.pdf";
-//    final String path = "/mnt/sdcard/Books/a.pdf";
-    final String path = "/mnt/sdcard/Pictures/normal.jpg";
+    //final String path = "/mnt/sdcard/Books/a.pdf";
+    final String path = "/mnt/sdcard/Books/lz.13.pdf";
+//    final String path = "/mnt/sdcard/Pictures/normal.jpg";
     private int pn = 0;
     private int next = 0;
     private EditText searchEdit;
@@ -206,7 +207,18 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", false);
-                testReaderGoto();
+                testContinuousScale();
+            }
+        });
+    }
+
+    public void testContinuousScale() {
+        BaseRequest request = new ScaleRequest(String.valueOf(0), 2.0f, 0, 0);
+        reader.submitRequest(this, request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                assert(e == null);
+                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png", false);
             }
         });
     }
