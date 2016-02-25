@@ -27,6 +27,7 @@ public class LayoutContinuousProvider extends LayoutProvider {
 
     public void activate() {
         LayoutProviderUtils.addAllPage(getLayoutManager());
+        getPageManager().setPageRepeat(100);
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
@@ -34,21 +35,11 @@ public class LayoutContinuousProvider extends LayoutProvider {
     }
 
     public boolean prevScreen() throws ReaderException {
-        if (!getPageManager().prevViewport()) {
-            return prevPage();
-        }
-        return true;
+        return getPageManager().prevViewport();
     }
 
     public boolean nextScreen() throws ReaderException {
-        if (!getPageManager().nextViewport()) {
-            return nextPage();
-        }
-        return true;
-    }
-
-    private void onPageChanged(boolean first) {
-
+        return getPageManager().nextViewport();
     }
 
     public boolean prevPage() throws ReaderException {
@@ -72,7 +63,6 @@ public class LayoutContinuousProvider extends LayoutProvider {
     }
 
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
-        getPageManager().collectVisiblePages();
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap, readerViewInfo);
         return true;
     }
@@ -101,7 +91,7 @@ public class LayoutContinuousProvider extends LayoutProvider {
     }
 
     public boolean gotoPosition(final String location) throws ReaderException {
-        if (StringUtils.isNotBlank(location)) {
+        if (StringUtils.isNullOrEmpty(location)) {
             return false;
         }
         return getPageManager().gotoPage(location);
@@ -113,7 +103,7 @@ public class LayoutContinuousProvider extends LayoutProvider {
     }
 
     public boolean supportPreRender() throws ReaderException {
-        return false;
+        return true;
     }
 
     public boolean supportSubScreenNavigation() {

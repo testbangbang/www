@@ -29,6 +29,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     public void activate()  {
+        getPageManager().setPageRepeat(0);
     }
 
     private NavigationArgs getNavigationArgs() {

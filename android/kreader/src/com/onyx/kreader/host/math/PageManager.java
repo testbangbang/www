@@ -25,6 +25,7 @@ public class PageManager {
     private float bottomMargin = 0;
     private float spacing;
     private String firstVisiblePageName;
+    private int pageRepeat = 0;
 
     private RectF pagesBoundingRect = new RectF();
 
@@ -341,7 +342,7 @@ public class PageManager {
         if (viewportRect.bottom >= pagesBoundingRect.bottom) {
             return false;
         }
-        viewportRect.offset(0, viewportRect.height());
+        viewportRect.offset(0, viewportRect.height() - pageRepeat);
         onViewportChanged();
         return true;
     }
@@ -350,7 +351,7 @@ public class PageManager {
         if (viewportRect.top <= pagesBoundingRect.top) {
             return false;
         }
-        viewportRect.offset(0, -viewportRect.height());
+        viewportRect.offset(0, -viewportRect.height() + pageRepeat);
         onViewportChanged();
         return true;
     }
@@ -377,6 +378,10 @@ public class PageManager {
 
     public boolean isWidthCrop() {
         return specialScale == ReaderConstants.SCALE_TO_WIDTH_CONTENT;
+    }
+
+    public void setPageRepeat(int value) {
+        pageRepeat = value;
     }
 
 }
