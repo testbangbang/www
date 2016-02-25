@@ -194,6 +194,9 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         while (layoutManager.nextScreen()) {
             pageInfo = layoutManager.getCurrentPageInfo();
             assertNotNull(pageInfo);
+            if (!pageInfo.getName().equalsIgnoreCase(position)) {
+                break;
+            }
             ++index;
         }
         assertTrue(index == count);
@@ -204,9 +207,13 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         while (layoutManager.prevScreen()) {
             pageInfo = layoutManager.getCurrentPageInfo();
             assertNotNull(pageInfo);
+            if (!pageInfo.getName().equalsIgnoreCase(position)) {
+                break;
+            }
             ++index;
         }
-        assertTrue(index == count);
+        // go back to prev page cause additional counting.
+        assertTrue(index == count + 1);
 
     }
 
