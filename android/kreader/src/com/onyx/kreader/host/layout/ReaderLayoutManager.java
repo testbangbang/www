@@ -37,7 +37,8 @@ public class ReaderLayoutManager {
     private PageManager pageManager;
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
-
+    private boolean supportScale;
+    private boolean supportReflow;
 
     public ReaderLayoutManager(final ReaderDocument document,
                                final ReaderNavigator navigator,
@@ -66,8 +67,8 @@ public class ReaderLayoutManager {
     }
 
     public void init()  {
-        boolean supportScale = getReaderRendererFeatures().supportScale();
-        boolean supportReflow = getReaderRendererFeatures().supportFontSizeAdjustment();
+        supportScale = getReaderRendererFeatures().supportScale();
+        supportReflow = getReaderRendererFeatures().supportFontSizeAdjustment();
         if (supportScale) {
             provider.put(ReaderConstants.SINGLE_PAGE, new LayoutSinglePageProvider(this));
             provider.put(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, new LayoutSinglePageNavigationListProvider(this));
@@ -149,6 +150,15 @@ public class ReaderLayoutManager {
     public RectF getPageRectOnViewport(final String position) throws ReaderException {
         return getCurrentLayoutProvider().getPageRectOnViewport(position);
     }
+
+    public boolean isSupportScale() {
+        return supportScale;
+    }
+
+    public boolean isSupportReflow() {
+        return supportReflow;
+    }
+
 
     // share the same instance for all providers. if necessary, we could change to use different
     // instance for different providers.

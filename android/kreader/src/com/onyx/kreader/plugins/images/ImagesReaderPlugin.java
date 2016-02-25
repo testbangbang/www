@@ -25,7 +25,6 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         ReaderRenderer,
         ReaderNavigator,
         ReaderSearchManager,
-        ReaderTextStyleManager,
         ReaderDrmManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
@@ -148,7 +147,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
      * Retrieve text style interface.
      */
     public ReaderTextStyleManager getTextStyleManager() {
-        return this;
+        return null;
     }
 
     /**

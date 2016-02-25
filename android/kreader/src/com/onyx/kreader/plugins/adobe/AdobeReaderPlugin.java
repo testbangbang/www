@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.JniUtils;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
@@ -441,6 +442,8 @@ public class AdobeReaderPlugin implements ReaderPlugin,
         selection.setRectangles(JniUtils.rectangles(getPluginImpl().rectangles(start, end)));
         return selection;
     }
+
+    public void setStyle(final ReaderStyle style) {}
 
     public boolean supportScale() {
         if (StringUtils.isNullOrEmpty(documentPath)) {

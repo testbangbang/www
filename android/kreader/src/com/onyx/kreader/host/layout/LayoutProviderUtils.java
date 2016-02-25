@@ -38,7 +38,7 @@ public class LayoutProviderUtils {
             hitCache = true;
         }
 
-        for(PageInfo pageInfo : visiblePages) {
+        for (PageInfo pageInfo : visiblePages) {
             String documentPosition = pageInfo.getName();
             final RectF rect = pageInfo.getDisplayRect();
             if (!hitCache) {
@@ -50,6 +50,15 @@ public class LayoutProviderUtils {
         if (enableCache && StringUtils.isNotBlank(key) && !hitCache) {
             addToCache(cacheManager, key, bitmap);
         }
+
+        updateReaderViewInfo(readerViewInfo, layoutManager);
+    }
+
+    static public void updateReaderViewInfo(final ReaderViewInfo readerViewInfo, final ReaderLayoutManager layoutManager) {
+        readerViewInfo.supportScalable = layoutManager.isSupportScale();
+        readerViewInfo.supportReflow = layoutManager.isSupportReflow();
+        readerViewInfo.canGoBack = layoutManager.canGoBack();
+        readerViewInfo.canGoForward = layoutManager.canGoForward();
     }
 
     static public boolean addToCache(final ReaderCacheManager cacheManager, final String key, final ReaderBitmapImpl bitmap) {

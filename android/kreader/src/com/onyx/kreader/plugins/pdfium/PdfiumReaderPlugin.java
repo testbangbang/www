@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import android.util.Log;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.common.Benchmark;
+import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
@@ -141,6 +142,8 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     public ReaderTextStyleManager getTextStyleManager() {
         return this;
     }
+
+    public void setStyle(final ReaderStyle style) {}
 
     /**
      * Retrieve reader hit test.

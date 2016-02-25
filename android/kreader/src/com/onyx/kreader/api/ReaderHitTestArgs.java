@@ -13,6 +13,13 @@ public class ReaderHitTestArgs {
     public int pageDisplayOrientation;
     public PointF point;
 
+    /**
+     *
+     * @param name the page name
+     * @param rect the page display rect.
+     * @param orientation the page display orientation.
+     * @param p the touch point relative to display rect.
+     */
     public ReaderHitTestArgs(final String name, final RectF rect, int orientation, final PointF p) {
         pageName = name;
         pageDisplayRect = rect;

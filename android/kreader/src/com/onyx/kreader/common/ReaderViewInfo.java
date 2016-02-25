@@ -5,6 +5,7 @@ import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.options.ReaderConstants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,13 +15,11 @@ import java.util.Map;
 public class ReaderViewInfo {
 
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
-    private List<ReaderSelection> selectionList = new ArrayList<ReaderSelection>();
+    private Map<String, List<ReaderSelection>> selectionMap = new HashMap<String, List<ReaderSelection>>();
     public boolean canGoBack;
     public boolean canGoForward;
-    public int specialScale = ReaderConstants.SCALE_INVALID;
-    public float actualScale;
-    public boolean reflowDocument;
-    public boolean pageScalable;
+    public boolean supportReflow;
+    public boolean supportScalable;
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;
@@ -31,8 +30,8 @@ public class ReaderViewInfo {
         visiblePages.add(copy);
     }
 
-    public final List<ReaderSelection> getSelectionList() {
-        return selectionList;
+    public final List<ReaderSelection> getSelectionList(final String type) {
+        return selectionMap.get(type);
     }
 
 }
