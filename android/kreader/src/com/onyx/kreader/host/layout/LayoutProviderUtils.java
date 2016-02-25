@@ -27,23 +27,27 @@ public class LayoutProviderUtils {
      * @param bitmap
      */
     static public void drawVisiblePages(final Reader reader, final ReaderLayoutManager layoutManager, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) {
+        bitmap.clear();
+
         final ReaderRenderer renderer = reader.getRenderer();
         final ReaderCacheManager cacheManager = reader.getReaderCacheManager();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
         final String key = PositionSnapshot.cacheKey(visiblePages);
+        boolean hitCache = false;
         if (enableCache && checkCache(cacheManager, key, bitmap)) {
-            return;
+            hitCache = true;
         }
 
-        bitmap.clear();
         for(PageInfo pageInfo : visiblePages) {
             String documentPosition = pageInfo.getName();
             final RectF rect = pageInfo.getDisplayRect();
-            renderer.draw(documentPosition, pageInfo.getActualScale(), pageInfo.getPageDisplayOrientation(), bitmap, (int) rect.left, (int) rect.top, (int) rect.width(), (int) rect.height());
+            if (!hitCache) {
+                renderer.draw(documentPosition, pageInfo.getActualScale(), pageInfo.getPageDisplayOrientation(), bitmap, (int) rect.left, (int) rect.top, (int) rect.width(), (int) rect.height());
+            }
             readerViewInfo.copyPageInfo(pageInfo);
         }
 
-        if (enableCache && StringUtils.isNotBlank(key)) {
+        if (enableCache && StringUtils.isNotBlank(key) && !hitCache) {
             addToCache(cacheManager, key, bitmap);
         }
     }

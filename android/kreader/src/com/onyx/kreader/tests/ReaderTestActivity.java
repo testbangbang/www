@@ -213,7 +213,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testContinuousScale() {
-        BaseRequest request = new ScaleRequest(String.valueOf(0), 2.0f, 0, 0);
+        BaseRequest request = new ScaleRequest(String.valueOf(0), 1.0f, 0, 0);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -317,6 +317,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (e == null) {
+                    readerViewInfo = request.getReaderViewInfo();
                     dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
                     textPrerenderScreen();
                 }
@@ -342,6 +343,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (e == null) {
+                    readerViewInfo = request.getReaderViewInfo();
                     dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
                 }
             }
