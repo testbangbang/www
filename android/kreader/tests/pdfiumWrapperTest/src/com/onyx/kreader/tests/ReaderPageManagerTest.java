@@ -86,6 +86,11 @@ public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<Read
         assertTrue(TestUtils.compareFloatWhole(rectArg.bottom, childInViewport.bottom * actualScale));
 
         RectF resultViewport = pageManager.getViewportRect();
+        // increase a little bit
+        resultViewport.set(resultViewport.left - 1,
+                resultViewport.top - 1,
+                resultViewport.right + 1,
+                resultViewport.bottom + 1);
         assertTrue(resultViewport.contains(rectArg));
 
     }
