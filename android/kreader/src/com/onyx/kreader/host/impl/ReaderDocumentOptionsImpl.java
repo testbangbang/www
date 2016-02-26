@@ -9,6 +9,9 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
 
     private String documentPassword;
     private String archivePassword;
+    private String encoding;
+    private String language;
+
 
     public ReaderDocumentOptionsImpl(final String dp, final String ap) {
         documentPassword = dp;

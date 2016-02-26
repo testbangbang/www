@@ -114,14 +114,6 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return false;
     }
 
-    public PositionSnapshot saveSnapshot() throws ReaderException {
-        return null;
-    }
-
-    public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
-        return false;
-    }
-
     public RectF getPageRectOnViewport(final String position) throws ReaderException {
         return null;
     }

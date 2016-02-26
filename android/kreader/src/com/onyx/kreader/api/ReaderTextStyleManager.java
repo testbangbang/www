@@ -10,4 +10,5 @@ public interface ReaderTextStyleManager {
 
     public void setStyle(final ReaderStyle style);
 
+
 }

@@ -8,6 +8,7 @@ import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -122,17 +123,21 @@ public class LayoutProvider {
         return false;
     }
 
-    /**
-     * save current position.
-     * @return position snapshot object.
-     * @throws ReaderException
-     */
     public PositionSnapshot saveSnapshot() throws ReaderException {
-        return null;
+        if (getPageManager().getFirstVisiblePage() == null) {
+            return null;
+        }
+        return PositionSnapshot.snapshot(getProviderName(), getPageManager().getFirstVisiblePage(), getPageManager().getSpecialScale());
     }
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
-        return false;
+        if (ReaderConstants.isSpecialScale(snapshot.specialScale)) {
+            getPageManager().setSpecialScale(snapshot.pageName, snapshot.specialScale);
+        } else {
+            getPageManager().setScale(snapshot.pageName, snapshot.actualScale);
+        }
+        getPageManager().setViewportPosition(snapshot.pageName, snapshot.displayRect.left, snapshot.displayRect.top);
+        return true;
     }
 
     public final String getCurrentPageName() {
