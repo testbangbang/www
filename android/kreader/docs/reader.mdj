@@ -3080,7 +3080,7 @@
 											"containerExtending": false,
 											"left": 325,
 											"top": 383,
-											"width": 158,
+											"width": 158.28515625,
 											"height": 13,
 											"autoResize": false,
 											"underline": false,
@@ -3149,7 +3149,7 @@
 									"containerExtending": false,
 									"left": 320,
 									"top": 376,
-									"width": 168,
+									"width": 168.28515625,
 									"height": 25,
 									"autoResize": false,
 									"stereotypeLabel": {
@@ -3195,7 +3195,7 @@
 											"containerExtending": false,
 											"left": 325,
 											"top": 406,
-											"width": 158,
+											"width": 158.28515625,
 											"height": 13,
 											"autoResize": false,
 											"underline": false,
@@ -3215,7 +3215,7 @@
 									"containerExtending": false,
 									"left": 320,
 									"top": 401,
-									"width": 168,
+									"width": 168.28515625,
 									"height": 23,
 									"autoResize": false
 								},
@@ -3239,7 +3239,7 @@
 									"containerExtending": false,
 									"left": 320,
 									"top": 424,
-									"width": 168,
+									"width": 168.28515625,
 									"height": 10,
 									"autoResize": false
 								},
@@ -3303,7 +3303,7 @@
 							"containerExtending": false,
 							"left": 320,
 							"top": 376,
-							"width": 168,
+							"width": 168.28515625,
 							"height": 58,
 							"autoResize": false,
 							"stereotypeDisplay": "label",
@@ -4978,6 +4978,35 @@
 							"isAbstract": false
 						}
 					],
+					"isAbstract": false,
+					"isFinalSpecialization": false,
+					"isLeaf": false,
+					"isActive": false
+				},
+				{
+					"_type": "UMLClass",
+					"_id": "AAAAAAFTGNRudmZ4EBw=",
+					"_parent": {
+						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
+					},
+					"name": "OnyxText",
+					"ownedElements": [
+						{
+							"_type": "UMLGeneralization",
+							"_id": "AAAAAAFTGNUMfWamLjo=",
+							"_parent": {
+								"$ref": "AAAAAAFTGNRudmZ4EBw="
+							},
+							"source": {
+								"$ref": "AAAAAAFTGNRudmZ4EBw="
+							},
+							"target": {
+								"$ref": "AAAAAAFTAzriwk9QE10="
+							},
+							"visibility": "public"
+						}
+					],
+					"visibility": "public",
 					"isAbstract": false,
 					"isFinalSpecialization": false,
 					"isLeaf": false,
