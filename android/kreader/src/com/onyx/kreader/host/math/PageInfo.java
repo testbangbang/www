@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.kreader.api.ReaderHitTestArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
-import com.onyx.kreader.plugins.adobe.HitTest;
+
 
 /**
  * Created by zhuzeng on 10/8/15.

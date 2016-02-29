@@ -1,5 +1,7 @@
 package com.onyx.kreader.formats.encodings;
 
+import org.mozilla.universalchardet.UniversalDetector;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -12,26 +14,28 @@ import java.nio.charset.CodingErrorAction;
  */
 public class Decoder {
 
-    public static String decode(final ByteBuffer data) {
-        Charset charset = Charset.forName("GBK");
-        CharsetDecoder decoder = charset.newDecoder();
-        decoder.onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE);
-        final ByteBuffer inBuffer = data;
-        final CharBuffer outBuffer = CharBuffer.allocate(data.capacity());
-        CoderResult result = decoder.decode(inBuffer, outBuffer, false);
+    private CharsetDecoder decoderProvider = null;
 
-        // check in buffer.
-        int pos = outBuffer.remaining();
-        pos = inBuffer.remaining();
-        data.compact();
+    public static String detectEncoding(final ByteBuffer buffer) {
+        UniversalDetector detector = new UniversalDetector(null);
+        detector.handleData(buffer.array(), 0, buffer.array().length);
+        detector.dataEnd();
+        return detector.getDetectedCharset();
+    }
 
+    public boolean decode(final ByteBuffer inBuffer, final CharBuffer outBuffer, boolean finished) {
+        if (decoderProvider != null) {
+            decoderProvider.decode(inBuffer, outBuffer, finished);
+            return true;
+        }
+        return false;
+    }
 
-        // read from char buffer.
-        outBuffer.flip();
-        StringBuilder builder = new StringBuilder();
-        builder.append(outBuffer);
-
-        return builder.toString();
-
+    public static Decoder createInstance(final String encoding) {
+        Decoder decoder = new Decoder();
+        Charset charset = Charset.forName(encoding);
+        decoder.decoderProvider = charset.newDecoder();
+        decoder.decoderProvider.onMalformedInput(CodingErrorAction.IGNORE).onUnmappableCharacter(CodingErrorAction.IGNORE);
+        return decoder;
     }
 }

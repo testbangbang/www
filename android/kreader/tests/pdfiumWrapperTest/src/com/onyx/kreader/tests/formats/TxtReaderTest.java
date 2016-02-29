@@ -24,7 +24,7 @@ public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestAc
         BookModel bookModel = new BookModel();
         BookReaderContext context = new BookReaderContext(path);
         int round = 0;
-        while (reader.readNext(bookModel, context)) {
+        while (reader.processNext(bookModel, context)) {
             Log.d(TAG, "round: " + round);
             ++round;
         }
