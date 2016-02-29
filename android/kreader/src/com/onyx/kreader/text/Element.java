@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 1/9/16.
- * TODO:
+ * for rendering. use concrete class.
  * 1. reference to model
  *
  */

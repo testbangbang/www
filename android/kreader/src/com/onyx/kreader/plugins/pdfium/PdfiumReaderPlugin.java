@@ -143,6 +143,10 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    /**
+     * set stream document style. ignore.
+     * @param style
+     */
     public void setStyle(final ReaderStyle style) {}
 
     /**
