@@ -5,7 +5,6 @@ import android.graphics.RectF;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.kreader.host.wrapper.ReaderPageInfo;
 import com.onyx.kreader.utils.GObject;
 
 import java.util.List;
@@ -325,15 +324,6 @@ public class ReaderOptions  {
     public void setTotalPage(int t) {
         backend.putInt(TOTAL_PAGE_TAG, t);
     }
-
-    public void setCropList(final List<ReaderPageInfo> list) {
-        backend.putList(CROP_LIST, list);
-    }
-
-    public final List<ReaderPageInfo> getCropList() {
-        return (List<ReaderPageInfo>)backend.getList(CROP_LIST);
-    }
-
 
     public int getValue(final String key, int low, int up, int defaultValue) {
         if (backend.hasKey(key)) {
