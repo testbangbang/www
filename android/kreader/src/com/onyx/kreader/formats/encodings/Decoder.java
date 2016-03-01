@@ -23,7 +23,7 @@ public class Decoder {
         return detector.getDetectedCharset();
     }
 
-    public boolean decode(final ByteBuffer inBuffer, final CharBuffer outBuffer, boolean finished) {
+    public boolean decodeBuffer(final ByteBuffer inBuffer, final CharBuffer outBuffer, boolean finished) {
         if (decoderProvider != null) {
             outBuffer.clear();
             decoderProvider.decode(inBuffer, outBuffer, finished);

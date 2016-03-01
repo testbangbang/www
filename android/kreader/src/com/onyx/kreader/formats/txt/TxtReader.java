@@ -24,30 +24,30 @@ public class TxtReader implements BookReader {
     static public final char SPACE = ' ';
 
     public boolean open(final BookModel bookModel) {
-        if (bookModel.getBookContext() != null) {
-            return bookModel.getBookContext().file.open();
+        if (bookModel.getModelHelper() != null) {
+            return bookModel.getModelHelper().open();
         }
         return true;
     }
 
     public boolean processNext(final BookModel bookModel) {
-        if (bookModel.getBookContext().read(data) <= 0) {
+        if (bookModel.getModelHelper().read(data) <= 0) {
             return false;
         }
 
-        if (!bookModel.getBookContext().isEncodingDetected()) {
+        if (!bookModel.getModelHelper().isEncodingDetected()) {
             detectEncoding(bookModel);
         }
         return processNextData(bookModel);
     }
 
     private void detectEncoding(final BookModel bookModel) {
-        bookModel.getBookContext().detectEncoding(data);
+        bookModel.getModelHelper().detectEncoding(data);
         data.rewind();
     }
 
     private boolean processNextData(final BookModel bookModel) {
-        bookModel.getBookContext().decode(data, result, data.limit() < limit);
+        bookModel.getModelHelper().decodeBuffer(data, result, data.limit() < limit);
         int start = 0;
         int end = result.length();
         int ptr = start;

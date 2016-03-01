@@ -3,7 +3,6 @@ package com.onyx.kreader.tests.formats;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import com.onyx.kreader.formats.model.BookModel;
-import com.onyx.kreader.formats.model.BookContext;
 import com.onyx.kreader.formats.txt.TxtReader;
 import com.onyx.kreader.tests.ReaderTestActivity;
 
@@ -28,7 +27,7 @@ public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestAc
             Log.d(TAG, "round: " + round);
             ++round;
         }
-        assertTrue(bookModel.getBookContext().encoding.equalsIgnoreCase("GB18030"));
+        assertTrue(bookModel.getModelHelper().getEncoding().equalsIgnoreCase("GB18030"));
     }
 
 }

@@ -5,15 +5,15 @@ package com.onyx.kreader.formats.model;
  */
 public class BookModel {
 
-    private BookContext bookContext;
+    private BookModelHelper modelHelper;
     private TextModel textModel;
 
 
     public BookModel(final String path) {
-        bookContext = new BookContext(path);
+        modelHelper = new BookModelHelper(path);
     }
 
-    public final BookContext getBookContext() {
-        return bookContext;
+    public final BookModelHelper getModelHelper() {
+        return modelHelper;
     }
 }

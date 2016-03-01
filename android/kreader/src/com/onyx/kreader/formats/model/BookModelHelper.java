@@ -11,19 +11,23 @@ import java.nio.CharBuffer;
 /**
  * Created by zengzhu on 2/28/16.
  */
-public class BookContext {
+public class BookModelHelper {
 
-    public FileNIO file;
-    public String encoding;
-    public String fallbackEncoding = "UTF-8";
-    public Decoder decoder;
+    private FileNIO file;
+    private String encoding;
+    private String fallbackEncoding = "UTF-8";
+    private Decoder decoder;
 
-    public BookContext(final String path) {
+    public BookModelHelper(final String path) {
         file = new FileNIO(path);
     }
 
     public boolean isEncodingDetected() {
         return StringUtils.isNotBlank(encoding);
+    }
+
+    public final String getEncoding() {
+        return encoding;
     }
 
     public boolean detectEncoding(final ByteBuffer data) {
@@ -37,6 +41,10 @@ public class BookContext {
         return detected;
     }
 
+    public boolean open() {
+        return file.open();
+    }
+
     public int read(final ByteBuffer data) {
         data.clear();
         int count = file.read(data);
@@ -44,9 +52,9 @@ public class BookContext {
         return count;
     }
 
-    public void decode(final ByteBuffer inBuffer, final CharBuffer outBuffer, boolean finished) {
+    public void decodeBuffer(final ByteBuffer inBuffer, final CharBuffer outBuffer, boolean finished) {
         if (decoder != null) {
-            decoder.decode(inBuffer, outBuffer, finished);
+            decoder.decodeBuffer(inBuffer, outBuffer, finished);
         }
     }
 
