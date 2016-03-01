@@ -25,7 +25,9 @@ public class Decoder {
 
     public boolean decode(final ByteBuffer inBuffer, final CharBuffer outBuffer, boolean finished) {
         if (decoderProvider != null) {
+            outBuffer.clear();
             decoderProvider.decode(inBuffer, outBuffer, finished);
+            outBuffer.flip();
             return true;
         }
         return false;

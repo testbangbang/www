@@ -5,14 +5,18 @@ package com.onyx.kreader.formats.model;
  */
 public interface BookReader {
 
-
+    /**
+     * open book and prepare for reading data.
+     * @param bookModel the BookModel object.
+     * @return
+     */
+    public boolean open(final BookModel bookModel);
 
     /**
      * for async loading, we always use processNext to read next block.
      * @param bookModel the book model.
-     * @param context the loading context.
      * @return true if can continue reading more.
      */
-    public boolean processNext(final BookModel bookModel, final BookReaderContext context);
+    public boolean processNext(final BookModel bookModel);
 
 }

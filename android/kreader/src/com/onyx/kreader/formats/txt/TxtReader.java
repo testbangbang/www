@@ -1,11 +1,8 @@
 package com.onyx.kreader.formats.txt;
 
 import android.util.Log;
-import com.onyx.kreader.formats.encodings.Decoder;
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.BookReader;
-import com.onyx.kreader.formats.model.BookReaderContext;
-import com.onyx.kreader.utils.StringUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -16,7 +13,6 @@ import java.nio.CharBuffer;
 public class TxtReader implements BookReader {
 
     private static String TAG = TxtReader.class.getSimpleName();
-    private BookReaderContext myContext;
     private final int limit = 2048;
     private ByteBuffer data = ByteBuffer.allocate(limit);
     private CharBuffer result = CharBuffer.allocate(limit);
@@ -27,52 +23,31 @@ public class TxtReader implements BookReader {
     static public final char TAB = '\t';
     static public final char SPACE = ' ';
 
-
-    public boolean processNext(final BookModel bookModel, final BookReaderContext context) {
-        if (!ensureOpen(context)) {
-            return false;
-        }
-
-        if (readNext() <= 0) {
-            return false;
-        }
-
-        if (myContext.encoding == null) {
-            detectEncoding();
-        }
-        return processNextImpl();
-    }
-
-    private boolean ensureOpen(final BookReaderContext context) {
-        if (myContext == null) {
-            myContext = context;
-            if (!myContext.bookStream.open()) {
-                return false;
-            }
+    public boolean open(final BookModel bookModel) {
+        if (bookModel.getBookContext() != null) {
+            return bookModel.getBookContext().file.open();
         }
         return true;
     }
 
-    private int readNext() {
-        int count = myContext.bookStream.read(data);
-        data.flip();
-        return count;
-    }
-
-    private String detectEncoding() {
-        myContext.encoding = Decoder.detectEncoding(data);
-        if (StringUtils.isNullOrEmpty(myContext.encoding)) {
-            myContext.encoding = "UTF-8";
+    public boolean processNext(final BookModel bookModel) {
+        if (bookModel.getBookContext().read(data) <= 0) {
+            return false;
         }
-        myContext.decoder = Decoder.createInstance(myContext.encoding);
-        data.rewind();
-        return myContext.encoding;
+
+        if (!bookModel.getBookContext().isEncodingDetected()) {
+            detectEncoding(bookModel);
+        }
+        return processNextData(bookModel);
     }
 
-    private boolean processNextImpl() {
-        result.clear();
-        myContext.decoder.decode(data, result, false);
-        result.flip();
+    private void detectEncoding(final BookModel bookModel) {
+        bookModel.getBookContext().detectEncoding(data);
+        data.rewind();
+    }
+
+    private boolean processNextData(final BookModel bookModel) {
+        bookModel.getBookContext().decode(data, result, data.limit() < limit);
         int start = 0;
         int end = result.length();
         int ptr = start;
@@ -103,8 +78,6 @@ public class TxtReader implements BookReader {
         if (start != end) {
             processData(result, start, end);
         }
-
-        data.clear();
         return true;
     }
 
