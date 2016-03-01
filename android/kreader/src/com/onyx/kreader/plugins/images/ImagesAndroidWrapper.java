@@ -2,6 +2,7 @@ package com.onyx.kreader.plugins.images;
 
 import android.graphics.*;
 
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.utils.BitmapUtils;
 
 import java.io.IOException;
@@ -42,7 +43,8 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
                 return false;
             }
             try {
-                renderToBitmap(src, bitmap, x, y, width, height);
+                renderToBitmap(src, bitmap, bitmapRegion, (int)imageInformation.width,
+                        (int)imageInformation.height, x, y, width, height);
             } finally {
                 src.recycle();
             }
@@ -54,7 +56,7 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
     }
 
     private Rect locatePageRegion(int pageWidth, int pageHeight, int x, int y, int width, int height, int rotation, Bitmap bitmap) {
-        Rect bitmapRegion = deviceRegionToPage(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()),
+        Rect bitmapRegion = PageUtils.screenRegionToDoc(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()),
                 pageWidth, pageHeight, x, y, width, height, rotation);
         Rect pageRect = new Rect(0, 0, pageWidth, pageHeight);
         pageRect.intersect(bitmapRegion);
@@ -79,39 +81,23 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
         return infoCache.get(path);
     }
 
-    private void renderToBitmap(Bitmap src, Bitmap dst, int x, int y, int width, int height) {
+    private Matrix mapViewportToScreen(Rect viewportRegion, int docWidth, int docHeight, int x, int y, int width, int height) {
+        Matrix matrix = new Matrix();
+        float scaleX = width / (float)docWidth;
+        float scaleY = height / (float)docHeight;
+        matrix.postScale(scaleX, scaleY);
+        int regionOffsetX = (int)(viewportRegion.left * scaleX) + x;
+        int regionOffsetY = (int)(viewportRegion.top * scaleY) + y;
+        matrix.postTranslate(regionOffsetX, regionOffsetY);
+        return matrix;
+    }
+
+    private void renderToBitmap(Bitmap viewportBitmap, Bitmap dst, Rect viewportRegion, int docWidth, int docHeight, int x, int y, int width, int height) {
         Canvas canvas = new Canvas(dst);
         Paint paint = new Paint();
         paint.setFilterBitmap(true);
-        Matrix matrix = new Matrix();
-        matrix.postScale(width / (float)src.getWidth(), height / (float)src.getHeight());
-        matrix.postTranslate(x, y);
-        canvas.drawBitmap(src, matrix, paint);
-    }
-
-    /**
-     * TODO ignore rotation first
-     *
-     * @param point
-     * @param pageWidth
-     * @param pageHeight
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param rotation
-     * @return
-     */
-    private Point devicePointToPage(Point point, int pageWidth, int pageHeight, int x, int y, int width, int height, int rotation) {
-        double scaleX = width / (double)pageWidth;
-        double scaleY = height / (double)pageHeight;
-        return new Point((int)((point.x - x) / scaleX), (int)((point.y - y) / scaleY));
-    }
-
-    private Rect deviceRegionToPage(Rect region, int pageWidth, int pageHeight, int x, int y, int width, int height, int rotation) {
-        Point topLeft = devicePointToPage(new Point(region.left, region.top), pageWidth, pageHeight, x, y, width, height, rotation);
-        Point rightBottom = devicePointToPage(new Point(region.right, region.bottom), pageWidth, pageHeight, x, y, width, height, rotation);
-        return new Rect(topLeft.x, topLeft.y, rightBottom.x, rightBottom.y);
+        Matrix matrix = mapViewportToScreen(viewportRegion, docWidth, docHeight, x, y, width, height);
+        canvas.drawBitmap(viewportBitmap, matrix, paint);
     }
 
 }
