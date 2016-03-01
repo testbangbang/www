@@ -59,162 +59,164 @@ public class AlHyph {
 	}
 
 	public void getHyph(final char[] text, final byte[] hyph, final int count, AlIntHolder flag) {
-		int i, j;
-		wordIn[0] = 0x20; wordAdr[0] = space_adr; hyph[0] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
-		for (i = 0, j = 1; i < count; i++, j++) {
-			if (text[i] >= 0x3000) {
-				wordIn[j]  = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';			
-				wordAdr[j] = space_adr; 
-				if (((i == count - 1) || isLetterLower[text[j]] > 0x20)) {
-					hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
-				} else {					
-					if (i < count - 2 && (text[j] == 8220 || text[j] == 8221)) {
-						hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
-					} else 
-						hyph[j] = '8';
-				}
-			} else {
-				switch (isLetterLower[text[i]]) {
-				case 0x00:
-					hyph[j] = '8';
-					wordIn[j]  = ' ';			
-					wordAdr[j] = space_adr;
-					break;				
-				case AlStyles.CHAR_IMAGE_E:
-					wordIn[j]  = ' ';			
-					wordAdr[j] = space_adr;
-					hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
-					break;
-				default:
-					hyph[j] = InternalConst.TAL_HYPH_INPLACE_DISABLE;//'0';
-					wordIn[j]  = isLetterLower[text[i]];
-					wordAdr[j] = getAdrHyphPattern(wordIn[j]);
-					break;
-				}
-			}
-		}
-		/*for (i = 0, j = 1; i < count; i++, j++) {		
-			if (text[i] >= 0x3000) {
-				wordIn[j]  = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';			
-				wordAdr[j] = space_adr; 
-				if (((i == count - 1) || isLetterLower[text[j]] != 0x00)) {
-					hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
-				} else {					
-					if (i < count - 2 && (text[j] == 8220 || text[j] == 8221)) {
-						hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
-					} else 
-						hyph[j] = '8';
-				}
-			} else
-			if (isLetterLower[text[i]] != 0) {
-				hyph[j] = InternalConst.TAL_HYPH_INPLACE_DISABLE;//'0';
-				wordIn[j]  = isLetterLower[text[i]];
-				wordAdr[j] = getAdrHyphPattern(wordIn[j]);
-			} else
-			if (text[i] == AlStyles.CHAR_IMAGE_E) {
-				wordIn[j]  = ' ';			
-				wordAdr[j] = space_adr;
-				hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
-			} else
-			if (AlUnicode.isHyphWordChar(text[i])) {
-				wordIn[j]  = ' ';			
-				wordAdr[j] = space_adr;
-				hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
-			} else {
-				hyph[j] = '8';
-				wordIn[j]  = ' ';			
-				wordAdr[j] = space_adr;
-			}
-		}*/
-		wordIn[count + 1] = 0x20; wordAdr[count + 1] = space_adr;
-		hyph[1] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
-		for (i = 1; i <= count + 1; i++) {
-			if (wordIn[i] == ' ') {
-				if (i + 1 <= count && hyph[i + 1] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE/*'B'*/)
-					hyph[i + 1] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
-				if (i - 1 > 0 && hyph[i - 1] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE/*'B'*/)
-					hyph[i - 1] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
-				if (i - 2 > 0 && hyph[i - 2] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE/*'B'*/)
-					hyph[i - 2] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
-			}
-		}	
-		
-		if (pattern != null) {
-			int	start_adr = 0;
-			int letter_num;
-			int len_pattern;			
-			
-			next_letter:
-				for (letter_num = count; letter_num >= 0; letter_num--) {
-					start_adr = wordAdr[letter_num];
-					if (start_adr == -1)
-						continue;
-					//
-					len_pattern = pattern[start_adr];
-					if (len_pattern == 1) {
-						if (letter_num > 0 && mask[start_adr] > hyph[letter_num - 1])
-							hyph[letter_num - 1] = mask[start_adr];
-						if (mask[start_adr + 1] > hyph[letter_num])
-							hyph[letter_num] = mask[start_adr + 1];
-					}
-					//
-					
-					while (true) {	
-						if (start_adr >= PatternLen)
-							break;
-						
-						len_pattern = pattern[start_adr];	
-						if (pattern[start_adr + 1] != wordIn[letter_num])						
-							continue next_letter;
-						
-						
-						if (len_pattern <= count - letter_num + 2) {
-							for (i = 1; i < len_pattern; i++) {
-								//int diff = pattern[start_adr + i + 1] - wordIn[letter_num + i];
-								
-								if (pattern[start_adr + i + 1] < wordIn[letter_num + i]) {
-									break;
-								} else
-								if (pattern[start_adr + i + 1] > wordIn[letter_num + i]) {
-									continue next_letter;
-								} else
-								
-								/*if (diff < 0) {
-									break;
-								} else
-								if (diff > 0) {
-									continue next_letter;
-								} else*/
-								
-								if (i == len_pattern - 1) {
-									/*diff = 0;
-									if (letter_num == 0)
-										diff++;*/
-									for (j = (letter_num == 0 ? 1 : 0)/*diff*/; j <= len_pattern; j++) {
-										if (mask[start_adr + j] > hyph[letter_num + j - 1])
-											hyph[letter_num + j - 1] = mask[start_adr + j];
-									}
-								}
-							}
-						}
-
-						start_adr += len_pattern + 1;
-					}
-				}
-		}
-		
-		for (i = 1; i <= count; i++) {
-			switch (hyph[i]) {			
-			case '1': case '3': case '5': case '7': case '9':
-				hyph[i] = InternalConst.TAL_HYPH_INPLACE_ENABLE;//'-';
-				break;
-			case '0': case '2': case '4': case '6': case '8': 
-				hyph[i] = InternalConst.TAL_HYPH_INPLACE_DISABLE;//'0';
-				break;			
-			}			
-		}		
-
-		flag.value |= InternalConst.AL_ONEWORD_FLAG_DOHYPH;
+        return;
+//
+//		int i, j;
+//		wordIn[0] = 0x20; wordAdr[0] = space_adr; hyph[0] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+//		for (i = 0, j = 1; i < count; i++, j++) {
+//			if (text[i] >= 0x3000) {
+//				wordIn[j]  = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+//				wordAdr[j] = space_adr;
+//				if (((i == count - 1) || isLetterLower[text[j]] > 0x20)) {
+//					hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
+//				} else {
+//					if (i < count - 2 && (text[j] == 8220 || text[j] == 8221)) {
+//						hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
+//					} else
+//						hyph[j] = '8';
+//				}
+//			} else {
+//				switch (isLetterLower[text[i]]) {
+//				case 0x00:
+//					hyph[j] = '8';
+//					wordIn[j]  = ' ';
+//					wordAdr[j] = space_adr;
+//					break;
+//				case AlStyles.CHAR_IMAGE_E:
+//					wordIn[j]  = ' ';
+//					wordAdr[j] = space_adr;
+//					hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
+//					break;
+//				default:
+//					hyph[j] = InternalConst.TAL_HYPH_INPLACE_DISABLE;//'0';
+//					wordIn[j]  = isLetterLower[text[i]];
+//					wordAdr[j] = getAdrHyphPattern(wordIn[j]);
+//					break;
+//				}
+//			}
+//		}
+//		/*for (i = 0, j = 1; i < count; i++, j++) {
+//			if (text[i] >= 0x3000) {
+//				wordIn[j]  = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+//				wordAdr[j] = space_adr;
+//				if (((i == count - 1) || isLetterLower[text[j]] != 0x00)) {
+//					hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
+//				} else {
+//					if (i < count - 2 && (text[j] == 8220 || text[j] == 8221)) {
+//						hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
+//					} else
+//						hyph[j] = '8';
+//				}
+//			} else
+//			if (isLetterLower[text[i]] != 0) {
+//				hyph[j] = InternalConst.TAL_HYPH_INPLACE_DISABLE;//'0';
+//				wordIn[j]  = isLetterLower[text[i]];
+//				wordAdr[j] = getAdrHyphPattern(wordIn[j]);
+//			} else
+//			if (text[i] == AlStyles.CHAR_IMAGE_E) {
+//				wordIn[j]  = ' ';
+//				wordAdr[j] = space_adr;
+//				hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
+//			} else
+//			if (AlUnicode.isHyphWordChar(text[i])) {
+//				wordIn[j]  = ' ';
+//				wordAdr[j] = space_adr;
+//				hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
+//			} else {
+//				hyph[j] = '8';
+//				wordIn[j]  = ' ';
+//				wordAdr[j] = space_adr;
+//			}
+//		}*/
+//		wordIn[count + 1] = 0x20; wordAdr[count + 1] = space_adr;
+//		hyph[1] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+//		for (i = 1; i <= count + 1; i++) {
+//			if (wordIn[i] == ' ') {
+//				if (i + 1 <= count && hyph[i + 1] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE/*'B'*/)
+//					hyph[i + 1] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+//				if (i - 1 > 0 && hyph[i - 1] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE/*'B'*/)
+//					hyph[i - 1] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+//				if (i - 2 > 0 && hyph[i - 2] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE/*'B'*/)
+//					hyph[i - 2] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+//			}
+//		}
+//
+//		if (pattern != null) {
+//			int	start_adr = 0;
+//			int letter_num;
+//			int len_pattern;
+//
+//			next_letter:
+//				for (letter_num = count; letter_num >= 0; letter_num--) {
+//					start_adr = wordAdr[letter_num];
+//					if (start_adr == -1)
+//						continue;
+//					//
+//					len_pattern = pattern[start_adr];
+//					if (len_pattern == 1) {
+//						if (letter_num > 0 && mask[start_adr] > hyph[letter_num - 1])
+//							hyph[letter_num - 1] = mask[start_adr];
+//						if (mask[start_adr + 1] > hyph[letter_num])
+//							hyph[letter_num] = mask[start_adr + 1];
+//					}
+//					//
+//
+//					while (true) {
+//						if (start_adr >= PatternLen)
+//							break;
+//
+//						len_pattern = pattern[start_adr];
+//						if (pattern[start_adr + 1] != wordIn[letter_num])
+//							continue next_letter;
+//
+//
+//						if (len_pattern <= count - letter_num + 2) {
+//							for (i = 1; i < len_pattern; i++) {
+//								//int diff = pattern[start_adr + i + 1] - wordIn[letter_num + i];
+//
+//								if (pattern[start_adr + i + 1] < wordIn[letter_num + i]) {
+//									break;
+//								} else
+//								if (pattern[start_adr + i + 1] > wordIn[letter_num + i]) {
+//									continue next_letter;
+//								} else
+//
+//								/*if (diff < 0) {
+//									break;
+//								} else
+//								if (diff > 0) {
+//									continue next_letter;
+//								} else*/
+//
+//								if (i == len_pattern - 1) {
+//									/*diff = 0;
+//									if (letter_num == 0)
+//										diff++;*/
+//									for (j = (letter_num == 0 ? 1 : 0)/*diff*/; j <= len_pattern; j++) {
+//										if (mask[start_adr + j] > hyph[letter_num + j - 1])
+//											hyph[letter_num + j - 1] = mask[start_adr + j];
+//									}
+//								}
+//							}
+//						}
+//
+//						start_adr += len_pattern + 1;
+//					}
+//				}
+//		}
+//
+//		for (i = 1; i <= count; i++) {
+//			switch (hyph[i]) {
+//			case '1': case '3': case '5': case '7': case '9':
+//				hyph[i] = InternalConst.TAL_HYPH_INPLACE_ENABLE;//'-';
+//				break;
+//			case '0': case '2': case '4': case '6': case '8':
+//				hyph[i] = InternalConst.TAL_HYPH_INPLACE_DISABLE;//'0';
+//				break;
+//			}
+//		}
+//
+//		flag.value |= InternalConst.AL_ONEWORD_FLAG_DOHYPH;
 	}
 
 	public AlHyph() {
