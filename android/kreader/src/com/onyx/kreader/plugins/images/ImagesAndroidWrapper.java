@@ -42,7 +42,8 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
                 return false;
             }
             try {
-                renderToBitmap(src, bitmap, x, y, width, height);
+                renderToBitmap(src, bitmap, bitmapRegion, (int)imageInformation.width,
+                        (int)imageInformation.height, x, y, width, height);
             } finally {
                 src.recycle();
             }
@@ -79,14 +80,23 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
         return infoCache.get(path);
     }
 
-    private void renderToBitmap(Bitmap src, Bitmap dst, int x, int y, int width, int height) {
+    private Matrix mapViewportToScreen(Rect viewportRegion, int docWidth, int docHeight, int x, int y, int width, int height) {
+        Matrix matrix = new Matrix();
+        float scaleX = width / (float)docWidth;
+        float scaleY = height / (float)docHeight;
+        matrix.postScale(scaleX, scaleY);
+        int regionOffsetX = (int)(viewportRegion.left * scaleX) + x;
+        int regionOffsetY = (int)(viewportRegion.top * scaleY) + y;
+        matrix.postTranslate(regionOffsetX, regionOffsetY);
+        return matrix;
+    }
+
+    private void renderToBitmap(Bitmap viewportBitmap, Bitmap dst, Rect viewportRegion, int docWidth, int docHeight, int x, int y, int width, int height) {
         Canvas canvas = new Canvas(dst);
         Paint paint = new Paint();
         paint.setFilterBitmap(true);
-        Matrix matrix = new Matrix();
-        matrix.postScale(width / (float)src.getWidth(), height / (float)src.getHeight());
-        matrix.postTranslate(x, y);
-        canvas.drawBitmap(src, matrix, paint);
+        Matrix matrix = mapViewportToScreen(viewportRegion, docWidth, docHeight, x, y, width, height);
+        canvas.drawBitmap(viewportBitmap, matrix, paint);
     }
 
     /**
