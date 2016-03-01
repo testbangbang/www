@@ -73,6 +73,19 @@ public class ReaderTestActivity extends Activity {
     }
 
     private void initSurfaceView() {
+        button = (Button)findViewById(R.id.open);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    path = ((EditText)findViewById(R.id.path)).getText().toString();
+                    testReaderOpen();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         button = (Button)findViewById(R.id.update);
         button.setOnClickListener(new View.OnClickListener() {
             @Override

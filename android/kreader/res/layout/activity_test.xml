@@ -4,6 +4,26 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/open"
+                android:layout_alignParentRight="true"
+                android:text="open"
+            />
+
+        <EditText android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/path"
+                  android:layout_toLeftOf="@id/open"
+                  android:text="/mnt/sdcard/"
+            />
+
+    </RelativeLayout>
+
     <Button android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/update"
