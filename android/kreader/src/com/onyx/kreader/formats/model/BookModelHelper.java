@@ -1,5 +1,6 @@
 package com.onyx.kreader.formats.model;
 
+import android.util.Log;
 import com.onyx.kreader.formats.encodings.Decoder;
 import com.onyx.kreader.formats.filesystem.FileNIO;
 import com.onyx.kreader.utils.StringUtils;

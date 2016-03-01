@@ -23,8 +23,16 @@ public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestAc
         BookModel bookModel = new BookModel(path);
         assertTrue(reader.open(bookModel));
         int round = 0;
-        while (reader.processNext(bookModel)) {
-            Log.d(TAG, "round: " + round);
+        while (true) {
+            long start = System.currentTimeMillis();
+            if (!reader.processNext(bookModel)) {
+                break;
+            }
+            long end = System.currentTimeMillis();
+            if (round >= 1) {
+                assertTrue(end - start < 100);
+            }
+            Log.d(TAG, "round: " + round + " ts: " + (end - start));
             ++round;
         }
         assertTrue(bookModel.getModelHelper().getEncoding().equalsIgnoreCase("GB18030"));
