@@ -38,12 +38,13 @@ import java.util.*;
  */
 public class ReaderTestActivity extends Activity {
 
+    private enum TestCase { ToPage, PageList, ContinuousList  }
 
     private Reader reader;
     //final String path = "/mnt/sdcard/cityhunter/cityhunter10.pdf";
-    final String path = "/mnt/sdcard/Books/a.pdf";
+//    final String path = "/mnt/sdcard/Books/a.pdf";
 //    final String path = "/mnt/sdcard/Books/lz.13.pdf";
-//    final String path = "/mnt/sdcard/Pictures/normal.jpg";
+    String path = "/mnt/sdcard/Pictures/normal.jpg";
     private int pn = 0;
     private int next = 0;
     private EditText searchEdit;
@@ -62,6 +63,7 @@ public class ReaderTestActivity extends Activity {
     private float startX, startY, endX, endY;
     private ReaderViewInfo readerViewInfo;
     private RectF selectionRect;
+    private TestCase testCase = TestCase.ToPage;
 
 
     @Override
@@ -95,6 +97,28 @@ public class ReaderTestActivity extends Activity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        final Button btn = (Button)findViewById(R.id.switch_test);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (testCase) {
+                    case ToPage:
+                        testCase = TestCase.PageList;
+                        break;
+                    case PageList:
+                        testCase = TestCase.ContinuousList;
+                        break;
+                    case ContinuousList:
+                        testCase = TestCase.ToPage;
+                        break;
+                    default:
+                        assert false;
+                        return;
+                }
+                btn.setText("switch: " + testCase.toString());
             }
         });
 
@@ -190,7 +214,21 @@ public class ReaderTestActivity extends Activity {
         reader.submitRequest(this, config, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
-                testContinuousList();
+                readerViewInfo = request.getReaderViewInfo();
+                switch (testCase) {
+                    case ToPage:
+                        testScaleToPage();
+                        break;
+                    case PageList:
+                        testPageNavigationList();
+                        break;
+                    case ContinuousList:
+                        testContinuousList();
+                        break;
+                    default:
+                        testScaleToPage();
+                        break;
+                }
             }
         });
     }
@@ -226,11 +264,13 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testContinuousScale() {
-        BaseRequest request = new ScaleToPageRequest(String.valueOf(0));
+        BaseRequest request = new ScaleRequest(String.valueOf(0), 0.5f, 0, 0);
+//        BaseRequest request = new ScaleToPageRequest(String.valueOf(0));
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
+                readerViewInfo = request.getReaderViewInfo();
                 dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png", false);
             }
         });
