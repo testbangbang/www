@@ -11,7 +11,7 @@ public class TextModel {
     private List<Paragraph> paragraphList = new ArrayList<Paragraph>();
 
     public Paragraph createParagraph() {
-        return Paragraph.create();
+        return null;
     }
 
     

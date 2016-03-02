@@ -1,5 +1,7 @@
 package com.onyx.kreader.formats.filesystem;
 
+import com.onyx.kreader.utils.FileUtils;
+
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
@@ -20,10 +22,9 @@ public class FileNIO {
     }
 
     public boolean open() {
+        close();
         try {
-            if (randomAccessFile == null) {
-                randomAccessFile = new RandomAccessFile(path, "r");
-            }
+            randomAccessFile = new RandomAccessFile(path, "r");
             readChannel = randomAccessFile.getChannel();
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,5 +39,16 @@ public class FileNIO {
         } catch (Exception e) {
             return -1;
         }
+    }
+
+    public void close() {
+        if (readChannel != null && readChannel.isOpen()) {
+            FileUtils.closeQuietly(readChannel);
+        }
+        if (randomAccessFile != null) {
+            FileUtils.closeQuietly(randomAccessFile);
+        }
+        randomAccessFile = null;
+        readChannel = null;
     }
 }

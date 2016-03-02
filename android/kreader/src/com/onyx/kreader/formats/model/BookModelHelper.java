@@ -53,6 +53,15 @@ public class BookModelHelper {
         return count;
     }
 
+    public boolean close() {
+        decoder = null;
+        encoding = null;
+        if (file != null) {
+            file.close();
+        }
+        return true;
+    }
+
     public void decodeBuffer(final ByteBuffer inBuffer, final CharBuffer outBuffer, boolean finished) {
         if (decoder != null) {
             decoder.decodeBuffer(inBuffer, outBuffer, finished);

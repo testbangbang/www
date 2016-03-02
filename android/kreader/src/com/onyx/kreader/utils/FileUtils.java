@@ -1,6 +1,10 @@
 package com.onyx.kreader.utils;
 
+import android.database.Cursor;
+
+import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -51,5 +55,24 @@ public class FileUtils {
     public static String getParent(final String path) {
         File file = new File(path);
         return file.getParent();
+    }
+
+
+    public static void closeQuietly(Cursor cursor) {
+        try {
+            if (cursor != null)
+                cursor.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void closeQuietly(Closeable closeable) {
+        try {
+            if (closeable != null)
+                closeable.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

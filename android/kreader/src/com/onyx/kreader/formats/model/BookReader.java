@@ -19,4 +19,11 @@ public interface BookReader {
      */
     public boolean processNext(final BookModel bookModel);
 
+    /**
+     * close model.
+     * @param bookModel the book model.
+     * @return true if model has been successfully closed.
+     */
+    public boolean close(final BookModel bookModel);
+
 }

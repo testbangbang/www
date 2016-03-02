@@ -21,21 +21,24 @@ public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestAc
         final String path = "/mnt/sdcard/Books/test.txt";
         TxtReader reader = new TxtReader();
         BookModel bookModel = new BookModel(path);
-        assertTrue(reader.open(bookModel));
-        int round = 0;
-        while (true) {
-            long start = System.currentTimeMillis();
-            if (!reader.processNext(bookModel)) {
-                break;
+        for(int i = 0; i < 3; ++i) {
+            assertTrue(reader.open(bookModel));
+            int round = 0;
+            while (true) {
+                long start = System.currentTimeMillis();
+                if (!reader.processNext(bookModel)) {
+                    break;
+                }
+                long end = System.currentTimeMillis();
+                if (round >= 1) {
+                    assertTrue(end - start < 100);
+                }
+                //  Log.d(TAG, "round: " + round + " ts: " + (end - start));
+                ++round;
             }
-            long end = System.currentTimeMillis();
-            if (round >= 1) {
-                assertTrue(end - start < 100);
-            }
-            Log.d(TAG, "round: " + round + " ts: " + (end - start));
-            ++round;
+            assertTrue(bookModel.getModelHelper().getEncoding().equalsIgnoreCase("GB18030"));
+            assertTrue(reader.close(bookModel));
         }
-        assertTrue(bookModel.getModelHelper().getEncoding().equalsIgnoreCase("GB18030"));
     }
 
 }
