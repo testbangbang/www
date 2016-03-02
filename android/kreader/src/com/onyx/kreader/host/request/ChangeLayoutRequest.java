@@ -19,8 +19,7 @@ public class ChangeLayoutRequest extends BaseRequest {
 
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
-        reader.getReaderLayoutManager().setCurrentLayout(newLayout);
-        reader.getReaderLayoutManager().setNavigationArgs(navigationArgs);
+        reader.getReaderLayoutManager().setCurrentLayout(newLayout, navigationArgs);
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
 }
