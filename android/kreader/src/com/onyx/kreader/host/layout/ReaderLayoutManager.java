@@ -97,7 +97,7 @@ public class ReaderLayoutManager {
         return currentProvider;
     }
 
-    public boolean setCurrentLayout(final String layoutName) throws ReaderException {
+    public boolean setCurrentLayout(final String layoutName, NavigationArgs navigationArgs) throws ReaderException {
         if (!provider.containsKey(layoutName)) {
             return false;
         }
@@ -107,6 +107,7 @@ public class ReaderLayoutManager {
 
         currentProvider = layoutName;
         getCurrentLayoutProvider().activate();
+        getCurrentLayoutProvider().setNavigationArgs(navigationArgs);
 
         // goto the stored page
         if (StringUtils.isNotBlank(pagePosition)) {
