@@ -4,18 +4,53 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <Button android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/open"
+                android:layout_alignParentRight="true"
+                android:text="open"
+            />
+
+        <EditText android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/path"
+                  android:layout_toLeftOf="@id/open"
+                  android:text="/mnt/sdcard/"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/switch_test"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="switch test"
+            />
+
+        <Button
             android:id="@+id/update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/switch_test"
             android:text="test"
-    />
+            />
+
+    </RelativeLayout>
 
     <Button android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/hyphen"
             android:text="testHyphen"
-    />
-
+        />
 
     <EditText android:layout_width="match_parent"
             android:layout_height="wrap_content"
