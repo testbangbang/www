@@ -16,4 +16,11 @@ public class BookModel {
     public final BookModelHelper getModelHelper() {
         return modelHelper;
     }
+
+    public final TextModel getTextModel() {
+        if (textModel == null) {
+            textModel = new TextModel();
+        }
+        return textModel;
+    }
 }

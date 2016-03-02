@@ -1,5 +1,6 @@
 package com.onyx.kreader.formats.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,14 +30,18 @@ public class Paragraph {
     private long streamPosition;
     private long streamLength;
     private ParagraphKind paragraphKind;
-    private List<Entry> entryList;
+    private List<ParagraphEntry> paragraphEntryList = new ArrayList<ParagraphEntry>();
 
     public Paragraph(final ParagraphKind kind) {
         paragraphKind = kind;
     }
 
-    public void addEntry(final Entry entry) {
-        entryList.add(entry);
+    public void addEntry(final ParagraphEntry paragraphEntry) {
+        paragraphEntryList.add(paragraphEntry);
+    }
+
+    public final List<ParagraphEntry> getParagraphEntryList() {
+        return paragraphEntryList;
     }
 
 }

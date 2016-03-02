@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by zengzhu on 3/1/16.
  */
-public class Entry {
+public class ParagraphEntry {
 
     static public enum EntryKind {
         TEXT_ENTRY,
