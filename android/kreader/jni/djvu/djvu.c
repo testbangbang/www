@@ -31,65 +31,65 @@ ddjvu_page_t *page = NULL;
 
 JNIEXPORT int JNICALL
 JNI_FN(DjvuDocument_openFile)(JNIEnv * env, jobject thiz, jstring jfileName)
-{  
-	page = NULL;
-	context = ddjvu_context_create("neo");
-	const char * fileName = (*env)->GetStringUTFChars(env, jfileName, 0);
+{
+    page = NULL;
+    context = ddjvu_context_create("neo");
+    const char * fileName = (*env)->GetStringUTFChars(env, jfileName, 0);
 
-	doc = ddjvu_document_create_by_filename_utf8(context, fileName, 0);
-	int pageNum = 0;
-	if (doc) {
-		pageNum =  ddjvu_document_get_pagenum(doc);
-	}
-	return 	pageNum;
+    doc = ddjvu_document_create_by_filename_utf8(context, fileName, 0);
+    int pageNum = 0;
+    if (doc) {
+        pageNum =  ddjvu_document_get_pagenum(doc);
+    }
+    return 	pageNum;
 }
 
 
 JNIEXPORT void JNICALL
 JNI_FN(DjvuDocument_gotoPageInternal)(JNIEnv *env, jobject thiz, int pageNum)
 {
-	if (page != NULL) {
-	    ddjvu_page_release(page);
-	    page = NULL;
-	}
-	page = ddjvu_page_create_by_pageno(doc, pageNum);
+    if (page != NULL) {
+        ddjvu_page_release(page);
+        page = NULL;
+    }
+    page = ddjvu_page_create_by_pageno(doc, pageNum);
 }
 
 JNIEXPORT void JNICALL
 JNI_FN(DjvuDocument_getPageInfo)(JNIEnv *env, jobject thiz, int pageNum, jobject info)
 {
-	
-	clock_t start, end;
-	start = clock();
 
-	/*
-	ddjvu_page_t * mypage = ddjvu_page_create_by_pageno(doc, pageNum);
-	int pageWidth =  ddjvu_page_get_width(mypage);
-	int pageHeight = ddjvu_page_get_height(mypage);
-	//LOGI("mypage: %x", mypage);
-	
-	ddjvu_page_release(mypage);
-	*/
+    clock_t start, end;
+    start = clock();
 
-	ddjvu_pageinfo_t dinfo;
-	ddjvu_document_get_pageinfo(doc, pageNum, &dinfo);
-	
-	jclass cls = (*env)->GetObjectClass(env, info);
-	jfieldID width = (*env)->GetFieldID(env, cls, "pageNaturalWidth", "I");
-	jfieldID height = (*env)->GetFieldID(env, cls, "pageNaturalHeight", "I");
-	(*env)->SetIntField(env, info, width, dinfo.width);
-	(*env)->SetIntField(env, info, height, dinfo.height);
-	 
-	end = clock();	
+    /*
+    ddjvu_page_t * mypage = ddjvu_page_create_by_pageno(doc, pageNum);
+    int pageWidth =  ddjvu_page_get_width(mypage);
+    int pageHeight = ddjvu_page_get_height(mypage);
+    //LOGI("mypage: %x", mypage);
+
+    ddjvu_page_release(mypage);
+    */
+
+    ddjvu_pageinfo_t dinfo;
+    ddjvu_document_get_pageinfo(doc, pageNum, &dinfo);
+
+    jclass cls = (*env)->GetObjectClass(env, info);
+    jfieldID width = (*env)->GetFieldID(env, cls, "pageNaturalWidth", "I");
+    jfieldID height = (*env)->GetFieldID(env, cls, "pageNaturalHeight", "I");
+    (*env)->SetIntField(env, info, width, dinfo.width);
+    (*env)->SetIntField(env, info, height, dinfo.height);
+
+    end = clock();
 }
 
 JNIEXPORT jboolean JNICALL
 JNI_FN(DjvuDocument_drawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float zoom,
-		int bmpWidth, int bmpHeight, int patchX, int patchY, int patchW, int patchH)
+        int bmpWidth, int bmpHeight, int patchX, int patchY, int patchW, int patchH)
 {
-	int ret;
-	AndroidBitmapInfo info;
-	void *pixels;
+    int ret;
+    AndroidBitmapInfo info;
+    void *pixels;
 
     if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
         LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
@@ -106,11 +106,11 @@ JNI_FN(DjvuDocument_drawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float z
         LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
         return 0;
     }
-			
+
     //float zoom = 0.0001f * zoom10000;
-	int pageWidth =  ddjvu_page_get_width(page);
-	int pageHeight = ddjvu_page_get_height(page);
-	
+    int pageWidth =  ddjvu_page_get_width(page);
+    int pageHeight = ddjvu_page_get_height(page);
+
     ddjvu_rect_t pageRect;
     pageRect.x = 0;
     pageRect.y = 0;
@@ -121,27 +121,27 @@ JNI_FN(DjvuDocument_drawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float z
     targetRect.y = patchY;
     targetRect.w = patchW;
     targetRect.h = patchH;
-	
-	int shift = 0;
-	if (targetRect.x < 0) {
-	   shift = -targetRect.x;
-	   targetRect.w += targetRect.x;
-	   targetRect.x = 0;
-	}
-	if (targetRect.y < 0) {
-	    shift +=  -targetRect.y * info.width;
-		targetRect.h += targetRect.y;
-		targetRect.y = 0;
-	}
-	
-	if (pageRect.w <  targetRect.x + targetRect.w) {
-	    targetRect.w = targetRect.w - (targetRect.x + targetRect.w - pageRect.w);
-	}
-	if (pageRect.h <  targetRect.y + targetRect.h) {
-	    targetRect.h = targetRect.h - (targetRect.y + targetRect.h - pageRect.h);
-	}
-	memset(pixels, 0xffffffff, numPixels);
-	 
+
+    int shift = 0;
+    if (targetRect.x < 0) {
+       shift = -targetRect.x;
+       targetRect.w += targetRect.x;
+       targetRect.x = 0;
+    }
+    if (targetRect.y < 0) {
+        shift +=  -targetRect.y * info.width;
+        targetRect.h += targetRect.y;
+        targetRect.y = 0;
+    }
+
+    if (pageRect.w <  targetRect.x + targetRect.w) {
+        targetRect.w = targetRect.w - (targetRect.x + targetRect.w - pageRect.w);
+    }
+    if (pageRect.h <  targetRect.y + targetRect.h) {
+        targetRect.h = targetRect.h - (targetRect.y + targetRect.h - pageRect.h);
+    }
+    memset(pixels, 0xffffffff, numPixels);
+
     unsigned int masks[4] = { 0xff, 0xff00, 0xff0000, 0xff000000 };
     ddjvu_format_t* pixelFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 4, masks);
 
@@ -150,7 +150,7 @@ JNI_FN(DjvuDocument_drawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float z
     char * buffer = &(((unsigned char *)pixels)[shift*4]);
     //LOGI("going to render page %d %d %d %d pageRect %d %d %d %d.", targetRect.x, targetRect.y, targetRect.w, targetRect.h, pageRect.x, pageRect.y, pageRect.w, pageRect.h);
     jboolean result = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, info.stride, buffer);
-	ddjvu_format_release(pixelFormat);
+    ddjvu_format_release(pixelFormat);
     AndroidBitmap_unlockPixels(env, bitmap);
     return 1;
 }
@@ -159,39 +159,39 @@ JNI_FN(DjvuDocument_drawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float z
 JNIEXPORT void JNICALL
 JNI_FN(DjvuDocument_destroying)(JNIEnv * env, jobject thiz)
 {
-	if (page != NULL) {
-		ddjvu_page_release(page);
-		page = NULL;
-	}
-	if (doc != NULL) {
-		ddjvu_document_release(doc);
-		doc = NULL;
-	}
-	if (context != NULL) {
-		ddjvu_context_release(context);
-		context = NULL;
-	}
+    if (page != NULL) {
+        ddjvu_page_release(page);
+        page = NULL;
+    }
+    if (doc != NULL) {
+        ddjvu_document_release(doc);
+        doc = NULL;
+    }
+    if (context != NULL) {
+        ddjvu_context_release(context);
+        context = NULL;
+    }
 }
 
 
-struct list_el {  
+struct list_el {
   jobject item;
   struct list_item * next;
 };
 
 typedef struct list_el list_item;
 
-struct list_st {  
+struct list_st {
   list_item * head;
   list_item * tail;
 };
 
 typedef struct list_st list;
 
-struct OutlineItem_s {  
+struct OutlineItem_s {
   char * title;
   int level;
-  int page;  
+  int page;
 };
 typedef struct OutlineItem_s OutlineItem;
 
@@ -201,73 +201,73 @@ JNIEXPORT jobjectArray JNICALL
 JNI_FN(DjvuDocument_getOutline)(JNIEnv * env, jobject thiz)
 {
   miniexp_t outline = ddjvu_document_get_outline(doc);
-  
-  if (outline == miniexp_dummy || outline == NULL) {    
+
+  if (outline == miniexp_dummy || outline == NULL) {
       return NULL;
   }
-    
+
   if (!miniexp_consp(outline) || miniexp_car(outline) != miniexp_symbol("bookmarks"))
   {
      LOGI("Outlines is empty");
   }
-      
-  list_item * root = (list_item *) malloc(sizeof(list_item)); 
+
+  list_item * root = (list_item *) malloc(sizeof(list_item));
   root->next = NULL;
-  
+
   list * myList = (list *) malloc(sizeof(list));
   myList->head = root;
   myList->tail = root;
-  
+
   jclass        olClass;
   jmethodID     ctor;
 
   olClass = (*env)->FindClass(env, "com/onyx/reader/outline/OutlineItem");
   if (olClass == NULL) return NULL;
   ctor = (*env)->GetMethodID(env, olClass, "<init>", "(ILjava/lang/String;I)V");
-  if (ctor == NULL) return NULL;  
-  
+  if (ctor == NULL) return NULL;
+
   buildTOC(miniexp_cdr(outline), myList, 0, env, olClass, ctor);
-  
+
   list_item * next = myList->head;
   int size = 0;
-  while (next->next != NULL) {    
+  while (next->next != NULL) {
     next = next->next;
     size++;
   }
-  
+
   LOGI("Outline has %i entries", size);
-  
+
   jobjectArray arr = (*env)->NewObjectArray(env, size, olClass, NULL);
   if (arr == NULL) {
     return NULL;
   }
-  
+
   next = root->next;
-  int pos = 0;  
-    
-  while (next != NULL) {    
+  int pos = 0;
+
+  while (next != NULL) {
     OutlineItem * item = next->item;
     jstring title = (*env)->NewStringUTF(env, item->title);
     //shift pageno to zero based
     jobject element = (*env)->NewObject(env, olClass, ctor, item->level, title, item->page - 1);
-    (*env)->SetObjectArrayElement(env, arr, pos, element);    
-    (*env)->DeleteLocalRef(env, title);    
+    (*env)->SetObjectArrayElement(env, arr, pos, element);
+    (*env)->DeleteLocalRef(env, title);
     (*env)->DeleteLocalRef(env, element);
-    
-    free(item);    
+
+    free(item);
     list_item * next2 = next->next;
     free(next);
     next = next2;
-    pos++;    
+    pos++;
   }
   free(root);
-  
-  return arr;  
+
+  return arr;
 }
 
 
 int buildTOC(miniexp_t expr, list * myList, int level, JNIEnv * env, jclass olClass, jmethodID ctor)
-{   
+{
   while(miniexp_consp(expr))
     {
       miniexp_t s = miniexp_car(expr);
@@ -283,22 +283,22 @@ int buildTOC(miniexp_t expr, list * myList, int level, JNIEnv * env, jclass olCl
           //starts with #
 //          LOGI("Page %s", page);
           int pageno = atoi(&page[1]);
-	  
-	  if (name == NULL) {return -1;}
-	  
-	  OutlineItem * element = (list_item *) malloc(sizeof(OutlineItem));
-	  element->title = name;
-	  element->page = pageno;
-	  element->level = level;
-	  
-	  list_item * next = (list_item *) malloc(sizeof(list_item));
-	  next->item = element;
-	  next->next = NULL;
-	  myList->tail->next = next;
-	  myList->tail = next;
-	  	  
+
+      if (name == NULL) {return -1;}
+
+      OutlineItem * element = (list_item *) malloc(sizeof(OutlineItem));
+      element->title = name;
+      element->page = pageno;
+      element->level = level;
+
+      list_item * next = (list_item *) malloc(sizeof(list_item));
+      next->item = element;
+      next->next = NULL;
+      myList->tail->next = next;
+      myList->tail = next;
+
           // recursion
-          buildTOC(miniexp_cddr(s), myList, level+1, env, olClass, ctor);	  
+          buildTOC(miniexp_cddr(s), myList, level+1, env, olClass, ctor);
         }
     }
     return 0;
@@ -308,7 +308,7 @@ int buildTOC(miniexp_t expr, list * myList, int level, JNIEnv * env, jclass olCl
 
 JNIEXPORT jstring JNICALL
 JNI_FN(DjvuDocument_getText)(JNIEnv *env, jobject thiz, int pageNumber,
-		int startX, int startY, int width, int height)
+        int startX, int startY, int width, int height)
 {
 
     miniexp_t pagetext;
@@ -326,14 +326,14 @@ JNI_FN(DjvuDocument_getText)(JNIEnv *env, jobject thiz, int pageNumber,
         //nothing
     }
 
-	Arraylist values = arraylist_create();
+    Arraylist values = arraylist_create();
 
     int w = info.width;
     int h = info.height;
     fz_bbox target = {startX, h - startY - height, startX + width, h - startY};
-	extractText(pagetext, values, &target);
+    extractText(pagetext, values, &target);
 
-	arraylist_add(values, 0);
+    arraylist_add(values, 0);
     jstring result = (*env)->NewStringUTF(env, arraylist_getData(values));
     arraylist_free(values);
 
