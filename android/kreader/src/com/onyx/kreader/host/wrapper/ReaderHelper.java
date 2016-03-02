@@ -8,6 +8,7 @@ import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 
@@ -41,6 +42,8 @@ public class ReaderHelper {
             plugin = new PdfiumReaderPlugin(context, pluginOptions);
         } else if (ImagesReaderPlugin.accept(path)) {
             plugin = new ImagesReaderPlugin(context, pluginOptions);
+        } else if (DjvuReaderPlugin.accept(path)) {
+            plugin = new DjvuReaderPlugin(context, pluginOptions);
         }
         return (plugin != null);
     }
