@@ -14,8 +14,8 @@
 #include "list.c"
 #include "base_geometry.c"
 
-#define JNI_FN(A) Java_com_onyx_reader_djvu_ ## A
-#define PACKAGENAME "com/onyx/reader/djvu"
+#define JNI_FN(A) Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_ ## A
+#define PACKAGENAME "com/onyx/kreader/plugins/djvu"
 
 
 #define LOG_TAG "djvulib"
@@ -30,7 +30,7 @@ ddjvu_page_t *page = NULL;
 
 
 JNIEXPORT int JNICALL
-JNI_FN(DjvuDocument_openFile)(JNIEnv * env, jobject thiz, jstring jfileName)
+JNI_FN(nativeOpenFile)(JNIEnv * env, jobject thiz, jstring jfileName)
 {
     page = NULL;
     context = ddjvu_context_create("neo");
@@ -46,7 +46,7 @@ JNI_FN(DjvuDocument_openFile)(JNIEnv * env, jobject thiz, jstring jfileName)
 
 
 JNIEXPORT void JNICALL
-JNI_FN(DjvuDocument_gotoPageInternal)(JNIEnv *env, jobject thiz, int pageNum)
+JNI_FN(nativeGotoPage)(JNIEnv *env, jobject thiz, int pageNum)
 {
     if (page != NULL) {
         ddjvu_page_release(page);
@@ -56,7 +56,7 @@ JNI_FN(DjvuDocument_gotoPageInternal)(JNIEnv *env, jobject thiz, int pageNum)
 }
 
 JNIEXPORT void JNICALL
-JNI_FN(DjvuDocument_getPageInfo)(JNIEnv *env, jobject thiz, int pageNum, jobject info)
+JNI_FN(nativeGetPageSize)(JNIEnv *env, jobject thiz, int pageNum, jfloatArray size)
 {
 
     clock_t start, end;
@@ -74,17 +74,16 @@ JNI_FN(DjvuDocument_getPageInfo)(JNIEnv *env, jobject thiz, int pageNum, jobject
     ddjvu_pageinfo_t dinfo;
     ddjvu_document_get_pageinfo(doc, pageNum, &dinfo);
 
-    jclass cls = (*env)->GetObjectClass(env, info);
-    jfieldID width = (*env)->GetFieldID(env, cls, "pageNaturalWidth", "I");
-    jfieldID height = (*env)->GetFieldID(env, cls, "pageNaturalHeight", "I");
-    (*env)->SetIntField(env, info, width, dinfo.width);
-    (*env)->SetIntField(env, info, height, dinfo.height);
-
+    //jfloat s[2] = { (float)dinfo.width, (float)dinfo.height };
+    jfloat s[2];
+    s[0] = (float)dinfo.width;
+    s[1] = (float)dinfo.height;
+    (*env)->SetFloatArrayRegion(env, size, 0, 2, s);
     end = clock();
 }
 
 JNIEXPORT jboolean JNICALL
-JNI_FN(DjvuDocument_drawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float zoom,
+JNI_FN(nativeDrawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float zoom,
         int bmpWidth, int bmpHeight, int patchX, int patchY, int patchW, int patchH)
 {
     int ret;
@@ -157,7 +156,7 @@ JNI_FN(DjvuDocument_drawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float z
 
 
 JNIEXPORT void JNICALL
-JNI_FN(DjvuDocument_destroying)(JNIEnv * env, jobject thiz)
+JNI_FN(nativeClose)(JNIEnv * env, jobject thiz)
 {
     if (page != NULL) {
         ddjvu_page_release(page);
@@ -194,117 +193,6 @@ struct OutlineItem_s {
   int page;
 };
 typedef struct OutlineItem_s OutlineItem;
-
-
-
-JNIEXPORT jobjectArray JNICALL
-JNI_FN(DjvuDocument_getOutline)(JNIEnv * env, jobject thiz)
-{
-  miniexp_t outline = ddjvu_document_get_outline(doc);
-
-  if (outline == miniexp_dummy || outline == NULL) {
-      return NULL;
-  }
-
-  if (!miniexp_consp(outline) || miniexp_car(outline) != miniexp_symbol("bookmarks"))
-  {
-     LOGI("Outlines is empty");
-  }
-
-  list_item * root = (list_item *) malloc(sizeof(list_item));
-  root->next = NULL;
-
-  list * myList = (list *) malloc(sizeof(list));
-  myList->head = root;
-  myList->tail = root;
-
-  jclass        olClass;
-  jmethodID     ctor;
-
-  olClass = (*env)->FindClass(env, "com/onyx/reader/outline/OutlineItem");
-  if (olClass == NULL) return NULL;
-  ctor = (*env)->GetMethodID(env, olClass, "<init>", "(ILjava/lang/String;I)V");
-  if (ctor == NULL) return NULL;
-
-  buildTOC(miniexp_cdr(outline), myList, 0, env, olClass, ctor);
-
-  list_item * next = myList->head;
-  int size = 0;
-  while (next->next != NULL) {
-    next = next->next;
-    size++;
-  }
-
-  LOGI("Outline has %i entries", size);
-
-  jobjectArray arr = (*env)->NewObjectArray(env, size, olClass, NULL);
-  if (arr == NULL) {
-    return NULL;
-  }
-
-  next = root->next;
-  int pos = 0;
-
-  while (next != NULL) {
-    OutlineItem * item = next->item;
-    jstring title = (*env)->NewStringUTF(env, item->title);
-    //shift pageno to zero based
-    jobject element = (*env)->NewObject(env, olClass, ctor, item->level, title, item->page - 1);
-    (*env)->SetObjectArrayElement(env, arr, pos, element);
-    (*env)->DeleteLocalRef(env, title);
-    (*env)->DeleteLocalRef(env, element);
-
-    free(item);
-    list_item * next2 = next->next;
-    free(next);
-    next = next2;
-    pos++;
-  }
-  free(root);
-
-  return arr;
-}
-
-
-int buildTOC(miniexp_t expr, list * myList, int level, JNIEnv * env, jclass olClass, jmethodID ctor)
-{
-  while(miniexp_consp(expr))
-    {
-      miniexp_t s = miniexp_car(expr);
-      expr = miniexp_cdr(expr);
-      if (miniexp_consp(s) &&
-          miniexp_consp(miniexp_cdr(s)) &&
-          miniexp_stringp(miniexp_car(s)) &&
-          miniexp_stringp(miniexp_cadr(s)) )
-        {
-          // fill item
-          const char *name = miniexp_to_str(miniexp_car(s));
-          const char *page = miniexp_to_str(miniexp_cadr(s));
-          //starts with #
-//          LOGI("Page %s", page);
-          int pageno = atoi(&page[1]);
-
-      if (name == NULL) {return -1;}
-
-      OutlineItem * element = (list_item *) malloc(sizeof(OutlineItem));
-      element->title = name;
-      element->page = pageno;
-      element->level = level;
-
-      list_item * next = (list_item *) malloc(sizeof(list_item));
-      next->item = element;
-      next->next = NULL;
-      myList->tail->next = next;
-      myList->tail = next;
-
-          // recursion
-          buildTOC(miniexp_cddr(s), myList, level+1, env, olClass, ctor);
-        }
-    }
-    return 0;
-}
-
-
 
 JNIEXPORT jstring JNICALL
 JNI_FN(DjvuDocument_getText)(JNIEnv *env, jobject thiz, int pageNumber,
