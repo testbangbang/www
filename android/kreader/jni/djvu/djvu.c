@@ -139,7 +139,8 @@ JNI_FN(nativeDrawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float zoom,
     if (pageRect.h <  targetRect.y + targetRect.h) {
         targetRect.h = targetRect.h - (targetRect.y + targetRect.h - pageRect.h);
     }
-    memset(pixels, 0xffffffff, numPixels);
+    // we would keep old bitmap data if we want to provide continuous paging mode
+    //memset(pixels, 0xffffffff, numPixels);
 
     unsigned int masks[4] = { 0xff, 0xff00, 0xff0000, 0xff000000 };
     ddjvu_format_t* pixelFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 4, masks);
