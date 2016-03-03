@@ -62,13 +62,17 @@ public class LayoutTestActivity extends Activity {
             return;
         }
         long s2 = System.currentTimeMillis();
+        final Style style = randStyle();
         TextLayoutJustify instance = new TextLayoutJustify();
         int margin = 100;
-        RectF rect = new RectF(margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - margin);
+
+        final Paint.FontMetrics fontMetrics = style.getPaint().getFontMetrics();
+        float baseLine = margin - fontMetrics.top;
+        RectF rect = new RectF(margin, baseLine, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - baseLine);
 
         List<Element> textElementList = new ArrayList<Element>();
         final List<Paragraph> list = bookModel.getTextModel().getParagraphList();
-        final Style style = randStyle();
+
         for (int p = lastParagraph; p < list.size(); ++p) {
             final Paragraph paragraph = list.get(p);
             for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
@@ -99,10 +103,16 @@ public class LayoutTestActivity extends Activity {
         for(Element element : textElementList) {
             element.draw(canvas);
         }
-        canvas.drawRect(rect, paint);
+
+
+        canvas.drawLine(margin, baseLine, surfaceView.getMeasuredWidth() - margin, baseLine, style.getPaint());
+        RectF bounding = new RectF(margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - margin);
+        canvas.drawRect(bounding, paint);
+
         holder.unlockCanvasAndPost(canvas);
         long s5 = System.currentTimeMillis();
         Log.i(TAG, "performance: " + (s2 - s1) + " " + (s3 - s2) + " " + (s4 - s3) + " " + (s5 - s4));
+
 
     }
 
