@@ -40,7 +40,7 @@
                 <data android:pathPattern=".*\\.acsm" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".tests.LayoutTestActivity"/>
 
 
     </application>

@@ -36,8 +36,6 @@ public class PdfiumJniWrapper {
     public native int nativePageCount();
     public native boolean nativePageSize(int page, float []size);
 
-    public native boolean nativeClearBitmap(final Bitmap bitmap);
-
     private native boolean nativeRenderPage(int page, int x, int y, int width, int height, int rotation, final Bitmap bitmap);
 
     public native int nativeHitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final PdfiumSelection selection);

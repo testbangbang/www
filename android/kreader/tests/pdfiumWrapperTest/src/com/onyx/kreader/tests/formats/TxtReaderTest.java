@@ -2,6 +2,7 @@ package com.onyx.kreader.tests.formats;
 
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.kreader.formats.model.BookModel;
+import com.onyx.kreader.formats.model.Paragraph;
 import com.onyx.kreader.formats.model.entry.ParagraphEntry;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.formats.txt.TxtReader;
@@ -20,13 +21,13 @@ public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestAc
         super(ReaderTestActivity.class);
     }
 
-    public void testTxtReader() {
+    public void testTxtReader1() {
         final String path = "/mnt/sdcard/Books/test.txt";
         TxtReader reader = new TxtReader();
         BookModel bookModel = new BookModel(path);
-        for(int i = 0; i < 3; ++i) {
+        for(int i = 0; i < 2; ++i) {
             assertTrue(reader.open(bookModel));
-            int round = 0;
+            assertFalse(bookModel.getTextModel().isLoadFinished());
             while (true) {
                 if (!reader.processNext(bookModel)) {
                     break;
@@ -41,8 +42,36 @@ public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestAc
 
                 TextParagraphEntry textParagraphEntry = (TextParagraphEntry)entry;
                 assertTrue(textParagraphEntry.getText().split("\n").length <= 1);
+            }
+            final Paragraph paragraph = bookModel.getTextModel().getLastParagraph();
+            assertNotNull(paragraph);
+            assertTrue(bookModel.getTextModel().paragraphCount() == 51373);
+            assertTrue(bookModel.getTextModel().isLoadFinished());
+            assertTrue(bookModel.getModelHelper().getEncoding().equalsIgnoreCase("GB18030"));
+            assertTrue(reader.close(bookModel));
+        }
+    }
 
-                ++round;
+    public void testTxtReader2() {
+        final String path = "/mnt/sdcard/Books/test2.txt";
+        TxtReader reader = new TxtReader();
+        BookModel bookModel = new BookModel(path);
+        for(int i = 0; i < 2; ++i) {
+            assertTrue(reader.open(bookModel));
+            while (true) {
+                if (!reader.processNext(bookModel)) {
+                    break;
+                }
+                assertNotNull(bookModel.getTextModel().getLastParagraph());
+                final List<ParagraphEntry> entryList = bookModel.getTextModel().getLastParagraph().getParagraphEntryList();
+                assertNotNull(entryList);
+                ParagraphEntry entry = entryList.get(0);
+                assertNotNull(entry);
+                assertTrue(entry.getEntryKind() == TextParagraphEntry.EntryKind.TEXT_ENTRY);
+                assertTrue(entry instanceof TextParagraphEntry);
+
+                TextParagraphEntry textParagraphEntry = (TextParagraphEntry)entry;
+                assertTrue(textParagraphEntry.getText().split("\n").length <= 1);
             }
             assertTrue(bookModel.getModelHelper().getEncoding().equalsIgnoreCase("GB18030"));
             assertTrue(reader.close(bookModel));

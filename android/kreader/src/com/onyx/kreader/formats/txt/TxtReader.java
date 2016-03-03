@@ -20,28 +20,35 @@ public class TxtReader implements BookReader {
     private CharBuffer decodeResult = CharBuffer.allocate(limit);
     private StringBuilder stringBuilder = new StringBuilder();
     private Paragraph paragraph;
-    private long currentPosition;
 
 
     public boolean open(final BookModel bookModel) {
-        if (bookModel.getModelHelper() != null) {
-            return bookModel.getModelHelper().open();
+        if (bookModel.getModelHelper() == null) {
+            return false;
         }
-        currentPosition = 0;
-        return true;
+
+        if (bookModel.getModelHelper().open()) {
+            bookModel.getTextModel().reset();
+            return true;
+        }
+        return false;
     }
+
 
     public boolean processNext(final BookModel bookModel) {
         if (bookModel.getModelHelper().read(fileData) <= 0) {
             return false;
         }
 
+        if (fileData.limit() < limit) {
+            bookModel.getTextModel().setLoadFinished(true);
+        }
         if (!bookModel.getModelHelper().isEncodingDetected()) {
             detectEncoding(bookModel);
         }
-        if (!processNextData(bookModel)) {
-            flushToCurrentParagraph();
-        }
+
+        decodeBuffer(bookModel);
+        processNextData(bookModel);
         return true;
     }
 
@@ -56,8 +63,11 @@ public class TxtReader implements BookReader {
         fileData.rewind();
     }
 
-    private boolean processNextData(final BookModel bookModel) {
+    private void decodeBuffer(final BookModel bookModel) {
         bookModel.getModelHelper().decodeBuffer(fileData, decodeResult, fileData.limit() < limit);
+    }
+
+    private void processNextData(final BookModel bookModel) {
         int start = 0;
         int end = decodeResult.length();
         int ptr = start;
@@ -88,7 +98,6 @@ public class TxtReader implements BookReader {
         if (start != end) {
             processData(bookModel, decodeResult, start, end);
         }
-        return true;
     }
 
     /**
