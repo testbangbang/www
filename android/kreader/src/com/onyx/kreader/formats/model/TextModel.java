@@ -10,6 +10,12 @@ import java.util.List;
 public class TextModel {
 
     private List<Paragraph> paragraphList = new ArrayList<Paragraph>();
+    private boolean loadFinished = false;
+
+    public void reset() {
+        paragraphList.clear();
+        setLoadFinished(false);
+    }
 
     public void addParagraph(final Paragraph paragraph) {
         paragraphList.add(paragraph);
@@ -20,6 +26,18 @@ public class TextModel {
             return null;
         }
         return paragraphList.get(paragraphList.size() - 1);
+    }
+
+    public boolean isLoadFinished() {
+        return loadFinished;
+    }
+
+    public void setLoadFinished(boolean finished) {
+        loadFinished = finished;
+    }
+
+    public int paragraphCount() {
+        return paragraphList.size();
     }
 
     public void dump() {
