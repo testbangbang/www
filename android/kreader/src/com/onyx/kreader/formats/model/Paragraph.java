@@ -1,5 +1,7 @@
 package com.onyx.kreader.formats.model;
 
+import com.onyx.kreader.formats.model.entry.ParagraphEntry;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +29,17 @@ public class Paragraph {
     }
 
 
-    private long streamPosition;
+    private long physicalPosition;
     private long streamLength;
     private ParagraphKind paragraphKind;
     private List<ParagraphEntry> paragraphEntryList = new ArrayList<ParagraphEntry>();
 
     public Paragraph(final ParagraphKind kind) {
         paragraphKind = kind;
+    }
+
+    public void setPhysicalPosition(final long position) {
+        physicalPosition = position;
     }
 
     public void addEntry(final ParagraphEntry paragraphEntry) {

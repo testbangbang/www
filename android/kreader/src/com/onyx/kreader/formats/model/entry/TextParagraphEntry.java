@@ -1,4 +1,4 @@
-package com.onyx.kreader.formats.model;
+package com.onyx.kreader.formats.model.entry;
 
 /**
  * Created by zengzhu on 3/1/16.

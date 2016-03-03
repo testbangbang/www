@@ -16,6 +16,11 @@ public class Decoder {
 
     private CharsetDecoder decoderProvider = null;
 
+    static public final char CR = '\r';
+    static public final char NL = '\n';
+    static public final char TAB = '\t';
+    static public final char SPACE = ' ';
+
     public static String detectEncoding(final ByteBuffer buffer) {
         UniversalDetector detector = new UniversalDetector(null);
         detector.handleData(buffer.array(), 0, buffer.array().length);

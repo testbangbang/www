@@ -11,11 +11,6 @@ public class TextModel {
 
     private List<Paragraph> paragraphList = new ArrayList<Paragraph>();
 
-    public Paragraph createParagraph(final Paragraph.ParagraphKind paragraphKind) {
-        Paragraph paragraph = new Paragraph(paragraphKind) ;
-        return paragraph;
-    }
-
     public void addParagraph(final Paragraph paragraph) {
         paragraphList.add(paragraph);
     }

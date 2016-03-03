@@ -1,9 +1,10 @@
 package com.onyx.kreader.formats.txt;
 
+import com.onyx.kreader.formats.encodings.Decoder;
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.BookReader;
 import com.onyx.kreader.formats.model.Paragraph;
-import com.onyx.kreader.formats.model.TextParagraphEntry;
+import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -19,16 +20,14 @@ public class TxtReader implements BookReader {
     private CharBuffer decodeResult = CharBuffer.allocate(limit);
     private StringBuilder stringBuilder = new StringBuilder();
     private Paragraph paragraph;
+    private long currentPosition;
 
-    static public final char CR = '\r';
-    static public final char NL = '\n';
-    static public final char TAB = '\t';
-    static public final char SPACE = ' ';
 
     public boolean open(final BookModel bookModel) {
         if (bookModel.getModelHelper() != null) {
             return bookModel.getModelHelper().open();
         }
+        currentPosition = 0;
         return true;
     }
 
@@ -64,11 +63,11 @@ public class TxtReader implements BookReader {
         int ptr = start;
         while (ptr < end) {
             char value = decodeResult.get(ptr);
-            if (value == NL || value == CR) {
+            if (value == Decoder.NL || value == Decoder.CR) {
                 boolean skipNewLine = false;
-                if (value == CR && ptr + 1 < end && decodeResult.get(ptr + 1) == NL) {
+                if (value == Decoder.CR && ptr + 1 < end && decodeResult.get(ptr + 1) == Decoder.NL) {
                     skipNewLine = true;
-                    decodeResult.put(ptr, NL);
+                    decodeResult.put(ptr, Decoder.NL);
                 }
                 if (start != ptr) {
                     processData(bookModel, decodeResult, start, ptr + 1);
@@ -79,8 +78,8 @@ public class TxtReader implements BookReader {
                 start = ptr + 1;
                 processNewLine(bookModel);
             } else if ((value & 0x80) == 0 && Character.isSpaceChar(value)) {
-                if (value != TAB) {
-                    decodeResult.put(ptr, SPACE);
+                if (value != Decoder.TAB) {
+                    decodeResult.put(ptr, Decoder.SPACE);
                 }
             } else {
             }

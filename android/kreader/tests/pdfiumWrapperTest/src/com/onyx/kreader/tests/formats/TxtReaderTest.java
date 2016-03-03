@@ -1,10 +1,9 @@
 package com.onyx.kreader.tests.formats;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
 import com.onyx.kreader.formats.model.BookModel;
-import com.onyx.kreader.formats.model.ParagraphEntry;
-import com.onyx.kreader.formats.model.TextParagraphEntry;
+import com.onyx.kreader.formats.model.entry.ParagraphEntry;
+import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.formats.txt.TxtReader;
 import com.onyx.kreader.tests.ReaderTestActivity;
 

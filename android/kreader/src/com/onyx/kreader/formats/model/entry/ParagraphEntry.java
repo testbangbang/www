@@ -1,4 +1,4 @@
-package com.onyx.kreader.formats.model;
+package com.onyx.kreader.formats.model.entry;
 
 import java.util.List;
 
