@@ -13,6 +13,8 @@ import com.onyx.kreader.utils.TestUtils;
  */
 public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
+    private NavigationArgs navigationArgs;
+
     public ReaderLayoutManagerTest() {
         super(ReaderTestActivity.class);
     }
@@ -171,6 +173,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
 
         layoutManager.init();
         layoutManager.updateViewportSize();
+        navigationArgs = new NavigationArgs();
+        navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, null);
         assertTrue(layoutManager.setCurrentLayout(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
         assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST));
 
