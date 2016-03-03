@@ -55,11 +55,10 @@ public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<Reade
         assertFalse(DjvuReaderPlugin.accept("D:\\My Books\\a.pdf"));
     }
 
-    private ReaderDocument openTestFile() {
+    private ReaderDocument openTestFile(DjvuReaderPlugin plugin) {
         File file = new File(FILE);
         assertTrue(file.exists() && file.isFile());
         assertTrue(DjvuReaderPlugin.accept(FILE));
-        DjvuReaderPlugin plugin = new DjvuReaderPlugin(getActivity(), new ReaderPluginOptionsImpl());
         try {
            return plugin.open(FILE, null, new ReaderPluginOptionsImpl());
         } catch (ReaderException e) {
@@ -68,10 +67,24 @@ public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<Reade
         return null;
     }
 
+    private ReaderDocument openTestFile() {
+        DjvuReaderPlugin plugin = new DjvuReaderPlugin(getActivity(), new ReaderPluginOptionsImpl());
+        return openTestFile(plugin);
+    }
+
     public void testOpen() {
         ReaderDocument doc = openTestFile();
         assertNotNull(doc);
         doc.close();
+    }
+
+    public void testCleanup() {
+        DjvuReaderPlugin plugin = new DjvuReaderPlugin(getActivity(), new ReaderPluginOptionsImpl());
+        for (int i = 0; i < 100; i++) {
+            ReaderDocument doc = openTestFile(plugin);
+            assertNotNull(doc);
+            doc.close();
+        }
     }
 
     public void testPageCount() {
