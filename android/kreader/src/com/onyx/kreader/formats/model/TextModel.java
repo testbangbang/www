@@ -40,6 +40,10 @@ public class TextModel {
         return paragraphList.size();
     }
 
+    public final List<Paragraph> getParagraphList() {
+        return paragraphList;
+    }
+
     public void dump() {
 
     }

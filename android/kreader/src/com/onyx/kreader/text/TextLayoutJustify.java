@@ -1,6 +1,8 @@
 package com.onyx.kreader.text;
 
 import android.graphics.RectF;
+import com.onyx.kreader.formats.model.Paragraph;
+import com.onyx.kreader.formats.model.entry.ParagraphEntry;
 
 import java.util.List;
 
@@ -40,6 +42,11 @@ public class TextLayoutJustify {
         }
         onLayoutFinished(textLayoutContext);
         return textLayoutContext.getLayoutLines();
+    }
+
+    public List<LayoutLine> layoutParagraph(final RectF rect, final Paragraph paragraph) {
+
+        return null;
     }
 
     private boolean onLayoutBegin() {
