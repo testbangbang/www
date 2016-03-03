@@ -15,7 +15,7 @@ import java.nio.CharBuffer;
 public class TxtReader implements BookReader {
 
     private static String TAG = TxtReader.class.getSimpleName();
-    private final int limit = 2 * 1024;
+    private final int limit = 1 * 1024;
     private ByteBuffer fileData = ByteBuffer.allocate(limit);
     private CharBuffer decodeResult = CharBuffer.allocate(limit);
     private StringBuilder stringBuilder = new StringBuilder();

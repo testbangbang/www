@@ -3,6 +3,7 @@ package com.onyx.kreader.tests;
 import android.app.Activity;
 import android.graphics.*;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -27,10 +28,12 @@ public class LayoutTestActivity extends Activity {
     private Button openButton;
     private SurfaceHolder holder;
     private SurfaceView surfaceView;
+    private static final String TAG = LayoutTestActivity.class.getSimpleName();
 
     final String path = "/mnt/sdcard/Books/test.txt";
-    TxtReader reader = new TxtReader();
-    BookModel bookModel = new BookModel(path);
+    private TxtReader reader = new TxtReader();
+    private BookModel bookModel = new BookModel(path);
+    private int lastParagraph = 0;
 
 
     @Override
@@ -53,31 +56,39 @@ public class LayoutTestActivity extends Activity {
 
 
     private void testLayout() {
+        long s1 = System.currentTimeMillis();
 
         if (!reader.processNext(bookModel)) {
             return;
         }
-
+        long s2 = System.currentTimeMillis();
         TextLayoutJustify instance = new TextLayoutJustify();
-        RectF rect = new RectF(0, 0, surfaceView.getMeasuredWidth(), surfaceView.getMeasuredHeight());
+        int margin = 100;
+        RectF rect = new RectF(margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - margin);
 
         List<Element> textElementList = new ArrayList<Element>();
         final List<Paragraph> list = bookModel.getTextModel().getParagraphList();
         final Style style = randStyle();
-        for (Paragraph paragraph : list) {
+        for (int p = lastParagraph; p < list.size(); ++p) {
+            final Paragraph paragraph = list.get(p);
             for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
                 if (entry instanceof TextParagraphEntry) {
                     TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
                     final String text = textParagraphEntry.getText();
                     for (int i = 0; i < text.length(); ++i) {
+                        final String sub = text.substring(i, i + 1);
+                        if( (Character.UnicodeBlock.of(text.charAt(i)) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS)) {
+                        }
                         TextElement element = TextElement.create(text.substring(i, i + 1), style);
                         textElementList.add(element);
                     }
                 }
             }
-
         }
+        lastParagraph = list.size() - 1;
+        long s3 = System.currentTimeMillis();
         final List<LayoutLine> lines  = instance.layout(rect, textElementList);
+        long s4 = System.currentTimeMillis();
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setTextSize(40);
@@ -90,6 +101,8 @@ public class LayoutTestActivity extends Activity {
         }
         canvas.drawRect(rect, paint);
         holder.unlockCanvasAndPost(canvas);
+        long s5 = System.currentTimeMillis();
+        Log.i(TAG, "performance: " + (s2 - s1) + " " + (s3 - s2) + " " + (s4 - s3) + " " + (s5 - s4));
 
     }
 
