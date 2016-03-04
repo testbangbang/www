@@ -80,13 +80,13 @@ public class TxtReader implements BookReader {
                     decodeResult.put(ptr, Decoder.NL);
                 }
                 if (start != ptr) {
-                    processData(bookModel, decodeResult, start, ptr + 1);
+                    onReceivedData(bookModel, decodeResult, start, ptr + 1);
                 }
                 if (skipNewLine) {
                     ++ptr;
                 }
                 start = ptr + 1;
-                processNewLine(bookModel);
+                onReceivedEndOfLine(bookModel);
             } else if ((value & 0x80) == 0 && Character.isSpaceChar(value)) {
                 if (value != Decoder.TAB) {
                     decodeResult.put(ptr, Decoder.SPACE);
@@ -96,35 +96,42 @@ public class TxtReader implements BookReader {
             ++ptr;
         }
         if (start != end) {
-            processData(bookModel, decodeResult, start, end);
+            onReceivedData(bookModel, decodeResult, start, end);
         }
     }
 
+
     /**
-     * flush data to current paragraph.
+     * flush data to current paragraph, called when it received end-of-line.
      */
-    private void processNewLine(final BookModel bookModel) {
+    private void onReceivedEndOfLine(final BookModel bookModel) {
+        ensureCurrentParagraph(bookModel);
         flushToCurrentParagraph();
         bookModel.getTextModel().addParagraph(currentParagraph());
         resetCurrentParagraph();
     }
 
     /**
-     * add string to current paragraph
+     * Called when it received data.
      * @param buffer
      * @param start
      * @param end
      * @return
      */
-    private int processData(final BookModel bookModel, final CharBuffer buffer, int start, int end) {
+    private void onReceivedData(final BookModel bookModel, final CharBuffer buffer, int start, int end) {
+        ensureCurrentParagraph(bookModel);
         stringBuilder.append(buffer.subSequence(start, end));
-        return 0;
+    }
+
+    private void ensureCurrentParagraph(final BookModel bookModel) {
+        if (paragraph == null) {
+            // on paragraph begin, consider to add paragraph start entry
+            paragraph = Paragraph.create(Paragraph.ParagraphKind.TEXT_PARAGRAPH);
+
+        }
     }
 
     private Paragraph currentParagraph() {
-        if (paragraph == null) {
-            paragraph = Paragraph.create(Paragraph.ParagraphKind.TEXT_PARAGRAPH);
-        }
         return paragraph;
     }
 
