@@ -1,6 +1,7 @@
 package com.onyx.kreader.plugins.images;
 
 import android.graphics.*;
+import android.util.Log;
 
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.utils.BitmapUtils;
@@ -60,7 +61,9 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
         Rect bitmapRegion = PageUtils.screenRegionToDoc(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()),
                 pageWidth, pageHeight, x, y, width, height, rotation);
         Rect pageRect = new Rect(0, 0, pageWidth, pageHeight);
-        pageRect.intersect(bitmapRegion);
+        if (pageRect.intersect(bitmapRegion)) {
+            Log.w(TAG, "target region out of page bound.");
+        }
         return pageRect;
     }
 
