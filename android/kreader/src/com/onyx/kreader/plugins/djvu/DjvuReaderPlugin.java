@@ -81,8 +81,10 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     @Override
     public RectF getPageOriginSize(String position) {
         float size [] = {0, 0};
-        getPluginImpl().getPageSize(Integer.parseInt(position), size);
-        return new RectF(0, 0, size[0], size[1]);
+        if (getPluginImpl().getPageSize(Integer.parseInt(position), size)) {
+            return new RectF(0, 0, size[0], size[1]);
+        }
+        return null;
     }
 
     @Override
