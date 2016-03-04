@@ -38,11 +38,15 @@ public class LayoutProviderUtils {
             hitCache = true;
         }
 
+        final RectF visibleRect = new RectF();
         for (PageInfo pageInfo : visiblePages) {
             String documentPosition = pageInfo.getName();
-            final RectF rect = pageInfo.getDisplayRect();
+            final RectF displayRect = pageInfo.getDisplayRect();
+            final RectF positionRect = pageInfo.getPositionRect();
+            visibleRect.set(positionRect);
+            visibleRect.intersect(layoutManager.getPageManager().getViewportRect());
             if (!hitCache) {
-                renderer.draw(documentPosition, pageInfo.getActualScale(), pageInfo.getPageDisplayOrientation(), bitmap, (int) rect.left, (int) rect.top, (int) rect.width(), (int) rect.height());
+                renderer.draw(documentPosition, pageInfo.getActualScale(), pageInfo.getPageDisplayOrientation(), bitmap, displayRect, positionRect, visibleRect);
             }
             readerViewInfo.copyPageInfo(pageInfo);
         }

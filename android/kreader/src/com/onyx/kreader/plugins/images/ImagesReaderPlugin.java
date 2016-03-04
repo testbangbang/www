@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import android.util.Log;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.common.Benchmark;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
@@ -184,13 +185,19 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return ret;
     }
 
-    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap) {
+    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF positionRect, final RectF visibleRect) {
         final String path = getImagePath(page);
         if (StringUtils.isNullOrEmpty(path)) {
             return false;
         }
         benchmark.restart();
-        boolean ret = getPluginImpl().drawImage(path, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, rotation, bitmap.getBitmap());
+        // get doc position
+        boolean ret = getPluginImpl().drawImage(path,
+                (int)displayRect.left,
+                (int)displayRect.top,
+                (int)displayRect.width(),
+                (int)displayRect.height(),
+                rotation, bitmap.getBitmap());
         Log.e(TAG, "rendering png:　"+ benchmark.duration());
         return ret;
     }

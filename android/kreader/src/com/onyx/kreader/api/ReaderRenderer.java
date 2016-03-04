@@ -1,5 +1,7 @@
 package com.onyx.kreader.api;
 
+import android.graphics.RectF;
+
 /**
  * Created by zhuzeng on 10/3/15.
  */
@@ -29,10 +31,9 @@ public interface ReaderRenderer {
      * @param scale the actual scale used to render page.
      * @param rotation the rotation.
      * @param bitmap the target bitmap to draw content. Caller may use this method to draw part of content.
-     * @param xInBitmap the position x in bitmap to draw.
-     * @param yInBitmap the position y in bitmap to draw.
-     * @param widthInBitmap the width of content to draw.
-     * @param heightInBitmap the height of content to draw.
+     * @param displayRect the display rect in screen coordinate system.
+     * @param positionRect the position rect in doc coordinate system.
+     * @param visibleRect the visible rect in doc coordinate system.
      *
      *        bitmap  matrix
      *          (viewportX, viewportY)
@@ -48,6 +49,6 @@ public interface ReaderRenderer {
      *
      * @return
      */
-    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap);
+    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF positionRect, final RectF visibleRect);
 
 }

@@ -69,9 +69,8 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
         pageManager.add(pageInfo);
         pageManager.scaleToPage(pageInfo.getName());
         PageInfo result = pageManager.getFirstVisiblePage();
-        Rect displayRect = RectUtils.toRect(result.getDisplayRect());
-        assertTrue(renderer.draw(initPosition, result.getActualScale(), result.getPageDisplayOrientation(), readerBitmap, displayRect.left, displayRect.top,
-                displayRect.width(), displayRect.height()));
+        RectF displayRect = result.getDisplayRect();
+        assertTrue(renderer.draw(initPosition, result.getActualScale(), result.getPageDisplayOrientation(), readerBitmap, displayRect, null, null));
         BitmapUtils.saveBitmap(readerBitmap.getBitmap(), "/mnt/sdcard/1.png");
         document.close();
     }

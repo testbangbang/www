@@ -34,6 +34,7 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
                 return false;
             }
 
+            // get region in doc coordinates
             Rect bitmapRegion = locatePageRegion((int)imageInformation.width, (int)imageInformation.height,
                     x, y, width, height, rotation, bitmap);
 

@@ -44,9 +44,14 @@ public class TextLayoutJustify {
         return textLayoutContext.getLayoutLines();
     }
 
-    public List<LayoutLine> layoutParagraph(final RectF rect, final Paragraph paragraph) {
-
-        return null;
+    /**
+     * try to layout the entry if possible according to current context.
+     * @param context
+     * @param entry
+     * @return
+     */
+    public boolean addEntryToLayout(final TextLayoutContext context, final ParagraphEntry entry) {
+        return true;
     }
 
     private boolean onLayoutBegin() {

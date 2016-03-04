@@ -41,10 +41,10 @@ public class ReaderTestActivity extends Activity {
     private enum TestCase { ToPage, PageList, ContinuousList  }
 
     private Reader reader;
-    //final String path = "/mnt/sdcard/cityhunter/cityhunter10.pdf";
-//    final String path = "/mnt/sdcard/Books/a.pdf";
-//    final String path = "/mnt/sdcard/Books/lz.13.pdf";
-    String path = "/mnt/sdcard/Pictures/normal.jpg";
+    //String path = "/mnt/sdcard/cityhunter/cityhunter10.pdf";
+     String path = "/mnt/sdcard/Books/a.pdf";
+//   String path = "/mnt/sdcard/Books/lz.13.pdf";
+//    String path = "/mnt/sdcard/Pictures/normal.jpg";
     private int pn = 0;
     private int next = 0;
     private EditText searchEdit;
@@ -187,6 +187,8 @@ public class ReaderTestActivity extends Activity {
                 return true;
             }
         });
+
+        ((EditText)findViewById(R.id.path)).setText(path);
     }
 
     public ReaderViewOptions getViewOptions() {
