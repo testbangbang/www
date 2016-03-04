@@ -3,29 +3,36 @@ package com.onyx.kreader.tests;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.plugins.djvu.DjvuJniWrapper;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by joy on 3/3/16.
  */
 public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
-    private final static String FILE = "/mnt/sdcard/Books/a.djvu";
+    private static final String TAG = ReaderPluginDjvuTest.class.getSimpleName();
+    private static final String FILE = "/mnt/sdcard/Books/a.djvu";
 
     public ReaderPluginDjvuTest() {
         super(ReaderTestActivity.class);
     }
 
-    public void testJniInterface() {
+    public void testJniInterface() throws Exception {
         DjvuJniWrapper wrapper = new DjvuJniWrapper();
         assertTrue(wrapper.open(FILE));
         assertNotNull(wrapper.getFilePath());
@@ -36,10 +43,36 @@ public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<Reade
         int width = (int)size[0];
         int height = (int)size[1];
         assertTrue(width > 0 && height > 0);
+
+        ArrayList<ReaderSelection> textChunks = new ArrayList<ReaderSelection>();
+        assertTrue(wrapper.extractPageText(page, textChunks));
+        for (ReaderSelection chunk : textChunks) {
+            assertTrue(chunk.getRectangles().size() == 1);
+            Log.i(TAG, "chunk: " + chunk.getText() + ", " + chunk.getRectangles().get(0).toShortString());
+        }
+
+        ArrayList<ReaderSelection> result = new ArrayList<ReaderSelection>();
+        assertTrue(wrapper.searchInPage(page, "distance", true, true, result));
+        assertTrue(result.size() > 0);
+        result.clear();
+        assertTrue(wrapper.searchInPage(page, "Distance", true, true, result));
+        assertTrue(result.size() == 0);
+        result.clear();
+        assertTrue(wrapper.searchInPage(page, "dist", true, true, result));
+        assertTrue(result.size() == 0);
+
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         assertNotNull(bitmap);
         assertTrue(wrapper.drawPage(page, bitmap, 1.0f, width, height, 0, 0, width, height));
+
         wrapper.close();
+        assertNull(wrapper.getFilePath());
+        assertEquals(wrapper.getPageCount(), 0);
+
+        Field field = wrapper.getClass().getDeclaredField("pageTextChunks");
+        field.setAccessible(true);
+        HashMap<Integer, List<ReaderSelection>> chunks = (HashMap<Integer, List<ReaderSelection>>) field.get(wrapper);
+        assertEquals(chunks.size(), 0);
     }
 
     public void testAccept() {
