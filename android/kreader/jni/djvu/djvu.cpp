@@ -11,8 +11,11 @@
 #include <ddjvuapi.h>
 #include "debug.h"
 
-#include "list.c"
 #include "base_geometry.c"
+
+#include "JNIUtils.h"
+
+#include "com_onyx_kreader_plugins_djvu_DjvuJniWrapper.h"
 
 #define JNI_FN(A) Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_ ## A
 #define PACKAGENAME "com/onyx/kreader/plugins/djvu"
@@ -28,13 +31,15 @@ ddjvu_context_t *context = NULL;
 ddjvu_document_t *doc = NULL;
 ddjvu_page_t *page = NULL;
 
+static int extractText(JNIEnv *env, miniexp_t item, fz_bbox * target, JNIUtils *utils, int pageWidth, int pageHeight, jobject textChunk);
+
 
 JNIEXPORT int JNICALL
 JNI_FN(nativeOpenFile)(JNIEnv * env, jobject thiz, jstring jfileName)
 {
     page = NULL;
     context = ddjvu_context_create("neo");
-    const char * fileName = (*env)->GetStringUTFChars(env, jfileName, 0);
+    const char * fileName = env->GetStringUTFChars(jfileName, 0);
 
     doc = ddjvu_document_create_by_filename_utf8(context, fileName, 0);
     int pageNum = 0;
@@ -78,7 +83,7 @@ JNI_FN(nativeGetPageSize)(JNIEnv *env, jobject thiz, int pageNum, jfloatArray si
     jfloat s[2];
     s[0] = (float)dinfo.width;
     s[1] = (float)dinfo.height;
-    (*env)->SetFloatArrayRegion(env, size, 0, 2, s);
+    env->SetFloatArrayRegion(size, 0, 2, s);
     end = clock();
 }
 
@@ -147,7 +152,7 @@ JNI_FN(nativeDrawPage)(JNIEnv *env, jobject thiz, jobject bitmap, float zoom,
 
     ddjvu_format_set_row_order(pixelFormat, TRUE);
     ddjvu_format_set_y_direction(pixelFormat, TRUE);
-    char * buffer = &(((unsigned char *)pixels)[shift*4]);
+    char * buffer = &(((char *)pixels)[shift*4]);
     //LOGI("going to render page %d %d %d %d pageRect %d %d %d %d.", targetRect.x, targetRect.y, targetRect.w, targetRect.h, pageRect.x, pageRect.y, pageRect.w, pageRect.h);
     jboolean result = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, info.stride, buffer);
     ddjvu_format_release(pixelFormat);
@@ -173,31 +178,8 @@ JNI_FN(nativeClose)(JNIEnv * env, jobject thiz)
     }
 }
 
-
-struct list_el {
-  jobject item;
-  struct list_item * next;
-};
-
-typedef struct list_el list_item;
-
-struct list_st {
-  list_item * head;
-  list_item * tail;
-};
-
-typedef struct list_st list;
-
-struct OutlineItem_s {
-  char * title;
-  int level;
-  int page;
-};
-typedef struct OutlineItem_s OutlineItem;
-
-JNIEXPORT jstring JNICALL
-JNI_FN(DjvuDocument_getText)(JNIEnv *env, jobject thiz, int pageNumber,
-        int startX, int startY, int width, int height)
+JNIEXPORT jboolean JNICALL
+JNI_FN(nativeExtractPageText)(JNIEnv *env, jobject thiz, int pageNumber, jobject textChunks)
 {
 
     miniexp_t pagetext;
@@ -206,32 +188,29 @@ JNI_FN(DjvuDocument_getText)(JNIEnv *env, jobject thiz, int pageNumber,
     }
 
     if (miniexp_nil == pagetext) {
-        return NULL;
+        return false;
     }
-//
+
     ddjvu_status_t status;
     ddjvu_pageinfo_t info;
     while ((status = ddjvu_document_get_pageinfo(doc, pageNumber, &info)) < DDJVU_JOB_OK) {
         //nothing
     }
 
-    Arraylist values = arraylist_create();
-
+    JNIUtils utils(env);
+    utils.findStaticMethod("com/onyx/kreader/plugins/djvu/DjvuSelection",
+                           "addToSelectionList", "(Ljava/util/List;Ljava/lang/String;[I)V");
     int w = info.width;
     int h = info.height;
-    fz_bbox target = {startX, h - startY - height, startX + width, h - startY};
-    extractText(pagetext, values, &target);
+    fz_bbox target = { 0, 0, w, h };
+    extractText(env, pagetext, &target, &utils, w, h, textChunks);
 
-    arraylist_add(values, 0);
-    jstring result = (*env)->NewStringUTF(env, arraylist_getData(values));
-    arraylist_free(values);
-
-    return result;
+    return true;
 }
 
 
 //sumatrapdf code
-int extractText(miniexp_t item, Arraylist list, fz_bbox * target) {
+int extractText(JNIEnv *env, miniexp_t item, fz_bbox * target, JNIUtils *utils, int pageWidth, int pageHeight, jobject textChunks) {
     miniexp_t type = miniexp_car(item);
 
     if (!miniexp_symbolp(type))
@@ -247,44 +226,29 @@ int extractText(miniexp_t item, Arraylist list, fz_bbox * target) {
     int x1 = miniexp_to_int(miniexp_car(item)); item = miniexp_cdr(item);
     if (!miniexp_numberp(miniexp_car(item))) return 0;
     int y1 = miniexp_to_int(miniexp_car(item)); item = miniexp_cdr(item);
-    //RectI rect = RectI::FromXY(x0, y0, x1, y1);
+
     fz_bbox rect = {x0 , y0 , x1 , y1};
 
     miniexp_t str = miniexp_car(item);
 
     if (miniexp_stringp(str) && !miniexp_cdr(item)) {
         fz_bbox inters = fz_intersect_bbox(rect, *target);
-            //LOGI("Start text extraction: rectangle=[%d,%d,%d,%d] %s", rect.x0, rect.y0, rect.x1, rect.y1, content);
         if (!fz_is_empty_bbox(inters)) {
             const char *content = miniexp_to_str(str);
-
-            while (*content) {
-                arraylist_add(list, *content++);
-            }
-
-    //        if (value) {
-    //            size_t len = str::Len(value);
-    //            // TODO: split the rectangle into individual parts per glyph
-    //            for (size_t i = 0; i < len; i++)
-    //                coords.Append(RectI(rect.x, rect.y, rect.dx, rect.dy));
-    //            extracted.AppendAndFree(value);
-    //        }
-            if (miniexp_symbol("word") == type) {
-                arraylist_add(list, ' ');
-                //coords.Append(RectI(rect.x + rect.dx, rect.y, 2, rect.dy));
-            }
-            else if (miniexp_symbol("char") != type) {
-                arraylist_add(list, '\n');
-    //            extracted.Append(lineSep);
-    //            for (size_t i = 0; i < str::Len(lineSep); i++)
-    //                coords.Append(RectI());
-            }
+            //LOGI("Start text extraction: rectangle=[%d,%d,%d,%d] %s", rect.x0, rect.y0, rect.x1, rect.y1, content);
+            int list[] = { rect.x0, pageHeight - rect.y1, rect.x1, pageHeight - rect.y0 }; // patching y coordinates
+            JNIIntArray intArray(env, 4, &list[0]);
+            env->CallStaticVoidMethod(utils->getClazz(),
+                                      utils->getMethodId(),
+                                      textChunks,
+                                      env->NewStringUTF(content),
+                                      intArray.getIntArray(true));
         }
         item = miniexp_cdr(item);
     }
 
     while (miniexp_consp(str)) {
-        extractText(str, list, target);
+        extractText(env, str, target, utils, pageWidth, pageHeight, textChunks);
         item = miniexp_cdr(item);
         str = miniexp_car(item);
     }
