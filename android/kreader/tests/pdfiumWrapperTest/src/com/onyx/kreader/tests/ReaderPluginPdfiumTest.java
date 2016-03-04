@@ -38,7 +38,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
         assertNotNull(renderer);
         String initPosition = navigator.getInitPosition();
         assertNotNull(initPosition);
-        assertTrue(renderer.draw(initPosition, -1, 0, readerBitmap));
+        assertTrue(renderer.draw(initPosition, -1, 0, readerBitmap, new RectF(0, 0, readerBitmap.getBitmap().getWidth(), readerBitmap.getBitmap().getHeight()), null, null));
         document.close();
     }
 

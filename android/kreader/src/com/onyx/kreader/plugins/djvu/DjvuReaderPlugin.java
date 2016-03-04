@@ -250,18 +250,6 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean draw(String page, float scale, int rotation, ReaderBitmap bitmap) {
-        benchmark.restart();
-        try {
-            return getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page), bitmap.getBitmap(),
-                    scale, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(),
-                    0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
-        } finally {
-            Log.e(TAG, "rendering takes: " + benchmark.duration());
-        }
-    }
-
-    @Override
     public boolean draw(String page, float scale, int rotation, ReaderBitmap bitmap, final RectF displayRect, final RectF positionRect, final RectF visibleRect) {
         benchmark.restart();
         try {

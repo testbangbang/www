@@ -14,15 +14,6 @@ public interface ReaderRenderer {
     public ReaderRendererFeatures getRendererFeatures();
 
     /**
-     * draw content.
-     * @param page the page position.
-     * @param rotation the rotation.
-     * @param bitmap the target bitmap to draw page.
-     * @return false if not supported.
-     */
-    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap);
-
-    /**
      * draw content. There are two coordinates system.
      * host coordinates system, the viewportInPage is specified in host coordinates system
      * the bitmapx, bitmapy, width and height can be regarded as viewportInPage coordinates system, whereas viewportInPage is the

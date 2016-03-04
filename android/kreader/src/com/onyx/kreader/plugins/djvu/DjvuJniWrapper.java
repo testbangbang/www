@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class DjvuJniWrapper {
     static {
-        System.loadLibrary("djvu");
+        System.loadLibrary("onyx_djvu");
     }
 
     private native int nativeOpenFile(String path);
