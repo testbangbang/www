@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class TextLayoutContext {
 
+    // should be a shape, to support irregular region.
     private RectF limitedRect = new RectF();
     private float availableWidth;
     private float availableHeight;
@@ -17,6 +18,7 @@ public class TextLayoutContext {
     private LayoutLine currentLine;
     private List<Element> elementList;
     private int elementPosition;
+
 
     public void initializeWithLimitedRect(final RectF rect) {
         limitedRect.set(rect);

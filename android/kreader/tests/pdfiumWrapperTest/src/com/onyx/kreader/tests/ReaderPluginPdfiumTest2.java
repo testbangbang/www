@@ -164,6 +164,9 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
         wrapper.searchInPage(0, 0, 0, 1024, 768, 0, pattern, false, true, list);
         assertTrue(list.size() > 0);
+        for(ReaderSelection selection : list) {
+            assertTrue(selection.getText().equals(pattern));
+        }
         assertTrue(wrapper.nativeCloseDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }

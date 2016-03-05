@@ -50,4 +50,25 @@ public class Paragraph {
         return paragraphEntryList;
     }
 
+    public final ParagraphEntry getLastEntry() {
+        if (paragraphEntryList.isEmpty()) {
+            return null;
+        }
+        return paragraphEntryList.get(paragraphEntryList.size() - 1);
+    }
+
+    public boolean isBeginOfParagraph(final ParagraphEntry paragraphEntry) {
+        if (paragraphEntryList.isEmpty()) {
+            return false;
+        }
+        return paragraphEntryList.get(0).equals(paragraphEntry);
+    }
+
+    public boolean isEndOfParagraph(final ParagraphEntry paragraphEntry) {
+        if (paragraphEntryList.isEmpty()) {
+            return false;
+        }
+        return getLastEntry().equals(paragraphEntry);
+    }
+
 }

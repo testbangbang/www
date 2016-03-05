@@ -7,7 +7,6 @@ public class TextParagraphEntry extends ParagraphEntry {
 
     private String text;
 
-
     public TextParagraphEntry(final String string) {
         entryKind = EntryKind.TEXT_ENTRY;
         text = string;
@@ -15,6 +14,16 @@ public class TextParagraphEntry extends ParagraphEntry {
 
     public final String getText() {
         return text;
+    }
+
+    public final Character nextCharacter(int i) {
+        if (i < 0) {
+            return text.charAt(0);
+        }
+        if (i + 1 < text.length()) {
+            return text.charAt(i + 1);
+        }
+        return null;
     }
 
 }

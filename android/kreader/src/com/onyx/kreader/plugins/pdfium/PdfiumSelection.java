@@ -22,10 +22,11 @@ public class PdfiumSelection implements ReaderSelection {
     public PdfiumSelection() {
     }
 
-    public PdfiumSelection(int [] data, int start, int end) {
+    public PdfiumSelection(int [] data, byte [] string, int start, int end) {
         for(int i = 0; i < data.length / 4; ++i) {
             rectangles.add(new RectF(data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3]));
         }
+        text = StringUtils.utf16le(string);
         startCharIndex = start;
         endCharIndex = end;
     }
@@ -80,8 +81,8 @@ public class PdfiumSelection implements ReaderSelection {
     }
 
     @SuppressWarnings("unused")
-    public static void addToSelectionList(List<ReaderSelection> list, int [] rectangles, int startIndex, int endIndex) {
-        list.add(new PdfiumSelection(rectangles, startIndex, endIndex));
+    public static void addToSelectionList(List<ReaderSelection> list, int [] rectangles, final byte[] utf16le, int startIndex, int endIndex) {
+        list.add(new PdfiumSelection(rectangles, utf16le, startIndex, endIndex));
     }
 
 }
