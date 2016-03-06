@@ -5,7 +5,18 @@ package com.onyx.kreader.utils;
  */
 public class UnicodeUtils {
 
+    static public boolean isWhitespace(final Character ch) {
+        return Character.isWhitespace(ch);
+    }
+
     static public boolean isCJKCharacter(final Character ch) {
         return (Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS);
     }
+
+    // TODO, not work correctly.
+    static public boolean isPunctuation(final Character ch) {
+        return (Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION) ||
+                (Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.GENERAL_PUNCTUATION);
+    }
+
 }

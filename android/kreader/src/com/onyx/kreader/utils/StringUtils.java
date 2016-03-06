@@ -1,6 +1,13 @@
 package com.onyx.kreader.utils;
 
 
+import android.graphics.Rect;
+import android.util.Log;
+import com.onyx.kreader.text.LayoutRun;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by zhuzeng on 10/16/15.
  */
@@ -44,5 +51,6 @@ public class StringUtils {
         }
         return buffer;
     }
+
 
 }

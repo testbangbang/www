@@ -16,9 +16,11 @@ import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.formats.txt.TxtReader;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.TestUtils;
+import com.onyx.kreader.utils.UnicodeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by zengzhu on 3/3/16.
@@ -26,6 +28,8 @@ import java.util.List;
 public class LayoutTestActivity extends Activity {
 
     private Button openButton;
+    private Button controllerButton;
+    private Button runButton;
     private SurfaceHolder holder;
     private SurfaceView surfaceView;
     private static final String TAG = LayoutTestActivity.class.getSimpleName();
@@ -46,6 +50,22 @@ public class LayoutTestActivity extends Activity {
             @Override
             public void onClick(View v) {
                 testLayout();
+            }
+        });
+
+        controllerButton = (Button)findViewById(R.id.test_layout_controller);
+        controllerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testController();
+            }
+        });
+
+        runButton = (Button)findViewById(R.id.test_layout_run);
+        runButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testLayoutRun();
             }
         });
 
@@ -112,8 +132,63 @@ public class LayoutTestActivity extends Activity {
         holder.unlockCanvasAndPost(canvas);
         long s5 = System.currentTimeMillis();
         Log.i(TAG, "performance: " + (s2 - s1) + " " + (s3 - s2) + " " + (s4 - s3) + " " + (s5 - s4));
+    }
+
+    private RectF layoutRect() {
+        int margin = 100;
+        RectF rect = new RectF(margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - margin);
+        return rect;
+    }
+
+    private void testController() {
+        if (!reader.processNext(bookModel)) {
+            return;
+        }
+
+        TextController textController = new TextController();
+        TextLayoutContext context = new TextLayoutContext();
+        context.initializeWithLimitedRect(layoutRect());
+        context.createLayoutLine();
+        final Style textStyle = randStyle();
+
+        final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
+        for (int p = lastParagraph; p < paragraphList.size(); ++p) {
+            final Paragraph paragraph = paragraphList.get(p);
+            for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
+                if (entry instanceof TextParagraphEntry) {
+                    TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
+                    textController.addEntryToLayout(context, textParagraphEntry, textStyle);
+                }
+            }
+        }
+    }
+
+    private void testLayoutRun() {
+        if (!reader.processNext(bookModel)) {
+            return;
+        }
 
 
+        LayoutRunLineManager context = new LayoutRunLineManager(layoutRect());
+        final Style textStyle = randStyle();
+
+        final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
+        for (int p = lastParagraph; p < paragraphList.size(); ++p) {
+            final Paragraph paragraph = paragraphList.get(p);
+            for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
+                if (entry instanceof TextParagraphEntry) {
+                    TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
+                    final List<LayoutRun> list = LayoutRunLineManager.split(textParagraphEntry.getText(), textStyle);
+                    for(LayoutRun layoutRun : list) {
+                        int ret = context.layoutRun(layoutRun);
+                        if (ret == LayoutRunLineManager.LAYOUT_FINISHED || ret == LayoutRunLineManager.LAYOUT_FAIL) {
+                            // create new one
+
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private Style randStyle() {
@@ -130,6 +205,8 @@ public class LayoutTestActivity extends Activity {
         paint.setStyle(Paint.Style.STROKE);
         return TextStyle.create(paint);
     }
+
+
 
 
 
