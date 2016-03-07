@@ -12,7 +12,7 @@
 class OnyxDjvuContext
 {
 public:
-    static OnyxDjvuContext *createContext(std::string filePath);
+    static OnyxDjvuContext *createContext(const std::string & filePath);
 
 private:
     OnyxDjvuContext(const std::string &filePath, int pageCount,

@@ -30,11 +30,11 @@
 
 namespace {
 
-std::map<std::string, OnyxDjvuContext *> contextMap;
+static std::map<jobject, OnyxDjvuContext *> contextMap;
 
-OnyxDjvuContext *findContext(const std::map<std::string, OnyxDjvuContext *> &map, const std::string &filePath) {
-    auto find = map.find(filePath);
-    if (find == map.end()) {
+static OnyxDjvuContext *findContext(jobject thiz) {
+    auto find = contextMap.find(thiz);
+    if (find == contextMap.end()) {
         return nullptr;
     }
     return find->second;
@@ -47,13 +47,13 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeOpenFile(JNIEnv * env, j
 {
     std::string filePath(JNIString(env, jfilePath).getLocalString());
 
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         context = OnyxDjvuContext::createContext(filePath);
         if (!context) {
             return 0;
         }
-        contextMap[filePath] = context;
+        contextMap[thiz] = context;
     }
     return context->getPageCount();
 }
@@ -63,7 +63,7 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage(JNIEnv *env, jo
 {
     std::string filePath(JNIString(env, jfilePath).getLocalString());
 
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return false;
     }
@@ -75,7 +75,7 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize(JNIEnv *env,
 {
     std::string filePath(JNIString(env, jfilePath).getLocalString());
 
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return false;
     }
@@ -93,7 +93,7 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText(JNIEnv *
 {
     std::string filePath(JNIString(env, jfilePath).getLocalString());
 
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return false;
     }
@@ -106,7 +106,7 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jo
 {
     std::string filePath(JNIString(env, jfilePath).getLocalString());
 
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return false;
     }
@@ -118,15 +118,15 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeClose(JNIEnv * env, jobj
 {
     std::string filePath(JNIString(env, jfilePath).getLocalString());
 
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return;
     }
 
     // CAUTION: map.erase() will cause re-open djvu document failed, not sure why
-    contextMap[filePath] = nullptr;
     context->close();
     delete context;
+    contextMap[thiz] = nullptr;
     return;
 }
 

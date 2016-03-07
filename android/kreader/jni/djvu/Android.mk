@@ -11,6 +11,7 @@ LOCAL_C_INCLUDES := \
     $(TOP_LOCAL_PATH)/libdjvu  \
     $(TOP_LOCAL_PATH)/../common/utils
 
+LOCAL_CXXFLAGS := -fPIC -std=c++11
 LOCAL_MODULE    := onyx_djvu
 LOCAL_SRC_FILES := djvu.cpp onyx_djvu_context.cpp
 

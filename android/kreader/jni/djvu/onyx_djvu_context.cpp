@@ -69,14 +69,15 @@ bool extractText(JNIEnv *env, miniexp_t item, fz_bbox *target, JNIUtils *utils, 
 
 }
 
-OnyxDjvuContext *OnyxDjvuContext::createContext(std::string filePath)
+OnyxDjvuContext *OnyxDjvuContext::createContext(const std::string & filePath)
 {
-    ddjvu_context_t *context = ddjvu_context_create("neo");
+    ddjvu_context_t *context = ddjvu_context_create(filePath.c_str());
     if (!context) {
         LOGE("creating djvu context failed!");
         return nullptr;
     }
 
+    LOGE("open file %s", filePath.c_str());
     ddjvu_document_t *doc = ddjvu_document_create_by_filename_utf8(context, filePath.c_str(), 0);
     if (!doc) {
         LOGE("creating djvu document failed!");
@@ -93,6 +94,7 @@ OnyxDjvuContext *OnyxDjvuContext::createContext(std::string filePath)
     }
 
     int pageCount = ddjvu_document_get_pagenum(doc);
+    LOGE("page count %d", pageCount);
     return new OnyxDjvuContext(filePath, pageCount, context, doc);
 }
 
