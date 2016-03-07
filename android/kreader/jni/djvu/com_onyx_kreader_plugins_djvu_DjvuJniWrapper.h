@@ -18,42 +18,42 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeO
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeGotoPage
- * Signature: (I)V
+ * Signature: (Ljava/lang/String;I)Z
  */
-JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage
-  (JNIEnv *, jobject, jint);
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage
+  (JNIEnv *, jobject, jstring, jint);
 
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeGetPageSize
- * Signature: (I[F)V
+ * Signature: (Ljava/lang/String;I[F)Z
  */
-JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize
-  (JNIEnv *, jobject, jint, jfloatArray);
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize
+  (JNIEnv *, jobject, jstring, jint, jfloatArray);
 
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeExtractPageText
- * Signature: (ILjava/util/List;)Z
+ * Signature: (Ljava/lang/String;ILjava/util/List;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText
-  (JNIEnv *, jobject, jint, jobject);
+  (JNIEnv *, jobject, jstring, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeDrawPage
- * Signature: (Landroid/graphics/Bitmap;FIIIIII)Z
+ * Signature: (Ljava/lang/String;Landroid/graphics/Bitmap;FIIIIII)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage
-  (JNIEnv *, jobject, jobject, jfloat, jint, jint, jint, jint, jint, jint);
+  (JNIEnv *, jobject, jstring, jobject, jfloat, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeClose
- * Signature: ()V
+ * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeClose
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus
 }

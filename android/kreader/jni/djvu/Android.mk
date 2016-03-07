@@ -12,8 +12,7 @@ LOCAL_C_INCLUDES := \
     $(TOP_LOCAL_PATH)/../common/utils
 
 LOCAL_MODULE    := onyx_djvu
-LOCAL_SRC_FILES := djvu.cpp \
-            orion_bitmap.c
+LOCAL_SRC_FILES := djvu.cpp
 
 LOCAL_STATIC_LIBRARIES := djvucore libutils
 
