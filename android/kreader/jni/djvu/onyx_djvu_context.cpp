@@ -13,7 +13,7 @@
 #include <miniexp.h>
 #include <ddjvuapi.h>
 
-#include "base_geometry.c"
+#include "base_geometry.h"
 
 #include "JNIUtils.h"
 

@@ -12,7 +12,7 @@ LOCAL_C_INCLUDES := \
     $(TOP_LOCAL_PATH)/../common/utils
 
 LOCAL_MODULE    := onyx_djvu
-LOCAL_SRC_FILES := djvu.cpp onyx_djvu_context.cpp
+LOCAL_SRC_FILES := djvu.cpp onyx_djvu_context.cpp base_geometry.c
 
 LOCAL_STATIC_LIBRARIES := djvucore libutils
 
