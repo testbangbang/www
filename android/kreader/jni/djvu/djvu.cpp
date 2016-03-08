@@ -30,10 +30,10 @@
 
 namespace {
 
-std::map<std::string, OnyxDjvuContext *> contextMap;
+std::map<jobject, OnyxDjvuContext *> contextMap;
 
-OnyxDjvuContext *findContext(const std::map<std::string, OnyxDjvuContext *> &map, const std::string &filePath) {
-    auto find = map.find(filePath);
+OnyxDjvuContext *findContext(std::map<jobject, OnyxDjvuContext *> &map, const jobject &thiz) {
+    auto find = map.find(thiz);
     if (find == map.end()) {
         return nullptr;
     }
@@ -47,23 +47,21 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeOpenFile(JNIEnv * env, j
 {
     std::string filePath(JNIString(env, jfilePath).getLocalString());
 
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(contextMap, thiz);
     if (!context) {
         context = OnyxDjvuContext::createContext(filePath);
         if (!context) {
             return 0;
         }
-        contextMap[filePath] = context;
+        contextMap.insert({ thiz, context });
     }
     return context->getPageCount();
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage(JNIEnv *env, jobject thiz, jstring jfilePath, int pageNum)
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage(JNIEnv *env, jobject thiz, int pageNum)
 {
-    std::string filePath(JNIString(env, jfilePath).getLocalString());
-
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(contextMap, thiz);
     if (!context) {
         return false;
     }
@@ -71,11 +69,9 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage(JNIEnv *env, jo
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize(JNIEnv *env, jobject thiz, jstring jfilePath, int pageNum, jfloatArray size)
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize(JNIEnv *env, jobject thiz, int pageNum, jfloatArray size)
 {
-    std::string filePath(JNIString(env, jfilePath).getLocalString());
-
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(contextMap, thiz);
     if (!context) {
         return false;
     }
@@ -89,11 +85,9 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize(JNIEnv *env,
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText(JNIEnv *env, jobject thiz, jstring jfilePath, int pageNum, jobject textChunks)
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText(JNIEnv *env, jobject thiz, int pageNum, jobject textChunks)
 {
-    std::string filePath(JNIString(env, jfilePath).getLocalString());
-
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(contextMap, thiz);
     if (!context) {
         return false;
     }
@@ -101,12 +95,10 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText(JNIEnv *
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jobject thiz, jstring jfilePath, jobject bitmap, float zoom,
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jobject thiz, jobject bitmap, float zoom,
                                                                  int bmpWidth, int bmpHeight, int patchX, int patchY, int patchW, int patchH)
 {
-    std::string filePath(JNIString(env, jfilePath).getLocalString());
-
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(contextMap, thiz);
     if (!context) {
         return false;
     }
@@ -114,18 +106,14 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jo
 }
 
 JNIEXPORT void JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeClose(JNIEnv * env, jobject thiz, jstring jfilePath)
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeClose(JNIEnv * env, jobject thiz)
 {
-    std::string filePath(JNIString(env, jfilePath).getLocalString());
-
-    OnyxDjvuContext *context = findContext(contextMap, filePath);
+    OnyxDjvuContext *context = findContext(contextMap, thiz);
     if (!context) {
         return;
     }
 
-    // CAUTION: map.erase() will cause re-open djvu document failed, not sure why
-    contextMap[filePath] = nullptr;
-    context->close();
+    contextMap.erase(thiz);
     delete context;
     return;
 }

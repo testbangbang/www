@@ -18,42 +18,42 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeO
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeGotoPage
- * Signature: (Ljava/lang/String;I)Z
+ * Signature: (I)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage
-  (JNIEnv *, jobject, jstring, jint);
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeGetPageSize
- * Signature: (Ljava/lang/String;I[F)Z
+ * Signature: (I[F)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize
-  (JNIEnv *, jobject, jstring, jint, jfloatArray);
+  (JNIEnv *, jobject, jint, jfloatArray);
 
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeExtractPageText
- * Signature: (Ljava/lang/String;ILjava/util/List;)Z
+ * Signature: (ILjava/util/List;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText
-  (JNIEnv *, jobject, jstring, jint, jobject);
+  (JNIEnv *, jobject, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeDrawPage
- * Signature: (Ljava/lang/String;Landroid/graphics/Bitmap;FIIIIII)Z
+ * Signature: (Landroid/graphics/Bitmap;FIIIIII)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage
-  (JNIEnv *, jobject, jstring, jobject, jfloat, jint, jint, jint, jint, jint, jint);
+  (JNIEnv *, jobject, jobject, jfloat, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeClose
- * Signature: (Ljava/lang/String;)V
+ * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeClose
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

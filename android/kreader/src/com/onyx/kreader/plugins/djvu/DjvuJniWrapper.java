@@ -17,14 +17,14 @@ public class DjvuJniWrapper {
     }
 
     private native int nativeOpenFile(String path);
-    private native boolean nativeGotoPage(String path, int pageNum);
-    private native boolean nativeGetPageSize(String path, int pageNum, float[] size);
-    private native boolean nativeExtractPageText(String path, int pageNum, List<ReaderSelection> textChunks);
+    private native boolean nativeGotoPage(int pageNum);
+    private native boolean nativeGetPageSize(int pageNum, float[] size);
+    private native boolean nativeExtractPageText(int pageNum, List<ReaderSelection> textChunks);
 
-    private native boolean nativeDrawPage(String path, Bitmap bitmap, float zoom, int pageW, int pageH,
+    private native boolean nativeDrawPage(Bitmap bitmap, float zoom, int pageW, int pageH,
                                           int patchX, int patchY,
                                           int patchW, int patchH);
-    private native void nativeClose(String path);
+    private native void nativeClose();
 
     private String filePath;
     private int pageCount;
@@ -49,14 +49,14 @@ public class DjvuJniWrapper {
         if (!isValidPage(page)) {
             return false;
         }
-        return nativeGotoPage(filePath, page);
+        return nativeGotoPage(page);
     }
 
     public boolean getPageSize(int page, float[] size) {
         if (!isValidPage(page)) {
             return false;
         }
-        return nativeGetPageSize(filePath, page, size);
+        return nativeGetPageSize(page, size);
     }
 
     public boolean extractPageText(int page, List<ReaderSelection> textChunks) {
@@ -64,7 +64,7 @@ public class DjvuJniWrapper {
             return false;
         }
         if (!pageTextChunks.containsKey(page)) {
-            if (!nativeExtractPageText(filePath, page, textChunks)) {
+            if (!nativeExtractPageText(page, textChunks)) {
                 return false;
             }
             pageTextChunks.put(page, new ArrayList<ReaderSelection>(textChunks));
@@ -79,11 +79,11 @@ public class DjvuJniWrapper {
         if (!gotoPage(page)) {
             return false;
         }
-        return nativeDrawPage(filePath, bitmap, zoom, pageW, pageH, patchX, patchY, patchW, patchH);
+        return nativeDrawPage(bitmap, zoom, pageW, pageH, patchX, patchY, patchW, patchH);
     }
 
     public void close() {
-        nativeClose(filePath);
+        nativeClose();
         cleanup();
     }
 
