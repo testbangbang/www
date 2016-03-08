@@ -22,6 +22,29 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 namespace {
+
+bool handle_ddjvu_messages(ddjvu_context_t *context, bool wait)
+{
+    const ddjvu_message_t *msg;
+    if (!context)
+        return false;
+    if (wait)
+        msg = ddjvu_message_wait(context);
+    while ((msg = ddjvu_message_peek(context)))
+    {
+      switch(msg->m_any.tag)
+        {
+        case DDJVU_ERROR:
+          break;
+        default:
+          break;
+        }
+      ddjvu_message_pop(context);
+    }
+
+    return true;
+}
+
 bool extractText(JNIEnv *env, miniexp_t item, fz_bbox *target, JNIUtils *utils, int pageWidth, int pageHeight, jobject textChunks)
 {
     miniexp_t type = miniexp_car(item);
@@ -84,8 +107,12 @@ OnyxDjvuContext *OnyxDjvuContext::createContext(std::string filePath)
         return nullptr;
     }
 
+    while (!ddjvu_document_decoding_done(doc)) {
+        handle_ddjvu_messages(context, true);
+    }
+
     ddjvu_status_t status = ddjvu_document_decoding_status(doc);
-    if (status == DDJVU_JOB_FAILED) {
+    if (status >= DDJVU_JOB_FAILED) {
         LOGE("decoding djvu document failed!");
         ddjvu_context_release(context);
         ddjvu_document_release(doc);
@@ -125,7 +152,11 @@ bool OnyxDjvuContext::gotoPage(int pageNum)
 bool OnyxDjvuContext::getPageSize(int pageNum, std::vector<jfloat> *size)
 {
     ddjvu_pageinfo_t dinfo;
-    if (ddjvu_document_get_pageinfo(doc_, pageNum, &dinfo) == DDJVU_JOB_FAILED) {
+    ddjvu_status_t s;
+    while ((s= ddjvu_document_get_pageinfo(doc_, pageNum, &dinfo)) < DDJVU_JOB_OK) {
+        handle_ddjvu_messages(context_, true);
+    }
+    if (s >= DDJVU_JOB_FAILED) {
         LOGE("ddjvu_document_get_pageinfo failed");
         return false;
     }
@@ -241,6 +272,7 @@ void OnyxDjvuContext::close()
 {
     filePath_ = "";
     pageCount_ = 0;
+
     if (currentPage_) {
         ddjvu_page_release(currentPage_);
         currentPage_ = nullptr;
