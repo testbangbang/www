@@ -45,11 +45,9 @@ OnyxDjvuContext *findContext(std::map<jobject, OnyxDjvuContext *> &map, const jo
 JNIEXPORT int JNICALL
 Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeOpenFile(JNIEnv * env, jobject thiz, jstring jfilePath)
 {
-    std::string filePath(JNIString(env, jfilePath).getLocalString());
-
     OnyxDjvuContext *context = findContext(contextMap, thiz);
     if (!context) {
-        context = OnyxDjvuContext::createContext(filePath);
+        context = OnyxDjvuContext::createContext(env, jfilePath);
         if (!context) {
             return 0;
         }
