@@ -40,12 +40,16 @@ OnyxDjvuContext *findContext(std::map<jobject, OnyxDjvuContext *> &map, const jo
     return find->second;
 }
 
+OnyxDjvuContext *findContext(const jobject &thiz) {
+    return findContext(contextMap, thiz);
+}
+
 }
 
 JNIEXPORT int JNICALL
 Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeOpenFile(JNIEnv * env, jobject thiz, jstring jfilePath)
 {
-    OnyxDjvuContext *context = findContext(contextMap, thiz);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         context = OnyxDjvuContext::createContext(env, jfilePath);
         if (!context) {
@@ -59,7 +63,7 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeOpenFile(JNIEnv * env, j
 JNIEXPORT jboolean JNICALL
 Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage(JNIEnv *env, jobject thiz, int pageNum)
 {
-    OnyxDjvuContext *context = findContext(contextMap, thiz);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return false;
     }
@@ -85,7 +89,7 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize(JNIEnv *env,
 JNIEXPORT jboolean JNICALL
 Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText(JNIEnv *env, jobject thiz, int pageNum, jobject textChunks)
 {
-    OnyxDjvuContext *context = findContext(contextMap, thiz);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return false;
     }
@@ -96,7 +100,7 @@ JNIEXPORT jboolean JNICALL
 Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jobject thiz, jobject bitmap, float zoom,
                                                                  int bmpWidth, int bmpHeight, int patchX, int patchY, int patchW, int patchH)
 {
-    OnyxDjvuContext *context = findContext(contextMap, thiz);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return false;
     }
@@ -106,7 +110,7 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jo
 JNIEXPORT void JNICALL
 Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeClose(JNIEnv * env, jobject thiz)
 {
-    OnyxDjvuContext *context = findContext(contextMap, thiz);
+    OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return;
     }
