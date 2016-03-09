@@ -42,10 +42,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nat
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
  * Method:    nativeDrawPage
- * Signature: (Landroid/graphics/Bitmap;FIIIIII)Z
+ * Signature: (ILandroid/graphics/Bitmap;FIIIIII)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage
-  (JNIEnv *, jobject, jobject, jfloat, jint, jint, jint, jint, jint, jint);
+  (JNIEnv *, jobject, jint, jobject, jfloat, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     com_onyx_kreader_plugins_djvu_DjvuJniWrapper
