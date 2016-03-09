@@ -1,6 +1,7 @@
 #include "onyx_djvu_context.h"
 
 #include <math.h>
+#include <malloc.h>
 
 #include <string>
 #include <vector>
@@ -13,7 +14,7 @@
 #include <miniexp.h>
 #include <ddjvuapi.h>
 
-#include "base_geometry.c"
+#include "base_geometry.h"
 
 #include "JNIUtils.h"
 
@@ -22,6 +23,29 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 namespace {
+
+bool handle_ddjvu_messages(ddjvu_context_t *context, bool wait)
+{
+    const ddjvu_message_t *msg;
+    if (!context)
+        return false;
+    if (wait)
+        msg = ddjvu_message_wait(context);
+    while ((msg = ddjvu_message_peek(context)))
+    {
+      switch(msg->m_any.tag)
+        {
+        case DDJVU_ERROR:
+          break;
+        default:
+          break;
+        }
+      ddjvu_message_pop(context);
+    }
+
+    return true;
+}
+
 bool extractText(JNIEnv *env, miniexp_t item, fz_bbox *target, JNIUtils *utils, int pageWidth, int pageHeight, jobject textChunks)
 {
     miniexp_t type = miniexp_car(item);
@@ -69,36 +93,43 @@ bool extractText(JNIEnv *env, miniexp_t item, fz_bbox *target, JNIUtils *utils, 
 
 }
 
-OnyxDjvuContext *OnyxDjvuContext::createContext(const std::string & filePath)
+OnyxDjvuContext *OnyxDjvuContext::createContext(JNIEnv *env, jstring filePath)
 {
-    ddjvu_context_t *context = ddjvu_context_create(filePath.c_str());
+    ddjvu_context_t *context = ddjvu_context_create("neo");
     if (!context) {
         LOGE("creating djvu context failed!");
         return nullptr;
     }
 
-    LOGE("open file %s", filePath.c_str());
-    ddjvu_document_t *doc = ddjvu_document_create_by_filename_utf8(context, filePath.c_str(), 0);
+    std::string str(JNIString(env, filePath).getLocalString());
+    char *pFilePath = (char *)calloc(str.size() + 1, 1);
+    str.copy(pFilePath, str.size());
+
+    // djvulibre will keep pFilePath pointer, so we use heap memory to store it
+    ddjvu_document_t *doc = ddjvu_document_create_by_filename_utf8(context, pFilePath, 0);
     if (!doc) {
         LOGE("creating djvu document failed!");
         ddjvu_context_release(context);
         return nullptr;
     }
 
+    while (!ddjvu_document_decoding_done(doc)) {
+        handle_ddjvu_messages(context, true);
+    }
+
     ddjvu_status_t status = ddjvu_document_decoding_status(doc);
-    if (status == DDJVU_JOB_FAILED) {
+    if (status >= DDJVU_JOB_FAILED) {
         LOGE("decoding djvu document failed!");
-        ddjvu_context_release(context);
         ddjvu_document_release(doc);
+        ddjvu_context_release(context);
         return nullptr;
     }
 
     int pageCount = ddjvu_document_get_pagenum(doc);
-    LOGE("page count %d", pageCount);
-    return new OnyxDjvuContext(filePath, pageCount, context, doc);
+    return new OnyxDjvuContext(pFilePath, pageCount, context, doc);
 }
 
-OnyxDjvuContext::OnyxDjvuContext(const std::string &filePath, int pageCount,
+OnyxDjvuContext::OnyxDjvuContext(char *filePath, int pageCount,
             ddjvu_context_t *context, ddjvu_document_t *doc)
     : filePath_(filePath), pageCount_(pageCount),
       context_(context), doc_(doc), currentPage_(nullptr) {
@@ -127,7 +158,11 @@ bool OnyxDjvuContext::gotoPage(int pageNum)
 bool OnyxDjvuContext::getPageSize(int pageNum, std::vector<jfloat> *size)
 {
     ddjvu_pageinfo_t dinfo;
-    if (ddjvu_document_get_pageinfo(doc_, pageNum, &dinfo) == DDJVU_JOB_FAILED) {
+    ddjvu_status_t s;
+    while ((s= ddjvu_document_get_pageinfo(doc_, pageNum, &dinfo)) < DDJVU_JOB_OK) {
+        handle_ddjvu_messages(context_, true);
+    }
+    if (s >= DDJVU_JOB_FAILED) {
         LOGE("ddjvu_document_get_pageinfo failed");
         return false;
     }
@@ -241,8 +276,8 @@ bool OnyxDjvuContext::draw(JNIEnv *env, jobject bitmap, float zoom, int bmpWidth
 
 void OnyxDjvuContext::close()
 {
-    filePath_ = "";
     pageCount_ = 0;
+
     if (currentPage_) {
         ddjvu_page_release(currentPage_);
         currentPage_ = nullptr;
@@ -254,6 +289,10 @@ void OnyxDjvuContext::close()
     if (context_) {
         ddjvu_context_release(context_);
         context_ = nullptr;
+    }
+    if (filePath_) {
+        free(filePath_);
+        filePath_ = nullptr;
     }
 }
 

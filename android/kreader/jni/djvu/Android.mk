@@ -13,7 +13,7 @@ LOCAL_C_INCLUDES := \
 
 LOCAL_CXXFLAGS := -fPIC -std=c++11
 LOCAL_MODULE    := onyx_djvu
-LOCAL_SRC_FILES := djvu.cpp onyx_djvu_context.cpp
+LOCAL_SRC_FILES := djvu.cpp onyx_djvu_context.cpp base_geometry.c
 
 LOCAL_STATIC_LIBRARIES := djvucore libutils
 

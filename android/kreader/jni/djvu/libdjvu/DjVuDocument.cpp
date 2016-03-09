@@ -238,6 +238,8 @@ DjVuDocument::~DjVuDocument(void)
        file->stop(false);	// Disable any access to data
      }
    }
+   init_data_pool->clear_stream();
+   init_data_pool = DataPool::create();
    DataPool::close_all();
 }
 
