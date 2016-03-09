@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <string>
+#include <map>
 
 #include <jni.h>
 
@@ -36,6 +37,7 @@ private:
     ddjvu_context_t *context_;
     ddjvu_document_t *doc_;
     ddjvu_page_t *currentPage_;
+    std::map<int, ddjvu_page_t*> pageMap;
 };
 
 #endif // ONYXDJVUCONTEXT_H

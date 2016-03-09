@@ -147,12 +147,18 @@ int OnyxDjvuContext::getPageCount()
 
 bool OnyxDjvuContext::gotoPage(int pageNum)
 {
-    if (currentPage_) {
-        ddjvu_page_release(currentPage_);
-        currentPage_ = nullptr;
+    auto find = pageMap.find(pageNum);
+    if (find != pageMap.end()) {
+        currentPage_ = find->second;
+        return true;
     }
+    
     currentPage_ = ddjvu_page_create_by_pageno(doc_, pageNum);
-    return currentPage_;
+    if (!currentPage_) {
+        return false;
+    }
+    pageMap.insert({ pageNum, currentPage_ });
+    return true;
 }
 
 bool OnyxDjvuContext::getPageSize(int pageNum, std::vector<jfloat> *size)
@@ -278,10 +284,11 @@ void OnyxDjvuContext::close()
 {
     pageCount_ = 0;
 
-    if (currentPage_) {
-        ddjvu_page_release(currentPage_);
-        currentPage_ = nullptr;
+    for (auto &p : pageMap) {
+        ddjvu_page_release(p.second);
     }
+    pageMap.clear();
+
     if (doc_) {
         ddjvu_document_release(doc_);
         doc_ = nullptr;
