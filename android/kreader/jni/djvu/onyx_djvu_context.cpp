@@ -291,7 +291,6 @@ void OnyxDjvuContext::close()
         context_ = nullptr;
     }
     if (filePath_) {
-        LOGE("free path: %s", filePath_);
         free(filePath_);
         filePath_ = nullptr;
     }
