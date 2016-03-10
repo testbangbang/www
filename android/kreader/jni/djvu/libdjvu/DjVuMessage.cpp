@@ -71,8 +71,9 @@
 #include "debug.h"
 #include <ctype.h>
 #include <string.h>
+#include <stddef.h>
 #include <stdlib.h>
-#ifdef WIN32
+#ifdef _WIN32
 # include <tchar.h>
 # include <windows.h>
 # include <winreg.h>
@@ -128,7 +129,7 @@ static const char DjVuPrefixDir[] = LT_DEFAULT_PREFIX "/profiles";
 #ifndef NDEBUG
 static const char DebugModuleDjVuDir[] ="../TOPDIR/SRCDIR/profiles";
 #endif
-#ifdef WIN32
+#ifdef _WIN32
 static const char RootDjVuDir[] ="C:/Program Files/LizardTech/Profiles";
 static const TCHAR registrypath[]= TEXT("Software\\LizardTech\\DjVu\\Profile Path");
 #else
@@ -141,7 +142,7 @@ static const char DjVuEnv[] = "DJVU_CONFIG_DIR";
 static const char MessageFile[]="messages.xml";
 static const char LanguageFile[]="languages.xml";
 
-#ifdef WIN32
+#ifdef _WIN32
 static GURL
 RegOpenReadConfig ( HKEY hParentKey )
 {
@@ -269,7 +270,7 @@ DjVuMessage::GetProfilePaths(void)
     const GUTF8String envp(GOS::getenv(DjVuEnv));
     if(envp.length())
       appendPath(GURL::Filename::UTF8(envp),pathsmap,paths);
-#if defined(WIN32) || defined(UNIX)
+#if defined(_WIN32) || defined(UNIX)
     GURL mpath(GetModulePath());
     if(!mpath.is_empty() && mpath.is_dir())
     {
@@ -294,7 +295,7 @@ DjVuMessage::GetProfilePaths(void)
     GURL dpath = GURL::Filename::UTF8(DjVuDataDir);
     appendPath(dpath,pathsmap,paths);
 #endif
-#ifdef WIN32
+#ifdef _WIN32
     appendPath(RegOpenReadConfig(HKEY_CURRENT_USER),pathsmap,paths);
     appendPath(RegOpenReadConfig(HKEY_LOCAL_MACHINE),pathsmap,paths);
 #else
