@@ -169,6 +169,15 @@ bool OnyxDjvuContext::gotoPage(int pageNum)
     if (!page) {
         return false;
     }
+    ddjvu_status_t s;
+    while (! ddjvu_page_decoding_done(page)) {
+        handle_ddjvu_messages(context_, true);
+    }
+    s = ddjvu_page_decoding_status(page);
+    if (s >= DDJVU_JOB_FAILED) {
+        ddjvu_page_release(page);
+        return false;
+    }
     pageMap.insert({ pageNum, page });
     return true;
 }
