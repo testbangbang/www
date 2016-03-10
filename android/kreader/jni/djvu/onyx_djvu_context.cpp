@@ -22,6 +22,8 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
+#define DEBUG 0
+
 namespace {
 
 bool handle_ddjvu_messages(ddjvu_context_t *context, bool wait)
@@ -36,6 +38,14 @@ bool handle_ddjvu_messages(ddjvu_context_t *context, bool wait)
       switch(msg->m_any.tag)
         {
         case DDJVU_ERROR:
+#ifdef DEBUG
+          if (msg->m_error.filename) {
+              LOGE("ddjvu: %s\nddjvu: '%s:%d'\n", msg->m_error.message,
+                   msg->m_error.filename, msg->m_error.lineno);
+          } else {
+              LOGE("ddjvu: %s\n", msg->m_error.message);
+          }
+#endif
           break;
         default:
           break;
@@ -109,6 +119,7 @@ OnyxDjvuContext *OnyxDjvuContext::createContext(JNIEnv *env, jstring filePath)
     ddjvu_document_t *doc = ddjvu_document_create_by_filename_utf8(context, pFilePath, 0);
     if (!doc) {
         LOGE("creating djvu document failed!");
+        handle_ddjvu_messages(context, true);
         ddjvu_context_release(context);
         free(pFilePath);
         return nullptr;
