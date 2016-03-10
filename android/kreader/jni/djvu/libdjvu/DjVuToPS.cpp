@@ -334,6 +334,8 @@ store_doc_prolog(ByteStream &str, int pages, int dpi, GRect *grect)
   write(str, "%%%%CreationDate: %s", ctime(&tm));
   // For
 #ifdef UNIX
+  
+#if 0
   passwd *pswd = getpwuid(getuid());
   if (pswd)
     {
@@ -348,6 +350,8 @@ store_doc_prolog(ByteStream &str, int pages, int dpi, GRect *grect)
       if (s)
         write(str, "%%%%For: %s\n", s);
     }
+#endif
+  
 #endif
   // Language
   write(str, "%%%%LanguageLevel: %d\n", options.get_level());

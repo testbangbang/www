@@ -446,8 +446,11 @@ GThread::create(void (*entry)(void*), void *arg)
 void 
 GThread::terminate()
 {
+  // ndk does not implement phthread_cancel, so we replace it with pthread_kill
+  // luckily, there is no code calling terminate() method in 3.5.27, so we can safely do this to avoid compiling error
+  // joy@onyx
   if (xentry || xarg)
-    pthread_cancel(hthr);
+    pthread_kill(hthr, 0);
 }
 
 int
