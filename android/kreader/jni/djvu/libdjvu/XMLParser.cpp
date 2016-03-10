@@ -75,6 +75,7 @@
 #include "debug.h"
 #include <stdio.h>
 #include <ctype.h>
+#include <stddef.h>
 #include <stdlib.h>
 
 
@@ -248,7 +249,7 @@ convertToColor(const GUTF8String &s)
   unsigned long retval=0;
   if(s.length())
   {
-    int endpos;
+    int endpos = -1;
     if(s[0] == '#')
     {
       retval=s.substr(1,-1).toULong(0,endpos,16);
@@ -645,17 +646,12 @@ lt_XMLParser::Impl::parse(const lt_XMLTags &tags, GURL *pdjvufile)
     GPosition datapos=args.contains("data");
     if(datapos)
     {
-      bool isDjVuType=false;
       GPosition typePos(args.contains("type"));
       if(typePos)
-      {
-        if(args[typePos] != mimetype)
         {
-          // DjVuPrintErrorUTF8("Ignoring %s Object tag\n",mimetype);
+          if(args[typePos] != mimetype)
           continue;
         }
-        isDjVuType=true;
-      }
       const GURL url = (pdjvufile) ? *pdjvufile 
         : GURL::UTF8(args[datapos], 
                      (args[datapos][0] == '/') ? codebase.base() : codebase);

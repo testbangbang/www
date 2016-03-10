@@ -72,6 +72,7 @@
 #include "GPixmap.h"
 #include "debug.h"
 #include <stdarg.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -333,7 +334,9 @@ store_doc_prolog(ByteStream &str, int pages, int dpi, GRect *grect)
   write(str, "%%%%CreationDate: %s", ctime(&tm));
   // For
 #ifdef UNIX
-/*  passwd *pswd = getpwuid(getuid());
+  
+#if 0
+  passwd *pswd = getpwuid(getuid());
   if (pswd)
     {
       char *s = strchr(pswd->pw_gecos, ',');
@@ -346,7 +349,9 @@ store_doc_prolog(ByteStream &str, int pages, int dpi, GRect *grect)
         s = pswd->pw_name;
       if (s)
         write(str, "%%%%For: %s\n", s);
-    }*/
+    }
+#endif
+  
 #endif
   // Language
   write(str, "%%%%LanguageLevel: %d\n", options.get_level());
@@ -2209,7 +2214,7 @@ public:
   double decode_done;
   GURL decode_page_url;
   virtual void notify_file_flags_changed(const DjVuFile*,long,long);
-  virtual void notify_decode_progress(const DjVuPort*,double);
+  virtual void notify_decode_progress(const DjVuPort*,float);
 };
 
 DjVuToPS::DecodePort::
@@ -2246,7 +2251,7 @@ notify_file_flags_changed(const DjVuFile *source,
 
 void 
 DjVuToPS::DecodePort::
-notify_decode_progress(const DjVuPort *source, double done)
+notify_decode_progress(const DjVuPort *source, float done)
 {
   // WARNING! This function is called from another thread
   if (source->inherits("DjVuFile"))

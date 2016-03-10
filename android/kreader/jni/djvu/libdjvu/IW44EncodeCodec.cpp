@@ -76,6 +76,7 @@
 #include "IFFByteStream.h"
 #include "GRect.h"
 
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -309,7 +310,7 @@ static const int   d16[] = {16,16};
 static inline void
 mmx_fv_1 ( short* &q, short* e, int s, int s3 )
 {
-  while (q<e && (((long)q)&0x7))
+  while (q<e && (((size_t)q)&0x7))
     {
       int a = (int)q[-s] + (int)q[s];
       int b = (int)q[-s3] + (int)q[s3];
@@ -352,7 +353,7 @@ mmx_fv_1 ( short* &q, short* e, int s, int s3 )
 static inline void
 mmx_fv_2 ( short* &q, short* e, int s, int s3 )
 {
-  while (q<e && (((long)q)&0x7))
+  while (q<e && (((size_t)q)&0x7))
     {
       int a = (int)q[-s] + (int)q[s];
       int b = (int)q[-s3] + (int)q[s3];

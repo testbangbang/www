@@ -72,13 +72,14 @@
 #include "GURL.h"
 #include "debug.h"
 
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <math.h>
 #include <string.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 # include <tchar.h>
 # include <windows.h>
 # include <direct.h>
@@ -182,7 +183,7 @@ static const char nillchar=0;
 #if defined(UNIX)
   static const char tilde='~';
   static const char root[] = "/";
-#elif defined(WIN32) || defined(OS2)
+#elif defined(_WIN32) || defined(OS2)
   static const char root[] = "\\";
 #elif defined(macintosh)
   static char const * const root = &nillchar; 
@@ -231,7 +232,7 @@ void
 GURL::convert_slashes(void)
 {
    GUTF8String xurl(get_string());
-#if defined(WIN32)
+#if defined(_WIN32)
    const int protocol_length=protocol(xurl).length();
    for(char *ptr=(xurl.getbuf()+protocol_length);*ptr;ptr++)
      if(*ptr == backslash)
@@ -287,7 +288,7 @@ GURL::beautify_path(GUTF8String xurl)
   // Convert /./ stuff into plain /
   for(;(ptr=strstr(start, "/./"));collapse(ptr, 2))
     EMPTY_LOOP;
-#if defined(WIN32) || defined(OS2)
+#if defined(_WIN32) || defined(OS2)
   if(!xurl.cmp(filespec,sizeof(filespec)-1))
   {
 	int offset=1;
@@ -438,7 +439,7 @@ GURL::GURL(const GUTF8String & url_in)
 GURL::GURL(const GNativeString & url_in)
   : url(url_in.getNative2UTF8()), validurl(false)
 {
-#if defined(WIN32) || defined(OS2)
+#if defined(_WIN32) || defined(OS2)
   if(is_valid() && is_local_file_url())
   {
     GURL::Filename::UTF8 xurl(UTF8Filename());
@@ -451,7 +452,6 @@ GURL::GURL(const GNativeString & url_in)
 GURL::GURL(const GURL & url_in)
   : validurl(false)
 {
-  original = url_in.original;
   if(url_in.is_valid())
   {
     url=url_in.get_string();
@@ -475,7 +475,6 @@ GURL::operator=(const GURL & url_in)
      url=url_in.url;
      validurl=false;
    }
-   original = url_in.original;
    return *this;
 }
 
@@ -485,7 +484,7 @@ GURL::protocol(const GUTF8String& url)
   const char * const url_ptr=url;
   const char * ptr=url_ptr;
   for(char c=*ptr;
-      c && (isalnum(c) || c == '+' || c == '-' || c == '.');
+      c && isascii(c) && (isalnum(c) || c == '+' || c == '-' || c == '.');
       c=*(++ptr)) EMPTY_LOOP;
   if (ptr[0]==colon && ptr[1]=='/' && ptr[2]=='/')
     return GUTF8String(url_ptr, ptr-url_ptr);
@@ -1072,7 +1071,7 @@ GURL::encode_reserved(const GUTF8String &gs)
   for (; *s; s++,d++)
   {
     // Convert directory separator to slashes
-#if defined(WIN32) || defined(OS2)
+#if defined(_WIN32) || defined(OS2)
     if (*s == backslash || *s== slash)
 #else
 #ifdef macintosh
@@ -1246,7 +1245,7 @@ GURL::GURL(const GNativeString &xurl,const GURL &codebase)
   GURL retval(xurl.getNative2UTF8(),codebase);
   if(retval.is_valid())
   {
-#if defined(WIN32)
+#if defined(_WIN32)
     // Hack for IE to change \\ to /
     if(retval.is_local_file_url())
     {
@@ -1353,7 +1352,7 @@ GURL::UTF8Filename(void) const
     retval = expand_name(url_ptr,root);
 #endif
     
-#if defined(WIN32) || defined(OS2)
+#if defined(_WIN32) || defined(OS2)
     if (url_ptr[0] && url_ptr[1]=='|' && url_ptr[2]== slash)
     {
       if ((url_ptr[0]>='a' && url_ptr[0]<='z') 
@@ -1398,7 +1397,7 @@ GURL::is_file(void) const
     {
       retval=!(buf.st_mode & S_IFDIR);
     }
-#elif defined(WIN32)
+#elif defined(_WIN32)
     GUTF8String filename(UTF8Filename());
     if(filename.length() >= MAX_PATH)
       {
@@ -1470,7 +1469,7 @@ GURL::is_dir(void) const
     {
       retval=(buf.st_mode & S_IFDIR);
     }
-#elif defined(WIN32)   // (either Windows or WCE)
+#elif defined(_WIN32)   // (either Windows or WCE)
     GUTF8String filename(UTF8Filename());
     if(filename.length() >= MAX_PATH)
       {
@@ -1534,7 +1533,7 @@ GURL::mkdir() const
         retval = 0;
       else 
         retval = ::mkdir(NativeFilename(), 0755);
-#elif defined(WIN32)
+#elif defined(_WIN32)
       if (is_dir())
         retval = 0;
       else 
@@ -1560,7 +1559,7 @@ GURL::deletefile(void) const
         retval = ::rmdir(NativeFilename());
       else
         retval = ::unlink(NativeFilename());
-#elif defined(WIN32)
+#elif defined(_WIN32)
       if (is_dir())
         retval = ::RemoveDirectoryA(NativeFilename());
       else
@@ -1590,7 +1589,7 @@ GURL::listdir(void) const
       retval.append(GURL::Native(de->d_name,*this));
     }
     closedir(dir);
-#elif defined (WIN32)
+#elif defined(_WIN32)
     GURL::UTF8 wildcard("*.*",*this);
     WIN32_FIND_DATA finddata;
     HANDLE handle = FindFirstFile(wildcard.NativeFilename(), &finddata);//MBCS cvt
@@ -1756,7 +1755,7 @@ GURL::expand_name(const GUTF8String &xfname, const char *from)
       EMPTY_LOOP;
     *s = 0;
   }
-#elif defined (WIN32) // WIN32 implementation
+#elif defined(_WIN32) // WIN32 implementation
   // Handle base
   strcpy(string_buffer, (char const *)(from ? expand_name(from) : GOS::cwd()));
   //  GNativeString native;

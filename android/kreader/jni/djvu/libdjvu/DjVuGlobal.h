@@ -62,19 +62,16 @@
 # pragma interface
 #endif
 
+#if defined(HAVE_STDINCLUDES)
 # include <new>
-#if defined(UNDER_CE)
-# ifndef __WCEALT_H__
-inline void * operator new(size_t, void * ptr) { return ptr; }
-# endif
-#elif defined(HAVE_STDINCLUDES)
-# include <new>
+#elif defined(HAVE_NEW_H)
+# include <new.h>
 #else
-# include <new>
+# include <new> // try standard c++ anyway!
 #endif
 
-#ifdef WIN32
-# ifdef DLL_EXPORT
+#ifdef _WIN32
+# ifdef DJVUAPI_EXPORT
 #  define DJVUAPI __declspec(dllexport)
 # else
 #  define DJVUAPI __declspec(dllimport)

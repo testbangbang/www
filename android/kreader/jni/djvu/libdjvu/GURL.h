@@ -130,8 +130,6 @@ protected:
       //@}
 
 public:
-   const char * original;
-
    GURL(void);
 
    GURL(const GUTF8String & url_string);

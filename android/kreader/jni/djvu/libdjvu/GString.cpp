@@ -73,6 +73,7 @@
 #include "GThreads.h"
 #include "debug.h"
 
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -87,16 +88,14 @@
 #endif
 #include <ctype.h>
 
+#include <errno.h>
+
+#ifndef LC_NUMERIC          //MingW
+# undef DO_CHANGELOCALE
+# define LC_NUMERIC 0
+#endif
 #ifndef DO_CHANGELOCALE
-#define DO_CHANGELOCALE 1
-#ifdef UNIX
-#if THREADMODEL != COTHREADS
-#if THREADMODEL != NOTHREADS
-#undef DO_CHANGELOCALE
-#define DO_CHANGELOCALE 0
-#endif
-#endif 
-#endif
+# define DO_CHANGELOCALE 0
 #endif
 
 
@@ -111,6 +110,36 @@ namespace DJVU {
 GBaseString::~GBaseString() {}
 GNativeString::~GNativeString() {}
 GUTF8String::~GUTF8String() {}
+
+// wcrtomb() of ndk version always convert wc to '\0x1', so we implement our own.
+// joy@onyx
+size_t MYwcrtomb(char *s, wchar_t wc, mbstate_t *st)
+{
+	if (!s) return 1;
+	if ((unsigned)wc < 0x80) {
+		*s = wc;
+		return 1;
+	} else if ((unsigned)wc < 0x800) {
+		*s++ = 0xc0 | (wc>>6);
+		*s = 0x80 | (wc&0x3f);
+		return 2;
+	} else if ((unsigned)wc < 0xd800 || (unsigned)wc-0xe000 < 0x2000) {
+		*s++ = 0xe0 | (wc>>12);
+		*s++ = 0x80 | ((wc>>6)&0x3f);
+		*s = 0x80 | (wc&0x3f);
+		return 3;
+	} else if ((unsigned)wc-0x10000 < 0x100000) {
+		*s++ = 0xf0 | (wc>>18);
+		*s++ = 0x80 | ((wc>>12)&0x3f);
+		*s++ = 0x80 | ((wc>>6)&0x3f);
+		*s = 0x80 | (wc&0x3f);
+		return 4;
+	}
+	errno = EILSEQ;
+	return -1;
+}
+
+#define wcrtomb MYwcrtomb
 
 #if !HAS_MBSTATE && HAS_WCHAR
 // Under some systems, wctomb() and mbtowc() are not thread
@@ -539,25 +568,23 @@ GStringRep::Native::UCS4toString(
 // the results with a nill termination.  (Normally 7 characters
 // is enough.)
 unsigned char *
-GStringRep::UCS4toNative(
-  const uint32_t w0,unsigned char *ptr, mbstate_t *ps)
+GStringRep::UCS4toNative(const uint32_t w0,unsigned char *ptr, mbstate_t *ps)
 {
   uint16_t w1;
   uint16_t w2=1;
-  for(int count=(sizeof(wchar_t)==sizeof(w1)) ? UCS4toUTF16(w0,w1,w2) : 1;
+  for(int count=(sizeof(wchar_t)==sizeof(w1)) 
+        ? UCS4toUTF16(w0,w1,w2) : 1;
       count;
       --count,w1=w2)
-  {
-    // wchar_t can be either UCS4 or UCS2
-    const wchar_t w=(sizeof(wchar_t) == sizeof(w1))?(wchar_t)w1:(wchar_t)w0;
-    int i=wcrtomb((char *)ptr,w,ps);
-    if(i<0)
     {
-      break;
+      // wchar_t can be either UCS4 or UCS2
+      const wchar_t w=(sizeof(wchar_t) == sizeof(w1))?(wchar_t)w1:(wchar_t)w0;
+      int i=wcrtomb((char *)ptr,w,ps);
+      if(i<0)
+        break;
+      ptr[i]=0;
+      ptr += i;
     }
-    ptr[i]=0;
-    ptr += i;
-  }
   ptr[0]=0;
   return ptr;
 }
@@ -642,26 +669,22 @@ GBaseString::UTF8ToNative(
   const char *source=(*this);
   GP<GStringRep> retval;
   if(source && source[0]) 
-  {
-#if DO_CHANGELOCALE
-    GUTF8String lc_ctype(setlocale(LC_CTYPE,0));
-#endif
-    bool repeat;
-    for(repeat=!currentlocale;;repeat=false)
     {
-      retval=(*this)->toNative((GStringRep::EscapeMode)escape);
 #if DO_CHANGELOCALE
-      if (!repeat || retval || (lc_ctype == setlocale(LC_CTYPE,"")))
+      GUTF8String lc_ctype(setlocale(LC_CTYPE,0));
+      bool repeat;
+      for(repeat=!currentlocale;;repeat=false)
+        {
 #endif
-        break;
-    }
+          retval=(*this)->toNative((GStringRep::EscapeMode)escape);
 #if DO_CHANGELOCALE
-    if(!repeat)
-      {
+          if (!repeat || retval || (lc_ctype == setlocale(LC_CTYPE,"")))
+            break;
+        }
+      if(!repeat)
         setlocale(LC_CTYPE,(const char *)lc_ctype);
-      }
 #endif
-  }
+    }
   return GNativeString(retval);
 }
 
@@ -696,27 +719,19 @@ GBaseString::NativeToUTF8(void) const
     const char *source=(*this);
 #if DO_CHANGELOCALE
     GUTF8String lc_ctype=setlocale(LC_CTYPE,0);
-#endif
     bool repeat;
     for(repeat=true;;repeat=false)
-    {
-      if( (retval=GStringRep::NativeToUTF8(source)) )
       {
-        if(GStringRep::cmp(retval->toNative(),source))
-        {
-          retval=GStringRep::UTF8::create((unsigned int)0);
-        }
-      }
-#if DO_CHANGELOCALE
-      if(!repeat || retval || (lc_ctype == setlocale(LC_CTYPE,"")))
 #endif
-        break;
-    }
+        if( (retval=GStringRep::NativeToUTF8(source)) )
+          if(GStringRep::cmp(retval->toNative(),source))
+            retval=GStringRep::UTF8::create((unsigned int)0);
 #if DO_CHANGELOCALE
+        if(!repeat || retval || (lc_ctype == setlocale(LC_CTYPE,"")))
+          break;
+      }
     if(!repeat)
-    {
       setlocale(LC_CTYPE,(const char *)lc_ctype);
-    }
 #endif
   }
   return GUTF8String(retval);
@@ -1411,7 +1426,8 @@ GStringRep::toEscaped( const bool tosevenbit ) const
   char const *s=start;
   char const *last=s;
   GP<GStringRep> special;
-  for(unsigned long w;(w=getValidUCS4(s));last=s)
+  for(unsigned long w;(w=getValidUCS4(s));last=s)  
+    // Whoever wrote this for statement should be __complete_here__
   {
     char const *ss=0;
     switch(w)
@@ -1596,7 +1612,7 @@ GStringRep::setat(int n, char ch) const
 
 #if defined(AUTOCONF) && defined(HAVE_VSNPRINTF)
 # define USE_VSNPRINTF vsnprintf
-#elif defined(WIN32) && !defined(__CYGWIN32__)
+#elif defined(_WIN32) && !defined(__CYGWIN32__)
 # define USE_VSNPRINTF _vsnprintf
 #elif defined(linux)
 # define USE_VSNPRINTF vsnprintf
@@ -1811,41 +1827,43 @@ GStringRep::UTF8::UCS4toString(
 }
 
 int
-GStringRep::UTF8::ncopy(
-  wchar_t * const buf, const int buflen ) const
+GStringRep::UTF8::ncopy(wchar_t * const buf, const int buflen ) const
 {
   int retval=(-1);
   if(buf && buflen)
-  {
-	buf[0]=0;
-    if(data[0])
+    {
+      buf[0]=0;
+      if(data[0])
 	{
-      const size_t length=strlen(data);
-      const unsigned char * const eptr=(const unsigned char *)(data+length);
+          const size_t length=strlen(data);
+          const unsigned char * const eptr=(const unsigned char *)(data+length);
 	  wchar_t *r=buf;
 	  wchar_t const * const rend=buf+buflen;
-      for(const unsigned char *s=(const unsigned char *)data;(r<rend)&&(s<eptr)&&*s;)
-	  {
-        const uint32_t w0=UTF8toUCS4(s,eptr);
-        uint16_t w1;
-        uint16_t w2=1;
-        for(int count=(sizeof(wchar_t) == sizeof(w1))?UCS4toUTF16(w0,w1,w2):1;
-            count&&(r<rend);
-            --count,w1=w2,++r)
+          for(const unsigned char *s=(const unsigned char *)data;
+              (r<rend)&&(s<eptr)&&*s;)
+            {
+              const uint32_t w0=UTF8toUCS4(s,eptr);
+              uint16_t w1;
+              uint16_t w2=1;
+              for(int count=(sizeof(wchar_t)==sizeof(w1))
+                    ?UCS4toUTF16(w0,w1,w2):1;
+                  count&&(r<rend);
+                  --count,w1=w2,++r)
 		{
 		  r[0]=(sizeof(wchar_t) == sizeof(w1))?(wchar_t)w1:(wchar_t)w0;
 		}
-	  }
+            }
 	  if(r<rend)
-	  {
-	    r[0]=0;
-		retval=((size_t)r-(size_t)buf)/sizeof(wchar_t);
-	  }
-	}else
+            {
+              r[0]=0;
+              retval=((size_t)r-(size_t)buf)/sizeof(wchar_t);
+            }
+	}
+      else
 	{
 	  retval=0;
 	}
-  }
+    }
   return retval;
 }
 
@@ -1863,26 +1881,36 @@ GStringRep::UTF8::toNative(const EscapeMode escape) const
     mbstate_t ps;
     memset(&ps,0,sizeof(mbstate_t));
     for(const unsigned char *s=(const unsigned char *)data;(s<eptr)&& *s;)
-    {
-      const uint32_t w0=UTF8toUCS4(s,eptr);
-      const unsigned char * const r0=r;
-      r=UCS4toNative(w0,r,&ps);
-      if(r == r0)
       {
-        if(escape == IS_ESCAPED)
-        {
-          sprintf((char *)r,"&#%lu;",(unsigned long)w0);
-          r+=strlen((char *)r);
-        }
+        const unsigned char * const s0 = s;
+        const uint32_t w0=UTF8toUCS4(s,eptr);
+        if (s == s0)
+          {
+            s += 1;
+            *r++ = '?';
+          }
         else
-        {
-          *r++ = '?';
-        }
+          {
+            const unsigned char * const r0 = r;
+            r=UCS4toNative(w0,r,&ps);
+            if(r == r0)
+              {
+                if (escape == IS_ESCAPED)
+                  {
+                    sprintf((char *)r,"&#%lu;",(unsigned long)w0);
+                    r += strlen((char *)r);
+                  }
+                else
+                  {
+                    *r++ = '?';
+                  }
+              }
+          }
       }
-    }
     r[0]=0;
     retval = NATIVE_CREATE( (const char *)buf );
-  } else
+  } 
+  else
   {
     retval = NATIVE_CREATE( (unsigned int)0 );
   }
@@ -2149,19 +2177,6 @@ GStringRep::concat(const GP<GStringRep> &s1,const GP<GStringRep> &s2) const
   return retval;
 }
 
-#ifdef WIN32
-static const char *setlocale_win32(void)
-{
-  static const char *locale=setlocale(LC_ALL,0);
-  if(! locale || (locale[0] == 'C' && !locale[1]))
-  {
-    locale=setlocale(LC_ALL,"");
-  }
-  return locale;
-}
-const char *setlocale_win32_var = setlocale_win32();
-#endif
-
 GStringRep::GStringRep(void)
 {
   size=0;
@@ -2276,8 +2291,9 @@ GStringRep::UTF8::toLong(
     endpos=edata-data;
   }else
   {
+    GP<GStringRep> ptr = GStringRep::UTF8::create();
     endpos=(-1);
-    GP<GStringRep> ptr=ptr->strdup(data+pos);
+    ptr=ptr->strdup(data+pos);
     if(ptr)
       ptr=ptr->toNative(NOT_ESCAPED);
     if(ptr)
@@ -2321,8 +2337,9 @@ GStringRep::UTF8::toULong(
     endpos=edata-data;
   }else
   {
+    GP<GStringRep> ptr = GStringRep::UTF8::create();
     endpos=(-1);
-    GP<GStringRep> ptr=ptr->strdup(data+pos);
+    ptr=ptr->strdup(data+pos);
     if(ptr)
       ptr=ptr->toNative(NOT_ESCAPED);
     if(ptr)
@@ -2365,8 +2382,9 @@ GStringRep::UTF8::toDouble(const int pos, int &endpos) const
     endpos=edata-data;
   }else
   {
+    GP<GStringRep> ptr = GStringRep::UTF8::create();
     endpos=(-1);
-    GP<GStringRep> ptr=ptr->strdup(data+pos);
+    ptr=ptr->strdup(data+pos);
     if(ptr)
       ptr=ptr->toNative(NOT_ESCAPED);
     if(ptr)

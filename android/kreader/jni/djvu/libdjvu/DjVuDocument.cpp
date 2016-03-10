@@ -176,6 +176,7 @@ DjVuDocument::start_init(
       // Initialize
    cache=xcache;
    doc_type=UNKNOWN_TYPE;
+   DataPool::close_all();
    DjVuPortcaster * pcaster=get_portcaster();
    if (!xport)
      xport=simple_port=new DjVuSimplePort();
@@ -238,8 +239,6 @@ DjVuDocument::~DjVuDocument(void)
        file->stop(false);	// Disable any access to data
      }
    }
-   init_data_pool->clear_stream();
-   init_data_pool = DataPool::create();
    DataPool::close_all();
 }
 
@@ -1653,7 +1652,7 @@ DjVuDocument::get_url_names(void)
         // Why is this try/catch block here?
         G_TRY { 
           get_portcaster()->notify_error(this, ex.get_cause()); 
-          GUTF8String emsg = ERR_MSG("DjVuDocument.exclude_page") "\t" + (i+1);
+          GUTF8String emsg = ERR_MSG("DjVuDocument.exclude_page") "\t" + GUTF8String(i+1);
           get_portcaster()->notify_error(this, emsg);
         }
         G_CATCH_ALL
@@ -1742,7 +1741,7 @@ DjVuDocument::get_djvm_doc()
                    G_TRY { 
                      get_portcaster()->notify_error(this, ex.get_cause());
                      GUTF8String emsg = ERR_MSG("DjVuDocument.skip_page") "\t" 
-                                      + (page_num+1);
+                                      + GUTF8String(page_num+1);
                      get_portcaster()->notify_error(this, emsg);
                    }
                    G_CATCH_ALL
@@ -1775,10 +1774,20 @@ DjVuDocument::write(const GP<ByteStream> &gstr, bool force_djvm)
    
   GP<DjVmDoc> doc=get_djvm_doc();
   GP<DjVmDir> dir=doc->get_djvm_dir();
-  if (force_djvm || dir->get_files_num()>1)
+
+  bool singlepage = (dir->get_files_num()==1 && !djvm_nav && !force_djvm);
+  if (singlepage)
+  {
+    // maybe save as single page
+    DjVmDir::File *file = dir->page_to_file(0);
+    if (file->get_title() != file->get_load_name())
+      singlepage = false;
+  }
+  if (! singlepage)
   {
     doc->write(gstr);
-  }else
+  }
+  else
   {
     GPList<DjVmDir::File> files_list=dir->resolve_duplicates(false);
     GP<DataPool> pool=doc->get_data(files_list[files_list]->get_load_name());
