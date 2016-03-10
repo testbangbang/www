@@ -9,7 +9,7 @@
 
 #include <assert.h>
 
-#include <map>
+#include <unordered_map>
 
 #include <miniexp.h>
 #include <ddjvuapi.h>
@@ -30,9 +30,9 @@
 
 namespace {
 
-std::map<jobject, OnyxDjvuContext *> contextMap;
+std::unordered_map<jobject, OnyxDjvuContext *> contextMap;
 
-OnyxDjvuContext *findContext(std::map<jobject, OnyxDjvuContext *> &map, const jobject &thiz) {
+OnyxDjvuContext *findContext(std::unordered_map<jobject, OnyxDjvuContext *> &map, const jobject &thiz) {
     auto find = map.find(thiz);
     if (find == map.end()) {
         return nullptr;
@@ -97,14 +97,14 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText(JNIEnv *
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jobject thiz, jobject bitmap, float zoom,
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jobject thiz, jint pageNum, jobject bitmap, float zoom,
                                                                  int bmpWidth, int bmpHeight, int patchX, int patchY, int patchW, int patchH)
 {
     OnyxDjvuContext *context = findContext(thiz);
     if (!context) {
         return false;
     }
-    return context->draw(env, bitmap, zoom, bmpWidth, bmpHeight, patchX, patchY, patchW, patchH);
+    return context->draw(env, pageNum, bitmap, zoom, bmpWidth, bmpHeight, patchX, patchY, patchW, patchH);
 }
 
 JNIEXPORT void JNICALL

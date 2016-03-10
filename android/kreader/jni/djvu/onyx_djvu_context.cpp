@@ -110,6 +110,7 @@ OnyxDjvuContext *OnyxDjvuContext::createContext(JNIEnv *env, jstring filePath)
     if (!doc) {
         LOGE("creating djvu document failed!");
         ddjvu_context_release(context);
+        free(pFilePath);
         return nullptr;
     }
 
@@ -122,6 +123,7 @@ OnyxDjvuContext *OnyxDjvuContext::createContext(JNIEnv *env, jstring filePath)
         LOGE("decoding djvu document failed!");
         ddjvu_document_release(doc);
         ddjvu_context_release(context);
+        free(pFilePath);
         return nullptr;
     }
 
@@ -132,7 +134,7 @@ OnyxDjvuContext *OnyxDjvuContext::createContext(JNIEnv *env, jstring filePath)
 OnyxDjvuContext::OnyxDjvuContext(char *filePath, int pageCount,
             ddjvu_context_t *context, ddjvu_document_t *doc)
     : filePath_(filePath), pageCount_(pageCount),
-      context_(context), doc_(doc), currentPage_(nullptr) {
+      context_(context), doc_(doc) {
 }
 
 OnyxDjvuContext::~OnyxDjvuContext()
@@ -149,15 +151,14 @@ bool OnyxDjvuContext::gotoPage(int pageNum)
 {
     auto find = pageMap.find(pageNum);
     if (find != pageMap.end()) {
-        currentPage_ = find->second;
         return true;
     }
     
-    currentPage_ = ddjvu_page_create_by_pageno(doc_, pageNum);
-    if (!currentPage_) {
+    ddjvu_page_t *page = ddjvu_page_create_by_pageno(doc_, pageNum);
+    if (!page) {
         return false;
     }
-    pageMap.insert({ pageNum, currentPage_ });
+    pageMap.insert({ pageNum, page });
     return true;
 }
 
@@ -203,11 +204,12 @@ bool OnyxDjvuContext::extractPageText(JNIEnv *env, int pageNum, jobject textChun
     return extractText(env, pagetext, &target, &utils, w, h, textChunks);
 }
 
-bool OnyxDjvuContext::draw(JNIEnv *env, jobject bitmap, float zoom, int bmpWidth, int bmpHeight, int patchX, int patchY, int patchW, int patchH)
+bool OnyxDjvuContext::draw(JNIEnv *env, int pageNum, jobject bitmap, float zoom, int bmpWidth, int bmpHeight, int patchX, int patchY, int patchW, int patchH)
 {
-    if (!currentPage_) {
+    if (!gotoPage(pageNum)) {
         return false;
     }
+    ddjvu_page_t *page = pageMap.find(pageNum)->second;
 
     int ret;
     AndroidBitmapInfo info;
@@ -230,8 +232,8 @@ bool OnyxDjvuContext::draw(JNIEnv *env, jobject bitmap, float zoom, int bmpWidth
     }
 
     //float zoom = 0.0001f * zoom10000;
-    int pageWidth =  ddjvu_page_get_width(currentPage_);
-    int pageHeight = ddjvu_page_get_height(currentPage_);
+    int pageWidth =  ddjvu_page_get_width(page);
+    int pageHeight = ddjvu_page_get_height(page);
 
     ddjvu_rect_t pageRect;
     pageRect.x = 0;
@@ -273,7 +275,7 @@ bool OnyxDjvuContext::draw(JNIEnv *env, jobject bitmap, float zoom, int bmpWidth
     ddjvu_format_set_y_direction(pixelFormat, TRUE);
     char * buffer = &(((char *)pixels)[shift*4]);
     //LOGI("going to render page %d %d %d %d pageRect %d %d %d %d.", targetRect.x, targetRect.y, targetRect.w, targetRect.h, pageRect.x, pageRect.y, pa
-    ret = ddjvu_page_render(currentPage_, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, info.stride, buffer);
+    ret = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, info.stride, buffer);
     ddjvu_format_release(pixelFormat);
     AndroidBitmap_unlockPixels(env, bitmap);
 

@@ -21,7 +21,7 @@ public class DjvuJniWrapper {
     private native boolean nativeGetPageSize(int pageNum, float[] size);
     private native boolean nativeExtractPageText(int pageNum, List<ReaderSelection> textChunks);
 
-    private native boolean nativeDrawPage(Bitmap bitmap, float zoom, int pageW, int pageH,
+    private native boolean nativeDrawPage(int pageNum, Bitmap bitmap, float zoom, int pageW, int pageH,
                                           int patchX, int patchY,
                                           int patchW, int patchH);
     private native void nativeClose();
@@ -76,10 +76,10 @@ public class DjvuJniWrapper {
     public boolean drawPage(int page, Bitmap bitmap, float zoom, int pageW, int pageH,
                                            int patchX, int patchY,
                                            int patchW, int patchH) {
-        if (!gotoPage(page)) {
+        if (!isValidPage(page)) {
             return false;
         }
-        return nativeDrawPage(bitmap, zoom, pageW, pageH, patchX, patchY, patchW, patchH);
+        return nativeDrawPage(page, bitmap, zoom, pageW, pageH, patchX, patchY, patchW, patchH);
     }
 
     public void close() {

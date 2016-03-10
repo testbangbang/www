@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include <string>
-#include <map>
+#include <unordered_map>
 
 #include <jni.h>
 
@@ -27,7 +27,7 @@ public:
     bool gotoPage(int pageNum);
     bool getPageSize(int pageNum, std::vector<jfloat> *size);
     bool extractPageText(JNIEnv *env, int pageNum, jobject textChunks);
-    bool draw(JNIEnv *env, jobject bitmap, float zoom, int bmpWidth, int bmpHeight,
+    bool draw(JNIEnv *env, int pageNum, jobject bitmap, float zoom, int bmpWidth, int bmpHeight,
               int patchX, int patchY, int patchW, int patchH);
     void close();
 
@@ -36,8 +36,7 @@ private:
     int pageCount_;
     ddjvu_context_t *context_;
     ddjvu_document_t *doc_;
-    ddjvu_page_t *currentPage_;
-    std::map<int, ddjvu_page_t*> pageMap;
+    std::unordered_map<int, ddjvu_page_t*> pageMap;
 };
 
 #endif // ONYXDJVUCONTEXT_H
