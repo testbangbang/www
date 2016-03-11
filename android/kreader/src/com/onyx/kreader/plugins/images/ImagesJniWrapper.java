@@ -1,6 +1,7 @@
 package com.onyx.kreader.plugins.images;
 
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 
 /**
  * Created by zhuzeng on 2/18/16.
@@ -24,9 +25,11 @@ public class ImagesJniWrapper implements ImagesWrapper {
         return null;
     }
 
-    public boolean drawImage(final String imagePath, int x, int y, int width, int height, int rotation, final Bitmap bitmap) {
-        return nativeDrawImage(imagePath, x, y, width, height, rotation, bitmap);
-    }
+    public boolean drawImage(final String imagePath, final float scale, int rotation, final RectF displayRect, final RectF positionRect, final RectF visibleRect, final Bitmap bitmap) {
+        return nativeDrawImage(imagePath, (int)displayRect.left, (int)displayRect.top,
+                (int)displayRect.width(), (int)displayRect.height(), rotation, bitmap);
+
+}
 
     public boolean closeImage(final String path) {
         return nativeCloseImage(path);

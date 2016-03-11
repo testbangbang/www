@@ -29,6 +29,7 @@ import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
 import com.onyx.kreader.common.Benchmark;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
@@ -250,30 +251,16 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean draw(String page, float scale, int rotation, ReaderBitmap bitmap, final RectF displayRect, final RectF positionRect, final RectF visibleRect) {
+    public boolean draw(String page, float scale, int rotation, ReaderBitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         benchmark.restart();
         try {
             final int pn = PagePositionUtils.getPageNumber(page);
-            Rect pageRect = locateTargetRect(pn, scale, bitmap, (int)displayRect.left, (int)displayRect.top);
             return getPluginImpl().drawPage(pn, bitmap.getBitmap(),
                     scale, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(),
-                    pageRect.left, pageRect.top, pageRect.width(), pageRect.height());
+                    (int)visibleRect.left, (int)visibleRect.top, (int)visibleRect.width(), (int)visibleRect.height());
         } finally {
             Log.e(TAG, "rendering takes: " + benchmark.duration());
         }
-    }
-
-    private Rect locateTargetRect(int page, float scale, ReaderBitmap bitmap, int xInBitmap, int yInBitmap) {
-        final float[] pageSize = new float[2];
-        getPluginImpl().getPageSize(page, pageSize);
-        Rect pageRect = new Rect(0, 0, (int)(scale * pageSize[0]), (int)(scale * pageSize[1]));
-        Rect targetRect = new Rect(-xInBitmap, -yInBitmap,
-                -xInBitmap + bitmap.getBitmap().getWidth(),
-                -yInBitmap + bitmap.getBitmap().getHeight());
-        if (!pageRect.intersect(targetRect)) {
-            Log.w(TAG, "target region out of page bound.");
-        }
-        return pageRect;
     }
 
     @Override

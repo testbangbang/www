@@ -174,19 +174,14 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF positionRect, final RectF visibleRect) {
+    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         final String path = getImagePath(page);
         if (StringUtils.isNullOrEmpty(path)) {
             return false;
         }
         benchmark.restart();
         // get doc position
-        boolean ret = getPluginImpl().drawImage(path,
-                (int)displayRect.left,
-                (int)displayRect.top,
-                (int)displayRect.width(),
-                (int)displayRect.height(),
-                rotation, bitmap.getBitmap());
+        boolean ret = getPluginImpl().drawImage(path, scale, rotation, displayRect, pageRect, visibleRect, bitmap.getBitmap());
         Log.e(TAG, "rendering png:　"+ benchmark.duration());
         return ret;
     }
