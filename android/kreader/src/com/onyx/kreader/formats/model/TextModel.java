@@ -44,6 +44,10 @@ public class TextModel {
         return paragraphList;
     }
 
+    public int getParagraphCount() {
+        return paragraphList.size();
+    }
+
     public void dump() {
 
     }

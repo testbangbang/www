@@ -2,6 +2,7 @@ package com.onyx.kreader.formats.model;
 
 /**
  * Created by zengzhu on 2/28/16.
+ * including text model, toc tree and other resources.
  */
 public class BookModel {
 

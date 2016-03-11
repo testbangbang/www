@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.onyx.kreader.R;
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.Paragraph;
+import com.onyx.kreader.formats.model.TextModelPosition;
 import com.onyx.kreader.formats.model.entry.ParagraphEntry;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.formats.txt.TxtReader;
@@ -168,27 +169,52 @@ public class LayoutTestActivity extends Activity {
             return;
         }
 
-
-        LayoutRunLineManager context = new LayoutRunLineManager(layoutRect());
+        RectF lineRect = new RectF(layoutRect());
+        List<LayoutRunLineManager> lineList = new ArrayList<LayoutRunLineManager>();
+        LayoutRunLineManager layoutLine = new LayoutRunLineManager(lineRect);
+        lineList.add(layoutLine);
         final Style textStyle = randStyle();
+        final List<LayoutRun> list = new ArrayList<LayoutRun>();
 
+        TextModelPosition position = new TextModelPosition();
+        int count = bookModel.getTextModel().getParagraphCount();
         final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
         for (int p = lastParagraph; p < paragraphList.size(); ++p) {
             final Paragraph paragraph = paragraphList.get(p);
             for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
                 if (entry instanceof TextParagraphEntry) {
                     TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
-                    final List<LayoutRun> list = LayoutRunLineManager.split(textParagraphEntry.getText(), textStyle);
-                    for(LayoutRun layoutRun : list) {
-                        int ret = context.layoutRun(layoutRun);
-                        if (ret == LayoutRunLineManager.LAYOUT_FINISHED || ret == LayoutRunLineManager.LAYOUT_FAIL) {
-                            // create new one
-
-                        }
-                    }
+                    list.addAll(LayoutRunLineManager.split(textParagraphEntry.getText(), position, textStyle));
                 }
             }
         }
+
+        final float  lineSpacing = 10;
+        for(LayoutRun layoutRun : list) {
+            int ret = layoutLine.layoutRun(layoutRun);
+            if (ret == LayoutRunLineManager.LAYOUT_FINISHED || ret == LayoutRunLineManager.LAYOUT_FAIL) {
+                if (!layoutLine.nextLine(layoutRect(), lineRect, lineSpacing)) {
+                    break;
+                }
+                layoutLine = new LayoutRunLineManager(lineRect);
+                lineList.add(layoutLine);
+            }
+        }
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        Canvas canvas = holder.lockCanvas();
+        canvas.drawColor(Color.WHITE);
+        for(LayoutRunLineManager lineManager: lineList) {
+            for (LayoutRun layoutRun : lineManager.getRunList()) {
+                if (layoutRun.isNormal()) {
+                    final Paint.FontMetrics fontMetrics = textStyle.getPaint().getFontMetrics();
+//                    canvas.drawRect(layoutRun.getPosition(), textStyle.getPaint());
+                    canvas.drawText(layoutRun.getText(), layoutRun.getPosition().left, layoutRun.getPosition().top - fontMetrics.top - fontMetrics.bottom, textStyle.getPaint());
+                }
+            }
+        }
+
+        holder.unlockCanvasAndPost(canvas);
     }
 
     private Style randStyle() {

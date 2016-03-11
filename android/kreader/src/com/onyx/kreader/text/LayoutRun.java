@@ -1,36 +1,45 @@
 package com.onyx.kreader.text;
 
-import android.graphics.Paint;
 import android.graphics.RectF;
-
-import java.util.List;
 
 /**
  * Created by zengzhu on 3/6/16.
+ * Mininum layout unit.
  */
 public class LayoutRun {
 
-    static public int TYPE_LEADING  = 0x1;
-    static public int TYPE_NORMAL   = 0x2;
-    static public int TYPE_SPACING  = 0x3;
-    static public int TYPE_PUNCTUATION = 0x4;
-    static public int TYPE_END      = 0x5;
+    static public byte TYPE_PARAGRAPH_LEADING   = 0x1;
+    static public byte TYPE_WORD                = 0x2;
+    static public byte TYPE_SPACING             = 0x3;
+    static public byte TYPE_PUNCTUATION         = 0x4;
+    static public byte TYPE_PARAGRAPH_END       = 0x5;
 
     private float originWidth;
     private float originHeight;
     private RectF position = new RectF();
     private int runType;
     private int start, end;
+    private String text;
 
-    static public LayoutRun create(final int start, final int end, final float width, final float height, final int type) {
+    static public LayoutRun create(final String text, final int start, final int end, final float width, final float height, final byte type) {
         LayoutRun run = new LayoutRun();
+        run.text = text;
         run.originWidth = width;
         run.originHeight = height;
+        run.position.set(0, 0, width - 1, height - 1);
         run.runType = type;
         run.start = start;
         run.end = end;
         return run;
     }
+
+    static public LayoutRun createParagraphEnd() {
+        LayoutRun run = new LayoutRun();
+        run.runType = TYPE_PARAGRAPH_END;
+        return run;
+    }
+
+
 
     public int getStart() {
         return start;
@@ -64,19 +73,31 @@ public class LayoutRun {
     }
 
     public boolean isNormal() {
-        return (runType == TYPE_NORMAL) ;
+        return (runType == TYPE_WORD) ;
     }
 
-    public boolean isLeading() {
-        return (runType == TYPE_LEADING);
+    public boolean isParagraphLeading() {
+        return (runType == TYPE_PARAGRAPH_LEADING);
     }
 
-    public boolean isEnd() {
-        return (runType == TYPE_END);
+    public boolean isParagraphEnd() {
+        return (runType == TYPE_PARAGRAPH_END);
     }
 
     public final RectF getPosition() {
         return position;
+    }
+
+    public final float getOriginWidth() {
+        return originWidth;
+    }
+
+    public final float getOriginHeight() {
+        return originHeight;
+    }
+
+    public final String getText() {
+        return text;
     }
 
     public void moveTo(final float x, final float y) {

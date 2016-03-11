@@ -2,7 +2,7 @@ package com.onyx.kreader.text;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
+import com.onyx.kreader.formats.model.TextModelPosition;
 import com.onyx.kreader.utils.UnicodeUtils;
 
 import java.util.ArrayList;
@@ -29,7 +29,8 @@ public class LayoutRunLineManager {
     private List<LayoutRun> runList = new ArrayList<LayoutRun>();
 
     public LayoutRunLineManager(final RectF line) {
-        lineRect = line;
+        lineRect = new RectF(line);
+        reset();
     }
 
     public void reset() {
@@ -45,17 +46,25 @@ public class LayoutRunLineManager {
         return lineRect.width() - contentWidth;
     }
 
+    public final float getAvailableHeight() {
+        return lineRect.height();
+    }
+
     public float getCharacterSpacing() {
         return averageCharacterWidth * 3;
     }
 
     public int layoutRun(final LayoutRun run) {
-        if (getAvailableWidth() <= 0) {
+        if (run.isParagraphEnd()) {
+            return LAYOUT_FINISHED;
+        }
+
+        if (getAvailableWidth() <= 0 || getAvailableHeight() < run.originHeight()) {
             return LAYOUT_FAIL;
         }
-        float requiredWidth = getAvailableWidth() - run.originWidth();
+        float leftWidth = getAvailableWidth() - run.originWidth();
 
-        if (requiredWidth >= 0) {
+        if (leftWidth >= 0) {
             addRun(run);
             return LAYOUT_ADDED;
         }
@@ -68,14 +77,24 @@ public class LayoutRunLineManager {
         return LAYOUT_FINISHED;
     }
 
+    public boolean nextLine(final RectF parent, final RectF next, final float  lineSpacing) {
+        if (lineRect.top + contentHeight +  lineSpacing >= parent.bottom) {
+            return false;
+        }
+        next.set(lineRect.left, lineRect.top + contentHeight + lineSpacing, lineRect.right, parent.bottom);
+        return true;
+    }
+
+    public final List<LayoutRun> getRunList() {
+        return runList;
+    }
+
     private void addRun(final LayoutRun run) {
         run.moveTo(x, y);
         runList.add(run);
         x += run.originWidth();
         contentWidth += run.originWidth();
-        if (contentHeight < run.originHeight()) {
-            contentHeight = run.originHeight();
-        }
+        contentHeight = Math.max(contentHeight, run.originHeight());
         averageCharacterWidth = run.singleCharacterWidth();
     }
 
@@ -133,36 +152,43 @@ public class LayoutRunLineManager {
         }
     }
 
-    public static List<LayoutRun> split(final String text, final Style style) {
+    public static List<LayoutRun> split(final String text, final TextModelPosition position, final Style style) {
         List<LayoutRun> list = new ArrayList<LayoutRun>();
         int last = 0;
         for(int i = 0; i < text.length(); ++i) {
             Character character = text.charAt(i);
             if (UnicodeUtils.isWhitespace(character)) {
-                addLayoutRun(list, text, style, last, i, LayoutRun.TYPE_NORMAL);
+                addLayoutRun(list, text, style, last, i, LayoutRun.TYPE_WORD);
                 addLayoutRun(list, text, style, i, i + 1, LayoutRun.TYPE_SPACING);
                 last = i + 1;
             } else if (UnicodeUtils.isCJKCharacter(character)) {
-                addLayoutRun(list, text, style, last, i, LayoutRun.TYPE_NORMAL);
-                addLayoutRun(list, text, style, i, i + 1, LayoutRun.TYPE_NORMAL);
+                addLayoutRun(list, text, style, last, i, LayoutRun.TYPE_WORD);
+                addLayoutRun(list, text, style, i, i + 1, LayoutRun.TYPE_WORD);
                 last = i + 1;
             } else if (UnicodeUtils.isPunctuation(character)) {
-                addLayoutRun(list, text, style, last, i, LayoutRun.TYPE_NORMAL);
+                addLayoutRun(list, text, style, last, i, LayoutRun.TYPE_WORD);
                 addLayoutRun(list, text, style, i, i + 1, LayoutRun.TYPE_PUNCTUATION);
                 last = i + 1;
             }
         }
-        addLayoutRun(list, text, style, last, text.length(), LayoutRun.TYPE_NORMAL);
+        addLayoutRun(list, text, style, last, text.length(), LayoutRun.TYPE_WORD);
+        addParagraphEndRun(list);
         return list;
     }
 
-    public static boolean addLayoutRun(final List<LayoutRun> list, final String text, final Style style, final int start, final int end, final int type) {
+    public static boolean addParagraphEndRun(final List<LayoutRun> list) {
+        LayoutRun run = LayoutRun.createParagraphEnd();
+        list.add(run);
+        return true;
+    }
+
+    public static boolean addLayoutRun(final List<LayoutRun> list, final String text, final Style style, final int start, final int end, final byte type) {
         if (end <= start) {
             return false;
         }
         Rect rect = new Rect();
         style.getPaint().getTextBounds(text, start, end, rect);
-        LayoutRun run = LayoutRun.create(start, end, rect.width(), rect.height(), type);
+        LayoutRun run = LayoutRun.create(text.substring(start, end), start, end, rect.width(), rect.height(), type);
         list.add(run);
         return true;
     }
