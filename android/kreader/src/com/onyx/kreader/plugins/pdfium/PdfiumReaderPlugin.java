@@ -172,7 +172,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String page, final float scale,  final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF positionRect, final RectF visibleRect) {
+    public boolean draw(final String page, final float scale,  final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         benchmark.restart();
         boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page),
                 (int)displayRect.left,

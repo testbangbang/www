@@ -5,6 +5,7 @@ import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -38,15 +39,21 @@ public class LayoutProviderUtils {
             hitCache = true;
         }
 
+        final RectF pageRect = new RectF();
         final RectF visibleRect = new RectF();
         for (PageInfo pageInfo : visiblePages) {
             String documentPosition = pageInfo.getName();
             final RectF displayRect = pageInfo.getDisplayRect();
             final RectF positionRect = pageInfo.getPositionRect();
+
+            pageRect.set(positionRect);
+            pageRect.offset(0, -positionRect.top);
+
             visibleRect.set(positionRect);
             visibleRect.intersect(layoutManager.getPageManager().getViewportRect());
+            PageUtils.translateCoordinates(visibleRect, positionRect);
             if (!hitCache) {
-                renderer.draw(documentPosition, pageInfo.getActualScale(), pageInfo.getPageDisplayOrientation(), bitmap, displayRect, positionRect, visibleRect);
+                renderer.draw(documentPosition, pageInfo.getActualScale(), pageInfo.getPageDisplayOrientation(), bitmap, displayRect, pageRect, visibleRect);
             }
             readerViewInfo.copyPageInfo(pageInfo);
         }

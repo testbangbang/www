@@ -23,7 +23,7 @@ public interface ReaderRenderer {
      * @param rotation the rotation.
      * @param bitmap the target bitmap to draw content. Caller may use this method to draw part of content.
      * @param displayRect the display rect in screen coordinate system.
-     * @param positionRect the position rect in doc coordinate system.
+     * @param pageRect the page rect in doc coordinate system.
      * @param visibleRect the visible rect in doc coordinate system.
      *
      *        bitmap  matrix
@@ -40,6 +40,6 @@ public interface ReaderRenderer {
      *
      * @return
      */
-    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF positionRect, final RectF visibleRect);
+    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect);
 
 }
