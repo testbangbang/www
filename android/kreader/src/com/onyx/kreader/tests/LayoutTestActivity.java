@@ -189,11 +189,10 @@ public class LayoutTestActivity extends Activity {
             }
         }
 
-        final float  lineSpacing = 10;
         for(LayoutRun layoutRun : list) {
             int ret = layoutLine.layoutRun(layoutRun);
             if (ret == LayoutRunLineManager.LAYOUT_FINISHED || ret == LayoutRunLineManager.LAYOUT_FAIL) {
-                if (!layoutLine.nextLine(layoutRect(), lineRect, lineSpacing)) {
+                if (!layoutLine.nextLine(layoutRect(), lineRect, Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A")))) {
                     break;
                 }
                 layoutLine = new LayoutRunLineManager(lineRect);
@@ -219,7 +218,7 @@ public class LayoutTestActivity extends Activity {
 
     private Style randStyle() {
         Paint paint = new Paint();
-        paint.setTextSize(35);
+        paint.setTextSize(TestUtils.randInt(30, 80));
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
         int value = TestUtils.randInt(10, 20);

@@ -50,6 +50,10 @@ public class LayoutRunLineManager {
         return lineRect.height();
     }
 
+    public final float getContentHeight() {
+        return contentHeight;
+    }
+
     public float getCharacterSpacing() {
         return averageCharacterWidth * 3;
     }
