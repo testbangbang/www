@@ -28,16 +28,15 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
         return loadBitmapInformation(path);
     }
 
-    public boolean drawImage(final String imagePath, int x, int y, int width, int height, int rotation, final Bitmap bitmap) {
+    public boolean drawImage(final String imagePath, final float scale, int rotation, final RectF displayRect, final RectF positionRect, final RectF visibleRect, final Bitmap bitmap) {
         try {
             ImageInformation imageInformation;
             if ((imageInformation = imageInfo(imagePath)) == null) {
                 return false;
             }
 
-            // get region in doc coordinates
-            Rect bitmapRegion = locatePageRegion((int)imageInformation.width, (int)imageInformation.height,
-                    x, y, width, height, rotation, bitmap);
+            Rect bitmapRegion = new Rect((int)(visibleRect.left / scale), (int)(visibleRect.top / scale),
+                    (int)(visibleRect.right / scale), (int)(visibleRect.bottom / scale));
 
             BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imagePath, true);
             Bitmap src = decoder.decodeRegion(bitmapRegion, null);
@@ -46,7 +45,8 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
             }
             try {
                 renderToBitmap(src, bitmap, bitmapRegion, (int)imageInformation.width,
-                        (int)imageInformation.height, x, y, width, height);
+                        (int)imageInformation.height, (int)displayRect.left, (int)displayRect.top,
+                        (int)displayRect.width(), (int)displayRect.height());
             } finally {
                 src.recycle();
             }
@@ -55,16 +55,6 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private Rect locatePageRegion(int pageWidth, int pageHeight, int x, int y, int width, int height, int rotation, Bitmap bitmap) {
-        Rect bitmapRegion = PageUtils.screenRegionToDoc(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()),
-                pageWidth, pageHeight, x, y, width, height, rotation);
-        Rect pageRect = new Rect(0, 0, pageWidth, pageHeight);
-        if (pageRect.intersect(bitmapRegion)) {
-            Log.w(TAG, "target region out of page bound.");
-        }
-        return pageRect;
     }
 
     @Override
