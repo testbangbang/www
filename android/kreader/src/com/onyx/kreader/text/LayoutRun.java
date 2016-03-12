@@ -4,42 +4,48 @@ import android.graphics.RectF;
 
 /**
  * Created by zengzhu on 3/6/16.
- * Mininum layout unit.
+ * Mininum layout unit, used by LayoutRunLine and rendering engine
  */
 public class LayoutRun {
 
-    static public byte TYPE_PARAGRAPH_LEADING   = 0x1;
-    static public byte TYPE_WORD                = 0x2;
-    static public byte TYPE_SPACING             = 0x3;
-    static public byte TYPE_PUNCTUATION         = 0x4;
-    static public byte TYPE_PARAGRAPH_END       = 0x5;
+    public static enum Type {
+        TYPE_PARAGRAPH_BEGIN,
+        TYPE_WORD,
+        TYPE_SPACING,
+        TYPE_PUNCTUATION,
+        TYPE_PARAGRAPH_END,
+    }
 
     private float originWidth;
     private float originHeight;
-    private RectF position = new RectF();
-    private int runType;
+    private RectF positionRect = new RectF();
+    private Type runType;
     private int start, end;
     private String text;
 
-    static public LayoutRun create(final String text, final int start, final int end, final float width, final float height, final byte type) {
+    static public LayoutRun create(final String text, final int start, final int end, final float width, final float height, final Type type) {
         LayoutRun run = new LayoutRun();
         run.text = text;
         run.originWidth = width;
         run.originHeight = height;
-        run.position.set(0, 0, width - 1, height - 1);
+        run.positionRect.set(0, 0, width - 1, height - 1);
         run.runType = type;
         run.start = start;
         run.end = end;
         return run;
     }
 
-    static public LayoutRun createParagraphEnd() {
+    static public LayoutRun createParagraphBegin() {
         LayoutRun run = new LayoutRun();
-        run.runType = TYPE_PARAGRAPH_END;
+        run.runType = Type.TYPE_PARAGRAPH_BEGIN;
         return run;
     }
 
-
+    static public LayoutRun createParagraphEnd() {
+        LayoutRun run = new LayoutRun();
+        run.runType = Type.TYPE_PARAGRAPH_END;
+        return run;
+    }
 
     public int getStart() {
         return start;
@@ -69,23 +75,23 @@ public class LayoutRun {
     }
 
     public boolean isSpacing() {
-        return (runType == TYPE_SPACING);
+        return (runType == Type.TYPE_SPACING);
     }
 
-    public boolean isNormal() {
-        return (runType == TYPE_WORD) ;
+    public boolean isWord() {
+        return (runType == Type.TYPE_WORD) ;
     }
 
-    public boolean isParagraphLeading() {
-        return (runType == TYPE_PARAGRAPH_LEADING);
+    public boolean isParagraphBegin() {
+        return (runType == Type.TYPE_PARAGRAPH_BEGIN);
     }
 
     public boolean isParagraphEnd() {
-        return (runType == TYPE_PARAGRAPH_END);
+        return (runType == Type.TYPE_PARAGRAPH_END);
     }
 
-    public final RectF getPosition() {
-        return position;
+    public final RectF getPositionRect() {
+        return positionRect;
     }
 
     public final float getOriginWidth() {
@@ -101,8 +107,18 @@ public class LayoutRun {
     }
 
     public void moveTo(final float x, final float y) {
-        position.offsetTo(x, y);
+        positionRect.offsetTo(x, y);
     }
 
+    public final LayoutRun breakRun(int count, final float newOriginWidth) {
+        LayoutRun anotherRun = null;
+        if (count < (end - start)) {
+            anotherRun = LayoutRun.create(text, start + count, end, originWidth - newOriginWidth, originHeight, Type.TYPE_WORD);
+            end = start + count;
+            originWidth = newOriginWidth;
+            positionRect.set(positionRect.left, positionRect.top, positionRect.left + originWidth, positionRect.bottom);
+        }
+        return anotherRun;
+    }
 
 }

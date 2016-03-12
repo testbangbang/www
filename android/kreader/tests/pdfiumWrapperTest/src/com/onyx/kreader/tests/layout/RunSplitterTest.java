@@ -2,13 +2,12 @@ package com.onyx.kreader.tests.layout;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import com.onyx.kreader.tests.ReaderTestActivity;
 import com.onyx.kreader.text.LayoutRun;
-import com.onyx.kreader.text.LayoutRunLineManager;
+import com.onyx.kreader.text.LayoutRunLine;
 import com.onyx.kreader.text.Style;
 import com.onyx.kreader.text.TextStyle;
 import com.onyx.kreader.utils.TestUtils;
@@ -43,7 +42,7 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
 
     public void testSplitter1() {
         final String text = "这是 个混合test this a 混合测test!测试分词目的";
-        final List<LayoutRun> list = LayoutRunLineManager.split(text, randStyle());
+        final List<LayoutRun> list = LayoutRunLine.split(text, randStyle());
         assertTrue(list.size() == 22);
 
         StringBuilder sb = new StringBuilder();
@@ -59,7 +58,7 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
 
     public void testSplitter2() {
         final String text = "这是  个 混合test  this a 混合测test!测试分词目的ру́сский язы́к, russkiy yazyk,";
-        final List<LayoutRun> list = LayoutRunLineManager.split(text, randStyle());
+        final List<LayoutRun> list = LayoutRunLine.split(text, randStyle());
         assertTrue(list.size() == 32);
 
         StringBuilder sb = new StringBuilder();
@@ -76,7 +75,7 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
 
     public void testSplitter3() {
         final String text = "这是\n 个\t 混合test\t  this a 混合测test!测试分词目的ру́сский \tязы́к, russkiy yazyk,";
-        final List<LayoutRun> list = LayoutRunLineManager.split(text, randStyle());
+        final List<LayoutRun> list = LayoutRunLine.split(text, randStyle());
         assertTrue(list.size() == 35);
 
         StringBuilder sb = new StringBuilder();

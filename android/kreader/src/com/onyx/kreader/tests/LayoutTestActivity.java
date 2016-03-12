@@ -11,17 +11,15 @@ import android.widget.Button;
 import com.onyx.kreader.R;
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.Paragraph;
-import com.onyx.kreader.formats.model.TextModelPosition;
+import com.onyx.kreader.formats.model.TextPosition;
 import com.onyx.kreader.formats.model.entry.ParagraphEntry;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.formats.txt.TxtReader;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.TestUtils;
-import com.onyx.kreader.utils.UnicodeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Created by zengzhu on 3/3/16.
@@ -169,14 +167,15 @@ public class LayoutTestActivity extends Activity {
             return;
         }
 
+
         RectF lineRect = new RectF(layoutRect());
-        List<LayoutRunLineManager> lineList = new ArrayList<LayoutRunLineManager>();
-        LayoutRunLineManager layoutLine = new LayoutRunLineManager(lineRect);
+        List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
+        LayoutRunLine layoutLine = new LayoutRunLine(lineRect);
         lineList.add(layoutLine);
         final Style textStyle = randStyle();
-        final List<LayoutRun> list = new ArrayList<LayoutRun>();
+        final List<LayoutRun> runlist = new ArrayList<LayoutRun>();
 
-        TextModelPosition position = new TextModelPosition();
+        TextPosition position = new TextPosition();
         int count = bookModel.getTextModel().getParagraphCount();
         final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
         for (int p = lastParagraph; p < paragraphList.size(); ++p) {
@@ -184,31 +183,56 @@ public class LayoutTestActivity extends Activity {
             for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
                 if (entry instanceof TextParagraphEntry) {
                     TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
-                    list.addAll(LayoutRunLineManager.split(textParagraphEntry.getText(), position, textStyle));
+                    runlist.addAll(LayoutRunSplitter.split(textParagraphEntry.getText(), position, textStyle));
                 }
             }
         }
 
-        for(LayoutRun layoutRun : list) {
-            int ret = layoutLine.layoutRun(layoutRun);
-            if (ret == LayoutRunLineManager.LAYOUT_FINISHED || ret == LayoutRunLineManager.LAYOUT_FAIL) {
-                if (!layoutLine.nextLine(layoutRect(), lineRect, Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A")))) {
+        boolean stop = false;
+        int index = 0;
+        while (!stop && index < runlist.size()) {
+            final LayoutRun layoutRun = runlist.get(index);
+            LayoutRunLine.LayoutResult result = layoutLine.layoutRun(layoutRun);
+            switch (result) {
+                case LAYOUT_ADDED:
+                    ++index;
                     break;
-                }
-                layoutLine = new LayoutRunLineManager(lineRect);
-                lineList.add(layoutLine);
+                case LAYOUT_FINISHED:
+                    if (!layoutLine.nextLine(layoutRect(), lineRect, Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A")))) {
+                        stop = true;
+                        break;
+                    }
+                    layoutLine = new LayoutRunLine(lineRect);
+                    lineList.add(layoutLine);
+                    ++index;
+                    break;
+                case LAYOUT_FAIL:
+                    if (!layoutLine.nextLine(layoutRect(), lineRect, Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A")))) {
+                        stop = true;
+                        break;
+                    }
+                    layoutLine = new LayoutRunLine(lineRect);
+                    lineList.add(layoutLine);
+                    break;
+                case LAYOUT_BREAK:
+                    final LayoutRun another = breakRunByWidth(layoutRun, layoutLine.getAvailableWidth(), textStyle);
+                    runlist.add(index + 1, another);
+                    break;
             }
         }
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         Canvas canvas = holder.lockCanvas();
         canvas.drawColor(Color.WHITE);
-        for(LayoutRunLineManager lineManager: lineList) {
+        for(LayoutRunLine lineManager: lineList) {
             for (LayoutRun layoutRun : lineManager.getRunList()) {
-                if (layoutRun.isNormal()) {
+                if (layoutRun.isWord()) {
                     final Paint.FontMetrics fontMetrics = textStyle.getPaint().getFontMetrics();
-//                    canvas.drawRect(layoutRun.getPosition(), textStyle.getPaint());
-                    canvas.drawText(layoutRun.getText(), layoutRun.getPosition().left, layoutRun.getPosition().top - fontMetrics.top - fontMetrics.bottom, textStyle.getPaint());
+//                    canvas.drawRect(layoutRun.getPositionRect(), textStyle.getPaint());
+                    canvas.drawText(layoutRun.getText(),
+                            layoutRun.getStart(),
+                            layoutRun.getEnd(),
+                            layoutRun.getPositionRect().left, layoutRun.getPositionRect().top - fontMetrics.top - fontMetrics.bottom, textStyle.getPaint());
                 }
             }
         }
@@ -216,9 +240,16 @@ public class LayoutTestActivity extends Activity {
         holder.unlockCanvasAndPost(canvas);
     }
 
+    private final LayoutRun breakRunByWidth(final LayoutRun layoutRun, final float width, final Style textStyle) {
+        final float characterWidth = layoutRun.singleCharacterWidth();
+        int count = (int)(width /characterWidth);
+        float newWidth = textStyle.getPaint().measureText(layoutRun.getText(), layoutRun.getStart(), layoutRun.getStart() + count);
+        return layoutRun.breakRun(count, newWidth);
+    }
+
     private Style randStyle() {
         Paint paint = new Paint();
-        paint.setTextSize(TestUtils.randInt(30, 80));
+        paint.setTextSize(35);//TestUtils.randInt(10, 80));
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
         int value = TestUtils.randInt(10, 20);
