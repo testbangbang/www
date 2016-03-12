@@ -90,7 +90,9 @@ public class LayoutTestActivity extends Activity {
     private void testLayoutRun() {
 
         final RectF lineRect = new RectF(layoutRect());
-        LayoutRunSplitter.fetchMore(runlist, position, textStyle, 2000);
+        if (runIndex <= 0) {
+            LayoutRunSplitter.fetchMore(runlist, position, textStyle, 10 * 1000);
+        }
 
         List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
         LayoutRunLine layoutLine = new LayoutRunLine(lineRect);

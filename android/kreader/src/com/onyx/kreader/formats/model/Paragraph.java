@@ -91,6 +91,9 @@ public class Paragraph {
         if (entryList.size() <= 0) {
             return available;
         }
+        if (sinceEntry < 0) {
+            sinceEntry = 0;
+        }
         for(int i = sinceEntry; i < entryList.size(); ++i) {
             final ParagraphEntry entry = entryList.get(i);
             if (entry instanceof TextParagraphEntry) {

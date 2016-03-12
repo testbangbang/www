@@ -19,8 +19,11 @@ public class LayoutRunSplitter {
      * @param limit
      */
     public static void fetchMore(final List<LayoutRun> list, final TextPosition position, final Style textStyle, final int limit) {
-        if (position.available() < limit) {
-            position.fetchMore();
+
+        while (position.available() < limit) {
+            if (!position.fetchMore()) {
+                break;
+            }
         }
         split(list, position, textStyle);
     }
