@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Created by zengzhu on 3/6/16.
  * add LayoutRun into the line to see if it's possible to layout it or not.
+ * hyphenation and consider the first run of next line.
  */
 public class LayoutRunLine {
 
@@ -24,11 +25,12 @@ public class LayoutRunLine {
 
     private float contentHeight = 0;
     private float contentWidth = 0;
-    private float totalSpacing = 0;
+    private float indent = 0;
     private float averageCharacterWidth = 0;
     private PointF currentPoint = new PointF();
     private int direction = 1;
     private RectF lineRect;
+
     private List<LayoutRun> runList = new ArrayList<LayoutRun>();
 
     public LayoutRunLine(final RectF line) {
@@ -40,8 +42,8 @@ public class LayoutRunLine {
         runList.clear();
         contentWidth = 0;
         contentHeight = 0;
-        totalSpacing = 0;
-        currentPoint.set(lineRect.left, lineRect.top);
+        indent = 0;
+        resetCurrentPoint();
     }
 
     public float getAvailableWidth() {
@@ -65,7 +67,7 @@ public class LayoutRunLine {
     }
 
     public final float getIndent() {
-        return 30;
+        return 80;
     }
 
     public LayoutResult layoutRun(final LayoutRun run) {
@@ -80,8 +82,7 @@ public class LayoutRunLine {
         float leftWidth = getAvailableWidth() - run.originWidth();
 
         if (run.isParagraphBegin() && leftWidth > getIndent()) {
-            currentPoint.offset(getIndent(), 0);
-            contentWidth += getIndent();
+            addParagraphBeginRun(run);
             return LayoutResult.LAYOUT_ADDED;
         }
 
@@ -99,6 +100,15 @@ public class LayoutRunLine {
         return LayoutResult.LAYOUT_BREAK;
     }
 
+    public final LayoutRun removeLastRun() {
+        if (runList.isEmpty()) {
+            return null;
+        }
+        final LayoutRun layoutRun = runList.remove(runList.size() - 1);
+        beautifyLine(false);
+        return layoutRun;
+    }
+
     public boolean nextLine(final RectF parent, final RectF next, final float lineSpacing) {
         if (lineRect.top + contentHeight +  lineSpacing >= parent.bottom) {
             return false;
@@ -109,6 +119,12 @@ public class LayoutRunLine {
 
     public final List<LayoutRun> getRunList() {
         return runList;
+    }
+
+    private void addParagraphBeginRun(final LayoutRun run) {
+        currentPoint.offset(getIndent(), 0);
+        contentWidth += getIndent();
+        indent = getIndent();
     }
 
     private void addRun(final LayoutRun run) {
@@ -129,9 +145,8 @@ public class LayoutRunLine {
     }
 
     public void adjustifyLine() {
-        totalSpacing = getAvailableWidth();
         int count = 0;
-        for(LayoutRun run : runList) {
+        for (LayoutRun run : runList) {
             if (run.isSpacing()) {
                 count++;
             }
@@ -142,13 +157,17 @@ public class LayoutRunLine {
             return;
         }
 
-        float spacing = totalSpacing / count;
+        adjustifyToSpacing(count);
+    }
+
+    private void adjustifyToSpacing(int count) {
+        float spacing = getAvailableWidth() / count;
         if (spacing >= getCharacterSpacing()) {
             adjustifyAllRuns();
             return;
         }
 
-        currentPoint.set(lineRect.left, lineRect.top);
+        resetCurrentPoint();
         for(LayoutRun run : runList) {
             run.moveTo(currentPoint.x, currentPoint.y);
             currentPoint.offset(run.originWidth(), 0);
@@ -160,8 +179,8 @@ public class LayoutRunLine {
 
 
     private void adjustifyAllRuns() {
-        float margin = totalSpacing / runList.size();
-        currentPoint.set(lineRect.left, lineRect.top);
+        resetCurrentPoint();
+        float margin = getAvailableWidth() / runList.size();
         for(LayoutRun run : runList) {
             run.moveTo(currentPoint.x, currentPoint.y);
             currentPoint.offset(run.originWidth(), 0);
@@ -170,11 +189,16 @@ public class LayoutRunLine {
     }
 
     private void alignAllRunsToLeft() {
-        currentPoint.set(lineRect.left, lineRect.top);
+        resetCurrentPoint();
         for(LayoutRun run : runList) {
             run.moveTo(currentPoint.x, currentPoint.y);
             currentPoint.offset(run.originWidth(), 0);
         }
+    }
+
+    private void resetCurrentPoint() {
+        currentPoint.set(lineRect.left, lineRect.top);
+        currentPoint.offset(indent, 0);
     }
 
 

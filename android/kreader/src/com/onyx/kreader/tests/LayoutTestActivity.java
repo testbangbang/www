@@ -188,6 +188,7 @@ public class LayoutTestActivity extends Activity {
             }
         }
 
+        float lineSpacing;
         boolean stop = false;
         int index = 0;
         while (!stop && index < runlist.size()) {
@@ -198,7 +199,11 @@ public class LayoutTestActivity extends Activity {
                     ++index;
                     break;
                 case LAYOUT_FINISHED:
-                    if (!layoutLine.nextLine(layoutRect(), lineRect, Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A")))) {
+                    lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));
+                    if (!layoutRun.isParagraphEnd()) {
+                        lineSpacing = 10;
+                    }
+                    if (!layoutLine.nextLine(layoutRect(), lineRect, lineSpacing)) {
                         stop = true;
                         break;
                     }
@@ -207,7 +212,12 @@ public class LayoutTestActivity extends Activity {
                     ++index;
                     break;
                 case LAYOUT_FAIL:
-                    if (!layoutLine.nextLine(layoutRect(), lineRect, Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A")))) {
+                    lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));
+                    if (!layoutRun.isParagraphEnd()) {
+                        lineSpacing = 10;
+                    }
+
+                    if (!layoutLine.nextLine(layoutRect(), lineRect, lineSpacing)) {
                         stop = true;
                         break;
                     }
@@ -236,7 +246,7 @@ public class LayoutTestActivity extends Activity {
                 }
             }
         }
-
+        canvas.drawRect(layoutRect(), paint);
         holder.unlockCanvasAndPost(canvas);
     }
 
