@@ -11,6 +11,7 @@ public class LayoutRun {
     public static enum Type {
         TYPE_PARAGRAPH_BEGIN,
         TYPE_WORD,
+        TYPE_IMAGE,
         TYPE_SPACING,
         TYPE_PUNCTUATION,
         TYPE_PARAGRAPH_END,

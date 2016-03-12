@@ -57,6 +57,17 @@ public class Paragraph {
         return paragraphEntryList.get(paragraphEntryList.size() - 1);
     }
 
+    public final ParagraphEntry getEntry(final int index) {
+        if (index >= 0 && index < paragraphEntryList.size()) {
+            return paragraphEntryList.get(index);
+        }
+        return null;
+    }
+
+    public final int getEntryCount() {
+        return paragraphEntryList.size();
+    }
+
     public boolean isBeginOfParagraph(final ParagraphEntry paragraphEntry) {
         if (paragraphEntryList.isEmpty()) {
             return false;

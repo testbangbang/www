@@ -44,6 +44,13 @@ public class TextModel {
         return paragraphList;
     }
 
+    public final Paragraph getParagraph(final int paragraph) {
+        if (paragraph >= 0 && paragraph < paragraphList.size()) {
+            return paragraphList.get(paragraph);
+        }
+        return null;
+    }
+
     public int getParagraphCount() {
         return paragraphList.size();
     }

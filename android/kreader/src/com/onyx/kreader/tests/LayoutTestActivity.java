@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.onyx.kreader.R;
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.Paragraph;
-import com.onyx.kreader.formats.model.TextPosition;
+import com.onyx.kreader.text.TextPosition;
 import com.onyx.kreader.formats.model.entry.ParagraphEntry;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.formats.txt.TxtReader;
@@ -75,62 +75,7 @@ public class LayoutTestActivity extends Activity {
 
 
     private void testLayout() {
-        long s1 = System.currentTimeMillis();
 
-        if (!reader.processNext(bookModel)) {
-            return;
-        }
-        long s2 = System.currentTimeMillis();
-        final Style style = randStyle();
-        TextLayoutJustify instance = new TextLayoutJustify();
-        int margin = 100;
-
-        final Paint.FontMetrics fontMetrics = style.getPaint().getFontMetrics();
-        float baseLine = margin - fontMetrics.top;
-        RectF rect = new RectF(margin, baseLine, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - baseLine);
-
-        List<Element> textElementList = new ArrayList<Element>();
-        final List<Paragraph> list = bookModel.getTextModel().getParagraphList();
-
-        for (int p = lastParagraph; p < list.size(); ++p) {
-            final Paragraph paragraph = list.get(p);
-            for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
-                if (entry instanceof TextParagraphEntry) {
-                    TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
-                    final String text = textParagraphEntry.getText();
-                    for (int i = 0; i < text.length(); ++i) {
-                        final String sub = text.substring(i, i + 1);
-                        if( (Character.UnicodeBlock.of(text.charAt(i)) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS)) {
-                        }
-                        TextElement element = TextElement.create(text.substring(i, i + 1), style);
-                        textElementList.add(element);
-                    }
-                }
-            }
-        }
-        lastParagraph = list.size() - 1;
-        long s3 = System.currentTimeMillis();
-        final List<LayoutLine> lines  = instance.layout(rect, textElementList);
-        long s4 = System.currentTimeMillis();
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(40);
-        paint.setStyle(Paint.Style.STROKE);
-
-        Canvas canvas = holder.lockCanvas();
-        canvas.drawColor(Color.WHITE);
-        for(Element element : textElementList) {
-            element.draw(canvas);
-        }
-
-
-        canvas.drawLine(margin, baseLine, surfaceView.getMeasuredWidth() - margin, baseLine, style.getPaint());
-        RectF bounding = new RectF(margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - margin);
-        canvas.drawRect(bounding, paint);
-
-        holder.unlockCanvasAndPost(canvas);
-        long s5 = System.currentTimeMillis();
-        Log.i(TAG, "performance: " + (s2 - s1) + " " + (s3 - s2) + " " + (s4 - s3) + " " + (s5 - s4));
     }
 
     private RectF layoutRect() {
@@ -140,26 +85,6 @@ public class LayoutTestActivity extends Activity {
     }
 
     private void testController() {
-        if (!reader.processNext(bookModel)) {
-            return;
-        }
-
-        TextController textController = new TextController();
-        TextLayoutContext context = new TextLayoutContext();
-        context.initializeWithLimitedRect(layoutRect());
-        context.createLayoutLine();
-        final Style textStyle = randStyle();
-
-        final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
-        for (int p = lastParagraph; p < paragraphList.size(); ++p) {
-            final Paragraph paragraph = paragraphList.get(p);
-            for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
-                if (entry instanceof TextParagraphEntry) {
-                    TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
-                    textController.addEntryToLayout(context, textParagraphEntry, textStyle);
-                }
-            }
-        }
     }
 
     private void testLayoutRun() {
@@ -167,27 +92,20 @@ public class LayoutTestActivity extends Activity {
             return;
         }
 
+        final RectF lineRect = new RectF(layoutRect());
+        final TextPosition position = new TextPosition(bookModel);
+        final List<LayoutRun> runlist = new ArrayList<LayoutRun>();
+        final Style textStyle = randStyle();
 
-        RectF lineRect = new RectF(layoutRect());
+        for(int i = 0; i < 20; ++i) {
+            LayoutRunSplitter.split(runlist, position, textStyle);
+        }
+
         List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
         LayoutRunLine layoutLine = new LayoutRunLine(lineRect);
         lineList.add(layoutLine);
-        final Style textStyle = randStyle();
-        final List<LayoutRun> runlist = new ArrayList<LayoutRun>();
 
-        TextPosition position = new TextPosition();
-        int count = bookModel.getTextModel().getParagraphCount();
-        final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
-        for (int p = lastParagraph; p < paragraphList.size(); ++p) {
-            final Paragraph paragraph = paragraphList.get(p);
-            for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
-                if (entry instanceof TextParagraphEntry) {
-                    TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
-                    runlist.addAll(LayoutRunSplitter.split(textParagraphEntry.getText(), position, textStyle));
-                }
-            }
-        }
-
+        long start = System.currentTimeMillis();
         float lineSpacing;
         boolean stop = false;
         int index = 0;
@@ -248,6 +166,9 @@ public class LayoutTestActivity extends Activity {
         }
         canvas.drawRect(layoutRect(), paint);
         holder.unlockCanvasAndPost(canvas);
+
+        long end = System.currentTimeMillis();
+        Log.d(TAG, "layout and rendering takes: " + (end - start));
     }
 
     private final LayoutRun breakRunByWidth(final LayoutRun layoutRun, final float width, final Style textStyle) {

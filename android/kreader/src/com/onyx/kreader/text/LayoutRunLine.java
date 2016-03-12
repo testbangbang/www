@@ -1,10 +1,7 @@
 package com.onyx.kreader.text;
 
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import com.onyx.kreader.formats.model.TextPosition;
-import com.onyx.kreader.utils.UnicodeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +69,7 @@ public class LayoutRunLine {
 
     public LayoutResult layoutRun(final LayoutRun run) {
         if (run.isParagraphEnd()) {
-            beautifyLine(true);
+            addParagraphEndRun(run);
             return LayoutResult.LAYOUT_FINISHED;
         }
 
@@ -121,6 +118,10 @@ public class LayoutRunLine {
         return runList;
     }
 
+    private void addParagraphEndRun(final LayoutRun run) {
+        beautifyLine(true);
+    }
+
     private void addParagraphBeginRun(final LayoutRun run) {
         currentPoint.offset(getIndent(), 0);
         contentWidth += getIndent();
@@ -144,6 +145,10 @@ public class LayoutRunLine {
         }
     }
 
+    /**
+     * distribute the spacing to runs. select spacing run at first, if not possible
+     * or if it's too large, distribute to all runs instead.
+     */
     public void adjustifyLine() {
         int count = 0;
         for (LayoutRun run : runList) {
@@ -157,16 +162,16 @@ public class LayoutRunLine {
             return;
         }
 
-        adjustifyToSpacing(count);
-    }
-
-    private void adjustifyToSpacing(int count) {
         float spacing = getAvailableWidth() / count;
         if (spacing >= getCharacterSpacing()) {
             adjustifyAllRuns();
             return;
         }
 
+        adjustifyToSpacing(count);
+    }
+
+    private void adjustifyToSpacing(final float spacing) {
         resetCurrentPoint();
         for(LayoutRun run : runList) {
             run.moveTo(currentPoint.x, currentPoint.y);
@@ -176,7 +181,6 @@ public class LayoutRunLine {
             }
         }
     }
-
 
     private void adjustifyAllRuns() {
         resetCurrentPoint();

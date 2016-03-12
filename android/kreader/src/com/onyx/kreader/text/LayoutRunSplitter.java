@@ -1,22 +1,33 @@
 package com.onyx.kreader.text;
 
 import android.graphics.Rect;
-import com.onyx.kreader.formats.model.TextPosition;
+import com.onyx.kreader.formats.model.BookModel;
+import com.onyx.kreader.formats.model.Paragraph;
+import com.onyx.kreader.formats.model.entry.ParagraphEntry;
+import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
+import com.onyx.kreader.utils.StringUtils;
 import com.onyx.kreader.utils.UnicodeUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by zengzhu on 3/12/16.
- * Split text into run list. TODO: change to use model later.
+ * Split model into run list.
  */
 public class LayoutRunSplitter {
 
-    public static List<LayoutRun> split(final String text, final TextPosition position, final Style style) {
-        List<LayoutRun> list = new ArrayList<LayoutRun>();
-        addParagraphLeadingRun(list);
+    public static void split(final List<LayoutRun> list, final TextPosition textPosition, final Style style) {
+        if (!textPosition.hasNext()) {
+            return;
+        }
+        final String text = textPosition.next();
+        if (text != null) {
+            LayoutRunSplitter.split(list, text, style);
+        }
+    }
 
+    public static void split(final List<LayoutRun> list, final String text, final Style style) {
+        addParagraphBeginRun(list);
         int last = 0;
         for(int i = 0; i < text.length(); ++i) {
             Character character = text.charAt(i);
@@ -36,10 +47,9 @@ public class LayoutRunSplitter {
         }
         addLayoutTextRun(list, text, style, last, text.length(), LayoutRun.Type.TYPE_WORD);
         addParagraphEndRun(list);
-        return list;
     }
 
-    public static boolean addParagraphLeadingRun(final List<LayoutRun> list) {
+    public static boolean addParagraphBeginRun(final List<LayoutRun> list) {
         LayoutRun run = LayoutRun.createParagraphBegin();
         list.add(run);
         return true;

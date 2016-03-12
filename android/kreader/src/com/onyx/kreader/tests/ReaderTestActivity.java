@@ -430,76 +430,7 @@ public class ReaderTestActivity extends Activity {
 
 
 
-    // use span list to draw string
-    // split into word list
-    // get each word size
-    // adjust the spacing if necessary
-    // adjust the character finally
 
-    private void testSpan() throws Exception  {
-        TextLayoutJustify textLayoutJustify = new TextLayoutJustify();
-        Rect rect = new Rect();
-        surfaceView.getDrawingRect(rect);
-        List<Element> list = new ArrayList<Element>();
-        list.add(LeadingElement.create(randStyle()));
-        int count = TestUtils.randInt(100, 600);
-        for(int i = 0; i < count; ++i) {
-            list.add(randElement());
-            list.add(spacingElement());
-        }
-        int offset = 50;
-        RectF rectF = new RectF(rect.left + offset, rect.top + offset, rect.right - offset, rect.bottom - offset);
-        final List<LayoutLine> lines = textLayoutJustify.layout(rectF, list);
-
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(40);
-        paint.setStyle(Paint.Style.STROKE);
-
-        Canvas canvas = holder.lockCanvas();
-        canvas.drawColor(Color.WHITE);
-        for(Element element : list) {
-            element.draw(canvas);
-        }
-        canvas.drawRect(rectF, paint);
-        holder.unlockCanvasAndPost(canvas);
-
-        verifyLayout(lines, rectF);
-    }
-
-    private void verifyLayout(final List<LayoutLine> lines, final RectF limitedRect) throws Exception  {
-        for(int index = 0; index < lines.size(); ++index) {
-            LayoutLine layoutLine = lines.get(index);
-            if (layoutLine.getContentWidth() >= limitedRect.width()) {
-                throw new InvalidObjectException("width error");
-            }
-            final List<Element> list = layoutLine.getElementList();
-            if (list.isEmpty()) {
-                throw new InvalidObjectException("list empty");
-            }
-            if (!list.get(0).canBeLayoutedAtLineBegin() && index != 0) {
-                throw new InvalidObjectException("invalid element");
-            }
-        }
-    }
-
-    private String randString(int length) {
-        char[] text = new char[length];
-        for (int i = 0; i < length; i++) {
-            text[i] = source.charAt(TestUtils.randInt(0, source.length() - 1));
-        }
-        return new String(text).trim();
-    }
-
-    private Element randElement() {
-        Element element = TextElement.create(randString(TestUtils.randInt(3, 10)), randStyle());
-        return element;
-    }
-
-    private Element spacingElement() {
-        Element element = TextElement.create(" ", randStyle());
-        return element;
-    }
 
     private Style randStyle() {
         Paint paint = new Paint();
