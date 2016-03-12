@@ -33,6 +33,10 @@ public class LayoutTestActivity extends Activity {
     final String path = "/mnt/sdcard/Books/test.txt";
     private TxtReader bookReader = new TxtReader();
     private BookModel bookModel = new BookModel(path);
+    private TextPosition position = new TextPosition(bookReader, bookModel);
+    private List<LayoutRun> runlist = new ArrayList<LayoutRun>();
+    private Style textStyle = randStyle();
+    private int runIndex = 0;
 
 
     @Override
@@ -85,11 +89,7 @@ public class LayoutTestActivity extends Activity {
 
     private void testLayoutRun() {
 
-
         final RectF lineRect = new RectF(layoutRect());
-        final TextPosition position = new TextPosition(bookReader, bookModel);
-        final List<LayoutRun> runlist = new ArrayList<LayoutRun>();
-        final Style textStyle = randStyle();
         LayoutRunSplitter.fetchMore(runlist, position, textStyle, 2000);
 
         List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
@@ -99,7 +99,7 @@ public class LayoutTestActivity extends Activity {
         long start = System.currentTimeMillis();
         float lineSpacing;
         boolean stop = false;
-        int index = 0;
+        int index = runIndex;
         while (!stop && index < runlist.size()) {
             final LayoutRun layoutRun = runlist.get(index);
             LayoutRunLine.LayoutResult result = layoutLine.layoutRun(layoutRun);
@@ -139,6 +139,8 @@ public class LayoutTestActivity extends Activity {
                     break;
             }
         }
+
+        runIndex = index;
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         Canvas canvas = holder.lockCanvas();
