@@ -1,6 +1,7 @@
 package com.onyx.kreader.text;
 
 import com.onyx.kreader.formats.model.BookModel;
+import com.onyx.kreader.formats.model.BookReader;
 import com.onyx.kreader.formats.model.Paragraph;
 import com.onyx.kreader.formats.model.entry.ParagraphEntry;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
@@ -21,10 +22,12 @@ public class TextPosition {
     private int currentRunOffset;
     private int length;
 
-    private BookModel bookModel;
+    private final BookModel bookModel;
+    private final BookReader reader;
 
-    public TextPosition(final BookModel parent) {
+    public TextPosition(final BookReader r, final BookModel parent) {
         bookModel = parent;
+        reader = r;
     }
 
     public final String getCurrentText() {
@@ -95,4 +98,42 @@ public class TextPosition {
     public boolean isLastRun() {
         return (currentRunOffset >= length && length > 0);
     }
+
+    /**
+     * get available text length in model that has been read.
+     * @return
+     */
+    public int available() {
+        int available = 0;
+        final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
+        if (paragraphList.size() <= 0) {
+            return available;
+        }
+        Paragraph paragraph = paragraphList.get(currentParagraph);
+        available += paragraph.available(currentEntry);
+
+        for(int i = currentParagraph + 1; i < paragraphList.size(); ++i) {
+            paragraph = paragraphList.get(i);
+            available += paragraph.available(0);
+        }
+        return available;
+    }
+
+    public boolean fetchMore() {
+        if (!reader.processNext(bookModel)) {
+            return false;
+        }
+        update();
+        return true;
+    }
+
+    private void update() {
+        final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
+        paragraphCount = paragraphList.size();
+        if (paragraphCount <= 0) {
+            return;
+        }
+        entryCount = paragraphList.get(currentParagraph).getEntryList().size();
+    }
+
 }

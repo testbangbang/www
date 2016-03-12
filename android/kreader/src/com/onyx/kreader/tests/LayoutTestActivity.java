@@ -10,10 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import com.onyx.kreader.R;
 import com.onyx.kreader.formats.model.BookModel;
-import com.onyx.kreader.formats.model.Paragraph;
 import com.onyx.kreader.text.TextPosition;
-import com.onyx.kreader.formats.model.entry.ParagraphEntry;
-import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.formats.txt.TxtReader;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.TestUtils;
@@ -34,9 +31,8 @@ public class LayoutTestActivity extends Activity {
     private static final String TAG = LayoutTestActivity.class.getSimpleName();
 
     final String path = "/mnt/sdcard/Books/test.txt";
-    private TxtReader reader = new TxtReader();
+    private TxtReader bookReader = new TxtReader();
     private BookModel bookModel = new BookModel(path);
-    private int lastParagraph = 0;
 
 
     @Override
@@ -70,7 +66,7 @@ public class LayoutTestActivity extends Activity {
 
         surfaceView = (SurfaceView)findViewById(R.id.surfaceView);
         holder = surfaceView.getHolder();
-        reader.open(bookModel);
+        bookReader.open(bookModel);
     }
 
 
@@ -88,18 +84,13 @@ public class LayoutTestActivity extends Activity {
     }
 
     private void testLayoutRun() {
-        if (!reader.processNext(bookModel)) {
-            return;
-        }
+
 
         final RectF lineRect = new RectF(layoutRect());
-        final TextPosition position = new TextPosition(bookModel);
+        final TextPosition position = new TextPosition(bookReader, bookModel);
         final List<LayoutRun> runlist = new ArrayList<LayoutRun>();
         final Style textStyle = randStyle();
-
-        for(int i = 0; i < 20; ++i) {
-            LayoutRunSplitter.split(runlist, position, textStyle);
-        }
+        LayoutRunSplitter.fetchMore(runlist, position, textStyle, 2000);
 
         List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
         LayoutRunLine layoutLine = new LayoutRunLine(lineRect);

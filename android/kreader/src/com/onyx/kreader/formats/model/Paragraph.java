@@ -1,6 +1,7 @@
 package com.onyx.kreader.formats.model;
 
 import com.onyx.kreader.formats.model.entry.ParagraphEntry;
+import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,10 @@ public class Paragraph {
         ENCRYPTED_SECTION_PARAGRAPH,
     }
 
-
     static public Paragraph create(final ParagraphKind kind) {
         Paragraph paragraph = new Paragraph(kind);
         return paragraph;
     }
-
 
     private long physicalPosition;
     private long streamLength;
@@ -64,6 +63,10 @@ public class Paragraph {
         return null;
     }
 
+    public final List<ParagraphEntry> getEntryList() {
+        return paragraphEntryList;
+    }
+
     public final int getEntryCount() {
         return paragraphEntryList.size();
     }
@@ -80,6 +83,22 @@ public class Paragraph {
             return false;
         }
         return getLastEntry().equals(paragraphEntry);
+    }
+
+    public int available(int sinceEntry) {
+        int available = 0;
+        final List<ParagraphEntry> entryList = getEntryList();
+        if (entryList.size() <= 0) {
+            return available;
+        }
+        for(int i = sinceEntry; i < entryList.size(); ++i) {
+            final ParagraphEntry entry = entryList.get(i);
+            if (entry instanceof TextParagraphEntry) {
+                TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
+                available += textParagraphEntry.getText().length();
+            }
+        }
+        return available;
     }
 
 }

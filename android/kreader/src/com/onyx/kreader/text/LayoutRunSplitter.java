@@ -1,11 +1,6 @@
 package com.onyx.kreader.text;
 
 import android.graphics.Rect;
-import com.onyx.kreader.formats.model.BookModel;
-import com.onyx.kreader.formats.model.Paragraph;
-import com.onyx.kreader.formats.model.entry.ParagraphEntry;
-import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
-import com.onyx.kreader.utils.StringUtils;
 import com.onyx.kreader.utils.UnicodeUtils;
 
 import java.util.List;
@@ -16,13 +11,26 @@ import java.util.List;
  */
 public class LayoutRunSplitter {
 
-    public static void split(final List<LayoutRun> list, final TextPosition textPosition, final Style style) {
-        if (!textPosition.hasNext()) {
-            return;
+    /**
+     * fetch more data within limit
+     * @param list
+     * @param position
+     * @param textStyle
+     * @param limit
+     */
+    public static void fetchMore(final List<LayoutRun> list, final TextPosition position, final Style textStyle, final int limit) {
+        if (position.available() < limit) {
+            position.fetchMore();
         }
-        final String text = textPosition.next();
-        if (text != null) {
-            LayoutRunSplitter.split(list, text, style);
+        split(list, position, textStyle);
+    }
+
+    public static void split(final List<LayoutRun> list, final TextPosition textPosition, final Style style) {
+        while (textPosition.hasNext()) {
+            final String text = textPosition.next();
+            if (text != null) {
+                LayoutRunSplitter.split(list, text, style);
+            }
         }
     }
 
