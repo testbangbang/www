@@ -43,6 +43,10 @@ public class LayoutRunLine {
         resetCurrentPoint();
     }
 
+    public boolean isEmpty() {
+        return runList.isEmpty();
+    }
+
     public float getAvailableWidth() {
         return lineRect.width() - contentWidth;
     }
@@ -60,11 +64,11 @@ public class LayoutRunLine {
     }
 
     public float getCharacterSpacing() {
-        return averageCharacterWidth * 3;
+        return averageCharacterWidth;
     }
 
     public final float getIndent() {
-        return 80;
+        return 50;
     }
 
     public LayoutResult layoutRun(final LayoutRun run) {
@@ -73,23 +77,23 @@ public class LayoutRunLine {
             return LayoutResult.LAYOUT_FINISHED;
         }
 
-        if (getAvailableWidth() <= 0 || getAvailableHeight() < run.originHeight()) {
+        final float availableWidth = getAvailableWidth();
+        if (availableWidth <= 0 || getAvailableHeight() < run.originHeight()) {
             return LayoutResult.LAYOUT_FAIL;
         }
-        float leftWidth = getAvailableWidth() - run.originWidth();
 
-        if (run.isParagraphBegin() && leftWidth > getIndent()) {
+        if (run.isParagraphBegin() && availableWidth > getIndent()) {
             addParagraphBeginRun(run);
             return LayoutResult.LAYOUT_ADDED;
         }
 
-        if (leftWidth >= 0) {
+        if (availableWidth >= run.originWidth()) {
             addRun(run);
             return LayoutResult.LAYOUT_ADDED;
         }
 
         // if not possible to layout even one single character
-        if (getAvailableWidth() < run.singleCharacterWidth()) {
+        if (availableWidth < getCharacterSpacing()) {
             beautifyLine(false);
             return LayoutResult.LAYOUT_FAIL;
         }
@@ -102,6 +106,7 @@ public class LayoutRunLine {
             return null;
         }
         final LayoutRun layoutRun = runList.remove(runList.size() - 1);
+        contentWidth -= layoutRun.originWidth();
         beautifyLine(false);
         return layoutRun;
     }
@@ -134,7 +139,10 @@ public class LayoutRunLine {
         currentPoint.offset(run.originWidth(), 0);
         contentWidth += run.originWidth();
         contentHeight = Math.max(contentHeight, run.originHeight());
-        averageCharacterWidth = run.singleCharacterWidth();
+        final float width = run.singleCharacterWidth();
+        if (averageCharacterWidth < width) {
+            averageCharacterWidth = width;
+        }
     }
 
     public void beautifyLine(boolean lastLine) {
@@ -152,7 +160,7 @@ public class LayoutRunLine {
     public void adjustifyLine() {
         int count = 0;
         for (LayoutRun run : runList) {
-            if (run.isSpacing()) {
+            if (run.isSpacing() || run.isPunctuation()) {
                 count++;
             }
         }
@@ -174,11 +182,14 @@ public class LayoutRunLine {
 
     private void adjustifyToSpacing(final float spacing) {
         resetCurrentPoint();
+        float pending = 0;
         for(LayoutRun run : runList) {
+            currentPoint.offset(pending, 0);
+            pending = 0;
             run.moveTo(currentPoint.x, currentPoint.y);
             currentPoint.offset(run.originWidth(), 0);
-            if (run.isSpacing()) {
-                currentPoint.offset(spacing, 0);
+            if (run.isSpacing() || run.isPunctuation()) {
+                pending = spacing;
             }
         }
     }

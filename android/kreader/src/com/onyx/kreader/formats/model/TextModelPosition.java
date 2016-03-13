@@ -1,4 +1,4 @@
-package com.onyx.kreader.text;
+package com.onyx.kreader.formats.model;
 
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.BookReader;
@@ -11,21 +11,18 @@ import java.util.List;
 /**
  * Created by zengzhu on 3/11/16.
  */
-public class TextPosition {
+public class TextModelPosition {
 
-    private int currentParagraph;
-    private int paragraphCount;
+    private int currentParagraph = 0;
+    private int paragraphCount = -1;
 
-    private int currentEntry = -1;
-    private int entryCount;
-
-    private int currentRunOffset;
-    private int length;
+    private int currentEntry = 0;
+    private int entryCountOfCurrentParagraph;
 
     private final BookModel bookModel;
     private final BookReader reader;
 
-    public TextPosition(final BookReader r, final BookModel parent) {
+    public TextModelPosition(final BookReader r, final BookModel parent) {
         bookModel = parent;
         reader = r;
     }
@@ -36,7 +33,7 @@ public class TextPosition {
             return null;
         }
 
-        entryCount = paragraph.getEntryCount();
+        entryCountOfCurrentParagraph = paragraph.getEntryCount();
         final ParagraphEntry entry = paragraph.getEntry(currentEntry);
         if (entry == null) {
             return null;
@@ -54,29 +51,38 @@ public class TextPosition {
     }
 
     public final String next() {
+        final String current = getCurrentText();
         if (isLastEntry()) {
-            return nextParagraph();
+            nextParagraph();
+        } else {
+            nextEntry();
         }
-        return nextEntry();
+        return current;
     }
 
-    private final String nextParagraph() {
+    private boolean nextParagraph() {
         if (!hasNext()) {
-            return null;
+            return false;
         }
         ++currentParagraph;
         currentEntry = 0;
         final Paragraph paragraph = bookModel.getTextModel().getParagraph(currentParagraph);
-        entryCount = paragraph.getEntryCount();
-        return getCurrentText();
+        if (paragraph == null) {
+            return false;
+        }
+        entryCountOfCurrentParagraph = paragraph.getEntryCount();
+        return true;
     }
 
-    private final String nextEntry() {
+    private boolean nextEntry() {
+        if (!hasNext()) {
+            return false;
+        }
         if (isLastEntry()) {
             return nextParagraph();
         }
         ++currentEntry;
-        return getCurrentText();
+        return true;
     }
 
     public boolean isFirstParagraph() {
@@ -92,29 +98,25 @@ public class TextPosition {
     }
 
     public boolean isLastEntry() {
-        return (currentEntry >= entryCount - 1 && entryCount > 0);
-    }
-
-    public boolean isLastRun() {
-        return (currentRunOffset >= length && length > 0);
+        return (currentEntry >= entryCountOfCurrentParagraph - 1 && entryCountOfCurrentParagraph > 0);
     }
 
     /**
-     * get available text length in model that has been read.
+     * get available text length in model that has been loaded.
      * @return
      */
-    public int available() {
+    public int availableTextLength() {
         int available = 0;
         final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
         if (paragraphList.size() <= 0) {
             return available;
         }
         Paragraph paragraph = paragraphList.get(currentParagraph);
-        available += paragraph.available(currentEntry);
+        available += paragraph.availableTextLength(currentEntry);
 
         for(int i = currentParagraph + 1; i < paragraphList.size(); ++i) {
             paragraph = paragraphList.get(i);
-            available += paragraph.available(0);
+            available += paragraph.availableTextLength(0);
         }
         return available;
     }
@@ -129,11 +131,11 @@ public class TextPosition {
 
     private void update() {
         final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
-        paragraphCount = paragraphList.size();
-        if (paragraphCount <= 0) {
+        if (paragraphList.size() < 0) {
             return;
         }
-        entryCount = paragraphList.get(currentParagraph).getEntryList().size();
+        paragraphCount = paragraphList.size();
+        entryCountOfCurrentParagraph = paragraphList.get(currentParagraph).getEntryList().size();
     }
 
 }

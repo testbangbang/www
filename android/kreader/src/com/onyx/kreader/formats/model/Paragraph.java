@@ -85,7 +85,7 @@ public class Paragraph {
         return getLastEntry().equals(paragraphEntry);
     }
 
-    public int available(int sinceEntry) {
+    public int availableTextLength(int sinceEntry) {
         int available = 0;
         final List<ParagraphEntry> entryList = getEntryList();
         if (entryList.size() <= 0) {

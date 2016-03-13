@@ -42,7 +42,7 @@ public class LayoutController {
             for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
                 if (entry instanceof TextParagraphEntry) {
                     TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
-                    LayoutRunSplitter.split(runlist, textParagraphEntry.getText(), textStyle);
+                    LayoutRunGenerator.split(runlist, textParagraphEntry.getText(), textStyle);
                 }
             }
         }

@@ -1,26 +1,28 @@
 package com.onyx.kreader.text;
 
 import android.graphics.Rect;
+import android.util.Log;
+import com.onyx.kreader.formats.model.TextModelPosition;
 import com.onyx.kreader.utils.UnicodeUtils;
 
 import java.util.List;
 
 /**
  * Created by zengzhu on 3/12/16.
- * Split model into run list.
+ * Read data from model and generate LayoutRun list. After that the layout engine could use the LayoutRun list easily.
  */
-public class LayoutRunSplitter {
+public class LayoutRunGenerator {
 
+    private static boolean debugString = true;
     /**
-     * fetch more data within limit
+     * fetch data from model and generate LayoutRun list.
      * @param list
      * @param position
      * @param textStyle
      * @param limit
      */
-    public static void fetchMore(final List<LayoutRun> list, final TextPosition position, final Style textStyle, final int limit) {
-
-        while (position.available() < limit) {
+    public static void generate(final List<LayoutRun> list, final TextModelPosition position, final Style textStyle, final int limit) {
+        while (position.availableTextLength() < limit) {
             if (!position.fetchMore()) {
                 break;
             }
@@ -28,15 +30,16 @@ public class LayoutRunSplitter {
         split(list, position, textStyle);
     }
 
-    public static void split(final List<LayoutRun> list, final TextPosition textPosition, final Style style) {
-        while (textPosition.hasNext()) {
-            final String text = textPosition.next();
+    public static void split(final List<LayoutRun> list, final TextModelPosition textModelPosition, final Style style) {
+        while (textModelPosition.hasNext()) {
+            final String text = textModelPosition.next();
             if (text != null) {
-                LayoutRunSplitter.split(list, text, style);
+                split(list, text, style);
             }
         }
     }
 
+    // TODO: extend to support more language.
     public static void split(final List<LayoutRun> list, final String text, final Style style) {
         addParagraphBeginRun(list);
         int last = 0;
@@ -81,6 +84,10 @@ public class LayoutRunSplitter {
         float width = style.getPaint().measureText(text, start, end);
         LayoutRun run = LayoutRun.create(text, start, end, width, rect.height(), type);
         list.add(run);
+        if (debugString) {
+            String subString = text.substring(start, end);
+            Log.d("Test", subString);
+        }
         return true;
     }
 

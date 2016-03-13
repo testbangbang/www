@@ -4,7 +4,7 @@ import android.graphics.RectF;
 
 /**
  * Created by zengzhu on 3/6/16.
- * Mininum layout unit, used by LayoutRunLine and rendering engine
+ * Mininum layout unit, used by LayoutRunLine and layout engine
  */
 public class LayoutRun {
 
@@ -77,6 +77,10 @@ public class LayoutRun {
 
     public boolean isSpacing() {
         return (runType == Type.TYPE_SPACING);
+    }
+
+    public boolean isPunctuation() {
+        return runType == Type.TYPE_PUNCTUATION;
     }
 
     public boolean isWord() {

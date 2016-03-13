@@ -421,6 +421,8 @@ public class OnyxHyphen {
                 String a = word.substring(0, i);
                 String b = word.substring(i);
                 list.add(new Pair<String, String>(a, b));
+            } else if (data[i] == 'B') {
+
             }
         }
         return list;

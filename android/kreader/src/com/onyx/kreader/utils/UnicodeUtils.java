@@ -13,10 +13,8 @@ public class UnicodeUtils {
         return (Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS);
     }
 
-    // TODO, not work correctly.
     static public boolean isPunctuation(final Character ch) {
-        return (Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION) ||
-                (Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.GENERAL_PUNCTUATION);
+        return ch == ',' || ch == '.' || ch == '!' || ch == '?' || ch == ':' || ch == ';' || ch == '’' || ch == '，' || ch == '。' || ch == '？' || ch == '：';
     }
 
 }

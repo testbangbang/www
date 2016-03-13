@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import com.onyx.kreader.R;
 import com.onyx.kreader.formats.model.BookModel;
-import com.onyx.kreader.text.TextPosition;
+import com.onyx.kreader.formats.model.TextModelPosition;
 import com.onyx.kreader.formats.txt.TxtReader;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.TestUtils;
@@ -33,7 +33,7 @@ public class LayoutTestActivity extends Activity {
     final String path = "/mnt/sdcard/Books/test.txt";
     private TxtReader bookReader = new TxtReader();
     private BookModel bookModel = new BookModel(path);
-    private TextPosition position = new TextPosition(bookReader, bookModel);
+    private TextModelPosition position = new TextModelPosition(bookReader, bookModel);
     private List<LayoutRun> runlist = new ArrayList<LayoutRun>();
     private Style textStyle = randStyle();
     private int runIndex = 0;
@@ -89,67 +89,21 @@ public class LayoutTestActivity extends Activity {
 
     private void testLayoutRun() {
 
-        final RectF lineRect = new RectF(layoutRect());
         if (runIndex <= 0) {
-            LayoutRunSplitter.fetchMore(runlist, position, textStyle, 5 * 1000);
+            LayoutRunGenerator.generate(runlist, position, textStyle, 5 * 1000);
         }
-
-        List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
-        LayoutRunLine layoutLine = new LayoutRunLine(lineRect);
-        lineList.add(layoutLine);
 
         long start = System.currentTimeMillis();
-        float lineSpacing;
-        boolean stop = false;
-        int index = runIndex;
-        while (!stop && index < runlist.size()) {
-            final LayoutRun layoutRun = runlist.get(index);
-            LayoutRunLine.LayoutResult result = layoutLine.layoutRun(layoutRun);
-            switch (result) {
-                case LAYOUT_ADDED:
-                    ++index;
-                    break;
-                case LAYOUT_FINISHED:
-                    lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));
-                    if (!layoutRun.isParagraphEnd()) {
-                        lineSpacing = 10;
-                    }
-                    if (!layoutLine.nextLine(layoutRect(), lineRect, lineSpacing)) {
-                        stop = true;
-                        break;
-                    }
-                    layoutLine = new LayoutRunLine(lineRect);
-                    lineList.add(layoutLine);
-                    ++index;
-                    break;
-                case LAYOUT_FAIL:
-                    lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));
-                    if (!layoutRun.isParagraphEnd()) {
-                        lineSpacing = 10;
-                    }
+        LayoutBlock block = new LayoutBlock();
+        runIndex = block.layout(layoutRect(), runlist, runIndex, textStyle);
 
-                    if (!layoutLine.nextLine(layoutRect(), lineRect, lineSpacing)) {
-                        stop = true;
-                        break;
-                    }
-                    layoutLine = new LayoutRunLine(lineRect);
-                    lineList.add(layoutLine);
-                    break;
-                case LAYOUT_BREAK:
-                    final LayoutRun another = breakRunByWidth(layoutRun, layoutLine.getAvailableWidth(), textStyle);
-                    runlist.add(index + 1, another);
-                    break;
-            }
-        }
-
-        runIndex = index;
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         Canvas canvas = holder.lockCanvas();
         canvas.drawColor(Color.WHITE);
-        for(LayoutRunLine lineManager: lineList) {
+        for(LayoutRunLine lineManager: block.getLineList()) {
             for (LayoutRun layoutRun : lineManager.getRunList()) {
-                if (layoutRun.isWord()) {
+                if (layoutRun.isWord() || layoutRun.isPunctuation()) {
                     final Paint.FontMetrics fontMetrics = textStyle.getPaint().getFontMetrics();
 //                    canvas.drawRect(layoutRun.getPositionRect(), textStyle.getPaint());
                     canvas.drawText(layoutRun.getText(),
