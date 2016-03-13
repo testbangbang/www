@@ -6,12 +6,10 @@ import android.graphics.Typeface;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import com.onyx.kreader.tests.ReaderTestActivity;
-import com.onyx.kreader.text.LayoutRun;
-import com.onyx.kreader.text.LayoutRunLine;
-import com.onyx.kreader.text.Style;
-import com.onyx.kreader.text.TextStyle;
+import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.TestUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,8 +40,9 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
 
     public void testSplitter1() {
         final String text = "这是 个混合test this a 混合测test!测试分词目的";
-        final List<LayoutRun> list = LayoutRunLine.split(text, randStyle());
-        assertTrue(list.size() == 22);
+        final List<LayoutRun> list = new ArrayList<LayoutRun>();
+        LayoutRunGenerator.split(list, text, randStyle());
+        assertTrue(list.size() == 25);
 
         StringBuilder sb = new StringBuilder();
         int length = 0;
@@ -58,8 +57,9 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
 
     public void testSplitter2() {
         final String text = "这是  个 混合test  this a 混合测test!测试分词目的ру́сский язы́к, russkiy yazyk,";
-        final List<LayoutRun> list = LayoutRunLine.split(text, randStyle());
-        assertTrue(list.size() == 32);
+        final List<LayoutRun> list = new ArrayList<LayoutRun>();
+        LayoutRunGenerator.split(list, text, randStyle());
+        assertTrue(list.size() == 37);
 
         StringBuilder sb = new StringBuilder();
         int length = 0;
@@ -75,8 +75,9 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
 
     public void testSplitter3() {
         final String text = "这是\n 个\t 混合test\t  this a 混合测test!测试分词目的ру́сский \tязы́к, russkiy yazyk,";
-        final List<LayoutRun> list = LayoutRunLine.split(text, randStyle());
-        assertTrue(list.size() == 35);
+        final List<LayoutRun> list = new ArrayList<LayoutRun>();
+        LayoutRunGenerator.split(list, text, randStyle());
+        assertTrue(list.size() == 40);
 
         StringBuilder sb = new StringBuilder();
         int length = 0;
