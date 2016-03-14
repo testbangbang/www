@@ -11,11 +11,13 @@ import java.nio.CharBuffer;
 
 /**
  * Created by zengzhu on 2/28/16.
+ * string builder save text that not finished. when end-of-line found, it flush all text collected
+ * to the paragraph.
  */
 public class TxtReader implements BookReader {
 
     private static String TAG = TxtReader.class.getSimpleName();
-    private final int limit = 2 * 1024;
+    private static final int limit = 2 * 1024;
     private ByteBuffer fileData = ByteBuffer.allocate(limit);
     private CharBuffer decodeResult = CharBuffer.allocate(limit);
     private StringBuilder stringBuilder = new StringBuilder();
@@ -33,7 +35,6 @@ public class TxtReader implements BookReader {
         }
         return false;
     }
-
 
     public boolean processNext(final BookModel bookModel) {
         if (bookModel.getModelHelper().read(fileData) <= 0) {
@@ -103,6 +104,7 @@ public class TxtReader implements BookReader {
 
     /**
      * flush data to current paragraph, called when it received end-of-line.
+     * add the paragraph to the model.
      */
     private void onReceivedEndOfLine(final BookModel bookModel) {
         ensureCurrentParagraph(bookModel);
@@ -123,11 +125,13 @@ public class TxtReader implements BookReader {
         stringBuilder.append(buffer.subSequence(start, end));
     }
 
+    /**
+     * ensure current paragraph exist.
+     * @param bookModel
+     */
     private void ensureCurrentParagraph(final BookModel bookModel) {
         if (paragraph == null) {
-            // on paragraph begin, consider to add paragraph start entry
             paragraph = Paragraph.create(Paragraph.ParagraphKind.TEXT_PARAGRAPH);
-
         }
     }
 

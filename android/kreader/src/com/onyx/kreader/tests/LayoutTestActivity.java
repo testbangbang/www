@@ -79,7 +79,7 @@ public class LayoutTestActivity extends Activity {
     }
 
     private RectF layoutRect() {
-        int margin = 100;
+        int margin = 50;
         RectF rect = new RectF(margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - margin);
         return rect;
     }
@@ -120,16 +120,9 @@ public class LayoutTestActivity extends Activity {
         Log.d(TAG, "layout and rendering takes: " + (end - start));
     }
 
-    private final LayoutRun breakRunByWidth(final LayoutRun layoutRun, final float width, final Style textStyle) {
-        final float characterWidth = layoutRun.singleCharacterWidth();
-        int count = (int)(width /characterWidth);
-        float newWidth = textStyle.getPaint().measureText(layoutRun.getText(), layoutRun.getStart(), layoutRun.getStart() + count);
-        return layoutRun.breakRun(count, newWidth);
-    }
-
     private Style randStyle() {
         Paint paint = new Paint();
-        paint.setTextSize(35);//TestUtils.randInt(10, 80));
+        paint.setTextSize(40);//TestUtils.randInt(10, 80));
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
         int value = TestUtils.randInt(10, 20);

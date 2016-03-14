@@ -35,7 +35,7 @@ public class LayoutController {
         lineList.add(layoutLine);
         final List<LayoutRun> runlist = new ArrayList<LayoutRun>();
 
-        int count = bookModel.getTextModel().getParagraphCount();
+        int count = bookModel.getTextModel().paragraphCount();
         final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
         for (int p = 0; p < paragraphList.size(); ++p) {
             final Paragraph paragraph = paragraphList.get(p);

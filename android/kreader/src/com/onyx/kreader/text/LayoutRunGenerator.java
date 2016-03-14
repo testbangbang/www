@@ -2,9 +2,13 @@ package com.onyx.kreader.text;
 
 import android.graphics.Rect;
 import android.util.Log;
+import com.onyx.kreader.formats.model.Paragraph;
 import com.onyx.kreader.formats.model.TextModelPosition;
+import com.onyx.kreader.formats.model.entry.ParagraphEntry;
+import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.utils.UnicodeUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +18,10 @@ import java.util.List;
 public class LayoutRunGenerator {
 
     private static boolean debugString = true;
+    private int currentRunIndex = 0;
+    private List<LayoutRun> runList = new ArrayList<LayoutRun>();
+
+
     /**
      * fetch data from model and generate LayoutRun list.
      * @param list
@@ -22,26 +30,35 @@ public class LayoutRunGenerator {
      * @param limit
      */
     public static void generate(final List<LayoutRun> list, final TextModelPosition position, final Style textStyle, final int limit) {
-        while (position.availableTextLength() < limit) {
-            if (!position.fetchMore()) {
+        while (list.size() < limit && position.fetchMore()) {
+            split(list, position, textStyle);
+        }
+    }
+
+    /**
+     * paragraph based splitter.
+     * @param list
+     * @param textModelPosition
+     * @param style
+     */
+    public static void split(final List<LayoutRun> list, final TextModelPosition textModelPosition, final Style style) {
+        while (textModelPosition.hasNextParagraph()) {
+            final Paragraph paragraph = textModelPosition.nextParagraph();
+            if (paragraph == null) {
                 break;
             }
-        }
-        split(list, position, textStyle);
-    }
-
-    public static void split(final List<LayoutRun> list, final TextModelPosition textModelPosition, final Style style) {
-        while (textModelPosition.hasNext()) {
-            final String text = textModelPosition.next();
-            if (text != null) {
-                split(list, text, style);
+            addParagraphBeginRun(list);
+            for (ParagraphEntry paragraphEntry : paragraph.getParagraphEntryList()) {
+                if (paragraphEntry instanceof TextParagraphEntry) {
+                    final TextParagraphEntry textParagraphEntry = (TextParagraphEntry) paragraphEntry;
+                    split(list, textParagraphEntry.getText(), style);
+                }
             }
+            addParagraphEndRun(list);
         }
     }
 
-    // TODO: extend to support more language.
     public static void split(final List<LayoutRun> list, final String text, final Style style) {
-        addParagraphBeginRun(list);
         int last = 0;
         for(int i = 0; i < text.length(); ++i) {
             Character character = text.charAt(i);
@@ -60,7 +77,6 @@ public class LayoutRunGenerator {
             }
         }
         addLayoutTextRun(list, text, style, last, text.length(), LayoutRun.Type.TYPE_WORD);
-        addParagraphEndRun(list);
     }
 
     public static boolean addParagraphBeginRun(final List<LayoutRun> list) {

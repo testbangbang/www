@@ -14,7 +14,15 @@ public class UnicodeUtils {
     }
 
     static public boolean isPunctuation(final Character ch) {
-        return ch == ',' || ch == '.' || ch == '!' || ch == '?' || ch == ':' || ch == ';' || ch == '’' || ch == '，' || ch == '。' || ch == '？' || ch == '：';
+         return isEnglishPunctuation(ch) || isChinesePunctuation(ch);
+    }
+
+    static public boolean isEnglishPunctuation(final Character ch) {
+        return ch == ',' || ch == '.' || ch == '!' || ch == '?' || ch == ':' || ch == ';' || ch == '’';
+    }
+
+    static public boolean isChinesePunctuation(final Character ch) {
+        return ch == '，' || ch == '。' || ch == '？' || ch == '：';
     }
 
 }

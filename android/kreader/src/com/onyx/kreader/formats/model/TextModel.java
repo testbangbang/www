@@ -17,6 +17,14 @@ public class TextModel {
         setLoadFinished(false);
     }
 
+    public boolean isLoadFinished() {
+        return loadFinished;
+    }
+
+    public void setLoadFinished(boolean finished) {
+        loadFinished = finished;
+    }
+
     public void addParagraph(final Paragraph paragraph) {
         paragraphList.add(paragraph);
     }
@@ -26,14 +34,6 @@ public class TextModel {
             return null;
         }
         return paragraphList.get(paragraphList.size() - 1);
-    }
-
-    public boolean isLoadFinished() {
-        return loadFinished;
-    }
-
-    public void setLoadFinished(boolean finished) {
-        loadFinished = finished;
     }
 
     public int paragraphCount() {
@@ -49,10 +49,6 @@ public class TextModel {
             return paragraphList.get(paragraph);
         }
         return null;
-    }
-
-    public int getParagraphCount() {
-        return paragraphList.size();
     }
 
     public void dump() {

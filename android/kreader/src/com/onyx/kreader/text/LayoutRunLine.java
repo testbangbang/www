@@ -172,7 +172,7 @@ public class LayoutRunLine {
 
         // if spacing is too large distribute to all runs.
         float spacing = getAvailableWidth() / count;
-        if (spacing >= getCharacterSpacing()) {
+        if (spacing >= getCharacterSpacing() / 2) {
             adjustifyAllRuns();
             return;
         }
