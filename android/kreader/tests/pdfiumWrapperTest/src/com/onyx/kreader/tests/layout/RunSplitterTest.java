@@ -5,6 +5,12 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
+import com.onyx.kreader.formats.model.BookModel;
+import com.onyx.kreader.formats.model.Paragraph;
+import com.onyx.kreader.formats.model.TextModel;
+import com.onyx.kreader.formats.model.TextModelPosition;
+import com.onyx.kreader.formats.model.entry.ParagraphEntry;
+import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.tests.ReaderTestActivity;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.TestUtils;
@@ -22,6 +28,8 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
     public RunSplitterTest() {
         super(ReaderTestActivity.class);
     }
+
+
 
     static public Style randStyle() {
         Paint paint = new Paint();
@@ -90,5 +98,53 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
         final String result = sb.toString();
         assertTrue(text.equals(result));
     }
+
+
+    private final BookModel randomModel(final List<String> list) {
+        final BookModel bookModel = new BookModel(null);
+        final TextModel textModel = bookModel.getTextModel();
+
+        int paragraphCount = TestUtils.randInt(1, 3);
+        for(int i = 0; i < paragraphCount; ++i) {
+            final Paragraph paragraph = Paragraph.create(Paragraph.ParagraphKind.TEXT_PARAGRAPH);
+            int entryCount = TestUtils.randInt(1, 3);
+            for(int j = 0; j < entryCount; ++j) {
+                final String text = TestUtils.randString();
+                list.add(text);
+                final ParagraphEntry paragraphEntry = new TextParagraphEntry(text);
+                paragraph.addEntry(paragraphEntry);
+            }
+            textModel.addParagraph(paragraph);
+        }
+        textModel.setLoadFinished(true);
+        return bookModel;
+    }
+
+    public void testLayoutRunGenerator() {
+        StringBuilder s1 = new StringBuilder();
+        StringBuilder s2 = new StringBuilder();
+
+        List<String> list = new ArrayList<String>();
+        final BookModel bookModel = randomModel(list);
+        for(String s: list) {
+            s1.append(s);
+        }
+
+        TextModelPosition modelPosition = new TextModelPosition(null, bookModel);
+        LayoutRunGenerator generator = new LayoutRunGenerator(modelPosition);
+
+        final Style style = randStyle();
+        while (generator.hasNext()) {
+            final LayoutRun layoutRun = generator.getRun(style);
+            final String text = layoutRun.getRealText();
+            s2.append(text);
+            generator.moveToNext();
+        }
+
+        final String source = s1.toString();
+        final String target = s2.toString();
+        assertTrue(source.equals(target));
+    }
+
 
 }

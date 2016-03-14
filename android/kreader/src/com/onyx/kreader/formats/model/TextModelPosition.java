@@ -148,7 +148,7 @@ public class TextModelPosition {
     }
 
     public boolean isLastEntry() {
-        return (currentEntry >= entryCountOfCurrentParagraph - 1 && entryCountOfCurrentParagraph > 0);
+        return (entryCountOfCurrentParagraph > 0 && currentEntry >= entryCountOfCurrentParagraph - 1);
     }
 
     /**
@@ -172,10 +172,13 @@ public class TextModelPosition {
     }
 
     public boolean fetchMore() {
-        if (!reader.processNext(bookModel)) {
+        if (reader != null && !reader.processNext(bookModel)) {
             return false;
         }
         update();
+        if (reader == null) {
+            return false;
+        }
         return true;
     }
 

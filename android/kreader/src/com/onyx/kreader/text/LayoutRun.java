@@ -111,6 +111,13 @@ public class LayoutRun {
         return text;
     }
 
+    public final String getRealText() {
+        if (text != null) {
+            return text.substring(start, end);
+        }
+        return null;
+    }
+
     public void moveTo(final float x, final float y) {
         positionRect.offsetTo(x, y);
     }

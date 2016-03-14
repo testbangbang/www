@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class LayoutRunGenerator {
 
-    private static boolean debugString = true;
+    private static boolean debugString = false;
     private int currentRunIndex = 0;
     private List<LayoutRun> runList = new ArrayList<LayoutRun>();
     private final TextModelPosition textModelPosition;
@@ -31,7 +31,7 @@ public class LayoutRunGenerator {
     }
 
     public boolean hasNext() {
-        if (leftRuns() > 0) {
+        if (leftRuns() > 1) {
             return true;
         }
         if (!textModelPosition.isLoadFinished()) {
@@ -44,8 +44,11 @@ public class LayoutRunGenerator {
     }
 
     public final LayoutRun getRun(final Style textStyle) {
-        if (leftRuns() <= 0) {
+        if (leftRuns() < 1) {
             generate(runList, textStyle, 2000);
+        }
+        if (currentRunIndex >= runList.size() - 1) {
+            return null;
         }
         return runList.get(currentRunIndex);
     }
@@ -68,6 +71,7 @@ public class LayoutRunGenerator {
         while (leftRuns() < limit && textModelPosition.fetchMore()) {
             split(list, textModelPosition, textStyle);
         }
+        split(list, textModelPosition, textStyle);
     }
 
     /**
@@ -83,8 +87,9 @@ public class LayoutRunGenerator {
                 break;
             }
             addParagraphBeginRun(list);
-            for (ParagraphEntry paragraphEntry : paragraph.getParagraphEntryList()) {
-                if (paragraphEntry instanceof TextParagraphEntry) {
+            while (textModelPosition.hasNextEntry()) {
+                final ParagraphEntry paragraphEntry = textModelPosition.nextEntry();
+                if (paragraphEntry != null && paragraphEntry instanceof TextParagraphEntry) {
                     final TextParagraphEntry textParagraphEntry = (TextParagraphEntry) paragraphEntry;
                     split(list, textParagraphEntry.getText(), style);
                 }
