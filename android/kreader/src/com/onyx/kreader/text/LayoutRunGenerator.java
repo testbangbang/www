@@ -20,18 +20,53 @@ public class LayoutRunGenerator {
     private static boolean debugString = true;
     private int currentRunIndex = 0;
     private List<LayoutRun> runList = new ArrayList<LayoutRun>();
+    private final TextModelPosition textModelPosition;
 
+    public LayoutRunGenerator(final TextModelPosition position) {
+        textModelPosition = position;
+    }
+
+    public int leftRuns() {
+        return runList.size() - currentRunIndex;
+    }
+
+    public boolean hasNext() {
+        if (leftRuns() > 0) {
+            return true;
+        }
+        if (!textModelPosition.isLoadFinished()) {
+            return true;
+        }
+        if (textModelPosition.hasNextParagraph() || textModelPosition.hasNextEntry()) {
+            return true;
+        }
+        return false;
+    }
+
+    public final LayoutRun getRun(final Style textStyle) {
+        if (leftRuns() <= 0) {
+            generate(runList, textStyle, 2000);
+        }
+        return runList.get(currentRunIndex);
+    }
+
+    public void moveToNext() {
+        currentRunIndex++;
+    }
+
+    public void breakRun(final LayoutRun layoutRun) {
+        runList.add(currentRunIndex + 1, layoutRun);
+    }
 
     /**
      * fetch data from model and generate LayoutRun list.
      * @param list
-     * @param position
      * @param textStyle
      * @param limit
      */
-    public static void generate(final List<LayoutRun> list, final TextModelPosition position, final Style textStyle, final int limit) {
-        while (list.size() < limit && position.fetchMore()) {
-            split(list, position, textStyle);
+    public void generate(final List<LayoutRun> list, final Style textStyle, final int limit) {
+        while (leftRuns() < limit && textModelPosition.fetchMore()) {
+            split(list, textModelPosition, textStyle);
         }
     }
 

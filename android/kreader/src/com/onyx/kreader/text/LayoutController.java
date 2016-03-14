@@ -52,7 +52,7 @@ public class LayoutController {
         int index = 0;
         while (!stop && index < runlist.size()) {
             final LayoutRun layoutRun = runlist.get(index);
-            LayoutRunLine.LayoutResult result = layoutLine.layoutRun(layoutRun);
+            LayoutRunLine.LayoutResult result = layoutLine.addLayoutRun(layoutRun);
             switch (result) {
                 case LAYOUT_ADDED:
                     ++index;

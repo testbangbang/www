@@ -62,6 +62,14 @@ public class TextModelPosition {
         return null;
     }
 
+    public boolean isLoadFinished() {
+        return bookModel.getTextModel().isLoadFinished();
+    }
+
+    /**
+     * check if we have more paragraph loaded in memory.
+     * @return
+     */
     public boolean hasNextParagraph() {
         return !(isLastParagraph());
     }

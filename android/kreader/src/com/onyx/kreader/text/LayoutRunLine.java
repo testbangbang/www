@@ -71,7 +71,7 @@ public class LayoutRunLine {
         return 50;
     }
 
-    public LayoutResult layoutRun(final LayoutRun run) {
+    public LayoutResult addLayoutRun(final LayoutRun run) {
         if (run.isParagraphEnd()) {
             addParagraphEndRun(run);
             return LayoutResult.LAYOUT_FINISHED;

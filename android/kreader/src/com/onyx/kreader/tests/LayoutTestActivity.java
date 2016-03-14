@@ -36,7 +36,7 @@ public class LayoutTestActivity extends Activity {
     private TextModelPosition position = new TextModelPosition(bookReader, bookModel);
     private List<LayoutRun> runlist = new ArrayList<LayoutRun>();
     private Style textStyle = randStyle();
-    private int runIndex = 0;
+    private LayoutRunGenerator generator = new LayoutRunGenerator(position);
 
 
     @Override
@@ -88,14 +88,9 @@ public class LayoutTestActivity extends Activity {
     }
 
     private void testLayoutRun() {
-
-        if (runIndex <= 0) {
-            LayoutRunGenerator.generate(runlist, position, textStyle, 5 * 1000);
-        }
-
         long start = System.currentTimeMillis();
         LayoutBlock block = new LayoutBlock();
-        runIndex = block.layout(layoutRect(), runlist, runIndex, textStyle);
+        block.layout(layoutRect(), generator, textStyle);
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
@@ -105,7 +100,7 @@ public class LayoutTestActivity extends Activity {
             for (LayoutRun layoutRun : lineManager.getRunList()) {
                 if (layoutRun.isWord() || layoutRun.isPunctuation()) {
                     final Paint.FontMetrics fontMetrics = textStyle.getPaint().getFontMetrics();
-//                    canvas.drawRect(layoutRun.getPositionRect(), textStyle.getPaint());
+//                    canvas.drawRect(addLayoutRun.getPositionRect(), textStyle.getPaint());
                     canvas.drawText(layoutRun.getText(),
                             layoutRun.getStart(),
                             layoutRun.getEnd(),

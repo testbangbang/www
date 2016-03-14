@@ -19,7 +19,7 @@ public class LayoutBlock {
 
     private List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
 
-    public int layout(final RectF blockRect, final List<LayoutRun> runList, int runIndex, final Style textStyle) {
+    public int layout(final RectF blockRect, final LayoutRunGenerator generator, final Style textStyle) {
         lineList.clear();
 
         RectF lineRect = new RectF(blockRect);
@@ -29,14 +29,13 @@ public class LayoutBlock {
 
         float lineSpacing;
         boolean stop = false;
-        int index = runIndex;
-        while (!stop && index < runList.size()) {
-            final LayoutRun layoutRun = runList.get(index);
+        while (!stop && generator.hasNext()) {
+            final LayoutRun layoutRun = generator.getRun(textStyle);
             beforeLayout(lastLine, layoutLine, layoutRun);
-            LayoutRunLine.LayoutResult result = layoutLine.layoutRun(layoutRun);
+            LayoutRunLine.LayoutResult result = layoutLine.addLayoutRun(layoutRun);
             switch (result) {
                 case LAYOUT_ADDED:
-                    ++index;
+                    generator.moveToNext();
                     break;
                 case LAYOUT_FINISHED:
                     lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));
@@ -50,7 +49,7 @@ public class LayoutBlock {
                     lastLine = layoutLine;
                     layoutLine = new LayoutRunLine(lineRect);
                     lineList.add(layoutLine);
-                    ++index;
+                    generator.moveToNext();
                     break;
                 case LAYOUT_FAIL:
                     lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));
@@ -68,16 +67,16 @@ public class LayoutBlock {
                     break;
                 case LAYOUT_BREAK:
                     final LayoutRun another = breakRunByWidth(layoutRun, layoutLine.getAvailableWidth(), textStyle);
-                    runList.add(index + 1, another);
+                    generator.breakRun(another);
                     break;
             }
         }
-        return index;
+        return 0;
     }
 
     private void beforeLayout(final LayoutRunLine oldLine, final LayoutRunLine newLine, final LayoutRun layoutRun) {
         if (layoutRun.isPunctuation() && newLine.isEmpty() && oldLine != null) {
-            newLine.layoutRun(oldLine.removeLastRun());
+            newLine.addLayoutRun(oldLine.removeLastRun());
         }
     }
 
