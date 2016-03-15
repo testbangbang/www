@@ -33,7 +33,7 @@ public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestAc
                     break;
                 }
                 assertNotNull(bookModel.getTextModel().getLastParagraph());
-                final List<ParagraphEntry> entryList = bookModel.getTextModel().getLastParagraph().getParagraphEntryList();
+                final List<ParagraphEntry> entryList = bookModel.getTextModel().getLastParagraph().getEntryList();
                 assertNotNull(entryList);
                 ParagraphEntry entry = entryList.get(0);
                 assertNotNull(entry);
@@ -63,7 +63,7 @@ public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestAc
                     break;
                 }
                 assertNotNull(bookModel.getTextModel().getLastParagraph());
-                final List<ParagraphEntry> entryList = bookModel.getTextModel().getLastParagraph().getParagraphEntryList();
+                final List<ParagraphEntry> entryList = bookModel.getTextModel().getLastParagraph().getEntryList();
                 assertNotNull(entryList);
                 ParagraphEntry entry = entryList.get(0);
                 assertNotNull(entry);

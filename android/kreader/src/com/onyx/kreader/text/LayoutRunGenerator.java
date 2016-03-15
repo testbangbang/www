@@ -37,7 +37,10 @@ public class LayoutRunGenerator {
         if (!textModelPosition.isLoadFinished()) {
             return true;
         }
-        if (textModelPosition.hasNextParagraph() || textModelPosition.hasNextEntry()) {
+        if (textModelPosition.hasNextEntry()) {
+            return true;
+        }
+        if (textModelPosition.hasNextParagraph()) {
             return true;
         }
         return false;
@@ -53,7 +56,7 @@ public class LayoutRunGenerator {
         return runList.get(currentRunIndex);
     }
 
-    public void moveToNext() {
+    public void moveToNextRun() {
         currentRunIndex++;
     }
 
@@ -87,8 +90,8 @@ public class LayoutRunGenerator {
                 break;
             }
             addParagraphBeginRun(list);
-            while (textModelPosition.hasNextEntry()) {
-                final ParagraphEntry paragraphEntry = textModelPosition.nextEntry();
+            while (paragraph.hasNextEntry()) {
+                final ParagraphEntry paragraphEntry = paragraph.nextEntry();
                 if (paragraphEntry != null && paragraphEntry instanceof TextParagraphEntry) {
                     final TextParagraphEntry textParagraphEntry = (TextParagraphEntry) paragraphEntry;
                     split(list, textParagraphEntry.getText(), style);

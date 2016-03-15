@@ -39,7 +39,7 @@ public class LayoutController {
         final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
         for (int p = 0; p < paragraphList.size(); ++p) {
             final Paragraph paragraph = paragraphList.get(p);
-            for (ParagraphEntry entry : paragraph.getParagraphEntryList()) {
+            for (ParagraphEntry entry : paragraph.getEntryList()) {
                 if (entry instanceof TextParagraphEntry) {
                     TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
                     LayoutRunGenerator.split(runlist, textParagraphEntry.getText(), textStyle);

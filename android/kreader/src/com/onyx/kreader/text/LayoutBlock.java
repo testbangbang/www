@@ -35,7 +35,7 @@ public class LayoutBlock {
             LayoutRunLine.LayoutResult result = layoutLine.addLayoutRun(layoutRun);
             switch (result) {
                 case LAYOUT_ADDED:
-                    generator.moveToNext();
+                    generator.moveToNextRun();
                     break;
                 case LAYOUT_FINISHED:
                     lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));
@@ -49,7 +49,7 @@ public class LayoutBlock {
                     lastLine = layoutLine;
                     layoutLine = new LayoutRunLine(lineRect);
                     lineList.add(layoutLine);
-                    generator.moveToNext();
+                    generator.moveToNextRun();
                     break;
                 case LAYOUT_FAIL:
                     lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));

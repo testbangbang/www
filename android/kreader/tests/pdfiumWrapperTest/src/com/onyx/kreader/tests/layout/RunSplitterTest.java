@@ -50,7 +50,7 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
         final String text = "这是 个混合test this a 混合测test!测试分词目的";
         final List<LayoutRun> list = new ArrayList<LayoutRun>();
         LayoutRunGenerator.split(list, text, randStyle());
-        assertTrue(list.size() == 25);
+        assertTrue(list.size() == 23);
 
         StringBuilder sb = new StringBuilder();
         int length = 0;
@@ -67,7 +67,7 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
         final String text = "这是  个 混合test  this a 混合测test!测试分词目的ру́сский язы́к, russkiy yazyk,";
         final List<LayoutRun> list = new ArrayList<LayoutRun>();
         LayoutRunGenerator.split(list, text, randStyle());
-        assertTrue(list.size() == 37);
+        assertTrue(list.size() == 35);
 
         StringBuilder sb = new StringBuilder();
         int length = 0;
@@ -85,7 +85,7 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
         final String text = "这是\n 个\t 混合test\t  this a 混合测test!测试分词目的ру́сский \tязы́к, russkiy yazyk,";
         final List<LayoutRun> list = new ArrayList<LayoutRun>();
         LayoutRunGenerator.split(list, text, randStyle());
-        assertTrue(list.size() == 40);
+        assertTrue(list.size() == 38);
 
         StringBuilder sb = new StringBuilder();
         int length = 0;
@@ -137,8 +137,10 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
         while (generator.hasNext()) {
             final LayoutRun layoutRun = generator.getRun(style);
             final String text = layoutRun.getRealText();
-            s2.append(text);
-            generator.moveToNext();
+            if (text != null) {
+                s2.append(text);
+            }
+            generator.moveToNextRun();
         }
 
         final String source = s1.toString();

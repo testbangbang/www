@@ -32,6 +32,7 @@ public class Paragraph {
     private long streamLength;
     private ParagraphKind paragraphKind;
     private List<ParagraphEntry> paragraphEntryList = new ArrayList<ParagraphEntry>();
+    private int currentEntry = 0;
 
     public Paragraph(final ParagraphKind kind) {
         paragraphKind = kind;
@@ -45,8 +46,19 @@ public class Paragraph {
         paragraphEntryList.add(paragraphEntry);
     }
 
-    public final List<ParagraphEntry> getParagraphEntryList() {
-        return paragraphEntryList;
+    public void resetEntryCursor() {
+        currentEntry = 0;
+    }
+
+    public boolean hasNextEntry() {
+        return currentEntry < getEntryCount();
+    }
+
+    public final ParagraphEntry nextEntry() {
+        if (!hasNextEntry()) {
+            return null;
+        }
+        return getEntry(currentEntry++);
     }
 
     public final ParagraphEntry getLastEntry() {

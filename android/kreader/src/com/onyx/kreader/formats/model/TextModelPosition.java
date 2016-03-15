@@ -16,9 +16,6 @@ public class TextModelPosition {
     private int currentParagraph = 0;
     private int paragraphCount = -1;
 
-    private int currentEntry = 0;
-    private int entryCountOfCurrentParagraph;
-
     private final BookModel bookModel;
     private final BookReader reader;
 
@@ -35,33 +32,6 @@ public class TextModelPosition {
         return paragraph;
     }
 
-    public final ParagraphEntry currentParagraphEntry() {
-        final Paragraph paragraph = currentParagraph();
-        if (paragraph == null) {
-            return null;
-        }
-        return paragraph.getEntry(currentEntry);
-    }
-
-    public final String getCurrentText() {
-        final Paragraph paragraph = bookModel.getTextModel().getParagraph(currentParagraph);
-        if (paragraph == null) {
-            return null;
-        }
-
-        entryCountOfCurrentParagraph = paragraph.getEntryCount();
-        final ParagraphEntry entry = paragraph.getEntry(currentEntry);
-        if (entry == null) {
-            return null;
-        }
-
-        if (entry instanceof TextParagraphEntry) {
-            TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
-            return textParagraphEntry.getText();
-        }
-        return null;
-    }
-
     public boolean isLoadFinished() {
         return bookModel.getTextModel().isLoadFinished();
     }
@@ -71,21 +41,21 @@ public class TextModelPosition {
      * @return
      */
     public boolean hasNextParagraph() {
-        return !(isLastParagraph());
+        if (paragraphCount < 0) {
+            return true;
+        }
+        if (paragraphCount > 0 && currentParagraph < paragraphCount) {
+            return true;
+        }
+        return false;
     }
 
     public boolean hasNextEntry() {
-        return !(isLastEntry());
-    }
-
-    public final String next() {
-        final String current = getCurrentText();
-        if (isLastEntry()) {
-            nextParagraph();
-        } else {
-            nextEntry();
+        final Paragraph paragraph = currentParagraph();
+        if (paragraph == null) {
+            return false;
         }
-        return current;
+        return paragraph.hasNextEntry();
     }
 
     /**
@@ -97,78 +67,12 @@ public class TextModelPosition {
             return null;
         }
         final Paragraph lastParagraph = currentParagraph();
-        nextParagraphImpl();
-        return lastParagraph;
-    }
-
-    private final Paragraph nextParagraphImpl() {
-        if (!hasNextParagraph()) {
-            return null;
-        }
-
         ++currentParagraph;
-        currentEntry = 0;
-        final Paragraph paragraph = bookModel.getTextModel().getParagraph(currentParagraph);
-        entryCountOfCurrentParagraph = paragraph.getEntryCount();
-        return paragraph;
-    }
-
-    /**
-     * return next entry in this paragraph.
-     * @return null if no more entry in this paragraph.
-     */
-    public final ParagraphEntry nextEntry() {
-        if (!hasNextEntry()) {
-            return null;
-        }
-        final ParagraphEntry paragraphEntry = currentParagraphEntry();
-        nextEntryImpl();
-        return paragraphEntry;
-    }
-
-    public final ParagraphEntry nextEntryImpl() {
-        if (!hasNextEntry()) {
-            return null;
-        }
-
-        ++currentEntry;
-        return currentParagraphEntry();
+        return lastParagraph;
     }
 
     public boolean isFirstParagraph() {
         return (currentParagraph == 0);
-    }
-
-    public boolean isLastParagraph() {
-        return (paragraphCount > 0 && currentParagraph >= paragraphCount - 1);
-    }
-
-    public boolean isFirstEntry() {
-        return (currentEntry == 0);
-    }
-
-    public boolean isLastEntry() {
-        return (entryCountOfCurrentParagraph > 0 && currentEntry >= entryCountOfCurrentParagraph - 1);
-    }
-
-    /**
-     * get available text length in model that has been loaded.
-     * @return
-     */
-    public int availableTextLength() {
-        int available = 0;
-        final List<Paragraph> paragraphList = bookModel.getTextModel().getParagraphList();
-        if (paragraphList.size() <= 0) {
-            return available;
-        }
-        Paragraph paragraph = paragraphList.get(currentParagraph);
-        available += paragraph.availableTextLength(currentEntry);
-
-        for(int i = currentParagraph + 1; i < paragraphList.size(); ++i) {
-            paragraph = paragraphList.get(i);
-            available += paragraph.availableTextLength(0);
-        }
-        return available;
     }
 
     public boolean fetchMore() {
@@ -188,7 +92,6 @@ public class TextModelPosition {
             return;
         }
         paragraphCount = paragraphList.size();
-        entryCountOfCurrentParagraph = paragraphList.get(currentParagraph).getEntryList().size();
     }
 
 }

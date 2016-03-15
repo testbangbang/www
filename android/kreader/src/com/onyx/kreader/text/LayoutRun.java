@@ -111,6 +111,10 @@ public class LayoutRun {
         return text;
     }
 
+    /**
+     * get real text without hyphenation symbol.
+     * @return
+     */
     public final String getRealText() {
         if (text != null) {
             return text.substring(start, end);
