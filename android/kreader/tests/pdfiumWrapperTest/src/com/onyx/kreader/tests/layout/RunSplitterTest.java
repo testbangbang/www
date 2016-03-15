@@ -135,7 +135,7 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
 
         final Style style = randStyle();
         while (generator.hasNext()) {
-            final LayoutRun layoutRun = generator.getRun(style);
+            final LayoutRun layoutRun = generator.getRun(style, 2000);
             final String text = layoutRun.getRealText();
             if (text != null) {
                 s2.append(text);
