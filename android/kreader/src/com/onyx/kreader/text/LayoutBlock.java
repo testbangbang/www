@@ -30,7 +30,7 @@ public class LayoutBlock {
         float lineSpacing;
         boolean stop = false;
         while (!stop && generator.hasNext()) {
-            final LayoutRun layoutRun = generator.getRun(textStyle);
+            final LayoutRun layoutRun = generator.getRun(textStyle, 2000);
             beforeLayout(lastLine, layoutLine, layoutRun);
             LayoutRunLine.LayoutResult result = layoutLine.addLayoutRun(layoutRun);
             switch (result) {

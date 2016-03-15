@@ -34,23 +34,17 @@ public class LayoutRunGenerator {
         if (leftRuns() > 1) {
             return true;
         }
-        if (!textModelPosition.isLoadFinished()) {
-            return true;
-        }
-        if (textModelPosition.hasNextEntry()) {
-            return true;
-        }
-        if (textModelPosition.hasNextParagraph()) {
+        if (textModelPosition.hasNext()) {
             return true;
         }
         return false;
     }
 
-    public final LayoutRun getRun(final Style textStyle) {
+    public final LayoutRun getRun(final Style textStyle, int runsLimit) {
         if (leftRuns() < 1) {
-            generate(runList, textStyle, 2000);
+            generate(runList, textStyle, runsLimit);
         }
-        if (currentRunIndex >= runList.size() - 1) {
+        if (currentRunIndex > runList.size() - 1) {
             return null;
         }
         return runList.get(currentRunIndex);
@@ -68,10 +62,10 @@ public class LayoutRunGenerator {
      * fetch data from model and generate LayoutRun list.
      * @param list
      * @param textStyle
-     * @param limit
+     * @param runsLimit how many runs we need.
      */
-    public void generate(final List<LayoutRun> list, final Style textStyle, final int limit) {
-        while (leftRuns() < limit && textModelPosition.fetchMore()) {
+    public void generate(final List<LayoutRun> list, final Style textStyle, final int runsLimit) {
+        while (leftRuns() < runsLimit && textModelPosition.fetchMore()) {
             split(list, textModelPosition, textStyle);
         }
         split(list, textModelPosition, textStyle);

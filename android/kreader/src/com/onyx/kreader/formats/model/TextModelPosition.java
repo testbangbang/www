@@ -50,12 +50,16 @@ public class TextModelPosition {
         return false;
     }
 
-    public boolean hasNextEntry() {
+    private boolean hasNextEntry() {
         final Paragraph paragraph = currentParagraph();
         if (paragraph == null) {
             return false;
         }
         return paragraph.hasNextEntry();
+    }
+
+    public boolean hasNext() {
+        return (!isLoadFinished() || hasNextEntry() || hasNextParagraph());
     }
 
     /**
