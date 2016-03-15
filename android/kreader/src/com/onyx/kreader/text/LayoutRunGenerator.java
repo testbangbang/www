@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by zengzhu on 3/12/16.
  * Read data from model and generate LayoutRun list. After that the layout engine could use the LayoutRun list easily.
+ * Maintain style in this class?
  */
 public class LayoutRunGenerator {
 
@@ -30,6 +31,10 @@ public class LayoutRunGenerator {
         return runList.size() - currentRunIndex;
     }
 
+    /**
+     * has any other run to load.
+     * @return
+     */
     public boolean hasNext() {
         if (leftRuns() > 1) {
             return true;
@@ -88,14 +93,14 @@ public class LayoutRunGenerator {
                 final ParagraphEntry paragraphEntry = paragraph.nextEntry();
                 if (paragraphEntry != null && paragraphEntry instanceof TextParagraphEntry) {
                     final TextParagraphEntry textParagraphEntry = (TextParagraphEntry) paragraphEntry;
-                    split(list, textParagraphEntry.getText(), style);
+                    splitText(list, textParagraphEntry.getText(), style);
                 }
             }
             addParagraphEndRun(list);
         }
     }
 
-    public static void split(final List<LayoutRun> list, final String text, final Style style) {
+    public static void splitText(final List<LayoutRun> list, final String text, final Style style) {
         int last = 0;
         for(int i = 0; i < text.length(); ++i) {
             Character character = text.charAt(i);

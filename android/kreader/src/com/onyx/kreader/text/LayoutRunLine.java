@@ -14,24 +14,64 @@ import java.util.List;
 public class LayoutRunLine {
 
     static public enum LayoutResult {
+        /**
+         * layout run has been added successfully
+         */
         LAYOUT_ADDED,
+
+        /**
+         * Received end-of-line
+         */
         LAYOUT_FINISHED,
+
+        /**
+         * caller should break word
+         */
         LAYOUT_BREAK,
+
+        /**
+         * not enough room to add layout to this line.
+         */
         LAYOUT_FAIL,
     }
 
+    static public class Args {
+        public float indent;
+        public RectF lineRect;
+        public int direction = 0;
+
+        public Args() {
+        }
+
+        public Args(final Args another) {
+            indent = another.indent;
+            lineRect = new RectF(another.lineRect);
+            direction = another.direction;
+        }
+
+        public final float width() {
+            return lineRect.width();
+        }
+
+        public final float height() {
+            return lineRect.height();
+        }
+    }
+
+    static public final byte PARAGRAPH_BEGIN = 0x01;
+    static public final byte PARAGRAPH_END = 0x02;
+
     private float contentHeight = 0;
     private float contentWidth = 0;
-    private float indent = 0;
     private float averageCharacterWidth = 0;
+    private byte lineType = 0;
     private PointF currentPoint = new PointF();
-    private int direction = 1;
-    private RectF lineRect;
+    private Args lineArgs;
 
     private List<LayoutRun> runList = new ArrayList<LayoutRun>();
 
-    public LayoutRunLine(final RectF line) {
-        lineRect = new RectF(line);
+    public LayoutRunLine(final Args args) {
+        lineArgs = new Args(args);
         reset();
     }
 
@@ -39,7 +79,6 @@ public class LayoutRunLine {
         runList.clear();
         contentWidth = 0;
         contentHeight = 0;
-        indent = 0;
         resetCurrentPoint();
     }
 
@@ -48,11 +87,11 @@ public class LayoutRunLine {
     }
 
     public float getAvailableWidth() {
-        return lineRect.width() - contentWidth;
+        return lineArgs.width() - contentWidth;
     }
 
     public final float getAvailableHeight() {
-        return lineRect.height();
+        return lineArgs.height();
     }
 
     public final float getContentHeight() {
@@ -68,7 +107,7 @@ public class LayoutRunLine {
     }
 
     public final float getIndent() {
-        return 50;
+        return lineArgs.indent;
     }
 
     public LayoutResult addLayoutRun(final LayoutRun run) {
@@ -112,10 +151,10 @@ public class LayoutRunLine {
     }
 
     public boolean nextLine(final RectF parent, final RectF next, final float lineSpacing) {
-        if (lineRect.top + contentHeight +  lineSpacing >= parent.bottom) {
+        if (lineArgs.lineRect.top + contentHeight +  lineSpacing >= parent.bottom) {
             return false;
         }
-        next.set(lineRect.left, lineRect.top + contentHeight + lineSpacing, lineRect.right, parent.bottom);
+        next.set(lineArgs.lineRect.left, lineArgs.lineRect.top + contentHeight + lineSpacing, lineArgs.lineRect.right, parent.bottom);
         return true;
     }
 
@@ -124,13 +163,18 @@ public class LayoutRunLine {
     }
 
     private void addParagraphEndRun(final LayoutRun run) {
+        lineType |= PARAGRAPH_END;
         beautifyLine(true);
     }
 
     private void addParagraphBeginRun(final LayoutRun run) {
+        lineType |= PARAGRAPH_BEGIN;
         currentPoint.offset(getIndent(), 0);
         contentWidth += getIndent();
-        indent = getIndent();
+    }
+
+    private boolean isParagraphBegin() {
+        return (lineType & PARAGRAPH_BEGIN) != 0;
     }
 
     private void addRun(final LayoutRun run) {
@@ -213,8 +257,10 @@ public class LayoutRunLine {
     }
 
     private void resetCurrentPoint() {
-        currentPoint.set(lineRect.left, lineRect.top);
-        currentPoint.offset(indent, 0);
+        currentPoint.set(lineArgs.lineRect.left, lineArgs.lineRect.top);
+        if (isParagraphBegin()) {
+            currentPoint.offset(getIndent(), 0);
+        }
     }
 
 

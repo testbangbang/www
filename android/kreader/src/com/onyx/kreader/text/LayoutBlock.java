@@ -18,51 +18,79 @@ import java.util.List;
 public class LayoutBlock {
 
     private List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
+    private LayoutRunLine.Args args = new LayoutRunLine.Args();
+    private boolean stop = false;
 
-    public void layout(final RectF blockRect, final LayoutRunGenerator generator, final Style textStyle) {
+    static public abstract class Callback {
+
+        public abstract boolean hasNextRun();
+
+        public abstract LayoutRun getRun();
+
+        public abstract void moveToNextRun();
+
+        public abstract boolean breakRun(final float width);
+
+        public abstract Style styleForRun(final LayoutRun run);
+
+    }
+
+    private final LayoutRunLine.Args getArgs() {
+        return args;
+    }
+
+    private void resetArgs(final RectF blockRect) {
+        final LayoutRunLine.Args myArgs = getArgs();
+        myArgs.indent = 50;
+        myArgs.lineRect = new RectF(blockRect);
+    }
+
+    public void layoutWithCallback(final RectF blockRect, final Callback callback) {
         lineList.clear();
+        resetArgs(blockRect);
 
-        RectF lineRect = new RectF(blockRect);
         LayoutRunLine lastLine = null;
-        LayoutRunLine layoutLine = createLine(lineList, blockRect);
-
+        LayoutRunLine layoutLine = createLine(lineList, args);
         float lineSpacing;
-        boolean stop = false;
-        while (!stop && generator.hasNext()) {
-            final LayoutRun layoutRun = generator.getRun(textStyle, 2000);
+        stop = false;
+        while (!stop && callback.hasNextRun()) {
+            final LayoutRun layoutRun = callback.getRun();
             beforeLayout(lastLine, layoutLine, layoutRun);
             LayoutRunLine.LayoutResult result = layoutLine.addLayoutRun(layoutRun);
             switch (result) {
                 case LAYOUT_ADDED:
-                    generator.moveToNextRun();
+                    callback.moveToNextRun();
                     break;
                 case LAYOUT_FINISHED:
-                    lineSpacing = lineSpacing(layoutLine, layoutRun, textStyle);
-                    if (!layoutLine.nextLine(blockRect, lineRect, lineSpacing)) {
+                    lineSpacing = lineSpacing(layoutLine, layoutRun, callback.styleForRun(layoutRun));
+                    if (!layoutLine.nextLine(blockRect, args.lineRect, lineSpacing)) {
                         stop = true;
                         break;
                     }
                     lastLine = layoutLine;
-                    layoutLine = new LayoutRunLine(lineRect);
+                    layoutLine = new LayoutRunLine(args);
                     lineList.add(layoutLine);
-                    generator.moveToNextRun();
+                    callback.moveToNextRun();
                     break;
                 case LAYOUT_FAIL:
-                    lineSpacing = lineSpacing(layoutLine, layoutRun, textStyle);
-                    if (!layoutLine.nextLine(blockRect, lineRect, lineSpacing)) {
+                    lineSpacing = lineSpacing(layoutLine, layoutRun, callback.styleForRun(layoutRun));
+                    if (!layoutLine.nextLine(blockRect, args.lineRect, lineSpacing)) {
                         stop = true;
                         break;
                     }
                     lastLine = layoutLine;
-                    layoutLine = new LayoutRunLine(lineRect);
+                    layoutLine = new LayoutRunLine(args);
                     lineList.add(layoutLine);
                     break;
                 case LAYOUT_BREAK:
-                    final LayoutRun another = breakRunByWidth(layoutRun, layoutLine.getAvailableWidth(), textStyle);
-                    generator.breakRun(another);
+                    final LayoutRun another = breakRunByWidth(layoutRun, layoutLine.getAvailableWidth(), callback.styleForRun(layoutRun));
+                    if (!callback.breakRun(layoutLine.getAvailableWidth())) {
+
+                    }
                     break;
             }
         }
+        afterLayout();
     }
 
     private float lineSpacing(final LayoutRunLine currentLayoutLine, final LayoutRun lastRun, final Style textStyle) {
@@ -79,8 +107,8 @@ public class LayoutBlock {
         }
     }
 
-    public final LayoutRunLine createLine(final List<LayoutRunLine> lineList, final RectF lineRect) {
-        LayoutRunLine layoutLine = new LayoutRunLine(lineRect);
+    public final LayoutRunLine createLine(final List<LayoutRunLine> lineList, final LayoutRunLine.Args args) {
+        LayoutRunLine layoutLine = new LayoutRunLine(args);
         lineList.add(layoutLine);
         return layoutLine;
     }
@@ -95,4 +123,9 @@ public class LayoutBlock {
     public final List<LayoutRunLine> getLineList() {
         return lineList;
     }
+
+    private void afterLayout() {
+
+    }
+
 }

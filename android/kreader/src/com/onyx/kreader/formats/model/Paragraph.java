@@ -38,6 +38,10 @@ public class Paragraph {
         paragraphKind = kind;
     }
 
+    public final ParagraphKind getParagraphKind() {
+        return paragraphKind;
+    }
+
     public void setPhysicalPosition(final long position) {
         physicalPosition = position;
     }
@@ -95,25 +99,6 @@ public class Paragraph {
             return false;
         }
         return getLastEntry().equals(paragraphEntry);
-    }
-
-    public int availableTextLength(int sinceEntry) {
-        int available = 0;
-        final List<ParagraphEntry> entryList = getEntryList();
-        if (entryList.size() <= 0) {
-            return available;
-        }
-        if (sinceEntry < 0) {
-            sinceEntry = 0;
-        }
-        for(int i = sinceEntry; i < entryList.size(); ++i) {
-            final ParagraphEntry entry = entryList.get(i);
-            if (entry instanceof TextParagraphEntry) {
-                TextParagraphEntry textParagraphEntry = (TextParagraphEntry) entry;
-                available += textParagraphEntry.getText().length();
-            }
-        }
-        return available;
     }
 
 }

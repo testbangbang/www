@@ -22,7 +22,7 @@ public class UnicodeUtils {
     }
 
     static public boolean isChinesePunctuation(final Character ch) {
-        return ch == '，' || ch == '。' || ch == '？' || ch == '：' || ch == '、' || ch == '；';
+        return ch == '，' || ch == '。' || ch == '？' || ch == '：' || ch == '、' || ch == '；' || ch == '！' || ch == '“' || ch == '”' || ch == '‘' || ch ==  '’';
     }
 
 }

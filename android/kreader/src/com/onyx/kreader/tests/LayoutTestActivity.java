@@ -78,25 +78,85 @@ public class LayoutTestActivity extends Activity {
 
     }
 
-    private RectF layoutRect() {
+    private RectF leftLayoutRect() {
         int margin = 50;
-        RectF rect = new RectF(margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - margin);
+        RectF rect = new RectF(margin, margin, surfaceView.getMeasuredWidth() / 2 - margin, surfaceView.getMeasuredHeight() - margin);
         return rect;
     }
+
+    private RectF rightLayoutRect() {
+        int margin = 50;
+        RectF rect = new RectF(surfaceView.getMeasuredWidth() / 2 + margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - margin);
+        return rect;
+    }
+
 
     private void testController() {
     }
 
     private void testLayoutRun() {
         long start = System.currentTimeMillis();
-        LayoutBlock block = new LayoutBlock();
-        block.layout(layoutRect(), generator, textStyle);
+        LayoutBlock left = new LayoutBlock();
+        left.layoutWithCallback(leftLayoutRect(), new LayoutBlock.Callback() {
+            @Override
+            public boolean hasNextRun() {
+                return generator.hasNext();
+            }
+
+            @Override
+            public LayoutRun getRun() {
+                return generator.getRun(textStyle, 400);
+            }
+
+            @Override
+            public void moveToNextRun() {
+                generator.moveToNextRun();
+            }
+
+            @Override
+            public boolean breakRun(float width) {
+                return false;
+            }
+
+            @Override
+            public Style styleForRun(LayoutRun run) {
+                return textStyle;
+            }
+        });
+
+        LayoutBlock right = new LayoutBlock();
+        right.layoutWithCallback(rightLayoutRect(), new LayoutBlock.Callback() {
+            @Override
+            public boolean hasNextRun() {
+                return generator.hasNext();
+            }
+
+            @Override
+            public LayoutRun getRun() {
+                return generator.getRun(textStyle, 400);
+            }
+
+            @Override
+            public void moveToNextRun() {
+                generator.moveToNextRun();
+            }
+
+            @Override
+            public boolean breakRun(float width) {
+                return false;
+            }
+
+            @Override
+            public Style styleForRun(LayoutRun run) {
+                return textStyle;
+            }
+        });
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         Canvas canvas = holder.lockCanvas();
         canvas.drawColor(Color.WHITE);
-        for(LayoutRunLine lineManager: block.getLineList()) {
+        for(LayoutRunLine lineManager: left.getLineList()) {
             for (LayoutRun layoutRun : lineManager.getRunList()) {
                 if (layoutRun.isWord() || layoutRun.isPunctuation()) {
                     final Paint.FontMetrics fontMetrics = textStyle.getPaint().getFontMetrics();
@@ -108,7 +168,22 @@ public class LayoutTestActivity extends Activity {
                 }
             }
         }
-        canvas.drawRect(layoutRect(), paint);
+
+        for(LayoutRunLine lineManager: right.getLineList()) {
+            for (LayoutRun layoutRun : lineManager.getRunList()) {
+                if (layoutRun.isWord() || layoutRun.isPunctuation()) {
+                    final Paint.FontMetrics fontMetrics = textStyle.getPaint().getFontMetrics();
+//                    canvas.drawRect(addLayoutRun.getPositionRect(), textStyle.getPaint());
+                    canvas.drawText(layoutRun.getText(),
+                            layoutRun.getStart(),
+                            layoutRun.getEnd(),
+                            layoutRun.getPositionRect().left, layoutRun.getPositionRect().top - fontMetrics.top - fontMetrics.bottom, textStyle.getPaint());
+                }
+            }
+        }
+
+        canvas.drawRect(leftLayoutRect(), paint);
+        canvas.drawRect(rightLayoutRect(), paint);
         holder.unlockCanvasAndPost(canvas);
 
         long end = System.currentTimeMillis();
