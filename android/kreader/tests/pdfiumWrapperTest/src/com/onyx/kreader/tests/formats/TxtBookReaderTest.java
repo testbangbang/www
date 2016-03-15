@@ -5,7 +5,7 @@ import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.Paragraph;
 import com.onyx.kreader.formats.model.entry.ParagraphEntry;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
-import com.onyx.kreader.formats.txt.TxtReader;
+import com.onyx.kreader.formats.txt.TxtBookReader;
 import com.onyx.kreader.tests.ReaderTestActivity;
 
 import java.util.List;
@@ -13,17 +13,17 @@ import java.util.List;
 /**
  * Created by zengzhu on 2/28/16.
  */
-public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class TxtBookReaderTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
-    private String TAG = TxtReaderTest.class.getSimpleName();
+    private String TAG = TxtBookReaderTest.class.getSimpleName();
 
-    public TxtReaderTest() {
+    public TxtBookReaderTest() {
         super(ReaderTestActivity.class);
     }
 
     public void testTxtReader1() {
         final String path = "/mnt/sdcard/Books/test.txt";
-        TxtReader reader = new TxtReader();
+        TxtBookReader reader = new TxtBookReader();
         BookModel bookModel = new BookModel(path);
         for(int i = 0; i < 2; ++i) {
             assertTrue(reader.open(bookModel));
@@ -54,7 +54,7 @@ public class TxtReaderTest extends ActivityInstrumentationTestCase2<ReaderTestAc
 
     public void testTxtReader2() {
         final String path = "/mnt/sdcard/Books/test2.txt";
-        TxtReader reader = new TxtReader();
+        TxtBookReader reader = new TxtBookReader();
         BookModel bookModel = new BookModel(path);
         for(int i = 0; i < 2; ++i) {
             assertTrue(reader.open(bookModel));

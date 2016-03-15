@@ -19,11 +19,10 @@ public class LayoutBlock {
 
     private List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
 
-    public int layout(final RectF blockRect, final LayoutRunGenerator generator, final Style textStyle) {
+    public void layout(final RectF blockRect, final LayoutRunGenerator generator, final Style textStyle) {
         lineList.clear();
 
         RectF lineRect = new RectF(blockRect);
-
         LayoutRunLine lastLine = null;
         LayoutRunLine layoutLine = createLine(lineList, blockRect);
 
@@ -38,10 +37,7 @@ public class LayoutBlock {
                     generator.moveToNextRun();
                     break;
                 case LAYOUT_FINISHED:
-                    lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));
-                    if (!layoutRun.isParagraphEnd()) {
-                        lineSpacing = 10;
-                    }
+                    lineSpacing = lineSpacing(layoutLine, layoutRun, textStyle);
                     if (!layoutLine.nextLine(blockRect, lineRect, lineSpacing)) {
                         stop = true;
                         break;
@@ -52,11 +48,7 @@ public class LayoutBlock {
                     generator.moveToNextRun();
                     break;
                 case LAYOUT_FAIL:
-                    lineSpacing = Math.max(layoutLine.getContentHeight(), textStyle.measureHeight("A"));
-                    if (!layoutRun.isParagraphEnd()) {
-                        lineSpacing = 10;
-                    }
-
+                    lineSpacing = lineSpacing(layoutLine, layoutRun, textStyle);
                     if (!layoutLine.nextLine(blockRect, lineRect, lineSpacing)) {
                         stop = true;
                         break;
@@ -71,7 +63,14 @@ public class LayoutBlock {
                     break;
             }
         }
-        return 0;
+    }
+
+    private float lineSpacing(final LayoutRunLine currentLayoutLine, final LayoutRun lastRun, final Style textStyle) {
+        float lineSpacing = Math.max(currentLayoutLine.getContentHeight(), textStyle.measureHeight("A"));
+        if (!lastRun.isParagraphEnd()) {
+            lineSpacing = 15;
+        }
+        return lineSpacing;
     }
 
     private void beforeLayout(final LayoutRunLine oldLine, final LayoutRunLine newLine, final LayoutRun layoutRun) {

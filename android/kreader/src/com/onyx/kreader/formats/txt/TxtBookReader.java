@@ -14,9 +14,9 @@ import java.nio.CharBuffer;
  * string builder save text that not finished. when end-of-line found, it flush all text collected
  * to the paragraph.
  */
-public class TxtReader implements BookReader {
+public class TxtBookReader implements BookReader {
 
-    private static String TAG = TxtReader.class.getSimpleName();
+    private static String TAG = TxtBookReader.class.getSimpleName();
     private static final int limit = 2 * 1024;
     private ByteBuffer fileData = ByteBuffer.allocate(limit);
     private CharBuffer decodeResult = CharBuffer.allocate(limit);

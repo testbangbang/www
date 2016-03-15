@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.onyx.kreader.R;
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.TextModelPosition;
-import com.onyx.kreader.formats.txt.TxtReader;
+import com.onyx.kreader.formats.txt.TxtBookReader;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.TestUtils;
 
@@ -31,7 +31,7 @@ public class LayoutTestActivity extends Activity {
     private static final String TAG = LayoutTestActivity.class.getSimpleName();
 
     final String path = "/mnt/sdcard/Books/test.txt";
-    private TxtReader bookReader = new TxtReader();
+    private TxtBookReader bookReader = new TxtBookReader();
     private BookModel bookModel = new BookModel(path);
     private TextModelPosition position = new TextModelPosition(bookReader, bookModel);
     private List<LayoutRun> runlist = new ArrayList<LayoutRun>();
