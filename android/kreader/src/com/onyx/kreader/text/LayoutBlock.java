@@ -1,6 +1,7 @@
 package com.onyx.kreader.text;
 
 import android.graphics.RectF;
+import com.onyx.kreader.utils.RectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,18 @@ public class LayoutBlock {
     private List<LayoutRunLine> lineList = new ArrayList<LayoutRunLine>();
     private LayoutRunLine.Args args = new LayoutRunLine.Args();
     private boolean stop = false;
+    private LayoutRunLine lastLine;
+    private LayoutRunLine currentLayoutLine;
+    private RectF blockRect;
+
 
     static public abstract class Callback {
 
         public abstract boolean hasNextRun();
 
         public abstract LayoutRun getRun();
+
+        public abstract void moveToPrevRun();
 
         public abstract void moveToNextRun();
 
@@ -45,52 +52,59 @@ public class LayoutBlock {
         myArgs.lineRect = new RectF(blockRect);
     }
 
-    public void layoutWithCallback(final RectF blockRect, final Callback callback) {
+    public void layoutWithCallback(final RectF rect, final Callback callback) {
         lineList.clear();
+        blockRect = rect;
         resetArgs(blockRect);
 
-        LayoutRunLine lastLine = null;
-        LayoutRunLine layoutLine = createLine(lineList, args);
-        float lineSpacing;
+        lastLine = null;
+        currentLayoutLine = createLine(lineList, args);
         stop = false;
         while (!stop && callback.hasNextRun()) {
             final LayoutRun layoutRun = callback.getRun();
-            beforeLayout(lastLine, layoutLine, layoutRun);
-            LayoutRunLine.LayoutResult result = layoutLine.addLayoutRun(layoutRun);
+            if (!beforeLayout(lastLine, currentLayoutLine, layoutRun, callback)) {
+                continue;
+            }
+            LayoutRunLine.LayoutResult result = currentLayoutLine.addLayoutRun(layoutRun);
             switch (result) {
                 case LAYOUT_ADDED:
+                case LAYOUT_IGNORED:
                     callback.moveToNextRun();
                     break;
                 case LAYOUT_FINISHED:
-                    lineSpacing = lineSpacing(layoutLine, layoutRun, callback.styleForRun(layoutRun));
-                    if (!layoutLine.nextLine(blockRect, args.lineRect, lineSpacing)) {
+                    callback.moveToNextRun();
+                    if (!nextLine(layoutRun, callback)) {
                         stop = true;
                         break;
                     }
-                    lastLine = layoutLine;
-                    layoutLine = new LayoutRunLine(args);
-                    lineList.add(layoutLine);
-                    callback.moveToNextRun();
                     break;
                 case LAYOUT_FAIL:
-                    lineSpacing = lineSpacing(layoutLine, layoutRun, callback.styleForRun(layoutRun));
-                    if (!layoutLine.nextLine(blockRect, args.lineRect, lineSpacing)) {
+                    if (!nextLine(layoutRun, callback)) {
                         stop = true;
                         break;
                     }
-                    lastLine = layoutLine;
-                    layoutLine = new LayoutRunLine(args);
-                    lineList.add(layoutLine);
                     break;
                 case LAYOUT_BREAK:
-                    final LayoutRun another = breakRunByWidth(layoutRun, layoutLine.getAvailableWidth(), callback.styleForRun(layoutRun));
-                    if (!callback.breakRun(layoutLine.getAvailableWidth())) {
-
+                    currentLayoutLine.beautifyLine(currentLayoutLine.isParagraphEnd());
+                    if (!nextLine(layoutRun, callback)) {
+                        stop = true;
+                        break;
                     }
                     break;
             }
         }
         afterLayout();
+    }
+
+    private boolean nextLine(final LayoutRun layoutRun, final Callback callback) {
+        float lineSpacing = lineSpacing(currentLayoutLine, layoutRun, callback.styleForRun(layoutRun));
+        args.lineRect = RectUtils.remove(blockRect, currentLayoutLine.getLineRect().top, currentLayoutLine.getContentHeight(), lineSpacing);
+        if (args.lineRect == null) {
+            return false;
+        }
+        lastLine = currentLayoutLine;
+        currentLayoutLine = createLine(lineList, args);
+        return true;
     }
 
     private float lineSpacing(final LayoutRunLine currentLayoutLine, final LayoutRun lastRun, final Style textStyle) {
@@ -101,10 +115,20 @@ public class LayoutBlock {
         return lineSpacing;
     }
 
-    private void beforeLayout(final LayoutRunLine oldLine, final LayoutRunLine newLine, final LayoutRun layoutRun) {
-        if (layoutRun.isPunctuation() && newLine.isEmpty() && oldLine != null) {
-            newLine.addLayoutRun(oldLine.removeLastRun());
+    private boolean beforeLayout(final LayoutRunLine lastLine, final LayoutRunLine newLine, final LayoutRun layoutRun, final Callback callback) {
+        if (!newLine.isEmpty() || !layoutRun.isPunctuation() || lastLine == null) {
+            return true;
         }
+        lastLine.removeLastRun();
+        callback.moveToPrevRun();
+
+        int count = 0;
+        LayoutRun run;
+        while ((run = lastLine.getLastRun()) != null && run.isPunctuation() && count++ < 3) {
+            lastLine.removeLastRun();
+            callback.moveToPrevRun();
+        }
+        return false;
     }
 
     public final LayoutRunLine createLine(final List<LayoutRunLine> lineList, final LayoutRunLine.Args args) {

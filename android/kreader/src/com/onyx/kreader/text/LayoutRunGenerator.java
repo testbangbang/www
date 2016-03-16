@@ -55,6 +55,10 @@ public class LayoutRunGenerator {
         return runList.get(currentRunIndex);
     }
 
+    public void moveToPrevRun() {
+        currentRunIndex--;
+    }
+
     public void moveToNextRun() {
         currentRunIndex++;
     }

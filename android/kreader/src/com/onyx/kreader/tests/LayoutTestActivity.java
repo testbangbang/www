@@ -109,6 +109,11 @@ public class LayoutTestActivity extends Activity {
             }
 
             @Override
+            public void moveToPrevRun() {
+                generator.moveToPrevRun();
+            }
+
+            @Override
             public void moveToNextRun() {
                 generator.moveToNextRun();
             }
@@ -129,6 +134,11 @@ public class LayoutTestActivity extends Activity {
             @Override
             public boolean hasNextRun() {
                 return generator.hasNext();
+            }
+
+            @Override
+            public void moveToPrevRun() {
+                generator.moveToPrevRun();
             }
 
             @Override

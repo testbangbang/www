@@ -18,6 +18,7 @@ public class LayoutRunLine {
          * layout run has been added successfully
          */
         LAYOUT_ADDED,
+        LAYOUT_IGNORED,
 
         /**
          * Received end-of-line
@@ -67,7 +68,6 @@ public class LayoutRunLine {
     private byte lineType = 0;
     private PointF currentPoint = new PointF();
     private Args lineArgs;
-
     private List<LayoutRun> runList = new ArrayList<LayoutRun>();
 
     public LayoutRunLine(final Args args) {
@@ -92,6 +92,10 @@ public class LayoutRunLine {
 
     public final float getAvailableHeight() {
         return lineArgs.height();
+    }
+
+    public final RectF getLineRect() {
+        return lineArgs.lineRect;
     }
 
     public final float getContentHeight() {
@@ -133,7 +137,7 @@ public class LayoutRunLine {
 
         // if not possible to layout even one single character
         if (availableWidth < getCharacterSpacing()) {
-            beautifyLine(false);
+            beautifyLine(isParagraphEnd());
             return LayoutResult.LAYOUT_FAIL;
         }
 
@@ -146,16 +150,16 @@ public class LayoutRunLine {
         }
         final LayoutRun layoutRun = runList.remove(runList.size() - 1);
         contentWidth -= layoutRun.originWidth();
-        beautifyLine(false);
+        beautifyLine(isParagraphEnd());
         return layoutRun;
     }
 
-    public boolean nextLine(final RectF parent, final RectF next, final float lineSpacing) {
-        if (lineArgs.lineRect.top + contentHeight +  lineSpacing >= parent.bottom) {
-            return false;
+    public final LayoutRun getLastRun() {
+        if (runList.isEmpty()) {
+            return null;
         }
-        next.set(lineArgs.lineRect.left, lineArgs.lineRect.top + contentHeight + lineSpacing, lineArgs.lineRect.right, parent.bottom);
-        return true;
+        final LayoutRun layoutRun = runList.get(runList.size() - 1);
+        return layoutRun;
     }
 
     public final List<LayoutRun> getRunList() {
@@ -164,7 +168,7 @@ public class LayoutRunLine {
 
     private void addParagraphEndRun(final LayoutRun run) {
         lineType |= PARAGRAPH_END;
-        beautifyLine(true);
+        beautifyLine(isParagraphEnd());
     }
 
     private void addParagraphBeginRun(final LayoutRun run) {
@@ -173,8 +177,12 @@ public class LayoutRunLine {
         contentWidth += getIndent();
     }
 
-    private boolean isParagraphBegin() {
+    public boolean isParagraphBegin() {
         return (lineType & PARAGRAPH_BEGIN) != 0;
+    }
+
+    public boolean isParagraphEnd() {
+        return (lineType & PARAGRAPH_END) != 0;
     }
 
     private void addRun(final LayoutRun run) {
@@ -239,8 +247,11 @@ public class LayoutRunLine {
     }
 
     private void adjustifyAllRuns() {
+        if (runList.size() <= 1) {
+            return;
+        }
         resetCurrentPoint();
-        float margin = getAvailableWidth() / runList.size();
+        float margin = getAvailableWidth() / (runList.size() - 1);
         for(LayoutRun run : runList) {
             run.moveTo(currentPoint.x, currentPoint.y);
             currentPoint.offset(run.originWidth(), 0);
