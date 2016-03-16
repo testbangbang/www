@@ -75,13 +75,17 @@ public class LayoutBlock {
                     callback.moveToNextRun();
                     if (!nextLine(layoutRun, callback)) {
                         stop = true;
-                        break;
                     }
                     break;
-                case LAYOUT_FAIL:
+                case  LAYOUT_HEIGHT_FAIL:
+                    rollbackLine(currentLayoutLine, callback);
                     if (!nextLine(layoutRun, callback)) {
                         stop = true;
-                        break;
+                    }
+                    break;
+                case LAYOUT_WIDTH_FAIL:
+                    if (!nextLine(layoutRun, callback)) {
+                        stop = true;
                     }
                     break;
                 case LAYOUT_BREAK:
@@ -110,7 +114,7 @@ public class LayoutBlock {
     private float lineSpacing(final LayoutRunLine currentLayoutLine, final LayoutRun lastRun, final Style textStyle) {
         float lineSpacing = Math.max(currentLayoutLine.getContentHeight(), textStyle.measureHeight("A"));
         if (!lastRun.isParagraphEnd()) {
-            lineSpacing = 15;
+            lineSpacing = 10;
         }
         return lineSpacing;
     }
@@ -129,6 +133,13 @@ public class LayoutBlock {
             callback.moveToPrevRun();
         }
         return false;
+    }
+
+    private void rollbackLine(final LayoutRunLine line, final Callback callback) {
+        while (line != null && !line.isEmpty()) {
+            line.removeLastRun();
+            callback.moveToPrevRun();
+        }
     }
 
     public final LayoutRunLine createLine(final List<LayoutRunLine> lineList, final LayoutRunLine.Args args) {

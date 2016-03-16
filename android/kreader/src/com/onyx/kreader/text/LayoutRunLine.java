@@ -31,9 +31,15 @@ public class LayoutRunLine {
         LAYOUT_BREAK,
 
         /**
-         * not enough room to add layout to this line.
+         * not enough width room to add layout to this line.
          */
-        LAYOUT_FAIL,
+        LAYOUT_WIDTH_FAIL,
+
+        /**
+         * not enough height room to add layout to this line.
+         */
+        LAYOUT_HEIGHT_FAIL,
+
     }
 
     static public class Args {
@@ -120,9 +126,13 @@ public class LayoutRunLine {
             return LayoutResult.LAYOUT_FINISHED;
         }
 
+        if (getAvailableHeight() < run.originHeight()) {
+            return LayoutResult.LAYOUT_HEIGHT_FAIL;
+        }
+
         final float availableWidth = getAvailableWidth();
-        if (availableWidth <= 0 || getAvailableHeight() < run.originHeight()) {
-            return LayoutResult.LAYOUT_FAIL;
+        if (availableWidth <= 0) {
+            return LayoutResult.LAYOUT_WIDTH_FAIL;
         }
 
         if (run.isParagraphBegin() && availableWidth > getIndent()) {
@@ -138,7 +148,7 @@ public class LayoutRunLine {
         // if not possible to layout even one single character
         if (availableWidth < getCharacterSpacing()) {
             beautifyLine(isParagraphEnd());
-            return LayoutResult.LAYOUT_FAIL;
+            return LayoutResult.LAYOUT_WIDTH_FAIL;
         }
 
         return LayoutResult.LAYOUT_BREAK;

@@ -80,13 +80,13 @@ public class LayoutTestActivity extends Activity {
 
     private RectF leftLayoutRect() {
         int margin = 50;
-        RectF rect = new RectF(margin, margin, surfaceView.getMeasuredWidth() / 2 - margin, surfaceView.getMeasuredHeight() - margin);
+        RectF rect = new RectF(margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() / 2 - margin);
         return rect;
     }
 
     private RectF rightLayoutRect() {
         int margin = 50;
-        RectF rect = new RectF(surfaceView.getMeasuredWidth() / 2 + margin, margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight() - margin);
+        RectF rect = new RectF( margin, surfaceView.getMeasuredHeight() / 2 + margin, surfaceView.getMeasuredWidth() - margin, surfaceView.getMeasuredHeight()   - margin);
         return rect;
     }
 
@@ -167,10 +167,11 @@ public class LayoutTestActivity extends Activity {
         Canvas canvas = holder.lockCanvas();
         canvas.drawColor(Color.WHITE);
         for(LayoutRunLine lineManager: left.getLineList()) {
+            canvas.drawRect(lineManager.getLineRect(), textStyle.getPaint());
             for (LayoutRun layoutRun : lineManager.getRunList()) {
                 if (layoutRun.isWord() || layoutRun.isPunctuation()) {
                     final Paint.FontMetrics fontMetrics = textStyle.getPaint().getFontMetrics();
-//                    canvas.drawRect(addLayoutRun.getPositionRect(), textStyle.getPaint());
+
                     canvas.drawText(layoutRun.getText(),
                             layoutRun.getStart(),
                             layoutRun.getEnd(),
@@ -180,10 +181,10 @@ public class LayoutTestActivity extends Activity {
         }
 
         for(LayoutRunLine lineManager: right.getLineList()) {
+            canvas.drawRect(lineManager.getLineRect(), textStyle.getPaint());
             for (LayoutRun layoutRun : lineManager.getRunList()) {
                 if (layoutRun.isWord() || layoutRun.isPunctuation()) {
                     final Paint.FontMetrics fontMetrics = textStyle.getPaint().getFontMetrics();
-//                    canvas.drawRect(addLayoutRun.getPositionRect(), textStyle.getPaint());
                     canvas.drawText(layoutRun.getText(),
                             layoutRun.getStart(),
                             layoutRun.getEnd(),
