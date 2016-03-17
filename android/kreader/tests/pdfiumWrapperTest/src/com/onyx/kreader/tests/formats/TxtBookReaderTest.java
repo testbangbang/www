@@ -24,9 +24,9 @@ public class TxtBookReaderTest extends ActivityInstrumentationTestCase2<ReaderTe
     public void testTxtReader1() {
         final String path = "/mnt/sdcard/Books/test.txt";
         TxtBookReader reader = new TxtBookReader();
-        BookModel bookModel = new BookModel(path);
+        BookModel bookModel = new BookModel();
         for(int i = 0; i < 2; ++i) {
-            assertTrue(reader.open(bookModel));
+            assertTrue(reader.open(path, bookModel));
             assertFalse(bookModel.getTextModel().isLoadFinished());
             while (true) {
                 if (!reader.processNext(bookModel)) {
@@ -47,7 +47,7 @@ public class TxtBookReaderTest extends ActivityInstrumentationTestCase2<ReaderTe
             assertNotNull(paragraph);
             assertTrue(bookModel.getTextModel().paragraphCount() == 51373);
             assertTrue(bookModel.getTextModel().isLoadFinished());
-            assertTrue(bookModel.getModelHelper().getEncoding().equalsIgnoreCase("GB18030"));
+            assertTrue(reader.getFileReader().getEncoding().equalsIgnoreCase("GB18030"));
             assertTrue(reader.close(bookModel));
         }
     }
@@ -55,9 +55,9 @@ public class TxtBookReaderTest extends ActivityInstrumentationTestCase2<ReaderTe
     public void testTxtReader2() {
         final String path = "/mnt/sdcard/Books/test2.txt";
         TxtBookReader reader = new TxtBookReader();
-        BookModel bookModel = new BookModel(path);
+        BookModel bookModel = new BookModel();
         for(int i = 0; i < 2; ++i) {
-            assertTrue(reader.open(bookModel));
+            assertTrue(reader.open(path, bookModel));
             while (true) {
                 if (!reader.processNext(bookModel)) {
                     break;
@@ -73,7 +73,7 @@ public class TxtBookReaderTest extends ActivityInstrumentationTestCase2<ReaderTe
                 TextParagraphEntry textParagraphEntry = (TextParagraphEntry)entry;
                 assertTrue(textParagraphEntry.getText().split("\n").length <= 1);
             }
-            assertTrue(bookModel.getModelHelper().getEncoding().equalsIgnoreCase("GB18030"));
+            assertTrue(reader.getFileReader().getEncoding().equalsIgnoreCase("GB18030"));
             assertTrue(reader.close(bookModel));
         }
     }

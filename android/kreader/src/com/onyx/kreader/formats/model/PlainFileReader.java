@@ -12,14 +12,14 @@ import java.nio.CharBuffer;
 /**
  * Created by zengzhu on 2/28/16.
  */
-public class BookModelHelper {
+public class PlainFileReader {
 
     private FileNIO file;
     private String encoding;
     private String fallbackEncoding = "UTF-8";
     private Decoder decoder;
 
-    public BookModelHelper(final String path) {
+    public PlainFileReader(final String path) {
         file = new FileNIO(path);
     }
 

@@ -31,8 +31,9 @@ public class LayoutTestActivity extends Activity {
     private static final String TAG = LayoutTestActivity.class.getSimpleName();
 
     final String path = "/mnt/sdcard/Books/test.txt";
+
+    private BookModel bookModel = new BookModel();
     private TxtBookReader bookReader = new TxtBookReader();
-    private BookModel bookModel = new BookModel(path);
     private TextModelPosition position = new TextModelPosition(bookReader, bookModel);
     private List<LayoutRun> runlist = new ArrayList<LayoutRun>();
     private Style textStyle = randStyle();
@@ -70,7 +71,7 @@ public class LayoutTestActivity extends Activity {
 
         surfaceView = (SurfaceView)findViewById(R.id.surfaceView);
         holder = surfaceView.getHolder();
-        bookReader.open(bookModel);
+        bookReader.open(path, bookModel);
     }
 
 

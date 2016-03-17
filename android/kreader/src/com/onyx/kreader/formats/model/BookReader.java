@@ -7,10 +7,11 @@ public interface BookReader {
 
     /**
      * open book and prepare for reading data.
+     * @param path the path to read
      * @param bookModel the BookModel object.
      * @return
      */
-    public boolean open(final BookModel bookModel);
+    public boolean open(final String path, final BookModel bookModel);
 
     /**
      * for async loading, we always use processNext to read next block.

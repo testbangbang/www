@@ -101,7 +101,7 @@ public class RunSplitterTest  extends ActivityInstrumentationTestCase2<ReaderTes
 
 
     private final BookModel randomModel(final List<String> list) {
-        final BookModel bookModel = new BookModel(null);
+        final BookModel bookModel = new BookModel();
         final TextModel textModel = bookModel.getTextModel();
 
         int paragraphCount = TestUtils.randInt(1, 3);

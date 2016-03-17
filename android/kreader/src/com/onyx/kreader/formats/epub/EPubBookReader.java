@@ -8,7 +8,8 @@ import com.onyx.kreader.formats.model.BookReader;
  */
 public class EPubBookReader implements BookReader {
 
-    public boolean open(final BookModel bookModel) {
+
+    public boolean open(final String path, final BookModel bookModel) {
         return false;
     }
 

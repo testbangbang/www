@@ -4,6 +4,7 @@ import com.onyx.kreader.formats.encodings.Decoder;
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.BookReader;
 import com.onyx.kreader.formats.model.Paragraph;
+import com.onyx.kreader.formats.model.PlainFileReader;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 
 import java.nio.ByteBuffer;
@@ -18,33 +19,43 @@ public class TxtBookReader implements BookReader {
 
     private static String TAG = TxtBookReader.class.getSimpleName();
     private static final int limit = 2 * 1024;
+
+    private PlainFileReader fileReader;
     private ByteBuffer fileData = ByteBuffer.allocate(limit);
     private CharBuffer decodeResult = CharBuffer.allocate(limit);
     private StringBuilder stringBuilder = new StringBuilder();
     private Paragraph paragraph;
 
 
-    public boolean open(final BookModel bookModel) {
-        if (bookModel.getModelHelper() == null) {
-            return false;
-        }
-
-        if (bookModel.getModelHelper().open()) {
+    public boolean open(final String path, final BookModel bookModel) {
+        createFileReader(path);
+        if (getFileReader().open()) {
             bookModel.getTextModel().reset();
             return true;
         }
         return false;
     }
 
+    private PlainFileReader createFileReader(final String path) {
+        if (fileReader == null) {
+            fileReader = new PlainFileReader(path);
+        }
+        return fileReader;
+    }
+
+    public final PlainFileReader getFileReader() {
+        return fileReader;
+    }
+
     public boolean processNext(final BookModel bookModel) {
-        if (bookModel.getModelHelper().read(fileData) <= 0) {
+        if (getFileReader().read(fileData) <= 0) {
             return false;
         }
 
         if (fileData.limit() < limit) {
             bookModel.getTextModel().setLoadFinished(true);
         }
-        if (!bookModel.getModelHelper().isEncodingDetected()) {
+        if (!getFileReader().isEncodingDetected()) {
             detectEncoding(bookModel);
         }
 
@@ -56,16 +67,16 @@ public class TxtBookReader implements BookReader {
     public boolean close(final BookModel bookModel) {
         fileData.clear();
         decodeResult.clear();
-        return  bookModel.getModelHelper().close();
+        return getFileReader().close();
     }
 
     private void detectEncoding(final BookModel bookModel) {
-        bookModel.getModelHelper().detectEncoding(fileData);
+        getFileReader().detectEncoding(fileData);
         fileData.rewind();
     }
 
     private void decodeBuffer(final BookModel bookModel) {
-        bookModel.getModelHelper().decodeBuffer(fileData, decodeResult, fileData.limit() < limit);
+        getFileReader().decodeBuffer(fileData, decodeResult, fileData.limit() < limit);
     }
 
     private void processNextData(final BookModel bookModel) {

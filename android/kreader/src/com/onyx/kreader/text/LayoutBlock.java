@@ -15,6 +15,7 @@ import java.util.List;
  *           |--  List<LayoutRunLine>
  *
  * The layout block can be used in page master.
+ * http://stackoverflow.com/questions/27631736/meaning-of-top-ascent-baseline-descent-bottom-and-leading-in-androids-font
  */
 public class LayoutBlock {
 

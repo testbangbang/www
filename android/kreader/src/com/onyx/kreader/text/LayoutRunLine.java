@@ -209,7 +209,7 @@ public class LayoutRunLine {
 
     public void beautifyLine(boolean lastLine) {
         if (lastLine) {
-            alignAllRunsToLeft();
+            alignToLeft();
         } else {
             adjustifyLine();
         }
@@ -269,8 +269,26 @@ public class LayoutRunLine {
         }
     }
 
-    private void alignAllRunsToLeft() {
+    private void alignToLeft() {
         resetCurrentPoint();
+        for(LayoutRun run : runList) {
+            run.moveTo(currentPoint.x, currentPoint.y);
+            currentPoint.offset(run.originWidth(), 0);
+        }
+    }
+
+    private void alignToCenter() {
+        float margin = getAvailableWidth() / 2;
+        currentPoint.set(lineArgs.lineRect.left + margin, lineArgs.lineRect.top);
+        for(LayoutRun run : runList) {
+            run.moveTo(currentPoint.x, currentPoint.y);
+            currentPoint.offset(run.originWidth(), 0);
+        }
+    }
+
+    private void alignToRight() {
+        float margin = getAvailableWidth();
+        currentPoint.set(lineArgs.lineRect.left + margin, lineArgs.lineRect.top);
         for(LayoutRun run : runList) {
             run.moveTo(currentPoint.x, currentPoint.y);
             currentPoint.offset(run.originWidth(), 0);
