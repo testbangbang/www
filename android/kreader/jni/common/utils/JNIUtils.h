@@ -22,6 +22,7 @@ public:
 	~JNIUtils();
 
 public:
+    bool findClass(const char * className);
 	bool findMethod(const char * className, const char * method, const char *signature);
 	bool findStaticMethod(const char * className, const char * method, const char *signature);
 
@@ -42,14 +43,14 @@ class JNIByteArray {
 private:
 	JNIEnv * myEnv;
     jbyte * buffer;
-    int size;
+    size_t size;
+    size_t offset;
     jbyteArray array;
 	bool allocate;
 
-
 public:
 
-	JNIByteArray(JNIEnv *env, int s): myEnv(env), buffer(0), size(s), array(0), allocate(true) {
+	JNIByteArray(JNIEnv *env, size_t s): myEnv(env), buffer(0), size(s), offset(0), array(0), allocate(true) {
 		buffer = new jbyte[size];
 		memset(buffer, 0, size);
 		array = env->NewByteArray(size);
@@ -66,6 +67,16 @@ public:
 
     jbyte * getBuffer() {
     	return buffer;
+    }
+    
+    void appendBuffer(jbyte *addr, size_t n) {
+        if ((n + offset) > size) {
+            n = size - offset;
+        }
+        if (n > 0) {
+            memcpy(buffer + offset, addr, n);
+            offset += n;
+        }
     }
 
     jbyteArray getByteArray(bool sync) {
