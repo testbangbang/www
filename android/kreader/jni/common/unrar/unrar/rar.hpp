@@ -85,7 +85,7 @@
 #include "global.hpp"
 
 
-
+#undef _ANDROID
 
 #ifdef _ANDROID
 #include "GUI/rarjni.hpp"
