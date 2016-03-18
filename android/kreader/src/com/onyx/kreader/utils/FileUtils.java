@@ -75,4 +75,13 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
+
+    public static String canonicalPath(final String ref, final String path) {
+        String result = path;
+        int index = ref.lastIndexOf('/');
+        if (index > 0 && path.indexOf('/') < 0) {
+            result = ref.substring(0, index + 1) + path;
+        }
+        return result;
+    }
 }

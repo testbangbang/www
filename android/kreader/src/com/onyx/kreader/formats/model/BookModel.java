@@ -6,8 +6,8 @@ package com.onyx.kreader.formats.model;
  */
 public class BookModel {
 
+    private BookMetadata bookMetadata;
     private TextModel textModel;
-
 
     public BookModel() {
     }
@@ -17,5 +17,12 @@ public class BookModel {
             textModel = new TextModel();
         }
         return textModel;
+    }
+
+    public final BookMetadata getBookMetadata() {
+        if (bookMetadata == null) {
+            bookMetadata = new BookMetadata();
+        }
+        return bookMetadata;
     }
 }

@@ -1,10 +1,7 @@
 package com.onyx.kreader.formats.txt;
 
 import com.onyx.kreader.formats.encodings.Decoder;
-import com.onyx.kreader.formats.model.BookModel;
-import com.onyx.kreader.formats.model.BookReader;
-import com.onyx.kreader.formats.model.Paragraph;
-import com.onyx.kreader.formats.model.PlainFileReader;
+import com.onyx.kreader.formats.model.*;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 
 import java.nio.ByteBuffer;
@@ -27,8 +24,8 @@ public class TxtBookReader implements BookReader {
     private Paragraph paragraph;
 
 
-    public boolean open(final String path, final BookModel bookModel) {
-        createFileReader(path);
+    public boolean open(final BookReaderContext bookReaderContext, final BookModel bookModel) {
+        createFileReader(bookReaderContext.path);
         if (getFileReader().open()) {
             bookModel.getTextModel().reset();
             return true;

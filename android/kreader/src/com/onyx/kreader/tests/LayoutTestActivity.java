@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import com.onyx.kreader.R;
 import com.onyx.kreader.formats.model.BookModel;
+import com.onyx.kreader.formats.model.BookReaderContext;
 import com.onyx.kreader.formats.model.TextModelPosition;
 import com.onyx.kreader.formats.txt.TxtBookReader;
 import com.onyx.kreader.text.*;
@@ -33,6 +34,7 @@ public class LayoutTestActivity extends Activity {
     final String path = "/mnt/sdcard/Books/test.txt";
 
     private BookModel bookModel = new BookModel();
+    private BookReaderContext context = new BookReaderContext();
     private TxtBookReader bookReader = new TxtBookReader();
     private TextModelPosition position = new TextModelPosition(bookReader, bookModel);
     private List<LayoutRun> runlist = new ArrayList<LayoutRun>();
@@ -71,7 +73,8 @@ public class LayoutTestActivity extends Activity {
 
         surfaceView = (SurfaceView)findViewById(R.id.surfaceView);
         holder = surfaceView.getHolder();
-        bookReader.open(path, bookModel);
+        context.path = path;
+        bookReader.open(context, bookModel);
     }
 
 
