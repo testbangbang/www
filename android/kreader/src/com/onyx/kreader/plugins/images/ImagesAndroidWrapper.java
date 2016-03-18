@@ -5,8 +5,11 @@ import android.util.Log;
 
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.utils.BitmapUtils;
+import com.onyx.kreader.utils.FileUtils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 /**
@@ -16,6 +19,38 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
 
     private static final String TAG = ImagesAndroidWrapper.class.getSimpleName();
     private static final HashMap<String, ImageInformation> infoCache = new HashMap<String, ImageInformation>();
+
+    public static boolean drawImage(final InputStream stream, final float scale, int rotation, final RectF displayRect, final RectF positionRect, final RectF visibleRect, final Bitmap bitmap) {
+        int pageWidth = (int)(positionRect.width() / scale);
+        int pageHeight = (int)(positionRect.height() / scale);
+
+        try {
+            Rect bitmapRegion = new Rect((int) (visibleRect.left / scale), (int) (visibleRect.top / scale),
+                    (int) (visibleRect.right / scale), (int) (visibleRect.bottom / scale));
+
+            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(stream, true);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inDither = false;
+            options.inPreferQualityOverSpeed = true;
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap src = decoder.decodeRegion(bitmapRegion, new BitmapFactory.Options());
+            if (src == null) {
+                return false;
+            }
+            try {
+                renderToBitmap(src, bitmap, bitmapRegion, pageWidth, pageHeight,
+                        (int) displayRect.left, (int) displayRect.top,
+                        (int) displayRect.width(), (int) displayRect.height());
+            } finally {
+                src.recycle();
+            }
+            return true;
+        } catch (IOException ex) {
+            Log.w(TAG, ex);
+        }
+
+        return false;
+    }
 
     public ImageInformation imageInfo(final String path) {
         if (!infoCache.containsKey(path)) {
@@ -29,31 +64,15 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
     }
 
     public boolean drawImage(final String imagePath, final float scale, int rotation, final RectF displayRect, final RectF positionRect, final RectF visibleRect, final Bitmap bitmap) {
+        FileInputStream stream = null;
         try {
-            ImageInformation imageInformation;
-            if ((imageInformation = imageInfo(imagePath)) == null) {
-                return false;
-            }
-
-            Rect bitmapRegion = new Rect((int)(visibleRect.left / scale), (int)(visibleRect.top / scale),
-                    (int)(visibleRect.right / scale), (int)(visibleRect.bottom / scale));
-
-            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imagePath, true);
-            Bitmap src = decoder.decodeRegion(bitmapRegion, null);
-            if (src == null) {
-                return false;
-            }
-            try {
-                renderToBitmap(src, bitmap, bitmapRegion, (int)imageInformation.width,
-                        (int)imageInformation.height, (int)displayRect.left, (int)displayRect.top,
-                        (int)displayRect.width(), (int)displayRect.height());
-            } finally {
-                src.recycle();
-            }
-            return true;
+            stream = new FileInputStream(imagePath);
+            return drawImage(stream, scale, rotation, displayRect, positionRect, visibleRect, bitmap);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        } finally {
+            FileUtils.closeQuietly(stream);
         }
     }
 
@@ -75,7 +94,7 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
         return infoCache.get(path);
     }
 
-    private Matrix mapViewportToScreen(Rect viewportRegion, int docWidth, int docHeight, int x, int y, int width, int height) {
+    private static Matrix mapViewportToScreen(Rect viewportRegion, int docWidth, int docHeight, int x, int y, int width, int height) {
         Matrix matrix = new Matrix();
         float scaleX = width / (float)docWidth;
         float scaleY = height / (float)docHeight;
@@ -86,10 +105,12 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
         return matrix;
     }
 
-    private void renderToBitmap(Bitmap viewportBitmap, Bitmap dst, Rect viewportRegion, int docWidth, int docHeight, int x, int y, int width, int height) {
+    private static void renderToBitmap(Bitmap viewportBitmap, Bitmap dst, Rect viewportRegion, int docWidth, int docHeight, int x, int y, int width, int height) {
         Canvas canvas = new Canvas(dst);
         Paint paint = new Paint();
         paint.setFilterBitmap(true);
+//        paint.setAntiAlias(true);
+//        paint.setDither(true);
         Matrix matrix = mapViewportToScreen(viewportRegion, docWidth, docHeight, x, y, width, height);
         canvas.drawBitmap(viewportBitmap, matrix, paint);
     }

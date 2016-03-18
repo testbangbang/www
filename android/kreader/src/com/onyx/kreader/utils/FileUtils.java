@@ -84,4 +84,20 @@ public class FileUtils {
         }
         return result;
     }
+
+    public static boolean isImageFile(String fileName) {
+        fileName = fileName.toLowerCase(Locale.getDefault());
+        return fileName.endsWith(".jpg") || fileName.endsWith(".gif") || fileName.endsWith(".png");
+    }
+
+    public static boolean isZipFile(String fileName) {
+        fileName = fileName.toLowerCase(Locale.getDefault());
+        return fileName.endsWith(".zip") || fileName.endsWith(".cbz");
+    }
+
+    public static boolean isRarFile(String fileName) {
+        fileName = fileName.toLowerCase(Locale.getDefault());
+        return fileName.endsWith(".rar") || fileName.endsWith(".cbr");
+    }
+
 }

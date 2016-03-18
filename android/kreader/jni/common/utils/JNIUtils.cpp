@@ -12,6 +12,16 @@
 JNIUtils::JNIUtils(JNIEnv * env) : myEnv(env) {
 }
 
+bool JNIUtils::findClass(const char *className)
+{
+    clazz = myEnv->FindClass(className);
+    if (clazz == 0) {
+        LOGE("Could not find class: %s", className);
+        return false;
+    }
+    return true;
+}
+
 bool JNIUtils::findMethod(const char * className, const char * method, const char *signature) {
     clazz = myEnv->FindClass(className);
     if (clazz == 0) {

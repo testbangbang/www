@@ -1,0 +1,534 @@
+package com.onyx.kreader.plugins.comic;
+
+import android.content.Context;
+import android.graphics.RectF;
+
+import com.onyx.kreader.api.ReaderBitmap;
+import com.onyx.kreader.api.ReaderDRMCallback;
+import com.onyx.kreader.api.ReaderDocument;
+import com.onyx.kreader.api.ReaderDocumentMetadata;
+import com.onyx.kreader.api.ReaderDocumentOptions;
+import com.onyx.kreader.api.ReaderDocumentTableOfContent;
+import com.onyx.kreader.api.ReaderDrmManager;
+import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.api.ReaderHitTestArgs;
+import com.onyx.kreader.api.ReaderHitTestManager;
+import com.onyx.kreader.api.ReaderLink;
+import com.onyx.kreader.api.ReaderNavigator;
+import com.onyx.kreader.api.ReaderPlugin;
+import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.api.ReaderRendererFeatures;
+import com.onyx.kreader.api.ReaderSearchManager;
+import com.onyx.kreader.api.ReaderSearchOptions;
+import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.api.ReaderTextSplitter;
+import com.onyx.kreader.api.ReaderTextStyleManager;
+import com.onyx.kreader.api.ReaderView;
+import com.onyx.kreader.api.ReaderViewOptions;
+import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.kreader.plugins.images.ImagesWrapper;
+import com.onyx.kreader.utils.PagePositionUtils;
+
+import java.util.List;
+
+/**
+ * Created by joy on 3/15/16.
+ */
+public class ComicReaderPlugin implements ReaderPlugin,
+        ReaderDocument,
+        ReaderView,
+        ReaderRenderer,
+        ReaderNavigator,
+        ReaderSearchManager,
+        ReaderTextStyleManager,
+        ReaderDrmManager,
+        ReaderHitTestManager,
+        ReaderRendererFeatures {
+
+    static public boolean accept(final String path) {
+        return path.toLowerCase().endsWith(".cbz") ||
+                path.toLowerCase().endsWith(".cbr");
+    }
+
+    private ComicArchiveWrapper impl;
+
+    public ComicReaderPlugin(Context context, ReaderPluginOptions pluginOptions) {
+
+    }
+
+    private ComicArchiveWrapper getPluginImpl() {
+        if (impl == null) {
+            impl = new ComicArchiveWrapper();
+        }
+        return impl;
+    }
+
+    /**
+     * Read the document metadata.
+     *
+     * @param metadata The metadata interface.
+     * @return
+     */
+    @Override
+    public boolean readMetadata(ReaderDocumentMetadata metadata) {
+        return false;
+    }
+
+    /**
+     * Retrieve cover image.
+     *
+     * @param bitmap
+     */
+    @Override
+    public boolean readCover(ReaderBitmap bitmap) {
+        return false;
+    }
+
+    /**
+     * Retrieve the page natural size.
+     *
+     * @param position
+     * @return
+     */
+    @Override
+    public RectF getPageOriginSize(String position) {
+        ImagesWrapper.ImageInformation imageInformation = getPluginImpl().imageInfo(Integer.parseInt(position));
+        if (imageInformation == null) {
+            return null;
+        }
+        return new RectF(0, 0, imageInformation.width, imageInformation.height);
+    }
+
+    /**
+     * Read the document table of content.
+     *
+     * @param toc
+     * @return
+     */
+    @Override
+    public boolean readTableOfContent(ReaderDocumentTableOfContent toc) {
+        return false;
+    }
+
+    /**
+     * Get corresponding view.
+     *
+     * @param viewOptions The view options.
+     * @return The created view. null if failed.
+     */
+    @Override
+    public ReaderView getView(ReaderViewOptions viewOptions) {
+        return this;
+    }
+
+    /**
+     * Close the document.
+     */
+    @Override
+    public void close() {
+        getPluginImpl().close();
+    }
+
+    /**
+     * Check if drm manager accept the file or not.
+     *
+     * @param path
+     * @return
+     */
+    @Override
+    public boolean acceptDRMFile(String path) {
+        return false;
+    }
+
+    @Override
+    public boolean registerDRMCallback(ReaderDRMCallback callback) {
+        return false;
+    }
+
+    @Override
+    public boolean activateDeviceDRM(String user, String password) {
+        return false;
+    }
+
+    @Override
+    public boolean deactivateDeviceDRM() {
+        return false;
+    }
+
+    @Override
+    public String getDeviceDRMAccount() {
+        return null;
+    }
+
+    @Override
+    public boolean fulfillDRMFile(String path) {
+        return false;
+    }
+
+    /**
+     * Select word by the point. The plugin should automatically extend the selection to word boundary.
+     *
+     * @param hitTest  the user input point in document coordinates system.
+     * @param splitter the text splitter.
+     * @return the selection.
+     */
+    @Override
+    public ReaderSelection selectWord(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
+        return null;
+    }
+
+    /**
+     * Get document position for specified point.
+     *
+     * @param hitTest the hit test args.
+     * @return
+     */
+    @Override
+    public String position(ReaderHitTestArgs hitTest) {
+        return null;
+    }
+
+    /**
+     * Select text between start point and end point.
+     *
+     * @param start The start view point.
+     * @param end
+     * @return the selection.
+     */
+    @Override
+    public ReaderSelection select(ReaderHitTestArgs start, ReaderHitTestArgs end) {
+        return null;
+    }
+
+    /**
+     * Retrieve the default start position.
+     *
+     * @return
+     */
+    @Override
+    public String getInitPosition() {
+        return firstPage();
+    }
+
+    /**
+     * Get position from page number. Page position can be retrieved by both index and name.
+     *
+     * @param pageNumber The 0 based page number.
+     * @return
+     */
+    @Override
+    public String getPositionByPageNumber(int pageNumber) {
+        return PagePositionUtils.fromPageNumber(pageNumber);
+    }
+
+    /**
+     * Get position from page name.
+     *
+     * @param pageName The page name.
+     * @return page position.
+     */
+    @Override
+    public String getPositionByPageName(String pageName) {
+        return pageName;
+    }
+
+    /**
+     * Return total page number.
+     *
+     * @return 1 based total page number. return -1 if not available yet.
+     */
+    @Override
+    public int getTotalPage() {
+        return 0;
+    }
+
+    /**
+     * Navigate to next screen.
+     *
+     * @param position
+     */
+    @Override
+    public String nextScreen(String position) {
+        return nextPage(position);
+    }
+
+    /**
+     * Navigate to previous screen.
+     *
+     * @param position
+     */
+    @Override
+    public String prevScreen(String position) {
+        return prevPage(position);
+    }
+
+    /**
+     * Navigate to next page.
+     *
+     * @param position
+     * @return
+     */
+    @Override
+    public String nextPage(String position) {
+        int pn = PagePositionUtils.getPageNumber(position);
+        if (pn + 1 < getTotalPage()) {
+            return PagePositionUtils.fromPageNumber(pn + 1);
+        }
+        return null;
+    }
+
+    /**
+     * Navigate to previous page.
+     *
+     * @param position
+     * @return
+     */
+    @Override
+    public String prevPage(String position) {
+        int pn = PagePositionUtils.getPageNumber(position);
+        if (pn > 0) {
+            return PagePositionUtils.fromPageNumber(pn - 1);
+        }
+        return null;
+    }
+
+    /**
+     * Navigate to first page.
+     *
+     * @return
+     */
+    @Override
+    public String firstPage() {
+        return PagePositionUtils.fromPageNumber(0);
+    }
+
+    /**
+     * Navigate to last page.
+     *
+     * @return
+     */
+    @Override
+    public String lastPage() {
+        return PagePositionUtils.fromPageNumber(getPluginImpl().getPageCount() - 1);
+    }
+
+    /**
+     * Retrieve links of specified page.
+     *
+     * @param position
+     * @return link list.
+     */
+    @Override
+    public List<ReaderLink> getLinks(String position) {
+        return null;
+    }
+
+    /**
+     * Return the plugin display name.
+     *
+     * @return
+     */
+    @Override
+    public String displayName() {
+        return ComicReaderPlugin.class.getSimpleName();
+    }
+
+    /**
+     * Try to open the document specified by the path.
+     *
+     * @param path            The path in local file system.
+     * @param documentOptions The document opening options.
+     * @param pluginOptions   The plugin options.
+     * @return Reader document instance.
+     * @throws ReaderException
+     */
+    @Override
+    public ReaderDocument open(String path, ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) throws ReaderException {
+        if (!getPluginImpl().open(path, documentOptions.getDocumentPassword())) {
+            return null;
+        }
+        return this;
+    }
+
+    /**
+     * Check if drm is supported or not.
+     *
+     * @return
+     */
+    @Override
+    public boolean supportDrm() {
+        return false;
+    }
+
+    /**
+     * DRM support
+     */
+    @Override
+    public ReaderDrmManager createDrmManager() {
+        return null;
+    }
+
+    /**
+     * Abort current running job if possible.
+     */
+    @Override
+    public void abortCurrentJob() {
+
+    }
+
+    /**
+     * Clear setAbortFlag flag.
+     */
+    @Override
+    public void clearAbortFlag() {
+
+    }
+
+    /**
+     * Get renderer features.
+     *
+     * @return renderer features interface.
+     */
+    @Override
+    public ReaderRendererFeatures getRendererFeatures() {
+        return this;
+    }
+
+    /**
+     * draw content. There are two coordinates system.
+     * host coordinates system, the viewportInPage is specified in host coordinates system
+     * the bitmapx, bitmapy, width and height can be regarded as viewportInPage coordinates system, whereas viewportInPage is the
+     * origin point(0, 0)
+     *
+     * @param page        the page position.
+     * @param scale       the actual scale used to render page.
+     * @param rotation    the rotation.
+     * @param bitmap      the target bitmap to draw content. Caller may use this method to draw part of content.
+     * @param displayRect the display rect in screen coordinate system.
+     * @param pageRect    the page rect in doc coordinate system.
+     * @param visibleRect the visible rect in doc coordinate system.
+     *                    <p/>
+     *                    bitmap  matrix
+     *                    (viewportX, viewportY)
+     *                    |--------------|
+     *                    |              |
+     *                    | (x,y)        |
+     *                    |  |------|    |
+     *                    |  |      |    |
+     *                    |  |      |    |
+     *                    |  |------|    |
+     *                    |        (w,h) |
+     *                    |--------------|
+     * @return
+     */
+    @Override
+    public boolean draw(String page, float scale, int rotation, ReaderBitmap bitmap, RectF displayRect, RectF pageRect, RectF visibleRect) {
+        final int pn = PagePositionUtils.getPageNumber(page);
+        return getPluginImpl().drawPage(pn, scale, rotation, displayRect, pageRect, visibleRect, bitmap.getBitmap());
+    }
+
+    /**
+     * Check if the document support scale or not.
+     *
+     * @return true if supports.
+     */
+    @Override
+    public boolean supportScale() {
+        return true;
+    }
+
+    /**
+     * support font size adjustment.
+     *
+     * @return
+     */
+    @Override
+    public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
+    /**
+     * support type face adjustment.
+     *
+     * @return
+     */
+    @Override
+    public boolean supportTypefaceAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean searchPrevious(ReaderSearchOptions options) {
+        return false;
+    }
+
+    @Override
+    public boolean searchNext(ReaderSearchOptions options) {
+        return false;
+    }
+
+    @Override
+    public List<ReaderSelection> searchResults() {
+        return null;
+    }
+
+    @Override
+    public void setStyle(ReaderStyle style) {
+
+    }
+
+    /**
+     * Retrieve view options interface.
+     */
+    @Override
+    public ReaderViewOptions getViewOptions() {
+        return null;
+    }
+
+    /**
+     * Retrieve renderer.
+     *
+     * @return the renderer.
+     */
+    @Override
+    public ReaderRenderer getRenderer() {
+        return this;
+    }
+
+    /**
+     * Retrieve the navigator.
+     *
+     * @return
+     */
+    @Override
+    public ReaderNavigator getNavigator() {
+        return this;
+    }
+
+    /**
+     * Retrieve text style interface.
+     */
+    @Override
+    public ReaderTextStyleManager getTextStyleManager() {
+        return this;
+    }
+
+    /**
+     * Retrieve reader hit test.
+     */
+    @Override
+    public ReaderHitTestManager getReaderHitTestManager() {
+        return this;
+    }
+
+    /**
+     * Retrieve search interface.
+     *
+     * @return
+     */
+    @Override
+    public ReaderSearchManager getSearchManager() {
+        return this;
+    }
+}
