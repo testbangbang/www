@@ -3,11 +3,11 @@ package com.onyx.kreader.host.wrapper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import com.onyx.kreader.api.*;
-import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
@@ -44,6 +44,8 @@ public class ReaderHelper {
             plugin = new ImagesReaderPlugin(context, pluginOptions);
         } else if (DjvuReaderPlugin.accept(path)) {
             plugin = new DjvuReaderPlugin(context, pluginOptions);
+        } else if (ComicReaderPlugin.accept(path)) {
+            plugin = new ComicReaderPlugin(context, pluginOptions);
         }
         return (plugin != null);
     }
