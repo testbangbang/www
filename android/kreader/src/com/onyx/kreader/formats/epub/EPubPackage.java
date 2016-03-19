@@ -58,13 +58,18 @@ public class EPubPackage {
     static public class NavPoint {
         public String id;
         public String playOrder;
-        public String navLabel;
+        public String label;
         public String content;
+        public NavPoint parent;
+        public List<NavPoint> child = new ArrayList<NavPoint>();
+
+        public NavPoint() {
+        }
 
         public NavPoint(final String i, final String p, final String n, final String c) {
             id = i;
             playOrder = p;
-            navLabel = n;
+            label = n;
             content = c;
         }
     }
@@ -91,8 +96,8 @@ public class EPubPackage {
         guideItemList.add(new GuideItem(type, title, href));
     }
 
-    public void addNavPoint(final String id, final String playOrder, final String label, final String content) {
-        navMap.add(new NavPoint(id, playOrder, label, content));
+    public void addNavPoint(final NavPoint navPoint) {
+        navMap.add(navPoint);
     }
 
     public final String getNcxHref() {

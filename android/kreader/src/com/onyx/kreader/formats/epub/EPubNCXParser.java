@@ -1,13 +1,25 @@
 package com.onyx.kreader.formats.epub;
 
+import android.app.ListActivity;
 import android.util.Log;
 import com.onyx.kreader.formats.model.zip.ZipFileEntry;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zengzhu on 3/17/16.
@@ -60,14 +72,6 @@ public class EPubNCXParser {
     private ZipFileEntry entry;
     private EPubPackage ePubPackage = new EPubPackage();
 
-    private boolean inHead;
-    private boolean inTitle;
-    private boolean inNavMap;
-    private boolean inAuthor;
-    private boolean inNavPoint;
-    private boolean inNavLabel;
-    private boolean inContent;
-
     public static final String HEAD_TAG = "head";
     public static final String TITLE_TAG = "docTitle";
     public static final String AUTHOR_TAG = "docAuthor";
@@ -75,6 +79,7 @@ public class EPubNCXParser {
     public static final String NAV_POINT_TAG = "navPoint";
     public static final String NAV_LABEL_TAG = "navLabel";
     public static final String CONTENT_TAG = "content";
+    public static final String TEXT_TAG = "text";
 
 
     public EPubNCXParser(final ZipFileEntry e) {
@@ -83,172 +88,168 @@ public class EPubNCXParser {
 
     public void parse() {
         try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(entry.getInputStream(), new DefaultHandler() {
-                @Override
-                public void startDocument() throws SAXException {
-                }
+            // create output stream to save data read from zip file.
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte data[] = new byte[10 * 1024];
+            final InputStream inputStream = entry.getInputStream();
+            while (inputStream.read(data) > 0) {
+                byteArrayOutputStream.write(data);
+            }
 
-                @Override
-                public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-                    if (localName.equals(HEAD_TAG)) {
-                        enterHead();
-                    } else if (localName.equals(TITLE_TAG)) {
-                        enterDocTitle();
-                    } else if (localName.equals(AUTHOR_TAG)) {
-                        enterAuthor();
-                    } else if (localName.equals(NAV_MAP_TAG)) {
-                        enterNavMap();
-                    } else if (localName.equals(NAV_POINT_TAG)) {
-                        enterNavPoint();
-                    } else if (localName.equals(NAV_LABEL_TAG)) {
-                        enterNavLabel();
-                    } else if (localName.equals(CONTENT_TAG)) {
-                        enterContent();
-                    } else {
-                        onReceivedTag(uri, localName, qName, attributes);
-                    }
-                }
+            // create input stream from data of output stream.
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(byteArrayInputStream);
+            parseTitle(doc);
+            parseAuthor(doc);
+            parseNavMap(doc);
 
-                @Override
-                public void endElement(String uri, String localName, String qName)
-                        throws SAXException {
-                    if (localName.equals(HEAD_TAG)) {
-                        exitHead();
-                    } else if (localName.equals(TITLE_TAG)) {
-                        exitDocTitle();
-                    } else if (localName.equals(AUTHOR_TAG)) {
-                        exitAuthor();
-                    } else if (localName.equals(NAV_MAP_TAG)) {
-                        exitNavMap();
-                    } else if (localName.equals(NAV_POINT_TAG)) {
-                        exitNavPoint();
-                    } else if (localName.equals(NAV_LABEL_TAG)) {
-                        exitNavLabel();
-                    } else if (localName.equals(CONTENT_TAG)) {
-                        exitContent();
-                    } else {
-                    }
-                }
-
-                @Override
-                public void characters(char[] ch, int start, int length) throws SAXException {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(ch);
-                    onReceivedValue(builder.toString());
-                }
-            });
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    private void enterHead() {
-        inHead = true;
-    }
-
-    private void exitHead() {
-        inHead = false;
-    }
-
-    private boolean inHead() {
-        return inHead;
-    }
-
-    private void enterDocTitle() {
-        inTitle = true;
-    }
-
-    private void exitDocTitle() {
-        inTitle = false;
-    }
-
-    private boolean inDocTitle() {
-        return inTitle;
-    }
-
-    private void enterAuthor() {
-        inAuthor = true;
-    }
-
-    private void exitAuthor() {
-        inAuthor = false;
-    }
-
-    private boolean inAuthor() {
-        return inAuthor;
-    }
-
-    private void enterNavMap() {
-        inNavMap = true;
-    }
-
-    private void exitNavMap() {
-        inNavMap = false;
-    }
-
-    private boolean inNavMap() {
-        return inNavMap;
-    }
-
-    private void enterNavPoint() {
-        inNavPoint = true;
-    }
-
-    private void exitNavPoint() {
-        inNavPoint = false;
-    }
-
-    private boolean inNavPoint() {
-        return inNavPoint;
-    }
-
-    private void enterNavLabel() {
-        inNavLabel = true;
-    }
-
-    private void exitNavLabel() {
-        inNavLabel = false;
-    }
-
-    private boolean inNavLabel() {
-        return inNavLabel;
-    }
-
-    private void enterContent() {
-        inContent = true;
-    }
-
-    private void exitContent() {
-        inContent = false;
-    }
-
-    private boolean inContent() {
-        return inContent;
+    private final String getText(final Document document, final String parentTag, final String childTag) {
+        final NodeList list = document.getElementsByTagName(parentTag);
+        if (list == null || list.getLength() <= 0) {
+            return null;
+        }
+        final NodeList child = list.item(0).getChildNodes();
+        for(int i = 0; i < child.getLength(); ++i) {
+            final Node node = child.item(i);
+            if (node.getNodeName().equals(childTag)) {
+                return node.getTextContent();
+            }
+        }
+        return null;
     }
 
 
-    private void onReceivedTag(String uri, String localName, String qName, Attributes attributes) {
-        if (inDocTitle()) {
-            onReceivedDocTitle(uri, localName, qName, attributes);
-        } else if (inAuthor()) {
-            onReceivedAuthor(uri, localName, qName, attributes);
-        } else if (inNavMap()) {
 
-        } else if (inNavPoint()) {
+    private void parseTitle(final Document doc) {
+        final String title = getText(doc, TITLE_TAG, TEXT_TAG);
+        ePubPackage.addMetadataItem(TITLE_TAG, title);
+    }
 
+    private void parseAuthor(final Document doc) {
+        final String value = getText(doc, AUTHOR_TAG, TEXT_TAG);
+        ePubPackage.addMetadataItem(AUTHOR_TAG, value);
+    }
+
+    /**
+     * <navMap>
+     <navPoint id="navpoint-1" playOrder="1">
+     <navLabel>
+     <text>African Wildlife</text>
+     </navLabel>
+     <content src="chapter-1.xhtml"/>
+     <navPoint id="navpoint-2" playOrder="2">
+     <navLabel>
+     <text>Lorem ipsum dolor sit amet</text>
+     </navLabel>
+     <content src="chapter-1.xhtml#chapter-1-sh1"/>
+     </navPoint>
+     </navPoint>
+     <navPoint id="navpoint-3" playOrder="3">
+     <navLabel>
+     <text>African Wildlife</text>
+     </navLabel>
+     <content src="chapter-2.xhtml"/>
+     <navPoint id="navpoint-4" playOrder="4">
+     <navLabel>
+     <text>Lorem ipsum dolor sit amet</text>
+     </navLabel>
+     <content src="chapter-2.xhtml#chapter-2-sh1"/>
+     </navPoint>
+     </navPoint>
+     </navMap>
+     * @param doc
+     */
+    private void parseNavMap(final Document doc) {
+        final NodeList nodeList = doc.getElementsByTagName(NAV_MAP_TAG);
+        if (nodeList.getLength() <= 0) {
+            return;
+        }
+        final Node navMap  = nodeList.item(0);
+        final NodeList childNodes = navMap.getChildNodes();
+        for(int i = 0; i < childNodes.getLength(); ++i) {
+            final Node child = childNodes.item(i);
+            ePubPackage.addNavPoint(parseNavPoint(child, null));
         }
     }
 
-    private void onReceivedValue(final String string) {
+    private EPubPackage.NavPoint parseNavPoint(final Node node, final EPubPackage.NavPoint parent) {
+        EPubPackage.NavPoint navPoint = new EPubPackage.NavPoint();
+        navPoint.parent = parent;
+
+        final Node label = getFirstChildByName(node, NAV_LABEL_TAG);
+        final Node textNode = getFirstChildByName(label, TEXT_TAG);
+        navPoint.label = getTextContent(textNode);
+        navPoint.id = getAttribute(node, "id");
+        navPoint.playOrder = getAttribute(node, "playOrder");
+
+        final Node contentNode = getFirstChildByName(node, CONTENT_TAG);
+        navPoint.content = getAttribute(contentNode, "src");
+        List<Node> list = getChildNodesByName(node, NAV_POINT_TAG);
+        for(Node n : list) {
+            navPoint.child.add(parseNavPoint(n, navPoint));
+        }
+        return navPoint;
+
     }
 
-    private void onReceivedDocTitle(String uri, String localName, String qName, Attributes attributes) {
-
+    private final String getTextContent(final Node node) {
+        if (node != null) {
+            return node.getTextContent();
+        }
+        return null;
     }
 
 
-    private void onReceivedAuthor(String uri, String localName, String qName, Attributes attributes) {
+    private final String getAttribute(final Node node, final String name) {
+        if (node == null) {
+            return null;
+        }
+        final NamedNodeMap attributes = node.getAttributes();
+        if (attributes == null) {
+            return null;
+        }
+        final Node item = attributes.getNamedItem(name);
+        if (item == null) {
+            return null;
+        }
+        return item.getTextContent();
+    }
 
+    private final Node getFirstChildByName(final Node node, final String name) {
+        if (node == null) {
+            return null;
+        }
+        final NodeList childNodes = node.getChildNodes();
+        for(int i = 0; i < childNodes.getLength(); ++i) {
+            final Node child = childNodes.item(i);
+            String localName = child.getNodeName();
+            if (localName != null && localName.equals(name)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    private final List<Node> getChildNodesByName(final Node node, final String name) {
+        if (node == null) {
+            return null;
+        }
+        List<Node> list = new ArrayList<Node>();
+        final NodeList childNodes = node.getChildNodes();
+        for(int i = 0; i < childNodes.getLength(); ++i) {
+            final Node child = childNodes.item(i);
+            String localName = child.getNodeName();
+            if (localName != null && localName.equals(name)) {
+                list.add(child);
+            }
+        }
+        return list;
     }
 }

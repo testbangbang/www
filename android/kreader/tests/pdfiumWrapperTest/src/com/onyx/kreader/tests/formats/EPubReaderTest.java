@@ -26,7 +26,7 @@ public class EPubReaderTest extends ActivityInstrumentationTestCase2<ReaderTestA
         context.path = path;
         EPubBookReader zipFileReader = new EPubBookReader();
         assertTrue(zipFileReader.open(context, bookModel));
-        assertTrue(zipFileReader.close(null));
+        assertTrue(zipFileReader.close(bookModel));
     }
 
 }
