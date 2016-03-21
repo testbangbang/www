@@ -13,6 +13,7 @@
 #include "unrar/dll.hpp"
 
 #include "JNIUtils.h"
+#include "plugin_context_holder.h"
 
 #define  LOG_TAG    "libunrar"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
@@ -95,20 +96,6 @@ private:
     HANDLE handle_;
     bool isEncrypted_;
 };
-
-std::unordered_map<jobject, OnyxRarContext*> contextMap;
-
-OnyxRarContext *findContext(std::unordered_map<jobject, OnyxRarContext*> map, jobject thiz) {
-    auto find = map.find(thiz);
-    if (find == map.end()) {
-        return nullptr;
-    }
-    return find->second;
-}
-
-OnyxRarContext *findContext(jobject thiz) {
-    return findContext(contextMap, thiz);
-}
 
 void displayError(unsigned int error, const char *filename)
 {
@@ -199,22 +186,24 @@ void setPassword(HANDLE handle, OnyxRarContext *context) {
     }
 }
 
+PluginContextHolder<OnyxRarContext> contextHolder;
+
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_open(JNIEnv *env, jobject thiz, jstring filePath)
 {
-    OnyxRarContext *context = findContext(thiz);
+    OnyxRarContext *context = contextHolder.findContext(thiz);
     if (!context) {
         JNIString path(env, filePath);
         context = new OnyxRarContext(path.getLocalString());
-        contextMap.insert({ thiz, context });
+        contextHolder.insertContext(thiz, std::unique_ptr<OnyxRarContext>(context));
     }
     return true;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_isEncrypted(JNIEnv *env, jobject thiz)
 {
-    OnyxRarContext *context = findContext(thiz);
+    OnyxRarContext *context = contextHolder.findContext(thiz);
     if (!context) {
         return false;
     }
@@ -223,7 +212,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_i
 
 JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_setPassword(JNIEnv *env, jobject thiz, jstring password)
 {
-    OnyxRarContext *context = findContext(thiz);
+    OnyxRarContext *context = contextHolder.findContext(thiz);
     if (!context) {
         return;
     }
@@ -235,7 +224,7 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_setPa
 JNIEXPORT jobjectArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_getEntries
 (JNIEnv *env, jobject thiz)
 {
-    OnyxRarContext *context = findContext(thiz);
+    OnyxRarContext *context = contextHolder.findContext(thiz);
     if (!context) {
         return nullptr;
     }
@@ -300,7 +289,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapp
 JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_extractEntryData
 (JNIEnv *env, jobject thiz, jstring jEntry)
 {
-    OnyxRarContext *context = findContext(thiz);
+    OnyxRarContext *context = contextHolder.findContext(thiz);
     if (!context) {
         return nullptr;
     }
@@ -363,10 +352,5 @@ JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper
 
 JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_close(JNIEnv *env, jobject thiz)
 {
-    OnyxRarContext *context = findContext(thiz);
-    if (!context) {
-        return;
-    }
-    contextMap.erase(thiz);
-    delete context;
+    contextHolder.eraseContext(thiz);
 }

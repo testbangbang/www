@@ -132,8 +132,8 @@ public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<Reade
         RectF rect = plugin.getPageOriginSize(position);
         assertTrue(rect != null && rect.width() > 0 && rect.height() > 0);
         ReaderBitmap bitmap = ReaderBitmapImpl.create((int)rect.width(), (int)rect.height(), Bitmap.Config.ARGB_8888);
-        assertNotNull(bitmap);
-        assertTrue(plugin.draw(position, 1.0f, 0, bitmap, rect, null, null));
+        assertTrue(bitmap != null && bitmap.getBitmap() != null);
+        assertTrue(plugin.draw(position, 1.0f, 0, bitmap, rect, rect, rect));
         plugin.close();
     }
 }

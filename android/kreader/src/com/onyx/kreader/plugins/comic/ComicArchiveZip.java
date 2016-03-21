@@ -4,6 +4,7 @@ import android.util.Log;
 import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.StringUtils;
 import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.io.BaseInputStream;
 import net.lingala.zip4j.io.ZipInputStream;
 import net.lingala.zip4j.model.FileHeader;
@@ -23,12 +24,29 @@ public class ComicArchiveZip implements ComicArchive {
 
     @Override
     public boolean isEncrypted() {
+        if (!isOpened()) {
+            return false;
+        }
+        try {
+            return archive.isEncrypted();
+        } catch (ZipException e) {
+            Log.w(TAG, e);
+        }
         return false;
     }
 
     @Override
     public void setPassword(String password) {
-
+        if (!isOpened()) {
+            return;
+        }
+        try {
+            if (archive.isEncrypted() && !StringUtils.isNullOrEmpty(password)) {
+                archive.setPassword(password);
+            }
+        } catch (ZipException e) {
+            Log.w(TAG, e);
+        }
     }
 
     @Override

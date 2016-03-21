@@ -24,7 +24,7 @@ public class ComicArchiveRar implements ComicArchive {
 
     @Override
     public void setPassword(String password) {
-        if (StringUtils.isNullOrEmpty(password)) {
+        if (!StringUtils.isNullOrEmpty(password)) {
             wrapper.setPassword(password);
         }
     }
@@ -34,7 +34,7 @@ public class ComicArchiveRar implements ComicArchive {
         if (!wrapper.open(path)) {
             return false;
         }
-        if (StringUtils.isNullOrEmpty(password)) {
+        if (!StringUtils.isNullOrEmpty(password)) {
             wrapper.setPassword(password);
         }
         arcPath = path;
