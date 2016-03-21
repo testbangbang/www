@@ -13,7 +13,7 @@
 #include "unrar/dll.hpp"
 
 #include "JNIUtils.h"
-#include "onyx_context_holder.h"
+#include "plugin_context_holder.h"
 
 #define  LOG_TAG    "libunrar"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
@@ -186,7 +186,7 @@ void setPassword(HANDLE handle, OnyxRarContext *context) {
     }
 }
 
-OnyxContextHolder<OnyxRarContext> contextHolder;
+PluginContextHolder<OnyxRarContext> contextHolder;
 
 }
 

@@ -20,7 +20,7 @@
 #include "prof.h"
 #endif
 
-#include "onyx_context_holder.h"
+#include "plugin_context_holder.h"
 
 #include "log.h"
 #include "com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper.h"
@@ -133,7 +133,7 @@ private:
 class OnyxPdfiumManager {
 
 private:
-    static OnyxContextHolder<OnyxPdfiumContext> contextHolder;
+    static PluginContextHolder<OnyxPdfiumContext> contextHolder;
 
 public:
     static OnyxPdfiumContext * getContext(jobject thiz);

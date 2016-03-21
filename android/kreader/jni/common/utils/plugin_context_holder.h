@@ -6,10 +6,10 @@
 
 #include <jni.h>
 
-template <class T> class OnyxContextHolder
+template <class T> class PluginContextHolder
 {
 public:
-    OnyxContextHolder() { }
+    PluginContextHolder() { }
     
     T *findContext(jobject object) {
         auto find = contextMap.find(object);

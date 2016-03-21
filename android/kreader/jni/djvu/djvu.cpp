@@ -16,7 +16,7 @@
 #include "debug.h"
 
 #include "JNIUtils.h"
-#include "onyx_context_holder.h"
+#include "plugin_context_holder.h"
 
 #include "com_onyx_kreader_plugins_djvu_DjvuJniWrapper.h"
 
@@ -31,7 +31,7 @@
 
 namespace {
 
-OnyxContextHolder<OnyxDjvuContext> contextHolder;
+PluginContextHolder<OnyxDjvuContext> contextHolder;
 
 }
 

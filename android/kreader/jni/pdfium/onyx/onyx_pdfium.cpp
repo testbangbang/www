@@ -9,7 +9,7 @@ static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/Pdfium
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
-OnyxContextHolder<OnyxPdfiumContext> OnyxPdfiumManager::contextHolder;
+PluginContextHolder<OnyxPdfiumContext> OnyxPdfiumManager::contextHolder;
 
 OnyxPdfiumContext * OnyxPdfiumManager::getContext(jobject thiz) {
     return contextHolder.findContext(thiz);
