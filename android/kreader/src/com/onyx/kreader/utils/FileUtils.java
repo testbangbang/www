@@ -87,7 +87,8 @@ public class FileUtils {
 
     public static boolean isImageFile(String fileName) {
         fileName = fileName.toLowerCase(Locale.getDefault());
-        return fileName.endsWith(".jpg") || fileName.endsWith(".gif") || fileName.endsWith(".png");
+        return fileName.endsWith(".bmp") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") ||
+                fileName.endsWith(".png") || fileName.endsWith(".gif");
     }
 
     public static boolean isZipFile(String fileName) {
