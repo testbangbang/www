@@ -2,6 +2,7 @@ package com.onyx.kreader.tests.formats;
 
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.kreader.formats.model.BookModel;
+import com.onyx.kreader.formats.model.BookReaderContext;
 import com.onyx.kreader.formats.model.Paragraph;
 import com.onyx.kreader.formats.model.entry.ParagraphEntry;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
@@ -23,10 +24,12 @@ public class TxtBookReaderTest extends ActivityInstrumentationTestCase2<ReaderTe
 
     public void testTxtReader1() {
         final String path = "/mnt/sdcard/Books/test.txt";
+        BookReaderContext context = new BookReaderContext();
+        context.path = path;
         TxtBookReader reader = new TxtBookReader();
         BookModel bookModel = new BookModel();
         for(int i = 0; i < 2; ++i) {
-            assertTrue(reader.open(path, bookModel));
+            assertTrue(reader.open(context, bookModel));
             assertFalse(bookModel.getTextModel().isLoadFinished());
             while (true) {
                 if (!reader.processNext(bookModel)) {
@@ -54,10 +57,12 @@ public class TxtBookReaderTest extends ActivityInstrumentationTestCase2<ReaderTe
 
     public void testTxtReader2() {
         final String path = "/mnt/sdcard/Books/test2.txt";
+        BookReaderContext context = new BookReaderContext();
+        context.path = path;
         TxtBookReader reader = new TxtBookReader();
         BookModel bookModel = new BookModel();
         for(int i = 0; i < 2; ++i) {
-            assertTrue(reader.open(path, bookModel));
+            assertTrue(reader.open(context, bookModel));
             while (true) {
                 if (!reader.processNext(bookModel)) {
                     break;

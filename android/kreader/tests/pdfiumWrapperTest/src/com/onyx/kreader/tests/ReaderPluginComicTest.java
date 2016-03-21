@@ -5,8 +5,6 @@ import android.util.Log;
 import com.onyx.kreader.plugins.comic.ComicArchiveZip;
 import com.onyx.kreader.plugins.comic.UnrarJniWrapper;
 import com.onyx.kreader.utils.StringUtils;
-import net.lingala.zip4j.exception.ZipException;
-import net.lingala.zip4j.exception.ZipExceptionConstants;
 
 import java.io.File;
 import java.io.IOException;
