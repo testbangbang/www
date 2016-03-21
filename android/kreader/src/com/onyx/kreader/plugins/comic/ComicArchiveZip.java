@@ -24,6 +24,14 @@ public class ComicArchiveZip implements ComicArchive {
 
     @Override
     public boolean isEncrypted() {
+        if (!isOpened()) {
+            return false;
+        }
+        try {
+            return archive.isEncrypted();
+        } catch (ZipException e) {
+            Log.w(TAG, e);
+        }
         return false;
     }
 
