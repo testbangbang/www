@@ -9,28 +9,20 @@ static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/Pdfium
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
-std::map<jobject, OnyxPdfiumContext *> OnyxPdfiumManager::contextMap;
+OnyxContextHolder<OnyxPdfiumContext> OnyxPdfiumManager::contextHolder;
 
 OnyxPdfiumContext * OnyxPdfiumManager::getContext(jobject thiz) {
-    std::map<jobject, OnyxPdfiumContext *>::iterator iterator = contextMap.find(thiz);
-    if (iterator != contextMap.end()) {
-        return iterator->second;
-    }
-    return NULL;
+    return contextHolder.findContext(thiz);
 }
 
 OnyxPdfiumContext * OnyxPdfiumManager::createContext(jobject object, FPDF_DOCUMENT document) {
     OnyxPdfiumContext * context = new OnyxPdfiumContext(document);
-    contextMap.insert(std::pair<jobject, OnyxPdfiumContext *>(object, context));
+    contextHolder.insertContext(object, std::unique_ptr<OnyxPdfiumContext>(context));
     return context;
 }
 
 void OnyxPdfiumManager::releaseContext(jobject thiz) {
-    std::map<jobject, OnyxPdfiumContext *>::iterator iterator = contextMap.find(thiz);
-    if (iterator != contextMap.end()) {
-        delete iterator->second;
-        contextMap.erase(iterator);
-    }
+    contextHolder.eraseContext(thiz);
 }
 
 

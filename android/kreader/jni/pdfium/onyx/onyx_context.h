@@ -20,13 +20,13 @@
 #include "prof.h"
 #endif
 
+#include "onyx_context_holder.h"
+
 #include "log.h"
 #include "com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper.h"
 #include "fpdf_doc.h"
 #include "fpdfview.h"
 #include "fpdf_text.h"
-
-
 
 class OnyxPdfiumPage {
 
@@ -133,7 +133,7 @@ private:
 class OnyxPdfiumManager {
 
 private:
-    static std::map<jobject, OnyxPdfiumContext *> contextMap;
+    static OnyxContextHolder<OnyxPdfiumContext> contextHolder;
 
 public:
     static OnyxPdfiumContext * getContext(jobject thiz);
