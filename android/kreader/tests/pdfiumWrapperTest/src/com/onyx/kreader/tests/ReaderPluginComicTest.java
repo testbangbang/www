@@ -47,9 +47,9 @@ public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<Read
     }
 
     public void testRarEncrypted() {
-//        testRarJniWrapper(RAR_FILE, "");
-//        testRarJniWrapper(RAR_ENCRYPTED_FILE, "boox");
-//        testRarJniWrapper(RAR_ENCRYPTED_NAME_FILE, "boox");
+        testRarJniWrapper(RAR_FILE, "");
+        testRarJniWrapper(RAR_ENCRYPTED_FILE, "boox");
+        testRarJniWrapper(RAR_ENCRYPTED_NAME_FILE, "boox");
     }
 
     private boolean isInvalidZipPassword(Exception e) {
