@@ -40,6 +40,8 @@ import java.util.*;
  */
 public class ReaderTestActivity extends Activity {
 
+    private boolean testPrerender = false;
+
     private enum TestCase { ToPage, PageList, ContinuousList  }
 
     private Reader reader;
@@ -386,15 +388,17 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void textPrerenderScreen() {
-        final PrerenderRequest renderRequest = new PrerenderRequest(true);
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e == null) {
-                    //dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
+        if (testPrerender) {
+            final PrerenderRequest renderRequest = new PrerenderRequest(true);
+            reader.submitRequest(this, renderRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Exception e) {
+                    if (e == null) {
+                        //dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void textPreviousScreen() {
