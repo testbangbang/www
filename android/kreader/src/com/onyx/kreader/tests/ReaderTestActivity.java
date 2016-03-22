@@ -8,12 +8,14 @@ import android.util.Pair;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
+import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderViewOptions;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.math.PageInfo;
@@ -195,13 +197,17 @@ public class ReaderTestActivity extends Activity {
         return new ReaderViewOptionsImpl(surfaceView.getWidth(), surfaceView.getHeight());
     }
 
+    public ReaderDocumentOptions getDocumentOptions() {
+        return new ReaderDocumentOptionsImpl(null, null);
+    }
+
     public ReaderPluginOptions getPluginOptions() {
         return new ReaderPluginOptionsImpl();
     }
 
     public void testReaderOpen() {
         reader = ReaderManager.getReader(path);
-        BaseRequest open = new OpenRequest(path, null, getPluginOptions());
+        BaseRequest open = new OpenRequest(path, getDocumentOptions(), getPluginOptions());
         reader.submitRequest(this, open, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
