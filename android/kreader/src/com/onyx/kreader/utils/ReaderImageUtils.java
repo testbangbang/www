@@ -1,8 +1,8 @@
 package com.onyx.kreader.utils;
 
 import android.graphics.*;
-import com.onyx.kreader.reflow.ReaderScannedPageReflowManager;
-import com.onyx.kreader.reflow.ReaderScannedPageReflowSettings;
+import com.onyx.kreader.reflow.ImageReflowManager;
+import com.onyx.kreader.reflow.ImageReflowSettings;
 
 /**
  * Created by joy on 3/22/16.
@@ -17,7 +17,7 @@ public class ReaderImageUtils {
     }
 
     static private native double [] crop(Bitmap bitmap, int left, int top, int right, int bottom, double threshold);
-    static private native boolean reflowPage(Bitmap input, final String pageName, ReaderScannedPageReflowManager parent, ReaderScannedPageReflowSettings settings);
+    static private native boolean reflowPage(Bitmap input, final String pageName, ImageReflowManager parent, ImageReflowSettings settings);
     static private native boolean emboldenInPlace(Bitmap bitmap, int level);
     static private native boolean gammaCorrection(Bitmap bitmap, float gamma);
 
@@ -35,7 +35,7 @@ public class ReaderImageUtils {
         return RectUtils.rectangle(result);
     }
 
-    static public boolean reflowScannedPage(Bitmap bitmap, final String pageName, ReaderScannedPageReflowManager parent) {
+    static public boolean reflowScannedPage(Bitmap bitmap, final String pageName, ImageReflowManager parent) {
         return reflowPage(bitmap, pageName, parent, parent.getSettings());
     }
 
