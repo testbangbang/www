@@ -32,7 +32,7 @@ extern "C" {
 #include "prof.h"
 #endif
 
-#include "com_onyx_reader_ReaderImageUtils.h"
+#include "com_onyx_kreader_utils_ReaderImageUtils.h"
 #include "image_embolden_filter.h"
 #include "image_gamma_filter.h"
 
