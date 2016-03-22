@@ -7,7 +7,7 @@ import com.onyx.kreader.reflow.ImageReflowSettings;
 /**
  * Created by joy on 3/22/16.
  */
-public class ReaderImageUtils {
+public class ImageUtils {
     public static final float NO_GAMMA = -1;
     public static final float STANDARD_GAMMA = 150;
     public static final float MAX_GAMMA = 200;

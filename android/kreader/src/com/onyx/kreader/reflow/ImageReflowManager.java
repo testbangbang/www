@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.utils.FileUtils;
-import com.onyx.kreader.utils.ReaderImageUtils;
+import com.onyx.kreader.utils.ImageUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,7 +62,7 @@ public class ImageReflowManager {
         settings.page_width = (int)(pageWidth * scale);
         settings.page_height = (int)(pageHeight * scale);
         Log.i("reflow settings", JSON.toJSONString(settings));
-        if (ReaderImageUtils.reflowScannedPage(bitmap, pageName, this)) {
+        if (ImageUtils.reflowScannedPage(bitmap, pageName, this)) {
             savePageMap();
         }
     }
