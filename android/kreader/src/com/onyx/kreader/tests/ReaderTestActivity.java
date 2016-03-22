@@ -137,6 +137,19 @@ public class ReaderTestActivity extends Activity {
 
         searchEdit = (EditText)findViewById(R.id.search);
 
+        findViewById(R.id.prev_page).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textPreviousScreen();
+            }
+        });
+
+        findViewById(R.id.next_page).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testNextScreen();
+            }
+        });
 
         surfaceView = (SurfaceView)findViewById(R.id.surfaceView);
         surfaceHolderCallback = new SurfaceHolder.Callback() {
