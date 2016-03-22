@@ -18,4 +18,13 @@ public class RectUtils {
         }
         return new RectF(parent.left, childTop + childHeight + spacing, parent.right, parent.bottom);
     }
+
+    static public RectF rectangle(double result[]) {
+        float left = (float)result[0];
+        float top = (float)result[1];
+        float right = (float)result[2];
+        float bottom = (float)result[3];
+        RectF rect = new RectF(left, top , right, bottom);
+        return rect;
+    }
 }
