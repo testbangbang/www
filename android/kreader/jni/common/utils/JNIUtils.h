@@ -147,7 +147,9 @@ private:
     
 public:
     JNIString(JNIEnv *env, const jstring & string): myEnv(env), javaString(string), localString(0)  {
-        localString = env->GetStringUTFChars(string, 0);
+        if (string) {
+            localString = env->GetStringUTFChars(string, 0);
+        }
     }
     
     ~JNIString() {
