@@ -1,8 +1,6 @@
 package com.onyx.kreader.utils;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
+import android.graphics.*;
 import android.hardware.Camera;
 import android.util.Log;
 import com.onyx.kreader.plugins.images.ImagesWrapper;
@@ -64,6 +62,15 @@ public class BitmapUtils {
         } finally {
             FileUtils.closeQuietly(stream);
         }
+    }
+
+    static public void drawRectOnBitmap(Bitmap bmp, RectF rect) {
+        Canvas canvas = new Canvas(bmp);
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(3);
+        canvas.drawRect(rect, paint);
     }
 
 }

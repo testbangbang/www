@@ -39,21 +39,25 @@ public class ImageUtils {
         return reflowPage(bitmap, pageName, parent, parent.getSettings());
     }
 
-    static public void drawRectOnBitmap(Bitmap bmp, RectF rect) {
-        Canvas canvas = new Canvas(bmp);
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(3);
-        canvas.drawRect(rect, paint);
+    /**
+     * modify bitmap in place
+     *
+     * @param bmp
+     * @param emboldenLevel
+     * @return
+     */
+    public static boolean applyBitmapEmbolden(Bitmap bmp, int emboldenLevel) {
+        return emboldenInPlace(bmp, emboldenLevel);
     }
 
-    public static Bitmap emboldenBitmapInPlace(Bitmap bmp, int emboldenLevel) {
-        emboldenInPlace(bmp, emboldenLevel);
-        return bmp;
-    }
-
-    public static Bitmap applyGammaCorrection(Bitmap bmp, float selection) {
+    /**
+     * modify bitmap in place
+     *
+     * @param bmp
+     * @param selection
+     * @return
+     */
+    public static boolean applyGammaCorrection(Bitmap bmp, float selection) {
         // selection range [minGammaLevel, maxGammaLevel], the bigger the darker.
         // add mapping here. gamma range [0.5, 100]
         // selection 200 ->  gamma 0.5
@@ -63,7 +67,6 @@ public class ImageUtils {
             value = 1;
         }
         float gamma = (MAX_GAMMA / 2) / value;
-        gammaCorrection(bmp, gamma);
-        return bmp;
+        return gammaCorrection(bmp, gamma);
     }
 }
