@@ -19,7 +19,6 @@ import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
@@ -30,9 +29,9 @@ import com.onyx.kreader.plugins.pdfium.PdfiumSelection;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.utils.ImageUtils;
 import com.onyx.kreader.utils.TestUtils;
 
-import java.io.InvalidObjectException;
 import java.util.*;
 
 /**
@@ -42,7 +41,9 @@ public class ReaderTestActivity extends Activity {
 
     private boolean testPrerender = false;
 
-    private enum TestCase { ToPage, PageList, ContinuousList  }
+    private enum TestCase { Original, ToPage, ToWidth, PageList, ContinuousList  }
+    private enum EmboldenLevel { L0, L1, L2, L3 }
+    private enum ContrastLevel { L0, L100, L150, L200 }
 
     private Reader reader;
     //String path = "/mnt/sdcard/cityhunter/cityhunter10.pdf";
@@ -67,8 +68,9 @@ public class ReaderTestActivity extends Activity {
     private float startX, startY, endX, endY;
     private ReaderViewInfo readerViewInfo;
     private RectF selectionRect;
-    private TestCase testCase = TestCase.ToPage;
-
+    private TestCase testCase = TestCase.Original;
+    private EmboldenLevel emboldenLevel = EmboldenLevel.L0;
+    private ContrastLevel contrastLevel = ContrastLevel.L0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,14 @@ public class ReaderTestActivity extends Activity {
         setContentView(R.layout.activity_test);
         initSurfaceView();
         OnyxHyphen.reinit_hyph(this, OnyxHyphen.HYPH_ENGLISH);
+    }
+
+    private <E extends Enum<E>> E loopNextEnumValue(E current) {
+        int next = current.ordinal() + 1;
+        if (next >= EnumSet.allOf(current.getClass()).size()) {
+            next = 0;
+        }
+        return (E)EnumSet.allOf(current.getClass()).toArray()[next];
     }
 
     private void initSurfaceView() {
@@ -104,27 +114,35 @@ public class ReaderTestActivity extends Activity {
             }
         });
 
-        final Button btn = (Button)findViewById(R.id.switch_test);
-        btn.setOnClickListener(new View.OnClickListener() {
+        final Button btnTestCase = (Button)findViewById(R.id.switch_test);
+        btnTestCase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (testCase) {
-                    case ToPage:
-                        testCase = TestCase.PageList;
-                        break;
-                    case PageList:
-                        testCase = TestCase.ContinuousList;
-                        break;
-                    case ContinuousList:
-                        testCase = TestCase.ToPage;
-                        break;
-                    default:
-                        assert false;
-                        return;
-                }
-                btn.setText("switch: " + testCase.toString());
+                testCase = loopNextEnumValue(testCase);
+                btnTestCase.setText("switch: " + testCase.toString());
             }
         });
+        btnTestCase.setText("switch: " + testCase.toString());
+
+        final Button btnContrast = (Button)findViewById(R.id.set_contrast);
+        btnContrast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                contrastLevel = loopNextEnumValue(contrastLevel);
+                btnContrast.setText("contrast: " + contrastLevel.toString());
+            }
+        });
+        btnContrast.setText("contrast: " + contrastLevel.toString());
+
+        final Button btnEmbolden = (Button)findViewById(R.id.set_embloden);
+        btnEmbolden.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                emboldenLevel = loopNextEnumValue(emboldenLevel);
+                btnEmbolden.setText("bold: " + emboldenLevel.toString());
+            }
+        });
+        btnEmbolden.setText("bold: " + emboldenLevel.toString());
 
         button = (Button)findViewById(R.id.hyphen);
         button.setOnClickListener(new View.OnClickListener() {
@@ -239,8 +257,14 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 readerViewInfo = request.getReaderViewInfo();
                 switch (testCase) {
+                    case Original:
+                        testOriginScale();
+                        break;
                     case ToPage:
                         testScaleToPage();
+                        break;
+                    case ToWidth:
+                        testScaleToWidth();
                         break;
                     case PageList:
                         testPageNavigationList();
@@ -249,7 +273,7 @@ public class ReaderTestActivity extends Activity {
                         testContinuousList();
                         break;
                     default:
-                        testScaleToPage();
+                        testOriginScale();
                         break;
                 }
             }
@@ -258,7 +282,7 @@ public class ReaderTestActivity extends Activity {
 
     public void testPageNavigationList() {
         NavigationArgs navigationArgs = new NavigationArgs();
-        RectF limit = new RectF(0.3f, 0.05f, 0.7f, 0.95f);
+        RectF limit = new RectF(0, 0, 0, 0);
         navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, limit);
         BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs);
         reader.submitRequest(this, request, new BaseCallback() {
@@ -266,7 +290,7 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", false);
-                testReaderGoto();
+                //testReaderGoto();
             }
         });
     }
@@ -299,7 +323,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderGoto() {
-        BaseRequest gotoPosition = new GotoLocationRequest(pn++);
+        BaseRequest gotoPosition = new GotoLocationRequest(pn);
         reader.submitRequest(this, gotoPosition, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -318,7 +342,6 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToPage.png", true);
-                testScaleToWidth();
             }
         });
     }
@@ -330,7 +353,6 @@ public class ReaderTestActivity extends Activity {
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
                 dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToWidth.png", true);
-                testActualScale();
             }
         });
     }
@@ -375,13 +397,12 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testOriginScale() {
-        final ScaleToPageRequest renderRequest = new ScaleToPageRequest(String.valueOf(pn));
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
+        BaseRequest request = new ScaleRequest(String.valueOf(0), 1.0f, 0, 0);
+        reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/originScale.png", true);
-                testNextScreen();
+                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/originScale.png", true);
             }
         });
     }
@@ -512,7 +533,50 @@ public class ReaderTestActivity extends Activity {
         holder.unlockCanvasAndPost(canvas);
     }
 
+    private void applyContrast(Bitmap bitmap) {
+        int contrast = 0;
+        switch (contrastLevel) {
+            case L50:
+                contrast = 50;
+                break;
+            case L100:
+                contrast = 100;
+                break;
+            case L200:
+                contrast = 200;
+                break;
+            default:
+                break;
+        }
+        if (contrast > 0) {
+            ImageUtils.applyGammaCorrection(bitmap, contrast);
+        }
+    }
+
+    private void applyEmbolden(Bitmap bitmap) {
+        int bold = 0;
+        switch (emboldenLevel) {
+            case L1:
+                bold = 1;
+                break;
+            case L2:
+                bold = 2;
+                break;
+            case L3:
+                bold = 3;
+                break;
+            default:
+                break;
+        }
+        if (bold > 0) {
+            ImageUtils.applyBitmapEmbolden(bitmap, bold);
+        }
+
+    }
+
     private void drawBitmap(final Canvas canvas) {
+        applyContrast(bitmap);
+        applyEmbolden(bitmap);
         canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(bitmap, 0, 0, null);
     }
