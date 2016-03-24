@@ -240,7 +240,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
      */
     @Override
     public int getTotalPage() {
-        return 0;
+        return getPluginImpl().getPageCount();
     }
 
     /**
