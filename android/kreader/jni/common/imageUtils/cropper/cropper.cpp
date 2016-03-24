@@ -36,7 +36,7 @@ extern "C" {
 #include "image_embolden_filter.h"
 #include "image_gamma_filter.h"
 
-static const char * readerBitmapClassName = "com/onyx/reader/ReaderScannedPageReflowManager";
+static const char * readerBitmapClassName = "com/onyx/kreader/reflow/ImageReflowManager";
 
 #define COLUMN_HALF_HEIGHT 15
 #define V_LINE_SIZE 5
@@ -314,7 +314,7 @@ static jobject createReaderBitmapList(JNIEnv * env) {
 static bool convertToKoptContext(JNIEnv *env, jobject jSettings, KOPTContext *context) {
     jclass clz_settings = env->GetObjectClass(jSettings);
     if (clz_settings == 0) {
-        LOGE("Find class com/onyx/reader/settings failed");
+        LOGE("Find class com/onyx/kreader/reflow/ImageReflowSettings failed");
         return false;
     }
 
