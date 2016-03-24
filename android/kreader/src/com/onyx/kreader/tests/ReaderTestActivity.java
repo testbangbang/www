@@ -536,11 +536,11 @@ public class ReaderTestActivity extends Activity {
     private void applyContrast(Bitmap bitmap) {
         int contrast = 0;
         switch (contrastLevel) {
-            case L50:
-                contrast = 50;
-                break;
             case L100:
                 contrast = 100;
+                break;
+            case L150:
+                contrast = 150;
                 break;
             case L200:
                 contrast = 200;
