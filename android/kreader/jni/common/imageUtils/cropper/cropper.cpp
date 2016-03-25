@@ -32,11 +32,11 @@ extern "C" {
 #include "prof.h"
 #endif
 
-#include "com_onyx_kreader_utils_ReaderImageUtils.h"
+#include "com_onyx_kreader_utils_ImageUtils.h"
 #include "image_embolden_filter.h"
 #include "image_gamma_filter.h"
 
-static const char * readerBitmapClassName = "com/onyx/reader/ReaderScannedPageReflowManager";
+static const char * readerBitmapClassName = "com/onyx/kreader/reflow/ImageReflowManager";
 
 #define COLUMN_HALF_HEIGHT 15
 #define V_LINE_SIZE 5
@@ -232,41 +232,6 @@ jdoubleArray doubleArrayFromRect(JNIEnv * env, double left, double top, double r
     return array;
 }
 
-JNIEXPORT jdoubleArray JNICALL Java_com_onyx_reader_ReaderImageUtils_crop(JNIEnv *env, jclass,
-    jobject bitmap, jint left, jint top, jint right, jint bottom, jdouble whiteThreshold) {
-    AndroidBitmapInfo info;
-	void *pixels;
-	int ret;
-
-	if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
-		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
-		return NULL;
-	}
-
-	if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
-		LOGE("Bitmap format is not RGBA_8888 !");
-		return NULL;
-	}
-
-	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
-		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
-		return NULL;
-	}
-
-    WHITE_THRESHOLD = whiteThreshold;
-    uint8_t * src = (uint8_t*)pixels;
-    int width = right - left;
-    int height = bottom - top;
-    int avgLum = calculateAvgLum(src, info.width, info.height, 0, 0, info.width, info.height);
-
-    double coords[4];
-    coords[0] = getLeftBound(src, width, height, avgLum) * (right - left) + left;
-    coords[1] = getTopBound(src, width, height, avgLum) * (bottom - top) + top;
-    coords[2] = getRightBound(src, width, height, avgLum) * (right - left) + left;
-    coords[3] = getBottomBound(src, width, height, avgLum) * (bottom - top) + top;
-    return doubleArrayFromRect(env, coords[0], coords[1], coords[2], coords[3]);
-}
-
 static bool convertToWillusBmp(JNIEnv *env, void * data, jint width, jint height, jint stride, WILLUSBITMAP *bmp) {
     bmp_init(bmp);
     bmp->width = width;
@@ -314,7 +279,7 @@ static jobject createReaderBitmapList(JNIEnv * env) {
 static bool convertToKoptContext(JNIEnv *env, jobject jSettings, KOPTContext *context) {
     jclass clz_settings = env->GetObjectClass(jSettings);
     if (clz_settings == 0) {
-        LOGE("Find class com/onyx/reader/settings failed");
+        LOGE("Find class com/onyx/kreader/reflow/ImageReflowSettings failed");
         return false;
     }
 
@@ -569,7 +534,42 @@ jboolean k2pdfopt_reflow_bmp(JNIEnv * env, jstring pageName, jobject parent, KOP
     return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_ReaderImageUtils_reflowPage
+JNIEXPORT jdoubleArray JNICALL Java_com_onyx_kreader_utils_ImageUtils_crop(JNIEnv *env, jclass,
+    jobject bitmap, jint left, jint top, jint right, jint bottom, jdouble whiteThreshold) {
+    AndroidBitmapInfo info;
+	void *pixels;
+	int ret;
+
+	if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+		return NULL;
+	}
+
+	if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+		LOGE("Bitmap format is not RGBA_8888 !");
+		return NULL;
+	}
+
+	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
+		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+		return NULL;
+	}
+
+    WHITE_THRESHOLD = whiteThreshold;
+    uint8_t * src = (uint8_t*)pixels;
+    int width = right - left;
+    int height = bottom - top;
+    int avgLum = calculateAvgLum(src, info.width, info.height, 0, 0, info.width, info.height);
+
+    double coords[4];
+    coords[0] = getLeftBound(src, width, height, avgLum) * (right - left) + left;
+    coords[1] = getTopBound(src, width, height, avgLum) * (bottom - top) + top;
+    coords[2] = getRightBound(src, width, height, avgLum) * (right - left) + left;
+    coords[3] = getBottomBound(src, width, height, avgLum) * (bottom - top) + top;
+    return doubleArrayFromRect(env, coords[0], coords[1], coords[2], coords[3]);
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_reflowPage
   (JNIEnv * env, jclass thiz, jobject  bitmap, jstring pageName, jobject parent, jobject settings) {
     AndroidBitmapInfo info;
 	void *pixels;
@@ -605,7 +605,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_ReaderImageUtils_reflowPage
 }
 
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_ReaderImageUtils_emboldenInPlace
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_emboldenInPlace
   (JNIEnv *env, jclass thiz, jobject bitmap, jint level) {
     AndroidBitmapInfo info;
 	void *pixels;
@@ -636,7 +636,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_reader_ReaderImageUtils_emboldenInPlace
     return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_reader_ReaderImageUtils_gammaCorrection
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_gammaCorrection
   (JNIEnv *env, jclass thiz, jobject bitmap, jfloat gamma) {
     AndroidBitmapInfo info;
     void *pixels;

@@ -5,7 +5,6 @@ import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.StringUtils;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
-import net.lingala.zip4j.io.BaseInputStream;
 import net.lingala.zip4j.io.ZipInputStream;
 import net.lingala.zip4j.model.FileHeader;
 
@@ -19,6 +18,69 @@ import java.util.List;
  */
 public class ComicArchiveZip implements ComicArchive {
     private static final String TAG = ComicArchiveZip.class.getSimpleName();
+
+    /**
+     * work around the issues of ZipInputStream
+     */
+    private static class InternalZipInputStream extends InputStream {
+        private FileHeader zipHeader = null;
+        private ZipInputStream zipInputStream = null;
+
+        public InternalZipInputStream(FileHeader header, ZipInputStream inputStream) {
+            zipHeader = header;
+            zipInputStream = inputStream;
+        }
+
+        @Override
+        public int available() throws IOException {
+            return zipInputStream.available();
+        }
+
+        @Override
+        public void close() throws IOException {
+            boolean skipCheck = !zipHeader.isEncrypted();
+            zipInputStream.close(skipCheck);
+        }
+
+        @Override
+        public void mark(int readlimit) {
+            zipInputStream.mark(readlimit);
+        }
+
+        @Override
+        public boolean markSupported() {
+            boolean b = zipInputStream.markSupported();
+            return b;
+        }
+
+        @Override
+        public int read() throws IOException {
+            return zipInputStream.read();
+        }
+
+        public int read(byte[] buffer) throws IOException {
+            return zipInputStream.read(buffer, 0, buffer.length);
+        }
+
+        public int read(byte[] buffer, int offset, int length) throws IOException {
+            return zipInputStream.read(buffer, offset, length);
+        }
+
+        @Override
+        public synchronized void reset() throws IOException {
+            zipInputStream.reset();
+        }
+
+        @Override
+        public long skip(long byteCount) throws IOException {
+            for (int i = 0; i < byteCount; i++) {
+                if (zipInputStream.read() == -1) {
+                    return i;
+                }
+            }
+            return byteCount;
+        }
+    }
 
     private ZipFile archive = null;
 
@@ -97,12 +159,13 @@ public class ComicArchiveZip implements ComicArchive {
         if (!isOpened()) {
             return null;
         }
+
         try {
             FileHeader header = archive.getFileHeader(page);
             if (header == null) {
                 return null;
             }
-            return archive.getInputStream(header);
+            return new InternalZipInputStream(header, archive.getInputStream(header));
         } catch (Exception e) {
             Log.w(TAG, e);
             return null;

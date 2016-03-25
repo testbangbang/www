@@ -7,7 +7,7 @@ import com.onyx.kreader.utils.HashUtils;
  * @author joy
  *
  */
-public class ReaderScannedPageReflowSettings {
+public class ImageReflowSettings {
     public int dev_dpi = 265;
     public int dev_width = 758;
     public int dev_height = 1024;
@@ -75,13 +75,13 @@ public class ReaderScannedPageReflowSettings {
      */
     public double contrast = 1.0;
 
-    static public ReaderScannedPageReflowSettings createSettings() {
-        ReaderScannedPageReflowSettings settings = new ReaderScannedPageReflowSettings();
+    static public ImageReflowSettings createSettings() {
+        ImageReflowSettings settings = new ImageReflowSettings();
         return settings;
     }
 
-    static public ReaderScannedPageReflowSettings fromJsonString(final String settings) {
-        ReaderScannedPageReflowSettings object = JSON.parseObject(settings, ReaderScannedPageReflowSettings.class);
+    static public ImageReflowSettings fromJsonString(final String settings) {
+        ImageReflowSettings object = JSON.parseObject(settings, ImageReflowSettings.class);
         return object;
     }
 
@@ -94,16 +94,16 @@ public class ReaderScannedPageReflowSettings {
         return HashUtils.md5(jsonString());
     }
 
-    public ReaderScannedPageReflowSettings() {
+    public ImageReflowSettings() {
         super();
     }
 
-    public ReaderScannedPageReflowSettings(ReaderScannedPageReflowSettings settings) {
+    public ImageReflowSettings(ImageReflowSettings settings) {
         super();
         update(settings);
     }
 
-    public void update(final ReaderScannedPageReflowSettings newSettings) {
+    public void update(final ImageReflowSettings newSettings) {
         dev_dpi = newSettings.dev_dpi;
         dev_width = newSettings.dev_width;
         dev_height = newSettings.dev_height;

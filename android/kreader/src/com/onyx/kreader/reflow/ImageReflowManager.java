@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.utils.FileUtils;
-import com.onyx.kreader.utils.ReaderImageUtils;
+import com.onyx.kreader.utils.ImageUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,27 +24,27 @@ import java.util.Map;
  *               |--- index, settings and page index.
  *               |--- page number - sub page.png
  */
-public class ReaderScannedPageReflowManager {
+public class ImageReflowManager {
     static private final String INDEX_FILE_NAME = "reflow-index.json";
     static private final String IMG_EXTENSION = ".png";
 
 
     private Map<String, ReaderBitmapList> pageMap;
     private String cacheRoot;
-    private ReaderScannedPageReflowSettings settings;
-    public ReaderScannedPageReflowManager(final String root, int dw, int dh) {
+    private ImageReflowSettings settings;
+    public ImageReflowManager(final String root, int dw, int dh) {
         super();
         cacheRoot = root;
-        settings = ReaderScannedPageReflowSettings.createSettings();
+        settings = ImageReflowSettings.createSettings();
         settings.dev_width = dw;
         settings.dev_height = dh;
     }
 
-    public ReaderScannedPageReflowSettings getSettings() {
+    public ImageReflowSettings getSettings() {
         return settings;
     }
 
-    static public File cacheFilePath(final String root, final ReaderScannedPageReflowSettings settings, final String fileName) {
+    static public File cacheFilePath(final String root, final ImageReflowSettings settings, final String fileName) {
         if (settings == null || root == null) {
             return null;
         }
@@ -52,7 +52,7 @@ public class ReaderScannedPageReflowManager {
         return file;
     }
 
-    public void updateSettings(final ReaderScannedPageReflowSettings s) {
+    public void updateSettings(final ImageReflowSettings s) {
         settings.update(s);
         pageMap = null;
         loadPageMap();
@@ -62,7 +62,7 @@ public class ReaderScannedPageReflowManager {
         settings.page_width = (int)(pageWidth * scale);
         settings.page_height = (int)(pageHeight * scale);
         Log.i("reflow settings", JSON.toJSONString(settings));
-        if (ReaderImageUtils.reflowScannedPage(bitmap, pageName, this)) {
+        if (ImageUtils.reflowScannedPage(bitmap, pageName, this)) {
             savePageMap();
         }
     }
