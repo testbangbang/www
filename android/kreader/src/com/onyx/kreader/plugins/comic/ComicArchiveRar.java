@@ -6,6 +6,7 @@ import com.onyx.kreader.utils.StringUtils;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,17 +14,23 @@ import java.util.List;
  */
 public class ComicArchiveRar implements ComicArchive {
 
-    private String arcPath = null;
-    ArrayList<String> pageList = new ArrayList<String>();
     UnrarJniWrapper wrapper = new UnrarJniWrapper();
+    private String arcPath = null;
+    String[] entries = null;
 
     @Override
     public boolean isEncrypted() {
+        if (!isOpened()) {
+            return false;
+        }
         return wrapper.isEncrypted();
     }
 
     @Override
     public void setPassword(String password) {
+        if (!isOpened()) {
+            return;
+        }
         if (!StringUtils.isNullOrEmpty(password)) {
             wrapper.setPassword(password);
         }
@@ -38,21 +45,18 @@ public class ComicArchiveRar implements ComicArchive {
             wrapper.setPassword(password);
         }
         arcPath = path;
-        return true;
+        entries = wrapper.getEntries();
+        return entries != null;
     }
 
     @Override
     public List<String> getPageList() {
-        String[] entries = wrapper.getEntries();
-        if (entries == null) {
-            return pageList;
+        ArrayList<String> pages = new ArrayList<String>();
+        if (!isOpened()) {
+            return pages;
         }
-        for (String s : entries) {
-            if (FileUtils.isImageFile(s)) {
-                pageList.add(s);
-            }
-        }
-        return pageList;
+        pages.addAll(Arrays.asList(entries));
+        return pages;
     }
 
     @Override
@@ -70,9 +74,10 @@ public class ComicArchiveRar implements ComicArchive {
     @Override
     public void close() {
         arcPath = null;
+        entries = null;
     }
 
     private  boolean isOpened() {
-        return arcPath != null;
+        return arcPath != null && entries != null;
     }
 }

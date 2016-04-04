@@ -48,7 +48,7 @@ public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<Reade
         assertTrue(wrapper.extractPageText(page, textChunks));
         for (ReaderSelection chunk : textChunks) {
             assertTrue(chunk.getRectangles().size() == 1);
-            Log.i(TAG, "chunk: " + chunk.getText() + ", " + chunk.getRectangles().get(0).toShortString());
+            Log.i(TAG, "chunk: " + chunk.getText() + ", " + chunk.getRectangles().get(0).toString());
         }
 
         ArrayList<ReaderSelection> result = new ArrayList<ReaderSelection>();

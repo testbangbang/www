@@ -2,9 +2,7 @@ package com.onyx.kreader.utils;
 
 import android.database.Cursor;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -99,6 +97,46 @@ public class FileUtils {
     public static boolean isRarFile(String fileName) {
         fileName = fileName.toLowerCase(Locale.getDefault());
         return fileName.endsWith(".rar") || fileName.endsWith(".cbr");
+    }
+
+    public static String readContentOfFile(File fileForRead) {
+        FileInputStream in = null;
+        InputStreamReader reader = null;
+        BufferedReader breader = null;
+        try {
+            in = new FileInputStream(fileForRead);
+            reader = new InputStreamReader(in, "utf-8");
+            breader = new BufferedReader(reader);
+
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = breader.readLine()) != null) {
+                sb.append(line);
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            closeQuietly(breader);
+            closeQuietly(reader);
+            closeQuietly(in);
+        }
+        return null;
+    }
+
+    public static boolean saveContentToFile(String content, File fileForSave) {
+        boolean succeed = true;
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(fileForSave);
+            out.write(content.getBytes("utf-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            succeed = false;
+        } finally {
+            closeQuietly(out);
+        }
+        return succeed;
     }
 
 }
