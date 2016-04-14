@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/mainmenu_open_file"
+        android:icon="@drawable/tb001"
+        android:showAsAction="always"
+        android:title="open">
+    </item>
+    <item
+        android:id="@+id/mainmenu_page_prev"
+        android:icon="@drawable/tb012"
+        android:showAsAction="always"
+        android:title="prev">
+    </item>
+    <item
+        android:id="@+id/mainmenu_page_next"
+        android:icon="@drawable/tb011"
+        android:showAsAction="always"
+        android:title="next">
+    </item>
+    <item
+        android:id="@+id/mainmenu_actions"
+        android:icon="@drawable/im004"
+        android:showAsAction="ifRoom"
+        android:title="file">
+- 
+        <menu>
+            <item
+                android:id="@+id/mainmenu_file_close"
+                android:title="close"/>
+            <item
+                android:id="@+id/mainmenu_file_debug"
+                android:title="debug file"/>
+            <item
+                android:id="@+id/mainmenu_file_find"
+                android:title="find 111"/>            
+        </menu>
+    </item>
+    
+    <item
+        android:id="@+id/mainmenu_profile"
+        android:icon="@drawable/im004"
+        android:showAsAction="ifRoom"
+        android:title="profile">
+- 
+        <menu>
+            <item
+                android:id="@+id/mainmenu_profile_day"
+                android:title="day"/>
+            <item
+                android:id="@+id/mainmenu_profile_night"
+                android:title="night"/>
+            <item
+                android:id="@+id/mainmenu_profile_incfont"
+                android:title="inc font"/>
+            <item
+                android:id="@+id/mainmenu_profile_decfont"
+                android:title="dec font"/>
+            <item
+                android:id="@+id/mainmenu_profile_incinterline"
+                android:title="inc line space"/>
+            <item
+                android:id="@+id/mainmenu_profile_decinterline"
+                android:title="dec line space"/>
+            <item
+                android:id="@+id/mainmenu_profile_bold"
+                android:title="bold"/>            
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/mainmenu_select"
+        android:icon="@drawable/im004"
+        android:showAsAction="ifRoom"
+        android:title="select">
+        -
+        <menu>
+            <item
+                android:id="@+id/mainmenu_select_dict"
+                android:title="dictionary"/>
+            <item
+                android:id="@+id/mainmenu_select_start"
+                android:title="select set start"/>
+            <item
+                android:id="@+id/mainmenu_select_end"
+                android:title="select set end"/>
+            <item
+                android:id="@+id/mainmenu_select_gettext"
+                android:title="get selected text"/>
+            <item
+                android:id="@+id/mainmenu_select_clear"
+                android:title="select clear"/>
+        </menu>
+    </item>
+
+</menu>
