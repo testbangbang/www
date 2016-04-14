@@ -334,7 +334,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
                 (int) end.point.x,
                 (int) end.point.y,
                 selection);
-        return null;
+        return selection;
     }
 
     public boolean supportScale() {
