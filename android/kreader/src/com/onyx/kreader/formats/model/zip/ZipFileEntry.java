@@ -1,19 +1,9 @@
 package com.onyx.kreader.formats.model.zip;
 
-import com.onyx.kreader.formats.encodings.Decoder;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.model.FileHeader;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 /**
  * Created by zengzhu on 3/17/16.
