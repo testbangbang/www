@@ -43,6 +43,8 @@ public class ViewAnimator<T extends Resourceble> {
     public void showMenuContent() {
         setViewsClickable(false);
         viewList.clear();
+        animatorListener.clearContainer();
+
         double size = list.size();
         for (int i = 0; i < size; i++) {
             View viewMenu = activity.getLayoutInflater().inflate(R.layout.menu_list_item, null);
@@ -167,7 +169,6 @@ public class ViewAnimator<T extends Resourceble> {
 
     private void switchItem(Resourceble slideMenuItem, int topPosition) {
         this.screenShotable = animatorListener.onSwitch(slideMenuItem, screenShotable, topPosition);
-        hideMenuContent();
     }
 
     public interface ViewAnimatorListener {
@@ -177,6 +178,8 @@ public class ViewAnimator<T extends Resourceble> {
         public void disableHomeButton();
 
         public void enableHomeButton();
+
+        public void clearContainer();
 
         public void addViewToContainer(View view);
 
