@@ -1,6 +1,8 @@
 package com.onyx.kreader.utils;
 
+import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 
 import java.io.*;
 import java.util.HashMap;
@@ -137,6 +139,22 @@ public class FileUtils {
             closeQuietly(out);
         }
         return succeed;
+    }
+
+    public static String getRealFilePathFromUri(Context context, Uri uri) {
+        String filePath = null;
+        if (uri != null) {
+            if ("content".equals(uri.getScheme())) {
+                Cursor cursor = context.getContentResolver().query(uri, new String[]{
+                        android.provider.MediaStore.Images.ImageColumns.DATA}, null, null, null);
+                cursor.moveToFirst();
+                filePath = cursor.getString(0);
+                cursor.close();
+            } else {
+                filePath = uri.getPath();
+            }
+        }
+        return filePath;
     }
 
 }
