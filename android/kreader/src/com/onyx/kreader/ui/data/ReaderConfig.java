@@ -1,4 +1,4 @@
-package com.onyx.kreader.ui;
+package com.onyx.kreader.ui.data;
 
 import android.content.Context;
 import android.os.Build;
@@ -6,7 +6,6 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.host.options.ReaderOptions;
-import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.utils.GObject;
 import com.onyx.kreader.utils.RawResourceUtil;
 

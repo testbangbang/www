@@ -11,12 +11,11 @@ import java.lang.ref.WeakReference;
 import io.codetail.animation.RevealAnimator.RevealInfo;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static io.codetail.animation.RevealAnimator.CLIP_RADIUS;
 
 public class ViewAnimationUtils {
 
-    private final static boolean LOLLIPOP_PLUS = SDK_INT >= LOLLIPOP;
+    private final static boolean LOLLIPOP_PLUS = false;
 
     public static final int SCALE_UP_DURATION = 500;
 

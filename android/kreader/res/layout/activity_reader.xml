@@ -12,7 +12,7 @@
             android:scrollbarThumbVertical="@android:color/transparent"
             android:layout_width="@dimen/sliding_menu_width"
             android:layout_height="match_parent"
-            android:layout_gravity="start|bottom">
+            android:layout_gravity="left">
 
         <LinearLayout
                 android:id="@+id/left_drawer"

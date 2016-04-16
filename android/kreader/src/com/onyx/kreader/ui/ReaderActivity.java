@@ -157,6 +157,19 @@ public class ReaderActivity extends Activity {
         });
     }
 
+    public void prevScreen() {
+        final PreviousScreenRequest renderRequest = new PreviousScreenRequest();
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                if (e != null) {
+                    return;
+                }
+                drawPage(request.getRenderBitmap().getBitmap());
+            }
+        });
+    }
+
     public void previousScreen() {
         final PreviousScreenRequest renderRequest = new PreviousScreenRequest();
         reader.submitRequest(this, renderRequest, new BaseCallback() {
@@ -172,6 +185,10 @@ public class ReaderActivity extends Activity {
 
     public void nextPage() {
         nextScreen();
+    }
+
+    public void prevPage() {
+        prevScreen();
     }
 
     public void previousPage() {

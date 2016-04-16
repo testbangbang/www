@@ -5,9 +5,10 @@ import android.graphics.PointF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.ui.ReaderActivity;
-import com.onyx.kreader.ui.ReaderConfig;
+import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.CustomBindKeyBean;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.utils.StringUtils;
@@ -65,10 +66,17 @@ public class HandlerManager {
         return  map.get(keycode);
     }
 
-    public final String getKeyAction(final String state, final String keycode) {
-        CustomBindKeyBean bean = JSONObject.parseObject(SingletonSharedPreference.getPrefs().
-                getString(keycode,null),CustomBindKeyBean.class);
+    private final CustomBindKeyBean getKeyBean(final String keycode) {
+        if (SingletonSharedPreference.getPrefs() != null) {
+            CustomBindKeyBean bean = JSONObject.parseObject(SingletonSharedPreference.getPrefs().
+                    getString(keycode, null), CustomBindKeyBean.class);
+            return bean;
+        }
+        return null;
+    }
 
+    public final String getKeyAction(final String state, final String keycode) {
+        final CustomBindKeyBean bean = getKeyBean(keycode);
         if (bean != null) {
             return bean.getAction();
         }
@@ -81,9 +89,7 @@ public class HandlerManager {
     }
 
     public final String getKeyArgs(final String state, final String keycode) {
-        CustomBindKeyBean bean = JSONObject.parseObject(SingletonSharedPreference.getPrefs().
-                getString(keycode,null),CustomBindKeyBean.class);
-
+        final CustomBindKeyBean bean = getKeyBean(keycode);
         if (bean != null) {
             return bean.getArgs();
         }
@@ -168,6 +174,16 @@ public class HandlerManager {
         if (!isEnableTouch()) {
             return false;
         }
+        int toolType = e.getToolType(0);
+        if (lastTooltype != toolType) {
+            if ((toolType == MotionEvent.TOOL_TYPE_STYLUS) || (lastTooltype == MotionEvent.TOOL_TYPE_ERASER && toolType == MotionEvent.TOOL_TYPE_FINGER)) {
+                //activity.changeToScribbleMode();
+            } else if (toolType == MotionEvent.TOOL_TYPE_ERASER) {
+                //activity.changeToEraseMode();
+            }
+            lastTooltype = toolType;
+        }
+
         return getActiveProvider().onTouchEvent(activity, e);
     }
 
@@ -210,7 +226,7 @@ public class HandlerManager {
         getActiveProvider().onShowPress(activity, e);
     }
 
-    public boolean onSingleTapUp(ReaderActivity activity, MotionEvent e) {
+    public boolean onSingleTapUp(ReaderActivity activity,  MotionEvent e) {
         if (!isEnable()) {
             return false;
         }
@@ -334,11 +350,30 @@ public class HandlerManager {
         } else if (action.equals(ReaderConfig.NEXT_PAGE)) {
             activity.nextPage();
         } else if (action.equals(ReaderConfig.PREV_SCREEN)) {
-            activity.previousScreen();
+            activity.prevScreen();
         } else if (action.equals(ReaderConfig.PREV_PAGE)) {
-            activity.previousPage();
+            activity.prevPage();
+        } else if (action.equals(ReaderConfig.MOVE_LEFT)) {
+            //activity.moveLeft();
+        } else if (action.equals(ReaderConfig.MOVE_RIGHT)) {
+            //activity.moveRight();
+        } else if (action.equals(ReaderConfig.MOVE_UP)) {
+            //activity.moveUp();
+        } else if (action.equals(ReaderConfig.MOVE_DOWN)) {
+            //activity.moveDown();
+        } else if (action.equals(ReaderConfig.TOGGLE_BOOKMARK)) {
+            //activity.toggleBookmark();
+        } else if (action.equals(ReaderConfig.SHOW_MENU)) {
+            activity.showReaderMenu();
+        } else if (action.equals(ReaderConfig.CHANGE_TO_ERASE_MODE)) {
+
+
+        } else if (action.equals(ReaderConfig.CHANGE_TO_SCRIBBLE_MODE)) {
+
+        } else {
+            return false;
         }
-        return false;
+        return true;
     }
 
 }
