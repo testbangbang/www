@@ -346,12 +346,16 @@ public class HandlerManager {
             return false;
         }
         if (action.equals(ReaderConfig.NEXT_SCREEN)) {
+            activity.beforePageChangeByUser();
             activity.nextScreen();
         } else if (action.equals(ReaderConfig.NEXT_PAGE)) {
+            activity.beforePageChangeByUser();
             activity.nextPage();
         } else if (action.equals(ReaderConfig.PREV_SCREEN)) {
+            activity.beforePageChangeByUser();
             activity.prevScreen();
         } else if (action.equals(ReaderConfig.PREV_PAGE)) {
+            activity.beforePageChangeByUser();
             activity.prevPage();
         } else if (action.equals(ReaderConfig.MOVE_LEFT)) {
             //activity.moveLeft();

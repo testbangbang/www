@@ -25,6 +25,7 @@ import yalantis.com.sidemenu.interfaces.Resourceble;
 import yalantis.com.sidemenu.interfaces.ScreenShotable;
 import yalantis.com.sidemenu.model.SlideMenuItem;
 import yalantis.com.sidemenu.util.ViewAnimator;
+import com.onyx.kreader.ui.gesture.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,72 +35,6 @@ import java.util.List;
  */
 public class ReaderActivity extends Activity {
     private final static String TAG = ReaderActivity.class.getSimpleName();
-
-    class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            return ReaderActivity.this.handlerManager.onSingleTapUp(ReaderActivity.this, e);
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            ReaderActivity.this.handlerManager.onLongPress(ReaderActivity.this, e);
-        }
-
-        // http://stackoverflow.com/questions/3081711/android-view-gesturedetector-ongesturelistener-onfling-vs-onscroll
-        // keep on called
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            return handlerManager.onScroll(ReaderActivity.this, e1, e2, distanceX, distanceY);
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            return handlerManager.onFling(ReaderActivity.this, e1, e2, velocityX, velocityY);
-        }
-
-        @Override
-        public void onShowPress(MotionEvent e) {
-            handlerManager.onShowPress(ReaderActivity.this, e);
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return handlerManager.onDown(ReaderActivity.this, e);
-        }
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            return handlerManager.onDoubleTap(ReaderActivity.this, e);
-        }
-
-        @Override
-        public boolean onDoubleTapEvent(MotionEvent e) {
-            return false;
-        }
-
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            return handlerManager.onSingleTapConfirmed(ReaderActivity.this, e);
-        }
-    }
-
-    class MyScaleGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            ReaderActivity.this.handlerManager.onScaleEnd(ReaderActivity.this, detector);
-        }
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            return ReaderActivity.this.handlerManager.onScaleBegin(ReaderActivity.this, detector);
-        }
-
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            return ReaderActivity.this.handlerManager.onScale(ReaderActivity.this, detector);
-        }
-    }
 
     private Reader reader;
 
@@ -148,6 +83,9 @@ public class ReaderActivity extends Activity {
         return surfaceView.getHeight();
     }
 
+    public void beforePageChangeByUser() {
+    }
+
     public void nextScreen() {
         final NextScreenRequest renderRequest = new NextScreenRequest();
         reader.submitRequest(this, renderRequest, new BaseCallback() {
@@ -156,6 +94,7 @@ public class ReaderActivity extends Activity {
                 if (e != null) {
                     return;
                 }
+                preRenderNext();
                 drawPage(request.getRenderBitmap().getBitmap());
             }
         });
@@ -170,6 +109,18 @@ public class ReaderActivity extends Activity {
                     return;
                 }
                 drawPage(request.getRenderBitmap().getBitmap());
+            }
+        });
+    }
+
+    public void preRenderNext() {
+        final PrerenderRequest request = new PrerenderRequest(true);
+        reader.submitRequest(this, request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                if (e != null) {
+                    return;
+                }
             }
         });
     }
@@ -273,8 +224,8 @@ public class ReaderActivity extends Activity {
 
         surfaceView.getHolder().addCallback(surfaceHolderCallback);
         holder = surfaceView.getHolder();
-        gestureDetector = new GestureDetector(this, new MyOnGestureListener());
-        scaleDetector = new ScaleGestureDetector(this, new MyScaleGestureListener());
+        gestureDetector = new GestureDetector(this, new MyOnGestureListener(this));
+        scaleDetector = new ScaleGestureDetector(this, new MyScaleGestureListener(this));
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -532,5 +483,9 @@ public class ReaderActivity extends Activity {
 
     private boolean processKeyUp(int keyCode, KeyEvent event) {
         return handlerManager.onKeyUp(this, keyCode, event) || super.onKeyUp(keyCode, event);
+    }
+
+    public final HandlerManager getHandlerManager() {
+        return handlerManager;
     }
 }
