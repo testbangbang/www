@@ -133,6 +133,10 @@ public class ReaderActivity extends Activity {
     }
 
     public boolean tryHitTest(float x, float y) {
+        if (isReaderMenuShown()) {
+            hideReaderMenu();
+            return true;
+        }
         return false;
     }
 
@@ -195,12 +199,22 @@ public class ReaderActivity extends Activity {
         previousScreen();
     }
 
-    public void showReaderMenu() {
-        readerMenuViewAnimator.showMenuContent();
+    public boolean isReaderMenuShown() {
+        return readerMenuLayout.getVisibility() == View.VISIBLE;
     }
 
-    public void closeReaderMenu() {
-        readerMenuViewAnimator.hideMenuContent();
+    public void showReaderMenu() {
+        if (!isReaderMenuShown()) {
+            readerMenuLayout.setVisibility(View.VISIBLE);
+            readerMenuViewAnimator.showMenuContent();
+        }
+    }
+
+    public void hideReaderMenu() {
+        if (isReaderMenuShown()) {
+            readerMenuLayout.setVisibility(View.INVISIBLE);
+            readerMenuViewAnimator.hideMenuContent();
+        }
     }
 
     public void scaleEnd() {
@@ -298,6 +312,7 @@ public class ReaderActivity extends Activity {
 
     private void initReaderMenu() {
         readerMenuLayout = (LinearLayout)findViewById(R.id.left_drawer);
+
         createMenuList();
         readerMenuViewAnimator = new ViewAnimator(this, readerMenuItemList, null, null, new ViewAnimator.ViewAnimatorListener() {
             @Override
@@ -314,6 +329,11 @@ public class ReaderActivity extends Activity {
             @Override
             public void enableHomeButton() {
 
+            }
+
+            @Override
+            public void clearContainer() {
+                readerMenuLayout.removeAllViews();
             }
 
             @Override
@@ -338,6 +358,7 @@ public class ReaderActivity extends Activity {
     private void handleMenuItemClicked(Resourceble slideMenuItem) {
         switch (slideMenuItem.getName()) {
             case "Close":
+                hideReaderMenu();
                 break;
             default:
                 break;
@@ -483,7 +504,29 @@ public class ReaderActivity extends Activity {
 
     }
 
+    private boolean hasPopupWindow() {
+        return isReaderMenuShown();
+    }
+
+    private void hideAllPopupMenu() {
+        hideReaderMenu();
+    }
+
+    protected boolean askForClose() {
+        return false;
+    }
+
     private boolean processKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!hasPopupWindow()){
+                if (askForClose()) {
+                    return true;
+                }
+            } else {
+                hideAllPopupMenu();
+                return true;
+            }
+        }
         return handlerManager.onKeyDown(this, keyCode, event) || super.onKeyDown(keyCode, event);
     }
 

@@ -19,6 +19,7 @@
                 android:orientation="vertical"
                 android:layout_width="@dimen/sliding_menu_width"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 android:divider="@android:color/transparent"
                 android:background="@android:color/transparent">
         </LinearLayout>
