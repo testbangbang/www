@@ -13,7 +13,8 @@
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:name=".ui.KReaderApp">
 
         <intent-filter>
             <action android:name="android.intent.action.VIEW" />
