@@ -22,14 +22,14 @@ public class ReaderSideMenu extends ReaderMenu {
 
     private LinearLayout readerMenuLayout;
     private ViewAnimator readerMenuViewAnimator;
-    private List<SlideMenuItem> readerMenuItemList = new ArrayList<>();
+    private List<SlideMenuItem> readerMenuItems = new ArrayList<>();
 
-    private List<ReaderSideMenuItem> readerMenuItemDataList = new ArrayList<>();
+    private List<ReaderSideMenuItem> readerMenuTopItems = new ArrayList<>();
     private ReaderSideMenuItem currentReaderMenuItemParent = null;
 
     public ReaderSideMenu(Activity activity, LinearLayout drawerLayout) {
         readerMenuLayout = drawerLayout;
-        readerMenuViewAnimator = new ViewAnimator(activity, readerMenuItemList, null, null, new ViewAnimator.ViewAnimatorListener() {
+        readerMenuViewAnimator = new ViewAnimator(activity, readerMenuItems, null, null, new ViewAnimator.ViewAnimatorListener() {
             @Override
             public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position) {
                 handleMenuItemClicked(slideMenuItem);
@@ -81,34 +81,28 @@ public class ReaderSideMenu extends ReaderMenu {
 
     @Override
     public void fillItems(List<? extends ReaderMenuItem> items) {
-        readerMenuItemDataList.addAll((List<ReaderSideMenuItem>)items);
+        readerMenuTopItems.addAll((List<ReaderSideMenuItem>)items);
         switchToTopMenuList();
     }
 
-    private void createTopMenuList() {
-        readerMenuItemList.clear();
-        createMenuList(null, readerMenuItemDataList);
-    }
-
     private void switchToTopMenuList() {
-        createTopMenuList();
-        readerMenuViewAnimator.showMenuContent();
+        switchMenuList(null, readerMenuTopItems);
     }
 
     private void switchMenuList(ReaderSideMenuItem parent, List<? extends ReaderMenuItem> items) {
-        readerMenuItemList.clear();
+        readerMenuItems.clear();
         createMenuList(parent, (List<ReaderSideMenuItem>)items);
         readerMenuViewAnimator.showMenuContent();
     }
 
     private void createMenuList(ReaderSideMenuItem parent, List<ReaderSideMenuItem> items) {
         if (parent == null) {
-            readerMenuItemList.add(new SlideMenuItem("Close", R.drawable.menu_close, TAG_CLOSE_ITEM));
+            readerMenuItems.add(new SlideMenuItem("Close", R.drawable.menu_close, TAG_CLOSE_ITEM));
         } else {
-            readerMenuItemList.add(new SlideMenuItem("Back", R.drawable.menu_back, TAG_BACK_ITEM));
+            readerMenuItems.add(new SlideMenuItem("Back", R.drawable.menu_back, TAG_BACK_ITEM));
         }
         for (ReaderSideMenuItem item : items) {
-            readerMenuItemList.add(new SlideMenuItem(item.getTitle(), item.getDrawableResourceId(), item));
+            readerMenuItems.add(new SlideMenuItem(item.getTitle(), item.getDrawableResourceId(), item));
         }
     }
 
