@@ -1,0 +1,98 @@
+{
+    "menu_list": [
+        {
+            "id": "Style",
+            "type": "Group",
+            "title": "Style",
+            "iconResourceId": "R.drawable.menu_style",
+            "children": [
+            ]
+        },
+        {
+            "id": "Rotation",
+            "type": "Group",
+            "title": "Rotation",
+            "iconResourceId": "R.drawable.menu_rotation",
+            "children": [
+            ]
+        },
+        {
+            "id": "Zoom",
+            "type": "Group",
+            "title": "Zoom",
+            "iconResourceId": "R.drawable.menu_zoom",
+            "children": [
+                {
+                    "id": "ZoomIn",
+                    "type": "Item",
+                    "title": "Zoom In",
+                    "iconResourceId": "R.drawable.menu_zoom_enlarge"
+                },
+                {
+                    "id": "ZoomOut",
+                    "type": "Item",
+                    "title": "Zoom Out",
+                    "iconResourceId": "R.drawable.menu_zoom_narrow"
+                },
+                {
+                    "id": "ToPage",
+                    "type": "Item",
+                    "title": "To Page",
+                    "iconResourceId": "R.drawable.menu_zoom_to_page"
+                },
+                {
+                    "id": "ToWidth",
+                    "type": "Item",
+                    "title": "To Width",
+                    "iconResourceId": "R.drawable.menu_zoom_to_width"
+                },
+                {
+                    "id": "ByRect",
+                    "type": "Item",
+                    "title": "By Rect",
+                    "iconResourceId": "R.drawable.menu_zoom_two_points_enlarge"
+                }
+            ]
+        },
+        {
+            "id": "Navigation",
+            "type": "Group",
+            "title": "Navigation",
+            "iconResourceId": "R.drawable.menu_navigation",
+            "children": [
+            ]
+        },
+        {
+            "id": "Spacing",
+            "type": "Group",
+            "title": "Spacing",
+            "iconResourceId": "R.drawable.menu_spacing",
+            "children": [
+            ]
+        },
+        {
+            "id": "Font",
+            "type": "Group",
+            "title": "Font",
+            "iconResourceId": "R.drawable.menu_font",
+            "children": [
+            ]
+        },
+        {
+            "id": "Directory",
+            "type": "Group",
+            "title": "Directory",
+            "iconResourceId": "R.drawable.menu_directory",
+            "children": [
+            ]
+        },
+        {
+            "id": "More",
+            "type": "Group",
+            "title": "More",
+            "iconResourceId": "R.drawable.menu_more",
+            "children": [
+            ]
+        }
+    ]
+}

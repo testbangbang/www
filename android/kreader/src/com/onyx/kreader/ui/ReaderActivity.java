@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.LinearLayout;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -19,7 +22,12 @@ import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.ui.menu.ReaderMenu;
+import com.onyx.kreader.ui.menu.ReaderMenuItem;
+import com.onyx.kreader.ui.menu.ReaderSideMenu;
+import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
 import com.onyx.kreader.utils.FileUtils;
+import com.onyx.kreader.utils.RawResourceUtil;
 import com.onyx.kreader.utils.StringUtils;
 import yalantis.com.sidemenu.interfaces.Resourceble;
 import yalantis.com.sidemenu.interfaces.ScreenShotable;
@@ -42,9 +50,7 @@ public class ReaderActivity extends Activity {
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
 
-    private LinearLayout readerMenuLayout;
-    private ViewAnimator readerMenuViewAnimator;
-    private List<SlideMenuItem> readerMenuItemList = new ArrayList<>();
+    private ReaderMenu readerMenu;
 
     private HandlerManager handlerManager;
     private GestureDetector gestureDetector;
@@ -68,8 +74,8 @@ public class ReaderActivity extends Activity {
     }
 
     public boolean tryHitTest(float x, float y) {
-        if (isReaderMenuShown()) {
-            hideReaderMenu();
+        if (readerMenu.isShown()) {
+            readerMenu.hide();
             return true;
         }
         return false;
@@ -150,23 +156,7 @@ public class ReaderActivity extends Activity {
         previousScreen();
     }
 
-    public boolean isReaderMenuShown() {
-        return readerMenuLayout.getVisibility() == View.VISIBLE;
-    }
 
-    public void showReaderMenu() {
-        if (!isReaderMenuShown()) {
-            readerMenuLayout.setVisibility(View.VISIBLE);
-            readerMenuViewAnimator.showMenuContent();
-        }
-    }
-
-    public void hideReaderMenu() {
-        if (isReaderMenuShown()) {
-            readerMenuLayout.setVisibility(View.INVISIBLE);
-            readerMenuViewAnimator.hideMenuContent();
-        }
-    }
 
     public void scaleEnd() {
 
@@ -262,58 +252,20 @@ public class ReaderActivity extends Activity {
     }
 
     private void initReaderMenu() {
-        readerMenuLayout = (LinearLayout)findViewById(R.id.left_drawer);
-
-        createMenuList();
-        readerMenuViewAnimator = new ViewAnimator(this, readerMenuItemList, null, null, new ViewAnimator.ViewAnimatorListener() {
-            @Override
-            public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position) {
-                handleMenuItemClicked(slideMenuItem);
-                return null;
-            }
-
-            @Override
-            public void disableHomeButton() {
-
-            }
-
-            @Override
-            public void enableHomeButton() {
-
-            }
-
-            @Override
-            public void clearContainer() {
-                readerMenuLayout.removeAllViews();
-            }
-
-            @Override
-            public void addViewToContainer(View view) {
-                readerMenuLayout.addView(view);
-            }
-        });
+        LinearLayout layout = (LinearLayout)findViewById(R.id.left_drawer);
+        createReaderSideMenu(layout);
     }
 
-    private void createMenuList() {
-        readerMenuItemList.add(new SlideMenuItem("Close", R.drawable.menu_close));
-        readerMenuItemList.add(new SlideMenuItem("Style", R.drawable.menu_style));
-        readerMenuItemList.add(new SlideMenuItem("Rotation", R.drawable.menu_rotation));
-        readerMenuItemList.add(new SlideMenuItem("Zoom", R.drawable.menu_zoom));
-        readerMenuItemList.add(new SlideMenuItem("Navigation", R.drawable.menu_navigation));
-        readerMenuItemList.add(new SlideMenuItem("Spacing", R.drawable.menu_spacing));
-        readerMenuItemList.add(new SlideMenuItem("Font", R.drawable.menu_font));
-        readerMenuItemList.add(new SlideMenuItem("Directory", R.drawable.menu_directory));
-        readerMenuItemList.add(new SlideMenuItem("More", R.drawable.menu_more));
+    private void createReaderSideMenu(LinearLayout drawerLayout) {
+        readerMenu = new ReaderSideMenu(this, drawerLayout);
+        List<ReaderSideMenuItem> items = createReaderSideMenuItems();
+        readerMenu.fillItems(items);
     }
 
-    private void handleMenuItemClicked(Resourceble slideMenuItem) {
-        switch (slideMenuItem.getName()) {
-            case "Close":
-                hideReaderMenu();
-                break;
-            default:
-                break;
-        }
+    private List<ReaderSideMenuItem> createReaderSideMenuItems() {
+        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(this, R.raw.reader_menu));
+        JSONArray array = json.getJSONArray("menu_list");
+        return ReaderSideMenuItem.createFromJSON(this, array);
     }
 
     private void clearCanvas(SurfaceHolder holder) {
@@ -402,12 +354,36 @@ public class ReaderActivity extends Activity {
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                drawPage(request.getRenderBitmap().getBitmap());
+                handleRenderRequestFinished(request, e);
             }
         });
+    }
+
+    private void scaleToWidth() {
+        final ScaleToWidthRequest renderRequest = new ScaleToWidthRequest(getCurrentPageName());
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                handleRenderRequestFinished(request, e);
+            }
+        });
+    }
+
+    private void scaleByRect(RectF rect) {
+        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(getCurrentPageName(), rect);
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                handleRenderRequestFinished(request, e);
+            }
+        });
+    }
+
+    private void handleRenderRequestFinished(BaseRequest request, Exception e) {
+        if (e != null) {
+            return;
+        }
+        drawPage(request.getRenderBitmap().getBitmap());
     }
 
     private void drawPage(Bitmap bitmap) {
@@ -456,11 +432,11 @@ public class ReaderActivity extends Activity {
     }
 
     private boolean hasPopupWindow() {
-        return isReaderMenuShown();
+        return readerMenu.isShown();
     }
 
     private void hideAllPopupMenu() {
-        hideReaderMenu();
+        readerMenu.hide();
     }
 
     protected boolean askForClose() {
@@ -487,5 +463,9 @@ public class ReaderActivity extends Activity {
 
     public final HandlerManager getHandlerManager() {
         return handlerManager;
+    }
+
+    public void showReaderMenu() {
+        readerMenu.show();
     }
 }
