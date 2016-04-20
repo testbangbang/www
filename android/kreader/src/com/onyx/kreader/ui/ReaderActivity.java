@@ -289,6 +289,8 @@ public class ReaderActivity extends Activity {
                         break;
                     case "/Zoom/ByRect":
                         break;
+                    case "/Navigation/ArticleMode":
+                        break;
                     case "/Navigation/ComicMode":
                         break;
                     case "/Navigation/Reset":
