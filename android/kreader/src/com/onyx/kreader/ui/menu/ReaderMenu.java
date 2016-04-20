@@ -12,7 +12,7 @@ public abstract class ReaderMenu {
         public abstract void onMenuItemClicked(ReaderMenuItem menuItem);
     }
 
-    protected ReaderMenuCallback callback = null;
+    private ReaderMenuCallback callback = null;
 
     public abstract boolean isShown();
     public abstract void show();
@@ -22,5 +22,11 @@ public abstract class ReaderMenu {
 
     public void setReaderMenuCallback(ReaderMenuCallback callback) {
         this.callback = callback;
+    }
+    public void notifyMenuItemClicked(ReaderMenuItem menuItem)
+    {
+        if (callback != null) {
+            callback.onMenuItemClicked(menuItem);
+        }
     }
 }

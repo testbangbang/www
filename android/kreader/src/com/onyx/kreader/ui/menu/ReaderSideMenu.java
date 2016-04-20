@@ -49,6 +49,7 @@ public class ReaderSideMenu extends ReaderMenu {
             @Override
             public void clearContainer() {
                 readerMenuLayout.removeAllViews();
+                readerMenuLayout.clearDisappearingChildren();
             }
 
             @Override
@@ -90,12 +91,12 @@ public class ReaderSideMenu extends ReaderMenu {
     }
 
     private void switchMenuList(ReaderSideMenuItem parent, List<? extends ReaderMenuItem> items) {
-        readerMenuItems.clear();
         createMenuList(parent, (List<ReaderSideMenuItem>)items);
         readerMenuViewAnimator.showMenuContent();
     }
 
     private void createMenuList(ReaderSideMenuItem parent, List<ReaderSideMenuItem> items) {
+        readerMenuItems.clear();
         if (parent == null) {
             readerMenuItems.add(new SlideMenuItem("Close", R.drawable.menu_close, TAG_CLOSE_ITEM));
         } else {
@@ -125,9 +126,7 @@ public class ReaderSideMenu extends ReaderMenu {
                 switchMenuList(item, item.getChildren());
                 currentReaderMenuItemParent = item;
             }
-            if (callback != null) {
-                callback.onMenuItemClicked(item);
-            }
+            notifyMenuItemClicked(item);
         }
     }
 }
