@@ -52,6 +52,8 @@ public class ReaderActivity extends Activity {
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
 
+    private boolean preRender = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +118,10 @@ public class ReaderActivity extends Activity {
     }
 
     public void preRenderNext() {
+        if (!preRender) {
+            return;
+        }
+
         final PrerenderRequest request = new PrerenderRequest(true);
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
