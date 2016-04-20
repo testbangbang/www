@@ -49,6 +49,7 @@ public class ReaderSideMenu extends ReaderMenu {
             @Override
             public void clearContainer() {
                 readerMenuLayout.removeAllViews();
+                readerMenuLayout.clearDisappearingChildren();
             }
 
             @Override
