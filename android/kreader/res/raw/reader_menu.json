@@ -1,19 +1,35 @@
 {
     "menu_list": [
         {
-            "id": "Style",
-            "type": "Group",
-            "title": "Style",
-            "iconResourceId": "R.drawable.menu_style",
-            "children": [
-            ]
-        },
-        {
             "id": "Rotation",
             "type": "Group",
             "title": "Rotation",
             "iconResourceId": "R.drawable.menu_rotation",
             "children": [
+                {
+                    "id": "Rotation90",
+                    "type": "Item",
+                    "title": "Rotation 90",
+                    "iconResourceId": "R.drawable.menu_rotation_90"
+                },
+                {
+                    "id": "Rotation0",
+                    "type": "Item",
+                    "title": "Rotation 0",
+                    "iconResourceId": "R.drawable.menu_rotation_0"
+                },
+                {
+                    "id": "Rotation270",
+                    "type": "Item",
+                    "title": "Rotation 270",
+                    "iconResourceId": "R.drawable.menu_rotation_270"
+                },
+                {
+                    "id": "Rotation180",
+                    "type": "Item",
+                    "title": "Rotation 180",
+                    "iconResourceId": "R.drawable.menu_rotation_180"
+                }
             ]
         },
         {
@@ -60,14 +76,74 @@
             "title": "Navigation",
             "iconResourceId": "R.drawable.menu_navigation",
             "children": [
+                {
+                    "id": "ArticleMode",
+                    "type": "Item",
+                    "title": "Article Mode",
+                    "iconResourceId": "R.drawable.menu_navigation_article_preset"
+                },
+                {
+                    "id": "ComicMode",
+                    "type": "Item",
+                    "title": "Comic Mode",
+                    "iconResourceId": "R.drawable.menu_navigation_comic_preset"
+                },
+                {
+                    "id": "Reset",
+                    "type": "Item",
+                    "title": "Reset",
+                    "iconResourceId": "R.drawable.menu_navigation_reset"
+                },
+                {
+                    "id": "MoreSetting",
+                    "type": "Item",
+                    "title": "More Setting",
+                    "iconResourceId": "R.drawable.menu_navigation_more_setting"
+                }
             ]
         },
         {
             "id": "Spacing",
             "type": "Group",
             "title": "Spacing",
-            "iconResourceId": "R.drawable.menu_spacing",
+            "iconResourceId": "R.drawable.menu_line_spacing",
             "children": [
+                {
+                    "id": "DecreaseSpacing",
+                    "type": "Item",
+                    "title": "Small Spacing",
+                    "iconResourceId": "R.drawable.menu_line_spacing_decreases"
+                },
+                {
+                    "id": "EnlargeSpacing",
+                    "type": "Item",
+                    "title": "Large Spacing",
+                    "iconResourceId": "R.drawable.menu_line_spacing_enlarge"
+                },
+                {
+                    "id": "NormalSpacing",
+                    "type": "Item",
+                    "title": "Normal Spacing",
+                    "iconResourceId": "R.drawable.menu_line_spacing_normal"
+                },
+                {
+                    "id": "SmallSpacing",
+                    "type": "Item",
+                    "title": "Small Spacing",
+                    "iconResourceId": "R.drawable.menu_line_spacing_small"
+                },
+                {
+                    "id": "LargeSpacing",
+                    "type": "Item",
+                    "title": "Large Spacing",
+                    "iconResourceId": "R.drawable.menu_line_spacing_big"
+                },
+                {
+                    "id": "Indent",
+                    "type": "Item",
+                    "title": "Intent",
+                    "iconResourceId": "R.drawable.menu_line_spacing_indent"
+                }
             ]
         },
         {
@@ -76,6 +152,36 @@
             "title": "Font",
             "iconResourceId": "R.drawable.menu_font",
             "children": [
+                {
+                    "id": "DecreaseSpacing",
+                    "type": "Item",
+                    "title": "Decrease Spacing",
+                    "iconResourceId": "R.drawable.menu_font_decrease"
+                },
+                {
+                    "id": "IncreaseSpacing",
+                    "type": "Item",
+                    "title": "Increase Spacing",
+                    "iconResourceId": "R.drawable.menu_font_increase"
+                },
+                {
+                    "id": "Gamma",
+                    "type": "Item",
+                    "title": "Gamma",
+                    "iconResourceId": "R.drawable.menu_font_gamma"
+                },
+                {
+                    "id": "Embolden",
+                    "type": "Item",
+                    "title": "Font Embolden",
+                    "iconResourceId": "R.drawable.menu_font_embolden"
+                },
+                {
+                    "id": "FontReflow",
+                    "type": "Item",
+                    "title": "Font Reflow",
+                    "iconResourceId": "R.drawable.menu_font_reflow"
+                }
             ]
         },
         {
@@ -84,6 +190,36 @@
             "title": "Directory",
             "iconResourceId": "R.drawable.menu_directory",
             "children": [
+                {
+                    "id": "TOC",
+                    "type": "Item",
+                    "title": "TOC",
+                    "iconResourceId": "R.drawable.menu_directory_toc"
+                },
+                {
+                    "id": "Bookmark",
+                    "type": "Item",
+                    "title": "Bookmark",
+                    "iconResourceId": "R.drawable.menu_directory_bookmark"
+                },
+                {
+                    "id": "Note",
+                    "type": "Item",
+                    "title": "Note",
+                    "iconResourceId": "R.drawable.menu_directory_note"
+                },
+                {
+                    "id": "Scribble",
+                    "type": "Item",
+                    "title": "Scribble",
+                    "iconResourceId": "R.drawable.menu_directory_scribble"
+                },
+                {
+                    "id": "Export",
+                    "type": "Item",
+                    "title": "Export",
+                    "iconResourceId": "R.drawable.menu_directory_export"
+                }
             ]
         },
         {
