@@ -2,6 +2,7 @@ package com.onyx.kreader.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.*;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,13 +30,8 @@ import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
 import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.RawResourceUtil;
 import com.onyx.kreader.utils.StringUtils;
-import yalantis.com.sidemenu.interfaces.Resourceble;
-import yalantis.com.sidemenu.interfaces.ScreenShotable;
-import yalantis.com.sidemenu.model.SlideMenuItem;
-import yalantis.com.sidemenu.util.ViewAnimator;
 import com.onyx.kreader.ui.gesture.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -258,8 +254,129 @@ public class ReaderActivity extends Activity {
 
     private void createReaderSideMenu(LinearLayout drawerLayout) {
         readerMenu = new ReaderSideMenu(this, drawerLayout);
+        readerMenu.setReaderMenuCallback(new ReaderMenu.ReaderMenuCallback() {
+            @Override
+            public void onMenuItemClicked(ReaderMenuItem menuItem) {
+                Log.d(TAG, "onMenuItemClicked: " + menuItem.getURI().getRawPath());
+                switch (menuItem.getURI().getRawPath()) {
+                    case "/Rotation/Rotation0":
+                        rotateScreen(0);
+                        break;
+                    case "/Rotation/Rotation90":
+                        rotateScreen(90);
+                        break;
+                    case "/Rotation/Rotation180":
+                        rotateScreen(180);
+                        break;
+                    case "/Rotation/Rotation270":
+                        rotateScreen(270);
+                        break;
+                    case "/Zoom/ZoomIn":
+                        break;
+                    case "/Zoom/ZoomOut":
+                        break;
+                    case "/Zoom/ToPage":
+                        scaleToPage();
+                        break;
+                    case "/Zoom/ToWidth":
+                        scaleToWidth();
+                        break;
+                    case "/Zoom/ByRect":
+                        break;
+                    case "/Navigation/ComicMode":
+                        break;
+                    case "/Navigation/Reset":
+                        break;
+                    case "/Navigation/MoreSetting":
+                        break;
+                    case "/Spacing/DecreaseSpacing":
+                        break;
+                    case "/Spacing/EnlargeSpacing":
+                        break;
+                    case "/Spacing/NormalSpacing":
+                        break;
+                    case "/Spacing/SmallSpacing":
+                        break;
+                    case "/Spacing/LargeSpacing":
+                        break;
+                    case "/Spacing/Indent":
+                        break;
+                    case "/Font/DecreaseSpacing":
+                        break;
+                    case "/Font/IncreaseSpacing":
+                        break;
+                    case "/Font/Gamma":
+                        break;
+                    case "/Font/Embolden":
+                        break;
+                    case "/Font/FontReflow":
+                        break;
+                    case "/Font/TOC":
+                        break;
+                    case "/Font/Bookmark":
+                        break;
+                    case "/Font/Note":
+                        break;
+                    case "/Font/Scribble":
+                        break;
+                    case "/Font/Export":
+                        break;
+                }
+            }
+        });
         List<ReaderSideMenuItem> items = createReaderSideMenuItems();
         readerMenu.fillItems(items);
+    }
+
+    private void rotateScreen(int rotationOperation) {
+        int orientation = computeNewRotation(getRequestedOrientation(), rotationOperation);
+        setRequestedOrientation(orientation);
+    }
+
+    private int computeNewRotation(int currentOrientation, int rotationOperation) {
+        switch (rotationOperation) {
+            case 0:
+                return currentOrientation;
+            case 90:
+                if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                    return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+                } else {
+                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+                }
+            case 180:
+                if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                    return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+                    return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+                } else {
+                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+                }
+            case 270:
+                if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                    return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+                    return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+                } else {
+                    return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+                }
+            default:
+                assert(false);
+                return currentOrientation;
+        }
     }
 
     private List<ReaderSideMenuItem> createReaderSideMenuItems() {
