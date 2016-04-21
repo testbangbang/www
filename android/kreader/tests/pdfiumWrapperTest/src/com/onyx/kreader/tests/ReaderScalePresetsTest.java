@@ -17,7 +17,6 @@ public class ReaderScalePresetsTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testScaleDown() {
-        Log.d(TAG, "scale down of 5.0: " + ReaderScalePresets.scaleDown(5.0f));
         Assert.assertEquals(ReaderScalePresets.scaleDown(5.0f), 4.0f);
         Assert.assertEquals(ReaderScalePresets.scaleDown(4.0f), 3.5f);
         Assert.assertEquals(ReaderScalePresets.scaleDown(3.6f), 3.5f);
@@ -30,7 +29,6 @@ public class ReaderScalePresetsTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testScaleUp() {
-        Log.d(TAG, "scale up of -1.0: " + ReaderScalePresets.scaleUp(-1.0f));
         Assert.assertEquals(ReaderScalePresets.scaleUp(-1.0f), 0.1f);
         Assert.assertEquals(ReaderScalePresets.scaleUp(0.0f), 0.1f);
         Assert.assertEquals(ReaderScalePresets.scaleUp(0.1f), 0.25f);
