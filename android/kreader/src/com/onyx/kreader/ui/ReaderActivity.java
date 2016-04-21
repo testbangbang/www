@@ -20,6 +20,8 @@ import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
+import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
@@ -294,10 +296,13 @@ public class ReaderActivity extends Activity {
                     case "/Zoom/ByRect":
                         break;
                     case "/Navigation/ArticleMode":
+                        switchNavigationToArticleMode();
                         break;
                     case "/Navigation/ComicMode":
+                        switchNavigationToComicMode();
                         break;
                     case "/Navigation/Reset":
+                        resetNavigationMode();
                         break;
                     case "/Navigation/MoreSetting":
                         break;
@@ -514,6 +519,30 @@ public class ReaderActivity extends Activity {
     private void scaleByRect(RectF rect) {
         final ScaleByRectRequest renderRequest = new ScaleByRectRequest(getCurrentPageName(), rect);
         submitRenderRequest(renderRequest);
+    }
+
+    private void switchNavigationToArticleMode() {
+        NavigationArgs args = new NavigationArgs();
+        RectF limit = new RectF(0, 0, 0, 0);
+        args.columnsLeftToRight(NavigationArgs.Type.ALL, 2, 2, limit);
+        switchNavigationMode(args);
+    }
+
+    private void switchNavigationToComicMode() {
+        NavigationArgs args = new NavigationArgs();
+        RectF limit = new RectF(0, 0, 0, 0);
+        args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
+        switchNavigationMode(args);
+    }
+
+    private void switchNavigationMode(NavigationArgs args) {
+        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
+        submitRenderRequest(request);
+    }
+
+    private void resetNavigationMode() {
+        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, new NavigationArgs());
+        submitRenderRequest(request);
     }
 
     private void submitRenderRequest(BaseRequest request) {
