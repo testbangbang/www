@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentOptions;
+import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
@@ -22,6 +23,7 @@ import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.ui.data.ReaderScalePresets;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.menu.ReaderMenu;
 import com.onyx.kreader.ui.menu.ReaderMenuItem;
@@ -278,8 +280,10 @@ public class ReaderActivity extends Activity {
                         rotateScreen(270);
                         break;
                     case "/Zoom/ZoomIn":
+                        scaleUp();
                         break;
                     case "/Zoom/ZoomOut":
+                        scaleDown();
                         break;
                     case "/Zoom/ToPage":
                         scaleToPage();
@@ -474,29 +478,46 @@ public class ReaderActivity extends Activity {
         });
     }
 
+    private void scaleUp() {
+        try {
+            float actualScale = reader.getReaderLayoutManager().getActualScale();
+            scaleByValue(ReaderScalePresets.scaleUp(actualScale));
+        } catch (ReaderException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void scaleDown() {
+        try {
+            float actualScale = reader.getReaderLayoutManager().getActualScale();
+            scaleByValue(ReaderScalePresets.scaleDown(actualScale));
+        } catch (ReaderException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void scaleByValue(float scale) {
+        final ScaleByValueRequest renderRequest = new ScaleByValueRequest(getCurrentPageName(), scale);
+        submitRenderRequest(renderRequest);
+    }
+
     private void scaleToPage() {
         final ScaleToPageRequest renderRequest = new ScaleToPageRequest(getCurrentPageName());
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                handleRenderRequestFinished(request, e);
-            }
-        });
+        submitRenderRequest(renderRequest);
     }
 
     private void scaleToWidth() {
         final ScaleToWidthRequest renderRequest = new ScaleToWidthRequest(getCurrentPageName());
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                handleRenderRequestFinished(request, e);
-            }
-        });
+        submitRenderRequest(renderRequest);
     }
 
     private void scaleByRect(RectF rect) {
         final ScaleByRectRequest renderRequest = new ScaleByRectRequest(getCurrentPageName(), rect);
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
+        submitRenderRequest(renderRequest);
+    }
+
+    private void submitRenderRequest(BaseRequest request) {
+        reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 handleRenderRequestFinished(request, e);
