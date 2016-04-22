@@ -7,6 +7,7 @@ import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
@@ -21,6 +22,7 @@ public class ReaderHelper {
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPluginOptionsImpl pluginOptions;
     private ReaderDocumentOptions documentOptions;
+    private BaseOptions baseOptions = new BaseOptions();
 
     private ReaderPlugin plugin;
     private ReaderDocument document;
@@ -145,6 +147,10 @@ public class ReaderHelper {
 
     public ReaderViewOptionsImpl getViewOptions() {
         return viewOptions;
+    }
+
+    public BaseOptions getBaseOptions() {
+        return baseOptions;
     }
 
     public ReaderDocument getDocument() {

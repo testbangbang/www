@@ -27,10 +27,12 @@ import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.data.ReaderScalePresets;
+import com.onyx.kreader.ui.dialog.DialogSetValue;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -65,6 +67,7 @@ public class ReaderActivity extends Activity {
 
     private boolean preRender = false;
     private CropImageResultReceiver selectionZoomAreaReceiver;
+    private DialogSetValue contrastDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -308,6 +311,7 @@ public class ReaderActivity extends Activity {
                     case "/Font/IncreaseSpacing":
                         break;
                     case "/Font/Gamma":
+                        adjustContrast();
                         break;
                     case "/Font/Embolden":
                         break;
@@ -494,7 +498,7 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleByValue(float scale) {
-        final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, 0, 0);
+        final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, displayWidth() / 2, displayHeight() / 2);
         submitRenderRequest(request);
     }
 
@@ -568,6 +572,44 @@ public class ReaderActivity extends Activity {
     private void resetNavigationMode() {
         BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, new NavigationArgs());
         submitRenderRequest(request);
+    }
+
+    private void adjustContrast() {
+        showContrastDialog();
+    }
+
+    public DialogSetValue showContrastDialog() {
+        if (contrastDialog == null) {
+            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
+                @Override
+                public void valueChange(int newValue) {
+                    GammaCorrectionRequest request = new GammaCorrectionRequest(newValue);
+                    submitRenderRequest(request);
+                }
+
+                @Override
+                public void done(boolean isValueChange, int oldValue, int newValue) {
+                    if (!isValueChange) {
+                        GammaCorrectionRequest request = new GammaCorrectionRequest(oldValue);
+                        submitRenderRequest(request);
+                    }
+                    hideContrastDialog();
+                }
+            };
+            float current = reader.getBaseOptions().getGammaLevel();
+            contrastDialog = new DialogSetValue(ReaderActivity.this, (int)current, BaseOptions.minGammaLevel(), BaseOptions.maxGammaLevel(), true, true,
+                    getString(R.string.contrast), getString(R.string.contrast_level), callback);
+
+        }
+        contrastDialog.show();
+        return contrastDialog;
+    }
+
+    private void hideContrastDialog() {
+        if (contrastDialog != null) {
+            contrastDialog.hide();
+            contrastDialog = null;
+        }
     }
 
     private void submitRenderRequest(BaseRequest request) {

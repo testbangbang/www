@@ -3,7 +3,6 @@ package com.onyx.kreader.host.options;
 import android.content.Context;
 import android.graphics.RectF;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.utils.GObject;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * Time: 9:56 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ReaderOptions  {
+public class BaseOptions {
 
     transient static public final String SCALE_TAG = "zoom";
     transient static public final String ACTUAL_SCALE_TAG = "actual_zoom";
@@ -59,7 +58,7 @@ public class ReaderOptions  {
     private static final double fallbackFontSize = 8.0;
     public static double defaultFontSize = fallbackFontSize;
 
-    public ReaderOptions() {
+    public BaseOptions() {
         super();
         backend = new GObject();
     }
@@ -76,8 +75,8 @@ public class ReaderOptions  {
         backend = b;
     }
 
-    static ReaderOptions optionFromJSONObject(final JSONObject object) {
-        ReaderOptions options = new ReaderOptions();
+    static BaseOptions optionFromJSONObject(final JSONObject object) {
+        BaseOptions options = new BaseOptions();
         options.backend.setBackend(object);
         return options;
     }
@@ -133,6 +132,10 @@ public class ReaderOptions  {
 
     static public double getDefaultCropValue() {
         return 0.01;
+    }
+
+    public boolean isGamaCorrectionEnabled() {
+        return getGammaLevel() > ReaderConstants.GAMMA_LOWER_LIMIT;
     }
 
     public float getGammaLevel() {

@@ -7,9 +7,10 @@ import android.os.PowerManager;
 import android.util.Log;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.common.BaseCallback;
+import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.host.options.BaseOptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -203,6 +204,10 @@ public class Reader {
 
     public ReaderViewOptionsImpl getViewOptions() {
         return getReaderHelper().getViewOptions();
+    }
+
+    public BaseOptions getBaseOptions() {
+        return getReaderHelper().getBaseOptions();
     }
 
     public ReaderLayoutManager getReaderLayoutManager() {

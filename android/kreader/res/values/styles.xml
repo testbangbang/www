@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="dialog_no_title" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+    <style name="single_line_X_axis_View">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@android:color/black</item>
+    </style>
+</resources>
