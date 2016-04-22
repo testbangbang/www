@@ -95,30 +95,13 @@ public class ReaderActivity extends Activity {
     }
 
     public void nextScreen() {
-        final NextScreenRequest renderRequest = new NextScreenRequest();
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                preRenderNext();
-                drawPage(request.getRenderBitmap().getBitmap());
-            }
-        });
+        final NextScreenRequest request = new NextScreenRequest();
+        submitRenderRequest(request);
     }
 
     public void prevScreen() {
-        final PreviousScreenRequest renderRequest = new PreviousScreenRequest();
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                drawPage(request.getRenderBitmap().getBitmap());
-            }
-        });
+        final PreviousScreenRequest request = new PreviousScreenRequest();
+        submitRenderRequest(request);
     }
 
     public void preRenderNext() {
@@ -137,19 +120,6 @@ public class ReaderActivity extends Activity {
         });
     }
 
-    public void previousScreen() {
-        final PreviousScreenRequest renderRequest = new PreviousScreenRequest();
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                drawPage(request.getRenderBitmap().getBitmap());
-            }
-        });
-    }
-
     public void nextPage() {
         nextScreen();
     }
@@ -157,12 +127,6 @@ public class ReaderActivity extends Activity {
     public void prevPage() {
         prevScreen();
     }
-
-    public void previousPage() {
-        previousScreen();
-    }
-
-
 
     public void scaleEnd() {
 
@@ -502,23 +466,23 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleByValue(float scale) {
-        final ScaleByValueRequest renderRequest = new ScaleByValueRequest(getCurrentPageName(), scale);
-        submitRenderRequest(renderRequest);
+        final ScaleByValueRequest request = new ScaleByValueRequest(getCurrentPageName(), scale);
+        submitRenderRequest(request);
     }
 
     private void scaleToPage() {
-        final ScaleToPageRequest renderRequest = new ScaleToPageRequest(getCurrentPageName());
-        submitRenderRequest(renderRequest);
+        final ScaleToPageRequest request = new ScaleToPageRequest(getCurrentPageName());
+        submitRenderRequest(request);
     }
 
     private void scaleToWidth() {
-        final ScaleToWidthRequest renderRequest = new ScaleToWidthRequest(getCurrentPageName());
-        submitRenderRequest(renderRequest);
+        final ScaleToWidthRequest request = new ScaleToWidthRequest(getCurrentPageName());
+        submitRenderRequest(request);
     }
 
     private void scaleByRect(RectF rect) {
-        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(getCurrentPageName(), rect);
-        submitRenderRequest(renderRequest);
+        final ScaleByRectRequest request = new ScaleByRectRequest(getCurrentPageName(), rect);
+        submitRenderRequest(request);
     }
 
     private void switchNavigationToArticleMode() {
