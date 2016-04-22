@@ -625,7 +625,7 @@ public class ReaderActivity extends Activity {
         if (e != null) {
             return;
         }
-        drawPage(request.getRenderBitmap().getBitmap());
+        drawPage(reader.getViewportBitmap().getBitmap());
     }
 
     public void redrawPage() {

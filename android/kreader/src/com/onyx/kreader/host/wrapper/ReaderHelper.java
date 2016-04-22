@@ -32,6 +32,8 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
     private ReaderBitmapImpl renderBitmap;
+    // copy of renderBitmap, to be used by UI thread
+    private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
     private ReaderCacheManager readerCacheManager = new ReaderCacheManager();
@@ -109,6 +111,17 @@ public class ReaderHelper {
     public final ReaderBitmapImpl getRenderBitmap() {
         updateRenderBitmap(viewOptions.getViewWidth(), viewOptions.getViewHeight());
         return renderBitmap;
+    }
+
+    public final ReaderBitmapImpl getViewportBitmap() {
+        return viewportBitmap;
+    }
+
+    public void copyRenderBitmapToViewport() {
+        if (renderBitmap != null && renderBitmap.getBitmap() != null &&
+                !renderBitmap.getBitmap().isRecycled()) {
+            viewportBitmap.copyFrom(renderBitmap);
+        }
     }
 
     public ReaderPlugin getPlugin() {

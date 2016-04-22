@@ -222,4 +222,12 @@ public class Reader {
         return getReaderHelper().getRenderBitmap();
     }
 
+    public ReaderBitmap getViewportBitmap() {
+        return getReaderHelper().getViewportBitmap();
+    }
+
+    public void copyRenderBitmapToViewport() {
+        getReaderHelper().copyRenderBitmapToViewport();
+    }
+
 }

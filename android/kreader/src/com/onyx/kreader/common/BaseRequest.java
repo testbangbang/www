@@ -1,6 +1,7 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
+import android.util.Log;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -9,6 +10,7 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public abstract class BaseRequest {
 
+    private static final String TAG = BaseRequest.class.getSimpleName();
     private int requestSequence;
     private volatile boolean abort = false;
     private volatile boolean abortPendingTasks = false;
@@ -24,6 +26,9 @@ public abstract class BaseRequest {
 
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
+
+    // help to safely copy render bitmap to viewport bitmap
+    private static final Object bitmapCopyLock = new Object();
 
     static public int generateRequestSequence() {
         globalRequestSequence += 1;
@@ -153,13 +158,21 @@ public abstract class BaseRequest {
         }
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
+
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (callback != null) {
-                    callback.done(BaseRequest.this, getException());
+                synchronized (bitmapCopyLock) {
+                    if (callback != null) {
+                        callback.done(BaseRequest.this, getException());
+                    }
                 }
             }};
+
+        synchronized (bitmapCopyLock) {
+            reader.copyRenderBitmapToViewport();
+        }
+
         if (isRunInBackground()) {
             reader.getLooperHandler().post(runnable);
         } else {
