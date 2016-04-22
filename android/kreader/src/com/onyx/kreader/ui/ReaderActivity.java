@@ -2,16 +2,21 @@ package com.onyx.kreader.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.*;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.*;
 import android.widget.LinearLayout;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.cropimage.CropImage;
+import com.onyx.android.cropimage.CropImageResultReceiver;
+import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderException;
@@ -26,6 +31,8 @@ import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.data.ReaderScalePresets;
+import com.onyx.kreader.ui.gesture.MyOnGestureListener;
+import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.menu.ReaderMenu;
 import com.onyx.kreader.ui.menu.ReaderMenuItem;
@@ -34,8 +41,8 @@ import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
 import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.RawResourceUtil;
 import com.onyx.kreader.utils.StringUtils;
-import com.onyx.kreader.ui.gesture.*;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -57,12 +64,25 @@ public class ReaderActivity extends Activity {
     private ScaleGestureDetector scaleDetector;
 
     private boolean preRender = false;
+    private CropImageResultReceiver selectionZoomAreaReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
         initActivity();
+    }
+
+    @Override
+    protected void onResume() {
+        redrawPage();
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        resetEventListener();
+        super.onDestroy();
     }
 
     @Override
@@ -258,6 +278,7 @@ public class ReaderActivity extends Activity {
                         scaleToWidth();
                         break;
                     case "/Zoom/ByRect":
+                        scaleByRect();
                         break;
                     case "/Navigation/ArticleMode":
                         switchNavigationToArticleMode();
@@ -364,6 +385,13 @@ public class ReaderActivity extends Activity {
         JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(this, R.raw.reader_menu));
         JSONArray array = json.getJSONArray("menu_list");
         return ReaderSideMenuItem.createFromJSON(this, array);
+    }
+
+    private void resetEventListener() {
+        if (selectionZoomAreaReceiver != null) {
+            unregisterReceiver(selectionZoomAreaReceiver);
+            selectionZoomAreaReceiver = null;
+        }
     }
 
     private void clearCanvas(SurfaceHolder holder) {
@@ -480,6 +508,39 @@ public class ReaderActivity extends Activity {
         submitRenderRequest(request);
     }
 
+    private void showSelectionActivity(final CropArgs args, final CropImage.SelectionCallback callback) {
+        Uri outputUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "cropped.png"));
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(CropImage.INTENT_ACTION_SELECT_ZOOM_RECT);
+
+        if (selectionZoomAreaReceiver != null) {
+            unregisterReceiver(selectionZoomAreaReceiver);
+        }
+        selectionZoomAreaReceiver = new CropImageResultReceiver() {
+            @Override
+            public void onSelectionFinished(final CropArgs navigationArgs) {
+                if (callback != null) {
+                    callback.onSelectionFinished(navigationArgs);
+                }
+            }
+        };
+        ReaderActivity.this.registerReceiver(selectionZoomAreaReceiver, filter);
+        CropImage crop = new CropImage(reader.getRenderBitmap().getBitmap());
+        crop.output(outputUri).start(ReaderActivity.this, false, false, false, args);
+    }
+
+    private void scaleByRect() {
+        CropArgs args = new CropArgs();
+        args.manualCropPage = true;
+
+        showSelectionActivity(args, new CropImage.SelectionCallback() {
+            @Override
+            public void onSelectionFinished(CropArgs args) {
+                scaleByRect(new RectF(args.selectionRect));
+            }
+        });
+    }
+
     private void scaleByRect(RectF rect) {
         final ScaleByRectRequest request = new ScaleByRectRequest(getCurrentPageName(), rect);
         submitRenderRequest(request);
@@ -525,6 +586,12 @@ public class ReaderActivity extends Activity {
         drawPage(request.getRenderBitmap().getBitmap());
     }
 
+    public void redrawPage() {
+        if (reader != null) {
+            submitRenderRequest(new RenderRequest());
+        }
+    }
+
     private void drawPage(Bitmap bitmap) {
         Canvas canvas = holder.lockCanvas();
         if (canvas == null) {
@@ -532,7 +599,9 @@ public class ReaderActivity extends Activity {
         }
         Paint paint = new Paint();
         drawBackground(canvas, paint);
-        drawBitmap(canvas, paint, bitmap);
+        if (bitmap != null) {
+            drawBitmap(canvas, paint, bitmap);
+        }
         holder.unlockCanvasAndPost(canvas);
     }
 
