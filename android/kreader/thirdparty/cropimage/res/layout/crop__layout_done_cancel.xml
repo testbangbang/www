@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Crop.DoneCancelBar">
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:text="@android:string/cancel"
+        android:focusable="false"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+    </Button>
+
+    <Button
+        android:id="@+id/btn_done"
+        android:text="@android:string/ok"
+        android:layout_width="0dp"
+        android:focusable="false"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+    </Button>
+
+</LinearLayout>
