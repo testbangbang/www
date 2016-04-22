@@ -494,7 +494,7 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleByValue(float scale) {
-        final ScaleByValueRequest request = new ScaleByValueRequest(getCurrentPageName(), scale);
+        final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, 0, 0);
         submitRenderRequest(request);
     }
 
