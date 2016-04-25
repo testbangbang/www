@@ -195,6 +195,9 @@ public class ReaderHelper {
         if (getBaseOptions().isGamaCorrectionEnabled()) {
             ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getBaseOptions().getGammaLevel());
         }
+        if (getBaseOptions().isEmboldenLevelEnabled()) {
+            ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getBaseOptions().getEmboldenLevel());
+        }
     }
 
 }

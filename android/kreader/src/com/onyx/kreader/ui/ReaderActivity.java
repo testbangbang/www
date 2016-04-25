@@ -68,6 +68,7 @@ public class ReaderActivity extends Activity {
     private boolean preRender = false;
     private CropImageResultReceiver selectionZoomAreaReceiver;
     private DialogSetValue contrastDialog;
+    private DialogSetValue emboldenDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -314,6 +315,7 @@ public class ReaderActivity extends Activity {
                         adjustContrast();
                         break;
                     case "/Font/Embolden":
+                        adjustEmbolden();
                         break;
                     case "/Font/FontReflow":
                         break;
@@ -609,6 +611,43 @@ public class ReaderActivity extends Activity {
         if (contrastDialog != null) {
             contrastDialog.hide();
             contrastDialog = null;
+        }
+    }
+
+    private void adjustEmbolden() {
+        showEmboldenDialog();
+    }
+
+    public DialogSetValue showEmboldenDialog()  {
+        if (emboldenDialog == null) {
+            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
+                @Override
+                public void valueChange(int newValue) {
+                    EmboldenGlyphRequest request = new EmboldenGlyphRequest(newValue);
+                    submitRenderRequest(request);
+                }
+
+                @Override
+                public void done(boolean isValueChange, int oldValue, int newValue) {
+                    if (!isValueChange) {
+                        EmboldenGlyphRequest request = new EmboldenGlyphRequest(oldValue);
+                        submitRenderRequest(request);
+                    }
+                    hideEmboldenDialog();
+                }
+            };
+            int current = reader.getBaseOptions().getEmboldenLevel();
+            emboldenDialog = new DialogSetValue(ReaderActivity.this, current, BaseOptions.minEmboldenLevel(), BaseOptions.maxEmboldenLevel(), true, true,
+                    getString(R.string.embolden), getString(R.string.embolden_level), callback);
+        }
+        emboldenDialog.show();
+        return emboldenDialog;
+    }
+
+    private void hideEmboldenDialog() {
+        if (emboldenDialog != null) {
+            emboldenDialog.hide();
+            emboldenDialog = null;
         }
     }
 

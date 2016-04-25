@@ -149,6 +149,10 @@ public class BaseOptions {
         backend.putFloat(GAMMA_LEVEL, gamma);
     }
 
+    public boolean isEmboldenLevelEnabled() {
+        return getEmboldenLevel() > 0;
+    }
+
     public int getEmboldenLevel() {
         if (!backend.hasKey(ENHANCE_LEVEL)) {
             return 0;
