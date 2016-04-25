@@ -12,6 +12,7 @@ import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
+import com.onyx.kreader.utils.ImageUtils;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -190,5 +191,10 @@ public class ReaderHelper {
         return searchManager;
     }
 
+    public void applyPostBitmapProcess(ReaderBitmap bitmap) {
+        if (getBaseOptions().isGamaCorrectionEnabled()) {
+            ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getBaseOptions().getGammaLevel());
+        }
+    }
 
 }

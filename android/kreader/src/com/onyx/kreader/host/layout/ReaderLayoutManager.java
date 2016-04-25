@@ -259,9 +259,7 @@ public class ReaderLayoutManager {
 
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
         boolean ret = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo);
-        if (reader.getBaseOptions().isGamaCorrectionEnabled()) {
-            ImageUtils.applyGammaCorrection(bitmap.getBitmap(), reader.getBaseOptions().getGammaLevel());
-        }
+        reader.getReaderHelper().applyPostBitmapProcess(bitmap);
         return ret;
     }
 
