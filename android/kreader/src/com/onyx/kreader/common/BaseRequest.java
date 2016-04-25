@@ -2,6 +2,7 @@ package com.onyx.kreader.common;
 
 import android.content.Context;
 import android.util.Log;
+import com.onyx.android.cropimage.data.RefValue;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -159,25 +160,42 @@ public abstract class BaseRequest {
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
 
+        final RefValue<Boolean> waitCopy = new RefValue<>(true);
+
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (bitmapCopyLock) {
-                    if (callback != null) {
-                        callback.done(BaseRequest.this, getException());
+                if (callback != null) {
+                    synchronized (bitmapCopyLock) {
+                        try {
+                            reader.copyRenderBitmapToViewport();
+                        } catch (Exception ex) {
+                            setException(ex);
+                        } finally {
+                            waitCopy.setValue(false);
+                            bitmapCopyLock.notify();
+                        }
                     }
+                    callback.done(BaseRequest.this, getException());
                 }
             }};
-
-        synchronized (bitmapCopyLock) {
-            reader.copyRenderBitmapToViewport();
-        }
 
         if (isRunInBackground()) {
             reader.getLooperHandler().post(runnable);
         } else {
             runnable.run();
         }
+
+        synchronized (bitmapCopyLock) {
+            try {
+                while (waitCopy.getValue()) {
+                    bitmapCopyLock.wait();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         reader.releaseWakeLock();
     }
 
