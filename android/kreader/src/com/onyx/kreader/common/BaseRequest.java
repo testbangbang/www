@@ -1,6 +1,8 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
+import android.util.Log;
+import com.onyx.android.cropimage.data.RefValue;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -9,6 +11,7 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public abstract class BaseRequest {
 
+    private static final String TAG = BaseRequest.class.getSimpleName();
     private int requestSequence;
     private volatile boolean abort = false;
     private volatile boolean abortPendingTasks = false;
@@ -24,6 +27,9 @@ public abstract class BaseRequest {
 
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
+
+    // help to safely copy render bitmap to viewport bitmap
+    private static final Object bitmapCopyLock = new Object();
 
     static public int generateRequestSequence() {
         globalRequestSequence += 1;
@@ -153,18 +159,43 @@ public abstract class BaseRequest {
         }
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
+
+        final RefValue<Boolean> waitCopy = new RefValue<>(true);
+
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if (callback != null) {
+                    synchronized (bitmapCopyLock) {
+                        try {
+                            reader.copyRenderBitmapToViewport();
+                        } catch (Exception ex) {
+                            setException(ex);
+                        } finally {
+                            waitCopy.setValue(false);
+                            bitmapCopyLock.notify();
+                        }
+                    }
                     callback.done(BaseRequest.this, getException());
                 }
             }};
+
         if (isRunInBackground()) {
             reader.getLooperHandler().post(runnable);
         } else {
             runnable.run();
         }
+
+        synchronized (bitmapCopyLock) {
+            try {
+                while (waitCopy.getValue()) {
+                    bitmapCopyLock.wait();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         reader.releaseWakeLock();
     }
 

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">KReader</string>
+    <string name="title">title</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="outOfRangRerror">Out Of Range.</string>
+    <string name="illegalInput">Illegal Input.</string>
+    <string name="contrast">Contrast</string>
+    <string name="contrast_level">Contrast Level</string>
+    <string name="embolden">Embolden</string>
+    <string name="embolden_level">Embolden Level</string>
 </resources>

@@ -5,7 +5,7 @@ import android.os.Build;
 import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.BuildConfig;
-import com.onyx.kreader.host.options.ReaderOptions;
+import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.utils.GObject;
 import com.onyx.kreader.utils.RawResourceUtil;
 
@@ -169,7 +169,7 @@ public class ReaderConfig {
         if (backend.hasKey(DEFAULT_FONT_SIZE)) {
             return backend.getDouble(DEFAULT_FONT_SIZE);
         }
-        return ReaderOptions.getFallbackFontSize(context);
+        return BaseOptions.getFallbackFontSize(context);
     }
 
     public boolean useBigPen() {

@@ -36,6 +36,7 @@ public class ReaderConstants {
     }
 
 
+    static public int GAMMA_LOWER_LIMIT = 100;
     static public int DEFAULT_GAMMA = 150;
 
     static public double DEFAULT_AUTO_CROP_VALUE = 0.01;

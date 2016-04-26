@@ -11,6 +11,7 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.ImageUtils;
 import com.onyx.kreader.utils.StringUtils;
 import com.onyx.kreader.utils.HistoryManager;
 
@@ -258,6 +259,7 @@ public class ReaderLayoutManager {
 
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
         boolean ret = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo);
+        reader.getReaderHelper().applyPostBitmapProcess(bitmap);
         return ret;
     }
 

@@ -7,9 +7,10 @@ import android.os.PowerManager;
 import android.util.Log;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.common.BaseCallback;
+import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.host.options.BaseOptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -205,6 +206,10 @@ public class Reader {
         return getReaderHelper().getViewOptions();
     }
 
+    public BaseOptions getBaseOptions() {
+        return getReaderHelper().getBaseOptions();
+    }
+
     public ReaderLayoutManager getReaderLayoutManager() {
         return getReaderHelper().getReaderLayoutManager();
     }
@@ -215,6 +220,14 @@ public class Reader {
 
     public ReaderBitmap getRenderBitmap() {
         return getReaderHelper().getRenderBitmap();
+    }
+
+    public ReaderBitmap getViewportBitmap() {
+        return getReaderHelper().getViewportBitmap();
+    }
+
+    public void copyRenderBitmapToViewport() {
+        getReaderHelper().copyRenderBitmapToViewport();
     }
 
 }

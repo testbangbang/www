@@ -2,26 +2,39 @@ package com.onyx.kreader.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.*;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.*;
 import android.widget.LinearLayout;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.cropimage.CropImage;
+import com.onyx.android.cropimage.CropImageResultReceiver;
+import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentOptions;
+import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
+import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.ui.data.ReaderScalePresets;
+import com.onyx.kreader.ui.dialog.DialogSetValue;
+import com.onyx.kreader.ui.gesture.MyOnGestureListener;
+import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.menu.ReaderMenu;
 import com.onyx.kreader.ui.menu.ReaderMenuItem;
@@ -30,8 +43,8 @@ import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
 import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.RawResourceUtil;
 import com.onyx.kreader.utils.StringUtils;
-import com.onyx.kreader.ui.gesture.*;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -53,12 +66,27 @@ public class ReaderActivity extends Activity {
     private ScaleGestureDetector scaleDetector;
 
     private boolean preRender = false;
+    private CropImageResultReceiver selectionZoomAreaReceiver;
+    private DialogSetValue contrastDialog;
+    private DialogSetValue emboldenDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
         initActivity();
+    }
+
+    @Override
+    protected void onResume() {
+        redrawPage();
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        resetEventListener();
+        super.onDestroy();
     }
 
     @Override
@@ -91,30 +119,13 @@ public class ReaderActivity extends Activity {
     }
 
     public void nextScreen() {
-        final NextScreenRequest renderRequest = new NextScreenRequest();
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                preRenderNext();
-                drawPage(request.getRenderBitmap().getBitmap());
-            }
-        });
+        final NextScreenRequest request = new NextScreenRequest();
+        submitRenderRequest(request);
     }
 
     public void prevScreen() {
-        final PreviousScreenRequest renderRequest = new PreviousScreenRequest();
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                drawPage(request.getRenderBitmap().getBitmap());
-            }
-        });
+        final PreviousScreenRequest request = new PreviousScreenRequest();
+        submitRenderRequest(request);
     }
 
     public void preRenderNext() {
@@ -133,19 +144,6 @@ public class ReaderActivity extends Activity {
         });
     }
 
-    public void previousScreen() {
-        final PreviousScreenRequest renderRequest = new PreviousScreenRequest();
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                drawPage(request.getRenderBitmap().getBitmap());
-            }
-        });
-    }
-
     public void nextPage() {
         nextScreen();
     }
@@ -153,12 +151,6 @@ public class ReaderActivity extends Activity {
     public void prevPage() {
         prevScreen();
     }
-
-    public void previousPage() {
-        previousScreen();
-    }
-
-
 
     public void scaleEnd() {
 
@@ -278,8 +270,10 @@ public class ReaderActivity extends Activity {
                         rotateScreen(270);
                         break;
                     case "/Zoom/ZoomIn":
+                        scaleUp();
                         break;
                     case "/Zoom/ZoomOut":
+                        scaleDown();
                         break;
                     case "/Zoom/ToPage":
                         scaleToPage();
@@ -288,12 +282,16 @@ public class ReaderActivity extends Activity {
                         scaleToWidth();
                         break;
                     case "/Zoom/ByRect":
+                        scaleByRect();
                         break;
                     case "/Navigation/ArticleMode":
+                        switchNavigationToArticleMode();
                         break;
                     case "/Navigation/ComicMode":
+                        switchNavigationToComicMode();
                         break;
                     case "/Navigation/Reset":
+                        resetNavigationMode();
                         break;
                     case "/Navigation/MoreSetting":
                         break;
@@ -314,8 +312,10 @@ public class ReaderActivity extends Activity {
                     case "/Font/IncreaseSpacing":
                         break;
                     case "/Font/Gamma":
+                        adjustContrast();
                         break;
                     case "/Font/Embolden":
+                        adjustEmbolden();
                         break;
                     case "/Font/FontReflow":
                         break;
@@ -391,6 +391,13 @@ public class ReaderActivity extends Activity {
         JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(this, R.raw.reader_menu));
         JSONArray array = json.getJSONArray("menu_list");
         return ReaderSideMenuItem.createFromJSON(this, array);
+    }
+
+    private void resetEventListener() {
+        if (selectionZoomAreaReceiver != null) {
+            unregisterReceiver(selectionZoomAreaReceiver);
+            selectionZoomAreaReceiver = null;
+        }
     }
 
     private void clearCanvas(SurfaceHolder holder) {
@@ -474,29 +481,178 @@ public class ReaderActivity extends Activity {
         });
     }
 
+    private void scaleUp() {
+        try {
+            float actualScale = reader.getReaderLayoutManager().getActualScale();
+            scaleByValue(ReaderScalePresets.scaleUp(actualScale));
+        } catch (ReaderException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void scaleDown() {
+        try {
+            float actualScale = reader.getReaderLayoutManager().getActualScale();
+            scaleByValue(ReaderScalePresets.scaleDown(actualScale));
+        } catch (ReaderException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void scaleByValue(float scale) {
+        final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, displayWidth() / 2, displayHeight() / 2);
+        submitRenderRequest(request);
+    }
+
     private void scaleToPage() {
-        final ScaleToPageRequest renderRequest = new ScaleToPageRequest(getCurrentPageName());
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                handleRenderRequestFinished(request, e);
-            }
-        });
+        final ScaleToPageRequest request = new ScaleToPageRequest(getCurrentPageName());
+        submitRenderRequest(request);
     }
 
     private void scaleToWidth() {
-        final ScaleToWidthRequest renderRequest = new ScaleToWidthRequest(getCurrentPageName());
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
+        final ScaleToWidthRequest request = new ScaleToWidthRequest(getCurrentPageName());
+        submitRenderRequest(request);
+    }
+
+    private void showSelectionActivity(final CropArgs args, final CropImage.SelectionCallback callback) {
+        Uri outputUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "cropped.png"));
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(CropImage.INTENT_ACTION_SELECT_ZOOM_RECT);
+
+        if (selectionZoomAreaReceiver != null) {
+            unregisterReceiver(selectionZoomAreaReceiver);
+        }
+        selectionZoomAreaReceiver = new CropImageResultReceiver() {
             @Override
-            public void done(BaseRequest request, Exception e) {
-                handleRenderRequestFinished(request, e);
+            public void onSelectionFinished(final CropArgs navigationArgs) {
+                if (callback != null) {
+                    callback.onSelectionFinished(navigationArgs);
+                }
+            }
+        };
+        ReaderActivity.this.registerReceiver(selectionZoomAreaReceiver, filter);
+        CropImage crop = new CropImage(reader.getRenderBitmap().getBitmap());
+        crop.output(outputUri).start(ReaderActivity.this, false, false, false, args);
+    }
+
+    private void scaleByRect() {
+        CropArgs args = new CropArgs();
+        args.manualCropPage = true;
+
+        showSelectionActivity(args, new CropImage.SelectionCallback() {
+            @Override
+            public void onSelectionFinished(CropArgs args) {
+                scaleByRect(new RectF(args.selectionRect));
             }
         });
     }
 
     private void scaleByRect(RectF rect) {
-        final ScaleByRectRequest renderRequest = new ScaleByRectRequest(getCurrentPageName(), rect);
-        reader.submitRequest(this, renderRequest, new BaseCallback() {
+        final ScaleByRectRequest request = new ScaleByRectRequest(getCurrentPageName(), rect);
+        submitRenderRequest(request);
+    }
+
+    private void switchNavigationToArticleMode() {
+        NavigationArgs args = new NavigationArgs();
+        RectF limit = new RectF(0, 0, 0, 0);
+        args.columnsLeftToRight(NavigationArgs.Type.ALL, 2, 2, limit);
+        switchNavigationMode(args);
+    }
+
+    private void switchNavigationToComicMode() {
+        NavigationArgs args = new NavigationArgs();
+        RectF limit = new RectF(0, 0, 0, 0);
+        args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
+        switchNavigationMode(args);
+    }
+
+    private void switchNavigationMode(NavigationArgs args) {
+        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
+        submitRenderRequest(request);
+    }
+
+    private void resetNavigationMode() {
+        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, new NavigationArgs());
+        submitRenderRequest(request);
+    }
+
+    private void adjustContrast() {
+        showContrastDialog();
+    }
+
+    public DialogSetValue showContrastDialog() {
+        if (contrastDialog == null) {
+            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
+                @Override
+                public void valueChange(int newValue) {
+                    GammaCorrectionRequest request = new GammaCorrectionRequest(newValue);
+                    submitRenderRequest(request);
+                }
+
+                @Override
+                public void done(boolean isValueChange, int oldValue, int newValue) {
+                    if (!isValueChange) {
+                        GammaCorrectionRequest request = new GammaCorrectionRequest(oldValue);
+                        submitRenderRequest(request);
+                    }
+                    hideContrastDialog();
+                }
+            };
+            float current = reader.getBaseOptions().getGammaLevel();
+            contrastDialog = new DialogSetValue(ReaderActivity.this, (int)current, BaseOptions.minGammaLevel(), BaseOptions.maxGammaLevel(), true, true,
+                    getString(R.string.contrast), getString(R.string.contrast_level), callback);
+
+        }
+        contrastDialog.show();
+        return contrastDialog;
+    }
+
+    private void hideContrastDialog() {
+        if (contrastDialog != null) {
+            contrastDialog.hide();
+            contrastDialog = null;
+        }
+    }
+
+    private void adjustEmbolden() {
+        showEmboldenDialog();
+    }
+
+    public DialogSetValue showEmboldenDialog()  {
+        if (emboldenDialog == null) {
+            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
+                @Override
+                public void valueChange(int newValue) {
+                    EmboldenGlyphRequest request = new EmboldenGlyphRequest(newValue);
+                    submitRenderRequest(request);
+                }
+
+                @Override
+                public void done(boolean isValueChange, int oldValue, int newValue) {
+                    if (!isValueChange) {
+                        EmboldenGlyphRequest request = new EmboldenGlyphRequest(oldValue);
+                        submitRenderRequest(request);
+                    }
+                    hideEmboldenDialog();
+                }
+            };
+            int current = reader.getBaseOptions().getEmboldenLevel();
+            emboldenDialog = new DialogSetValue(ReaderActivity.this, current, BaseOptions.minEmboldenLevel(), BaseOptions.maxEmboldenLevel(), true, true,
+                    getString(R.string.embolden), getString(R.string.embolden_level), callback);
+        }
+        emboldenDialog.show();
+        return emboldenDialog;
+    }
+
+    private void hideEmboldenDialog() {
+        if (emboldenDialog != null) {
+            emboldenDialog.hide();
+            emboldenDialog = null;
+        }
+    }
+
+    private void submitRenderRequest(BaseRequest request) {
+        reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 handleRenderRequestFinished(request, e);
@@ -508,7 +664,13 @@ public class ReaderActivity extends Activity {
         if (e != null) {
             return;
         }
-        drawPage(request.getRenderBitmap().getBitmap());
+        drawPage(reader.getViewportBitmap().getBitmap());
+    }
+
+    public void redrawPage() {
+        if (reader != null) {
+            submitRenderRequest(new RenderRequest());
+        }
     }
 
     private void drawPage(Bitmap bitmap) {
@@ -518,7 +680,9 @@ public class ReaderActivity extends Activity {
         }
         Paint paint = new Paint();
         drawBackground(canvas, paint);
-        drawBitmap(canvas, paint, bitmap);
+        if (bitmap != null) {
+            drawBitmap(canvas, paint, bitmap);
+        }
         holder.unlockCanvasAndPost(canvas);
     }
 

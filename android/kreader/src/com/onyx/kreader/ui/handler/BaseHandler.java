@@ -102,7 +102,7 @@ public class BaseHandler  {
         } else if (e.getX() > activity.displayWidth() * 2 / 3) {
             activity.nextScreen();
         } else if (e.getX() < activity.displayWidth() / 3) {
-            activity.previousScreen();
+            activity.prevScreen();
         } else {
             activity.showReaderMenu();
         }

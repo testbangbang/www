@@ -7,10 +7,12 @@ import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
+import com.onyx.kreader.utils.ImageUtils;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -21,6 +23,7 @@ public class ReaderHelper {
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPluginOptionsImpl pluginOptions;
     private ReaderDocumentOptions documentOptions;
+    private BaseOptions baseOptions = new BaseOptions();
 
     private ReaderPlugin plugin;
     private ReaderDocument document;
@@ -30,6 +33,8 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
     private ReaderBitmapImpl renderBitmap;
+    // copy of renderBitmap, to be used by UI thread
+    private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
     private ReaderCacheManager readerCacheManager = new ReaderCacheManager();
@@ -109,6 +114,17 @@ public class ReaderHelper {
         return renderBitmap;
     }
 
+    public final ReaderBitmapImpl getViewportBitmap() {
+        return viewportBitmap;
+    }
+
+    public void copyRenderBitmapToViewport() {
+        if (renderBitmap != null && renderBitmap.getBitmap() != null &&
+                !renderBitmap.getBitmap().isRecycled()) {
+            viewportBitmap.copyFrom(renderBitmap);
+        }
+    }
+
     public ReaderPlugin getPlugin() {
         return plugin;
     }
@@ -147,6 +163,10 @@ public class ReaderHelper {
         return viewOptions;
     }
 
+    public BaseOptions getBaseOptions() {
+        return baseOptions;
+    }
+
     public ReaderDocument getDocument() {
         return document;
     }
@@ -171,5 +191,13 @@ public class ReaderHelper {
         return searchManager;
     }
 
+    public void applyPostBitmapProcess(ReaderBitmap bitmap) {
+        if (getBaseOptions().isGamaCorrectionEnabled()) {
+            ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getBaseOptions().getGammaLevel());
+        }
+        if (getBaseOptions().isEmboldenLevelEnabled()) {
+            ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getBaseOptions().getEmboldenLevel());
+        }
+    }
 
 }

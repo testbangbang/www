@@ -1,8 +1,7 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.host.options.ReaderOptions;
+import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -10,10 +9,10 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class RestoreRequest extends BaseRequest {
 
-    private ReaderOptions readerOptions;
+    private BaseOptions baseOptions;
 
-    public RestoreRequest(final ReaderOptions options) {
-        readerOptions = options;
+    public RestoreRequest(final BaseOptions options) {
+        baseOptions = options;
     }
 
 
