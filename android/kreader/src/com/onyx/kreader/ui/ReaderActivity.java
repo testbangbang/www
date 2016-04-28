@@ -180,10 +180,30 @@ public class ReaderActivity extends Activity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initActivity() {
+        initActionBar();
         initSurfaceView();
         initReaderMenu();
         initHandlerManager();
+    }
+
+    private void initActionBar() {
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowHomeEnabled(true);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void initSurfaceView() {
