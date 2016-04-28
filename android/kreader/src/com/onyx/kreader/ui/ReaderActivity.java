@@ -492,13 +492,7 @@ public class ReaderActivity extends Activity {
 
     private void gotoPage(String pageName) {
         BaseRequest gotoPosition = new GotoLocationRequest(pageName);
-        reader.submitRequest(this, gotoPosition, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                assert(e == null);
-                scaleToPage();
-            }
-        });
+        submitRenderRequest(gotoPosition);
     }
 
     private void scaleUp() {
