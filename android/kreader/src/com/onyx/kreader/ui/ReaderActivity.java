@@ -100,8 +100,8 @@ public class ReaderActivity extends Activity {
     }
 
     public boolean tryHitTest(float x, float y) {
-        if (readerMenu.isShown()) {
-            readerMenu.hide();
+        if (getReaderMenu().isShown()) {
+            getReaderMenu().hide();
             return true;
         }
         return false;
@@ -741,11 +741,11 @@ public class ReaderActivity extends Activity {
     }
 
     private boolean hasPopupWindow() {
-        return readerMenu.isShown();
+        return getReaderMenu().isShown();
     }
 
     private void hideAllPopupMenu() {
-        readerMenu.hide();
+        getReaderMenu().hide();
     }
 
     protected boolean askForClose() {
@@ -770,11 +770,19 @@ public class ReaderActivity extends Activity {
         return handlerManager.onKeyUp(this, keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
+    private ReaderMenu getReaderMenu() {
+        if (readerMenu == null) {
+            // delay init of reader menu to speed up activity startup
+            initReaderMenu();
+        }
+        return readerMenu;
+    }
+
     public final HandlerManager getHandlerManager() {
         return handlerManager;
     }
 
     public void showReaderMenu() {
-        readerMenu.show();
+        getReaderMenu().show();
     }
 }
