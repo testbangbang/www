@@ -160,14 +160,14 @@ public abstract class BaseRequest {
         reader.getReaderHelper().clearAbortFlag();
 
         // store render bitmap store to local flag to avoid multi-thread problem
-        final RefValue<Boolean> needCopy = new RefValue<>(reader.isRenderBitmapDirty());
+        final boolean needCopy = reader.isRenderBitmapDirty();
         final RefValue<Boolean> waitCopy = new RefValue<>(true);
 
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if (callback != null) {
-                    if (needCopy.getValue()) {
+                    if (needCopy) {
                         synchronized (bitmapCopyLock) {
                             try {
                                 reader.copyRenderBitmapToViewport();
@@ -190,7 +190,7 @@ public abstract class BaseRequest {
             runnable.run();
         }
 
-        if (needCopy.getValue()) {
+        if (needCopy) {
             synchronized (bitmapCopyLock) {
                 try {
                     while (waitCopy.getValue()) {
