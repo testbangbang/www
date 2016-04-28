@@ -222,6 +222,14 @@ public class Reader {
         return getReaderHelper().getRenderBitmap();
     }
 
+    public boolean isRenderBitmapDirty() {
+        return getReaderHelper().isRenderBitmapDirty();
+    }
+
+    public void setRenderBitmapDirty(boolean dirty) {
+        getReaderHelper().setRenderBitmapDirty(dirty);
+    }
+
     public ReaderBitmap getViewportBitmap() {
         return getReaderHelper().getViewportBitmap();
     }

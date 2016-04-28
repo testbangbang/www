@@ -1,7 +1,6 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
-import android.util.Log;
 import com.onyx.android.cropimage.data.RefValue;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -160,20 +159,25 @@ public abstract class BaseRequest {
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
 
+        // store render bitmap store to local flag to avoid multi-thread problem
+        final RefValue<Boolean> needCopy = new RefValue<>(reader.isRenderBitmapDirty());
         final RefValue<Boolean> waitCopy = new RefValue<>(true);
 
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if (callback != null) {
-                    synchronized (bitmapCopyLock) {
-                        try {
-                            reader.copyRenderBitmapToViewport();
-                        } catch (Exception ex) {
-                            setException(ex);
-                        } finally {
-                            waitCopy.setValue(false);
-                            bitmapCopyLock.notify();
+                    if (needCopy.getValue()) {
+                        synchronized (bitmapCopyLock) {
+                            try {
+                                reader.copyRenderBitmapToViewport();
+                                reader.setRenderBitmapDirty(false);
+                            } catch (Exception ex) {
+                                setException(ex);
+                            } finally {
+                                waitCopy.setValue(false);
+                                bitmapCopyLock.notify();
+                            }
                         }
                     }
                     callback.done(BaseRequest.this, getException());
@@ -186,13 +190,15 @@ public abstract class BaseRequest {
             runnable.run();
         }
 
-        synchronized (bitmapCopyLock) {
-            try {
-                while (waitCopy.getValue()) {
-                    bitmapCopyLock.wait();
+        if (needCopy.getValue()) {
+            synchronized (bitmapCopyLock) {
+                try {
+                    while (waitCopy.getValue()) {
+                        bitmapCopyLock.wait();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
 
