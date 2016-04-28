@@ -100,8 +100,8 @@ public class ReaderActivity extends Activity {
     }
 
     public boolean tryHitTest(float x, float y) {
-        if (readerMenu.isShown()) {
-            readerMenu.hide();
+        if (getReaderMenu().isShown()) {
+            getReaderMenu().hide();
             return true;
         }
         return false;
@@ -180,10 +180,30 @@ public class ReaderActivity extends Activity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initActivity() {
+        initActionBar();
         initSurfaceView();
         initReaderMenu();
         initHandlerManager();
+    }
+
+    private void initActionBar() {
+        if (getActionBar() != null) {
+            getActionBar().setDisplayShowHomeEnabled(true);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void initSurfaceView() {
@@ -461,7 +481,7 @@ public class ReaderActivity extends Activity {
                 if (e != null) {
                     return;
                 }
-                gotoPage(0);
+                gotoPage(reader.getNavigator().getInitPosition());
             }
         });
     }
@@ -472,13 +492,7 @@ public class ReaderActivity extends Activity {
 
     private void gotoPage(String pageName) {
         BaseRequest gotoPosition = new GotoLocationRequest(pageName);
-        reader.submitRequest(this, gotoPosition, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                assert(e == null);
-                scaleToPage();
-            }
-        });
+        submitRenderRequest(gotoPosition);
     }
 
     private void scaleUp() {
@@ -721,11 +735,11 @@ public class ReaderActivity extends Activity {
     }
 
     private boolean hasPopupWindow() {
-        return readerMenu.isShown();
+        return getReaderMenu().isShown();
     }
 
     private void hideAllPopupMenu() {
-        readerMenu.hide();
+        getReaderMenu().hide();
     }
 
     protected boolean askForClose() {
@@ -750,11 +764,19 @@ public class ReaderActivity extends Activity {
         return handlerManager.onKeyUp(this, keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
+    private ReaderMenu getReaderMenu() {
+        if (readerMenu == null) {
+            // delay init of reader menu to speed up activity startup
+            initReaderMenu();
+        }
+        return readerMenu;
+    }
+
     public final HandlerManager getHandlerManager() {
         return handlerManager;
     }
 
     public void showReaderMenu() {
-        readerMenu.show();
+        getReaderMenu().show();
     }
 }

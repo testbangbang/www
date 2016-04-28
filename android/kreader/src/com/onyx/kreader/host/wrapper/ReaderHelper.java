@@ -33,6 +33,7 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
     private ReaderBitmapImpl renderBitmap;
+    private boolean renderBitmapDirty = false;
     // copy of renderBitmap, to be used by UI thread
     private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
     private ReaderLayoutManager readerLayoutManager;
@@ -112,6 +113,14 @@ public class ReaderHelper {
     public final ReaderBitmapImpl getRenderBitmap() {
         updateRenderBitmap(viewOptions.getViewWidth(), viewOptions.getViewHeight());
         return renderBitmap;
+    }
+
+    public boolean isRenderBitmapDirty() {
+        return renderBitmapDirty;
+    }
+
+    public void setRenderBitmapDirty(boolean dirty) {
+        renderBitmapDirty = dirty;
     }
 
     public final ReaderBitmapImpl getViewportBitmap() {

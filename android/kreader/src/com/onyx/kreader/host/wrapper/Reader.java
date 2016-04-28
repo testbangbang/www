@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 
 /**
@@ -105,7 +106,14 @@ public class Reader {
 
     private ExecutorService getThreadPool()   {
         if (threadPool == null) {
-            threadPool = Executors.newSingleThreadExecutor();
+            threadPool = Executors.newSingleThreadExecutor(new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r);
+                    t.setPriority(Thread.MAX_PRIORITY);
+                    return t;
+                }
+            });
         }
         return threadPool;
     }
@@ -220,6 +228,14 @@ public class Reader {
 
     public ReaderBitmap getRenderBitmap() {
         return getReaderHelper().getRenderBitmap();
+    }
+
+    public boolean isRenderBitmapDirty() {
+        return getReaderHelper().isRenderBitmapDirty();
+    }
+
+    public void setRenderBitmapDirty(boolean dirty) {
+        getReaderHelper().setRenderBitmapDirty(dirty);
     }
 
     public ReaderBitmap getViewportBitmap() {

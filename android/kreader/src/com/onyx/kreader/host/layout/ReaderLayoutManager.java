@@ -260,6 +260,7 @@ public class ReaderLayoutManager {
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
         boolean ret = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo);
         reader.getReaderHelper().applyPostBitmapProcess(bitmap);
+        reader.getReaderHelper().setRenderBitmapDirty(true);
         return ret;
     }
 
