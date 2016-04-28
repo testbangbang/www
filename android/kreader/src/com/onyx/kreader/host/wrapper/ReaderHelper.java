@@ -33,7 +33,7 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
     private ReaderBitmapImpl renderBitmap;
-    private boolean renderBitmapDirty;
+    private boolean renderBitmapDirty = false;
     // copy of renderBitmap, to be used by UI thread
     private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
     private ReaderLayoutManager readerLayoutManager;
