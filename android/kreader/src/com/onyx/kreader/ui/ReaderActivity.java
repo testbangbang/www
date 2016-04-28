@@ -461,7 +461,7 @@ public class ReaderActivity extends Activity {
                 if (e != null) {
                     return;
                 }
-                gotoPage(0);
+                gotoPage(reader.getNavigator().getInitPosition());
             }
         });
     }
