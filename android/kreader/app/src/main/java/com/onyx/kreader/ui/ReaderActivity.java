@@ -358,6 +358,7 @@ public class ReaderActivity extends Activity {
 
     private void rotateScreen(int rotationOperation) {
         int orientation = computeNewRotation(getRequestedOrientation(), rotationOperation);
+        //noinspection ResourceType
         setRequestedOrientation(orientation);
     }
 
