@@ -1,0 +1,14 @@
+.idea/
+.vs/
+.gradle/
+ARM/
+gen/
+obj/
+out/
+build/
+*.iml
+kepler-ndk.*
+*.config
+*.creator*
+*.files
+*.includes
