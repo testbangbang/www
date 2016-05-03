@@ -22,7 +22,7 @@ android {
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                 commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath
             } else {
-                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath
+                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, '-j10'
             }
         }
         
