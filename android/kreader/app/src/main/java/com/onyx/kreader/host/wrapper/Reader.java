@@ -234,16 +234,12 @@ public class Reader {
         return getReaderHelper().isRenderBitmapDirty();
     }
 
-    public void setRenderBitmapDirty(boolean dirty) {
-        getReaderHelper().setRenderBitmapDirty(dirty);
-    }
-
     public ReaderBitmap getViewportBitmap() {
         return getReaderHelper().getViewportBitmap();
     }
 
-    public void copyRenderBitmapToViewport() {
-        getReaderHelper().copyRenderBitmapToViewport();
+    public ReaderHelper.BitmapCopyCoordinator getBitmapCopyCoordinator() {
+        return getReaderHelper().getBitmapCopyCoordinator();
     }
 
 }

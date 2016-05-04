@@ -27,9 +27,6 @@ public abstract class BaseRequest {
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
 
-    // help to safely copy render bitmap to viewport bitmap
-    private static final Object bitmapCopyLock = new Object();
-
     static public int generateRequestSequence() {
         globalRequestSequence += 1;
         return globalRequestSequence;
@@ -161,25 +158,12 @@ public abstract class BaseRequest {
 
         // store render bitmap store to local flag to avoid multi-thread problem
         final boolean needCopy = reader.isRenderBitmapDirty();
-        final RefValue<Boolean> waitCopy = new RefValue<>(true);
 
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if (callback != null) {
-                    if (needCopy) {
-                        synchronized (bitmapCopyLock) {
-                            try {
-                                reader.copyRenderBitmapToViewport();
-                                reader.setRenderBitmapDirty(false);
-                            } catch (Exception ex) {
-                                setException(ex);
-                            } finally {
-                                waitCopy.setValue(false);
-                                bitmapCopyLock.notify();
-                            }
-                        }
-                    }
+                    reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
                     callback.done(BaseRequest.this, getException());
                 }
             }};
@@ -190,17 +174,7 @@ public abstract class BaseRequest {
             runnable.run();
         }
 
-        if (needCopy) {
-            synchronized (bitmapCopyLock) {
-                try {
-                    while (waitCopy.getValue()) {
-                        bitmapCopyLock.wait();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        reader.getBitmapCopyCoordinator().waitCopy();
 
         reader.releaseWakeLock();
     }
