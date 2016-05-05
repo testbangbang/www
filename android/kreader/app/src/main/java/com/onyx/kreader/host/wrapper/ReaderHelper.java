@@ -44,12 +44,8 @@ public class ReaderHelper {
 
         public void waitCopy() {
             try {
-                while (true) {
-                    lock.lock();
-                    if (!renderBitmapDirty) {
-                        break;
-                    }
-
+                lock.lock();
+                while (renderBitmapDirty) {
                     condition.await();
                 }
             } catch (InterruptedException e) {
