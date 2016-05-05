@@ -14,11 +14,47 @@ import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 import com.onyx.kreader.utils.ImageUtils;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Created by zhuzeng on 10/5/15.
  * Save all helper data objects in this class.
  */
 public class ReaderHelper {
+
+    public class BitmapCopyCoordinator {
+        private ReentrantLock lock = new ReentrantLock();
+        Condition condition = lock.newCondition();
+        private boolean renderBitmapDirty = false;
+
+        public void copyRenderBitmapToViewport() {
+            try {
+                lock.lock();
+                if (!renderBitmapDirty) {
+                    return;
+                }
+                ReaderHelper.this.copyRenderBitmapToViewportImpl();
+                renderBitmapDirty = false;
+                condition.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        public void waitCopy() {
+            try {
+                lock.lock();
+                while (renderBitmapDirty) {
+                    condition.await();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
 
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPluginOptionsImpl pluginOptions;
@@ -33,9 +69,9 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
     private ReaderBitmapImpl renderBitmap;
-    private boolean renderBitmapDirty = false;
     // copy of renderBitmap, to be used by UI thread
     private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
+    private BitmapCopyCoordinator bitmapCopyCoordinator = new BitmapCopyCoordinator();
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
     private ReaderCacheManager readerCacheManager = new ReaderCacheManager();
@@ -116,22 +152,19 @@ public class ReaderHelper {
     }
 
     public boolean isRenderBitmapDirty() {
-        return renderBitmapDirty;
+        return bitmapCopyCoordinator.renderBitmapDirty;
     }
 
     public void setRenderBitmapDirty(boolean dirty) {
-        renderBitmapDirty = dirty;
+        bitmapCopyCoordinator.renderBitmapDirty = dirty;
     }
 
     public final ReaderBitmapImpl getViewportBitmap() {
         return viewportBitmap;
     }
 
-    public void copyRenderBitmapToViewport() {
-        if (renderBitmap != null && renderBitmap.getBitmap() != null &&
-                !renderBitmap.getBitmap().isRecycled()) {
-            viewportBitmap.copyFrom(renderBitmap);
-        }
+    public BitmapCopyCoordinator getBitmapCopyCoordinator() {
+        return bitmapCopyCoordinator;
     }
 
     public ReaderPlugin getPlugin() {
@@ -209,4 +242,10 @@ public class ReaderHelper {
         }
     }
 
+    private void copyRenderBitmapToViewportImpl() {
+        if (renderBitmap != null && renderBitmap.getBitmap() != null &&
+                !renderBitmap.getBitmap().isRecycled()) {
+            viewportBitmap.copyFrom(renderBitmap);
+        }
+    }
 }
