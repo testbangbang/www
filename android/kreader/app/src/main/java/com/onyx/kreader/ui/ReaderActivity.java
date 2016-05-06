@@ -23,6 +23,7 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.device.DeviceController;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -73,6 +74,7 @@ public class ReaderActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setFullScreen(true);
         setContentView(R.layout.activity_reader);
         initActivity();
     }
@@ -348,6 +350,9 @@ public class ReaderActivity extends Activity {
                     case "/Font/Scribble":
                         break;
                     case "/Font/Export":
+                        break;
+                    case "/Exit":
+                        onBackPressed();
                         break;
                 }
             }
@@ -782,5 +787,9 @@ public class ReaderActivity extends Activity {
 
     public void showReaderMenu() {
         getReaderMenu().show();
+    }
+
+    public void setFullScreen(boolean fullScreen) {
+        DeviceController.create(this).setFullScreen(fullScreen);
     }
 }
