@@ -65,7 +65,7 @@ public class ReaderActivity extends Activity {
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
 
-    private boolean preRender = false;
+    private boolean preRender = true;
     private CropImageResultReceiver selectionZoomAreaReceiver;
     private DialogSetValue contrastDialog;
     private DialogSetValue emboldenDialog;
@@ -671,6 +671,9 @@ public class ReaderActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 handleRenderRequestFinished(request, e);
+                if (preRender) {
+                    preRenderNext();
+                }
             }
         });
     }
