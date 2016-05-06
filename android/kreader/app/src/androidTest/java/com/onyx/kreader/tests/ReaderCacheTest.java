@@ -1,19 +1,15 @@
 package com.onyx.kreader.tests;
 
 import android.graphics.Bitmap;
-import android.graphics.PointF;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
-import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
-import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;
-import com.onyx.kreader.host.wrapper.ReaderCacheManager;
 import com.onyx.kreader.utils.TestUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,12 +39,15 @@ public class ReaderCacheTest extends ActivityInstrumentationTestCase2<ReaderTest
     }
 
     public void testCacheKey() throws Exception {
-        ReaderCacheManager cacheManager = new ReaderCacheManager();
+        BitmapLruCache.Builder builder = new BitmapLruCache.Builder();
+        builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
+        builder.setDiskCacheEnabled(true).setDiskCacheLocation(getActivity().getCacheDir());
+        BitmapLruCache cache = builder.build();
         List<PageInfo> list = randPageList();
         final String key = PositionSnapshot.cacheKey(list);
         ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(100, 100, Bitmap.Config.ARGB_8888);
-        assertNotNull(cacheManager.addBitmap(key, bitmap));
-        assertNotNull(cacheManager.getBitmap(key));
+        assertNotNull(cache.put(key, bitmap.getBitmap()));
+        assertNotNull(cache.get(key));
     }
 
     public void testViewport1() {
