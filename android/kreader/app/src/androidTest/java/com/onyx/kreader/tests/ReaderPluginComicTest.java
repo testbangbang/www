@@ -43,7 +43,7 @@ public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<Read
         File file = new File(filePath);
         assertTrue(file.exists() && file.isFile());
         UnrarJniWrapper wrapper = new UnrarJniWrapper();
-        assertTrue(wrapper.open(filePath));
+        assertTrue(wrapper.openRAR(filePath));
         if (!StringUtils.isNullOrEmpty(password)) {
             wrapper.setPassword(password);
         }
@@ -55,7 +55,7 @@ public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<Read
             assertNotNull(data);
             Log.i(TAG, "extracting entry: " + e + ", size: " + data.length);
         }
-        wrapper.close();
+        wrapper.closeRAR();
     }
 
     public void testRarEncrypted() {
