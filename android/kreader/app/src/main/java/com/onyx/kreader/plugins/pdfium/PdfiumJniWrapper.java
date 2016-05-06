@@ -61,11 +61,8 @@ public class PdfiumJniWrapper {
     }
 
     public boolean openDocument(final String path, final String password) {
-        boolean succ = nativeOpenDocument(path, password) == 0;
-        if (succ) {
-            filePath = path;
-        }
-        return succ;
+        filePath = path;
+        return nativeOpenDocument(path, password) == 0;
     }
 
     public void closeDocument() {
