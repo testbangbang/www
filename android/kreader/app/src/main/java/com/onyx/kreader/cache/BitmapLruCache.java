@@ -19,7 +19,7 @@ public class BitmapLruCache implements Closeable {
 
     public static class Builder {
         private static final int MEGABYTE = 1024 * 1024;
-        private static final float DEFAULT_MEMORY_CACHE_HEAP_RATIO = 1f / 2f;
+        private static final float DEFAULT_MEMORY_CACHE_HEAP_RATIO = 1f / 4f;
         private static final float MAX_MEMORY_CACHE_HEAP_RATIO = 0.75f;
         private static final int DEFAULT_DISK_CACHE_MAX_SIZE_MB = 100;
         private static final int DEFAULT_MEM_CACHE_MAX_SIZE_MB = 30;
