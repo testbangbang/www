@@ -2,9 +2,7 @@ package com.onyx.kreader.host.impl;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Rect;
 import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.utils.TimeUtils;
 
 /**
  * Created by zhuzeng on 10/4/15.
@@ -20,13 +18,17 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     public ReaderBitmapImpl() {
         super();
-        recycleBitmap();
     }
 
     public ReaderBitmapImpl(int width, int height, Bitmap.Config config) {
         super();
-        recycleBitmap();
         bitmap = Bitmap.createBitmap(width, height, config);
+    }
+
+    public void clear() {
+        if (bitmap != null) {
+            bitmap.eraseColor(Color.WHITE);
+        }
     }
 
     public void recycleBitmap() {
@@ -47,31 +49,8 @@ public class ReaderBitmapImpl implements ReaderBitmap {
         }
     }
 
-    public long copyFrom(final ReaderBitmap src) {
-        long start = TimeUtils.nanoTime();
-        if (bitmap != null) {
-            bitmap.recycle();
-        }
-        bitmap = src.getBitmap().copy(src.getBitmap().getConfig(), true);
-        long end = TimeUtils.nanoTime();
-        return (end - start);
+    public void copyFrom(final Bitmap src) {
+        recycleBitmap();
+        bitmap = src.copy(src.getConfig(), true);
     }
-
-    public void copy(final ReaderBitmap source, final ReaderBitmap target, final Rect rect) {
-    }
-
-    public void clear() {
-        getBitmap().eraseColor(Color.WHITE);
-    }
-
-    public boolean replaceWithNewBitmap(final Bitmap src) {
-        if (src == null || src == bitmap) {
-            return false;
-        }
-        bitmap.recycle();
-        bitmap = src;
-        return true;
-    }
-
-
 }
