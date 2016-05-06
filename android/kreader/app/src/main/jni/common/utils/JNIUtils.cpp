@@ -9,7 +9,7 @@
 
 
 
-JNIUtils::JNIUtils(JNIEnv * env) : myEnv(env) {
+JNIUtils::JNIUtils(JNIEnv * env) : myEnv(env), clazz(0) {
 }
 
 bool JNIUtils::findClass(const char *className)
