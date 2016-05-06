@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
@@ -222,8 +223,8 @@ public class Reader {
         return getReaderHelper().getReaderLayoutManager();
     }
 
-    public ReaderCacheManager getReaderCacheManager() {
-        return getReaderHelper().getReaderCacheManager();
+    public BitmapLruCache getBitmapLruCache() {
+        return getReaderHelper().getBitmapLruCache();
     }
 
     public ReaderBitmap getRenderBitmap() {

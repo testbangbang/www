@@ -3,6 +3,7 @@ package com.onyx.kreader.host.math;
 import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
 import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.kreader.utils.HashUtils;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class PositionSnapshot {
     }
 
     static public String cacheKey(final List<PageInfo> list) {
-        return JSON.toJSONString(list);
+        return HashUtils.md5(JSON.toJSONString(list));
     }
 
     public String key() {
