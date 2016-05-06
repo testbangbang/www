@@ -38,7 +38,7 @@ public class ComicArchiveRar implements ComicArchive {
 
     @Override
     public boolean open(String path, String password) {
-        if (!wrapper.open(path)) {
+        if (!wrapper.openRAR(path)) {
             return false;
         }
         if (!StringUtils.isNullOrEmpty(password)) {
@@ -73,6 +73,7 @@ public class ComicArchiveRar implements ComicArchive {
 
     @Override
     public void close() {
+        wrapper.closeRAR();
         arcPath = null;
         entries = null;
     }

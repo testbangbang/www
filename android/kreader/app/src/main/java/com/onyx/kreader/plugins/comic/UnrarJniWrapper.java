@@ -1,5 +1,7 @@
 package com.onyx.kreader.plugins.comic;
 
+import com.onyx.kreader.utils.StringUtils;
+
 /**
  * Created by joy on 3/16/16.
  */
@@ -9,10 +11,34 @@ public class UnrarJniWrapper {
         System.loadLibrary("unrar_jni");
     }
 
-    public native boolean open(String filePath);
+    private native boolean open(String filePath);
+    private native void close();
+
     public native boolean isEncrypted();
     public native void setPassword(String password);
     public native String[] getEntries();
     public native byte[] extractEntryData(String entryName);
-    public native void close();
+
+    private String filePath = null;
+
+    @Override
+    public int hashCode() {
+        if (StringUtils.isNotBlank(filePath)) {
+            return filePath.hashCode();
+        }
+        return super.hashCode();
+    }
+
+    public boolean openRAR(String path) {
+        if (open(path)) {
+            filePath = path;
+            return true;
+        }
+        return false;
+    }
+
+    public void closeRAR() {
+        close();
+        filePath = null;
+    }
 }

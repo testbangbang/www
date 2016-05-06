@@ -58,6 +58,15 @@ JNIUtils::~JNIUtils() {
     }
 }
 
+jint JNIUtils::hashcode(const jobject object)
+{
+    jclass clazz = myEnv->GetObjectClass(object);
+    jmethodID methodIDHashcode = myEnv->GetMethodID(clazz, "hashCode", "()I");
+    jint hashCode = myEnv->CallIntMethod(object, methodIDHashcode);
+    myEnv->DeleteLocalRef(clazz);
+    return hashCode;
+}
+
 void JNIUtils::invokeStaticMethod(JNIEnv *env, ...) {
     va_list args;
     va_start(args, env);

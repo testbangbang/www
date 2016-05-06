@@ -63,8 +63,8 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
             docPassword = documentOptions.getDocumentPassword();
             archivePassword = documentOptions.getDocumentPassword();
         }
-        long ret = getPluginImpl().nativeOpenDocument(path, docPassword);
-        if (ret == 0) {
+        boolean succ = getPluginImpl().openDocument(path, docPassword);
+        if (succ) {
             return this;
         }
         return null;
@@ -113,7 +113,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public void close() {
-        getPluginImpl().nativeCloseDocument();
+        getPluginImpl().closeDocument();
     }
 
     public ReaderViewOptions getViewOptions() {

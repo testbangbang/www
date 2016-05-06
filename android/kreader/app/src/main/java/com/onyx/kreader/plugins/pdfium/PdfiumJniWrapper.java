@@ -46,6 +46,32 @@ public class PdfiumJniWrapper {
 
     public native byte [] nativeGetPageText(int page);
 
+    private String filePath = null;
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    @Override
+    public int hashCode() {
+        if (StringUtils.isNotBlank(filePath)) {
+            return filePath.hashCode();
+        }
+        return super.hashCode();
+    }
+
+    public boolean openDocument(final String path, final String password) {
+        boolean succ = nativeOpenDocument(path, password) == 0;
+        if (succ) {
+            filePath = path;
+        }
+        return succ;
+    }
+
+    public void closeDocument() {
+        nativeCloseDocument();
+        filePath = null;
+    }
 
     public String metadataString(final String tag) {
         byte [] data  = new byte[4096];

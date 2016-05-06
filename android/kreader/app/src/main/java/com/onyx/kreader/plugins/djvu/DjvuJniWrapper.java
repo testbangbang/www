@@ -3,6 +3,7 @@ package com.onyx.kreader.plugins.djvu;
 import android.graphics.Bitmap;
 
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +40,14 @@ public class DjvuJniWrapper {
 
     public String getFilePath() {
         return filePath;
+    }
+
+    @Override
+    public int hashCode() {
+        if (StringUtils.isNotBlank(filePath)) {
+            return filePath.hashCode();
+        }
+        return super.hashCode();
     }
 
     public int getPageCount() {

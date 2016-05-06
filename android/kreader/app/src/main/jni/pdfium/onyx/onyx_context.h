@@ -136,36 +136,36 @@ private:
     static PluginContextHolder<OnyxPdfiumContext> contextHolder;
 
 public:
-    static OnyxPdfiumContext * getContext(jobject thiz);
-    static OnyxPdfiumContext * createContext(jobject thiz, FPDF_DOCUMENT document);
-    static void releaseContext(jobject thiz);
+    static OnyxPdfiumContext * getContext(JNIEnv *env, jobject thiz);
+    static OnyxPdfiumContext * createContext(JNIEnv *env, jobject thiz, FPDF_DOCUMENT document);
+    static void releaseContext(JNIEnv *env, jobject thiz);
 
-    static FPDF_DOCUMENT getDocument(jobject thiz) {
-        OnyxPdfiumContext * context = getContext(thiz);
+    static FPDF_DOCUMENT getDocument(JNIEnv *env, jobject thiz) {
+        OnyxPdfiumContext * context = getContext(env, thiz);
         if (context == NULL) {
             return NULL;
         }
         return context->getDocument();
     }
 
-    static FPDF_BITMAP getBitmap(jobject thiz, int width, int height, void * pixels, int stride) {
-        OnyxPdfiumContext * context = getContext(thiz);
+    static FPDF_BITMAP getBitmap(JNIEnv *env, jobject thiz, int width, int height, void * pixels, int stride) {
+        OnyxPdfiumContext * context = getContext(env, thiz);
         if (context == NULL) {
             return NULL;
         }
         return context->getBitmap(width, height, pixels, stride);
     }
 
-    static FPDF_PAGE getPage(jobject thiz, int pageIndex) {
-        OnyxPdfiumContext * context = getContext(thiz);
+    static FPDF_PAGE getPage(JNIEnv *env, jobject thiz, int pageIndex) {
+        OnyxPdfiumContext * context = getContext(env, thiz);
         if (context == NULL) {
             return NULL;
         }
         return context->getPage(pageIndex);
     }
 
-    static FPDF_PAGE getTextPage(jobject thiz, int pageIndex) {
-        OnyxPdfiumContext * context = getContext(thiz);
+    static FPDF_PAGE getTextPage(JNIEnv *env, jobject thiz, int pageIndex) {
+        OnyxPdfiumContext * context = getContext(env, thiz);
         if (context == NULL) {
             return NULL;
         }
