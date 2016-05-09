@@ -338,6 +338,11 @@ public class PageManager {
         return visible;
     }
 
+    public void nextViewportToEndOfPage() {
+        while (nextViewport()) {
+        }
+    }
+
     public boolean nextViewport() {
         if ((int)viewportRect.bottom >= (int)pagesBoundingRect.bottom) {
             return false;
