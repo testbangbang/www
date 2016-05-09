@@ -687,6 +687,7 @@ public class ReaderActivity extends Activity {
         if (e != null) {
             return;
         }
+        DeviceController.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
     }
 
@@ -790,6 +791,6 @@ public class ReaderActivity extends Activity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        DeviceController.create(this).setFullScreen(fullScreen);
+        DeviceController.setFullScreen(this, fullScreen);
     }
 }
