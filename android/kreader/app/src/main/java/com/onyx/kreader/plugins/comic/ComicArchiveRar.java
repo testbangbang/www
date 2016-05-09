@@ -1,6 +1,5 @@
 package com.onyx.kreader.plugins.comic;
 
-import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.io.ByteArrayInputStream;
@@ -38,7 +37,7 @@ public class ComicArchiveRar implements ComicArchive {
 
     @Override
     public boolean open(String path, String password) {
-        if (!wrapper.openRAR(path)) {
+        if (!wrapper.open(path)) {
             return false;
         }
         if (!StringUtils.isNullOrEmpty(password)) {
@@ -73,7 +72,7 @@ public class ComicArchiveRar implements ComicArchive {
 
     @Override
     public void close() {
-        wrapper.closeRAR();
+        wrapper.close();
         arcPath = null;
         entries = null;
     }

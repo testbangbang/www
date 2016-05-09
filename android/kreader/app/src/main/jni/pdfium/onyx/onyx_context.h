@@ -136,36 +136,36 @@ private:
     static PluginContextHolder<OnyxPdfiumContext> contextHolder;
 
 public:
-    static OnyxPdfiumContext * getContext(JNIEnv *env, jobject thiz);
-    static OnyxPdfiumContext * createContext(JNIEnv *env, jobject thiz, FPDF_DOCUMENT document);
-    static void releaseContext(JNIEnv *env, jobject thiz);
+    static OnyxPdfiumContext * getContext(JNIEnv *env, jint id);
+    static OnyxPdfiumContext * createContext(JNIEnv *env, jint id, FPDF_DOCUMENT document);
+    static void releaseContext(JNIEnv *env, jint id);
 
-    static FPDF_DOCUMENT getDocument(JNIEnv *env, jobject thiz) {
-        OnyxPdfiumContext * context = getContext(env, thiz);
+    static FPDF_DOCUMENT getDocument(JNIEnv *env, jint id) {
+        OnyxPdfiumContext * context = getContext(env, id);
         if (context == NULL) {
             return NULL;
         }
         return context->getDocument();
     }
 
-    static FPDF_BITMAP getBitmap(JNIEnv *env, jobject thiz, int width, int height, void * pixels, int stride) {
-        OnyxPdfiumContext * context = getContext(env, thiz);
+    static FPDF_BITMAP getBitmap(JNIEnv *env, jint id, int width, int height, void * pixels, int stride) {
+        OnyxPdfiumContext * context = getContext(env, id);
         if (context == NULL) {
             return NULL;
         }
         return context->getBitmap(width, height, pixels, stride);
     }
 
-    static FPDF_PAGE getPage(JNIEnv *env, jobject thiz, int pageIndex) {
-        OnyxPdfiumContext * context = getContext(env, thiz);
+    static FPDF_PAGE getPage(JNIEnv *env, jint id, int pageIndex) {
+        OnyxPdfiumContext * context = getContext(env, id);
         if (context == NULL) {
             return NULL;
         }
         return context->getPage(pageIndex);
     }
 
-    static FPDF_PAGE getTextPage(JNIEnv *env, jobject thiz, int pageIndex) {
-        OnyxPdfiumContext * context = getContext(env, thiz);
+    static FPDF_PAGE getTextPage(JNIEnv *env, jint id, int pageIndex) {
+        OnyxPdfiumContext * context = getContext(env, id);
         if (context == NULL) {
             return NULL;
         }

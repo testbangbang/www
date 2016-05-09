@@ -13,10 +13,8 @@ template <class T> class PluginContextHolder
 public:
     PluginContextHolder() { }
     
-    T *findContext(JNIEnv *env, jobject object) {
-        JNIUtils utils(env);
-        jint hashcode = utils.hashcode(object);
-        auto find = contextMap.find(hashcode);
+    T *findContext(JNIEnv *env, jint id) {
+        auto find = contextMap.find(id);
         if (find == contextMap.end()) {
             return nullptr;
         }
@@ -25,16 +23,12 @@ public:
 
     
     // pass in owernership of context
-    void insertContext(JNIEnv *env, jobject object, std::unique_ptr<T> context) {
-        JNIUtils utils(env);
-        jint hashcode = utils.hashcode(object);
-        contextMap[hashcode] = std::move(context);
+    void insertContext(JNIEnv *env, jint id, std::unique_ptr<T> context) {
+        contextMap[id] = std::move(context);
     }
     
-    void eraseContext(JNIEnv *env, jobject object) {
-        JNIUtils utils(env);
-        jint hashcode = utils.hashcode(object);
-        contextMap.erase(hashcode);
+    void eraseContext(JNIEnv *env, jint id) {
+        contextMap.erase(id);
     }
     
 private:

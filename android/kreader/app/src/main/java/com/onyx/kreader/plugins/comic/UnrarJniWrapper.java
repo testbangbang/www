@@ -1,7 +1,5 @@
 package com.onyx.kreader.plugins.comic;
 
-import com.onyx.kreader.utils.StringUtils;
-
 /**
  * Created by joy on 3/16/16.
  */
@@ -11,34 +9,51 @@ public class UnrarJniWrapper {
         System.loadLibrary("unrar_jni");
     }
 
-    private native boolean open(String filePath);
-    private native void close();
+    private static int sPluginId = -1;
 
-    public native boolean isEncrypted();
-    public native void setPassword(String password);
-    public native String[] getEntries();
-    public native byte[] extractEntryData(String entryName);
-
-    private String filePath = null;
-
-    @Override
-    public int hashCode() {
-        if (StringUtils.isNotBlank(filePath)) {
-            return filePath.hashCode();
-        }
-        return super.hashCode();
+    private synchronized static int nextId() {
+        sPluginId++;
+        return sPluginId;
     }
 
-    public boolean openRAR(String path) {
-        if (open(path)) {
-            filePath = path;
+    private native boolean open(int id, String filePath);
+    private native void close(int id);
+
+    private native boolean isEncrypted(int id);
+    private native void setPassword(int id, String password);
+    private native String[] getEntries(int id);
+    private native byte[] extractEntryData(int id, String entryName);
+
+    private int id;
+
+    public UnrarJniWrapper() {
+        id = nextId();
+    }
+
+    public boolean open(String path) {
+        if (open(id, path)) {
             return true;
         }
         return false;
     }
 
-    public void closeRAR() {
-        close();
-        filePath = null;
+    public void close() {
+        close(id);
+    }
+
+    public boolean isEncrypted() {
+        return isEncrypted(id);
+    }
+
+    public void setPassword(String password) {
+        setPassword(id, password);
+    }
+
+    public String[] getEntries() {
+        return getEntries(id);
+    }
+
+    public byte[] extractEntryData(String entryName) {
+        return extractEntryData(id, entryName);
     }
 }
