@@ -17,13 +17,12 @@ import java.util.Map;
 /**
  * Created by Joy on 2016/5/10.
  */
-public class DefaultDevice implements OnyxDevice {
-    private static final String TAG = "DefaultDevice";
+public class BaseDevice {
+    private static final String TAG = "BaseDevice";
     private final int ICE_CREAM_SANDWICH = 14;
     private final String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
 
-    @Override
     public DeviceInfo.DeviceBrand getDeviceBrand() {
         //Log.d(TAG, "Model: " + Build.MODEL + ", MANUFACTURER: " + Build.MANUFACTURER + ", BRAND: " + Build.BRAND);
 
@@ -50,17 +49,14 @@ public class DefaultDevice implements OnyxDevice {
         return DeviceInfo.DeviceBrand.Standard;
     }
 
-    @Override
     public File getStorageRootDirectory() {
         return android.os.Environment.getExternalStorageDirectory();
     }
 
-    @Override
     public File getExternalStorageDirectory() {
         return android.os.Environment.getExternalStorageDirectory();
     }
 
-    @Override
     public File getRemovableSDCardDirectory() {
         File storage_root = getExternalStorageDirectory();
 
@@ -76,53 +72,43 @@ public class DefaultDevice implements OnyxDevice {
         }
     }
 
-    @Override
     public boolean isFileOnRemovableSDCard(File file) {
         return file.getAbsolutePath().startsWith(getRemovableSDCardDirectory().getAbsolutePath());
     }
 
-    @Override
     public PowerManager.WakeLock newWakeLock(Context context, String tag) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, tag);
     }
 
-    @Override
     public boolean IsSmallScreen() {
         return isSmallScreen();
     }
 
-    @Override
     public boolean isSmallScreen() {
         return false;
     }
 
-    @Override
     public DeviceInfo.TouchType getTouchType(Context context) {
         return DeviceInfo.TouchType.IR;
     }
 
-    @Override
     public boolean hasWifi(Context context) {
         return true;
     }
 
-    @Override
     public boolean hasAudio(Context context) {
         return true;
     }
 
-    @Override
     public boolean hasBluetooth(Context context) {
         return true;
     }
 
-    @Override
     public boolean hasFrontLight(Context context) {
         return true;
     }
 
-    @Override
     public boolean has5WayButton(Context context) {
         return false;
     }
@@ -139,17 +125,14 @@ public class DefaultDevice implements OnyxDevice {
     public void enableTpd(boolean enable) {
     }
 
-    @Override
     public boolean hasPageButton(Context context) {
         return false;
     }
 
-    @Override
     public int getFrontLightBrightnessMinimum(Context context) {
         return 0;
     }
 
-    @Override
     public int getFrontLightBrightnessMaximum(Context context) {
         return 0;
     }
@@ -158,12 +141,10 @@ public class DefaultDevice implements OnyxDevice {
         return 0;
     }
 
-    @Override
     public boolean openFrontLight(Context context) {
         return false;
     }
 
-    @Override
     public boolean closeFrontLight(Context context) {
         return false;
     }
@@ -172,71 +153,57 @@ public class DefaultDevice implements OnyxDevice {
         return false;
     }
 
-    @Override
     public int getFrontLightDeviceValue(Context context) {
         return 0;
     }
 
-    @Override
     public List<Integer> getFrontLightValueList(Context context) {
         return new ArrayList<Integer>();
     }
 
-    @Override
     public boolean setFrontLightDeviceValue(Context context, int value) {
         return false;
     }
 
-    @Override
     public int getFrontLightConfigValue(Context context) {
         return 0;
     }
 
-    @Override
     public boolean setFrontLightConfigValue(Context context, int value) {
         return false;
     }
 
-    @Override
     public boolean isEInkScreen() {
         return false;
     }
 
-    @Override
     public EpdController.EPDMode getEpdMode() {
         return EpdController.EPDMode.AUTO;
     }
 
-    @Override
     public boolean setEpdMode(Context context, EpdController.EPDMode mode) {
         return false;
     }
 
-    @Override
     public boolean setEpdMode(View view, EpdController.EPDMode mode) {
         return false;
     }
 
-    @Override
     public EpdController.UpdateMode getViewDefaultUpdateMode(View view) {
         return EpdController.UpdateMode.GU;
     }
 
-    @Override
     public boolean setViewDefaultUpdateMode(View view, EpdController.UpdateMode mode) {
         return false;
     }
 
-    @Override
     public void resetViewUpdateMode(View view) {
     }
 
-    @Override
     public EpdController.UpdateMode getSystemDefaultUpdateMode() {
         return EpdController.UpdateMode.GU;
     }
 
-    @Override
     public boolean setSystemDefaultUpdateMode(EpdController.UpdateMode mode) {
         return false;
     }
@@ -252,22 +219,18 @@ public class DefaultDevice implements OnyxDevice {
     public void waitForUpdateFinished() {
     }
 
-    @Override
     public void invalidate(View view, EpdController.UpdateMode mode) {
         view.invalidate();
     }
 
-    @Override
     public boolean enableScreenUpdate(View view, boolean enable) {
         return false;
     }
 
 
-    @Override
     public void refreshScreen(View view, EpdController.UpdateMode mode) {
     }
 
-    @Override
     public void refreshScreenRegion(View view, int left, int top, int width, int height, EpdController.UpdateMode mode) {
     }
 
@@ -278,7 +241,6 @@ public class DefaultDevice implements OnyxDevice {
         return false;
     }
 
-    @Override
     public void setStrokeColor(int color) {
     }
 
@@ -288,15 +250,12 @@ public class DefaultDevice implements OnyxDevice {
     public void setPainterStyle(boolean antiAlias, Paint.Style strokeStyle, Paint.Join joinStyle, Paint.Cap capStyle) {
     }
 
-    @Override
     public void moveTo(float x, float y, float width) {
     }
 
-    @Override
     public void lineTo(float x, float y, EpdController.UpdateMode mode) {
     }
 
-    @Override
     public void quadTo(float x, float y, EpdController.UpdateMode mode) {
     }
 
@@ -318,25 +277,21 @@ public class DefaultDevice implements OnyxDevice {
     public void leaveScribbleMode(View view) {
     }
 
-    @Override
     public void enablePost(View view, int enable) {
     }
 
     public void applyGammaCorrection(boolean apply, int value) {
     }
 
-    @Override
     public void postInvalidate(View view, EpdController.UpdateMode mode) {
         view.postInvalidate();
     }
 
-    @Override
     public boolean setSystemUpdateModeAndScheme(EpdController.UpdateMode mode, EpdController.UpdateScheme scheme, int count) {
         // TODO Auto-generated method stub
         return false;
     }
 
-    @Override
     public boolean clearSystemUpdateModeAndScheme() {
         // TODO Auto-generated method stub
         return false;
@@ -347,70 +302,57 @@ public class DefaultDevice implements OnyxDevice {
 
     }
 
-    @Override
     public void wifiUnlock(Context context, String className) {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public void wifiLockClear(Context context) {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public Map<String, Integer> getWifiLockMap(Context context) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
     public void setWifiLockTimeout(Context context, long ms) {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public String getEncryptedDeviceID() {
         return null;
     }
 
-    @Override
     public void led(Context context, boolean on) {
 
     }
 
-    @Override
     public void setVCom(Context context, int mv, String path) {
 
     }
 
-    @Override
     public void updateWaveform(Context context, String path, String target) {
 
     }
 
-    @Override
     public int getVCom(Context context, String path) {
         return 0;
     }
 
-    @Override
     public String readSystemConfig(Context context, String key) {
         return "";
     }
 
-    @Override
     public boolean saveSystemConfig(Context context, String key, String mv) {
         return false;
     }
 
-    @Override
     public void updateMetadataDB(Context context, String path, String target) {
     }
 
-    @Override
     public Point getWindowWidthAndHeight(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Point point = new Point();
@@ -419,12 +361,10 @@ public class DefaultDevice implements OnyxDevice {
         return point;
     }
 
-    @Override
     public void hideSystemStatusBar(Context context) {
         showOrHideSystemStatusBar(context, HIDE_STATUS_BAR_ACTION);
     }
 
-    @Override
     public void showSystemStatusBar(Context context) {
         showOrHideSystemStatusBar(context, SHOW_STATUS_BAR_ACTION);
     }
@@ -436,12 +376,10 @@ public class DefaultDevice implements OnyxDevice {
         }
     }
 
-    @Override
     public String getPlatform() {
         return "";
     }
 
-    @Override
     public void stopBootAnimation() {
     }
 }

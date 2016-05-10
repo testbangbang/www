@@ -4,9 +4,6 @@
 package com.onyx.android.sdk.device;
 
 import android.os.Build;
-import android.util.Log;
-
-import java.util.ArrayList;
 
 /**
  * EPD work differently according to devices 
@@ -26,7 +23,7 @@ public class DeviceInfo
     private static DeviceInfo sInstance = new DeviceInfo();
 
     
-    public static final OnyxDevice currentDevice;
+    public static final BaseDevice currentDevice;
     
     static {
         currentDevice = sInstance.detectDevice();
@@ -37,12 +34,12 @@ public class DeviceInfo
      * 
      * @return
      */
-    public synchronized static OnyxDevice detectDevice()
+    public synchronized static BaseDevice detectDevice()
     {
         if (Build.HARDWARE.contains("freescale")) {
             return new IMX6Device();
         }
 
-        return new DefaultDevice();
+        return new BaseDevice();
     }
 }

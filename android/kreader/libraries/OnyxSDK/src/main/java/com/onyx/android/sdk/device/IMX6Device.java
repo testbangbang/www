@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Joy on 2016/5/10.
  */
-public class IMX6Device extends DefaultDevice {
+public class IMX6Device extends BaseDevice {
 
     private static final String TAG = IMX6Device.class.getSimpleName();
 
