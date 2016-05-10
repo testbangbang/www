@@ -51,6 +51,6 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     public void copyFrom(final Bitmap src) {
         recycleBitmap();
-        bitmap = src.copy(src.getConfig(), true);
+        bitmap = src.copy(Bitmap.Config.ARGB_8888, true);
     }
 }
