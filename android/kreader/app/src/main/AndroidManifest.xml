@@ -18,20 +18,6 @@
         android:largeHeap="true"
         android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
 
-        <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <data android:host="*" android:scheme="file" />
-            <data android:host="*" android:scheme="content" />
-            <data android:mimeType="application/pdf" />
-            <data android:mimeType="application/epub" />
-            <data android:mimeType="application/epub+zip" />
-            <data android:mimeType="application/x-zip" />
-            <data android:mimeType="image/vnd.djvu"/>
-            <data android:mimeType="image/x-djvu"/>
-            <data android:mimeType="application/djvu" />
-        </intent-filter>
-
         <activity android:name="com.onyx.kreader.tests.ReaderTestActivity">
 
         </activity>
@@ -45,6 +31,8 @@
                 <data android:host="*" android:scheme="content" />
                 <data android:mimeType="application/pdf" />
                 <data android:mimeType="application/x-zip" />
+                <data android:mimeType="application/x-cbz" />
+                <data android:mimeType="application/x-cbr" />
                 <data android:mimeType="image/vnd.djvu"/>
                 <data android:mimeType="image/x-djvu"/>
                 <data android:mimeType="image/jpeg"/>
@@ -61,7 +49,9 @@
                 <data android:pathPattern=".*\\.[pP][dD][fF]" />
                 <data android:pathPattern=".*\\.[dD][jJ][vV][uU]" />
                 <data android:pathPattern=".*\\.cbz" />
+                <data android:pathPattern=".*\\.cbr" />
                 <data android:pathPattern=".*\\.[cC][bB][zZ]" />
+                <data android:pathPattern=".*\\.[cC][bB][rR]" />
             </intent-filter>
 
         </activity>
