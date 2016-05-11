@@ -15,10 +15,6 @@ public class DeviceInfo
 {
     @SuppressWarnings("unused")
     private final static String TAG = "DeviceInfo";
-
-    public enum DeviceBrand { Standard, Artatech, ArtatechPlay, CasaDeLiBro, MacCentre }
-
-    public enum TouchType { None, IR, Capacitive, Unknown }
     
     private static DeviceInfo sInstance = new DeviceInfo();
 
@@ -37,7 +33,7 @@ public class DeviceInfo
     public synchronized static BaseDevice detectDevice()
     {
         if (Build.HARDWARE.contains("freescale")) {
-            return new IMX6Device();
+            return IMX6Device.createDevice();
         }
 
         return new BaseDevice();

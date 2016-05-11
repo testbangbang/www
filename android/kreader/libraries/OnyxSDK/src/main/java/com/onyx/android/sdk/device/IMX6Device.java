@@ -124,12 +124,6 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodWaitForUpdateFinished = null;
 
 
-    private static Method sMethodIsTouchable;
-    private static Method sMethodGetTouchType;
-    private static Method sMethodHasWifi;
-    private static Method sMethodHasAudio;
-    private static Method sMethodHasFrontLight;
-
     private static Method sMethodOpenFrontLight;
     private static Method sMethodCloseFrontLight;
     private static Method sMethodGetFrontLightValue;
@@ -145,19 +139,12 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodSaveSystemConfig;
     private static Method sMethodUpdateMetadataDB;
 
-    private static int sTouchTypeUnknown = 0;
-    private static int sTouchTypeIR = 1;
-    private static int sTouchTypeCapacitive = 2;
-
-    private static Method sMethodHasBluetooth;
-    private static Method sMethodHas5WayButton;
-    private static Method sMethodHasPageButton;
     private static Method sMethodUseBigPen;
     private static Method sMethodStopTpd;
     private static Method sMethodStartTpd;
     private static Method sMethodEnableTpd;
 
-    public IMX6Device() {
+    private IMX6Device() {
     }
 
     public int getWindowRotation() {
@@ -231,13 +218,6 @@ public class IMX6Device extends BaseDevice {
     @Override
     public boolean isFileOnRemovableSDCard(File file) {
         return file.getAbsolutePath().startsWith(getRemovableSDCardDirectory().getAbsolutePath());
-    }
-
-
-    @Override
-    public boolean isEInkScreen() {
-        // TODO Auto-generated method stub
-        return true;
     }
 
     @Override
@@ -450,7 +430,7 @@ public class IMX6Device extends BaseDevice {
         ReflectUtil.invokeMethodSafely(sMethodWaitForUpdateFinished, null);
     }
 
-    public static IMX6Device createController() {
+    public static IMX6Device createDevice() {
         if (sInstance == null) {
             sInstance = new IMX6Device();
 
@@ -500,12 +480,6 @@ public class IMX6Device extends BaseDevice {
 
             sMethodLed = ReflectUtil.getMethodSafely(deviceControllerClass, "led", boolean.class);
             sMethodSetLedColor = ReflectUtil.getMethodSafely(deviceControllerClass, "setLedColor", String.class, int.class);
-
-            sMethodIsTouchable = ReflectUtil.getMethodSafely(deviceControllerClass, "isTouchable");
-            sMethodGetTouchType = ReflectUtil.getMethodSafely(deviceControllerClass, "getTouchType");
-            sMethodHasWifi = ReflectUtil.getMethodSafely(deviceControllerClass, "hasWifi");
-            sMethodHasAudio = ReflectUtil.getMethodSafely(deviceControllerClass, "hasAudio");
-            sMethodHasFrontLight = ReflectUtil.getMethodSafely(deviceControllerClass, "hasFrontLight");
 
             // signature of "public void setUpdatePolicy(int updatePolicy, int guInterval)"
             sMethodSetUpdatePolicy = ReflectUtil.getMethodSafely(cls, "setUpdatePolicy", int.class, int.class);
@@ -559,96 +533,10 @@ public class IMX6Device extends BaseDevice {
             sMethodSaveSystemConfig = ReflectUtil.getMethodSafely(deviceControllerClass, "saveSystemConfig", String.class, String.class);
             sMethodUpdateMetadataDB = ReflectUtil.getMethodSafely(deviceControllerClass, "updateMetadataDB", String.class, String.class);
 
-            sMethodHasBluetooth = ReflectUtil.getMethodSafely(deviceControllerClass, "hasBluetooth");
-
-            sMethodHas5WayButton = ReflectUtil.getMethodSafely(deviceControllerClass, "has5WayButton");
-            sMethodHasPageButton = ReflectUtil.getMethodSafely(deviceControllerClass, "hasPageButton");
-
             Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
             return sInstance;
         }
         return sInstance;
-    }
-
-
-    @Override
-    public DeviceInfo.TouchType getTouchType(Context context) {
-        Boolean succ = (Boolean) this.invokeDeviceControllerMethod(context, sMethodIsTouchable);
-        if (succ == null || !succ.booleanValue()) {
-            return DeviceInfo.TouchType.None;
-        }
-
-        Integer n = (Integer) this.invokeDeviceControllerMethod(context, sMethodGetTouchType);
-        if (n.intValue() == sTouchTypeUnknown) {
-            return DeviceInfo.TouchType.Unknown;
-        } else if (n.intValue() == sTouchTypeIR) {
-            return DeviceInfo.TouchType.IR;
-        } else if (n.intValue() == sTouchTypeCapacitive) {
-            return DeviceInfo.TouchType.Capacitive;
-        } else {
-            assert (false);
-            return DeviceInfo.TouchType.Unknown;
-        }
-    }
-
-    @Override
-    public boolean hasWifi(Context context) {
-        Boolean has = (Boolean) this.invokeDeviceControllerMethod(context, sMethodHasWifi);
-        if (has == null) {
-            return false;
-        }
-
-        return has.booleanValue();
-    }
-
-    @Override
-    public boolean hasAudio(Context context) {
-        Boolean has = (Boolean) this.invokeDeviceControllerMethod(context, sMethodHasAudio);
-        if (has == null) {
-            return false;
-        }
-
-        return has.booleanValue();
-    }
-
-    @Override
-    public boolean hasBluetooth(Context context) {
-        Boolean has = (Boolean) this.invokeDeviceControllerMethod(context, sMethodHasBluetooth);
-        if (has == null) {
-            return false;
-        }
-
-        return has.booleanValue();
-    }
-
-    @Override
-    public boolean has5WayButton(Context context) {
-        Boolean has = (Boolean) this.invokeDeviceControllerMethod(context, sMethodHas5WayButton);
-        if (has == null) {
-            return false;
-        }
-
-        return has.booleanValue();
-    }
-
-    @Override
-    public boolean hasPageButton(Context context) {
-        Boolean has = (Boolean) this.invokeDeviceControllerMethod(context, sMethodHasPageButton);
-        if (has == null) {
-            return false;
-        }
-
-        return has.booleanValue();
-    }
-
-    @Override
-    public boolean hasFrontLight(Context context) {
-        Boolean has = (Boolean) this.invokeDeviceControllerMethod(context, sMethodHasFrontLight);
-        if (has == null) {
-            return false;
-        }
-
-        return has.booleanValue();
     }
 
     public void useBigPen(boolean use) {
@@ -942,10 +830,5 @@ public class IMX6Device extends BaseDevice {
         }
 
         return dst_value;
-    }
-
-    @Override
-    public String getPlatform() {
-        return Platforms.IMX6;
     }
 }

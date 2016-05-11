@@ -23,32 +23,6 @@ public class BaseDevice {
     private final String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
 
-    public DeviceInfo.DeviceBrand getDeviceBrand() {
-        //Log.d(TAG, "Model: " + Build.MODEL + ", MANUFACTURER: " + Build.MANUFACTURER + ", BRAND: " + Build.BRAND);
-
-        if (Build.BRAND.equalsIgnoreCase("Onyx") || Build.BRAND.equalsIgnoreCase("Onyx-Intl")) {
-            return DeviceInfo.DeviceBrand.Standard;
-        } else if (Build.BRAND.equalsIgnoreCase("Artatech")) {
-            return DeviceInfo.DeviceBrand.Artatech;
-        } else if (Build.BRAND.equalsIgnoreCase("Artatech-Play")) {
-            return DeviceInfo.DeviceBrand.ArtatechPlay;
-        } else if (Build.BRAND.equalsIgnoreCase("Tagus")) {
-            return DeviceInfo.DeviceBrand.CasaDeLiBro;
-        } else if (Build.BRAND.equalsIgnoreCase("MacCentre")) {
-            return DeviceInfo.DeviceBrand.MacCentre;
-        }
-
-        assert (false);
-        String startup = LauncherConfig.getStartupActivityQualifiedName();
-        if (startup.equals("com.onyx.android.launcher.LauncherArtatechActivity")) {
-            return DeviceInfo.DeviceBrand.Artatech;
-        } else if (startup.equals("com.onyx.android.launcher.LauncherMCActivity")) {
-            return DeviceInfo.DeviceBrand.MacCentre;
-        }
-
-        return DeviceInfo.DeviceBrand.Standard;
-    }
-
     public File getStorageRootDirectory() {
         return android.os.Environment.getExternalStorageDirectory();
     }
@@ -81,38 +55,6 @@ public class BaseDevice {
         return pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, tag);
     }
 
-    public boolean IsSmallScreen() {
-        return isSmallScreen();
-    }
-
-    public boolean isSmallScreen() {
-        return false;
-    }
-
-    public DeviceInfo.TouchType getTouchType(Context context) {
-        return DeviceInfo.TouchType.IR;
-    }
-
-    public boolean hasWifi(Context context) {
-        return true;
-    }
-
-    public boolean hasAudio(Context context) {
-        return true;
-    }
-
-    public boolean hasBluetooth(Context context) {
-        return true;
-    }
-
-    public boolean hasFrontLight(Context context) {
-        return true;
-    }
-
-    public boolean has5WayButton(Context context) {
-        return false;
-    }
-
     public void useBigPen(boolean use) {
     }
 
@@ -123,10 +65,6 @@ public class BaseDevice {
     }
 
     public void enableTpd(boolean enable) {
-    }
-
-    public boolean hasPageButton(Context context) {
-        return false;
     }
 
     public int getFrontLightBrightnessMinimum(Context context) {
@@ -170,10 +108,6 @@ public class BaseDevice {
     }
 
     public boolean setFrontLightConfigValue(Context context, int value) {
-        return false;
-    }
-
-    public boolean isEInkScreen() {
         return false;
     }
 
@@ -374,10 +308,6 @@ public class BaseDevice {
             Intent intent = new Intent(action);
             context.sendBroadcast(intent);
         }
-    }
-
-    public String getPlatform() {
-        return "";
     }
 
     public void stopBootAnimation() {
