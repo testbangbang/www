@@ -14,15 +14,15 @@ public class Benchmark {
     }
 
     public void restart() {
-        benchmarkStart = System.nanoTime();
+        benchmarkStart = System.currentTimeMillis();
     }
 
     public void report(final String tag) {
-        Log.i(tag, String.valueOf(duration()));
+        Log.i(tag, "--->" + String.valueOf(duration()) + "ms");
     }
 
     public long duration() {
-        benchmarkEnd = System.nanoTime();
+        benchmarkEnd = System.currentTimeMillis();
         return benchmarkEnd - benchmarkStart;
     }
 }

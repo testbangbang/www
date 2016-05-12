@@ -36,23 +36,23 @@ PluginContextHolder<OnyxDjvuContext> contextHolder;
 }
 
 JNIEXPORT int JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeOpenFile(JNIEnv * env, jobject thiz, jstring jfilePath)
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeOpenFile(JNIEnv * env, jobject thiz, jint id, jstring jfilePath)
 {
-    OnyxDjvuContext *context = contextHolder.findContext(thiz);
+    OnyxDjvuContext *context = contextHolder.findContext(env, id);
     if (!context) {
         context = OnyxDjvuContext::createContext(env, jfilePath);
         if (!context) {
             return 0;
         }
-        contextHolder.insertContext(thiz, std::unique_ptr<OnyxDjvuContext>(context));
+        contextHolder.insertContext(env, id, std::unique_ptr<OnyxDjvuContext>(context));
     }
     return context->getPageCount();
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage(JNIEnv *env, jobject thiz, int pageNum)
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage(JNIEnv *env, jobject thiz, jint id, int pageNum)
 {
-    OnyxDjvuContext *context = contextHolder.findContext(thiz);
+    OnyxDjvuContext *context = contextHolder.findContext(env, id);
     if (!context) {
         return false;
     }
@@ -60,9 +60,9 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGotoPage(JNIEnv *env, jo
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize(JNIEnv *env, jobject thiz, int pageNum, jfloatArray size)
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize(JNIEnv *env, jobject thiz, jint id, int pageNum, jfloatArray size)
 {
-    OnyxDjvuContext *context = contextHolder.findContext(thiz);
+    OnyxDjvuContext *context = contextHolder.findContext(env, id);
     if (!context) {
         return false;
     }
@@ -76,9 +76,9 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeGetPageSize(JNIEnv *env,
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText(JNIEnv *env, jobject thiz, int pageNum, jobject textChunks)
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText(JNIEnv *env, jobject thiz, jint id, int pageNum, jobject textChunks)
 {
-    OnyxDjvuContext *context = contextHolder.findContext(thiz);
+    OnyxDjvuContext *context = contextHolder.findContext(env, id);
     if (!context) {
         return false;
     }
@@ -86,10 +86,10 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeExtractPageText(JNIEnv *
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jobject thiz, jint pageNum, jobject bitmap, float zoom,
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jobject thiz, jint id, jint pageNum, jobject bitmap, float zoom,
                                                                  int bmpWidth, int bmpHeight, int patchX, int patchY, int patchW, int patchH)
 {
-    OnyxDjvuContext *context = contextHolder.findContext(thiz);
+    OnyxDjvuContext *context = contextHolder.findContext(env, id);
     if (!context) {
         return false;
     }
@@ -97,8 +97,8 @@ Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeDrawPage(JNIEnv *env, jo
 }
 
 JNIEXPORT void JNICALL
-Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeClose(JNIEnv * env, jobject thiz)
+Java_com_onyx_kreader_plugins_djvu_DjvuJniWrapper_nativeClose(JNIEnv * env, jobject thiz, jint id)
 {
-    contextHolder.eraseContext(thiz);
+    contextHolder.eraseContext(env, id);
 }
 

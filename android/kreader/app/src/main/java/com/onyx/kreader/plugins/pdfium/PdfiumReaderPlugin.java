@@ -63,8 +63,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
             docPassword = documentOptions.getDocumentPassword();
             archivePassword = documentOptions.getDocumentPassword();
         }
-        long ret = getPluginImpl().nativeOpenDocument(path, docPassword);
-        if (ret == 0) {
+        if (getPluginImpl().openDocument(path, docPassword) == PdfiumJniWrapper.NO_ERROR) {
             return this;
         }
         return null;
@@ -88,7 +87,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
 
     public RectF getPageOriginSize(final String position) {
         float size [] = {0, 0};
-        getPluginImpl().nativePageSize(Integer.parseInt(position), size);
+        getPluginImpl().pageSize(Integer.parseInt(position), size);
         return new RectF(0, 0, size[0], size[1]);
     }
 
@@ -113,7 +112,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public void close() {
-        getPluginImpl().nativeCloseDocument();
+        getPluginImpl().closeDocument();
     }
 
     public ReaderViewOptions getViewOptions() {
@@ -210,7 +209,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
      * @return 1 based total page number.
      */
     public int getTotalPage() {
-        return getPluginImpl().nativePageCount();
+        return getPluginImpl().pageCount();
     }
 
     /**
@@ -323,7 +322,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
 
     public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end) {
         PdfiumSelection selection = new PdfiumSelection();
-        getPluginImpl().nativeHitTest(PagePositionUtils.getPageNumber(start.pageName),
+        getPluginImpl().hitTest(PagePositionUtils.getPageNumber(start.pageName),
                 (int) start.pageDisplayRect.left,
                 (int) start.pageDisplayRect.top,
                 (int) start.pageDisplayRect.width(),

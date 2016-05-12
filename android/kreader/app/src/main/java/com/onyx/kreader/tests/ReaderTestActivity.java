@@ -520,7 +520,7 @@ public class ReaderTestActivity extends Activity {
     private void draw() {
         Canvas canvas = holder.lockCanvas();
         float [] size = new float[2];
-        wrapper.nativePageSize(currentPage, size);
+        wrapper.pageSize(currentPage, size);
         xScale = bitmap.getWidth() / size[0];
         yScale = bitmap.getHeight() / size[1];
         xScale = Math.min(xScale, yScale);
@@ -600,8 +600,7 @@ public class ReaderTestActivity extends Activity {
 
     private void testPdfiumWrapper() {
         wrapper.nativeInitLibrary();
-        long value = wrapper.nativeOpenDocument("/mnt/sdcard/Books/text.pdf", "");
-        if (value != PdfiumJniWrapper.NO_ERROR) {
+        if (wrapper.openDocument("/mnt/sdcard/Books/text.pdf", "") != PdfiumJniWrapper.NO_ERROR) {
             return;
         }
         bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
@@ -611,7 +610,7 @@ public class ReaderTestActivity extends Activity {
 
     private void drawHitTest(final Canvas canvas) {
         PdfiumSelection selection = new PdfiumSelection();
-        int size = wrapper.nativeHitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, (int) startX, (int) startY, (int) endX, (int) endY, selection);
+        int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, (int) startX, (int) startY, (int) endX, (int) endY, selection);
         if (size <= 0) {
             return;
         }
@@ -653,7 +652,7 @@ public class ReaderTestActivity extends Activity {
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
         while ((end = text.indexOf("\n", start)) > 0) {
             PdfiumSelection selection = new PdfiumSelection();
-            wrapper.nativeSelection(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, start, end, selection);
+            wrapper.selection(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, start, end, selection);
             list.add(selection);
             start = end + 1;
         }

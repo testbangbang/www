@@ -5,7 +5,6 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
@@ -42,7 +41,11 @@ public class LayoutSinglePageProvider extends LayoutProvider {
 
     public boolean prevScreen() throws ReaderException {
         if (!getPageManager().prevViewport()) {
-            return prevPage();
+            if (!prevPage()) {
+                return false;
+            }
+            getPageManager().nextViewportToEndOfPage();
+            return true;
         }
         getPageManager().collectVisiblePages();
         return true;

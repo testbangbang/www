@@ -33,67 +33,67 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
     public void testOpen() throws Exception {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
         String title = wrapper.metadataString("Title");
         assertTrue(StringUtils.isNotBlank(title));
-        assertTrue(wrapper.nativeCloseDocument());
-        assertFalse(wrapper.nativeCloseDocument());
+        assertTrue(wrapper.closeDocument());
+        assertFalse(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 
     public void testOpenWithPassword() throws Exception {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/password.pdf", null) == PdfiumJniWrapper.ERROR_PASSWORD_INVALID);
-        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/password.pdf", "12456") == PdfiumJniWrapper.ERROR_PASSWORD_INVALID);
-        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/password.pdf", "123456") == PdfiumJniWrapper.NO_ERROR);
-        assertTrue(wrapper.nativeCloseDocument());
-        assertFalse(wrapper.nativeCloseDocument());
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/password.pdf", null) == PdfiumJniWrapper.ERROR_PASSWORD_INVALID);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/password.pdf", "12456") == PdfiumJniWrapper.ERROR_PASSWORD_INVALID);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/password.pdf", "123456") == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.closeDocument());
+        assertFalse(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 
     public void testPageCount() {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
-        assertTrue(wrapper.nativePageCount() > 10);
-        assertTrue(wrapper.nativeCloseDocument());
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.pageCount() > 10);
+        assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 
     public void testPageRender() {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
-        int pageCount = wrapper.nativePageCount();
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
+        int pageCount = wrapper.pageCount();
         assertTrue(pageCount > 0);
         int page = pageCount - 1;
         float size[] = new float[2];
-        assertTrue(wrapper.nativePageSize(page, size));
+        assertTrue(wrapper.pageSize(page, size));
         assertTrue(size[0] > 0);
         assertTrue(size[1] > 0);
         Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
         assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
-        assertFalse(wrapper.nativePageSize(page + 1, size));
-        assertTrue(wrapper.nativeCloseDocument());
+        assertFalse(wrapper.pageSize(page + 1, size));
+        assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 
     public void testPageTextSelection() {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.nativeOpenDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
-        int pageCount = wrapper.nativePageCount();
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
+        int pageCount = wrapper.pageCount();
         assertTrue(pageCount > 0);
         int page = pageCount - 1;
         float size[] = new float[2];
-        assertTrue(wrapper.nativePageSize(page, size));
+        assertTrue(wrapper.pageSize(page, size));
         assertTrue(size[0] > 0);
         assertTrue(size[1] > 0);
         Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
         assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
-        assertFalse(wrapper.nativePageSize(page + 1, size));
-        assertTrue(wrapper.nativeCloseDocument());
+        assertFalse(wrapper.pageSize(page + 1, size));
+        assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 
@@ -111,13 +111,13 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
                 "/mnt/sdcard/cityhunter/007.pdf"};
         for(String path : pathes) {
             assertTrue(wrapper.nativeInitLibrary());
-            assertTrue(wrapper.nativeOpenDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
-            int pageCount = wrapper.nativePageCount();
+            assertTrue(wrapper.openDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
+            int pageCount = wrapper.pageCount();
             assertTrue(pageCount > 0);
             ReaderBitmapImpl readerBitmap = null;
             for (int i = 0; i < pageCount; ++i) {
                 float size[] = new float[2];
-                assertTrue(wrapper.nativePageSize(i, size));
+                assertTrue(wrapper.pageSize(i, size));
                 assertTrue(size[0] > 0);
                 assertTrue(size[1] > 0);
                 if (readerBitmap == null) {
@@ -132,7 +132,7 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
                 Log.i(TAG, "Performance testing: " + path +  " page: " + i + " ts: " + (end - start));
             }
             readerBitmap.recycleBitmap();
-            assertTrue(wrapper.nativeCloseDocument());
+            assertTrue(wrapper.closeDocument());
             assertTrue(wrapper.nativeDestroyLibrary());
         }
     }
@@ -148,10 +148,10 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         String path = "/mnt/sdcard/Books/text.pdf";
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.nativeOpenDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
         String text = wrapper.getPageText(0);
         assertTrue(text.contains("广州"));
-        assertTrue(wrapper.nativeCloseDocument());
+        assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 
@@ -159,7 +159,7 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
         String path = "/mnt/sdcard/Books/text.pdf";
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.nativeOpenDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
         String pattern = "广州";
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
         wrapper.searchInPage(0, 0, 0, 1024, 768, 0, pattern, false, true, list);
@@ -167,7 +167,7 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
         for(ReaderSelection selection : list) {
             assertTrue(selection.getText().equals(pattern));
         }
-        assertTrue(wrapper.nativeCloseDocument());
+        assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 

@@ -223,6 +223,12 @@
             ]
         },
         {
+            "id": "Exit",
+            "type": "Item",
+            "title": "Exit",
+            "iconResourceId": "R.drawable.ic_menu_exit"
+        },
+        {
             "id": "More",
             "type": "Group",
             "title": "More",
