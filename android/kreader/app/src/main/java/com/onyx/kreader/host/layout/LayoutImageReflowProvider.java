@@ -1,5 +1,6 @@
 package com.onyx.kreader.host.layout;
 
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderViewInfo;
@@ -8,23 +9,29 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.reflow.ImageReflowManager;
+import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 10/7/15.
  * For reflow stream document.
  */
-public class LayoutTextFlowProvider extends LayoutProvider {
+public class LayoutImageReflowProvider extends LayoutProvider {
 
 
-    public LayoutTextFlowProvider(final ReaderLayoutManager lm) {
+    private boolean reverseOrder;
+
+    public LayoutImageReflowProvider(final ReaderLayoutManager lm) {
         super(lm);
     }
 
     public String getProviderName() {
-        return ReaderConstants.REFLOW_PAGE;
+        return ReaderConstants.IMAGE_REFLOW_PAGE;
     }
 
     public void activate() {
+        getPageManager().setPageRepeat(0);
+        getLayoutManager().getImageReflowManager().loadPageMap();
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
@@ -32,32 +39,70 @@ public class LayoutTextFlowProvider extends LayoutProvider {
     }
 
     public boolean prevScreen() throws ReaderException {
-        return false;
+        reverseOrder = true;
+        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
+        if (reflowManager.atBegin(getCurrentPageName())) {
+            return prevPage();
+        }
+        return reflowManager.prev(getCurrentPageName());
     }
 
     public boolean nextScreen() throws ReaderException {
-        return false;
+        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
+        if (reflowManager.atEnd(getCurrentPageName())) {
+            return nextPage();
+        }
+        return reflowManager.next(getCurrentPageName());
     }
 
     public boolean prevPage() throws ReaderException {
+        if (gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()))) {
+            getLayoutManager().getImageReflowManager().moveToEnd(getCurrentPageName());
+            return true;
+        }
         return false;
     }
 
     public boolean nextPage() throws ReaderException {
+        if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
+            getLayoutManager().getImageReflowManager().moveToBegin(getCurrentPageName());
+            return true;
+        }
         return false;
     }
 
     public boolean firstPage() throws ReaderException {
-        return false;
+        return gotoPosition(LayoutProviderUtils.firstPage(getLayoutManager()));
     }
 
     public boolean lastPage() throws ReaderException {
-        return false;
+        return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap, readerViewInfo);
+        Bitmap bmp = reader.getImageReflowManager().getCurrentBitmap(getCurrentPageName());
+        if (bmp == null) {
+            reflowFirstVisiblePage(reader, bitmap, readerViewInfo, precache);
+            if (precache) {
+                return false;
+            }
+            if (reverseOrder) {
+                reader.getImageReflowManager().moveToEnd(getCurrentPageName());
+                reverseOrder = false;
+            }
+            bmp = reader.getImageReflowManager().getCurrentBitmap(getCurrentPageName());
+        }
+        bitmap.copyFrom(bmp);
         return true;
+    }
+
+    private void reflowFirstVisiblePage(final Reader reader, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) {
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap, readerViewInfo);
+        reader.getImageReflowManager().reflowBitmap(bitmap.getBitmap(),
+                reader.getViewOptions().getViewWidth(),
+                reader.getViewOptions().getViewHeight(),
+                getCurrentPageName(),
+                precache);
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
@@ -73,7 +118,11 @@ public class LayoutTextFlowProvider extends LayoutProvider {
     }
 
     public boolean gotoPosition(final String position) throws ReaderException {
-        return false;
+        if (StringUtils.isNullOrEmpty(position)) {
+            return false;
+        }
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), position);
+        return getPageManager().gotoPage(position);
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {

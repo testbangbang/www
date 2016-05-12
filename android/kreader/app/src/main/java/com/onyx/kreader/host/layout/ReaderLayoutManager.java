@@ -82,15 +82,15 @@ public class ReaderLayoutManager {
             provider.put(ReaderConstants.SINGLE_PAGE, new LayoutSinglePageProvider(this));
             provider.put(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, new LayoutSinglePageNavigationListProvider(this));
             provider.put(ReaderConstants.CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
-            provider.put(ReaderConstants.REFLOW_PAGE, new LayoutPageReflowProvider(this));
+            provider.put(ReaderConstants.IMAGE_REFLOW_PAGE, new LayoutImageReflowProvider(this));
         }
         if (supportTextFlow) {
-            provider.put(ReaderConstants.TEXT_FLOW_PAGE, new LayoutTextFlowProvider(this));
+            provider.put(ReaderConstants.TEXT_REFLOW_PAGE, new LayoutTextReflowProvider(this));
         }
         if (supportScale) {
             currentProvider = ReaderConstants.SINGLE_PAGE;
         } else {
-            currentProvider = ReaderConstants.TEXT_FLOW_PAGE;
+            currentProvider = ReaderConstants.TEXT_REFLOW_PAGE;
         }
         getCurrentLayoutProvider().activate();
     }

@@ -688,7 +688,7 @@ public class ReaderActivity extends Activity {
                 @Override
                 public void onFinished(boolean confirm, ImageReflowSettings settings) {
                     if (confirm && settings != null) {
-                        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.REFLOW_PAGE, new NavigationArgs());
+                        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
                         submitRenderRequest(request);
                     }
                     hideReflowSettingsDialog();
