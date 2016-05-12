@@ -2,17 +2,14 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
-import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.reflow.ImageReflowManager;
-import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -82,10 +79,13 @@ public class LayoutPageReflowProvider extends LayoutProvider {
         return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
-    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) throws ReaderException {
         Bitmap bmp = reader.getImageReflowManager().getCurrentBitmap(getCurrentPageName());
         if (bmp == null) {
-            reflowFirstVisiblePage(reader, bitmap, readerViewInfo);
+            reflowFirstVisiblePage(reader, bitmap, readerViewInfo, precache);
+            if (precache) {
+                return false;
+            }
             if (reverseOrder) {
                 reader.getImageReflowManager().moveToEnd(getCurrentPageName());
                 reverseOrder = false;
@@ -96,13 +96,13 @@ public class LayoutPageReflowProvider extends LayoutProvider {
         return true;
     }
 
-    private void reflowFirstVisiblePage(final Reader reader, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) {
+    private void reflowFirstVisiblePage(final Reader reader, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap, readerViewInfo);
-        reader.getImageReflowManager().clear(getCurrentPageName());
         reader.getImageReflowManager().reflowBitmap(bitmap.getBitmap(),
                 reader.getViewOptions().getViewWidth(),
                 reader.getViewOptions().getViewHeight(),
-                getCurrentPageName());
+                getCurrentPageName(),
+                precache);
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {

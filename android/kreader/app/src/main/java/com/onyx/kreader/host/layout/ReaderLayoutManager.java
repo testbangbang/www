@@ -267,10 +267,16 @@ public class ReaderLayoutManager {
     }
 
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
-        boolean ret = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo);
-        reader.getReaderHelper().applyPostBitmapProcess(bitmap);
-        reader.getReaderHelper().setRenderBitmapDirty(true);
-        return ret;
+        return drawVisiblePages(reader, bitmap, viewInfo, false);
+    }
+
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo, boolean precache) throws ReaderException {
+        boolean succ = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo, precache);
+        if (succ) {
+            reader.getReaderHelper().applyPostBitmapProcess(bitmap);
+            reader.getReaderHelper().setRenderBitmapDirty(true);
+        }
+        return succ;
     }
 
     public void setScale(final String pageName, final float scale, final float x, final float y) throws ReaderException {

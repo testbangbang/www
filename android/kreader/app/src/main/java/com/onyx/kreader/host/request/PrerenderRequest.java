@@ -18,10 +18,10 @@ public class PrerenderRequest extends BaseRequest {
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
         if (forward && reader.getReaderLayoutManager().nextScreen()) {
-            reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+            reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo(), true);
             reader.getReaderLayoutManager().prevScreen();
         } else if (!forward && reader.getReaderLayoutManager().prevScreen()) {
-            reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+            reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo(), true);
             reader.getReaderLayoutManager().nextScreen();
         }
     }
