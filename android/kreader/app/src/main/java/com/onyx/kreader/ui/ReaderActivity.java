@@ -32,7 +32,9 @@ import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.reflow.ImageReflowSettings;
 import com.onyx.kreader.ui.data.ReaderScalePresets;
+import com.onyx.kreader.ui.dialog.DialogReflowSettings;
 import com.onyx.kreader.ui.dialog.DialogSetValue;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -70,6 +72,7 @@ public class ReaderActivity extends Activity {
     private CropImageResultReceiver selectionZoomAreaReceiver;
     private DialogSetValue contrastDialog;
     private DialogSetValue emboldenDialog;
+    private DialogReflowSettings reflowSettingsDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -340,6 +343,7 @@ public class ReaderActivity extends Activity {
                         adjustEmbolden();
                         break;
                     case "/Font/FontReflow":
+                        adjustReflowSettings();
                         break;
                     case "/Font/TOC":
                         break;
@@ -576,17 +580,17 @@ public class ReaderActivity extends Activity {
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.columnsLeftToRight(NavigationArgs.Type.ALL, 2, 2, limit);
-        switchNavigationMode(args);
+        switchPageNavigationMode(args);
     }
 
     private void switchNavigationToComicMode() {
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
-        switchNavigationMode(args);
+        switchPageNavigationMode(args);
     }
 
-    private void switchNavigationMode(NavigationArgs args) {
+    private void switchPageNavigationMode(NavigationArgs args) {
         BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
         submitRenderRequest(request);
     }
@@ -620,7 +624,7 @@ public class ReaderActivity extends Activity {
             };
             float current = reader.getBaseOptions().getGammaLevel();
             contrastDialog = new DialogSetValue(ReaderActivity.this, (int)current, BaseOptions.minGammaLevel(), BaseOptions.maxGammaLevel(), true, true,
-                    getString(R.string.contrast), getString(R.string.contrast_level), callback);
+                    getString(R.string.dialog_reflow_settings_contrast), getString(R.string.contrast_level), callback);
 
         }
         contrastDialog.show();
@@ -668,6 +672,36 @@ public class ReaderActivity extends Activity {
         if (emboldenDialog != null) {
             emboldenDialog.hide();
             emboldenDialog = null;
+        }
+    }
+
+    private void adjustReflowSettings() {
+        showReflowSettingsDialog();
+    }
+
+    private void showReflowSettingsDialog() {
+        if (reflowSettingsDialog == null) {
+            ImageReflowSettings settings = reader.getImageReflowSettings();
+            settings.dev_width = surfaceView.getWidth();
+            settings.dev_height = surfaceView.getHeight();
+            reflowSettingsDialog = new DialogReflowSettings(this, settings, new DialogReflowSettings.ReflowCallback() {
+                @Override
+                public void onFinished(boolean confirm, ImageReflowSettings settings) {
+                    if (confirm && settings != null) {
+                        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.REFLOW_PAGE, new NavigationArgs());
+                        submitRenderRequest(request);
+                    }
+                    hideReflowSettingsDialog();
+                }
+            });
+        }
+        reflowSettingsDialog.show();
+    }
+
+    private void hideReflowSettingsDialog() {
+        if (reflowSettingsDialog != null) {
+            reflowSettingsDialog.hide();
+            reflowSettingsDialog = null;
         }
     }
 

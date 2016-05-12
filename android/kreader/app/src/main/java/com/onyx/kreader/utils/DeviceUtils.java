@@ -1,8 +1,10 @@
 package com.onyx.kreader.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -11,8 +13,6 @@ import java.util.UUID;
  * Created by zhuzeng on 10/16/15.
  */
 public class DeviceUtils {
-
-
 
     public static String getDeviceSerial(Context context) {
         UUID uuid = null;
@@ -35,6 +35,12 @@ public class DeviceUtils {
         }
 
         return uuid.toString();
+    }
+
+    public static float getDensity(Activity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.density * 160;
     }
 
 }

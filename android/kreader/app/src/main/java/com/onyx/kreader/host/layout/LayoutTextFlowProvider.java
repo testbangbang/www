@@ -15,10 +15,10 @@ import com.onyx.kreader.host.wrapper.Reader;
  * Created by zhuzeng on 10/7/15.
  * For reflow stream document.
  */
-public class LayoutReflowProvider  extends LayoutProvider {
+public class LayoutTextFlowProvider extends LayoutProvider {
 
 
-    public LayoutReflowProvider(final ReaderLayoutManager lm) {
+    public LayoutTextFlowProvider(final ReaderLayoutManager lm) {
         super(lm);
     }
 

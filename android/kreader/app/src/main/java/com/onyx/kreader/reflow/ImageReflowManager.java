@@ -30,9 +30,9 @@ public class ImageReflowManager {
 
 
     private Map<String, ReaderBitmapList> pageMap;
-    private String cacheRoot;
+    private File cacheRoot;
     private ImageReflowSettings settings;
-    public ImageReflowManager(final String root, int dw, int dh) {
+    public ImageReflowManager(final File root, int dw, int dh) {
         super();
         cacheRoot = root;
         settings = ImageReflowSettings.createSettings();
@@ -44,7 +44,7 @@ public class ImageReflowManager {
         return settings;
     }
 
-    static public File cacheFilePath(final String root, final ImageReflowSettings settings, final String fileName) {
+    static public File cacheFilePath(final File root, final ImageReflowSettings settings, final String fileName) {
         if (settings == null || root == null) {
             return null;
         }
@@ -58,9 +58,9 @@ public class ImageReflowManager {
         loadPageMap();
     }
 
-    public void reflowBitmap(Bitmap bitmap, int pageWidth, int pageHeight, double scale, final String pageName) {
-        settings.page_width = (int)(pageWidth * scale);
-        settings.page_height = (int)(pageHeight * scale);
+    public void reflowBitmap(Bitmap bitmap, int pageWidth, int pageHeight, final String pageName) {
+        settings.page_width = pageWidth;
+        settings.page_height = pageHeight;
         Log.i("reflow settings", JSON.toJSONString(settings));
         if (ImageUtils.reflowScannedPage(bitmap, pageName, this)) {
             savePageMap();
@@ -200,8 +200,7 @@ public class ImageReflowManager {
     }
 
     public void clearAllCacheFiles() {
-        File dir = new File(cacheRoot);
-        File[] list = dir.listFiles();
+        File[] list = cacheRoot.listFiles();
         if (list == null) {
             return;
         }
