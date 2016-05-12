@@ -351,6 +351,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public String getFilePath() {
+        return getPluginImpl().getFilePath();
+    }
+
     /**
      * Check if drm is supported or not.
      *

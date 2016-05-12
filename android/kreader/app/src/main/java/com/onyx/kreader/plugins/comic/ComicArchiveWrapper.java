@@ -21,15 +21,21 @@ public class ComicArchiveWrapper {
 
     private static final HashMap<Integer, ImagesWrapper.ImageInformation> infoCache = new HashMap<Integer, ImagesWrapper.ImageInformation>();
 
+    private String filePath;
     private ComicArchive archive;
 
     public boolean open(String path, String password) {
+        filePath = path;
         if (FileUtils.isZipFile(path)) {
             archive = new ComicArchiveZip();
         } else if (FileUtils.isRarFile(path)) {
             archive = new ComicArchiveRar();
         }
         return archive.open(path, password);
+    }
+
+    public String getFilePath() {
+        return filePath;
     }
 
     public int getPageCount() {

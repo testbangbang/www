@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -8,9 +7,12 @@ import android.graphics.*;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -44,6 +46,7 @@ import com.onyx.kreader.ui.menu.ReaderMenuItem;
 import com.onyx.kreader.ui.menu.ReaderSideMenu;
 import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
 import com.onyx.kreader.utils.FileUtils;
+import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.RawResourceUtil;
 import com.onyx.kreader.utils.StringUtils;
 
@@ -53,7 +56,7 @@ import java.util.List;
 /**
  * Created by Joy on 2016/4/14.
  */
-public class ReaderActivity extends Activity {
+public class ReaderActivity extends ActionBarActivity {
     private final static String TAG = ReaderActivity.class.getSimpleName();
 
     private Reader reader;
@@ -73,6 +76,8 @@ public class ReaderActivity extends Activity {
     private DialogSetValue contrastDialog;
     private DialogSetValue emboldenDialog;
     private DialogReflowSettings reflowSettingsDialog;
+    private DialogSetValue gotoPageDialog;
+    private DialogSetValue cropValueDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,7 +111,7 @@ public class ReaderActivity extends Activity {
 
     public boolean tryHitTest(float x, float y) {
         if (getReaderMenu().isShown()) {
-            getReaderMenu().hide();
+            hideReaderMenu();
             return true;
         }
         return false;
@@ -198,17 +203,25 @@ public class ReaderActivity extends Activity {
     }
 
     private void initActivity() {
-        initActionBar();
+        initToolBar();
         initSurfaceView();
         initReaderMenu();
         initHandlerManager();
     }
 
-    private void initActionBar() {
-        if (getActionBar() != null) {
-            getActionBar().setDisplayShowHomeEnabled(true);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+    private void initToolBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.findViewById(R.id.toolbar_progress).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGotoDialog();
+            }
+        });
     }
 
     private void initSurfaceView() {
@@ -305,6 +318,9 @@ public class ReaderActivity extends Activity {
                         break;
                     case "/Zoom/ToWidth":
                         scaleToWidth();
+                        break;
+                    case "/Zoom/Crop":
+                        scaleByCrop();
                         break;
                     case "/Zoom/ByRect":
                         scaleByRect();
@@ -483,6 +499,9 @@ public class ReaderActivity extends Activity {
     }
 
     private void onFileOpenSucceed() {
+        hideReaderMenu();
+        String name = FileUtils.getFileName(reader.getReaderHelper().getPlugin().getFilePath());
+        updateToolbarTitle(name);
         handlerManager.setEnable(true);
         BaseRequest config = new CreateViewRequest(displayWidth(), displayHeight());
         reader.submitRequest(this, config, new BaseCallback() {
@@ -538,6 +557,46 @@ public class ReaderActivity extends Activity {
         submitRenderRequest(request);
     }
 
+    private void scaleByCrop() {
+        showCropValueDialog();
+    }
+
+    public DialogSetValue showCropValueDialog() {
+        final int minValue = 1;
+        final int maxValue = 20;
+        final int defaultValue = minValue;
+        if (cropValueDialog == null) {
+            DialogSetValue.DialogCallback cropCallback = new DialogSetValue.DialogCallback() {
+                @Override
+                public void valueChange(int newValue) {
+                    cropWithValue((double)newValue / maxValue);
+                }
+
+                @Override
+                public void done(boolean isValueChange, int oldValue, int newValue) {
+                    if (!isValueChange) {
+                    }
+                    hideCropValueDialog();
+                }
+            };
+            cropValueDialog = new DialogSetValue(this, defaultValue, minValue, maxValue, true, true,  getString(R.string.dialog_crop_tittle), getString(R.string.dialog_crop_tittle), cropCallback);
+            cropWithValue((double)defaultValue / maxValue);
+        }
+        cropValueDialog.show();
+        return cropValueDialog;
+    }
+
+    public void hideCropValueDialog()  {
+        if (cropValueDialog != null) {
+            cropValueDialog.hide();
+            cropValueDialog = null;
+        }
+    }
+
+    private void cropWithValue(double value) {
+
+    }
+
     private void showSelectionActivity(final CropArgs args, final CropImage.SelectionCallback callback) {
         Uri outputUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "cropped.png"));
         IntentFilter filter = new IntentFilter();
@@ -555,7 +614,7 @@ public class ReaderActivity extends Activity {
             }
         };
         ReaderActivity.this.registerReceiver(selectionZoomAreaReceiver, filter);
-        CropImage crop = new CropImage(reader.getRenderBitmap().getBitmap());
+        CropImage crop = new CropImage(reader.getViewportBitmap().getBitmap());
         crop.output(outputUri).start(ReaderActivity.this, false, false, false, args);
     }
 
@@ -721,6 +780,12 @@ public class ReaderActivity extends Activity {
         if (e != null) {
             return;
         }
+        // TODO avoid null pointer error
+        String page = getCurrentPageName();
+        if (page != null) {
+            int pn = Integer.parseInt(page);
+            updateToolbarProgress((pn + 1) + "/" + getPageCount());
+        }
         DeviceController.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
     }
@@ -758,6 +823,14 @@ public class ReaderActivity extends Activity {
         return reader.getReaderLayoutManager().getCurrentPageName();
     }
 
+    private int getCurrentPage() {
+        return PagePositionUtils.getPosition(getCurrentPageName());
+    }
+
+    private int getPageCount() {
+        return reader.getNavigator().getTotalPage();
+    }
+
     private ReaderPluginOptions getPluginOptions() {
         return new ReaderPluginOptionsImpl();
     }
@@ -783,7 +856,7 @@ public class ReaderActivity extends Activity {
     }
 
     private void hideAllPopupMenu() {
-        getReaderMenu().hide();
+        hideReaderMenu();
     }
 
     protected boolean askForClose() {
@@ -821,7 +894,61 @@ public class ReaderActivity extends Activity {
     }
 
     public void showReaderMenu() {
+        showToolbar();
         getReaderMenu().show();
+    }
+
+    public void hideReaderMenu() {
+        hideToolbar();
+        getReaderMenu().hide();
+    }
+
+    private void showToolbar() {
+        findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
+    }
+
+    private void hideToolbar() {
+        findViewById(R.id.toolbar).setVisibility(View.GONE);
+    }
+
+    private void updateToolbarTitle(String title) {
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        ((TextView)toolbar.findViewById(R.id.toolbar_title)).setText(title);
+    }
+
+    private void updateToolbarProgress(String progress) {
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        ((TextView)toolbar.findViewById(R.id.toolbar_progress)).setText(progress);
+    }
+
+    public DialogSetValue showGotoDialog() {
+        if (gotoPageDialog == null) {
+            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
+                @Override
+                public void valueChange(int newValue) {
+                    gotoPage(newValue - 1);
+                }
+
+                @Override
+                public void done(boolean isValueChange, int oldValue, int newValue) {
+                    if (!isValueChange) {
+                        gotoPage(oldValue - 1);
+                    }
+                    hideGotoDialog();
+                }
+            };
+            gotoPageDialog = new DialogSetValue(ReaderActivity.this, getCurrentPage(), 1, getPageCount(), true, true,
+                    getString(R.string.go_to_page), getString(R.string.go_to_page), callback);
+        }
+        gotoPageDialog.show();
+        return gotoPageDialog;
+    }
+
+    private void hideGotoDialog() {
+        if (gotoPageDialog != null) {
+            gotoPageDialog.hide();
+            gotoPageDialog = null;
+        }
     }
 
     public void setFullScreen(boolean fullScreen) {

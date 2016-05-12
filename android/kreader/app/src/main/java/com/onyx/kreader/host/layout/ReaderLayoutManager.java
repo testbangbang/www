@@ -274,7 +274,9 @@ public class ReaderLayoutManager {
         boolean succ = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo, precache);
         if (succ) {
             reader.getReaderHelper().applyPostBitmapProcess(bitmap);
-            reader.getReaderHelper().setRenderBitmapDirty(true);
+            if (!precache) {
+                reader.getReaderHelper().setRenderBitmapDirty(true);
+            }
         }
         return succ;
     }

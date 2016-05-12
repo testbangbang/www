@@ -23,6 +23,8 @@ public interface ReaderPlugin {
      */
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException;
 
+    public String getFilePath();
+
     /**
      * Check if drm is supported or not.
      * @return

@@ -63,6 +63,12 @@
                     "iconResourceId": "R.drawable.menu_zoom_to_width"
                 },
                 {
+                    "id": "Crop",
+                    "type": "Item",
+                    "title": "Crop",
+                    "iconResourceId": "R.drawable.menu_zoom_cutting_edge"
+                },
+                {
                     "id": "ByRect",
                     "type": "Item",
                     "title": "By Rect",

@@ -82,7 +82,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) throws ReaderException {
         Bitmap bmp = reader.getImageReflowManager().getCurrentBitmap(getCurrentPageName());
         if (bmp == null) {
-            reflowFirstVisiblePage(reader, bitmap, readerViewInfo, precache);
+            reflowPage(reader, bitmap, readerViewInfo, precache);
             if (precache) {
                 return false;
             }
@@ -96,7 +96,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return true;
     }
 
-    private void reflowFirstVisiblePage(final Reader reader, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) {
+    private void reflowPage(final Reader reader, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap, readerViewInfo);
         reader.getImageReflowManager().reflowBitmap(bitmap.getBitmap(),
                 reader.getViewOptions().getViewWidth(),

@@ -42,4 +42,6 @@
     <string name="dialog_reflow_settings_contrast_default">Default</string>
     <string name="dialog_reflow_settings_contrast_darker">Darker</string>
     <string name="dialog_reflow_settings_contrast_darkest">Darkest</string>
+    <string name="go_to_page">Go To Page</string>
+    <string name="dialog_crop_tittle">Crop</string>
 </resources>

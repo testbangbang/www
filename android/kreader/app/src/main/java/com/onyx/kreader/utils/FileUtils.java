@@ -57,6 +57,10 @@ public class FileUtils {
         return file.getParent();
     }
 
+    public static String getFileName(final String path) {
+        File file = new File(path);
+        return file.getName();
+    }
 
     public static void closeQuietly(Cursor cursor) {
         try {

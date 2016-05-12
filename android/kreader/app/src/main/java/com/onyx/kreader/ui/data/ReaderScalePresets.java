@@ -5,7 +5,7 @@ package com.onyx.kreader.ui.data;
  */
 public class ReaderScalePresets {
     private static final float MIN_VALUE = 0.1f;
-    private static final float DELTA = 0.5f;
+    private static final float DELTA = 0.25f;
 
     public static float scaleUp(float currentValue) {
         return currentValue + DELTA;
