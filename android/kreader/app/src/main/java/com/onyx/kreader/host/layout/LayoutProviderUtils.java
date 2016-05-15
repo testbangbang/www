@@ -1,7 +1,10 @@
 package com.onyx.kreader.host.layout;
 
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.cache.BitmapLruCache;
+import com.onyx.kreader.common.Benchmark;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
@@ -9,7 +12,6 @@ import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderCacheManager;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
@@ -28,14 +30,12 @@ public class LayoutProviderUtils {
      * @param bitmap
      */
     static public void drawVisiblePages(final Reader reader, final ReaderLayoutManager layoutManager, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) {
-        bitmap.clear();
-
         final ReaderRenderer renderer = reader.getRenderer();
-        final ReaderCacheManager cacheManager = reader.getReaderCacheManager();
+        final BitmapLruCache cache = reader.getBitmapLruCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
         final String key = PositionSnapshot.cacheKey(visiblePages);
         boolean hitCache = false;
-        if (enableCache && checkCache(cacheManager, key, bitmap)) {
+        if (enableCache && checkCache(cache, key, bitmap)) {
             hitCache = true;
         }
 
@@ -53,13 +53,16 @@ public class LayoutProviderUtils {
             visibleRect.intersect(layoutManager.getPageManager().getViewportRect());
             PageUtils.translateCoordinates(visibleRect, positionRect);
             if (!hitCache) {
-                renderer.draw(documentPosition, pageInfo.getActualScale(), pageInfo.getPageDisplayOrientation(), bitmap, displayRect, pageRect, visibleRect);
+                bitmap.clear();
+                if (renderer.draw(documentPosition, pageInfo.getActualScale(),
+                        pageInfo.getPageDisplayOrientation(), bitmap, displayRect,
+                        pageRect, visibleRect)) {
+                    if (enableCache && StringUtils.isNotBlank(key)) {
+                        addToCache(cache, key, bitmap);
+                    }
+                }
             }
             readerViewInfo.copyPageInfo(pageInfo);
-        }
-
-        if (enableCache && StringUtils.isNotBlank(key) && !hitCache) {
-            addToCache(cacheManager, key, bitmap);
         }
 
         updateReaderViewInfo(readerViewInfo, layoutManager);
@@ -72,22 +75,22 @@ public class LayoutProviderUtils {
         readerViewInfo.canGoForward = layoutManager.canGoForward();
     }
 
-    static public boolean addToCache(final ReaderCacheManager cacheManager, final String key, final ReaderBitmapImpl bitmap) {
-        final ReaderBitmapImpl cache = cacheManager.getBitmap(key);
-        if (cache == null) {
-            cacheManager.clear();
-            cacheManager.addBitmap(key, bitmap);
+    static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
+        final Bitmap result = cache.get(key);
+        if (result == null) {
+            Bitmap copy = bitmap.getBitmap().copy(bitmap.getBitmap().getConfig(), false);
+            cache.put(key, copy);
             return true;
         }
         return false;
     }
 
-    static public boolean checkCache(final ReaderCacheManager cacheManager, final String key, final ReaderBitmapImpl bitmap) {
-        final ReaderBitmapImpl cache = cacheManager.getBitmap(key);
-        if (cache == null) {
+    static public boolean checkCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
+        final Bitmap result = cache.get(key);
+        if (result == null) {
             return false;
         }
-        bitmap.copyFrom(cache);
+        bitmap.copyFrom(result);
         return true;
     }
 

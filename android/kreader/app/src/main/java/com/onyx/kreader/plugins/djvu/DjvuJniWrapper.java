@@ -1,7 +1,6 @@
 package com.onyx.kreader.plugins.djvu;
 
 import android.graphics.Bitmap;
-
 import com.onyx.kreader.api.ReaderSelection;
 
 import java.util.ArrayList;
@@ -16,24 +15,36 @@ public class DjvuJniWrapper {
         System.loadLibrary("onyx_djvu");
     }
 
-    private native int nativeOpenFile(String path);
-    private native boolean nativeGotoPage(int pageNum);
-    private native boolean nativeGetPageSize(int pageNum, float[] size);
-    private native boolean nativeExtractPageText(int pageNum, List<ReaderSelection> textChunks);
+    private static int sPluginId = -1;
 
-    private native boolean nativeDrawPage(int pageNum, Bitmap bitmap, float zoom, int pageW, int pageH,
+    private synchronized static int nextId() {
+        sPluginId++;
+        return sPluginId;
+    }
+
+    private native int nativeOpenFile(int id, String path);
+    private native boolean nativeGotoPage(int id, int pageNum);
+    private native boolean nativeGetPageSize(int id, int pageNum, float[] size);
+    private native boolean nativeExtractPageText(int id, int pageNum, List<ReaderSelection> textChunks);
+
+    private native boolean nativeDrawPage(int id, int pageNum, Bitmap bitmap, float zoom, int pageW, int pageH,
                                           int patchX, int patchY,
                                           int patchW, int patchH);
-    private native void nativeClose();
+    private native void nativeClose(int id);
 
+    private int id;
     private String filePath;
     private int pageCount;
     private HashMap<Integer, List<ReaderSelection>> pageTextChunks = new HashMap<Integer, List<ReaderSelection>>();
 
+    public DjvuJniWrapper() {
+        id = nextId();
+    }
+
     public boolean open(String path) {
         cleanup();
         filePath = path;
-        pageCount = nativeOpenFile(path);
+        pageCount = nativeOpenFile(id, path);
         return pageCount > 0;
     }
 
@@ -49,14 +60,14 @@ public class DjvuJniWrapper {
         if (!isValidPage(page)) {
             return false;
         }
-        return nativeGotoPage(page);
+        return nativeGotoPage(id, page);
     }
 
     public boolean getPageSize(int page, float[] size) {
         if (!isValidPage(page)) {
             return false;
         }
-        return nativeGetPageSize(page, size);
+        return nativeGetPageSize(id, page, size);
     }
 
     public boolean extractPageText(int page, List<ReaderSelection> textChunks) {
@@ -64,7 +75,7 @@ public class DjvuJniWrapper {
             return false;
         }
         if (!pageTextChunks.containsKey(page)) {
-            if (!nativeExtractPageText(page, textChunks)) {
+            if (!nativeExtractPageText(id, page, textChunks)) {
                 return false;
             }
             pageTextChunks.put(page, new ArrayList<ReaderSelection>(textChunks));
@@ -79,11 +90,11 @@ public class DjvuJniWrapper {
         if (!isValidPage(page)) {
             return false;
         }
-        return nativeDrawPage(page, bitmap, zoom, pageW, pageH, patchX, patchY, patchW, patchH);
+        return nativeDrawPage(id, page, bitmap, zoom, pageW, pageH, patchX, patchY, patchW, patchH);
     }
 
     public void close() {
-        nativeClose();
+        nativeClose(id);
         cleanup();
     }
 

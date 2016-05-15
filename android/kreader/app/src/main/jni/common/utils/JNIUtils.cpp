@@ -9,7 +9,7 @@
 
 
 
-JNIUtils::JNIUtils(JNIEnv * env) : myEnv(env) {
+JNIUtils::JNIUtils(JNIEnv * env) : myEnv(env), clazz(0) {
 }
 
 bool JNIUtils::findClass(const char *className)
@@ -56,6 +56,15 @@ JNIUtils::~JNIUtils() {
     if (clazz != 0) {
         myEnv->DeleteLocalRef(clazz);
     }
+}
+
+jint JNIUtils::hashcode(const jobject object)
+{
+    jclass clazz = myEnv->GetObjectClass(object);
+    jmethodID methodIDHashcode = myEnv->GetMethodID(clazz, "hashCode", "()I");
+    jint hashCode = myEnv->CallIntMethod(object, methodIDHashcode);
+    myEnv->DeleteLocalRef(clazz);
+    return hashCode;
 }
 
 void JNIUtils::invokeStaticMethod(JNIEnv *env, ...) {

@@ -2,7 +2,9 @@ package com.onyx.kreader.host.wrapper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import com.jakewharton.disklrucache.DiskLruCache;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
@@ -12,13 +14,51 @@ import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
+import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.ImageUtils;
+
+import java.io.File;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by zhuzeng on 10/5/15.
  * Save all helper data objects in this class.
  */
 public class ReaderHelper {
+
+    public class BitmapCopyCoordinator {
+        private ReentrantLock lock = new ReentrantLock();
+        Condition condition = lock.newCondition();
+        private boolean renderBitmapDirty = false;
+
+        public void copyRenderBitmapToViewport() {
+            try {
+                lock.lock();
+                if (!renderBitmapDirty) {
+                    return;
+                }
+                ReaderHelper.this.copyRenderBitmapToViewportImpl();
+                renderBitmapDirty = false;
+                condition.signal();
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        public void waitCopy() {
+            try {
+                lock.lock();
+                while (renderBitmapDirty) {
+                    condition.await();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
 
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPluginOptionsImpl pluginOptions;
@@ -33,12 +73,12 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
     private ReaderBitmapImpl renderBitmap;
-    private boolean renderBitmapDirty = false;
     // copy of renderBitmap, to be used by UI thread
     private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
+    private BitmapCopyCoordinator bitmapCopyCoordinator = new BitmapCopyCoordinator();
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
-    private ReaderCacheManager readerCacheManager = new ReaderCacheManager();
+    private BitmapLruCache bitmapLruCache;
 
     public ReaderHelper() {
     }
@@ -68,7 +108,6 @@ public class ReaderHelper {
         hitTestManager = view.getReaderHitTestManager();
         getReaderLayoutManager().init();
         getReaderLayoutManager().updateViewportSize();
-        getReaderCacheManager().clear();
     }
 
     public void onDocumentClosed() {
@@ -78,7 +117,9 @@ public class ReaderHelper {
         navigator = null;
         searchManager = null;
         hitTestManager = null;
-        getReaderCacheManager().clear();
+        if (bitmapLruCache != null) {
+            FileUtils.closeQuietly(bitmapLruCache);
+        }
     }
 
     public void updateViewportSize(int newWidth, int newHeight) {
@@ -116,22 +157,19 @@ public class ReaderHelper {
     }
 
     public boolean isRenderBitmapDirty() {
-        return renderBitmapDirty;
+        return bitmapCopyCoordinator.renderBitmapDirty;
     }
 
     public void setRenderBitmapDirty(boolean dirty) {
-        renderBitmapDirty = dirty;
+        bitmapCopyCoordinator.renderBitmapDirty = dirty;
     }
 
     public final ReaderBitmapImpl getViewportBitmap() {
         return viewportBitmap;
     }
 
-    public void copyRenderBitmapToViewport() {
-        if (renderBitmap != null && renderBitmap.getBitmap() != null &&
-                !renderBitmap.getBitmap().isRecycled()) {
-            viewportBitmap.copyFrom(renderBitmap);
-        }
+    public BitmapCopyCoordinator getBitmapCopyCoordinator() {
+        return bitmapCopyCoordinator;
     }
 
     public ReaderPlugin getPlugin() {
@@ -156,8 +194,21 @@ public class ReaderHelper {
         return readerLayoutManager;
     }
 
-    public ReaderCacheManager getReaderCacheManager() {
-        return readerCacheManager;
+    public void initBitmapLruCache(Context context) {
+        if (bitmapLruCache == null) {
+            File cacheLocation = new File(context.getCacheDir(), DiskLruCache.class.getCanonicalName());
+            if (!cacheLocation.exists()) {
+                cacheLocation.mkdirs();
+            }
+            BitmapLruCache.Builder builder = new BitmapLruCache.Builder();
+            builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
+            builder.setDiskCacheEnabled(true).setDiskCacheLocation(cacheLocation);
+            bitmapLruCache = builder.build();
+        }
+    }
+
+    public BitmapLruCache getBitmapLruCache() {
+        return bitmapLruCache;
     }
 
     public ReaderHitTestManager getHitTestManager() {
@@ -209,4 +260,10 @@ public class ReaderHelper {
         }
     }
 
+    private void copyRenderBitmapToViewportImpl() {
+        if (renderBitmap != null && renderBitmap.getBitmap() != null &&
+                !renderBitmap.getBitmap().isRecycled()) {
+            viewportBitmap.copyFrom(renderBitmap.getBitmap());
+        }
+   }
 }

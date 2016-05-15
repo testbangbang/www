@@ -10,9 +10,7 @@ import net.lingala.zip4j.model.FileHeader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by joy on 3/15/16.
@@ -84,7 +82,7 @@ public class ComicArchiveZip implements ComicArchive {
     }
 
     private ZipFile archive = null;
-    private HashMap<String, FileHeader> pageList = null;
+    private SortedMap<String, FileHeader> pageList = null;
 
     @Override
     public boolean isEncrypted() {
@@ -137,7 +135,7 @@ public class ComicArchiveZip implements ComicArchive {
 
     @Override
     public List<String> getPageList() {
-        ArrayList<String> pages = new ArrayList<String>();
+        ArrayList<String> pages = new ArrayList<>();
         if (!isOpened()) {
             return pages;
         }
@@ -176,7 +174,7 @@ public class ComicArchiveZip implements ComicArchive {
     }
 
     private boolean loadPageList() {
-        HashMap<String, FileHeader> pages = new HashMap<String, FileHeader>();
+        SortedMap<String, FileHeader> pages = new TreeMap<>();
         try {
             List headers = archive.getFileHeaders();
             for (int i = 0; i < headers.size(); i++) {

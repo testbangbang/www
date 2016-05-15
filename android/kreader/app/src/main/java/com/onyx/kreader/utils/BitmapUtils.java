@@ -1,12 +1,12 @@
 package com.onyx.kreader.utils;
 
+import android.annotation.SuppressLint;
 import android.graphics.*;
-import android.hardware.Camera;
+import android.os.Build;
 import android.util.Log;
 import com.onyx.kreader.plugins.images.ImagesWrapper;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
@@ -71,6 +71,31 @@ public class BitmapUtils {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(3);
         canvas.drawRect(rect, paint);
+    }
+
+    @SuppressLint("NewApi")
+    public static int getSizeInBytes(Bitmap bitmap) {
+        if (bitmap == null) {
+            return 0;
+        }
+
+        // There's a known issue in KitKat where getAllocationByteCount() can throw an NPE. This was
+        // apparently fixed in MR1: http://bit.ly/1IvdRpd. So we do a version check here, and
+        // catch any potential NPEs just to be safe.
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            try {
+                return bitmap.getAllocationByteCount();
+            } catch (NullPointerException npe) {
+                // Swallow exception and try fallbacks.
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return bitmap.getByteCount();
+        }
+
+        // Estimate for earlier platforms.
+        return bitmap.getHeight() * bitmap.getRowBytes();
     }
 
 }

@@ -20,15 +20,25 @@ android {
         // call regular ndk-build(.cmd) script from app directory
         task ndkBuild(type: Exec) {
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath
+                commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, '-j10'
             } else {
                 commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, '-j10'
             }
         }
-        
+
         tasks.withType(JavaCompile) {
             compileTask -> compileTask.dependsOn ndkBuild
         }
+
+        task ndkClean(type: Exec) {
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, 'clean'
+            } else {
+                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, 'clean'
+            }
+        }
+        
+        clean.dependsOn 'ndkClean'
     }
 
     buildTypes {
@@ -48,6 +58,7 @@ android {
 }
 
 dependencies {
+    compile project(':libraries:OnyxSDK')
     compile project(':libraries:cropimage')
     compile project(':libraries:Side-Menu.Android:library')
     compile fileTree(dir: 'libs', include: ['*.jar'])

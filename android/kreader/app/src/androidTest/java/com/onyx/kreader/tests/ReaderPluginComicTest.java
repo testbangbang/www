@@ -5,7 +5,6 @@ import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
-import android.util.Pair;
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderException;
@@ -19,7 +18,6 @@ import com.onyx.kreader.utils.StringUtils;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -100,6 +98,7 @@ public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<Read
         }
     }
 
+    @Suppress
     public void testZipEncrypted() {
         helpTestZipWrapper(ZIP_FILE, "", false);
         helpTestZipWrapper(ZIP_ENCRYPTED_FILE, "boox", false);
@@ -157,9 +156,9 @@ public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<Read
     }
 
     List<TestCase> testCases = Arrays.asList((new TestCase[]{
-            new TestCase(ZIP_FILE, null),
-            new TestCase(ZIP_FILE, ""),
-            new TestCase(ZIP_ENCRYPTED_FILE, "boox"),
+//            new TestCase(ZIP_FILE, null),
+//            new TestCase(ZIP_FILE, ""),
+//            new TestCase(ZIP_ENCRYPTED_FILE, "boox"),
             new TestCase(RAR_FILE, null),
             new TestCase(RAR_FILE, ""),
             new TestCase(RAR_ENCRYPTED_FILE, "boox"),

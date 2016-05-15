@@ -2,57 +2,60 @@
 #include <jni.h>
 /* Header for class com_onyx_kreader_plugins_comic_UnrarJniWrapper */
 
+#ifndef _Included_com_onyx_kreader_plugins_comic_UnrarJniWrapper
+#define _Included_com_onyx_kreader_plugins_comic_UnrarJniWrapper
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*
  * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
  * Method:    open
- * Signature: (Ljava/lang/String;)Z
+ * Signature: (ILjava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_open
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
- * Method:    isEncrypted
- * Signature: ()Z
- */
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_isEncrypted
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
- * Method:    setPassword
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_setPassword
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
- * Method:    getEntries
- * Signature: ()[Ljava/lang/String;
- */
-JNIEXPORT jobjectArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_getEntries
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
- * Method:    extractEntryData
- * Signature: (Ljava/lang/String;)[B
- */
-JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_extractEntryData
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jint, jstring);
 
 /*
  * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
  * Method:    close
- * Signature: ()V
+ * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_close
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
+ * Method:    isEncrypted
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_isEncrypted
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
+ * Method:    setPassword
+ * Signature: (ILjava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_setPassword
+  (JNIEnv *, jobject, jint, jstring);
+
+/*
+ * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
+ * Method:    getEntries
+ * Signature: (I)[Ljava/lang/String;
+ */
+JNIEXPORT jobjectArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_getEntries
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_onyx_kreader_plugins_comic_UnrarJniWrapper
+ * Method:    extractEntryData
+ * Signature: (ILjava/lang/String;)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper_extractEntryData
+  (JNIEnv *, jobject, jint, jstring);
 
 #ifdef __cplusplus
 }
+#endif
 #endif

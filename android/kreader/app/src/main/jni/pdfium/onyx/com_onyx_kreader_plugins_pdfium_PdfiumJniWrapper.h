@@ -26,90 +26,82 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeOpenDocument
- * Signature: (Ljava/lang/String;Ljava/lang/String;)J
+ * Signature: (ILjava/lang/String;Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeOpenDocument
-  (JNIEnv *, jobject, jstring, jstring);
+  (JNIEnv *, jobject, jint, jstring, jstring);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeCloseDocument
- * Signature: ()Z
+ * Signature: (I)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeCloseDocument
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeMetadata
- * Signature: (Ljava/lang/String;[B)I
+ * Signature: (ILjava/lang/String;[B)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeMetadata
-  (JNIEnv *, jobject, jstring, jbyteArray);
+  (JNIEnv *, jobject, jint, jstring, jbyteArray);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativePageCount
- * Signature: ()I
+ * Signature: (I)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativePageCount
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativePageSize
- * Signature: (I[F)Z
+ * Signature: (II[F)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativePageSize
-  (JNIEnv *, jobject, jint, jfloatArray);
-
-/*
- * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
- * Method:    nativeClearBitmap
- * Signature: (Landroid/graphics/Bitmap;)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeClearBitmap
-  (JNIEnv *, jobject, jobject);
+  (JNIEnv *, jobject, jint, jint, jfloatArray);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeRenderPage
- * Signature: (IIIIIILandroid/graphics/Bitmap;)Z
+ * Signature: (IIIIIIILandroid/graphics/Bitmap;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeHitTest
- * Signature: (IIIIIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
+ * Signature: (IIIIIIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeSelection
- * Signature: (IIIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
+ * Signature: (IIIIIIIIILcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSelection
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeSearchInPage
- * Signature: (IIIIII[BZZLjava/util/List;)I
+ * Signature: (IIIIIII[BZZLjava/util/List;)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSearchInPage
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jbyteArray, jboolean, jboolean, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jbyteArray, jboolean, jboolean, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeGetPageText
- * Signature: (I)[B
+ * Signature: (II)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetPageText
-  (JNIEnv *, jobject, jint);
+  (JNIEnv *, jobject, jint, jint);
 
 #ifdef __cplusplus
 }

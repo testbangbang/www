@@ -338,8 +338,13 @@ public class PageManager {
         return visible;
     }
 
+    public void nextViewportToEndOfPage() {
+        while (nextViewport()) {
+        }
+    }
+
     public boolean nextViewport() {
-        if (viewportRect.bottom >= pagesBoundingRect.bottom) {
+        if ((int)viewportRect.bottom >= (int)pagesBoundingRect.bottom) {
             return false;
         }
         viewportRect.offset(0, viewportRect.height() - pageRepeat);
@@ -348,7 +353,7 @@ public class PageManager {
     }
 
     public boolean prevViewport() {
-        if (viewportRect.top <= pagesBoundingRect.top) {
+        if ((int)viewportRect.top <= (int)pagesBoundingRect.top) {
             return false;
         }
         viewportRect.offset(0, -viewportRect.height() + pageRepeat);
