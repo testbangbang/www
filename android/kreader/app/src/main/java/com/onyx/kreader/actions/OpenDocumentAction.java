@@ -20,12 +20,14 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     public void execute(final ReaderActivity readerActivity) {
+        showLoadingDialog(readerActivity);
         final Reader reader = ReaderManager.getReader(documentPath);
         BaseRequest openRequest = new OpenRequest(documentPath, readerActivity.getDocumentOptions(), readerActivity.getPluginOptions());
         reader.submitRequest(readerActivity, openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (e != null) {
+                    cleanup(readerActivity);
                     return;
                 }
                 onFileOpenSucceed(readerActivity, reader);
@@ -40,10 +42,17 @@ public class OpenDocumentAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (e != null) {
+                    cleanup(readerActivity);
                     return;
                 }
             }
         });
+    }
+
+    private void showLoadingDialog(final ReaderActivity readerActivity) {
+    }
+
+    private void cleanup(final ReaderActivity readerActivity) {
     }
 
 }

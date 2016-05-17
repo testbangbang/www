@@ -3,9 +3,8 @@
  */
 package com.onyx.android.sdk.api.device.epd;
 
-import android.content.Context;
 import android.view.View;
-import com.onyx.android.sdk.api.device.DeviceInfo;
+import com.onyx.android.sdk.device.DeviceInfo;
 
 /**
  * singleton class
@@ -16,7 +15,7 @@ import com.onyx.android.sdk.api.device.DeviceInfo;
 public abstract class EpdController
 {
     @SuppressWarnings("unused")
-    private static String TAG = "EpdController";
+    private static String TAG = EpdController.class.getSimpleName();
 
     static public int SCHEME_START                  = 1;
     static public int SCHEME_NORMAL                 = 1;
@@ -30,14 +29,9 @@ public abstract class EpdController
     private EpdController()
     {
     }
+
     
-    public static boolean setUpdatePolicy(View view, UpdatePolicy policy, int guInterval)
-    {
-        return false;
-    }
-    
-    public static void invalidate(View view, UpdateMode mode)
-    {
+    public static void invalidate(final View view, final UpdateMode mode) {
         DeviceInfo.currentDevice.invalidate(view, mode);
     }
 
@@ -51,44 +45,19 @@ public abstract class EpdController
     {
         DeviceInfo.currentDevice.postInvalidate(view, mode);
     }
-    
-    public static EPDMode getMode()
-    {
-        return DeviceInfo.currentDevice.getEpdMode();
-    }
-    
-    @Deprecated
-    public static boolean setMode(Context context, EPDMode mode)
-    {
-        return DeviceInfo.currentDevice.setEpdMode(context, mode);
-    }
-    
-    /**
-     * prefer this method over setMode(Context context, EPDMode mode)
-     * 
-     * @param view
-     * @param mode
-     * @return
-     */
-    public static boolean setMode(View view, EPDMode mode)
-    {
-        return DeviceInfo.currentDevice.setEpdMode(view.getContext(), mode);
-    }
-    
-    public static UpdateMode getViewDefaultUpdateMode(View view)
-    {
-        return DeviceInfo.currentDevice.getViewDefaultUpdateMode(view);
-        
-    }
+
 
     public static boolean enableScreenUpdate(View view, boolean enable) {
         return DeviceInfo.currentDevice.enableScreenUpdate(view, enable);
     }
 
-    public static boolean setViewDefaultUpdateMode(View view, UpdateMode mode)
-    {
+    public static boolean setViewDefaultUpdateMode(View view, UpdateMode mode) {
         DeviceInfo.currentDevice.setViewDefaultUpdateMode(view, mode);
         return true;
+    }
+
+    public static UpdateMode getViewDefaultUpdateMode(View view) {
+        return DeviceInfo.currentDevice.getViewDefaultUpdateMode(view);
     }
 
     public static boolean resetViewUpdateMode(View view) {
@@ -96,25 +65,21 @@ public abstract class EpdController
         return true;
     }
 
-    public static UpdateMode getSystemDefaultUpdateMode()
-    {
+    public static UpdateMode getSystemDefaultUpdateMode() {
         return DeviceInfo.currentDevice.getSystemDefaultUpdateMode();
     }
 
-    public static boolean setSystemDefaultUpdateMode(UpdateMode mode)
-    {
+    public static boolean setSystemDefaultUpdateMode(UpdateMode mode) {
         DeviceInfo.currentDevice.setSystemDefaultUpdateMode(mode);
         return false;
     }
 
-    public static boolean setSystemUpdateModeAndScheme(UpdateMode mode, UpdateScheme scheme, int count)
-    {
+    public static boolean setSystemUpdateModeAndScheme(UpdateMode mode, UpdateScheme scheme, int count) {
         DeviceInfo.currentDevice.setSystemUpdateModeAndScheme(mode, scheme, count);
         return false;
     }
     
-    public static boolean clearSystemUpdateModeAndScheme()
-    {
+    public static boolean clearSystemUpdateModeAndScheme() {
         DeviceInfo.currentDevice.clearSystemUpdateModeAndScheme();
         return false;
     }
