@@ -75,7 +75,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
-    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap, readerViewInfo);
         return true;
     }

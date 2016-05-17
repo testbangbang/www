@@ -28,7 +28,7 @@ public class OpenRequest extends BaseRequest {
         }
         ReaderDocument document = reader.getPlugin().open(documentPath, documentOptions, pluginOptions);
         if (document != null) {
-            reader.getReaderHelper().initBitmapLruCache(getContext());
+            reader.getReaderHelper().initData(getContext());
             reader.getReaderHelper().onDocumentOpened(document);
         }
     }

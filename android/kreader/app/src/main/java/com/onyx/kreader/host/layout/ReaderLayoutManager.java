@@ -11,7 +11,8 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.utils.ImageUtils;
+import com.onyx.kreader.host.wrapper.ReaderHelper;
+import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.utils.StringUtils;
 import com.onyx.kreader.utils.HistoryManager;
 
@@ -30,6 +31,7 @@ import java.util.Map;
  */
 public class ReaderLayoutManager {
 
+    private ReaderHelper readerHelper;
     private ReaderDocument readerDocument;
     private ReaderNavigator readerNavigator;
     private ReaderRendererFeatures readerRendererFeatures;
@@ -39,12 +41,14 @@ public class ReaderLayoutManager {
     private String currentProvider;
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
     private boolean supportScale;
-    private boolean supportReflow;
+    private boolean supportTextFlow;
 
-    public ReaderLayoutManager(final ReaderDocument document,
+    public ReaderLayoutManager(final ReaderHelper helper,
+                               final ReaderDocument document,
                                final ReaderNavigator navigator,
                                final ReaderRendererFeatures features,
                                final ReaderViewOptions viewOptions) {
+        readerHelper = helper;
         readerDocument = document;
         readerNavigator = navigator;
         readerRendererFeatures = features;
@@ -67,21 +71,26 @@ public class ReaderLayoutManager {
         return readerViewOptions;
     }
 
+    public ImageReflowManager getImageReflowManager() {
+        return readerHelper.getImageReflowManager();
+    }
+
     public void init()  {
         supportScale = getReaderRendererFeatures().supportScale();
-        supportReflow = getReaderRendererFeatures().supportFontSizeAdjustment();
+        supportTextFlow = getReaderRendererFeatures().supportFontSizeAdjustment();
         if (supportScale) {
             provider.put(ReaderConstants.SINGLE_PAGE, new LayoutSinglePageProvider(this));
             provider.put(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, new LayoutSinglePageNavigationListProvider(this));
             provider.put(ReaderConstants.CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
+            provider.put(ReaderConstants.IMAGE_REFLOW_PAGE, new LayoutImageReflowProvider(this));
         }
-        if (supportReflow) {
-            provider.put(ReaderConstants.REFLOW_PAGE, new LayoutReflowProvider(this));
+        if (supportTextFlow) {
+            provider.put(ReaderConstants.TEXT_REFLOW_PAGE, new LayoutTextReflowProvider(this));
         }
         if (supportScale) {
             currentProvider = ReaderConstants.SINGLE_PAGE;
         } else {
-            currentProvider = ReaderConstants.REFLOW_PAGE;
+            currentProvider = ReaderConstants.TEXT_REFLOW_PAGE;
         }
         getCurrentLayoutProvider().activate();
     }
@@ -158,7 +167,7 @@ public class ReaderLayoutManager {
     }
 
     public boolean isSupportReflow() {
-        return supportReflow;
+        return supportTextFlow;
     }
 
 
@@ -258,10 +267,16 @@ public class ReaderLayoutManager {
     }
 
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
-        boolean ret = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo);
-        reader.getReaderHelper().applyPostBitmapProcess(bitmap);
-        reader.getReaderHelper().setRenderBitmapDirty(true);
-        return ret;
+        return drawVisiblePages(reader, bitmap, viewInfo, false);
+    }
+
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo, boolean precache) throws ReaderException {
+        boolean succ = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo, precache);
+        if (succ) {
+            reader.getReaderHelper().applyPostBitmapProcess(bitmap);
+            reader.getReaderHelper().setRenderBitmapDirty(true);
+        }
+        return succ;
     }
 
     public void setScale(final String pageName, final float scale, final float x, final float y) throws ReaderException {

@@ -4,7 +4,6 @@ import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
-import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.options.ReaderConstants;
@@ -81,7 +80,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
-    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap, readerViewInfo);
         return true;
     }

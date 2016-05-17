@@ -1,11 +1,9 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
-import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
@@ -15,15 +13,15 @@ import com.onyx.kreader.host.wrapper.Reader;
  * Created by zhuzeng on 10/7/15.
  * For reflow stream document.
  */
-public class LayoutReflowProvider  extends LayoutProvider {
+public class LayoutTextReflowProvider extends LayoutProvider {
 
 
-    public LayoutReflowProvider(final ReaderLayoutManager lm) {
+    public LayoutTextReflowProvider(final ReaderLayoutManager lm) {
         super(lm);
     }
 
     public String getProviderName() {
-        return ReaderConstants.REFLOW_PAGE;
+        return ReaderConstants.IMAGE_REFLOW_PAGE;
     }
 
     public void activate() {
@@ -57,7 +55,7 @@ public class LayoutReflowProvider  extends LayoutProvider {
         return false;
     }
 
-    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
+    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap, readerViewInfo);
         return true;
     }

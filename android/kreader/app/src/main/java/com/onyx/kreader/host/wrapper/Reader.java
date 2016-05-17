@@ -12,6 +12,8 @@ import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.options.BaseOptions;
+import com.onyx.kreader.reflow.ImageReflowManager;
+import com.onyx.kreader.reflow.ImageReflowSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -243,4 +245,11 @@ public class Reader {
         return getReaderHelper().getBitmapCopyCoordinator();
     }
 
+    public ImageReflowManager getImageReflowManager() {
+        return getReaderHelper().getImageReflowManager();
+    }
+
+    public ImageReflowSettings getImageReflowSettings() {
+        return getReaderHelper().getImageReflowManager().getSettings();
+    }
 }
