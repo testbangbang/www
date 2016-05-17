@@ -15,5 +15,11 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
+        repositories {
+            flatDir {
+                dirs 'libs' //this way we can find the .aar file in libs folder
+            }
+        }
     }
 }
