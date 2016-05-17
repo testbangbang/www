@@ -7,7 +7,7 @@ obj/
 out/
 build/
 *.iml
-kepler-ndk.*
+kreader-ndk.*
 *.config
 *.creator*
 *.files

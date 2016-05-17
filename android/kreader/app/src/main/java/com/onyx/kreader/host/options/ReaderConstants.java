@@ -11,8 +11,8 @@ public class ReaderConstants {
     public static final String SINGLE_PAGE = "singlePage";
     public static final String SINGLE_PAGE_NAVIGATION_LIST = "singlePageNavigationList";
     public static final String CONTINUOUS_PAGE = "continuousPage";
-    public static final String REFLOW_PAGE = "reflowPage";
-    public static final String SCANNED_REFLOW_PAGE = "scanReflowPage";
+    public static final String IMAGE_REFLOW_PAGE = "imageReflowPage";
+    public static final String TEXT_REFLOW_PAGE = "textReflowPage";
 
     /**
      * scale

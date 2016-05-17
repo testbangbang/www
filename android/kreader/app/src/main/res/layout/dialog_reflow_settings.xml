@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textview_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:text="@string/menu_item_smart_reflow"
+        android:textColor="@android:color/white"
+        android:background="@android:color/black"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/dialog_title_text_size"
+        android:minHeight="@dimen/dialog_title_min_height" />
+
+    <LinearLayout
+        android:id="@+id/select_tab"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/button_minHeight"
+        android:background="@android:color/white"
+        android:layout_below="@id/textview_title"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/left_tab"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_minHeight"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="@string/menu_item_option_left"
+            android:background="@drawable/imagebtn_bg"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/right_tab"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_minHeight"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="@string/menu_item_option_right"
+            android:background="@drawable/imagebtn_bg"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_alignBottom="@+id/select_tab"
+        android:layout_alignParentLeft="true"
+        android:layout_height="2dp"/>
+
+    <LinearLayout
+        android:id="@+id/content_area"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_below="@id/select_tab"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation">
+
+        <com.onyx.kreader.ui.dialog.DialogReflowControlItem
+            android:id="@+id/item0"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <com.onyx.kreader.ui.dialog.DialogReflowControlItem
+            android:id="@+id/item1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <com.onyx.kreader.ui.dialog.DialogReflowControlItem
+            android:id="@+id/item2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <com.onyx.kreader.ui.dialog.DialogReflowControlItem
+            android:id="@+id/item3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <com.onyx.kreader.ui.dialog.DialogReflowControlItem
+            android:id="@+id/item4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+    </LinearLayout>
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_alignParentLeft="true"
+        android:layout_alignBottom="@+id/content_area"
+        android:layout_height="2dp"/>
+
+    <LinearLayout
+        android:id="@+id/button_area"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_below="@id/content_area">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_minHeight"
+            android:text="@string/cancel"
+            android:layout_weight="1"
+            android:id="@+id/button_cancel"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_minHeight"
+            android:layout_weight="0.3" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_minHeight"
+            android:layout_weight="1"
+            android:text="@string/confirm"
+            android:id="@+id/button_confirm"
+            android:textSize="20sp" />
+    </LinearLayout>
+</RelativeLayout>

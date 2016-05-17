@@ -14,6 +14,8 @@ import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
+import com.onyx.kreader.reflow.ImageReflowManager;
+import com.onyx.kreader.reflow.ImageReflowSettings;
 import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.ImageUtils;
 
@@ -78,6 +80,7 @@ public class ReaderHelper {
     private BitmapCopyCoordinator bitmapCopyCoordinator = new BitmapCopyCoordinator();
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
+    private ImageReflowManager imageReflowManager;
     private BitmapLruCache bitmapLruCache;
 
     public ReaderHelper() {
@@ -186,7 +189,8 @@ public class ReaderHelper {
 
     public ReaderLayoutManager getReaderLayoutManager() {
         if (readerLayoutManager == null) {
-            readerLayoutManager = new ReaderLayoutManager(getDocument(),
+            readerLayoutManager = new ReaderLayoutManager(this,
+                    getDocument(),
                     getNavigator(),
                     getRendererFeatures(),
                     getViewOptions());
@@ -194,7 +198,36 @@ public class ReaderHelper {
         return readerLayoutManager;
     }
 
-    public void initBitmapLruCache(Context context) {
+    public ReaderHitTestManager getHitTestManager() {
+        return hitTestManager;
+    }
+
+    public ImageReflowManager getImageReflowManager() {
+        return imageReflowManager;
+    }
+
+    public BitmapLruCache getBitmapLruCache() {
+        return bitmapLruCache;
+    }
+
+    public void initData(Context context) {
+        initImageReflowManager(context);
+        initBitmapLruCache(context);
+    }
+
+    private void initImageReflowManager(Context context) {
+        if (imageReflowManager == null) {
+            File cacheLocation = new File(context.getCacheDir(), ImageReflowManager.class.getCanonicalName());
+            if (!cacheLocation.exists()) {
+                cacheLocation.mkdirs();
+            }
+            imageReflowManager = new ImageReflowManager(cacheLocation,
+                    getViewOptions().getViewWidth(),
+                    getViewOptions().getViewHeight());
+        }
+    }
+
+    private void initBitmapLruCache(Context context) {
         if (bitmapLruCache == null) {
             File cacheLocation = new File(context.getCacheDir(), DiskLruCache.class.getCanonicalName());
             if (!cacheLocation.exists()) {
@@ -205,14 +238,6 @@ public class ReaderHelper {
             builder.setDiskCacheEnabled(true).setDiskCacheLocation(cacheLocation);
             bitmapLruCache = builder.build();
         }
-    }
-
-    public BitmapLruCache getBitmapLruCache() {
-        return bitmapLruCache;
-    }
-
-    public ReaderHitTestManager getHitTestManager() {
-        return hitTestManager;
     }
 
     public ReaderPluginOptionsImpl getPluginOptions() {
