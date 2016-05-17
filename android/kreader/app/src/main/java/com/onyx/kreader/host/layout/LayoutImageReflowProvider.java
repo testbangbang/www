@@ -3,6 +3,7 @@ package com.onyx.kreader.host.layout;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -79,11 +80,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
-    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) throws ReaderException {
+    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
         Bitmap bmp = reader.getImageReflowManager().getCurrentBitmap(getCurrentPageName());
         if (bmp == null) {
-            reflowFirstVisiblePage(reader, bitmap, readerViewInfo, precache);
-            if (precache) {
+            reflowFirstVisiblePage(reader, drawContext, bitmap, readerViewInfo, drawContext.asyncDraw);
+            if (drawContext.asyncDraw) {
                 return false;
             }
             if (reverseOrder) {
@@ -96,13 +97,13 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return true;
     }
 
-    private void reflowFirstVisiblePage(final Reader reader, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean precache) {
-        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), bitmap, readerViewInfo);
+    private void reflowFirstVisiblePage(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean async) {
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, bitmap, readerViewInfo);
         reader.getImageReflowManager().reflowBitmap(bitmap.getBitmap(),
                 reader.getViewOptions().getViewWidth(),
                 reader.getViewOptions().getViewHeight(),
                 getCurrentPageName(),
-                precache);
+                async);
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {

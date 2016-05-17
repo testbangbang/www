@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.common.Benchmark;
+import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
@@ -29,7 +30,11 @@ public class LayoutProviderUtils {
      * @param layoutManager
      * @param bitmap
      */
-    static public void drawVisiblePages(final Reader reader, final ReaderLayoutManager layoutManager, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) {
+    static public void drawVisiblePages(final Reader reader,
+                                        final ReaderLayoutManager layoutManager,
+                                        final ReaderDrawContext drawContext,
+                                        final ReaderBitmapImpl bitmap,
+                                        final ReaderViewInfo readerViewInfo) {
         final ReaderRenderer renderer = reader.getRenderer();
         final BitmapLruCache cache = reader.getBitmapLruCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
