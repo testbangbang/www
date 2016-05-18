@@ -8,6 +8,9 @@ import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
 import android.view.WindowManager;
+import com.onyx.android.sdk.api.device.epd.EPDMode;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.api.device.epd.UpdateScheme;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -111,34 +114,34 @@ public class BaseDevice {
         return false;
     }
 
-    public EpdController.EPDMode getEpdMode() {
-        return EpdController.EPDMode.AUTO;
+    public EPDMode getEpdMode() {
+        return EPDMode.AUTO;
     }
 
-    public boolean setEpdMode(Context context, EpdController.EPDMode mode) {
+    public boolean setEpdMode(Context context, EPDMode mode) {
         return false;
     }
 
-    public boolean setEpdMode(View view, EpdController.EPDMode mode) {
+    public boolean setEpdMode(View view, EPDMode mode) {
         return false;
     }
 
-    public EpdController.UpdateMode getViewDefaultUpdateMode(View view) {
-        return EpdController.UpdateMode.GU;
+    public UpdateMode getViewDefaultUpdateMode(View view) {
+        return UpdateMode.GU;
     }
 
-    public boolean setViewDefaultUpdateMode(View view, EpdController.UpdateMode mode) {
+    public boolean setViewDefaultUpdateMode(View view, UpdateMode mode) {
         return false;
     }
 
     public void resetViewUpdateMode(View view) {
     }
 
-    public EpdController.UpdateMode getSystemDefaultUpdateMode() {
-        return EpdController.UpdateMode.GU;
+    public UpdateMode getSystemDefaultUpdateMode() {
+        return UpdateMode.GU;
     }
 
-    public boolean setSystemDefaultUpdateMode(EpdController.UpdateMode mode) {
+    public boolean setSystemDefaultUpdateMode(UpdateMode mode) {
         return false;
     }
 
@@ -153,7 +156,7 @@ public class BaseDevice {
     public void waitForUpdateFinished() {
     }
 
-    public void invalidate(View view, EpdController.UpdateMode mode) {
+    public void invalidate(View view, UpdateMode mode) {
         view.invalidate();
     }
 
@@ -162,10 +165,10 @@ public class BaseDevice {
     }
 
 
-    public void refreshScreen(View view, EpdController.UpdateMode mode) {
+    public void refreshScreen(View view, UpdateMode mode) {
     }
 
-    public void refreshScreenRegion(View view, int left, int top, int width, int height, EpdController.UpdateMode mode) {
+    public void refreshScreenRegion(View view, int left, int top, int width, int height, UpdateMode mode) {
     }
 
     public void screenshot(View view, int r, final String path) {
@@ -187,10 +190,10 @@ public class BaseDevice {
     public void moveTo(float x, float y, float width) {
     }
 
-    public void lineTo(float x, float y, EpdController.UpdateMode mode) {
+    public void lineTo(float x, float y, UpdateMode mode) {
     }
 
-    public void quadTo(float x, float y, EpdController.UpdateMode mode) {
+    public void quadTo(float x, float y, UpdateMode mode) {
     }
 
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
@@ -217,11 +220,11 @@ public class BaseDevice {
     public void applyGammaCorrection(boolean apply, int value) {
     }
 
-    public void postInvalidate(View view, EpdController.UpdateMode mode) {
+    public void postInvalidate(View view, UpdateMode mode) {
         view.postInvalidate();
     }
 
-    public boolean setSystemUpdateModeAndScheme(EpdController.UpdateMode mode, EpdController.UpdateScheme scheme, int count) {
+    public boolean setSystemUpdateModeAndScheme(UpdateMode mode, UpdateScheme scheme, int count) {
         // TODO Auto-generated method stub
         return false;
     }
