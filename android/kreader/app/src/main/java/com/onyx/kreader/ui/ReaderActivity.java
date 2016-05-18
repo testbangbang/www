@@ -3,7 +3,6 @@ package com.onyx.kreader.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.graphics.*;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,13 +13,8 @@ import android.widget.LinearLayout;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.cropimage.CropImage;
-import com.onyx.android.cropimage.CropImageResultReceiver;
-import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.kreader.R;
-import com.onyx.kreader.actions.ChangeOrientationAction;
-import com.onyx.kreader.actions.NextScreenAction;
-import com.onyx.kreader.actions.PreviousScreenAction;
+import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -72,9 +66,7 @@ public class ReaderActivity extends Activity {
     private ScaleGestureDetector scaleDetector;
 
     private boolean preRender = true;
-    private CropImageResultReceiver selectionZoomAreaReceiver;
-    private DialogSetValue contrastDialog;
-    private DialogSetValue emboldenDialog;
+
     private DialogReflowSettings reflowSettingsDialog;
 
     @Override
@@ -93,7 +85,6 @@ public class ReaderActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        resetEventListener();
         super.onDestroy();
     }
 
@@ -124,6 +115,10 @@ public class ReaderActivity extends Activity {
     }
 
     public void beforePageChangeByUser() {
+    }
+
+    public final Reader getReader() {
+        return reader;
     }
 
     public void nextScreen() {
@@ -379,13 +374,6 @@ public class ReaderActivity extends Activity {
         return ReaderSideMenuItem.createFromJSON(this, array);
     }
 
-    private void resetEventListener() {
-        if (selectionZoomAreaReceiver != null) {
-            unregisterReceiver(selectionZoomAreaReceiver);
-            selectionZoomAreaReceiver = null;
-        }
-    }
-
     private void clearCanvas(SurfaceHolder holder) {
         if (holder == null) {
             return;
@@ -424,41 +412,14 @@ public class ReaderActivity extends Activity {
 
     }
 
-    private void openLocalFile(String path) {
-        reader = ReaderManager.getReader(path);
-        BaseRequest open = new OpenRequest(path, getDocumentOptions(), getPluginOptions());
-        reader.submitRequest(this, open, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                onFileOpenSucceed();
-            }
-        });
-    }
-
-    private void onFileOpenSucceed() {
-        handlerManager.setEnable(true);
-        BaseRequest config = new CreateViewRequest(displayWidth(), displayHeight());
-        reader.submitRequest(this, config, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                gotoPage(reader.getNavigator().getInitPosition());
-            }
-        });
+    private void openLocalFile(final String path) {
+        final OpenDocumentAction action = new OpenDocumentAction(path);
+        action.execute(this);
     }
 
     private void gotoPage(int page) {
-        gotoPage(String.valueOf(page));
-    }
-
-    private void gotoPage(String pageName) {
-        BaseRequest gotoPosition = new GotoLocationRequest(pageName);
-        submitRenderRequest(gotoPosition);
+        final GotoPageAction action = new GotoPageAction(String.valueOf(page));
+        action.execute(this);
     }
 
     private void scaleUp() {
@@ -494,42 +455,11 @@ public class ReaderActivity extends Activity {
         submitRenderRequest(request);
     }
 
-    private void showSelectionActivity(final CropArgs args, final CropImage.SelectionCallback callback) {
-        Uri outputUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "cropped.png"));
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(CropImage.INTENT_ACTION_SELECT_ZOOM_RECT);
 
-        if (selectionZoomAreaReceiver != null) {
-            unregisterReceiver(selectionZoomAreaReceiver);
-        }
-        selectionZoomAreaReceiver = new CropImageResultReceiver() {
-            @Override
-            public void onSelectionFinished(final CropArgs navigationArgs) {
-                if (callback != null) {
-                    callback.onSelectionFinished(navigationArgs);
-                }
-            }
-        };
-        ReaderActivity.this.registerReceiver(selectionZoomAreaReceiver, filter);
-        CropImage crop = new CropImage(reader.getRenderBitmap().getBitmap());
-        crop.output(outputUri).start(ReaderActivity.this, false, false, false, args);
-    }
 
     private void scaleByRect() {
-        CropArgs args = new CropArgs();
-        args.manualCropPage = true;
-
-        showSelectionActivity(args, new CropImage.SelectionCallback() {
-            @Override
-            public void onSelectionFinished(CropArgs args) {
-                scaleByRect(new RectF(args.selectionRect));
-            }
-        });
-    }
-
-    private void scaleByRect(RectF rect) {
-        final ScaleByRectRequest request = new ScaleByRectRequest(getCurrentPageName(), rect);
-        submitRenderRequest(request);
+        final SelectionScaleAction action = new SelectionScaleAction();
+        action.execute(this);
     }
 
     private void switchNavigationToArticleMode() {
@@ -557,78 +487,13 @@ public class ReaderActivity extends Activity {
     }
 
     private void adjustContrast() {
-        showContrastDialog();
-    }
-
-    public DialogSetValue showContrastDialog() {
-        if (contrastDialog == null) {
-            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
-                @Override
-                public void valueChange(int newValue) {
-                    GammaCorrectionRequest request = new GammaCorrectionRequest(newValue);
-                    submitRenderRequest(request);
-                }
-
-                @Override
-                public void done(boolean isValueChange, int oldValue, int newValue) {
-                    if (!isValueChange) {
-                        GammaCorrectionRequest request = new GammaCorrectionRequest(oldValue);
-                        submitRenderRequest(request);
-                    }
-                    hideContrastDialog();
-                }
-            };
-            float current = reader.getBaseOptions().getGammaLevel();
-            contrastDialog = new DialogSetValue(ReaderActivity.this, (int)current, BaseOptions.minGammaLevel(), BaseOptions.maxGammaLevel(), true, true,
-                    getString(R.string.dialog_reflow_settings_contrast), getString(R.string.contrast_level), callback);
-
-        }
-        contrastDialog.show();
-        return contrastDialog;
-    }
-
-    private void hideContrastDialog() {
-        if (contrastDialog != null) {
-            contrastDialog.hide();
-            contrastDialog = null;
-        }
+        final AdjustContrastAction action = new AdjustContrastAction();
+        action.execute(this);
     }
 
     private void adjustEmbolden() {
-        showEmboldenDialog();
-    }
-
-    public DialogSetValue showEmboldenDialog()  {
-        if (emboldenDialog == null) {
-            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
-                @Override
-                public void valueChange(int newValue) {
-                    EmboldenGlyphRequest request = new EmboldenGlyphRequest(newValue);
-                    submitRenderRequest(request);
-                }
-
-                @Override
-                public void done(boolean isValueChange, int oldValue, int newValue) {
-                    if (!isValueChange) {
-                        EmboldenGlyphRequest request = new EmboldenGlyphRequest(oldValue);
-                        submitRenderRequest(request);
-                    }
-                    hideEmboldenDialog();
-                }
-            };
-            int current = reader.getBaseOptions().getEmboldenLevel();
-            emboldenDialog = new DialogSetValue(ReaderActivity.this, current, BaseOptions.minEmboldenLevel(), BaseOptions.maxEmboldenLevel(), true, true,
-                    getString(R.string.embolden), getString(R.string.embolden_level), callback);
-        }
-        emboldenDialog.show();
-        return emboldenDialog;
-    }
-
-    private void hideEmboldenDialog() {
-        if (emboldenDialog != null) {
-            emboldenDialog.hide();
-            emboldenDialog = null;
-        }
+        final EmboldenAction action = new EmboldenAction();
+        action.execute(this);
     }
 
     private void adjustReflowSettings() {
@@ -710,7 +575,7 @@ public class ReaderActivity extends Activity {
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
-    private String getCurrentPageName() {
+    public String getCurrentPageName() {
         return reader.getReaderLayoutManager().getCurrentPageName();
     }
 
