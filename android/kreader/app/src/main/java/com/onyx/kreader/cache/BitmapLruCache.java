@@ -223,7 +223,6 @@ public class BitmapLruCache implements Closeable {
         if (memoryCache != null) {
             memoryCache.put(key, bitmap);
         }
-        benchmark.report("put memory cache");
     }
 
     private void putDiskCache(final String key, final Bitmap bitmap,
@@ -242,11 +241,10 @@ public class BitmapLruCache implements Closeable {
                     OutputStream os = editor.newOutputStream(0);
                     try {
                         bitmap.compress(compressFormat, compressQuality, os);
-                        benchmark.report("write disk cache");
                         os.flush();
-                        benchmark.report("flush disk cache");
                         editor.commit();
                         diskCache.flush();
+                        benchmark.report("write disk cache");
                     } finally {
                         FileUtils.closeQuietly(os);
                     }
