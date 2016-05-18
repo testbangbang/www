@@ -15,7 +15,6 @@ import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 import com.onyx.kreader.reflow.ImageReflowManager;
-import com.onyx.kreader.reflow.ImageReflowSettings;
 import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.ImageUtils;
 
@@ -64,8 +63,7 @@ public class ReaderHelper {
 
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPluginOptionsImpl pluginOptions;
-    private ReaderDocumentOptions documentOptions;
-    private BaseOptions baseOptions = new BaseOptions();
+    private BaseOptions documentOptions = new BaseOptions();
 
     private ReaderPlugin plugin;
     private ReaderDocument document;
@@ -248,8 +246,8 @@ public class ReaderHelper {
         return viewOptions;
     }
 
-    public BaseOptions getBaseOptions() {
-        return baseOptions;
+    public BaseOptions getDocumentOptions() {
+        return documentOptions;
     }
 
     public ReaderDocument getDocument() {
@@ -277,11 +275,11 @@ public class ReaderHelper {
     }
 
     public void applyPostBitmapProcess(ReaderBitmap bitmap) {
-        if (getBaseOptions().isGamaCorrectionEnabled()) {
-            ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getBaseOptions().getGammaLevel());
+        if (getDocumentOptions().isGamaCorrectionEnabled()) {
+            ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel());
         }
-        if (getBaseOptions().isEmboldenLevelEnabled()) {
-            ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getBaseOptions().getEmboldenLevel());
+        if (getDocumentOptions().isEmboldenLevelEnabled()) {
+            ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel());
         }
     }
 

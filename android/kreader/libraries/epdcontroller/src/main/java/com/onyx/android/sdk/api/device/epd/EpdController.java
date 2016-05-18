@@ -5,7 +5,7 @@ package com.onyx.android.sdk.api.device.epd;
 
 import android.content.Context;
 import android.view.View;
-import com.onyx.android.sdk.api.device.DeviceInfo;
+import com.onyx.android.sdk.device.DeviceInfo;
 
 /**
  * singleton class

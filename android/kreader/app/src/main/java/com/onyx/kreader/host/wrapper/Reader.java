@@ -218,7 +218,7 @@ public class Reader {
     }
 
     public BaseOptions getBaseOptions() {
-        return getReaderHelper().getBaseOptions();
+        return getReaderHelper().getDocumentOptions();
     }
 
     public ReaderLayoutManager getReaderLayoutManager() {

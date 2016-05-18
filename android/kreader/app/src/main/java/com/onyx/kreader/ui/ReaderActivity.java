@@ -20,6 +20,9 @@ import com.onyx.android.cropimage.CropImage;
 import com.onyx.android.cropimage.CropImageResultReceiver;
 import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.kreader.R;
+import com.onyx.kreader.actions.ChangeOrientationAction;
+import com.onyx.kreader.actions.NextScreenAction;
+import com.onyx.kreader.actions.PreviousScreenAction;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -132,13 +135,13 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void nextScreen() {
-        final NextScreenRequest request = new NextScreenRequest();
-        submitRenderRequest(request);
+        final NextScreenAction action = new NextScreenAction();
+        action.execute(this);
     }
 
     public void prevScreen() {
-        final PreviousScreenRequest request = new PreviousScreenRequest();
-        submitRenderRequest(request);
+        final PreviousScreenAction action = new PreviousScreenAction();
+        action.execute(this);
     }
 
     public void preRenderNext() {
@@ -385,55 +388,8 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void rotateScreen(int rotationOperation) {
-        int orientation = computeNewRotation(getRequestedOrientation(), rotationOperation);
-        //noinspection ResourceType
-        setRequestedOrientation(orientation);
-    }
-
-    private int computeNewRotation(int currentOrientation, int rotationOperation) {
-        switch (rotationOperation) {
-            case 0:
-                return currentOrientation;
-            case 90:
-                if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                    return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-                    return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
-                } else {
-                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-                }
-            case 180:
-                if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
-                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-                    return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                    return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-                } else {
-                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
-                }
-            case 270:
-                if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                    return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
-                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-                    return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-                } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                    return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-                } else {
-                    return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-                }
-            default:
-                assert(false);
-                return currentOrientation;
-        }
+        final ChangeOrientationAction action = new ChangeOrientationAction(rotationOperation);
+        action.execute(this);
     }
 
     private List<ReaderSideMenuItem> createReaderSideMenuItems() {
@@ -783,7 +739,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
-    private void submitRenderRequest(BaseRequest request) {
+    public void submitRenderRequest(BaseRequest request) {
         reader.submitRequest(this, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -850,11 +806,11 @@ public class ReaderActivity extends ActionBarActivity {
         return reader.getNavigator().getTotalPage();
     }
 
-    private ReaderPluginOptions getPluginOptions() {
+    public ReaderPluginOptions getPluginOptions() {
         return new ReaderPluginOptionsImpl();
     }
 
-    private ReaderDocumentOptions getDocumentOptions() {
+    public ReaderDocumentOptions getDocumentOptions() {
         return new ReaderDocumentOptionsImpl("", "");
     }
 

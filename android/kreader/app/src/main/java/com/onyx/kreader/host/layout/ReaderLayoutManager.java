@@ -2,6 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
@@ -267,18 +268,16 @@ public class ReaderLayoutManager {
     }
 
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
-        return drawVisiblePages(reader, bitmap, viewInfo, false);
+        return drawVisiblePages(reader, null, bitmap, viewInfo);
     }
 
-    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo, boolean precache) throws ReaderException {
-        boolean succ = getCurrentLayoutProvider().drawVisiblePages(reader, bitmap, viewInfo, precache);
-        if (succ) {
-            reader.getReaderHelper().applyPostBitmapProcess(bitmap);
-            if (!precache) {
-                reader.getReaderHelper().setRenderBitmapDirty(true);
-            }
+    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
+        if (!getCurrentLayoutProvider().drawVisiblePages(reader, drawContext, bitmap, viewInfo)) {
+            return false;
         }
-        return succ;
+        reader.getReaderHelper().applyPostBitmapProcess(bitmap);
+        reader.getReaderHelper().setRenderBitmapDirty(true);
+        return true;
     }
 
     public void setScale(final String pageName, final float scale, final float x, final float y) throws ReaderException {

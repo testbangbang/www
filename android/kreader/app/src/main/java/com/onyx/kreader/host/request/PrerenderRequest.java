@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -17,11 +18,12 @@ public class PrerenderRequest extends BaseRequest {
 
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
+        final ReaderDrawContext drawContext = new ReaderDrawContext();
         if (forward && reader.getReaderLayoutManager().nextScreen()) {
-            reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo(), true);
+            reader.getReaderLayoutManager().drawVisiblePages(reader, drawContext, getRenderBitmap(), createReaderViewInfo());
             reader.getReaderLayoutManager().prevScreen();
         } else if (!forward && reader.getReaderLayoutManager().prevScreen()) {
-            reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo(), true);
+            reader.getReaderLayoutManager().drawVisiblePages(reader, drawContext, getRenderBitmap(), createReaderViewInfo());
             reader.getReaderLayoutManager().nextScreen();
         }
     }
