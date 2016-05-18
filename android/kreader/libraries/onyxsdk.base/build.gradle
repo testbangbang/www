@@ -9,10 +9,18 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+
+        sourceSets.main {
+            aidl.srcDirs = ['src/main/java']
+
+            jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
+            jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
+        }
+
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -25,5 +33,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.alibaba:fastjson:1.1.34.android'
     compile 'com.android.support:appcompat-v7:21.0.3'
 }

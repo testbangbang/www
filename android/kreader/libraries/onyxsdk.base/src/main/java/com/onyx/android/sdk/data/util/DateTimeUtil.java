@@ -52,9 +52,9 @@ public class DateTimeUtil
 		long second_value = allSecond % 3600 % 60;
 		String whitespace_symbol = " ";
 		
-		String hour_symbol = context.getResources().getString(R.string.hour_symbol);
-		String minute_symbol = context.getResources().getString(R.string.minute_symbol);
-		String second_symbol = context.getResources().getString(R.string.second_symbol);
+		String hour_symbol = "H";
+		String minute_symbol = "M";
+		String second_symbol = "S";
 
 		if (hour_value > 0) {
 			return hour_value + hour_symbol + whitespace_symbol + minute_value + minute_symbol;

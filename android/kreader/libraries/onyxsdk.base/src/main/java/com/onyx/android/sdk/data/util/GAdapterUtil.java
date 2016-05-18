@@ -89,10 +89,11 @@ public final class GAdapterUtil {
     static public HashMap<String, Integer> getDefaultMenuMaping() {
         if (defaultGlobalMapping == null) {
             defaultGlobalMapping = new HashMap<String, Integer>();
-            defaultGlobalMapping.put(GAdapterUtil.TAG_TITLE_RESOURCE, R.id.textview_title);
-            defaultGlobalMapping.put(GAdapterUtil.TAG_TITLE_STRING, R.id.textview_title);
-            defaultGlobalMapping.put(GAdapterUtil.TAG_IMAGE_RESOURCE, R.id.imageview_icon);
-            defaultGlobalMapping.put(GAdapterUtil.TAG_IMAGE_DRAWABLE, R.id.imageview_icon);
+            // TODO MUST BE FIXED!
+//            defaultGlobalMapping.put(GAdapterUtil.TAG_TITLE_RESOURCE, R.id.textview_title);
+//            defaultGlobalMapping.put(GAdapterUtil.TAG_TITLE_STRING, R.id.textview_title);
+//            defaultGlobalMapping.put(GAdapterUtil.TAG_IMAGE_RESOURCE, R.id.imageview_icon);
+//            defaultGlobalMapping.put(GAdapterUtil.TAG_IMAGE_DRAWABLE, R.id.imageview_icon);
         }
         return defaultGlobalMapping;
     }
