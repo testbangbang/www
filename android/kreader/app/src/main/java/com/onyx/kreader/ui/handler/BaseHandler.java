@@ -99,9 +99,9 @@ public class BaseHandler  {
     public boolean onSingleTapUp(ReaderActivity activity,  MotionEvent e) {
         if (activity.tryHitTest(e.getX(), e.getY())) {
             return true;
-        } else if (e.getX() > activity.displayWidth() * 2 / 3) {
+        } else if (e.getX() > activity.getDisplayWidth() * 2 / 3) {
             activity.nextScreen();
-        } else if (e.getX() < activity.displayWidth() / 3) {
+        } else if (e.getX() < activity.getDisplayWidth() / 3) {
             activity.prevScreen();
         } else {
             activity.showReaderMenu();
