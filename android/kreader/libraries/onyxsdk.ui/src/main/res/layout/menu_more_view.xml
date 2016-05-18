@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/layout_dictionary"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:focusable="true"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:id="@+id/textview_dictionary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:text="@string/menu_item_dictionary"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:id="@+id/imageview_dictionary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textview_dictionary"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/menu_dictionary"
+            android:background="@color/read_menu_item_background_color"
+            android:scaleType="fitCenter"
+            android:src="@drawable/menu_dictionary" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_screen"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/textview_screen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:text="@string/menu_item_screen_full"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:id="@+id/imageview_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textview_screen"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/full_screen"
+            android:background="@color/read_menu_item_background_color"
+            android:scaleType="fitCenter"
+            android:src="@drawable/full_screen" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_search"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:focusable="true"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/textview_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:text="@string/menu_item_search"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:id="@+id/imageview_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textview_search"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/search"
+            android:background="@color/read_menu_item_background_color"
+            android:scaleType="fitCenter"
+            android:src="@drawable/search" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_refresh"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:focusable="true"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/textview_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:text="@string/menu_item_refresh"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:id="@+id/imageview_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textview_refresh"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/menu_screen_refresh"
+            android:background="@color/read_menu_item_background_color"
+            android:scaleType="fitCenter"
+            android:src="@drawable/menu_screen_refresh" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_reading_mode"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:focusable="true"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/textview_reading_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:text="@string/menu_item_reading_mode"
+            android:singleLine="true"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:id="@+id/imageview_reading_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textview_reading_mode"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/reading_mode"
+            android:background="@color/read_menu_item_background_color"
+            android:scaleType="fitCenter"
+            android:src="@drawable/reading_mode" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_brightness"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:focusable="true"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/textview_brightness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:text="@string/menu_item_brightness"
+            android:singleLine="true"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:id="@+id/imageview_brightness"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textview_brightness"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/light_settings"
+            android:background="@color/read_menu_item_background_color"
+            android:scaleType="fitCenter"
+            android:src="@drawable/light_settings" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_settings"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:focusable="true"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/textview_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:text="@string/menu_item_settings"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:id="@+id/imageview_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textview_settings"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/settings"
+            android:background="@color/read_menu_item_background_color"
+            android:scaleType="fitCenter"
+            android:src="@drawable/settings" />
+    </RelativeLayout>
+
+</LinearLayout>

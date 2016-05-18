@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/layout_spacing_decreases"
+        android:layout_width="@dimen/reader_menu_item_width"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:focusable="true"
+        >
+
+        <TextView
+            android:id="@+id/textview_line_spacing_decreases"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/menu_item_font_decrease"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/read_menu_item_background_color"
+            android:layout_above="@id/textview_line_spacing_decreases"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/line_spacing_decreases"
+            android:src="@drawable/line_spacing_decreases" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/layout_spacing_enlarge"
+        android:layout_width="@dimen/reader_menu_item_width"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:layout_marginLeft="5dp"
+        android:focusable="true"
+        >
+
+        <TextView
+            android:id="@+id/textview_line_spacing_enlarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/menu_item_font_increase"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/textview_line_spacing_enlarge"
+            android:background="@color/read_menu_item_background_color"
+            android:contentDescription="@drawable/line_spacing_enlarge"
+            android:src="@drawable/line_spacing_enlarge" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_spacing_normal"
+        android:layout_width="@dimen/reader_menu_item_width"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:layout_marginLeft="5dp"
+        android:focusable="true"
+        >
+
+        <TextView
+            android:id="@+id/textview_line_spacing_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/menu_item_normal"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textview_line_spacing_normal"
+            android:background="@color/read_menu_item_background_color"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/line_spacing_normal"
+            android:src="@drawable/line_spacing_normal" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_spacing_small"
+        android:layout_width="@dimen/reader_menu_item_width"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:layout_marginLeft="5dp"
+        android:focusable="true"
+        >
+
+        <TextView
+            android:id="@+id/textview_line_spacing_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/menu_item_small"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textview_line_spacing_small"
+            android:layout_centerHorizontal="true"
+            android:background="@color/read_menu_item_background_color"
+            android:contentDescription="@drawable/line_spacing_small"
+            android:src="@drawable/line_spacing_small" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/layout_spacing_big"
+        android:layout_width="@dimen/reader_menu_item_width"
+        android:layout_height="match_parent"
+        android:background="@drawable/reader_menu_item_background"
+        android:layout_marginLeft="5dp"
+        android:focusable="true"
+        >
+
+        <TextView
+            android:id="@+id/textview_line_spacing_big"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/menu_item_big"
+            android:textSize="@dimen/dialog_reader_menu_textsize" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textview_line_spacing_big"
+            android:background="@color/read_menu_item_background_color"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@drawable/line_spacing_big"
+            android:src="@drawable/line_spacing_big" />
+    </RelativeLayout>
+
+</LinearLayout>

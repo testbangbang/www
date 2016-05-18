@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:drawableLeft="@drawable/ic_reader_settings_title"
+        android:text="@string/reader_setting"
+        android:textColor="@android:color/black"
+        android:gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:textSize="30sp" />
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_height="2dp" />
+
+    <com.onyx.android.sdk.ui.OnyxGridView
+        android:id="@+id/onyxgridview_settings_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white" />
+
+</LinearLayout>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:MyTextView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.onyx.android.sdk.ui.util.AlProgressLine
+        android:id="@+id/progress_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:id="@+id/statusbar_info_layout">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/navigatorHeight"
+            android:id="@+id/status_page_layout"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/view_navigator"
+            android:layout_marginLeft="2dp"
+            android:background="@drawable/imagebtn_bg"
+            android:layout_marginRight="2dp"
+            android:layout_alignBottom="@+id/view_navigator">
+
+            <com.onyx.android.sdk.ui.util.MyTextView
+                android:id="@+id/status_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                MyTextView:textSize="@dimen/status_bar_text_size"
+                android:text="0/0" />
+        </RelativeLayout>
+
+
+        <com.onyx.android.sdk.ui.util.MyTextView
+            android:id="@+id/status_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_alignBottom="@+id/view_navigator"
+            android:layout_toLeftOf="@+id/view_navigator"
+            android:layout_toRightOf="@+id/status_page_layout"
+            android:layout_centerInParent="true"
+            MyTextView:textSize="@dimen/status_bar_text_size"
+            android:visibility="visible" />
+
+        <com.onyx.android.sdk.ui.util.MyTextView
+            android:id="@+id/status_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            MyTextView:textSize="@dimen/status_bar_text_size"
+            android:visibility="gone"
+            android:text="--:--" />
+
+        <com.onyx.android.sdk.ui.util.MyTextView
+            android:id="@+id/status_battery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_centerVertical="true"
+            MyTextView:textSize="@dimen/status_bar_text_size"
+            android:layout_toLeftOf="@id/status_time"
+            android:layout_alignWithParentIfMissing="true"
+            android:visibility="gone"
+            android:text="100%" />
+
+        <com.onyx.android.sdk.ui.util.StatusBarNavigatorView
+            android:id="@+id/view_navigator"
+            android:layout_width="@dimen/navigatorWidth"
+            android:layout_height="@dimen/navigatorHeight"
+            android:layout_toLeftOf="@id/status_battery"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginBottom="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+</merge>

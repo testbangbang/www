@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/menu_background"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_enlarge"
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_enlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:ellipsize="marquee"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/phone_menu_zoom_settings_font_size"
+                android:text="@string/menu_item_zoom_in" />
+
+            <ImageView
+                android:id="@+id/imagebutton_enlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textview_enlarge"
+                android:layout_centerHorizontal="true"
+                android:background="@color/read_menu_item_background_color"
+                android:contentDescription="@drawable/zoom_enlarge"
+                android:scaleType="fitCenter"
+                android:src="@drawable/zoom_enlarge" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_narrow"
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_narrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/phone_menu_zoom_settings_font_size"
+                android:text="@string/menu_item_zoom_out" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textview_narrow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/read_menu_item_background_color"
+                android:contentDescription="@drawable/zoom_narrow"
+                android:scaleType="fitCenter"
+                android:src="@drawable/zoom_narrow" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_fit_width"
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_fit_width"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/phone_menu_zoom_settings_font_size"
+                android:text="@string/menu_item_to_width" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textview_fit_width"
+                android:layout_centerHorizontal="true"
+                android:background="@color/read_menu_item_background_color"
+                android:contentDescription="@drawable/zoom_to_width"
+                android:scaleType="fitCenter"
+                android:src="@drawable/zoom_to_width" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_fit_page"
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_fit_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/phone_menu_zoom_settings_font_size"
+                android:text="@string/menu_item_to_page" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textview_fit_page"
+                android:layout_centerHorizontal="true"
+                android:background="@color/read_menu_item_background_color"
+                android:contentDescription="@drawable/zoom_to_page"
+                android:scaleType="fitCenter"
+                android:src="@drawable/zoom_to_page" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_two_points_enlarge"
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_two_points_enlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/phone_menu_zoom_settings_font_size"
+                android:text="@string/menu_item_crop" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textview_two_points_enlarge"
+                android:layout_centerHorizontal="true"
+                android:background="@color/read_menu_item_background_color"
+                android:contentDescription="@drawable/zoom_two_points_enlarge"
+                android:scaleType="fitCenter"
+                android:src="@drawable/zoom_two_points_enlarge" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_cutting_edge"
+            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_cutting_edge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/phone_menu_zoom_settings_font_size"
+                android:text="@string/menu_item_selection" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textview_cutting_edge"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@drawable/zoom_cutting_edge"
+                android:scaleType="fitCenter"
+                android:src="@drawable/zoom_cutting_edge" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

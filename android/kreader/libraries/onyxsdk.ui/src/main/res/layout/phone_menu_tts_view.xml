@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:baselineAligned="false"
+    android:background="@drawable/menu_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <ImageButton
+        android:id="@+id/imagebutton_tts_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/reader_menu_item_background"
+        android:contentDescription="@drawable/tts_stop"
+        android:src="@drawable/tts_stop" />
+
+    <ImageButton
+        android:id="@+id/imagebutton_tts_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/reader_menu_item_background"
+        android:contentDescription="@drawable/tts_pause"
+        android:src="@drawable/tts_start" />
+
+
+    <ImageButton
+        android:id="@+id/imagebutton_tts_volume_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:background="@drawable/reader_menu_item_background"
+        android:contentDescription="@drawable/tts_volume_down"
+        android:src="@drawable/tts_volume_down" />
+
+    <SeekBar
+        android:id="@+id/progressbar_tts_volume"
+        style="@style/tts_seekbar"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:focusable="false"
+        android:visibility="gone"
+        android:thumb="@drawable/tts_thumb" />
+
+    <ImageButton
+        android:id="@+id/imagebutton_tts_volume_increase"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:background="@drawable/reader_menu_item_background"
+        android:contentDescription="@drawable/tts_volume_increase"
+        android:src="@drawable/tts_volume_increase" />
+
+</LinearLayout>

@@ -1,0 +1,62 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" 
+    android:minWidth="400dp" >
+    
+  <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/file_browser_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/title"
+            android:src="@android:drawable/ic_menu_more" />
+
+        <TextView
+            android:id="@+id/file_browser_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/file_browser_image"
+            android:layout_alignTop="@id/file_browser_image"
+            android:layout_toRightOf="@id/file_browser_image"
+            android:gravity="center_vertical"
+            android:text="@string/file_browser"
+            android:textSize="20sp"
+            android:textColor="@android:color/primary_text_light"
+            android:textStyle="bold" />
+        
+        <ImageView 
+            android:id="@+id/dialog_dir_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/title"
+            android:layout_alignParentRight="true"
+            android:src="@android:drawable/ic_menu_revert"/>
+    </RelativeLayout>
+    
+      <TextView 
+        android:id="@+id/textview_path"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="2"
+        android:ellipsize="middle"
+        android:textStyle="bold">
+        
+    </TextView>
+    <com.onyx.android.sdk.ui.FileBrowserGridView
+        android:id="@+id/dialog_file_gridview"
+         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="90dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"
+        />
+</LinearLayout>
