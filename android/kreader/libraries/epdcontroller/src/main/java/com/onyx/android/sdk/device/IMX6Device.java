@@ -3,9 +3,7 @@ package com.onyx.android.sdk.device;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
-import com.onyx.android.sdk.api.device.epd.UpdatePolicy;
 import com.onyx.android.sdk.api.device.epd.UpdateScheme;
 import com.onyx.android.sdk.utils.ReflectUtil;
 
@@ -15,19 +13,14 @@ import java.lang.reflect.Method;
 /**
  * Created by Joy on 2016/5/10.
  */
-public class IMX6Device {
+public class IMX6Device extends DeviceInfo {
 
     private static final String TAG = IMX6Device.class.getSimpleName();
 
     private static IMX6Device sInstance = null;
-
-    private static int sPolicyAutomatic = 0;
-    private static int sPolicyGUIntervally = 0;
-
     private static int sModeDW = 0;
     private static int sModeGU = 0;
     private static int sModeGC = 0;
-    private static int sModeAnimation = 0;
     private static int sModeAnimationQuality = 0;
     private static int sModeGC4 = 0;
 
@@ -35,10 +28,6 @@ public class IMX6Device {
     private static final int sSchemeQUEUE = 1;
     private static final int sSchemeQUEUE_AND_MERGE = 2;
 
-    /**
-     * View.setUpdatePolicy(int updatePolicy, int guInterval)
-     */
-    private static Method sMethodSetUpdatePolicy = null;
     /**
      * View.refreshScreen(int updateMode)
      */
@@ -103,103 +92,6 @@ public class IMX6Device {
     private IMX6Device() {
     }
 
-    public boolean setUpdatePolicy(View view, UpdatePolicy policy, int guInterval) {
-        int dst_mode_value = getPolicyValue(policy);
-
-        try {
-            assert (sMethodSetUpdatePolicy != null);
-            sMethodSetUpdatePolicy.invoke(view, dst_mode_value, guInterval);
-            return true;
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
-        }
-
-        return false;
-    }
-
-    public EPDMode getEpdMode() {
-        return EPDMode.AUTO;
-    }
-
-    public boolean setEpdMode(Context context, EPDMode mode) {
-        setSystemUpdateModeAndScheme(getEpdMode(mode), UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
-        return false;
-    }
-
-    public void invalidate(View view, UpdateMode mode) {
-        int dst_mode_value = getUpdateMode(mode);
-
-        try {
-            assert (sMethodInvalidate != null);
-            sMethodInvalidate.invoke(view, dst_mode_value);
-            return;
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
-        }
-
-        view.invalidate();
-    }
-
-
-    public void postInvalidate(View view, UpdateMode mode) {
-        int dst_mode_value = getUpdateMode(mode);
-
-        try {
-            assert (sMethodPostInvalidate != null);
-            Log.d(TAG, "dst mode: " + dst_mode_value);
-            sMethodPostInvalidate.invoke(view, dst_mode_value);
-            return;
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
-        }
-
-        view.postInvalidate();
-    }
-
-    public void refreshScreen(View view, UpdateMode mode) {
-        int dst_mode_value = getUpdateMode(mode);
-        try {
-            assert (sMethodRefreshScreen != null);
-            sMethodRefreshScreen.invoke(view, dst_mode_value);
-            return;
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
-        }
-    }
-
-    public void refreshScreenRegion(View view, int left, int top, int width, int height, UpdateMode mode) {
-        int dst_mode_value = getUpdateMode(mode);
-        try {
-            assert (sMethodRefreshScreenRegion != null);
-            sMethodRefreshScreenRegion.invoke(view, left, top, width, height, dst_mode_value);
-            return;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean enableScreenUpdate(View view, boolean enable) {
-        try {
-            sMethodEnableScreenUpdate.invoke(view, enable);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return true;
-    }
-
-    public boolean setDisplayScheme(int scheme) {
-        ReflectUtil.invokeMethodSafely(sMethodSetDisplayScheme, null, scheme);
-        return true;
-    }
-
-    public void waitForUpdateFinished() {
-        ReflectUtil.invokeMethodSafely(sMethodWaitForUpdateFinished, null);
-    }
-
     public static IMX6Device createDevice() {
         if (sInstance == null) {
             sInstance = new IMX6Device();
@@ -219,18 +111,13 @@ public class IMX6Device {
             int value_mode_update_partial = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_UPDATE_MODE_PARTIAL");
             int value_mode_update_full = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_UPDATE_MODE_FULL");
 
-            sPolicyAutomatic = value_policy_automic;
-            sPolicyGUIntervally = value_policy_gu_intervally;
 
             sModeDW = value_mode_regional | value_mode_nowait | value_mode_waveform_du | value_mode_update_partial;
             sModeGU = value_mode_regional | value_mode_nowait | value_mode_waveform_gc16 | value_mode_update_partial;
             sModeGC = value_mode_regional | value_mode_wait | value_mode_waveform_gc16 | value_mode_update_full;
-            sModeAnimation = value_mode_regional | value_mode_nowait | value_mode_waveform_animation | value_mode_update_partial;
             sModeAnimationQuality = ReflectUtil.getStaticIntFieldSafely(cls, "UI_A2_QUALITY_MODE");
             sModeGC4 = value_mode_regional | value_mode_nowait | value_mode_waveform_gc4 | value_mode_update_partial;
 
-            // signature of "public void setUpdatePolicy(int updatePolicy, int guInterval)"
-            sMethodSetUpdatePolicy = ReflectUtil.getMethodSafely(cls, "setUpdatePolicy", int.class, int.class);
             // signature of "public void postInvalidate(int updateMode)"
             sMethodPostInvalidate = ReflectUtil.getMethodSafely(cls, "postInvalidate", int.class);
             // signature of "public void refreshScreen(int updateMode)"
@@ -266,7 +153,77 @@ public class IMX6Device {
         return sInstance;
     }
 
-    public UpdateMode getViewDefaultUpdateMode(View view) {
+    public void invalidate(final View view, final UpdateMode mode) {
+        int dst_mode_value = getUpdateMode(mode);
+        try {
+            assert (sMethodInvalidate != null);
+            sMethodInvalidate.invoke(view, dst_mode_value);
+            return;
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+        }
+    }
+
+
+    public void postInvalidate(final View view, final UpdateMode mode) {
+        int dst_mode_value = getUpdateMode(mode);
+
+        try {
+            assert (sMethodPostInvalidate != null);
+            Log.d(TAG, "dst mode: " + dst_mode_value);
+            sMethodPostInvalidate.invoke(view, dst_mode_value);
+            return;
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+        }
+    }
+
+    public void refreshScreen(final View view, final UpdateMode mode) {
+        int dst_mode_value = getUpdateMode(mode);
+        try {
+            assert (sMethodRefreshScreen != null);
+            sMethodRefreshScreen.invoke(view, dst_mode_value);
+            return;
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+        }
+    }
+
+    public void refreshScreenRegion(final View view, int left, int top, int width, int height, UpdateMode mode) {
+        int dst_mode_value = getUpdateMode(mode);
+        try {
+            assert (sMethodRefreshScreenRegion != null);
+            sMethodRefreshScreenRegion.invoke(view, left, top, width, height, dst_mode_value);
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean enableScreenUpdate(final View view, boolean enable) {
+        try {
+            sMethodEnableScreenUpdate.invoke(view, enable);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean setDisplayScheme(int scheme) {
+        ReflectUtil.invokeMethodSafely(sMethodSetDisplayScheme, null, scheme);
+        return true;
+    }
+
+    public void waitForUpdateFinished() {
+        ReflectUtil.invokeMethodSafely(sMethodWaitForUpdateFinished, null);
+    }
+
+
+
+    public UpdateMode getViewDefaultUpdateMode(final View view) {
         Integer res = (Integer) ReflectUtil.invokeMethodSafely(sMethodGetViewDefaultUpdateMode, view);
         if (res == null) {
             return UpdateMode.GU;
@@ -275,11 +232,11 @@ public class IMX6Device {
         return this.updateModeFromValue(res.intValue());
     }
 
-    public void resetViewUpdateMode(View view) {
+    public void resetViewUpdateMode(final View view) {
         ReflectUtil.invokeMethodSafely(sMethodResetViewUpdateMode, view);
     }
 
-    public boolean setViewDefaultUpdateMode(View view, UpdateMode mode) {
+    public boolean setViewDefaultUpdateMode(final View view, UpdateMode mode) {
         Object res = ReflectUtil.invokeMethodSafely(sMethodSetViewDefaultUpdateMode, view, getUpdateMode(mode));
         return res != null;
     }
@@ -293,17 +250,17 @@ public class IMX6Device {
         return this.updateModeFromValue(res.intValue());
     }
 
-    public boolean setSystemDefaultUpdateMode(UpdateMode mode) {
+    public boolean setSystemDefaultUpdateMode(final UpdateMode mode) {
         Object res = ReflectUtil.invokeMethodSafely(sMethodSetSystemDefaultUpdateMode, null, getUpdateMode(mode));
         return res != null;
     }
 
-    public boolean setFirstDrawUpdateMode(UpdateMode mode) {
+    public boolean setFirstDrawUpdateMode(final UpdateMode mode) {
         Object res = ReflectUtil.invokeMethodSafely(sMethodSetFirstDrawUpdateMode, null, getUpdateMode(mode));
         return res != null;
     }
 
-    public boolean setSystemUpdateModeAndScheme(UpdateMode mode, UpdateScheme scheme, int count) {
+    public boolean setSystemUpdateModeAndScheme(final UpdateMode mode, final UpdateScheme scheme, int count) {
         Object res = ReflectUtil.invokeMethodSafely(sMethodSetSystemUpdateModeAndScheme, null, getUpdateMode(mode), getUpdateScheme(scheme), count);
         return res != null;
     }
@@ -318,38 +275,21 @@ public class IMX6Device {
         return res != null;
     }
 
-    UpdateMode getEpdMode(EPDMode mode) {
-        switch (mode) {
-            case FULL:
-                return UpdateMode.GC;
-            case AUTO:
-            case TEXT:
-            case AUTO_PART:
-                return UpdateMode.GU;
-            default:
-                return UpdateMode.DW;
-        }
-    }
-
-    int getUpdateMode(UpdateMode mode) {
+    private int getUpdateMode(UpdateMode mode) {
         // default use GC update mode
         int dst_mode = sModeGC;
 
         switch (mode) {
-            case GU_FAST:
-            case DW:
+            case DU:
                 dst_mode = sModeDW;
                 break;
             case GU:
                 dst_mode = sModeGU;
                 break;
-            case GC:
+            case GC16:
                 dst_mode = sModeGC;
                 break;
             case ANIMATION:
-                dst_mode = sModeAnimation;
-                break;
-            case ANIMATION_QUALITY:
                 dst_mode = sModeAnimationQuality;
                 break;
             case GC4:
@@ -384,29 +324,12 @@ public class IMX6Device {
 
     private UpdateMode updateModeFromValue(int value) {
         if (value == sModeDW) {
-            return UpdateMode.DW;
+            return UpdateMode.DU;
         } else if (value == sModeGU) {
             return UpdateMode.GU;
         } else if (value == sModeGC) {
-            return UpdateMode.GC;
+            return UpdateMode.GC16;
         }
-        return UpdateMode.GC;
-    }
-
-    private static int getPolicyValue(UpdatePolicy policy) {
-        int dst_value = sModeGU;
-        switch (policy) {
-            case Automatic:
-                dst_value |= sPolicyAutomatic;
-                break;
-            case GUIntervally:
-                dst_value |= sPolicyGUIntervally;
-                break;
-            default:
-                assert (false);
-                break;
-        }
-
-        return dst_value;
+        return UpdateMode.GC16;
     }
 }
