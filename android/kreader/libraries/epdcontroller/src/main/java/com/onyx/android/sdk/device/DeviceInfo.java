@@ -1,9 +1,7 @@
 /**
  * 
  */
-package com.onyx.android.sdk.api.device;
-
-import com.onyx.android.sdk.device.IMX6Device;
+package com.onyx.android.sdk.device;
 
 /**
  * EPD work differently according to devices 
