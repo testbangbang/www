@@ -269,12 +269,10 @@ bool OnyxDjvuContext::draw(JNIEnv *env, int pageNum, jobject bitmap, float zoom,
     int shift = 0;
     if (targetRect.x < 0) {
         shift = -targetRect.x;
-        targetRect.w += targetRect.x;
         targetRect.x = 0;
     }
     if (targetRect.y < 0) {
         shift +=  -targetRect.y * info.width;
-        targetRect.h += targetRect.y;
         targetRect.y = 0;
     }
 
@@ -284,6 +282,9 @@ bool OnyxDjvuContext::draw(JNIEnv *env, int pageNum, jobject bitmap, float zoom,
     if (pageRect.h <  targetRect.y + targetRect.h) {
         targetRect.h = targetRect.h - (targetRect.y + targetRect.h - pageRect.h);
     }
+    
+    targetRect.w = std::min((int)targetRect.w, bmpWidth);
+    targetRect.h = std::min((int)targetRect.h, bmpHeight);
 
     // we would keep old bitmap data if we want to provide continuous paging mode
     //memset(pixels, 0xffffffff, numPixels);
@@ -294,7 +295,7 @@ bool OnyxDjvuContext::draw(JNIEnv *env, int pageNum, jobject bitmap, float zoom,
     ddjvu_format_set_row_order(pixelFormat, TRUE);
     ddjvu_format_set_y_direction(pixelFormat, TRUE);
     char * buffer = &(((char *)pixels)[shift*4]);
-    //LOGI("going to render page %d %d %d %d pageRect %d %d %d %d.", targetRect.x, targetRect.y, targetRect.w, targetRect.h, pageRect.x, pageRect.y, pa
+    LOGE("shift: %d, going to render page %d %d %d %d pageRect %d %d %d %d.", shift, targetRect.x, targetRect.y, targetRect.w, targetRect.h, pageRect.x, pageRect.y, pageRect.w, pageRect.h);
     ret = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, info.stride, buffer);
     ddjvu_format_release(pixelFormat);
     AndroidBitmap_unlockPixels(env, bitmap);
