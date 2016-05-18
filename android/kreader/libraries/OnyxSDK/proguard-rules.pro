@@ -15,3 +15,24 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontnote com.google.vending.licensing.ILicensingService
+-dontnote com.android.vending.licensing.ILicensingService
+-dontnote android.support.annotation.Keep
+
+-keeppackagenames com.onyx.android.sdk.api.**
+#-keepnames com.onyx.android.sdk.api.**
+
+-keepclasseswithmembernames public class com.onyx.android.sdk.api.** {
+    *;
+}
+
+#-keepclasseswithmembernames public class com.onyx.android.sdk.api.device.epd.EpdController {
+#    public *;
+#}
+#
+#-keepclasseswithmembers public enum com.onyx.android.sdk.api.device.epd.** {
+#    *;
+#}
+
+-dontshrink
