@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.common.Benchmark;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
@@ -20,6 +21,8 @@ import java.util.List;
  * Created by zhuzeng on 10/14/15.
  */
 public class LayoutProviderUtils {
+
+    private static final String TAG = LayoutProviderUtils.class.getSimpleName();
 
     static boolean enableCache = true;
 
@@ -54,6 +57,11 @@ public class LayoutProviderUtils {
             PageUtils.translateCoordinates(visibleRect, positionRect);
             if (!hitCache) {
                 bitmap.clear();
+                Debug.d(TAG, "page: " + documentPosition + ", scale: " + pageInfo.getActualScale() +
+                        ", bitmap: " + bitmap.getBitmap().getWidth() + ", " + bitmap.getBitmap().getHeight() +
+                        ", display rect: " + displayRect +
+                        ", page rect: " + pageRect +
+                        ", visible rect: " + visibleRect);
                 if (renderer.draw(documentPosition, pageInfo.getActualScale(),
                         pageInfo.getPageDisplayOrientation(), bitmap, displayRect,
                         pageRect, visibleRect)) {
