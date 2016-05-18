@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.api.device.epd.UpdateScheme;
 import com.onyx.android.sdk.utils.ReflectUtil;
 
 import java.io.File;
@@ -181,7 +183,7 @@ public class IMX6Device extends BaseDevice {
         return false;
     }
 
-    public boolean setUpdatePolicy(View view, EpdController.UpdatePolicy policy, int guInterval) {
+    public boolean setUpdatePolicy(View view, UpdatePolicy policy, int guInterval) {
         int dst_mode_value = getPolicyValue(policy);
 
         try {
@@ -221,18 +223,18 @@ public class IMX6Device extends BaseDevice {
     }
 
     @Override
-    public EpdController.EPDMode getEpdMode() {
-        return EpdController.EPDMode.AUTO;
+    public EPDMode getEpdMode() {
+        return EPDMode.AUTO;
     }
 
     @Override
-    public boolean setEpdMode(Context context, EpdController.EPDMode mode) {
-        setSystemUpdateModeAndScheme(getEpdMode(mode), EpdController.UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+    public boolean setEpdMode(Context context, EPDMode mode) {
+        setSystemUpdateModeAndScheme(getEpdMode(mode), UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
         return false;
     }
 
     @Override
-    public void invalidate(View view, EpdController.UpdateMode mode) {
+    public void invalidate(View view, UpdateMode mode) {
         int dst_mode_value = getUpdateMode(mode);
 
         try {
@@ -249,7 +251,7 @@ public class IMX6Device extends BaseDevice {
 
 
     @Override
-    public void postInvalidate(View view, EpdController.UpdateMode mode) {
+    public void postInvalidate(View view, UpdateMode mode) {
         int dst_mode_value = getUpdateMode(mode);
 
         try {
@@ -266,7 +268,7 @@ public class IMX6Device extends BaseDevice {
     }
 
     @Override
-    public void refreshScreen(View view, EpdController.UpdateMode mode) {
+    public void refreshScreen(View view, UpdateMode mode) {
         int dst_mode_value = getUpdateMode(mode);
         try {
             assert (sMethodRefreshScreen != null);
@@ -278,7 +280,7 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
-    public void refreshScreenRegion(View view, int left, int top, int width, int height, EpdController.UpdateMode mode) {
+    public void refreshScreenRegion(View view, int left, int top, int width, int height, UpdateMode mode) {
         int dst_mode_value = getUpdateMode(mode);
         try {
             assert (sMethodRefreshScreenRegion != null);
@@ -335,7 +337,7 @@ public class IMX6Device extends BaseDevice {
         return (sMethodLineTo != null);
     }
 
-    public void lineTo(float x, float y, EpdController.UpdateMode mode) {
+    public void lineTo(float x, float y, UpdateMode mode) {
         int value = getUpdateMode(mode);
         try {
             ReflectUtil.invokeMethodSafely(sMethodLineTo, null, x, y, value);
@@ -344,7 +346,7 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
-    public void quadTo(float x, float y, EpdController.UpdateMode mode) {
+    public void quadTo(float x, float y, UpdateMode mode) {
         int value = getUpdateMode(mode);
         try {
             ReflectUtil.invokeMethodSafely(sMethodQuadTo, null, x, y, value);
@@ -556,10 +558,10 @@ public class IMX6Device extends BaseDevice {
     }
 
     @Override
-    public EpdController.UpdateMode getViewDefaultUpdateMode(View view) {
+    public UpdateMode getViewDefaultUpdateMode(View view) {
         Integer res = (Integer) ReflectUtil.invokeMethodSafely(sMethodGetViewDefaultUpdateMode, view);
         if (res == null) {
-            return EpdController.UpdateMode.GU;
+            return UpdateMode.GU;
         }
 
         return this.updateModeFromValue(res.intValue());
@@ -570,34 +572,34 @@ public class IMX6Device extends BaseDevice {
     }
 
     @Override
-    public boolean setViewDefaultUpdateMode(View view, EpdController.UpdateMode mode) {
+    public boolean setViewDefaultUpdateMode(View view, UpdateMode mode) {
         Object res = ReflectUtil.invokeMethodSafely(sMethodSetViewDefaultUpdateMode, view, getUpdateMode(mode));
         return res != null;
     }
 
     @Override
-    public EpdController.UpdateMode getSystemDefaultUpdateMode() {
+    public UpdateMode getSystemDefaultUpdateMode() {
         Integer res = (Integer) ReflectUtil.invokeMethodSafely(sMethodGetSystemDefaultUpdateMode, null);
         if (res == null) {
-            return EpdController.UpdateMode.GU;
+            return UpdateMode.GU;
         }
 
         return this.updateModeFromValue(res.intValue());
     }
 
     @Override
-    public boolean setSystemDefaultUpdateMode(EpdController.UpdateMode mode) {
+    public boolean setSystemDefaultUpdateMode(UpdateMode mode) {
         Object res = ReflectUtil.invokeMethodSafely(sMethodSetSystemDefaultUpdateMode, null, getUpdateMode(mode));
         return res != null;
     }
 
-    public boolean setFirstDrawUpdateMode(EpdController.UpdateMode mode) {
+    public boolean setFirstDrawUpdateMode(UpdateMode mode) {
         Object res = ReflectUtil.invokeMethodSafely(sMethodSetFirstDrawUpdateMode, null, getUpdateMode(mode));
         return res != null;
     }
 
     @Override
-    public boolean setSystemUpdateModeAndScheme(EpdController.UpdateMode mode, EpdController.UpdateScheme scheme, int count) {
+    public boolean setSystemUpdateModeAndScheme(UpdateMode mode, UpdateScheme scheme, int count) {
         Object res = ReflectUtil.invokeMethodSafely(sMethodSetSystemUpdateModeAndScheme, null, getUpdateMode(mode), getUpdateScheme(scheme), count);
         return res != null;
     }
@@ -740,20 +742,20 @@ public class IMX6Device extends BaseDevice {
         return ReflectUtil.invokeMethodSafely(method, null, args);
     }
 
-    EpdController.UpdateMode getEpdMode(EpdController.EPDMode mode) {
+    UpdateMode getEpdMode(EPDMode mode) {
         switch (mode) {
             case FULL:
-                return EpdController.UpdateMode.GC;
+                return UpdateMode.GC;
             case AUTO:
             case TEXT:
             case AUTO_PART:
-                return EpdController.UpdateMode.GU;
+                return UpdateMode.GU;
             default:
-                return EpdController.UpdateMode.DW;
+                return UpdateMode.DW;
         }
     }
 
-    int getUpdateMode(EpdController.UpdateMode mode) {
+    int getUpdateMode(UpdateMode mode) {
         // default use GC update mode
         int dst_mode = sModeGC;
 
@@ -784,7 +786,7 @@ public class IMX6Device extends BaseDevice {
         return dst_mode;
     }
 
-    private int getUpdateScheme(EpdController.UpdateScheme scheme) {
+    private int getUpdateScheme(UpdateScheme scheme) {
         int dst_scheme = sSchemeQUEUE;
         switch (scheme) {
             case SNAPSHOT:
@@ -804,18 +806,18 @@ public class IMX6Device extends BaseDevice {
 
     }
 
-    private EpdController.UpdateMode updateModeFromValue(int value) {
+    private UpdateMode updateModeFromValue(int value) {
         if (value == sModeDW) {
-            return EpdController.UpdateMode.DW;
+            return UpdateMode.DW;
         } else if (value == sModeGU) {
-            return EpdController.UpdateMode.GU;
+            return UpdateMode.GU;
         } else if (value == sModeGC) {
-            return EpdController.UpdateMode.GC;
+            return UpdateMode.GC;
         }
-        return EpdController.UpdateMode.GC;
+        return UpdateMode.GC;
     }
 
-    private static int getPolicyValue(EpdController.UpdatePolicy policy) {
+    private static int getPolicyValue(UpdatePolicy policy) {
         int dst_value = sModeGU;
         switch (policy) {
             case Automatic:
