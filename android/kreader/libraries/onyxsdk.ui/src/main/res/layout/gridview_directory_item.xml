@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dialog_directory_item_height"
+    android:padding="2dp" >
+
+    <TextView
+        android:id="@+id/textview_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_alignParentRight="true"
+        android:singleLine="true"
+        android:layout_centerVertical="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/dialog_content_text_size" />
+
+    <TextView
+        android:id="@+id/textview_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/textview_page"
+        android:ellipsize="middle"
+        android:layout_marginLeft="@dimen/dialog_directory_item_margin_left"
+        android:layout_centerVertical="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/dialog_content_text_size"
+        android:singleLine="true" />
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="@dimen/dialog_directory_item_line_margin"
+        android:layout_marginRight="@dimen/dialog_directory_item_line_margin"
+        android:layout_alignBottom="@+id/textview_title"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/black" />
+
+</RelativeLayout>

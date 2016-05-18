@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dialog_reader_menu_textsize">14sp</dimen>
+    <dimen name="dialog_reader_menu_textsize_smaller">14sp</dimen>
+    <dimen name="dialog_reader_menu_textsize_smallest">12.33sp</dimen>
+    <dimen name="onyx_reader_menu_sub_height">90dp</dimen>
+    <dimen name="button_minHeight">48dp</dimen>
+    <dimen name="contentView_button_X_axis_margin">30dp</dimen>
+    <dimen name="contentView_button_progress_minWidth">100dp</dimen>
+</resources>

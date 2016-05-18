@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_dialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_border"
+    android:padding="2dp">
+
+    <include
+        android:id="@+id/dialog_tittleBar"
+        layout="@layout/dialog_tittle_bar" />
+
+    <View
+        android:id="@+id/top_divider_line"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"
+        android:layout_below="@id/dialog_tittleBar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+    <View
+        android:id="@+id/bottom_divider_line"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"
+        android:layout_above="@+id/button_function_panel"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+    <com.onyx.android.sdk.ui.ContentView
+        android:id="@+id/page_margin_contentView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_divider_line"
+        android:layout_below="@id/top_divider_line"
+        android:layout_margin="5dp" />
+
+    <LinearLayout
+        android:id="@+id/button_function_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:background="@drawable/imagebtn_bg"
+            android:gravity="center"
+            android:minHeight="@dimen/button_minHeight"
+            android:padding="5dp"
+            android:text="@android:string/cancel"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/dialog_content_text_size" />
+
+        <View
+            style="@style/single_line_Y_axis_View"
+            android:layout_width="1dp" />
+
+        <Button
+            android:id="@+id/btn_set"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:background="@drawable/imagebtn_bg"
+            android:gravity="center"
+            android:minHeight="@dimen/button_minHeight"
+            android:padding="5dp"
+            android:text="@string/set"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/dialog_content_text_size" />
+    </LinearLayout>
+</RelativeLayout>

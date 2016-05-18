@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:background="@drawable/menu_background"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_spacing_decreases"
+            android:layout_width="90dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_line_spacing_decreases"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:text="@string/menu_item_font_decrease" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textview_line_spacing_decreases"
+                android:background="@color/read_menu_item_background_color"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@drawable/line_spacing_decreases"
+                android:src="@drawable/line_spacing_decreases" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_spacing_enlarge"
+            android:layout_width="90dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_line_spacing_enlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:ellipsize="marquee"
+                android:text="@string/menu_item_font_increase" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@id/textview_line_spacing_enlarge"
+                android:background="@color/read_menu_item_background_color"
+                android:contentDescription="@drawable/line_spacing_enlarge"
+                android:src="@drawable/line_spacing_enlarge" />
+        </RelativeLayout>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_spacing_normal"
+            android:layout_width="90dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_line_spacing_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:ellipsize="marquee"
+                android:text="@string/menu_item_normal" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textview_line_spacing_normal"
+                android:layout_centerHorizontal="true"
+                android:background="@color/read_menu_item_background_color"
+                android:contentDescription="@drawable/line_spacing_normal"
+                android:src="@drawable/line_spacing_normal" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_spacing_small"
+            android:layout_width="90dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_line_spacing_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:ellipsize="marquee"
+                android:text="@string/menu_item_small" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textview_line_spacing_small"
+                android:background="@color/read_menu_item_background_color"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@drawable/line_spacing_small"
+                android:src="@drawable/line_spacing_small" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:id="@+id/layout_spacing_big"
+            android:layout_width="90dp"
+            android:layout_height="60dp"
+            android:background="@drawable/reader_menu_item_background"
+            android:focusable="true" >
+
+            <TextView
+                android:id="@+id/textview_line_spacing_big"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:ellipsize="marquee"
+                android:text="@string/menu_item_big" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/textview_line_spacing_big"
+                android:background="@color/read_menu_item_background_color"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@drawable/line_spacing_big"
+                android:src="@drawable/line_spacing_big" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

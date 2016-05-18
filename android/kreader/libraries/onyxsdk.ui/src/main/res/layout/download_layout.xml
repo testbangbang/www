@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/textview_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="55dp"
+            android:text="@string/download_resource_files"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/dialog_title_text_size"/>
+    </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="25dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dialog_download_padding_left"
+            android:paddingRight="@dimen/dialog_download_padding_right" >
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/textview_progress"
+                android:layout_centerVertical="true"
+                android:max="100" />
+
+            <TextView
+                android:id="@+id/textview_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="0%"
+                android:paddingLeft="@dimen/dialog_download_padding_left"
+                android:textSize="@dimen/dialog_content_text_size" />
+        </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dialog_download_margin_bottom"
+        android:layout_marginTop="@dimen/dialog_download_margin_top"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dialog_download_padding_left"
+        android:paddingRight="@dimen/dialog_download_padding_right" >
+
+        <TextView
+            android:id="@+id/textview_deploy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.0"
+            android:text="@string/deploying_resource_files"
+            android:textSize="@dimen/dialog_button_text_size" 
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:textSize="@dimen/dialog_button_text_size" 
+            android:text="@string/Cancel" />
+    </LinearLayout>
+
+</LinearLayout>

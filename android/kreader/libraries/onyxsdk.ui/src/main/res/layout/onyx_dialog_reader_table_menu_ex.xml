@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_alignParentBottom="true"
+              android:background="@android:color/white"
+              android:orientation="vertical" >
+
+    <com.onyx.android.sdk.ui.ReaderMenuLayout
+            android:id="@+id/layout_reader_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    <View
+            style="@style/single_line_X_axis_View"
+            android:layout_height="@dimen/dialog_reader_menu_divider_height" />
+
+    <RelativeLayout
+            android:id="@+id/layout_menu_footer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/onyx_reader_menu_footer_height"
+            android:visibility="gone">
+
+        <LinearLayout
+                android:id="@+id/layout_page_info"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/reader_menu_item_background"
+                android:focusable="true"
+                android:gravity="center" >
+
+            <TextView
+                    android:id="@+id/textview_current_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/page_initial_value"
+                    android:textSize="20sp" />
+
+            <TextView
+                    android:id="@+id/textview_slash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/slash"
+                    android:textSize="20sp" />
+
+            <TextView
+                    android:id="@+id/textview_total_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/page_initial_value"
+                    android:textSize="20sp" />
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/textview_book_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/layout_page_info"
+                android:ellipsize="middle"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+    </RelativeLayout>
+
+</LinearLayout>
