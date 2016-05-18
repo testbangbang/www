@@ -262,9 +262,9 @@ public class DjvuReaderPlugin implements ReaderPlugin,
             final int pn = PagePositionUtils.getPageNumber(page);
             return getPluginImpl().drawPage(pn, bitmap.getBitmap(),
                     scale, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(),
-                    (int)visibleRect.left, (int)visibleRect.top, (int)visibleRect.width(), (int)visibleRect.height());
+                    -(int)displayRect.left, -(int)displayRect.top, (int)displayRect.width(), (int)displayRect.height());
         } finally {
-            Log.e(TAG, "rendering takes: " + benchmark.duration());
+            benchmark.report("djvu rendering finished");
         }
     }
 
