@@ -5,7 +5,9 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.api.device.epd.UpdatePolicy;
 import com.onyx.android.sdk.api.device.epd.UpdateScheme;
 import com.onyx.android.sdk.utils.ReflectUtil;
 
