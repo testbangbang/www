@@ -25,9 +25,11 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.device.DeviceController;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
+import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -60,6 +62,7 @@ public class ReaderActivity extends ActionBarActivity {
     private final static String TAG = ReaderActivity.class.getSimpleName();
 
     private Reader reader;
+    private ReaderViewInfo readerViewInfo;
 
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
@@ -631,7 +634,23 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void scaleByRect(RectF rect) {
-        final ScaleByRectRequest request = new ScaleByRectRequest(getCurrentPageName(), rect);
+        if (readerViewInfo == null || readerViewInfo.getVisiblePages() == null ||
+                readerViewInfo.getVisiblePages().size() <= 0) {
+            return;
+        }
+        String pn = null;
+        for(PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
+            if (pageInfo.getDisplayRect().contains(rect)) {
+                pn = pageInfo.getName();
+                rect = ScaleByRectRequest.rectInDocument(pageInfo, rect);
+                break;
+            }
+        }
+        if (pn == null) {
+            return;
+        }
+
+        final ScaleByRectRequest request = new ScaleByRectRequest(pn, rect);
         submitRenderRequest(request);
     }
 
@@ -780,14 +799,14 @@ public class ReaderActivity extends ActionBarActivity {
         if (e != null) {
             return;
         }
+        readerViewInfo = request.getReaderViewInfo();
         // TODO avoid null pointer error
-        String page = getCurrentPageName();
-        if (page != null) {
-            int pn = Integer.parseInt(page);
-            updateToolbarProgress((pn + 1) + "/" + getPageCount());
-        }
+        String page = request.getReaderViewInfo().getVisiblePages().get(0).getName();
+        int pn = Integer.parseInt(page);
+        updateToolbarProgress((pn + 1) + "/" + getPageCount());
         DeviceController.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
+        surfaceView.invalidate();
     }
 
     public void redrawPage() {
