@@ -423,7 +423,7 @@ public class ReaderTestActivity extends Activity {
 
     public void textPrerenderScreen() {
         if (testPrerender) {
-            final PrerenderRequest renderRequest = new PrerenderRequest(true);
+            final PreRenderRequest renderRequest = new PreRenderRequest(true);
             reader.submitRequest(this, renderRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Exception e) {
