@@ -2,11 +2,9 @@ package com.onyx.kreader.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.*;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.*;
 import android.widget.LinearLayout;
@@ -14,6 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
+import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderException;
@@ -25,14 +24,9 @@ import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
-import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.kreader.reflow.ImageReflowSettings;
 import com.onyx.kreader.ui.data.ReaderScalePresets;
-import com.onyx.kreader.ui.dialog.DialogReflowSettings;
-import com.onyx.kreader.ui.dialog.DialogSetValue;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -44,7 +38,6 @@ import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.RawResourceUtil;
 import com.onyx.kreader.utils.StringUtils;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -67,7 +60,6 @@ public class ReaderActivity extends Activity {
 
     private boolean preRender = true;
 
-    private DialogReflowSettings reflowSettingsDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,11 +98,11 @@ public class ReaderActivity extends Activity {
         return false;
     }
 
-    public int displayWidth() {
+    public int getDisplayWidth() {
         return surfaceView.getWidth();
     }
 
-    public int displayHeight() {
+    public int getDisplayHeight() {
         return surfaceView.getHeight();
     }
 
@@ -341,7 +333,7 @@ public class ReaderActivity extends Activity {
                         adjustEmbolden();
                         break;
                     case "/Font/FontReflow":
-                        adjustReflowSettings();
+                        imageReflow();
                         break;
                     case "/Font/TOC":
                         break;
@@ -413,6 +405,7 @@ public class ReaderActivity extends Activity {
     }
 
     private void openLocalFile(final String path) {
+        reader = ReaderManager.getReader(path);
         final OpenDocumentAction action = new OpenDocumentAction(path);
         action.execute(this);
     }
@@ -441,7 +434,7 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleByValue(float scale) {
-        final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, displayWidth() / 2, displayHeight() / 2);
+        final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, getDisplayWidth() / 2, getDisplayHeight() / 2);
         submitRenderRequest(request);
     }
 
@@ -454,8 +447,6 @@ public class ReaderActivity extends Activity {
         final ScaleToWidthRequest request = new ScaleToWidthRequest(getCurrentPageName());
         submitRenderRequest(request);
     }
-
-
 
     private void scaleByRect() {
         final SelectionScaleAction action = new SelectionScaleAction();
@@ -496,34 +487,9 @@ public class ReaderActivity extends Activity {
         action.execute(this);
     }
 
-    private void adjustReflowSettings() {
-        showReflowSettingsDialog();
-    }
-
-    private void showReflowSettingsDialog() {
-        if (reflowSettingsDialog == null) {
-            ImageReflowSettings settings = reader.getImageReflowSettings();
-            settings.dev_width = surfaceView.getWidth();
-            settings.dev_height = surfaceView.getHeight();
-            reflowSettingsDialog = new DialogReflowSettings(this, settings, new DialogReflowSettings.ReflowCallback() {
-                @Override
-                public void onFinished(boolean confirm, ImageReflowSettings settings) {
-                    if (confirm && settings != null) {
-                        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
-                        submitRenderRequest(request);
-                    }
-                    hideReflowSettingsDialog();
-                }
-            });
-        }
-        reflowSettingsDialog.show();
-    }
-
-    private void hideReflowSettingsDialog() {
-        if (reflowSettingsDialog != null) {
-            reflowSettingsDialog.hide();
-            reflowSettingsDialog = null;
-        }
+    private void imageReflow() {
+        final ImageReflowAction action = new ImageReflowAction();
+        action.execute(this);
     }
 
     public void submitRenderRequest(BaseRequest request) {
@@ -592,11 +558,6 @@ public class ReaderActivity extends Activity {
     }
 
     private void openBuiltInDoc() {
-        hideLoadingDialog();
-    }
-
-    private void hideLoadingDialog() {
-
     }
 
     private boolean hasPopupWindow() {
