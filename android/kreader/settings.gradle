@@ -1,1 +1,1 @@
-include ':app', ':libraries:OnyxSDK', ':libraries:cropimage', ':libraries:Side-Menu.Android:library', ':libraries:epdcontroller'
+include ':app', ':libraries:cropimage', ':libraries:Side-Menu.Android:library', ':libraries:epdcontroller'

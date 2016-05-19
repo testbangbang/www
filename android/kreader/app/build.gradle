@@ -58,7 +58,6 @@ android {
 }
 
 dependencies {
-    compile project(':libraries:OnyxSDK')
     compile project(':libraries:cropimage')
     compile project(':libraries:Side-Menu.Android:library')
     compile project(':libraries:epdcontroller')
