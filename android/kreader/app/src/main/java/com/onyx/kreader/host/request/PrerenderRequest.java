@@ -8,11 +8,11 @@ import com.onyx.kreader.host.wrapper.Reader;
 /**
  * Created by zhuzeng on 2/16/16.
  */
-public class PrerenderRequest extends BaseRequest {
+public class PreRenderRequest extends BaseRequest {
 
     private boolean forward;
 
-    public PrerenderRequest(boolean next) {
+    public PreRenderRequest(boolean next) {
         super();
         forward = next;
     }
