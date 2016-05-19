@@ -86,17 +86,22 @@ public class LayoutProviderUtils {
 
     static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
         Bitmap copy = bitmap.getBitmap().copy(bitmap.getBitmap().getConfig(), true);
-        cache.put(key, copy);
+        if (copy != null) {
+            cache.put(key, copy);
+        }
         return true;
     }
 
     static public boolean checkCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        final Bitmap result = cache.get(key);
+        Bitmap result = cache.get(key);
         if (result == null) {
             return false;
         }
 
-        bitmap.copyFrom(result);
+        if (!bitmap.copyFrom(result)) {
+            result = cache.remove(key);
+            bitmap.attach(result);
+        }
         return true;
     }
 

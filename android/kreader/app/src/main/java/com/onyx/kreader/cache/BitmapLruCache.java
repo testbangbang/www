@@ -144,6 +144,18 @@ public class BitmapLruCache implements Closeable {
         return getFromDiskCache(key, options);
     }
 
+    public final Bitmap remove(final String key) {
+        return removeFromMemoryCache(key);
+    }
+
+    public Bitmap removeFromMemoryCache(final String key) {
+        if (memoryCache == null) {
+            return null;
+        }
+
+        return memoryCache.remove(key);
+    }
+
     public Bitmap getFromMemoryCache(final String key) {
         if (memoryCache == null) {
             return null;
