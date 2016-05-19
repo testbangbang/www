@@ -233,7 +233,7 @@ public class ReaderHelper {
             }
             BitmapLruCache.Builder builder = new BitmapLruCache.Builder();
             builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
-            builder.setDiskCacheEnabled(true).setDiskCacheLocation(cacheLocation);
+            builder.setDiskCacheEnabled(false).setDiskCacheLocation(cacheLocation);
             bitmapLruCache = builder.build();
         }
     }
