@@ -35,7 +35,7 @@ public class PositionSnapshot {
     }
 
     static public String cacheKey(final List<PageInfo> list) {
-        return HashUtils.md5(JSON.toJSONString(list));
+        return JSON.toJSONString(list);
     }
 
     public String key() {
