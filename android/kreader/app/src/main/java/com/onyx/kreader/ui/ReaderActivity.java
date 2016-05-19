@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
+import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
@@ -57,6 +58,7 @@ public class ReaderActivity extends Activity {
     private HandlerManager handlerManager;
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
+    private ReaderViewInfo readerViewInfo;
 
     private boolean preRender = true;
 
@@ -434,6 +436,7 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleByValue(float scale) {
+
         final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, getDisplayWidth() / 2, getDisplayHeight() / 2);
         submitRenderRequest(request);
     }
@@ -504,10 +507,19 @@ public class ReaderActivity extends Activity {
         });
     }
 
+    private void saveReaderViewInfo(final BaseRequest request) {
+        readerViewInfo = request.getReaderViewInfo();
+    }
+
+    public final ReaderViewInfo getReaderViewInfo() {
+        return readerViewInfo;
+    }
+
     private void handleRenderRequestFinished(BaseRequest request, Exception e) {
         if (e != null) {
             return;
         }
+        saveReaderViewInfo(request);
         DeviceController.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
     }
