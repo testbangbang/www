@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="dialog_reader_menu_textsize">15sp</dimen>
-    <dimen name="dialog_reader_menu_textsize_smaller">15sp</dimen>
-    <dimen name="dialog_reader_menu_textsize_smallest">15sp</dimen>
-</resources>
