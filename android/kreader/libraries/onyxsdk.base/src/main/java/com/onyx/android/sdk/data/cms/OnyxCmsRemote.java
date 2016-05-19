@@ -3,7 +3,7 @@
  */
 package com.onyx.android.sdk.data.cms;
 
-import com.onyx.android.sdk.sync.IOnyxSyncService;
+import com.onyx.android.sync.IOnyxSyncService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
