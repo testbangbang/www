@@ -3,6 +3,9 @@ package com.onyx.kreader.device;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import com.onyx.android.sdk.*;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 
 /**
  * Created by Joy on 2016/5/6.
@@ -24,6 +27,6 @@ public class DeviceController {
     }
 
     public static void applyGCInvalidate(View view) {
-//        EpdController.setViewDefaultUpdateMode(view, UpdateMode.GU);
+        EpdController.setViewDefaultUpdateMode(view, UpdateMode.GC16);
     }
 }
