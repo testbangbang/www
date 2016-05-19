@@ -2,6 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.util.Log;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.common.Benchmark;
@@ -13,6 +14,8 @@ import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.BitmapUtils;
+import com.onyx.kreader.utils.HashUtils;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
@@ -43,6 +46,9 @@ public class LayoutProviderUtils {
         if (enableCache && checkCache(cache, key, bitmap)) {
             hitCache = true;
         }
+        if (!hitCache) {
+            bitmap.clear();
+        }
 
         final RectF pageRect = new RectF();
         final RectF visibleRect = new RectF();
@@ -58,18 +64,16 @@ public class LayoutProviderUtils {
             visibleRect.intersect(layoutManager.getPageManager().getViewportRect());
             PageUtils.translateCoordinates(visibleRect, positionRect);
             if (!hitCache) {
-                bitmap.clear();
-                if (renderer.draw(documentPosition, pageInfo.getActualScale(),
+                renderer.draw(documentPosition, pageInfo.getActualScale(),
                         pageInfo.getPageDisplayOrientation(), bitmap, displayRect,
-                        pageRect, visibleRect)) {
-                    if (enableCache && StringUtils.isNotBlank(key)) {
-                        addToCache(cache, key, bitmap);
-                    }
-                }
+                        pageRect, visibleRect);
             }
             readerViewInfo.copyPageInfo(pageInfo);
         }
 
+        if (!hitCache && enableCache && StringUtils.isNotBlank(key)) {
+            addToCache(cache, key, bitmap);
+        }
         updateReaderViewInfo(readerViewInfo, layoutManager);
     }
 
@@ -81,13 +85,9 @@ public class LayoutProviderUtils {
     }
 
     static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        final Bitmap result = cache.get(key);
-        if (result == null) {
-            Bitmap copy = bitmap.getBitmap().copy(bitmap.getBitmap().getConfig(), false);
-            cache.put(key, copy);
-            return true;
-        }
-        return false;
+        Bitmap copy = bitmap.getBitmap().copy(bitmap.getBitmap().getConfig(), true);
+        cache.put(key, copy);
+        return true;
     }
 
     static public boolean checkCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
@@ -95,6 +95,7 @@ public class LayoutProviderUtils {
         if (result == null) {
             return false;
         }
+
         bitmap.copyFrom(result);
         return true;
     }
