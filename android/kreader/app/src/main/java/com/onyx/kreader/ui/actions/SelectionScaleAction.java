@@ -53,7 +53,7 @@ public class SelectionScaleAction extends BaseAction {
             }
         };
         readerActivity.registerReceiver(selectionZoomAreaReceiver, filter);
-        CropImage crop = new CropImage(readerActivity.getReader().getRenderBitmap().getBitmap());
+        CropImage crop = new CropImage(readerActivity.getReader().getViewportBitmap().getBitmap());
         crop.output(outputUri).start(readerActivity, false, false, false, args);
     }
 
