@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.request.CreateViewRequest;
+import com.onyx.kreader.host.request.GotoInitPositionRequest;
 import com.onyx.kreader.host.request.GotoLocationRequest;
 import com.onyx.kreader.host.request.OpenRequest;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -61,7 +62,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void restore(final ReaderActivity readerActivity) {
-        BaseRequest gotoPosition = new GotoLocationRequest(String.valueOf(0));
+        BaseRequest gotoPosition = new GotoInitPositionRequest();
         readerActivity.submitRenderRequest(gotoPosition);
     }
 
