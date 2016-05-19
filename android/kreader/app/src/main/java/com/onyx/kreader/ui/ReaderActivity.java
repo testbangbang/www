@@ -61,6 +61,7 @@ public class ReaderActivity extends Activity {
     private ReaderViewInfo readerViewInfo;
 
     private boolean preRender = true;
+    private boolean preRenderNext = true;
 
 
     @Override
@@ -116,11 +117,13 @@ public class ReaderActivity extends Activity {
     }
 
     public void nextScreen() {
+        preRenderNext = true;
         final NextScreenAction action = new NextScreenAction();
         action.execute(this);
     }
 
     public void prevScreen() {
+        preRenderNext = false;
         final PreviousScreenAction action = new PreviousScreenAction();
         action.execute(this);
     }
@@ -129,16 +132,8 @@ public class ReaderActivity extends Activity {
         if (!preRender) {
             return;
         }
-
-        final PrerenderRequest request = new PrerenderRequest(true);
-        reader.submitRequest(this, request, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-            }
-        });
+        final PreRenderRequest request = new PreRenderRequest(preRenderNext);
+        reader.submitRequest(this, request, null);
     }
 
     public void nextPage() {
@@ -418,12 +413,8 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleUp() {
-        try {
-            float actualScale = reader.getReaderLayoutManager().getActualScale();
-            scaleByValue(ReaderScalePresets.scaleUp(actualScale));
-        } catch (ReaderException e) {
-            e.printStackTrace();
-        }
+        final ChangeScaleWithDeltaRequest request = new ChangeScaleWithDeltaRequest(getCurrentPageName(), 0.3f);
+        submitRenderRequest(request);
     }
 
     private void scaleDown() {
@@ -436,7 +427,6 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleByValue(float scale) {
-
         final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, getDisplayWidth() / 2, getDisplayHeight() / 2);
         submitRenderRequest(request);
     }
