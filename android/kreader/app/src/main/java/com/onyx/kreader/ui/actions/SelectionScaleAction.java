@@ -4,6 +4,7 @@ import android.content.IntentFilter;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Environment;
+import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.android.cropimage.CropImage;
@@ -65,7 +66,9 @@ public class SelectionScaleAction extends BaseAction {
     }
 
     private void scaleByRect(final ReaderActivity readerActivity, final RectF rect) {
-        final ScaleByRectRequest request = new ScaleByRectRequest(readerActivity.getCurrentPageName(), rect);
+        final PageInfo pageInfo = readerActivity.getReaderViewInfo().getVisiblePages().get(0);
+        RectF docRect = ScaleByRectRequest.rectInDocument(pageInfo, rect);
+        final ScaleByRectRequest request = new ScaleByRectRequest(readerActivity.getCurrentPageName(), docRect);
         readerActivity.submitRenderRequest(request);
     }
 
