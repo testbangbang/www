@@ -16,7 +16,6 @@ import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
-import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
@@ -27,7 +26,6 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.ui.data.ReaderScalePresets;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -413,13 +411,13 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleUp() {
-        final ChangeScaleWithDeltaRequest request = new ChangeScaleWithDeltaRequest(getCurrentPageName(), 0.3f);
-        submitRenderRequest(request);
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.3f);
+        action.execute(this);
     }
 
     private void scaleDown() {
-        final ChangeScaleWithDeltaRequest request = new ChangeScaleWithDeltaRequest(getCurrentPageName(), -0.3f);
-        submitRenderRequest(request);
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.3f);
+        action.execute(this);
     }
 
     private void scaleByValue(float scale) {
