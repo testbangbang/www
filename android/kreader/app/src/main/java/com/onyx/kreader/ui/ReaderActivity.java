@@ -12,10 +12,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
+import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
-import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
@@ -26,7 +26,6 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.ui.data.ReaderScalePresets;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -57,8 +56,10 @@ public class ReaderActivity extends Activity {
     private HandlerManager handlerManager;
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
+    private ReaderViewInfo readerViewInfo;
 
     private boolean preRender = true;
+    private boolean preRenderNext = true;
 
 
     @Override
@@ -114,11 +115,13 @@ public class ReaderActivity extends Activity {
     }
 
     public void nextScreen() {
+        preRenderNext = true;
         final NextScreenAction action = new NextScreenAction();
         action.execute(this);
     }
 
     public void prevScreen() {
+        preRenderNext = false;
         final PreviousScreenAction action = new PreviousScreenAction();
         action.execute(this);
     }
@@ -127,16 +130,8 @@ public class ReaderActivity extends Activity {
         if (!preRender) {
             return;
         }
-
-        final PrerenderRequest request = new PrerenderRequest(true);
-        reader.submitRequest(this, request, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-            }
-        });
+        final PreRenderRequest request = new PreRenderRequest(preRenderNext);
+        reader.submitRequest(this, request, null);
     }
 
     public void nextPage() {
@@ -416,21 +411,13 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleUp() {
-        try {
-            float actualScale = reader.getReaderLayoutManager().getActualScale();
-            scaleByValue(ReaderScalePresets.scaleUp(actualScale));
-        } catch (ReaderException e) {
-            e.printStackTrace();
-        }
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.3f);
+        action.execute(this);
     }
 
     private void scaleDown() {
-        try {
-            float actualScale = reader.getReaderLayoutManager().getActualScale();
-            scaleByValue(ReaderScalePresets.scaleDown(actualScale));
-        } catch (ReaderException e) {
-            e.printStackTrace();
-        }
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.3f);
+        action.execute(this);
     }
 
     private void scaleByValue(float scale) {
@@ -497,17 +484,24 @@ public class ReaderActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 handleRenderRequestFinished(request, e);
-                if (preRender) {
-                    preRenderNext();
-                }
+                preRenderNext();
             }
         });
+    }
+
+    private void saveReaderViewInfo(final BaseRequest request) {
+        readerViewInfo = request.getReaderViewInfo();
+    }
+
+    public final ReaderViewInfo getReaderViewInfo() {
+        return readerViewInfo;
     }
 
     private void handleRenderRequestFinished(BaseRequest request, Exception e) {
         if (e != null) {
             return;
         }
+        saveReaderViewInfo(request);
         DeviceController.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
     }

@@ -35,7 +35,7 @@ public class AdjustContrastAction extends BaseAction {
                     hideContrastDialog();
                 }
             };
-            float current = readerActivity.getReader().getBaseOptions().getGammaLevel();
+            float current = readerActivity.getReader().getDocumentOptions().getGammaLevel();
             contrastDialog = new DialogSetValue(readerActivity,
                     (int)current,
                     BaseOptions.minGammaLevel(), BaseOptions.maxGammaLevel(), true, true,

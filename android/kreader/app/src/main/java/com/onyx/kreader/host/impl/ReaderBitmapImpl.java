@@ -3,6 +3,7 @@ package com.onyx.kreader.host.impl;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import com.onyx.kreader.api.ReaderBitmap;
+import com.onyx.kreader.utils.BitmapUtils;
 
 /**
  * Created by zhuzeng on 10/4/15.
@@ -49,8 +50,16 @@ public class ReaderBitmapImpl implements ReaderBitmap {
         }
     }
 
-    public void copyFrom(final Bitmap src) {
+    public boolean copyFrom(final Bitmap src) {
         recycleBitmap();
-        bitmap = src.copy(Bitmap.Config.ARGB_8888, true);
+        bitmap = src.copy(src.getConfig(), true);
+        return BitmapUtils.isValid(bitmap);
     }
+
+    public void attach(final Bitmap src) {
+        recycleBitmap();
+        bitmap = src;
+    }
+
+
 }

@@ -71,18 +71,15 @@ private:
     FPDF_DOCUMENT document;
     FPDF_BITMAP bitmap;
     std::unordered_map<int, OnyxPdfiumPage *> pageMap;
+    std::unordered_map<void *, FPDF_BITMAP> bitmapMap;
 
 public:
     OnyxPdfiumContext(FPDF_DOCUMENT doc)
-        : document(doc)
-        , bitmap(NULL) {
+        : document(doc) {
     }
     ~OnyxPdfiumContext() {
         document = NULL;
-        if (bitmap != NULL) {
-            FPDFBitmap_Destroy(bitmap);
-            bitmap = NULL;
-        }
+        clearBitmaps();
         clearPages();
     }
 
@@ -92,8 +89,13 @@ public:
     }
 
     FPDF_BITMAP getBitmap(int width, int height, void * pixels, int stride) {
-        if (bitmap == NULL) {
+        FPDF_BITMAP bitmap = NULL;
+        std::unordered_map<void *, FPDF_BITMAP>::iterator iterator = bitmapMap.find(pixels);
+        if (iterator == bitmapMap.end()) {
             bitmap = FPDFBitmap_CreateEx(width, height, FPDFBitmap_BGRA, pixels, stride);
+            bitmapMap[pixels] = bitmap;
+        } else {
+            bitmap = iterator->second;
         }
         return bitmap;
     }
@@ -126,6 +128,13 @@ private:
             delete iterator->second;
         }
         pageMap.clear();
+    }
+
+    void clearBitmaps() {
+        for(std::unordered_map<void *, FPDF_BITMAP>::iterator iterator = bitmapMap.begin(); iterator != bitmapMap.end(); ++iterator) {
+            FPDFBitmap_Destroy(iterator->second);
+        }
+        bitmapMap.clear();
     }
 };
 
