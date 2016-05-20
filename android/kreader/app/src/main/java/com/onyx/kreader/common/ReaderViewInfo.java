@@ -27,6 +27,13 @@ public class ReaderViewInfo {
         return visiblePages;
     }
 
+    public final PageInfo getFirstVisiblePage() {
+        if (visiblePages.size() <= 0) {
+            return null;
+        }
+        return visiblePages.get(0);
+    }
+
     public final PageInfo getPageInfo(final String pageName) {
         for(PageInfo pageInfo : getVisiblePages()) {
             if (pageInfo.getName().equals(pageName)) {
