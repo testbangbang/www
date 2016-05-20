@@ -1,7 +1,6 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -17,7 +16,7 @@ public class EmboldenGlyphRequest extends BaseRequest {
 
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
-        reader.getBaseOptions().setEmboldenLevel(emboldenLevel);
+        reader.getDocumentOptions().setEmboldenLevel(emboldenLevel);
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
 

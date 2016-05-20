@@ -8,12 +8,14 @@ import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zhuzeng on 10/4/15.
+ * TODO: add document features when opened.
  */
 public class OpenRequest extends BaseRequest {
 
     private String documentPath;
     private ReaderDocumentOptions documentOptions;
     private ReaderPluginOptions pluginOptions;
+
 
     public OpenRequest(final String path, final ReaderDocumentOptions doc, final ReaderPluginOptions plugin) {
         super();

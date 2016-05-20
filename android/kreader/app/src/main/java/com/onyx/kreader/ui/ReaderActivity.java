@@ -418,12 +418,8 @@ public class ReaderActivity extends Activity {
     }
 
     private void scaleDown() {
-        try {
-            float actualScale = reader.getReaderLayoutManager().getActualScale();
-            scaleByValue(ReaderScalePresets.scaleDown(actualScale));
-        } catch (ReaderException e) {
-            e.printStackTrace();
-        }
+        final ChangeScaleWithDeltaRequest request = new ChangeScaleWithDeltaRequest(getCurrentPageName(), -0.3f);
+        submitRenderRequest(request);
     }
 
     private void scaleByValue(float scale) {

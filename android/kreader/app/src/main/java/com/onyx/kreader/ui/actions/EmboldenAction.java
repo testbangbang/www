@@ -34,7 +34,7 @@ public class EmboldenAction extends BaseAction {
                     hideEmboldenDialog();
                 }
             };
-            int current = readerActivity.getReader().getBaseOptions().getEmboldenLevel();
+            int current = readerActivity.getReader().getDocumentOptions().getEmboldenLevel();
             emboldenDialog = new DialogSetValue(readerActivity,
                     current,
                     BaseOptions.minEmboldenLevel(),

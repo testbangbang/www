@@ -3,6 +3,7 @@ package com.onyx.kreader.host.layout;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.util.Log;
+import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.common.Benchmark;
@@ -37,7 +38,7 @@ public class LayoutProviderUtils {
                                         final ReaderLayoutManager layoutManager,
                                         final ReaderDrawContext drawContext,
                                         final ReaderBitmapImpl bitmap,
-                                        final ReaderViewInfo readerViewInfo) {
+                                        final ReaderViewInfo readerViewInfo) throws ReaderException {
         final ReaderRenderer renderer = reader.getRenderer();
         final BitmapLruCache cache = reader.getBitmapLruCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
@@ -77,11 +78,12 @@ public class LayoutProviderUtils {
         updateReaderViewInfo(readerViewInfo, layoutManager);
     }
 
-    static public void updateReaderViewInfo(final ReaderViewInfo readerViewInfo, final ReaderLayoutManager layoutManager) {
+    static public void updateReaderViewInfo(final ReaderViewInfo readerViewInfo, final ReaderLayoutManager layoutManager) throws ReaderException {
         readerViewInfo.supportScalable = layoutManager.isSupportScale();
         readerViewInfo.supportReflow = layoutManager.isSupportReflow();
         readerViewInfo.canGoBack = layoutManager.canGoBack();
         readerViewInfo.canGoForward = layoutManager.canGoForward();
+        readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());
     }
 
     static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {

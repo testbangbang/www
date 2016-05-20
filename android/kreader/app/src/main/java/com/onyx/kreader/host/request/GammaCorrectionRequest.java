@@ -17,7 +17,7 @@ public class GammaCorrectionRequest extends BaseRequest {
 
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
-        reader.getBaseOptions().setGamma(gamma);
+        reader.getDocumentOptions().setGamma(gamma);
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
 

@@ -97,7 +97,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return true;
     }
 
-    private void reflowFirstVisiblePage(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo, boolean async) {
+    private void reflowFirstVisiblePage(final Reader reader,
+                                        final ReaderDrawContext drawContext,
+                                        final ReaderBitmapImpl bitmap,
+                                        final ReaderViewInfo readerViewInfo,
+                                        boolean async) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, bitmap, readerViewInfo);
         reader.getImageReflowManager().reflowBitmap(bitmap.getBitmap(),
                 reader.getViewOptions().getViewWidth(),
