@@ -19,6 +19,7 @@ public class PreRenderRequest extends BaseRequest {
 
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
+        reader.getReaderLayoutManager().setSavePosition(false);
         final ReaderDrawContext drawContext = new ReaderDrawContext();
         final PositionSnapshot snapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
         if (forward && reader.getReaderLayoutManager().nextScreen()) {

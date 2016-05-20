@@ -17,6 +17,7 @@ public class ScaleToWidthRequest extends BaseRequest {
     // in document coordinates system. forward to layout manager to scale
     public void execute(final Reader reader) throws Exception {
         useRenderBitmap(reader);
+        reader.getReaderLayoutManager().setSavePosition(true);
         reader.getReaderLayoutManager().scaleToWidth(pageName);
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
