@@ -9,10 +9,10 @@ import com.onyx.kreader.host.wrapper.Reader;
  * redraw request
  */
 public class GammaCorrectionRequest extends BaseRequest {
-    private int gamma = ReaderConstants.DEFAULT_GAMMA;
 
-    public GammaCorrectionRequest(int gamma) {
-        this.gamma = gamma;
+    private int gamma = ReaderConstants.DEFAULT_GAMMA;
+    public GammaCorrectionRequest(int value) {
+        gamma = value;
     }
 
     public void execute(final Reader reader) throws Exception {
