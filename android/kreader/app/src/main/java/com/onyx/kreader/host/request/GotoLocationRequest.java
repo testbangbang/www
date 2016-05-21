@@ -23,6 +23,7 @@ public class GotoLocationRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        reader.getReaderLayoutManager().setSavePosition(true);
         String documentPosition;
         if (StringUtils.isNotBlank(persistentPosition)) {
             documentPosition = persistentPosition;

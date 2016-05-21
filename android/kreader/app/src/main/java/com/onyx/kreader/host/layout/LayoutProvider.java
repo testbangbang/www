@@ -134,6 +134,7 @@ public class LayoutProvider {
     }
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), snapshot.pageName);
         if (ReaderConstants.isSpecialScale(snapshot.specialScale)) {
             getPageManager().setSpecialScale(snapshot.pageName, snapshot.specialScale);
         } else {
