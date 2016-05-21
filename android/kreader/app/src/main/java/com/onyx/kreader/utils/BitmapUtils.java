@@ -98,4 +98,8 @@ public class BitmapUtils {
         return bitmap.getHeight() * bitmap.getRowBytes();
     }
 
+    static public boolean isValid(final Bitmap bitmap) {
+        return bitmap != null && bitmap.getWidth() > 0 && bitmap.getHeight() > 0 && !bitmap.isRecycled();
+    }
+
 }

@@ -2,10 +2,11 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.util.Log;
+import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.common.Benchmark;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
@@ -14,6 +15,8 @@ import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.BitmapUtils;
+import com.onyx.kreader.utils.HashUtils;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
@@ -22,8 +25,6 @@ import java.util.List;
  * Created by zhuzeng on 10/14/15.
  */
 public class LayoutProviderUtils {
-
-    private static final String TAG = LayoutProviderUtils.class.getSimpleName();
 
     static boolean enableCache = true;
 
@@ -37,7 +38,7 @@ public class LayoutProviderUtils {
                                         final ReaderLayoutManager layoutManager,
                                         final ReaderDrawContext drawContext,
                                         final ReaderBitmapImpl bitmap,
-                                        final ReaderViewInfo readerViewInfo) {
+                                        final ReaderViewInfo readerViewInfo) throws ReaderException {
         final ReaderRenderer renderer = reader.getRenderer();
         final BitmapLruCache cache = reader.getBitmapLruCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
@@ -45,6 +46,9 @@ public class LayoutProviderUtils {
         boolean hitCache = false;
         if (enableCache && checkCache(cache, key, bitmap)) {
             hitCache = true;
+        }
+        if (!hitCache) {
+            bitmap.clear();
         }
 
         final RectF pageRect = new RectF();
@@ -61,49 +65,45 @@ public class LayoutProviderUtils {
             visibleRect.intersect(layoutManager.getPageManager().getViewportRect());
             PageUtils.translateCoordinates(visibleRect, positionRect);
             if (!hitCache) {
-                bitmap.clear();
-                Debug.d(TAG, "page: " + documentPosition + ", scale: " + pageInfo.getActualScale() +
-                        ", bitmap: " + bitmap.getBitmap().getWidth() + ", " + bitmap.getBitmap().getHeight() +
-                        ", display rect: " + displayRect +
-                        ", page rect: " + pageRect +
-                        ", visible rect: " + visibleRect);
-                if (renderer.draw(documentPosition, pageInfo.getActualScale(),
+                renderer.draw(documentPosition, pageInfo.getActualScale(),
                         pageInfo.getPageDisplayOrientation(), bitmap, displayRect,
-                        pageRect, visibleRect)) {
-                    if (enableCache && StringUtils.isNotBlank(key)) {
-                        addToCache(cache, key, bitmap);
-                    }
-                }
+                        pageRect, visibleRect);
             }
             readerViewInfo.copyPageInfo(pageInfo);
         }
 
+        if (!hitCache && enableCache && StringUtils.isNotBlank(key)) {
+            addToCache(cache, key, bitmap);
+        }
         updateReaderViewInfo(readerViewInfo, layoutManager);
     }
 
-    static public void updateReaderViewInfo(final ReaderViewInfo readerViewInfo, final ReaderLayoutManager layoutManager) {
+    static public void updateReaderViewInfo(final ReaderViewInfo readerViewInfo, final ReaderLayoutManager layoutManager) throws ReaderException {
         readerViewInfo.supportScalable = layoutManager.isSupportScale();
         readerViewInfo.supportReflow = layoutManager.isSupportReflow();
         readerViewInfo.canGoBack = layoutManager.canGoBack();
         readerViewInfo.canGoForward = layoutManager.canGoForward();
+        readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());
     }
 
     static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        final Bitmap result = cache.get(key);
-        if (result == null) {
-            Bitmap copy = bitmap.getBitmap().copy(bitmap.getBitmap().getConfig(), false);
+        Bitmap copy = bitmap.getBitmap().copy(bitmap.getBitmap().getConfig(), true);
+        if (copy != null) {
             cache.put(key, copy);
-            return true;
         }
-        return false;
+        return true;
     }
 
     static public boolean checkCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        final Bitmap result = cache.get(key);
+        Bitmap result = cache.get(key);
         if (result == null) {
             return false;
         }
-        bitmap.copyFrom(result);
+
+        if (!bitmap.copyFrom(result)) {
+            result = cache.remove(key);
+            bitmap.attach(result);
+        }
         return true;
     }
 

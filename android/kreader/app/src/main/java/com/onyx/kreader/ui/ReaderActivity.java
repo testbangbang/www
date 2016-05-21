@@ -1,12 +1,10 @@
 package com.onyx.kreader.ui;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.graphics.*;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,32 +14,21 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.cropimage.CropImage;
-import com.onyx.android.cropimage.CropImageResultReceiver;
-import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.kreader.R;
-import com.onyx.kreader.actions.ChangeOrientationAction;
-import com.onyx.kreader.actions.NextScreenAction;
-import com.onyx.kreader.actions.PreviousScreenAction;
+import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
-import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.device.DeviceController;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
-import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
-import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.kreader.reflow.ImageReflowSettings;
-import com.onyx.kreader.ui.data.ReaderScalePresets;
-import com.onyx.kreader.ui.dialog.DialogReflowSettings;
 import com.onyx.kreader.ui.dialog.DialogSetValue;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -55,7 +42,6 @@ import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.RawResourceUtil;
 import com.onyx.kreader.utils.StringUtils;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -65,7 +51,6 @@ public class ReaderActivity extends ActionBarActivity {
     private final static String TAG = ReaderActivity.class.getSimpleName();
 
     private Reader reader;
-    private ReaderViewInfo readerViewInfo;
 
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
@@ -76,14 +61,13 @@ public class ReaderActivity extends ActionBarActivity {
     private HandlerManager handlerManager;
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
+    private ReaderViewInfo readerViewInfo;
+
+    private DialogSetValue gotoPageDialog;
 
     private boolean preRender = true;
-    private CropImageResultReceiver selectionZoomAreaReceiver;
-    private DialogSetValue contrastDialog;
-    private DialogSetValue emboldenDialog;
-    private DialogReflowSettings reflowSettingsDialog;
-    private DialogSetValue gotoPageDialog;
-    private DialogSetValue cropValueDialog;
+    private boolean preRenderNext = true;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +85,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        resetEventListener();
         super.onDestroy();
     }
 
@@ -116,30 +99,36 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public boolean tryHitTest(float x, float y) {
-        if (getReaderMenu().isShown()) {
+        if (isReaderMenuShown()) {
             hideReaderMenu();
             return true;
         }
         return false;
     }
 
-    public int displayWidth() {
+    public int getDisplayWidth() {
         return surfaceView.getWidth();
     }
 
-    public int displayHeight() {
+    public int getDisplayHeight() {
         return surfaceView.getHeight();
     }
 
     public void beforePageChangeByUser() {
     }
 
+    public final Reader getReader() {
+        return reader;
+    }
+
     public void nextScreen() {
+        preRenderNext = true;
         final NextScreenAction action = new NextScreenAction();
         action.execute(this);
     }
 
     public void prevScreen() {
+        preRenderNext = false;
         final PreviousScreenAction action = new PreviousScreenAction();
         action.execute(this);
     }
@@ -148,16 +137,8 @@ public class ReaderActivity extends ActionBarActivity {
         if (!preRender) {
             return;
         }
-
-        final PrerenderRequest request = new PrerenderRequest(true);
-        reader.submitRequest(this, request, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-            }
-        });
+        final PreRenderRequest request = new PreRenderRequest(preRenderNext);
+        reader.submitRequest(this, request, null);
     }
 
     public void nextPage() {
@@ -209,13 +190,13 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initActivity() {
-        initToolBar();
+        initToolbar();
         initSurfaceView();
         initReaderMenu();
         initHandlerManager();
     }
 
-    private void initToolBar() {
+    private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -225,9 +206,10 @@ public class ReaderActivity extends ActionBarActivity {
         toolbar.findViewById(R.id.toolbar_progress).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showGotoDialog();
+                new GotoPageDialogAction().execute(ReaderActivity.this);
             }
         });
+
     }
 
     private void initSurfaceView() {
@@ -325,9 +307,6 @@ public class ReaderActivity extends ActionBarActivity {
                     case "/Zoom/ToWidth":
                         scaleToWidth();
                         break;
-                    case "/Zoom/Crop":
-                        scaleByCrop();
-                        break;
                     case "/Zoom/ByRect":
                         scaleByRect();
                         break;
@@ -365,7 +344,7 @@ public class ReaderActivity extends ActionBarActivity {
                         adjustEmbolden();
                         break;
                     case "/Font/FontReflow":
-                        adjustReflowSettings();
+                        imageReflow();
                         break;
                     case "/Font/TOC":
                         break;
@@ -396,13 +375,6 @@ public class ReaderActivity extends ActionBarActivity {
         JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(this, R.raw.reader_menu));
         JSONArray array = json.getJSONArray("menu_list");
         return ReaderSideMenuItem.createFromJSON(this, array);
-    }
-
-    private void resetEventListener() {
-        if (selectionZoomAreaReceiver != null) {
-            unregisterReceiver(selectionZoomAreaReceiver);
-            selectionZoomAreaReceiver = null;
-        }
     }
 
     private void clearCanvas(SurfaceHolder holder) {
@@ -443,66 +415,29 @@ public class ReaderActivity extends ActionBarActivity {
 
     }
 
-    private void openLocalFile(String path) {
+    private void openLocalFile(final String path) {
         reader = ReaderManager.getReader(path);
-        BaseRequest open = new OpenRequest(path, getDocumentOptions(), getPluginOptions());
-        reader.submitRequest(this, open, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                onFileOpenSucceed();
-            }
-        });
-    }
-
-    private void onFileOpenSucceed() {
-        hideReaderMenu();
-        String name = FileUtils.getFileName(reader.getReaderHelper().getPlugin().getFilePath());
-        updateToolbarTitle(name);
-        handlerManager.setEnable(true);
-        BaseRequest config = new CreateViewRequest(displayWidth(), displayHeight());
-        reader.submitRequest(this, config, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    return;
-                }
-                gotoPage(reader.getNavigator().getInitPosition());
-            }
-        });
+        final OpenDocumentAction action = new OpenDocumentAction(path);
+        action.execute(this);
     }
 
     private void gotoPage(int page) {
-        gotoPage(String.valueOf(page));
-    }
-
-    private void gotoPage(String pageName) {
-        BaseRequest gotoPosition = new GotoLocationRequest(pageName);
-        submitRenderRequest(gotoPosition);
+        final GotoPageAction action = new GotoPageAction(String.valueOf(page));
+        action.execute(this);
     }
 
     private void scaleUp() {
-        try {
-            float actualScale = reader.getReaderLayoutManager().getActualScale();
-            scaleByValue(ReaderScalePresets.scaleUp(actualScale));
-        } catch (ReaderException e) {
-            e.printStackTrace();
-        }
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.3f);
+        action.execute(this);
     }
 
     private void scaleDown() {
-        try {
-            float actualScale = reader.getReaderLayoutManager().getActualScale();
-            scaleByValue(ReaderScalePresets.scaleDown(actualScale));
-        } catch (ReaderException e) {
-            e.printStackTrace();
-        }
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.3f);
+        action.execute(this);
     }
 
     private void scaleByValue(float scale) {
-        final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, displayWidth() / 2, displayHeight() / 2);
+        final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, getDisplayWidth() / 2, getDisplayHeight() / 2);
         submitRenderRequest(request);
     }
 
@@ -516,98 +451,9 @@ public class ReaderActivity extends ActionBarActivity {
         submitRenderRequest(request);
     }
 
-    private void scaleByCrop() {
-        showCropValueDialog();
-    }
-
-    public DialogSetValue showCropValueDialog() {
-        final int minValue = 1;
-        final int maxValue = 20;
-        final int defaultValue = minValue;
-        if (cropValueDialog == null) {
-            DialogSetValue.DialogCallback cropCallback = new DialogSetValue.DialogCallback() {
-                @Override
-                public void valueChange(int newValue) {
-                    cropWithValue((double)newValue / maxValue);
-                }
-
-                @Override
-                public void done(boolean isValueChange, int oldValue, int newValue) {
-                    if (!isValueChange) {
-                    }
-                    hideCropValueDialog();
-                }
-            };
-            cropValueDialog = new DialogSetValue(this, defaultValue, minValue, maxValue, true, true,  getString(R.string.dialog_crop_tittle), getString(R.string.dialog_crop_tittle), cropCallback);
-            cropWithValue((double)defaultValue / maxValue);
-        }
-        cropValueDialog.show();
-        return cropValueDialog;
-    }
-
-    public void hideCropValueDialog()  {
-        if (cropValueDialog != null) {
-            cropValueDialog.hide();
-            cropValueDialog = null;
-        }
-    }
-
-    private void cropWithValue(double value) {
-
-    }
-
-    private void showSelectionActivity(final CropArgs args, final CropImage.SelectionCallback callback) {
-        Uri outputUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "cropped.png"));
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(CropImage.INTENT_ACTION_SELECT_ZOOM_RECT);
-
-        if (selectionZoomAreaReceiver != null) {
-            unregisterReceiver(selectionZoomAreaReceiver);
-        }
-        selectionZoomAreaReceiver = new CropImageResultReceiver() {
-            @Override
-            public void onSelectionFinished(final CropArgs navigationArgs) {
-                if (callback != null) {
-                    callback.onSelectionFinished(navigationArgs);
-                }
-            }
-        };
-        ReaderActivity.this.registerReceiver(selectionZoomAreaReceiver, filter);
-        CropImage crop = new CropImage(reader.getViewportBitmap().getBitmap());
-        crop.output(outputUri).start(ReaderActivity.this, false, false, false, args);
-    }
-
     private void scaleByRect() {
-        CropArgs args = new CropArgs();
-        args.manualCropPage = true;
-
-        showSelectionActivity(args, new CropImage.SelectionCallback() {
-            @Override
-            public void onSelectionFinished(CropArgs args) {
-                scaleByRect(new RectF(args.selectionRect));
-            }
-        });
-    }
-
-    private void scaleByRect(RectF rect) {
-        if (readerViewInfo == null || readerViewInfo.getVisiblePages() == null ||
-                readerViewInfo.getVisiblePages().size() <= 0) {
-            return;
-        }
-        String pn = null;
-        for(PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
-            if (pageInfo.getDisplayRect().contains(rect)) {
-                pn = pageInfo.getName();
-                rect = ScaleByRectRequest.rectInDocument(pageInfo, rect);
-                break;
-            }
-        }
-        if (pn == null) {
-            return;
-        }
-
-        final ScaleByRectRequest request = new ScaleByRectRequest(pn, rect);
-        submitRenderRequest(request);
+        final SelectionScaleAction action = new SelectionScaleAction();
+        action.execute(this);
     }
 
     private void switchNavigationToArticleMode() {
@@ -635,108 +481,23 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void adjustContrast() {
-        showContrastDialog();
-    }
-
-    public DialogSetValue showContrastDialog() {
-        if (contrastDialog == null) {
-            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
-                @Override
-                public void valueChange(int newValue) {
-                    GammaCorrectionRequest request = new GammaCorrectionRequest(newValue);
-                    submitRenderRequest(request);
-                }
-
-                @Override
-                public void done(boolean isValueChange, int oldValue, int newValue) {
-                    if (!isValueChange) {
-                        GammaCorrectionRequest request = new GammaCorrectionRequest(oldValue);
-                        submitRenderRequest(request);
-                    }
-                    hideContrastDialog();
-                }
-            };
-            float current = reader.getBaseOptions().getGammaLevel();
-            contrastDialog = new DialogSetValue(ReaderActivity.this, (int)current, BaseOptions.minGammaLevel(), BaseOptions.maxGammaLevel(), true, true,
-                    getString(R.string.dialog_reflow_settings_contrast), getString(R.string.contrast_level), callback);
-
-        }
-        contrastDialog.show();
-        return contrastDialog;
-    }
-
-    private void hideContrastDialog() {
-        if (contrastDialog != null) {
-            contrastDialog.hide();
-            contrastDialog = null;
-        }
+        final AdjustContrastAction action = new AdjustContrastAction();
+        action.execute(this);
     }
 
     private void adjustEmbolden() {
-        showEmboldenDialog();
+        final EmboldenAction action = new EmboldenAction();
+        action.execute(this);
     }
 
-    public DialogSetValue showEmboldenDialog()  {
-        if (emboldenDialog == null) {
-            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
-                @Override
-                public void valueChange(int newValue) {
-                    EmboldenGlyphRequest request = new EmboldenGlyphRequest(newValue);
-                    submitRenderRequest(request);
-                }
-
-                @Override
-                public void done(boolean isValueChange, int oldValue, int newValue) {
-                    if (!isValueChange) {
-                        EmboldenGlyphRequest request = new EmboldenGlyphRequest(oldValue);
-                        submitRenderRequest(request);
-                    }
-                    hideEmboldenDialog();
-                }
-            };
-            int current = reader.getBaseOptions().getEmboldenLevel();
-            emboldenDialog = new DialogSetValue(ReaderActivity.this, current, BaseOptions.minEmboldenLevel(), BaseOptions.maxEmboldenLevel(), true, true,
-                    getString(R.string.embolden), getString(R.string.embolden_level), callback);
-        }
-        emboldenDialog.show();
-        return emboldenDialog;
+    private void imageReflow() {
+        final ImageReflowAction action = new ImageReflowAction();
+        action.execute(this);
     }
 
-    private void hideEmboldenDialog() {
-        if (emboldenDialog != null) {
-            emboldenDialog.hide();
-            emboldenDialog = null;
-        }
-    }
-
-    private void adjustReflowSettings() {
-        showReflowSettingsDialog();
-    }
-
-    private void showReflowSettingsDialog() {
-        if (reflowSettingsDialog == null) {
-            ImageReflowSettings settings = reader.getImageReflowSettings();
-            settings.dev_width = surfaceView.getWidth();
-            settings.dev_height = surfaceView.getHeight();
-            reflowSettingsDialog = new DialogReflowSettings(this, settings, new DialogReflowSettings.ReflowCallback() {
-                @Override
-                public void onFinished(boolean confirm, ImageReflowSettings settings) {
-                    if (confirm && settings != null) {
-                        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
-                        submitRenderRequest(request);
-                    }
-                    hideReflowSettingsDialog();
-                }
-            });
-        }
-        reflowSettingsDialog.show();
-    }
-
-    private void hideReflowSettingsDialog() {
-        if (reflowSettingsDialog != null) {
-            reflowSettingsDialog.hide();
-            reflowSettingsDialog = null;
-        }
+    public void onDocumentOpened() {
+        hideToolbar();
+        updateToolbarTitle();
     }
 
     public void submitRenderRequest(BaseRequest request) {
@@ -744,25 +505,27 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 handleRenderRequestFinished(request, e);
-                if (preRender) {
-                    preRenderNext();
-                }
+                preRenderNext();
             }
         });
+    }
+
+    private void saveReaderViewInfo(final BaseRequest request) {
+        readerViewInfo = request.getReaderViewInfo();
+    }
+
+    public final ReaderViewInfo getReaderViewInfo() {
+        return readerViewInfo;
     }
 
     private void handleRenderRequestFinished(BaseRequest request, Exception e) {
         if (e != null) {
             return;
         }
-        readerViewInfo = request.getReaderViewInfo();
-        // TODO avoid null pointer error
-        String page = request.getReaderViewInfo().getVisiblePages().get(0).getName();
-        int pn = Integer.parseInt(page);
-        updateToolbarProgress((pn + 1) + "/" + getPageCount());
+        saveReaderViewInfo(request);
+        updateToolbarProgress();
         DeviceController.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
-        surfaceView.invalidate();
     }
 
     public void redrawPage() {
@@ -794,15 +557,15 @@ public class ReaderActivity extends ActionBarActivity {
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
-    private String getCurrentPageName() {
+    public String getCurrentPageName() {
         return reader.getReaderLayoutManager().getCurrentPageName();
     }
 
-    private int getCurrentPage() {
+    public int getCurrentPage() {
         return PagePositionUtils.getPosition(getCurrentPageName());
     }
 
-    private int getPageCount() {
+    public int getPageCount() {
         return reader.getNavigator().getTotalPage();
     }
 
@@ -819,15 +582,10 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void openBuiltInDoc() {
-        hideLoadingDialog();
-    }
-
-    private void hideLoadingDialog() {
-
     }
 
     private boolean hasPopupWindow() {
-        return getReaderMenu().isShown();
+        return isReaderMenuShown();
     }
 
     private void hideAllPopupMenu() {
@@ -868,6 +626,10 @@ public class ReaderActivity extends ActionBarActivity {
         return handlerManager;
     }
 
+    public boolean isReaderMenuShown() {
+        return getReaderMenu().isShown();
+    }
+
     public void showReaderMenu() {
         showToolbar();
         getReaderMenu().show();
@@ -886,43 +648,17 @@ public class ReaderActivity extends ActionBarActivity {
         findViewById(R.id.toolbar).setVisibility(View.GONE);
     }
 
-    private void updateToolbarTitle(String title) {
+    private void updateToolbarTitle() {
+        String name = FileUtils.getFileName(reader.getReaderHelper().getPlugin().getFilePath());
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        ((TextView)toolbar.findViewById(R.id.toolbar_title)).setText(title);
+        ((TextView)toolbar.findViewById(R.id.toolbar_title)).setText(name);
     }
 
-    private void updateToolbarProgress(String progress) {
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        ((TextView)toolbar.findViewById(R.id.toolbar_progress)).setText(progress);
-    }
-
-    public DialogSetValue showGotoDialog() {
-        if (gotoPageDialog == null) {
-            DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
-                @Override
-                public void valueChange(int newValue) {
-                    gotoPage(newValue - 1);
-                }
-
-                @Override
-                public void done(boolean isValueChange, int oldValue, int newValue) {
-                    if (!isValueChange) {
-                        gotoPage(oldValue - 1);
-                    }
-                    hideGotoDialog();
-                }
-            };
-            gotoPageDialog = new DialogSetValue(ReaderActivity.this, getCurrentPage(), 1, getPageCount(), true, true,
-                    getString(R.string.go_to_page), getString(R.string.go_to_page), callback);
-        }
-        gotoPageDialog.show();
-        return gotoPageDialog;
-    }
-
-    private void hideGotoDialog() {
-        if (gotoPageDialog != null) {
-            gotoPageDialog.hide();
-            gotoPageDialog = null;
+    private void updateToolbarProgress() {
+        if (readerViewInfo != null) {
+            int pn = Integer.parseInt(readerViewInfo.getFirstVisiblePage().getName());
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            ((TextView) toolbar.findViewById(R.id.toolbar_progress)).setText((pn + 1) + "/" + getPageCount());
         }
     }
 

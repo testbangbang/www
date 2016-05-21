@@ -1,7 +1,6 @@
-package com.onyx.kreader.actions;
+package com.onyx.kreader.ui.actions;
 
 import android.content.pm.ActivityInfo;
-import com.onyx.kreader.host.request.NextScreenRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 
 /**

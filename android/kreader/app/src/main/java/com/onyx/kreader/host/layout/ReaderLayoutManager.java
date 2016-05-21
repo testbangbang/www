@@ -43,6 +43,7 @@ public class ReaderLayoutManager {
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
     private boolean supportScale;
     private boolean supportTextFlow;
+    private boolean savePosition = true;
 
     public ReaderLayoutManager(final ReaderHelper helper,
                                final ReaderDocument document,
@@ -147,6 +148,14 @@ public class ReaderLayoutManager {
         return getPageManager().isWidthCrop();
     }
 
+    public void setSavePosition(boolean save) {
+        savePosition = save;
+    }
+
+    public boolean isSavePosition() {
+        return savePosition;
+    }
+
     public float getActualScale() throws ReaderException {
         return getCurrentLayoutProvider().getActualScale();
     }
@@ -201,7 +210,9 @@ public class ReaderLayoutManager {
     }
 
     public void onPositionChanged() {
-        savePositionSnapshot();
+        if (isSavePosition()) {
+            savePositionSnapshot();
+        }
     }
 
     public boolean goBack() {

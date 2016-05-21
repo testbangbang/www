@@ -127,16 +127,20 @@ public class LayoutProvider {
         if (getPageManager().getFirstVisiblePage() == null) {
             return null;
         }
-        return PositionSnapshot.snapshot(getProviderName(), getPageManager().getFirstVisiblePage(), getPageManager().getSpecialScale());
+        return PositionSnapshot.snapshot(getProviderName(),
+                getPageManager().getFirstVisiblePage(),
+                getPageManager().getViewportRect(),
+                getPageManager().getSpecialScale());
     }
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), snapshot.pageName);
         if (ReaderConstants.isSpecialScale(snapshot.specialScale)) {
             getPageManager().setSpecialScale(snapshot.pageName, snapshot.specialScale);
         } else {
             getPageManager().setScale(snapshot.pageName, snapshot.actualScale);
         }
-        getPageManager().setViewportPosition(snapshot.pageName, snapshot.displayRect.left, snapshot.displayRect.top);
+        getPageManager().setViewportPosition(snapshot.pageName, snapshot.viewportOffsetRect.left, snapshot.viewportOffsetRect.top);
         return true;
     }
 

@@ -1,5 +1,6 @@
 package com.onyx.kreader.common;
 
+import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.options.ReaderConstants;
@@ -20,9 +21,26 @@ public class ReaderViewInfo {
     public boolean canGoForward;
     public boolean supportReflow;
     public boolean supportScalable;
+    public RectF viewportInDoc = new RectF();
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;
+    }
+
+    public final PageInfo getFirstVisiblePage() {
+        if (visiblePages.size() <= 0) {
+            return null;
+        }
+        return visiblePages.get(0);
+    }
+
+    public final PageInfo getPageInfo(final String pageName) {
+        for(PageInfo pageInfo : getVisiblePages()) {
+            if (pageInfo.getName().equals(pageName)) {
+                return pageInfo;
+            }
+        }
+        return null;
     }
 
     public void copyPageInfo(final PageInfo pageInfo) {

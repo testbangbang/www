@@ -1,4 +1,4 @@
-package com.onyx.kreader.actions;
+package com.onyx.kreader.ui.actions;
 
 
 import com.onyx.kreader.ui.ReaderActivity;
