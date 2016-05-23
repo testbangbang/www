@@ -109,8 +109,14 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         if (StringUtils.isNullOrEmpty(location)) {
             return false;
         }
+        float viewportLeft = getPageManager().getViewportRect().left;
         LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
-        return getPageManager().gotoPage(location);
+        boolean succ = getPageManager().gotoPage(location);
+        if (succ) {
+            float dx = viewportLeft - getPageManager().getViewportRect().left;
+            getPageManager().panViewportPosition(dx, 0);
+        }
+        return succ;
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
