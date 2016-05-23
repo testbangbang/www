@@ -7,6 +7,7 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.common.Benchmark;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
@@ -26,6 +27,7 @@ import java.util.List;
  */
 public class LayoutProviderUtils {
 
+    private static final String TAG = LayoutProviderUtils.class.getSimpleName();
     static boolean enableCache = true;
 
     /**
@@ -65,6 +67,12 @@ public class LayoutProviderUtils {
             visibleRect.intersect(layoutManager.getPageManager().getViewportRect());
             PageUtils.translateCoordinates(visibleRect, positionRect);
             if (!hitCache) {
+                Debug.d(TAG, "page: " + documentPosition + ", scale: " + pageInfo.getActualScale() +
+                        ", bitmap: " + bitmap.getBitmap().getWidth() + ", " + bitmap.getBitmap().getHeight() +
+                        ", display rect: " + displayRect +
+                        ", position rect: " + positionRect +
+                        ", page rect: " + pageRect +
+                        ", visible rect: " + visibleRect);
                 renderer.draw(documentPosition, pageInfo.getActualScale(),
                         pageInfo.getPageDisplayOrientation(), bitmap, displayRect,
                         pageRect, visibleRect);
