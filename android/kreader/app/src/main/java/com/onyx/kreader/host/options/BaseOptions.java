@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.RectF;
 
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.kreader.api.ReaderDocumentOptions;
+import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.utils.GObject;
 
 import java.util.List;
@@ -495,5 +498,13 @@ public class BaseOptions {
         double fallFontSize = fallbackFontSize;
         fallFontSize = 0;//context.getResources().getInteger(R.integer.default_font_size);
         return fallFontSize;
+    }
+
+    public final ReaderDocumentOptionsImpl documentOptions() {
+        return new ReaderDocumentOptionsImpl(getPassword(), getZipPassword());
+    }
+
+    public final ReaderPluginOptions pluginOptions() {
+        return null;
     }
 }

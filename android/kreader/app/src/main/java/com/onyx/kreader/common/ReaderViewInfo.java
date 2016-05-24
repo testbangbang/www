@@ -22,6 +22,7 @@ public class ReaderViewInfo {
     public boolean supportReflow;
     public boolean supportScalable;
     public RectF viewportInDoc = new RectF();
+    public RectF pagesBoundingRect = new RectF();
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;

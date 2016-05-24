@@ -97,8 +97,9 @@ public class ReaderHelper {
         return (plugin != null);
     }
 
-    public void onDocumentOpened(final ReaderDocument doc) {
+    public void onDocumentOpened(final ReaderDocument doc, final ReaderDocumentOptions options) {
         document = doc;
+        getDocumentOptions().setPassword(options.getDocumentPassword());
     }
 
     public void onViewSizeChanged() {
@@ -289,4 +290,8 @@ public class ReaderHelper {
             viewportBitmap.copyFrom(renderBitmap.getBitmap());
         }
    }
+
+    public BaseOptions loadDocumentOptions(final Context context, final String path) {
+        return new BaseOptions();
+    }
 }

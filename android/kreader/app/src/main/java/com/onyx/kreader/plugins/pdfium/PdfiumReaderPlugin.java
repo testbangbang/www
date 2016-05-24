@@ -63,8 +63,14 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
             docPassword = documentOptions.getDocumentPassword();
             archivePassword = documentOptions.getDocumentPassword();
         }
-        if (getPluginImpl().openDocument(path, docPassword) == PdfiumJniWrapper.NO_ERROR) {
+        long ret = getPluginImpl().openDocument(path, docPassword);
+        if (ret  == PdfiumJniWrapper.NO_ERROR) {
             return this;
+        }
+        if (ret == PdfiumJniWrapper.ERROR_PASSWORD_INVALID) {
+            throw ReaderException.passwordRequired();
+        } else if (ret == PdfiumJniWrapper.ERROR_UNKNOWN) {
+            throw ReaderException.cannotOpen();
         }
         return null;
     }
