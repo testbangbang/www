@@ -85,12 +85,8 @@ public class ReaderActivity extends ActionBarActivity {
 
             @Override
             public void onGlobalLayout() {
+                removeGlobalOnLayoutListener(this);
                 new ScreenOrientationChangedAction().execute(ReaderActivity.this);
-                if (Build.VERSION.SDK_INT < 16) {
-                    TreeObserverUtils.removeLayoutListenerPre16(surfaceView.getViewTreeObserver(), this);
-                } else {
-                        TreeObserverUtils.removeLayoutListenerPost16(surfaceView.getViewTreeObserver(), this);
-                }
             }
         });
 
@@ -274,10 +270,18 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                removeGlobalOnLayoutListener(this);
                 handleActivityIntent();
             }
         });
+    }
+
+    private void removeGlobalOnLayoutListener(ViewTreeObserver.OnGlobalLayoutListener listener) {
+        if (Build.VERSION.SDK_INT < 16) {
+            TreeObserverUtils.removeLayoutListenerPre16(surfaceView.getViewTreeObserver(), listener);
+        } else {
+            TreeObserverUtils.removeLayoutListenerPost16(surfaceView.getViewTreeObserver(), listener);
+        }
     }
 
     private void initHandlerManager() {
