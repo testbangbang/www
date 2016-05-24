@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.*;
 import android.net.Uri;
@@ -29,7 +28,6 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.ui.dialog.DialogSetValue;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -50,6 +48,7 @@ import java.util.List;
 public class ReaderActivity extends ActionBarActivity {
     private final static String TAG = ReaderActivity.class.getSimpleName();
 
+    private String documentPath;
     private Reader reader;
 
     private SurfaceView surfaceView;
@@ -63,11 +62,8 @@ public class ReaderActivity extends ActionBarActivity {
     private ScaleGestureDetector scaleDetector;
     private ReaderViewInfo readerViewInfo;
 
-    private DialogSetValue gotoPageDialog;
-
     private boolean preRender = true;
     private boolean preRenderNext = true;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -427,7 +423,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void scaleUp() {
-        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.3f);
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.095f);
         action.execute(this);
     }
 
@@ -495,7 +491,8 @@ public class ReaderActivity extends ActionBarActivity {
         action.execute(this);
     }
 
-    public void onDocumentOpened() {
+    public void onDocumentOpened(String path) {
+        documentPath = path;
         hideToolbar();
         updateToolbarTitle();
     }
@@ -649,7 +646,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void updateToolbarTitle() {
-        String name = FileUtils.getFileName(reader.getReaderHelper().getPlugin().getFilePath());
+        String name = FileUtils.getFileName(documentPath);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         ((TextView)toolbar.findViewById(R.id.toolbar_title)).setText(name);
     }
