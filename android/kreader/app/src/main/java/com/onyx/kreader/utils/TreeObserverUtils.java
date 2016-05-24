@@ -1,0 +1,19 @@
+package com.onyx.kreader.utils;
+
+import android.annotation.TargetApi;
+import android.view.ViewTreeObserver;
+
+/**
+ * Created by Joy on 2016/5/24.
+ */
+public class TreeObserverUtils {
+    @SuppressWarnings("deprecation")
+    public static void removeLayoutListenerPre16(ViewTreeObserver observer, ViewTreeObserver.OnGlobalLayoutListener listener){
+        observer.removeGlobalOnLayoutListener(listener);
+    }
+
+    @TargetApi(16)
+    public static void removeLayoutListenerPost16(ViewTreeObserver observer, ViewTreeObserver.OnGlobalLayoutListener listener){
+        observer.removeOnGlobalLayoutListener(listener);
+    }
+}

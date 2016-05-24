@@ -22,7 +22,8 @@
 
         </activity>
 
-        <activity android:name="com.onyx.kreader.ui.ReaderActivity">
+        <activity android:name="com.onyx.kreader.ui.ReaderActivity"
+                  android:configChanges="keyboardHidden|orientation|screenSize">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
