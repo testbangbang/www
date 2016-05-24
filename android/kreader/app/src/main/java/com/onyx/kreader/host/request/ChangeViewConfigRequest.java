@@ -9,13 +9,16 @@ import com.onyx.kreader.host.wrapper.Reader;
 public class ChangeViewConfigRequest extends BaseRequest {
 
     private int newWidth, newHeight;
+    private String position;
 
-    public ChangeViewConfigRequest(int nw, int nh) {
+    public ChangeViewConfigRequest(int nw, int nh, final String position) {
         newWidth = nw;
         newHeight = nh;
+        this.position = position;
     }
 
     public void execute(final Reader reader) throws Exception {
         reader.getReaderHelper().updateViewportSize(newWidth, newHeight);
+        reader.getReaderLayoutManager().gotoPosition(position);
     }
 }
