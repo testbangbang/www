@@ -80,25 +80,21 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        int oldOrientation = getResources().getConfiguration().orientation;
-        int newOrientation = getRequestedOrientation();
-        super.onConfigurationChanged(newConfig);
+        ViewTreeObserver observer = surfaceView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-        if (oldOrientation != newOrientation) {
-            ViewTreeObserver observer = surfaceView.getViewTreeObserver();
-            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-                @Override
-                public void onGlobalLayout() {
-                    if (Build.VERSION.SDK_INT < 16) {
-                        TreeObserverUtils.removeLayoutListenerPre16(surfaceView.getViewTreeObserver(), this);
-                    } else {
+            @Override
+            public void onGlobalLayout() {
+                new ScreenOrientationChangedAction().execute(ReaderActivity.this);
+                if (Build.VERSION.SDK_INT < 16) {
+                    TreeObserverUtils.removeLayoutListenerPre16(surfaceView.getViewTreeObserver(), this);
+                } else {
                         TreeObserverUtils.removeLayoutListenerPost16(surfaceView.getViewTreeObserver(), this);
-                    }
-                    new ScreenOrientationChangedAction().execute(ReaderActivity.this);
                 }
-            });
-        }
+            }
+        });
+
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
