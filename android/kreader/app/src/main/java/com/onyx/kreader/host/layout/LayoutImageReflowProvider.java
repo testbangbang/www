@@ -82,7 +82,9 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
         Bitmap bmp = reader.getImageReflowManager().getCurrentBitmap(getCurrentPageName());
-        if (bmp == null) {
+        if (bmp != null) {
+            LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
+        } else {
             reflowFirstVisiblePage(reader, drawContext, bitmap, readerViewInfo, drawContext.asyncDraw);
             if (drawContext.asyncDraw) {
                 return false;

@@ -73,7 +73,6 @@ public class LayoutProviderUtils {
                         pageInfo.getPageDisplayOrientation(), bitmap, displayRect,
                         pageRect, visibleRect);
             }
-            readerViewInfo.copyPageInfo(pageInfo);
         }
 
         if (!hitCache && enableCache && StringUtils.isNotBlank(key)) {
@@ -83,6 +82,10 @@ public class LayoutProviderUtils {
     }
 
     static public void updateReaderViewInfo(final ReaderViewInfo readerViewInfo, final ReaderLayoutManager layoutManager) throws ReaderException {
+        List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
+        for (PageInfo pageInfo : visiblePages) {
+            readerViewInfo.copyPageInfo(pageInfo);
+        }
         readerViewInfo.supportScalable = layoutManager.isSupportScale();
         readerViewInfo.supportReflow = layoutManager.isSupportReflow();
         readerViewInfo.canGoBack = layoutManager.canGoBack();
