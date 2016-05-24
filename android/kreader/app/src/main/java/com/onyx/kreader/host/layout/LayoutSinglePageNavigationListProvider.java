@@ -5,11 +5,13 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -163,5 +165,22 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
         getPageManager().scaleToViewport(pageName, child);
+    }
+
+    public PositionSnapshot saveSnapshot() throws ReaderException {
+        if (getPageManager().getFirstVisiblePage() == null) {
+            return null;
+        }
+        return PositionSnapshot.snapshot(getProviderName(),
+                getPageManager().getFirstVisiblePage(),
+                getPageManager().getViewportRect(),
+                getPageManager().getSpecialScale(),
+                getNavigationList().getCurrentIndex());
+    }
+
+    public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
+        super.restoreBySnapshot(snapshot);
+        getNavigationList().setCurrentIndex(snapshot.subScreenIndex);
+        return true;
     }
 }

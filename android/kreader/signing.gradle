@@ -1,0 +1,10 @@
+android {
+    signingConfigs {
+        release {
+            storeFile file(rootProject.projectDir.absolutePath + '/keys/android-release-key.keystore')
+            storePassword 'kG7UOwf2%@foQ70cD8u'
+            keyAlias 'release-key'
+            keyPassword 'kG7UOwf2%@foQ70cD8u'
+        }
+    }
+}

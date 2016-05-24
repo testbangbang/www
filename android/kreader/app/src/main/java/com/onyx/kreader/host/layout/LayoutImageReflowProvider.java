@@ -2,10 +2,12 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.util.Log;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
@@ -18,7 +20,7 @@ import com.onyx.kreader.utils.StringUtils;
  * For reflow stream document.
  */
 public class LayoutImageReflowProvider extends LayoutProvider {
-
+    private static final String TAG = LayoutImageReflowProvider.class.getSimpleName();
 
     private boolean reverseOrder;
 
@@ -82,7 +84,9 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
         Bitmap bmp = reader.getImageReflowManager().getCurrentBitmap(getCurrentPageName());
-        if (bmp == null) {
+        if (bmp != null) {
+            LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
+        } else {
             reflowFirstVisiblePage(reader, drawContext, bitmap, readerViewInfo, drawContext.asyncDraw);
             if (drawContext.asyncDraw) {
                 return false;
@@ -174,6 +178,25 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public void scaleByRect(final RectF child) throws ReaderException {
 
+    }
+
+    public PositionSnapshot saveSnapshot() throws ReaderException {
+        if (getPageManager().getFirstVisiblePage() == null) {
+            return null;
+        }
+        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
+        return PositionSnapshot.snapshot(getProviderName(),
+                getPageManager().getFirstVisiblePage(),
+                getPageManager().getViewportRect(),
+                getPageManager().getSpecialScale(),
+                reflowManager.getCurrentScreenIndex(getCurrentPageName()));
+    }
+
+    public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
+        super.restoreBySnapshot(snapshot);
+        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
+        reflowManager.moveToScreen(getCurrentPageName(), snapshot.subScreenIndex);
+        return true;
     }
 
 

@@ -241,6 +241,14 @@ public class ImageReflowManager {
         getSubPageList(pageName).moveToBegin();
     }
 
+    public int getCurrentScreenIndex(final String pageName) {
+        return getSubPageList(pageName).getCurrent();
+    }
+
+    public void moveToScreen(final String pageName, final int screenIndex) {
+        getSubPageList(pageName).moveToScreen(screenIndex);
+    }
+
     public boolean next(final String pageName) {
         return getSubPageList(pageName).next();
     }

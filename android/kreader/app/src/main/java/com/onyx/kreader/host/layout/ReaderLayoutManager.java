@@ -279,7 +279,9 @@ public class ReaderLayoutManager {
     }
 
     public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
-        return drawVisiblePages(reader, null, bitmap, viewInfo);
+        ReaderDrawContext context = new ReaderDrawContext();
+        context.asyncDraw = false;
+        return drawVisiblePages(reader, context, bitmap, viewInfo);
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {

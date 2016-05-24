@@ -179,7 +179,13 @@ public class NavigationList {
         return null;
     }
 
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
 
+    public void setCurrentIndex(int index) {
+        currentIndex = index;
+    }
 
 
 }

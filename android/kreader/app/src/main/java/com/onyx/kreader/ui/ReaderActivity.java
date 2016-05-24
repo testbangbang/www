@@ -423,12 +423,12 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void scaleUp() {
-        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.095f);
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.1f);
         action.execute(this);
     }
 
     private void scaleDown() {
-        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.3f);
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.1f);
         action.execute(this);
     }
 
@@ -652,7 +652,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void updateToolbarProgress() {
-        if (readerViewInfo != null && readerViewInfo.getVisiblePages() != null) {
+        if (readerViewInfo != null && readerViewInfo.getFirstVisiblePage() != null) {
             int pn = Integer.parseInt(readerViewInfo.getFirstVisiblePage().getName());
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             ((TextView) toolbar.findViewById(R.id.toolbar_progress)).setText((pn + 1) + "/" + getPageCount());
