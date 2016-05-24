@@ -92,6 +92,7 @@ public class LayoutProviderUtils {
         readerViewInfo.canGoBack = layoutManager.canGoBack();
         readerViewInfo.canGoForward = layoutManager.canGoForward();
         readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());
+        readerViewInfo.pagesBoundingRect.set(layoutManager.getPageBoundingRect());
     }
 
     static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
