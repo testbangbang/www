@@ -423,12 +423,12 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void scaleUp() {
-        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.095f);
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.1f);
         action.execute(this);
     }
 
     private void scaleDown() {
-        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.3f);
+        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.1f);
         action.execute(this);
     }
 
