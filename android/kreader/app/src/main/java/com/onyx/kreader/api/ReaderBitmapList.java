@@ -68,6 +68,10 @@ public class ReaderBitmapList {
         current = 0;
     }
 
+    public void moveToScreen(final int screenIndex) {
+        current = screenIndex;
+    }
+
     public boolean next() {
         if (++current >= count) {
             return false;
