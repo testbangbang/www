@@ -91,11 +91,17 @@ public:
     FPDF_BITMAP getBitmap(int width, int height, void * pixels, int stride) {
         FPDF_BITMAP bitmap = NULL;
         std::unordered_map<void *, FPDF_BITMAP>::iterator iterator = bitmapMap.find(pixels);
+        if (iterator != bitmapMap.end()) {
+            bitmap = iterator->second;
+            if (FPDFBitmap_GetWidth(bitmap) != width || FPDFBitmap_GetHeight(bitmap) != height) {
+                FPDFBitmap_Destroy(iterator->second);
+                bitmapMap.erase(iterator);
+                iterator = bitmapMap.end();
+            }
+        }
         if (iterator == bitmapMap.end()) {
             bitmap = FPDFBitmap_CreateEx(width, height, FPDFBitmap_BGRA, pixels, stride);
             bitmapMap[pixels] = bitmap;
-        } else {
-            bitmap = iterator->second;
         }
         return bitmap;
     }
