@@ -9,7 +9,7 @@ import com.onyx.kreader.ui.ReaderActivity;
 /**
  * Created by Joy on 2016/5/24.
  */
-public class ScreenOrientationChangedAction extends BaseAction {
+public class ChangeViewConfigAction extends BaseAction {
     @Override
     public void execute(final ReaderActivity readerActivity) {
         final PageInfo pageInfo = readerActivity.getReaderViewInfo().getFirstVisiblePage();

@@ -86,7 +86,7 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 removeGlobalOnLayoutListener(this);
-                new ScreenOrientationChangedAction().execute(ReaderActivity.this);
+                new ChangeViewConfigAction().execute(ReaderActivity.this);
             }
         });
 
