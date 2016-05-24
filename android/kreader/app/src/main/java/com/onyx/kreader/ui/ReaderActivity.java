@@ -652,7 +652,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void updateToolbarProgress() {
-        if (readerViewInfo != null && readerViewInfo.getVisiblePages() != null) {
+        if (readerViewInfo != null && readerViewInfo.getFirstVisiblePage() != null) {
             int pn = Integer.parseInt(readerViewInfo.getFirstVisiblePage().getName());
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             ((TextView) toolbar.findViewById(R.id.toolbar_progress)).setText((pn + 1) + "/" + getPageCount());
