@@ -22,8 +22,16 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
         return documentPassword;
     }
 
+    public void setDocumentPassword(final String password) {
+        documentPassword = password;
+    }
+
     public String getCompressedPassword() {
         return archivePassword;
+    }
+
+    public void setCompressedPassword(final String password) {
+        archivePassword = password;
     }
 
 }

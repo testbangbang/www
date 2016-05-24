@@ -252,4 +252,8 @@ public class Reader {
     public ImageReflowSettings getImageReflowSettings() {
         return getReaderHelper().getImageReflowManager().getSettings();
     }
+
+    public BaseOptions loadDocumentOptions(final Context context, final String path) {
+        return getReaderHelper().loadDocumentOptions(context, path);
+    }
 }
