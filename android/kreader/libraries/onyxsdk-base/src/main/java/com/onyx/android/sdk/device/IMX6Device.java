@@ -247,8 +247,6 @@ public class IMX6Device extends BaseDevice {
         } catch (IllegalAccessException e) {
         } catch (InvocationTargetException e) {
         }
-
-        view.invalidate();
     }
 
 
@@ -265,8 +263,6 @@ public class IMX6Device extends BaseDevice {
         } catch (IllegalAccessException e) {
         } catch (InvocationTargetException e) {
         }
-
-        view.postInvalidate();
     }
 
     @Override

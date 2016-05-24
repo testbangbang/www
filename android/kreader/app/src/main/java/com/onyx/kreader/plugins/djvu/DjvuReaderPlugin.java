@@ -226,11 +226,6 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public String getFilePath() {
-        return getPluginImpl().getFilePath();
-    }
-
-    @Override
     public boolean supportDrm() {
         return false;
     }
