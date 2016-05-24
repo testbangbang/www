@@ -240,7 +240,7 @@ public class ReaderTestActivity extends Activity {
 
     public void testReaderOpen() {
         reader = ReaderManager.getReader(path);
-        BaseRequest open = new OpenRequest(path, getDocumentOptions(), getPluginOptions());
+        BaseRequest open = new OpenRequest(path, getDocumentOptions());
         reader.submitRequest(this, open, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
