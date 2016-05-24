@@ -75,7 +75,7 @@ public class ReaderSideMenu extends ReaderMenu {
     @Override
     public void hide() {
         if (isShown()) {
-            readerMenuLayout.setVisibility(View.INVISIBLE);
+            readerMenuLayout.setVisibility(View.GONE);
             readerMenuViewAnimator.hideMenuContent();
         }
     }
