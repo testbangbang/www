@@ -75,11 +75,6 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    @Override
-    public String getFilePath() {
-        return documentPath;
-    }
-
     public boolean supportDrm() {
         return false;
     }

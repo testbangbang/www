@@ -69,11 +69,6 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    @Override
-    public String getFilePath() {
-        return documentPath;
-    }
-
     public boolean supportDrm() {
         return true;
     }

@@ -38,7 +38,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void onFileOpenSucceed(final ReaderActivity readerActivity, final Reader reader) {
-        readerActivity.onDocumentOpened();
+        readerActivity.onDocumentOpened(documentPath);
         readerActivity.getHandlerManager().setEnable(true);
         BaseRequest config = new CreateViewRequest(readerActivity.getDisplayWidth(), readerActivity.getDisplayHeight());
         reader.submitRequest(readerActivity, config, new BaseCallback() {
