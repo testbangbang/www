@@ -1,8 +1,10 @@
 package com.onyx.kreader.ui;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.*;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -35,10 +37,7 @@ import com.onyx.kreader.ui.menu.ReaderMenu;
 import com.onyx.kreader.ui.menu.ReaderMenuItem;
 import com.onyx.kreader.ui.menu.ReaderSideMenu;
 import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
-import com.onyx.kreader.utils.FileUtils;
-import com.onyx.kreader.utils.PagePositionUtils;
-import com.onyx.kreader.utils.RawResourceUtil;
-import com.onyx.kreader.utils.StringUtils;
+import com.onyx.kreader.utils.*;
 
 import java.util.List;
 
@@ -77,6 +76,21 @@ public class ReaderActivity extends ActionBarActivity {
     protected void onResume() {
         redrawPage();
         super.onResume();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        ViewTreeObserver observer = surfaceView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                removeGlobalOnLayoutListener(this);
+                new ChangeViewConfigAction().execute(ReaderActivity.this);
+            }
+        });
+
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -256,10 +270,18 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                removeGlobalOnLayoutListener(this);
                 handleActivityIntent();
             }
         });
+    }
+
+    private void removeGlobalOnLayoutListener(ViewTreeObserver.OnGlobalLayoutListener listener) {
+        if (Build.VERSION.SDK_INT < 16) {
+            TreeObserverUtils.removeLayoutListenerPre16(surfaceView.getViewTreeObserver(), listener);
+        } else {
+            TreeObserverUtils.removeLayoutListenerPost16(surfaceView.getViewTreeObserver(), listener);
+        }
     }
 
     private void initHandlerManager() {
