@@ -85,21 +85,19 @@ public class PinchZoomAction extends BaseAction {
         holder.unlockCanvasAndPost(canvas);
     }
 
-
-
     static public void scaleEnd(final ReaderActivity readerActivity) {
         float values[] = new float[9];
         scaleMatrix.getValues(values);
+        final RectF viewport = readerActivity.getReaderViewInfo().viewportInDoc;
         final PageInfo pageInfo = readerActivity.getReaderViewInfo().getFirstVisiblePage();
         float deltaScale =  values[Matrix.MSCALE_X];
-        float deltaX = values[Matrix.MTRANS_X];// detector.getFocusX() - initFocusX;
-        float deltaY = values[Matrix.MTRANS_Y];//detector.getFocusY() - initFocusY;
+        float deltaX = values[Matrix.MTRANS_X];
+        float deltaY = values[Matrix.MTRANS_Y];
 
-        // when scaling, we cannot scale shadow between pages. the value should be adjusted.
-        // deltaScale * pageInfo.pageRectInScreen.left + deltaX is the final screen position
-        // convert screen position to document position by
-        float left = deltaScale * pageInfo.getPositionRect().left - (deltaScale * pageInfo.getPositionRect().left + deltaX);
-        float top =  deltaScale * pageInfo.getPositionRect().top - (deltaScale * pageInfo.getPositionRect().top + deltaY);
+        // the final page position in document coordinates system should be
+        // pageInfo.getPositionRect().left * deltaScale + deltaX
+        float left = deltaScale * pageInfo.viewportInPage(viewport).left - deltaX;
+        float top =  deltaScale * pageInfo.viewportInPage(viewport).top  - deltaY;
 
 //        hideTextZoomingPopupMenu();
 //        handlerManager.setEnable(false);
