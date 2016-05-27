@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.CustomBindKeyBean;
-import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.dataprovider.SharedPreferenceProvider;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.HashMap;
@@ -67,8 +67,8 @@ public class HandlerManager {
     }
 
     private final CustomBindKeyBean getKeyBean(final String keycode) {
-        if (SingletonSharedPreference.getPrefs() != null) {
-            CustomBindKeyBean bean = JSONObject.parseObject(SingletonSharedPreference.getPrefs().
+        if (SharedPreferenceProvider.getPrefs() != null) {
+            CustomBindKeyBean bean = JSONObject.parseObject(SharedPreferenceProvider.getPrefs().
                     getString(keycode, null), CustomBindKeyBean.class);
             return bean;
         }

@@ -5,6 +5,7 @@ import android.os.Build;
 import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.BuildConfig;
+import com.onyx.kreader.dataprovider.SharedPreferenceProvider;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.utils.GObject;
 import com.onyx.kreader.utils.RawResourceUtil;
@@ -202,12 +203,12 @@ public class ReaderConfig {
         return backend.hasKey(DEFAULT_SHOW_DOC_TITLE_IN_STATUS_BAR) && backend.getBoolean(DEFAULT_SHOW_DOC_TITLE_IN_STATUS_BAR, false);
     }
 
-    public SingletonSharedPreference.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {
-        SingletonSharedPreference.AnnotationHighlightStyle style = SingletonSharedPreference.AnnotationHighlightStyle.Underline;
+    public SharedPreferenceProvider.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {
+        SharedPreferenceProvider.AnnotationHighlightStyle style = SharedPreferenceProvider.AnnotationHighlightStyle.Underline;
         if (backend.hasKey(DEFAULT_ANNOTATION_HIGHLIGHT_STYLE)) {
             String value = backend.getString(DEFAULT_ANNOTATION_HIGHLIGHT_STYLE);
             try {
-                style = Enum.valueOf(SingletonSharedPreference.AnnotationHighlightStyle.class, value);
+                style = Enum.valueOf(SharedPreferenceProvider.AnnotationHighlightStyle.class, value);
             } catch (Exception e) {
             }
         }

@@ -12,6 +12,7 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 public class ReaderDeviceManager {
 
     private static final String TAG = ReaderDeviceManager.class.getSimpleName();
+    private static final String APP = ReaderDeviceManager.class.getSimpleName();
 
     private final static String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
@@ -31,11 +32,11 @@ public class ReaderDeviceManager {
     }
 
     public static void enterAnimationUpdate(boolean clear) {
-        EpdController.applyApplicationFastMode("reader-device", true, clear);
+        EpdController.applyApplicationFastMode(APP, true, clear);
     }
 
     public static void exitAnimationUpdate(boolean clear) {
-        EpdController.applyApplicationFastMode("reader-device", false, clear);
+        EpdController.applyApplicationFastMode(APP, false, clear);
     }
 
 }
