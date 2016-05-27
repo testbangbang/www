@@ -39,7 +39,7 @@ public class PinchZoomAction extends BaseAction {
         lastFocusY = detector.getFocusY();
         scaleMatrix.reset();
         initScale = readerActivity.getReaderViewInfo().getFirstVisiblePage().getActualScale();
-        //ReaderDeviceManager.sharedInstance().enterAnimationUpdate(surfaceView, Integer.MAX_VALUE, ReaderConfig.sharedInstance(this).getClearBeforeAnimation());
+        ReaderDeviceManager.enterAnimationUpdate(true);
     }
 
     static public void scaling(final ReaderActivity readerActivity, final ScaleGestureDetector detector) {
@@ -60,7 +60,6 @@ public class PinchZoomAction extends BaseAction {
         if (Math.abs(lastScale - scale) <= 0.10 && filterScaling) {
             return;
         }
-        scale = filterScale(lastScale, scale, scaleMatrix);
         lastScale = scale;
         showScalingInfo(scale);
         if (!animateDisplay) {
@@ -75,7 +74,6 @@ public class PinchZoomAction extends BaseAction {
     }
 
     static public void fastRedrawScalingBitmap(final ReaderActivity readerActivity) {
-        ReaderDeviceManager.enterAnimationUpdate(ReaderConfig.sharedInstance(readerActivity).getClearBeforeAnimation());
         final SurfaceHolder holder = readerActivity.getHolder();
         Canvas canvas =  holder.lockCanvas();
         Bitmap bmp = readerActivity.getReader().getViewportBitmap().getBitmap();
@@ -105,6 +103,8 @@ public class PinchZoomAction extends BaseAction {
 
 //        hideTextZoomingPopupMenu();
 //        handlerManager.setEnable(false);
+
+        ReaderDeviceManager.exitAnimationUpdate(false);
         float newScale = pageInfo.getActualScale() * deltaScale;
         final ScaleRequest scaleRequest = new ScaleRequest(pageInfo.getName(), newScale, left, top);
         readerActivity.submitRenderRequest(scaleRequest);

@@ -165,14 +165,12 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void scaling(ScaleGestureDetector detector) {
-        final PinchZoomAction action = new PinchZoomAction(detector);
-        action.execute(this);
+        PinchZoomAction.scaling(this, detector);
     }
 
     public void scaleEnd() {
         PinchZoomAction.scaleEnd(this);
     }
-
 
     public void panning(int offsetX, int offsetY) {
         PanAction.panning(this, offsetX, offsetY);
