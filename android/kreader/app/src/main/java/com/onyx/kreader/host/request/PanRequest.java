@@ -1,0 +1,24 @@
+package com.onyx.kreader.host.request;
+
+import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.host.wrapper.Reader;
+
+/**
+ * Created by zhuzeng on 5/27/16.
+ */
+public class PanRequest extends BaseRequest {
+
+    private int x, y;
+
+    public PanRequest(int dx, int dy) {
+        x = dx;
+        y = dy;
+    }
+
+    public void execute(final Reader reader) throws Exception {
+        useRenderBitmap(reader);
+        reader.getReaderLayoutManager().setSavePosition(true);
+        reader.getReaderLayoutManager().pan(x, y);
+        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+    }
+}

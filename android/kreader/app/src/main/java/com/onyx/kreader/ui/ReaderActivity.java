@@ -23,7 +23,7 @@ import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.device.DeviceController;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -159,24 +159,28 @@ public class ReaderActivity extends ActionBarActivity {
         prevScreen();
     }
 
-    public void scaleEnd() {
-
-    }
 
     public void scaleBegin(ScaleGestureDetector detector) {
-
+        PinchZoomAction.scaleBegin(this, detector);
     }
 
     public void scaling(ScaleGestureDetector detector) {
+        final PinchZoomAction action = new PinchZoomAction(detector);
+        action.execute(this);
+    }
 
+    public void scaleEnd() {
+        PinchZoomAction.scaleEnd(this);
+    }
+
+
+    public void panning(int offsetX, int offsetY) {
+        PanAction.panning(this, offsetX, offsetY);
     }
 
     public void panFinished(int offsetX, int offsetY) {
-
-    }
-
-    public void panning(int offsetX, int offsetY) {
-
+        final PanAction panAction = new PanAction(offsetX, offsetY);
+        panAction.execute(this);
     }
 
     public void highlight(float x1, float y1, float x2, float y2) {
@@ -543,7 +547,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
         saveReaderViewInfo(request);
         updateToolbarProgress();
-        DeviceController.applyGCInvalidate(surfaceView);
+//        ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
     }
 
@@ -596,6 +600,10 @@ public class ReaderActivity extends ActionBarActivity {
         return new ReaderDocumentOptionsImpl("", "");
     }
 
+    public SurfaceHolder getHolder() {
+        return holder;
+    }
+
     private void quitApplication() {
 
     }
@@ -635,7 +643,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     private ReaderMenu getReaderMenu() {
         if (readerMenu == null) {
-            // delay init of reader menu to speed up activity startup
             initReaderMenu();
         }
         return readerMenu;
@@ -682,6 +689,6 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        DeviceController.setFullScreen(this, fullScreen);
+        ReaderDeviceManager.setFullScreen(this, fullScreen);
     }
 }

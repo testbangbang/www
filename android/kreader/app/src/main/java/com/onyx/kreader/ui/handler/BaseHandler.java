@@ -137,7 +137,7 @@ public class BaseHandler  {
     public boolean onActionUp(ReaderActivity activity, final float startX, final float startY, final float endX, final float endY) {
         if (isLongPress()) {
         } else if (isScrolling()) {
-            activity.panFinished((int) (endX - getStartPoint().x), (int) (endY - getStartPoint().y));
+            activity.panFinished((int) (getStartPoint().x - endX), (int) (getStartPoint().y - endY));
         }
         resetState();
         return true;

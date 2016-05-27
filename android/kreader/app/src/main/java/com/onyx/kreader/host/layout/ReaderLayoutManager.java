@@ -293,6 +293,12 @@ public class ReaderLayoutManager {
         return true;
     }
 
+    public void pan(final int dx, final int dy) throws ReaderException {
+        beforePositionChange();
+        getCurrentLayoutProvider().pan(dx, dy);
+        onPositionChanged();
+    }
+
     public void setScale(final String pageName, final float scale, final float x, final float y) throws ReaderException {
         beforePositionChange();
         getCurrentLayoutProvider().setScale(pageName, scale, x, y);
