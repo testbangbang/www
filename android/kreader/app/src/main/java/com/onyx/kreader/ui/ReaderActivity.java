@@ -173,10 +173,17 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void panning(int offsetX, int offsetY) {
+        if (!getReaderViewInfo().canPan()) {
+            return;
+        }
         PanAction.panning(this, offsetX, offsetY);
     }
 
     public void panFinished(int offsetX, int offsetY) {
+        if (!getReaderViewInfo().canPan()) {
+            return;
+        }
+
         final PanAction panAction = new PanAction(offsetX, offsetY);
         panAction.execute(this);
     }

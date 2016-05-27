@@ -53,4 +53,7 @@ public class ReaderViewInfo {
         return selectionMap.get(type);
     }
 
+    public boolean canPan() {
+        return pagesBoundingRect.width() > viewportInDoc.width() || pagesBoundingRect.height() > viewportInDoc.height();
+    }
 }
