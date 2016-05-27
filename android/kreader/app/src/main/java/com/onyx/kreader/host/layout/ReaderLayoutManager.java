@@ -148,6 +148,10 @@ public class ReaderLayoutManager {
         return getPageManager().isWidthCrop();
     }
 
+    public int getSpecialScale() {
+        return getPageManager().getSpecialScale();
+    }
+
     public void setSavePosition(boolean save) {
         savePosition = save;
     }
@@ -186,6 +190,7 @@ public class ReaderLayoutManager {
     public PageManager getPageManager() {
         if (pageManager == null) {
             pageManager = new PageManager();
+            pageManager.setCropProvider(new PageCropper(readerHelper));
         }
         return pageManager;
     }

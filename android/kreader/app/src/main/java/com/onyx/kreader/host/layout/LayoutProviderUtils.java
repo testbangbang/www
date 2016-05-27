@@ -37,9 +37,13 @@ public class LayoutProviderUtils {
                                         final ReaderDrawContext drawContext,
                                         final ReaderBitmapImpl bitmap,
                                         final ReaderViewInfo readerViewInfo) throws ReaderException {
+
+        // step1: prepare.
         final ReaderRenderer renderer = reader.getRenderer();
         final BitmapLruCache cache = reader.getBitmapLruCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
+
+        // step2: check cache.
         final String key = PositionSnapshot.cacheKey(visiblePages);
         boolean hitCache = false;
         if (enableCache && checkCache(cache, key, bitmap)) {
@@ -49,16 +53,32 @@ public class LayoutProviderUtils {
             bitmap.clear();
         }
 
+        // step3: render
+        drawVisiblePagesImpl(renderer, layoutManager, bitmap, visiblePages, hitCache);
+
+        // step4: update cache
+        if (!hitCache && enableCache && StringUtils.isNotBlank(key)) {
+            addToCache(cache, key, bitmap);
+        }
+
+        // final step: update view info.
+        updateReaderViewInfo(readerViewInfo, layoutManager);
+    }
+
+    static private void drawVisiblePagesImpl(final ReaderRenderer renderer,
+                                             final ReaderLayoutManager layoutManager,
+                                             final ReaderBitmapImpl bitmap,
+                                             final List<PageInfo> visiblePages,
+                                             boolean hitCache) {
+
         final RectF pageRect = new RectF();
         final RectF visibleRect = new RectF();
         for (PageInfo pageInfo : visiblePages) {
-            String documentPosition = pageInfo.getName();
+            final String documentPosition = pageInfo.getName();
             final RectF displayRect = pageInfo.getDisplayRect();
             final RectF positionRect = pageInfo.getPositionRect();
-
             pageRect.set(positionRect);
             pageRect.offset(0, -positionRect.top);
-
             visibleRect.set(positionRect);
             visibleRect.intersect(layoutManager.getPageManager().getViewportRect());
             PageUtils.translateCoordinates(visibleRect, positionRect);
@@ -74,15 +94,11 @@ public class LayoutProviderUtils {
                         pageRect, visibleRect);
             }
         }
-
-        if (!hitCache && enableCache && StringUtils.isNotBlank(key)) {
-            addToCache(cache, key, bitmap);
-        }
-        updateReaderViewInfo(readerViewInfo, layoutManager);
     }
 
-    static public void updateReaderViewInfo(final ReaderViewInfo readerViewInfo, final ReaderLayoutManager layoutManager) throws ReaderException {
-        List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
+    static public void updateReaderViewInfo(final ReaderViewInfo readerViewInfo,
+                                            final ReaderLayoutManager layoutManager) throws ReaderException {
+        final List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
         for (PageInfo pageInfo : visiblePages) {
             readerViewInfo.copyPageInfo(pageInfo);
         }
@@ -92,6 +108,7 @@ public class LayoutProviderUtils {
         readerViewInfo.canGoForward = layoutManager.canGoForward();
         readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());
         readerViewInfo.pagesBoundingRect.set(layoutManager.getPageBoundingRect());
+        readerViewInfo.scale = layoutManager.getSpecialScale();
     }
 
     static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
