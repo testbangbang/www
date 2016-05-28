@@ -1,4 +1,4 @@
-package com.onyx.kreader.ui.data;
+package com.onyx.kreader.dataprovider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 /**
  * Created by solskjaer49 on 14-4-22.
  */
-public class SingletonSharedPreference {
+public class SharedPreferenceProvider {
 
     public enum AnnotationHighlightStyle { Highlight, Underline }
 

@@ -291,7 +291,4 @@ public class ReaderHelper {
         }
    }
 
-    public BaseOptions loadDocumentOptions(final Context context, final String path) {
-        return new BaseOptions();
-    }
 }

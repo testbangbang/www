@@ -111,12 +111,13 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         }
         float viewportLeft = getPageManager().getViewportRect().left;
         LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
-        boolean succ = getPageManager().gotoPage(location);
-        if (succ) {
-            float dx = viewportLeft - getPageManager().getViewportRect().left;
-            getPageManager().panViewportPosition(dx, 0);
+        if (!getPageManager().gotoPage(location)) {
+            return false;
         }
-        return succ;
+
+        float dx = viewportLeft - getPageManager().getViewportRect().left;
+        getPageManager().panViewportPosition(dx, 0);
+        return true;
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {

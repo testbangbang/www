@@ -21,6 +21,7 @@ public class ReaderViewInfo {
     public boolean canGoForward;
     public boolean supportReflow;
     public boolean supportScalable;
+    public int scale;
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();
 
@@ -53,4 +54,14 @@ public class ReaderViewInfo {
         return selectionMap.get(type);
     }
 
+    public boolean canPan() {
+        if (isSpecialScale()) {
+            return false;
+        }
+        return pagesBoundingRect.width() > viewportInDoc.width() || pagesBoundingRect.height() > viewportInDoc.height();
+    }
+
+    public boolean isSpecialScale() {
+        return ReaderConstants.isSpecialScale(scale);
+    }
 }

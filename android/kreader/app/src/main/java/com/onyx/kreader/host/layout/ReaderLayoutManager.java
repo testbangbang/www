@@ -148,6 +148,10 @@ public class ReaderLayoutManager {
         return getPageManager().isWidthCrop();
     }
 
+    public int getSpecialScale() {
+        return getPageManager().getSpecialScale();
+    }
+
     public void setSavePosition(boolean save) {
         savePosition = save;
     }
@@ -186,6 +190,7 @@ public class ReaderLayoutManager {
     public PageManager getPageManager() {
         if (pageManager == null) {
             pageManager = new PageManager();
+            pageManager.setCropProvider(new PageCropper(readerHelper));
         }
         return pageManager;
     }
@@ -291,6 +296,12 @@ public class ReaderLayoutManager {
         reader.getReaderHelper().applyPostBitmapProcess(bitmap);
         reader.getReaderHelper().setRenderBitmapDirty(true);
         return true;
+    }
+
+    public void pan(final int dx, final int dy) throws ReaderException {
+        beforePositionChange();
+        getCurrentLayoutProvider().pan(dx, dy);
+        onPositionChanged();
     }
 
     public void setScale(final String pageName, final float scale, final float x, final float y) throws ReaderException {

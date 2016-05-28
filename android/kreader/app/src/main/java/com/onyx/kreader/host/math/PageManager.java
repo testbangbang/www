@@ -2,6 +2,7 @@ package com.onyx.kreader.host.math;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.utils.StringUtils;
 
@@ -16,7 +17,7 @@ import java.util.Map;
  * into its own coordinates system, for example, document coordinates system.
  */
 public class PageManager {
-
+    static private final String TAG = PageManager.class.getSimpleName();
     private int specialScale = ReaderConstants.SCALE_TO_PAGE;
     private float actualScale = 1.0f;
     private float topMargin = 0;
@@ -28,21 +29,28 @@ public class PageManager {
     private int pageRepeat = 0;
 
     private RectF pagesBoundingRect = new RectF();
-
-    /**
-     * screen viewport rectangle in document coordinates system.
-     */
-    private RectF viewportRect = new RectF();
+    private RectF viewportRect = new RectF();   // screen viewport rectangle in document coordinates system.
 
     private List<PageInfo> visible = new ArrayList<PageInfo>();
     private List<PageInfo> pageInfoList = new ArrayList<PageInfo>();
     private Map<String, PageInfo> pageInfoMap = new HashMap<String, PageInfo>();
+    private PageCropProvider cropProvider;
+
+    static public abstract class PageCropProvider {
+
+        public abstract float cropPage(final float displayWidth, final float displayHeight, final PageInfo pageInfo);
+
+    }
 
     public void clear() {
         visible.clear();
         pageInfoList.clear();
         pagesBoundingRect.set(0, 0, 0, 0);
         firstVisiblePageName = null;
+    }
+
+    public void setCropProvider(final PageCropProvider provider) {
+        cropProvider = provider;
     }
 
     public void setViewportRect(final RectF rect) {
@@ -176,6 +184,8 @@ public class PageManager {
             scaleToWidth(pageName);
         } else if (isScaleToHeight()) {
             scaleToHeight(pageName);
+        } else if (isPageCrop()) {
+            scaleToPageContent(pageName);
         }
     }
 
@@ -210,6 +220,27 @@ public class PageManager {
         }
         PageInfo pageInfo = getPageInfo(pageName);
         setScaleImpl(pageName, PageUtils.scaleToHeight(pageInfo.getOriginHeight(), viewportRect.height()));
+        return true;
+    }
+
+    public boolean scaleToPageContent(final String pageName) {
+        specialScale = ReaderConstants.SCALE_TO_PAGE_CONTENT;
+        if (!contains(pageName) || !hasValidViewport()) {
+            return false;
+        }
+
+        PageInfo pageInfo = getPageInfo(pageName);
+        float scale = PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect.width(), viewportRect.height());
+        if (pageInfo.getAutoCropScale() <= 0) {
+            if (cropProvider == null) {
+                Log.w(TAG, "Crop provider is null, use scale to page instead.");
+            }
+            if (cropProvider != null) {
+                scale = cropProvider.cropPage(viewportRect.width(), viewportRect.height(), pageInfo);
+            }
+        }
+
+        setScaleImpl(pageName, scale);
         return true;
     }
 
