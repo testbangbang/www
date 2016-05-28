@@ -20,6 +20,7 @@ import com.onyx.kreader.utils.StringUtils;
  * For reflow stream document.
  */
 public class LayoutImageReflowProvider extends LayoutProvider {
+    @SuppressWarnings("unused")
     private static final String TAG = LayoutImageReflowProvider.class.getSimpleName();
 
     private boolean reverseOrder;
@@ -43,7 +44,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public boolean prevScreen() throws ReaderException {
         reverseOrder = true;
-        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
         if (atFirstSubPage()) {
             return prevPage();
         }
@@ -52,7 +52,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean nextScreen() throws ReaderException {
-        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
         if (atLastSubPage()) {
             return nextPage();
         }
