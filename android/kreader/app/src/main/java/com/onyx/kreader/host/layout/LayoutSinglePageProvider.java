@@ -94,6 +94,11 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         getPageManager().scaleToPage(pageName);
     }
 
+    public void scaleToPageContent(final String pageName) throws ReaderException {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
+        getPageManager().scaleToPageContent(pageName);
+    }
+
     public void scaleToWidth(final String pageName) throws ReaderException {
         LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().scaleToWidth(pageName);

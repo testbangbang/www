@@ -22,8 +22,8 @@ public class PageInfo {
 
     private float originWidth;
     private float originHeight;
-    private RectF autoCropContentRegion;    // content region with auto crop scale.
-    private float autoCropScale;
+
+    private RectF autoCropContentRegion;    // content region with page origin size
 
     private RectF positionRect = new RectF(); // page position rect in document coordinates system with actual scale.
     private RectF displayRect = new RectF(); // page display rect in viewport(screen) coordinates system with actual scale.
@@ -61,14 +61,6 @@ public class PageInfo {
 
     public void setAutoCropContentRegion(final RectF region) {
         autoCropContentRegion = region;
-    }
-
-    public float getAutoCropScale() {
-        return autoCropScale;
-    }
-
-    public void setAutoCropScale(final float value) {
-        autoCropScale = value;
     }
 
     public final RectF getPositionRect() {
@@ -169,7 +161,5 @@ public class PageInfo {
     public final String getName() {
         return name;
     }
-
-
 
 }

@@ -337,6 +337,9 @@ public class ReaderActivity extends ActionBarActivity {
                     case "/Zoom/ByRect":
                         scaleByRect();
                         break;
+                    case "/Zoom/Crop":
+                        scaleByAutoCrop();
+                        break;
                     case "/Navigation/ArticleMode":
                         switchNavigationToArticleMode();
                         break;
@@ -480,6 +483,11 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void scaleByRect() {
         final SelectionScaleAction action = new SelectionScaleAction();
+        action.execute(this);
+    }
+
+    private void scaleByAutoCrop() {
+        final PageCropAction action = new PageCropAction(getCurrentPageName());
         action.execute(this);
     }
 
