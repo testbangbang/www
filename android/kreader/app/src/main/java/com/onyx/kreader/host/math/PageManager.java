@@ -238,9 +238,14 @@ public class PageManager {
                 cropProvider.cropPage(viewportRect.width(), viewportRect.height(), pageInfo);
             }
         }
+
+        // crop region is in origin size, so just scale it to viewport.
         RectF region = new RectF(pageInfo.getAutoCropContentRegion());
         float scale = PageUtils.scaleByRect(region, viewportRect);
         setScaleImpl(pageName, scale);
+
+        // make crop region center in center of viewport to make it looks nice
+        panViewportPosition(region.left, region.top);
         return true;
     }
 

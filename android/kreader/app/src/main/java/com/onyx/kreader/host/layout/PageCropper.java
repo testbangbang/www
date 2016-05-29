@@ -70,9 +70,10 @@ public class PageCropper extends PageManager.PageCropProvider {
         }
 
         // step4: calculate region with origin size.
-        scale *= PageUtils.scaleByRect(cropRegion, new RectF(0, 0, pageInfo.getOriginWidth(), pageInfo.getOriginHeight()));
+        float delta = PageUtils.scaleByRect(viewport, new RectF(0, 0, pageInfo.getOriginWidth(), pageInfo.getOriginHeight()));
+        PageUtils.scaleRect(cropRegion, delta);
         pageInfo.setAutoCropContentRegion(cropRegion);
-        return scale;
+        return scale * delta;
     }
 
     public static RectF getCropDisplay(final float pw, final float ph) {
