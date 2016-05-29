@@ -50,6 +50,8 @@ public class PageCropper extends PageManager.PageCropProvider {
         final PageInfo visiblePage = internalPageManager.getFirstVisiblePage();
         final RectF visibleRect = new RectF(visiblePage.getPositionRect());
         visibleRect.intersect(viewport);
+
+        bitmapWrapper.clear();
         getReaderRenderer().draw(pageInfo.getName(), scale, pageInfo.getPageDisplayOrientation(),
                 bitmapWrapper,
                 visiblePage.getDisplayRect(),
@@ -61,16 +63,15 @@ public class PageCropper extends PageManager.PageCropProvider {
         }
 
         // step3: crop the image.
-        RectF cropRegion = ImageUtils.cropPage(bitmap, 0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1, ReaderConstants.DEFAULT_AUTO_CROP_VALUE);
-
-        // step4: calculate region with origin size.
-        scale *= PageUtils.scaleByRect(cropRegion, new RectF(0, 0, pageInfo.getOriginWidth(), pageInfo.getOriginHeight()));
-        pageInfo.setAutoCropContentRegion(cropRegion);
-
+        RectF cropRegion = ImageUtils.cropPage(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), ReaderConstants.DEFAULT_AUTO_CROP_VALUE);
         if (debugCrop && BuildConfig.DEBUG) {
             BitmapUtils.drawRectOnBitmap(bitmap, cropRegion);
             BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/with-crop.png");
         }
+
+        // step4: calculate region with origin size.
+        scale *= PageUtils.scaleByRect(cropRegion, new RectF(0, 0, pageInfo.getOriginWidth(), pageInfo.getOriginHeight()));
+        pageInfo.setAutoCropContentRegion(cropRegion);
         return scale;
     }
 
