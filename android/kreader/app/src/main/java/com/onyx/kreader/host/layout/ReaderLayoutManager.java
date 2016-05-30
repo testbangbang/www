@@ -140,8 +140,8 @@ public class ReaderLayoutManager {
         return getPageManager().isScaleToHeight();
     }
 
-    public boolean isPageCrop() {
-        return getPageManager().isPageCrop();
+    public boolean isScaleToPageContent() {
+        return getPageManager().isScaleToPageContent();
     }
 
     public boolean isWidthCrop() {

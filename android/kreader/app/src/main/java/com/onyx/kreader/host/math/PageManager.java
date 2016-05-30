@@ -184,7 +184,7 @@ public class PageManager {
             scaleToWidth(pageName);
         } else if (isScaleToHeight()) {
             scaleToHeight(pageName);
-        } else if (isPageCrop()) {
+        } else if (isScaleToPageContent()) {
             scaleToPageContent(pageName);
         }
     }
@@ -246,7 +246,7 @@ public class PageManager {
 
         // make crop region center in center of viewport to make it looks nice
         float delta = (viewportRect.width() - region.width()) / 2;
-        panViewportPosition(region.left + delta, region.top);
+        panViewportPosition(region.left - delta, region.top);
         return true;
     }
 
@@ -414,7 +414,7 @@ public class PageManager {
         return specialScale == ReaderConstants.SCALE_TO_HEIGHT;
     }
 
-    public boolean isPageCrop() {
+    public boolean isScaleToPageContent() {
         return specialScale == ReaderConstants.SCALE_TO_PAGE_CONTENT;
     }
 

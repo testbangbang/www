@@ -34,5 +34,6 @@ public class PreRenderRequest extends BaseRequest {
             reader.getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
         }
         reader.getReaderHelper().setRenderBitmapDirty(false);
+        setTransferBitmap(false);
     }
 }
