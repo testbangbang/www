@@ -27,6 +27,14 @@ public class PageUtils {
         child.offset(-parent.x, -parent.y);
     }
 
+    static public RectF scaleRect(final RectF rect, final float scale) {
+        rect.left *= scale;
+        rect.top *= scale;
+        rect.right *= scale;
+        rect.bottom *= scale;
+        return rect;
+    }
+
     static public float scaleToPage(final float pageWidth, final float pageHeight, final float viewportWidth, final float viewportHeight) {
         float scale = Math.min(viewportWidth / pageWidth, viewportHeight / pageHeight);
         return scale;

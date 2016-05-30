@@ -190,7 +190,7 @@ public class ReaderLayoutManager {
     public PageManager getPageManager() {
         if (pageManager == null) {
             pageManager = new PageManager();
-            pageManager.setCropProvider(new PageCropper(readerHelper));
+            pageManager.setCropProvider(new PageCropper(readerHelper.getRenderer()));
         }
         return pageManager;
     }
@@ -319,6 +319,12 @@ public class ReaderLayoutManager {
     public void scaleToWidth(final String pageName) throws ReaderException {
         beforePositionChange();
         getCurrentLayoutProvider().scaleToWidth(pageName);
+        onPositionChanged();
+    }
+
+    public void scaleToPageContent(final String pageName) throws ReaderException {
+        beforePositionChange();
+        getCurrentLayoutProvider().scaleToPageContent(pageName);
         onPositionChanged();
     }
 

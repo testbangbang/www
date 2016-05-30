@@ -230,17 +230,22 @@ public class PageManager {
         }
 
         PageInfo pageInfo = getPageInfo(pageName);
-        float scale = PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewportRect.width(), viewportRect.height());
-        if (pageInfo.getAutoCropScale() <= 0) {
+        if (pageInfo.getAutoCropContentRegion() == null || pageInfo.getAutoCropContentRegion().isEmpty()) {
             if (cropProvider == null) {
                 Log.w(TAG, "Crop provider is null, use scale to page instead.");
             }
             if (cropProvider != null) {
-                scale = cropProvider.cropPage(viewportRect.width(), viewportRect.height(), pageInfo);
+                cropProvider.cropPage(viewportRect.width(), viewportRect.height(), pageInfo);
             }
         }
 
+        // crop region is in origin size, so just scale it to viewport.
+        RectF region = new RectF(pageInfo.getAutoCropContentRegion());
+        float scale = PageUtils.scaleByRect(region, viewportRect);
         setScaleImpl(pageName, scale);
+
+        // make crop region center in center of viewport to make it looks nice
+        panViewportPosition(region.left, region.top);
         return true;
     }
 
