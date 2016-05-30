@@ -144,4 +144,30 @@ public class PageUtils {
         Point rightBottom = screenPointToDoc(new Point(region.right, region.bottom), pageWidth, pageHeight, x, y, width, height, rotation);
         return new Rect(topLeft.x, topLeft.y, rightBottom.x, rightBottom.y);
     }
+
+    public static RectF alignToLeft(final RectF child, final RectF parent) {
+        float delta = parent.left - child.left;
+        child.offset(delta, 0);
+        return child;
+    }
+
+    public static RectF alignToRight(final RectF child, final RectF parent) {
+        float delta = parent.right - child.right;
+        child.offset(delta, 0);
+        return child;
+    }
+
+    public static RectF alignToTop(final RectF child, final RectF parent) {
+        float delta = parent.top - child.top;
+        child.offset(0, delta);
+        return child;
+    }
+
+    public static RectF alignToBottom(final RectF child, final RectF parent) {
+        float delta = parent.bottom - child.bottom;
+        child.offset(0, delta);
+        return child;
+    }
+
+
 }

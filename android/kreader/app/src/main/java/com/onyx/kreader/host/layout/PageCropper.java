@@ -69,7 +69,8 @@ public class PageCropper extends PageManager.PageCropProvider {
             BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/with-crop.png");
         }
 
-        // step4: calculate region with origin size.
+        // step4: calculate region for page with origin size.
+        // for caller, PageUtils.scaleRect(cropRegion, viewport);
         float delta = PageUtils.scaleByRect(viewport, new RectF(0, 0, pageInfo.getOriginWidth(), pageInfo.getOriginHeight()));
         PageUtils.scaleRect(cropRegion, delta);
         pageInfo.setAutoCropContentRegion(cropRegion);

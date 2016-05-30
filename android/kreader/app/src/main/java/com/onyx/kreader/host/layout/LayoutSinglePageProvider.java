@@ -45,7 +45,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
             if (!prevPage()) {
                 return false;
             }
-            getPageManager().nextViewportToEndOfPage();
+            getPageManager().moveViewportToEndOfPage();
             return true;
         }
         getPageManager().collectVisiblePages();

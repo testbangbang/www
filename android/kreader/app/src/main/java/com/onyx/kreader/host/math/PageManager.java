@@ -239,13 +239,14 @@ public class PageManager {
             }
         }
 
-        // crop region is in origin size, so just scale it to viewport.
+        // crop region is in origin size, so just use scaleByRect to viewport.
         RectF region = new RectF(pageInfo.getAutoCropContentRegion());
         float scale = PageUtils.scaleByRect(region, viewportRect);
         setScaleImpl(pageName, scale);
 
         // make crop region center in center of viewport to make it looks nice
-        panViewportPosition(region.left, region.top);
+        float delta = (viewportRect.width() - region.width()) / 2;
+        panViewportPosition(region.left + delta, region.top);
         return true;
     }
 
@@ -374,9 +375,9 @@ public class PageManager {
         return visible;
     }
 
-    public void nextViewportToEndOfPage() {
-        while (nextViewport()) {
-        }
+    public void moveViewportToEndOfPage() {
+        PageUtils.alignToBottom(viewportRect, pagesBoundingRect);
+        onViewportChanged();
     }
 
     public boolean nextViewport() {
