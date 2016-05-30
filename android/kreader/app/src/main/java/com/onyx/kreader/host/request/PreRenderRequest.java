@@ -18,6 +18,10 @@ public class PreRenderRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        if (!reader.getReaderLayoutManager().getCurrentLayoutProvider().supportPreRender()) {
+            return;
+        }
+
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().setSavePosition(false);
         final ReaderDrawContext drawContext = new ReaderDrawContext();

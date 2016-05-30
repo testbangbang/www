@@ -87,19 +87,20 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         Bitmap bmp = getCurrentSubPageBitmap();
         if (bmp != null) {
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
-        } else {
-            reflowFirstVisiblePage(reader, drawContext, bitmap, readerViewInfo, drawContext.asyncDraw);
-            if (drawContext.asyncDraw) {
-                return false;
-            }
-            if (reverseOrder) {
-                moveToLastSubPage();
-                reverseOrder = false;
-            }
-            bmp = getCurrentSubPageBitmap();
-            if (bmp == null) {
-                return false;
-            }
+            return true;
+        }
+
+        reflowFirstVisiblePage(reader, drawContext, bitmap, readerViewInfo, drawContext.asyncDraw);
+        if (drawContext.asyncDraw) {
+            return false;
+        }
+        if (reverseOrder) {
+            moveToLastSubPage();
+            reverseOrder = false;
+        }
+        bmp = getCurrentSubPageBitmap();
+        if (bmp == null) {
+            return false;
         }
         bitmap.copyFrom(bmp);
         return true;
