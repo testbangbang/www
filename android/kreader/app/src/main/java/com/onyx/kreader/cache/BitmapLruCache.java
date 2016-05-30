@@ -185,6 +185,7 @@ public class BitmapLruCache implements Closeable {
                 return null;
             }
             try {
+                Benchmark benchmark = new Benchmark();
                 InputStream is = snapshot.getInputStream(0);
                 try {
                     Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
@@ -196,6 +197,8 @@ public class BitmapLruCache implements Closeable {
                         diskCache.remove(key);
                         diskCache.flush();
                     }
+                    benchmark.report("load disk cache");
+                    return bitmap;
                 } finally {
                     FileUtils.closeQuietly(is);
                 }
@@ -214,10 +217,24 @@ public class BitmapLruCache implements Closeable {
     }
 
     public Bitmap put(final String key, final Bitmap bitmap,
-                      Bitmap.CompressFormat compressFormat, int compressQuality) {
+                      Bitmap.CompressFormat compressFormat,
+                      int compressQuality) {
         putMemoryCache(key, bitmap);
         putDiskCache(key, bitmap, compressFormat, compressQuality);
         return bitmap;
+    }
+
+    public void clear() {
+        if (memoryCache != null) {
+            memoryCache.evictAll();
+        }
+        if (diskCache != null) {
+            try {
+                diskCache.delete();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -231,7 +248,6 @@ public class BitmapLruCache implements Closeable {
     }
 
     private void putMemoryCache(final String key, final Bitmap bitmap) {
-        Benchmark benchmark = new Benchmark();
         if (memoryCache != null) {
             memoryCache.put(key, bitmap);
         }
@@ -244,26 +260,21 @@ public class BitmapLruCache implements Closeable {
             return;
         }
 
-        diskCacheWriteExecutor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Benchmark benchmark = new Benchmark();
-                    DiskLruCache.Editor editor = diskCache.edit(key);
-                    OutputStream os = editor.newOutputStream(0);
-                    try {
-                        bitmap.compress(compressFormat, compressQuality, os);
-                        os.flush();
-                        editor.commit();
-                        diskCache.flush();
-                        benchmark.report("write disk cache");
-                    } finally {
-                        FileUtils.closeQuietly(os);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        try {
+            Benchmark benchmark = new Benchmark();
+            DiskLruCache.Editor editor = diskCache.edit(key);
+            OutputStream os = editor.newOutputStream(0);
+            try {
+                bitmap.compress(compressFormat, compressQuality, os);
+                os.flush();
+                editor.commit();
+                diskCache.flush();
+                benchmark.report("write disk cache");
+            } finally {
+                FileUtils.closeQuietly(os);
             }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

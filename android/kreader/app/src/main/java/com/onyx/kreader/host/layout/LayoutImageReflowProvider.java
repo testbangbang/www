@@ -2,7 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import android.util.Log;
+import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
@@ -20,6 +20,7 @@ import com.onyx.kreader.utils.StringUtils;
  * For reflow stream document.
  */
 public class LayoutImageReflowProvider extends LayoutProvider {
+    @SuppressWarnings("unused")
     private static final String TAG = LayoutImageReflowProvider.class.getSimpleName();
 
     private boolean reverseOrder;
@@ -43,24 +44,24 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public boolean prevScreen() throws ReaderException {
         reverseOrder = true;
-        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
-        if (reflowManager.atBegin(getCurrentPageName())) {
+        if (atFirstSubPage()) {
             return prevPage();
         }
-        return reflowManager.prev(getCurrentPageName());
+        previousSubPage();
+        return true;
     }
 
     public boolean nextScreen() throws ReaderException {
-        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
-        if (reflowManager.atEnd(getCurrentPageName())) {
+        if (atLastSubPage()) {
             return nextPage();
         }
-        return reflowManager.next(getCurrentPageName());
+        nextSubPage();
+        return true;
     }
 
     public boolean prevPage() throws ReaderException {
         if (gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()))) {
-            getLayoutManager().getImageReflowManager().moveToEnd(getCurrentPageName());
+            moveToLastSubPage();
             return true;
         }
         return false;
@@ -68,7 +69,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public boolean nextPage() throws ReaderException {
         if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
-            getLayoutManager().getImageReflowManager().moveToBegin(getCurrentPageName());
+            moveToFirstSubPage();
             return true;
         }
         return false;
@@ -83,7 +84,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
-        Bitmap bmp = reader.getImageReflowManager().getCurrentBitmap(getCurrentPageName());
+        Bitmap bmp = getCurrentSubPageBitmap();
         if (bmp != null) {
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
         } else {
@@ -92,10 +93,13 @@ public class LayoutImageReflowProvider extends LayoutProvider {
                 return false;
             }
             if (reverseOrder) {
-                reader.getImageReflowManager().moveToEnd(getCurrentPageName());
+                moveToLastSubPage();
                 reverseOrder = false;
             }
-            bmp = reader.getImageReflowManager().getCurrentBitmap(getCurrentPageName());
+            bmp = getCurrentSubPageBitmap();
+            if (bmp == null) {
+                return false;
+            }
         }
         bitmap.copyFrom(bmp);
         return true;
@@ -184,20 +188,57 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (getPageManager().getFirstVisiblePage() == null) {
             return null;
         }
-        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
         return PositionSnapshot.snapshot(getProviderName(),
                 getPageManager().getFirstVisiblePage(),
                 getPageManager().getViewportRect(),
                 getPageManager().getSpecialScale(),
-                reflowManager.getCurrentScreenIndex(getCurrentPageName()));
+                getCurrentSubPageIndex());
     }
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
         super.restoreBySnapshot(snapshot);
-        ImageReflowManager reflowManager = getLayoutManager().getImageReflowManager();
-        reflowManager.moveToScreen(getCurrentPageName(), snapshot.subScreenIndex);
+        moveToSubSPage(snapshot.subScreenIndex);
         return true;
     }
 
+    private ReaderBitmapList getCurrentSubPageList() {
+        return getLayoutManager().getImageReflowManager().getSubPageList(getCurrentPageName());
+    }
+
+    private Bitmap getCurrentSubPageBitmap() {
+        return getLayoutManager().getImageReflowManager().getSubPageBitmap(getCurrentPageName(), getCurrentSubPageIndex());
+    }
+
+    private int getCurrentSubPageIndex() {
+        return getCurrentSubPageList().getCurrent();
+    }
+
+    private boolean atFirstSubPage() {
+        return getCurrentSubPageList().atBegin();
+    }
+
+    private boolean atLastSubPage() {
+        return getCurrentSubPageList().atEnd();
+    }
+
+    private void moveToFirstSubPage() {
+        getCurrentSubPageList().moveToBegin();
+    }
+
+    private void moveToLastSubPage() {
+        getCurrentSubPageList().moveToEnd();
+    }
+
+    private void previousSubPage() {
+        getCurrentSubPageList().prev();
+    }
+
+    private void nextSubPage() {
+        getCurrentSubPageList().next();
+    }
+
+    private void moveToSubSPage(int index) {
+        getCurrentSubPageList().moveToScreen(index);
+    }
 
 }
