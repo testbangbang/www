@@ -73,6 +73,12 @@ public class BitmapUtils {
         canvas.drawRect(rect, paint);
     }
 
+    public static void clear(final Bitmap bitmap) {
+        if (bitmap != null) {
+            bitmap.eraseColor(Color.WHITE);
+        }
+    }
+
     @SuppressLint("NewApi")
     public static int getSizeInBytes(Bitmap bitmap) {
         if (bitmap == null) {

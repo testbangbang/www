@@ -157,15 +157,14 @@ public abstract class BaseRequest {
         reader.getReaderHelper().clearAbortFlag();
 
         // store render bitmap store to local flag to avoid multi-thread problem
-        final boolean needCopy = reader.isRenderBitmapDirty();
-
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
                 if (callback != null) {
-                    reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
                     callback.done(BaseRequest.this, getException());
                 }
+                reader.releaseWakeLock();
             }};
 
         if (isRunInBackground()) {
@@ -175,8 +174,6 @@ public abstract class BaseRequest {
         }
 
         reader.getBitmapCopyCoordinator().waitCopy();
-
-        reader.releaseWakeLock();
     }
 
     public final ReaderViewInfo getReaderViewInfo() {

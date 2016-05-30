@@ -43,21 +43,7 @@ public class PageCropper extends PageManager.PageCropProvider {
         final Bitmap bitmap = bitmapWrapper.getBitmap();
 
         // step2: reuse page manager to calculate positions.
-        final PageManager internalPageManager = new PageManager();
-        internalPageManager.add(pageInfo);
-        internalPageManager.setViewportRect(viewport);
-        internalPageManager.scaleToPage(pageInfo.getName());
-        final PageInfo visiblePage = internalPageManager.getFirstVisiblePage();
-        final RectF visibleRect = new RectF(visiblePage.getPositionRect());
-        visibleRect.intersect(viewport);
-
-        bitmapWrapper.clear();
-        getReaderRenderer().draw(pageInfo.getName(), scale, pageInfo.getPageDisplayOrientation(),
-                bitmapWrapper,
-                visiblePage.getDisplayRect(),
-                visiblePage.getPositionRect(),
-                visibleRect);
-
+        LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmapWrapper, getReaderRenderer());
         if (debugCrop && BuildConfig.DEBUG) {
             BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/before-crop.png");
         }

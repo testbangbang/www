@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.host.layout.LayoutProviderUtils;
+import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -24,10 +26,7 @@ public class RenderThumbnailRequest extends BaseRequest {
 
     public void execute(final Reader reader) throws Exception {
         final RectF origin = reader.getDocument().getPageOriginSize(page);
-        final RectF displayRect = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
-        final float scale = PageUtils.scaleToPage(origin.width(), origin.height(), displayRect.width(), displayRect.height());
-        final RectF positionRect = new RectF(origin);
-        final RectF visibleRect = new RectF(positionRect);
-        reader.getRenderer().draw(page, scale, 0, bitmap, displayRect, positionRect, visibleRect);
+        PageInfo pageInfo = new PageInfo(page, origin.width(), origin.height());
+        LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmap, reader.getRenderer());
     }
 }
