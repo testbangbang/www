@@ -156,9 +156,6 @@ public abstract class BaseRequest {
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
 
-        // store render bitmap store to local flag to avoid multi-thread problem
-        final boolean needCopy = reader.isRenderBitmapDirty();
-
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
