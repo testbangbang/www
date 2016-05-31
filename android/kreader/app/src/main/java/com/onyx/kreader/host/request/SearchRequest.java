@@ -2,6 +2,7 @@ package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.impl.ReaderSearchOptionsImpl;
+import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -28,5 +29,6 @@ public class SearchRequest extends BaseReaderRequest {
         if (reader.getSearchManager().searchResults().size() > 0) {
             getReaderViewInfo().saveSearchResults(reader.getSearchManager().searchResults());
         }
+        LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
     }
 }
