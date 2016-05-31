@@ -4,14 +4,14 @@ import android.graphics.PointF;
 import com.onyx.kreader.api.ReaderHitTestArgs;
 import com.onyx.kreader.api.ReaderHitTestManager;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zhuzeng on 2/15/16.
  */
-public class SelectWordRequest extends BaseRequest {
+public class SelectWordRequest extends BaseReaderRequest {
 
     private PointF start = new PointF();
     private PointF end = new PointF();

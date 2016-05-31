@@ -1,6 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.request.GotoLocationRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 
@@ -15,7 +15,7 @@ public class GotoPageAction extends BaseAction {
     }
 
     public void execute(final ReaderActivity readerActivity) {
-        BaseRequest gotoPosition = new GotoLocationRequest(pageName);
+        BaseReaderRequest gotoPosition = new GotoLocationRequest(pageName);
         readerActivity.submitRenderRequest(gotoPosition);
     }
 }

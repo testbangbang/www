@@ -12,9 +12,10 @@ import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderViewOptions;
+import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.common.BaseCallback;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
@@ -240,7 +241,7 @@ public class ReaderTestActivity extends Activity {
 
     public void testReaderOpen() {
         reader = ReaderManager.getReader(path);
-        BaseRequest open = new OpenRequest(path, getDocumentOptions());
+        BaseReaderRequest open = new OpenRequest(path, getDocumentOptions());
         reader.submitRequest(this, open, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -251,11 +252,11 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testConfigView() {
-        BaseRequest config = new CreateViewRequest(surfaceView.getWidth(), surfaceView.getHeight());
+        final BaseReaderRequest config = new CreateViewRequest(surfaceView.getWidth(), surfaceView.getHeight());
         reader.submitRequest(this, config, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
-                readerViewInfo = request.getReaderViewInfo();
+                readerViewInfo = config.getReaderViewInfo();
                 switch (testCase) {
                     case Original:
                         testOriginScale();
@@ -284,12 +285,12 @@ public class ReaderTestActivity extends Activity {
         NavigationArgs navigationArgs = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, limit);
-        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs);
-        reader.submitRequest(this, request, new BaseCallback() {
+        final BaseReaderRequest readerRequest = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs);
+        reader.submitRequest(this, readerRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", false);
+                dumpBitmap(readerRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", false);
                 //testReaderGoto();
             }
         });
@@ -299,37 +300,37 @@ public class ReaderTestActivity extends Activity {
         NavigationArgs navigationArgs = new NavigationArgs();
         RectF limit = new RectF(0.3f, 0.05f, 0.7f, 0.95f);
         navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, limit);
-        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.CONTINUOUS_PAGE, navigationArgs);
-        reader.submitRequest(this, request, new BaseCallback() {
+        final BaseReaderRequest readerRequest = new ChangeLayoutRequest(ReaderConstants.CONTINUOUS_PAGE, navigationArgs);
+        reader.submitRequest(this, readerRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", false);
+                dumpBitmap(readerRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", false);
                 testContinuousScale();
             }
         });
     }
 
     public void testContinuousScale() {
-        BaseRequest request = new ScaleRequest(String.valueOf(0), 2.0f, 0, 0);
-        reader.submitRequest(this, request, new BaseCallback() {
+        final BaseReaderRequest readerRequest = new ScaleRequest(String.valueOf(0), 2.0f, 0, 0);
+        reader.submitRequest(this, readerRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                readerViewInfo = request.getReaderViewInfo();
-                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png", false);
+                readerViewInfo = readerRequest.getReaderViewInfo();
+                dumpBitmap(readerRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png", false);
             }
         });
     }
 
     public void testReaderGoto() {
-        BaseRequest gotoPosition = new GotoLocationRequest(pn);
+        final BaseReaderRequest gotoPosition = new GotoLocationRequest(pn);
         reader.submitRequest(this, gotoPosition, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                readerViewInfo = request.getReaderViewInfo();
-                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/goto.png", false);
+                readerViewInfo = gotoPosition.getReaderViewInfo();
+                dumpBitmap(gotoPosition.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/goto.png", false);
 //                testScaleToPage();
             }
         });
@@ -397,12 +398,12 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testOriginScale() {
-        BaseRequest request = new ScaleRequest(String.valueOf(0), 1.0f, 0, 0);
-        reader.submitRequest(this, request, new BaseCallback() {
+        final BaseReaderRequest scaleRequest = new ScaleRequest(String.valueOf(0), 1.0f, 0, 0);
+        reader.submitRequest(this, scaleRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
                 assert(e == null);
-                dumpBitmap(request.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/originScale.png", true);
+                dumpBitmap(scaleRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/originScale.png", true);
             }
         });
     }
@@ -413,7 +414,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (e == null) {
-                    readerViewInfo = request.getReaderViewInfo();
+                    readerViewInfo = renderRequest.getReaderViewInfo();
                     dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
                     textPrerenderScreen();
                 }
@@ -441,7 +442,7 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (e == null) {
-                    readerViewInfo = request.getReaderViewInfo();
+                    readerViewInfo = renderRequest.getReaderViewInfo();
                     dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
                 }
             }
@@ -449,12 +450,12 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testHitTestWithoutRendering() {
-        final AnnotationRequest request = new AnnotationRequest(String.valueOf(currentPage), new PointF(200, 200), new PointF(250, 300));
-        reader.submitRequest(this, request, new BaseCallback() {
+        final AnnotationRequest annotationRequest = new AnnotationRequest(String.valueOf(currentPage), new PointF(200, 200), new PointF(250, 300));
+        reader.submitRequest(this, annotationRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest baseRequest, Exception e) {
+            public void done(BaseRequest baseReaderRequest, Exception e) {
                 assert(e == null);
-                ReaderSelection selection = request.getSelection();
+                ReaderSelection selection = annotationRequest.getSelection();
                 testReaderClose();
             }
         });

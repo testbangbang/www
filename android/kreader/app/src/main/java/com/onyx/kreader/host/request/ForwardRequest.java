@@ -1,12 +1,12 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zengzhu on 2/22/16.
  */
-public class ForwardRequest extends BaseRequest {
+public class ForwardRequest extends BaseReaderRequest {
 
     public ForwardRequest() {
     }

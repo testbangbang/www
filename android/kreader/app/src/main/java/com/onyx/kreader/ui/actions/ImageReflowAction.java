@@ -1,6 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
@@ -27,7 +27,7 @@ public class ImageReflowAction extends BaseAction {
                 @Override
                 public void onFinished(boolean confirm, ImageReflowSettings settings) {
                     if (confirm && settings != null) {
-                        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
+                        BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
                         readerActivity.submitRenderRequest(request);
                     }
                     hideReflowSettingsDialog();

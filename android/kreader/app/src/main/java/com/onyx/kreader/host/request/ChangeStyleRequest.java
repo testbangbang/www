@@ -1,13 +1,13 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zengzhu on 2/22/16.
  */
-public class ChangeStyleRequest extends BaseRequest {
+public class ChangeStyleRequest extends BaseReaderRequest {
 
     private ReaderStyle readerStyle;
 

@@ -1,12 +1,12 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zhuzeng on 5/27/16.
  */
-public class PanRequest extends BaseRequest {
+public class PanRequest extends BaseReaderRequest {
 
     private int x, y;
 

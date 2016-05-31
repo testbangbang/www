@@ -114,6 +114,12 @@ public class LayoutProviderUtils {
         readerViewInfo.scale = layoutManager.getSpecialScale();
     }
 
+    /**
+     * draw page with scale to page on specified bitmap.
+     * @param pageInfo
+     * @param bitmap
+     * @param readerRenderer
+     */
     static public void drawPageWithScaleToPage(final PageInfo pageInfo, final ReaderBitmap bitmap, final ReaderRenderer readerRenderer) {
         final RectF viewport = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
         final float scale = PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewport.width(), viewport.height());

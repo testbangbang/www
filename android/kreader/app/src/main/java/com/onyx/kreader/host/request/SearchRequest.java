@@ -1,14 +1,13 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.kreader.api.ReaderSearchOptions;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.impl.ReaderSearchOptionsImpl;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zhuzeng on 2/15/16.
  */
-public class SearchRequest extends BaseRequest {
+public class SearchRequest extends BaseReaderRequest {
 
     private ReaderSearchOptionsImpl searchOptions;
     private boolean searchForward;

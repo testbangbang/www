@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import android.graphics.RectF;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -9,7 +9,7 @@ import com.onyx.kreader.host.wrapper.Reader;
 /**
  * Created by zhuzeng on 10/15/15.
  */
-public class ScaleByRectRequest extends BaseRequest  {
+public class ScaleByRectRequest extends BaseReaderRequest {
 
     private RectF childInDocument;
     private String pageName;

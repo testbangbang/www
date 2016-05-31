@@ -1,14 +1,14 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 10/5/15.
  */
-public class GotoLocationRequest extends BaseRequest {
+public class GotoLocationRequest extends BaseReaderRequest {
 
     private int page;
     private String persistentPosition;

@@ -1,12 +1,12 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zhuzeng on 5/29/16.
  */
-public class ScaleToPageCrop extends BaseRequest {
+public class ScaleToPageCrop extends BaseReaderRequest {
 
     private String pageName;
 

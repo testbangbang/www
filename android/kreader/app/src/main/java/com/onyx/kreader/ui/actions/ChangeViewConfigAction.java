@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import com.onyx.kreader.common.BaseCallback;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.request.ChangeViewConfigRequest;
@@ -13,7 +14,7 @@ public class ChangeViewConfigAction extends BaseAction {
     @Override
     public void execute(final ReaderActivity readerActivity) {
         final PageInfo pageInfo = readerActivity.getReaderViewInfo().getFirstVisiblePage();
-        BaseRequest config = new ChangeViewConfigRequest(readerActivity.getDisplayWidth(),
+        BaseReaderRequest config = new ChangeViewConfigRequest(readerActivity.getDisplayWidth(),
                 readerActivity.getDisplayHeight(),
                 pageInfo != null ? pageInfo.getName() : null);
         readerActivity.getReader().submitRequest(readerActivity, config, new BaseCallback() {

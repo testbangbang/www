@@ -16,13 +16,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
+import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
@@ -506,12 +507,12 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void switchPageNavigationMode(NavigationArgs args) {
-        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
+        BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
         submitRenderRequest(request);
     }
 
     private void resetNavigationMode() {
-        BaseRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, new NavigationArgs());
+        BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, new NavigationArgs());
         submitRenderRequest(request);
     }
 
@@ -536,17 +537,17 @@ public class ReaderActivity extends ActionBarActivity {
         updateToolbarTitle();
     }
 
-    public void submitRenderRequest(BaseRequest request) {
-        reader.submitRequest(this, request, new BaseCallback() {
+    public void submitRenderRequest(final BaseReaderRequest renderRequest) {
+        reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
-                handleRenderRequestFinished(request, e);
+                handleRenderRequestFinished(renderRequest, e);
                 preRenderNext();
             }
         });
     }
 
-    private void saveReaderViewInfo(final BaseRequest request) {
+    private void saveReaderViewInfo(final BaseReaderRequest request) {
         readerViewInfo = request.getReaderViewInfo();
     }
 
@@ -554,7 +555,7 @@ public class ReaderActivity extends ActionBarActivity {
         return readerViewInfo;
     }
 
-    private void handleRenderRequestFinished(BaseRequest request, Exception e) {
+    private void handleRenderRequestFinished(final BaseReaderRequest request, Exception e) {
         if (e != null) {
             return;
         }

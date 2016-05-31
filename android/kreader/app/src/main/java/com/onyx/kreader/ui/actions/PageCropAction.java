@@ -1,10 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
-import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.request.PanRequest;
-import com.onyx.kreader.host.request.RenderRequest;
-import com.onyx.kreader.host.request.ScaleRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.request.ScaleToPageCrop;
 import com.onyx.kreader.ui.ReaderActivity;
 
@@ -20,7 +16,7 @@ public class PageCropAction extends BaseAction {
     }
 
     public void execute(final ReaderActivity readerActivity) {
-        final BaseRequest request = new ScaleToPageCrop(pageName);
+        final BaseReaderRequest request = new ScaleToPageCrop(pageName);
         readerActivity.submitRenderRequest(request);
     }
 }

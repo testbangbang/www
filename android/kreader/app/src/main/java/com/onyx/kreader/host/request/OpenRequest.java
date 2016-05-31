@@ -4,7 +4,7 @@ import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -15,7 +15,7 @@ import com.onyx.kreader.utils.StringUtils;
  * Created by zhuzeng on 10/4/15.
  * TODO: add document features when opened.
  */
-public class OpenRequest extends BaseRequest {
+public class OpenRequest extends BaseReaderRequest {
 
     private String documentPath;
     private ReaderDocumentOptions srcOptions;

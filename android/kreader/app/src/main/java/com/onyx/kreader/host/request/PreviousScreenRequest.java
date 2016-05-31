@@ -1,12 +1,12 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zhuzeng on 2/16/16.
  */
-public class PreviousScreenRequest extends BaseRequest {
+public class PreviousScreenRequest extends BaseReaderRequest {
 
     public PreviousScreenRequest() {
 

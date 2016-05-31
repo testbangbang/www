@@ -1,14 +1,12 @@
 package com.onyx.kreader.ui.actions;
 
-import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.request.CreateViewRequest;
 import com.onyx.kreader.host.request.GotoInitPositionRequest;
-import com.onyx.kreader.host.request.GotoLocationRequest;
 import com.onyx.kreader.host.request.OpenRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
@@ -34,7 +32,7 @@ public class OpenDocumentAction extends BaseAction {
     public void execute(final ReaderActivity readerActivity) {
         showLoadingDialog(readerActivity);
         final Reader reader = ReaderManager.getReader(documentPath);
-        final BaseRequest openRequest = new OpenRequest(documentPath, null);
+        final BaseReaderRequest openRequest = new OpenRequest(documentPath, null);
         reader.submitRequest(readerActivity, openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -50,7 +48,7 @@ public class OpenDocumentAction extends BaseAction {
     private void onFileOpenSucceed(final ReaderActivity readerActivity, final Reader reader) {
         readerActivity.onDocumentOpened(documentPath);
         readerActivity.getHandlerManager().setEnable(true);
-        BaseRequest config = new CreateViewRequest(readerActivity.getDisplayWidth(), readerActivity.getDisplayHeight());
+        final BaseReaderRequest config = new CreateViewRequest(readerActivity.getDisplayWidth(), readerActivity.getDisplayHeight());
         reader.submitRequest(readerActivity, config, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -74,7 +72,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void restore(final ReaderActivity readerActivity) {
-        BaseRequest gotoPosition = new GotoInitPositionRequest();
+        BaseReaderRequest gotoPosition = new GotoInitPositionRequest();
         readerActivity.submitRenderRequest(gotoPosition);
     }
 

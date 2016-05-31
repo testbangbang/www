@@ -2,11 +2,10 @@ package com.onyx.kreader.ui.actions;
 
 import android.graphics.*;
 import android.view.SurfaceHolder;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.request.PanRequest;
 import com.onyx.kreader.ui.ReaderActivity;
-import com.onyx.kreader.ui.data.ReaderConfig;
 
 /**
  * Created by zhuzeng on 5/27/16.
@@ -24,7 +23,7 @@ public class PanAction extends BaseAction {
     public void execute(final ReaderActivity readerActivity) {
         translateMatrix.reset();
         ReaderDeviceManager.exitAnimationUpdate(false);
-        final BaseRequest request = new PanRequest(offsetX, offsetY);
+        final BaseReaderRequest request = new PanRequest(offsetX, offsetY);
         readerActivity.submitRenderRequest(request);
     }
 

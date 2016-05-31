@@ -1,29 +1,20 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
-import com.onyx.kreader.host.impl.ReaderBitmapImpl;
-import com.onyx.kreader.host.wrapper.Reader;
 
 /**
- * Created by zhuzeng on 10/4/15.
+ * Created by zhuzeng on 5/31/16.
  */
-public abstract class BaseRequest {
-
-    private static final String TAG = BaseRequest.class.getSimpleName();
+public class BaseRequest {
     private int requestSequence;
     private volatile boolean abort = false;
     private volatile boolean abortPendingTasks = false;
     private boolean useWakeLock = true;
     private boolean runInBackground = true;
-    private boolean saveOptions = true;
     private BaseCallback callback;
     private Context context;
     private Benchmark benchmark;
     private Exception exception;
-    private ReaderBitmapImpl renderBitmap;
-    private ReaderViewInfo readerViewInfo;
-    private volatile boolean transferBitmap = true;
-
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
 
@@ -45,6 +36,10 @@ public abstract class BaseRequest {
 
     public void setCallback(final BaseCallback c) {
         callback = c;
+    }
+
+    public final BaseCallback getCallback() {
+        return callback;
     }
 
     public int getRequestSequence() {
@@ -79,14 +74,6 @@ public abstract class BaseRequest {
         return useWakeLock;
     }
 
-    public boolean isTransferBitmap() {
-        return transferBitmap;
-    }
-
-    public void setTransferBitmap(boolean sync) {
-        transferBitmap = sync;
-    }
-
     static public boolean isEnableBenchmarkDebug() {
         return enableBenchmarkDebug;
     }
@@ -113,10 +100,6 @@ public abstract class BaseRequest {
         return runInBackground;
     }
 
-    public boolean isSaveOptions() {
-        return saveOptions;
-    }
-
     public void setException(final Exception e) {
         exception = e;
     }
@@ -125,74 +108,5 @@ public abstract class BaseRequest {
         return exception;
     }
 
-    public ReaderBitmapImpl getRenderBitmap() {
-        return renderBitmap;
-    }
-
-    public void useRenderBitmap(final Reader reader) {
-        renderBitmap = reader.getReaderHelper().getRenderBitmap();
-    }
-
-    public void beforeExecute(final Reader reader) {
-        reader.acquireWakeLock(getContext());
-        benchmarkStart();
-        if (isAbort()) {
-            reader.getReaderHelper().setAbortFlag();
-        }
-        if (callback == null) {
-            return;
-        }
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                callback.start(BaseRequest.this);
-            }
-        };
-        if (isRunInBackground()) {
-            reader.getLooperHandler().post(runnable);
-        } else {
-            runnable.run();
-        }
-    }
-
-    public abstract void execute(final Reader reader) throws Exception;
-
-    public void afterExecute(final Reader reader) {
-        if (exception != null) {
-            exception.printStackTrace();
-        }
-        benchmarkEnd();
-        reader.getReaderHelper().clearAbortFlag();
-
-        // store render bitmap store to local flag to avoid multi-thread problem
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isTransferBitmap()) {
-                    reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
-                }
-                if (callback != null) {
-                    callback.done(BaseRequest.this, getException());
-                }
-                reader.releaseWakeLock();
-            }};
-
-        if (isRunInBackground()) {
-            reader.getLooperHandler().post(runnable);
-        } else {
-            runnable.run();
-        }
-
-        reader.getBitmapCopyCoordinator().waitCopy();
-    }
-
-    public final ReaderViewInfo getReaderViewInfo() {
-        return readerViewInfo;
-    }
-
-    public ReaderViewInfo createReaderViewInfo() {
-        readerViewInfo = new ReaderViewInfo();
-        return readerViewInfo;
-    }
 
 }
