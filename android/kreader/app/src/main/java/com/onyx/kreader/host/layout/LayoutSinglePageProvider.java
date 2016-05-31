@@ -41,11 +41,15 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public boolean prevScreen() throws ReaderException {
+        if (viewportAsPage()) {
+            return prevPage();
+        }
+
         if (!getPageManager().prevViewport()) {
             if (!prevPage()) {
                 return false;
             }
-            getPageManager().nextViewportToEndOfPage();
+            getPageManager().moveViewportToEndOfPage();
             return true;
         }
         getPageManager().collectVisiblePages();
@@ -53,6 +57,10 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public boolean nextScreen() throws ReaderException {
+        if (viewportAsPage()) {
+            return nextPage();
+        }
+
         if (!getPageManager().nextViewport()) {
             return nextPage();
         }
@@ -84,7 +92,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     public boolean setScale(final String pageName, float scale, float left, float top) throws ReaderException {
         LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().setScale(pageName, scale);
-        getPageManager().setViewportPosition(pageName, left, top);
+        getPageManager().panViewportPosition(pageName, left, top);
         getPageManager().collectVisiblePages();
         return true;
     }
@@ -114,15 +122,19 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         if (StringUtils.isNullOrEmpty(location)) {
             return false;
         }
-        float viewportLeft = getPageManager().getViewportRect().left;
+
+        final RectF viewportBeforeChange = getPageManager().getViewportRect();
         LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
         if (!getPageManager().gotoPage(location)) {
             return false;
         }
 
-        float dx = viewportLeft - getPageManager().getViewportRect().left;
-        getPageManager().panViewportPosition(dx, 0);
+        onPageChanged(viewportBeforeChange);
         return true;
+    }
+
+    private void onPageChanged(final RectF viewportBeforeChange) {
+
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
@@ -162,5 +174,11 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
         LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().scaleToViewport(pageName, child);
+    }
+
+    // return true when provider wants to regard viewport as page, ignore the other content.
+    // When it's true, provider turn to next page or prev page directly instead of moving viewport.
+    private boolean viewportAsPage() {
+        return getPageManager().isScaleToPageContent() || getPageManager().isScaleToPage();
     }
 }

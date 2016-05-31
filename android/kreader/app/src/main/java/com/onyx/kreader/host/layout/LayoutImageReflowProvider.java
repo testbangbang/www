@@ -12,6 +12,7 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -86,26 +87,20 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         Bitmap bmp = getCurrentSubPageBitmap();
         if (bmp != null) {
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
-            if (precacheNextPage(drawContext)) {
-                // do the trick to precache next page's reflow result
-                if (nextPage()) {
-                    return drawVisiblePages(reader, drawContext, bitmap, readerViewInfo);
-                }
-                return false;
-            }
-        } else {
-            reflowFirstVisiblePage(reader, drawContext, bitmap, readerViewInfo, drawContext.asyncDraw);
-            if (drawContext.asyncDraw) {
-                return false;
-            }
-            if (reverseOrder) {
-                moveToLastSubPage();
-                reverseOrder = false;
-            }
-            bmp = getCurrentSubPageBitmap();
-            if (bmp == null) {
-                return false;
-            }
+            return true;
+        }
+
+        reflowFirstVisiblePage(reader, drawContext, bitmap, readerViewInfo, drawContext.asyncDraw);
+        if (drawContext.asyncDraw) {
+            return false;
+        }
+        if (reverseOrder) {
+            moveToLastSubPage();
+            reverseOrder = false;
+        }
+        bmp = getCurrentSubPageBitmap();
+        if (bmp == null) {
+            return false;
         }
         bitmap.copyFrom(bmp);
         return true;
@@ -245,16 +240,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     private void moveToSubSPage(int index) {
         getCurrentSubPageList().moveToScreen(index);
-    }
-
-    /**
-     * if we hit next screen with asyncDraw, we actually want to precache next page
-     *
-     * @param context
-     * @return
-     */
-    private boolean precacheNextPage(ReaderDrawContext context) {
-        return context.asyncDraw && !reverseOrder && getCurrentSubPageIndex() == 1;
     }
 
 }

@@ -69,7 +69,7 @@ public class LayoutContinuousProvider extends LayoutProvider {
 
     public boolean setScale(final String pageName, float scale, float left, float top) throws ReaderException {
         getPageManager().setScale(pageName, scale);
-        getPageManager().setViewportPosition(pageName, left, top);
+        getPageManager().panViewportPosition(pageName, left, top);
         return true;
     }
 

@@ -18,8 +18,13 @@ public class PreRenderRequest extends BaseRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        useRenderBitmap(reader);
+        if (!reader.getReaderLayoutManager().getCurrentLayoutProvider().supportPreRender()) {
+            return;
+        }
+
+        // do not save position in history list.
         reader.getReaderLayoutManager().setSavePosition(false);
+        useRenderBitmap(reader);
         final ReaderDrawContext drawContext = new ReaderDrawContext();
         final PositionSnapshot snapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
         if (forward && reader.getReaderLayoutManager().nextScreen()) {
@@ -30,5 +35,6 @@ public class PreRenderRequest extends BaseRequest {
             reader.getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
         }
         reader.getReaderHelper().setRenderBitmapDirty(false);
+        setTransferBitmap(false);
     }
 }

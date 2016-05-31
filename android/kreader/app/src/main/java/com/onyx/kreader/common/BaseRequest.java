@@ -1,7 +1,6 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
-import com.onyx.android.cropimage.data.RefValue;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -23,6 +22,7 @@ public abstract class BaseRequest {
     private Exception exception;
     private ReaderBitmapImpl renderBitmap;
     private ReaderViewInfo readerViewInfo;
+    private volatile boolean transferBitmap = true;
 
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
@@ -77,6 +77,14 @@ public abstract class BaseRequest {
 
     public boolean isUseWakeLock() {
         return useWakeLock;
+    }
+
+    public boolean isTransferBitmap() {
+        return transferBitmap;
+    }
+
+    public void setTransferBitmap(boolean sync) {
+        transferBitmap = sync;
     }
 
     static public boolean isEnableBenchmarkDebug() {
@@ -159,10 +167,13 @@ public abstract class BaseRequest {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (callback != null) {
+                if (isTransferBitmap()) {
                     reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
+                }
+                if (callback != null) {
                     callback.done(BaseRequest.this, getException());
                 }
+                reader.releaseWakeLock();
             }};
 
         if (isRunInBackground()) {
@@ -172,8 +183,6 @@ public abstract class BaseRequest {
         }
 
         reader.getBitmapCopyCoordinator().waitCopy();
-
-        reader.releaseWakeLock();
     }
 
     public final ReaderViewInfo getReaderViewInfo() {

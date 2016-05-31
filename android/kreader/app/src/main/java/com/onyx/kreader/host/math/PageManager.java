@@ -86,11 +86,21 @@ public class PageManager {
      * @param dx x offset inside page with document coordinates system.
      * @param dy y offset inside page with document coordinates system.
      */
-    public void setViewportPosition(final String pageName, final float dx, final float dy) {
+    public void panViewportPosition(final String pageName, final float dx, final float dy) {
         if (!gotoPage(pageName)) {
             return;
         }
         panViewportPosition(dx, dy);
+    }
+
+    /**
+     * set absolute viewport position.
+     * @param absoluteLeft the absolute left.
+     * @param absoluteTop the absolute top.
+     */
+    public void setAbsoluteViewportPosition(final float absoluteLeft, final float absoluteTop) {
+        viewportRect.offsetTo(absoluteLeft, absoluteTop);
+        onViewportChanged();
     }
 
     private void gotoPageImpl(final PageInfo pageInfo) {
@@ -184,7 +194,7 @@ public class PageManager {
             scaleToWidth(pageName);
         } else if (isScaleToHeight()) {
             scaleToHeight(pageName);
-        } else if (isPageCrop()) {
+        } else if (isScaleToPageContent()) {
             scaleToPageContent(pageName);
         }
     }
@@ -239,13 +249,14 @@ public class PageManager {
             }
         }
 
-        // crop region is in origin size, so just scale it to viewport.
+        // crop region is in origin size, so just use scaleByRect to viewport.
         RectF region = new RectF(pageInfo.getAutoCropContentRegion());
         float scale = PageUtils.scaleByRect(region, viewportRect);
         setScaleImpl(pageName, scale);
 
         // make crop region center in center of viewport to make it looks nice
-        panViewportPosition(region.left, region.top);
+        float delta = (viewportRect.width() - region.width()) / 2;
+        panViewportPosition(region.left - delta, region.top);
         return true;
     }
 
@@ -374,9 +385,9 @@ public class PageManager {
         return visible;
     }
 
-    public void nextViewportToEndOfPage() {
-        while (nextViewport()) {
-        }
+    public void moveViewportToEndOfPage() {
+        PageUtils.alignToBottom(viewportRect, pagesBoundingRect);
+        onViewportChanged();
     }
 
     public boolean nextViewport() {
@@ -413,7 +424,7 @@ public class PageManager {
         return specialScale == ReaderConstants.SCALE_TO_HEIGHT;
     }
 
-    public boolean isPageCrop() {
+    public boolean isScaleToPageContent() {
         return specialScale == ReaderConstants.SCALE_TO_PAGE_CONTENT;
     }
 

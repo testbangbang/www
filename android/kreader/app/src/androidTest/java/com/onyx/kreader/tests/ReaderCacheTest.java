@@ -55,7 +55,7 @@ public class ReaderCacheTest extends ActivityInstrumentationTestCase2<ReaderTest
             List<PageInfo> list = randPageList();
             int index = TestUtils.randInt(0, list.size() - 1);
             final PageInfo pageInfo = list.get(index);
-            pageManager.setViewportPosition(pageInfo.getName(), 0, 0);
+            pageManager.panViewportPosition(pageInfo.getName(), 0, 0);
             List<PageInfo> visibleList = pageManager.getVisiblePages();
             assertTrue(visibleList.size() > 0);
             final PageInfo first = visibleList.get(0);

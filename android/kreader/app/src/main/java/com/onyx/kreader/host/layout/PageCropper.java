@@ -43,21 +43,7 @@ public class PageCropper extends PageManager.PageCropProvider {
         final Bitmap bitmap = bitmapWrapper.getBitmap();
 
         // step2: reuse page manager to calculate positions.
-        final PageManager internalPageManager = new PageManager();
-        internalPageManager.add(pageInfo);
-        internalPageManager.setViewportRect(viewport);
-        internalPageManager.scaleToPage(pageInfo.getName());
-        final PageInfo visiblePage = internalPageManager.getFirstVisiblePage();
-        final RectF visibleRect = new RectF(visiblePage.getPositionRect());
-        visibleRect.intersect(viewport);
-
-        bitmapWrapper.clear();
-        getReaderRenderer().draw(pageInfo.getName(), scale, pageInfo.getPageDisplayOrientation(),
-                bitmapWrapper,
-                visiblePage.getDisplayRect(),
-                visiblePage.getPositionRect(),
-                visibleRect);
-
+        LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmapWrapper, getReaderRenderer());
         if (debugCrop && BuildConfig.DEBUG) {
             BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/before-crop.png");
         }
@@ -69,7 +55,8 @@ public class PageCropper extends PageManager.PageCropProvider {
             BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/with-crop.png");
         }
 
-        // step4: calculate region with origin size.
+        // step4: calculate region for page with origin size.
+        // for caller, PageUtils.scaleRect(cropRegion, viewport);
         float delta = PageUtils.scaleByRect(viewport, new RectF(0, 0, pageInfo.getOriginWidth(), pageInfo.getOriginHeight()));
         PageUtils.scaleRect(cropRegion, delta);
         pageInfo.setAutoCropContentRegion(cropRegion);
