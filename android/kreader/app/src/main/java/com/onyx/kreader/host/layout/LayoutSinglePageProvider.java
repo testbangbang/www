@@ -92,7 +92,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     public boolean setScale(final String pageName, float scale, float left, float top) throws ReaderException {
         LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().setScale(pageName, scale);
-        getPageManager().setViewportPosition(pageName, left, top);
+        getPageManager().panViewportPosition(pageName, left, top);
         getPageManager().collectVisiblePages();
         return true;
     }
@@ -122,15 +122,19 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         if (StringUtils.isNullOrEmpty(location)) {
             return false;
         }
-        float viewportLeft = getPageManager().getViewportRect().left;
+
+        final RectF viewportBeforeChange = getPageManager().getViewportRect();
         LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
         if (!getPageManager().gotoPage(location)) {
             return false;
         }
 
-        //float dx = viewportLeft - getPageManager().getViewportRect().left;
-        //getPageManager().panViewportPosition(dx, 0);
+        onPageChanged(viewportBeforeChange);
         return true;
+    }
+
+    private void onPageChanged(final RectF viewportBeforeChange) {
+
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {

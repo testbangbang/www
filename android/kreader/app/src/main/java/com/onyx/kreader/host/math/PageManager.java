@@ -86,11 +86,21 @@ public class PageManager {
      * @param dx x offset inside page with document coordinates system.
      * @param dy y offset inside page with document coordinates system.
      */
-    public void setViewportPosition(final String pageName, final float dx, final float dy) {
+    public void panViewportPosition(final String pageName, final float dx, final float dy) {
         if (!gotoPage(pageName)) {
             return;
         }
         panViewportPosition(dx, dy);
+    }
+
+    /**
+     * set absolute viewport position.
+     * @param absoluteLeft the absolute left.
+     * @param absoluteTop the absolute top.
+     */
+    public void setAbsoluteViewportPosition(final float absoluteLeft, final float absoluteTop) {
+        viewportRect.offsetTo(absoluteLeft, absoluteTop);
+        onViewportChanged();
     }
 
     private void gotoPageImpl(final PageInfo pageInfo) {

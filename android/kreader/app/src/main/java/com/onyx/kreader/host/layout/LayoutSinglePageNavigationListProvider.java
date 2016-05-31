@@ -11,7 +11,6 @@ import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -90,7 +89,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     public boolean setScale(final String pageName, float scale, float left, float top) throws ReaderException {
         getPageManager().setScale(pageName, scale);
-        getPageManager().setViewportPosition(pageName, left, top);
+        getPageManager().panViewportPosition(pageName, left, top);
         return true;
     }
 

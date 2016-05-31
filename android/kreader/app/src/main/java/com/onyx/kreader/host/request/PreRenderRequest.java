@@ -22,8 +22,9 @@ public class PreRenderRequest extends BaseRequest {
             return;
         }
 
-        useRenderBitmap(reader);
+        // do not save position in history list.
         reader.getReaderLayoutManager().setSavePosition(false);
+        useRenderBitmap(reader);
         final ReaderDrawContext drawContext = new ReaderDrawContext();
         final PositionSnapshot snapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
         if (forward && reader.getReaderLayoutManager().nextScreen()) {

@@ -193,7 +193,7 @@ public class LayoutProviderUtils {
     }
 
     static public void resetViewportPosition(final ReaderLayoutManager layoutManager) {
-        layoutManager.getPageManager().setViewportPosition(null, 0, 0);
+        layoutManager.getPageManager().panViewportPosition(null, 0, 0);
     }
 
     static public boolean moveViewportByPosition(final ReaderLayoutManager layoutManager, final String location) {
