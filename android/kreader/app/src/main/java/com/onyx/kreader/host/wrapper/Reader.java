@@ -42,22 +42,6 @@ public class Reader {
         requestManager.releaseWakeLock();
     }
 
-    private boolean beforeSubmitRequest(final Context context, final BaseReaderRequest request, final BaseCallback callback) {
-        if (request == null) {
-            if (callback != null) {
-                callback.done(null,  null);
-            }
-            return false;
-        }
-        request.setContext(context);
-        request.setCallback(callback);
-        if (request.isAbortPendingTasks()) {
-            requestManager.abortAllRequests();
-        }
-        requestManager.addRequest(request);
-        return true;
-    }
-
     private final Runnable generateRunnable(final BaseReaderRequest request) {
         Runnable runnable = new Runnable() {
             @Override
@@ -81,17 +65,8 @@ public class Reader {
     }
 
     public boolean submitRequest(final Context context, final BaseReaderRequest request, final BaseCallback callback) {
-        if (!beforeSubmitRequest(context, request, callback)) {
-            return false;
-        }
-
         final Runnable runnable = generateRunnable(request);
-        if (request.isRunInBackground()) {
-            requestManager.getSingleThreadPool().submit(runnable);
-        } else {
-            runnable.run();
-        }
-        return true;
+        return requestManager.submitRequest(context, request, runnable, callback);
     }
 
     public Handler getLooperHandler() {

@@ -21,6 +21,7 @@ import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
@@ -611,16 +612,14 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
-    private void drawPage(Bitmap bitmap) {
+    private void drawPage(final Bitmap pageBitmap) {
         Canvas canvas = holder.lockCanvas();
         if (canvas == null) {
             return;
         }
         Paint paint = new Paint();
         drawBackground(canvas, paint);
-        if (bitmap != null) {
-            drawBitmap(canvas, paint, bitmap);
-        }
+        drawBitmap(canvas, paint, pageBitmap);
         drawSearchResults(canvas, paint);
         holder.unlockCanvasAndPost(canvas);
     }
@@ -632,20 +631,24 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawBitmap(Canvas canvas, Paint paint, Bitmap bitmap) {
+        if (bitmap == null) {
+            return;
+        }
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
     private void drawSearchResults(Canvas canvas, Paint paint) {
+        PageInfo pageInfo = getReaderViewInfo().getFirstVisiblePage();
         List<ReaderSelection> list = getReaderViewInfo().getSearchResults();
         if (list == null || list.size() <= 0) {
             return;
         }
         for (ReaderSelection sel : list) {
-            drawHighlightRectangles(canvas, paint, sel.getRectangles());
+            drawHighlightRectangles(canvas, paint, pageInfo.getDisplayRect(), sel.getRectangles());
         }
     }
 
-    private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
+    private void drawHighlightRectangles(Canvas canvas, Paint paint, final RectF page, List<RectF> rectangles) {
         if (rectangles == null) {
             return;
         }
@@ -653,7 +656,9 @@ public class ReaderActivity extends ActionBarActivity {
         paint.setStyle(Paint.Style.FILL);
         paint.setXfermode(xorMode);
         for(int j = 0; j < rectangles.size(); ++j) {
-            canvas.drawRect(rectangles.get(j), paint);
+            final RectF rect = new RectF(rectangles.get(j));
+            rect.offset(page.left, page.top);
+            canvas.drawRect(rect, paint);
         }
     }
 

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
+import com.onyx.kreader.api.ReaderException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +24,7 @@ public class RequestManager {
     private int wakeLockCounting = 0;
     private ExecutorService singleThreadPool = null;
     private boolean debugWakelock = false;
-    private List<BaseReaderRequest> requestList;
+    private List<BaseRequest> requestList;
     private Handler handler = new Handler(Looper.getMainLooper());
 
     public RequestManager() {
@@ -31,16 +32,16 @@ public class RequestManager {
     }
 
     private void initRequestList() {
-        requestList = Collections.synchronizedList(new ArrayList<BaseReaderRequest>());
+        requestList = Collections.synchronizedList(new ArrayList<BaseRequest>());
     }
 
-    public void removeRequest(final BaseReaderRequest request) {
+    public void removeRequest(final BaseRequest request) {
         synchronized (requestList) {
             requestList.remove(request);
         }
     }
 
-    public void addRequest(final BaseReaderRequest request) {
+    public void addRequest(final BaseRequest request) {
         synchronized (requestList) {
             requestList.add(request);
         }
@@ -48,7 +49,7 @@ public class RequestManager {
 
     public void abortAllRequests() {
         synchronized (requestList) {
-            for(BaseReaderRequest request : requestList) {
+            for(BaseRequest request : requestList) {
                 request.setAbort();
             }
         }
@@ -107,5 +108,35 @@ public class RequestManager {
     public Handler getLooperHandler() {
         return handler;
     }
+
+    public boolean submitRequest(final Context context, final BaseRequest request, final Runnable runnable, final BaseCallback callback) {
+        if (!beforeSubmitRequest(context, request, callback)) {
+            return false;
+        }
+
+        if (request.isRunInBackground()) {
+            getSingleThreadPool().submit(runnable);
+        } else {
+            runnable.run();
+        }
+        return true;
+    }
+
+    private boolean beforeSubmitRequest(final Context context, final BaseRequest request, final BaseCallback callback) {
+        if (request == null) {
+            if (callback != null) {
+                callback.done(null,  null);
+            }
+            return false;
+        }
+        request.setContext(context);
+        request.setCallback(callback);
+        if (request.isAbortPendingTasks()) {
+            abortAllRequests();
+        }
+        addRequest(request);
+        return true;
+    }
+
 
 }
