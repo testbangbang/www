@@ -2,6 +2,7 @@ package com.onyx.kreader.plugins.pdfium;
 
 import android.graphics.Bitmap;
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
  * https://src.chromium.org/svn/trunk/src/pdf/pdfium/
  */
 public class PdfiumJniWrapper {
+
+    public static final String TAG = PdfiumJniWrapper.class.getSimpleName();
 
     static{
         System.loadLibrary("onyx_pdfium");
@@ -113,7 +116,9 @@ public class PdfiumJniWrapper {
     }
 
     public void searchInPage(int page, int x, int y, int width, int height, int rotation, final String text, boolean caseSensitive, boolean matchWholeWord, final List<ReaderSelection> list) {
+        Debug.d(TAG, "searching in page: " + page + ", " + text);
         nativeSearchInPage(id, page, x, y, width, height, rotation, StringUtils.utf16leBuffer(text), caseSensitive, matchWholeWord, list);
+        Debug.d(TAG, "searched results: " + list.size());
     }
 
     public String getPageText(int page) {

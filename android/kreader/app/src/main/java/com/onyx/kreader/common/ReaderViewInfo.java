@@ -15,6 +15,8 @@ import java.util.Map;
  */
 public class ReaderViewInfo {
 
+    private final static String SEARCH_TAG = "search";
+
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private Map<String, List<ReaderSelection>> selectionMap = new HashMap<String, List<ReaderSelection>>();
     public boolean canGoBack;
@@ -50,8 +52,12 @@ public class ReaderViewInfo {
         visiblePages.add(copy);
     }
 
-    public final List<ReaderSelection> getSelectionList(final String type) {
-        return selectionMap.get(type);
+    public List<ReaderSelection> getSearchResults() {
+        return selectionMap.get(SEARCH_TAG);
+    }
+
+    public void saveSearchResults(List<ReaderSelection> list) {
+        selectionMap.put(SEARCH_TAG, list);
     }
 
     public boolean canPan() {

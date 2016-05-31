@@ -108,6 +108,7 @@ public class ReaderHelper {
         navigator = view.getNavigator();
         rendererFeatures = renderer.getRendererFeatures();
         hitTestManager = view.getReaderHitTestManager();
+        searchManager = view.getSearchManager();
         getReaderLayoutManager().init();
         getReaderLayoutManager().updateViewportSize();
     }

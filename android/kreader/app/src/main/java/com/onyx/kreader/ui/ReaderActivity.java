@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.*;
@@ -16,6 +17,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
+import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
@@ -46,6 +49,7 @@ import java.util.List;
  */
 public class ReaderActivity extends ActionBarActivity {
     private final static String TAG = ReaderActivity.class.getSimpleName();
+    private static final String DOCUMENT_PATH_TAG = "document";
 
     private String documentPath;
     private Reader reader;
@@ -64,6 +68,8 @@ public class ReaderActivity extends ActionBarActivity {
     private boolean preRender = true;
     private boolean preRenderNext = true;
 
+    private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +80,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onResume() {
-        redrawPage();
+//        redrawPage();
         super.onResume();
     }
 
@@ -91,6 +97,26 @@ public class ReaderActivity extends ActionBarActivity {
         });
 
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        // check if search intent
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            intent.putExtra(DOCUMENT_PATH_TAG, documentPath);
+        }
+
+        super.startActivity(intent);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        try {
+            setIntent(intent);
+            handleActivityIntent();
+        } catch (java.lang.Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     @Override
@@ -216,7 +242,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_bottom);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -229,6 +255,14 @@ public class ReaderActivity extends ActionBarActivity {
             }
         });
 
+        toolbar = (Toolbar)findViewById(R.id.toolbar_top);
+        toolbar.findViewById(R.id.toolbar_search).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideReaderMenu();
+                onSearchRequested();
+            }
+        });
     }
 
     private void initSurfaceView() {
@@ -441,8 +475,11 @@ public class ReaderActivity extends ActionBarActivity {
         return false;
     }
 
-    private void searchContent(Intent intent, boolean b) {
-
+    private void searchContent(Intent intent, boolean forward) {
+        final String query = intent.getStringExtra(SearchManager.QUERY);
+        if (StringUtils.isNotBlank(query)) {
+            new SearchContentAction(query, forward).execute(this);
+        }
     }
 
     private void openLocalFile(final String path) {
@@ -547,6 +584,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void saveReaderViewInfo(final BaseRequest request) {
+        Debug.d(TAG, "saveReaderViewInfo: " + JSON.toJSONString(request.getReaderViewInfo().getFirstVisiblePage()));
         readerViewInfo = request.getReaderViewInfo();
     }
 
@@ -555,6 +593,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void handleRenderRequestFinished(BaseRequest request, Exception e) {
+        Debug.d(TAG, "handleRenderRequestFinished: " + request + ", " + e);
         if (e != null) {
             return;
         }
@@ -580,6 +619,7 @@ public class ReaderActivity extends ActionBarActivity {
         if (bitmap != null) {
             drawBitmap(canvas, paint, bitmap);
         }
+        drawSearchResults(canvas, paint);
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -593,8 +633,30 @@ public class ReaderActivity extends ActionBarActivity {
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
+    private void drawSearchResults(Canvas canvas, Paint paint) {
+        List<ReaderSelection> list = getReaderViewInfo().getSearchResults();
+        if (list == null || list.size() <= 0) {
+            return;
+        }
+        for (ReaderSelection sel : list) {
+            drawHighlightRectangles(canvas, paint, sel.getRectangles());
+        }
+    }
+
+    private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
+        if (rectangles == null) {
+            return;
+        }
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setXfermode(xorMode);
+        for(int j = 0; j < rectangles.size(); ++j) {
+            canvas.drawRect(rectangles.get(j), paint);
+        }
+    }
+
     public String getCurrentPageName() {
-        return reader.getReaderLayoutManager().getCurrentPageName();
+        return getReaderViewInfo().getFirstVisiblePage().getName();
     }
 
     public int getCurrentPage() {
@@ -680,23 +742,25 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void showToolbar() {
-        findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
+        findViewById(R.id.toolbar_top).setVisibility(View.VISIBLE);
+        findViewById(R.id.toolbar_bottom).setVisibility(View.VISIBLE);
     }
 
     private void hideToolbar() {
-        findViewById(R.id.toolbar).setVisibility(View.GONE);
+        findViewById(R.id.toolbar_top).setVisibility(View.GONE);
+        findViewById(R.id.toolbar_bottom).setVisibility(View.GONE);
     }
 
     private void updateToolbarTitle() {
         String name = FileUtils.getFileName(documentPath);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_top);
         ((TextView)toolbar.findViewById(R.id.toolbar_title)).setText(name);
     }
 
     private void updateToolbarProgress() {
         if (readerViewInfo != null && readerViewInfo.getFirstVisiblePage() != null) {
             int pn = Integer.parseInt(readerViewInfo.getFirstVisiblePage().getName());
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_bottom);
             ((TextView) toolbar.findViewById(R.id.toolbar_progress)).setText((pn + 1) + "/" + getPageCount());
         }
     }

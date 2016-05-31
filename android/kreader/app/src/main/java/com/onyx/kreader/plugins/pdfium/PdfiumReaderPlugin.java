@@ -5,10 +5,12 @@ import android.graphics.RectF;
 import android.util.Log;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.common.Benchmark;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +32,10 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
 
     private PdfiumJniWrapper impl;
     private String documentPath;
+
+    List<ReaderSelection> searchResults = new ArrayList<>();
+
+    private ReaderViewOptions readerViewOptions;
 
     public PdfiumReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
     }
@@ -110,6 +116,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderView getView(final ReaderViewOptions viewOptions) {
+        readerViewOptions = viewOptions;
         return this;
     }
 
@@ -122,7 +129,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderViewOptions getViewOptions() {
-        return null;
+        return readerViewOptions;
     }
 
     /**
@@ -282,15 +289,39 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {
+        searchResults.clear();
+        int page = Integer.parseInt(options.fromPage());
+        for (int i = page; i >= 0; i--) {
+            getPluginImpl().searchInPage(i, 0, 0,
+                    getViewOptions().getViewWidth(),
+                    getViewOptions().getViewHeight(),
+                    0, options.pattern(), options.isCaseSensitive(),
+                    options.isMatchWholeWord(), searchResults);
+            if (searchResults.size() > 0) {
+                return true;
+            }
+        }
         return false;
     }
 
     public boolean searchNext(final ReaderSearchOptions options) {
+        searchResults.clear();
+        int page = Integer.parseInt(options.fromPage());
+        for (int i = page; i < getTotalPage(); i++) {
+            getPluginImpl().searchInPage(i, 0, 0,
+                    getViewOptions().getViewWidth(),
+                    getViewOptions().getViewHeight(),
+                    0, options.pattern(), options.isCaseSensitive(),
+                    options.isMatchWholeWord(), searchResults);
+            if (searchResults.size() > 0) {
+                return true;
+            }
+        }
         return false;
     }
 
     public List<ReaderSelection> searchResults() {
-        return null;
+        return searchResults;
     }
 
 
