@@ -19,5 +19,14 @@ public class SearchRequest extends BaseReaderRequest {
 
     // in document coordinates system. forward to layout manager to scale
     public void execute(final Reader reader) throws Exception {
+        createReaderViewInfo();
+        if (searchForward) {
+            reader.getSearchManager().searchNext(searchOptions);
+        } else {
+            reader.getSearchManager().searchPrevious(searchOptions);
+        }
+        if (reader.getSearchManager().searchResults().size() > 0) {
+            getReaderViewInfo().saveSearchResults(reader.getSearchManager().searchResults());
+        }
     }
 }

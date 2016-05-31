@@ -323,7 +323,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
         std::vector<int> list;
         getSelectionRectangles(page, textPage, x, y, width, height, rotation, startIndex, endIndex, list);
         JNIIntArray intArray(env, list.size(), &list[0]);
-        env->CallStaticObjectMethod(utils.getClazz(), utils.getMethodId(), objectList, intArray.getIntArray(true), array, startIndex, endIndex);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, intArray.getIntArray(true), array, startIndex, endIndex);
     }
     FPDFText_FindClose(searchHandle);
     delete [] stringData;

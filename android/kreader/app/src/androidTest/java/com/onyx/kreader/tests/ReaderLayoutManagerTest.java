@@ -2,10 +2,12 @@ package com.onyx.kreader.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
 import com.alibaba.fastjson.JSON;
+import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.kreader.host.wrapper.ReaderHelper;
 import com.onyx.kreader.utils.TestUtils;
 
 /**
@@ -23,11 +25,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
     public void testSinglePage() throws Exception  {
         FakeReader reader = new FakeReader();
         reader.open();
-        ReaderLayoutManager layoutManager = new ReaderLayoutManager(reader,
-                reader,
-                reader,
-                reader);
-
+        ReaderLayoutManager layoutManager = new ReaderLayoutManager(new ReaderHelper(),
+                reader, reader, reader, new ReaderViewOptionsImpl());
         layoutManager.init();
         layoutManager.updateViewportSize();
         assertTrue(layoutManager.setCurrentLayout(ReaderConstants.SINGLE_PAGE, navigationArgs));
@@ -60,10 +59,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
     public void testSinglePageSnapshot1() throws Exception  {
         FakeReader reader = new FakeReader();
         reader.open();
-        ReaderLayoutManager layoutManager = new ReaderLayoutManager(reader,
-                reader,
-                reader,
-                reader);
+        ReaderLayoutManager layoutManager = new ReaderLayoutManager(new ReaderHelper(),
+                reader, reader, reader, new ReaderViewOptionsImpl());
 
         layoutManager.init();
         layoutManager.updateViewportSize();
@@ -112,10 +109,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
     public void testSinglePageSnapshot2() throws Exception  {
         FakeReader reader = new FakeReader();
         reader.open();
-        ReaderLayoutManager layoutManager = new ReaderLayoutManager(reader,
-                reader,
-                reader,
-                reader);
+        ReaderLayoutManager layoutManager = new ReaderLayoutManager(new ReaderHelper(),
+                reader, reader, reader, new ReaderViewOptionsImpl());
 
         layoutManager.init();
         layoutManager.updateViewportSize();
@@ -166,10 +161,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
     public void testSinglePageSnapshot3() throws Exception  {
         FakeReader reader = new FakeReader();
         reader.open();
-        ReaderLayoutManager layoutManager = new ReaderLayoutManager(reader,
-                reader,
-                reader,
-                reader);
+        ReaderLayoutManager layoutManager = new ReaderLayoutManager(new ReaderHelper(),
+                reader, reader, reader, new ReaderViewOptionsImpl());
 
         layoutManager.init();
         layoutManager.updateViewportSize();
