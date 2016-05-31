@@ -19,8 +19,6 @@ import java.util.List;
  */
 public class BookmarkProvider {
 
-    private static final String TAG = BookmarkProvider.class.getSimpleName();
-    private RequestManager requestManager;
 
     static public class Bookmark {
 
@@ -33,36 +31,15 @@ public class BookmarkProvider {
         private String mApplication = null;
         private String mPosition = null;
     }
-    
-    public BookmarkProvider() {
-        requestManager = new RequestManager();
-    }
 
-    private final Runnable generateRunnable(final BaseDataProviderRequest request) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    request.execute();
-                } catch (java.lang.Exception exception) {
-                    Log.d(TAG, Log.getStackTraceString(exception));
-                    request.setException(exception);
-                } finally {
-                    requestManager.dumpWakelocks();
-                    requestManager.removeRequest(request);
-                }
-            }
-        };
-        return runnable;
-    }
-
-    public final List<Bookmark> loadBookmarks(final Context context, final String path) {
+    public static final List<Bookmark> loadBookmarks(final Context context, final String path) {
         return null;
     }
 
-    public void saveInBackground(final Context context, final String path, final List<Bookmark> books, final BaseCallback callback) {
-        final SaveBookmarkRequest saveBookmarkRequest = new SaveBookmarkRequest(path, books);
-        requestManager.submitRequest(context, saveBookmarkRequest, generateRunnable(saveBookmarkRequest), callback);
+    public static void deleteBookmark(final Context context, final Bookmark bookmark) {
     }
 
+    public static boolean hasBookmark(final Context context, final String pageName) {
+        return false;
+    }
 }

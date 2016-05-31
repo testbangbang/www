@@ -21,6 +21,7 @@ import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
@@ -55,6 +56,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     private String documentPath;
     private Reader reader;
+    private DataProvider dataProvider;
 
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
@@ -82,7 +84,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onResume() {
-//        redrawPage();
         super.onResume();
     }
 
@@ -159,6 +160,10 @@ public class ReaderActivity extends ActionBarActivity {
         return reader;
     }
 
+    public final DataProvider getDataProvider() {
+        return dataProvider;
+    }
+
     public void nextScreen() {
         preRenderNext = true;
         final NextScreenAction action = new NextScreenAction();
@@ -186,7 +191,6 @@ public class ReaderActivity extends ActionBarActivity {
     public void prevPage() {
         prevScreen();
     }
-
 
     public void scaleBegin(ScaleGestureDetector detector) {
         PinchZoomAction.scaleBegin(this, detector);
@@ -241,6 +245,7 @@ public class ReaderActivity extends ActionBarActivity {
         initSurfaceView();
         initReaderMenu();
         initHandlerManager();
+        initDataProvider();
     }
 
     private void initToolbar() {
@@ -311,7 +316,7 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceView.setFocusableInTouchMode(true);
         surfaceView.requestFocusFromTouch();
 
-        // make sure we openLocalFile the doc after surface view is layouted correctly.
+        // make sure we openFileFromIntent the doc after surface view is layouted correctly.
         surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -332,6 +337,10 @@ public class ReaderActivity extends ActionBarActivity {
     private void initHandlerManager() {
         handlerManager = new HandlerManager(this);
         handlerManager.setEnable(false);
+    }
+
+    private void initDataProvider() {
+        dataProvider = new DataProvider();
     }
 
     private void initReaderMenu() {
@@ -462,11 +471,7 @@ public class ReaderActivity extends ActionBarActivity {
             } else if (action.equals(Intent.ACTION_MAIN)) {
                 quitApplication();
             } else if (action.equals(Intent.ACTION_VIEW)) {
-                Uri uri = getIntent().getData();
-                if (uri == null) {
-                    return false;
-                }
-                openLocalFile(FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri));
+                openFileFromIntent();
             } else if (action.equals(Intent.ACTION_SEARCH)) {
                 searchContent(getIntent(), true);
             }
@@ -484,7 +489,13 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
-    private void openLocalFile(final String path) {
+    private void openFileFromIntent() {
+        Uri uri = getIntent().getData();
+        if (uri == null) {
+            return;
+        }
+
+        final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         reader = ReaderManager.getReader(path);
         final OpenDocumentAction action = new OpenDocumentAction(path);
         action.execute(this);

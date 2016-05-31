@@ -5,6 +5,7 @@ import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.dataprovider.request.LoadDocumentOptionsRequest;
 import com.onyx.kreader.host.request.CreateViewRequest;
 import com.onyx.kreader.host.request.GotoInitPositionRequest;
 import com.onyx.kreader.host.request.OpenRequest;
@@ -23,7 +24,6 @@ public class OpenDocumentAction extends BaseAction {
     public OpenDocumentAction(final String path) {
         documentPath = path;
     }
-
 
     private ReaderPluginOptions getPluginOptions() {
         return null;
@@ -65,15 +65,25 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void showPasswordDialog(final ReaderActivity readerActivity) {
+        hideLoadingDialog(readerActivity);
+    }
 
+    private void hideLoadingDialog(final ReaderActivity readerActivity) {
     }
 
     private void cleanup(final ReaderActivity readerActivity) {
+        hideLoadingDialog(readerActivity);
     }
 
     private void restore(final ReaderActivity readerActivity) {
-        BaseReaderRequest gotoPosition = new GotoInitPositionRequest();
-        readerActivity.submitRenderRequest(gotoPosition);
+        final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath);
+        readerActivity.getDataProvider().submit(readerActivity, loadDocumentOptionsRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                final BaseReaderRequest gotoPosition = new GotoInitPositionRequest();
+                readerActivity.submitRenderRequest(gotoPosition);
+            }
+        });
     }
 
     private void processOpenException(final ReaderActivity readerActivity, final Reader reader, final Exception e) {
