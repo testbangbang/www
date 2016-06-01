@@ -1,7 +1,10 @@
 package com.onyx.kreader.dataprovider;
 
 import android.content.Context;
+import android.graphics.Rect;
+import com.onyx.kreader.dataprovider.request.BaseDataProviderRequest;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,20 +13,25 @@ import java.util.List;
  */
 public class AnnotationProvider {
 
-    static public class Annotation {
+    static public class Annotation extends BaseData {
 
-        private static final int INVALID_ID = -1;
-        private long mId = INVALID_ID;
-        private String mMD5 = null;
         private String mQuote = null;
-        private String mLocation = null;
-        private Date mUpdateTime = null;
+        private String mLocationBegin = null;
+        private String mLocationEnd = null;
+        private String mNote = null;
         private String mApplication = null;
         private String mPosition = null;
+        private List<Rect> mRects = new ArrayList<Rect>();
+
+
     }
 
     public static final List<Annotation> loadAnnotations(final Context context, final String path) {
         return null;
+    }
+
+    public static boolean addAnnotation(final Context context, final Annotation annotation){
+        return false;
     }
 
     public static void deleteAnnotation(final Context context, final Annotation annotation) {

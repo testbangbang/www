@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -159,6 +161,70 @@ public class FileUtils {
             }
         }
         return filePath;
+    }
+
+
+    public static String computeMD5(File file) throws IOException, NoSuchAlgorithmException {
+        if (!file.exists()) {
+            throw new FileNotFoundException();
+        }
+
+        if (!file.isFile()) {
+            throw new IllegalArgumentException();
+        }
+
+        byte[] digest_buffer = getDigestBuffer(file);
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(digest_buffer);
+        byte[] out = md.digest();
+
+        final char hex_digits[] = {
+                '0', '1', '2', '3',
+                '4', '5', '6', '7',
+                '8', '9', 'a', 'b',
+                'c', 'd', 'e', 'f' };
+
+        char str[] = new char[out.length * 2];
+        for (int i = 0; i < out.length; i++) {
+            int j = i << 1;
+            str[j] = hex_digits[(out[i] >> 4) & 0x0F];
+            str[j + 1] = hex_digits[out[i] & 0x0F];
+        }
+
+        return String.valueOf(str);
+    }
+
+    public static byte[] getDigestBuffer(File file) throws IOException {
+        final int digestBlockLength = 512;
+        byte[] digestBuffer = null;
+        RandomAccessFile rf = null;
+
+        try {
+            rf = new RandomAccessFile(file, "r");
+
+            long fileSize = rf.length();
+
+            // TODO: what about an empty file?
+            if (fileSize <= (digestBlockLength * 3)) {
+                digestBuffer = new byte[(int)fileSize];
+                rf.read(digestBuffer);
+            } else {
+                // 3 digest blocks, head, mid, end
+                digestBuffer = new byte[3 * digestBlockLength];
+                rf.seek(0);
+                rf.read(digestBuffer, 0, digestBlockLength);
+                rf.seek((fileSize / 2) - (digestBlockLength / 2));
+                rf.read(digestBuffer, digestBlockLength, digestBlockLength);
+                rf.seek(fileSize - digestBlockLength);
+                rf.read(digestBuffer, 2 * digestBlockLength, digestBlockLength);
+            }
+        }
+        finally {
+            if (rf != null) {
+                rf.close();
+            }
+        }
+        return digestBuffer;
     }
 
 }

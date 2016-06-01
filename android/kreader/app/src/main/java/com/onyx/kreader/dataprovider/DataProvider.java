@@ -6,6 +6,8 @@ import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.RequestManager;
 import com.onyx.kreader.dataprovider.request.BaseDataProviderRequest;
 import com.onyx.kreader.dataprovider.request.SaveBookmarkRequest;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.util.List;
 
@@ -14,11 +16,16 @@ import java.util.List;
  */
 public class DataProvider {
 
-    private static final String TAG = BookmarkProvider.class.getSimpleName();
+    private static final String TAG = DataProvider.class.getSimpleName();
     private RequestManager requestManager;
 
     public DataProvider() {
         requestManager = new RequestManager();
+    }
+
+    public static void init(final Context context) {
+        FlowConfig.Builder builder = new FlowConfig.Builder(context);
+        FlowManager.init(builder.build());
     }
 
     private final Runnable generateRunnable(final BaseDataProviderRequest request) {
