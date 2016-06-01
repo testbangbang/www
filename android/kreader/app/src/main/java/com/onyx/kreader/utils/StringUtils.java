@@ -5,7 +5,9 @@ import android.graphics.Rect;
 import android.util.Log;
 import com.onyx.kreader.text.LayoutRun;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,5 +54,21 @@ public class StringUtils {
         return buffer;
     }
 
+    public static String join(Iterable<?> elements, String delimiter) {
+        StringBuilder sb = new StringBuilder();
+        for (Object e : elements) {
+            if (sb.length() > 0)
+                sb.append(delimiter);
+            sb.append(e);
+        }
+        return sb.toString();
+    }
 
+    public static List<String> split(final String string, final String delimiter) {
+        if (isNullOrEmpty(string)) {
+            return new ArrayList<String>();
+        }
+        final String [] result = string.split(delimiter);
+        return Arrays.asList(result);
+    }
 }

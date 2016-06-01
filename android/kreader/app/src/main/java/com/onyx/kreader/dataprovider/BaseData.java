@@ -18,6 +18,7 @@ import java.util.List;
 public class BaseData extends BaseModel {
 
     public static final int INVALID_ID = -1;
+    public static final String DELIMITER = ",";
 
     @Column
     @PrimaryKey
@@ -47,6 +48,14 @@ public class BaseData extends BaseModel {
 
     public void setMd5(final String value) {
         md5 = value;
+    }
+
+    public void setCreatedAt(final Date d) {
+        createdAt = d;
+    }
+
+    public final Date getCreatedAt() {
+        return createdAt;
     }
 
     public final Date getUpdateTime() {
