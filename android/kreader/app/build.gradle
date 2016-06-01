@@ -64,9 +64,9 @@ android {
 
 
 dependencies {
-    apt 'com.github.Raizlabs.DBFlow:dbflow-processor:develop-SNAPSHOT'
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:develop-SNAPSHOT"
-    compile "com.github.Raizlabs.DBFlow:dbflow:develop-SNAPSHOT"
+    apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.0.1'
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
+    compile "com.github.Raizlabs.DBFlow:dbflow:3.0.1"
 
     compile project(':libraries:cropimage')
     compile project(':libraries:Side-Menu.Android:library')
