@@ -7,6 +7,7 @@ import com.onyx.kreader.api.ReaderDocumentOptions;
  */
 public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
 
+    private String documentPath;
     private String documentPassword;
     private String archivePassword;
     private String encoding;
@@ -16,6 +17,14 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     public ReaderDocumentOptionsImpl(final String dp, final String ap) {
         documentPassword = dp;
         archivePassword = ap;
+    }
+
+    public void setDocumentPath(final String path) {
+        documentPath = path;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
     }
 
     public String getDocumentPassword() {

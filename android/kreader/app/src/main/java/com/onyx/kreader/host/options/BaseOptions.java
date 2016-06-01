@@ -3,8 +3,8 @@ package com.onyx.kreader.host.options;
 import android.content.Context;
 import android.graphics.RectF;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.utils.GObject;
@@ -20,8 +20,8 @@ import java.util.List;
  */
 public class BaseOptions {
 
-    transient static public final String SCALE_TAG = "zoom";
-    transient static public final String ACTUAL_SCALE_TAG = "actual_zoom";
+    transient static public final String SPECIAL_SCALE_TAG = "special_scale";
+    transient static public final String ACTUAL_SCALE_TAG = "actual_scale";
     transient static public final String MANUAL_CROP_REGION_TAG = "manual_crop_region";
     transient static public final String SCREEN_SPLIT_POINT_TAG = "screen_split_point";
     transient static public final String FONT_SIZE_TAG = "font_size";
@@ -82,6 +82,10 @@ public class BaseOptions {
         BaseOptions options = new BaseOptions();
         options.backend.setBackend(object);
         return options;
+    }
+
+    public String toJSONString() {
+        return JSON.toJSONString(backend);
     }
 
     public String getPassword() {
@@ -175,19 +179,23 @@ public class BaseOptions {
         backend.putString(LAYOUT_TYPE_TAG, type);
     }
 
-    public double getScale()  {
-        if (backend.hasKey(SCALE_TAG)) {
-            return backend.getDouble(SCALE_TAG);
+    public int getSpecialScale()  {
+        if (backend.hasKey(SPECIAL_SCALE_TAG)) {
+            return backend.getInt(SPECIAL_SCALE_TAG);
         }
-        return getDefaultScale();
+        return getDefaultSpecialScale();
     }
 
-    public void setScale(double value) {
-        backend.putDouble(SCALE_TAG, value);
+    public void setSpecialScale(int value) {
+        backend.putInt(SPECIAL_SCALE_TAG, value);
     }
 
-    public double getActualScale() {
-        return backend.getDouble(ACTUAL_SCALE_TAG);
+    public float getActualScale() {
+        return backend.getFloat(ACTUAL_SCALE_TAG);
+    }
+
+    public void setActualScale(final float value) {
+        backend.putFloat(ACTUAL_SCALE_TAG, value);
     }
 
     public List<RectF> getManualCropRegions() {
@@ -203,7 +211,7 @@ public class BaseOptions {
     }
 
 
-    static public double getDefaultScale() {
+    static public int getDefaultSpecialScale() {
         return ReaderConstants.SCALE_TO_PAGE;
     }
 
@@ -323,8 +331,8 @@ public class BaseOptions {
         return backend.getInt(CURRENT_PAGE_TAG);
     }
 
-    public void setCurrentPage(int c) {
-        backend.putInt(CURRENT_PAGE_TAG, c);
+    public void setCurrentPage(final String pageName) {
+        backend.putString(CURRENT_PAGE_TAG, pageName);
     }
 
     public int getTotalPage() {

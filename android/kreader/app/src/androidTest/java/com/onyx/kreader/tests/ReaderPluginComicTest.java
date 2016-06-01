@@ -130,7 +130,7 @@ public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<Read
         File file = new File(filePath);
         assertTrue(file.exists() && file.isFile());
         assertTrue(ComicReaderPlugin.accept(filePath));
-        plugin.open(filePath, new ReaderDocumentOptionsImpl(password, password), new ReaderPluginOptionsImpl());
+        plugin.open(filePath, new ReaderDocumentOptionsImpl(filePath, password, password), new ReaderPluginOptionsImpl());
         return plugin;
     }
 

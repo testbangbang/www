@@ -61,6 +61,7 @@ public class ReaderHelper {
         }
     }
 
+    private String documentPath;
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPluginOptionsImpl pluginOptions;
     private BaseOptions documentOptions = new BaseOptions();
@@ -97,7 +98,8 @@ public class ReaderHelper {
         return (plugin != null);
     }
 
-    public void onDocumentOpened(final ReaderDocument doc, final ReaderDocumentOptions options) {
+    public void onDocumentOpened(final String path, final ReaderDocument doc, final ReaderDocumentOptions options) {
+        documentPath = path;
         document = doc;
         getDocumentOptions().setPassword(options.getDocumentPassword());
     }
@@ -114,6 +116,7 @@ public class ReaderHelper {
     }
 
     public void onDocumentClosed() {
+        documentPath = null;
         document = null;
         view = null;
         renderer = null;
@@ -292,4 +295,15 @@ public class ReaderHelper {
         }
    }
 
+    public final String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void saveOptions() {
+        getDocumentOptions().setLayoutType(getReaderLayoutManager().getCurrentLayoutType());
+        getDocumentOptions().setSpecialScale(getReaderLayoutManager().getSpecialScale());
+        getDocumentOptions().setActualScale(getReaderLayoutManager().getSpecialScale());
+        getDocumentOptions().setCurrentPage(getReaderLayoutManager().getCurrentPageName());
+        //getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
+    }
 }

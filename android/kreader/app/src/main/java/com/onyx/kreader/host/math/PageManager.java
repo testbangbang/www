@@ -274,7 +274,7 @@ public class PageManager {
         float newScale = pageInfo.getActualScale() * deltaScale;
         setScale(pageName, newScale);
 
-        // adjust viewport, since viewport is changed in setScale.
+        // adjust viewport, since viewport is changed in setSpecialScale.
         float viewportLeft  = child.centerX() - viewportRect.width() / 2;
         float viewportTop = child.centerY() - viewportRect.height() / 2;
         viewportRect.offsetTo(viewportLeft, viewportTop);

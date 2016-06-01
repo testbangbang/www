@@ -1,5 +1,6 @@
 package com.onyx.kreader.common;
 
+import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -67,6 +68,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
+        saveReaderOptions(reader);
 
         // store render bitmap store to local flag to avoid multi-thread problem
         final Runnable runnable = new Runnable() {
@@ -99,4 +101,14 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return readerViewInfo;
     }
 
+    private void saveReaderOptions(final Reader reader) {
+        if (!isSaveOptions()) {
+            return;
+        }
+
+        reader.saveOptions();
+        DocumentOptionsProvider.saveDocumentOptions(getContext(),
+                reader.getDocumentPath(),
+                reader.getDocumentOptions());
+    }
 }

@@ -237,16 +237,16 @@ public class ReaderLayoutManager {
         return true;
     }
 
-    private boolean savePositionSnapshot() {
+    public PositionSnapshot savePositionSnapshot() {
         try {
             final PositionSnapshot snapshot = getCurrentLayoutProvider().saveSnapshot();
             if (snapshot != null) {
                 getHistoryManager().addToHistory(snapshot.key(), false);
-                return true;
+                return snapshot;
             }
         } catch (Exception e) {
         }
-        return false;
+        return null;
     }
 
     /**

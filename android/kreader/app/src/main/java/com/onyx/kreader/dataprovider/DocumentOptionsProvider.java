@@ -8,11 +8,14 @@ import com.onyx.kreader.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Update;
+import com.raizlabs.android.dbflow.sql.language.Where;
 
 import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Condition;
 
 /**
  * Created by zhuzeng on 5/27/16.
@@ -248,7 +251,7 @@ public class DocumentOptionsProvider {
         BaseOptions baseOptions = new BaseOptions();
         try {
             final String md5 = FileUtils.computeMD5(new File(path));
-            List<DocumentOptions> options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.is(md5)).queryList();
+            final List<DocumentOptions> options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.is(md5)).queryList();
             if (options == null || options.size() <= 0) {
                 return baseOptions;
             }
@@ -259,8 +262,21 @@ public class DocumentOptionsProvider {
         return baseOptions;
     }
 
-    public static void saveDocumentOptions(final Context context, final String path, final BaseOptions options) {
-
+    public static void saveDocumentOptions(final Context context, final String path, final BaseOptions baseOptions) {
+        try {
+            DocumentOptions documentOptions = null;
+            final String md5 = FileUtils.computeMD5(new File(path));
+            final List<DocumentOptions> options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.is(md5)).queryList();
+            if (options == null || options.size() <= 0) {
+                documentOptions = new DocumentOptions();
+                documentOptions.setMd5(md5);
+            } else {
+                documentOptions = options.get(0);
+            }
+            documentOptions.setExtraAttributes(baseOptions.toJSONString());
+            documentOptions.save();
+        } catch (Exception e) {
+        }
     }
 
 }
