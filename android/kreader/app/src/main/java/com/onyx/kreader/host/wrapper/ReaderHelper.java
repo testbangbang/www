@@ -299,11 +299,22 @@ public class ReaderHelper {
         return documentPath;
     }
 
+    /**
+     * save options from reader components to document options.
+     */
     public void saveOptions() {
-        getDocumentOptions().setLayoutType(getReaderLayoutManager().getCurrentLayoutType());
-        getDocumentOptions().setSpecialScale(getReaderLayoutManager().getSpecialScale());
-        getDocumentOptions().setActualScale(getReaderLayoutManager().getSpecialScale());
-        getDocumentOptions().setCurrentPage(getReaderLayoutManager().getCurrentPageName());
-        //getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
+        if (readerLayoutManager == null) {
+            return;
+        }
+        try {
+            getDocumentOptions().setLayoutType(getReaderLayoutManager().getCurrentLayoutType());
+            getDocumentOptions().setSpecialScale(getReaderLayoutManager().getSpecialScale());
+            getDocumentOptions().setActualScale(getReaderLayoutManager().getSpecialScale());
+            getDocumentOptions().setCurrentPage(getReaderLayoutManager().getCurrentPageName());
+            getDocumentOptions().setTotalPage(getNavigator().getTotalPage());
+            getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
+        } catch (Exception e) {
+
+        }
     }
 }

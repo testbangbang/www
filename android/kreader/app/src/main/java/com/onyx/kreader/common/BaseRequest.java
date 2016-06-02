@@ -108,5 +108,9 @@ public class BaseRequest {
         return exception;
     }
 
+    public boolean hasException() {
+        return (exception != null);
+    }
+
 
 }

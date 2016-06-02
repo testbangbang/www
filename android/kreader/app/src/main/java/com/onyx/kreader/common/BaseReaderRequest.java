@@ -63,12 +63,14 @@ public abstract class BaseReaderRequest extends BaseRequest {
     public abstract void execute(final Reader reader) throws Exception;
 
     public void afterExecute(final Reader reader) {
-        if (getException() != null) {
+        if (hasException()) {
             getException().printStackTrace();
         }
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
-        saveReaderOptions(reader);
+        if (!hasException()) {
+            saveReaderOptions(reader);
+        }
 
         // store render bitmap store to local flag to avoid multi-thread problem
         final Runnable runnable = new Runnable() {

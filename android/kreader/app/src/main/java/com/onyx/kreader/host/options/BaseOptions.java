@@ -38,6 +38,7 @@ public class BaseOptions {
     transient static public final String READER_NAVIGATION_MATRIX_TAG = "nav_mode";
     transient static public final String CURRENT_PAGE_TAG = "current_page";
     transient static public final String TOTAL_PAGE_TAG = "total_page";
+    transient static public final String VIEWPORT_TAG = "viewport";
     transient static public final String CROP_LIST = "crop_list";
     transient static public final String CROP_VALUE = "crop_value";
     transient static public final String GAMMA_LEVEL = "gamma_level";
@@ -327,8 +328,8 @@ public class BaseOptions {
         return  backend.getString(READER_NAVIGATION_MATRIX_TAG);
     }
 
-    public int getCurrentPage() {
-        return backend.getInt(CURRENT_PAGE_TAG);
+    public String getCurrentPage() {
+        return backend.getString(CURRENT_PAGE_TAG);
     }
 
     public void setCurrentPage(final String pageName) {
@@ -351,6 +352,17 @@ public class BaseOptions {
             }
         }
         return defaultValue;
+    }
+
+    public void setViewport(final RectF rect) {
+        backend.putString(VIEWPORT_TAG, JSON.toJSONString(rect));
+    }
+
+    public final RectF getViewport() {
+        if (backend.hasKey(VIEWPORT_TAG)) {
+            return JSON.parseObject(backend.getString(VIEWPORT_TAG), RectF.class);
+        }
+        return null;
     }
 
     public int getNavigationRows() {
