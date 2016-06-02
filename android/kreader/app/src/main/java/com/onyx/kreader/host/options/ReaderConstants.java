@@ -29,7 +29,7 @@ public class ReaderConstants {
     public static final int ZOOM_TO_PAPER = -9;
 
     public static boolean isSpecialScale(int scale) {
-        if (scale <= SCALE_INVALID && scale >= SCALE_TO_WIDTH_CONTENT) {
+        if (scale < SCALE_INVALID && scale >= SCALE_TO_WIDTH_CONTENT) {
             return true;
         }
         return false;

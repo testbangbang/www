@@ -17,6 +17,6 @@ public class PageCropAction extends BaseAction {
 
     public void execute(final ReaderActivity readerActivity) {
         final BaseReaderRequest request = new ScaleToPageCropRequest(pageName);
-        readerActivity.submitRenderRequest(request);
+        readerActivity.submitRequest(request);
     }
 }

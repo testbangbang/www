@@ -89,7 +89,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void restoreWithOptions(final ReaderActivity readerActivity, final BaseOptions options) {
         final RestoreRequest restoreRequest = new RestoreRequest(options);
-        readerActivity.submitRenderRequest(restoreRequest);
+        readerActivity.submitRequest(restoreRequest);
     }
 
     private void processOpenException(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options, final Exception e) {

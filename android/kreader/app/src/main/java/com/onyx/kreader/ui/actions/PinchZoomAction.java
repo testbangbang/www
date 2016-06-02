@@ -7,7 +7,6 @@ import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.ui.ReaderActivity;
-import com.onyx.kreader.ui.data.ReaderConfig;
 
 /**
  * Created by zhuzeng on 5/26/16.
@@ -105,7 +104,7 @@ public class PinchZoomAction extends BaseAction {
         ReaderDeviceManager.exitAnimationUpdate(false);
         float newScale = pageInfo.getActualScale() * deltaScale;
         final ScaleRequest scaleRequest = new ScaleRequest(pageInfo.getName(), newScale, left, top);
-        readerActivity.submitRenderRequest(scaleRequest);
+        readerActivity.submitRequest(scaleRequest);
     }
 
     static private float filterScale(float currentScale, float targetScale, Matrix matrix) {

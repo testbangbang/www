@@ -23,14 +23,14 @@ public class AdjustContrastAction extends BaseAction {
                 @Override
                 public void valueChange(int newValue) {
                     final GammaCorrectionRequest request = new GammaCorrectionRequest(newValue);
-                    readerActivity.submitRenderRequest(request);
+                    readerActivity.submitRequest(request);
                 }
 
                 @Override
                 public void done(boolean isValueChange, int oldValue, int newValue) {
                     if (!isValueChange) {
                         GammaCorrectionRequest request = new GammaCorrectionRequest(oldValue);
-                        readerActivity.submitRenderRequest(request);
+                        readerActivity.submitRequest(request);
                     }
                     hideContrastDialog();
                 }

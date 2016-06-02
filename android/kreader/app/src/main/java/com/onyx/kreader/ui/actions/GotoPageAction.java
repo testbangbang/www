@@ -16,6 +16,6 @@ public class GotoPageAction extends BaseAction {
 
     public void execute(final ReaderActivity readerActivity) {
         BaseReaderRequest gotoPosition = new GotoLocationRequest(pageName);
-        readerActivity.submitRenderRequest(gotoPosition);
+        readerActivity.submitRequest(gotoPosition);
     }
 }

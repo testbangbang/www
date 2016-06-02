@@ -10,7 +10,7 @@ public class NextScreenAction extends BaseAction {
 
     public void execute(final ReaderActivity readerActivity) {
         final NextScreenRequest request = new NextScreenRequest();
-        readerActivity.submitRenderRequest(request);
+        readerActivity.submitRequest(request);
     }
 
 }
