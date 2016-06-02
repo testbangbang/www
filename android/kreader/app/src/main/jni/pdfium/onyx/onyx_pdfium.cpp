@@ -315,7 +315,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     int count = 0;
     FPDF_SCHHANDLE searchHandle = FPDFText_FindStart(textPage, (unsigned short *)stringData, flags, 0);
     JNIUtils utils(env);
-    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;[I[BII)V");
+    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[I[BII)V");
     while (searchHandle != NULL && FPDFText_FindNext(searchHandle)) {
         ++count;
         int startIndex = FPDFText_GetSchResultIndex(searchHandle);
@@ -323,7 +323,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
         std::vector<int> list;
         getSelectionRectangles(page, textPage, x, y, width, height, rotation, startIndex, endIndex, list);
         JNIIntArray intArray(env, list.size(), &list[0]);
-        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, intArray.getIntArray(true), array, startIndex, endIndex);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, intArray.getIntArray(true), array, startIndex, endIndex);
     }
     FPDFText_FindClose(searchHandle);
     delete [] stringData;

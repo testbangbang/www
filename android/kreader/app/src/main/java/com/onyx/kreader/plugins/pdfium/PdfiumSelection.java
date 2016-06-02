@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class PdfiumSelection implements ReaderSelection {
 
+    private String pagePosition;
     private int startCharIndex;
     private int endCharIndex;
     private String text;
@@ -22,7 +23,8 @@ public class PdfiumSelection implements ReaderSelection {
     public PdfiumSelection() {
     }
 
-    public PdfiumSelection(int [] data, byte [] string, int start, int end) {
+    public PdfiumSelection(int page, int [] data, byte [] string, int start, int end) {
+        pagePosition = PagePositionUtils.fromPosition(page);
         for(int i = 0; i < data.length / 4; ++i) {
             rectangles.add(new RectF(data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3]));
         }
@@ -32,7 +34,7 @@ public class PdfiumSelection implements ReaderSelection {
     }
 
     public String getPagePosition() {
-        return null;
+        return pagePosition;
     }
 
     public String getStartPosition() {
@@ -81,8 +83,8 @@ public class PdfiumSelection implements ReaderSelection {
     }
 
     @SuppressWarnings("unused")
-    public static void addToSelectionList(List<ReaderSelection> list, int [] rectangles, final byte[] utf16le, int startIndex, int endIndex) {
-        list.add(new PdfiumSelection(rectangles, utf16le, startIndex, endIndex));
+    public static void addToSelectionList(List<ReaderSelection> list, int page, int [] rectangles, final byte[] utf16le, int startIndex, int endIndex) {
+        list.add(new PdfiumSelection(page, rectangles, utf16le, startIndex, endIndex));
     }
 
 }
