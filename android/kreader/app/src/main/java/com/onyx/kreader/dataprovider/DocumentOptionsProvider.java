@@ -19,44 +19,41 @@ import java.util.List;
  */
 public class DocumentOptionsProvider {
 
-    public static BaseOptions loadDocumentOptions(final Context context, final String path, String md5) {
-        BaseOptions baseOptions = new BaseOptions();
+    public static DocumentOptions findDocumentOptions(final Context context, final String path, String md5) {
+        DocumentOptions options = null;
         try {
             if (StringUtils.isNullOrEmpty(md5)) {
                 md5 = FileUtils.computeMD5(new File(path));
             }
-            final DocumentOptions options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.eq(md5)).querySingle();
-            if (options == null) {
-                return baseOptions;
-            }
-            return options.getBaseOptions();
+            options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.eq(md5)).querySingle();
+            return options;
         } catch (Exception e) {
         }
-        return baseOptions;
+        return options;
+    }
+
+    public static BaseOptions loadDocumentOptions(final Context context, final String path, String md5) {
+        final DocumentOptions options = findDocumentOptions(context, path, md5);
+        if (options == null) {
+            return new BaseOptions();
+        }
+        return options.getBaseOptions();
     }
 
     public static void saveDocumentOptions(final Context context, final String path, String md5, final BaseOptions baseOptions) {
         DocumentOptions documentOptions;
-        try {
-            if (StringUtils.isNullOrEmpty(md5)) {
-                md5 = FileUtils.computeMD5(new File(path));
-            }
-
-            final DocumentOptions options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.eq(md5)).querySingle();
-            if (options == null) {
-                documentOptions = new DocumentOptions();
-                documentOptions.setMd5(md5);
-            } else {
-                documentOptions = options;
-            }
-            documentOptions.setExtraAttributes(baseOptions.toJSONString());
-            if (options == null) {
-                documentOptions.save();
-            } else {
-                documentOptions.update();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        final DocumentOptions options = findDocumentOptions(context, path, md5);
+        if (options == null) {
+            documentOptions = new DocumentOptions();
+            documentOptions.setMd5(md5);
+        } else {
+            documentOptions = options;
+        }
+        documentOptions.setExtraAttributes(baseOptions.toJSONString());
+        if (options == null) {
+            documentOptions.save();
+        } else {
+            documentOptions.update();
         }
     }
 
