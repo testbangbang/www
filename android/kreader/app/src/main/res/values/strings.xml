@@ -45,4 +45,5 @@
     <string name="go_to_page">Go To Page</string>
     <string name="dialog_crop_tittle">Crop</string>
     <string name="search_hint">Search</string>
+    <string name="not_found">No Search Result</string>
 </resources>
