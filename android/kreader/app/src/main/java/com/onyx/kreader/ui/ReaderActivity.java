@@ -637,7 +637,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
         saveReaderViewInfo(request);
         updateToolbarProgress();
-//        ReaderDeviceManager.applyGCInvalidate(surfaceView);
+        ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
     }
 
@@ -673,41 +673,28 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawSearchResults(Canvas canvas, Paint paint) {
-        PageInfo pageInfo = getReaderViewInfo().getFirstVisiblePage();
         List<ReaderSelection> list = getReaderViewInfo().getSearchResults();
         if (list == null || list.size() <= 0) {
             return;
         }
         for (ReaderSelection sel : list) {
-            drawHighlightRectangles(canvas, paint, pageInfo.getDisplayRect(), sel.getRectangles());
+            PageInfo pageInfo = getReaderViewInfo().getPageInfo(sel.getPagePosition());
+            if (pageInfo != null) {
+                drawHighlightRectangles(canvas, paint, sel.getRectangles());
+            }
         }
     }
 
-    private void drawHighlightRectangles(Canvas canvas, Paint paint, final RectF page, List<RectF> rectangles) {
+    private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
         if (rectangles == null) {
             return;
         }
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
         paint.setXfermode(xorMode);
-        RectF displayRect = readerViewInfo.getFirstVisiblePage().getDisplayRect();
-        Rect viewportRect = new Rect(0, 0, getDisplayWidth(), getDisplayHeight());
-        for(int j = 0; j < rectangles.size(); ++j) {
-            final RectF rect = viewportToDisplayRect(displayRect, viewportRect, new RectF(rectangles.get(j)));
-            canvas.drawRect(rect, paint);
+        for (int i = 0; i < rectangles.size(); ++i) {
+            canvas.drawRect(rectangles.get(i), paint);
         }
-    }
-
-    private PointF viewportToDisplayRect(RectF displayRect, Rect viewportRect, PointF point) {
-        float x = displayRect.left + (point.x - viewportRect.left) * displayRect.width() / (float)viewportRect.width();
-        float y = displayRect.top + (point.y - viewportRect.top) * displayRect.height() / (float)viewportRect.height();
-        return new PointF(x, y);
-    }
-
-    private RectF viewportToDisplayRect(RectF displayRect, Rect viewportRect, RectF rect) {
-        PointF leftTop = viewportToDisplayRect(displayRect, viewportRect, new PointF(rect.left, rect.top));
-        PointF rightBottom = viewportToDisplayRect(displayRect, viewportRect, new PointF(rect.right, rect.bottom));
-        return new RectF(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
     }
 
     public String getCurrentPageName() {
@@ -791,6 +778,7 @@ public class ReaderActivity extends ActionBarActivity {
                 @Override
                 public void disMissMenu() {
                     searchMenu.hide();
+                    redrawPage();
                 }
 
                 @Override

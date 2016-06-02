@@ -1,11 +1,17 @@
 package com.onyx.kreader.host.request;
 
+import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderSearchOptions;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.impl.ReaderSearchOptionsImpl;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
+import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.StringUtils;
+
+import java.util.List;
 
 /**
  * Created by zhuzeng on 2/15/16.
@@ -32,10 +38,24 @@ public class SearchRequest extends BaseReaderRequest {
         if (reader.getSearchManager().searchResults().size() > 0) {
             String page = reader.getSearchManager().searchResults().get(0).getPagePosition();
             new GotoLocationRequest(page).execute(reader);
-            
-            getReaderViewInfo().saveSearchResults(reader.getSearchManager().searchResults());
+
             LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
+            getReaderViewInfo().saveSearchResults(toScreen(reader.getSearchManager().searchResults()));
         }
+    }
+
+    private List<ReaderSelection> toScreen(List<ReaderSelection> list) {
+        for (ReaderSelection selection : list) {
+            PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
+            if (pageInfo == null) {
+                continue;
+            }
+            for (int i = 0; i < selection.getRectangles().size(); i++) {
+                RectF rect = selection.getRectangles().get(i);
+                selection.getRectangles().set(i, PageUtils.docToScreenRect(pageInfo, rect));
+            }
+        }
+        return list;
     }
 
     public ReaderSearchOptions getSearchOptions() {
