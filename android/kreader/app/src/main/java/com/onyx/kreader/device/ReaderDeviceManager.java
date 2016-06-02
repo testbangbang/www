@@ -1,7 +1,9 @@
 package com.onyx.kreader.device;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -17,14 +19,24 @@ public class ReaderDeviceManager {
     private final static String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
 
-    public static void setFullScreen(Context context, boolean fullScreen) {
+    public static void setFullScreen(Activity activity, boolean fullScreen) {
+        if (Build.VERSION.SDK_INT >= 19) {
+            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE);
+            return;
+        }
+        
         Intent intent;
         if (fullScreen) {
             intent = new Intent(HIDE_STATUS_BAR_ACTION);
         } else {
             intent = new Intent(SHOW_STATUS_BAR_ACTION);
         }
-        context.sendBroadcast(intent);
+        activity.sendBroadcast(intent);
     }
 
     public static void applyGCInvalidate(View view) {
