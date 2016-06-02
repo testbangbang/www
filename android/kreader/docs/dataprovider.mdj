@@ -1461,7 +1461,7 @@
 							"width": 708,
 							"height": 136,
 							"autoResize": false,
-							"text": "线程模型\n1. data provider接收request，调用request上面的方法execute，进行执行，结果通过callback返回，具体的操作由request加以完成\n2. 添加bookmark,增加请求，检查，删除，封装在BookmarkProvider中？\n3. Annotation，类似bookmark\n4. Scribble数据，直接渲染在背景透明的bitmap中？and render path bitmap into main bitmap",
+							"text": "线程模型\n1. data provider接收request，调用request上面的方法execute，进行执行，结果通过callback返回，具体的操作由request加以完成\n2. 添加bookmark,增加请求，检查，删除，封装在BookmarkProvider中？\n3. Annotation，类似bookmark\n4. Scribble数据，直接渲染在背景透明的bitmap中？and render path bitmap into main bitmap\n5. options, 只有在saveOptions中保存, loadOptions，只是加载，但不会覆盖现有的",
 							"wordWrap": true
 						},
 						{
