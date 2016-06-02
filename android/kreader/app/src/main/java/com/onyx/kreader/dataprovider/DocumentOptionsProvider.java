@@ -241,9 +241,12 @@ public class DocumentOptionsProvider {
         }
     }
 
-    public static BaseOptions loadDocumentOptions(final Context context, final String path, final String md5) {
+    public static BaseOptions loadDocumentOptions(final Context context, final String path, String md5) {
         BaseOptions baseOptions = new BaseOptions();
         try {
+            if (StringUtils.isNullOrEmpty(md5)) {
+                md5 = FileUtils.computeMD5(new File(path));
+            }
             final DocumentOptions options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.is(md5)).querySingle();
             if (options == null) {
                 return baseOptions;
@@ -254,8 +257,11 @@ public class DocumentOptionsProvider {
         return baseOptions;
     }
 
-    public static void saveDocumentOptions(final Context context, final String path, final String md5, final BaseOptions baseOptions) {
+    public static void saveDocumentOptions(final Context context, final String path, String md5, final BaseOptions baseOptions) {
         try {
+            if (StringUtils.isNullOrEmpty(md5)) {
+                md5 = FileUtils.computeMD5(new File(path));
+            }
             DocumentOptions documentOptions = null;
             final DocumentOptions options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.is(md5)).querySingle();
             if (options == null) {

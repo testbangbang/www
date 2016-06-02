@@ -17,27 +17,18 @@ import com.onyx.kreader.utils.StringUtils;
 public class OpenRequest extends BaseReaderRequest {
 
     private String documentPath;
-    private ReaderDocumentOptions srcOptions;
+    private BaseOptions srcOptions;
 
-    public OpenRequest(final String path, final ReaderDocumentOptions documentOptions) {
+    public OpenRequest(final String path, final BaseOptions documentOptions) {
         super();
         documentPath = path;
         srcOptions = documentOptions;
-        setSaveOptions(false);
     }
 
     public void execute(final Reader reader) throws Exception {
-        final BaseOptions options = DocumentOptionsProvider.loadDocumentOptions(getContext(), documentPath, reader.getDocumentMd5());
-        final ReaderDocumentOptionsImpl documentOptions = options.documentOptions();
-        final ReaderPluginOptions pluginOptions = options.pluginOptions();
-        if (srcOptions != null && documentOptions != null) {
-            if (StringUtils.isNotBlank(srcOptions.getDocumentPassword())) {
-                documentOptions.setDocumentPassword(srcOptions.getDocumentPassword());
-            }
-            if (StringUtils.isNotBlank(srcOptions.getCompressedPassword())) {
-                documentOptions.setCompressedPassword(srcOptions.getCompressedPassword());
-            }
-        }
+        setSaveOptions(false);
+        final ReaderDocumentOptionsImpl documentOptions = srcOptions.documentOptions();
+        final ReaderPluginOptions pluginOptions = srcOptions.pluginOptions();
 
         if (!reader.getReaderHelper().selectPlugin(getContext(), documentPath, pluginOptions)) {
             return;
@@ -46,7 +37,7 @@ public class OpenRequest extends BaseReaderRequest {
         try {
             ReaderDocument document = reader.getPlugin().open(documentPath, documentOptions, pluginOptions);
             reader.getReaderHelper().initData(getContext());
-            reader.getReaderHelper().onDocumentOpened(documentPath, document, options);
+            reader.getReaderHelper().onDocumentOpened(documentPath, document, srcOptions);
         } catch (ReaderException readerException) {
             throw readerException;
         }
