@@ -196,11 +196,15 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, std::vector<int> & list) {
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
+    int pageHeight = FPDF_GetPageHeight(page);
     int count = end - start + 1;
     for(int i = 0; i < count; ++i) {
         FPDFText_GetCharBox(textPage, i + start, &left, &right, &bottom, &top);
-        FPDF_PageToDevice(page, x, y, width, height, rotation, left, top, &newLeft, &newTop);
-        FPDF_PageToDevice(page, x, y, width, height, rotation, right, bottom, &newRight, &newBottom);
+        // convert page's left-bottom origin to screen's left-top origin
+        newLeft = left;
+        newRight = right;
+        newTop = pageHeight - top;
+        newBottom = pageHeight - bottom;
         if (newRight < newLeft) {
             std::swap(newRight, newLeft);
         }
