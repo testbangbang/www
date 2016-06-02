@@ -35,6 +35,27 @@ public class ReaderConstants {
         return false;
     }
 
+    public static boolean isScaleToPage(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_PAGE;
+    }
+
+    public static boolean isScaleToWidth(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_WIDTH;
+    }
+
+    public static boolean isScaleToHeight(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_HEIGHT;
+    }
+
+    public static boolean isScaleToPageContent(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_PAGE_CONTENT;
+    }
+
+    public static boolean isWidthCrop(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_WIDTH_CONTENT;
+    }
+
+
 
     static public int GAMMA_LOWER_LIMIT = 100;
     static public int DEFAULT_GAMMA = 100;

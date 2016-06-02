@@ -9,6 +9,7 @@ import com.onyx.kreader.dataprovider.request.LoadDocumentOptionsRequest;
 import com.onyx.kreader.host.request.CreateViewRequest;
 import com.onyx.kreader.host.request.GotoInitPositionRequest;
 import com.onyx.kreader.host.request.OpenRequest;
+import com.onyx.kreader.host.request.RestoreRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.ReaderActivity;
@@ -76,12 +77,13 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void restore(final ReaderActivity readerActivity) {
-        final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath);
+        final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
+                readerActivity.getReader().getDocumentMd5());
         readerActivity.getDataProvider().submit(readerActivity, loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
-                final BaseReaderRequest gotoPosition = new GotoInitPositionRequest();
-                readerActivity.submitRenderRequest(gotoPosition);
+                final RestoreRequest restoreRequest = new RestoreRequest(loadDocumentOptionsRequest.getDocumentOptions());
+                readerActivity.submitRenderRequest(restoreRequest);
             }
         });
     }

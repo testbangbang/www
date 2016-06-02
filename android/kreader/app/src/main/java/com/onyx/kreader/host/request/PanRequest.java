@@ -16,6 +16,7 @@ public class PanRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        setSaveOptions(true);
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().setSavePosition(true);
         reader.getReaderLayoutManager().pan(x, y);

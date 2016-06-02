@@ -9,14 +9,16 @@ import com.onyx.kreader.host.options.BaseOptions;
 public class LoadDocumentOptionsRequest extends BaseDataProviderRequest {
 
     private String documentPath;
+    private String md5;
     private BaseOptions documentOptions;
 
-    public LoadDocumentOptionsRequest(final String path) {
+    public LoadDocumentOptionsRequest(final String path, final String md5Value) {
         documentPath = path;
+        md5 = md5Value;
     }
 
     public void execute() {
-        documentOptions = DocumentOptionsProvider.loadDocumentOptions(getContext(), documentPath);
+        documentOptions = DocumentOptionsProvider.loadDocumentOptions(getContext(), documentPath, md5);
     }
 
     public final BaseOptions getDocumentOptions() {

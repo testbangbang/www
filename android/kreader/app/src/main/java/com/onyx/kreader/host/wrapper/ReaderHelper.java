@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.cache.BitmapLruCache;
+import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
@@ -62,6 +63,7 @@ public class ReaderHelper {
     }
 
     private String documentPath;
+    private String documentMd5;
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPluginOptionsImpl pluginOptions;
     private BaseOptions documentOptions = new BaseOptions();
@@ -98,10 +100,12 @@ public class ReaderHelper {
         return (plugin != null);
     }
 
-    public void onDocumentOpened(final String path, final ReaderDocument doc, final ReaderDocumentOptions options) {
+    public void onDocumentOpened(final String path, final ReaderDocument doc, final BaseOptions options) throws Exception {
         documentPath = path;
         document = doc;
-        getDocumentOptions().setPassword(options.getDocumentPassword());
+        documentMd5 = FileUtils.computeMD5(new File(documentPath));
+        getDocumentOptions().setZipPassword(options.getZipPassword());
+        getDocumentOptions().setPassword(options.getPassword());
     }
 
     public void onViewSizeChanged() {
@@ -188,6 +192,10 @@ public class ReaderHelper {
 
     public void clearAbortFlag() {
         getPlugin().clearAbortFlag();
+    }
+
+    public boolean isReaderLayoutManagerCreated() {
+        return (readerLayoutManager != null);
     }
 
     public ReaderLayoutManager getReaderLayoutManager() {
@@ -299,17 +307,21 @@ public class ReaderHelper {
         return documentPath;
     }
 
+    public final String getDocumentMd5() {
+        return documentMd5;
+    }
+
     /**
-     * save options from reader components to document options.
+     * collect all options from reader components to BaseOptions.
      */
     public void saveOptions() {
-        if (readerLayoutManager == null) {
+        if (!isReaderLayoutManagerCreated()) {
             return;
         }
         try {
             getDocumentOptions().setLayoutType(getReaderLayoutManager().getCurrentLayoutType());
             getDocumentOptions().setSpecialScale(getReaderLayoutManager().getSpecialScale());
-            getDocumentOptions().setActualScale(getReaderLayoutManager().getSpecialScale());
+            getDocumentOptions().setActualScale(getReaderLayoutManager().getActualScale());
             getDocumentOptions().setCurrentPage(getReaderLayoutManager().getCurrentPageName());
             getDocumentOptions().setTotalPage(getNavigator().getTotalPage());
             getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());

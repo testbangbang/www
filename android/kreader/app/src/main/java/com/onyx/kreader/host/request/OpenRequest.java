@@ -13,7 +13,6 @@ import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 10/4/15.
- * TODO: add document features when opened.
  */
 public class OpenRequest extends BaseReaderRequest {
 
@@ -24,10 +23,11 @@ public class OpenRequest extends BaseReaderRequest {
         super();
         documentPath = path;
         srcOptions = documentOptions;
+        setSaveOptions(false);
     }
 
     public void execute(final Reader reader) throws Exception {
-        final BaseOptions options = DocumentOptionsProvider.loadDocumentOptions(getContext(), documentPath);
+        final BaseOptions options = DocumentOptionsProvider.loadDocumentOptions(getContext(), documentPath, reader.getDocumentMd5());
         final ReaderDocumentOptionsImpl documentOptions = options.documentOptions();
         final ReaderPluginOptions pluginOptions = options.pluginOptions();
         if (srcOptions != null && documentOptions != null) {
@@ -46,7 +46,7 @@ public class OpenRequest extends BaseReaderRequest {
         try {
             ReaderDocument document = reader.getPlugin().open(documentPath, documentOptions, pluginOptions);
             reader.getReaderHelper().initData(getContext());
-            reader.getReaderHelper().onDocumentOpened(documentPath, document, documentOptions);
+            reader.getReaderHelper().onDocumentOpened(documentPath, document, options);
         } catch (ReaderException readerException) {
             throw readerException;
         }

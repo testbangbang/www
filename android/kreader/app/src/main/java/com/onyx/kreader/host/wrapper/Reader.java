@@ -121,6 +121,10 @@ public class Reader {
         return getReaderHelper().getDocumentPath();
     }
 
+    public String getDocumentMd5() {
+        return getReaderHelper().getDocumentMd5();
+    }
+
     public ReaderLayoutManager getReaderLayoutManager() {
         return getReaderHelper().getReaderLayoutManager();
     }
@@ -153,9 +157,6 @@ public class Reader {
         return getReaderHelper().getImageReflowManager().getSettings();
     }
 
-    /**
-     * save options from current reader components to options.
-     */
     public void saveOptions() {
         getReaderHelper().saveOptions();
     }

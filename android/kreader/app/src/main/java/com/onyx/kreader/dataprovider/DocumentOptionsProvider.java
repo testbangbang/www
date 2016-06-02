@@ -8,14 +8,9 @@ import com.onyx.kreader.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Update;
-import com.raizlabs.android.dbflow.sql.language.Where;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.locks.Condition;
 
 /**
  * Created by zhuzeng on 5/27/16.
@@ -240,42 +235,39 @@ public class DocumentOptionsProvider {
             cloudReference = c;
         }
 
-        public BaseOptions toBaseOptions() {
-            BaseOptions options = JSON.parseObject(getExtraAttributes(), BaseOptions.class);
+        public BaseOptions getBaseOptions() {
+            BaseOptions options = BaseOptions.optionsFromJSONString(getExtraAttributes());
             return options;
         }
-
     }
 
-    public static BaseOptions loadDocumentOptions(final Context context, final String path) {
+    public static BaseOptions loadDocumentOptions(final Context context, final String path, final String md5) {
         BaseOptions baseOptions = new BaseOptions();
         try {
-            final String md5 = FileUtils.computeMD5(new File(path));
-            final List<DocumentOptions> options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.is(md5)).queryList();
-            if (options == null || options.size() <= 0) {
+            final DocumentOptions options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.is(md5)).querySingle();
+            if (options == null) {
                 return baseOptions;
             }
-            final DocumentOptions first = options.get(0);
-            return first.toBaseOptions();
+            return options.getBaseOptions();
         } catch (Exception e) {
         }
         return baseOptions;
     }
 
-    public static void saveDocumentOptions(final Context context, final String path, final BaseOptions baseOptions) {
+    public static void saveDocumentOptions(final Context context, final String path, final String md5, final BaseOptions baseOptions) {
         try {
             DocumentOptions documentOptions = null;
-            final String md5 = FileUtils.computeMD5(new File(path));
-            final List<DocumentOptions> options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.is(md5)).queryList();
-            if (options == null || options.size() <= 0) {
+            final DocumentOptions options = new Select().from(DocumentOptions.class).where(DocumentOptions_Table.md5.is(md5)).querySingle();
+            if (options == null) {
                 documentOptions = new DocumentOptions();
                 documentOptions.setMd5(md5);
             } else {
-                documentOptions = options.get(0);
+                documentOptions = options;
             }
             documentOptions.setExtraAttributes(baseOptions.toJSONString());
             documentOptions.save();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

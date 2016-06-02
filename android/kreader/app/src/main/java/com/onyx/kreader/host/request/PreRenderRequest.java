@@ -15,6 +15,7 @@ public class PreRenderRequest extends BaseReaderRequest {
     public PreRenderRequest(boolean next) {
         super();
         forward = next;
+        setSaveOptions(false);
     }
 
     public void execute(final Reader reader) throws Exception {

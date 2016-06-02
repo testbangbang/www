@@ -322,6 +322,12 @@ public class ReaderLayoutManager {
         onPositionChanged();
     }
 
+    public void scaleToHeight(final String pageName) throws ReaderException {
+        beforePositionChange();
+        getCurrentLayoutProvider().scaleToWidth(pageName);
+        onPositionChanged();
+    }
+
     public void scaleToPageContent(final String pageName) throws ReaderException {
         beforePositionChange();
         getCurrentLayoutProvider().scaleToPageContent(pageName);

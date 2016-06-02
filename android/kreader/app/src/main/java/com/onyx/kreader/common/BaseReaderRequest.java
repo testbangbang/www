@@ -10,7 +10,7 @@ import com.onyx.kreader.host.wrapper.Reader;
 public abstract class BaseReaderRequest extends BaseRequest {
 
     private static final String TAG = BaseReaderRequest.class.getSimpleName();
-    private boolean saveOptions = true;
+    private volatile boolean saveOptions = false;
     private ReaderBitmapImpl renderBitmap;
     private ReaderViewInfo readerViewInfo;
     private volatile boolean transferBitmap = true;
@@ -24,6 +24,10 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     public void setTransferBitmap(boolean sync) {
         transferBitmap = sync;
+    }
+
+    public void setSaveOptions(boolean save) {
+        saveOptions = save;
     }
 
     public boolean isSaveOptions() {
@@ -68,9 +72,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
-        if (!hasException()) {
-            saveReaderOptions(reader);
-        }
+        saveReaderOptions(reader);
 
         // store render bitmap store to local flag to avoid multi-thread problem
         final Runnable runnable = new Runnable() {
@@ -104,13 +106,14 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     private void saveReaderOptions(final Reader reader) {
-        if (!isSaveOptions()) {
+        if (hasException() || !isSaveOptions()) {
             return;
         }
 
         reader.saveOptions();
         DocumentOptionsProvider.saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),
+                reader.getDocumentMd5(),
                 reader.getDocumentOptions());
     }
 }
