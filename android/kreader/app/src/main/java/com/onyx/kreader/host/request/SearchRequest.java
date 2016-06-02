@@ -36,23 +36,24 @@ public class SearchRequest extends BaseReaderRequest {
             reader.getSearchManager().searchPrevious(searchOptions);
         }
         if (reader.getSearchManager().searchResults().size() > 0) {
-            String page = reader.getSearchManager().searchResults().get(0).getPagePosition();
+            final String page = reader.getSearchManager().searchResults().get(0).getPagePosition();
             new GotoLocationRequest(page).execute(reader);
-
             LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
             getReaderViewInfo().saveSearchResults(toScreen(reader.getSearchManager().searchResults()));
         }
     }
 
-    private List<ReaderSelection> toScreen(List<ReaderSelection> list) {
+    private List<ReaderSelection> toScreen(final List<ReaderSelection> list) {
         for (ReaderSelection selection : list) {
             PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
             if (pageInfo == null) {
                 continue;
             }
             for (int i = 0; i < selection.getRectangles().size(); i++) {
-                RectF rect = selection.getRectangles().get(i);
-                selection.getRectangles().set(i, PageUtils.docToScreenRect(pageInfo, rect));
+                PageUtils.translate(pageInfo.getDisplayRect().left,
+                        pageInfo.getDisplayRect().top,
+                        pageInfo.getActualScale(),
+                        selection.getRectangles().get(i));
             }
         }
         return list;

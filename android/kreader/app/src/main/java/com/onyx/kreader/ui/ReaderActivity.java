@@ -637,7 +637,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
         saveReaderViewInfo(request);
         updateToolbarProgress();
-        ReaderDeviceManager.applyGCInvalidate(surfaceView);
+        //ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
     }
 
