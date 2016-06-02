@@ -791,6 +791,7 @@ public class ReaderActivity extends ActionBarActivity {
                 @Override
                 public void disMissMenu() {
                     searchMenu.hide();
+                    redrawPage();
                 }
 
                 @Override
