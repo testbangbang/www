@@ -18,6 +18,9 @@ public class PdfiumSelection implements ReaderSelection {
     private int startCharIndex;
     private int endCharIndex;
     private String text;
+    /**
+     * rectangles in page's coordinate from left-top origin
+     */
     private List<RectF> rectangles = new ArrayList<RectF>();
 
     public PdfiumSelection() {

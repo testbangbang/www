@@ -120,29 +120,15 @@ public class PageUtils {
         return changed;
     }
 
-    /**
-     * TODO ignore rotation first
-     *
-     * @param point
-     * @param pageWidth
-     * @param pageHeight
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param rotation
-     * @return
-     */
-    public static Point screenPointToDoc(Point point, int pageWidth, int pageHeight, int x, int y, int width, int height, int rotation) {
-        double scaleX = width / (double)pageWidth;
-        double scaleY = height / (double)pageHeight;
-        return new Point((int)((point.x - x) / scaleX), (int)((point.y - y) / scaleY));
+    public static PointF docToScreenPoint(final PageInfo pageInfo, PointF point) {
+        return new PointF(pageInfo.getDisplayRect().left + point.x * pageInfo.getActualScale(),
+                pageInfo.getDisplayRect().top + point.y * pageInfo.getActualScale());
     }
 
-    public static Rect screenRegionToDoc(Rect region, int pageWidth, int pageHeight, int x, int y, int width, int height, int rotation) {
-        Point topLeft = screenPointToDoc(new Point(region.left, region.top), pageWidth, pageHeight, x, y, width, height, rotation);
-        Point rightBottom = screenPointToDoc(new Point(region.right, region.bottom), pageWidth, pageHeight, x, y, width, height, rotation);
-        return new Rect(topLeft.x, topLeft.y, rightBottom.x, rightBottom.y);
+    public static RectF docToScreenRect(final PageInfo pageInfo, RectF rect) {
+        PointF leftTop = docToScreenPoint(pageInfo, new PointF(rect.left, rect.top));
+        PointF rightBottom = docToScreenPoint(pageInfo, new PointF(rect.right, rect.bottom));
+        return new RectF(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
     }
 
     public static RectF alignToLeft(final RectF child, final RectF parent) {
