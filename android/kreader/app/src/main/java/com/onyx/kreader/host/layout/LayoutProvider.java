@@ -143,7 +143,7 @@ public class LayoutProvider {
         } else {
             getPageManager().setScale(snapshot.pageName, snapshot.actualScale);
         }
-        getPageManager().setAbsoluteViewportPosition(snapshot.viewportOffsetRect.left, snapshot.viewportOffsetRect.top);
+        getPageManager().setAbsoluteViewportPosition(snapshot.viewport.left, snapshot.viewport.top);
         return true;
     }
 
