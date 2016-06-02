@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -36,6 +37,7 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -63,6 +65,7 @@ public class ReaderActivity extends ActionBarActivity {
     private SurfaceHolder holder;
 
     private ReaderMenu readerMenu;
+    private PopupSearchMenu searchMenu;
 
     private HandlerManager handlerManager;
     private GestureDetector gestureDetector;
@@ -485,7 +488,17 @@ public class ReaderActivity extends ActionBarActivity {
     private void searchContent(Intent intent, boolean forward) {
         final String query = intent.getStringExtra(SearchManager.QUERY);
         if (StringUtils.isNotBlank(query)) {
-            new SearchContentAction(query, forward).execute(this);
+            new SearchContentAction(getCurrentPageName(), query, forward).execute(this);
+        }
+    }
+
+    private void searchContent(int page, String query, boolean forward) {
+        searchContent(PagePositionUtils.fromPageNumber(page), query, forward);
+    }
+
+    private void searchContent(String page, String query, boolean forward) {
+        if (StringUtils.isNotBlank(query)) {
+            new SearchContentAction(page, query, forward).execute(this);
         }
     }
 
@@ -586,6 +599,17 @@ public class ReaderActivity extends ActionBarActivity {
         updateToolbarTitle();
     }
 
+    public void onSearchFinished(SearchRequest request, Exception e) {
+        getSearchMenu().setSearchOptions(request.getSearchOptions());
+        getSearchMenu().show();
+        if (!request.hasSearchResults(reader)) {
+            getSearchMenu().searchDone(PopupSearchMenu.SearchResult.EMPTY);
+        } else {
+            getSearchMenu().searchDone(PopupSearchMenu.SearchResult.SUCCEED);
+            handleRenderRequestFinished(request, e);
+        }
+    }
+
     public void submitRenderRequest(final BaseReaderRequest renderRequest) {
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
@@ -666,11 +690,24 @@ public class ReaderActivity extends ActionBarActivity {
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
         paint.setXfermode(xorMode);
+        RectF displayRect = readerViewInfo.getFirstVisiblePage().getDisplayRect();
+        Rect viewportRect = new Rect(0, 0, getDisplayWidth(), getDisplayHeight());
         for(int j = 0; j < rectangles.size(); ++j) {
-            final RectF rect = new RectF(rectangles.get(j));
-            rect.offset(page.left, page.top);
+            final RectF rect = viewportToDisplayRect(displayRect, viewportRect, new RectF(rectangles.get(j)));
             canvas.drawRect(rect, paint);
         }
+    }
+
+    private PointF viewportToDisplayRect(RectF displayRect, Rect viewportRect, PointF point) {
+        float x = displayRect.left + (point.x - viewportRect.left) * displayRect.width() / (float)viewportRect.width();
+        float y = displayRect.top + (point.y - viewportRect.top) * displayRect.height() / (float)viewportRect.height();
+        return new PointF(x, y);
+    }
+
+    private RectF viewportToDisplayRect(RectF displayRect, Rect viewportRect, RectF rect) {
+        PointF leftTop = viewportToDisplayRect(displayRect, viewportRect, new PointF(rect.left, rect.top));
+        PointF rightBottom = viewportToDisplayRect(displayRect, viewportRect, new PointF(rect.right, rect.bottom));
+        return new RectF(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
     }
 
     public String getCurrentPageName() {
@@ -732,6 +769,37 @@ public class ReaderActivity extends ActionBarActivity {
 
     private boolean processKeyUp(int keyCode, KeyEvent event) {
         return handlerManager.onKeyUp(this, keyCode, event) || super.onKeyUp(keyCode, event);
+    }
+
+    private PopupSearchMenu getSearchMenu() {
+        if (searchMenu == null) {
+            searchMenu = new PopupSearchMenu(this, (RelativeLayout)surfaceView.getParent(), new PopupSearchMenu.MenuCallback() {
+                @Override
+                public void search(PopupSearchMenu.SearchDirection mSearchDirection) {
+                    switch (mSearchDirection){
+                        case Forward:
+                            searchContent(getCurrentPage() + 1, searchMenu.getSearchOptions().pattern(), true);
+                            break;
+                        case Backward:
+                            searchContent(getCurrentPage() - 1, searchMenu.getSearchOptions().pattern(), false);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                @Override
+                public void disMissMenu() {
+                    searchMenu.hide();
+                }
+
+                @Override
+                public void showSearchAll() {
+
+                }
+            });
+        }
+        return searchMenu;
     }
 
     private ReaderMenu getReaderMenu() {

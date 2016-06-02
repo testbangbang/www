@@ -292,12 +292,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         searchResults.clear();
         int page = Integer.parseInt(options.fromPage());
         for (int i = page; i >= 0; i--) {
-            getPluginImpl().searchInPage(i, 0, 0,
-                    getViewOptions().getViewWidth(),
-                    getViewOptions().getViewHeight(),
-                    0, options.pattern(), options.isCaseSensitive(),
-                    options.isMatchWholeWord(), searchResults);
-            if (searchResults.size() > 0) {
+            if (searchInPage(i, options)) {
                 return true;
             }
         }
@@ -308,16 +303,20 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         searchResults.clear();
         int page = Integer.parseInt(options.fromPage());
         for (int i = page; i < getTotalPage(); i++) {
-            getPluginImpl().searchInPage(i, 0, 0,
-                    getViewOptions().getViewWidth(),
-                    getViewOptions().getViewHeight(),
-                    0, options.pattern(), options.isCaseSensitive(),
-                    options.isMatchWholeWord(), searchResults);
-            if (searchResults.size() > 0) {
+            if (searchInPage(i, options)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean searchInPage(final int currentPage, final ReaderSearchOptions options) {
+        getPluginImpl().searchInPage(currentPage, 0, 0,
+                getViewOptions().getViewWidth(),
+                getViewOptions().getViewHeight(),
+                0, options.pattern(), options.isCaseSensitive(),
+                options.isMatchWholeWord(), searchResults);
+        return searchResults.size() > 0;
     }
 
     public List<ReaderSelection> searchResults() {
