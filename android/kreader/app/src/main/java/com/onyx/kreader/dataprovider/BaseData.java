@@ -1,10 +1,7 @@
 package com.onyx.kreader.dataprovider;
 
 import android.graphics.Rect;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.ArrayList;
@@ -21,8 +18,9 @@ public class BaseData extends BaseModel {
     public static final String DELIMITER = ",";
 
     @Column
-    @PrimaryKey
-    private long id = INVALID_ID;
+    @PrimaryKey(autoincrement = true)
+    @Index
+    long id = INVALID_ID;
 
     @Column
     @Unique
