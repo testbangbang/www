@@ -680,12 +680,12 @@ public class ReaderActivity extends ActionBarActivity {
         for (ReaderSelection sel : list) {
             PageInfo pageInfo = getReaderViewInfo().getPageInfo(sel.getPagePosition());
             if (pageInfo != null) {
-                drawHighlightRectangles(canvas, paint, pageInfo.getActualScale(), pageInfo.getDisplayRect(), sel.getRectangles());
+                drawHighlightRectangles(canvas, paint, sel.getRectangles());
             }
         }
     }
 
-    private void drawHighlightRectangles(Canvas canvas, Paint paint, final float scale, final RectF displayRect, List<RectF> rectangles) {
+    private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
         if (rectangles == null) {
             return;
         }
@@ -693,19 +693,8 @@ public class ReaderActivity extends ActionBarActivity {
         paint.setStyle(Paint.Style.FILL);
         paint.setXfermode(xorMode);
         for (int i = 0; i < rectangles.size(); ++i) {
-            final RectF rect = docToScreenRect(scale, displayRect, new RectF(rectangles.get(i)));
-            canvas.drawRect(rect, paint);
+            canvas.drawRect(rectangles.get(i), paint);
         }
-    }
-
-    private PointF docToScreenPoint(float scale, RectF displayRect, PointF point) {
-        return new PointF(displayRect.left + point.x * scale, displayRect.top + point.y * scale);
-    }
-
-    private RectF docToScreenRect(float scale, RectF displayRect, RectF rect) {
-        PointF leftTop = docToScreenPoint(scale, displayRect, new PointF(rect.left, rect.top));
-        PointF rightBottom = docToScreenPoint(scale, displayRect, new PointF(rect.right, rect.bottom));
-        return new RectF(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
     }
 
     public String getCurrentPageName() {
