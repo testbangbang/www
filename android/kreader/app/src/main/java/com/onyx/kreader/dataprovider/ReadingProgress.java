@@ -8,4 +8,5 @@ public class ReadingProgress {
     private int current = 0;
     private int total = 1;
 
+
 }

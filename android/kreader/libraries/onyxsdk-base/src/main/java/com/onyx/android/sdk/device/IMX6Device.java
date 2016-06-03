@@ -749,7 +749,7 @@ public class IMX6Device extends BaseDevice {
             case AUTO_PART:
                 return UpdateMode.GU;
             default:
-                return UpdateMode.DW;
+                return UpdateMode.DU;
         }
     }
 
@@ -759,7 +759,7 @@ public class IMX6Device extends BaseDevice {
 
         switch (mode) {
             case GU_FAST:
-            case DW:
+            case DU:
                 dst_mode = sModeDW;
                 break;
             case GU:
@@ -806,7 +806,7 @@ public class IMX6Device extends BaseDevice {
 
     private UpdateMode updateModeFromValue(int value) {
         if (value == sModeDW) {
-            return UpdateMode.DW;
+            return UpdateMode.DU;
         } else if (value == sModeGU) {
             return UpdateMode.GU;
         } else if (value == sModeGC) {
