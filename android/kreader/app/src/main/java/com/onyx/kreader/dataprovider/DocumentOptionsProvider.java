@@ -41,19 +41,23 @@ public class DocumentOptionsProvider {
     }
 
     public static void saveDocumentOptions(final Context context, final String path, String md5, final BaseOptions baseOptions) {
-        DocumentOptions documentOptions;
-        final DocumentOptions options = findDocumentOptions(context, path, md5);
-        if (options == null) {
-            documentOptions = new DocumentOptions();
-            documentOptions.setMd5(md5);
-        } else {
-            documentOptions = options;
-        }
-        documentOptions.setExtraAttributes(baseOptions.toJSONString());
-        if (options == null) {
-            documentOptions.save();
-        } else {
-            documentOptions.update();
+        try {
+            DocumentOptions documentOptions;
+            final DocumentOptions options = findDocumentOptions(context, path, md5);
+            if (options == null) {
+                documentOptions = new DocumentOptions();
+                documentOptions.setMd5(md5);
+            } else {
+                documentOptions = options;
+            }
+            documentOptions.setExtraAttributes(baseOptions.toJSONString());
+            if (options == null) {
+                documentOptions.save();
+            } else {
+                documentOptions.update();
+            }
+        } catch (Exception e) {
+
         }
     }
 

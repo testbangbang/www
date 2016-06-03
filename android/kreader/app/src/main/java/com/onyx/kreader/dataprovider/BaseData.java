@@ -30,7 +30,7 @@ public class BaseData extends BaseModel {
     private Date createdAt = null;
 
     @Column
-    private Date updateTime = null;
+    private Date updatedAt = null;
 
     public long getId() {
         return id;
@@ -56,12 +56,12 @@ public class BaseData extends BaseModel {
         return createdAt;
     }
 
-    public final Date getUpdateTime() {
-        return updateTime;
+    public final Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdateTime(final Date d) {
-        updateTime = d;
+    public void setUpdatedAt(final Date d) {
+        updatedAt = d;
     }
 
 }

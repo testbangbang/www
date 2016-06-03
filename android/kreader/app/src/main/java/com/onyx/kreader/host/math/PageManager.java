@@ -40,6 +40,7 @@ public class PageManager {
 
         public abstract float cropPage(final float displayWidth, final float displayHeight, final PageInfo pageInfo);
 
+        public abstract float cropWidth(final float displayWidth, final float displayHeight, final PageInfo pageInfo);
     }
 
     public void clear() {
