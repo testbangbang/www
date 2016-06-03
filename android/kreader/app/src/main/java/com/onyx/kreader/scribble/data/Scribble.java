@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import com.onyx.kreader.dataprovider.ReaderDatabase;
 import com.raizlabs.android.dbflow.annotation.*;
+import com.raizlabs.android.dbflow.data.Blob;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.ArrayList;
@@ -24,47 +25,49 @@ public class Scribble extends BaseModel {
     @Column
     @PrimaryKey(autoincrement = true)
     @Index
-    public long id = INVALID_ID;
+    long id = INVALID_ID;
 
     @Column
     @Unique
-    public String md5 = null;
+    String md5 = null;
 
     @Column
-    public Date createdAt = null;
+    Date createdAt = null;
 
     @Column
-    public Date updatedAt = null;
+    Date updatedAt = null;
 
     @Column
-    public String pageName;
+    String pageName;
 
     @Column
-    public String subPageName;
+    String subPageName;
 
     @Column
-    public int color = Color.BLACK;
+    int color = Color.BLACK;
 
     @Column
-    public float thickness = 3.0f;
-
-    //@Column
-    public List<TouchPoint> points;
+    float thickness = 3.0f;
 
     @Column
-    public String position;
+    Blob points;
+    List<TouchPoint> rawPoints;
 
     @Column
-    public String uniqueId  = null;
-
-    //@Column
-    public RectF boundingRect = null;
+    String position;
 
     @Column
-    public int scribbleType;
+    String uniqueId  = null;
 
     @Column
-    public String extraAttributes;
+    String boundingRectString;
+    RectF boundingRect = null;
+
+    @Column
+    int scribbleType;
+
+    @Column
+    String extraAttributes;
 
     public Scribble() {
     }
@@ -133,16 +136,16 @@ public class Scribble extends BaseModel {
         thickness = t;
     }
 
-    public List<TouchPoint> getPoints() {
+    public Blob  getPoints() {
         return points;
     }
 
     public List<TouchPoint> allocatePoints(int size) {
-        points = new ArrayList<TouchPoint>(size);
-        return points;
+        rawPoints = new ArrayList<TouchPoint>(size);
+        return rawPoints;
     }
 
-    public void setPoints(final List<TouchPoint> pts) {
+    public void setPoints(final Blob pts) {
         points = pts;
     }
 
@@ -173,6 +176,15 @@ public class Scribble extends BaseModel {
             boundingRect.union(x, y);
         }
     }
+
+    public void setBoundingRectString(final String rect) {
+        boundingRectString = rect;
+    }
+
+    public final String getBoundingRectString() {
+        return boundingRectString;
+    }
+
 
     public void setBoundingRect(final RectF rect) {
         boundingRect = rect;
