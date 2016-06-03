@@ -258,6 +258,18 @@ public class ReaderActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        toolbar.findViewById(R.id.toolbar_backward).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backward();
+            }
+        });
+        toolbar.findViewById(R.id.toolbar_forward).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forward();
+            }
+        });
         toolbar.findViewById(R.id.toolbar_progress).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
