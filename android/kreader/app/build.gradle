@@ -16,6 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
 
+
         sourceSets.main {
             jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
             jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
@@ -59,6 +60,19 @@ android {
 
     dexOptions {
         preDexLibraries = false
+    }
+
+
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
     }
 }
 

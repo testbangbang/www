@@ -2,6 +2,7 @@ package com.onyx.kreader.dataprovider;
 
 import android.graphics.Rect;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * Created by zhuzeng on 6/3/16.
  */
+@Table(database = ReaderDatabase.class)
 public class Annotation extends BaseData {
 
     @Column
@@ -29,7 +31,7 @@ public class Annotation extends BaseData {
     @Column
     private String position = null;
 
-    @Column
+//    @Column
     private List<Rect> rects = new ArrayList<Rect>();
 
     public void setQuote(final String q) {
