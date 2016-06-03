@@ -6,16 +6,17 @@ import com.onyx.kreader.host.wrapper.Reader;
 /**
  * Created by zhuzeng on 5/29/16.
  */
-public class ScaleToPageCrop extends BaseReaderRequest {
+public class ScaleToPageCropRequest extends BaseReaderRequest {
 
     private String pageName;
 
-    public ScaleToPageCrop(final String name) {
+    public ScaleToPageCropRequest(final String name) {
         pageName = name;
     }
 
     // in document coordinates system. forward to layout manager to scale
     public void execute(final Reader reader) throws Exception {
+        setSaveOptions(true);
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().setSavePosition(true);
         reader.getReaderLayoutManager().scaleToPageContent(pageName);

@@ -1,6 +1,7 @@
 package com.onyx.kreader.dataprovider.request;
 
 import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.dataprovider.Bookmark;
 import com.onyx.kreader.dataprovider.BookmarkProvider;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public class SaveBookmarkRequest extends BaseDataProviderRequest {
 
-    public SaveBookmarkRequest( final String path, final List<BookmarkProvider.Bookmark> books) {
+    public SaveBookmarkRequest( final String path, final List<Bookmark> books) {
 
     }
 

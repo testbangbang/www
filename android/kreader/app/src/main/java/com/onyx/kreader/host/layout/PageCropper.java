@@ -25,7 +25,7 @@ public class PageCropper extends PageManager.PageCropProvider {
     // to reduce rendering time. cropDisplay should be smaller than view size.
     private static RectF cropDisplay;
     private ReaderRenderer readerRenderer;
-    private boolean debugCrop = true;
+    private boolean debugCrop = false;
 
     public PageCropper(final ReaderRenderer r) {
         readerRenderer = r;
@@ -62,6 +62,11 @@ public class PageCropper extends PageManager.PageCropProvider {
         PageUtils.scaleRect(cropRegion, delta);
         pageInfo.setAutoCropContentRegion(cropRegion);
         return scale * delta;
+    }
+
+    public float cropWidth(final float displayWidth, final float displayHeight, final PageInfo pageInfo) {
+        float value = cropPage(displayWidth, displayHeight, pageInfo);
+        return value;
     }
 
     public static RectF getCropDisplay(final float pw, final float ph) {

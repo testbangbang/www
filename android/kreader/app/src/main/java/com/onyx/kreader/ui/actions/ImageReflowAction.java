@@ -28,7 +28,7 @@ public class ImageReflowAction extends BaseAction {
                 public void onFinished(boolean confirm, ImageReflowSettings settings) {
                     if (confirm && settings != null) {
                         BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
-                        readerActivity.submitRenderRequest(request);
+                        readerActivity.submitRequest(request);
                     }
                     hideReflowSettingsDialog();
                 }

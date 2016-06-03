@@ -40,6 +40,7 @@ public class PageManager {
 
         public abstract float cropPage(final float displayWidth, final float displayHeight, final PageInfo pageInfo);
 
+        public abstract float cropWidth(final float displayWidth, final float displayHeight, final PageInfo pageInfo);
     }
 
     public void clear() {
@@ -409,27 +410,27 @@ public class PageManager {
     }
 
     public boolean isSpecialScale() {
-        return specialScale < ReaderConstants.SCALE_INVALID;
+        return ReaderConstants.isSpecialScale(specialScale);
     }
 
     public boolean isScaleToPage() {
-        return specialScale == ReaderConstants.SCALE_TO_PAGE;
+        return ReaderConstants.isScaleToPage(specialScale);
     }
 
     public boolean isScaleToWidth() {
-        return specialScale == ReaderConstants.SCALE_TO_WIDTH;
+        return ReaderConstants.isScaleToWidth(specialScale);
     }
 
     public boolean isScaleToHeight() {
-        return specialScale == ReaderConstants.SCALE_TO_HEIGHT;
+        return ReaderConstants.isScaleToHeight(specialScale);
     }
 
     public boolean isScaleToPageContent() {
-        return specialScale == ReaderConstants.SCALE_TO_PAGE_CONTENT;
+        return ReaderConstants.isScaleToPageContent(specialScale);
     }
 
     public boolean isWidthCrop() {
-        return specialScale == ReaderConstants.SCALE_TO_WIDTH_CONTENT;
+        return ReaderConstants.isWidthCrop(specialScale);
     }
 
     public void setPageRepeat(int value) {

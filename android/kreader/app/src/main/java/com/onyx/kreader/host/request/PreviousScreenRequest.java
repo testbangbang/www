@@ -9,10 +9,10 @@ import com.onyx.kreader.host.wrapper.Reader;
 public class PreviousScreenRequest extends BaseReaderRequest {
 
     public PreviousScreenRequest() {
-
     }
 
     public void execute(final Reader reader) throws Exception {
+        setSaveOptions(true);
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().setSavePosition(true);
         reader.getReaderLayoutManager().prevScreen();

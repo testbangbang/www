@@ -79,9 +79,9 @@ public class BaseOptions {
         backend = b;
     }
 
-    static BaseOptions optionFromJSONObject(final JSONObject object) {
+    public static BaseOptions optionsFromJSONString(final String jsonString) {
         BaseOptions options = new BaseOptions();
-        options.backend.setBackend(object);
+        options.backend = JSON.parseObject(jsonString, GObject.class);
         return options;
     }
 

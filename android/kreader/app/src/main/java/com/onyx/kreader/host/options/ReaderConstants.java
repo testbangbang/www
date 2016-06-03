@@ -29,11 +29,32 @@ public class ReaderConstants {
     public static final int ZOOM_TO_PAPER = -9;
 
     public static boolean isSpecialScale(int scale) {
-        if (scale <= SCALE_INVALID && scale >= SCALE_TO_WIDTH_CONTENT) {
+        if (scale < SCALE_INVALID && scale >= SCALE_TO_WIDTH_CONTENT) {
             return true;
         }
         return false;
     }
+
+    public static boolean isScaleToPage(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_PAGE;
+    }
+
+    public static boolean isScaleToWidth(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_WIDTH;
+    }
+
+    public static boolean isScaleToHeight(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_HEIGHT;
+    }
+
+    public static boolean isScaleToPageContent(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_PAGE_CONTENT;
+    }
+
+    public static boolean isWidthCrop(int specialScale) {
+        return specialScale == ReaderConstants.SCALE_TO_WIDTH_CONTENT;
+    }
+
 
 
     static public int GAMMA_LOWER_LIMIT = 100;

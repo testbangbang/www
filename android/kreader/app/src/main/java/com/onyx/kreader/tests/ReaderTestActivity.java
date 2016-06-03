@@ -21,6 +21,7 @@ import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -231,8 +232,8 @@ public class ReaderTestActivity extends Activity {
         return new ReaderViewOptionsImpl(surfaceView.getWidth(), surfaceView.getHeight());
     }
 
-    public ReaderDocumentOptions getDocumentOptions() {
-        return new ReaderDocumentOptionsImpl(null, null);
+    public BaseOptions getDocumentOptions() {
+        return new BaseOptions();
     }
 
     public ReaderPluginOptions getPluginOptions() {

@@ -400,8 +400,10 @@ public class ReaderActivity extends ActionBarActivity {
                     case "/Navigation/MoreSetting":
                         break;
                     case "/Spacing/DecreaseSpacing":
+                        forward();
                         break;
                     case "/Spacing/EnlargeSpacing":
+                        backward();
                         break;
                     case "/Spacing/NormalSpacing":
                         break;
@@ -531,17 +533,17 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void scaleByValue(float scale) {
         final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, getDisplayWidth() / 2, getDisplayHeight() / 2);
-        submitRenderRequest(request);
+        submitRequest(request);
     }
 
     private void scaleToPage() {
         final ScaleToPageRequest request = new ScaleToPageRequest(getCurrentPageName());
-        submitRenderRequest(request);
+        submitRequest(request);
     }
 
     private void scaleToWidth() {
         final ScaleToWidthRequest request = new ScaleToWidthRequest(getCurrentPageName());
-        submitRenderRequest(request);
+        submitRequest(request);
     }
 
     private void scaleByRect() {
@@ -570,12 +572,12 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void switchPageNavigationMode(NavigationArgs args) {
         BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
-        submitRenderRequest(request);
+        submitRequest(request);
     }
 
     private void resetNavigationMode() {
         BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, new NavigationArgs());
-        submitRenderRequest(request);
+        submitRequest(request);
     }
 
     private void adjustContrast() {
@@ -610,7 +612,17 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
-    public void submitRenderRequest(final BaseReaderRequest renderRequest) {
+    public void backward() {
+        final BackwardAction backwardAction = new BackwardAction();
+        backwardAction.execute(this);
+    }
+
+    public void forward() {
+        final ForwardAction forwardAction = new ForwardAction();
+        forwardAction.execute(this);
+    }
+
+    public void submitRequest(final BaseReaderRequest renderRequest) {
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
@@ -637,13 +649,13 @@ public class ReaderActivity extends ActionBarActivity {
         }
         saveReaderViewInfo(request);
         updateToolbarProgress();
-        ReaderDeviceManager.applyGCInvalidate(surfaceView);
+        //ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
     }
 
     public void redrawPage() {
         if (reader != null) {
-            submitRenderRequest(new RenderRequest());
+            submitRequest(new RenderRequest());
         }
     }
 

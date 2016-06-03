@@ -1,14 +1,14 @@
 package com.onyx.kreader.ui.actions;
 
 import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.dataprovider.request.LoadDocumentOptionsRequest;
+import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.CreateViewRequest;
-import com.onyx.kreader.host.request.GotoInitPositionRequest;
 import com.onyx.kreader.host.request.OpenRequest;
+import com.onyx.kreader.host.request.RestoreRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.ReaderActivity;
@@ -16,6 +16,11 @@ import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 5/17/16.
+ * steps:
+ * 1. load document options.
+ * 2. open with options.
+ * 3. create view
+ * 4. restoreWithOptions.
  */
 public class OpenDocumentAction extends BaseAction {
 
@@ -25,27 +30,34 @@ public class OpenDocumentAction extends BaseAction {
         documentPath = path;
     }
 
-    private ReaderPluginOptions getPluginOptions() {
-        return null;
-    }
-
     public void execute(final ReaderActivity readerActivity) {
         showLoadingDialog(readerActivity);
         final Reader reader = ReaderManager.getReader(documentPath);
-        final BaseReaderRequest openRequest = new OpenRequest(documentPath, null);
-        reader.submitRequest(readerActivity, openRequest, new BaseCallback() {
+        final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
+                readerActivity.getReader().getDocumentMd5());
+        readerActivity.getDataProvider().submit(readerActivity, loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
-                if (e != null) {
-                    processOpenException(readerActivity, reader, e);
-                    return;
-                }
-                onFileOpenSucceed(readerActivity, reader);
+                openWithOptions(readerActivity, reader, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
     }
 
-    private void onFileOpenSucceed(final ReaderActivity readerActivity, final Reader reader) {
+    private void openWithOptions(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options) {
+        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options);
+        reader.submitRequest(readerActivity, openRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                if (e != null) {
+                    processOpenException(readerActivity, reader, options, e);
+                    return;
+                }
+                onFileOpenSucceed(readerActivity, reader, options);
+            }
+        });
+    }
+
+    private void onFileOpenSucceed(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options) {
         readerActivity.onDocumentOpened(documentPath);
         readerActivity.getHandlerManager().setEnable(true);
         final BaseReaderRequest config = new CreateViewRequest(readerActivity.getDisplayWidth(), readerActivity.getDisplayHeight());
@@ -56,7 +68,7 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup(readerActivity);
                     return;
                 }
-                restore(readerActivity);
+                restoreWithOptions(readerActivity, options);
             }
         });
     }
@@ -75,18 +87,12 @@ public class OpenDocumentAction extends BaseAction {
         hideLoadingDialog(readerActivity);
     }
 
-    private void restore(final ReaderActivity readerActivity) {
-        final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath);
-        readerActivity.getDataProvider().submit(readerActivity, loadDocumentOptionsRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Exception e) {
-                final BaseReaderRequest gotoPosition = new GotoInitPositionRequest();
-                readerActivity.submitRenderRequest(gotoPosition);
-            }
-        });
+    private void restoreWithOptions(final ReaderActivity readerActivity, final BaseOptions options) {
+        final RestoreRequest restoreRequest = new RestoreRequest(options);
+        readerActivity.submitRequest(restoreRequest);
     }
 
-    private void processOpenException(final ReaderActivity readerActivity, final Reader reader, final Exception e) {
+    private void processOpenException(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options, final Exception e) {
         if (StringUtils.isNullOrEmpty(reader.getDocumentOptions().getPassword())) {
             cleanup(readerActivity);
             return;

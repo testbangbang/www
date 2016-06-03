@@ -120,15 +120,17 @@ public class PageUtils {
         return changed;
     }
 
-    public static PointF docToScreenPoint(final PageInfo pageInfo, PointF point) {
-        return new PointF(pageInfo.getDisplayRect().left + point.x * pageInfo.getActualScale(),
-                pageInfo.getDisplayRect().top + point.y * pageInfo.getActualScale());
+    public static PointF translate(final float originX, final float originY, final float scale, final PointF point) {
+        point.set(originX + point.x * scale, originY + point.y * scale);
+        return point;
     }
 
-    public static RectF docToScreenRect(final PageInfo pageInfo, RectF rect) {
-        PointF leftTop = docToScreenPoint(pageInfo, new PointF(rect.left, rect.top));
-        PointF rightBottom = docToScreenPoint(pageInfo, new PointF(rect.right, rect.bottom));
-        return new RectF(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
+    public static RectF translate(final float originX, final float originY, final float scale, final RectF rect) {
+        rect.set(originX + rect.left * scale,
+                 originY + rect.top * scale,
+                 originX + rect.right * scale,
+                 originY + rect.bottom * scale);
+        return rect;
     }
 
     public static RectF alignToLeft(final RectF child, final RectF parent) {

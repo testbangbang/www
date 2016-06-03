@@ -20,6 +20,7 @@ public class ScaleByRectRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        setSaveOptions(true);
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().setSavePosition(true);
         reader.getReaderLayoutManager().scaleByRect(pageName, childInDocument);

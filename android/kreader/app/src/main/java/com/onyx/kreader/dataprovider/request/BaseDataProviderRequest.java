@@ -9,7 +9,7 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class BaseDataProviderRequest extends BaseRequest {
 
-    public void execute() {
+    public void execute() throws Exception {
     }
 
     public void afterExecute(final RequestManager requestManager) {
