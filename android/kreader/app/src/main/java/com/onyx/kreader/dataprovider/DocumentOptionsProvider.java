@@ -40,7 +40,7 @@ public class DocumentOptionsProvider {
         return options.getBaseOptions();
     }
 
-    public static void saveDocumentOptions(final Context context, final String path, String md5, final BaseOptions baseOptions) {
+    public static boolean saveDocumentOptions(final Context context, final String path, String md5, final BaseOptions baseOptions) {
         try {
             DocumentOptions documentOptions;
             final DocumentOptions options = findDocumentOptions(context, path, md5);
@@ -56,8 +56,9 @@ public class DocumentOptionsProvider {
             } else {
                 documentOptions.update();
             }
+            return true;
         } catch (Exception e) {
-
+            return false;
         }
     }
 

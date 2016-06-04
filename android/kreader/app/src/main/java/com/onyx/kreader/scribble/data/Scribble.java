@@ -14,7 +14,7 @@ import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/3/16.
- * Persistence for shape.
+ * Persistence for all shapes.
  */
 @Table(database = ReaderDatabase.class)
 public class Scribble extends BaseModel {
@@ -25,11 +25,14 @@ public class Scribble extends BaseModel {
     @Column
     @PrimaryKey(autoincrement = true)
     @Index
-    long id = INVALID_ID;
+    long id;
+
+    @Column
+    String md5 ;
 
     @Column
     @Unique
-    String md5 = null;
+    String uniqueId;
 
     @Column
     Date createdAt = null;
@@ -44,23 +47,18 @@ public class Scribble extends BaseModel {
     String subPageName;
 
     @Column
-    int color = Color.BLACK;
+    int color;
 
     @Column
-    float thickness = 3.0f;
+    float thickness;
 
-    @Column
-    Blob points;
-    List<TouchPoint> rawPoints;
+    @Column(typeConverter = TouchPointListConverter.class)
+    TouchPointList points;
 
     @Column
     String position;
 
-    @Column
-    String uniqueId  = null;
-
-    @Column
-    String boundingRectString;
+    @Column(typeConverter = RectangleConverter.class)
     RectF boundingRect = null;
 
     @Column
@@ -136,16 +134,16 @@ public class Scribble extends BaseModel {
         thickness = t;
     }
 
-    public Blob  getPoints() {
+    public TouchPointList  getPoints() {
         return points;
     }
 
-    public List<TouchPoint> allocatePoints(int size) {
-        rawPoints = new ArrayList<TouchPoint>(size);
-        return rawPoints;
+    public TouchPointList allocatePoints(int size) {
+        points = new TouchPointList(size);
+        return points;
     }
 
-    public void setPoints(final Blob pts) {
+    public void setPoints(final TouchPointList pts) {
         points = pts;
     }
 
@@ -177,15 +175,6 @@ public class Scribble extends BaseModel {
         }
     }
 
-    public void setBoundingRectString(final String rect) {
-        boundingRectString = rect;
-    }
-
-    public final String getBoundingRectString() {
-        return boundingRectString;
-    }
-
-
     public void setBoundingRect(final RectF rect) {
         boundingRect = rect;
     }
@@ -209,4 +198,5 @@ public class Scribble extends BaseModel {
     public void setExtraAttributes(final String attributes) {
         extraAttributes = attributes;
     }
+
 }

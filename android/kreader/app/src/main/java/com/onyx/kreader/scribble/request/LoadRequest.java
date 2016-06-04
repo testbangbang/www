@@ -24,8 +24,7 @@ public class LoadRequest extends BaseScribbleRequest {
     }
 
     public void execute(final ScribbleManager parent) throws Exception {
-        list = ScribbleDataProvider.loadScribblePage(getContext(), documentMd5, pageName, subPageName);
-
+        list = ScribbleDataProvider.loadScribbleList(getContext(), documentMd5, pageName, subPageName);
     }
 
     public final List<Scribble> getList() {

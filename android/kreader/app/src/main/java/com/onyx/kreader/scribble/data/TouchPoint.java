@@ -1,14 +1,28 @@
 package com.onyx.kreader.scribble.data;
 
+import org.nustaq.serialization.annotations.Flat;
+
+import java.io.Serializable;
+
 /**
  * Created by zhuzeng on 4/22/16.
  */
-public class TouchPoint {
+@Flat
+public class TouchPoint implements Serializable {
 
+    @Flat
     public float x;
+
+    @Flat
     public float y;
+
+    @Flat
     public float pressure;
+
+    @Flat
     public float size;
+
+    @Flat
     public long timestamp;
 
     public TouchPoint() {
@@ -43,4 +57,6 @@ public class TouchPoint {
     public long getTimestamp() {
         return timestamp;
     }
+
+
 }
