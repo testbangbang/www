@@ -45,6 +45,7 @@ public class HandlerManager {
     public HandlerManager(final Context context) {
         super();
         providerMap.put(BASE_PROVIDER, new BaseHandler(this));
+        providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, context));
         activeProvider = BASE_PROVIDER;
         enable = true;
         enableTouch = true;

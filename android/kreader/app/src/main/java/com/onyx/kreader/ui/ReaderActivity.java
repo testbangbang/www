@@ -14,6 +14,7 @@ import android.view.*;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -41,6 +42,8 @@ import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.ui.highlight.HighlightCursor;
+import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.ui.menu.ReaderMenu;
 import com.onyx.kreader.ui.menu.ReaderMenuItem;
 import com.onyx.kreader.ui.menu.ReaderSideMenu;
@@ -76,6 +79,8 @@ public class ReaderActivity extends ActionBarActivity {
     private boolean preRenderNext = true;
 
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
+
+    private ReaderSelectionManager selectionManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -228,7 +233,23 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void selectWord(float x1, float y1, float x2, float y2, boolean b) {
+        PageInfo page = hitTestPage(x1, y1);
+        if (page == null) {
+            return;
+        }
+        new SelectWordAction(page.getName(), new PointF(x1, y1), new PointF(x2, y2)).execute(this);
+    }
 
+    private PageInfo hitTestPage(float x, float y) {
+        if (getReaderViewInfo().getVisiblePages() == null) {
+            return null;
+        }
+        for (PageInfo pageInfo : getReaderViewInfo().getVisiblePages()) {
+            if (pageInfo.getDisplayRect().contains(x, y)) {
+                return pageInfo;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -614,14 +635,38 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void onSearchFinished(SearchRequest request, Exception e) {
+        if (e != null) {
+            return;
+        }
+
         getSearchMenu().setSearchOptions(request.getSearchOptions());
         getSearchMenu().show();
-        if (!request.hasSearchResults(reader)) {
+        if (!request.getReaderViewInfo().hasSearchResults()) {
             getSearchMenu().searchDone(PopupSearchMenu.SearchResult.EMPTY);
         } else {
             getSearchMenu().searchDone(PopupSearchMenu.SearchResult.SUCCEED);
             handleRenderRequestFinished(request, e);
         }
+    }
+
+    public void onSelectWordFinished(SelectWordRequest request, Exception e) {
+        if (e != null) {
+            return;
+        }
+
+        if (!request.getReaderViewInfo().hasHighlightResult()) {
+            //Toast.makeText(ReaderActivity.this, R.string.emptyselection, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ReaderSelection selection = request.getReaderViewInfo().getHighlightResult();
+        Debug.d(TAG, "select word result: " + JSON.toJSONString(selection));
+        getSelectionManager().setCurrentSelection(selection);
+        getSelectionManager().update(this);
+        getSelectionManager().updateDisplayPosition();
+
+        handlerManager.setActiveProvider(HandlerManager.WORD_SELECTION_PROVIDER);
+        handleRenderRequestFinished(request, e);
     }
 
     public void backward() {
@@ -653,6 +698,12 @@ public class ReaderActivity extends ActionBarActivity {
         return readerViewInfo;
     }
 
+    public ReaderSelectionManager getSelectionManager() {
+        if (selectionManager == null) {
+            selectionManager = new ReaderSelectionManager();
+        }
+        return selectionManager;
+    }
 
     private void handleRenderRequestFinished(final BaseReaderRequest request, Exception e) {
         Debug.d(TAG, "handleRenderRequestFinished: " + request + ", " + e);
@@ -680,6 +731,7 @@ public class ReaderActivity extends ActionBarActivity {
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, pageBitmap);
         drawSearchResults(canvas, paint);
+        drawHighlightResult(canvas, paint);
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -697,15 +749,29 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawSearchResults(Canvas canvas, Paint paint) {
-        List<ReaderSelection> list = getReaderViewInfo().getSearchResults();
+        drawReaderSelections(canvas, paint, getReaderViewInfo().getSearchResults());
+    }
+
+    private void drawHighlightResult(Canvas canvas, Paint paint) {
+        if (getReaderViewInfo().hasHighlightResult()) {
+            drawReaderSelection(canvas, paint, getReaderViewInfo().getHighlightResult());
+            drawSelectionCursor(canvas, paint, xorMode);
+        }
+    }
+
+    private void drawReaderSelection(Canvas canvas, Paint paint, ReaderSelection selection) {
+        PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
+        if (pageInfo != null) {
+            drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+        }
+    }
+
+    private void drawReaderSelections(Canvas canvas, Paint paint, List<ReaderSelection> list) {
         if (list == null || list.size() <= 0) {
             return;
         }
         for (ReaderSelection sel : list) {
-            PageInfo pageInfo = getReaderViewInfo().getPageInfo(sel.getPagePosition());
-            if (pageInfo != null) {
-                drawHighlightRectangles(canvas, paint, sel.getRectangles());
-            }
+            drawReaderSelection(canvas, paint, sel);
         }
     }
 
@@ -719,6 +785,10 @@ public class ReaderActivity extends ActionBarActivity {
         for (int i = 0; i < rectangles.size(); ++i) {
             canvas.drawRect(rectangles.get(i), paint);
         }
+    }
+
+    private void drawSelectionCursor(Canvas canvas, Paint paint, PixelXorXfermode xor) {
+        getSelectionManager().draw(canvas, paint, xor);
     }
 
     public String getCurrentPageName() {
@@ -865,5 +935,35 @@ public class ReaderActivity extends ActionBarActivity {
 
     public void setFullScreen(boolean fullScreen) {
         ReaderDeviceManager.setFullScreen(this, fullScreen);
+    }
+
+    public boolean hasSelectionWord() {
+        return readerViewInfo.hasHighlightResult();
+    }
+
+    public void highlightAlongTouchMoved(float x, float y, int cursorSelected) {
+        ReaderSelection selection = getReaderViewInfo().getHighlightResult();
+        PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
+        if (hitTestPage(x, y) != pageInfo) {
+            return;
+        }
+        if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
+            PointF bottomRight = RectUtils.getBottomRight(selection.getRectangles());
+            new SelectWordAction(pageInfo.getName(), new PointF(x, y), bottomRight).execute(this);
+        } else {
+            PointF leftTop = RectUtils.getTopLeft(selection.getRectangles());
+            new SelectWordAction(pageInfo.getName(), leftTop, new PointF(x, y)).execute(this);
+        }
+
+    }
+
+    public int getCursorSelected(int x, int y) {
+        if (getSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX).hitTest(x, y)) {
+            return HighlightCursor.BEGIN_CURSOR_INDEX;
+        }
+        if (getSelectionManager().getHighlightCursor(HighlightCursor.END_CURSOR_INDEX).hitTest(x, y)) {
+            return HighlightCursor.END_CURSOR_INDEX;
+        }
+        return -1;
     }
 }

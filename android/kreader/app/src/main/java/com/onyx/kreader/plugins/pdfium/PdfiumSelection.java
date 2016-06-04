@@ -26,6 +26,10 @@ public class PdfiumSelection implements ReaderSelection {
     public PdfiumSelection() {
     }
 
+    public PdfiumSelection(String pagePosition) {
+        this.pagePosition = pagePosition;
+    }
+
     public PdfiumSelection(int page, int [] data, byte [] string, int start, int end) {
         pagePosition = PagePositionUtils.fromPosition(page);
         for(int i = 0; i < data.length / 4; ++i) {

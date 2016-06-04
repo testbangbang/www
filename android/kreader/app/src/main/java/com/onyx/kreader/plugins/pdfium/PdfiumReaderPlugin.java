@@ -357,7 +357,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end) {
-        PdfiumSelection selection = new PdfiumSelection();
+        PdfiumSelection selection = new PdfiumSelection(start.pageName);
         getPluginImpl().hitTest(PagePositionUtils.getPageNumber(start.pageName),
                 (int) start.pageDisplayRect.left,
                 (int) start.pageDisplayRect.top,
