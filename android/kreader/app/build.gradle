@@ -49,7 +49,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard-rules.pro', 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
@@ -62,8 +62,6 @@ android {
         preDexLibraries = false
     }
 
-
-
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
@@ -73,6 +71,10 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 

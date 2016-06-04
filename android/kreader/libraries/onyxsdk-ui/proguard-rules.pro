@@ -16,10 +16,6 @@
 #   public *;
 #}
 
--dontnote com.google.vending.licensing.ILicensingService
--dontnote com.android.vending.licensing.ILicensingService
--dontnote android.support.annotation.Keep
-
 -keeppackagenames com.onyx.android.sdk.api.**
 #-keepnames com.onyx.android.sdk.api.**
 
