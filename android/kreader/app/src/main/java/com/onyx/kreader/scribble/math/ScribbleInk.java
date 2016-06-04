@@ -1,4 +1,4 @@
-package com.onyx.kreader.scribble;
+package com.onyx.kreader.scribble.math;
 
 
 import android.text.method.Touch;

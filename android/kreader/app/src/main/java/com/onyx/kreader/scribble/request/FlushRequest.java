@@ -1,7 +1,7 @@
 package com.onyx.kreader.scribble.request;
 
 
-import com.onyx.kreader.scribble.ScribbleManager;
+import com.onyx.kreader.scribble.ShapeManager;
 import com.onyx.kreader.scribble.shape.Shape;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class FlushRequest extends BaseScribbleRequest {
         shapeList = list;
     }
 
-    public void execute(final ScribbleManager parent) throws Exception {
+    public void execute(final ShapeManager parent) throws Exception {
 
     }
 

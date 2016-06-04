@@ -1,7 +1,7 @@
 package com.onyx.kreader.scribble.request;
 
-import com.onyx.kreader.scribble.ScribbleManager;
-import com.onyx.kreader.scribble.data.Scribble;
+import com.onyx.kreader.scribble.ShapeManager;
+import com.onyx.kreader.scribble.data.ShapeModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,16 +12,16 @@ import java.util.List;
 public class RemoveByUniqueIdListRequest extends BaseScribbleRequest {
 
     private String documentIndex;
-    private List<Scribble> list = new ArrayList<Scribble>();
+    private List<ShapeModel> list = new ArrayList<ShapeModel>();
 
 
-    public RemoveByUniqueIdListRequest(final String doc, final List<Scribble> l) {
+    public RemoveByUniqueIdListRequest(final String doc, final List<ShapeModel> l) {
         documentIndex = doc;
         list.addAll(l);
     }
 
     @Override
-    public void execute(final ScribbleManager parent) throws Exception {
+    public void execute(final ShapeManager parent) throws Exception {
         // ask scribble provider to remove them.
     }
 }

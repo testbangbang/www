@@ -1,9 +1,11 @@
 package com.onyx.kreader.scribble.shape;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import com.onyx.kreader.scribble.data.TouchPoint;
+import com.onyx.kreader.scribble.data.TouchPointList;
 
 /**
  * Created by zhuzeng on 4/19/16.
@@ -56,10 +58,11 @@ public interface Shape {
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
 
+    public void addPoints(final TouchPointList points);
+
     public boolean supportDFB();
 
-    // draw path by the points. called in rendering thread.
-    public void render(final Canvas canvas, final Paint paint);
+    public void render(final Matrix matrix, final Canvas canvas, final Paint paint);
 
     public boolean hitTest(final float x, final float y);
 

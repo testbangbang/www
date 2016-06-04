@@ -465,7 +465,7 @@ public class ReaderActivity extends ActionBarActivity {
                         break;
                     case "/Font/Note":
                         break;
-                    case "/Font/Scribble":
+                    case "/Font/ShapeModel":
                         break;
                     case "/Font/Export":
                         break;

@@ -5,14 +5,10 @@ import android.util.Log;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.RequestManager;
 import com.onyx.kreader.dataprovider.request.BaseDataProviderRequest;
-import com.onyx.kreader.dataprovider.request.SaveBookmarkRequest;
-import com.onyx.kreader.scribble.data.Scribble;
-import com.onyx.kreader.scribble.data.Scribble_Table;
+import com.onyx.kreader.scribble.data.ShapeModel;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
-
-import java.util.List;
 
 /**
  * Created by zhuzeng on 5/31/16.
@@ -32,7 +28,7 @@ public class DataProvider {
     }
 
     public static void cleanUp() {
-        Delete.table(Scribble.class);
+        Delete.table(ShapeModel.class);
     }
 
     private final Runnable generateRunnable(final BaseDataProviderRequest request) {

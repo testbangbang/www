@@ -48,6 +48,10 @@ public class TouchPointList implements Serializable {
         points.add(touchPoint);
     }
 
+    public void addAll(final TouchPointList other) {
+        points.addAll(other.getPoints());
+    }
+
     public Iterator<TouchPoint> iterator() {
         return points.iterator();
     }

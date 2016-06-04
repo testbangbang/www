@@ -2,14 +2,14 @@ package com.onyx.kreader.scribble.request;
 
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.common.RequestManager;
-import com.onyx.kreader.scribble.ScribbleManager;
+import com.onyx.kreader.scribble.ShapeManager;
 
 /**
  * Created by zhuzeng on 6/3/16.
  */
 public class BaseScribbleRequest extends BaseRequest {
 
-    public void execute(final ScribbleManager scribbleManager) throws Exception {
+    public void execute(final ShapeManager shapeManager) throws Exception {
     }
 
     public void afterExecute(final RequestManager requestManager) {

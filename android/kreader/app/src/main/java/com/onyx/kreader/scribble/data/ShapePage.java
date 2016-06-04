@@ -3,10 +3,6 @@ package com.onyx.kreader.scribble.data;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import com.onyx.kreader.common.BaseCallback;
-import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.scribble.ScribbleManager;
-import com.onyx.kreader.scribble.request.ShapeRenderRequest;
 import com.onyx.kreader.scribble.shape.*;
 
 import java.util.ArrayList;
@@ -14,8 +10,10 @@ import java.util.List;
 
 /**
  * Created by zhuzeng on 4/23/16.
+ * Manager for a list of shapes in single page.
+ * To make it easy for activity or other class to manage shapes.
  */
-public class ScribblePage {
+public class ShapePage {
 
     private boolean dirty = false;
     private String uniqueName;
@@ -64,7 +62,7 @@ public class ScribblePage {
         }
         Canvas canvas = new Canvas(bitmap);
         for(Shape shape : shapeList) {
-            shape.render(canvas, paint);
+            shape.render(null, canvas, paint);
         }
     }
 

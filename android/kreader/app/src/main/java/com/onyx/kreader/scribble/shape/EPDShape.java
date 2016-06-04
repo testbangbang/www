@@ -1,6 +1,7 @@
 package com.onyx.kreader.scribble.shape;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -97,7 +98,11 @@ public class EPDShape implements Shape {
         normalizedPoints.add(normalizedPoint);
     }
 
-    public void render(final Canvas canvas, final Paint paint) {
+    public void addPoints(final TouchPointList points) {
+        normalizedPoints.addAll(points);
+    }
+
+    public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
     }
 
     public boolean hitTest(final float x, final float y) {

@@ -1,8 +1,10 @@
 package com.onyx.kreader.scribble.request;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
-import com.onyx.kreader.scribble.ScribbleManager;
+import com.onyx.kreader.scribble.ShapeManager;
 import com.onyx.kreader.scribble.shape.Shape;
 
 import java.util.List;
@@ -13,18 +15,21 @@ import java.util.List;
 public class ShapeRenderRequest extends BaseScribbleRequest {
 
     private List<Shape> shapes;
-    private Canvas canvas;
+    private Bitmap bitmap;
     private Paint paint;
 
-    public ShapeRenderRequest(final List<Shape> list, final Canvas c, final Paint p) {
+    public ShapeRenderRequest(final List<Shape> list, final Bitmap b, final Paint p) {
         shapes = list;
-        canvas = c;
+        bitmap = b;
         paint = p;
     }
 
-    public void execute(final ScribbleManager parent) throws Exception {
+    public void execute(final ShapeManager parent) throws Exception {
+        bitmap.eraseColor(Color.argb(0, 0xff, 0xff, 0xff));
+        Canvas canvas = new Canvas(bitmap);
+
         for(Shape shape : shapes) {
-            shape.render(canvas, paint);
+            shape.render(null, canvas, paint);
         }
     }
 }

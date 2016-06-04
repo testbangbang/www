@@ -1,25 +1,21 @@
 package com.onyx.kreader.scribble.data;
 
-import android.graphics.Color;
 import android.graphics.RectF;
 import com.onyx.kreader.dataprovider.ReaderDatabase;
 import com.raizlabs.android.dbflow.annotation.*;
-import com.raizlabs.android.dbflow.data.Blob;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/3/16.
- * Persistence for all shapes.
+ * Data model for all shapes.
  */
 @Table(database = ReaderDatabase.class)
-public class Scribble extends BaseModel {
+public class ShapeModel extends BaseModel {
 
-    private static final String TAG = Scribble.class.getSimpleName();
+    private static final String TAG = ShapeModel.class.getSimpleName();
     public static final int INVALID_ID = -1;
 
     @Column
@@ -65,12 +61,12 @@ public class Scribble extends BaseModel {
     RectF boundingRect = null;
 
     @Column
-    int scribbleType;
+    int shapeType;
 
     @Column
     String extraAttributes;
 
-    public Scribble() {
+    public ShapeModel() {
     }
 
     public long getId() {
@@ -186,12 +182,12 @@ public class Scribble extends BaseModel {
         return boundingRect;
     }
 
-    public int getScribbleType() {
-        return scribbleType;
+    public int getShapeType() {
+        return shapeType;
     }
 
-    public void setScribbleType(int t) {
-        scribbleType = t;
+    public void setShapeType(int t) {
+        shapeType = t;
     }
 
     public String getExtraAttributes() {

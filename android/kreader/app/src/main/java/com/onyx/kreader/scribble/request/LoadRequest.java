@@ -1,9 +1,9 @@
 package com.onyx.kreader.scribble.request;
 
 
-import com.onyx.kreader.scribble.ScribbleManager;
-import com.onyx.kreader.scribble.data.Scribble;
-import com.onyx.kreader.scribble.data.ScribbleDataProvider;
+import com.onyx.kreader.scribble.ShapeManager;
+import com.onyx.kreader.scribble.data.ShapeModel;
+import com.onyx.kreader.scribble.data.ShapeDataProvider;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class LoadRequest extends BaseScribbleRequest {
     private String documentMd5;
     private String pageName;
     private String subPageName;
-    private List<Scribble> list;
+    private List<ShapeModel> list;
 
     public LoadRequest(final String md5, final String pn, final String spn) {
         documentMd5 = md5;
@@ -23,11 +23,11 @@ public class LoadRequest extends BaseScribbleRequest {
         subPageName = spn;
     }
 
-    public void execute(final ScribbleManager parent) throws Exception {
-        list = ScribbleDataProvider.loadScribbleList(getContext(), documentMd5, pageName, subPageName);
+    public void execute(final ShapeManager parent) throws Exception {
+        list = ShapeDataProvider.loadScribbleList(getContext(), documentMd5, pageName, subPageName);
     }
 
-    public final List<Scribble> getList() {
+    public final List<ShapeModel> getList() {
         return list;
     }
 

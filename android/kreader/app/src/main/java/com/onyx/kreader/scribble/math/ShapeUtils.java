@@ -1,4 +1,4 @@
-package com.onyx.kreader.scribble;
+package com.onyx.kreader.scribble.math;
 
 import android.content.Context;
 import android.view.MotionEvent;
@@ -7,7 +7,7 @@ import com.onyx.kreader.scribble.data.TouchPoint;
 /**
  * Created by zhuzeng on 9/18/15.
  */
-public class ScribbleUtils {
+public class ShapeUtils {
 
     public static TouchPoint normalize(double scale, int pageX, int pageY, final MotionEvent touchPoint) {
         return new TouchPoint(

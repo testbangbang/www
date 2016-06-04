@@ -1,6 +1,7 @@
 package com.onyx.kreader.scribble.shape;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import com.onyx.kreader.scribble.data.TouchPoint;
 
@@ -17,7 +18,7 @@ public class CircleShape extends NormalShape {
     }
 
 
-    public void render(final Canvas canvas, final Paint paint) {
+    public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
         float cx = (downPoint.x + currentPoint.x) / 2;
         float cy = (downPoint.y + currentPoint.y) / 2;
         float radius = Math.abs(cx - downPoint.x);
