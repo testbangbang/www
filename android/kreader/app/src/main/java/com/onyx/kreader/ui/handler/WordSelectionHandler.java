@@ -86,9 +86,12 @@ public class WordSelectionHandler extends BaseHandler {
             case KEYCDOE_SCRIBE:
             case KEYCDOE_ERASE:
                 return false;
+            case KeyEvent.KEYCODE_BACK:
+                activity.quitWordSelection();
+                return true;
             case KeyEvent.KEYCODE_PAGE_DOWN:
             case KeyEvent.KEYCODE_PAGE_UP:
-//                activity.hideTextSelectionPopupWindow(true, true);
+                activity.quitWordSelection();
                 return super.onKeyDown(activity,keyCode,event);
             default:
                 return super.onKeyDown(activity,keyCode,event);
