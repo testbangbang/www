@@ -966,4 +966,9 @@ public class ReaderActivity extends ActionBarActivity {
         }
         return -1;
     }
+
+    public void quitWordSelection() {
+        getHandlerManager().resetToDefaultProvider();
+        redrawPage();
+    }
 }
