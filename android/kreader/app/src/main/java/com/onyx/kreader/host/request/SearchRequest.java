@@ -1,6 +1,5 @@
 package com.onyx.kreader.host.request;
 
-import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderSearchOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -9,7 +8,6 @@ import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
 
@@ -39,11 +37,11 @@ public class SearchRequest extends BaseReaderRequest {
             final String page = reader.getSearchManager().searchResults().get(0).getPagePosition();
             new GotoLocationRequest(page).execute(reader);
             LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
-            getReaderViewInfo().saveSearchResults(toScreen(reader.getSearchManager().searchResults()));
+            getReaderViewInfo().saveSearchResults(translateToScreen(reader.getSearchManager().searchResults()));
         }
     }
 
-    private List<ReaderSelection> toScreen(final List<ReaderSelection> list) {
+    private List<ReaderSelection> translateToScreen(final List<ReaderSelection> list) {
         for (ReaderSelection selection : list) {
             PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
             if (pageInfo == null) {
@@ -61,9 +59,5 @@ public class SearchRequest extends BaseReaderRequest {
 
     public ReaderSearchOptions getSearchOptions() {
         return searchOptions;
-    }
-
-    public boolean hasSearchResults(final Reader reader) {
-        return reader.getSearchManager().searchResults().size() > 0;
     }
 }

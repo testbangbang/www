@@ -31,8 +31,6 @@ public class HandlerManager {
     public static final String ERASER_PROVIDER = "eraser";
     public static final String SELECTION_ZOOM = "sz";
 
-
-
     private String activeProvider;
     private Map<String, BaseHandler> providerMap = new HashMap<String, BaseHandler>();
     private PointF touchStartPosition;
@@ -42,12 +40,12 @@ public class HandlerManager {
     private boolean  penErasing = false;
     private boolean penStart = false;
     private ReaderConfig readerConfig;
-    private int lastTooltype = MotionEvent.TOOL_TYPE_FINGER;
-
+    private int lastToolType = MotionEvent.TOOL_TYPE_FINGER;
 
     public HandlerManager(final Context context) {
         super();
         providerMap.put(BASE_PROVIDER, new BaseHandler(this));
+        providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, context));
         activeProvider = BASE_PROVIDER;
         enable = true;
         enableTouch = true;
@@ -175,13 +173,13 @@ public class HandlerManager {
             return false;
         }
         int toolType = e.getToolType(0);
-        if (lastTooltype != toolType) {
-            if ((toolType == MotionEvent.TOOL_TYPE_STYLUS) || (lastTooltype == MotionEvent.TOOL_TYPE_ERASER && toolType == MotionEvent.TOOL_TYPE_FINGER)) {
+        if (lastToolType != toolType) {
+            if ((toolType == MotionEvent.TOOL_TYPE_STYLUS) || (lastToolType == MotionEvent.TOOL_TYPE_ERASER && toolType == MotionEvent.TOOL_TYPE_FINGER)) {
                 //activity.changeToScribbleMode();
             } else if (toolType == MotionEvent.TOOL_TYPE_ERASER) {
                 //activity.changeToEraseMode();
             }
-            lastTooltype = toolType;
+            lastToolType = toolType;
         }
 
         return getActiveProvider().onTouchEvent(activity, e);
@@ -338,7 +336,7 @@ public class HandlerManager {
     public void resetPenState() {
         penErasing = false;
         penStart = false;
-        lastTooltype = MotionEvent.TOOL_TYPE_FINGER;
+        lastToolType = MotionEvent.TOOL_TYPE_FINGER;
     }
 
     public boolean processKeyDown(ReaderActivity activity,  final String action, final String args) {

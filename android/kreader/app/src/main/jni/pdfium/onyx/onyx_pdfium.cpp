@@ -258,7 +258,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
         return 0;
     }
 
-    double tolerance = 0;
+    double tolerance = 10;
     double startPageX, startPageY, endPageX, endPageY;
 
     // convert from screen to page
