@@ -29,7 +29,6 @@ public class DataProvider {
     public static void init(final Context context) {
         FlowConfig.Builder builder = new FlowConfig.Builder(context);
         FlowManager.init(builder.build());
-        cleanUp();
     }
 
     public static void cleanUp() {

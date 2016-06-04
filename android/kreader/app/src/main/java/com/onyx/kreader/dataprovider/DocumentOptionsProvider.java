@@ -2,6 +2,7 @@ package com.onyx.kreader.dataprovider;
 
 import android.content.Context;
 import com.alibaba.fastjson.JSON;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.StringUtils;
@@ -58,6 +59,7 @@ public class DocumentOptionsProvider {
             }
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

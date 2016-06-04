@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.kreader.scribble.data.TouchPoint;
+import com.onyx.kreader.scribble.data.TouchPointList;
 
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class EPDShape implements Shape {
 
     static public final UpdateMode updateMode = UpdateMode.DU;
     private RectF boundingRect = new RectF();
-    private List<TouchPoint> normalizedPoints = new ArrayList<TouchPoint>();
+    private TouchPointList normalizedPoints = new TouchPointList();
 
     /**
      * rectangle, circle, etc.
@@ -106,7 +107,7 @@ public class EPDShape implements Shape {
         return true;
     }
 
-    public final List<TouchPoint> getNormalizedPoints() {
+    public final TouchPointList getNormalizedPoints() {
         return normalizedPoints;
     }
 }

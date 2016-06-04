@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import com.onyx.kreader.scribble.data.TouchPoint;
+import com.onyx.kreader.scribble.data.TouchPointList;
 
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +16,7 @@ public class BrushScribbleShape extends EPDShape  {
 
     // render path with width list and generate path list.
     public void render(final Canvas canvas, final Paint paint) {
-        final List<TouchPoint> pointList = getNormalizedPoints();
+        final TouchPointList pointList = getNormalizedPoints();
         if (pointList.size() <= 0) {
             return;
         }

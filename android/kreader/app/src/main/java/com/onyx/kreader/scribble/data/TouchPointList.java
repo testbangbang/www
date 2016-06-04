@@ -5,6 +5,7 @@ import org.nustaq.serialization.annotations.Flat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -41,5 +42,13 @@ public class TouchPointList implements Serializable {
 
     public TouchPoint get(int i) {
         return points.get(i);
+    }
+
+    public void add(final TouchPoint touchPoint) {
+        points.add(touchPoint);
+    }
+
+    public Iterator<TouchPoint> iterator() {
+        return points.iterator();
     }
 }

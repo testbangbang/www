@@ -46,12 +46,5 @@ public class ScribbleDataProvider {
         return true;
     }
 
-    public static boolean remove(final Context context,
-                                 final String md5,
-                                 final String pageName,
-                                 final String subPage) {
-
-        return false;
-    }
 
 }

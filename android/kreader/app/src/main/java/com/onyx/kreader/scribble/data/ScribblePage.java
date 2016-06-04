@@ -3,6 +3,10 @@ package com.onyx.kreader.scribble.data;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import com.onyx.kreader.common.BaseCallback;
+import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.scribble.ScribbleManager;
+import com.onyx.kreader.scribble.request.ShapeRenderRequest;
 import com.onyx.kreader.scribble.shape.*;
 
 import java.util.ArrayList;
@@ -93,4 +97,5 @@ public class ScribblePage {
     public final Shape getCurrentShape() {
         return currentShape;
     }
+
 }

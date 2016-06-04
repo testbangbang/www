@@ -78,4 +78,28 @@ public class ScribbleProviderTest   extends ActivityInstrumentationTestCase2<Rea
         assertTrue(resultPoint.y == point.y);
         assertTrue(resultPoint.size == point.size);
     }
+
+    public void testSaveAndRemove() {
+        DataProvider.cleanUp();
+        List<Scribble> list = new ArrayList<Scribble>();
+        final String md5 = UUID.randomUUID().toString();
+        final String pageName = UUID.randomUUID().toString();
+        final String subPageName = UUID.randomUUID().toString();
+        final RectF boundingRect = new RectF(0, 0, 100, 100);
+        final TouchPointList points = new TouchPointList();
+        final TouchPoint point = randomPoint();
+        points.getPoints().add(point);
+        final Scribble scribble = randomScribble(md5, pageName, subPageName, boundingRect, points);
+        list.add(scribble);
+        ScribbleDataProvider.saveScribbleList(getActivity(), list);
+        List<Scribble> result = ScribbleDataProvider.loadScribbleList(getActivity(), md5, pageName, null);
+        assertTrue(result.size() == 1);
+        assertTrue(result.get(0).getBoundingRect().width() == boundingRect.width());
+        assertTrue(result.get(0).getBoundingRect().height() == boundingRect.height());
+        assertTrue(result.get(0).getPoints().size() == 1);
+
+        ScribbleDataProvider.remove(getActivity(), scribble.getUniqueId());
+        result = ScribbleDataProvider.loadScribbleList(getActivity(), md5, pageName, null);
+        assertTrue(result.size() <= 0);
+    }
 }

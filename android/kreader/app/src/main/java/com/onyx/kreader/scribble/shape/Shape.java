@@ -58,6 +58,7 @@ public interface Shape {
 
     public boolean supportDFB();
 
+    // draw path by the points. called in rendering thread.
     public void render(final Canvas canvas, final Paint paint);
 
     public boolean hitTest(final float x, final float y);

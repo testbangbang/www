@@ -14,61 +14,61 @@ import java.util.List;
 public class DocumentOptions extends BaseData {
 
     @Column
-    private String name = null;
+    String name = null;
 
     @Column
-    private String title = null;
+    String title = null;
 
     @Column
-    private String authors = null;
+    String authors = null;
 
     @Column
-    private String publisher = null;
+    String publisher = null;
 
     @Column
-    private String language = null;
+    String language = null;
 
     @Column
-    private String ISBN = null;
+    String ISBN = null;
 
     @Column
-    private String description = null;
+    String description = null;
 
     @Column
-    private String location = null;
+    String location = null;
 
     @Column
-    private String nativeAbsolutePath = null;
+    String nativeAbsolutePath = null;
 
     @Column
-    private long size = 0;
+    long size = 0;
 
     @Column
-    private String encoding = null;
+    String encoding = null;
 
     @Column
-    private String progress = null;
+    String progress = null;
 
     @Column
-    private int favorite = 0;
+    int favorite = 0;
 
     @Column
-    private int rating = 0;
+    int rating = 0;
 
     @Column
-    private String tags = null;
+    String tags = null;
 
     @Column
-    private String series = null;
+    String series = null;
 
     @Column
-    private String extraAttributes = null;
+    String extraAttributes = null;
 
     @Column
-    private String type = null;
+    String type = null;
 
     @Column
-    private String cloudReference;
+    String cloudReference;
 
     public String getName() {
         return name;

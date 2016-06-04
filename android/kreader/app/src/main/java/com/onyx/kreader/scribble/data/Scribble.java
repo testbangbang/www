@@ -52,6 +52,9 @@ public class Scribble extends BaseModel {
     @Column
     float thickness;
 
+    @Column
+    int zorder;
+
     @Column(typeConverter = TouchPointListConverter.class)
     TouchPointList points;
 
@@ -199,4 +202,11 @@ public class Scribble extends BaseModel {
         extraAttributes = attributes;
     }
 
+    public int getZorder() {
+        return zorder;
+    }
+
+    public void setZorder(int order) {
+        zorder = order;
+    }
 }
