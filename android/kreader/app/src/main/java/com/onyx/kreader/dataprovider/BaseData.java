@@ -24,7 +24,7 @@ public class BaseData extends BaseModel {
 
     @Column
     @Unique
-    private String md5 = null;
+    String md5 = null;
 
     @Column
     private Date createdAt = null;

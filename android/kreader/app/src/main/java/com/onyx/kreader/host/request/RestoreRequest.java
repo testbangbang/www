@@ -24,6 +24,7 @@ public class RestoreRequest extends BaseReaderRequest {
         restorePagePosition(reader);
         restoreScale(reader);
         restoreViewport(reader);
+        restoreOthers(reader);
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
 
@@ -52,6 +53,11 @@ public class RestoreRequest extends BaseReaderRequest {
     private void restoreViewport(final Reader reader) throws Exception {
     }
 
+    private void restoreOthers(final Reader reader) {
+        reader.getDocumentOptions().setGamma(baseOptions.getGammaLevel());
+        reader.getDocumentOptions().setEmboldenLevel(baseOptions.getEmboldenLevel());
+    }
+
     private void setSpecialScale(final Reader reader, final BaseOptions baseOptions, final String position) throws Exception {
         if (ReaderConstants.isScaleToPage(baseOptions.getSpecialScale())) {
             reader.getReaderLayoutManager().scaleToPage(position);
@@ -67,4 +73,6 @@ public class RestoreRequest extends BaseReaderRequest {
     private void setActualScale(final Reader reader, final BaseOptions baseOptions, final String position) throws Exception {
         reader.getReaderLayoutManager().setScale(position, baseOptions.getActualScale(), 0, 0);
     }
+
+
 }
