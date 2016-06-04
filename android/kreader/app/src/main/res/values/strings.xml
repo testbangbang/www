@@ -46,4 +46,5 @@
     <string name="dialog_crop_tittle">Crop</string>
     <string name="search_hint">Search</string>
     <string name="not_found">No Search Result</string>
+    <string name="emptyselection">Empty Selection</string>
 </resources>
