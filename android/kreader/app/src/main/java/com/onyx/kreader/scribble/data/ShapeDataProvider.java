@@ -9,16 +9,16 @@ import java.util.*;
 
 /**
  * Created by zhuzeng on 9/16/15.
- * CRUD for scribble page.
+ * CRUD for shape data.
  */
 public class ShapeDataProvider {
 
     private static final String TAG = ShapeDataProvider.class.getSimpleName();
 
-    public static List<ShapeModel> loadScribbleList(final Context context,
-                                                  final String md5,
-                                                  final String pageName,
-                                                  final String subPageName) {
+    public static List<ShapeModel> loadShapeList(final Context context,
+                                                 final String md5,
+                                                 final String pageName,
+                                                 final String subPageName) {
         Select select = new Select();
         Where where = select.from(ShapeModel.class).where(ShapeModel_Table.md5.eq(md5)).and(ShapeModel_Table.pageName.eq(pageName));
         if (StringUtils.isNotBlank(subPageName)) {
@@ -29,15 +29,15 @@ public class ShapeDataProvider {
         return list;
     }
 
-    public static void saveScribbleList(final Context context,
-                                        final List<ShapeModel> list) {
+    public static void saveShapeList(final Context context,
+                                     final List<ShapeModel> list) {
         for(ShapeModel shapeModel : list) {
             shapeModel.save();
         }
     }
 
-    public static boolean remove(final Context context,
-                                 final String uniqueId) {
+    public static boolean removeShape(final Context context,
+                                      final String uniqueId) {
         Select select = new Select();
         Where where = select.from(ShapeModel.class).where(ShapeModel_Table.uniqueId.eq(uniqueId));
         where.querySingle().delete();

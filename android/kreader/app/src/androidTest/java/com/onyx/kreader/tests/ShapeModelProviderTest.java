@@ -64,8 +64,8 @@ public class ShapeModelProviderTest extends ActivityInstrumentationTestCase2<Rea
         final TouchPoint point = randomPoint();
         points.getPoints().add(point);
         list.add(randomScribble(md5, pageName, subPageName, boundingRect, points));
-        ShapeDataProvider.saveScribbleList(getActivity(), list);
-        List<ShapeModel> result = ShapeDataProvider.loadScribbleList(getActivity(), md5, pageName, null);
+        ShapeDataProvider.saveShapeList(getActivity(), list);
+        List<ShapeModel> result = ShapeDataProvider.loadShapeList(getActivity(), md5, pageName, null);
         assertTrue(result.size() == 1);
         assertTrue(result.get(0).getBoundingRect().width() == boundingRect.width());
         assertTrue(result.get(0).getBoundingRect().height() == boundingRect.height());
@@ -89,15 +89,15 @@ public class ShapeModelProviderTest extends ActivityInstrumentationTestCase2<Rea
         points.getPoints().add(point);
         final ShapeModel shapeModel = randomScribble(md5, pageName, subPageName, boundingRect, points);
         list.add(shapeModel);
-        ShapeDataProvider.saveScribbleList(getActivity(), list);
-        List<ShapeModel> result = ShapeDataProvider.loadScribbleList(getActivity(), md5, pageName, null);
+        ShapeDataProvider.saveShapeList(getActivity(), list);
+        List<ShapeModel> result = ShapeDataProvider.loadShapeList(getActivity(), md5, pageName, null);
         assertTrue(result.size() == 1);
         assertTrue(result.get(0).getBoundingRect().width() == boundingRect.width());
         assertTrue(result.get(0).getBoundingRect().height() == boundingRect.height());
         assertTrue(result.get(0).getPoints().size() == 1);
 
-        ShapeDataProvider.remove(getActivity(), shapeModel.getUniqueId());
-        result = ShapeDataProvider.loadScribbleList(getActivity(), md5, pageName, null);
+        ShapeDataProvider.removeShape(getActivity(), shapeModel.getUniqueId());
+        result = ShapeDataProvider.loadShapeList(getActivity(), md5, pageName, null);
         assertTrue(result.size() <= 0);
     }
 }

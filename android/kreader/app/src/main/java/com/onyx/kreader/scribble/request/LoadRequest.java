@@ -24,7 +24,7 @@ public class LoadRequest extends BaseScribbleRequest {
     }
 
     public void execute(final ShapeManager parent) throws Exception {
-        list = ShapeDataProvider.loadScribbleList(getContext(), documentMd5, pageName, subPageName);
+        list = ShapeDataProvider.loadShapeList(getContext(), documentMd5, pageName, subPageName);
     }
 
     public final List<ShapeModel> getList() {

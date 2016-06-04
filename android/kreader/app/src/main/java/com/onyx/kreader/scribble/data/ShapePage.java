@@ -2,6 +2,7 @@ package com.onyx.kreader.scribble.data;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import com.onyx.kreader.scribble.shape.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Created by zhuzeng on 4/23/16.
  * Manager for a list of shapes in single page.
  * To make it easy for activity or other class to manage shapes.
+ * ShapeManager->ShapePage->Shape->ShapeModel
  */
 public class ShapePage {
 
@@ -24,6 +26,7 @@ public class ShapePage {
     static private final float dst[] = new float[2];
     private int currentShapeType;
     private Shape currentShape;
+    private Matrix pageMatrix;
 
     public final String getUniqueName() {
         return uniqueName;
@@ -43,10 +46,16 @@ public class ShapePage {
         return list;
     }
 
+    public void setPageMatrix(final Matrix matrix) {
+        pageMatrix = matrix;
+    }
+
     public void setPageDisplayPosition(float px, float py) {
         pageX = px;
         pageY = py;
     }
+
+
 
     public void setDisplayScale(final float scale) {
         displayScale = scale;

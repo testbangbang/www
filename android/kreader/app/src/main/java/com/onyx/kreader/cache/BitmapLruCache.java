@@ -164,7 +164,7 @@ public class BitmapLruCache implements Closeable {
         Bitmap result;
         synchronized (memoryCache) {
             result = memoryCache.get(key);
-            // If we get a value, but it has a invalid bitmap, remove it
+            // If we get a value, but it has a invalid bitmap, removeShape it
             if (result != null && result.isRecycled()) {
                 memoryCache.remove(key);
                 result = null;

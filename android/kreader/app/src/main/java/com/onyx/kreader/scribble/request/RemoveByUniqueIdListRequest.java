@@ -22,6 +22,6 @@ public class RemoveByUniqueIdListRequest extends BaseScribbleRequest {
 
     @Override
     public void execute(final ShapeManager parent) throws Exception {
-        // ask scribble provider to remove them.
+        // ask scribble provider to removeShape them.
     }
 }
