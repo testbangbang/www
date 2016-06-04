@@ -93,6 +93,7 @@ dependencies {
     compile 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
     compile 'com.jakewharton:disklrucache:2.0.2'
     compile 'org.apache.commons:commons-collections4:4.0'
+    compile 'de.ruedigermoeller:fst:2.47'
 
 }
 
