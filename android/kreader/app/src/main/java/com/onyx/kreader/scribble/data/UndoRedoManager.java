@@ -113,8 +113,16 @@ public class UndoRedoManager {
         return !back.isEmpty();
     }
 
+    public boolean canUndo() {
+        return canGoBack();
+    }
+
     public boolean canGoForward() {
         return !forward.isEmpty();
+    }
+
+    public boolean canRedo() {
+        return canGoForward();
     }
 
     private boolean add(final List<Action> list, final Action action) {
