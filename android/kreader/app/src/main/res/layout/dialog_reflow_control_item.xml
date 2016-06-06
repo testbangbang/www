@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:src="@drawable/ic_dialog_reflow_control_item_arrow_back"
-            android:background="@drawable/imagebtn_bg" />
+            android:background="@drawable/image_button_bg" />
 
         <ImageView
             android:id="@+id/forward_icon"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_dialog_reflow_control_item_arrow_forward"
-            android:background="@drawable/imagebtn_bg" />
+            android:background="@drawable/image_button_bg" />
 
         <TextView
             android:id="@+id/current_item"

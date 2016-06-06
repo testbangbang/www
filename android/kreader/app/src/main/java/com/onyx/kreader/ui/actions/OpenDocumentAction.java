@@ -1,5 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
+import android.view.View;
+import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -12,6 +14,7 @@ import com.onyx.kreader.host.request.RestoreRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -38,6 +41,10 @@ public class OpenDocumentAction extends BaseAction {
         readerActivity.getDataProvider().submit(readerActivity, loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
+                if (e != null) {
+                    cleanup(readerActivity);
+                    return;
+                }
                 openWithOptions(readerActivity, reader, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
@@ -73,14 +80,16 @@ public class OpenDocumentAction extends BaseAction {
         });
     }
 
-    private void showLoadingDialog(final ReaderActivity readerActivity) {
-    }
-
     private void showPasswordDialog(final ReaderActivity readerActivity) {
         hideLoadingDialog(readerActivity);
     }
 
-    private void hideLoadingDialog(final ReaderActivity readerActivity) {
+    private DialogLoading showLoadingDialog(final ReaderActivity activity) {
+        return activity.showLoadingDialog();
+    }
+
+    private void hideLoadingDialog(final ReaderActivity activity) {
+        activity.hideLoadingDialog();
     }
 
     private void cleanup(final ReaderActivity readerActivity) {

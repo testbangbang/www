@@ -8,4 +8,14 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@android:color/black</item>
     </style>
+    <style name="dialog_progress" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    <style name="single_line_Y_axis_View">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@android:color/black</item>
+    </style>
 </resources>
