@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.util.Log;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.RequestManager;
+import com.onyx.kreader.scribble.data.UndoRedoManager;
 import com.onyx.kreader.scribble.request.BaseScribbleRequest;
 
 /**
@@ -20,6 +21,7 @@ public class ShapeManager {
     public static int digitizerId = 1;
 
     private RequestManager requestManager = new RequestManager();
+    private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
     public ShapeManager() {
     }
