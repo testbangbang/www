@@ -25,7 +25,7 @@ public interface Shape {
     public int getType();
 
     /**
-     * get instance unique id
+     * get shape instance unique id
      * @return
      */
     public String getUniqueId();

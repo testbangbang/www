@@ -14,10 +14,6 @@ public class ShapeFactory {
     static public final int SHAPE_VARY_SCRIBBLE = 3;
     static public final int SHAPE_TEXT = 4;
 
-    // create from pool if needed.
-    public static final Shape createShape(int type) {
-        return null;
-    }
 
     public static final Shape shapeFromModel(final ShapeModel shapeModel) {
         switch (shapeModel.getShapeType()) {
@@ -25,9 +21,21 @@ public class ShapeFactory {
                 return createNormalScribbleShape(shapeModel);
             case SHAPE_VARY_SCRIBBLE:
                 return createVaryScribbleShape(shapeModel);
+            case SHAPE_CIRCLE:
+                return createCircleShape(shapeModel);
+            case SHAPE_RECTANGLE:
+                return createRectangleShape(shapeModel);
             default:
                 return createNormalScribbleShape(shapeModel);
         }
+    }
+
+    public static final ShapeModel modelFromShape(final Shape shape) {
+        final ShapeModel shapeModel = new ShapeModel();
+        shapeModel.setBoundingRect(shape.getBoundingRect());
+        shapeModel.setUniqueId(shape.getUniqueId());
+        shapeModel.setColor(shape.getColor());
+        return shapeModel;
     }
 
     private static final Shape createNormalScribbleShape(final ShapeModel shapeModel) {
@@ -41,4 +49,17 @@ public class ShapeFactory {
         shape.addPoints(shapeModel.getPoints());
         return shape;
     }
+
+    private static final Shape createCircleShape(final ShapeModel shapeModel) {
+        final CircleShape shape = new CircleShape();
+        shape.addPoints(shapeModel.getPoints());
+        return shape;
+    }
+
+    private static final Shape createRectangleShape(final ShapeModel shapeModel) {
+        final RectangleShape shape = new RectangleShape();
+        shape.addPoints(shapeModel.getPoints());
+        return shape;
+    }
+
 }
