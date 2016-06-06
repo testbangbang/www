@@ -15,6 +15,7 @@ import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.dialog.DialogLoading;
+import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -82,6 +83,20 @@ public class OpenDocumentAction extends BaseAction {
 
     private void showPasswordDialog(final ReaderActivity readerActivity) {
         hideLoadingDialog(readerActivity);
+        final DialogPassword dlg = new DialogPassword(readerActivity);
+        dlg.setOnPasswordEnteredListener(new DialogPassword.OnPasswordEnteredListener() {
+            @Override
+            public void onPasswordEntered(boolean success, String password) {
+                dlg.dismiss();
+                if (!success) {
+                    readerActivity.quitApplication();
+                } else {
+                    readerActivity.getReader().getDocumentOptions().setPassword(password);
+                    openWithOptions(readerActivity, readerActivity.getReader(), readerActivity.getReader().getDocumentOptions());
+                }
+            }
+        });
+        dlg.show();
     }
 
     private DialogLoading showLoadingDialog(final ReaderActivity activity) {
@@ -102,11 +117,6 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void processOpenException(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options, final Exception e) {
-        if (StringUtils.isNullOrEmpty(reader.getDocumentOptions().getPassword())) {
-            cleanup(readerActivity);
-            return;
-        }
-
         if (!(e instanceof ReaderException)) {
             return;
         }

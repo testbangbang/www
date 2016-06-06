@@ -48,4 +48,7 @@
     <string name="not_found">No Search Result</string>
     <string name="emptyselection">Empty Selection</string>
     <string name="loading_document">Loading Document</string>
+    <string name="dialog_password_text_password">Password</string>
+    <string name="dialog_password_set">Set</string>
+    <string name="dialog_password_cancel">Cancel</string>
 </resources>
