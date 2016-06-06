@@ -82,7 +82,6 @@ public class ReaderActivity extends ActionBarActivity {
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
 
     private ReaderSelectionManager selectionManager;
-    private DialogLoading dialogLoading;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -682,10 +681,16 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void submitRequest(final BaseReaderRequest renderRequest) {
+        reader.submitRequest(this, renderRequest, null);
+    }
+
+    public void submitRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
-                hideLoadingDialog();
+                if (callback != null) {
+                    callback.done(request, e);
+                }
                 handleRenderRequestFinished(renderRequest, e);
                 preRenderNext();
             }
@@ -975,24 +980,4 @@ public class ReaderActivity extends ActionBarActivity {
         redrawPage();
     }
 
-    public DialogLoading showLoadingDialog() {
-        if (dialogLoading == null) {
-            dialogLoading = new DialogLoading(ReaderActivity.this, getResources().getString(R.string.loading_document), true);
-            dialogLoading.setCancelButtonClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    quitApplication();
-                }
-            });
-        }
-        dialogLoading.show();
-        return dialogLoading;
-    }
-
-    public void hideLoadingDialog() {
-        if (dialogLoading != null) {
-            dialogLoading.dismiss();
-            dialogLoading = null;
-        }
-    }
 }

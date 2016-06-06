@@ -29,6 +29,7 @@ import com.onyx.kreader.utils.StringUtils;
 public class OpenDocumentAction extends BaseAction {
 
     private String documentPath;
+    private DialogLoading dialogLoading;
 
     public OpenDocumentAction(final String path) {
         documentPath = path;
@@ -100,11 +101,24 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private DialogLoading showLoadingDialog(final ReaderActivity activity) {
-        return activity.showLoadingDialog();
+        if (dialogLoading == null) {
+            dialogLoading = new DialogLoading(activity, activity.getResources().getString(R.string.loading_document), true);
+            dialogLoading.setCancelButtonClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    activity.quitApplication();
+                }
+            });
+        }
+        dialogLoading.show();
+        return dialogLoading;
     }
 
     private void hideLoadingDialog(final ReaderActivity activity) {
-        activity.hideLoadingDialog();
+        if (dialogLoading != null) {
+            dialogLoading.dismiss();
+            dialogLoading = null;
+        }
     }
 
     private void cleanup(final ReaderActivity readerActivity) {
@@ -113,7 +127,12 @@ public class OpenDocumentAction extends BaseAction {
 
     private void restoreWithOptions(final ReaderActivity readerActivity, final BaseOptions options) {
         final RestoreRequest restoreRequest = new RestoreRequest(options);
-        readerActivity.submitRequest(restoreRequest);
+        readerActivity.submitRequest(restoreRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Exception e) {
+                hideLoadingDialog(readerActivity);
+            }
+        });
     }
 
     private void processOpenException(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options, final Exception e) {
@@ -125,6 +144,7 @@ public class OpenDocumentAction extends BaseAction {
             showPasswordDialog(readerActivity);
             return;
         }
+        readerActivity.quitApplication();
     }
 
 }
