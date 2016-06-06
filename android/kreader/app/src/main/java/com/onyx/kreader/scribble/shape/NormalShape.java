@@ -9,11 +9,13 @@ import com.onyx.kreader.scribble.data.TouchPointList;
 
 /**
  * Created by zhuzeng on 4/25/16.
+ * shape on canvas.
  */
 public class NormalShape implements Shape {
 
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();
+    private String uniqueId;
 
     /**
      * rectangle, circle, etc.
@@ -23,12 +25,12 @@ public class NormalShape implements Shape {
         return ShapeFactory.SHAPE_INVALID;
     }
 
-    /**
-     * get instance unique id
-     * @return
-     */
+    public void setUniqueId(final String id) {
+        uniqueId = id;
+    }
+
     public String getUniqueId() {
-        return null;
+        return uniqueId;
     }
 
     public int getZOrder() {
@@ -62,10 +64,11 @@ public class NormalShape implements Shape {
     }
 
     public void moveTo(final float x, final float y) {
-
     }
 
-    public void resize(final float width, final float height) {}
+    public void resize(final float width, final float height) {
+    }
+
     public int getOrientation() {
         return 0;
     }
@@ -89,7 +92,12 @@ public class NormalShape implements Shape {
     }
 
     public void addPoints(final TouchPointList points) {
-
+        // the first is download
+        if (points.size() != 2) {
+            return;
+        }
+        downPoint.set(points.get(0));
+        currentPoint.set(points.get(1));
     }
 
     public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {

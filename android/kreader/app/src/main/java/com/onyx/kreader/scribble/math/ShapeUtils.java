@@ -1,6 +1,7 @@
 package com.onyx.kreader.scribble.math;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import android.view.MotionEvent;
 import com.onyx.kreader.scribble.data.TouchPoint;
 
@@ -33,4 +34,7 @@ public class ShapeUtils {
                 screenPoint.getPressure(), screenPoint.getSize(), screenPoint.getTimestamp());
     }
 
+    public static TouchPoint mapPoint(final Matrix matrix, final TouchPoint normalizedPoint) {
+        return normalizedPoint;
+    }
 }

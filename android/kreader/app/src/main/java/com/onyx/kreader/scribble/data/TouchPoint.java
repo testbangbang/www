@@ -1,5 +1,6 @@
 package com.onyx.kreader.scribble.data;
 
+import android.text.method.Touch;
 import org.nustaq.serialization.annotations.Flat;
 
 import java.io.Serializable;
@@ -37,6 +38,13 @@ public class TouchPoint implements Serializable {
         timestamp = ts;
     }
 
+    public void set(final TouchPoint point) {
+        x = point.x;
+        y = point.y;
+        pressure = point.pressure;
+        size = point.size;
+        timestamp = point.timestamp;
+    }
 
     public float getX() {
         return x;

@@ -24,10 +24,8 @@ public interface Shape {
      */
     public int getType();
 
-    /**
-     * get shape instance unique id
-     * @return
-     */
+    public void setUniqueId(final String uniqueId);
+
     public String getUniqueId();
 
     public int getZOrder();

@@ -20,6 +20,7 @@ public class EPDShape implements Shape {
     static public final UpdateMode updateMode = UpdateMode.DU;
     private RectF boundingRect = new RectF();
     private TouchPointList normalizedPoints = new TouchPointList();
+    private String uniqueId;
 
     /**
      * rectangle, circle, etc.
@@ -29,12 +30,12 @@ public class EPDShape implements Shape {
         return ShapeFactory.SHAPE_NORMAL_SCRIBBLE;
     }
 
-    /**
-     * get instance unique id
-     * @return
-     */
+    public void setUniqueId(final String id) {
+        uniqueId = id;
+    }
+
     public String getUniqueId() {
-        return null;
+        return uniqueId;
     }
 
     public int getZOrder() {

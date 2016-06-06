@@ -40,26 +40,30 @@ public class ShapeFactory {
 
     private static final Shape createNormalScribbleShape(final ShapeModel shapeModel) {
         final NormalScribbleShape shape = new NormalScribbleShape();
-        shape.addPoints(shapeModel.getPoints());
+        syncShapeDataFromModel(shape, shapeModel);
         return shape;
     }
 
     private static final Shape createVaryScribbleShape(final ShapeModel shapeModel) {
         final BrushScribbleShape shape = new BrushScribbleShape();
-        shape.addPoints(shapeModel.getPoints());
+        syncShapeDataFromModel(shape, shapeModel);
         return shape;
     }
 
     private static final Shape createCircleShape(final ShapeModel shapeModel) {
         final CircleShape shape = new CircleShape();
-        shape.addPoints(shapeModel.getPoints());
+        syncShapeDataFromModel(shape, shapeModel);
         return shape;
     }
 
     private static final Shape createRectangleShape(final ShapeModel shapeModel) {
         final RectangleShape shape = new RectangleShape();
-        shape.addPoints(shapeModel.getPoints());
+        syncShapeDataFromModel(shape, shapeModel);
         return shape;
     }
 
+    private static void syncShapeDataFromModel(final Shape shape, final ShapeModel shapeModel) {
+        shape.setUniqueId(shapeModel.getUniqueId());
+        shape.addPoints(shapeModel.getPoints());
+    }
 }
