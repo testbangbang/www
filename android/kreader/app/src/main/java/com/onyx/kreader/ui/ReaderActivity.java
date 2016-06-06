@@ -38,6 +38,7 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -81,6 +82,7 @@ public class ReaderActivity extends ActionBarActivity {
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
 
     private ReaderSelectionManager selectionManager;
+    private DialogLoading dialogLoading;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -683,6 +685,7 @@ public class ReaderActivity extends ActionBarActivity {
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Exception e) {
+                hideLoadingDialog();
                 handleRenderRequestFinished(renderRequest, e);
                 preRenderNext();
             }
@@ -815,7 +818,7 @@ public class ReaderActivity extends ActionBarActivity {
         return holder;
     }
 
-    private void quitApplication() {
+    public void quitApplication() {
 
     }
 
@@ -970,5 +973,26 @@ public class ReaderActivity extends ActionBarActivity {
     public void quitWordSelection() {
         getHandlerManager().resetToDefaultProvider();
         redrawPage();
+    }
+
+    public DialogLoading showLoadingDialog() {
+        if (dialogLoading == null) {
+            dialogLoading = new DialogLoading(ReaderActivity.this, getResources().getString(R.string.loading_document), true);
+            dialogLoading.setCancelButtonClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    quitApplication();
+                }
+            });
+        }
+        dialogLoading.show();
+        return dialogLoading;
+    }
+
+    public void hideLoadingDialog() {
+        if (dialogLoading != null) {
+            dialogLoading.dismiss();
+            dialogLoading = null;
+        }
     }
 }

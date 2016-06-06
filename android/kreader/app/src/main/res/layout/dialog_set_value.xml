@@ -78,7 +78,7 @@
                 android:src="@drawable/ic_dialog_set_value_decrease"
                 android:focusable="true"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/image_button_bg"
                 />
 
             <ImageView
@@ -87,7 +87,7 @@
                 android:id="@+id/imageView_AddButton"
                 android:src="@drawable/ic_dialog_set_value_increase"
                 android:focusable="true"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/image_button_bg"
                 android:layout_alignParentRight="true" />
 
             <SeekBar
@@ -120,7 +120,7 @@
             <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
             <!--android:textColor="@android:color/black"-->
             <!--android:checkMark="?android:attr/listChoiceIndicatorSingle"-->
-            <!--android:background="@drawable/imagebtn_bg"-->
+            <!--android:background="@drawable/image_button_bg"-->
             <!--android:gravity="left|center"-->
             <!--android:text="New CheckBox"-->
             <!--android:id="@+id/checkedTextView" />-->
