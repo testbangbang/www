@@ -12,9 +12,11 @@ import com.onyx.kreader.utils.StringUtils;
  */
 public class ShowSearchMenuAction extends BaseAction {
 
+    // when in search, we will always re-use the menu, so make to be static
+    private static PopupSearchMenu searchMenu;
+
     private ReaderSearchOptions searchOptions;
     private PopupSearchMenu.SearchResult searchResult;
-    private PopupSearchMenu searchMenu;
 
     public ShowSearchMenuAction(final ReaderSearchOptions options, final PopupSearchMenu.SearchResult result) {
         searchOptions = options;
@@ -48,6 +50,7 @@ public class ShowSearchMenuAction extends BaseAction {
                 @Override
                 public void disMissMenu() {
                     searchMenu.hide();
+                    searchMenu = null;
                     readerActivity.redrawPage();
                 }
 
