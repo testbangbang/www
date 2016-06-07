@@ -110,6 +110,7 @@ public class ReaderSideMenu extends ReaderMenu {
     private void handleMenuItemClicked(Resourceble slideMenuItem) {
         if (slideMenuItem.getTag() == TAG_CLOSE_ITEM) {
             hide();
+            notifyHideMenu();
         } else if (slideMenuItem.getTag() == TAG_BACK_ITEM) {
             if (currentReaderMenuItemParent == null) {
                 return;
