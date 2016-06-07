@@ -1,5 +1,6 @@
 package com.onyx.kreader.common;
 
+import android.util.Log;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -100,9 +101,13 @@ public abstract class BaseReaderRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
-        reader.getReaderHelper().clearAbortFlag();
-        saveReaderOptions(reader);
-        loadUserData(reader);
+        try {
+            reader.getReaderHelper().clearAbortFlag();
+            saveReaderOptions(reader);
+            loadUserData(reader);
+        } catch (Throwable tr) {
+            Log.w(TAG, tr);
+        }
 
         // store render bitmap store to local flag to avoid multi-thread problem
         final Runnable runnable = new Runnable() {
