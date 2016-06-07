@@ -10,19 +10,20 @@ import com.onyx.kreader.scribble.data.TouchPoint;
  */
 public class ShapeUtils {
 
-    public static TouchPoint normalize(double scale, int pageX, int pageY, final MotionEvent touchPoint) {
+    public static TouchPoint normalize(float scale, float pageX, float pageY, final MotionEvent touchPoint) {
         return new TouchPoint(
-                (float) ((touchPoint.getX() - pageX) / scale),
-                (float) ((touchPoint.getY() - pageY) / scale),
+                ((touchPoint.getX() - pageX) / scale),
+                ((touchPoint.getY() - pageY) / scale),
                 touchPoint.getPressure(),
                 touchPoint.getSize(),
                 touchPoint.getEventTime());
     }
 
-    public static TouchPoint normalize(double scale, int pageX, int pageY, final float x, final float y, final float pressure, final  float size, long eventTime) {
+    public static TouchPoint normalize(float scale, float pageX, float pageY,
+                                       final float x, final float y, final float pressure, final  float size, long eventTime) {
         return new TouchPoint(
-                (float) ((x - pageX) / scale),
-                (float) ((y - pageY) / scale),
+                ((x - pageX) / scale),
+                ((y - pageY) / scale),
                 pressure,
                 size,
                 eventTime);

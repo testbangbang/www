@@ -14,8 +14,6 @@ import android.view.*;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
 
 import com.onyx.kreader.common.*;
@@ -23,6 +21,7 @@ import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.scribble.data.ShapePage;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -30,14 +29,11 @@ import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
-import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -45,7 +41,6 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.ui.menu.ReaderMenu;
-import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
 import com.onyx.kreader.utils.*;
 
 import java.util.List;
@@ -785,5 +780,17 @@ public class ReaderActivity extends ActionBarActivity {
 
     public void showReaderMenu() {
         new ShowReaderMenuAction().execute(this);
+    }
+
+    public final PageInfo getFirstPageInfo() {
+        return getReaderViewInfo().getFirstVisiblePage();
+    }
+
+    public final ShapePage getShapePage() {
+        return getReaderUserDataInfo().getShapePage(getFirstVisiblePageName());
+    }
+
+    public final String getFirstVisiblePageName() {
+        return getReaderViewInfo().getFirstVisiblePage().getName();
     }
 }

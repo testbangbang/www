@@ -90,4 +90,8 @@ public class ReaderUserDataInfo {
         }
         return true;
     }
+
+    public final ShapePage getShapePage(final String pageName) {
+        return shapePageMap.get(pageName);
+    }
 }
