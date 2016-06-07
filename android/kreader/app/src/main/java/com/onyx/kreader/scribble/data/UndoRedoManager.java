@@ -50,17 +50,9 @@ public class UndoRedoManager {
         if (back.isEmpty()) {
             return null;
         }
-        add(forward, current);
         current = back.remove(back.size() - 1);
+        add(forward, current);
         return current;
-    }
-
-    /**
-     * alias to undo
-     * @return
-     */
-    public Action backward() {
-        return undo();
     }
 
     /**
@@ -71,17 +63,9 @@ public class UndoRedoManager {
         if (forward.isEmpty()) {
             return null;
         }
-        add(back, current);
         current = forward.remove(forward.size() - 1);
+        add(back, current);
         return current;
-    }
-
-    /**
-     * alias to redo
-     * @return
-     */
-    public Action forward() {
-        return redo();
     }
 
     /**
@@ -109,20 +93,12 @@ public class UndoRedoManager {
         return current;
     }
 
-    public boolean canGoBack() {
+    public boolean canUndo() {
         return !back.isEmpty();
     }
 
-    public boolean canUndo() {
-        return canGoBack();
-    }
-
-    public boolean canGoForward() {
-        return !forward.isEmpty();
-    }
-
     public boolean canRedo() {
-        return canGoForward();
+        return !forward.isEmpty();
     }
 
     private boolean add(final List<Action> list, final Action action) {

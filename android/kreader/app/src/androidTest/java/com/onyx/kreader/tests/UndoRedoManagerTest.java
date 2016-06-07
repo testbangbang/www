@@ -58,5 +58,21 @@ public class UndoRedoManagerTest extends ActivityInstrumentationTestCase2<Reader
         assertTrue(action1.object == undo2.object);
         assertFalse(undoRedoManager.canUndo());
         assertTrue(undoRedoManager.canRedo());
+
+        final UndoRedoManager.Action redo1 = undoRedoManager.redo();
+        assertNotNull(redo1);
+        assertEquals(action1.actionName, redo1.actionName);
+        assertTrue(action1.object == redo1.object);
+        assertTrue(undoRedoManager.canUndo());
+        assertTrue(undoRedoManager.canRedo());
+
+        final UndoRedoManager.Action redo2 = undoRedoManager.redo();
+        assertNotNull(redo2);
+        assertEquals(action2.actionName, redo2.actionName);
+        assertTrue(action2.object == redo2.object);
+        assertTrue(undoRedoManager.canUndo());
+        assertFalse(undoRedoManager.canRedo());
+
+
     }
 }
