@@ -14,7 +14,7 @@ public class BaseRequest {
     private BaseCallback callback;
     private Context context;
     private Benchmark benchmark;
-    private Exception exception;
+    private Throwable exception;
     static private volatile int globalRequestSequence;
     static private boolean enableBenchmarkDebug = true;
 
@@ -100,11 +100,11 @@ public class BaseRequest {
         return runInBackground;
     }
 
-    public void setException(final Exception e) {
+    public void setException(final Throwable e) {
         exception = e;
     }
 
-    public Exception getException() {
+    public Throwable getException() {
         return exception;
     }
 

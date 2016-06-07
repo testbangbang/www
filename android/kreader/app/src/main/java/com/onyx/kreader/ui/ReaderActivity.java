@@ -428,7 +428,7 @@ public class ReaderActivity extends ActionBarActivity {
         updateToolbarTitle();
     }
 
-    public void onSearchFinished(SearchRequest request, Exception e) {
+    public void onSearchFinished(SearchRequest request, Throwable e) {
         if (e != null) {
             return;
         }
@@ -441,7 +441,7 @@ public class ReaderActivity extends ActionBarActivity {
         new ShowSearchMenuAction(request.getSearchOptions(), result).execute(this);
     }
 
-    public void onSelectWordFinished(SelectWordRequest request, Exception e) {
+    public void onSelectWordFinished(SelectWordRequest request, Throwable e) {
         if (e != null) {
             return;
         }
@@ -478,7 +478,7 @@ public class ReaderActivity extends ActionBarActivity {
     public void submitRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 if (callback != null) {
                     callback.done(request, e);
                 }
@@ -512,7 +512,7 @@ public class ReaderActivity extends ActionBarActivity {
         return selectionManager;
     }
 
-    private void handleRenderRequestFinished(final BaseReaderRequest request, Exception e) {
+    private void handleRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
         Debug.d(TAG, "handleRenderRequestFinished: " + request + ", " + e);
         if (e != null) {
             return;

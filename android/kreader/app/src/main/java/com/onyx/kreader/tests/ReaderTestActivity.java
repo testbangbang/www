@@ -8,7 +8,6 @@ import android.util.Pair;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
-import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderViewOptions;
@@ -16,7 +15,6 @@ import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.math.PageInfo;
@@ -245,7 +243,7 @@ public class ReaderTestActivity extends Activity {
         BaseReaderRequest open = new OpenRequest(path, getDocumentOptions());
         reader.submitRequest(this, open, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 testConfigView();
             }
@@ -256,7 +254,7 @@ public class ReaderTestActivity extends Activity {
         final BaseReaderRequest config = new CreateViewRequest(surfaceView.getWidth(), surfaceView.getHeight());
         reader.submitRequest(this, config, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 readerViewInfo = config.getReaderViewInfo();
                 switch (testCase) {
                     case Original:
@@ -289,7 +287,7 @@ public class ReaderTestActivity extends Activity {
         final BaseReaderRequest readerRequest = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs);
         reader.submitRequest(this, readerRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 dumpBitmap(readerRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", false);
                 //testReaderGoto();
@@ -304,7 +302,7 @@ public class ReaderTestActivity extends Activity {
         final BaseReaderRequest readerRequest = new ChangeLayoutRequest(ReaderConstants.CONTINUOUS_PAGE, navigationArgs);
         reader.submitRequest(this, readerRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 dumpBitmap(readerRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/singlePage.png", false);
                 testContinuousScale();
@@ -316,7 +314,7 @@ public class ReaderTestActivity extends Activity {
         final BaseReaderRequest readerRequest = new ScaleRequest(String.valueOf(0), 2.0f, 0, 0);
         reader.submitRequest(this, readerRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 readerViewInfo = readerRequest.getReaderViewInfo();
                 dumpBitmap(readerRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png", false);
@@ -328,7 +326,7 @@ public class ReaderTestActivity extends Activity {
         final BaseReaderRequest gotoPosition = new GotoLocationRequest(pn);
         reader.submitRequest(this, gotoPosition, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 readerViewInfo = gotoPosition.getReaderViewInfo();
                 dumpBitmap(gotoPosition.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/goto.png", false);
@@ -341,7 +339,7 @@ public class ReaderTestActivity extends Activity {
         final ScaleToPageRequest renderRequest = new ScaleToPageRequest(String.valueOf(pn));
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToPage.png", true);
             }
@@ -352,7 +350,7 @@ public class ReaderTestActivity extends Activity {
         final ScaleToWidthRequest renderRequest = new ScaleToWidthRequest(String.valueOf(pn));
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleToWidth.png", true);
             }
@@ -363,7 +361,7 @@ public class ReaderTestActivity extends Activity {
         final ScaleRequest renderRequest = new ScaleRequest(String.valueOf(pn), 0.5f, 0, 0);
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scale.png", true);
                 testScaleByRect();
@@ -390,7 +388,7 @@ public class ReaderTestActivity extends Activity {
         final ScaleByRectRequest renderRequest = new ScaleByRectRequest(pn, selectionRect);
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/scaleByRect.png", true);
 //                testOriginScale();
@@ -402,7 +400,7 @@ public class ReaderTestActivity extends Activity {
         final BaseReaderRequest scaleRequest = new ScaleRequest(String.valueOf(0), 1.0f, 0, 0);
         reader.submitRequest(this, scaleRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 dumpBitmap(scaleRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/originScale.png", true);
             }
@@ -413,7 +411,7 @@ public class ReaderTestActivity extends Activity {
         final NextScreenRequest renderRequest = new NextScreenRequest();
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
                     readerViewInfo = renderRequest.getReaderViewInfo();
                     dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
@@ -428,7 +426,7 @@ public class ReaderTestActivity extends Activity {
             final PreRenderRequest renderRequest = new PreRenderRequest(true);
             reader.submitRequest(this, renderRequest, new BaseCallback() {
                 @Override
-                public void done(BaseRequest request, Exception e) {
+                public void done(BaseRequest request, Throwable e) {
                     if (e == null) {
                         //dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
                     }
@@ -441,7 +439,7 @@ public class ReaderTestActivity extends Activity {
         final PreviousScreenRequest renderRequest = new PreviousScreenRequest();
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
                     readerViewInfo = renderRequest.getReaderViewInfo();
                     dumpBitmap(renderRequest.getRenderBitmap().getBitmap(), "/mnt/sdcard/Books/next.png", false);
@@ -454,7 +452,7 @@ public class ReaderTestActivity extends Activity {
         final AnnotationRequest annotationRequest = new AnnotationRequest(String.valueOf(currentPage), new PointF(200, 200), new PointF(250, 300));
         reader.submitRequest(this, annotationRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest baseReaderRequest, Exception e) {
+            public void done(BaseRequest baseReaderRequest, Throwable e) {
                 assert(e == null);
                 ReaderSelection selection = annotationRequest.getSelection();
                 testReaderClose();
@@ -467,7 +465,7 @@ public class ReaderTestActivity extends Activity {
         final CloseRequest closeRequest = new CloseRequest();
         reader.submitRequest(this, closeRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 assert(e == null);
                 testReaderOpen();
             }

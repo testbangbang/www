@@ -16,7 +16,6 @@ import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
-import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -42,7 +41,7 @@ public class OpenDocumentAction extends BaseAction {
                 readerActivity.getReader().getDocumentMd5());
         readerActivity.getDataProvider().submit(readerActivity, loadDocumentOptionsRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     cleanup(readerActivity);
                     return;
@@ -56,7 +55,7 @@ public class OpenDocumentAction extends BaseAction {
         final BaseReaderRequest openRequest = new OpenRequest(documentPath, options);
         reader.submitRequest(readerActivity, openRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     processOpenException(readerActivity, reader, options, e);
                     return;
@@ -72,7 +71,7 @@ public class OpenDocumentAction extends BaseAction {
         final BaseReaderRequest config = new CreateViewRequest(readerActivity.getDisplayWidth(), readerActivity.getDisplayHeight());
         reader.submitRequest(readerActivity, config, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     cleanup(readerActivity);
                     return;
@@ -129,13 +128,13 @@ public class OpenDocumentAction extends BaseAction {
         final RestoreRequest restoreRequest = new RestoreRequest(options);
         readerActivity.submitRequest(restoreRequest, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog(readerActivity);
             }
         });
     }
 
-    private void processOpenException(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options, final Exception e) {
+    private void processOpenException(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options, final Throwable e) {
         if (!(e instanceof ReaderException)) {
             return;
         }
