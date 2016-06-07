@@ -11,14 +11,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
+
 import com.onyx.kreader.common.*;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.dataprovider.DataProvider;
@@ -27,14 +26,18 @@ import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
+
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
-import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.options.ReaderConstants;
-import com.onyx.kreader.host.request.*;
+import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.kreader.host.request.PreRenderRequest;
+import com.onyx.kreader.host.request.RenderRequest;
+import com.onyx.kreader.host.request.SearchRequest;
+import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.ui.dialog.DialogLoading;
+import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -42,8 +45,6 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.ui.menu.ReaderMenu;
-import com.onyx.kreader.ui.menu.ReaderMenuItem;
-import com.onyx.kreader.ui.menu.ReaderSideMenu;
 import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
 import com.onyx.kreader.utils.*;
 
@@ -130,6 +131,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
+        ShowReaderMenuAction.resetReaderMenu();
         super.onDestroy();
     }
 
@@ -144,8 +146,8 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public boolean tryHitTest(float x, float y) {
-        if (isReaderMenuShown()) {
-            hideReaderMenu();
+        if (ShowReaderMenuAction.isReaderMenuShown()) {
+            ShowReaderMenuAction.hideReaderMenu(this);
             return true;
         }
         return false;
@@ -265,7 +267,6 @@ public class ReaderActivity extends ActionBarActivity {
     private void initActivity() {
         initToolbar();
         initSurfaceView();
-        initReaderMenu();
         initHandlerManager();
         initDataProvider();
     }
@@ -300,7 +301,7 @@ public class ReaderActivity extends ActionBarActivity {
         toolbar.findViewById(R.id.toolbar_search).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideReaderMenu();
+                ShowReaderMenuAction.hideReaderMenu(ReaderActivity.this);
                 onSearchRequested();
             }
         });
@@ -377,117 +378,6 @@ public class ReaderActivity extends ActionBarActivity {
         dataProvider = new DataProvider();
     }
 
-    private void initReaderMenu() {
-        LinearLayout layout = (LinearLayout)findViewById(R.id.left_drawer);
-        createReaderSideMenu(layout);
-    }
-
-    private void createReaderSideMenu(LinearLayout drawerLayout) {
-        readerMenu = new ReaderSideMenu(this, drawerLayout);
-        readerMenu.setReaderMenuCallback(new ReaderMenu.ReaderMenuCallback() {
-            @Override
-            public void onMenuItemClicked(ReaderMenuItem menuItem) {
-                Log.d(TAG, "onMenuItemClicked: " + menuItem.getURI().getRawPath());
-                switch (menuItem.getURI().getRawPath()) {
-                    case "/Rotation/Rotation0":
-                        rotateScreen(0);
-                        break;
-                    case "/Rotation/Rotation90":
-                        rotateScreen(90);
-                        break;
-                    case "/Rotation/Rotation180":
-                        rotateScreen(180);
-                        break;
-                    case "/Rotation/Rotation270":
-                        rotateScreen(270);
-                        break;
-                    case "/Zoom/ZoomIn":
-                        scaleUp();
-                        break;
-                    case "/Zoom/ZoomOut":
-                        scaleDown();
-                        break;
-                    case "/Zoom/ToPage":
-                        scaleToPage();
-                        break;
-                    case "/Zoom/ToWidth":
-                        scaleToWidth();
-                        break;
-                    case "/Zoom/ByRect":
-                        scaleByRect();
-                        break;
-                    case "/Zoom/Crop":
-                        scaleByAutoCrop();
-                        break;
-                    case "/Navigation/ArticleMode":
-                        switchNavigationToArticleMode();
-                        break;
-                    case "/Navigation/ComicMode":
-                        switchNavigationToComicMode();
-                        break;
-                    case "/Navigation/Reset":
-                        resetNavigationMode();
-                        break;
-                    case "/Navigation/MoreSetting":
-                        break;
-                    case "/Spacing/DecreaseSpacing":
-                        forward();
-                        break;
-                    case "/Spacing/EnlargeSpacing":
-                        backward();
-                        break;
-                    case "/Spacing/NormalSpacing":
-                        break;
-                    case "/Spacing/SmallSpacing":
-                        break;
-                    case "/Spacing/LargeSpacing":
-                        break;
-                    case "/Spacing/Indent":
-                        break;
-                    case "/Font/DecreaseSpacing":
-                        break;
-                    case "/Font/IncreaseSpacing":
-                        break;
-                    case "/Font/Gamma":
-                        adjustContrast();
-                        break;
-                    case "/Font/Embolden":
-                        adjustEmbolden();
-                        break;
-                    case "/Font/FontReflow":
-                        imageReflow();
-                        break;
-                    case "/Font/TOC":
-                        break;
-                    case "/Font/Bookmark":
-                        break;
-                    case "/Font/Note":
-                        break;
-                    case "/Font/ShapeModel":
-                        break;
-                    case "/Font/Export":
-                        break;
-                    case "/Exit":
-                        onBackPressed();
-                        break;
-                }
-            }
-        });
-        List<ReaderSideMenuItem> items = createReaderSideMenuItems();
-        readerMenu.fillItems(items);
-    }
-
-    private void rotateScreen(int rotationOperation) {
-        final ChangeOrientationAction action = new ChangeOrientationAction(rotationOperation);
-        action.execute(this);
-    }
-
-    private List<ReaderSideMenuItem> createReaderSideMenuItems() {
-        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(this, R.raw.reader_menu));
-        JSONArray array = json.getJSONArray("menu_list");
-        return ReaderSideMenuItem.createFromJSON(this, array);
-    }
-
     private void clearCanvas(SurfaceHolder holder) {
         if (holder == null) {
             return;
@@ -552,79 +442,7 @@ public class ReaderActivity extends ActionBarActivity {
         action.execute(this);
     }
 
-    private void scaleUp() {
-        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.1f);
-        action.execute(this);
-    }
 
-    private void scaleDown() {
-        final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.1f);
-        action.execute(this);
-    }
-
-    private void scaleByValue(float scale) {
-        final ScaleRequest request = new ScaleRequest(getCurrentPageName(), scale, getDisplayWidth() / 2, getDisplayHeight() / 2);
-        submitRequest(request);
-    }
-
-    private void scaleToPage() {
-        final ScaleToPageRequest request = new ScaleToPageRequest(getCurrentPageName());
-        submitRequest(request);
-    }
-
-    private void scaleToWidth() {
-        final ScaleToWidthRequest request = new ScaleToWidthRequest(getCurrentPageName());
-        submitRequest(request);
-    }
-
-    private void scaleByRect() {
-        final SelectionScaleAction action = new SelectionScaleAction();
-        action.execute(this);
-    }
-
-    private void scaleByAutoCrop() {
-        final PageCropAction action = new PageCropAction(getCurrentPageName());
-        action.execute(this);
-    }
-
-    private void switchNavigationToArticleMode() {
-        NavigationArgs args = new NavigationArgs();
-        RectF limit = new RectF(0, 0, 0, 0);
-        args.columnsLeftToRight(NavigationArgs.Type.ALL, 2, 2, limit);
-        switchPageNavigationMode(args);
-    }
-
-    private void switchNavigationToComicMode() {
-        NavigationArgs args = new NavigationArgs();
-        RectF limit = new RectF(0, 0, 0, 0);
-        args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
-        switchPageNavigationMode(args);
-    }
-
-    private void switchPageNavigationMode(NavigationArgs args) {
-        BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
-        submitRequest(request);
-    }
-
-    private void resetNavigationMode() {
-        BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, new NavigationArgs());
-        submitRequest(request);
-    }
-
-    private void adjustContrast() {
-        final AdjustContrastAction action = new AdjustContrastAction();
-        action.execute(this);
-    }
-
-    private void adjustEmbolden() {
-        final EmboldenAction action = new EmboldenAction();
-        action.execute(this);
-    }
-
-    private void imageReflow() {
-        final ImageReflowAction action = new ImageReflowAction();
-        action.execute(this);
-    }
 
     public void onDocumentOpened(String path) {
         documentPath = path;
@@ -837,11 +655,11 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private boolean hasPopupWindow() {
-        return isReaderMenuShown();
+        return ShowReaderMenuAction.isReaderMenuShown();
     }
 
     private void hideAllPopupMenu() {
-        hideReaderMenu();
+        ShowReaderMenuAction.hideReaderMenu(this);
     }
 
     protected boolean askForClose() {
@@ -898,37 +716,16 @@ public class ReaderActivity extends ActionBarActivity {
         return searchMenu;
     }
 
-    private ReaderMenu getReaderMenu() {
-        if (readerMenu == null) {
-            initReaderMenu();
-        }
-        return readerMenu;
-    }
-
     public final HandlerManager getHandlerManager() {
         return handlerManager;
     }
 
-    public boolean isReaderMenuShown() {
-        return getReaderMenu().isShown();
-    }
-
-    public void showReaderMenu() {
-        showToolbar();
-        getReaderMenu().show();
-    }
-
-    public void hideReaderMenu() {
-        hideToolbar();
-        getReaderMenu().hide();
-    }
-
-    private void showToolbar() {
+    public void showToolbar() {
         findViewById(R.id.toolbar_top).setVisibility(View.VISIBLE);
         findViewById(R.id.toolbar_bottom).setVisibility(View.VISIBLE);
     }
 
-    private void hideToolbar() {
+    public void hideToolbar() {
         findViewById(R.id.toolbar_top).setVisibility(View.GONE);
         findViewById(R.id.toolbar_bottom).setVisibility(View.GONE);
     }
@@ -986,4 +783,7 @@ public class ReaderActivity extends ActionBarActivity {
         redrawPage();
     }
 
+    public void showReaderMenu() {
+        new ShowReaderMenuAction().execute(this);
+    }
 }
