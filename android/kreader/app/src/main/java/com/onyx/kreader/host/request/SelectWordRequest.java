@@ -39,7 +39,7 @@ public class SelectWordRequest extends BaseReaderRequest {
 
         LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
-            getReaderViewInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
+            getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
         }
     }
 

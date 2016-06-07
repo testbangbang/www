@@ -44,8 +44,13 @@ public class HandlerManager {
 
     public HandlerManager(final Context context) {
         super();
+        initProviderMap(context);
+    }
+
+    private void initProviderMap(final Context context) {
         providerMap.put(BASE_PROVIDER, new BaseHandler(this));
         providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, context));
+        providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
         activeProvider = BASE_PROVIDER;
         enable = true;
         enableTouch = true;

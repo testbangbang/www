@@ -24,12 +24,14 @@ public class ShapePage {
     private String subPageName;
 
     private List<Shape> shapeList = new ArrayList<Shape>();
-    private List<Shape> newShapeList = new ArrayList<Shape>();
-    private List<Shape> removeShapeList = new ArrayList<Shape>();
+    private List<Shape> newAddedShapeList = new ArrayList<Shape>();
+    private List<Shape> removedShapeList = new ArrayList<Shape>();
 
     private int currentShapeType;
     private Shape currentShape;
     private Matrix pageMatrix;
+    private boolean addToActionHistory = true;
+    private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
     public ShapePage() {
 
@@ -53,8 +55,39 @@ public class ShapePage {
         return subPageName;
     }
 
-    public void addShape(final Shape shape) {
+    public boolean isAddToActionHistory() {
+        return addToActionHistory;
+    }
+
+    public void setAddToActionHistory(boolean add) {
+        addToActionHistory = add;
+    }
+
+    public void clear() {
+        shapeList.clear();
+        newAddedShapeList.clear();
+        removedShapeList.clear();
+        undoRedoManager.clear();
+    }
+
+    public void addShapeFromModel(final Shape shape) {
         shapeList.add(shape);
+    }
+
+    public void addShape(final Shape shape) {
+        newAddedShapeList.add(shape);
+        if (isAddToActionHistory()) {
+            undoRedoManager.addToHistory(ShapeActions.addShapeAction(shape), false);
+        }
+    }
+
+    public void removeShape(final Shape shape) {
+        removedShapeList.add(shape);
+        newAddedShapeList.remove(shape);
+        shapeList.remove(shape);
+        if (isAddToActionHistory()) {
+            undoRedoManager.addToHistory(ShapeActions.removeShapeAction(shape), false);
+        }
     }
 
     public final List<Shape> getShapeList() {
@@ -128,7 +161,7 @@ public class ShapePage {
         final ShapePage shapePage = createPage(context, docUniqueId, pageName, subPageName);
         for(ShapeModel model : list) {
             final Shape shape = ShapeFactory.shapeFromModel(model);
-            shapePage.addShape(shape);
+            shapePage.addShapeFromModel(shape);
         }
         return shapePage;
     }
@@ -143,12 +176,12 @@ public class ShapePage {
      * @return
      */
     public boolean savePage() {
-        for(Shape shape : newShapeList) {
+        for(Shape shape : newAddedShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             model.save();
         }
 
-        for(Shape shape: removeShapeList) {
+        for(Shape shape: removedShapeList) {
             ShapeDataProvider.removeShape(null, shape.getUniqueId());
         }
         return true;

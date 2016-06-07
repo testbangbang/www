@@ -21,14 +21,14 @@ import java.util.List;
  */
 public class BookmarkProvider {
 
-    public static final List<Bookmark> loadBookmarks(final Context context, final String path) {
+    public static final List<Bookmark> loadBookmarks(final Context context, final String docUniqueId, final String pageName) {
         return null;
     }
 
     public static void deleteBookmark(final Context context, final Bookmark bookmark) {
     }
 
-    public static boolean hasBookmark(final Context context, final String pageName) {
+    public static boolean hasBookmark(final Context context, final String docUniqueId, final String pageName) {
         return false;
     }
 }

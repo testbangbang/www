@@ -19,18 +19,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.common.*;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
-import com.onyx.kreader.common.BaseCallback;
-import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
@@ -75,6 +71,7 @@ public class ReaderActivity extends ActionBarActivity {
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private ReaderViewInfo readerViewInfo;
+    private ReaderUserDataInfo readerUserDataInfo;
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -642,7 +639,7 @@ public class ReaderActivity extends ActionBarActivity {
 
         getSearchMenu().setSearchOptions(request.getSearchOptions());
         getSearchMenu().show();
-        if (!request.getReaderViewInfo().hasSearchResults()) {
+        if (!request.getReaderUserDataInfo().hasSearchResults()) {
             getSearchMenu().searchDone(PopupSearchMenu.SearchResult.EMPTY);
         } else {
             getSearchMenu().searchDone(PopupSearchMenu.SearchResult.SUCCEED);
@@ -655,12 +652,12 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
 
-        if (!request.getReaderViewInfo().hasHighlightResult()) {
+        if (!request.getReaderUserDataInfo().hasHighlightResult()) {
             //Toast.makeText(ReaderActivity.this, R.string.emptyselection, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        ReaderSelection selection = request.getReaderViewInfo().getHighlightResult();
+        ReaderSelection selection = request.getReaderUserDataInfo().getHighlightResult();
         Debug.d(TAG, "select word result: " + JSON.toJSONString(selection));
         getSelectionManager().setCurrentSelection(selection);
         getSelectionManager().update(this);
@@ -702,8 +699,16 @@ public class ReaderActivity extends ActionBarActivity {
         readerViewInfo = request.getReaderViewInfo();
     }
 
+    private void saveReaderUserDataInfo(final BaseReaderRequest request) {
+        readerUserDataInfo = request.getReaderUserDataInfo();
+    }
+
     public final ReaderViewInfo getReaderViewInfo() {
         return readerViewInfo;
+    }
+
+    public final ReaderUserDataInfo getReaderUserDataInfo() {
+        return readerUserDataInfo;
     }
 
     public ReaderSelectionManager getSelectionManager() {
@@ -719,6 +724,7 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
         saveReaderViewInfo(request);
+        saveReaderUserDataInfo(request);
         updateToolbarProgress();
         //ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
@@ -757,12 +763,12 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawSearchResults(Canvas canvas, Paint paint) {
-        drawReaderSelections(canvas, paint, getReaderViewInfo().getSearchResults());
+        drawReaderSelections(canvas, paint, getReaderUserDataInfo().getSearchResults());
     }
 
     private void drawHighlightResult(Canvas canvas, Paint paint) {
-        if (getReaderViewInfo().hasHighlightResult()) {
-            drawReaderSelection(canvas, paint, getReaderViewInfo().getHighlightResult());
+        if (getReaderUserDataInfo().hasHighlightResult()) {
+            drawReaderSelection(canvas, paint, getReaderUserDataInfo().getHighlightResult());
             drawSelectionCursor(canvas, paint, xorMode);
         }
     }
@@ -946,11 +952,11 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public boolean hasSelectionWord() {
-        return readerViewInfo.hasHighlightResult();
+        return readerUserDataInfo.hasHighlightResult();
     }
 
     public void highlightAlongTouchMoved(float x, float y, int cursorSelected) {
-        ReaderSelection selection = getReaderViewInfo().getHighlightResult();
+        ReaderSelection selection = getReaderUserDataInfo().getHighlightResult();
         PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
         if (hitTestPage(x, y) != pageInfo) {
             return;

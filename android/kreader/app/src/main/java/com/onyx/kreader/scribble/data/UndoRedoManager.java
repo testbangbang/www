@@ -89,6 +89,12 @@ public class UndoRedoManager {
         return true;
     }
 
+    public void clear() {
+        forward.clear();
+        back.clear();
+        current = null;
+    }
+
     public Action getCurrent() {
         return current;
     }

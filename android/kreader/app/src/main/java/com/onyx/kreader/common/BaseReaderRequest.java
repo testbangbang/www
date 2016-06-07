@@ -11,8 +11,13 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     private static final String TAG = BaseReaderRequest.class.getSimpleName();
     private volatile boolean saveOptions = false;
+    private volatile boolean loadShapeData = true;
+    private volatile boolean loadAnnotationData = false;
+    private volatile boolean loadBookmarkData = false;
+
     private ReaderBitmapImpl renderBitmap;
     private ReaderViewInfo readerViewInfo;
+    private ReaderUserDataInfo readerUserDataInfo;
     private volatile boolean transferBitmap = true;
 
     public BaseReaderRequest() {
@@ -32,6 +37,30 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     public boolean isSaveOptions() {
         return saveOptions;
+    }
+
+    public boolean isLoadShapeData() {
+        return loadShapeData;
+    }
+
+    public void setLoadShapeData(boolean load) {
+        loadShapeData = load;
+    }
+
+    public boolean isLoadAnnotationData() {
+        return loadAnnotationData;
+    }
+
+    public void setLoadAnnotationData(boolean load) {
+        loadAnnotationData = load;
+    }
+
+    public boolean isLoadBookmarkData() {
+        return loadBookmarkData;
+    }
+
+    public void setLoadBookmarkData(boolean load) {
+        loadBookmarkData = load;
     }
 
     public ReaderBitmapImpl getRenderBitmap() {
@@ -73,6 +102,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
         saveReaderOptions(reader);
+        loadUserData(reader);
 
         // store render bitmap store to local flag to avoid multi-thread problem
         final Runnable runnable = new Runnable() {
@@ -100,6 +130,13 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return readerViewInfo;
     }
 
+    public final ReaderUserDataInfo getReaderUserDataInfo() {
+        if (readerUserDataInfo == null) {
+            readerUserDataInfo = new ReaderUserDataInfo();
+        }
+        return readerUserDataInfo;
+    }
+
     public ReaderViewInfo createReaderViewInfo() {
         readerViewInfo = new ReaderViewInfo();
         return readerViewInfo;
@@ -115,5 +152,17 @@ public abstract class BaseReaderRequest extends BaseRequest {
                 reader.getDocumentPath(),
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions());
+    }
+
+    private void loadUserData(final Reader reader) {
+        if (isLoadShapeData()) {
+            getReaderUserDataInfo().loadUserShape(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+        if (isLoadAnnotationData()) {
+            getReaderUserDataInfo().loadAnnotations(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+        if (isLoadBookmarkData()) {
+            getReaderUserDataInfo().loadBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
     }
 }

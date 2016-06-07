@@ -14,7 +14,7 @@ import java.util.List;
 public class AnnotationProvider {
 
 
-    public static final List<Annotation> loadAnnotations(final Context context, final String path) {
+    public static final List<Annotation> loadAnnotations(final Context context, final String docUniqueId, final String pageName) {
         return null;
     }
 

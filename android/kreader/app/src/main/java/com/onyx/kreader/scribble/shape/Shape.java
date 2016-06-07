@@ -13,55 +13,55 @@ import com.onyx.kreader.scribble.data.TouchPointList;
  */
 public interface Shape {
 
-    public static int STATE_NORMAL      = 0;
-    public static int STATE_SELECTED    = 1;
-    public static int STATE_MOVING      = 2;
-    public static int STATE_RESIZING    = 3;
+    static int STATE_NORMAL      = 0;
+    static int STATE_SELECTED    = 1;
+    static int STATE_MOVING      = 2;
+    static int STATE_RESIZING    = 3;
 
     /**
      * rectangle, circle, etc.
      * @return
      */
-    public int getType();
+    int getType();
 
-    public void setUniqueId(final String uniqueId);
+    void setUniqueId(final String uniqueId);
 
-    public String getUniqueId();
+    String getUniqueId();
 
-    public int getZOrder();
+    int getZOrder();
 
-    public void setZOrder(int order);
+    void setZOrder(int order);
 
-    public int getColor();
+    int getColor();
 
-    public void setColor(int color);
+    void setColor(int color);
 
-    public float getStrokeWidth();
+    float getStrokeWidth();
 
-    public void setStrokeWidth(final float width);
+    void setStrokeWidth(final float width);
 
-    public RectF getBoundingRect();
+    RectF getBoundingRect();
 
-    public void moveTo(final float x, final float y);
+    void moveTo(final float x, final float y);
 
-    public void resize(final float width, final float height);
+    void resize(final float width, final float height);
 
-    public int getOrientation();
+    int getOrientation();
 
-    public void setOrientation(int orientation);
+    void setOrientation(int orientation);
 
-    public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
+    void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
 
-    public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
+    void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
 
-    public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
+    void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
 
-    public void addPoints(final TouchPointList points);
+    void addPoints(final TouchPointList points);
 
-    public boolean supportDFB();
+    boolean supportDFB();
 
-    public void render(final Matrix matrix, final Canvas canvas, final Paint paint);
+    void render(final Matrix matrix, final Canvas canvas, final Paint paint);
 
-    public boolean hitTest(final float x, final float y);
+    boolean hitTest(final float x, final float y);
 
 }

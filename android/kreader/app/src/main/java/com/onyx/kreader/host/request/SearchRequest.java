@@ -37,7 +37,7 @@ public class SearchRequest extends BaseReaderRequest {
             final String page = reader.getSearchManager().searchResults().get(0).getPagePosition();
             new GotoLocationRequest(page).execute(reader);
             LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
-            getReaderViewInfo().saveSearchResults(translateToScreen(reader.getSearchManager().searchResults()));
+            getReaderUserDataInfo().saveSearchResults(translateToScreen(reader.getSearchManager().searchResults()));
         }
     }
 
