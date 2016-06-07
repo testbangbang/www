@@ -65,9 +65,6 @@ public class ReaderActivity extends ActionBarActivity {
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
 
-    private ReaderMenu readerMenu;
-    private PopupSearchMenu searchMenu;
-
     private HandlerManager handlerManager;
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
@@ -415,16 +412,6 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
-    private void searchContent(int page, String query, boolean forward) {
-        searchContent(PagePositionUtils.fromPageNumber(page), query, forward);
-    }
-
-    private void searchContent(String page, String query, boolean forward) {
-        if (StringUtils.isNotBlank(query)) {
-            new SearchContentAction(page, query, forward).execute(this);
-        }
-    }
-
     private void openFileFromIntent() {
         Uri uri = getIntent().getData();
         if (uri == null) {
@@ -455,14 +442,12 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
 
-        getSearchMenu().setSearchOptions(request.getSearchOptions());
-        getSearchMenu().show();
-        if (!request.getReaderUserDataInfo().hasSearchResults()) {
-            getSearchMenu().searchDone(PopupSearchMenu.SearchResult.EMPTY);
-        } else {
-            getSearchMenu().searchDone(PopupSearchMenu.SearchResult.SUCCEED);
+        PopupSearchMenu.SearchResult result = PopupSearchMenu.SearchResult.EMPTY;
+        if (request.getReaderUserDataInfo().hasSearchResults()) {
+            result = PopupSearchMenu.SearchResult.SUCCEED;
             handleRenderRequestFinished(request, e);
         }
+        new ShowSearchMenuAction(request.getSearchOptions(), result).execute(this);
     }
 
     public void onSelectWordFinished(SelectWordRequest request, Exception e) {
@@ -684,37 +669,7 @@ public class ReaderActivity extends ActionBarActivity {
         return handlerManager.onKeyUp(this, keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
-    private PopupSearchMenu getSearchMenu() {
-        if (searchMenu == null) {
-            searchMenu = new PopupSearchMenu(this, (RelativeLayout)surfaceView.getParent(), new PopupSearchMenu.MenuCallback() {
-                @Override
-                public void search(PopupSearchMenu.SearchDirection mSearchDirection) {
-                    switch (mSearchDirection){
-                        case Forward:
-                            searchContent(getCurrentPage() + 1, searchMenu.getSearchOptions().pattern(), true);
-                            break;
-                        case Backward:
-                            searchContent(getCurrentPage() - 1, searchMenu.getSearchOptions().pattern(), false);
-                            break;
-                        default:
-                            break;
-                    }
-                }
 
-                @Override
-                public void disMissMenu() {
-                    searchMenu.hide();
-                    redrawPage();
-                }
-
-                @Override
-                public void showSearchAll() {
-
-                }
-            });
-        }
-        return searchMenu;
-    }
 
     public final HandlerManager getHandlerManager() {
         return handlerManager;
@@ -785,5 +740,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     public void showReaderMenu() {
         new ShowReaderMenuAction().execute(this);
+    }
+
+    public SurfaceView getSurfaceView() {
+        return surfaceView;
     }
 }
