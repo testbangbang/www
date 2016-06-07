@@ -10,6 +10,7 @@ import java.util.List;
 public abstract class ReaderMenu {
     public static abstract class ReaderMenuCallback {
         public abstract void onMenuItemClicked(ReaderMenuItem menuItem);
+        public abstract void onHideMenu();
     }
 
     private ReaderMenuCallback callback = null;
@@ -23,10 +24,18 @@ public abstract class ReaderMenu {
     public void setReaderMenuCallback(ReaderMenuCallback callback) {
         this.callback = callback;
     }
+
     public void notifyMenuItemClicked(ReaderMenuItem menuItem)
     {
         if (callback != null) {
             callback.onMenuItemClicked(menuItem);
         }
     }
+
+    public void notifyHideMenu() {
+        if (callback != null) {
+            callback.onHideMenu();
+        }
+    }
+
 }
