@@ -496,7 +496,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void submitRequest(final BaseReaderRequest renderRequest) {
-        reader.submitRequest(this, renderRequest, null);
+        submitRequest(renderRequest, null);
     }
 
     public void submitRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
