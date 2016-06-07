@@ -1,6 +1,7 @@
 package com.onyx.kreader.dataprovider;
 
 import android.content.Context;
+import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -19,6 +20,8 @@ import java.util.List;
  * onyx android sdk or new sdk.
  */
 public class DocumentOptionsProvider {
+
+    public static final String TAG = DocumentOptionsProvider.class.getSimpleName();
 
     public static DocumentOptions findDocumentOptions(final Context context, final String path, String md5) {
         DocumentOptions options = null;
@@ -59,7 +62,7 @@ public class DocumentOptionsProvider {
             }
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.w(TAG, e);
             return false;
         }
     }
