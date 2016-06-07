@@ -1,9 +1,14 @@
 package com.onyx.kreader.ui.handler;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.scribble.data.ShapePage;
+import com.onyx.kreader.scribble.data.TouchPoint;
+import com.onyx.kreader.scribble.math.ShapeUtils;
 import com.onyx.kreader.scribble.shape.Shape;
 import com.onyx.kreader.ui.ReaderActivity;
 
@@ -12,8 +17,6 @@ import com.onyx.kreader.ui.ReaderActivity;
  * Created by Joy on 2014/3/26.
  */
 public class ScribbleHandler extends BaseHandler {
-
-    private ShapePage shapePage = new ShapePage();
 
     public ScribbleHandler(HandlerManager p) {
         super(p);
@@ -63,29 +66,83 @@ public class ScribbleHandler extends BaseHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
-
+        final PageInfo pageInfo = activity.getFirstPageInfo();
+        final ShapePage shapePage = activity.getShapePage();
         final Shape shape = shapePage.getShapeFromPool();
         switch (e.getAction() & MotionEvent.ACTION_MASK) {
             case (MotionEvent.ACTION_DOWN):
-                shape.onDown(null, null);
+                processDownEvent(shape, pageInfo, e);
                 return true;
             case (MotionEvent.ACTION_CANCEL):
             case (MotionEvent.ACTION_OUTSIDE):
                 break;
             case MotionEvent.ACTION_UP:
-                shape.onUp(null, null);
+                processUpEvent(shape, pageInfo, e);
+                addShape(shapePage, shape);
                 return true;
             case MotionEvent.ACTION_MOVE:
-                int n = e.getHistorySize();
-                for (int i = 0; i < n; i++) {
-                    shape.onMove(null, null);
-                }
-                shape.onMove(null, null);
+                processMoveEvent(shape, pageInfo, e);
                 return true;
             default:
                 break;
         }
         return true;
+    }
+
+    private void addShape(final ShapePage shapePage, final Shape shape) {
+        shapePage.setAddToActionHistory(true);
+        shapePage.addShape(shape);
+    }
+
+    private TouchPoint normalized(final PageInfo pageInfo, final MotionEvent e) {
+        return ShapeUtils.normalize(pageInfo.getActualScale(), pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top, e);
+    }
+
+    private TouchPoint normalizedHistoricalPoint(final PageInfo pageInfo, final MotionEvent e, int index) {
+        return ShapeUtils.normalize(pageInfo.getActualScale(), pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top,
+                e.getHistoricalX(index),
+                e.getHistoricalY(index),
+                e.getHistoricalPressure(index),
+                e.getHistoricalSize(index),
+                e.getHistoricalEventTime(index));
+    }
+
+    public TouchPoint screenPoint(final PageInfo pageInfo, final MotionEvent e) {
+        return new TouchPoint(e.getX() - pageInfo.getDisplayRect().left,
+                e.getY() - pageInfo.getDisplayRect().top,
+                e.getPressure(),
+                e.getSize(),
+                e.getEventTime());
+    }
+
+    public TouchPoint screenHistoricalPoint(final PageInfo pageInfo, final MotionEvent e, int index) {
+        return new TouchPoint(e.getHistoricalX(index) - pageInfo.getDisplayRect().left,
+                e.getHistoricalY(index) - pageInfo.getDisplayRect().top,
+                e.getHistoricalPressure(index),
+                e.getHistoricalSize(index),
+                e.getHistoricalEventTime(index));
+    }
+
+    private void processDownEvent(final Shape shape, final PageInfo pageInfo, final MotionEvent e) {
+        shape.onDown(normalized(pageInfo, e), screenPoint(pageInfo, e));
+    }
+
+    private void processUpEvent(final Shape shape, final PageInfo pageInfo, final MotionEvent e) {
+        shape.onUp(normalized(pageInfo, e), screenPoint(pageInfo, e));
+    }
+
+    private void processMoveEvent(final Shape shape, final PageInfo pageInfo, final MotionEvent e) {
+        int n = e.getHistorySize();
+        for (int i = 0; i < n; i++) {
+            shape.onMove(normalizedHistoricalPoint(pageInfo, e, i), screenHistoricalPoint(pageInfo, e, i));
+        }
+        shape.onMove(normalized(pageInfo, e), screenPoint(pageInfo, e));
+    }
+
+    private void renderShape(final Canvas canvas, final Paint paint, final Shape shape) {
+        if (!shape.supportDFB()) {
+            shape.render(null, canvas, paint);
+        }
     }
 
     @Override

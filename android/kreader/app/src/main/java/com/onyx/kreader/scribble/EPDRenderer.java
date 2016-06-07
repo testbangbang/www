@@ -6,11 +6,11 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 
 /**
  * Created by zhuzeng on 4/21/16.
+ * Could be replaced by enableEpdHandwriting now.
  */
 public class EPDRenderer {
 
     static public void moveTo(float x, float y, float strokeWidth) {
-
     }
 
     static public void quadTo(float x, float y, final UpdateMode updateMode) {

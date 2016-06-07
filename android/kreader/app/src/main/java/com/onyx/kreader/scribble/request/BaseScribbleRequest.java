@@ -6,6 +6,8 @@ import com.onyx.kreader.scribble.ShapeManager;
 
 /**
  * Created by zhuzeng on 6/3/16.
+ * Requests are used in standalone application or separate page rendering from
+ * shape rendering.
  */
 public class BaseScribbleRequest extends BaseRequest {
 

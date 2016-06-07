@@ -21,7 +21,6 @@ public class ShapeManager {
     public static int digitizerId = 1;
 
     private RequestManager requestManager = new RequestManager();
-    private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
     public ShapeManager() {
     }

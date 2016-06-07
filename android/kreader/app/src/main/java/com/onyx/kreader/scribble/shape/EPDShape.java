@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.kreader.scribble.EPDRenderer;
 import com.onyx.kreader.scribble.data.TouchPoint;
 import com.onyx.kreader.scribble.data.TouchPointList;
 
@@ -82,19 +83,19 @@ public class EPDShape implements Shape {
 
 
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
-//        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getStrokeWidth());
+        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getStrokeWidth());
         boundingRect.union(normalizedPoint.x, normalizedPoint.y);
         normalizedPoints.add(normalizedPoint);
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
-//        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
         boundingRect.union(normalizedPoint.x, normalizedPoint.y);
         normalizedPoints.add(normalizedPoint);
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
-//        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
         boundingRect.union(normalizedPoint.x, normalizedPoint.y);
         normalizedPoints.add(normalizedPoint);
     }
