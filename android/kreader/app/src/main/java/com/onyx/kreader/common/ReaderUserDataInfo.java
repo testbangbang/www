@@ -27,10 +27,6 @@ public class ReaderUserDataInfo {
     private final static String HIGHLIGHT_TAG = "highlight";
     private Map<String, List<ReaderSelection>> selectionMap = new HashMap<String, List<ReaderSelection>>();
 
-    private Map<String, ShapePage> shapePageMap = new HashMap<String, ShapePage>();
-    public boolean canUndoShape;
-    public boolean canRedoShape;
-
     private Map<String, List<Bookmark>> bookmarkMap = new HashMap<String, List<Bookmark>>();
     private Map<String, List<Annotation>> annotationMap = new HashMap<String, List<Annotation>>();
 
@@ -63,18 +59,6 @@ public class ReaderUserDataInfo {
         selectionMap.put(HIGHLIGHT_TAG, Arrays.asList(new ReaderSelection[] { selection }));
     }
 
-    public boolean loadUserShape(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        for(PageInfo pageInfo: visiblePages) {
-            final ShapePage shapePage = ShapePage.createPage(context, reader.getDocumentMd5(), pageInfo.getName(), null);
-            final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, reader.getDocumentMd5(), pageInfo.getName(), null);
-            for(ShapeModel model : modelList) {
-                shapePage.addShapeFromModel(ShapeFactory.shapeFromModel(model));
-            }
-            shapePageMap.put(pageInfo.getName(), shapePage);
-        }
-        return true;
-    }
-
     public boolean loadAnnotations(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
             final List<Annotation> annotations = AnnotationProvider.loadAnnotations(context, reader.getDocumentMd5(), pageInfo.getName());
@@ -91,7 +75,4 @@ public class ReaderUserDataInfo {
         return true;
     }
 
-    public final ShapePage getShapePage(final String pageName) {
-        return shapePageMap.get(pageName);
-    }
 }

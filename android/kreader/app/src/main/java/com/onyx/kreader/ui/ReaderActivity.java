@@ -22,6 +22,7 @@ import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.scribble.data.ShapePage;
+import com.onyx.kreader.scribble.request.ShapeDataInfo;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -68,6 +69,7 @@ public class ReaderActivity extends ActionBarActivity {
     private ScaleGestureDetector scaleDetector;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
+    private ShapeDataInfo shapeDataInfo;
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -524,6 +526,10 @@ public class ReaderActivity extends ActionBarActivity {
         return readerUserDataInfo;
     }
 
+    public final ShapeDataInfo getShapeDataInfo() {
+        return shapeDataInfo;
+    }
+
     public ReaderSelectionManager getSelectionManager() {
         if (selectionManager == null) {
             selectionManager = new ReaderSelectionManager();
@@ -787,7 +793,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public final ShapePage getShapePage() {
-        return getReaderUserDataInfo().getShapePage(getFirstVisiblePageName());
+        return getShapeDataInfo().getShapePage(getFirstVisiblePageName());
     }
 
     public final String getFirstVisiblePageName() {

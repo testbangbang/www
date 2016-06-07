@@ -107,6 +107,12 @@ public class EPDShape implements Shape {
     public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
     }
 
+    /**
+     * check with normalized point.
+     * @param x
+     * @param y
+     * @return
+     */
     public boolean hitTest(final float x, final float y) {
         if (!boundingRect.contains(x, y)) {
             return false;

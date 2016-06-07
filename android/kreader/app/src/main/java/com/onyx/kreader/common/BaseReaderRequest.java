@@ -155,9 +155,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     private void loadUserData(final Reader reader) {
-        if (isLoadShapeData()) {
-            getReaderUserDataInfo().loadUserShape(getContext(), reader, readerViewInfo.getVisiblePages());
-        }
         if (isLoadAnnotationData()) {
             getReaderUserDataInfo().loadAnnotations(getContext(), reader, readerViewInfo.getVisiblePages());
         }
