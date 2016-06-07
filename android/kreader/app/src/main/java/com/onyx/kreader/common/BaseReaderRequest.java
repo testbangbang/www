@@ -106,6 +106,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
             afterExecuteImpl(reader);
         } catch (Throwable tr) {
             Log.w(TAG, tr);
+        } finally {
+            copyBitmapToViewport(reader);
         }
     }
 
@@ -115,7 +117,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
         reader.getReaderHelper().clearAbortFlag();
         saveReaderOptions(reader);
         loadUserData(reader);
-        copyBitmapToViewport(reader);
     }
 
     private void dumpException() {
@@ -128,17 +129,14 @@ public abstract class BaseReaderRequest extends BaseRequest {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                try {
-                    if (isTransferBitmap()) {
-                        reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
-                    }
-                    if (getCallback() != null) {
-                        // we can't foresee what's will be in done(), so we protect it with catch clause
-                        getCallback().done(BaseReaderRequest.this, getException());
-                    }
-                    reader.releaseWakeLock();
-                } catch (Exception e) {
+                if (isTransferBitmap()) {
+                    reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
                 }
+                if (getCallback() != null) {
+                    // we can't foresee what's will be in done(), so we protect it with catch clause
+                    getCallback().done(BaseReaderRequest.this, getException());
+                }
+                reader.releaseWakeLock();
         }};
 
         if (isRunInBackground()) {
