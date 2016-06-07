@@ -49,11 +49,8 @@ public class Reader {
                 try {
                     request.beforeExecute(Reader.this);
                     request.execute(Reader.this);
-                } catch (ReaderException exception) {
-                    request.setException(exception);
-                } catch (java.lang.Exception exception) {
-                    Log.d(TAG, Log.getStackTraceString(exception));
-                    request.setException(exception);
+                } catch (Throwable tr) {
+                    request.setException(tr);
                 } finally {
                     request.afterExecute(Reader.this);
                     requestManager.dumpWakelocks();

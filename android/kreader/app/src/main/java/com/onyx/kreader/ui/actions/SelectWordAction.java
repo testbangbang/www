@@ -25,7 +25,7 @@ public class SelectWordAction extends BaseAction {
         SelectWordRequest request = new SelectWordRequest(pageName, startPoint, endPoint);
         readerActivity.getReader().submitRequest(readerActivity, request, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 readerActivity.onSelectWordFinished((SelectWordRequest)request, e);
             }
         });

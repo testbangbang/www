@@ -19,7 +19,7 @@ public class ChangeViewConfigAction extends BaseAction {
                 pageInfo != null ? pageInfo.getName() : null);
         readerActivity.getReader().submitRequest(readerActivity, config, new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Exception e) {
+            public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     return;
                 }
