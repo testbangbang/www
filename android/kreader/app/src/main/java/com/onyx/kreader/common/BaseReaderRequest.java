@@ -96,7 +96,15 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     public abstract void execute(final Reader reader) throws Exception;
 
+    /**
+     * must not throw out exception from the method
+     *
+     * @param reader
+     */
     public void afterExecute(final Reader reader) {
+        if (getException() != null) {
+            Log.w(TAG, getException());
+        }
         benchmarkEnd();
         try {
             reader.getReaderHelper().clearAbortFlag();
@@ -106,7 +114,10 @@ public abstract class BaseReaderRequest extends BaseRequest {
             Log.w(TAG, tr);
         }
 
-        // store render bitmap store to local flag to avoid multi-thread problem
+        copyBitmapToViewport(reader);
+    }
+
+    private void copyBitmapToViewport(final Reader reader) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -114,18 +125,27 @@ public abstract class BaseReaderRequest extends BaseRequest {
                     reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
                 }
                 if (getCallback() != null) {
-                    getCallback().done(BaseReaderRequest.this, getException());
+                    try {
+                        // we can't foresee what's will be in done(), so we protect it with catch clause
+                        getCallback().done(BaseReaderRequest.this, getException());
+                    } catch (Throwable tr) {
+                        Log.w(TAG, tr);
+                    }
                 }
                 reader.releaseWakeLock();
             }};
 
-        if (isRunInBackground()) {
-            reader.getLooperHandler().post(runnable);
-        } else {
-            runnable.run();
-        }
+        try {
+            if (isRunInBackground()) {
+                reader.getLooperHandler().post(runnable);
+            } else {
+                runnable.run();
+            }
 
-        reader.getBitmapCopyCoordinator().waitCopy();
+            reader.getBitmapCopyCoordinator().waitCopy();
+        } catch (Throwable tr) {
+            Log.w(TAG, tr);
+        }
     }
 
     public final ReaderViewInfo getReaderViewInfo() {

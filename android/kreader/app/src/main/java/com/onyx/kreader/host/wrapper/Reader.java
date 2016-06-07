@@ -49,17 +49,10 @@ public class Reader {
                 try {
                     request.beforeExecute(Reader.this);
                     request.execute(Reader.this);
-                } catch (ReaderException exception) {
-                    request.setException(exception);
-                } catch (java.lang.Exception exception) {
-                    Log.w(TAG, exception);
-                    request.setException(exception);
+                } catch (Throwable tr) {
+                    request.setException(tr);
                 } finally {
-                    try {
-                        request.afterExecute(Reader.this);
-                    } catch (Throwable tr) {
-                        Log.w(TAG, tr);
-                    }
+                    request.afterExecute(Reader.this);
                     requestManager.dumpWakelocks();
                     requestManager.removeRequest(request);
                 }
