@@ -1,5 +1,6 @@
 package com.onyx.kreader.common;
 
+import android.util.Log;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -95,34 +96,56 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     public abstract void execute(final Reader reader) throws Exception;
 
+    /**
+     * must not throw out exception from the method
+     *
+     * @param reader
+     */
     public void afterExecute(final Reader reader) {
-        if (hasException()) {
-            getException().printStackTrace();
+        try {
+            afterExecuteImpl(reader);
+        } catch (Throwable tr) {
+            Log.w(TAG, tr);
         }
+    }
+
+    private void afterExecuteImpl(final Reader reader) throws Throwable {
+        dumpException();
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
         saveReaderOptions(reader);
         loadUserData(reader);
+        copyBitmapToViewport(reader);
+    }
 
-        // store render bitmap store to local flag to avoid multi-thread problem
+    private void dumpException() {
+        if (hasException()) {
+            Log.w(TAG, getException());
+        }
+    }
+
+    private void copyBitmapToViewport(final Reader reader) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (isTransferBitmap()) {
-                    reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
+                try {
+                    if (isTransferBitmap()) {
+                        reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
+                    }
+                    if (getCallback() != null) {
+                        // we can't foresee what's will be in done(), so we protect it with catch clause
+                        getCallback().done(BaseReaderRequest.this, getException());
+                    }
+                    reader.releaseWakeLock();
+                } catch (Exception e) {
                 }
-                if (getCallback() != null) {
-                    getCallback().done(BaseReaderRequest.this, getException());
-                }
-                reader.releaseWakeLock();
-            }};
+        }};
 
         if (isRunInBackground()) {
             reader.getLooperHandler().post(runnable);
         } else {
             runnable.run();
         }
-
         reader.getBitmapCopyCoordinator().waitCopy();
     }
 

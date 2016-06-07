@@ -25,7 +25,7 @@ public class SearchContentAction extends BaseAction {
         SearchRequest request = new SearchRequest(page, query, false, false, forward);
         readerActivity.getReader().submitRequest(readerActivity, request, new BaseCallback() {
             @Override
-            public void done(final BaseRequest request, Exception e) {
+            public void done(final BaseRequest request, Throwable e) {
                 readerActivity.onSearchFinished((SearchRequest)request, e);
             }
         });

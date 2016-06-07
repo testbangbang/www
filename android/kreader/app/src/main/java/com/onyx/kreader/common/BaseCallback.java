@@ -16,6 +16,6 @@ public abstract class BaseCallback {
     public void progress(final BaseRequest request, final ProgressInfo info) {
     }
 
-    public abstract void done(final BaseRequest request, final Exception e);
+    public abstract void done(final BaseRequest request, final Throwable e);
 
 }

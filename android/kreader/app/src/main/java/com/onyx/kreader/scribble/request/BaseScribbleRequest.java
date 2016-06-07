@@ -20,14 +20,23 @@ public class BaseScribbleRequest extends BaseRequest {
 
     private ShapeDataInfo shapeDataInfo;
     private String docUniqueId;
+
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
 
     public void setDocUniqueId(final String id) {
         docUniqueId = id;
     }
 
+    public final String getDocUniqueId() {
+        return docUniqueId;
+    }
+
     public void setVisiblePages(final List<PageInfo> pages) {
         visiblePages.addAll(pages);
+    }
+
+    public final List<PageInfo> getVisiblePages() {
+        return visiblePages;
     }
 
     public void execute(final ShapeManager shapeManager) throws Exception {
@@ -38,7 +47,6 @@ public class BaseScribbleRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
-        loadShapeData();
 
         final Runnable runnable = new Runnable() {
             @Override
@@ -63,8 +71,5 @@ public class BaseScribbleRequest extends BaseRequest {
         return shapeDataInfo;
     }
 
-    private void loadShapeData() {
-        getShapeDataInfo().loadUserShape(getContext(), docUniqueId, visiblePages);
-    }
 
 }
