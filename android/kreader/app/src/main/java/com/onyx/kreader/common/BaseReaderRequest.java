@@ -97,9 +97,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
     public abstract void execute(final Reader reader) throws Exception;
 
     public void afterExecute(final Reader reader) {
-        if (hasException()) {
-            getException().printStackTrace();
-        }
         benchmarkEnd();
         try {
             reader.getReaderHelper().clearAbortFlag();

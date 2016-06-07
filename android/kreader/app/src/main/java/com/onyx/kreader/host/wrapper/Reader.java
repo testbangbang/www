@@ -52,7 +52,7 @@ public class Reader {
                 } catch (ReaderException exception) {
                     request.setException(exception);
                 } catch (java.lang.Exception exception) {
-                    Log.d(TAG, Log.getStackTraceString(exception));
+                    Log.w(TAG, exception);
                     request.setException(exception);
                 } finally {
                     try {
