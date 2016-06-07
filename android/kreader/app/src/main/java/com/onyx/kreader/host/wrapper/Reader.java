@@ -55,7 +55,11 @@ public class Reader {
                     Log.d(TAG, Log.getStackTraceString(exception));
                     request.setException(exception);
                 } finally {
-                    request.afterExecute(Reader.this);
+                    try {
+                        request.afterExecute(Reader.this);
+                    } catch (Throwable tr) {
+                        Log.w(TAG, tr);
+                    }
                     requestManager.dumpWakelocks();
                     requestManager.removeRequest(request);
                 }
