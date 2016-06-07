@@ -35,7 +35,17 @@ public class ShapeUtils {
                 screenPoint.getPressure(), screenPoint.getSize(), screenPoint.getTimestamp());
     }
 
-    public static TouchPoint mapPoint(final Matrix matrix, final TouchPoint normalizedPoint) {
-        return normalizedPoint;
+    public static TouchPoint mapPoint(final float scale, final float pageX, final float pageY, final TouchPoint normalizedPoint) {
+        return new TouchPoint(
+                pageX + scale * normalizedPoint.getX(),
+                pageY + scale * normalizedPoint.getY(),
+                normalizedPoint.getPressure(),
+                normalizedPoint.getSize(),
+                normalizedPoint.getTimestamp());
     }
+
+    public static float mapPoint(final float scale, final float translate, final float origin) {
+        return translate + scale * origin;
+    }
+
 }

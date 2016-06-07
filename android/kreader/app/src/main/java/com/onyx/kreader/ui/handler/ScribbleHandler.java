@@ -1,5 +1,7 @@
 package com.onyx.kreader.ui.handler;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -76,6 +78,7 @@ public class ScribbleHandler extends BaseHandler {
                 break;
             case MotionEvent.ACTION_UP:
                 processUpEvent(shape, pageInfo, e);
+                addShape(shapePage, shape);
                 return true;
             case MotionEvent.ACTION_MOVE:
                 processMoveEvent(shape, pageInfo, e);
@@ -84,6 +87,11 @@ public class ScribbleHandler extends BaseHandler {
                 break;
         }
         return true;
+    }
+
+    private void addShape(final ShapePage shapePage, final Shape shape) {
+        shapePage.setAddToActionHistory(true);
+        shapePage.addShape(shape);
     }
 
     private TouchPoint normalized(final PageInfo pageInfo, final MotionEvent e) {
@@ -129,6 +137,12 @@ public class ScribbleHandler extends BaseHandler {
             shape.onMove(normalizedHistoricalPoint(pageInfo, e, i), screenHistoricalPoint(pageInfo, e, i));
         }
         shape.onMove(normalized(pageInfo, e), screenPoint(pageInfo, e));
+    }
+
+    private void renderShape(final Canvas canvas, final Paint paint, final Shape shape) {
+        if (!shape.supportDFB()) {
+            shape.render(null, canvas, paint);
+        }
     }
 
     @Override
