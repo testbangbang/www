@@ -12,9 +12,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     private static final String TAG = BaseReaderRequest.class.getSimpleName();
     private volatile boolean saveOptions = false;
-    private volatile boolean loadShapeData = true;
-    private volatile boolean loadAnnotationData = false;
-    private volatile boolean loadBookmarkData = false;
+    private volatile boolean loadAnnotationData = true;
+    private volatile boolean loadBookmarkData = true;
 
     private ReaderBitmapImpl renderBitmap;
     private ReaderViewInfo readerViewInfo;
@@ -38,14 +37,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     public boolean isSaveOptions() {
         return saveOptions;
-    }
-
-    public boolean isLoadShapeData() {
-        return loadShapeData;
-    }
-
-    public void setLoadShapeData(boolean load) {
-        loadShapeData = load;
     }
 
     public boolean isLoadAnnotationData() {

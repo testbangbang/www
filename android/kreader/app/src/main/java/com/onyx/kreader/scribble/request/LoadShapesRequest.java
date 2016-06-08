@@ -11,11 +11,12 @@ import java.util.List;
 /**
  * Created by zengzhu on 4/18/16.
  */
-public class LoadRequest extends BaseScribbleRequest {
+public class LoadShapesRequest extends BaseScribbleRequest {
 
     private List<ShapeModel> list;
 
-    public LoadRequest(final List<PageInfo> pages) {
+    public LoadShapesRequest(final String id, final List<PageInfo> pages) {
+        setDocUniqueId(id);
         setVisiblePages(pages);
     }
 

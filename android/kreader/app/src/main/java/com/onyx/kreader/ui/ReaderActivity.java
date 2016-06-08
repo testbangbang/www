@@ -20,26 +20,21 @@ import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.scribble.ShapeManager;
 import com.onyx.kreader.scribble.data.ShapePage;
+import com.onyx.kreader.scribble.request.LoadShapesRequest;
 import com.onyx.kreader.scribble.request.ShapeDataInfo;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.common.*;
-import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
-import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.kreader.scribble.data.ShapePage;
-import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -59,6 +54,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     private String documentPath;
     private Reader reader;
+    private ShapeManager shapeManager;
     private DataProvider dataProvider;
 
     private SurfaceView surfaceView;
@@ -536,6 +532,7 @@ public class ReaderActivity extends ActionBarActivity {
         updateToolbarProgress();
         //ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
+        loadShapeData();
     }
 
     public void redrawPage() {
@@ -554,6 +551,7 @@ public class ReaderActivity extends ActionBarActivity {
         drawBitmap(canvas, paint, pageBitmap);
         drawSearchResults(canvas, paint);
         drawHighlightResult(canvas, paint);
+        drawShapes(canvas, paint);
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -611,6 +609,24 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void drawSelectionCursor(Canvas canvas, Paint paint, PixelXorXfermode xor) {
         getSelectionManager().draw(canvas, paint, xor);
+    }
+
+    private void drawShapes(final Canvas canvas, Paint paint) {
+        // draw shapes bitmap on current canvas.
+    }
+
+    private void loadShapeData() {
+        if (shapeDataInfo != null) {
+            return;
+        }
+
+        final LoadShapesRequest request = new LoadShapesRequest(reader.getDocumentMd5(), getReaderViewInfo().getVisiblePages());
+        shapeManager.submit(this, request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                drawPage(reader.getViewportBitmap().getBitmap());
+            }
+        });
     }
 
     public String getCurrentPageName() {
@@ -756,7 +772,10 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public final ShapePage getShapePage() {
-        return getShapeDataInfo().getShapePage(getFirstVisiblePageName());
+        if (shapeDataInfo != null) {
+            return shapeDataInfo.getShapePage(getFirstVisiblePageName());
+        }
+        return null;
     }
 
     public final String getFirstVisiblePageName() {

@@ -66,8 +66,12 @@ public class ScribbleHandler extends BaseHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
-        final PageInfo pageInfo = activity.getFirstPageInfo();
         final ShapePage shapePage = activity.getShapePage();
+        if (shapePage == null) {
+            return false;
+        }
+
+        final PageInfo pageInfo = activity.getFirstPageInfo();
         final Shape shape = shapePage.getShapeFromPool();
         switch (e.getAction() & MotionEvent.ACTION_MASK) {
             case (MotionEvent.ACTION_DOWN):
