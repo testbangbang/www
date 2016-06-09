@@ -1,10 +1,12 @@
 package com.onyx.kreader.scribble;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.Log;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.RequestManager;
+import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.scribble.data.UndoRedoManager;
 import com.onyx.kreader.scribble.request.BaseScribbleRequest;
 
@@ -14,6 +16,7 @@ import com.onyx.kreader.scribble.request.BaseScribbleRequest;
 public class ShapeManager {
 
     private static final String TAG = ShapeManager.class.getSimpleName();
+    private ReaderBitmapImpl bitmapWrapper = new ReaderBitmapImpl();
 
     private Rect limitRect = null;
     public static final int KEYCDOE_SCRIBBLER = 213;
@@ -24,7 +27,6 @@ public class ShapeManager {
 
     public ShapeManager() {
     }
-
 
     private final Runnable generateRunnable(final BaseScribbleRequest request) {
         Runnable runnable = new Runnable() {
@@ -49,4 +51,15 @@ public class ShapeManager {
         requestManager.submitRequest(context, request, generateRunnable(request), callback);
     }
 
+    public Bitmap updateBitmap(final Rect viewportSize) {
+        bitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
+        return bitmapWrapper.getBitmap();
+    }
+
+    public Bitmap getShapeBitmap() {
+        if (bitmapWrapper == null) {
+            return null;
+        }
+        return bitmapWrapper.getBitmap();
+    }
 }

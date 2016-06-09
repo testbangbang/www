@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.kreader.R;
 
 import com.onyx.kreader.common.*;
@@ -22,6 +23,7 @@ import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.scribble.ShapeManager;
 import com.onyx.kreader.scribble.data.ShapePage;
+import com.onyx.kreader.scribble.request.BaseScribbleRequest;
 import com.onyx.kreader.scribble.request.LoadShapesRequest;
 import com.onyx.kreader.scribble.request.ShapeDataInfo;
 import com.onyx.kreader.ui.actions.*;
@@ -153,6 +155,10 @@ public class ReaderActivity extends ActionBarActivity {
 
     public int getDisplayHeight() {
         return surfaceView.getHeight();
+    }
+
+    public Rect getDisplayRect() {
+        return new Rect(0, 0, getDisplayWidth(), getDisplayHeight());
     }
 
     public void beforePageChangeByUser() {
@@ -503,6 +509,17 @@ public class ReaderActivity extends ActionBarActivity {
         readerUserDataInfo = request.getReaderUserDataInfo();
     }
 
+    private void saveShapeDataInfo(final BaseScribbleRequest request) {
+        shapeDataInfo = request.getShapeDataInfo();
+    }
+
+    private boolean hasShapes() {
+        if (shapeDataInfo == null) {
+            return false;
+        }
+        return shapeDataInfo.hasShapes();
+    }
+
     public final ReaderViewInfo getReaderViewInfo() {
         return readerViewInfo;
     }
@@ -530,6 +547,7 @@ public class ReaderActivity extends ActionBarActivity {
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
         updateToolbarProgress();
+
         //ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
         loadShapeData();
@@ -552,6 +570,7 @@ public class ReaderActivity extends ActionBarActivity {
         drawSearchResults(canvas, paint);
         drawHighlightResult(canvas, paint);
         drawShapes(canvas, paint);
+
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -612,19 +631,35 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawShapes(final Canvas canvas, Paint paint) {
-        // draw shapes bitmap on current canvas.
-    }
-
-    private void loadShapeData() {
-        if (shapeDataInfo != null) {
+        final Bitmap bitmap = getShapeManager().getShapeBitmap();
+        if (bitmap == null) {
             return;
         }
 
-        final LoadShapesRequest request = new LoadShapesRequest(reader.getDocumentMd5(), getReaderViewInfo().getVisiblePages());
-        shapeManager.submit(this, request, new BaseCallback() {
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+    }
+
+    private ShapeManager getShapeManager() {
+        if (shapeManager == null) {
+            shapeManager = new ShapeManager();
+        }
+        return shapeManager;
+    }
+
+    private void loadShapeData() {
+        if (hasShapes()) {
+            return;
+        }
+
+        final LoadShapesRequest loadRequest = new LoadShapesRequest(reader.getDocumentMd5(), getReaderViewInfo().getVisiblePages(), getDisplayRect());
+        getShapeManager().submit(this, loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                drawPage(reader.getViewportBitmap().getBitmap());
+                saveShapeDataInfo(loadRequest);
+                //if (hasShapes()) {
+                    drawPage(reader.getViewportBitmap().getBitmap());
+                //}
             }
         });
     }

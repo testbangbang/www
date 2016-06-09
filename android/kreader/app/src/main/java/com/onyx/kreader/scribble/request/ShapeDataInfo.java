@@ -21,8 +21,20 @@ public class ShapeDataInfo {
     public boolean canUndoShape;
     public boolean canRedoShape;
 
+    public final Map<String, ShapePage> getShapePageMap() {
+        return shapePageMap;
+    }
+
     public final ShapePage getShapePage(final String pageName) {
         return shapePageMap.get(pageName);
+    }
+
+    public boolean hasShapes() {
+        return (shapePageMap.size() > 0);
+    }
+
+    public boolean hasShapes(final String pageName) {
+        return shapePageMap.containsKey(pageName) && shapePageMap.get(pageName).hasShapes();
     }
 
     public boolean loadUserShape(final Context context, final String docUniqueId, final List<PageInfo> visiblePages) {

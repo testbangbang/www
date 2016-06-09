@@ -1,8 +1,13 @@
 package com.onyx.kreader.scribble.request;
 
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.util.Size;
+import android.util.SizeF;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.RequestManager;
+import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.scribble.ShapeManager;
 import com.onyx.kreader.scribble.data.ShapeDataProvider;
@@ -20,7 +25,7 @@ public class BaseScribbleRequest extends BaseRequest {
 
     private ShapeDataInfo shapeDataInfo;
     private String docUniqueId;
-
+    private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
 
     public void setDocUniqueId(final String id) {
@@ -29,6 +34,14 @@ public class BaseScribbleRequest extends BaseRequest {
 
     public final String getDocUniqueId() {
         return docUniqueId;
+    }
+
+    public void setViewportSize(final Rect size) {
+        viewportSize = size;
+    }
+
+    public final Rect getViewportSize() {
+        return viewportSize;
     }
 
     public void setVisiblePages(final List<PageInfo> pages) {

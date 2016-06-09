@@ -108,11 +108,10 @@ public class ShapePage {
         return new TouchPoint();
     }
 
-    public void render(final Bitmap bitmap, final Paint paint) {
+    public void render(final Canvas canvas, final Paint paint) {
         if (shapeList == null) {
             return;
         }
-        Canvas canvas = new Canvas(bitmap);
         for(Shape shape : shapeList) {
             shape.render(pageMatrix, canvas, paint);
         }
@@ -185,5 +184,9 @@ public class ShapePage {
             ShapeDataProvider.removeShape(null, shape.getUniqueId());
         }
         return true;
+    }
+
+    public boolean hasShapes() {
+        return shapeList.size() > 0;
     }
 }
