@@ -95,7 +95,7 @@ public class DocumentOptions extends BaseData {
     }
 
     public List<String> getAuthorList() {
-        return StringUtils.split(authors, DELIMITER);
+        return StringUtils.split(authors, BaseData.DELIMITER);
     }
 
     public String getPublisher() {

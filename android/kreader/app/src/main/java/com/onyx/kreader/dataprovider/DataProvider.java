@@ -6,6 +6,7 @@ import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.RequestManager;
 import com.onyx.kreader.dataprovider.request.BaseDataProviderRequest;
 import com.onyx.kreader.scribble.data.ShapeModel;
+import com.raizlabs.android.dbflow.config.DatabaseConfig;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
