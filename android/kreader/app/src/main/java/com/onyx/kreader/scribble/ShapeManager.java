@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.util.Log;
 import com.onyx.kreader.common.BaseCallback;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.common.RequestManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;

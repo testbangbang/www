@@ -21,6 +21,10 @@ public class BaseScribbleRequest extends BaseRequest {
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
 
+    public BaseScribbleRequest() {
+        setAbortPendingTasks();
+    }
+
     public void setDocUniqueId(final String id) {
         docUniqueId = id;
     }

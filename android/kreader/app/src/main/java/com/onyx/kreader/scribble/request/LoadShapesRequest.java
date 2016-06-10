@@ -2,6 +2,7 @@ package com.onyx.kreader.scribble.request;
 
 
 import android.graphics.*;
+import android.util.Log;
 import android.util.Size;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.math.PageInfo;
@@ -24,6 +25,7 @@ public class LoadShapesRequest extends BaseScribbleRequest {
 
 
     public LoadShapesRequest(final String id, final List<PageInfo> pages, final Rect size) {
+        setAbortPendingTasks();
         setViewportSize(size);
         setDocUniqueId(id);
         setVisiblePages(pages);
@@ -38,11 +40,12 @@ public class LoadShapesRequest extends BaseScribbleRequest {
         try {
             getShapeDataInfo().loadUserShape(getContext(), getDocUniqueId(), getVisiblePages());
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
     public void renderShape(final ShapeManager parent) {
+        Log.d("######", "render shape:  " + this);
         Bitmap bitmap = parent.updateBitmap(getViewportSize());
         bitmap.eraseColor(Color.TRANSPARENT);
         Canvas canvas = new Canvas(bitmap);
@@ -62,6 +65,7 @@ public class LoadShapesRequest extends BaseScribbleRequest {
 
         // draw test path.
         drawRandomPath(canvas, paint);
+        Log.d("######", "render shape finished:  " + this);
     }
 
     private void drawRandomPath(final Canvas canvas, final Paint paint) {
@@ -76,7 +80,12 @@ public class LoadShapesRequest extends BaseScribbleRequest {
             float xx2 = TestUtils.randInt(0, width);
             float yy2 = TestUtils.randInt(0, height);
             path.quadTo((xx + xx2) / 2, (yy + yy2) / 2, xx2, yy2);
+            if (isAbort()) {
+                Log.d("###########", "aborted detected: " + this);
+                return;
+            }
         }
+        Log.d("###########", "path generated: " + this);
         canvas.drawPath(path, paint);
     }
 

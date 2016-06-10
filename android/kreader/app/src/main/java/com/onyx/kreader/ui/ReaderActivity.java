@@ -184,7 +184,7 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
         final PreRenderRequest request = new PreRenderRequest(preRenderNext);
-        reader.submitRequest(this, request, null);
+        getReader().submitRequest(this, request, null);
     }
 
     public void nextPage() {
@@ -645,7 +645,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void resetShapeData() {
         getShapeManager().enableBitmap(false);
-
     }
 
     private void loadShapeData() {
