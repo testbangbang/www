@@ -57,7 +57,6 @@ public class ReaderActivity extends ActionBarActivity {
     private String documentPath;
     private Reader reader;
     private ShapeManager shapeManager;
-    private DataProvider dataProvider;
 
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
@@ -168,10 +167,6 @@ public class ReaderActivity extends ActionBarActivity {
         return reader;
     }
 
-    public final DataProvider getDataProvider() {
-        return dataProvider;
-    }
-
     public void nextScreen() {
         preRenderNext = true;
         final NextScreenAction action = new NextScreenAction();
@@ -268,7 +263,6 @@ public class ReaderActivity extends ActionBarActivity {
         initToolbar();
         initSurfaceView();
         initHandlerManager();
-        initDataProvider();
     }
 
     private void initToolbar() {
@@ -372,10 +366,6 @@ public class ReaderActivity extends ActionBarActivity {
     private void initHandlerManager() {
         handlerManager = new HandlerManager(this);
         handlerManager.setEnable(false);
-    }
-
-    private void initDataProvider() {
-        dataProvider = new DataProvider();
     }
 
     private void clearCanvas(SurfaceHolder holder) {
@@ -488,6 +478,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void submitRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
+        beforeSubmitRequest();
         reader.submitRequest(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -498,6 +489,10 @@ public class ReaderActivity extends ActionBarActivity {
                 preRenderNext();
             }
         });
+    }
+
+    private void beforeSubmitRequest() {
+        resetShapeData();
     }
 
     private void saveReaderViewInfo(final BaseReaderRequest request) {
@@ -550,6 +545,7 @@ public class ReaderActivity extends ActionBarActivity {
 
         //ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
+
         loadShapeData();
     }
 
@@ -647,6 +643,11 @@ public class ReaderActivity extends ActionBarActivity {
         return shapeManager;
     }
 
+    private void resetShapeData() {
+        getShapeManager().enableBitmap(false);
+
+    }
+
     private void loadShapeData() {
         if (hasShapes()) {
             return;
@@ -657,9 +658,8 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 saveShapeDataInfo(loadRequest);
-                //if (hasShapes()) {
-                    drawPage(reader.getViewportBitmap().getBitmap());
-                //}
+                getShapeManager().enableBitmap(true);
+                drawPage(reader.getViewportBitmap().getBitmap());
             }
         });
     }

@@ -3,8 +3,10 @@ package com.onyx.kreader.scribble;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.Log;
 import com.onyx.kreader.common.BaseCallback;
+import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.common.RequestManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.scribble.data.UndoRedoManager;
@@ -17,6 +19,7 @@ public class ShapeManager {
 
     private static final String TAG = ShapeManager.class.getSimpleName();
     private ReaderBitmapImpl bitmapWrapper = new ReaderBitmapImpl();
+    private boolean enableBitmap = true;
 
     private Rect limitRect = null;
     public static final int KEYCDOE_SCRIBBLER = 213;
@@ -33,6 +36,7 @@ public class ShapeManager {
             @Override
             public void run() {
                 try {
+                    request.beforeExecute(requestManager);
                     request.execute(ShapeManager.this);
                 } catch (java.lang.Exception exception) {
                     Log.d(TAG, Log.getStackTraceString(exception));
@@ -57,9 +61,13 @@ public class ShapeManager {
     }
 
     public Bitmap getShapeBitmap() {
-        if (bitmapWrapper == null) {
+        if (bitmapWrapper == null || !enableBitmap) {
             return null;
         }
         return bitmapWrapper.getBitmap();
+    }
+
+    public void enableBitmap(boolean enable) {
+        enableBitmap = enable;
     }
 }

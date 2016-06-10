@@ -1,7 +1,6 @@
 package com.onyx.kreader.scribble.data;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -32,6 +31,11 @@ public class ShapePage {
     private Matrix pageMatrix;
     private boolean addToActionHistory = true;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
+
+
+    public static abstract class RenderCallback {
+        public abstract boolean isRenderAbort();
+    }
 
     public ShapePage() {
 
@@ -108,12 +112,15 @@ public class ShapePage {
         return new TouchPoint();
     }
 
-    public void render(final Canvas canvas, final Paint paint) {
+    public void render(final Canvas canvas, final Paint paint, final RenderCallback callback) {
         if (shapeList == null) {
             return;
         }
         for(Shape shape : shapeList) {
             shape.render(pageMatrix, canvas, paint);
+            if (callback != null && callback.isRenderAbort()) {
+                break;
+            }
         }
     }
 

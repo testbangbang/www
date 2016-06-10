@@ -6,6 +6,7 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseCallback;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.dataprovider.request.LoadDocumentOptionsRequest;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.CreateViewRequest;
@@ -29,9 +30,11 @@ public class OpenDocumentAction extends BaseAction {
 
     private String documentPath;
     private DialogLoading dialogLoading;
+    private DataProvider dataProvider;
 
     public OpenDocumentAction(final String path) {
         documentPath = path;
+        dataProvider = new DataProvider();
     }
 
     public void execute(final ReaderActivity readerActivity) {
@@ -39,7 +42,7 @@ public class OpenDocumentAction extends BaseAction {
         final Reader reader = ReaderManager.getReader(documentPath);
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
                 readerActivity.getReader().getDocumentMd5());
-        readerActivity.getDataProvider().submit(readerActivity, loadDocumentOptionsRequest, new BaseCallback() {
+        dataProvider.submit(readerActivity, loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {

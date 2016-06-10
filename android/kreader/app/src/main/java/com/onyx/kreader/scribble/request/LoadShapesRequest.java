@@ -3,12 +3,14 @@ package com.onyx.kreader.scribble.request;
 
 import android.graphics.*;
 import android.util.Size;
+import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.scribble.ShapeManager;
 import com.onyx.kreader.scribble.data.ShapeModel;
 import com.onyx.kreader.scribble.data.ShapeDataProvider;
 import com.onyx.kreader.scribble.data.ShapePage;
 import com.onyx.kreader.scribble.shape.ShapeFactory;
+import com.onyx.kreader.utils.TestUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -50,16 +52,32 @@ public class LoadShapesRequest extends BaseScribbleRequest {
         paint.setStrokeWidth(3.0f);
 
         for(Map.Entry<String, ShapePage> entry: getShapeDataInfo().getShapePageMap().entrySet()) {
-            entry.getValue().render(canvas, paint);
+            entry.getValue().render(canvas, paint, new ShapePage.RenderCallback() {
+                @Override
+                public boolean isRenderAbort() {
+                    return isAbort();
+                }
+            });
         }
 
-
         // draw test path.
-        Path path = new Path();
-        path.moveTo(100, 100);
-        path.quadTo(123, 500, 230, 220);
-        canvas.drawPath(path, paint);
+        drawRandomPath(canvas, paint);
     }
 
+    private void drawRandomPath(final Canvas canvas, final Paint paint) {
+        Path path = new Path();
+        int width = getViewportSize().width();
+        int height = getViewportSize().height();
+        int max = TestUtils.randInt(1000, 5000);
+        path.moveTo(TestUtils.randInt(0, width), TestUtils.randInt(0, height));
+        for(int i = 0; i < max; ++i) {
+            float xx = TestUtils.randInt(0, width);
+            float yy = TestUtils.randInt(0, height);
+            float xx2 = TestUtils.randInt(0, width);
+            float yy2 = TestUtils.randInt(0, height);
+            path.quadTo((xx + xx2) / 2, (yy + yy2) / 2, xx2, yy2);
+        }
+        canvas.drawPath(path, paint);
+    }
 
 }

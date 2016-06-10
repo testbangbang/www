@@ -1,17 +1,10 @@
 package com.onyx.kreader.scribble.request;
 
-import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.util.Size;
-import android.util.SizeF;
 import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.RequestManager;
-import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.scribble.ShapeManager;
-import com.onyx.kreader.scribble.data.ShapeDataProvider;
-import com.onyx.kreader.scribble.shape.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +43,36 @@ public class BaseScribbleRequest extends BaseRequest {
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;
+    }
+
+    public void beforeExecute(final RequestManager requestManager) {
+        requestManager.acquireWakeLock(getContext());
+        benchmarkStart();
+        processAbort(requestManager);
+        invokeStartCallback(requestManager);
+    }
+
+    private void processAbort(final RequestManager requestManager) {
+        if (isAbort()) {
+            requestManager.abortAllRequests();
+        }
+    }
+
+    private void invokeStartCallback(final RequestManager requestManager) {
+        if (getCallback() == null) {
+            return;
+        }
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                getCallback().start(BaseScribbleRequest.this);
+            }
+        };
+        if (isRunInBackground()) {
+            requestManager.getLooperHandler().post(runnable);
+        } else {
+            runnable.run();
+        }
     }
 
     public void execute(final ShapeManager shapeManager) throws Exception {
