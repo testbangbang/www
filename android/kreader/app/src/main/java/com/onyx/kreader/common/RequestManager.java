@@ -55,6 +55,12 @@ public class RequestManager {
         }
     }
 
+    public boolean hasPendingRequests() {
+        synchronized (requestList) {
+            return requestList.size() > 0;
+        }
+    }
+
     public void acquireWakeLock(Context context) {
         try {
             if (wakeLock == null) {

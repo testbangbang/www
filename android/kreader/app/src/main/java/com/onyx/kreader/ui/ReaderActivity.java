@@ -13,12 +13,10 @@ import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.kreader.R;
 
 import com.onyx.kreader.common.*;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.scribble.ShapeManager;
@@ -438,7 +436,7 @@ public class ReaderActivity extends ActionBarActivity {
         PopupSearchMenu.SearchResult result = PopupSearchMenu.SearchResult.EMPTY;
         if (request.getReaderUserDataInfo().hasSearchResults()) {
             result = PopupSearchMenu.SearchResult.SUCCEED;
-            handleRenderRequestFinished(request, e);
+            onRenderRequestFinished(request, e);
         }
         new ShowSearchMenuAction(request.getSearchOptions(), result).execute(this);
     }
@@ -460,7 +458,7 @@ public class ReaderActivity extends ActionBarActivity {
         getSelectionManager().updateDisplayPosition();
 
         handlerManager.setActiveProvider(HandlerManager.WORD_SELECTION_PROVIDER);
-        handleRenderRequestFinished(request, e);
+        onRenderRequestFinished(request, e);
     }
 
     public void backward() {
@@ -485,7 +483,7 @@ public class ReaderActivity extends ActionBarActivity {
                 if (callback != null) {
                     callback.done(request, e);
                 }
-                handleRenderRequestFinished(renderRequest, e);
+                onRenderRequestFinished(renderRequest, e);
                 preRenderNext();
             }
         });
@@ -534,8 +532,8 @@ public class ReaderActivity extends ActionBarActivity {
         return selectionManager;
     }
 
-    private void handleRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
-        Debug.d(TAG, "handleRenderRequestFinished: " + request + ", " + e);
+    private void onRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
+        Debug.d(TAG, "onRenderRequestFinished: " + request + ", " + e);
         if (e != null) {
             return;
         }
@@ -545,8 +543,7 @@ public class ReaderActivity extends ActionBarActivity {
 
         //ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
-
-        loadShapeData();
+        renderShapeDataInBackground();
     }
 
     public void redrawPage() {
@@ -627,11 +624,10 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawShapes(final Canvas canvas, Paint paint) {
-        final Bitmap bitmap = getShapeManager().getShapeBitmap();
-        if (bitmap == null) {
+        if (!isShapeBitmapReady()) {
             return;
         }
-
+        final Bitmap bitmap = getShapeManager().getShapeBitmap();
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
@@ -643,11 +639,25 @@ public class ReaderActivity extends ActionBarActivity {
         return shapeManager;
     }
 
-    private void resetShapeData() {
-        getShapeManager().enableBitmap(false);
+    private boolean isShapeBitmapReady() {
+        // TODO
+//        if (!hasShapes()) {
+//            return false;
+//        }
+
+        final Bitmap bitmap = getShapeManager().getShapeBitmap();
+        if (bitmap == null) {
+            return false;
+        }
+        return true;
     }
 
-    private void loadShapeData() {
+    private void resetShapeData() {
+        getShapeManager().enableBitmap(false);
+        shapeDataInfo = null;
+    }
+
+    private void renderShapeDataInBackground() {
         if (hasShapes()) {
             return;
         }
@@ -656,6 +666,9 @@ public class ReaderActivity extends ActionBarActivity {
         getShapeManager().submit(this, loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e != null || request.isAbort()) {
+                    return;
+                }
                 saveShapeDataInfo(loadRequest);
                 getShapeManager().enableBitmap(true);
                 drawPage(reader.getViewportBitmap().getBitmap());

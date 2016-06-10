@@ -3,19 +3,15 @@ package com.onyx.kreader.scribble.request;
 
 import android.graphics.*;
 import android.util.Log;
-import android.util.Size;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.kreader.BuildConfig;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.scribble.ShapeManager;
-import com.onyx.kreader.scribble.data.ShapeModel;
-import com.onyx.kreader.scribble.data.ShapeDataProvider;
 import com.onyx.kreader.scribble.data.ShapePage;
-import com.onyx.kreader.scribble.shape.ShapeFactory;
 import com.onyx.kreader.utils.TestUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CancellationException;
 
 /**
  * Created by zengzhu on 4/18/16.
@@ -23,6 +19,7 @@ import java.util.concurrent.CancellationException;
  */
 public class LoadShapesRequest extends BaseScribbleRequest {
 
+    private boolean debugPathBenchmark = true;
 
     public LoadShapesRequest(final String id, final List<PageInfo> pages, final Rect size) {
         setAbortPendingTasks();
@@ -45,7 +42,7 @@ public class LoadShapesRequest extends BaseScribbleRequest {
     }
 
     public void renderShape(final ShapeManager parent) {
-        Log.d("######", "render shape:  " + this);
+        Debug.d("Render shape starts");
         Bitmap bitmap = parent.updateBitmap(getViewportSize());
         bitmap.eraseColor(Color.TRANSPARENT);
         Canvas canvas = new Canvas(bitmap);
@@ -64,15 +61,18 @@ public class LoadShapesRequest extends BaseScribbleRequest {
         }
 
         // draw test path.
-        drawRandomPath(canvas, paint);
-        Log.d("######", "render shape finished:  " + this);
+        drawRandomTestPath(canvas, paint);
+        Debug.d("Render shape finished.");
     }
 
-    private void drawRandomPath(final Canvas canvas, final Paint paint) {
+    private void drawRandomTestPath(final Canvas canvas, final Paint paint) {
+        if (!(BuildConfig.DEBUG && debugPathBenchmark)) {
+            return;
+        }
         Path path = new Path();
         int width = getViewportSize().width();
         int height = getViewportSize().height();
-        int max = TestUtils.randInt(1000, 5000);
+        int max = TestUtils.randInt(0, 5000);
         path.moveTo(TestUtils.randInt(0, width), TestUtils.randInt(0, height));
         for(int i = 0; i < max; ++i) {
             float xx = TestUtils.randInt(0, width);
@@ -81,12 +81,14 @@ public class LoadShapesRequest extends BaseScribbleRequest {
             float yy2 = TestUtils.randInt(0, height);
             path.quadTo((xx + xx2) / 2, (yy + yy2) / 2, xx2, yy2);
             if (isAbort()) {
-                Log.d("###########", "aborted detected: " + this);
+                Debug.d("Render shape aborted detected: " + this);
                 return;
             }
         }
-        Log.d("###########", "path generated: " + this);
+        long ts = System.currentTimeMillis();
+        Debug.d("Render shape path generated: " + this);
         canvas.drawPath(path, paint);
+        Debug.d("Render shape path draw with: " + max + " finished: " + (System.currentTimeMillis() - ts) + " ms ");
     }
 
 }

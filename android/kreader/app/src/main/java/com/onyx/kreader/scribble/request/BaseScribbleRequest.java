@@ -52,14 +52,7 @@ public class BaseScribbleRequest extends BaseRequest {
     public void beforeExecute(final RequestManager requestManager) {
         requestManager.acquireWakeLock(getContext());
         benchmarkStart();
-        processAbort(requestManager);
         invokeStartCallback(requestManager);
-    }
-
-    private void processAbort(final RequestManager requestManager) {
-        if (isAbort()) {
-            requestManager.abortAllRequests();
-        }
     }
 
     private void invokeStartCallback(final RequestManager requestManager) {
