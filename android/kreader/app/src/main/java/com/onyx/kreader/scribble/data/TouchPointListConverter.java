@@ -12,7 +12,7 @@ import java.util.List;
 @com.raizlabs.android.dbflow.annotation.TypeConverter
 public class TouchPointListConverter extends TypeConverter<Blob, TouchPointList> {
 
-    static FSTConfiguration singletonConf = FSTConfiguration.createUnsafeBinaryConfiguration();
+    static FSTConfiguration singletonConf = FSTConfiguration.createAndroidDefaultConfiguration();
 
     @Override
     public TouchPointList getModelValue(final Blob blob) {
