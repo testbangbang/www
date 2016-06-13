@@ -123,7 +123,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
             return false;
         }
 
-        final RectF viewportBeforeChange = getPageManager().getViewportRect();
+        final RectF viewportBeforeChange = new RectF(getPageManager().getViewportRect());
         LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
         if (!getPageManager().gotoPage(location)) {
             return false;
@@ -134,7 +134,11 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     private void onPageChanged(final RectF viewportBeforeChange) {
-
+        if (ReaderConstants.isSpecialScale(getLayoutManager().getSpecialScale())) {
+            return;
+        }
+        getPageManager().setAbsoluteViewportPosition(viewportBeforeChange.left,
+                getPageManager().getViewportRect().top);
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
