@@ -51,7 +51,9 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private void restoreViewport(final Reader reader) throws Exception {
-        reader.getReaderLayoutManager().getPageManager().setViewportRect(baseOptions.getViewport());
+        if (baseOptions.getViewport() != null) {
+            reader.getReaderLayoutManager().getPageManager().setViewportRect(baseOptions.getViewport());
+        }
     }
 
     private void restoreOthers(final Reader reader) {
