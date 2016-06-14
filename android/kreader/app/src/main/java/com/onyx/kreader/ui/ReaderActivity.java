@@ -534,7 +534,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void onRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
         Debug.d(TAG, "onRenderRequestFinished: " + request + ", " + e);
-        if (e != null) {
+        if (e != null || request.isAbort()) {
             return;
         }
         saveReaderViewInfo(request);
