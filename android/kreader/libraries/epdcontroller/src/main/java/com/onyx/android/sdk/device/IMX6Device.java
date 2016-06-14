@@ -88,6 +88,9 @@ public class IMX6Device extends DeviceInfo {
     private static Method sMethodEnableScreenUpdate = null;
     private static Method sMethodSetDisplayScheme = null;
     private static Method sMethodWaitForUpdateFinished = null;
+    private static Method sMethodEnableHandWriting = null;
+    private static Method sMethodSetScreenHandWritingRegionLimit = null;
+    private static Method sMethodEnablePost = null;
 
     private IMX6Device() {
     }
@@ -145,9 +148,12 @@ public class IMX6Device extends DeviceInfo {
             sMethodApplyApplicationFastMode = ReflectUtil.getMethodSafely(cls, "applyApplicationFastMode", String.class, boolean.class, boolean.class);
             sMethodEnableScreenUpdate = ReflectUtil.getMethodSafely(cls, "enableScreenUpdate", boolean.class);
             sMethodSetDisplayScheme = ReflectUtil.getMethodSafely(cls, "setDisplayScheme", int.class);
+            sMethodEnableHandWriting = ReflectUtil.getMethodSafely(cls, "enableHandWriting", int.class);
+            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int.class, int.class, int.class, int.class);
+            sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
             sMethodWaitForUpdateFinished = ReflectUtil.getMethodSafely(cls, "waitForUpdateFinished");
 
-            Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
+            Log.d(TAG, "init device imx6.");
             return sInstance;
         }
         return sInstance;
@@ -331,5 +337,29 @@ public class IMX6Device extends DeviceInfo {
             return UpdateMode.GC16;
         }
         return UpdateMode.GC16;
+    }
+
+    public void enableScreenHandWriting(View view, int enable) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodEnableHandWriting, view, enable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, left, top, right, bottom);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void enablePost(View view, int enable) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodEnablePost, view, enable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

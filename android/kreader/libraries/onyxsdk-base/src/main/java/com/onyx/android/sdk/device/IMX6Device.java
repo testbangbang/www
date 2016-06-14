@@ -67,6 +67,8 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodLineTo = null;
     private static Method sMethodQuadTo = null;
     private static Method sMethodEnablePost = null;
+    private static Method sMethodEnableHandWriting = null;
+    private static Method sMethodSetScreenHandWritingRegionLimit = null;
     private static Method sMethodApplyGammaCorrection = null;
     private static Method sMethodStartStroke = null;
     private static Method sMethodAddStrokePoint = null;
@@ -407,6 +409,26 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public boolean supportScreenHandWriting() {
+        return (sMethodEnableHandWriting != null);
+    }
+
+    public void enableScreenHandWriting(View view, int enable) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodEnableHandWriting, view, enable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, left, top, right, bottom);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void applyGammaCorrection(boolean apply, int value) {
         ReflectUtil.invokeMethodSafely(sMethodApplyGammaCorrection, null, apply, value);
     }
@@ -497,6 +519,8 @@ public class IMX6Device extends BaseDevice {
             sMethodLineTo = ReflectUtil.getMethodSafely(cls, "lineTo", float.class, float.class, int.class);
             sMethodQuadTo = ReflectUtil.getMethodSafely(cls, "quadTo", float.class, float.class, int.class);
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
+            sMethodEnableHandWriting = ReflectUtil.getMethodSafely(cls, "enableHandWriting", int.class);
+            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int.class, int.class, int.class, int.class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
 
             sMethodStartStroke = ReflectUtil.getMethodSafely(cls, "startStroke", float.class, float.class, float.class, float.class, float.class, float.class);

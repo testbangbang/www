@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class LoadShapesRequest extends BaseScribbleRequest {
 
-    private boolean debugPathBenchmark = true;
+    private boolean debugPathBenchmark = false;
 
     public LoadShapesRequest(final String id, final List<PageInfo> pages, final Rect size) {
         setAbortPendingTasks();

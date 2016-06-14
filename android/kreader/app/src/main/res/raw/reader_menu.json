@@ -240,6 +240,12 @@
             "title": "More",
             "iconResourceId": "R.drawable.menu_more",
             "children": [
+                {
+                    "id": "shape",
+                    "type": "Item",
+                    "title": "Draw",
+                    "iconResourceId": "R.drawable.menu_navigation_article_preset"
+                },
             ]
         }
     ]

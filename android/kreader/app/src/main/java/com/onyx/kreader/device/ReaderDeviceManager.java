@@ -7,6 +7,7 @@ import android.os.Build;
 import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.device.*;
 
 /**
  * Created by Joy on 2016/5/6.
@@ -49,6 +50,16 @@ public class ReaderDeviceManager {
 
     public static void exitAnimationUpdate(boolean clear) {
         EpdController.applyApplicationFastMode(APP, false, clear);
+    }
+
+    public static void startScreenHandWriting(final View view) {
+        EpdController.enablePost(view, 0);
+        EpdController.enableScreenHandWriting(view, 1);
+    }
+
+    public static void stopScreenHandWriting(final View view) {
+        EpdController.enablePost(view, 1);
+        EpdController.enableScreenHandWriting(view, 0);
     }
 
 }

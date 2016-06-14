@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdateScheme;
+import com.onyx.android.sdk.utils.ReflectUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -217,7 +218,10 @@ public class BaseDevice {
     public void enablePost(View view, int enable) {
     }
 
-    public void applyGammaCorrection(boolean apply, int value) {
+    public void enableScreenHandWriting(View view, int enable) {
+    }
+
+    public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
     }
 
     public void postInvalidate(View view, UpdateMode mode) {

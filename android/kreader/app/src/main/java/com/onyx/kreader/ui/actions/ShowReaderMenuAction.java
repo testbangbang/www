@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
@@ -15,6 +16,7 @@ import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.menu.ReaderMenu;
 import com.onyx.kreader.ui.menu.ReaderMenuItem;
 import com.onyx.kreader.ui.menu.ReaderSideMenu;
@@ -164,9 +166,13 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case "/Font/Export":
                         break;
+                    case "/More/shape":
+                        startShapeDrawing(readerActivity);
+                        break;
                     case "/Exit":
                         readerActivity.onBackPressed();
                         break;
+
                 }
             }
         });
@@ -255,5 +261,11 @@ public class ShowReaderMenuAction extends BaseAction {
     private void imageReflow(final ReaderActivity readerActivity) {
         final ImageReflowAction action = new ImageReflowAction();
         action.execute(readerActivity);
+    }
+
+    private void startShapeDrawing(final ReaderActivity readerActivity) {
+        // get current page and start rendering.
+        readerActivity.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+        ReaderDeviceManager.startScreenHandWriting(readerActivity.getSurfaceView());
     }
 }

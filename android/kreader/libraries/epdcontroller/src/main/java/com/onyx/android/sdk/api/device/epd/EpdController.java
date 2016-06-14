@@ -104,7 +104,18 @@ public abstract class EpdController
     }
 
     public static void refreshScreenRegion(View view, int left, int top, int width, int height, UpdateMode mode) {
-        DeviceInfo.currentDevice.refreshScreenRegion(view , left, top, width, height, mode);
+        DeviceInfo.currentDevice.refreshScreenRegion(view, left, top, width, height, mode);
     }
 
+    public static void enableScreenHandWriting(View view, int enable) {
+        DeviceInfo.currentDevice.enableScreenHandWriting(view, enable);
+    }
+
+    public static void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
+        DeviceInfo.currentDevice.setScreenHandWritingRegionLimit(view, left, top, right, bottom);
+    }
+
+    public static void enablePost(View view, int enable) {
+        DeviceInfo.currentDevice.enablePost(view, enable);
+    }
 }
