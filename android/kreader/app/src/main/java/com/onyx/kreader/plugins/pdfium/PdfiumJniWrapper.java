@@ -3,6 +3,8 @@ package com.onyx.kreader.plugins.pdfium;
 import android.graphics.Bitmap;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.api.ReaderTextSplitter;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
@@ -49,7 +51,7 @@ public class PdfiumJniWrapper {
 
     private native boolean nativeRenderPage(int id, int page, int x, int y, int width, int height, int rotation, final Bitmap bitmap);
 
-    private native int nativeHitTest(int id, int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final PdfiumSelection selection);
+    private native int nativeHitTest(int id, int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final ReaderTextSplitter splitter, final PdfiumSelection selection);
 
     private native int nativeSelection(int id, int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final PdfiumSelection selection);
 
@@ -108,7 +110,7 @@ public class PdfiumJniWrapper {
     }
 
     public int hitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final PdfiumSelection selection) {
-        return nativeHitTest(id, page, x, y, width, height, rotation, startX, startY, endX, endY, selection);
+        return nativeHitTest(id, page, x, y, width, height, rotation, startX, startY, endX, endY, ReaderTextSplitterImpl.sharedInstance(), selection);
     }
 
     public int selection(int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final PdfiumSelection selection) {
