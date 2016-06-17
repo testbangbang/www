@@ -25,41 +25,76 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
     }
 
     // reverse string.
-    static int getTextLeftBoundary(final String character, final String left, final String right) {
-        hasSpace = hasSpace(left) || hasSpace(right);
+    public int getTextLeftBoundary(final String word, final String left, final String right) {
+        hasSpace = hasSpace(left);
         if (!hasSpace) {
-            return 1;
+            return 0;
         }
-        return getSpaceBoundaryForLatin(left);
+        return searchSpaceBoundaryForLatinFromRight(word, left);
     }
 
-    static int getTextRightBoundary(final String character, final String left, final String right) {
+    public int getTextRightBoundary(final String word, final String left, final String right) {
+        hasSpace = hasSpace(right);
         if (!hasSpace) {
-            return 1;
+            return 0;
         }
-        return getSpaceBoundaryForLatin(right);
+        return searchSpaceBoundaryForLatinFromLeft(word, right);
     }
 
-    static boolean hasSpace(final String string) {
+    boolean hasSpace(final String string) {
         return (string.indexOf(' ') > 0);
     }
 
-
-    static int getSpaceBoundaryForLatin(final String string) {
-        int begin = 0;
-        while (begin < string.length()) {
-            if (!Character.isLetter(string.charAt(begin))) {
-                break;
-            }
-            ++begin;
+    String normalizeString(final String string) {
+        if (string.length() <= 0 || string.charAt(string.length() - 1) != '\0') {
+            return string;
         }
-        if (begin >= string.length()) {
-            return 1;
-        }
-        return begin + 1;
+        return string.substring(0, string.length() - 1); // excluding trailing terminator
     }
 
-    static int nextSentence(final String text, int start) {
+    int searchSpaceBoundaryForLatinFromLeft(String word, String string) {
+        word = normalizeString(word);
+        if (word.length() > 0 && !Character.isLetter(word.charAt(word.length() - 1))) {
+            return 0;
+        }
+
+        string = normalizeString(string);
+        int index = 0;
+        while (index < string.length() - 1) {
+            if (!Character.isLetter(string.charAt(index))) {
+                break;
+            }
+            ++index;
+        }
+        if (index == 0 || index >= string.length()) {
+            return 0;
+        }
+        final int lastNonSpace = index - 1;
+        return lastNonSpace;
+    }
+
+    int searchSpaceBoundaryForLatinFromRight(String word, String string) {
+        word = normalizeString(word);
+        if (word.length() > 0 && !Character.isLetter(word.charAt(0))) {
+            return 0;
+        }
+
+        string = normalizeString(string);
+        int index = string.length() - 1;
+        while (index >= 0) {
+            if (!Character.isLetter(string.charAt(index))) {
+                break;
+            }
+            --index;
+        }
+        if (index < 0 || index == (string.length() - 1)) {
+            return 0;
+        }
+        final int lastNonSpace = index + 1;
+        return string.length() - 1 - lastNonSpace;
+    }
+
+    int nextSentence(final String text, int start) {
         int position = start;
         while (position == start) {
             ++start;
@@ -68,7 +103,7 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         return position;
     }
 
-    static int isSentenceBoundary(final String text) {
+    int isSentenceBoundary(final String text) {
         for(String splitter: Splitters) {
             if (text.endsWith(splitter)) {
                 return 1;
