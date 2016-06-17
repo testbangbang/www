@@ -1,11 +1,8 @@
 package com.onyx.kreader.utils;
 
 
-import android.graphics.Rect;
 import android.util.Log;
-import com.onyx.kreader.text.LayoutRun;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,8 +29,9 @@ public class StringUtils {
         try {
             string = new String(data, UTF16LE);
         } catch (Exception e) {
+            Log.w("", e);
         }
-        return string.trim();
+        return string;
     }
 
     static public String utf16(final byte [] data) {
@@ -42,7 +40,7 @@ public class StringUtils {
             string = new String(data, UTF16);
         } catch (Exception e) {
         }
-        return string.trim();
+        return string;
     }
 
     static public byte[] utf16leBuffer(final String text) {

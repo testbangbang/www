@@ -139,6 +139,25 @@ public:
     }
 };
 
+template <class T> class JNILocalRef {
+private:
+    JNIEnv * myEnv;
+    const T &ref;
+    
+public:
+    JNILocalRef(JNIEnv *env, const T &value): myEnv(env), ref(value) {
+    }
+    
+    ~JNILocalRef() {
+        myEnv->DeleteLocalRef(ref);
+    }
+    
+public:
+    const T &getValue() const {
+        return ref;
+    }
+};
+
 class JNIString {
     
 private:

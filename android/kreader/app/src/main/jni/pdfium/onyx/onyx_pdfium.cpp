@@ -4,8 +4,11 @@
 #include "onyx_context.h"
 #include "JNIUtils.h"
 
-static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
+#include <memory>
 
+static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
+static const char * splitterClassName = "com/onyx/kreader/api/ReaderTextSplitter";
+static const char * stringUtilsClassName = "com/onyx/kreader/utils/StringUtils";
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
@@ -249,9 +252,69 @@ static int reportSelection(JNIEnv *env, FPDF_PAGE page, FPDF_TEXTPAGE textPage, 
     return count;
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
-  (JNIEnv *env, jobject thiz, jint id, jint pageIndex,  jint x, jint y, jint width, jint height, jint rotation, jint sx, jint sy, jint ex, jint ey, jobject selection) {
+static int getTextLeftBoundary(JNIEnv * env, jobject splitter, jstring str, jstring left, jstring right) {
+    JNILocalRef<jclass> clz = JNILocalRef<jclass>(env, env->GetObjectClass(splitter));
+    jmethodID method = env->GetMethodID(clz.getValue(), "getTextLeftBoundary", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
+    if (!method) {
+        LOGE("find method getTextLeftBoundary failed!");
+        return -1;
+    }
+    return env->CallIntMethod(splitter, method, str, left, right);
+}
 
+static int getTextRightBoundary(JNIEnv * env, jobject splitter, jstring str, jstring left, jstring right) {
+    JNILocalRef<jclass> clz = JNILocalRef<jclass>(env, env->GetObjectClass(splitter));
+    jmethodID method = env->GetMethodID(clz.getValue(), "getTextRightBoundary", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
+    if (!method) {
+        LOGE("find method getTextRightBoundary failed!");
+        return -1;
+    }
+    return env->CallIntMethod(splitter, method, str, left, right);
+}
+
+static std::shared_ptr<_jstring> getJStringText(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int start, int end) {
+    const int count = end - start + 1;
+    int textSize = (count + 1) * sizeof(unsigned short);
+    JNIByteArray arrayWrapper(env, textSize);
+    FPDFText_GetText(page, start, count, (unsigned short *)(arrayWrapper.getBuffer()));
+    
+    jclass clz = env->FindClass(stringUtilsClassName);
+    jmethodID method = env->GetStaticMethodID(clz, "utf16le", "([B)Ljava/lang/String;");
+    jstring str = (jstring)env->CallStaticObjectMethod(clz, method, arrayWrapper.getByteArray(true));
+    return std::shared_ptr<_jstring>(str, [=](_jstring *s) {
+        env->DeleteLocalRef(s);
+    });
+}
+
+static void selectByWord(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int start, int end, int *newStart, int *newEnd) {
+    const int count = FPDFText_CountChars(page);
+    if (count <= 0) {
+        LOGE("selectByWord, FPDFText_CountChars failed.");
+        return;
+    }
+    
+    const int extend = 50;
+    const int left = std::max(start - extend, 0);
+    const int right = std::min(end + extend, count - 1);
+    LOGE("selectByWord: start %d, end %d, left %d, right %d", start, end, left, right);
+    
+    std::shared_ptr<_jstring> word = getJStringText(env, page, splitter, start, end);
+    std::shared_ptr<_jstring> leftStr = getJStringText(env, page, splitter, left, start);
+    std::shared_ptr<_jstring> rightStr = getJStringText(env, page, splitter, end, right);
+    
+    int leftBoundary = getTextLeftBoundary(env, splitter, word.get(), leftStr.get(), rightStr.get());
+    int rightBoundary = getTextRightBoundary(env, splitter, word.get(), leftStr.get(), rightStr.get());
+    if (leftBoundary > 0) {
+        *newStart = start - leftBoundary;
+    }
+    if (rightBoundary > 0) {
+        *newEnd = end + rightBoundary;
+    }
+    LOGE("result left %d, right %d", *newStart, *newEnd);
+}
+
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
+  (JNIEnv *env, jobject thiz, jint id, jint pageIndex,  jint x, jint y, jint width, jint height, jint rotation, jint sx, jint sy, jint ex, jint ey, jobject splitter, jobject selection) {
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
     if (page == NULL || textPage == NULL) {
@@ -277,7 +340,13 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     // normalize
     int start = startIndex < endIndex ? startIndex : endIndex;
     int end = startIndex < endIndex ? endIndex : startIndex;
-    return reportSelection(env, page, textPage, x, y, width, height, rotation, start, end, selection);
+    
+    int newStart = start;
+    int newEnd = end;
+    selectByWord(env, textPage, splitter, start, end, &newStart, &newEnd);
+    LOGE("selectByWord finished");
+    
+    return reportSelection(env, page, textPage, x, y, width, height, rotation, newStart, newEnd, selection);
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSelection
