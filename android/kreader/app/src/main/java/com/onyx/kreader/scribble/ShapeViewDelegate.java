@@ -3,6 +3,9 @@ package com.onyx.kreader.scribble;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import com.onyx.kreader.scribble.data.RawInputReader;
+import com.onyx.kreader.scribble.data.TouchPointList;
+import com.onyx.kreader.scribble.shape.NormalScribbleShape;
 import com.onyx.kreader.scribble.shape.Shape;
 
 import java.io.File;
@@ -31,6 +34,11 @@ public class ShapeViewDelegate {
 
     }
 
+    private ShapeManager shapeManager;
+    private RawInputReader rawInputReader = new RawInputReader();
+    private Callback callback;
+
+
     public void setView(final SurfaceView view) {
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -42,10 +50,42 @@ public class ShapeViewDelegate {
         });
     }
 
+    private void init() {
+        rawInputReader.setInputCallback(new RawInputReader.InputCallback() {
+            @Override
+            public void onBeginHandWriting() {
+
+            }
+
+            @Override
+            public void onNewStrokeReceived(TouchPointList pointList) {
+                // create shape and add to memory.
+                Shape shape = new NormalScribbleShape();
+                shape.addPoints(pointList);
+            }
+
+            @Override
+            public void onBeginErase() {
+
+            }
+
+            @Override
+            public void onEraseReceived(TouchPointList pointList) {
+
+            }
+        });
+    }
+
     public void setOptions() {
     }
 
-    public void setState(int newState) {
+    public void startHandWriting() {
+    }
+
+    public void startErasing() {
+    }
+
+    public void stop() {
     }
 
     public void setStrokeWidth(final float width) {
@@ -73,6 +113,10 @@ public class ShapeViewDelegate {
 
     public boolean redo() {
         return false;
+    }
+
+    public void setCallback(final Callback c) {
+        callback = c;
     }
 
 

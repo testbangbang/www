@@ -20,10 +20,13 @@ import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.scribble.ShapeManager;
+import com.onyx.kreader.scribble.ShapeViewDelegate;
 import com.onyx.kreader.scribble.data.ShapePage;
+import com.onyx.kreader.scribble.request.AddShapeRequest;
 import com.onyx.kreader.scribble.request.BaseScribbleRequest;
 import com.onyx.kreader.scribble.request.LoadShapesRequest;
 import com.onyx.kreader.scribble.request.ShapeDataInfo;
+import com.onyx.kreader.scribble.shape.Shape;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -73,6 +76,7 @@ public class ReaderActivity extends ActionBarActivity {
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
 
     private ReaderSelectionManager selectionManager;
+    private ShapeViewDelegate shapeViewDelegate = new ShapeViewDelegate();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -261,6 +265,7 @@ public class ReaderActivity extends ActionBarActivity {
         initToolbar();
         initSurfaceView();
         initHandlerManager();
+        initShapeViewDelegate();
     }
 
     private void initToolbar() {
@@ -364,6 +369,47 @@ public class ReaderActivity extends ActionBarActivity {
     private void initHandlerManager() {
         handlerManager = new HandlerManager(this);
         handlerManager.setEnable(false);
+    }
+
+    private void initShapeViewDelegate() {
+        shapeViewDelegate.setView(surfaceView);
+
+        shapeViewDelegate.setCallback(new ShapeViewDelegate.Callback() {
+            @Override
+            public void beforeAddNewShape(Shape shape) {
+            }
+
+            @Override
+            public void afterAddNewShape(Shape shape) {
+                // submit to shapeManager, add to memory page.
+                //shapeViewDelegate.addShapeToPage(docId, pageName, subPageName, shape);
+            }
+
+            @Override
+            public void beforeRemoveShape(Shape shape) {
+            }
+
+            @Override
+            public void afterRemoveShape(Shape shape) {
+
+            }
+
+            @Override
+            public void StylusChanged(int oldState, int newState) {
+
+            }
+        });
+
+        // setup connection between toolbar and shapeViewDelegate
+        shapeViewDelegate.setStrokeWidth(3.0f);
+        shapeViewDelegate.setStrokeColor(Color.BLACK);
+        shapeViewDelegate.setStrokeStyle(0);
+
+        shapeViewDelegate.startHandWriting();
+
+        // when page changed, choose to flush
+        //shapeViewDelegate.flushPendingShapes();
+
     }
 
     private void clearCanvas(SurfaceHolder holder) {

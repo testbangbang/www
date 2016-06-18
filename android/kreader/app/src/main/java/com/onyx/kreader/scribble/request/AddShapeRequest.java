@@ -8,14 +8,14 @@ import com.onyx.kreader.scribble.data.ShapeManagerOptions;
  * generate path list from add all points and stroke width.
  * also add to pending list which will be used later.
  */
-public class AddStrokeRequest extends BaseScribbleRequest {
+public class AddShapeRequest extends BaseScribbleRequest {
 
     private ShapeManager shapeManager;
     private String documentMd5;
     private int initDisplayPage;
     private ShapeManagerOptions shapeManagerOptions;
 
-    public AddStrokeRequest(final String md5, int page, final ShapeManagerOptions option) {
+    public AddShapeRequest(final String md5, int page, final ShapeManagerOptions option) {
         documentMd5 = md5;
         initDisplayPage = page;
         shapeManagerOptions = option;

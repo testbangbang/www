@@ -5,6 +5,7 @@ import com.onyx.kreader.scribble.ShapeManager;
 
 /**
  * Created by zhuzeng on 12/25/15.
+ * remove from memory
  */
 public class RemoveByPositionRequest extends BaseScribbleRequest {
 

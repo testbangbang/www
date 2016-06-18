@@ -92,7 +92,7 @@ public class ReaderTestActivity extends Activity {
         matrix.postTranslate(1200, 0);
         // right matrix pt * scale.
         matrix.preScale(1600.0f / 10206.0f, 1200.0f / 7422.0f);
-        input.setMatrix(matrix);
+        input.setMatrix(matrix, null);
         input.start();
     }
 

@@ -1,6 +1,8 @@
 package com.onyx.kreader.scribble.data;
 
 import android.graphics.Matrix;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.io.DataInputStream;
@@ -18,7 +20,6 @@ public class RawInputReader {
     private static final int EV_KEY = 0x01;
     private static final int EV_ABS = 0x03;
 
-
     private static final int ABS_X = 0x00;
     private static final int ABS_Y = 0x01;
     private static final int ABS_PRESSURE = 0x18;
@@ -30,6 +31,18 @@ public class RawInputReader {
 
     private static final int PEN_SIZE = 0;
 
+    public static abstract class InputCallback {
+
+        public abstract void onBeginHandWriting();
+
+        public abstract void onNewStrokeReceived(final TouchPointList pointList);
+
+        public abstract void onBeginErase();
+
+        public abstract void onEraseReceived(final TouchPointList pointList);
+
+    }
+
     private int px, py, pressure;
     private boolean erasing = false;
     private boolean pressed;
@@ -40,20 +53,18 @@ public class RawInputReader {
     private Matrix viewMatrix;
     private float[] srcPoint = new float[2];
     private float[] dstPoint = new float[2];
-
     private volatile TouchPointList touchPointList;
+    private InputCallback inputCallback;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
-    public static abstract class Callback {
-
-        public abstract void onNewStrokeReceived(final TouchPointList pointList);
-
-        public abstract void onEraseReceived(final TouchPointList pointList);
-
-    }
 
     public void setMatrix(final Matrix sm, final Matrix vm) {
         screenMatrix = sm;
         viewMatrix = vm;
+    }
+
+    public void setInputCallback(final InputCallback callback) {
+        inputCallback = callback;
     }
 
     public void start() {
@@ -162,8 +173,21 @@ public class RawInputReader {
         Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
-    private void invokeCallback(final TouchPointList touchPointList, boolean erasing) {
-
+    private void invokeCallback(final TouchPointList touchPointList, final boolean erasing) {
+        if (inputCallback == null) {
+            return;
+        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (erasing) {
+                } else {
+                    inputCallback.onNewStrokeReceived(touchPointList);
+                }
+            }
+        });
     }
+
+
 
 }
