@@ -1,5 +1,6 @@
 package com.onyx.kreader.scribble.data;
 
+import android.graphics.Matrix;
 import android.util.Log;
 
 import java.io.DataInputStream;
@@ -35,8 +36,12 @@ public class RawInputReader {
     private boolean lastPressed;
     private volatile boolean stop = false;
     private String systemPath = "/dev/input/event1";
+    private Matrix screenMatrix;
+    private Matrix viewMatrix;
+    private float[] srcPoint = new float[2];
+    private float[] dstPoint = new float[2];
 
-    private TouchPointList touchPointList;
+    private volatile TouchPointList touchPointList;
 
     public static abstract class Callback {
 
@@ -44,6 +49,11 @@ public class RawInputReader {
 
         public abstract void onEraseReceived(final TouchPointList pointList);
 
+    }
+
+    public void setMatrix(final Matrix sm, final Matrix vm) {
+        screenMatrix = sm;
+        viewMatrix = vm;
     }
 
     public void start() {
@@ -114,22 +124,39 @@ public class RawInputReader {
         }
     }
 
+    private TouchPoint mapPoint(int x, int y, int pressure, int size, long ts) {
+        dstPoint[0] = x;
+        dstPoint[1] = y;
+        if (screenMatrix != null) {
+            srcPoint[0] = x;
+            srcPoint[1] = y;
+            screenMatrix.mapPoints(dstPoint, srcPoint);
+        }
+        if (viewMatrix != null) {
+            srcPoint[0] = dstPoint[0];
+            srcPoint[1] = dstPoint[1];
+            viewMatrix.mapPoints(dstPoint, srcPoint);
+        }
+        TouchPoint touchPoint = new TouchPoint(dstPoint[0], dstPoint[1], pressure, size, ts);
+        return touchPoint;
+    }
+
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
         touchPointList = new TouchPointList(200);
-        touchPointList.add(new TouchPoint(x, y, pressure, size, ts));
+        touchPointList.add(mapPoint(x, y, pressure, size, ts));
         Log.d(TAG, "pressed received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
         if (touchPointList != null) {
-            touchPointList.add(new TouchPoint(x, y, pressure, size, ts));
+            touchPointList.add(mapPoint(x, y, pressure, size, ts));
         }
         Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
         if (touchPointList != null) {
-            touchPointList.add(new TouchPoint(x, y, pressure, size, ts));
+            touchPointList.add(mapPoint(x, y, pressure, size, ts));
         }
         invokeCallback(touchPointList, erasing);
         Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
