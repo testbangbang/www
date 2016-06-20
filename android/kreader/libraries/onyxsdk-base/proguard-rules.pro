@@ -23,8 +23,6 @@
     *;
 }
 
--keepnames class com.onyx.android.sdk.data.PageInfo { *; }
-
 #-keepclasseswithmembernames public class com.onyx.android.sdk.api.device.epd.EpdController {
 #    public *;
 #}
