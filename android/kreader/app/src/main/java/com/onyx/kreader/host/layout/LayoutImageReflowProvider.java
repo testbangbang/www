@@ -12,7 +12,6 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.utils.StringUtils;
 
 /**
@@ -86,6 +85,8 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
         Bitmap bmp = getCurrentSubPageBitmap();
         if (bmp != null) {
+            bitmap.copyFrom(bmp);
+            bmp.recycle();
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
             return true;
         }
@@ -103,6 +104,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
             return false;
         }
         bitmap.copyFrom(bmp);
+        bmp.recycle();
         return true;
     }
 
