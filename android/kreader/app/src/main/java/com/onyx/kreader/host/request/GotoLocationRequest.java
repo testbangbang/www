@@ -1,9 +1,9 @@
 package com.onyx.kreader.host.request;
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 10/5/15.

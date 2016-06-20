@@ -8,13 +8,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.BookReaderContext;
 import com.onyx.kreader.formats.model.TextModelPosition;
 import com.onyx.kreader.formats.txt.TxtBookReader;
 import com.onyx.kreader.text.*;
-import com.onyx.kreader.utils.TestUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,11 @@
 package com.onyx.kreader.plugins.pdfium;
 
 import android.graphics.Bitmap;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
-import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
 

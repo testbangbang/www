@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
@@ -14,7 +15,6 @@ import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
 import com.onyx.kreader.reflow.ImageReflowManager;
-import com.onyx.kreader.utils.StringUtils;
 import com.onyx.kreader.utils.HistoryManager;
 
 import java.util.HashMap;

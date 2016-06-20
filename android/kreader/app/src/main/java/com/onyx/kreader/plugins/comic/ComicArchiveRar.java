@@ -1,6 +1,7 @@
 package com.onyx.kreader.plugins.comic;
 
-import com.onyx.kreader.utils.StringUtils;
+
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

@@ -1,5 +1,7 @@
 package com.onyx.kreader.utils;
 
+import com.onyx.android.sdk.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 

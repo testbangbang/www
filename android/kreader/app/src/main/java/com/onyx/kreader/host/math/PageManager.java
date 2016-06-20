@@ -5,7 +5,7 @@ import android.graphics.RectF;
 import android.util.Log;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.kreader.utils.StringUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

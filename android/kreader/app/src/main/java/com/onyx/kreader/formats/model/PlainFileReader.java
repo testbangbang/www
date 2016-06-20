@@ -1,9 +1,9 @@
 package com.onyx.kreader.formats.model;
 
 import android.util.Log;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.formats.encodings.Decoder;
 import com.onyx.kreader.formats.filesystem.FileNIO;
-import com.onyx.kreader.utils.StringUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

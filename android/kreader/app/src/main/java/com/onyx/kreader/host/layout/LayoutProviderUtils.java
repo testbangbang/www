@@ -2,6 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderRenderer;
@@ -17,7 +18,6 @@ import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.BitmapUtils;
-import com.onyx.kreader.utils.StringUtils;
 
 import java.util.List;
 

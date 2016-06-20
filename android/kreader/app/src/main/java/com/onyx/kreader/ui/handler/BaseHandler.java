@@ -6,8 +6,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.ui.ReaderActivity;
-import com.onyx.kreader.utils.StringUtils;
 
 
 /**

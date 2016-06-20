@@ -1,7 +1,7 @@
 package com.onyx.kreader.formats.epub;
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.formats.model.zip.ZipFileEntry;
-import com.onyx.kreader.utils.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

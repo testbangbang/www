@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.RectF;
-import com.onyx.kreader.dataprovider.ReaderDatabase;
 import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
@@ -12,7 +11,7 @@ import java.util.UUID;
  * Created by zhuzeng on 6/3/16.
  * Data model for all shapes.
  */
-@Table(database = ReaderDatabase.class)
+@Table(database = ShapeDatabase.class)
 public class ShapeModel extends BaseModel {
 
     private static final String TAG = ShapeModel.class.getSimpleName();

@@ -1,8 +1,8 @@
 package com.onyx.kreader.plugins.comic;
 
 import android.util.Log;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.utils.FileUtils;
-import com.onyx.kreader.utils.StringUtils;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.io.ZipInputStream;

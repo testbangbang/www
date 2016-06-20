@@ -8,6 +8,7 @@ import android.util.Pair;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderViewOptions;
@@ -31,7 +32,6 @@ import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.utils.ImageUtils;
-import com.onyx.kreader.utils.TestUtils;
 
 import java.util.*;
 

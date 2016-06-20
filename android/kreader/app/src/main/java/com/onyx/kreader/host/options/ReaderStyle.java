@@ -1,8 +1,8 @@
 package com.onyx.kreader.host.options;
 
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.utils.LocaleUtils;
-import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 11/6/15.

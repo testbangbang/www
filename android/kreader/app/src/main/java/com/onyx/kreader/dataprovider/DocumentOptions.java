@@ -1,7 +1,7 @@
 package com.onyx.kreader.dataprovider;
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 

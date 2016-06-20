@@ -3,6 +3,7 @@ package com.onyx.kreader.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.*;
 import java.security.MessageDigest;

@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble.data;
 
+
 import org.nustaq.serialization.annotations.Flat;
 
 import java.io.Serializable;

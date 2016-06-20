@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.data;
 
-import com.onyx.kreader.utils.StringUtils;
+
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;

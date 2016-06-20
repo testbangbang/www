@@ -1,11 +1,12 @@
 package com.onyx.kreader.ui.actions;
 
 import android.widget.RelativeLayout;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSearchOptions;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.utils.PagePositionUtils;
-import com.onyx.kreader.utils.StringUtils;
+
 
 /**
  * Created by Joy on 2016/6/7.

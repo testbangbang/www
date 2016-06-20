@@ -3,7 +3,6 @@ package com.onyx.kreader.dataprovider.request;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.utils.FileUtils;
-import com.onyx.kreader.utils.StringUtils;
 
 import java.io.File;
 

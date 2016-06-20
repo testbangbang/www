@@ -1,4 +1,4 @@
-package com.onyx.kreader.utils;
+package com.onyx.android.sdk.utils;
 
 import android.util.Log;
 import com.onyx.android.sdk.data.PageInfo;

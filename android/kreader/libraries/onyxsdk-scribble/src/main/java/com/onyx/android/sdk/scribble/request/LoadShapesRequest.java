@@ -2,12 +2,11 @@ package com.onyx.android.sdk.scribble.request;
 
 
 import android.graphics.*;
-import com.onyx.kreader.BuildConfig;
-import com.onyx.kreader.common.Debug;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.BuildConfig;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapePage;
-import com.onyx.kreader.utils.TestUtils;
+import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,6 @@ public class LoadShapesRequest extends BaseScribbleRequest {
     }
 
     public void renderShape(final ShapeViewHelper parent) {
-        Debug.d("Render shape starts");
         Bitmap bitmap = parent.updateBitmap(getViewportSize());
         bitmap.eraseColor(Color.TRANSPARENT);
         Canvas canvas = new Canvas(bitmap);
@@ -61,7 +59,6 @@ public class LoadShapesRequest extends BaseScribbleRequest {
 
         // draw test path.
         drawRandomTestPath(canvas, paint);
-        Debug.d("Render shape finished.");
     }
 
     private void drawRandomTestPath(final Canvas canvas, final Paint paint) {
@@ -80,14 +77,11 @@ public class LoadShapesRequest extends BaseScribbleRequest {
             float yy2 = TestUtils.randInt(0, height);
             path.quadTo((xx + xx2) / 2, (yy + yy2) / 2, xx2, yy2);
             if (isAbort()) {
-                Debug.d("Render shape aborted detected: " + this);
                 return;
             }
         }
         long ts = System.currentTimeMillis();
-        Debug.d("Render shape path generated: " + this);
         canvas.drawPath(path, paint);
-        Debug.d("Render shape path draw with: " + max + " finished: " + (System.currentTimeMillis() - ts) + " ms ");
     }
 
 }

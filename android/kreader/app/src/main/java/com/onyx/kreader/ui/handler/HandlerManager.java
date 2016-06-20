@@ -8,11 +8,11 @@ import android.view.ScaleGestureDetector;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.scribble.ScribbleHandler;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.CustomBindKeyBean;
 import com.onyx.kreader.dataprovider.SharedPreferenceProvider;
-import com.onyx.kreader.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;

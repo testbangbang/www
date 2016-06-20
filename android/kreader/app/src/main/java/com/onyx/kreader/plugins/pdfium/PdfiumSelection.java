@@ -1,9 +1,9 @@
 package com.onyx.kreader.plugins.pdfium;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.utils.PagePositionUtils;
-import com.onyx.kreader.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;

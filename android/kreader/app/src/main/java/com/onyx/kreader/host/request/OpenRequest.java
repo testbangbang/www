@@ -9,7 +9,6 @@ import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 10/4/15.

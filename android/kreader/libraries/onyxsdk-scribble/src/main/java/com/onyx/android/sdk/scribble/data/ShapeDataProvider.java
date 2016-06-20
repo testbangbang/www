@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
-import com.onyx.kreader.utils.StringUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 
