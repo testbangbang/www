@@ -88,11 +88,14 @@ dependencies {
     compile project(':libraries:cropimage')
     compile project(':libraries:Side-Menu.Android:library')
     compile (project(':libraries:onyxsdk-scribble')) {
-        exclude group: 'com.github.Raizlabs.DBFlow'
+        ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {
+            exclude group: it
+        }
     }
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:support-v4:21.0.+'
+    compile 'com.alibaba:fastjson:1.1.34.android'
     compile 'net.lingala.zip4j:zip4j:1.3.2'
     compile 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
     compile 'com.jakewharton:disklrucache:2.0.2'
