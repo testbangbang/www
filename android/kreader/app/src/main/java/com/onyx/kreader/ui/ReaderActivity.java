@@ -38,6 +38,8 @@ import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.ui.data.PageTurningDetector;
+import com.onyx.kreader.ui.data.PageTurningDirection;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -218,6 +220,14 @@ public class ReaderActivity extends ActionBarActivity {
 
     public void panFinished(int offsetX, int offsetY) {
         if (!getReaderViewInfo().canPan()) {
+            PageTurningDirection direction = PageTurningDetector.detectHorizontalTuring(this, -offsetX);
+            if (direction == PageTurningDirection.Left) {
+                beforePageChangeByUser();
+                prevPage();
+            } else if (direction == PageTurningDirection.Right) {
+                beforePageChangeByUser();
+                nextPage();
+            }
             return;
         }
 
