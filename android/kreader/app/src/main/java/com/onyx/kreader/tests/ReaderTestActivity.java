@@ -26,7 +26,7 @@ import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper;
 import com.onyx.kreader.plugins.pdfium.PdfiumSelection;
-import com.onyx.kreader.scribble.data.RawInputReader;
+import com.onyx.android.sdk.scribble.data.RawInputReader;
 import com.onyx.kreader.text.*;
 import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.R;

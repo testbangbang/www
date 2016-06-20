@@ -5,7 +5,7 @@ import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.kreader.dataprovider.request.BaseDataProviderRequest;
-import com.onyx.kreader.scribble.data.ShapeModel;
+import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;

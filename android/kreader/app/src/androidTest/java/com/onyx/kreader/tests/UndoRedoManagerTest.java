@@ -1,9 +1,9 @@
 package com.onyx.kreader.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
-import com.onyx.kreader.scribble.data.UndoRedoManager;
-import com.onyx.kreader.scribble.shape.NormalShape;
-import com.onyx.kreader.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.data.UndoRedoManager;
+import com.onyx.android.sdk.scribble.shape.NormalShape;
+import com.onyx.android.sdk.scribble.shape.Shape;
 
 /**
  * Created by zhuzeng on 6/6/16.
