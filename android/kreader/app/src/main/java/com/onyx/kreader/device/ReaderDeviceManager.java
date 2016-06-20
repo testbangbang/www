@@ -1,13 +1,11 @@
 package com.onyx.kreader.device;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
-import com.onyx.android.sdk.device.*;
 
 /**
  * Created by Joy on 2016/5/6.
@@ -41,7 +39,7 @@ public class ReaderDeviceManager {
     }
 
     public static void applyGCInvalidate(View view) {
-        EpdController.setViewDefaultUpdateMode(view, UpdateMode.GC16);
+        EpdController.setViewDefaultUpdateMode(view, UpdateMode.GC);
     }
 
     public static void enterAnimationUpdate(boolean clear) {
