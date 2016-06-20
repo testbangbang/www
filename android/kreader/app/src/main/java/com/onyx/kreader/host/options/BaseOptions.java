@@ -5,7 +5,7 @@ import android.graphics.RectF;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.utils.GObject;
@@ -144,12 +144,12 @@ public class BaseOptions {
     }
 
     public boolean isGamaCorrectionEnabled() {
-        return getGammaLevel() > ReaderConstants.GAMMA_LOWER_LIMIT;
+        return getGammaLevel() > PageConstants.GAMMA_LOWER_LIMIT;
     }
 
     public float getGammaLevel() {
         if (!backend.hasKey(GAMMA_LEVEL)) {
-            return ReaderConstants.DEFAULT_GAMMA;
+            return PageConstants.DEFAULT_GAMMA;
         }
         return backend.getFloat(GAMMA_LEVEL);
     }
@@ -214,7 +214,7 @@ public class BaseOptions {
 
 
     static public int getDefaultSpecialScale() {
-        return ReaderConstants.SCALE_TO_PAGE;
+        return PageConstants.SCALE_TO_PAGE;
     }
 
     static public double getScaleDelta() {
@@ -288,14 +288,14 @@ public class BaseOptions {
 
     public int getLineSpacing() {
         if (!backend.hasKey(LINE_SPACING_TAG)) {
-            return ReaderConstants.DEFAULT_LINE_SPACING;
+            return PageConstants.DEFAULT_LINE_SPACING;
         }
         return backend.getInt(LINE_SPACING_TAG);
     }
 
     public float getParagraphIndent() {
         if (!backend.hasKey(PARAGRAPH_INDENT_TAG)) {
-            return ReaderConstants.DEFAULT_PARAGRAPH_INDENT;
+            return PageConstants.DEFAULT_PARAGRAPH_INDENT;
         }
         return backend.getFloat(PARAGRAPH_INDENT_TAG);
     }

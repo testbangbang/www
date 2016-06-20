@@ -21,7 +21,7 @@ public class PageInfo {
     private RectF positionRect = new RectF(); // page position rect in document coordinates system with actual scale.
     private RectF displayRect = new RectF(); // page display rect in viewport(screen) coordinates system with actual scale.
     private float actualScale = 1.0f;
-    private int specialScale = ReaderConstants.SCALE_INVALID;
+    private int specialScale = PageConstants.SCALE_INVALID;
 
     public PageInfo(final String string, final float nw, final float nh) {
         name = string;

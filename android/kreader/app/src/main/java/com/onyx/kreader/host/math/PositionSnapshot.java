@@ -3,7 +3,7 @@ package com.onyx.kreader.host.math;
 import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class PositionSnapshot {
     public RectF viewport;              // viewport absolute position.
     public RectF viewportOffsetRect;    // viewport offset in page
     public float actualScale = 1.0f;
-    public int specialScale = ReaderConstants.SCALE_INVALID;
+    public int specialScale = PageConstants.SCALE_INVALID;
     public int subScreenIndex = -1;
 
     static public PositionSnapshot fromSnapshotKey(final String string)  {

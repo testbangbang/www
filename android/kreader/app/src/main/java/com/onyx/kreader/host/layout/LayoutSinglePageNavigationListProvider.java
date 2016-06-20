@@ -8,7 +8,7 @@ import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.navigation.NavigationList;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.StringUtils;
@@ -26,7 +26,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     public String getProviderName() {
-        return ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST;
+        return PageConstants.SINGLE_PAGE_NAVIGATION_LIST;
     }
 
     public void activate()  {

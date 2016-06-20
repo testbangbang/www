@@ -10,7 +10,7 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
@@ -239,12 +239,12 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void switchPageNavigationMode(final ReaderActivity readerActivity, NavigationArgs args) {
-        BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
+        BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
         readerActivity.submitRequest(request);
     }
 
     private void resetNavigationMode(final ReaderActivity readerActivity) {
-        BaseReaderRequest request = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE, new NavigationArgs());
+        BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE, new NavigationArgs());
         readerActivity.submitRequest(request);
     }
 

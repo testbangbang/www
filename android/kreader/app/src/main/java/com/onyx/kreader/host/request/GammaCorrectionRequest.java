@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -10,7 +10,7 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class GammaCorrectionRequest extends BaseReaderRequest {
 
-    private int gamma = ReaderConstants.DEFAULT_GAMMA;
+    private int gamma = PageConstants.DEFAULT_GAMMA;
     public GammaCorrectionRequest(int value) {
         gamma = value;
     }

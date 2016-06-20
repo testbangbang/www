@@ -6,7 +6,7 @@ import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
 import com.onyx.kreader.utils.TestUtils;
 
@@ -29,8 +29,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
                 reader, reader, reader, new ReaderViewOptionsImpl());
         layoutManager.init();
         layoutManager.updateViewportSize();
-        assertTrue(layoutManager.setCurrentLayout(ReaderConstants.SINGLE_PAGE, navigationArgs));
-        assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(ReaderConstants.SINGLE_PAGE));
+        assertTrue(layoutManager.setCurrentLayout(PageConstants.SINGLE_PAGE, navigationArgs));
+        assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(PageConstants.SINGLE_PAGE));
 
         String position = reader.getInitPosition();
         assertNotNull(position);
@@ -64,8 +64,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
 
         layoutManager.init();
         layoutManager.updateViewportSize();
-        assertTrue(layoutManager.setCurrentLayout(ReaderConstants.SINGLE_PAGE, navigationArgs));
-        assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(ReaderConstants.SINGLE_PAGE));
+        assertTrue(layoutManager.setCurrentLayout(PageConstants.SINGLE_PAGE, navigationArgs));
+        assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(PageConstants.SINGLE_PAGE));
         assertFalse(layoutManager.canGoBack());
         assertFalse(layoutManager.canGoForward());
 
@@ -114,8 +114,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
 
         layoutManager.init();
         layoutManager.updateViewportSize();
-        assertTrue(layoutManager.setCurrentLayout(ReaderConstants.SINGLE_PAGE, navigationArgs));
-        assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(ReaderConstants.SINGLE_PAGE));
+        assertTrue(layoutManager.setCurrentLayout(PageConstants.SINGLE_PAGE, navigationArgs));
+        assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(PageConstants.SINGLE_PAGE));
         assertFalse(layoutManager.canGoBack());
         assertFalse(layoutManager.canGoForward());
 
@@ -168,8 +168,8 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         layoutManager.updateViewportSize();
         navigationArgs = new NavigationArgs();
         navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, null);
-        assertTrue(layoutManager.setCurrentLayout(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
-        assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST));
+        assertTrue(layoutManager.setCurrentLayout(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
+        assertTrue(layoutManager.getCurrentLayoutType().equalsIgnoreCase(PageConstants.SINGLE_PAGE_NAVIGATION_LIST));
 
         int rows = TestUtils.randInt(2, 10);
         int cols = TestUtils.randInt(2, 10);

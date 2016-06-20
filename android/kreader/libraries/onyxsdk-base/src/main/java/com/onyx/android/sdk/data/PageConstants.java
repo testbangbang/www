@@ -3,7 +3,7 @@ package com.onyx.android.sdk.data;
 /**
  * Created by zhuzeng on 2/15/16.
  */
-public class ReaderConstants {
+public class PageConstants {
 
     /**
      * layout section.
@@ -36,23 +36,23 @@ public class ReaderConstants {
     }
 
     public static boolean isScaleToPage(int specialScale) {
-        return specialScale == ReaderConstants.SCALE_TO_PAGE;
+        return specialScale == PageConstants.SCALE_TO_PAGE;
     }
 
     public static boolean isScaleToWidth(int specialScale) {
-        return specialScale == ReaderConstants.SCALE_TO_WIDTH;
+        return specialScale == PageConstants.SCALE_TO_WIDTH;
     }
 
     public static boolean isScaleToHeight(int specialScale) {
-        return specialScale == ReaderConstants.SCALE_TO_HEIGHT;
+        return specialScale == PageConstants.SCALE_TO_HEIGHT;
     }
 
     public static boolean isScaleToPageContent(int specialScale) {
-        return specialScale == ReaderConstants.SCALE_TO_PAGE_CONTENT;
+        return specialScale == PageConstants.SCALE_TO_PAGE_CONTENT;
     }
 
     public static boolean isWidthCrop(int specialScale) {
-        return specialScale == ReaderConstants.SCALE_TO_WIDTH_CONTENT;
+        return specialScale == PageConstants.SCALE_TO_WIDTH_CONTENT;
     }
 
 

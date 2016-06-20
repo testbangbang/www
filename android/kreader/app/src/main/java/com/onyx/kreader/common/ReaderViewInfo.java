@@ -2,7 +2,7 @@ package com.onyx.kreader.common;
 
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 
 import java.util.*;
 
@@ -55,6 +55,6 @@ public class ReaderViewInfo {
     }
 
     public boolean isSpecialScale() {
-        return ReaderConstants.isSpecialScale(scale);
+        return PageConstants.isSpecialScale(scale);
     }
 }

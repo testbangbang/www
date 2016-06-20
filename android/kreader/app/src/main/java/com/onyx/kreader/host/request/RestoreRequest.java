@@ -2,7 +2,7 @@ package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.StringUtils;
 
@@ -43,7 +43,7 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private void restoreScale(final Reader reader) throws Exception {
-        if (ReaderConstants.isSpecialScale(baseOptions.getSpecialScale())) {
+        if (PageConstants.isSpecialScale(baseOptions.getSpecialScale())) {
             setSpecialScale(reader, baseOptions, position);
         } else {
             setActualScale(reader, baseOptions, position);
@@ -62,13 +62,13 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private void setSpecialScale(final Reader reader, final BaseOptions baseOptions, final String position) throws Exception {
-        if (ReaderConstants.isScaleToPage(baseOptions.getSpecialScale())) {
+        if (PageConstants.isScaleToPage(baseOptions.getSpecialScale())) {
             reader.getReaderLayoutManager().scaleToPage(position);
-        } else if (ReaderConstants.isScaleToWidth(baseOptions.getSpecialScale())) {
+        } else if (PageConstants.isScaleToWidth(baseOptions.getSpecialScale())) {
             reader.getReaderLayoutManager().scaleToWidth(position);
-        } else if (ReaderConstants.isScaleToHeight(baseOptions.getSpecialScale())) {
+        } else if (PageConstants.isScaleToHeight(baseOptions.getSpecialScale())) {
             reader.getReaderLayoutManager().scaleToHeight(position);
-        } else if (ReaderConstants.isScaleToPageContent(baseOptions.getSpecialScale())) {
+        } else if (PageConstants.isScaleToPageContent(baseOptions.getSpecialScale())) {
             reader.getReaderLayoutManager().scaleToPageContent(position);
         }
     }

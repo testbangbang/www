@@ -20,7 +20,7 @@ import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
@@ -300,7 +300,7 @@ public class ReaderTestActivity extends Activity {
         NavigationArgs navigationArgs = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, limit);
-        final BaseReaderRequest readerRequest = new ChangeLayoutRequest(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs);
+        final BaseReaderRequest readerRequest = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs);
         reader.submitRequest(this, readerRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -315,7 +315,7 @@ public class ReaderTestActivity extends Activity {
         NavigationArgs navigationArgs = new NavigationArgs();
         RectF limit = new RectF(0.3f, 0.05f, 0.7f, 0.95f);
         navigationArgs.rowsLeftToRight(NavigationArgs.Type.ALL, 3, 3, limit);
-        final BaseReaderRequest readerRequest = new ChangeLayoutRequest(ReaderConstants.CONTINUOUS_PAGE, navigationArgs);
+        final BaseReaderRequest readerRequest = new ChangeLayoutRequest(PageConstants.CONTINUOUS_PAGE, navigationArgs);
         reader.submitRequest(this, readerRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

@@ -4,7 +4,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class PageManager {
     static private final String TAG = PageManager.class.getSimpleName();
-    private int specialScale = ReaderConstants.SCALE_TO_PAGE;
+    private int specialScale = PageConstants.SCALE_TO_PAGE;
     private float actualScale = 1.0f;
     private float topMargin = 0;
     private float leftMargin = 0;
@@ -164,7 +164,7 @@ public class PageManager {
     }
 
     public void setScale(final String pageName, final float scale) {
-        specialScale = ReaderConstants.SCALE_INVALID;
+        specialScale = PageConstants.SCALE_INVALID;
         setScaleImpl(pageName, scale);
     }
 
@@ -187,7 +187,7 @@ public class PageManager {
     }
 
     public void setSpecialScale(final String pageName, int scale) {
-        if (ReaderConstants.isSpecialScale(scale)) {
+        if (PageConstants.isSpecialScale(scale)) {
             specialScale = scale;
         }
         if (isScaleToPage()) {
@@ -206,7 +206,7 @@ public class PageManager {
     }
 
     public boolean scaleToPage(final String pageName) {
-        specialScale = ReaderConstants.SCALE_TO_PAGE;
+        specialScale = PageConstants.SCALE_TO_PAGE;
         if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
@@ -216,7 +216,7 @@ public class PageManager {
     }
 
     public boolean scaleToWidth(final String pageName) {
-        specialScale = ReaderConstants.SCALE_TO_WIDTH;
+        specialScale = PageConstants.SCALE_TO_WIDTH;
         if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
@@ -226,7 +226,7 @@ public class PageManager {
     }
 
     public boolean scaleToHeight(final String pageName) {
-        specialScale = ReaderConstants.SCALE_TO_HEIGHT;
+        specialScale = PageConstants.SCALE_TO_HEIGHT;
         if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
@@ -236,7 +236,7 @@ public class PageManager {
     }
 
     public boolean scaleToPageContent(final String pageName) {
-        specialScale = ReaderConstants.SCALE_TO_PAGE_CONTENT;
+        specialScale = PageConstants.SCALE_TO_PAGE_CONTENT;
         if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
@@ -285,7 +285,7 @@ public class PageManager {
     }
 
     public boolean scaleWithDelta(final String pageName, final float delta) {
-        specialScale = ReaderConstants.SCALE_INVALID;
+        specialScale = PageConstants.SCALE_INVALID;
         if (!contains(pageName) || !hasValidViewport()) {
             return false;
         }
@@ -411,27 +411,27 @@ public class PageManager {
     }
 
     public boolean isSpecialScale() {
-        return ReaderConstants.isSpecialScale(specialScale);
+        return PageConstants.isSpecialScale(specialScale);
     }
 
     public boolean isScaleToPage() {
-        return ReaderConstants.isScaleToPage(specialScale);
+        return PageConstants.isScaleToPage(specialScale);
     }
 
     public boolean isScaleToWidth() {
-        return ReaderConstants.isScaleToWidth(specialScale);
+        return PageConstants.isScaleToWidth(specialScale);
     }
 
     public boolean isScaleToHeight() {
-        return ReaderConstants.isScaleToHeight(specialScale);
+        return PageConstants.isScaleToHeight(specialScale);
     }
 
     public boolean isScaleToPageContent() {
-        return ReaderConstants.isScaleToPageContent(specialScale);
+        return PageConstants.isScaleToPageContent(specialScale);
     }
 
     public boolean isWidthCrop() {
-        return ReaderConstants.isWidthCrop(specialScale);
+        return PageConstants.isWidthCrop(specialScale);
     }
 
     public void setPageRepeat(int value) {

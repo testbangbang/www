@@ -7,7 +7,7 @@ import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.StringUtils;
@@ -28,7 +28,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public String getProviderName() {
-        return ReaderConstants.SINGLE_PAGE;
+        return PageConstants.SINGLE_PAGE;
     }
 
     public void activate()  {
@@ -134,7 +134,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     private void onPageChanged(final RectF viewportBeforeChange) {
-        if (ReaderConstants.isSpecialScale(getLayoutManager().getSpecialScale())) {
+        if (PageConstants.isSpecialScale(getLayoutManager().getSpecialScale())) {
             return;
         }
         getPageManager().setAbsoluteViewportPosition(viewportBeforeChange.left,

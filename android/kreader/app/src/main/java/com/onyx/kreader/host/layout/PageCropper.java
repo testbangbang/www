@@ -8,7 +8,7 @@ import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.utils.ImageUtils;
 
@@ -45,7 +45,7 @@ public class PageCropper extends PageManager.PageCropProvider {
         }
 
         // step3: crop the image.
-        RectF cropRegion = ImageUtils.cropPage(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), ReaderConstants.DEFAULT_AUTO_CROP_VALUE);
+        RectF cropRegion = ImageUtils.cropPage(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), PageConstants.DEFAULT_AUTO_CROP_VALUE);
         if (debugCrop && BuildConfig.DEBUG) {
             BitmapUtils.drawRectOnBitmap(bitmap, cropRegion);
             BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/with-crop.png");

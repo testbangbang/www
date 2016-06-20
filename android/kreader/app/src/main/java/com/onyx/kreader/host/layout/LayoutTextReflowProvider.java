@@ -6,7 +6,7 @@ import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -22,7 +22,7 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     }
 
     public String getProviderName() {
-        return ReaderConstants.IMAGE_REFLOW_PAGE;
+        return PageConstants.IMAGE_REFLOW_PAGE;
     }
 
     public void activate() {

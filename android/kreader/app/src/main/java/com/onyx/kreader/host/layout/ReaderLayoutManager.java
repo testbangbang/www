@@ -9,7 +9,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
@@ -81,18 +81,18 @@ public class ReaderLayoutManager {
         supportScale = getReaderRendererFeatures().supportScale();
         supportTextFlow = getReaderRendererFeatures().supportFontSizeAdjustment();
         if (supportScale) {
-            provider.put(ReaderConstants.SINGLE_PAGE, new LayoutSinglePageProvider(this));
-            provider.put(ReaderConstants.SINGLE_PAGE_NAVIGATION_LIST, new LayoutSinglePageNavigationListProvider(this));
-            provider.put(ReaderConstants.CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
-            provider.put(ReaderConstants.IMAGE_REFLOW_PAGE, new LayoutImageReflowProvider(this));
+            provider.put(PageConstants.SINGLE_PAGE, new LayoutSinglePageProvider(this));
+            provider.put(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, new LayoutSinglePageNavigationListProvider(this));
+            provider.put(PageConstants.CONTINUOUS_PAGE, new LayoutContinuousProvider(this));
+            provider.put(PageConstants.IMAGE_REFLOW_PAGE, new LayoutImageReflowProvider(this));
         }
         if (supportTextFlow) {
-            provider.put(ReaderConstants.TEXT_REFLOW_PAGE, new LayoutTextReflowProvider(this));
+            provider.put(PageConstants.TEXT_REFLOW_PAGE, new LayoutTextReflowProvider(this));
         }
         if (supportScale) {
-            currentProvider = ReaderConstants.SINGLE_PAGE;
+            currentProvider = PageConstants.SINGLE_PAGE;
         } else {
-            currentProvider = ReaderConstants.TEXT_REFLOW_PAGE;
+            currentProvider = PageConstants.TEXT_REFLOW_PAGE;
         }
         getCurrentLayoutProvider().activate();
     }

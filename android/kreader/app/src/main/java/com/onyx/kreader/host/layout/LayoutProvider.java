@@ -8,7 +8,7 @@ import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderConstants;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -138,7 +138,7 @@ public class LayoutProvider {
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
         LayoutProviderUtils.addSinglePage(getLayoutManager(), snapshot.pageName);
-        if (ReaderConstants.isSpecialScale(snapshot.specialScale)) {
+        if (PageConstants.isSpecialScale(snapshot.specialScale)) {
             getPageManager().setSpecialScale(snapshot.pageName, snapshot.specialScale);
         } else {
             getPageManager().setScale(snapshot.pageName, snapshot.actualScale);
