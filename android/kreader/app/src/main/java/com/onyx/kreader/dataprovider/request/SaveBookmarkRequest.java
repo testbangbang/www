@@ -1,8 +1,6 @@
 package com.onyx.kreader.dataprovider.request;
 
-import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.dataprovider.Bookmark;
-import com.onyx.kreader.dataprovider.BookmarkProvider;
 
 import java.util.List;
 

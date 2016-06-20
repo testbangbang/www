@@ -1,7 +1,7 @@
-package com.onyx.kreader.common;
+package com.onyx.android.sdk.utils;
 
 import android.util.Log;
-import com.onyx.kreader.BuildConfig;
+import com.onyx.android.sdk.BuildConfig;
 
 /**
  * Created by zhuzeng on 10/4/15.

@@ -20,6 +20,17 @@ android {
             minifyEnabled false
         }
     }
+
+    /**
+     * to work around the issue of "Gradle plugin does not propagate debug/release to dependencies"
+     * https://code.google.com/p/android/issues/detail?id=52962
+     */
+    defaultPublishConfig 'release'
+    publishNonDefault true
+    productFlavors {
+        library {
+        }
+    }
 }
 
 dependencies {

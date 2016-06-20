@@ -4,25 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
-import android.view.View;
-import com.onyx.kreader.common.BaseCallback;
-import com.onyx.kreader.common.RequestManager;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.scribble.data.RawInputReader;
-import com.onyx.kreader.scribble.data.ShapePage;
 import com.onyx.kreader.scribble.data.TouchPointList;
 import com.onyx.kreader.scribble.request.BaseScribbleRequest;
-import com.onyx.kreader.scribble.request.ShapeRenderRequest;
 import com.onyx.kreader.scribble.shape.NormalScribbleShape;
 import com.onyx.kreader.scribble.shape.Shape;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.nio.channels.Selector;
 
 /**
  * Created by zhuzeng on 6/16/16.

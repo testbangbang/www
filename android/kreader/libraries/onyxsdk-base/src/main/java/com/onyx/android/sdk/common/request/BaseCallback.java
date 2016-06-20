@@ -1,4 +1,4 @@
-package com.onyx.kreader.common;
+package com.onyx.android.sdk.common.request;
 
 /**
  * Created by zhuzeng on 10/4/15.

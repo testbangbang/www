@@ -1,6 +1,7 @@
-package com.onyx.kreader.common;
+package com.onyx.android.sdk.common.request;
 
 import android.content.Context;
+import com.onyx.android.sdk.utils.Benchmark;
 
 /**
  * Created by zhuzeng on 5/31/16.

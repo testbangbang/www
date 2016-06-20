@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
 
 import com.onyx.kreader.common.*;

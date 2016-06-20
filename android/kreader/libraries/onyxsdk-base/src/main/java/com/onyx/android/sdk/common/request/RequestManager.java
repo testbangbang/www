@@ -1,11 +1,10 @@
-package com.onyx.kreader.common;
+package com.onyx.android.sdk.common.request;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
-import com.onyx.kreader.api.ReaderException;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,8 +1,8 @@
 package com.onyx.kreader.scribble.request;
 
 import android.graphics.Rect;
-import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.common.RequestManager;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.scribble.ShapeViewHelper;
 

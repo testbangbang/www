@@ -1,8 +1,7 @@
 package com.onyx.kreader.dataprovider.request;
 
-import com.onyx.kreader.common.BaseRequest;
-import com.onyx.kreader.common.RequestManager;
-import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.common.request.RequestManager;
 
 /**
  * Created by zhuzeng on 5/31/16.
