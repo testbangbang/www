@@ -199,15 +199,16 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, std::vector<int> & list) {
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
+    int pageWidth = FPDF_GetPageWidth(page);
     int pageHeight = FPDF_GetPageHeight(page);
     int count = end - start + 1;
     for(int i = 0; i < count; ++i) {
         FPDFText_GetCharBox(textPage, i + start, &left, &right, &bottom, &top);
         // convert page's left-bottom origin to screen's left-top origin
-        newLeft = left;
-        newRight = right;
-        newTop = pageHeight - top;
-        newBottom = pageHeight - bottom;
+        // but there are some documents we can't get normalized coordinates simply by subtracting with page width/height,
+        // so it's safer to use pdfium's built-in FPDF_PageToDevice()
+        FPDF_PageToDevice(page, 0, 0, pageWidth, pageHeight, rotation, left, top, &newLeft, &newTop);
+        FPDF_PageToDevice(page, 0, 0, pageWidth, pageHeight, rotation, right, bottom, &newRight, &newBottom);
         if (newRight < newLeft) {
             std::swap(newRight, newLeft);
         }
