@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import com.onyx.kreader.scribble.ShapeManager;
+import com.onyx.kreader.scribble.ShapeViewHelper;
 import com.onyx.kreader.scribble.shape.Shape;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class ShapeRenderRequest extends BaseScribbleRequest {
         paint = p;
     }
 
-    public void execute(final ShapeManager parent) throws Exception {
+    public void execute(final ShapeViewHelper parent) throws Exception {
         bitmap.eraseColor(Color.argb(0, 0xff, 0xff, 0xff));
         Canvas canvas = new Canvas(bitmap);
 

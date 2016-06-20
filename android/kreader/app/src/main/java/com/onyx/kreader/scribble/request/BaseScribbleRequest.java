@@ -4,7 +4,7 @@ import android.graphics.Rect;
 import com.onyx.kreader.common.BaseRequest;
 import com.onyx.kreader.common.RequestManager;
 import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.scribble.ShapeManager;
+import com.onyx.kreader.scribble.ShapeViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +49,10 @@ public class BaseScribbleRequest extends BaseRequest {
         return visiblePages;
     }
 
-    public void beforeExecute(final RequestManager requestManager) {
-        requestManager.acquireWakeLock(getContext());
+    public void beforeExecute(final ShapeViewHelper helper) {
+        helper.getRequestManager().acquireWakeLock(getContext());
         benchmarkStart();
-        invokeStartCallback(requestManager);
+        invokeStartCallback(helper.getRequestManager());
     }
 
     private void invokeStartCallback(final RequestManager requestManager) {
@@ -72,10 +72,10 @@ public class BaseScribbleRequest extends BaseRequest {
         }
     }
 
-    public void execute(final ShapeManager shapeManager) throws Exception {
+    public void execute(final ShapeViewHelper helper) throws Exception {
     }
 
-    public void afterExecute(final RequestManager requestManager) {
+    public void afterExecute(final ShapeViewHelper helper) {
         if (getException() != null) {
             getException().printStackTrace();
         }
@@ -87,11 +87,11 @@ public class BaseScribbleRequest extends BaseRequest {
                 if (getCallback() != null) {
                     getCallback().done(BaseScribbleRequest.this, getException());
                 }
-                requestManager.releaseWakeLock();
+                helper.getRequestManager().releaseWakeLock();
             }};
 
         if (isRunInBackground()) {
-            requestManager.getLooperHandler().post(runnable);
+            helper.getRequestManager().getLooperHandler().post(runnable);
         } else {
             runnable.run();
         }

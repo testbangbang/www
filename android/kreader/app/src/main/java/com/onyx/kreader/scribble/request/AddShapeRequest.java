@@ -1,6 +1,6 @@
 package com.onyx.kreader.scribble.request;
 
-import com.onyx.kreader.scribble.ShapeManager;
+import com.onyx.kreader.scribble.ShapeViewHelper;
 import com.onyx.kreader.scribble.data.ShapeManagerOptions;
 
 /**
@@ -10,7 +10,6 @@ import com.onyx.kreader.scribble.data.ShapeManagerOptions;
  */
 public class AddShapeRequest extends BaseScribbleRequest {
 
-    private ShapeManager shapeManager;
     private String documentMd5;
     private int initDisplayPage;
     private ShapeManagerOptions shapeManagerOptions;
@@ -21,7 +20,7 @@ public class AddShapeRequest extends BaseScribbleRequest {
         shapeManagerOptions = option;
     }
 
-    public void execute(final ShapeManager parent) throws Exception {
+    public void execute(final ShapeViewHelper parent) throws Exception {
 
     }
 }

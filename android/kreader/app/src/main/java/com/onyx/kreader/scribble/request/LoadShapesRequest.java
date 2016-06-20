@@ -2,11 +2,10 @@ package com.onyx.kreader.scribble.request;
 
 
 import android.graphics.*;
-import android.util.Log;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.scribble.ShapeManager;
+import com.onyx.kreader.scribble.ShapeViewHelper;
 import com.onyx.kreader.scribble.data.ShapePage;
 import com.onyx.kreader.utils.TestUtils;
 
@@ -28,12 +27,12 @@ public class LoadShapesRequest extends BaseScribbleRequest {
         setVisiblePages(pages);
     }
 
-    public void execute(final ShapeManager parent) throws Exception {
+    public void execute(final ShapeViewHelper parent) throws Exception {
         loadShapeData(parent);
         renderShape(parent);
     }
 
-    public void loadShapeData(final ShapeManager parent) {
+    public void loadShapeData(final ShapeViewHelper parent) {
         try {
             getShapeDataInfo().loadUserShape(getContext(), getDocUniqueId(), getVisiblePages());
         } catch (Exception e) {
@@ -41,7 +40,7 @@ public class LoadShapesRequest extends BaseScribbleRequest {
         }
     }
 
-    public void renderShape(final ShapeManager parent) {
+    public void renderShape(final ShapeViewHelper parent) {
         Debug.d("Render shape starts");
         Bitmap bitmap = parent.updateBitmap(getViewportSize());
         bitmap.eraseColor(Color.TRANSPARENT);

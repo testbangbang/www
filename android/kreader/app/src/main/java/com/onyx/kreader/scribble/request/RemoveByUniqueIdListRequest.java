@@ -1,6 +1,6 @@
 package com.onyx.kreader.scribble.request;
 
-import com.onyx.kreader.scribble.ShapeManager;
+import com.onyx.kreader.scribble.ShapeViewHelper;
 import com.onyx.kreader.scribble.data.ShapeModel;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class RemoveByUniqueIdListRequest extends BaseScribbleRequest {
     }
 
     @Override
-    public void execute(final ShapeManager parent) throws Exception {
+    public void execute(final ShapeViewHelper parent) throws Exception {
         // ask scribble provider to removeShape them.
     }
 }
