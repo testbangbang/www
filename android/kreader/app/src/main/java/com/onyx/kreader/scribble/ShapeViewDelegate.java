@@ -40,14 +40,7 @@ public class ShapeViewDelegate {
 
 
     public void setView(final SurfaceView view) {
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                // serves as switch only.
-                // detect the stylus button and others. but do not receive the data.
-                return false;
-            }
-        });
+
     }
 
     private void init() {
