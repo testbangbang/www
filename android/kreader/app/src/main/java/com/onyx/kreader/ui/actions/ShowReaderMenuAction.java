@@ -10,7 +10,7 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.android.sdk.data.ReaderConstants;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;

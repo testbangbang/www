@@ -1,13 +1,10 @@
 package com.onyx.kreader.plugins.images;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 import android.util.Log;
 import com.onyx.kreader.api.*;
-import com.onyx.kreader.common.Benchmark;
-import com.onyx.kreader.host.math.PageUtils;
+import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.kreader.utils.FileUtils;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.StringUtils;

@@ -3,7 +3,8 @@ package com.onyx.kreader.host.math;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
-import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderConstants;
 import com.onyx.kreader.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -377,7 +378,7 @@ public class PageManager {
         for(PageInfo pageInfo : pageInfoList) {
             if (RectF.intersects(viewportRect, pageInfo.getPositionRect())) {
                 visible.add(pageInfo);
-                pageInfo.updateDisplayRect(viewportRect);
+                PageUtils.updateDisplayRect(pageInfo, viewportRect);
                 found = true;
             } else if (found) {
                 break;

@@ -13,17 +13,19 @@ import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
 
 import com.onyx.kreader.common.*;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.kreader.scribble.ShapeViewHelper;
-import com.onyx.kreader.scribble.data.ShapePage;
-import com.onyx.kreader.scribble.request.BaseScribbleRequest;
-import com.onyx.kreader.scribble.request.LoadShapesRequest;
-import com.onyx.kreader.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.ShapeViewHelper;
+import com.onyx.android.sdk.scribble.data.ShapePage;
+import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
+import com.onyx.android.sdk.scribble.request.LoadShapesRequest;
+import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -35,6 +37,8 @@ import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.ui.data.PageTurningDetector;
+import com.onyx.kreader.ui.data.PageTurningDirection;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -214,6 +218,14 @@ public class ReaderActivity extends ActionBarActivity {
 
     public void panFinished(int offsetX, int offsetY) {
         if (!getReaderViewInfo().canPan()) {
+            PageTurningDirection direction = PageTurningDetector.detectHorizontalTuring(this, -offsetX);
+            if (direction == PageTurningDirection.Left) {
+                beforePageChangeByUser();
+                prevPage();
+            } else if (direction == PageTurningDirection.Right) {
+                beforePageChangeByUser();
+                nextPage();
+            }
             return;
         }
 

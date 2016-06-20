@@ -3,16 +3,12 @@ package com.onyx.kreader.host.layout;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.kreader.BuildConfig;
-import com.onyx.kreader.api.ReaderPlugin;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.options.ReaderConstants;
-import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderHelper;
-import com.onyx.kreader.ui.data.ReaderConfig;
+import com.onyx.android.sdk.data.ReaderConstants;
 import com.onyx.kreader.utils.BitmapUtils;
 import com.onyx.kreader.utils.ImageUtils;
 

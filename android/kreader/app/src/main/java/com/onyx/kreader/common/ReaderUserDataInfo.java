@@ -1,20 +1,13 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
-import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.dataprovider.AnnotationProvider;
 import com.onyx.kreader.dataprovider.Bookmark;
 import com.onyx.kreader.dataprovider.BookmarkProvider;
-import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.scribble.data.ShapeDataProvider;
-import com.onyx.kreader.scribble.data.ShapeModel;
-import com.onyx.kreader.scribble.data.ShapePage;
-import com.onyx.kreader.scribble.shape.Shape;
-import com.onyx.kreader.scribble.shape.ShapeFactory;
 
 import java.util.*;
 

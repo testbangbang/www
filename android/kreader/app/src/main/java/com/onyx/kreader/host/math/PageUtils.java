@@ -4,6 +4,8 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.api.ReaderHitTestArgs;
 
 /**
  * Created by zhuzeng on 10/9/15.
@@ -157,5 +159,30 @@ public class PageUtils {
         return child;
     }
 
+    public static boolean hitTest(final PageInfo pageInfo, final PointF point, final ReaderHitTestArgs args) {
+        if (pageInfo.getDisplayRect().contains(point.x, point.y)) {
+            args.pageName = pageInfo.getName();
+            args.pageDisplayRect = pageInfo.getDisplayRect();
+            PageUtils.translateCoordinates(point, pageInfo.getDisplayRect());
+            return true;
+        }
+        return false;
+    }
+
+    public static RectF updateDisplayRect(final PageInfo pageInfo, final RectF viewport) {
+        PageUtils.translateCoordinates(pageInfo.getPositionRect(), viewport);
+        return pageInfo.updateDisplayRect(pageInfo.getPositionRect());
+    }
+
+    /**
+     * Retrieve viewport in document coordinates system. it's viewport relate to current page.
+     * @param viewport
+     * @return
+     */
+    public static RectF viewportInPage(final PageInfo pageInfo, final RectF viewport) {
+        RectF vp = new RectF(viewport);
+        PageUtils.translateCoordinates(vp, pageInfo.getPositionRect());
+        return vp;
+    }
 
 }

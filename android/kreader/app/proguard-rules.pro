@@ -22,8 +22,9 @@
     native <methods>;
 }
 
+-keepnames class com.onyx.android.sdk.data.PageInfo { *; }
+
 -keepnames class com.onyx.kreader.utils.GObject { *; }
--keepnames class com.onyx.kreader.host.math.PageInfo { *; }
 -keepnames class com.onyx.kreader.reflow.ImageReflowManager { *; }
 -keepnames class com.onyx.kreader.reflow.ImageReflowSettings { *; }
 -keepnames class com.onyx.kreader.plugins.pdfium.PdfiumSelection { *; }

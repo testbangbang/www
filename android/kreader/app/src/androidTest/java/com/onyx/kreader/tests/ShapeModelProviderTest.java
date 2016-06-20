@@ -3,10 +3,10 @@ package com.onyx.kreader.tests;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.kreader.dataprovider.DataProvider;
-import com.onyx.kreader.scribble.data.ShapeModel;
-import com.onyx.kreader.scribble.data.ShapeDataProvider;
-import com.onyx.kreader.scribble.data.TouchPoint;
-import com.onyx.kreader.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.data.ShapeModel;
+import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.kreader.utils.TestUtils;
 
 import java.util.ArrayList;

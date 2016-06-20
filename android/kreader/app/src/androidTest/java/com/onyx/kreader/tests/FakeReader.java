@@ -3,8 +3,7 @@ package com.onyx.kreader.tests;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import com.onyx.kreader.api.*;
-import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.host.math.PositionSnapshot;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.TestUtils;
 

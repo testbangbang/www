@@ -5,7 +5,7 @@ import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.utils.TestUtils;

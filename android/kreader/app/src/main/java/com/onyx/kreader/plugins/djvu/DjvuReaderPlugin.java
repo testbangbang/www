@@ -1,9 +1,7 @@
 package com.onyx.kreader.plugins.djvu;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.onyx.kreader.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderDRMCallback;
@@ -28,8 +26,7 @@ import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
-import com.onyx.kreader.common.Benchmark;
-import com.onyx.kreader.host.math.PageUtils;
+import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 

@@ -4,9 +4,9 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.alibaba.fastjson.JSON;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.android.sdk.data.ReaderConstants;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
 import com.onyx.kreader.utils.TestUtils;
 

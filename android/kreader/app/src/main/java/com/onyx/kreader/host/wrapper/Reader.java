@@ -2,12 +2,11 @@ package com.onyx.kreader.host.wrapper;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.cache.BitmapLruCache;
-import com.onyx.kreader.common.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.RequestManager;
+import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.options.BaseOptions;

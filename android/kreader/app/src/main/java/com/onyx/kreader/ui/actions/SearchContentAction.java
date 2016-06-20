@@ -1,7 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
-import com.onyx.kreader.common.BaseCallback;
-import com.onyx.kreader.common.BaseRequest;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 

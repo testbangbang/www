@@ -2,7 +2,7 @@ package com.onyx.kreader.host.request;
 
 import android.graphics.RectF;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 
