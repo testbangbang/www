@@ -1,6 +1,6 @@
 package com.onyx.kreader.scribble.request;
 
-import com.onyx.kreader.scribble.ShapeManager;
+import com.onyx.kreader.scribble.ShapeViewHelper;
 
 
 /**
@@ -18,7 +18,7 @@ public class RemoveByPositionRequest extends BaseScribbleRequest {
     }
 
     @Override
-    public void execute(final ShapeManager parent) throws Exception {
+    public void execute(final ShapeViewHelper parent) throws Exception {
 
     }
 }

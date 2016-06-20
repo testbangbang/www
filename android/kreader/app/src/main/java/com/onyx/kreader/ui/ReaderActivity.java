@@ -19,14 +19,11 @@ import com.onyx.kreader.common.*;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.kreader.scribble.ShapeManager;
-import com.onyx.kreader.scribble.ShapeViewDelegate;
+import com.onyx.kreader.scribble.ShapeViewHelper;
 import com.onyx.kreader.scribble.data.ShapePage;
-import com.onyx.kreader.scribble.request.AddShapeRequest;
 import com.onyx.kreader.scribble.request.BaseScribbleRequest;
 import com.onyx.kreader.scribble.request.LoadShapesRequest;
 import com.onyx.kreader.scribble.request.ShapeDataInfo;
-import com.onyx.kreader.scribble.shape.Shape;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -59,7 +56,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     private String documentPath;
     private Reader reader;
-    private ShapeManager shapeManager;
+    private ShapeViewHelper shapeViewHelper;
 
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
@@ -78,7 +75,6 @@ public class ReaderActivity extends ActionBarActivity {
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
 
     private ReaderSelectionManager selectionManager;
-    private ShapeViewDelegate shapeViewDelegate = new ShapeViewDelegate();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -382,43 +378,9 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initShapeViewDelegate() {
-        shapeViewDelegate.setView(surfaceView);
-
-        shapeViewDelegate.setCallback(new ShapeViewDelegate.Callback() {
-            @Override
-            public void beforeAddNewShape(Shape shape) {
-            }
-
-            @Override
-            public void afterAddNewShape(Shape shape) {
-                // submit to shapeManager, add to memory page.
-                //shapeViewDelegate.addShapeToPage(docId, pageName, subPageName, shape);
-            }
-
-            @Override
-            public void beforeRemoveShape(Shape shape) {
-            }
-
-            @Override
-            public void afterRemoveShape(Shape shape) {
-
-            }
-
-            @Override
-            public void StylusChanged(int oldState, int newState) {
-
-            }
-        });
-
-        // setup connection between toolbar and shapeViewDelegate
-        shapeViewDelegate.setStrokeWidth(3.0f);
-        shapeViewDelegate.setStrokeColor(Color.BLACK);
-        shapeViewDelegate.setStrokeStyle(0);
-
-        shapeViewDelegate.startHandWriting();
-
+        getShapeViewHelper().setView(surfaceView);
         // when page changed, choose to flush
-        //shapeViewDelegate.flushPendingShapes();
+        //shapeViewHelper.flushPendingShapes();
 
     }
 
@@ -683,16 +645,16 @@ public class ReaderActivity extends ActionBarActivity {
         if (!isShapeBitmapReady()) {
             return;
         }
-        final Bitmap bitmap = getShapeManager().getShapeBitmap();
+        final Bitmap bitmap = getShapeViewHelper().getShapeBitmap();
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
-    private ShapeManager getShapeManager() {
-        if (shapeManager == null) {
-            shapeManager = new ShapeManager();
+    private ShapeViewHelper getShapeViewHelper() {
+        if (shapeViewHelper == null) {
+            shapeViewHelper = new ShapeViewHelper();
         }
-        return shapeManager;
+        return shapeViewHelper;
     }
 
     private boolean isShapeBitmapReady() {
@@ -701,7 +663,7 @@ public class ReaderActivity extends ActionBarActivity {
 //            return false;
 //        }
 
-        final Bitmap bitmap = getShapeManager().getShapeBitmap();
+        final Bitmap bitmap = getShapeViewHelper().getShapeBitmap();
         if (bitmap == null) {
             return false;
         }
@@ -709,7 +671,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void resetShapeData() {
-        getShapeManager().enableBitmap(false);
+        getShapeViewHelper().enableBitmap(false);
         shapeDataInfo = null;
     }
 
@@ -719,14 +681,14 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         final LoadShapesRequest loadRequest = new LoadShapesRequest(reader.getDocumentMd5(), getReaderViewInfo().getVisiblePages(), getDisplayRect());
-        getShapeManager().submit(this, loadRequest, new BaseCallback() {
+        getShapeViewHelper().submit(this, loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || request.isAbort()) {
                     return;
                 }
                 saveShapeDataInfo(loadRequest);
-                getShapeManager().enableBitmap(true);
+                getShapeViewHelper().enableBitmap(true);
                 drawPage(reader.getViewportBitmap().getBitmap());
             }
         });
