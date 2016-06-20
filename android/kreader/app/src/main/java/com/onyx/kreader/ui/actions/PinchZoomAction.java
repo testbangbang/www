@@ -4,7 +4,8 @@ import android.graphics.*;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 
@@ -95,8 +96,8 @@ public class PinchZoomAction extends BaseAction {
 
         // the final page position in document coordinates system should be
         // pageInfo.getPositionRect().left * deltaScale + deltaX
-        float left = deltaScale * pageInfo.viewportInPage(viewport).left - deltaX;
-        float top =  deltaScale * pageInfo.viewportInPage(viewport).top  - deltaY;
+        float left = deltaScale * PageUtils.viewportInPage(pageInfo, viewport).left - deltaX;
+        float top =  deltaScale * PageUtils.viewportInPage(pageInfo, viewport).top  - deltaY;
 
 //        hideTextZoomingPopupMenu();
 //        handlerManager.setEnable(false);

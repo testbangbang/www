@@ -5,7 +5,7 @@ import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.scribble.data.ShapePage;
 import com.onyx.kreader.scribble.data.TouchPoint;
 import com.onyx.kreader.scribble.math.ShapeUtils;

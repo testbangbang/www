@@ -4,7 +4,7 @@ import android.content.IntentFilter;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Environment;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.android.cropimage.CropImage;

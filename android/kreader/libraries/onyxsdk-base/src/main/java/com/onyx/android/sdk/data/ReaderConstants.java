@@ -1,4 +1,4 @@
-package com.onyx.kreader.host.options;
+package com.onyx.android.sdk.data;
 
 /**
  * Created by zhuzeng on 2/15/16.

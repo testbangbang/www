@@ -1,8 +1,7 @@
 package com.onyx.kreader.scribble.request;
 
 import android.content.Context;
-import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.scribble.data.ShapeDataProvider;
 import com.onyx.kreader.scribble.data.ShapeModel;
 import com.onyx.kreader.scribble.data.ShapePage;

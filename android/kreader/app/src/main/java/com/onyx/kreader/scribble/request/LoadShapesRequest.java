@@ -4,7 +4,7 @@ package com.onyx.kreader.scribble.request;
 import android.graphics.*;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.scribble.ShapeViewHelper;
 import com.onyx.kreader.scribble.data.ShapePage;
 import com.onyx.kreader.utils.TestUtils;

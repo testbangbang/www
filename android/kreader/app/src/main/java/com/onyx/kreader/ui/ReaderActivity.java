@@ -19,7 +19,7 @@ import com.onyx.kreader.R;
 
 import com.onyx.kreader.common.*;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.scribble.ShapeViewHelper;
 import com.onyx.kreader.scribble.data.ShapePage;

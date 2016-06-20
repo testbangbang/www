@@ -1,13 +1,6 @@
-package com.onyx.kreader.host.math;
+package com.onyx.android.sdk.data;
 
-import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.RectF;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.onyx.kreader.api.ReaderHitTestArgs;
-import com.onyx.kreader.host.options.ReaderConstants;
-
 
 /**
  * Created by zhuzeng on 10/8/15.
@@ -112,9 +105,8 @@ public class PageInfo {
                 positionRect.top + originHeight * actualScale);
     }
 
-    public RectF updateDisplayRect(final RectF viewport) {
-        displayRect.set(positionRect);
-        PageUtils.translateCoordinates(displayRect, viewport);
+    public RectF updateDisplayRect(final RectF rect) {
+        displayRect = new RectF(rect);
         return displayRect;
     }
 
@@ -124,34 +116,6 @@ public class PageInfo {
 
     public int getPageDisplayOrientation() {
         return pageDisplayOrientation;
-    }
-
-    public RectF visibleRectInViewport(final RectF viewport) {
-        RectF visible = new RectF(positionRect);
-        visible.intersect(viewport);
-        PageUtils.translateCoordinates(visible, viewport);
-        return visible;
-    }
-
-    public boolean hitTest(final PointF point, final ReaderHitTestArgs args) {
-        if (displayRect.contains(point.x, point.y)) {
-            args.pageName = getName();
-            args.pageDisplayRect = getDisplayRect();
-            PageUtils.translateCoordinates(point, displayRect);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Retrieve viewport in document coordinates system. it's viewport relate to current page.
-     * @param viewport
-     * @return
-     */
-    public RectF viewportInPage(final RectF viewport) {
-        RectF vp = new RectF(viewport);
-        PageUtils.translateCoordinates(vp, positionRect);
-        return vp;
     }
 
     public void setName(final String n) {

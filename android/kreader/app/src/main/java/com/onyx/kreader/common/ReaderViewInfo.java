@@ -1,9 +1,8 @@
 package com.onyx.kreader.common;
 
 import android.graphics.RectF;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.host.math.PageInfo;
-import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderConstants;
 
 import java.util.*;
 

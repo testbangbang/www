@@ -1,11 +1,10 @@
 package com.onyx.kreader.tests;
 
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationList;

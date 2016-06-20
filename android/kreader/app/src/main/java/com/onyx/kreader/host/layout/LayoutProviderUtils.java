@@ -10,7 +10,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;

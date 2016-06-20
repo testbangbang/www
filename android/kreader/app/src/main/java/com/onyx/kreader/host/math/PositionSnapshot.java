@@ -2,7 +2,8 @@ package com.onyx.kreader.host.math;
 
 import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
-import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderConstants;
 
 import java.util.List;
 

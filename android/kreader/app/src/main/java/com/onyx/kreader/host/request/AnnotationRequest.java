@@ -5,7 +5,7 @@ import com.onyx.kreader.api.ReaderHitTestArgs;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderHitTestManager;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**

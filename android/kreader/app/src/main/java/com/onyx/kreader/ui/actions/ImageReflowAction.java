@@ -2,7 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.options.ReaderConstants;
+import com.onyx.android.sdk.data.ReaderConstants;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.reflow.ImageReflowSettings;
 import com.onyx.kreader.ui.ReaderActivity;

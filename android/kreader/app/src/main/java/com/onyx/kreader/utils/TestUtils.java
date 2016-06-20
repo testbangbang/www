@@ -1,7 +1,7 @@
 package com.onyx.kreader.utils;
 
 import android.util.Log;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 
 import java.util.List;
 import java.util.Random;

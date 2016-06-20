@@ -1,18 +1,15 @@
 package com.onyx.kreader.tests;
 
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.host.impl.ReaderBitmapImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
-import com.onyx.kreader.host.math.PageInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
-import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 import com.onyx.kreader.utils.BitmapUtils;
-import com.onyx.kreader.utils.RectUtils;
 import com.onyx.kreader.utils.TestUtils;
 
 /**

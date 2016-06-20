@@ -5,6 +5,7 @@ import android.graphics.RectF;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.ReaderConstants;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.utils.GObject;
