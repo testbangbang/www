@@ -13,14 +13,17 @@ import java.util.List;
  */
 public class ShapeLibraryDataProvider {
 
-    public static List<ShapeLibraryModel> loadShapeDocumentList(final Context context, final String parentUniqueId) {
+    public static List<ShapeLibraryModel> loadShapeDocumentList(final Context context, final String documentUniqueId) {
         Select select = new Select();
-        Where where = select.from(ShapeLibraryModel.class).where(ShapeLibraryModel_Table.parentUniqueId.eq(parentUniqueId));
+        Where where = select.from(ShapeLibraryModel.class).where(ShapeLibraryModel_Table.documentUniqueId.eq(documentUniqueId));
         List<ShapeLibraryModel> list = where.queryList();
         return list;
     }
 
     public static void saveShapeDocument(final Context context, final ShapeLibraryModel model) {
+        if (model == null) {
+            return;
+        }
         model.save();
     }
 
@@ -35,6 +38,9 @@ public class ShapeLibraryDataProvider {
         Select select = new Select();
         Where where = select.from(ShapeLibraryModel.class).where(ShapeLibraryModel_Table.documentUniqueId.eq(documentUniqueId));
         final ShapeLibraryModel model = (ShapeLibraryModel)where.querySingle();
+        if (model == null) {
+            return false;
+        }
         model.setParentUniqueId(newParentId);
         model.save();
         return true;

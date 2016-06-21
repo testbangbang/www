@@ -64,7 +64,7 @@ public class ShapeLibraryTest extends ApplicationTestCase<Application> {
 
         list = ShapeLibraryDataProvider.loadShapeDocumentList(getContext(), document.getDocumentUniqueId());
         assertTrue(list.size() == 1);
-        assertTrue(list.get(0).getParentUniqueId().equalsIgnoreCase(document.getParentUniqueId()));
+        assertTrue(list.get(0).getParentUniqueId().equalsIgnoreCase(newParentId));
 
     }
 
