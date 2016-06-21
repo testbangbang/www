@@ -3,10 +3,11 @@ package com.onyx.kreader.plugins.images;
 import android.content.Context;
 import android.graphics.RectF;
 import android.util.Log;
+import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.utils.Benchmark;
-import com.onyx.kreader.utils.FileUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         if (imageInformation == null) {
             return null;
         }
-        return new RectF(0, 0, imageInformation.width, imageInformation.height);
+        return new RectF(0, 0, imageInformation.getWidth(), imageInformation.getHeight());
     }
 
     public void abortCurrentJob() {

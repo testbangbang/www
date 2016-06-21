@@ -84,6 +84,7 @@ dependencies {
     compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
     compile "com.github.Raizlabs.DBFlow:dbflow:3.0.1"
 
+    compile project(':libraries:onyxsdk-base')
 
     compile project(':libraries:cropimage')
     compile project(':libraries:Side-Menu.Android:library')

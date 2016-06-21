@@ -1,10 +1,9 @@
 package com.onyx.kreader.formats.filesystem;
 
-import com.onyx.kreader.utils.FileUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 /**

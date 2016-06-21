@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.kreader.api.*;
-import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
-import com.onyx.kreader.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.kreader.utils.StringUtils;
 import com.onyx.kreader.utils.TestUtils;
 

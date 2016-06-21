@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 
@@ -683,6 +684,7 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
 
+        getShapeViewHelper().enableBitmap(true);
         final LoadShapesRequest loadRequest = new LoadShapesRequest(reader.getDocumentMd5(), getReaderViewInfo().getVisiblePages(), getDisplayRect());
         getShapeViewHelper().submit(this, loadRequest, new BaseCallback() {
             @Override
@@ -691,7 +693,6 @@ public class ReaderActivity extends ActionBarActivity {
                     return;
                 }
                 saveShapeDataInfo(loadRequest);
-                getShapeViewHelper().enableBitmap(true);
                 drawPage(reader.getViewportBitmap().getBitmap());
             }
         });

@@ -2,6 +2,7 @@ package com.onyx.kreader.host.wrapper;
 
 import android.content.Context;
 import android.os.Handler;
+import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.android.sdk.common.request.BaseCallback;

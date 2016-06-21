@@ -5,8 +5,8 @@ import android.graphics.RectF;
 
 import com.onyx.kreader.plugins.images.ImagesAndroidWrapper;
 import com.onyx.kreader.plugins.images.ImagesWrapper;
-import com.onyx.kreader.utils.BitmapUtils;
-import com.onyx.kreader.utils.FileUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -96,7 +96,7 @@ public class ComicArchiveWrapper {
             return false;
         }
         try {
-            if (!BitmapUtils.decodeBitmapSize(stream, info)) {
+            if (!BitmapUtils.decodeBitmapSize(stream, info.getSize())) {
                 return false;
             }
         } finally {

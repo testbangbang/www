@@ -5,7 +5,7 @@ import com.onyx.kreader.formats.model.BookReader;
 import com.onyx.kreader.formats.model.BookReaderContext;
 import com.onyx.kreader.formats.model.zip.ZipFileEntry;
 import com.onyx.kreader.formats.model.zip.ZipFileReader;
-import com.onyx.kreader.utils.FileUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 
 
 /**

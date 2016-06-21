@@ -2,17 +2,12 @@ package com.onyx.kreader.dataprovider;
 
 import android.content.Context;
 import android.util.Log;
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.utils.FileUtils;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.Table;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * Created by zhuzeng on 5/27/16.

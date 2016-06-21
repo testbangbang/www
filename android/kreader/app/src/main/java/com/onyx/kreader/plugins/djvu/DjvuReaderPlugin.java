@@ -3,7 +3,7 @@ package com.onyx.kreader.plugins.djvu;
 import android.content.Context;
 import android.graphics.RectF;
 
-import com.onyx.kreader.api.ReaderBitmap;
+import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderDRMCallback;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderDocumentMetadata;

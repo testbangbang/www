@@ -47,8 +47,7 @@ dependencies {
     compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
     compile "com.github.Raizlabs.DBFlow:dbflow:3.0.1"
 
-    debugCompile project(path: ':libraries:onyxsdk-base', configuration: "libraryDebug")
-    releaseCompile project(path: ':libraries:onyxsdk-base', configuration: "libraryRelease")
+    compile project(':libraries:onyxsdk-base')
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'org.apache.commons:commons-collections4:4.0'

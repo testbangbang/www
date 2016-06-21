@@ -1,13 +1,12 @@
 package com.onyx.kreader.reflow;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.utils.FileUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.utils.ImageUtils;
 
 import java.io.File;

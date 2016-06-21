@@ -1,9 +1,9 @@
-package com.onyx.kreader.host.impl;
+package com.onyx.android.sdk.data;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import com.onyx.kreader.api.ReaderBitmap;
-import com.onyx.kreader.utils.BitmapUtils;
+import com.onyx.android.sdk.api.ReaderBitmap;
+import com.onyx.android.sdk.utils.BitmapUtils;
 
 /**
  * Created by zhuzeng on 10/4/15.

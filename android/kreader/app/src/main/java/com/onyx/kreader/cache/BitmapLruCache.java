@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.onyx.android.sdk.utils.Benchmark;
-import com.onyx.kreader.utils.FileUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.*;
 import java.util.concurrent.ExecutorService;

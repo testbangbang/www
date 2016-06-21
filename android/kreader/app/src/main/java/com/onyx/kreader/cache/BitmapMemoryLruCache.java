@@ -2,7 +2,7 @@ package com.onyx.kreader.cache;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;
-import com.onyx.kreader.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
 
 /**
  * Created by Joy on 2016/5/5.
