@@ -13,14 +13,12 @@ import java.util.*;
  */
 public class ShapeDataProvider {
 
-    private static final String TAG = ShapeDataProvider.class.getSimpleName();
-
     public static List<ShapeModel> loadShapeList(final Context context,
-                                                 final String md5,
-                                                 final String pageName,
+                                                 final String documentUniqueId,
+                                                 final String pageUniqueId,
                                                  final String subPageName) {
         Select select = new Select();
-        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.md5.eq(md5)).and(ShapeModel_Table.pageUniqueId.eq(pageName));
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));
         if (StringUtils.isNotBlank(subPageName)) {
             where = where.and(ShapeModel_Table.subPageName.eq(subPageName));
         }
@@ -30,7 +28,7 @@ public class ShapeDataProvider {
     }
 
     public static void saveShapeList(final Context context,
-                                     final List<ShapeModel> list) {
+                                     final Collection<ShapeModel> list) {
         for(ShapeModel shapeModel : list) {
             shapeModel.save();
         }
@@ -39,14 +37,19 @@ public class ShapeDataProvider {
     public static boolean removeShape(final Context context,
                                       final String uniqueId) {
         Select select = new Select();
-        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.pageUniqueId.eq(uniqueId));
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.shapeUniqueId.eq(uniqueId));
         where.querySingle().delete();
         return true;
     }
 
     public static boolean removePage(final Context context, final String pageUniqueId) {
-        return false;
+        Select select = new Select();
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));
+        where.querySingle().delete();
+        return true;
     }
+
+
 
 
 }

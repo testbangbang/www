@@ -23,9 +23,6 @@ public class ShapeModel extends BaseModel {
     long id;
 
     @Column
-    String md5 ;
-
-    @Column
     @Unique
     String shapeUniqueId;
 
@@ -36,10 +33,16 @@ public class ShapeModel extends BaseModel {
     Date updatedAt = null;
 
     @Column
+    String documentUniqueId;
+
+    @Column
     String pageUniqueId;
 
     @Column
     String subPageName;
+
+    @Column
+    String appId;
 
     @Column
     int color;
@@ -52,9 +55,6 @@ public class ShapeModel extends BaseModel {
 
     @Column(typeConverter = TouchPointListConverter.class)
     TouchPointList points;
-
-    @Column
-    String position;
 
     @Column(typeConverter = RectangleConverter.class)
     RectF boundingRect = null;
@@ -76,14 +76,6 @@ public class ShapeModel extends BaseModel {
         id = value;
     }
 
-    public final String getMd5() {
-        return md5;
-    }
-
-    public void setMd5(final String value) {
-        md5 = value;
-    }
-
     public void setCreatedAt(final Date d) {
         createdAt = d;
     }
@@ -98,6 +90,14 @@ public class ShapeModel extends BaseModel {
 
     public void setUpdatedAt(final Date d) {
         updatedAt = d;
+    }
+
+    public String getDocumentUniqueId() {
+        return documentUniqueId;
+    }
+
+    public void setDocumentUniqueId(final String id) {
+        documentUniqueId = id;
     }
 
     public String getPageUniqueId() {
@@ -145,14 +145,6 @@ public class ShapeModel extends BaseModel {
         points = pts;
     }
 
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(final String pos) {
-        position = pos;
-    }
-
     public final String getShapeUniqueId() {
         return shapeUniqueId;
     }
@@ -161,7 +153,7 @@ public class ShapeModel extends BaseModel {
         shapeUniqueId = id;
     }
 
-    public String generateUniqueId() {
+    public String generateShapeUniqueId() {
         return shapeUniqueId = UUID.randomUUID().toString();
     }
 
@@ -203,5 +195,13 @@ public class ShapeModel extends BaseModel {
 
     public void setZorder(int order) {
         zorder = order;
+    }
+
+    public void setAppId(final String id) {
+        appId = id;
+    }
+
+    public String getAppId() {
+        return appId;
     }
 }
