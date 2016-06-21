@@ -21,5 +21,8 @@ public class LoadShapeLibraryRequest extends BaseScribbleRequest {
         list = ShapeLibraryDataProvider.loadShapeDocumentList(getContext(), parentUniqueId);
     }
 
+    public List<ShapeLibraryModel> getList() {
+        return list;
+    }
 
 }
