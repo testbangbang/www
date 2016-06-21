@@ -17,9 +17,8 @@ import java.util.List;
  */
 public class ShapePage {
 
-    private boolean dirty = false;
     private String docUniqueId;
-    private String pageName;
+    private String pageUniqueId;
     private String subPageName;
 
     private List<Shape> shapeList = new ArrayList<Shape>();
@@ -38,12 +37,11 @@ public class ShapePage {
     }
 
     public ShapePage() {
-
     }
 
-    public ShapePage(final String docId, final String pn, final String spn) {
+    public ShapePage(final String docId, final String pageId, final String spn) {
         docUniqueId = docId;
-        pageName = pn;
+        pageUniqueId = pageId;
         subPageName = spn;
     }
 
@@ -51,8 +49,8 @@ public class ShapePage {
         return docUniqueId;
     }
 
-    public final String getPageName() {
-        return pageName;
+    public final String getPageUniqueId() {
+        return pageUniqueId;
     }
 
     public final String getSubPageName() {
@@ -188,12 +186,20 @@ public class ShapePage {
         }
 
         for(Shape shape: removedShapeList) {
-            ShapeDataProvider.removeShape(null, shape.getUniqueId());
+            ShapeDataProvider.removeShape(null, shape.getShapeUniqueId());
         }
         return true;
     }
 
     public boolean hasShapes() {
         return shapeList.size() > 0;
+    }
+
+    public boolean hasPendingShapes() {
+        return newAddedShapeList.size() > 0 || removedShapeList.size() > 0;
+    }
+
+    public void remove() {
+
     }
 }

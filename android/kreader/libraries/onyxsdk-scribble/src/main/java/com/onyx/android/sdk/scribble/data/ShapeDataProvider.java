@@ -44,5 +44,9 @@ public class ShapeDataProvider {
         return true;
     }
 
+    public static boolean removePage(final Context context, final String pageUniqueId) {
+        return false;
+    }
+
 
 }

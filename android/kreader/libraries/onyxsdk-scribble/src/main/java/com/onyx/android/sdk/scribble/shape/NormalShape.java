@@ -16,6 +16,8 @@ public class NormalShape implements Shape {
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();
     private String uniqueId;
+    private String documentUniqueId;
+    private String pageUniqueId;
 
     /**
      * rectangle, circle, etc.
@@ -25,11 +27,27 @@ public class NormalShape implements Shape {
         return ShapeFactory.SHAPE_INVALID;
     }
 
-    public void setUniqueId(final String id) {
+    public void setDocumentUniqueId(final String id) {
+        documentUniqueId = id;
+    }
+
+    public String getDocumentUniqueId() {
+        return documentUniqueId;
+    }
+
+    public void setPageUniqueId(final String pageId) {
+        pageUniqueId = pageId;
+    }
+
+    public String getPageUniqueId() {
+        return pageUniqueId;
+    }
+
+    public void setShapeUniqueId(final String id) {
         uniqueId = id;
     }
 
-    public String getUniqueId() {
+    public String getShapeUniqueId() {
         return uniqueId;
     }
 

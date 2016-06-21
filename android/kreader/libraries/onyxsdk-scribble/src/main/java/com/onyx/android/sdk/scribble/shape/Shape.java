@@ -24,9 +24,17 @@ public interface Shape {
      */
     int getType();
 
-    void setUniqueId(final String uniqueId);
+    void setDocumentUniqueId(final String documentUniqueId);
 
-    String getUniqueId();
+    String getDocumentUniqueId();
+
+    void setPageUniqueId(final String pageId);
+
+    String getPageUniqueId();
+
+    void setShapeUniqueId(final String uniqueId);
+
+    String getShapeUniqueId();
 
     int getZOrder();
 
