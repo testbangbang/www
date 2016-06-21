@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.SurfaceView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.RawInputReader;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
@@ -28,7 +29,7 @@ public class ShapeViewHelper {
 
     private RequestManager requestManager = new RequestManager();
     private RawInputReader rawInputReader = new RawInputReader();
-    private Bitmap bitmapWrapper = null;
+    private ReaderBitmapImpl bitmapWrapper = null;
     private boolean enableBitmap = true;
 
     private Rect limitRect = null;
@@ -49,21 +50,22 @@ public class ShapeViewHelper {
     }
 
     public Bitmap updateBitmap(final Rect viewportSize) {
-     //   bitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
-    //    return bitmapWrapper.getBitmap();
-        return null;
+        bitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
+        return bitmapWrapper.getBitmap();
     }
 
     public Bitmap getShapeBitmap() {
-//        if (bitmapWrapper == null || !enableBitmap) {
-//            return null;
-//        }
-//        return bitmapWrapper.getBitmap();
-        return null;
+        if (bitmapWrapper == null || !enableBitmap) {
+            return null;
+        }
+        return bitmapWrapper.getBitmap();
     }
 
     public void enableBitmap(boolean enable) {
         enableBitmap = enable;
+        if (enableBitmap && bitmapWrapper == null) {
+            bitmapWrapper = new ReaderBitmapImpl();
+        }
     }
 
 
