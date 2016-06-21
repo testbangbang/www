@@ -1,4 +1,4 @@
-package com.onyx.kreader.api;
+package com.onyx.android.sdk.api;
 
 import android.graphics.Bitmap;
 

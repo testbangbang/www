@@ -1,10 +1,10 @@
-package com.onyx.kreader.utils;
+package com.onyx.android.sdk.utils;
 
 import android.annotation.SuppressLint;
 import android.graphics.*;
 import android.os.Build;
 import android.util.Log;
-import com.onyx.kreader.plugins.images.ImagesWrapper;
+import com.onyx.android.sdk.data.Size;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -37,13 +37,19 @@ public class BitmapUtils {
         return true;
     }
 
-    static public boolean decodeBitmapSize(final InputStream stream, final ImagesWrapper.ImageInformation information) {
+    /**
+     * return null if failed
+     *
+     * @param stream
+     * @return
+     */
+    static public boolean decodeBitmapSize(final InputStream stream, Size size) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         try {
             BitmapFactory.decodeStream(stream, null, options);
-            information.width = options.outWidth;
-            information.height = options.outHeight;
+            size.width = options.outWidth;
+            size.height = options.outHeight;
             return true;
         } catch (Throwable tr) {
             Log.w(TAG, tr);
@@ -51,11 +57,17 @@ public class BitmapUtils {
         }
     }
 
-    static public boolean decodeBitmapSize(final String path, final ImagesWrapper.ImageInformation information) {
+    /**
+     * return null if failed
+     *
+     * @param path
+     * @return
+     */
+    static public boolean decodeBitmapSize(final String path, Size size) {
         FileInputStream stream = null;
         try {
             stream = new FileInputStream(path);
-            return decodeBitmapSize(stream, information);
+            return decodeBitmapSize(stream, size);
         } catch (Throwable tr) {
             Log.w(TAG, tr);
             return false;

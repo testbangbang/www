@@ -3,6 +3,7 @@ package com.onyx.kreader.plugins.pdfium;
 import android.content.Context;
 import android.graphics.RectF;
 import android.util.Log;
+import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.utils.Benchmark;

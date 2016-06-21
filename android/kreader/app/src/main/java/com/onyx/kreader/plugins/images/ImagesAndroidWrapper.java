@@ -3,9 +3,8 @@ package com.onyx.kreader.plugins.images;
 import android.graphics.*;
 import android.util.Log;
 
-import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.utils.BitmapUtils;
-import com.onyx.kreader.utils.FileUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -55,7 +54,7 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
     public ImageInformation imageInfo(final String path) {
         if (!infoCache.containsKey(path)) {
             ImageInformation imageInformation = new ImageInformation();
-            if (!BitmapUtils.decodeBitmapSize(path, imageInformation)) {
+            if (!BitmapUtils.decodeBitmapSize(path, imageInformation.getSize())) {
                 return null;
             }
             saveImageInformation(path, imageInformation);

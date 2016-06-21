@@ -1,6 +1,7 @@
 package com.onyx.kreader.api;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.api.ReaderBitmap;
 
 /**
  * Created by zhuzeng on 10/2/15.

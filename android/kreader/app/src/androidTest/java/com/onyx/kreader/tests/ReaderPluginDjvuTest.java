@@ -5,11 +5,11 @@ import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
-import com.onyx.kreader.api.ReaderBitmap;
+import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.plugins.djvu.DjvuJniWrapper;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;

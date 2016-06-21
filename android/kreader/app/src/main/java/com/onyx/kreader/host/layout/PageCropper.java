@@ -4,12 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.api.ReaderRenderer;
-import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.kreader.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.kreader.utils.ImageUtils;
 
 /**

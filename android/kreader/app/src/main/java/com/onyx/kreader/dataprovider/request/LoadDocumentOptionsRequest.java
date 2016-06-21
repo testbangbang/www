@@ -2,9 +2,6 @@ package com.onyx.kreader.dataprovider.request;
 
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.utils.FileUtils;
-
-import java.io.File;
 
 /**
  * Created by zhuzeng on 5/31/16.

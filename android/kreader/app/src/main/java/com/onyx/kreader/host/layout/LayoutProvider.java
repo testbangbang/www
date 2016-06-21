@@ -4,7 +4,7 @@ import android.graphics.RectF;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
-import com.onyx.kreader.host.impl.ReaderBitmapImpl;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
