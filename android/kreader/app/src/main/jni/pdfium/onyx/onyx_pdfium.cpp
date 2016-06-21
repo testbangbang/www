@@ -8,7 +8,7 @@
 
 static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
 static const char * splitterClassName = "com/onyx/kreader/api/ReaderTextSplitter";
-static const char * stringUtilsClassName = "com/onyx/kreader/utils/StringUtils";
+static const char * stringUtilsClassName = "com/onyx/android/sdk/utils/StringUtils";
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
