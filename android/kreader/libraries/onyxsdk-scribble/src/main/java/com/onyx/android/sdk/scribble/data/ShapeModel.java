@@ -27,7 +27,7 @@ public class ShapeModel extends BaseModel {
 
     @Column
     @Unique
-    String uniqueId;
+    String shapeUniqueId;
 
     @Column
     Date createdAt = null;
@@ -36,7 +36,7 @@ public class ShapeModel extends BaseModel {
     Date updatedAt = null;
 
     @Column
-    String pageName;
+    String pageUniqueId;
 
     @Column
     String subPageName;
@@ -100,12 +100,12 @@ public class ShapeModel extends BaseModel {
         updatedAt = d;
     }
 
-    public String getPageName() {
-        return pageName;
+    public String getPageUniqueId() {
+        return pageUniqueId;
     }
 
-    public void setPageName(final String name) {
-        pageName = name;
+    public void setPageUniqueId(final String name) {
+        pageUniqueId = name;
     }
 
     public String getSubPageName() {
@@ -153,16 +153,16 @@ public class ShapeModel extends BaseModel {
         position = pos;
     }
 
-    public final String getUniqueId() {
-        return uniqueId;
+    public final String getShapeUniqueId() {
+        return shapeUniqueId;
     }
 
-    public void setUniqueId(final String id) {
-        uniqueId = id;
+    public void setShapeUniqueId(final String id) {
+        shapeUniqueId = id;
     }
 
     public String generateUniqueId() {
-        return uniqueId = UUID.randomUUID().toString();
+        return shapeUniqueId = UUID.randomUUID().toString();
     }
 
     public void updateBoundingRect(final float x, final float y) {

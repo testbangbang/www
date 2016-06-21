@@ -20,7 +20,7 @@ public class ShapeDataProvider {
                                                  final String pageName,
                                                  final String subPageName) {
         Select select = new Select();
-        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.md5.eq(md5)).and(ShapeModel_Table.pageName.eq(pageName));
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.md5.eq(md5)).and(ShapeModel_Table.pageUniqueId.eq(pageName));
         if (StringUtils.isNotBlank(subPageName)) {
             where = where.and(ShapeModel_Table.subPageName.eq(subPageName));
         }
@@ -39,7 +39,7 @@ public class ShapeDataProvider {
     public static boolean removeShape(final Context context,
                                       final String uniqueId) {
         Select select = new Select();
-        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.uniqueId.eq(uniqueId));
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.pageUniqueId.eq(uniqueId));
         where.querySingle().delete();
         return true;
     }

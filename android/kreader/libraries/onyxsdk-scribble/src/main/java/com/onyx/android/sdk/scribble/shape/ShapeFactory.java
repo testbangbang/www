@@ -33,7 +33,7 @@ public class ShapeFactory {
     public static final ShapeModel modelFromShape(final Shape shape) {
         final ShapeModel shapeModel = new ShapeModel();
         shapeModel.setBoundingRect(shape.getBoundingRect());
-        shapeModel.setUniqueId(shape.getShapeUniqueId());
+        shapeModel.setShapeUniqueId(shape.getShapeUniqueId());
         shapeModel.setColor(shape.getColor());
         return shapeModel;
     }
@@ -63,7 +63,7 @@ public class ShapeFactory {
     }
 
     private static void syncShapeDataFromModel(final Shape shape, final ShapeModel shapeModel) {
-        shape.setShapeUniqueId(shapeModel.getUniqueId());
+        shape.setShapeUniqueId(shapeModel.getShapeUniqueId());
         shape.addPoints(shapeModel.getPoints());
     }
 }

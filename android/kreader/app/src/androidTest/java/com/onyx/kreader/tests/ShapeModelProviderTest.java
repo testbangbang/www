@@ -30,8 +30,8 @@ public class ShapeModelProviderTest extends ActivityInstrumentationTestCase2<Rea
                                     final TouchPointList points) {
         ShapeModel shapeModel = new ShapeModel();
         shapeModel.setMd5(md5);
-        shapeModel.setPageName(pageName);
-        shapeModel.setUniqueId(UUID.randomUUID().toString());
+        shapeModel.setPageUniqueId(pageName);
+        shapeModel.setShapeUniqueId(UUID.randomUUID().toString());
         shapeModel.setUpdatedAt(new Date());
         shapeModel.setCreatedAt(new Date());
         shapeModel.setBoundingRect(boundingRect);
@@ -96,7 +96,7 @@ public class ShapeModelProviderTest extends ActivityInstrumentationTestCase2<Rea
         assertTrue(result.get(0).getBoundingRect().height() == boundingRect.height());
         assertTrue(result.get(0).getPoints().size() == 1);
 
-        ShapeDataProvider.removeShape(getActivity(), shapeModel.getUniqueId());
+        ShapeDataProvider.removeShape(getActivity(), shapeModel.getShapeUniqueId());
         result = ShapeDataProvider.loadShapeList(getActivity(), md5, pageName, null);
         assertTrue(result.size() <= 0);
     }
