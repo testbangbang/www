@@ -8,7 +8,7 @@ import com.onyx.kreader.dataprovider.request.BaseDataProviderRequest;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.ScribbleGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 
 /**
@@ -25,7 +25,7 @@ public class DataProvider {
 
     public static void init(final Context context) {
         FlowConfig.Builder builder = new FlowConfig.Builder(context);
-        builder.addDatabaseHolder(ScribbleGeneratedDatabaseHolder.class);
+        builder.addDatabaseHolder(ShapeGeneratedDatabaseHolder.class);
         FlowManager.init(builder.build());
     }
 

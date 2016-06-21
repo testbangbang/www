@@ -7,7 +7,7 @@ import com.onyx.android.sdk.scribble.data.ShapePage;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.scribbleGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     public ApplicationTest() {
         super(Application.class);
         FlowConfig.Builder builder = new FlowConfig.Builder(getContext());
-        builder.addDatabaseHolder(scribbleGeneratedDatabaseHolder.class);
+        builder.addDatabaseHolder(ShapeGeneratedDatabaseHolder.class);
         FlowManager.init(builder.build());
     }
 
