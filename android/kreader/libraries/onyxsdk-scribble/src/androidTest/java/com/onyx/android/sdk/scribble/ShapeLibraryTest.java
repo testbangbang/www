@@ -1,7 +1,10 @@
 package com.onyx.android.sdk.scribble;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 import android.test.ApplicationTestCase;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeLibraryDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeLibraryModel;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
@@ -99,6 +102,27 @@ public class ShapeLibraryTest extends ApplicationTestCase<Application> {
             final ShapeLibraryModel model = subList.get(0);
             assertTrue(model.getParentUniqueId().equalsIgnoreCase(string));
         }
+
+        list = ShapeLibraryDataProvider.loadShapeDocumentList(getContext(), null);
+        assertTrue(list.size() == map.size() - newLibrary.size());
+    }
+
+    public void testThumbnail() {
+        initDB();
+        Delete.tables(ShapeLibraryModel.class);
+        ShapeLibraryDataProvider.removeAllThumbnails(getContext());
+        int max = TestUtils.randInt(10, 30);
+        Map<String, ShapeLibraryModel> map = new HashMap<String, ShapeLibraryModel>();
+        for(int i = 0; i < max; ++i) {
+            final ShapeLibraryModel document = randomShapeModel();
+            ShapeLibraryDataProvider.saveShapeDocument(getContext(), document);
+            map.put(document.getDocumentUniqueId(), document);
+            assertFalse(ShapeLibraryDataProvider.hasThumbnail(getContext(), document.getDocumentUniqueId()));
+            Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            ShapeLibraryDataProvider.saveThumbnail(getContext(), document.getDocumentUniqueId(), bitmap);
+            assertTrue(ShapeLibraryDataProvider.hasThumbnail(getContext(), document.getDocumentUniqueId()));
+        }
+        ShapeLibraryDataProvider.removeAllThumbnails(getContext());
     }
 
 }

@@ -18,9 +18,22 @@ import java.util.Set;
  */
 public class FileUtils {
 
-    static public boolean fileExist(final String path) {
+    public static boolean fileExist(final String path) {
         File file = new File(path);
         return file.exists();
+    }
+
+    public static boolean mkdirs(final String path) {
+        File file = new File(path);
+        return file.mkdirs();
+    }
+
+    public static void purgeDirectory(final File dir) {
+        for (File file: dir.listFiles()) {
+            if (file.isFile()) {
+                file.delete();
+            }
+        }
     }
 
     public static String getFileExtension(String fileName) {

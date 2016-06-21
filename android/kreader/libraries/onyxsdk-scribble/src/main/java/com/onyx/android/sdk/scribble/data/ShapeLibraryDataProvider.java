@@ -1,11 +1,17 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,5 +65,40 @@ public class ShapeLibraryDataProvider {
         return true;
     }
 
+    public static boolean hasThumbnail(final Context context, final String documentUniqueId) {
+        final String path = thumbnailPath(context, documentUniqueId);
+        return FileUtils.fileExist(path);
+    }
+
+    public static boolean saveThumbnail(final Context context, final String documentUniqueId, final Bitmap bitmap) {
+        final String path = thumbnailPath(context, documentUniqueId);
+        return BitmapUtils.saveBitmap(bitmap, path);
+    }
+
+    public static void removeAllThumbnails(final Context context) {
+        FileUtils.purgeDirectory(new File(thumbnailBasePath(context)));
+    }
+
+    public static String thumbnailBasePath(final Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        String s = context.getPackageName();
+        try {
+            PackageInfo p = packageManager.getPackageInfo(s, 0);
+            s = p.applicationInfo.dataDir;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String path = s + "/thumbnails";
+        if (!FileUtils.fileExist(path)) {
+            FileUtils.mkdirs(path);
+        }
+        return path;
+    }
+
+    public static String thumbnailPath(final Context context, final String id) {
+        String path = thumbnailBasePath(context);
+        return path + "/" + id + ".png";
+    }
 
 }
