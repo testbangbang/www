@@ -27,7 +27,7 @@ android {
 
 apt {
     arguments {
-        targetModuleName 'scribble'
+        targetModuleName 'Scribble'
     }
 }
 
