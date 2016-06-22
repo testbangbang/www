@@ -118,11 +118,15 @@ public class ShapeLibraryTest extends ApplicationTestCase<Application> {
             ShapeLibraryDataProvider.saveShapeDocument(getContext(), document);
             map.put(document.getDocumentUniqueId(), document);
             assertFalse(ShapeLibraryDataProvider.hasThumbnail(getContext(), document.getDocumentUniqueId()));
-            Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            final int width = TestUtils.randInt(100, 500);
+            final int height = TestUtils.randInt(100, 500);
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             ShapeLibraryDataProvider.saveThumbnail(getContext(), document.getDocumentUniqueId(), bitmap);
             assertTrue(ShapeLibraryDataProvider.hasThumbnail(getContext(), document.getDocumentUniqueId()));
             final Bitmap result = ShapeLibraryDataProvider.loadThumbnail(getContext(), document.getDocumentUniqueId());
             assertNotNull(result);
+            assertEquals(result.getWidth(), width);
+            assertEquals(result.getHeight(), height);
         }
         ShapeLibraryDataProvider.removeAllThumbnails(getContext());
     }
