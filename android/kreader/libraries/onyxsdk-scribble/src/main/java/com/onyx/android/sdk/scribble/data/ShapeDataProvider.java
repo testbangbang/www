@@ -2,8 +2,12 @@ package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.raizlabs.android.dbflow.config.DatabaseConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.DefaultTransactionManager;
 
 import java.util.*;
 
@@ -29,9 +33,13 @@ public class ShapeDataProvider {
 
     public static void saveShapeList(final Context context,
                                      final Collection<ShapeModel> list) {
+        final DatabaseWrapper database= FlowManager.getDatabase(ShapeDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
         for(ShapeModel shapeModel : list) {
             shapeModel.save();
         }
+        database.setTransactionSuccessful();
+        database.endTransaction();
     }
 
     public static boolean removeShape(final Context context,
