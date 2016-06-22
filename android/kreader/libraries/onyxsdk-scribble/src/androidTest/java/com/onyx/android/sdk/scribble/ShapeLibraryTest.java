@@ -121,6 +121,8 @@ public class ShapeLibraryTest extends ApplicationTestCase<Application> {
             Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
             ShapeLibraryDataProvider.saveThumbnail(getContext(), document.getDocumentUniqueId(), bitmap);
             assertTrue(ShapeLibraryDataProvider.hasThumbnail(getContext(), document.getDocumentUniqueId()));
+            final Bitmap result = ShapeLibraryDataProvider.loadThumbnail(getContext(), document.getDocumentUniqueId());
+            assertNotNull(result);
         }
         ShapeLibraryDataProvider.removeAllThumbnails(getContext());
     }

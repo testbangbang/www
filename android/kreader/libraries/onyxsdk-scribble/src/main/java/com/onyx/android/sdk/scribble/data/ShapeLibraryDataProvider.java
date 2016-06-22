@@ -75,6 +75,11 @@ public class ShapeLibraryDataProvider {
         return BitmapUtils.saveBitmap(bitmap, path);
     }
 
+    public static Bitmap loadThumbnail(final Context context, final String documentUniqueId) {
+        final String path = thumbnailPath(context, documentUniqueId);
+        return BitmapUtils.loadBitmapFromFile(path);
+    }
+
     public static void removeAllThumbnails(final Context context) {
         FileUtils.purgeDirectory(new File(thumbnailBasePath(context)));
     }
