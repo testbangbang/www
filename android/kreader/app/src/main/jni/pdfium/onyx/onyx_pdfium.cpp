@@ -8,7 +8,6 @@
 
 static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
 static const char * splitterClassName = "com/onyx/kreader/api/ReaderTextSplitter";
-static const char * stringUtilsClassName = "com/onyx/android/sdk/utils/StringUtils";
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
@@ -278,10 +277,8 @@ static std::shared_ptr<_jstring> getJStringText(JNIEnv *env, FPDF_TEXTPAGE page,
     int textSize = (count + 1) * sizeof(unsigned short);
     JNIByteArray arrayWrapper(env, textSize);
     FPDFText_GetText(page, start, count, (unsigned short *)(arrayWrapper.getBuffer()));
-    
-    jclass clz = env->FindClass(stringUtilsClassName);
-    jmethodID method = env->GetStaticMethodID(clz, "utf16le", "([B)Ljava/lang/String;");
-    jstring str = (jstring)env->CallStaticObjectMethod(clz, method, arrayWrapper.getByteArray(true));
+
+    jstring str = env->NewString((jchar *)arrayWrapper.getBuffer(), textSize / 2);
     return std::shared_ptr<_jstring>(str, [=](_jstring *s) {
         env->DeleteLocalRef(s);
     });
