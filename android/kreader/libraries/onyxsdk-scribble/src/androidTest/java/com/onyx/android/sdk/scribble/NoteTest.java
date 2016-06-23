@@ -135,6 +135,23 @@ public class NoteTest extends ApplicationTestCase<Application> {
         final NoteModel result = NoteDataProvider.load(getContext(), noteModel.getUniqueId());
         assertNotNull(result);
         assertEquals(result.getTitle(), noteModel.getTitle());
+
+        NoteDataProvider.remove(getContext(), noteModel.getUniqueId());
+        NoteModel result2 = NoteDataProvider.load(getContext(), noteModel.getUniqueId());
+        assertNull(result2);
+    }
+
+    public void testCreateAndRemove2() {
+        initDB();
+        Delete.tables(NoteModel.class);
+        final NoteModel noteModel = NoteDataProvider.createNote(getContext(), null, UUID.randomUUID().toString());
+        final NoteModel result = NoteDataProvider.load(getContext(), noteModel.getUniqueId());
+        assertNotNull(result);
+        assertEquals(result.getTitle(), noteModel.getTitle());
+
+        NoteDataProvider.remove(getContext(), noteModel.getUniqueId());
+        NoteModel result2 = NoteDataProvider.load(getContext(), noteModel.getUniqueId());
+        assertNull(result2);
     }
 
 }
