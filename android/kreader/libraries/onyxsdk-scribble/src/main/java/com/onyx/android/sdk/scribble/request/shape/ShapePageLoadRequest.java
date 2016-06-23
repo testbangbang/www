@@ -5,8 +5,10 @@ import android.graphics.*;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.BuildConfig;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.List;
@@ -16,14 +18,13 @@ import java.util.Map;
  * Created by zengzhu on 4/18/16.
  * load and render shape with scale and offset.
  */
-public class ShapeLoadRequest extends BaseNoteRequest {
+public class ShapePageLoadRequest extends BaseNoteRequest {
 
     private boolean debugPathBenchmark = false;
 
-    public ShapeLoadRequest(final String id, final List<PageInfo> pages, final Rect size) {
+    public ShapePageLoadRequest(final List<PageInfo> pages, final Rect size) {
         setAbortPendingTasks();
         setViewportSize(size);
-        setDocUniqueId(id);
         setVisiblePages(pages);
     }
 
@@ -34,7 +35,7 @@ public class ShapeLoadRequest extends BaseNoteRequest {
 
     public void loadShapeData(final ShapeViewHelper parent) {
         try {
-            getShapeDataInfo().loadUserShape(getContext(), getDocUniqueId(), getVisiblePages());
+            parent.getNoteDocument().loadShapePages(getContext(), getVisiblePages());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,8 +50,9 @@ public class ShapeLoadRequest extends BaseNoteRequest {
         paint.setAntiAlias(true);
         paint.setStrokeWidth(3.0f);
 
-        for(Map.Entry<String, NotePage> entry: getShapeDataInfo().getShapePageMap().entrySet()) {
-            entry.getValue().render(canvas, paint, new NotePage.RenderCallback() {
+        for(PageInfo page: getVisiblePages()) {
+            final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
+            notePage.render(canvas, paint, new NotePage.RenderCallback() {
                 @Override
                 public boolean isRenderAbort() {
                     return isAbort();

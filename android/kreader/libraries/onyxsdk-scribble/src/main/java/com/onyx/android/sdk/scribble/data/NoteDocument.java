@@ -1,12 +1,15 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,6 +35,12 @@ public class NoteDocument {
 
     public String getDocumentUniqueId() {
         return documentUniqueId;
+    }
+
+    public PageNameList getPageNameList() {
+        final PageNameList pageNameList = new PageNameList();
+        pageNameList.addAll(pageDataMap.keyList());
+        return pageNameList;
     }
 
     private void setupPageDataMap(final Context context) {
@@ -142,6 +151,26 @@ public class NoteDocument {
             return true;
         }
         return false;
+    }
+
+    public boolean loadShapePages(final Context context, final List<PageInfo> visiblePages) {
+        for(PageInfo pageInfo: visiblePages) {
+            getNotePage(context, pageInfo.getName());
+        }
+        return true;
+    }
+
+    public NotePage getNotePage(final Context context, final String pageUniqueName) {
+        if (pageDataMap.containsKey(pageUniqueName)) {
+            return pageDataMap.get(pageUniqueName);
+        }
+        final NotePage notePage = NotePage.createPage(context, getDocumentUniqueId(), pageUniqueName, null);
+        final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), pageUniqueName, null);
+        for(ShapeModel model : modelList) {
+            notePage.addShapeFromModel(ShapeFactory.shapeFromModel(model));
+        }
+        pageDataMap.put(pageUniqueName, notePage);
+        return notePage;
     }
 
 

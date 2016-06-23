@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.request;
 import android.content.Context;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.data.PageNameList;
 import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -16,36 +17,22 @@ import java.util.Map;
  */
 public class ShapeDataInfo {
 
-    private Map<String, NotePage> shapePageMap = new HashMap<String, NotePage>();
+    private PageNameList pageNameList = new PageNameList();
+    private int currentPageIndex;
     public boolean canUndoShape;
     public boolean canRedoShape;
 
-    public final Map<String, NotePage> getShapePageMap() {
-        return shapePageMap;
-    }
-
-    public final NotePage getShapePage(final String pageName) {
-        return shapePageMap.get(pageName);
+    public final PageNameList getPageNameList() {
+        return pageNameList;
     }
 
     public boolean hasShapes() {
-        return (shapePageMap.size() > 0);
+        return (pageNameList.size() > 0);
     }
 
-    public boolean hasShapes(final String pageName) {
-        return shapePageMap.containsKey(pageName) && shapePageMap.get(pageName).hasShapes();
-    }
-
-    public boolean loadUserShape(final Context context, final String docUniqueId, final List<PageInfo> visiblePages) {
-        for(PageInfo pageInfo: visiblePages) {
-            final NotePage notePage = NotePage.createPage(context, docUniqueId, pageInfo.getName(), null);
-            final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, docUniqueId, pageInfo.getName(), null);
-            for(ShapeModel model : modelList) {
-                notePage.addShapeFromModel(ShapeFactory.shapeFromModel(model));
-            }
-            shapePageMap.put(pageInfo.getName(), notePage);
-        }
-        return true;
+    public void updateShapePageMap(final PageNameList pageNameList, int currentPage) {
+        pageNameList.addAll(pageNameList.getPageNameList());
+        currentPageIndex = currentPage;
     }
 
 }

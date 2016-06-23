@@ -26,7 +26,7 @@ import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.request.shape.ShapeLoadRequest;
+import com.onyx.android.sdk.scribble.request.shape.ShapePageLoadRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
@@ -685,7 +685,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         getShapeViewHelper().enableBitmap(true);
-        final ShapeLoadRequest loadRequest = new ShapeLoadRequest(reader.getDocumentMd5(), getReaderViewInfo().getVisiblePages(), getDisplayRect());
+        final ShapePageLoadRequest loadRequest = new ShapePageLoadRequest(reader.getDocumentMd5(), getReaderViewInfo().getVisiblePages(), getDisplayRect());
         getShapeViewHelper().submit(this, loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

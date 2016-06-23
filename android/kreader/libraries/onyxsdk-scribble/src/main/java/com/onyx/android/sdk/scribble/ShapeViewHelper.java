@@ -8,6 +8,7 @@ import android.view.SurfaceView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.RawInputReader;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -49,6 +50,10 @@ public class ShapeViewHelper {
 
     public final RawInputReader getRawInputReader() {
         return rawInputReader;
+    }
+
+    public final NoteDocument getNoteDocument() {
+        return noteDocument;
     }
 
     public Bitmap updateBitmap(final Rect viewportSize) {
