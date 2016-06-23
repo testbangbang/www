@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.converter.TypeConverter;
  * Created by zhuzeng on 6/4/16.
  */
 @com.raizlabs.android.dbflow.annotation.TypeConverter
-public class RectangleConverter extends TypeConverter<String, RectF> {
+public class ConverterRectangle extends TypeConverter<String, RectF> {
 
     @Override
     public RectF getModelValue(String string) {

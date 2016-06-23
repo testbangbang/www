@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.test.ApplicationTestCase;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
+import com.onyx.android.sdk.scribble.data.PageNameList;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -153,5 +155,30 @@ public class NoteTest extends ApplicationTestCase<Application> {
         NoteModel result2 = NoteDataProvider.load(getContext(), noteModel.getUniqueId());
         assertNull(result2);
     }
+
+    public void testPageNameList() {
+        initDB();
+        Delete.tables(NoteModel.class);
+        final NoteModel noteModel = NoteDataProvider.createNote(getContext(), null, UUID.randomUUID().toString());
+        final NoteModel result = NoteDataProvider.load(getContext(), noteModel.getUniqueId());
+        assertNotNull(result);
+        assertEquals(result.getTitle(), noteModel.getTitle());
+        assertNull(result.getPageNameList());
+
+        PageNameList src = new PageNameList();
+        int max = TestUtils.randInt(10, 100);
+        for(int i = 0; i < max; ++i) {
+            src.add(ShapeUtils.generateUniqueId());
+        }
+        noteModel.setPageNameList(src);
+        NoteDataProvider.saveNote(getContext(), noteModel);
+        final NoteModel result2 = NoteDataProvider.load(getContext(), noteModel.getUniqueId());
+        assertNotNull(result2);
+        assertEquals(result2.getPageNameList().size(), noteModel.getPageNameList().size());
+        for(int i = 0; i < result2.getPageNameList().size(); ++i) {
+            assertEquals(result2.getPageNameList().get(i), noteModel.getPageNameList().get(i));
+        }
+    }
+
 
 }

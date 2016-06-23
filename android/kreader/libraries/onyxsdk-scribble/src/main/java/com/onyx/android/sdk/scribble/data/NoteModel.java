@@ -6,6 +6,7 @@ import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zhuzeng on 6/21/16.
@@ -47,6 +48,9 @@ public class NoteModel extends BaseModel {
 
     @Column
     int type;
+
+    @Column(typeConverter = ConverterStringList.class)
+    PageNameList pageNameList = null;
 
     Bitmap thumbnail;
 
@@ -136,6 +140,14 @@ public class NoteModel extends BaseModel {
 
     public boolean isLibrary() {
         return type == TYPE_LIBRARY;
+    }
+
+    public PageNameList getPageNameList() {
+        return pageNameList;
+    }
+
+    public void setPageNameList(final PageNameList names) {
+        pageNameList = names;
     }
 
     public Bitmap getThumbnail() {

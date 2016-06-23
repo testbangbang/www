@@ -53,10 +53,10 @@ public class ShapeModel extends BaseModel {
     @Column
     int zorder;
 
-    @Column(typeConverter = TouchPointListConverter.class)
+    @Column(typeConverter = ConverterTouchPointList.class)
     TouchPointList points;
 
-    @Column(typeConverter = RectangleConverter.class)
+    @Column(typeConverter = ConverterRectangle.class)
     RectF boundingRect = null;
 
     @Column

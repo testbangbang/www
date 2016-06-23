@@ -2,6 +2,8 @@ package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
 
 import java.util.LinkedHashSet;
@@ -16,10 +18,6 @@ public class NoteDocument {
     private String documentUniqueId;
     private ListOrderedMap<String, NotePage> pageDataMap = new ListOrderedMap<String, NotePage>();
     private int currentPageIndex = 0;
-
-    static public final String generatePageName() {
-        return UUID.randomUUID().toString();
-    }
 
     public void open(final Context context, final String uniqueId) {
         setDocumentUniqueId(uniqueId);
@@ -37,15 +35,23 @@ public class NoteDocument {
     }
 
     private void setupPageDataMap(final Context context) {
-        final LinkedHashSet<String> pageIndex = new LinkedHashSet<String>();
-        loadPageIndex(pageIndex);
+        final LinkedHashSet<String> pageIndex = loadPageIndex(context);
         int index = 0;
         for(String key : pageIndex) {
             createPage(index++, key);
         }
     }
 
-    private void loadPageIndex(final LinkedHashSet<String> index) {
+    private LinkedHashSet<String> loadPageIndex(final Context context) {
+        final LinkedHashSet<String> index = new LinkedHashSet<String>();
+        final NoteModel noteModel = NoteDataProvider.load(context, getDocumentUniqueId());
+        if (noteModel.getPageNameList() == null) {
+            return index;
+        }
+        for(String string : noteModel.getPageNameList().getPageNameList()) {
+            index.add(string);
+        }
+        return index;
     }
 
     private void ensureDocumentNotBlank(final Context context) {
@@ -91,7 +97,7 @@ public class NoteDocument {
 
     public boolean createBlankPage(final Context context, final int index) {
         final int value = Math.min(index, pageDataMap.size());
-        createPage(value, generatePageName());
+        createPage(value, ShapeUtils.generateUniqueId());
         return gotoPage(value);
     }
 
