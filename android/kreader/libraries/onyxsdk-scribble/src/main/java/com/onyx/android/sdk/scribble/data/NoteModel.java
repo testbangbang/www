@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble.data;
 
+import android.graphics.Bitmap;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -46,6 +47,8 @@ public class NoteModel extends BaseModel {
 
     @Column
     int type;
+
+    Bitmap thumbnail;
 
     public NoteModel() {
     }
@@ -133,6 +136,14 @@ public class NoteModel extends BaseModel {
 
     public boolean isLibrary() {
         return type == TYPE_LIBRARY;
+    }
+
+    public Bitmap getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(final Bitmap bmp) {
+        thumbnail = bmp;
     }
 
     public static NoteModel createNote(final String parentUniqueId, final String title) {
