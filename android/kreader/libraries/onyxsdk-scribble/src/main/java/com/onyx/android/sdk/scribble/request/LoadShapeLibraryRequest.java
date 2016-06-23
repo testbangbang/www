@@ -1,8 +1,8 @@
 package com.onyx.android.sdk.scribble.request;
 
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
-import com.onyx.android.sdk.scribble.data.ShapeLibraryDataProvider;
-import com.onyx.android.sdk.scribble.data.ShapeLibraryModel;
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 
 import java.util.List;
 
@@ -11,17 +11,17 @@ import java.util.List;
  */
 public class LoadShapeLibraryRequest extends BaseScribbleRequest {
     private String parentUniqueId;
-    private List<ShapeLibraryModel> list;
+    private List<NoteModel> list;
 
     public LoadShapeLibraryRequest(final String id) {
         parentUniqueId = id;
     }
 
     public void execute(final ShapeViewHelper shapeManager) throws Exception {
-        list = ShapeLibraryDataProvider.loadShapeDocumentList(getContext(), parentUniqueId);
+        list = NoteDataProvider.loadNoteList(getContext(), parentUniqueId);
     }
 
-    public List<ShapeLibraryModel> getList() {
+    public List<NoteModel> getList() {
         return list;
     }
 

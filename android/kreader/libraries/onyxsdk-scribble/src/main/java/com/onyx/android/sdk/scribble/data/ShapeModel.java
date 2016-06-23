@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
@@ -154,7 +155,7 @@ public class ShapeModel extends BaseModel {
     }
 
     public String generateShapeUniqueId() {
-        return shapeUniqueId = UUID.randomUUID().toString();
+        return shapeUniqueId = ShapeUtils.generateUniqueId();
     }
 
     public void updateBoundingRect(final float x, final float y) {
