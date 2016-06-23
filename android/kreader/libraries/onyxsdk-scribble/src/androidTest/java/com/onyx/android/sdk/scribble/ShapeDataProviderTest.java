@@ -4,6 +4,8 @@ import android.app.Application;
 import android.test.ApplicationTestCase;
 import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -32,11 +34,27 @@ public class ShapeDataProviderTest extends ApplicationTestCase<Application> {
         init = true;
     }
 
+    private TouchPoint randomTouchPoint() {
+        TouchPoint touchPoint = new TouchPoint(
+                TestUtils.randInt(0, 1000),
+                TestUtils.randInt(0, 1000),
+                TestUtils.randInt(0, 1000),
+                TestUtils.randInt(0, 1000),
+                TestUtils.randInt(0, 1000));
+        return touchPoint;
+    }
+
     private ShapeModel randomShapeModel(final String documentId, final String pageUniqueId) {
         ShapeModel shapeModel = new ShapeModel();
         shapeModel.setDocumentUniqueId(documentId);
         shapeModel.setPageUniqueId(pageUniqueId);
         shapeModel.generateShapeUniqueId();
+        int points = TestUtils.randInt(10, 1000);
+        final TouchPointList list = new TouchPointList(points);
+        for(int i = 0; i < points; ++i) {
+            list.add(randomTouchPoint());
+        }
+        shapeModel.setPoints(list);
         return shapeModel;
     }
 
@@ -59,6 +77,39 @@ public class ShapeDataProviderTest extends ApplicationTestCase<Application> {
 
         for(ShapeModel mode: result) {
             assertTrue(map.containsKey(mode.getShapeUniqueId()));
+        }
+    }
+
+    public void testShapeDataProviderSave2() {
+        initDB();
+
+        Map<String, ShapeModel> map = new HashMap<String, ShapeModel>();
+        int max = TestUtils.randInt(10, 30);
+        final String docId = UUID.randomUUID().toString();
+        final String pageId = UUID.randomUUID().toString();
+        for(int i = 0; i < max; ++i) {
+            final ShapeModel model = randomShapeModel(docId, pageId);
+            map.put(model.getShapeUniqueId(), model);
+        }
+
+        ShapeDataProvider.saveShapeList(getContext(), map.values());
+        List<ShapeModel> result = ShapeDataProvider.loadShapeList(getContext(), docId, pageId, null);
+        assertNotNull(result);
+        assertTrue(result.size() == map.size());
+
+        for(ShapeModel mode: result) {
+            final ShapeModel origin = map.get(mode.getShapeUniqueId());
+            assertTrue(origin.getPoints().size() == mode.getPoints().size());
+            int size = origin.getPoints().size();
+            for(int i = 0; i < size; ++i) {
+                TouchPoint src = origin.getPoints().get(i);
+                TouchPoint dst = mode.getPoints().get(i);
+                assertEquals(src.getX(), dst.getX());
+                assertEquals(src.getY(), dst.getY());
+                assertEquals(src.getSize(), dst.getSize());
+                assertEquals(src.getPressure(), dst.getPressure());
+                assertEquals(src.getTimestamp(), dst.getTimestamp());
+            }
         }
     }
 }
