@@ -135,11 +135,12 @@ public class NoteModel extends BaseModel {
         return type == TYPE_LIBRARY;
     }
 
-    public static NoteModel createNote(final String parentUniqueId) {
+    public static NoteModel createNote(final String parentUniqueId, final String title) {
         final NoteModel document = new NoteModel();
         document.setType(TYPE_DOCUMENT);
         document.setUniqueId(ShapeUtils.generateUniqueId());
         document.setParentUniqueId(parentUniqueId);
+        document.setTitle(title);
         return document;
     }
 
