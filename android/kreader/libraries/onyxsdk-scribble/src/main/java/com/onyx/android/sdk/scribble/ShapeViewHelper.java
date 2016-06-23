@@ -40,6 +40,18 @@ public class ShapeViewHelper {
     public void setView(final SurfaceView view) {
     }
 
+    public void startDrawing() {
+        getRawInputReader().start();
+    }
+
+    public void starErasing() {
+        getRawInputReader().stop();
+    }
+
+    public void stop() {
+        getRawInputReader().stop();
+    }
+
     public void submit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
         getRequestManager().submitRequest(context, request, generateRunnable(request), callback);
     }
@@ -75,7 +87,6 @@ public class ShapeViewHelper {
         }
     }
 
-
     private final Runnable generateRunnable(final BaseNoteRequest request) {
         Runnable runnable = new Runnable() {
             @Override
@@ -109,6 +120,7 @@ public class ShapeViewHelper {
                 Shape shape = new NormalScribbleShape();
                 shape.addPoints(pointList);
                 // send request and send to request manager.
+
             }
 
             @Override
@@ -122,6 +134,5 @@ public class ShapeViewHelper {
             }
         });
     }
-
 
 }

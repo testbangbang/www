@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.scribble.request.shape;
+package com.onyx.android.sdk.scribble.request.navigation;
 
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -8,18 +8,19 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  * Created by zhuzeng on 12/25/15.
  * remove from memory
  */
-public class ShapeRemoveRequest extends BaseNoteRequest {
+public class PageRemoveRequest extends BaseNoteRequest {
 
     private String documentIndex;
-    private String pageUniqueId;
+    private volatile int pageIndex;
 
-    public ShapeRemoveRequest(final String doc, final String pageId) {
+    public PageRemoveRequest(final String doc, final int value) {
         documentIndex = doc;
-        pageUniqueId = pageId;
+        pageIndex = value;
     }
 
     @Override
     public void execute(final ShapeViewHelper parent) throws Exception {
-
+        parent.getNoteDocument().removePage(getContext(), pageIndex);
+        renderCurrentPage(parent);
     }
 }

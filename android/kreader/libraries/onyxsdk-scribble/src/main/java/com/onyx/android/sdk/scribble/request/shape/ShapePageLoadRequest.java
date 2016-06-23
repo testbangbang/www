@@ -20,8 +20,6 @@ import java.util.Map;
  */
 public class ShapePageLoadRequest extends BaseNoteRequest {
 
-    private boolean debugPathBenchmark = false;
-
     public ShapePageLoadRequest(final List<PageInfo> pages, final Rect size) {
         setAbortPendingTasks();
         setViewportSize(size);
@@ -30,7 +28,7 @@ public class ShapePageLoadRequest extends BaseNoteRequest {
 
     public void execute(final ShapeViewHelper parent) throws Exception {
         loadShapeData(parent);
-        renderShape(parent);
+        renderVisiblePages(parent);
     }
 
     public void loadShapeData(final ShapeViewHelper parent) {
@@ -39,52 +37,6 @@ public class ShapePageLoadRequest extends BaseNoteRequest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void renderShape(final ShapeViewHelper parent) {
-        Bitmap bitmap = parent.updateBitmap(getViewportSize());
-        bitmap.eraseColor(Color.TRANSPARENT);
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(3.0f);
-
-        for(PageInfo page: getVisiblePages()) {
-            final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-            notePage.render(canvas, paint, new NotePage.RenderCallback() {
-                @Override
-                public boolean isRenderAbort() {
-                    return isAbort();
-                }
-            });
-        }
-
-        // draw test path.
-        drawRandomTestPath(canvas, paint);
-    }
-
-    private void drawRandomTestPath(final Canvas canvas, final Paint paint) {
-        if (!(BuildConfig.DEBUG && debugPathBenchmark)) {
-            return;
-        }
-        Path path = new Path();
-        int width = getViewportSize().width();
-        int height = getViewportSize().height();
-        int max = TestUtils.randInt(0, 5000);
-        path.moveTo(TestUtils.randInt(0, width), TestUtils.randInt(0, height));
-        for(int i = 0; i < max; ++i) {
-            float xx = TestUtils.randInt(0, width);
-            float yy = TestUtils.randInt(0, height);
-            float xx2 = TestUtils.randInt(0, width);
-            float yy2 = TestUtils.randInt(0, height);
-            path.quadTo((xx + xx2) / 2, (yy + yy2) / 2, xx2, yy2);
-            if (isAbort()) {
-                return;
-            }
-        }
-        long ts = System.currentTimeMillis();
-        canvas.drawPath(path, paint);
     }
 
 }

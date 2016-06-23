@@ -10,7 +10,6 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/20/16.
@@ -117,12 +116,17 @@ public class NoteDocument {
         }
         notePage.remove();
         pageDataMap.remove(index);
+        ensureDocumentNotBlank(context);
         final int value = Math.min(index, pageDataMap.size() - 1);
         return gotoPage(value);
     }
 
     public int getCurrentPageIndex() {
         return currentPageIndex;
+    }
+
+    public String getCurrentPageUniqueId() {
+        return pageDataMap.get(getCurrentPageIndex());
     }
 
     public int getPageCount() {
@@ -161,16 +165,29 @@ public class NoteDocument {
     }
 
     public NotePage getNotePage(final Context context, final String pageUniqueName) {
-        if (pageDataMap.containsKey(pageUniqueName)) {
-            return pageDataMap.get(pageUniqueName);
+        if (StringUtils.isNullOrEmpty(pageUniqueName)) {
+            return null;
         }
-        final NotePage notePage = NotePage.createPage(context, getDocumentUniqueId(), pageUniqueName, null);
+        NotePage notePage = null;
+        if (pageDataMap.containsKey(pageUniqueName)) {
+            notePage = pageDataMap.get(pageUniqueName);
+        } else {
+            notePage = NotePage.createPage(context, getDocumentUniqueId(), pageUniqueName, null);
+            pageDataMap.put(pageUniqueName, notePage);
+        }
+        if (notePage != null && notePage.hasShapes()) {
+            return notePage;
+        }
         final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), pageUniqueName, null);
         for(ShapeModel model : modelList) {
             notePage.addShapeFromModel(ShapeFactory.shapeFromModel(model));
         }
-        pageDataMap.put(pageUniqueName, notePage);
         return notePage;
+    }
+
+    public NotePage getCurrentPage(final Context context) {
+        final String pageId = getCurrentPageUniqueId();
+        return getNotePage(context, pageId);
     }
 
 

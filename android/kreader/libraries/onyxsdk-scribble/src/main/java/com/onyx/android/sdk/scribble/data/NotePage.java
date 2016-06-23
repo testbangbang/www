@@ -106,10 +106,6 @@ public class NotePage {
         pageMatrix = matrix;
     }
 
-    public final TouchPoint normalizedTouchPoint(final float x, final float y, final float pressure, final float size, final long timestamp) {
-        return new TouchPoint();
-    }
-
     public void render(final Canvas canvas, final Paint paint, final RenderCallback callback) {
         if (shapeList == null) {
             return;
@@ -192,7 +188,7 @@ public class NotePage {
     }
 
     public boolean hasShapes() {
-        return shapeList.size() > 0;
+        return shapeList != null && shapeList.size() > 0;
     }
 
     public boolean hasPendingShapes() {
