@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.scribble.request.shape;
+package com.onyx.android.sdk.scribble.request.navigation;
 
 
 import android.graphics.*;
@@ -16,11 +16,11 @@ import java.util.Map;
 
 /**
  * Created by zengzhu on 4/18/16.
- * load and render shape with scale and offset.
+ * load and render shape with scale and offset for specified visible pages.
  */
-public class ShapePageLoadRequest extends BaseNoteRequest {
+public class PageListShapeRequest extends BaseNoteRequest {
 
-    public ShapePageLoadRequest(final List<PageInfo> pages, final Rect size) {
+    public PageListShapeRequest(final List<PageInfo> pages, final Rect size) {
         setAbortPendingTasks();
         setViewportSize(size);
         setVisiblePages(pages);

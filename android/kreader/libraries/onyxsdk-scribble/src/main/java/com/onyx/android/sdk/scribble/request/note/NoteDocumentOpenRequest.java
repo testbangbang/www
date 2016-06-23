@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.scribble.request.shape;
+package com.onyx.android.sdk.scribble.request.note;
 
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;

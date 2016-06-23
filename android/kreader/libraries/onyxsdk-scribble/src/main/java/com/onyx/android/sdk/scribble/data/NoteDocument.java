@@ -28,6 +28,12 @@ public class NoteDocument {
         gotoFirst();
     }
 
+    public void save() {
+        for(ListOrderedMap.Entry<String, NotePage> entry : pageDataMap.entrySet()) {
+            entry.getValue().savePage();
+        }
+    }
+
     private void setDocumentUniqueId(final String id) {
         documentUniqueId = id;
     }
