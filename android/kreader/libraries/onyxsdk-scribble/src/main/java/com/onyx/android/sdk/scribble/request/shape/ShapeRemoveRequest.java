@@ -1,14 +1,14 @@
 package com.onyx.android.sdk.scribble.request.shape;
 
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
-import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
 
 /**
  * Created by zhuzeng on 12/25/15.
  * remove from memory
  */
-public class ShapeRemoveRequest extends BaseScribbleRequest {
+public class ShapeRemoveRequest extends BaseNoteRequest {
 
     private String documentIndex;
     private String pageUniqueId;

@@ -3,14 +3,14 @@ package com.onyx.android.sdk.scribble.request.note;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
-import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
 import java.util.List;
 
 /**
  * Created by zhuzeng on 6/20/16.
  */
-public class NoteLibraryLoadRequest extends BaseScribbleRequest {
+public class NoteLibraryLoadRequest extends BaseNoteRequest {
 
     private String parentUniqueId;
     private List<NoteModel> noteList;

@@ -25,7 +25,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
 import com.onyx.android.sdk.scribble.data.NotePage;
-import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.shape.ShapeLoadRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.kreader.ui.actions.*;
@@ -524,7 +524,7 @@ public class ReaderActivity extends ActionBarActivity {
         readerUserDataInfo = request.getReaderUserDataInfo();
     }
 
-    private void saveShapeDataInfo(final BaseScribbleRequest request) {
+    private void saveShapeDataInfo(final BaseNoteRequest request) {
         shapeDataInfo = request.getShapeDataInfo();
     }
 

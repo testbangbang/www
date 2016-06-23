@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
-import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by zhuzeng on 6/4/16.
  */
-public class ShapeRenderRequest extends BaseScribbleRequest {
+public class ShapeRenderRequest extends BaseNoteRequest {
 
     private List<Shape> shapes;
     private Bitmap bitmap;

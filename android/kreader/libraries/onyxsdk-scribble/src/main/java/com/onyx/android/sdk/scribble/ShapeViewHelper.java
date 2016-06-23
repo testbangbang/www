@@ -10,7 +10,7 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.RawInputReader;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
@@ -37,7 +37,7 @@ public class ShapeViewHelper {
     public void setView(final SurfaceView view) {
     }
 
-    public void submit(final Context context, final BaseScribbleRequest request, final BaseCallback callback) {
+    public void submit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
         getRequestManager().submitRequest(context, request, generateRunnable(request), callback);
     }
 
@@ -69,7 +69,7 @@ public class ShapeViewHelper {
     }
 
 
-    private final Runnable generateRunnable(final BaseScribbleRequest request) {
+    private final Runnable generateRunnable(final BaseNoteRequest request) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

@@ -6,7 +6,7 @@ import com.onyx.android.sdk.scribble.data.ShapeManagerOptions;
 /**
  * Created by zhuzeng on 4/18/16.
  */
-public class ConfigRequest extends BaseScribbleRequest {
+public class ConfigRequest extends BaseNoteRequest {
 
     private String documentMd5;
     private int initDisplayPage;

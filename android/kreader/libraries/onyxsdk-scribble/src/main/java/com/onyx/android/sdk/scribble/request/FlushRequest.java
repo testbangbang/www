@@ -10,7 +10,7 @@ import java.util.List;
  * Created by zhuzeng on 4/25/16.
  * save all pages into database.
  */
-public class FlushRequest extends BaseScribbleRequest {
+public class FlushRequest extends BaseNoteRequest {
 
     private String pageUniqueId;
     private List<Shape> shapeList;

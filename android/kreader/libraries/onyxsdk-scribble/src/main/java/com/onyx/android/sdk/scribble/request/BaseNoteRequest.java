@@ -14,14 +14,14 @@ import java.util.List;
  * Requests are used in standalone application or separate page rendering from
  * shape rendering.
  */
-public class BaseScribbleRequest extends BaseRequest {
+public class BaseNoteRequest extends BaseRequest {
 
     private ShapeDataInfo shapeDataInfo;
     private String docUniqueId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
 
-    public BaseScribbleRequest() {
+    public BaseNoteRequest() {
         setAbortPendingTasks();
     }
 
@@ -62,7 +62,7 @@ public class BaseScribbleRequest extends BaseRequest {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                getCallback().start(BaseScribbleRequest.this);
+                getCallback().start(BaseNoteRequest.this);
             }
         };
         if (isRunInBackground()) {
@@ -85,7 +85,7 @@ public class BaseScribbleRequest extends BaseRequest {
             @Override
             public void run() {
                 if (getCallback() != null) {
-                    getCallback().done(BaseScribbleRequest.this, getException());
+                    getCallback().done(BaseNoteRequest.this, getException());
                 }
                 helper.getRequestManager().releaseWakeLock();
             }};

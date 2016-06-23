@@ -6,7 +6,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.BuildConfig;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
 import com.onyx.android.sdk.scribble.data.NotePage;
-import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Map;
  * Created by zengzhu on 4/18/16.
  * load and render shape with scale and offset.
  */
-public class ShapeLoadRequest extends BaseScribbleRequest {
+public class ShapeLoadRequest extends BaseNoteRequest {
 
     private boolean debugPathBenchmark = false;
 
