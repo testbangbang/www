@@ -6,7 +6,6 @@ import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/3/16.

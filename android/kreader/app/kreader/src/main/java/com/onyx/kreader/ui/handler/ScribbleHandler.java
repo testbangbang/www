@@ -8,7 +8,7 @@ import android.view.ScaleGestureDetector;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.math.ShapeUtils;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.handler.BaseHandler;
