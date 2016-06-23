@@ -1,11 +1,12 @@
-package com.onyx.android.sdk.scribble.request;
+package com.onyx.android.sdk.scribble.request.shape;
 
 
 import android.graphics.*;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.BuildConfig;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
-import com.onyx.android.sdk.scribble.data.ShapePage;
+import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.List;
@@ -15,11 +16,11 @@ import java.util.Map;
  * Created by zengzhu on 4/18/16.
  * load and render shape with scale and offset.
  */
-public class LoadShapesRequest extends BaseScribbleRequest {
+public class ShapeLoadRequest extends BaseScribbleRequest {
 
     private boolean debugPathBenchmark = false;
 
-    public LoadShapesRequest(final String id, final List<PageInfo> pages, final Rect size) {
+    public ShapeLoadRequest(final String id, final List<PageInfo> pages, final Rect size) {
         setAbortPendingTasks();
         setViewportSize(size);
         setDocUniqueId(id);
@@ -48,8 +49,8 @@ public class LoadShapesRequest extends BaseScribbleRequest {
         paint.setAntiAlias(true);
         paint.setStrokeWidth(3.0f);
 
-        for(Map.Entry<String, ShapePage> entry: getShapeDataInfo().getShapePageMap().entrySet()) {
-            entry.getValue().render(canvas, paint, new ShapePage.RenderCallback() {
+        for(Map.Entry<String, NotePage> entry: getShapeDataInfo().getShapePageMap().entrySet()) {
+            entry.getValue().render(canvas, paint, new NotePage.RenderCallback() {
                 @Override
                 public boolean isRenderAbort() {
                     return isAbort();

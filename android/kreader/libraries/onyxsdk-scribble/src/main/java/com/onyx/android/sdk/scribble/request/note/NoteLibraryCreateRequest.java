@@ -1,9 +1,10 @@
-package com.onyx.android.sdk.scribble.request;
+package com.onyx.android.sdk.scribble.request.note;
 
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
 
 import java.util.List;
 

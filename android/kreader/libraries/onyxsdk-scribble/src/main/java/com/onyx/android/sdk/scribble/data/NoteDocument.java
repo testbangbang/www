@@ -9,12 +9,12 @@ import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/20/16.
- * Maintain index and pageInfo in memory only. The database in sync in ShapePage class.
+ * Maintain index and pageInfo in memory only. The database in sync in NotePage class.
  */
-public class ShapeDocument {
+public class NoteDocument {
 
     private String documentUniqueId;
-    private ListOrderedMap<String, ShapePage> pageDataMap = new ListOrderedMap<String, ShapePage>();
+    private ListOrderedMap<String, NotePage> pageDataMap = new ListOrderedMap<String, NotePage>();
     private int currentPageIndex = 0;
 
     static public final String generatePageName() {
@@ -55,25 +55,25 @@ public class ShapeDocument {
         createBlankPage(context, 0);
     }
 
-    private ShapePage createPage(final int index, final String pageUniqueId) {
-        ShapePage shapePage = new ShapePage(getDocumentUniqueId(), pageUniqueId, null);
-        pageDataMap.put(index, pageUniqueId, shapePage);
-        return shapePage;
+    private NotePage createPage(final int index, final String pageUniqueId) {
+        NotePage notePage = new NotePage(getDocumentUniqueId(), pageUniqueId, null);
+        pageDataMap.put(index, pageUniqueId, notePage);
+        return notePage;
     }
 
-    public ShapePage getPage(final int index, final String pageUniqueId) {
-        ShapePage shapePage = getPageByIndex(index);
-        if (shapePage != null) {
-            return shapePage;
+    public NotePage getPage(final int index, final String pageUniqueId) {
+        NotePage notePage = getPageByIndex(index);
+        if (notePage != null) {
+            return notePage;
         }
         return getPageByUniqueId(pageUniqueId);
     }
 
-    public ShapePage getPageByUniqueId(final String pageUniqueId) {
+    public NotePage getPageByUniqueId(final String pageUniqueId) {
         return pageDataMap.get(pageUniqueId);
     }
 
-    public ShapePage getPageByIndex(final int index) {
+    public NotePage getPageByIndex(final int index) {
         if (index >= 0 && index < pageDataMap.size()) {
             return pageDataMap.getValue(index);
         }
@@ -81,9 +81,9 @@ public class ShapeDocument {
     }
 
     public void addShapeToPage(final int index, final String pageUniqueId, final Shape shape) {
-        final ShapePage shapePage = getPage(index, pageUniqueId);
-        if (shapePage != null && shape != null) {
-            shapePage.addShape(shape);
+        final NotePage notePage = getPage(index, pageUniqueId);
+        if (notePage != null && shape != null) {
+            notePage.addShape(shape);
             shape.setDocumentUniqueId(getDocumentUniqueId());
             shape.setPageUniqueId(pageUniqueId);
         }
@@ -96,11 +96,11 @@ public class ShapeDocument {
     }
 
     public boolean removePage(final Context context, final int index) {
-        final ShapePage shapePage = getPageByIndex(index);
-        if (shapePage == null) {
+        final NotePage notePage = getPageByIndex(index);
+        if (notePage == null) {
             return false;
         }
-        shapePage.remove();
+        notePage.remove();
         pageDataMap.remove(index);
         final int value = Math.min(index, pageDataMap.size() - 1);
         return gotoPage(value);

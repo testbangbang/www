@@ -1,10 +1,11 @@
-package com.onyx.android.sdk.scribble.request;
+package com.onyx.android.sdk.scribble.request.shape;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import com.onyx.android.sdk.scribble.ShapeViewHelper;
+import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.List;

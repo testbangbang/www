@@ -2,9 +2,9 @@ package com.onyx.android.sdk.scribble.request;
 
 import android.content.Context;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
-import com.onyx.android.sdk.scribble.data.ShapePage;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
 import java.util.HashMap;
@@ -16,15 +16,15 @@ import java.util.Map;
  */
 public class ShapeDataInfo {
 
-    private Map<String, ShapePage> shapePageMap = new HashMap<String, ShapePage>();
+    private Map<String, NotePage> shapePageMap = new HashMap<String, NotePage>();
     public boolean canUndoShape;
     public boolean canRedoShape;
 
-    public final Map<String, ShapePage> getShapePageMap() {
+    public final Map<String, NotePage> getShapePageMap() {
         return shapePageMap;
     }
 
-    public final ShapePage getShapePage(final String pageName) {
+    public final NotePage getShapePage(final String pageName) {
         return shapePageMap.get(pageName);
     }
 
@@ -38,12 +38,12 @@ public class ShapeDataInfo {
 
     public boolean loadUserShape(final Context context, final String docUniqueId, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            final ShapePage shapePage = ShapePage.createPage(context, docUniqueId, pageInfo.getName(), null);
+            final NotePage notePage = NotePage.createPage(context, docUniqueId, pageInfo.getName(), null);
             final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, docUniqueId, pageInfo.getName(), null);
             for(ShapeModel model : modelList) {
-                shapePage.addShapeFromModel(ShapeFactory.shapeFromModel(model));
+                notePage.addShapeFromModel(ShapeFactory.shapeFromModel(model));
             }
-            shapePageMap.put(pageInfo.getName(), shapePage);
+            shapePageMap.put(pageInfo.getName(), notePage);
         }
         return true;
     }
