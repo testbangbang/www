@@ -8,7 +8,7 @@ import android.graphics.RectF;
 /**
  * Created by zhuzeng on 4/25/16.
  */
-public class RectangleShape extends NormalShape {
+public class RectangleShape extends BaseShape {
 
 
     public int getType() {

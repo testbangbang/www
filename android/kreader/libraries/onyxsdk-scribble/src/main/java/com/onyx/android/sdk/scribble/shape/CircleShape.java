@@ -8,7 +8,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 /**
  * Created by zhuzeng on 4/20/16.
  */
-public class CircleShape extends NormalShape {
+public class CircleShape extends BaseShape {
 
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();

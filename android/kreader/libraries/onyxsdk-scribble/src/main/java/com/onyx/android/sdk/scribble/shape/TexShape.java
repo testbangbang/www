@@ -7,7 +7,7 @@ import android.graphics.Paint;
 /**
  * Created by zhuzeng on 4/19/16.
  */
-public class TexShape extends NormalShape  {
+public class TexShape extends BaseShape  {
 
 
     /**

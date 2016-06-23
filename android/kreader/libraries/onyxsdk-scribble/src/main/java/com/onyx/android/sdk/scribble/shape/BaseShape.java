@@ -4,15 +4,18 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import com.onyx.android.sdk.scribble.EPDRenderer;
+import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 
 /**
- * Created by zhuzeng on 4/25/16.
- * shape on canvas.
+ * Created by zhuzeng on 6/23/16.
  */
-public class NormalShape implements Shape {
+public class BaseShape implements Shape {
 
+    private RectF boundingRect = new RectF();
+    private TouchPointList normalizedPoints = new TouchPointList();
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();
     private String uniqueId;
@@ -93,20 +96,25 @@ public class NormalShape implements Shape {
 
     public void setOrientation(int orientation) {}
 
-
-    public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint){
+    public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         downPoint.x = normalizedPoint.x;
         downPoint.y = normalizedPoint.y;
+        boundingRect.union(normalizedPoint.x, normalizedPoint.y);
+        normalizedPoints.add(normalizedPoint);
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
+        boundingRect.union(normalizedPoint.x, normalizedPoint.y);
+        normalizedPoints.add(normalizedPoint);
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
+        boundingRect.union(normalizedPoint.x, normalizedPoint.y);
+        normalizedPoints.add(normalizedPoint);
     }
 
     public void addPoints(final TouchPointList points) {
@@ -116,6 +124,7 @@ public class NormalShape implements Shape {
         }
         downPoint.set(points.get(0));
         currentPoint.set(points.get(1));
+        normalizedPoints.addAll(points);
     }
 
     public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
@@ -131,5 +140,9 @@ public class NormalShape implements Shape {
 
     public final TouchPoint getDownPoint() {
         return downPoint;
+    }
+
+    public final TouchPointList getNormalizedPoints() {
+        return normalizedPoints;
     }
 }
