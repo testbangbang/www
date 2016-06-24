@@ -14,6 +14,7 @@ public class PageNextRequest extends BaseNoteRequest {
             return;
         }
         renderCurrentPage(helper);
+        updateShapeDataInfo(helper);
     }
 
 

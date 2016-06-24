@@ -13,6 +13,7 @@ public class PagePrevRequest extends BaseNoteRequest {
             return;
         }
         renderCurrentPage(helper);
+        updateShapeDataInfo(helper);
     }
 
 }

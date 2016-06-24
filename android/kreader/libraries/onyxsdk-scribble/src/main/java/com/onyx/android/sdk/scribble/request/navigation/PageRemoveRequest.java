@@ -22,5 +22,6 @@ public class PageRemoveRequest extends BaseNoteRequest {
     public void execute(final ShapeViewHelper parent) throws Exception {
         parent.getNoteDocument().removePage(getContext(), pageIndex);
         renderCurrentPage(parent);
+        updateShapeDataInfo(parent);
     }
 }

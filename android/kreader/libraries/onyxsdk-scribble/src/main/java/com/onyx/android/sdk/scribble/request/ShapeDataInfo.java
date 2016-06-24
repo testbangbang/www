@@ -35,4 +35,8 @@ public class ShapeDataInfo {
         currentPageIndex = currentPage;
     }
 
+    public int getPageCount() {
+        return pageNameList.size();
+    }
+
 }

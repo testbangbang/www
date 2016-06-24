@@ -18,9 +18,9 @@ import java.util.Map;
  * Created by zengzhu on 4/18/16.
  * load and render shape with scale and offset for specified visible pages.
  */
-public class PageListShapeRequest extends BaseNoteRequest {
+public class PageListRenderRequest extends BaseNoteRequest {
 
-    public PageListShapeRequest(final List<PageInfo> pages, final Rect size) {
+    public PageListRenderRequest(final List<PageInfo> pages, final Rect size) {
         setAbortPendingTasks();
         setViewportSize(size);
         setVisiblePages(pages);
@@ -29,6 +29,7 @@ public class PageListShapeRequest extends BaseNoteRequest {
     public void execute(final ShapeViewHelper parent) throws Exception {
         loadShapeData(parent);
         renderVisiblePages(parent);
+        updateShapeDataInfo(parent);
     }
 
     public void loadShapeData(final ShapeViewHelper parent) {

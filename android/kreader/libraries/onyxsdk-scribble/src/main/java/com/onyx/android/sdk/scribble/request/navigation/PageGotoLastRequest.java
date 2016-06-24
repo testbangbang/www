@@ -11,6 +11,7 @@ public class PageGotoLastRequest extends BaseNoteRequest {
     public void execute(final ShapeViewHelper helper) throws Exception {
         helper.getNoteDocument().gotoLast();
         renderCurrentPage(helper);
+        updateShapeDataInfo(helper);
     }
 
 }

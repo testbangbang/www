@@ -158,13 +158,20 @@ public class BaseNoteRequest extends BaseRequest {
     public void currentPageAsVisiblePage(final ShapeViewHelper helper) {
         final NotePage notePage = helper.getNoteDocument().getCurrentPage(getContext());
         getVisiblePages().clear();
-        PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), 0, 0);
+        PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
+        pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height());
         getVisiblePages().add(pageInfo);
     }
 
     public void renderCurrentPage(final ShapeViewHelper helper) {
         currentPageAsVisiblePage(helper);
         renderVisiblePages(helper);
+    }
+
+    public void updateShapeDataInfo(final ShapeViewHelper parent) {
+        getShapeDataInfo().updateShapePageMap(
+                parent.getNoteDocument().getPageNameList(),
+                parent.getNoteDocument().getCurrentPageIndex());
     }
 
 }

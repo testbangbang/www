@@ -48,6 +48,7 @@ public class RawInputReader {
     private boolean pressed;
     private boolean lastPressed;
     private volatile boolean stop = false;
+    private volatile boolean pause = false;
     private String systemPath = "/dev/input/event1";
     private Matrix screenMatrix;
     private Matrix viewMatrix;
@@ -73,6 +74,10 @@ public class RawInputReader {
 
     public void stop() {
         stop = true;
+    }
+
+    public void pause() {
+        pause = true;
     }
 
     private void read() {
@@ -135,6 +140,18 @@ public class RawInputReader {
         }
     }
 
+    /**
+     * Use screen matrix to map from touch device to screen
+     * Use view matrix to map from screen to view.
+     * finally we get points inside view. we may need the page matrix
+     * to map points from view to page.
+     * @param x
+     * @param y
+     * @param pressure
+     * @param size
+     * @param ts
+     * @return
+     */
     private TouchPoint mapPoint(int x, int y, int pressure, int size, long ts) {
         dstPoint[0] = x;
         dstPoint[1] = y;
@@ -153,7 +170,7 @@ public class RawInputReader {
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        touchPointList = new TouchPointList(200);
+        touchPointList = new TouchPointList(600);
         touchPointList.add(mapPoint(x, y, pressure, size, ts));
         Log.d(TAG, "pressed received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }

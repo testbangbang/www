@@ -17,9 +17,8 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
 
     public void execute(final ShapeViewHelper parent) throws Exception {
         parent.getNoteDocument().open(getContext(), documentUniqueId);
-        getShapeDataInfo().updateShapePageMap(
-                parent.getNoteDocument().getPageNameList(),
-                parent.getNoteDocument().getCurrentPageIndex());
+        renderCurrentPage(parent);
+        updateShapeDataInfo(parent);
     }
 
 }

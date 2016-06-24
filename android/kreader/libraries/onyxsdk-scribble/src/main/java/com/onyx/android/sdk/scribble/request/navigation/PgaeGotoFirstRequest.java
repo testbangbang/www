@@ -11,6 +11,7 @@ public class PgaeGotoFirstRequest extends BaseNoteRequest {
     public void execute(final ShapeViewHelper helper) throws Exception {
         helper.getNoteDocument().gotoFirst();
         renderCurrentPage(helper);
+        updateShapeDataInfo(helper);
     }
 
 }

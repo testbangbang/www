@@ -38,6 +38,22 @@ public class ShapeViewHelper {
     private Rect limitRect = null;
 
     public void setView(final SurfaceView view) {
+        initRawInputReader();
+        updateScreenMatrix();
+        updateViewMatrix();
+        updateLimitRect();
+    }
+
+    private void updateScreenMatrix() {
+        // read from conf or
+    }
+
+    private void updateViewMatrix() {
+
+    }
+
+    private void updateLimitRect() {
+
     }
 
     public void startDrawing() {
@@ -107,7 +123,7 @@ public class ShapeViewHelper {
         return runnable;
     }
 
-    private void init() {
+    private void initRawInputReader() {
         rawInputReader.setInputCallback(new RawInputReader.InputCallback() {
             @Override
             public void onBeginHandWriting() {
