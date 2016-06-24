@@ -3,16 +3,10 @@ package com.onyx.android.sdk.scribble.request.navigation;
 
 import android.graphics.*;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.BuildConfig;
-import com.onyx.android.sdk.scribble.ShapeViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
-import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by zengzhu on 4/18/16.
@@ -26,13 +20,13 @@ public class PageListRenderRequest extends BaseNoteRequest {
         setVisiblePages(pages);
     }
 
-    public void execute(final ShapeViewHelper parent) throws Exception {
+    public void execute(final NoteViewHelper parent) throws Exception {
         loadShapeData(parent);
         renderVisiblePages(parent);
         updateShapeDataInfo(parent);
     }
 
-    public void loadShapeData(final ShapeViewHelper parent) {
+    public void loadShapeData(final NoteViewHelper parent) {
         try {
             parent.getNoteDocument().loadShapePages(getContext(), getVisiblePages());
         } catch (Exception e) {

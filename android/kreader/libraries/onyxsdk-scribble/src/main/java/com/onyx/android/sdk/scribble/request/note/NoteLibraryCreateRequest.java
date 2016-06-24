@@ -1,6 +1,6 @@
 package com.onyx.android.sdk.scribble.request.note;
 
-import com.onyx.android.sdk.scribble.ShapeViewHelper;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -19,7 +19,7 @@ public class NoteLibraryCreateRequest extends BaseNoteRequest {
         title = t;
     }
 
-    public void execute(final ShapeViewHelper shapeManager) throws Exception {
+    public void execute(final NoteViewHelper shapeManager) throws Exception {
         noteModel = NoteDataProvider.createLibrary(getContext(), parentUniqueId, title);
     }
 

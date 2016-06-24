@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
@@ -23,7 +24,6 @@ import com.onyx.kreader.common.*;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.android.sdk.scribble.ShapeViewHelper;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
@@ -60,7 +60,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     private String documentPath;
     private Reader reader;
-    private ShapeViewHelper shapeViewHelper;
+    private NoteViewHelper noteViewHelper;
 
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
@@ -382,9 +382,9 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initShapeViewDelegate() {
-        getShapeViewHelper().setView(surfaceView);
+        getNoteViewHelper().setView(surfaceView);
         // when page changed, choose to flush
-        //shapeViewHelper.flushPendingShapes();
+        //noteViewHelper.flushPendingShapes();
 
     }
 
@@ -649,16 +649,16 @@ public class ReaderActivity extends ActionBarActivity {
         if (!isShapeBitmapReady()) {
             return;
         }
-        final Bitmap bitmap = getShapeViewHelper().getShapeBitmap();
+        final Bitmap bitmap = getNoteViewHelper().getShapeBitmap();
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
-    private ShapeViewHelper getShapeViewHelper() {
-        if (shapeViewHelper == null) {
-            shapeViewHelper = new ShapeViewHelper();
+    private NoteViewHelper getNoteViewHelper() {
+        if (noteViewHelper == null) {
+            noteViewHelper = new NoteViewHelper();
         }
-        return shapeViewHelper;
+        return noteViewHelper;
     }
 
     private boolean isShapeBitmapReady() {
@@ -667,7 +667,7 @@ public class ReaderActivity extends ActionBarActivity {
 //            return false;
 //        }
 
-        final Bitmap bitmap = getShapeViewHelper().getShapeBitmap();
+        final Bitmap bitmap = getNoteViewHelper().getShapeBitmap();
         if (bitmap == null) {
             return false;
         }
@@ -675,7 +675,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void resetShapeData() {
-        getShapeViewHelper().enableBitmap(false);
+        getNoteViewHelper().enableBitmap(false);
         shapeDataInfo = null;
     }
 
@@ -684,9 +684,9 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
 
-        getShapeViewHelper().enableBitmap(true);
+        getNoteViewHelper().enableBitmap(true);
         final PageListRenderRequest loadRequest = new PageListRenderRequest(reader.getDocumentMd5(), getReaderViewInfo().getVisiblePages(), getDisplayRect());
-        getShapeViewHelper().submit(this, loadRequest, new BaseCallback() {
+        getNoteViewHelper().submit(this, loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || request.isAbort()) {

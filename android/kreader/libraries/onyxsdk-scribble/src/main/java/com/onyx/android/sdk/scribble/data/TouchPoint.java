@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.data;
 
 
+import android.graphics.Matrix;
 import org.nustaq.serialization.annotations.Flat;
 
 import java.io.Serializable;
@@ -66,5 +67,14 @@ public class TouchPoint implements Serializable {
         return timestamp;
     }
 
+    public void mapInPlace(final Matrix matrix) {
+        float src[] = new float[2];
+        src[0] = x;
+        src[1] = y;
+        float dst[] = new float[2];
+        matrix.mapPoints(dst, src);
+        x = dst[0];
+        y = dst[1];
+    }
 
 }

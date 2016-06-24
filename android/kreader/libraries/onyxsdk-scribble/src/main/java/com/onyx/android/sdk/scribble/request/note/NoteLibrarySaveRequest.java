@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.request.note;
 
 import android.graphics.Bitmap;
-import com.onyx.android.sdk.scribble.ShapeViewHelper;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -19,7 +19,7 @@ public class NoteLibrarySaveRequest extends BaseNoteRequest {
         thumbnail = t;
     }
 
-    public void execute(final ShapeViewHelper shapeManager) throws Exception {
+    public void execute(final NoteViewHelper shapeManager) throws Exception {
         NoteDataProvider.saveNote(getContext(), noteModel);
         NoteDataProvider.saveThumbnail(getContext(), noteModel.getUniqueId(), thumbnail);
     }

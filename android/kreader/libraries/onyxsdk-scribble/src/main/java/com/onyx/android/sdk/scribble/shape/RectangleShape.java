@@ -16,11 +16,12 @@ public class RectangleShape extends BaseShape {
     }
 
 
-    public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
+    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
         RectF rect = new RectF(getDownPoint().x,
                 getDownPoint().y,
                 getCurrentPoint().x,
                 getCurrentPoint().y);
+        canvas.setMatrix(matrix);
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawRect(rect, paint);
     }

@@ -15,7 +15,7 @@ import java.util.Iterator;
 public class BrushScribbleShape extends EPDShape  {
 
     // render path with width list and generate path list.
-    public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
+    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
         final TouchPointList pointList = getNormalizedPoints();
         if (pointList.size() <= 0) {
             return;
@@ -24,13 +24,16 @@ public class BrushScribbleShape extends EPDShape  {
         final Iterator<TouchPoint> iterator = pointList.iterator();
         Path path = new Path();
         TouchPoint touchPoint = iterator.next();
+        touchPoint.mapInPlace(matrix);
         TouchPoint lastPoint = touchPoint;
         path.moveTo(touchPoint.x, touchPoint.y);
         while (iterator.hasNext()) {
             touchPoint = iterator.next();
+            touchPoint.mapInPlace(matrix);
             path.quadTo((lastPoint.x + touchPoint.x) / 2, (lastPoint.y + touchPoint.y) / 2, touchPoint.x, touchPoint.y);
             lastPoint = touchPoint;
         }
+        canvas.drawPath(path, paint);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.scribble.request.note;
 
-import com.onyx.android.sdk.scribble.ShapeViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
 /**
@@ -15,7 +14,7 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
         documentUniqueId = id;
     }
 
-    public void execute(final ShapeViewHelper parent) throws Exception {
+    public void execute(final NoteViewHelper parent) throws Exception {
         parent.getNoteDocument().open(getContext(), documentUniqueId);
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);

@@ -1,6 +1,6 @@
 package com.onyx.android.sdk.scribble.request.shape;
 
-import com.onyx.android.sdk.scribble.ShapeViewHelper;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
@@ -22,7 +22,7 @@ public class ShapeBulkRemoveRequest extends BaseNoteRequest {
     }
 
     @Override
-    public void execute(final ShapeViewHelper parent) throws Exception {
+    public void execute(final NoteViewHelper parent) throws Exception {
         // ask scribble provider to removeShape them.
     }
 }

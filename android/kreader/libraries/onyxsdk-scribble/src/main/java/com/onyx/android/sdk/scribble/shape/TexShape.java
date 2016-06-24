@@ -18,8 +18,7 @@ public class TexShape extends BaseShape  {
         return ShapeFactory.SHAPE_TEXT;
     }
 
-    public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
-
+    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
         float left = Math.min(getDownPoint().x, getCurrentPoint().x);
         float height = Math.abs(getDownPoint().y - getCurrentPoint().y);
         paint.setStyle(Paint.Style.STROKE);

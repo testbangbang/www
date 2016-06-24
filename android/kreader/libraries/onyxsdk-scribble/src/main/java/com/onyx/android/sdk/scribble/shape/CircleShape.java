@@ -18,7 +18,7 @@ public class CircleShape extends BaseShape {
     }
 
 
-    public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
+    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
         float cx = (downPoint.x + currentPoint.x) / 2;
         float cy = (downPoint.y + currentPoint.y) / 2;
         float radius = Math.abs(cx - downPoint.x);

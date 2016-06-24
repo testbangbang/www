@@ -1,6 +1,6 @@
 package com.onyx.android.sdk.scribble.request;
 
-import com.onyx.android.sdk.scribble.ShapeViewHelper;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapeManagerOptions;
 
 /**
@@ -16,7 +16,7 @@ public class ConfigRequest extends BaseNoteRequest {
         initDisplayPage = page;
     }
 
-    public void execute(final ShapeViewHelper parent) throws Exception {
+    public void execute(final NoteViewHelper parent) throws Exception {
 
     }
 

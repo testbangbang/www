@@ -5,9 +5,8 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.BuildConfig;
-import com.onyx.android.sdk.scribble.ShapeViewHelper;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NotePage;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class BaseNoteRequest extends BaseRequest {
         return visiblePages;
     }
 
-    public void beforeExecute(final ShapeViewHelper helper) {
+    public void beforeExecute(final NoteViewHelper helper) {
         helper.getRequestManager().acquireWakeLock(getContext());
         benchmarkStart();
         invokeStartCallback(helper.getRequestManager());
@@ -77,10 +76,10 @@ public class BaseNoteRequest extends BaseRequest {
         }
     }
 
-    public void execute(final ShapeViewHelper helper) throws Exception {
+    public void execute(final NoteViewHelper helper) throws Exception {
     }
 
-    public void afterExecute(final ShapeViewHelper helper) {
+    public void afterExecute(final NoteViewHelper helper) {
         if (getException() != null) {
             getException().printStackTrace();
         }
@@ -109,7 +108,7 @@ public class BaseNoteRequest extends BaseRequest {
         return shapeDataInfo;
     }
 
-    public void renderVisiblePages(final ShapeViewHelper parent) {
+    public void renderVisiblePages(final NoteViewHelper parent) {
         Bitmap bitmap = parent.updateBitmap(getViewportSize());
         bitmap.eraseColor(Color.TRANSPARENT);
         Canvas canvas = new Canvas(bitmap);
@@ -155,7 +154,7 @@ public class BaseNoteRequest extends BaseRequest {
         canvas.drawPath(path, paint);
     }
 
-    public void currentPageAsVisiblePage(final ShapeViewHelper helper) {
+    public void currentPageAsVisiblePage(final NoteViewHelper helper) {
         final NotePage notePage = helper.getNoteDocument().getCurrentPage(getContext());
         getVisiblePages().clear();
         PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
@@ -163,12 +162,12 @@ public class BaseNoteRequest extends BaseRequest {
         getVisiblePages().add(pageInfo);
     }
 
-    public void renderCurrentPage(final ShapeViewHelper helper) {
+    public void renderCurrentPage(final NoteViewHelper helper) {
         currentPageAsVisiblePage(helper);
         renderVisiblePages(helper);
     }
 
-    public void updateShapeDataInfo(final ShapeViewHelper parent) {
+    public void updateShapeDataInfo(final NoteViewHelper parent) {
         getShapeDataInfo().updateShapePageMap(
                 parent.getNoteDocument().getPageNameList(),
                 parent.getNoteDocument().getCurrentPageIndex());

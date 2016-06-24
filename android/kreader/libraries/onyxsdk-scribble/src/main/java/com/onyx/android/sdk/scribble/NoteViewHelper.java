@@ -8,7 +8,6 @@ import android.view.SurfaceView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.RawInputReader;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -25,16 +24,15 @@ import com.onyx.android.sdk.scribble.shape.Shape;
  * * ignore touch points from certain input device.
  * * faster than onTouchEvent.
  */
-public class ShapeViewHelper {
+public class NoteViewHelper {
 
-    private static final String TAG = ShapeViewHelper.class.getSimpleName();
+    private static final String TAG = NoteViewHelper.class.getSimpleName();
 
     private RequestManager requestManager = new RequestManager();
     private RawInputReader rawInputReader = new RawInputReader();
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl bitmapWrapper = null;
     private boolean enableBitmap = true;
-
     private Rect limitRect = null;
 
     public void setView(final SurfaceView view) {
@@ -108,13 +106,13 @@ public class ShapeViewHelper {
             @Override
             public void run() {
                 try {
-                    request.beforeExecute(ShapeViewHelper.this);
-                    request.execute(ShapeViewHelper.this);
+                    request.beforeExecute(NoteViewHelper.this);
+                    request.execute(NoteViewHelper.this);
                 } catch (java.lang.Exception exception) {
                     Log.d(TAG, Log.getStackTraceString(exception));
                     request.setException(exception);
                 } finally {
-                    request.afterExecute(ShapeViewHelper.this);
+                    request.afterExecute(NoteViewHelper.this);
                     getRequestManager().dumpWakelocks();
                     getRequestManager().removeRequest(request);
                 }
