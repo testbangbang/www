@@ -1,0 +1,6 @@
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="scribble_bg_item_height">250dp</dimen>
+    <dimen name="scribble_bg_item_width">230dp</dimen>
+</resources>

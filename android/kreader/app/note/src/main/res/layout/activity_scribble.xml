@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.onyx.android.note.activity.ScribbleActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:id="@+id/content_scribble"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBar">
+
+        <SurfaceView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/divider" />
+
+        <View
+            android:id="@+id/divider"
+            style="@style/single_line_X_axis_View"
+            android:layout_height="1dp"
+            android:layout_above="@+id/layout_footer" />
+
+        <LinearLayout
+            android:id="@+id/layout_footer"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/sub_menu_height"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/white"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/thickness_button"
+                android:layout_width="0dp"
+                android:layout_height="84dp"
+                android:layout_weight="1"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_student_note_pencil_black_84dp"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <ImageView
+                android:id="@+id/erase_button"
+                android:layout_width="0dp"
+                android:layout_height="84dp"
+                android:layout_weight="1"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_student_note_pen_black_84dp"
+                tools:layout_editor_absoluteX="46dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <ImageView
+                android:id="@+id/pen_style_button"
+                android:layout_width="0dp"
+                android:layout_height="84dp"
+                android:layout_weight="1"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_student_note_rule_black_84dp"
+                tools:layout_editor_absoluteX="92dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="84dp"
+                android:background="@android:color/white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:layout_editor_absoluteX="138dp"
+                tools:layout_editor_absoluteY="0dp">
+
+                <ImageView
+                    android:id="@+id/button_previous_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="84dp"
+                    android:background="@drawable/imagebtn_bg"
+                    android:focusable="true"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_dialog_prev"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="0dp" />
+
+                <!--<Button-->
+                <!--android:id="@+id/button_page_progress"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/button_progress_background"-->
+                <!--android:focusable="true"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/paged_init_text"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="25sp"-->
+                <!--android:textStyle="bold" />-->
+
+                <ImageView
+                    android:id="@+id/button_next_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="84dp"
+                    android:background="@drawable/imagebtn_bg"
+                    android:focusable="true"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_dialog_next"
+                    tools:layout_editor_absoluteX="76dp"
+                    tools:layout_editor_absoluteY="0dp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/button_new_page"
+                android:layout_width="0dp"
+                android:layout_height="84dp"
+                android:layout_weight="1"
+                android:background="@drawable/imagebtn_bg"
+                android:scaleType="center"
+                android:src="@drawable/ic_student_note_circle_plus_gray_64dp"
+                tools:layout_editor_absoluteX="290dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <!--<ImageView-->
+            <!--android:id="@+id/button_remove_page"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/imagebtn_bg"-->
+            <!--android:scaleType="center"-->
+            <!--android:src="@drawable/scribble_remove_page" />-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/button_exit"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/imagebtn_bg"-->
+            <!--android:scaleType="center"-->
+            <!--android:src="@drawable/scribble_exit" />-->
+            <ImageView
+                android:id="@+id/color_button"
+                android:layout_width="0dp"
+                android:layout_height="84dp"
+                android:layout_weight="1"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_student_note_brush_black_84dp" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</RelativeLayout>
