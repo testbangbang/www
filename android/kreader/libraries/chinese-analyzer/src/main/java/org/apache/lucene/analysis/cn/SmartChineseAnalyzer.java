@@ -90,7 +90,8 @@ public class SmartChineseAnalyzer extends Analyzer {
     // result = new LowerCaseFilter(result);
     // 不再需要LowerCaseFilter，因为SegTokenFilter已经将所有英文字符转换成小写
     // stem太严格了, This is not bug, this feature:)
-    result = new PorterStemFilter(result);
+    // joy@onyx we are interested in original word segments, so Porter Stemming should be skipped
+    // result = new PorterStemFilter(result);
     if (stopWords != null) {
       result = new StopFilter(result, stopWords, false);
     }
