@@ -8,7 +8,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 /**
  * Created by zhuzeng on 4/20/16.
  */
-public class CircleShape extends NormalShape {
+public class CircleShape extends BaseShape {
 
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();
@@ -18,7 +18,7 @@ public class CircleShape extends NormalShape {
     }
 
 
-    public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
+    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
         float cx = (downPoint.x + currentPoint.x) / 2;
         float cy = (downPoint.y + currentPoint.y) / 2;
         float radius = Math.abs(cx - downPoint.x);

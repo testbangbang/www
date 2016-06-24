@@ -12,14 +12,9 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 /**
  * Created by zhuzeng on 4/26/16.
  */
-public class EPDShape implements Shape {
+public class EPDShape extends BaseShape {
 
     static public final UpdateMode updateMode = UpdateMode.DU;
-    private RectF boundingRect = new RectF();
-    private TouchPointList normalizedPoints = new TouchPointList();
-    private String uniqueId;
-    private String documentUniqueId;
-    private String pageUniqueId;
 
     /**
      * rectangle, circle, etc.
@@ -29,96 +24,26 @@ public class EPDShape implements Shape {
         return ShapeFactory.SHAPE_NORMAL_SCRIBBLE;
     }
 
-    public void setDocumentUniqueId(final String id) {
-        documentUniqueId = id;
-    }
-
-    public String getDocumentUniqueId() {
-        return documentUniqueId;
-    }
-
-    public void setPageUniqueId(final String pageId) {
-        pageUniqueId = pageId;
-    }
-
-    public String getPageUniqueId() {
-        return pageUniqueId;
-    }
-
-    public void setShapeUniqueId(final String id) {
-        uniqueId = id;
-    }
-
-    public String getShapeUniqueId() {
-        return uniqueId;
-    }
-
-    public int getZOrder() {
-        return 0;
-    }
-
-    public void setZOrder(int order) {
-
-    }
-
-    public int getColor() {
-        return 0;
-    }
-
-    public void setColor(int color) {
-
-    }
-
-    public float getStrokeWidth() {
-        return 0.0f;
-    }
-
-    public void setStrokeWidth(final float width) {}
-
     public boolean supportDFB() {
         return true;
     }
 
-
-    public RectF getBoundingRect() {
-        return null;
-    }
-
-    public void moveTo(final float x, final float y) {
-
-    }
-
-    public void resize(final float width, final float height) {}
-    public int getOrientation() {
-        return 0;
-    }
-
-    public void setOrientation(int orientation) {}
-
-
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
+        super.onDown(normalizedPoint, screenPoint);
         EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getStrokeWidth());
-        boundingRect.union(normalizedPoint.x, normalizedPoint.y);
-        normalizedPoints.add(normalizedPoint);
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
+        super.onMove(normalizedPoint, screenPoint);
         EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
-        boundingRect.union(normalizedPoint.x, normalizedPoint.y);
-        normalizedPoints.add(normalizedPoint);
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
+        super.onUp(normalizedPoint, screenPoint);
         EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
-        boundingRect.union(normalizedPoint.x, normalizedPoint.y);
-        normalizedPoints.add(normalizedPoint);
     }
 
-    public void addPoints(final TouchPointList points) {
-        normalizedPoints.addAll(points);
-    }
-
-    public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
+    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
     }
 
     /**
@@ -128,13 +53,9 @@ public class EPDShape implements Shape {
      * @return
      */
     public boolean hitTest(final float x, final float y) {
-        if (!boundingRect.contains(x, y)) {
+        if (!getBoundingRect().contains(x, y)) {
             return false;
         }
         return true;
-    }
-
-    public final TouchPointList getNormalizedPoints() {
-        return normalizedPoints;
     }
 }

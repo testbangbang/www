@@ -6,7 +6,6 @@ import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/3/16.
@@ -54,10 +53,10 @@ public class ShapeModel extends BaseModel {
     @Column
     int zorder;
 
-    @Column(typeConverter = TouchPointListConverter.class)
+    @Column(typeConverter = ConverterTouchPointList.class)
     TouchPointList points;
 
-    @Column(typeConverter = RectangleConverter.class)
+    @Column(typeConverter = ConverterRectangle.class)
     RectF boundingRect = null;
 
     @Column

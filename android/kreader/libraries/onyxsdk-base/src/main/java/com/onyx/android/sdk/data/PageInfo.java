@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.data;
 
+import android.graphics.Matrix;
 import android.graphics.RectF;
 
 /**
@@ -125,5 +126,19 @@ public class PageInfo {
     public final String getName() {
         return name;
     }
+
+    /**
+     * To normalize point within display rect.
+     * @return
+     */
+    public Matrix normalizeMatrix() {
+        Matrix matrix = new Matrix();
+        final float xScale = 1.0f / getDisplayRect().width() / getActualScale();
+        final float yScale = 1.0f / getDisplayRect().height() / getActualScale();
+        matrix.postTranslate(-getDisplayRect().left, -getDisplayRect().top);
+        matrix.postScale(xScale, yScale);
+        return matrix;
+    }
+
 
 }

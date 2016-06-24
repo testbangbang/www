@@ -1,10 +1,12 @@
 package com.onyx.android.sdk.scribble.data;
 
+import android.graphics.Bitmap;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zhuzeng on 6/21/16.
@@ -46,6 +48,11 @@ public class NoteModel extends BaseModel {
 
     @Column
     int type;
+
+    @Column(typeConverter = ConverterStringList.class)
+    PageNameList pageNameList = null;
+
+    Bitmap thumbnail;
 
     public NoteModel() {
     }
@@ -135,11 +142,28 @@ public class NoteModel extends BaseModel {
         return type == TYPE_LIBRARY;
     }
 
-    public static NoteModel createNote(final String parentUniqueId) {
+    public PageNameList getPageNameList() {
+        return pageNameList;
+    }
+
+    public void setPageNameList(final PageNameList names) {
+        pageNameList = names;
+    }
+
+    public Bitmap getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(final Bitmap bmp) {
+        thumbnail = bmp;
+    }
+
+    public static NoteModel createNote(final String parentUniqueId, final String title) {
         final NoteModel document = new NoteModel();
         document.setType(TYPE_DOCUMENT);
         document.setUniqueId(ShapeUtils.generateUniqueId());
         document.setParentUniqueId(parentUniqueId);
+        document.setTitle(title);
         return document;
     }
 

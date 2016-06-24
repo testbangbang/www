@@ -170,8 +170,9 @@ public class PageUtils {
     }
 
     public static RectF updateDisplayRect(final PageInfo pageInfo, final RectF viewport) {
-        PageUtils.translateCoordinates(pageInfo.getPositionRect(), viewport);
-        return pageInfo.updateDisplayRect(pageInfo.getPositionRect());
+        RectF rect = new RectF(pageInfo.getPositionRect());
+        PageUtils.translateCoordinates(rect, viewport);
+        return pageInfo.updateDisplayRect(rect);
     }
 
     /**

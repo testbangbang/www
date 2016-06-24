@@ -70,9 +70,15 @@ public class NoteDataProvider {
         return true;
     }
 
+    public static NoteModel createNote(final Context context, final String parentUniqueId, final String title) {
+        NoteModel noteModel = NoteModel.createNote(parentUniqueId, title);
+        saveNote(context, noteModel);
+        return noteModel;
+    }
+
     public static NoteModel createLibrary(final Context context, final String parentUniqueId, final String title) {
         NoteModel noteModel = NoteModel.createLibrary(parentUniqueId, title);
-        noteModel.save();
+        saveNote(context, noteModel);
         return noteModel;
     }
 
