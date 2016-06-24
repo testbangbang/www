@@ -1,7 +1,9 @@
-package com.onyx.android.sdk.scribble.math;
+package com.onyx.android.sdk.scribble.utils;
 
 import android.view.MotionEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+
+import java.util.UUID;
 
 /**
  * Created by zhuzeng on 9/18/15.
@@ -44,6 +46,10 @@ public class ShapeUtils {
 
     public static float mapPoint(final float scale, final float translate, final float origin) {
         return translate + scale * origin;
+    }
+
+    public static String generateUniqueId() {
+        return UUID.randomUUID().toString();
     }
 
 }

@@ -13,9 +13,9 @@ import java.util.List;
  * Created by zhuzeng on 4/23/16.
  * Manager for a list of shapes in single page.
  * To make it easy for activity or other class to manage shapes.
- * ShapeManager->ShapePage->Shape->ShapeModel
+ * ShapeManager->NotePage->Shape->ShapeModel
  */
-public class ShapePage {
+public class NotePage {
 
     private String docUniqueId;
     private String pageUniqueId;
@@ -27,7 +27,6 @@ public class ShapePage {
 
     private int currentShapeType;
     private Shape currentShape;
-    private Matrix pageMatrix;
     private boolean addToActionHistory = true;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
@@ -36,10 +35,10 @@ public class ShapePage {
         public abstract boolean isRenderAbort();
     }
 
-    public ShapePage() {
+    public NotePage() {
     }
 
-    public ShapePage(final String docId, final String pageId, final String spn) {
+    public NotePage(final String docId, final String pageId, final String spn) {
         docUniqueId = docId;
         pageUniqueId = pageId;
         subPageName = spn;
@@ -102,20 +101,12 @@ public class ShapePage {
         return list;
     }
 
-    public void setPageMatrix(final Matrix matrix) {
-        pageMatrix = matrix;
-    }
-
-    public final TouchPoint normalizedTouchPoint(final float x, final float y, final float pressure, final float size, final long timestamp) {
-        return new TouchPoint();
-    }
-
-    public void render(final Canvas canvas, final Paint paint, final RenderCallback callback) {
+    public void render(final Canvas canvas, final Paint paint, final Matrix matrix, final RenderCallback callback) {
         if (shapeList == null) {
             return;
         }
         for(Shape shape : shapeList) {
-            shape.render(pageMatrix, canvas, paint);
+            shape.render(canvas, paint, matrix);
             if (callback != null && callback.isRenderAbort()) {
                 break;
             }
@@ -160,18 +151,18 @@ public class ShapePage {
      * @param subPageName
      * @return
      */
-    public static final ShapePage loadPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
+    public static final NotePage loadPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
         final List<ShapeModel> list = ShapeDataProvider.loadShapeList(context, docUniqueId, pageName, subPageName);
-        final ShapePage shapePage = createPage(context, docUniqueId, pageName, subPageName);
+        final NotePage notePage = createPage(context, docUniqueId, pageName, subPageName);
         for(ShapeModel model : list) {
             final Shape shape = ShapeFactory.shapeFromModel(model);
-            shapePage.addShapeFromModel(shape);
+            notePage.addShapeFromModel(shape);
         }
-        return shapePage;
+        return notePage;
     }
 
-    public static final ShapePage createPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
-        final ShapePage page = new ShapePage(docUniqueId, pageName, subPageName);
+    public static final NotePage createPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
+        final NotePage page = new NotePage(docUniqueId, pageName, subPageName);
         return page;
     }
 
@@ -192,7 +183,7 @@ public class ShapePage {
     }
 
     public boolean hasShapes() {
-        return shapeList.size() > 0;
+        return shapeList != null && shapeList.size() > 0;
     }
 
     public boolean hasPendingShapes() {

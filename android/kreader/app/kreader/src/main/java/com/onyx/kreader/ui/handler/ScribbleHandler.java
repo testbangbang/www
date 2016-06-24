@@ -6,9 +6,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.data.ShapePage;
+import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.math.ShapeUtils;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.handler.BaseHandler;
@@ -68,13 +68,13 @@ public class ScribbleHandler extends BaseHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
-        final ShapePage shapePage = activity.getShapePage();
-        if (shapePage == null) {
+        final NotePage notePage = activity.getShapePage();
+        if (notePage == null) {
             return false;
         }
 
         final PageInfo pageInfo = activity.getFirstPageInfo();
-        final Shape shape = shapePage.getShapeFromPool();
+        final Shape shape = notePage.getShapeFromPool();
         switch (e.getAction() & MotionEvent.ACTION_MASK) {
             case (MotionEvent.ACTION_DOWN):
                 processDownEvent(shape, pageInfo, e);
@@ -84,7 +84,7 @@ public class ScribbleHandler extends BaseHandler {
                 break;
             case MotionEvent.ACTION_UP:
                 processUpEvent(shape, pageInfo, e);
-                addShape(shapePage, shape);
+                addShape(notePage, shape);
                 return true;
             case MotionEvent.ACTION_MOVE:
                 processMoveEvent(shape, pageInfo, e);
@@ -95,9 +95,9 @@ public class ScribbleHandler extends BaseHandler {
         return true;
     }
 
-    private void addShape(final ShapePage shapePage, final Shape shape) {
-        shapePage.setAddToActionHistory(true);
-        shapePage.addShape(shape);
+    private void addShape(final NotePage notePage, final Shape shape) {
+        notePage.setAddToActionHistory(true);
+        notePage.addShape(shape);
     }
 
     private TouchPoint normalized(final PageInfo pageInfo, final MotionEvent e) {
@@ -147,7 +147,7 @@ public class ScribbleHandler extends BaseHandler {
 
     private void renderShape(final Canvas canvas, final Paint paint, final Shape shape) {
         if (!shape.supportDFB()) {
-            shape.render(null, canvas, paint);
+            shape.render(canvas, paint, null);
         }
     }
 

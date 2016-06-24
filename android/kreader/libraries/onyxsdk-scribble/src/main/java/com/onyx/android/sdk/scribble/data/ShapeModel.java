@@ -1,11 +1,11 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/3/16.
@@ -53,10 +53,10 @@ public class ShapeModel extends BaseModel {
     @Column
     int zorder;
 
-    @Column(typeConverter = TouchPointListConverter.class)
+    @Column(typeConverter = ConverterTouchPointList.class)
     TouchPointList points;
 
-    @Column(typeConverter = RectangleConverter.class)
+    @Column(typeConverter = ConverterRectangle.class)
     RectF boundingRect = null;
 
     @Column
@@ -154,7 +154,7 @@ public class ShapeModel extends BaseModel {
     }
 
     public String generateShapeUniqueId() {
-        return shapeUniqueId = UUID.randomUUID().toString();
+        return shapeUniqueId = ShapeUtils.generateUniqueId();
     }
 
     public void updateBoundingRect(final float x, final float y) {

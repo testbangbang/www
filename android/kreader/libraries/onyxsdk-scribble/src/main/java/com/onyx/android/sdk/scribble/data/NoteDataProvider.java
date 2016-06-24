@@ -12,51 +12,56 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by zhuzeng on 6/21/16.
  */
-public class ShapeLibraryDataProvider {
+public class NoteDataProvider {
 
-    public static ShapeLibraryModel loadShapeDocument(final Context context, final String documentUniqueId) {
+    public static NoteModel load(final Context context, final String uniqueId) {
         Select select = new Select();
-        Where where = select.from(ShapeLibraryModel.class).where(ShapeLibraryModel_Table.documentUniqueId.eq(documentUniqueId));
-        return (ShapeLibraryModel)where.querySingle();
+        Where where = select.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId));
+        return (NoteModel)where.querySingle();
     }
 
-    public static List<ShapeLibraryModel> loadShapeDocumentList(final Context context, final String parentUniqueId) {
+    /**
+     * Returns note document and library.
+     * @param context
+     * @param parentUniqueId
+     * @return
+     */
+    public static List<NoteModel> loadNoteList(final Context context, final String parentUniqueId) {
         Select select = new Select();
         Condition condition;
         if (StringUtils.isNullOrEmpty(parentUniqueId)) {
-            condition = ShapeLibraryModel_Table.parentUniqueId.isNull();
+            condition = NoteModel_Table.parentUniqueId.isNull();
         } else {
-            condition = ShapeLibraryModel_Table.parentUniqueId.eq(parentUniqueId);
+            condition = NoteModel_Table.parentUniqueId.eq(parentUniqueId);
         }
-        Where where = select.from(ShapeLibraryModel.class).where(condition);
-        List<ShapeLibraryModel> list = where.queryList();
+        Where where = select.from(NoteModel.class).where(condition);
+        List<NoteModel> list = where.queryList();
         return list;
     }
 
-    public static void saveShapeDocument(final Context context, final ShapeLibraryModel model) {
+    public static void saveNote(final Context context, final NoteModel model) {
         if (model == null) {
             return;
         }
         model.save();
     }
 
-    public static boolean removeShapeDocument(final Context context, final String documentUniqueId) {
+    public static boolean remove(final Context context, final String uniqueId) {
         Select select = new Select();
-        Where where = select.from(ShapeLibraryModel.class).where(ShapeLibraryModel_Table.documentUniqueId.eq(documentUniqueId));
+        Where where = select.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId));
         where.querySingle().delete();
         return true;
     }
 
-    public static boolean moveShapeDocument(final Context context, final String documentUniqueId, final String newParentId) {
+    public static boolean moveNote(final Context context, final String uniqueId, final String newParentId) {
         Select select = new Select();
-        Where where = select.from(ShapeLibraryModel.class).where(ShapeLibraryModel_Table.documentUniqueId.eq(documentUniqueId));
-        final ShapeLibraryModel model = (ShapeLibraryModel)where.querySingle();
+        Where where = select.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId));
+        final NoteModel model = (NoteModel)where.querySingle();
         if (model == null) {
             return false;
         }
@@ -65,12 +70,27 @@ public class ShapeLibraryDataProvider {
         return true;
     }
 
+    public static NoteModel createNote(final Context context, final String parentUniqueId, final String title) {
+        NoteModel noteModel = NoteModel.createNote(parentUniqueId, title);
+        saveNote(context, noteModel);
+        return noteModel;
+    }
+
+    public static NoteModel createLibrary(final Context context, final String parentUniqueId, final String title) {
+        NoteModel noteModel = NoteModel.createLibrary(parentUniqueId, title);
+        saveNote(context, noteModel);
+        return noteModel;
+    }
+
     public static boolean hasThumbnail(final Context context, final String documentUniqueId) {
         final String path = thumbnailPath(context, documentUniqueId);
         return FileUtils.fileExist(path);
     }
 
     public static boolean saveThumbnail(final Context context, final String documentUniqueId, final Bitmap bitmap) {
+        if (StringUtils.isNullOrEmpty(documentUniqueId) || bitmap == null) {
+            return false;
+        }
         final String path = thumbnailPath(context, documentUniqueId);
         return BitmapUtils.saveBitmap(bitmap, path);
     }

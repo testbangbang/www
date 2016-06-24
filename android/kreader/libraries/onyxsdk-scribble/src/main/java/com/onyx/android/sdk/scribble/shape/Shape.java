@@ -68,7 +68,7 @@ public interface Shape {
 
     boolean supportDFB();
 
-    void render(final Matrix matrix, final Canvas canvas, final Paint paint);
+    void render(final Canvas canvas, final Paint paint, final Matrix matrix);
 
     boolean hitTest(final float x, final float y);
 

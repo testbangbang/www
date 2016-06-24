@@ -8,9 +8,10 @@ import android.view.SurfaceView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.RawInputReader;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.request.BaseScribbleRequest;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
@@ -23,21 +24,49 @@ import com.onyx.android.sdk.scribble.shape.Shape;
  * * ignore touch points from certain input device.
  * * faster than onTouchEvent.
  */
-public class ShapeViewHelper {
+public class NoteViewHelper {
 
-    private static final String TAG = ShapeViewHelper.class.getSimpleName();
+    private static final String TAG = NoteViewHelper.class.getSimpleName();
 
     private RequestManager requestManager = new RequestManager();
     private RawInputReader rawInputReader = new RawInputReader();
+    private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl bitmapWrapper = null;
     private boolean enableBitmap = true;
-
     private Rect limitRect = null;
 
     public void setView(final SurfaceView view) {
+        initRawInputReader();
+        updateScreenMatrix();
+        updateViewMatrix();
+        updateLimitRect();
     }
 
-    public void submit(final Context context, final BaseScribbleRequest request, final BaseCallback callback) {
+    private void updateScreenMatrix() {
+        // read from conf or
+    }
+
+    private void updateViewMatrix() {
+
+    }
+
+    private void updateLimitRect() {
+
+    }
+
+    public void startDrawing() {
+        getRawInputReader().start();
+    }
+
+    public void starErasing() {
+        getRawInputReader().stop();
+    }
+
+    public void stop() {
+        getRawInputReader().stop();
+    }
+
+    public void submit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
         getRequestManager().submitRequest(context, request, generateRunnable(request), callback);
     }
 
@@ -47,6 +76,10 @@ public class ShapeViewHelper {
 
     public final RawInputReader getRawInputReader() {
         return rawInputReader;
+    }
+
+    public final NoteDocument getNoteDocument() {
+        return noteDocument;
     }
 
     public Bitmap updateBitmap(final Rect viewportSize) {
@@ -68,19 +101,18 @@ public class ShapeViewHelper {
         }
     }
 
-
-    private final Runnable generateRunnable(final BaseScribbleRequest request) {
+    private final Runnable generateRunnable(final BaseNoteRequest request) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 try {
-                    request.beforeExecute(ShapeViewHelper.this);
-                    request.execute(ShapeViewHelper.this);
+                    request.beforeExecute(NoteViewHelper.this);
+                    request.execute(NoteViewHelper.this);
                 } catch (java.lang.Exception exception) {
                     Log.d(TAG, Log.getStackTraceString(exception));
                     request.setException(exception);
                 } finally {
-                    request.afterExecute(ShapeViewHelper.this);
+                    request.afterExecute(NoteViewHelper.this);
                     getRequestManager().dumpWakelocks();
                     getRequestManager().removeRequest(request);
                 }
@@ -89,7 +121,7 @@ public class ShapeViewHelper {
         return runnable;
     }
 
-    private void init() {
+    private void initRawInputReader() {
         rawInputReader.setInputCallback(new RawInputReader.InputCallback() {
             @Override
             public void onBeginHandWriting() {
@@ -102,6 +134,7 @@ public class ShapeViewHelper {
                 Shape shape = new NormalScribbleShape();
                 shape.addPoints(pointList);
                 // send request and send to request manager.
+
             }
 
             @Override
@@ -115,6 +148,5 @@ public class ShapeViewHelper {
             }
         });
     }
-
 
 }
