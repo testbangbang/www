@@ -75,8 +75,9 @@ public class HHMMSegmenter {
               segGraph.addToken(token);
             }
 
-            while (j < length && charTypeArray[j] == CharType.SPACE_LIKE)
-              j++;
+            // joy@onyx don't skip spaces between HANZI
+            //while (j < length && charTypeArray[j] == CharType.SPACE_LIKE)
+            //  j++;
 
             if (j < length && charTypeArray[j] == CharType.HANZI) {
               wordBuf.append(sentence.charAt(j));
