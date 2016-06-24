@@ -127,7 +127,7 @@ public class BaseShape implements Shape {
         normalizedPoints.addAll(points);
     }
 
-    public void render(final Matrix matrix, final Canvas canvas, final Paint paint) {
+    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
     }
 
     public boolean hitTest(final float x, final float y) {

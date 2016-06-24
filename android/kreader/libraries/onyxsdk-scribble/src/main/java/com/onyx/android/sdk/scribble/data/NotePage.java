@@ -27,7 +27,6 @@ public class NotePage {
 
     private int currentShapeType;
     private Shape currentShape;
-    private Matrix pageMatrix;
     private boolean addToActionHistory = true;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
@@ -102,16 +101,12 @@ public class NotePage {
         return list;
     }
 
-    public void setPageMatrix(final Matrix matrix) {
-        pageMatrix = matrix;
-    }
-
-    public void render(final Canvas canvas, final Paint paint, final RenderCallback callback) {
+    public void render(final Canvas canvas, final Paint paint, final Matrix matrix, final RenderCallback callback) {
         if (shapeList == null) {
             return;
         }
         for(Shape shape : shapeList) {
-            shape.render(pageMatrix, canvas, paint);
+            shape.render(canvas, paint, matrix);
             if (callback != null && callback.isRenderAbort()) {
                 break;
             }

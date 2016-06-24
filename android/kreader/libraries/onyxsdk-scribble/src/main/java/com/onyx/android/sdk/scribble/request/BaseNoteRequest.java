@@ -120,7 +120,7 @@ public class BaseNoteRequest extends BaseRequest {
 
         for(PageInfo page: getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-            notePage.render(canvas, paint, new NotePage.RenderCallback() {
+            notePage.render(canvas, paint, page.normalizeMatrix(), new NotePage.RenderCallback() {
                 @Override
                 public boolean isRenderAbort() {
                     return isAbort();
@@ -159,7 +159,7 @@ public class BaseNoteRequest extends BaseRequest {
         final NotePage notePage = helper.getNoteDocument().getCurrentPage(getContext());
         getVisiblePages().clear();
         PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
-        pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height());
+        pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height()));
         getVisiblePages().add(pageInfo);
     }
 
