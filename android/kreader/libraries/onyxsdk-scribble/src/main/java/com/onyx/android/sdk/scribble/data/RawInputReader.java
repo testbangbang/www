@@ -4,6 +4,7 @@ import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -48,7 +49,6 @@ public class RawInputReader {
     private boolean pressed;
     private boolean lastPressed;
     private volatile boolean stop = false;
-    private volatile boolean pause = false;
     private String systemPath = "/dev/input/event1";
     private Matrix screenMatrix;
     private Matrix viewMatrix;
@@ -58,9 +58,11 @@ public class RawInputReader {
     private InputCallback inputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
 
-
-    public void setMatrix(final Matrix sm, final Matrix vm) {
+    public void setScreenMatrix(final Matrix sm) {
         screenMatrix = sm;
+    }
+
+    public void setViewMatrix(final Matrix vm) {
         viewMatrix = vm;
     }
 
@@ -69,42 +71,48 @@ public class RawInputReader {
     }
 
     public void start() {
-        read();
+        startThread();
     }
 
     public void stop() {
         stop = true;
     }
 
-    public void pause() {
-        pause = true;
-    }
-
-    private void read() {
+    private void startThread() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    DataInputStream in = new DataInputStream(new FileInputStream(systemPath));
-                    byte[] data = new byte[16];
-                    long ts;
-                    short type, code;
-                    int value;
-                    while (!stop) {
-                        in.readFully(data);
-                        ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
-                        ts = wrapped.getLong();
-                        type = wrapped.getShort();
-                        code = wrapped.getShort();
-                        value = wrapped.getInt();
-                        processInputEvent(ts, type, code, value);
-                    }
+                    detectInputDevicePath();
+                    readLoop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
         thread.start();
+    }
+
+    private void readLoop() throws Exception {
+        DataInputStream in = new DataInputStream(new FileInputStream(systemPath));
+        byte[] data = new byte[16];
+        while (!stop) {
+            in.readFully(data);
+            ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
+            processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
+        }
+    }
+
+    private void detectInputDevicePath() {
+        final int DEVICE_MAX = 3;
+        String last = systemPath;
+        for(int i = 1; i < DEVICE_MAX; ++i) {
+            String path = String.format("/dev/input/event%d", i);
+            if (FileUtils.fileExist(path)) {
+                last = path;
+            }
+        }
+        systemPath = last;
     }
 
     private void processInputEvent(long ts, int type, int code, int value) {

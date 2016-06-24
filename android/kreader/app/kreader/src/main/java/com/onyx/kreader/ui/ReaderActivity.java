@@ -842,7 +842,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     public final NotePage getShapePage() {
         if (shapeDataInfo != null) {
-            return shapeDataInfo.getShapePage(getFirstVisiblePageName());
+            return null;
         }
         return null;
     }

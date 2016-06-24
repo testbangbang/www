@@ -20,12 +20,22 @@ public class NoteDocument {
     private String documentUniqueId;
     private ListOrderedMap<String, NotePage> pageDataMap = new ListOrderedMap<String, NotePage>();
     private int currentPageIndex = 0;
+    private boolean isOpen = false;
 
     public void open(final Context context, final String uniqueId) {
         setDocumentUniqueId(uniqueId);
         setupPageDataMap(context);
         ensureDocumentNotBlank(context);
         gotoFirst();
+        markDocumentOpen();
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    private void markDocumentOpen() {
+        isOpen = true;
     }
 
     public void save() {

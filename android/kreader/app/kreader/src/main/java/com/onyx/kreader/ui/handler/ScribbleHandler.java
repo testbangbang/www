@@ -147,7 +147,7 @@ public class ScribbleHandler extends BaseHandler {
 
     private void renderShape(final Canvas canvas, final Paint paint, final Shape shape) {
         if (!shape.supportDFB()) {
-            shape.render(null, canvas, paint);
+            shape.render(canvas, paint, null);
         }
     }
 
