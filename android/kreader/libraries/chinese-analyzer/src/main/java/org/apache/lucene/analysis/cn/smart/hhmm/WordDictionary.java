@@ -16,21 +16,13 @@
 
 package org.apache.lucene.analysis.cn.smart.hhmm;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
+import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 import org.apache.lucene.analysis.cn.smart.AnalyzerProfile;
 import org.apache.lucene.analysis.cn.smart.Utility;
+
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class WordDictionary extends AbstractDictionary {
 
@@ -125,8 +117,14 @@ public class WordDictionary extends AbstractDictionary {
    * @throws IOException
    */
   public void load() throws IOException, ClassNotFoundException {
-    InputStream input = this.getClass().getResourceAsStream("coredict.mem");
-    loadFromObjectInputStream(input);
+    InputStream input = AnalyzerAndroidWrapper.openAssetFile("coredict.mem");
+    byte[] buf = new byte[input.available()];
+    input.read(buf);
+    input.close();
+
+    ByteArrayInputStream byteStream = new ByteArrayInputStream(buf);
+    loadFromObjectInputStream(byteStream);
+    byteStream.close();
   }
 
   private boolean loadFromObj(File serialObj) {

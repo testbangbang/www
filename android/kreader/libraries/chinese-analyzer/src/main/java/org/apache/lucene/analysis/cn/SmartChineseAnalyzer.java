@@ -16,14 +16,6 @@
 
 package org.apache.lucene.analysis.cn;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PorterStemFilter;
 import org.apache.lucene.analysis.StopFilter;
@@ -31,6 +23,10 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.cn.smart.SentenceTokenizer;
 import org.apache.lucene.analysis.cn.smart.WordSegmenter;
 import org.apache.lucene.analysis.cn.smart.WordTokenizer;
+
+import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 
@@ -68,8 +64,11 @@ public class SmartChineseAnalyzer extends Analyzer {
    */
   public SmartChineseAnalyzer(boolean useDefaultStopWords) {
     if (useDefaultStopWords) {
-      stopWords = loadStopWords(this.getClass().getResourceAsStream(
-          "stopwords.txt"));
+      try {
+        stopWords = loadStopWords(AnalyzerAndroidWrapper.openAssetFile("stopwords.txt"));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
     wordSegment = new WordSegmenter();
   }
