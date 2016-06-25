@@ -3,8 +3,8 @@ package com.onyx.android.sdk.scribble.data;
 import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.method.Touch;
 import android.util.Log;
+import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -13,13 +13,14 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 
 /**
  * Created by zhuzeng on 6/17/16.
  */
-public class RawInputReader {
+public class RawInputProcessor {
 
-    private static final String TAG = RawInputReader.class.getSimpleName();
+    private static final String TAG = RawInputProcessor.class.getSimpleName();
     private static final int EV_SYN = 0x00;
     private static final int EV_KEY = 0x01;
     private static final int EV_ABS = 0x03;
@@ -49,6 +50,7 @@ public class RawInputReader {
 
     private int px, py, pressure;
     private boolean erasing = false;
+    private boolean lastErasing = false;
     private boolean pressed;
     private boolean lastPressed;
     private volatile boolean stop = false;
@@ -60,6 +62,7 @@ public class RawInputReader {
     private volatile TouchPointList touchPointList;
     private InputCallback inputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private volatile View parentView;
 
     /**
      * matrix used to map point from input device to screen display.
@@ -81,21 +84,23 @@ public class RawInputReader {
         inputCallback = callback;
     }
 
-    public void start() {
-        startThread();
+    public void start(final View view) {
+        parentView = view;
+        startThread(parentView);
     }
 
     public void stop() {
         stop = true;
+        resetToNormalState();
     }
 
-    private void startThread() {
+    private void startThread(final View view) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     detectInputDevicePath();
-                    readLoop();
+                    readLoop(view);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -104,7 +109,8 @@ public class RawInputReader {
         thread.start();
     }
 
-    private void readLoop() throws Exception {
+    private void readLoop(final View view) throws Exception {
+        onDrawing();
         DataInputStream in = new DataInputStream(new FileInputStream(systemPath));
         byte[] data = new byte[16];
         while (!stop) {
@@ -112,6 +118,7 @@ public class RawInputReader {
             ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
             processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
         }
+        resetToNormalState();
     }
 
     private void detectInputDevicePath() {
@@ -156,7 +163,30 @@ public class RawInputReader {
                 pressed = pressure > 0;
                 lastPressed = false;
             }
+            onModeChanged();
         }
+    }
+
+    private void onModeChanged() {
+        if (lastErasing == erasing) {
+            return;
+        }
+        if (!lastErasing && erasing) {
+            resetToNormalState();
+        } else if (lastErasing && !erasing) {
+            onDrawing();
+        }
+        lastErasing = erasing;
+    }
+
+    private void resetToNormalState() {
+        EpdController.enablePost(parentView, 1);
+        EpdController.setScreenHandWritingPenState(parentView, 0);
+    }
+
+    private void onDrawing() {
+        EpdController.enablePost(parentView, 0);
+        EpdController.setScreenHandWritingPenState(parentView, 1);
     }
 
     /**
@@ -193,14 +223,24 @@ public class RawInputReader {
         return touchPoint;
     }
 
+    private void addToList(final TouchPoint touchPoint, boolean create) {
+        if (touchPointList == null) {
+            if (!create) {
+                return;
+            }
+            touchPointList = new TouchPointList(600);
+        }
+        if (touchPoint != null && touchPointList != null) {
+            touchPointList.add(touchPoint);
+        }
+    }
+
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        touchPointList = new TouchPointList(600);
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapInputToScreenPoint(touchPoint);
         EpdController.moveTo(touchPoint.x, touchPoint.y, 7.0f);
         mapScreenPointToPage(touchPoint);
-        touchPointList.add(touchPoint);
-
+        addToList(touchPoint, true);
         Log.d(TAG, "pressed received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
@@ -209,10 +249,7 @@ public class RawInputReader {
         mapInputToScreenPoint(touchPoint);
         EpdController.quadTo(touchPoint.x, touchPoint.y, UpdateMode.DU);
         mapScreenPointToPage(touchPoint);
-
-        if (touchPointList != null) {
-            touchPointList.add(touchPoint);
-        }
+        addToList(touchPoint, false);
         Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 

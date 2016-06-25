@@ -8,12 +8,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
-import com.onyx.android.sdk.scribble.data.RawInputReader;
+import com.onyx.android.sdk.scribble.data.RawInputProcessor;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
@@ -24,7 +23,7 @@ import com.onyx.android.sdk.scribble.shape.Shape;
  * View delegate, connect ShapeManager and view.
  * It receives commands from toolbar or view and convert the command to request and send to ShapeManager
  * to process. Broadcast notification to view through callback.
- * By using rawInputReader, it could
+ * By using rawInputProcessor, it could
  * * ignore touch points from certain input device.
  * * faster than onTouchEvent.
  */
@@ -33,20 +32,30 @@ public class NoteViewHelper {
     private static final String TAG = NoteViewHelper.class.getSimpleName();
 
     private RequestManager requestManager = new RequestManager();
-    private RawInputReader rawInputReader = new RawInputReader();
+    private RawInputProcessor rawInputProcessor = new RawInputProcessor();
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl bitmapWrapper = null;
     private boolean enableBitmap = true;
     private Rect limitRect = null;
-    private SurfaceView surfaceView;
+    private volatile SurfaceView surfaceView;
 
     public void setView(final SurfaceView view) {
-        surfaceView = view;
+        initWithSurfaceView(view);
         initRawInputReader();
         updateScreenMatrix();
         updateViewMatrix();
         updateLimitRect();
-        startDrawing();
+    }
+
+    private void initWithSurfaceView(final SurfaceView view) {
+        surfaceView = view;
+        surfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return false;
+            }
+        });
+
     }
 
     private void updateScreenMatrix() {
@@ -62,24 +71,17 @@ public class NoteViewHelper {
     }
 
     public void startDrawing() {
-        surfaceView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return false;
-            }
-        });
-        getRawInputReader().start();
-        EpdController.enablePost(surfaceView, 0);
+        getRawInputProcessor().start(surfaceView);
         //EpdController.startHandwriting();
     }
 
     public void starErasing() {
-        getRawInputReader().stop();
+        getRawInputProcessor().stop();
         //EpdController.stopHandwriting();
     }
 
     public void stop() {
-        getRawInputReader().stop();
+        getRawInputProcessor().stop();
         //EpdController.stopHandwriting();
     }
 
@@ -91,8 +93,8 @@ public class NoteViewHelper {
         return requestManager;
     }
 
-    public final RawInputReader getRawInputReader() {
-        return rawInputReader;
+    public final RawInputProcessor getRawInputProcessor() {
+        return rawInputProcessor;
     }
 
     public final NoteDocument getNoteDocument() {
@@ -140,7 +142,7 @@ public class NoteViewHelper {
 
     private void initRawInputReader() {
 
-        rawInputReader.setInputCallback(new RawInputReader.InputCallback() {
+        rawInputProcessor.setInputCallback(new RawInputProcessor.InputCallback() {
             @Override
             public void onBeginHandWriting() {
 
@@ -167,7 +169,7 @@ public class NoteViewHelper {
         });
         final Matrix screenMatrix = new Matrix();
         screenMatrix.preScale(1600.0f / 10206.0f, 1200.0f / 7422.0f);
-        rawInputReader.setScreenMatrix(screenMatrix);
+        rawInputProcessor.setScreenMatrix(screenMatrix);
     }
 
 }

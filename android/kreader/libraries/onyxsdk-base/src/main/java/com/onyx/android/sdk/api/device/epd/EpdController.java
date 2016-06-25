@@ -107,8 +107,8 @@ public abstract class EpdController
         DeviceInfo.currentDevice.refreshScreenRegion(view, left, top, width, height, mode);
     }
 
-    public static void enableScreenHandWriting(View view, int enable) {
-        DeviceInfo.currentDevice.enableScreenHandWriting(view, enable);
+    public static void setScreenHandWritingPenState(View view, int penState) {
+        DeviceInfo.currentDevice.setScreenHandWritingPenState(view, penState);
     }
 
     public static void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
