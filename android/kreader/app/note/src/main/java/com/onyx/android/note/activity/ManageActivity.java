@@ -29,9 +29,9 @@ public class ManageActivity extends OnyxAppCompatActivity {
     private int currentPage;
 
     TextView chooseModeButton, addFolderButton, cutButton, deleteButton;
-    ArrayList<GObject> mChosenItemsList = new ArrayList<GObject>();
+    ArrayList<GObject> chosenItemsList = new ArrayList<GObject>();
     ContentView contentView;
-    GAdapter mAdapter;
+    GAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,17 +78,17 @@ public class ManageActivity extends OnyxAppCompatActivity {
                         break;
                     case SelectionMode.MULTISELECT_MODE:
                         GObject temp = view.getData();
-                        int dataIndex = mAdapter.getGObjectIndex(temp);
+                        int dataIndex = adapter.getGObjectIndex(temp);
                         if (view.getData().getBoolean(GAdapterUtil.TAG_SELECTABLE, false)) {
                             temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, false);
-                            mChosenItemsList.remove(temp);
+                            chosenItemsList.remove(temp);
                         } else {
                             temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
-                            mChosenItemsList.add(temp);
+                            chosenItemsList.add(temp);
                         }
-                        mAdapter.setObject(dataIndex, temp);
+                        adapter.setObject(dataIndex, temp);
                         contentView.updateCurrentPage();
-                        contentView.setCustomInfo(Integer.toString(mChosenItemsList.size()), true);
+                        contentView.setCustomInfo(Integer.toString(chosenItemsList.size()), true);
                         break;
                 }
             }
@@ -125,28 +125,28 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
     private GAdapter getNoteAdapter() {
-        if (mAdapter == null) {
-            mAdapter = new GAdapter();
+        if (adapter == null) {
+            adapter = new GAdapter();
         }
-        return mAdapter;
+        return adapter;
     }
 
     private GAdapter getTestAdapter() {
-        if (mAdapter == null) {
-            mAdapter = new GAdapter();
-            mAdapter.addObject(createFilterItem(Integer.toString(0), R.drawable.ic_student_note_plus_gray_250dp));
+        if (adapter == null) {
+            adapter = new GAdapter();
+            adapter.addObject(createFilterItem(Integer.toString(0), R.drawable.ic_student_note_plus_gray_250dp));
             for (int i = 1; i < 4; i++) {
-                mAdapter.addObject(createFilterItem(Integer.toString(i), R.drawable.ic_student_note_folder_gray_250dp));
+                adapter.addObject(createFilterItem(Integer.toString(i), R.drawable.ic_student_note_folder_gray_250dp));
             }
             for (int i = 4; i < 256; i++) {
                 if (i % 2 == 0) {
-                    mAdapter.addObject(createFilterItem(Integer.toString(i), R.drawable.ic_student_note_doc_gray_250dp));
+                    adapter.addObject(createFilterItem(Integer.toString(i), R.drawable.ic_student_note_doc_gray_250dp));
                 } else {
-                    mAdapter.addObject(createFilterItem(Integer.toString(i), R.drawable.ic_student_note_pic_gray_250dp));
+                    adapter.addObject(createFilterItem(Integer.toString(i), R.drawable.ic_student_note_pic_gray_250dp));
                 }
             }
         }
-        return mAdapter;
+        return adapter;
     }
 
     private void switchMode(@SelectionMode.SelectionModeDef int selectionMode) {
