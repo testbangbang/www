@@ -218,7 +218,7 @@ public class BaseDevice {
     public void enablePost(View view, int enable) {
     }
 
-    public void enableScreenHandWriting(View view, int enable) {
+    public void setScreenHandWritingPenState(View view, int penState) {
     }
 
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {

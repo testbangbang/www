@@ -8,6 +8,11 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class PagePrevRequest extends BaseNoteRequest {
 
+    public PagePrevRequest() {
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(true);
+    }
+
     public void execute(final NoteViewHelper helper) throws Exception {
         if (!helper.getNoteDocument().prevPage()) {
             return;

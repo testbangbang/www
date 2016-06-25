@@ -8,6 +8,7 @@ import android.util.Pair;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
+import com.onyx.android.sdk.scribble.data.RawInputProcessor;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
@@ -27,7 +28,6 @@ import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper;
 import com.onyx.kreader.plugins.pdfium.PdfiumSelection;
-import com.onyx.android.sdk.scribble.data.RawInputReader;
 import com.onyx.kreader.text.*;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.kreader.R;
@@ -83,7 +83,7 @@ public class ReaderTestActivity extends Activity {
     }
 
    private void test() {
-        final RawInputReader input = new RawInputReader();
+        final RawInputProcessor input = new RawInputProcessor();
         final Matrix matrix = new Matrix();
 
         // read config later.

@@ -14,6 +14,8 @@ public class PageRemoveRequest extends BaseNoteRequest {
     private volatile int pageIndex;
 
     public PageRemoveRequest(final String doc, final int value) {
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(true);
         documentIndex = doc;
         pageIndex = value;
     }

@@ -8,6 +8,11 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class PageGotoLastRequest extends BaseNoteRequest {
 
+    public PageGotoLastRequest() {
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(true);
+    }
+
     public void execute(final NoteViewHelper helper) throws Exception {
         helper.getNoteDocument().gotoLast();
         renderCurrentPage(helper);

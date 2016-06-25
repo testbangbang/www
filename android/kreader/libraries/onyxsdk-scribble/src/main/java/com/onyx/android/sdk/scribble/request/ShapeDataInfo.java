@@ -39,4 +39,8 @@ public class ShapeDataInfo {
         return pageNameList.size();
     }
 
+    public int getCurrentPageIndex() {
+        return getCurrentPageIndex();
+    }
+
 }

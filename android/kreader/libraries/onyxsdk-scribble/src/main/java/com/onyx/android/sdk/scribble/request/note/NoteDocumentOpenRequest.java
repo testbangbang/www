@@ -11,6 +11,8 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
     private volatile String documentUniqueId;
 
     public NoteDocumentOpenRequest(final String id) {
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(true);
         documentUniqueId = id;
     }
 

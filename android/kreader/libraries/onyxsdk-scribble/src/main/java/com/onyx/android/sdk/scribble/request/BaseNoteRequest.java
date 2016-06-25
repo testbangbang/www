@@ -24,6 +24,24 @@ public class BaseNoteRequest extends BaseRequest {
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private boolean debugPathBenchmark = false;
+    private boolean pauseInputProcessor = true;
+    private boolean resumeInputProcessor = true;
+
+    public boolean isResumeInputProcessor() {
+        return resumeInputProcessor;
+    }
+
+    public void setResumeInputProcessor(boolean resumeInputProcessor) {
+        this.resumeInputProcessor = resumeInputProcessor;
+    }
+
+    public boolean isPauseInputProcessor() {
+        return pauseInputProcessor;
+    }
+
+    public void setPauseInputProcessor(boolean pauseInputProcessor) {
+        this.pauseInputProcessor = pauseInputProcessor;
+    }
 
     public BaseNoteRequest() {
         setAbortPendingTasks();
@@ -54,6 +72,9 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void beforeExecute(final NoteViewHelper helper) {
+        if (isPauseInputProcessor()) {
+            helper.stop();
+        }
         helper.getRequestManager().acquireWakeLock(getContext());
         benchmarkStart();
         invokeStartCallback(helper.getRequestManager());
@@ -88,6 +109,9 @@ public class BaseNoteRequest extends BaseRequest {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                if (isResumeInputProcessor()) {
+                    helper.startDrawing();
+                }
                 if (getCallback() != null) {
                     getCallback().done(BaseNoteRequest.this, getException());
                 }
@@ -172,5 +196,13 @@ public class BaseNoteRequest extends BaseRequest {
                 parent.getNoteDocument().getPageNameList(),
                 parent.getNoteDocument().getCurrentPageIndex());
     }
+
+    public void ensureDocumentOpened(final NoteViewHelper parent) {
+        if (!parent.getNoteDocument().isOpen()) {
+            parent.getNoteDocument().open(getContext(), getDocUniqueId());
+        }
+    }
+
+
 
 }

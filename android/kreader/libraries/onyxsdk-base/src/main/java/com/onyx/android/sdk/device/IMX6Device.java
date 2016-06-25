@@ -67,7 +67,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodLineTo = null;
     private static Method sMethodQuadTo = null;
     private static Method sMethodEnablePost = null;
-    private static Method sMethodEnableHandWriting = null;
+    private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
     private static Method sMethodApplyGammaCorrection = null;
     private static Method sMethodStartStroke = null;
@@ -410,12 +410,12 @@ public class IMX6Device extends BaseDevice {
     }
 
     public boolean supportScreenHandWriting() {
-        return (sMethodEnableHandWriting != null);
+        return (sMethodSetScreenHandWritingPenState != null);
     }
 
-    public void enableScreenHandWriting(View view, int enable) {
+    public void setScreenHandWritingPenState(View view, int penState) {
         try {
-            ReflectUtil.invokeMethodSafely(sMethodEnableHandWriting, view, enable);
+            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingPenState, view, penState);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -519,7 +519,7 @@ public class IMX6Device extends BaseDevice {
             sMethodLineTo = ReflectUtil.getMethodSafely(cls, "lineTo", float.class, float.class, int.class);
             sMethodQuadTo = ReflectUtil.getMethodSafely(cls, "quadTo", float.class, float.class, int.class);
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
-            sMethodEnableHandWriting = ReflectUtil.getMethodSafely(cls, "enableHandWriting", int.class);
+            sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int.class, int.class, int.class, int.class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
 

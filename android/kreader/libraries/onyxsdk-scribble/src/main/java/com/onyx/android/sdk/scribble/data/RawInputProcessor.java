@@ -4,19 +4,23 @@ import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 
 /**
  * Created by zhuzeng on 6/17/16.
  */
-public class RawInputReader {
+public class RawInputProcessor {
 
-    private static final String TAG = RawInputReader.class.getSimpleName();
+    private static final String TAG = RawInputProcessor.class.getSimpleName();
     private static final int EV_SYN = 0x00;
     private static final int EV_KEY = 0x01;
     private static final int EV_ABS = 0x03;
@@ -46,6 +50,7 @@ public class RawInputReader {
 
     private int px, py, pressure;
     private boolean erasing = false;
+    private boolean lastErasing = false;
     private boolean pressed;
     private boolean lastPressed;
     private volatile boolean stop = false;
@@ -57,11 +62,20 @@ public class RawInputReader {
     private volatile TouchPointList touchPointList;
     private InputCallback inputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private volatile View parentView;
 
+    /**
+     * matrix used to map point from input device to screen display.
+     * @param sm
+     */
     public void setScreenMatrix(final Matrix sm) {
         screenMatrix = sm;
     }
 
+    /**
+     * Matrix used to map point from screen to view with normalized.
+     * @param vm
+     */
     public void setViewMatrix(final Matrix vm) {
         viewMatrix = vm;
     }
@@ -70,21 +84,23 @@ public class RawInputReader {
         inputCallback = callback;
     }
 
-    public void start() {
-        startThread();
+    public void start(final View view) {
+        parentView = view;
+        startThread(parentView);
     }
 
     public void stop() {
         stop = true;
+        resetToNormalState();
     }
 
-    private void startThread() {
+    private void startThread(final View view) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     detectInputDevicePath();
-                    readLoop();
+                    readLoop(view);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -93,7 +109,8 @@ public class RawInputReader {
         thread.start();
     }
 
-    private void readLoop() throws Exception {
+    private void readLoop(final View view) throws Exception {
+        onDrawing();
         DataInputStream in = new DataInputStream(new FileInputStream(systemPath));
         byte[] data = new byte[16];
         while (!stop) {
@@ -101,6 +118,7 @@ public class RawInputReader {
             ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
             processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
         }
+        resetToNormalState();
     }
 
     private void detectInputDevicePath() {
@@ -145,7 +163,30 @@ public class RawInputReader {
                 pressed = pressure > 0;
                 lastPressed = false;
             }
+            onModeChanged();
         }
+    }
+
+    private void onModeChanged() {
+        if (lastErasing == erasing) {
+            return;
+        }
+        if (!lastErasing && erasing) {
+            resetToNormalState();
+        } else if (lastErasing && !erasing) {
+            onDrawing();
+        }
+        lastErasing = erasing;
+    }
+
+    private void resetToNormalState() {
+        EpdController.enablePost(parentView, 1);
+        EpdController.setScreenHandWritingPenState(parentView, 0);
+    }
+
+    private void onDrawing() {
+        EpdController.enablePost(parentView, 0);
+        EpdController.setScreenHandWritingPenState(parentView, 1);
     }
 
     /**
@@ -153,49 +194,73 @@ public class RawInputReader {
      * Use view matrix to map from screen to view.
      * finally we get points inside view. we may need the page matrix
      * to map points from view to page.
-     * @param x
-     * @param y
-     * @param pressure
-     * @param size
-     * @param ts
+     * @param touchPoint
      * @return
      */
-    private TouchPoint mapPoint(int x, int y, int pressure, int size, long ts) {
-        dstPoint[0] = x;
-        dstPoint[1] = y;
+    private TouchPoint mapInputToScreenPoint(final TouchPoint touchPoint) {
+        dstPoint[0] = touchPoint.x;
+        dstPoint[1] = touchPoint.y;
         if (screenMatrix != null) {
-            srcPoint[0] = x;
-            srcPoint[1] = y;
+            srcPoint[0] = touchPoint.x;
+            srcPoint[1] = touchPoint.y;
             screenMatrix.mapPoints(dstPoint, srcPoint);
         }
+        touchPoint.x = dstPoint[0];
+        touchPoint.y = dstPoint[1];
+        return touchPoint;
+    }
+
+    private TouchPoint mapScreenPointToPage(final TouchPoint touchPoint) {
+        dstPoint[0] = touchPoint.x;
+        dstPoint[1] = touchPoint.y;
         if (viewMatrix != null) {
             srcPoint[0] = dstPoint[0];
             srcPoint[1] = dstPoint[1];
             viewMatrix.mapPoints(dstPoint, srcPoint);
         }
-        TouchPoint touchPoint = new TouchPoint(dstPoint[0], dstPoint[1], pressure, size, ts);
+        touchPoint.x = dstPoint[0];
+        touchPoint.y = dstPoint[1];
         return touchPoint;
     }
 
+    private void addToList(final TouchPoint touchPoint, boolean create) {
+        if (touchPointList == null) {
+            if (!create) {
+                return;
+            }
+            touchPointList = new TouchPointList(600);
+        }
+        if (touchPoint != null && touchPointList != null) {
+            touchPointList.add(touchPoint);
+        }
+    }
+
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        touchPointList = new TouchPointList(600);
-        touchPointList.add(mapPoint(x, y, pressure, size, ts));
+        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+        mapInputToScreenPoint(touchPoint);
+        EpdController.moveTo(touchPoint.x, touchPoint.y, 7.0f);
+        mapScreenPointToPage(touchPoint);
+        addToList(touchPoint, true);
         Log.d(TAG, "pressed received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        if (touchPointList != null) {
-            touchPointList.add(mapPoint(x, y, pressure, size, ts));
-        }
+        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+        mapInputToScreenPoint(touchPoint);
+        EpdController.quadTo(touchPoint.x, touchPoint.y, UpdateMode.DU);
+        mapScreenPointToPage(touchPoint);
+        addToList(touchPoint, false);
         Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        if (touchPointList != null) {
-            touchPointList.add(mapPoint(x, y, pressure, size, ts));
-        }
         invokeCallback(touchPointList, erasing);
+        resetPointList();
         Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
+    }
+
+    private void resetPointList() {
+        touchPointList = null;
     }
 
     private void invokeCallback(final TouchPointList touchPointList, final boolean erasing) {

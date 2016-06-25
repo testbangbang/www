@@ -8,6 +8,11 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class PgaeGotoFirstRequest extends BaseNoteRequest {
 
+    public PgaeGotoFirstRequest() {
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(true);
+    }
+
     public void execute(final NoteViewHelper helper) throws Exception {
         helper.getNoteDocument().gotoFirst();
         renderCurrentPage(helper);
