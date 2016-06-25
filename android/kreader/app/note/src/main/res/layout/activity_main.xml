@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.onyx.android.note.activity.ManageActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <android.support.design.widget.AppBarLayout style="@style/OnyxAppBarStyle">
 
         <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
 
@@ -62,23 +60,22 @@
 
                 <TextView
                     android:id="@+id/selectMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:background="@drawable/imagebtn_bg"
                     android:clickable="true"
                     android:focusable="true"
-                    android:text="@string/select_mode"
-                    android:layout_width="wrap_content"
                     android:gravity="center"
-                    android:layout_height="match_parent"/>
+                    android:text="@string/select_mode" />
             </RelativeLayout>
-
-
         </android.support.v7.widget.Toolbar>
-
-
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
-
-</android.support.design.widget.CoordinatorLayout>
+    <com.onyx.android.sdk.ui.view.ContentView
+        android:id="@+id/note_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar" />
+</RelativeLayout>
