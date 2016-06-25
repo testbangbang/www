@@ -1,6 +1,12 @@
 package com.onyx.kreader.host.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.kreader.api.ReaderTextSplitter;
+import com.onyx.kreader.common.Debug;
+import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by zhuzeng on 5/24/15.
@@ -9,10 +15,69 @@ import com.onyx.kreader.api.ReaderTextSplitter;
 
 public class ReaderTextSplitterImpl implements ReaderTextSplitter {
 
+    private static class SentenceAnalyzeResult {
+        private String word, left, right;
+        private int leftBoundaryOfWord, rightBoundaryOfWord;
+
+        private SentenceAnalyzeResult(String word, String left, String right,
+                                      int leftBoundary, int rightBoundary) {
+            this.word = word;
+            this.left = left;
+            this.right = right;
+            this.leftBoundaryOfWord = leftBoundary;
+            this.rightBoundaryOfWord = rightBoundary;
+        }
+
+        public static SentenceAnalyzeResult analyze(String word, String left, String right) {
+            String sentence = (left + word + right).toLowerCase(Locale.getDefault());
+            ArrayList<String> result = AnalyzerAndroidWrapper.analyze(sentence);
+            Debug.d("analyze result: " + JSON.toJSONString(result));
+            if (result.size() <= 0) {
+                return new SentenceAnalyzeResult(word, left, right, 0, 0);
+            }
+
+            String target = "";
+            int leftIndex = 0;
+            for (String w : result) {
+                int i = sentence.indexOf(w, leftIndex);
+                if (i >= left.length()) {
+                    if (target.indexOf(word) < 0) {
+                        leftIndex = left.length();
+                        target = w;
+                    }
+                    break;
+                }
+                leftIndex = i;
+                target = w;
+            }
+            int rightIndex = leftIndex + target.length();
+            int leftBoundary = Math.max(0, left.length() - leftIndex);
+            int rightBoundary = rightIndex - left.length() - word.length();
+            return new SentenceAnalyzeResult(word, left, right, leftBoundary, rightBoundary);
+        }
+
+        public boolean isSameSentence(String word, String left, String right) {
+            return this.word.compareTo(word) == 0 &&
+                    this.left.compareTo(left) == 0 &&
+                    this.right.compareTo(right) == 0;
+        }
+
+        public int getLeftBoundaryOfWord() {
+            return leftBoundaryOfWord;
+        }
+
+        public int getRightBoundaryOfWord() {
+            return rightBoundaryOfWord;
+        }
+    }
+
     // TODO, use json later.
     static private final String  Splitters[] = {"。", "？", "！", ".", "!"};
     static private ReaderTextSplitterImpl instance;
     static boolean hasSpace = false;
+
+    private SentenceAnalyzeResult analyzeResult = null;
+
     private ReaderTextSplitterImpl() {
         super();
     }
@@ -26,26 +91,30 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
 
     // reverse string.
     public int getTextLeftBoundary(final String word, final String left, final String right) {
-        hasSpace = hasSpace(left);
-        if (!hasSpace) {
-            return 0;
+        final String w = normalizeString(word);
+        final String l = normalizeString(left);
+        final String r = normalizeString(right);
+        if (analyzeResult == null || !analyzeResult.isSameSentence(w, l, r)) {
+            analyzeResult = SentenceAnalyzeResult.analyze(w, l, r);
         }
-        return searchSpaceBoundaryForLatinFromRight(word, left);
+        return analyzeResult.getLeftBoundaryOfWord();
     }
 
     public int getTextRightBoundary(final String word, final String left, final String right) {
-        hasSpace = hasSpace(right);
-        if (!hasSpace) {
-            return 0;
+        final String w = normalizeString(word);
+        final String l = normalizeString(left);
+        final String r = normalizeString(right);
+        if (analyzeResult == null || !analyzeResult.isSameSentence(w, l, r)) {
+            analyzeResult = SentenceAnalyzeResult.analyze(w, l, r);
         }
-        return searchSpaceBoundaryForLatinFromLeft(word, right);
+        return analyzeResult.getRightBoundaryOfWord();
     }
 
     boolean hasSpace(final String string) {
         return (string.indexOf(' ') > 0);
     }
 
-    String normalizeString(final String string) {
+    private static String normalizeString(final String string) {
         if (string.length() <= 0 || string.charAt(string.length() - 1) != '\0') {
             return string;
         }
