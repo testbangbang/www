@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="divider_color">#AFAFAF</color>
+    <color name="title_background">#FFE9E9E9</color>
+    <color name="light_gray">#333333</color>
+    <color name="dialog_divider_grey">#555555</color>
+    <color name="divider_grey">#ff4b4b4b</color>
+    <color name="normal_black">@android:color/black</color>
+</resources>

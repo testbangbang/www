@@ -1,17 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        tools:context="com.onyx.android.note.MainActivity">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.onyx.android.note.activity.ManageActivity">
 
-    <TextView
-            android:text="Hello World!"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-</RelativeLayout>
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/move"
+                    android:background="@drawable/imagebtn_bg"
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/ic_student_note_delete_black_64dp"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/delete" />
+
+                <TextView
+                    android:id="@+id/move"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/add_folder"
+                    android:background="@drawable/imagebtn_bg"
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/ic_student_note_move_black_64dp"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/move" />
+
+
+                <TextView
+                    android:id="@+id/add_folder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/divider"
+                    android:background="@drawable/imagebtn_bg"
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/ic_student_note_folder_black_64dp"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/add_folder" />
+
+                <View
+                    android:id="@+id/divider"
+                    style="@style/single_line_Y_axis_View"
+                    android:layout_width="1dp"
+                    android:layout_margin="5dp"
+                    android:layout_toLeftOf="@+id/selectMode" />
+
+                <TextView
+                    android:id="@+id/selectMode"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/imagebtn_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/select_mode"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:layout_height="match_parent"/>
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.Toolbar>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_main" />
+
+</android.support.design.widget.CoordinatorLayout>
