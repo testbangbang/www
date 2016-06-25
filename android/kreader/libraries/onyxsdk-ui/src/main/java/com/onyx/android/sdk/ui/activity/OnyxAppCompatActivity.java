@@ -6,8 +6,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.ui.utils.ScreenSpecUtil;
 
 
 /**
@@ -49,11 +52,23 @@ public abstract class OnyxAppCompatActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             actionBar = getSupportActionBar();
             isCustomBackFunctionLayout = customBackFunctionLayout;
+            if (ScreenSpecUtil.isXLargeTablet(this)) {
+                toolbar.setPadding(0, 0, 0, 0);
+            }
             if (isCustomBackFunctionLayout) {
                 actionBar.setDisplayShowTitleEnabled(false);
                 actionBar.setDisplayHomeAsUpEnabled(false);
                 actionBar.setDisplayShowHomeEnabled(false);
                 actionBar.setDisplayUseLogoEnabled(false);
+                RelativeLayout backFunctionLayout = (RelativeLayout) findViewById(R.id.back_function_layout);
+                if (backFunctionLayout != null) {
+                    backFunctionLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onBackPressed();
+                        }
+                    });
+                }
             } else {
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setDisplayShowHomeEnabled(true);
