@@ -119,4 +119,16 @@ public abstract class EpdController
         DeviceInfo.currentDevice.enablePost(view, enable);
     }
 
+    public static void moveTo(float x, float y, float width) {
+        DeviceInfo.currentDevice.moveTo(x, y, width);
+    }
+
+    public static void lineTo(float x, float y, UpdateMode mode) {
+        DeviceInfo.currentDevice.lineTo(x, y, mode);
+    }
+
+    public static void quadTo(float x, float y, UpdateMode mode) {
+        DeviceInfo.currentDevice.quadTo(x, y, mode);
+    }
+
 }

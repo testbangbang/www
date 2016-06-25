@@ -54,6 +54,7 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void beforeExecute(final NoteViewHelper helper) {
+        helper.stop();
         helper.getRequestManager().acquireWakeLock(getContext());
         benchmarkStart();
         invokeStartCallback(helper.getRequestManager());
@@ -171,6 +172,12 @@ public class BaseNoteRequest extends BaseRequest {
         getShapeDataInfo().updateShapePageMap(
                 parent.getNoteDocument().getPageNameList(),
                 parent.getNoteDocument().getCurrentPageIndex());
+    }
+
+    public void ensureDocumentOpened(final NoteViewHelper parent) {
+        if (!parent.getNoteDocument().isOpen()) {
+            parent.getNoteDocument().open(getContext(), getDocUniqueId());
+        }
     }
 
 }

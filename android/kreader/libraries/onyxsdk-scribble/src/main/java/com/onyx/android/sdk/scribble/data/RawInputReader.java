@@ -3,7 +3,10 @@ package com.onyx.android.sdk.scribble.data;
 import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.method.Touch;
 import android.util.Log;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.DataInputStream;
@@ -58,10 +61,18 @@ public class RawInputReader {
     private InputCallback inputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
 
+    /**
+     * matrix used to map point from input device to screen display.
+     * @param sm
+     */
     public void setScreenMatrix(final Matrix sm) {
         screenMatrix = sm;
     }
 
+    /**
+     * Matrix used to map point from screen to view with normalized.
+     * @param vm
+     */
     public void setViewMatrix(final Matrix vm) {
         viewMatrix = vm;
     }
@@ -153,49 +164,66 @@ public class RawInputReader {
      * Use view matrix to map from screen to view.
      * finally we get points inside view. we may need the page matrix
      * to map points from view to page.
-     * @param x
-     * @param y
-     * @param pressure
-     * @param size
-     * @param ts
+     * @param touchPoint
      * @return
      */
-    private TouchPoint mapPoint(int x, int y, int pressure, int size, long ts) {
-        dstPoint[0] = x;
-        dstPoint[1] = y;
+    private TouchPoint mapInputToScreenPoint(final TouchPoint touchPoint) {
+        dstPoint[0] = touchPoint.x;
+        dstPoint[1] = touchPoint.y;
         if (screenMatrix != null) {
-            srcPoint[0] = x;
-            srcPoint[1] = y;
+            srcPoint[0] = touchPoint.x;
+            srcPoint[1] = touchPoint.y;
             screenMatrix.mapPoints(dstPoint, srcPoint);
         }
+        touchPoint.x = dstPoint[0];
+        touchPoint.y = dstPoint[1];
+        return touchPoint;
+    }
+
+    private TouchPoint mapScreenPointToPage(final TouchPoint touchPoint) {
+        dstPoint[0] = touchPoint.x;
+        dstPoint[1] = touchPoint.y;
         if (viewMatrix != null) {
             srcPoint[0] = dstPoint[0];
             srcPoint[1] = dstPoint[1];
             viewMatrix.mapPoints(dstPoint, srcPoint);
         }
-        TouchPoint touchPoint = new TouchPoint(dstPoint[0], dstPoint[1], pressure, size, ts);
+        touchPoint.x = dstPoint[0];
+        touchPoint.y = dstPoint[1];
         return touchPoint;
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
         touchPointList = new TouchPointList(600);
-        touchPointList.add(mapPoint(x, y, pressure, size, ts));
+        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+        mapInputToScreenPoint(touchPoint);
+        EpdController.moveTo(touchPoint.x, touchPoint.y, 7.0f);
+        mapScreenPointToPage(touchPoint);
+        touchPointList.add(touchPoint);
+
         Log.d(TAG, "pressed received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+        mapInputToScreenPoint(touchPoint);
+        EpdController.quadTo(touchPoint.x, touchPoint.y, UpdateMode.DU);
+        mapScreenPointToPage(touchPoint);
+
         if (touchPointList != null) {
-            touchPointList.add(mapPoint(x, y, pressure, size, ts));
+            touchPointList.add(touchPoint);
         }
         Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        if (touchPointList != null) {
-            touchPointList.add(mapPoint(x, y, pressure, size, ts));
-        }
         invokeCallback(touchPointList, erasing);
+        resetPointList();
         Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
+    }
+
+    private void resetPointList() {
+        touchPointList = null;
     }
 
     private void invokeCallback(final TouchPointList touchPointList, final boolean erasing) {

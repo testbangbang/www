@@ -2,9 +2,13 @@ package com.onyx.android.sdk.scribble;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -34,12 +38,15 @@ public class NoteViewHelper {
     private ReaderBitmapImpl bitmapWrapper = null;
     private boolean enableBitmap = true;
     private Rect limitRect = null;
+    private SurfaceView surfaceView;
 
     public void setView(final SurfaceView view) {
+        surfaceView = view;
         initRawInputReader();
         updateScreenMatrix();
         updateViewMatrix();
         updateLimitRect();
+        startDrawing();
     }
 
     private void updateScreenMatrix() {
@@ -55,15 +62,25 @@ public class NoteViewHelper {
     }
 
     public void startDrawing() {
+        surfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return false;
+            }
+        });
         getRawInputReader().start();
+        EpdController.enablePost(surfaceView, 0);
+        //EpdController.startHandwriting();
     }
 
     public void starErasing() {
         getRawInputReader().stop();
+        //EpdController.stopHandwriting();
     }
 
     public void stop() {
         getRawInputReader().stop();
+        //EpdController.stopHandwriting();
     }
 
     public void submit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
@@ -122,6 +139,7 @@ public class NoteViewHelper {
     }
 
     private void initRawInputReader() {
+
         rawInputReader.setInputCallback(new RawInputReader.InputCallback() {
             @Override
             public void onBeginHandWriting() {
@@ -147,6 +165,9 @@ public class NoteViewHelper {
 
             }
         });
+        final Matrix screenMatrix = new Matrix();
+        screenMatrix.preScale(1600.0f / 10206.0f, 1200.0f / 7422.0f);
+        rawInputReader.setScreenMatrix(screenMatrix);
     }
 
 }
