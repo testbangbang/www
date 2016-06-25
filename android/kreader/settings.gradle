@@ -1,1 +1,1 @@
-include ':app:kreader', ':libraries:cropimage', ':libraries:Side-Menu.Android:library', ':libraries:onyxsdk-ui', ':libraries:onyxsdk-base', ':libraries:onyxsdk-scribble', ':app:note'
+include ':app:kreader', ':libraries:cropimage', ':libraries:Side-Menu.Android:library', ':libraries:onyxsdk-ui', ':libraries:onyxsdk-base', ':libraries:onyxsdk-scribble', ':app:note', ':libraries:chinese-analyzer'

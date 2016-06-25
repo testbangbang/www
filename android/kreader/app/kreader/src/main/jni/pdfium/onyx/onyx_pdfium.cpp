@@ -297,8 +297,8 @@ static void selectByWord(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int 
     LOGE("selectByWord: start %d, end %d, left %d, right %d", start, end, left, right);
     
     std::shared_ptr<_jstring> word = getJStringText(env, page, splitter, start, end);
-    std::shared_ptr<_jstring> leftStr = getJStringText(env, page, splitter, left, start);
-    std::shared_ptr<_jstring> rightStr = getJStringText(env, page, splitter, end, right);
+    std::shared_ptr<_jstring> leftStr = getJStringText(env, page, splitter, left, start - 1);
+    std::shared_ptr<_jstring> rightStr = getJStringText(env, page, splitter, end + 1, right);
     
     int leftBoundary = getTextLeftBoundary(env, splitter, word.get(), leftStr.get(), rightStr.get());
     int rightBoundary = getTextRightBoundary(env, splitter, word.get(), leftStr.get(), rightStr.get());
