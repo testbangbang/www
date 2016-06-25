@@ -42,7 +42,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
     private void initView() {
-        initSupportActionBar();
+        initSupportActionBarWithCustomBackFunction();
         getSupportActionBar().setTitle(ManageActivity.class.getSimpleName());
         chooseModeButton = (TextView) findViewById(R.id.selectMode);
         chooseModeButton.setOnClickListener(new View.OnClickListener() {

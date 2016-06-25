@@ -2,4 +2,5 @@
 <resources>
     <item name="tool_bar" type="id" />
     <item name="app_bar" type="id" />
+    <item name="back_function_layout" type="id" />
 </resources>

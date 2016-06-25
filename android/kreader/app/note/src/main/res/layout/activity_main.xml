@@ -3,16 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="com.onyx.android.note.activity.ManageActivity">
-
-    <android.support.design.widget.AppBarLayout style="@style/OnyxAppBarStyle">
 
         <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
 
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_alignParentLeft="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@id/back_function_layout"
+                    style="@style/global_activities_back_function_layout">
+
+                    <ImageView
+                        android:id="@+id/imageView_back"
+                        style="@style/global_activities_back_btn_image" />
+
+                    <TextView
+                        android:id="@+id/textView_main_title"
+                        style="@style/global_activities_back_btn_category_tittle"
+                        android:layout_toRightOf="@+id/imageView_back"
+                        android:ellipsize="middle"
+                        android:gravity="left|center_vertical"
+                        android:maxLines="1"
+                        android:text="@string/app_name" />
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/delete"
@@ -37,7 +53,6 @@
                     android:focusable="true"
                     android:gravity="center_vertical"
                     android:text="@string/move" />
-
 
                 <TextView
                     android:id="@+id/add_folder"
@@ -71,11 +86,10 @@
                     android:text="@string/select_mode" />
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
 
     <com.onyx.android.sdk.ui.view.ContentView
         android:id="@+id/note_content_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/app_bar" />
+        android:layout_below="@id/tool_bar" />
 </RelativeLayout>
