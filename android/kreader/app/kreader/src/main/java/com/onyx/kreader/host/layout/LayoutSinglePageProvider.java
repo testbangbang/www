@@ -183,6 +183,6 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     // return true when provider wants to regard viewport as page, ignore the other content.
     // When it's true, provider turn to next page or prev page directly instead of moving viewport.
     private boolean viewportAsPage() {
-        return getPageManager().isScaleToPageContent() || getPageManager().isScaleToPage();
+        return getPageManager().isScaleToPage();
     }
 }
