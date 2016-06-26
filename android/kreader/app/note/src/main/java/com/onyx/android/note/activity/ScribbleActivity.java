@@ -8,23 +8,24 @@ import android.os.Bundle;
 
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 
-import java.util.Collection;
-
 public class ScribbleActivity extends OnyxAppCompatActivity {
 
-
     private SurfaceView surfaceView;
-    private NoteViewHelper noteViewHelper = new NoteViewHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
+    }
+
+    private NoteViewHelper getNoteViewHelper() {
+        return NoteApplication.getNoteViewHelper();
     }
 
     @Override
@@ -35,9 +36,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
                 cleanup(surfaceView);
-                noteViewHelper.setView(surfaceView);
-                noteViewHelper.stop();
-                noteViewHelper.startDrawing();
+                getNoteViewHelper().setView(surfaceView);
+                getNoteViewHelper().reset();
+                getNoteViewHelper().startDrawing();
             }
 
             @Override
@@ -56,7 +57,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        noteViewHelper.stop();
+        getNoteViewHelper().reset();
     }
 
     private void cleanup(final SurfaceView surfaceView) {

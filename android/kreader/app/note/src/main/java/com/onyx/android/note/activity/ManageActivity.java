@@ -5,10 +5,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
+import com.onyx.android.note.actions.GotoUpAction;
+import com.onyx.android.note.actions.LoadNoteListAction;
+import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -17,6 +25,7 @@ import com.onyx.android.sdk.ui.view.ContentView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class ManageActivity extends OnyxAppCompatActivity {
@@ -28,17 +37,35 @@ public class ManageActivity extends OnyxAppCompatActivity {
     int currentSelectMode = SelectionMode.NORMAL_MODE;
     private int currentPage;
 
-    TextView chooseModeButton, addFolderButton, cutButton, deleteButton;
-    ArrayList<GObject> chosenItemsList = new ArrayList<GObject>();
-    ContentView contentView;
-    GAdapter adapter;
+    private TextView chooseModeButton, addFolderButton, cutButton, deleteButton;
+    private ArrayList<GObject> chosenItemsList = new ArrayList<GObject>();
+    private ContentView contentView;
+    private GAdapter adapter;
+    private String currentLibraryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initNoteViewHelper();
         initView();
-        loadData();
+        loadNoteList();
+    }
+
+    private void initNoteViewHelper() {
+        getNoteViewHelper().reset();
+    }
+
+    public NoteViewHelper getNoteViewHelper() {
+        return NoteApplication.getNoteViewHelper();
+    }
+
+    public String getCurrentLibraryId() {
+        return currentLibraryId;
+    }
+
+    public void setCurrentLibraryId(String currentLibraryId) {
+        this.currentLibraryId = currentLibraryId;
     }
 
     private void initView() {
@@ -62,19 +89,14 @@ public class ManageActivity extends OnyxAppCompatActivity {
         });
         contentView = (ContentView) findViewById(R.id.note_content_view);
         contentView.setBlankAreaAnswerLongClick(false);
-        contentView.setupGridLayout(3, 3);
+        contentView.setupGridLayout(getRows(), getColumns());
         contentView.setShowPageInfoArea(false);
         contentView.setCallback(new ContentView.ContentViewCallback() {
             @Override
             public void onItemClick(ContentItemView view) {
                 switch (currentSelectMode) {
                     case SelectionMode.NORMAL_MODE:
-//                        if (GAdapterUtil.isDirectory(view.getData())) {
-//                            return;
-//                        }
-                        if (view.getData().getString(GAdapterUtil.TAG_TITLE_STRING).equalsIgnoreCase("0")) {
-                            startActivity(new Intent(ManageActivity.this, ScribbleActivity.class));
-                        }
+                        onNormalModeItemClick(view);
                         break;
                     case SelectionMode.MULTISELECT_MODE:
                         GObject temp = view.getData();
@@ -96,9 +118,40 @@ public class ManageActivity extends OnyxAppCompatActivity {
         });
     }
 
-    private void loadData() {
-        contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
-        contentView.setAdapter(getTestAdapter(), 0);
+    private void onNormalModeItemClick(final ContentItemView view) {
+        final GObject object = view.getData();
+        if (Utils.isLibrary(object)) {
+            gotoLibrary(GAdapterUtil.getUniqueId(object));
+            return;
+        }
+
+        if (Utils.isDocument(object)) {
+            editExistingDocument(GAdapterUtil.getUniqueId(object));
+            return;
+        }
+
+        if (Utils.isNew(object)) {
+            createNewDocument();
+            return;
+        }
+
+        if (Utils.isGotoUp(object)) {
+            gotoUp();
+            return;
+        }
+
+    }
+
+    private void createNewDocument() {
+        final Intent intent = new Intent(ManageActivity.this, ScribbleActivity.class);
+        intent.putExtra(Utils.DOCUMENT_ID, ShapeUtils.generateUniqueId());
+        startActivity(intent);
+    }
+
+    private void editExistingDocument(final String id) {
+        final Intent intent = new Intent(ManageActivity.this, ScribbleActivity.class);
+        intent.putExtra(Utils.DOCUMENT_ID, id);
+        startActivity(intent);
     }
 
     private HashMap<String, Integer> getItemViewDataMap(@SelectionMode.SelectionModeDef int mode) {
@@ -120,35 +173,6 @@ public class ManageActivity extends OnyxAppCompatActivity {
         return mapping;
     }
 
-    private GObject createFilterItem(String num, int imageRes) {
-        return GAdapterUtil.createTableItem(num, null, imageRes, 0, null);
-    }
-
-    private GAdapter getNoteAdapter() {
-        if (adapter == null) {
-            adapter = new GAdapter();
-        }
-        return adapter;
-    }
-
-    private GAdapter getTestAdapter() {
-        if (adapter == null) {
-            adapter = new GAdapter();
-            adapter.addObject(createFilterItem(Integer.toString(0), R.drawable.ic_student_note_plus_gray_250dp));
-            for (int i = 1; i < 4; i++) {
-                adapter.addObject(createFilterItem(Integer.toString(i), R.drawable.ic_student_note_folder_gray_250dp));
-            }
-            for (int i = 4; i < 256; i++) {
-                if (i % 2 == 0) {
-                    adapter.addObject(createFilterItem(Integer.toString(i), R.drawable.ic_student_note_doc_gray_250dp));
-                } else {
-                    adapter.addObject(createFilterItem(Integer.toString(i), R.drawable.ic_student_note_pic_gray_250dp));
-                }
-            }
-        }
-        return adapter;
-    }
-
     private void switchMode(@SelectionMode.SelectionModeDef int selectionMode) {
         currentPage = contentView.getCurrentPage();
         currentSelectMode = selectionMode;
@@ -165,13 +189,51 @@ public class ManageActivity extends OnyxAppCompatActivity {
     private void switchToNormalMode() {
         contentView.setSubLayoutParameter(R.layout.scribble_item,
                 getItemViewDataMap(SelectionMode.NORMAL_MODE));
-        contentView.setupContent(3, 3, getTestAdapter(), 0, true);
+        contentView.setupContent(getRows(), getColumns(), getCurrentAdapter(), 0, true);
         contentView.unCheckAllViews();
     }
 
     private void switchToMultiSelectionMode() {
         contentView.setSubLayoutParameter(R.layout.scribble_item,
                 getItemViewDataMap(SelectionMode.MULTISELECT_MODE));
-        contentView.setupContent(3, 3, getTestAdapter(), 0, true);
+        contentView.setupContent(getRows(), getColumns(), getCurrentAdapter(), 0, true);
     }
+
+    private int getRows() {
+        return 3;
+    }
+
+    private int getColumns() {
+        return 3;
+    }
+
+    public void loadNoteList() {
+        final LoadNoteListAction action = new LoadNoteListAction(getCurrentLibraryId());
+        action.execute(this);
+    }
+
+    private void gotoUp() {
+        final GotoUpAction action = new GotoUpAction(getCurrentLibraryId());
+        action.execute(this);
+    }
+
+    private void gotoLibrary(final String id) {
+        setCurrentLibraryId(id);
+        loadNoteList();
+    }
+
+    private GAdapter getCurrentAdapter() {
+        return adapter;
+    }
+
+    public void updateWithNoteList(final List<NoteModel> noteModelList) {
+        contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
+        adapter = Utils.adapterFromNoteModelList(noteModelList, R.drawable.ic_student_note_folder_gray_250dp,
+                R.drawable.ic_student_note_pic_gray_250dp);
+        adapter.addObject(0, Utils.createNewItem(Integer.toString(0), R.drawable.ic_student_note_plus_gray_250dp));
+        contentView.setAdapter(adapter, 0);
+    }
+
+
+
 }
