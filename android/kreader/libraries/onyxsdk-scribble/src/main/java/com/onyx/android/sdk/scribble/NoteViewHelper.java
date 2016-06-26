@@ -81,7 +81,7 @@ public class NoteViewHelper {
         getRawInputProcessor().stop();
     }
 
-    public void stop() {
+    public void reset() {
         getRawInputProcessor().stop();
     }
 

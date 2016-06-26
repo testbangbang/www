@@ -73,7 +73,7 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void beforeExecute(final NoteViewHelper helper) {
         if (isPauseInputProcessor()) {
-            helper.stop();
+            helper.reset();
         }
         helper.getRequestManager().acquireWakeLock(getContext());
         benchmarkStart();

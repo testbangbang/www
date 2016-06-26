@@ -29,8 +29,6 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
         for(NoteModel noteModel : noteList) {
             if (noteModel.isDocument()) {
                 noteModel.setThumbnail(NoteDataProvider.loadThumbnail(getContext(), noteModel.getUniqueId()));
-            } else {
-                // use default drawable
             }
         }
     }
