@@ -175,7 +175,6 @@ public class RawInputProcessor {
                 lastPressed = false;
             } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
                 erasing = false;
-                lastPressed = false;
             } else if (code == BTN_TOOL_RUBBER) {
                 erasing = true;
                 pressed = value > 0;
