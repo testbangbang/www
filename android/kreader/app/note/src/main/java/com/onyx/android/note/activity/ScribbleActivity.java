@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ImageView;
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
@@ -16,11 +18,14 @@ import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private SurfaceView surfaceView;
+    private ImageView pencilButton;
+    private ImageView eraseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scribble);
+        initToolbar();
         initSupportActionBarWithCustomBackFunction();
     }
 
@@ -60,6 +65,25 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         getNoteViewHelper().reset();
     }
 
+    private void initToolbar() {
+        pencilButton = (ImageView)findViewById(R.id.pencil_button);
+        pencilButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPencilClicked();
+            }
+        });
+
+        eraseButton = (ImageView)findViewById(R.id.erase_button);
+        eraseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onEraseClicked();
+            }
+        });
+
+    }
+
     private void cleanup(final SurfaceView surfaceView) {
         Rect rect = new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
         Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
@@ -72,6 +96,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         paint.setColor(Color.WHITE);
         canvas.drawRect(rect, paint);
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
+    }
 
+    private void onPencilClicked() {
+        NoteApplication.getNoteViewHelper().startDrawing();
+    }
+
+    private void onEraseClicked() {
+        // reset and render page.
+        NoteApplication.getNoteViewHelper().reset();
     }
 }
