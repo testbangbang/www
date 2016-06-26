@@ -4,4 +4,6 @@
     <string name="move">Move</string>
     <string name="add_folder">Add Folder</string>
     <string name="select_mode">SelectMode</string>
+    <string name="paged_init_text">1/1</string>
+    <string name="switch_bg">Change Background</string>
 </resources>

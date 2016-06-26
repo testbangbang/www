@@ -16,6 +16,7 @@ import java.util.Collection;
 
 public class ScribbleActivity extends OnyxAppCompatActivity {
 
+
     private SurfaceView surfaceView;
     private NoteViewHelper noteViewHelper = new NoteViewHelper();
 
@@ -23,13 +24,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scribble);
-        initSupportActionBar();
+        initSupportActionBarWithCustomBackFunction();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        surfaceView = (SurfaceView)findViewById(R.id.surface_view);
+        surfaceView = (SurfaceView)findViewById(R.id.note_view);
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
