@@ -13,6 +13,7 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.RawInputProcessor;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
@@ -41,7 +42,7 @@ public class NoteViewHelper {
 
     public void setView(final SurfaceView view) {
         initWithSurfaceView(view);
-        initRawInputReader();
+        initRawInputProcessor();
         updateScreenMatrix();
         updateViewMatrix();
         updateLimitRect();
@@ -59,7 +60,9 @@ public class NoteViewHelper {
     }
 
     private void updateScreenMatrix() {
-        // read from conf or
+        final Matrix screenMatrix = new Matrix();
+        screenMatrix.preScale(1600.0f / 10206.0f, 1200.0f / 7422.0f);
+        rawInputProcessor.setScreenMatrix(screenMatrix);
     }
 
     private void updateViewMatrix() {
@@ -71,18 +74,15 @@ public class NoteViewHelper {
     }
 
     public void startDrawing() {
-        getRawInputProcessor().start(surfaceView);
-        //EpdController.startHandwriting();
+        getRawInputProcessor().start();
     }
 
     public void starErasing() {
         getRawInputProcessor().stop();
-        //EpdController.stopHandwriting();
     }
 
     public void stop() {
         getRawInputProcessor().stop();
-        //EpdController.stopHandwriting();
     }
 
     public void submit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
@@ -140,8 +140,8 @@ public class NoteViewHelper {
         return runnable;
     }
 
-    private void initRawInputReader() {
-
+    private void initRawInputProcessor() {
+        rawInputProcessor.setParentView(surfaceView);
         rawInputProcessor.setInputCallback(new RawInputProcessor.InputCallback() {
             @Override
             public void onBeginHandWriting() {
@@ -149,27 +149,28 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onNewStrokeReceived(TouchPointList pointList) {
+            public void onNewTouchPointListReceived(TouchPointList pointList) {
                 // create shape and add to memory.
-                Shape shape = new NormalScribbleShape();
-                shape.addPoints(pointList);
+                //Shape shape = new NormalScribbleShape();
+                //shape.addPoints(pointList);
                 // send request and send to request manager.
+            }
+
+            @Override
+            public void onBeginErasing() {
 
             }
 
             @Override
-            public void onBeginErase() {
+            public void onErasing(TouchPoint touchPoint) {
 
             }
 
             @Override
-            public void onEraseReceived(TouchPointList pointList) {
+            public void onEraseTouchPointListReceived(TouchPointList pointList) {
 
             }
         });
-        final Matrix screenMatrix = new Matrix();
-        screenMatrix.preScale(1600.0f / 10206.0f, 1200.0f / 7422.0f);
-        rawInputProcessor.setScreenMatrix(screenMatrix);
     }
 
 }
