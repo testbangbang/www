@@ -11,7 +11,7 @@ import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
 /**
  * Created by zhuzeng on 6/26/16.
  */
-public class GotoUpAction extends BaseNoteAction {
+public class GotoUpAction<T extends ManageActivity>  extends BaseNoteAction<T> {
 
     private volatile String uniqueId;
 
@@ -20,7 +20,7 @@ public class GotoUpAction extends BaseNoteAction {
     }
 
     @Override
-    public void execute(final ManageActivity activity) {
+    public void execute(final T activity) {
         final NoteModel noteModel = NoteDataProvider.load(activity, uniqueId);
         final NoteLibraryLoadRequest loadRequest = new NoteLibraryLoadRequest(noteModel.getParentUniqueId());
         activity.getNoteViewHelper().submit(activity, loadRequest, new BaseCallback() {

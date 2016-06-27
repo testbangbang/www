@@ -117,7 +117,7 @@ public class RawInputProcessor {
             public void run() {
                 try {
                     detectInputDevicePath();
-                    readLoop(view);
+                    readLoop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -126,7 +126,7 @@ public class RawInputProcessor {
         thread.start();
     }
 
-    private void readLoop(final SurfaceView view) throws Exception {
+    private void readLoop() throws Exception {
         DataInputStream in = new DataInputStream(new FileInputStream(systemPath));
         byte[] data = new byte[16];
         while (!stop) {

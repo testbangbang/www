@@ -23,7 +23,6 @@ public class PageListRenderRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
-        parent.reset();
         ensureDocumentOpened(parent);
         loadShapeData(parent);
         renderVisiblePages(parent);

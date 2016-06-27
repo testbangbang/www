@@ -53,7 +53,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
     private void initNoteViewHelper() {
-        getNoteViewHelper().reset();
+        getNoteViewHelper().stopDrawing();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -145,12 +145,14 @@ public class ManageActivity extends OnyxAppCompatActivity {
     private void createNewDocument() {
         final Intent intent = new Intent(ManageActivity.this, ScribbleActivity.class);
         intent.putExtra(Utils.DOCUMENT_ID, ShapeUtils.generateUniqueId());
+        intent.putExtra(Utils.ACTION_TYPE, Utils.ACTION_CREATE);
         startActivity(intent);
     }
 
     private void editExistingDocument(final String id) {
         final Intent intent = new Intent(ManageActivity.this, ScribbleActivity.class);
         intent.putExtra(Utils.DOCUMENT_ID, id);
+        intent.putExtra(Utils.ACTION_TYPE, Utils.ACTION_EDIT);
         startActivity(intent);
     }
 
