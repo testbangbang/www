@@ -60,17 +60,17 @@ public class RawInputProcessor {
 
     }
 
-    private int px, py, pressure;
-    private boolean erasing = false;
-    private boolean lastErasing = false;
-    private boolean pressed;
-    private boolean lastPressed;
+    private volatile int px, py, pressure;
+    private volatile boolean erasing = false;
+    private volatile boolean lastErasing = false;
+    private volatile boolean pressed;
+    private volatile boolean lastPressed;
     private volatile boolean stop = false;
     private String systemPath = "/dev/input/event1";
-    private Matrix screenMatrix;
-    private Matrix viewMatrix;
-    private float[] srcPoint = new float[2];
-    private float[] dstPoint = new float[2];
+    private volatile Matrix screenMatrix;
+    private volatile Matrix viewMatrix;
+    private volatile float[] srcPoint = new float[2];
+    private volatile float[] dstPoint = new float[2];
     private volatile TouchPointList touchPointList;
     private InputCallback inputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -210,7 +210,7 @@ public class RawInputProcessor {
     }
 
     /**
-     * Use screen matrix to map from touch device to screen
+     * Use screen matrix to map from touch device to screen with correct orientation.
      * Use view matrix to map from screen to view.
      * finally we get points inside view. we may need the page matrix
      * to map points from view to page.
@@ -230,12 +230,17 @@ public class RawInputProcessor {
         return touchPoint;
     }
 
+    /**
+     * map points from screen to view.
+     * @param touchPoint
+     * @return
+     */
     private TouchPoint mapScreenPointToPage(final TouchPoint touchPoint) {
         dstPoint[0] = touchPoint.x;
         dstPoint[1] = touchPoint.y;
         if (viewMatrix != null) {
-            srcPoint[0] = dstPoint[0];
-            srcPoint[1] = dstPoint[1];
+            srcPoint[0] = touchPoint.x;
+            srcPoint[1] = touchPoint.y;
             viewMatrix.mapPoints(dstPoint, srcPoint);
         }
         touchPoint.x = dstPoint[0];
@@ -316,7 +321,7 @@ public class RawInputProcessor {
     }
 
     private void invokeTouchPointListFinished(final TouchPointList touchPointList, final boolean erasing) {
-        if (inputCallback == null) {
+        if (inputCallback == null || touchPointList == null) {
             return;
         }
         handler.post(new Runnable() {

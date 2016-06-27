@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -39,6 +41,7 @@ public class NoteViewHelper {
     private boolean enableBitmap = true;
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
+    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
 
     public void setView(final SurfaceView view) {
         initWithSurfaceView(view);
@@ -56,33 +59,87 @@ public class NoteViewHelper {
                 return false;
             }
         });
-
+        surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener());
     }
 
+    private ViewTreeObserver.OnGlobalLayoutListener getGlobalLayoutListener() {
+        if (globalLayoutListener == null) {
+            globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    updateViewMatrix();
+                    updateLimitRect();
+                }
+            };
+        }
+        return globalLayoutListener;
+    }
+
+    private float getEpdWidth() {
+        final float epdWidth = 1600;
+        return epdWidth;
+    }
+
+    private float getEpdHeight() {
+        final float epdHeight = 1200;
+        return epdHeight;
+    }
+
+    // the same orientation with epd and digitizer.
     private void updateScreenMatrix() {
         final Matrix screenMatrix = new Matrix();
-        screenMatrix.preScale(1600.0f / 10206.0f, 1200.0f / 7422.0f);
+        screenMatrix.postRotate(90);
+        screenMatrix.postTranslate(getEpdHeight(), 0);
         rawInputProcessor.setScreenMatrix(screenMatrix);
     }
 
+    // consider view offset to screen.
     private void updateViewMatrix() {
-
+        int viewPosition[] = {0, 0};
+        surfaceView.getLocationOnScreen(viewPosition);
+        final Matrix viewMatrix = new Matrix();
+        viewMatrix.postTranslate(-viewPosition[0], -viewPosition[1]);
+        viewMatrix.postScale(1.0f / surfaceView.getWidth(), 1.0f / surfaceView.getHeight());
+        rawInputProcessor.setViewMatrix(viewMatrix);
     }
 
     private void updateLimitRect() {
-
+        final Rect rect = new Rect();
+        surfaceView.getGlobalVisibleRect(rect);
+        int viewPosition[] = {0, 0};
+        surfaceView.getLocationOnScreen(viewPosition);
+        rect.offsetTo(viewPosition[0], viewPosition[1]);
+        final Matrix matrix = new Matrix();
+        matrix.postRotate(270);
+        matrix.postTranslate(0, getEpdHeight());
+        float src[] = new float[4];
+        src[0] = rect.left;
+        src[1] = rect.top;
+        src[2] = rect.right;
+        src[3] = rect.bottom;
+        float dst[] = new float[4];
+        matrix.mapPoints(dst, src);
+        rect.set((int)dst[0], (int)dst[1], (int)dst[2], (int)dst[3]);
+        EpdController.setScreenHandWritingRegionLimit(surfaceView,
+                Math.min(rect.left, rect.right),
+                Math.min(rect.top, rect.bottom),
+                Math.max(rect.left, rect.right),
+                Math.max(rect.top, rect.bottom));
     }
 
     public void startDrawing() {
         getRawInputProcessor().start();
     }
 
-    public void starErasing() {
+    public void reset() {
         getRawInputProcessor().stop();
     }
 
-    public void reset() {
-        getRawInputProcessor().stop();
+    public void stop() {
+        if (surfaceView == null || globalLayoutListener == null) {
+            return;
+        }
+        surfaceView.getViewTreeObserver().removeOnGlobalLayoutListener(getGlobalLayoutListener());
     }
 
     public void submit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
@@ -151,8 +208,8 @@ public class NoteViewHelper {
             @Override
             public void onNewTouchPointListReceived(TouchPointList pointList) {
                 // create shape and add to memory.
-                //Shape shape = new NormalScribbleShape();
-                //shape.addPoints(pointList);
+                Shape shape = new NormalScribbleShape();
+                shape.addPoints(pointList);
                 // send request and send to request manager.
             }
 
