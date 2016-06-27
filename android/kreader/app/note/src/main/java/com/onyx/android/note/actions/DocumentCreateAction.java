@@ -21,8 +21,7 @@ public class DocumentCreateAction<T extends ScribbleActivity> extends BaseNoteAc
         activity.getNoteViewHelper().submit(activity, createRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                activity.onDocumentOpened();
-                activity.startDrawing();
+                activity.onRequestFinished();
             }
         });
     }

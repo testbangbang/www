@@ -135,8 +135,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this);
     }
 
-    public void onDocumentOpened() {
+    public void onRequestFinished() {
         drawPage();
+        startDrawing();
     }
 
     public void drawPage() {
