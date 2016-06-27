@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">笔记</string>
     <string name="switch_bg">更换背景</string>
+    <string name="add_new_page">新增页面</string>
 </resources>

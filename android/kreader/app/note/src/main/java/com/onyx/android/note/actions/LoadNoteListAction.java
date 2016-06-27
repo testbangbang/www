@@ -1,10 +1,8 @@
 package com.onyx.android.note.actions;
 
-import android.widget.BaseAdapter;
 import com.onyx.android.note.activity.ManageActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
 
 /**

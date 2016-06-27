@@ -4,7 +4,6 @@ import com.onyx.android.note.activity.ManageActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.request.note.NoteLibraryCreateRequest;
-import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
 
 /**
  * Created by zhuzeng on 6/26/16.

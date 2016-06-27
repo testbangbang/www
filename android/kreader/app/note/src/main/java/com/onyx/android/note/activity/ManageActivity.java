@@ -7,14 +7,16 @@ import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
+import com.onyx.android.note.actions.CreateLibraryAction;
 import com.onyx.android.note.actions.GotoUpAction;
 import com.onyx.android.note.actions.LoadNoteListAction;
+import com.onyx.android.note.actions.NoteLibraryRemoveAction;
+import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
@@ -37,7 +39,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     int currentSelectMode = SelectionMode.NORMAL_MODE;
     private int currentPage;
 
-    private TextView chooseModeButton, addFolderButton, cutButton, deleteButton;
+    private TextView chooseModeButton, addFolderButton, moveButton, deleteButton;
     private ArrayList<GObject> chosenItemsList = new ArrayList<GObject>();
     private ContentView contentView;
     private GAdapter adapter;
@@ -49,6 +51,11 @@ public class ManageActivity extends OnyxAppCompatActivity {
         setContentView(R.layout.activity_main);
         initNoteViewHelper();
         initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadNoteList();
     }
 
@@ -72,6 +79,9 @@ public class ManageActivity extends OnyxAppCompatActivity {
         initSupportActionBarWithCustomBackFunction();
         getSupportActionBar().setTitle(ManageActivity.class.getSimpleName());
         chooseModeButton = (TextView) findViewById(R.id.selectMode);
+        addFolderButton = (TextView) findViewById(R.id.add_folder);
+        moveButton = (TextView) findViewById(R.id.move);
+        deleteButton = (TextView) findViewById(R.id.delete);
         chooseModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,11 +97,49 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 }
             }
         });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO:need distinguish doc/library.
+                ArrayList<String> targetRemoveIDList = new ArrayList<>();
+                for (GObject object : chosenItemsList) {
+                    targetRemoveIDList.add(GAdapterUtil.getUniqueId(object));
+                }
+                new NoteLibraryRemoveAction(targetRemoveIDList).execute(ManageActivity.this);
+                switchMode(SelectionMode.NORMAL_MODE);
+            }
+        });
+        addFolderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int bound = (int) (3 * Math.random());
+                for (int i = 0; i < 3 + bound; i++) {
+                    final CreateLibraryAction action = new CreateLibraryAction(getCurrentLibraryId(), Integer.toString(i));
+                    action.execute(ManageActivity.this);
+                }
+            }
+        });
         contentView = (ContentView) findViewById(R.id.note_content_view);
         contentView.setBlankAreaAnswerLongClick(false);
         contentView.setupGridLayout(getRows(), getColumns());
         contentView.setShowPageInfoArea(false);
         contentView.setCallback(new ContentView.ContentViewCallback() {
+            @Override
+            public void beforeSetupData(ContentItemView view, GObject object) {
+                if (object.isDummyObject()) {
+                    return;
+                }
+                switch (Utils.getItemType(object)) {
+                    case DataItemType.TYPE_CREATE:
+                    case DataItemType.TYPE_DOCUMENT:
+                        view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, R.drawable.image_border);
+                        break;
+                    case DataItemType.TYPE_LIBRARY:
+                        view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, 0);
+                        break;
+                }
+            }
+
             @Override
             public void onItemClick(ContentItemView view) {
                 switch (currentSelectMode) {
@@ -113,6 +161,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
                         contentView.setCustomInfo(Integer.toString(chosenItemsList.size()), true);
                         break;
                 }
+                updateButtonsStatusByMode();
             }
 
         });
@@ -120,42 +169,38 @@ public class ManageActivity extends OnyxAppCompatActivity {
 
     private void onNormalModeItemClick(final ContentItemView view) {
         final GObject object = view.getData();
-        if (Utils.isLibrary(object)) {
-            gotoLibrary(GAdapterUtil.getUniqueId(object));
-            return;
+        switch (Utils.getItemType(object)) {
+            case DataItemType.TYPE_CREATE:
+                editDocument(true);
+                break;
+            case DataItemType.TYPE_GOTO_UP:
+                gotoUp();
+                break;
+            case DataItemType.TYPE_DOCUMENT:
+                editDocument(false, GAdapterUtil.getUniqueId(object));
+                break;
+            case DataItemType.TYPE_LIBRARY:
+                gotoLibrary(GAdapterUtil.getUniqueId(object));
+                break;
+            case DataItemType.TYPE_INVALID:
+                break;
         }
-
-        if (Utils.isDocument(object)) {
-            editExistingDocument(GAdapterUtil.getUniqueId(object));
-            return;
-        }
-
-        if (Utils.isNew(object)) {
-            createNewDocument();
-            return;
-        }
-
-        if (Utils.isGotoUp(object)) {
-            gotoUp();
-            return;
-        }
-
     }
 
-    private void createNewDocument() {
-        final Intent intent = new Intent(ManageActivity.this, ScribbleActivity.class);
-        intent.putExtra(Utils.DOCUMENT_ID, ShapeUtils.generateUniqueId());
-        startActivity(intent);
-    }
-
-    private void editExistingDocument(final String id) {
-        final Intent intent = new Intent(ManageActivity.this, ScribbleActivity.class);
-        intent.putExtra(Utils.DOCUMENT_ID, id);
+    private void editDocument(boolean isNew, String... id) {
+        final Intent intent = Utils.getScribbleIntent(this);
+        String targetID;
+        if (isNew) {
+            targetID = ShapeUtils.generateUniqueId();
+        } else {
+            targetID = id[0];
+        }
+        intent.putExtra(Utils.DOCUMENT_ID, targetID);
         startActivity(intent);
     }
 
     private HashMap<String, Integer> getItemViewDataMap(@SelectionMode.SelectionModeDef int mode) {
-        HashMap<String, Integer> mapping = new HashMap<String, Integer>();
+        HashMap<String, Integer> mapping = new HashMap<>();
         switch (mode) {
             case SelectionMode.PASTE_MODE:
             case SelectionMode.NORMAL_MODE:
@@ -174,29 +219,14 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
     private void switchMode(@SelectionMode.SelectionModeDef int selectionMode) {
+        chosenItemsList.clear();
         currentPage = contentView.getCurrentPage();
         currentSelectMode = selectionMode;
-        switch (selectionMode) {
-            case SelectionMode.NORMAL_MODE:
-                switchToNormalMode();
-                break;
-            case SelectionMode.MULTISELECT_MODE:
-                switchToMultiSelectionMode();
-                break;
-        }
-    }
-
-    private void switchToNormalMode() {
         contentView.setSubLayoutParameter(R.layout.scribble_item,
-                getItemViewDataMap(SelectionMode.NORMAL_MODE));
-        contentView.setupContent(getRows(), getColumns(), getCurrentAdapter(), 0, true);
+                getItemViewDataMap(selectionMode));
         contentView.unCheckAllViews();
-    }
-
-    private void switchToMultiSelectionMode() {
-        contentView.setSubLayoutParameter(R.layout.scribble_item,
-                getItemViewDataMap(SelectionMode.MULTISELECT_MODE));
-        contentView.setupContent(getRows(), getColumns(), getCurrentAdapter(), 0, true);
+        contentView.setupContent(getRows(), getColumns(), adapter, 0, true);
+        updateButtonsStatusByMode();
     }
 
     private int getRows() {
@@ -222,18 +252,42 @@ public class ManageActivity extends OnyxAppCompatActivity {
         loadNoteList();
     }
 
-    private GAdapter getCurrentAdapter() {
-        return adapter;
-    }
-
     public void updateWithNoteList(final List<NoteModel> noteModelList) {
         contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
         adapter = Utils.adapterFromNoteModelList(noteModelList, R.drawable.ic_student_note_folder_gray_250dp,
                 R.drawable.ic_student_note_pic_gray_250dp);
-        adapter.addObject(0, Utils.createNewItem(Integer.toString(0), R.drawable.ic_student_note_plus_gray_250dp));
-        contentView.setAdapter(adapter, 0);
+        adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_student_note_plus_gray_250dp));
+        contentView.setupContent(getRows(), getColumns(), adapter, 0, true);
+        contentView.updateCurrentPage();
+        updateButtonsStatusByMode();
     }
 
+    private void updateButtonsStatusByMode() {
+        switch (currentSelectMode) {
+            case SelectionMode.MULTISELECT_MODE:
+                deleteButton.setVisibility(View.VISIBLE);
+                moveButton.setVisibility(View.VISIBLE);
+                if (chosenItemsList.size() <= 0) {
+                    deleteButton.setEnabled(false);
+                    moveButton.setEnabled(false);
+                } else {
+                    deleteButton.setEnabled(true);
+                    moveButton.setEnabled(true);
+                }
+                break;
+            case SelectionMode.NORMAL_MODE:
+                deleteButton.setVisibility(View.GONE);
+                moveButton.setVisibility(View.GONE);
+                break;
+        }
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        if (currentLibraryId != null) {
+            gotoUp();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
