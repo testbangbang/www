@@ -105,5 +105,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private void onEraseClicked() {
         // reset and render page.
         NoteApplication.getNoteViewHelper().reset();
+
+
     }
 }
