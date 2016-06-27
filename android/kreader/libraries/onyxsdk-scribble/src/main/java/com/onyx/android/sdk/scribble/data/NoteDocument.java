@@ -30,6 +30,10 @@ public class NoteDocument {
         markDocumentOpen();
     }
 
+    public void cleanDocument(final Context context) {
+        pageDataMap.clear();
+    }
+
     public boolean isOpen() {
         return isOpen;
     }
