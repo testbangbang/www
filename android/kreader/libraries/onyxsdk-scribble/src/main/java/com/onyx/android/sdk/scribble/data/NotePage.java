@@ -82,6 +82,11 @@ public class NotePage {
         }
     }
 
+    public void addShapeList(final List<Shape> shapes) {
+        newAddedShapeList.addAll(shapes);
+        shapeList.addAll(shapes);
+    }
+
     public void removeShape(final Shape shape) {
         removedShapeList.add(shape);
         newAddedShapeList.remove(shape);

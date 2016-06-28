@@ -83,8 +83,8 @@ public class MatrixTest  extends ApplicationTestCase<Application> {
 
         float [] src = new float[2];
         float [] dst = new float[2];
-        src[0] = 1451;//TestUtils.randInt(1, (int)touchWidth - 10);
-        src[1] = 1155;//TestUtils.randInt(1, (int)touchHeight - 10);
+        src[0] = TestUtils.randInt(1, (int)touchWidth - 10);
+        src[1] = TestUtils.randInt(1, (int)touchHeight - 10);
 
         screenMatrix.mapPoints(dst, src);
         float x = 1200 - src[1] / touchHeight * epdHeight;

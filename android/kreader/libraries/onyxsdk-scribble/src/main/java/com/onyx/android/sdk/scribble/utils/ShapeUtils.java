@@ -1,11 +1,11 @@
 package com.onyx.android.sdk.scribble.utils;
 
-import android.graphics.Matrix;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.*;
 import android.view.MotionEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 /**
@@ -66,4 +66,30 @@ public class ShapeUtils {
         origin.set((int)dst[0], (int)dst[1], (int)dst[2], (int)dst[3]);
         return origin;
     }
+
+    public static void renderShape(final Canvas canvas, final Paint paint, final Matrix matrix, final TouchPointList pointList) {
+        if (pointList == null || pointList.size() <= 0) {
+            return;
+        }
+        final Iterator<TouchPoint> iterator = pointList.iterator();
+        TouchPoint touchPoint = iterator.next();
+        Path path = new Path();
+
+        final float src[] = new float[2];
+        final float dst[] = new float[2];
+        final float lastDst[] = new float[2];
+        touchPoint.mapPoint(matrix, src, dst);
+        path.moveTo(dst[0], dst[1]);
+        lastDst[0] = dst[0];
+        lastDst[1] = dst[1];
+        while (iterator.hasNext()) {
+            touchPoint = iterator.next();
+            touchPoint.mapPoint(matrix, src, dst);
+            path.quadTo((lastDst[0] + dst[0]) / 2, (lastDst[1] + dst[1]) / 2, dst[0], dst[1]);
+            lastDst[0] = dst[0];
+            lastDst[1] = dst[1];
+        }
+        canvas.drawPath(path, paint);
+    }
+
 }

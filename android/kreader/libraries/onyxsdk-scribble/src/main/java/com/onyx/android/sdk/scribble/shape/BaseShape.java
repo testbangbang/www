@@ -118,13 +118,12 @@ public class BaseShape implements Shape {
     }
 
     public void addPoints(final TouchPointList points) {
-        // the first is download
-        if (points.size() != 2) {
+        normalizedPoints.addAll(points);
+        if (points.size() < 2) {
             return;
         }
         downPoint.set(points.get(0));
         currentPoint.set(points.get(1));
-        normalizedPoints.addAll(points);
     }
 
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {

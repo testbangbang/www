@@ -12,6 +12,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.DocumentCreateAction;
 import com.onyx.android.note.actions.DocumentEditAction;
+import com.onyx.android.note.actions.FlushAction;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
@@ -103,8 +104,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onEraseClicked() {
-        // reset and render page.
-        NoteApplication.getNoteViewHelper().stopDrawing();
+        getNoteViewHelper().stopDrawing();
+        final FlushAction<ScribbleActivity> action = new FlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash());
+        action.execute(this);
     }
 
     public void startDrawing() {

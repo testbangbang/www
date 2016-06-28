@@ -4,9 +4,7 @@ import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Surface;
 import android.view.SurfaceView;
-import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -14,6 +12,9 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by zhuzeng on 6/17/16.
@@ -63,8 +64,8 @@ public class RawInputProcessor {
     private volatile int px, py, pressure;
     private volatile boolean erasing = false;
     private volatile boolean lastErasing = false;
-    private volatile boolean pressed;
-    private volatile boolean lastPressed;
+    private volatile boolean pressed = false;
+    private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
     private String systemPath = "/dev/input/event1";
     private volatile Matrix screenMatrix;
@@ -75,6 +76,7 @@ public class RawInputProcessor {
     private InputCallback inputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
     private volatile SurfaceView parentView;
+    private ExecutorService singleThreadPool = null;
 
     /**
      * matrix used to map point from input device to screen display.
@@ -102,17 +104,39 @@ public class RawInputProcessor {
 
     public void start() {
         stop = false;
+        clearInternalState();
         EpdController.setScreenHandWritingPenState(parentView, 1);
-        startThread(parentView);
+        submitJob(parentView);
     }
 
     public void stop() {
         stop = true;
+        clearInternalState();
         EpdController.setScreenHandWritingPenState(parentView, 0);
     }
 
-    private void startThread(final SurfaceView view) {
-        Thread thread = new Thread(new Runnable() {
+    private void clearInternalState() {
+        pressed = false;
+        lastErasing = false;
+        lastPressed = false;
+    }
+
+    private ExecutorService getSingleThreadPool()   {
+        if (singleThreadPool == null) {
+            singleThreadPool = Executors.newSingleThreadExecutor(new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r);
+                    t.setPriority(Thread.MAX_PRIORITY);
+                    return t;
+                }
+            });
+        }
+        return singleThreadPool;
+    }
+
+    private void submitJob(final SurfaceView view) {
+        getSingleThreadPool().submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -123,7 +147,6 @@ public class RawInputProcessor {
                 }
             }
         });
-        thread.start();
     }
 
     private void readLoop() throws Exception {
@@ -248,24 +271,32 @@ public class RawInputProcessor {
         return touchPoint;
     }
 
-    private void addToList(final TouchPoint touchPoint, boolean create) {
+    private boolean addToList(final TouchPoint touchPoint, boolean create) {
         if (touchPointList == null) {
             if (!create) {
-                return;
+                return false;
             }
             touchPointList = new TouchPointList(600);
         }
+
+        if (touchPoint.x <= 0 || touchPoint.x >= 1 || touchPoint.y <= 0 || touchPoint.y >= 1) {
+            Log.e(TAG, "Ignore point: " + touchPoint.x + " " + touchPoint.y);
+            return false;
+        }
+
         if (touchPoint != null && touchPointList != null) {
             touchPointList.add(touchPoint);
         }
+        return true;
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapInputToScreenPoint(touchPoint);
         mapScreenPointToPage(touchPoint);
-        addToList(touchPoint, true);
-        invokeTouchPointListBegin(erasing);
+        if (addToList(touchPoint, true)) {
+            invokeTouchPointListBegin(erasing);
+        }
         // Log.d(TAG, "pressed received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
@@ -273,15 +304,18 @@ public class RawInputProcessor {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapInputToScreenPoint(touchPoint);
         mapScreenPointToPage(touchPoint);
-        addToList(touchPoint, false);
-        if (erasing) {
-            invokeCallbackErasing(touchPoint);
+        if (addToList(touchPoint, false)) {
+            if (erasing) {
+                invokeCallbackErasing(touchPoint);
+            }
         }
         // Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        invokeTouchPointListFinished(touchPointList, erasing);
+        if (touchPointList != null && touchPointList.size() > 0) {
+            invokeTouchPointListFinished(touchPointList, erasing);
+        }
         resetPointList();
         Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }

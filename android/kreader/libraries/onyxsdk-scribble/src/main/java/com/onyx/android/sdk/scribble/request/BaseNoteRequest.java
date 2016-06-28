@@ -23,7 +23,7 @@ public class BaseNoteRequest extends BaseRequest {
     private String docUniqueId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
-    private boolean debugPathBenchmark = true;
+    private boolean debugPathBenchmark = false;
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = true;
 
@@ -142,9 +142,12 @@ public class BaseNoteRequest extends BaseRequest {
         paint.setAntiAlias(true);
         paint.setStrokeWidth(3.0f);
 
+        final Matrix renderMatrix = new Matrix();
+        renderMatrix.postScale(getViewportSize().width(), getViewportSize().height());
+
         for(PageInfo page: getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-            notePage.render(canvas, paint, page.normalizeMatrix(), new NotePage.RenderCallback() {
+            notePage.render(canvas, paint, renderMatrix, new NotePage.RenderCallback() {
                 @Override
                 public boolean isRenderAbort() {
                     return isAbort();
