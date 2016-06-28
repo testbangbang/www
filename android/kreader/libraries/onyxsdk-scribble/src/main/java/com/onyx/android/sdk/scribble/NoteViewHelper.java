@@ -22,6 +22,9 @@ import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by zhuzeng on 6/16/16.
  * View delegate, connect ShapeManager and view.
@@ -43,6 +46,7 @@ public class NoteViewHelper {
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
+    private List<Shape> stash = new ArrayList<Shape>();
 
     public void setView(final SurfaceView view) {
         initWithSurfaceView(view);
@@ -96,11 +100,21 @@ public class NoteViewHelper {
         return 90;
     }
 
+    private int getTouchWidth() {
+        return 8192;
+    }
+
+    private int getTouchHeight() {
+        return 6144;
+    }
+
     // matrix from input touch panel to epd screen.
     private void updateScreenMatrix() {
         final Matrix screenMatrix = new Matrix();
         screenMatrix.postRotate(getEpdOrientation());
         screenMatrix.postTranslate(getEpdHeight(), 0);
+        screenMatrix.preScale((float) getEpdWidth() / (float) getTouchWidth(),
+                (float) getEpdHeight() / (float) getTouchHeight());
         rawInputProcessor.setScreenMatrix(screenMatrix);
     }
 
@@ -234,10 +248,9 @@ public class NoteViewHelper {
 
             @Override
             public void onNewTouchPointListReceived(TouchPointList pointList) {
-                // create shape and add to memory.
                 Shape shape = new NormalScribbleShape();
                 shape.addPoints(pointList);
-                // send request and send to request manager.
+                stash.add(shape);
             }
 
             @Override
@@ -255,6 +268,12 @@ public class NoteViewHelper {
 
             }
         });
+    }
+
+    public List<Shape> deatchStash() {
+        final List<Shape> temp = stash;
+        stash = new ArrayList<Shape>();
+        return temp;
     }
 
 }

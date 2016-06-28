@@ -12,6 +12,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.DocumentCreateAction;
 import com.onyx.android.note.actions.DocumentEditAction;
+import com.onyx.android.note.actions.FlushAction;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
@@ -45,7 +46,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                cleanup(surfaceView);
+                drawPage();
                 getNoteViewHelper().setView(surfaceView);
                 handleActivityIntent(getIntent());
             }
@@ -98,27 +99,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         });
     }
 
-    private void cleanup(final SurfaceView surfaceView) {
-        Rect rect = getViewportSize();
-        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
-        if (canvas == null) {
-            return;
-        }
-
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(rect, paint);
-        surfaceView.getHolder().unlockCanvasAndPost(canvas);
-    }
-
     private void onPencilClicked() {
         NoteApplication.getNoteViewHelper().startDrawing();
     }
 
     private void onEraseClicked() {
-        // reset and render page.
-        NoteApplication.getNoteViewHelper().stopDrawing();
+        getNoteViewHelper().stopDrawing();
+        final FlushAction<ScribbleActivity> action = new FlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash());
+        action.execute(this);
     }
 
     public void startDrawing() {
@@ -140,25 +128,44 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         startDrawing();
     }
 
+    private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(rect, paint);
+    }
+
     public void drawPage() {
         Rect rect = getViewportSize();
-        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
+        Canvas canvas = beforeDraw(rect);
         if (canvas == null) {
             return;
         }
 
         Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(rect, paint);
+        cleanup(canvas, paint, rect);
+        drawBackground(canvas, paint);
+        drawContent(canvas, paint);
+        afterDraw(canvas);
+    }
 
+    private Canvas beforeDraw(final Rect rect) {
+        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
+        return canvas;
+    }
 
+    private void afterDraw(final Canvas canvas) {
+        surfaceView.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    private void drawBackground(final Canvas canvas, final Paint paint) {
+    }
+
+    private void drawContent(final Canvas canvas, final Paint paint) {
         Bitmap bitmap = getNoteViewHelper().getShapeBitmap();
         if (bitmap != null) {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
             canvas.drawBitmap(bitmap, 0, 0, paint);
         }
-        surfaceView.getHolder().unlockCanvasAndPost(canvas);
     }
 
     public Rect getViewportSize() {
