@@ -266,8 +266,7 @@ public class RawInputProcessor {
         mapScreenPointToPage(touchPoint);
         addToList(touchPoint, true);
         invokeTouchPointListBegin(erasing);
-
-        Log.d(TAG, "pressed received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
+        // Log.d(TAG, "pressed received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
@@ -278,7 +277,7 @@ public class RawInputProcessor {
         if (erasing) {
             invokeCallbackErasing(touchPoint);
         }
-//        Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
+        // Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {

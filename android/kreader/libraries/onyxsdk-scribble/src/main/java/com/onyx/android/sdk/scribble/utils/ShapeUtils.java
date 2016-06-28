@@ -1,5 +1,8 @@
 package com.onyx.android.sdk.scribble.utils;
 
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 
@@ -52,4 +55,15 @@ public class ShapeUtils {
         return UUID.randomUUID().toString();
     }
 
+    public static Rect mapInPlace(final Rect origin, final Matrix matrix) {
+        float src[] = new float[4];
+        float dst[] = new float[4];
+        src[0] = origin.left;
+        src[1] = origin.top;
+        src[2] = origin.right;
+        src[3] = origin.bottom;
+        matrix.mapPoints(dst, src);
+        origin.set((int)dst[0], (int)dst[1], (int)dst[2], (int)dst[3]);
+        return origin;
+    }
 }
