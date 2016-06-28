@@ -20,15 +20,12 @@ public class NoteLibraryRemoveAction extends BaseNoteAction {
 
     @Override
     public void execute(final ManageActivity activity) {
-        for (String uniqueID : targetRemoveLibraryList) {
-            final NoteLibraryRemoveRequest request = new NoteLibraryRemoveRequest(uniqueID);
-            activity.getNoteViewHelper().submit(activity, request, new BaseCallback() {
-                @Override
-                public void done(BaseRequest request, Throwable e) {
-                    //TODO:should use batch remove method
-                    activity.loadNoteList();
-                }
-            });
-        }
+        final NoteLibraryRemoveRequest request = new NoteLibraryRemoveRequest(targetRemoveLibraryList);
+        activity.getNoteViewHelper().submit(activity, request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                activity.loadNoteList();
+            }
+        });
     }
 }

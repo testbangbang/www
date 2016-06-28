@@ -23,7 +23,7 @@ public class BaseNoteRequest extends BaseRequest {
     private String docUniqueId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
-    private boolean debugPathBenchmark = false;
+    private boolean debugPathBenchmark = true;
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = true;
 
@@ -73,7 +73,7 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void beforeExecute(final NoteViewHelper helper) {
         if (isPauseInputProcessor()) {
-            helper.reset();
+            helper.stopDrawing();
         }
         helper.getRequestManager().acquireWakeLock(getContext());
         benchmarkStart();
@@ -137,6 +137,7 @@ public class BaseNoteRequest extends BaseRequest {
         bitmap.eraseColor(Color.TRANSPARENT);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
         paint.setStrokeWidth(3.0f);
@@ -155,14 +156,18 @@ public class BaseNoteRequest extends BaseRequest {
         drawRandomTestPath(canvas, paint);
     }
 
+    private boolean isRenderRandomTestPath() {
+        return debugPathBenchmark;
+    }
+
     private void drawRandomTestPath(final Canvas canvas, final Paint paint) {
-        if (!(BuildConfig.DEBUG && debugPathBenchmark)) {
+        if (!isRenderRandomTestPath()) {
             return;
         }
         Path path = new Path();
         int width = getViewportSize().width();
         int height = getViewportSize().height();
-        int max = TestUtils.randInt(0, 5000);
+        int max = TestUtils.randInt(0, 50);
         path.moveTo(TestUtils.randInt(0, width), TestUtils.randInt(0, height));
         for(int i = 0; i < max; ++i) {
             float xx = TestUtils.randInt(0, width);

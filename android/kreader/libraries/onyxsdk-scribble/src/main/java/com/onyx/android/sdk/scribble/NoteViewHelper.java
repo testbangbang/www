@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.RawInputProcessor;
@@ -37,7 +38,7 @@ public class NoteViewHelper {
     private RequestManager requestManager = new RequestManager();
     private RawInputProcessor rawInputProcessor = new RawInputProcessor();
     private NoteDocument noteDocument = new NoteDocument();
-    private ReaderBitmapImpl bitmapWrapper = null;
+    private ReaderBitmapImpl bitmapWrapper = new ReaderBitmapImpl();
     private boolean enableBitmap = true;
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
@@ -49,6 +50,12 @@ public class NoteViewHelper {
         updateScreenMatrix();
         updateViewMatrix();
         updateLimitRect();
+        stopDrawing();
+    }
+
+    public void stop() {
+        stopDrawing();
+        removeLayoutListener();
     }
 
     private void initWithSurfaceView(final SurfaceView view) {
@@ -131,19 +138,36 @@ public class NoteViewHelper {
         getRawInputProcessor().start();
     }
 
-    public void reset() {
+    public void stopDrawing() {
         getRawInputProcessor().stop();
     }
 
-    public void stop() {
+    private void removeLayoutListener() {
         if (surfaceView == null || globalLayoutListener == null) {
             return;
         }
-        surfaceView.getViewTreeObserver().removeOnGlobalLayoutListener(getGlobalLayoutListener());
+        surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(getGlobalLayoutListener());
+    }
+
+    private Rect getViewportSize() {
+        if (surfaceView != null) {
+            return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
+        }
+        return null;
     }
 
     public void submit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
+        beforeSubmit(context, request, callback);
         getRequestManager().submitRequest(context, request, generateRunnable(request), callback);
+    }
+
+    private void beforeSubmit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
+        final Rect rect = getViewportSize();
+        if (rect != null) {
+            request.setViewportSize(rect);
+        }
+        request.setPauseInputProcessor(true);
+        request.setResumeInputProcessor(false);
     }
 
     public final RequestManager getRequestManager() {

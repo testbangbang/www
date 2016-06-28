@@ -32,8 +32,10 @@ public class Utils {
     static final String TAG = Utils.class.getSimpleName();
 
     public static final String DOCUMENT_ID = "document_id";
+    public static final String ACTION_TYPE = "action";
+    public static final String ACTION_CREATE = "create";
+    public static final String ACTION_EDIT = "edit";
     public static final String ITEM_TYPE_TAG = "item_type";
-
 
     public static SimpleDateFormat getDateFormat(Locale locale) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);

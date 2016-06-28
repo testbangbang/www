@@ -30,6 +30,10 @@ public class NoteDocument {
         markDocumentOpen();
     }
 
+    public void cleanDocument(final Context context) {
+        pageDataMap.clear();
+    }
+
     public boolean isOpen() {
         return isOpen;
     }
@@ -69,7 +73,7 @@ public class NoteDocument {
     private LinkedHashSet<String> loadPageIndex(final Context context) {
         final LinkedHashSet<String> index = new LinkedHashSet<String>();
         final NoteModel noteModel = NoteDataProvider.load(context, getDocumentUniqueId());
-        if (noteModel.getPageNameList() == null) {
+        if (noteModel == null || noteModel.getPageNameList() == null) {
             return index;
         }
         for(String string : noteModel.getPageNameList().getPageNameList()) {

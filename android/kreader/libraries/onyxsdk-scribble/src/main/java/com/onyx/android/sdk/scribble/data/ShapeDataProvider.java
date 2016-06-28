@@ -4,6 +4,7 @@ import android.content.Context;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.DatabaseConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -40,6 +41,12 @@ public class ShapeDataProvider {
         }
         database.setTransactionSuccessful();
         database.endTransaction();
+    }
+
+    public static void removeAllShapeOfDocument(final Context context, final String documentUniqueId) {
+        Select select = new Select();
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId));
+        where.querySingle().delete();
     }
 
     public static boolean removeShape(final Context context,
