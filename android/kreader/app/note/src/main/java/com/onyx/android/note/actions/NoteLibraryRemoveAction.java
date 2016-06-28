@@ -11,7 +11,7 @@ import java.util.List;
  * Created by solskjaer49 on 16/6/27 19:35.
  */
 
-public class NoteLibraryRemoveAction extends BaseNoteAction {
+public class NoteLibraryRemoveAction<T extends ManageActivity> extends BaseNoteAction<T> {
     List<String> targetRemoveLibraryList;
 
     public NoteLibraryRemoveAction(List<String> targetRemoveLibraryList) {
@@ -19,7 +19,7 @@ public class NoteLibraryRemoveAction extends BaseNoteAction {
     }
 
     @Override
-    public void execute(final ManageActivity activity) {
+    public void execute(final T activity) {
         final NoteLibraryRemoveRequest request = new NoteLibraryRemoveRequest(targetRemoveLibraryList);
         activity.getNoteViewHelper().submit(activity, request, new BaseCallback() {
             @Override

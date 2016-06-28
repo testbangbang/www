@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
@@ -171,13 +172,13 @@ public class ManageActivity extends OnyxAppCompatActivity {
         final GObject object = view.getData();
         switch (Utils.getItemType(object)) {
             case DataItemType.TYPE_CREATE:
-                editDocument(true);
+                createDocument();
                 break;
             case DataItemType.TYPE_GOTO_UP:
                 gotoUp();
                 break;
             case DataItemType.TYPE_DOCUMENT:
-                editDocument(false, GAdapterUtil.getUniqueId(object));
+                editDocument(GAdapterUtil.getUniqueId(object));
                 break;
             case DataItemType.TYPE_LIBRARY:
                 gotoLibrary(GAdapterUtil.getUniqueId(object));
@@ -187,15 +188,19 @@ public class ManageActivity extends OnyxAppCompatActivity {
         }
     }
 
-    private void editDocument(boolean isNew, String... id) {
+
+    private void editDocument( final String id) {
+        startScribbleActivity(id, Utils.ACTION_CREATE);
+    }
+
+    private void createDocument() {
+        startScribbleActivity(ShapeUtils.generateUniqueId(), Utils.ACTION_CREATE);
+    }
+
+    private void startScribbleActivity(final String id, final String action) {
         final Intent intent = Utils.getScribbleIntent(this);
-        String targetID;
-        if (isNew) {
-            targetID = ShapeUtils.generateUniqueId();
-        } else {
-            targetID = id[0];
-        }
-        intent.putExtra(Utils.DOCUMENT_ID, targetID);
+        intent.putExtra(Utils.DOCUMENT_ID, id);
+        intent.putExtra(Utils.ACTION_TYPE, action);
         startActivity(intent);
     }
 
