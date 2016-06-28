@@ -11,14 +11,17 @@ import com.onyx.android.note.actions.CreateLibraryAction;
 import com.onyx.android.note.actions.GotoUpAction;
 import com.onyx.android.note.actions.LoadNoteListAction;
 import com.onyx.android.note.actions.NoteLibraryRemoveAction;
+import com.onyx.android.note.actions.NoteLoadAllLibraryAction;
+import com.onyx.android.note.actions.NoteMoveAction;
 import com.onyx.android.note.data.DataItemType;
+import com.onyx.android.note.dialog.DialogCreateNewFolder;
+import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
@@ -41,7 +44,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     private int currentPage;
 
     private TextView chooseModeButton, addFolderButton, moveButton, deleteButton;
-    private ArrayList<GObject> chosenItemsList = new ArrayList<GObject>();
+    private ArrayList<GObject> chosenItemsList = new ArrayList<>();
     private ContentView contentView;
     private GAdapter adapter;
     private String currentLibraryId;
@@ -113,11 +116,22 @@ public class ManageActivity extends OnyxAppCompatActivity {
         addFolderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int bound = (int) (3 * Math.random());
-                for (int i = 0; i < 3 + bound; i++) {
-                    final CreateLibraryAction action = new CreateLibraryAction(getCurrentLibraryId(), Integer.toString(i));
-                    action.execute(ManageActivity.this);
-                }
+                DialogCreateNewFolder dlgCreateFolder = new DialogCreateNewFolder();
+                dlgCreateFolder.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
+                    @Override
+                    public void onCreated(String title) {
+                        final CreateLibraryAction action = new CreateLibraryAction(getCurrentLibraryId(), title);
+                        action.execute(ManageActivity.this);
+                    }
+                });
+                dlgCreateFolder.show(getFragmentManager());
+            }
+        });
+        moveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NoteLoadAllLibraryAction action = new NoteLoadAllLibraryAction();
+                action.execute(ManageActivity.this);
             }
         });
         contentView = (ContentView) findViewById(R.id.note_content_view);
@@ -189,7 +203,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
 
-    private void editDocument( final String id) {
+    private void editDocument(final String id) {
         startScribbleActivity(id, Utils.ACTION_CREATE);
     }
 
@@ -294,5 +308,30 @@ public class ManageActivity extends OnyxAppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void showMoveFolderDialog(final List<NoteModel> libraryList) {
+        final DialogMoveFolder dialogMoveFolder = new DialogMoveFolder();
+        dialogMoveFolder.setDataList(libraryList);
+        final ArrayList<String> targetMoveIDList = new ArrayList<>();
+        for (GObject object : chosenItemsList) {
+            targetMoveIDList.add(GAdapterUtil.getUniqueId(object));
+        }
+        ArrayList<String> excludeList = new ArrayList<>();
+        excludeList.add(getCurrentLibraryId());
+        excludeList.addAll(targetMoveIDList);
+        Bundle args = new Bundle();
+        args.putStringArrayList(DialogMoveFolder.ARGS_EXCLUDE_LIB, excludeList);
+        dialogMoveFolder.setArguments(args);
+        dialogMoveFolder.setOnCreatedListener(new DialogMoveFolder.OnMoveListener() {
+            @Override
+            public void onMove(String targetParentId) {
+                NoteMoveAction noteMoveAction = new NoteMoveAction<>(targetParentId, targetMoveIDList);
+                noteMoveAction.execute(ManageActivity.this);
+                dialogMoveFolder.dismiss();
+                switchMode(SelectionMode.NORMAL_MODE);
+            }
+        });
+        dialogMoveFolder.show(getFragmentManager());
     }
 }
