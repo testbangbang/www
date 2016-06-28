@@ -44,6 +44,20 @@ public class NoteDataProvider {
         return list;
     }
 
+    /**
+     * Returns note document and library.
+     * @param context
+     * @return
+     */
+    public static List<NoteModel> loadAllNoteLibraryList(final Context context) {
+        Select select = new Select();
+        Condition condition;
+        condition = NoteModel_Table.type.eq(NoteModel.TYPE_LIBRARY);
+        Where where = select.from(NoteModel.class).where(condition);
+        List<NoteModel> list = where.queryList();
+        return list;
+    }
+
     public static void saveNote(final Context context, final NoteModel model) {
         if (model == null) {
             return;
