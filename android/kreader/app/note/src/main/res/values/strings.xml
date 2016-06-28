@@ -6,4 +6,5 @@
     <string name="select_mode">SelectMode</string>
     <string name="paged_init_text">1/1</string>
     <string name="switch_bg">Change Background</string>
+    <string name="add_new_page">Add New Page</string>
 </resources>

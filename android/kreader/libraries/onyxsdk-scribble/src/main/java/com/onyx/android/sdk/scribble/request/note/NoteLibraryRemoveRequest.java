@@ -4,19 +4,26 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * Created by zhuzeng on 6/23/16.
  */
 public class NoteLibraryRemoveRequest extends BaseNoteRequest {
+    List<String> uniqueIdList;
 
-    private String uniqueId;
-
-    public NoteLibraryRemoveRequest(final String id) {
-        uniqueId = id;
+    public NoteLibraryRemoveRequest(List<String> targetIDList) {
+        uniqueIdList = new ArrayList<>();
+        uniqueIdList.addAll(targetIDList);
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
-        NoteDataProvider.remove(getContext(), uniqueId);
+        //TODO:should use batch remove method?
+        for (String uniqueId : uniqueIdList) {
+            NoteDataProvider.remove(getContext(), uniqueId);
+        }
     }
 
 
