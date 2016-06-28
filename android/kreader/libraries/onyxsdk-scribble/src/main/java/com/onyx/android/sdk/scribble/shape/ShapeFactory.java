@@ -35,6 +35,9 @@ public class ShapeFactory {
         shapeModel.setBoundingRect(shape.getBoundingRect());
         shapeModel.setShapeUniqueId(shape.getShapeUniqueId());
         shapeModel.setColor(shape.getColor());
+        shapeModel.setPoints(shape.getPoints());
+        shapeModel.setThickness(shape.getStrokeWidth());
+        shapeModel.setShapeType(shape.getType());
         return shapeModel;
     }
 

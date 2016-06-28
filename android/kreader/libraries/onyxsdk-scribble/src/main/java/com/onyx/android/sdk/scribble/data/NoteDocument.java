@@ -42,9 +42,9 @@ public class NoteDocument {
         isOpen = true;
     }
 
-    public void save() {
+    public void save(final Context context) {
         for(ListOrderedMap.Entry<String, NotePage> entry : pageDataMap.entrySet()) {
-            entry.getValue().savePage();
+            entry.getValue().savePage(context);
         }
     }
 

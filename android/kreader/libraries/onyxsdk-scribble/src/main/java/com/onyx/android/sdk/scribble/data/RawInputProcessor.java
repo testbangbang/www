@@ -123,14 +123,7 @@ public class RawInputProcessor {
 
     private ExecutorService getSingleThreadPool()   {
         if (singleThreadPool == null) {
-            singleThreadPool = Executors.newSingleThreadExecutor(new ThreadFactory() {
-                @Override
-                public Thread newThread(Runnable r) {
-                    Thread t = new Thread(r);
-                    t.setPriority(Thread.MAX_PRIORITY);
-                    return t;
-                }
-            });
+            singleThreadPool = Executors.newSingleThreadExecutor();
         }
         return singleThreadPool;
     }
@@ -280,7 +273,6 @@ public class RawInputProcessor {
         }
 
         if (touchPoint.x <= 0 || touchPoint.x >= 1 || touchPoint.y <= 0 || touchPoint.y >= 1) {
-            Log.e(TAG, "Ignore point: " + touchPoint.x + " " + touchPoint.y);
             return false;
         }
 
@@ -317,7 +309,7 @@ public class RawInputProcessor {
             invokeTouchPointListFinished(touchPointList, erasing);
         }
         resetPointList();
-        Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
+        //Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void resetPointList() {

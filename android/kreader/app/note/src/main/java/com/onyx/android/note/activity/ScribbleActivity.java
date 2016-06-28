@@ -17,6 +17,9 @@ import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 
+/**
+ * when any button clicked, flush at first and render page, after that always switch to drawing state.
+ */
 public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private SurfaceView surfaceView;

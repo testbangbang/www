@@ -12,7 +12,7 @@ public class NoteDocumentSaveRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
-        parent.getNoteDocument().save();
+        parent.getNoteDocument().save(getContext());
     }
 
 }

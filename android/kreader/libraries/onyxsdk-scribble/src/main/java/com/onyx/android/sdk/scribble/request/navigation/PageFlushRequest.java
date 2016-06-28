@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble.request.navigation;
 
+import android.util.Log;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -22,6 +23,9 @@ public class PageFlushRequest extends BaseNoteRequest {
     public void execute(final NoteViewHelper helper) throws Exception {
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
         renderCurrentPage(helper);
+        benchmarkStart();
+        helper.getNoteDocument().save(getContext());
+        Log.e("Save all pages", " duration " + benchmarkEnd());
         updateShapeDataInfo(helper);
     }
 }

@@ -126,6 +126,10 @@ public class BaseShape implements Shape {
         currentPoint.set(points.get(1));
     }
 
+    public TouchPointList getPoints() {
+        return normalizedPoints;
+    }
+
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
     }
 

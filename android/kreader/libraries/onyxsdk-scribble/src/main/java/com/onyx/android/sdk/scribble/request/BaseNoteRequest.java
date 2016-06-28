@@ -170,7 +170,7 @@ public class BaseNoteRequest extends BaseRequest {
         Path path = new Path();
         int width = getViewportSize().width();
         int height = getViewportSize().height();
-        int max = TestUtils.randInt(0, 50);
+        int max = TestUtils.randInt(0, 1000);
         path.moveTo(TestUtils.randInt(0, width), TestUtils.randInt(0, height));
         for(int i = 0; i < max; ++i) {
             float xx = TestUtils.randInt(0, width);
