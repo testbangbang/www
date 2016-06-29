@@ -11,4 +11,5 @@
     <string name="delete">Delete</string>
     <string name="note_name">Name:</string>
     <string name="discard">Discard</string>
+    <string name="save_note">Save Note</string>
 </resources>
