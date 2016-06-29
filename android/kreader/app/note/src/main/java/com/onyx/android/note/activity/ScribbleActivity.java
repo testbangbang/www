@@ -57,7 +57,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
                 drawPage();
-                getNoteViewHelper().setView(surfaceView);
+                getNoteViewHelper().setView(ScribbleActivity.this, surfaceView);
                 handleActivityIntent(getIntent());
             }
 
