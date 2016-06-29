@@ -12,9 +12,13 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.DocumentCreateAction;
 import com.onyx.android.note.actions.DocumentEditAction;
+import com.onyx.android.note.actions.DocumentSaveAndCloseAction;
 import com.onyx.android.note.actions.FlushAction;
 import com.onyx.android.note.utils.Utils;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.request.note.NoteDocumentSaveRequest;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 
 /**
@@ -72,9 +76,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         }
         final String action = intent.getStringExtra(Utils.ACTION_TYPE);
         if (Utils.ACTION_CREATE.equals(action)) {
-            handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID));
+            handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
+                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
         } else if (Utils.ACTION_EDIT.equals(action)) {
-            handleDocumentEdit(intent.getStringExtra(Utils.DOCUMENT_ID));
+            handleDocumentEdit(intent.getStringExtra(Utils.DOCUMENT_ID),
+                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
         }
     }
 
@@ -82,6 +88,16 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     protected void onPause() {
         super.onPause();
         getNoteViewHelper().stop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    public void onBackPressed() {
+        final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<ScribbleActivity>("test");
+        closeAction.execute(this);
     }
 
     private void initToolbar() {
@@ -116,18 +132,20 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         getNoteViewHelper().startDrawing();
     }
 
-    private void handleDocumentCreate(final String uniqueId) {
-        final DocumentCreateAction<ScribbleActivity> action = new DocumentCreateAction<ScribbleActivity>(uniqueId);
+    private void handleDocumentCreate(final String uniqueId, final String parentId) {
+        final DocumentCreateAction<ScribbleActivity> action = new DocumentCreateAction<ScribbleActivity>(uniqueId, parentId);
         action.execute(this);
     }
 
-    private void handleDocumentEdit(final String uniqueId) {
-        final DocumentEditAction<ScribbleActivity> action = new DocumentEditAction<ScribbleActivity>(uniqueId);
+    private void handleDocumentEdit(final String uniqueId, final String parentId) {
+        final DocumentEditAction<ScribbleActivity> action = new DocumentEditAction<ScribbleActivity>(uniqueId, parentId);
         action.execute(this);
     }
 
-    public void onRequestFinished() {
-        drawPage();
+    public void onRequestFinished(boolean updatePgae) {
+        if (updatePgae) {
+            drawPage();
+        }
         startDrawing();
     }
 

@@ -11,17 +11,19 @@ import com.onyx.android.sdk.scribble.request.note.NoteDocumentOpenRequest;
 public class DocumentEditAction<T extends ScribbleActivity> extends BaseNoteAction<T> {
 
     private volatile String uniqueId;
+    private volatile String parentUniqueId;
 
-    public DocumentEditAction(final String id) {
+    public DocumentEditAction(final String id, final String parentId) {
         uniqueId = id;
+        parentUniqueId = parentId;
     }
 
     public void execute(final T activity) {
-        final NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId);
+        final NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId);
         activity.getNoteViewHelper().submit(activity, openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                activity.onRequestFinished();
+                activity.onRequestFinished(true);
             }
         });
     }

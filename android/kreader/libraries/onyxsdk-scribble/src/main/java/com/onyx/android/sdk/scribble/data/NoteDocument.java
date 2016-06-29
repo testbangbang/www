@@ -18,12 +18,16 @@ import java.util.List;
 public class NoteDocument {
 
     private String documentUniqueId;
+    private String parentUniqueId;
     private ListOrderedMap<String, NotePage> pageDataMap = new ListOrderedMap<String, NotePage>();
     private int currentPageIndex = 0;
     private boolean isOpen = false;
 
-    public void open(final Context context, final String uniqueId) {
+    public void open(final Context context,
+                     final String uniqueId,
+                     final String parentLibraryUniqueId) {
         setDocumentUniqueId(uniqueId);
+        setParentUniqueId(parentLibraryUniqueId);
         setupPageDataMap(context);
         ensureDocumentNotBlank(context);
         gotoFirst();
@@ -42,10 +46,27 @@ public class NoteDocument {
         isOpen = true;
     }
 
-    public void save(final Context context) {
+    public void save(final Context context, final String title) {
+        NoteDataProvider.saveNote(context, getNoteModel(context, title));
         for(ListOrderedMap.Entry<String, NotePage> entry : pageDataMap.entrySet()) {
             entry.getValue().savePage(context);
         }
+    }
+
+    private NoteModel getNoteModel(final Context context, final String title) {
+        NoteModel noteModel = NoteDataProvider.load(context, getDocumentUniqueId());
+        if (noteModel != null) {
+            return noteModel;
+        }
+        NoteModel model = NoteModel.createNote(getParentUniqueId(), title);
+        model.setUniqueId(getDocumentUniqueId());
+        final PageNameList pageNameList = new PageNameList();
+        pageNameList.addAll(pageDataMap.keyList());
+        model.setPageNameList(pageNameList);
+        if (StringUtils.isNotBlank(title)) {
+            model.setTitle(title);
+        }
+        return model;
     }
 
     private void setDocumentUniqueId(final String id) {
@@ -54,6 +75,14 @@ public class NoteDocument {
 
     public String getDocumentUniqueId() {
         return documentUniqueId;
+    }
+
+    public String getParentUniqueId() {
+        return parentUniqueId;
+    }
+
+    public void setParentUniqueId(String parentUniqueId) {
+        this.parentUniqueId = parentUniqueId;
     }
 
     public PageNameList getPageNameList() {

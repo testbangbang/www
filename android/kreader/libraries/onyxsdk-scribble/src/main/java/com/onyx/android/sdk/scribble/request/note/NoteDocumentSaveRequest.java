@@ -8,11 +8,14 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class NoteDocumentSaveRequest extends BaseNoteRequest {
 
-    public NoteDocumentSaveRequest() {
+    private volatile String title;
+
+    public NoteDocumentSaveRequest(final String t) {
+        title = t;
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
-        parent.getNoteDocument().save(getContext());
+        parent.getNoteDocument().save(getContext(), title);
     }
 
 }

@@ -25,7 +25,7 @@ public class FlushAction<T extends ScribbleActivity> extends BaseNoteAction<T> {
         activity.getNoteViewHelper().submit(activity, flushRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                activity.onRequestFinished();
+                activity.onRequestFinished(true);
             }
         });
     }
