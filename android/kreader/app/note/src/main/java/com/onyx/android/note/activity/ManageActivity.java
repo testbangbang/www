@@ -204,17 +204,18 @@ public class ManageActivity extends OnyxAppCompatActivity {
 
 
     private void editDocument(final String id) {
-        startScribbleActivity(id, Utils.ACTION_CREATE);
+        startScribbleActivity(id, getCurrentLibraryId(), Utils.ACTION_CREATE);
     }
 
     private void createDocument() {
-        startScribbleActivity(ShapeUtils.generateUniqueId(), Utils.ACTION_CREATE);
+        startScribbleActivity(ShapeUtils.generateUniqueId(), getCurrentLibraryId(), Utils.ACTION_CREATE);
     }
 
-    private void startScribbleActivity(final String id, final String action) {
+    private void startScribbleActivity(final String id, final String parentId, final String action) {
         final Intent intent = Utils.getScribbleIntent(this);
         intent.putExtra(Utils.DOCUMENT_ID, id);
         intent.putExtra(Utils.ACTION_TYPE, action);
+        intent.putExtra(Utils.PARENT_LIBRARY_ID, parentId);
         startActivity(intent);
     }
 

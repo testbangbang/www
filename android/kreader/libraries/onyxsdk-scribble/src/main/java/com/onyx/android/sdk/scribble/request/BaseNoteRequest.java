@@ -21,6 +21,7 @@ public class BaseNoteRequest extends BaseRequest {
 
     private ShapeDataInfo shapeDataInfo;
     private String docUniqueId;
+    private String parentLibrayId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private boolean debugPathBenchmark = false;
@@ -53,6 +54,14 @@ public class BaseNoteRequest extends BaseRequest {
 
     public final String getDocUniqueId() {
         return docUniqueId;
+    }
+
+    public String getParentLibrayId() {
+        return parentLibrayId;
+    }
+
+    public void setParentLibrayId(String parentLibrayId) {
+        this.parentLibrayId = parentLibrayId;
     }
 
     public void setViewportSize(final Rect size) {
@@ -207,7 +216,9 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void ensureDocumentOpened(final NoteViewHelper parent) {
         if (!parent.getNoteDocument().isOpen()) {
-            parent.getNoteDocument().open(getContext(), getDocUniqueId());
+            parent.getNoteDocument().open(getContext(),
+                    getDocUniqueId(),
+                    getParentLibrayId());
         }
     }
 

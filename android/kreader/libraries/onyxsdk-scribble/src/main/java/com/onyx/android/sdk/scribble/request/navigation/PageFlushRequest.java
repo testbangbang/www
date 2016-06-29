@@ -24,7 +24,7 @@ public class PageFlushRequest extends BaseNoteRequest {
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
         renderCurrentPage(helper);
         benchmarkStart();
-        helper.getNoteDocument().save(getContext());
+        helper.getNoteDocument().save(getContext(), null);
         Log.e("Save all pages", " duration " + benchmarkEnd());
         updateShapeDataInfo(helper);
     }
