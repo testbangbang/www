@@ -48,7 +48,8 @@ public class NoteViewHelper {
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private List<Shape> stash = new ArrayList<Shape>();
 
-    public void setView(final SurfaceView view) {
+    public void setView(final Context context, final SurfaceView view) {
+        initRawResource(context);
         initWithSurfaceView(view);
         initRawInputProcessor();
         updateScreenMatrix();
@@ -60,6 +61,10 @@ public class NoteViewHelper {
     public void stop() {
         stopDrawing();
         removeLayoutListener();
+    }
+
+    private void initRawResource(final Context context) {
+
     }
 
     private void initWithSurfaceView(final SurfaceView view) {
@@ -100,6 +105,10 @@ public class NoteViewHelper {
         return 90;
     }
 
+    private int getTouchOrientation() {
+        return 90;
+    }
+
     private int getTouchWidth() {
         return 8192;
     }
@@ -108,7 +117,7 @@ public class NoteViewHelper {
         return 6144;
     }
 
-    // matrix from input touch panel to epd screen.
+    // matrix from input touch panel to system view with correct orientation.
     private void updateScreenMatrix() {
         final Matrix screenMatrix = new Matrix();
         screenMatrix.postRotate(getEpdOrientation());
