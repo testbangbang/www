@@ -9,4 +9,6 @@
     <string name="new_folder">New Folder</string>
     <string name="name_can_not_empty">Name can not be empty.</string>
     <string name="delete">Delete</string>
+    <string name="note_name">Name:</string>
+    <string name="discard">Discard</string>
 </resources>
