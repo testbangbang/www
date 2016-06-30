@@ -30,6 +30,7 @@ import com.onyx.android.sdk.ui.view.ContentView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -193,13 +194,13 @@ public class ManageActivity extends OnyxAppCompatActivity {
         final GObject object = view.getData();
         switch (Utils.getItemType(object)) {
             case DataItemType.TYPE_CREATE:
-                createDocument();
+                createDocument(object);
                 break;
             case DataItemType.TYPE_GOTO_UP:
                 gotoUp();
                 break;
             case DataItemType.TYPE_DOCUMENT:
-                editDocument(GAdapterUtil.getUniqueId(object));
+                editDocument(object);
                 break;
             case DataItemType.TYPE_LIBRARY:
                 gotoLibrary(GAdapterUtil.getUniqueId(object));
@@ -210,19 +211,29 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
 
-    private void editDocument(final String id) {
-        startScribbleActivity(id, getCurrentLibraryId(), Utils.ACTION_CREATE);
+    private void editDocument(GObject object) {
+        startScribbleActivity(object, getCurrentLibraryId(), Utils.ACTION_EDIT);
     }
 
-    private void createDocument() {
-        startScribbleActivity(ShapeUtils.generateUniqueId(), getCurrentLibraryId(), Utils.ACTION_CREATE);
+    private void createDocument(GObject object) {
+        startScribbleActivity(object, getCurrentLibraryId(), Utils.ACTION_CREATE);
     }
 
-    private void startScribbleActivity(final String id, final String parentId, final String action) {
+    private void startScribbleActivity(GObject object, final String parentId, final String action) {
         final Intent intent = Utils.getScribbleIntent(this);
-        intent.putExtra(Utils.DOCUMENT_ID, id);
         intent.putExtra(Utils.ACTION_TYPE, action);
         intent.putExtra(Utils.PARENT_LIBRARY_ID, parentId);
+        String noteTitle = "";
+        String uniqueID = "";
+        if (action.equals(Utils.ACTION_CREATE)) {
+            noteTitle = Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date());
+            uniqueID = ShapeUtils.generateUniqueId();
+        } else {
+            noteTitle = object.getString(GAdapterUtil.TAG_TITLE_STRING);
+            uniqueID = GAdapterUtil.getUniqueId(object);
+        }
+        intent.putExtra(ScribbleActivity.TAG_NOTE_TITLE, noteTitle);
+        intent.putExtra(Utils.DOCUMENT_ID, uniqueID);
         startActivity(intent);
     }
 
@@ -257,10 +268,12 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
     private int getRows() {
+        //TODO:should use res file to control actual rows and cols.
         return 3;
     }
 
     private int getColumns() {
+        //TODO:should use res file to control actual rows and cols.
         return 3;
     }
 

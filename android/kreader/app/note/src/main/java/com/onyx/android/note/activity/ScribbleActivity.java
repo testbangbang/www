@@ -9,10 +9,10 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
@@ -21,33 +21,45 @@ import com.onyx.android.note.actions.DocumentDiscardAction;
 import com.onyx.android.note.actions.DocumentEditAction;
 import com.onyx.android.note.actions.DocumentSaveAndCloseAction;
 import com.onyx.android.note.actions.FlushAction;
+import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
+import com.onyx.android.note.dialog.PenWidthPopupMenu;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.GAdapter;
+import com.onyx.android.sdk.data.GAdapterUtil;
+import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.view.ContentItemView;
+import com.onyx.android.sdk.ui.view.ContentView;
 
-import java.util.Date;
+import java.util.HashMap;
 
-import static android.R.attr.action;
 
 /**
  * when any button clicked, flush at first and render page, after that always switch to drawing state.
  */
 public class ScribbleActivity extends OnyxAppCompatActivity {
+    static final String TAG_NOTE_TITLE = "note_title";
 
     private SurfaceView surfaceView;
-    private ImageView pencilButton;
-    private ImageView eraseButton;
     private String activityAction;
+    private String noteTitle;
+    private
+    @PenType.PenTypeDef
+    int currentPenType = PenType.PENCIL;
+    private TextView titleTextView;
+    ContentView penStyleContentView;
+    GAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scribble);
-        initToolbar();
         initSupportActionBarWithCustomBackFunction();
+        initView();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -60,8 +72,77 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         initSurfaceView();
     }
 
+    private void initView() {
+        titleTextView = (TextView) findViewById(R.id.note_title);
+        penStyleContentView = (ContentView) findViewById(R.id.pen_style_content_view);
+        penStyleContentView.setShowPageInfoArea(false);
+        penStyleContentView.setSubLayoutParameter(R.layout.pen_style_item, getItemViewDataMap());
+        penStyleContentView.setCallback(new ContentView.ContentViewCallback() {
+            @Override
+            public void onItemClick(ContentItemView view) {
+                GObject temp = view.getData();
+                int dataIndex = penStyleContentView.getCurrentAdapter().getGObjectIndex(temp);
+                temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
+                currentPenType = Integer.decode(GAdapterUtil.getUniqueId(temp));
+                penStyleContentView.getCurrentAdapter().setObject(dataIndex, temp);
+                penStyleContentView.unCheckOtherViews(dataIndex, true);
+                penStyleContentView.updateCurrentPage();
+                invokePenStyleCallBack(currentPenType);
+            }
+        });
+        penStyleContentView.setupContent(1, 6, getPenStyleAdapter(), 0);
+    }
+
+    private void invokePenStyleCallBack(int penType) {
+        switch (penType) {
+            case PenType.PENCIL:
+                onPencilClicked();
+                break;
+            case PenType.OILY_PEN:
+                break;
+            case PenType.FOUNTAIN_PEN:
+                break;
+            case PenType.BRUSH:
+                break;
+            case PenType.RULER:
+                onRulerClicked();
+                break;
+            case PenType.ERASER:
+                onEraseClicked();
+                break;
+        }
+    }
+
+    private void onRulerClicked() {
+        PenWidthPopupMenu menu = new PenWidthPopupMenu(getLayoutInflater(),this);
+        menu.showAtLocation(getWindow().getDecorView(), Gravity.NO_GRAVITY, 50,
+                getWindow().getDecorView().getHeight() -
+                        getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
+                        getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height) - 10);
+    }
+
+    private HashMap<String, Integer> getItemViewDataMap() {
+        HashMap<String, Integer> mapping = new HashMap<>();
+        mapping.put(GAdapterUtil.TAG_IMAGE_RESOURCE, R.id.pen_img);
+        mapping.put(GAdapterUtil.TAG_SELECTABLE, R.id.pen_indicator);
+        return mapping;
+    }
+
+    private GAdapter getPenStyleAdapter() {
+        if (adapter == null) {
+            adapter = new GAdapter();
+            adapter.addObject(createPenItem(R.drawable.ic_business_write_pencil_black_70dp, PenType.PENCIL));
+            adapter.addObject(createPenItem(R.drawable.ic_business_write_marker_gray_70dp, PenType.OILY_PEN));
+            adapter.addObject(createPenItem(R.drawable.ic_business_write_pen_gray_70dp, PenType.FOUNTAIN_PEN));
+            adapter.addObject(createPenItem(R.drawable.ic_business_write_brush_gray_70dp, PenType.BRUSH));
+            adapter.addObject(createPenItem(R.drawable.ic_business_write_rule_gray_70dp, PenType.RULER));
+            adapter.addObject(createPenItem(R.drawable.ic_business_write_eraser_gray_60dp, PenType.ERASER));
+        }
+        return adapter;
+    }
+
     private void initSurfaceView() {
-        surfaceView = (SurfaceView)findViewById(R.id.note_view);
+        surfaceView = (SurfaceView) findViewById(R.id.note_view);
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -87,6 +168,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             return;
         }
         activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
+        noteTitle = intent.getStringExtra(TAG_NOTE_TITLE);
+        titleTextView.setText(noteTitle);
         if (Utils.ACTION_CREATE.equals(activityAction)) {
             handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
                     intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
@@ -116,29 +199,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         }
     }
 
-    private void initToolbar() {
-        pencilButton = (ImageView)findViewById(R.id.pencil_button);
-        pencilButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onPencilClicked();
-            }
-        });
-
-        eraseButton = (ImageView)findViewById(R.id.erase_button);
-        eraseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onEraseClicked();
-            }
-        });
-    }
-
     private void saveNewNoteDocument() {
         final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
         Bundle bundle = new Bundle();
         bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.save_note));
-        bundle.putString(DialogNoteNameInput.ARGS_HINT, Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date()));
+        bundle.putString(DialogNoteNameInput.ARGS_HINT, noteTitle);
         bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, true);
         dialogNoteNameInput.setArguments(bundle);
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
@@ -161,7 +226,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 discardAction.execute(ScribbleActivity.this, null);
             }
         });
-        final FlushAction<ScribbleActivity> action = new FlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash());
+        final FlushAction<ScribbleActivity> action = new FlushAction<>(getNoteViewHelper().deatchStash());
         action.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -171,7 +236,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void saveExistingNoteDocument() {
-        final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(null);
+        final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(noteTitle);
         closeAction.execute(this, null);
     }
 
@@ -198,8 +263,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this, null);
     }
 
-    public void onRequestFinished(boolean updatePgae) {
-        if (updatePgae) {
+    public void onRequestFinished(boolean updatePage) {
+        if (updatePage) {
             drawPage();
         }
         startDrawing();
@@ -247,5 +312,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     public Rect getViewportSize() {
         return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
+    }
+
+    private GObject createPenItem(final int penIconRes, @PenType.PenTypeDef int penType) {
+        GObject object = GAdapterUtil.createTableItem(0, 0, penIconRes, 0, null);
+        object.putString(GAdapterUtil.TAG_UNIQUE_ID, Integer.toString(penType));
+        if (penType == currentPenType) {
+            object.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
+        }
+        return object;
     }
 }

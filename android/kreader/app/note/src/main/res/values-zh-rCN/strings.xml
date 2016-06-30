@@ -12,4 +12,5 @@
     <string name="note_name">名字:</string>
     <string name="discard">丢弃</string>
     <string name="save_note">保存笔记</string>
+    <string name="finish">完成</string>
 </resources>
