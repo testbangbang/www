@@ -1,25 +1,34 @@
 package com.onyx.android.note.activity;
 
 import android.content.Intent;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.os.Bundle;
-
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
+
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.DocumentCreateAction;
+import com.onyx.android.note.actions.DocumentDiscardAction;
 import com.onyx.android.note.actions.DocumentEditAction;
 import com.onyx.android.note.actions.DocumentSaveAndCloseAction;
 import com.onyx.android.note.actions.FlushAction;
+import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.request.note.NoteDocumentSaveRequest;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+
+import java.util.Date;
+
+import static android.R.attr.action;
 
 /**
  * when any button clicked, flush at first and render page, after that always switch to drawing state.
@@ -96,8 +105,39 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     public void onBackPressed() {
-        final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<ScribbleActivity>("test");
-        closeAction.execute(this);
+        if (Utils.ACTION_CREATE.equals(action)) {
+            final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
+            Bundle bundle = new Bundle();
+            bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.save_note));
+            bundle.putString(DialogNoteNameInput.ARGS_HINT, Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date()));
+            bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, true);
+            dialogNoteNameInput.setArguments(bundle);
+            dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
+                @Override
+                public boolean onConfirmAction(String input) {
+                    final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(input);
+                    closeAction.execute(ScribbleActivity.this);
+                    return true;
+                }
+
+                @Override
+                public void onCancelAction() {
+                    dialogNoteNameInput.dismiss();
+                }
+
+                @Override
+                public void onDiscardAction() {
+                    dialogNoteNameInput.dismiss();
+                    //TODO:need id.
+                    final DocumentDiscardAction<ScribbleActivity> discardAction = new DocumentDiscardAction<>();
+                    discardAction.execute(ScribbleActivity.this);
+                }
+            });
+        } else {
+            //TODO:need obtain title
+            final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>("test");
+            closeAction.execute(this);
+        }
     }
 
     private void initToolbar() {

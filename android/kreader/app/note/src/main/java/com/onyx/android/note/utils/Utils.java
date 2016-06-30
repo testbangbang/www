@@ -93,10 +93,25 @@ public class Utils {
         return createDocumentItem(noteModel, docRes);
     }
 
+    public static GObject createLibraryItemWithFullPath(final NoteModel noteModel, final int folderRes) {
+        GObject object = GAdapterUtil.createTableItem(noteModel.getExtraAttributes(), null, folderRes, 0, null);
+        object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
+        putItemType(object, TYPE_LIBRARY);
+        return object;
+    }
+
     public static GAdapter adapterFromNoteModelList(final List<NoteModel> noteModelList, final int folderRes, final int docRes) {
         GAdapter adapter = new GAdapter();
         for (NoteModel model : noteModelList) {
             adapter.addObject(createNoteItem(model, folderRes, docRes));
+        }
+        return adapter;
+    }
+
+    public static GAdapter adapterFromNoteModelListWithFullPathTitle(final List<NoteModel> noteModelList, final int folderRes, final int docRes) {
+        GAdapter adapter = new GAdapter();
+        for (NoteModel model : noteModelList) {
+            adapter.addObject(createLibraryItemWithFullPath(model, folderRes));
         }
         return adapter;
     }

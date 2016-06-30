@@ -11,7 +11,7 @@ import com.onyx.android.note.actions.CreateLibraryAction;
 import com.onyx.android.note.actions.GotoUpAction;
 import com.onyx.android.note.actions.LoadNoteListAction;
 import com.onyx.android.note.actions.NoteLibraryRemoveAction;
-import com.onyx.android.note.actions.NoteLoadAllLibraryAction;
+import com.onyx.android.note.actions.NoteLoadMovableLibraryAction;
 import com.onyx.android.note.actions.NoteMoveAction;
 import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
@@ -45,6 +45,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
 
     private TextView chooseModeButton, addFolderButton, moveButton, deleteButton;
     private ArrayList<GObject> chosenItemsList = new ArrayList<>();
+    private ArrayList<String> targetMoveIDList = new ArrayList<>();
     private ContentView contentView;
     private GAdapter adapter;
     private String currentLibraryId;
@@ -130,7 +131,13 @@ public class ManageActivity extends OnyxAppCompatActivity {
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NoteLoadAllLibraryAction action = new NoteLoadAllLibraryAction();
+                targetMoveIDList = new ArrayList<>();
+                for (GObject object : chosenItemsList) {
+                    targetMoveIDList.add(GAdapterUtil.getUniqueId(object));
+                }
+                ArrayList<String> excludeList = new ArrayList<>();
+                excludeList.addAll(targetMoveIDList);
+                NoteLoadMovableLibraryAction action = new NoteLoadMovableLibraryAction(getCurrentLibraryId(), excludeList);
                 action.execute(ManageActivity.this);
             }
         });
@@ -304,6 +311,10 @@ public class ManageActivity extends OnyxAppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (currentSelectMode != SelectionMode.NORMAL_MODE) {
+            switchMode(SelectionMode.NORMAL_MODE);
+            return;
+        }
         if (currentLibraryId != null) {
             gotoUp();
         } else {
@@ -314,22 +325,17 @@ public class ManageActivity extends OnyxAppCompatActivity {
     public void showMoveFolderDialog(final List<NoteModel> libraryList) {
         final DialogMoveFolder dialogMoveFolder = new DialogMoveFolder();
         dialogMoveFolder.setDataList(libraryList);
-        final ArrayList<String> targetMoveIDList = new ArrayList<>();
-        for (GObject object : chosenItemsList) {
-            targetMoveIDList.add(GAdapterUtil.getUniqueId(object));
-        }
-        ArrayList<String> excludeList = new ArrayList<>();
-        excludeList.add(getCurrentLibraryId());
-        excludeList.addAll(targetMoveIDList);
-        Bundle args = new Bundle();
-        args.putStringArrayList(DialogMoveFolder.ARGS_EXCLUDE_LIB, excludeList);
-        dialogMoveFolder.setArguments(args);
-        dialogMoveFolder.setOnCreatedListener(new DialogMoveFolder.OnMoveListener() {
+        dialogMoveFolder.setCallback(new DialogMoveFolder.DialogMoveFolderCallback() {
             @Override
             public void onMove(String targetParentId) {
                 NoteMoveAction noteMoveAction = new NoteMoveAction<>(targetParentId, targetMoveIDList);
                 noteMoveAction.execute(ManageActivity.this);
                 dialogMoveFolder.dismiss();
+                switchMode(SelectionMode.NORMAL_MODE);
+            }
+
+            @Override
+            public void onDismiss() {
                 switchMode(SelectionMode.NORMAL_MODE);
             }
         });
