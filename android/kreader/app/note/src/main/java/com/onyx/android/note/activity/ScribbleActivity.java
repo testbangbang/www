@@ -16,16 +16,15 @@ import android.widget.ImageView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
-import com.onyx.android.note.actions.DocumentCreateAction;
-import com.onyx.android.note.actions.DocumentDiscardAction;
-import com.onyx.android.note.actions.DocumentEditAction;
-import com.onyx.android.note.actions.DocumentSaveAndCloseAction;
-import com.onyx.android.note.actions.DocumentFlushAction;
+import com.onyx.android.note.actions.*;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.RawInputProcessor;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 
 import java.util.Date;
@@ -64,7 +63,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
                 drawPage();
-                getNoteViewHelper().setView(ScribbleActivity.this, surfaceView);
+                getNoteViewHelper().setView(ScribbleActivity.this, surfaceView, inputCallback());
                 handleActivityIntent(getIntent());
             }
 
@@ -92,6 +91,45 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             handleDocumentEdit(intent.getStringExtra(Utils.DOCUMENT_ID),
                     intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
         }
+    }
+
+    private RawInputProcessor.InputCallback inputCallback() {
+        return new RawInputProcessor.InputCallback() {
+            @Override
+            public void onBeginHandWriting() {
+
+            }
+
+            @Override
+            public void onNewTouchPointListReceived(TouchPointList pointList) {
+
+            }
+
+            @Override
+            public void onBeginErasing() {
+                ScribbleActivity.this.onBeginErasing();
+            }
+
+            @Override
+            public void onErasing(TouchPoint touchPoint) {
+                drawPage();
+            }
+
+            @Override
+            public void onEraseTouchPointListReceived(TouchPointList pointList) {
+
+            }
+        };
+    }
+
+    private void onBeginErasing() {
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), false);
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                drawPage();
+            }
+        });
     }
 
     @Override
@@ -190,6 +228,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void handleDocumentEdit(final String uniqueId, final String parentId) {
         final DocumentEditAction<ScribbleActivity> action = new DocumentEditAction<ScribbleActivity>(uniqueId, parentId);
+        action.execute(this, null);
+    }
+
+    private void onAddNewPage() {
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>();
         action.execute(this, null);
     }
 

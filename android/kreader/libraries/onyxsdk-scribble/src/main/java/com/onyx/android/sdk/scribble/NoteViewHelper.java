@@ -47,8 +47,9 @@ public class NoteViewHelper {
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private List<Shape> stash = new ArrayList<Shape>();
+    private RawInputProcessor.InputCallback callback;
 
-    public void setView(final Context context, final SurfaceView view) {
+    public void setView(final Context context, final SurfaceView view, final RawInputProcessor.InputCallback c) {
         initRawResource(context);
         initWithSurfaceView(view);
         initRawInputProcessor();
@@ -56,6 +57,7 @@ public class NoteViewHelper {
         updateViewMatrix();
         updateLimitRect();
         stopDrawing();
+        setCallback(c);
     }
 
     public void stop() {
@@ -89,6 +91,10 @@ public class NoteViewHelper {
             };
         }
         return globalLayoutListener;
+    }
+
+    private void setCallback(final RawInputProcessor.InputCallback c) {
+        callback = c;
     }
 
     private float getEpdWidth() {
@@ -250,7 +256,6 @@ public class NoteViewHelper {
         rawInputProcessor.setInputCallback(new RawInputProcessor.InputCallback() {
             @Override
             public void onBeginHandWriting() {
-
             }
 
             @Override
@@ -262,17 +267,23 @@ public class NoteViewHelper {
 
             @Override
             public void onBeginErasing() {
-
+                if (callback != null) {
+                    callback.onBeginErasing();
+                }
             }
 
             @Override
             public void onErasing(TouchPoint touchPoint) {
-
+                if (callback != null) {
+                    callback.onErasing(touchPoint);
+                }
             }
 
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
-
+                if (callback != null) {
+                    callback.onEraseTouchPointListReceived(pointList);
+                }
             }
         });
     }
