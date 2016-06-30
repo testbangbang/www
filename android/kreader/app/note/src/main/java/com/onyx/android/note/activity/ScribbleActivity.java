@@ -198,8 +198,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this, null);
     }
 
-    public void onRequestFinished(boolean updatePgae) {
-        if (updatePgae) {
+    public void onRequestFinished(boolean updatePage) {
+        if (updatePage) {
             drawPage();
         }
         startDrawing();
