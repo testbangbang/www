@@ -17,6 +17,8 @@ public class NoteLibrarySaveRequest extends BaseNoteRequest {
     public NoteLibrarySaveRequest(final NoteModel model, final Bitmap t) {
         noteModel = model;
         thumbnail = t;
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(false);
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {

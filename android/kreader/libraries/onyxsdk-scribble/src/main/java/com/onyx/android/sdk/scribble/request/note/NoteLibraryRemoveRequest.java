@@ -17,6 +17,8 @@ public class NoteLibraryRemoveRequest extends BaseNoteRequest {
     public NoteLibraryRemoveRequest(List<String> targetIDList) {
         uniqueIdList = new ArrayList<>();
         uniqueIdList.addAll(targetIDList);
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(false);
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {

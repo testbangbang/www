@@ -16,6 +16,8 @@ public class NoteMoveRequest extends BaseNoteRequest {
     public NoteMoveRequest(String parentID, List<String> uniqueIdList) {
         this.parentID = parentID;
         this.uniqueIdList = uniqueIdList;
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(false);
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {

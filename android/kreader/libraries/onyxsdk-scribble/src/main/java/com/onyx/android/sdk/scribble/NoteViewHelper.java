@@ -192,8 +192,6 @@ public class NoteViewHelper {
         if (rect != null) {
             request.setViewportSize(rect);
         }
-        request.setPauseInputProcessor(true);
-        request.setResumeInputProcessor(false);
     }
 
     public final RequestManager getRequestManager() {

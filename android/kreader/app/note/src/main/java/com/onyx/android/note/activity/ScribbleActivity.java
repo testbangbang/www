@@ -20,7 +20,7 @@ import com.onyx.android.note.actions.DocumentCreateAction;
 import com.onyx.android.note.actions.DocumentDiscardAction;
 import com.onyx.android.note.actions.DocumentEditAction;
 import com.onyx.android.note.actions.DocumentSaveAndCloseAction;
-import com.onyx.android.note.actions.FlushAction;
+import com.onyx.android.note.actions.DocumentFlushAction;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -29,8 +29,6 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 
 import java.util.Date;
-
-import static android.R.attr.action;
 
 /**
  * when any button clicked, flush at first and render page, after that always switch to drawing state.
@@ -161,7 +159,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 discardAction.execute(ScribbleActivity.this, null);
             }
         });
-        final FlushAction<ScribbleActivity> action = new FlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash());
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), false);
         action.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -176,16 +174,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onPencilClicked() {
-        NoteApplication.getNoteViewHelper().startDrawing();
-    }
-
-    private void onEraseClicked() {
-        final FlushAction<ScribbleActivity> action = new FlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash());
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), true);
         action.execute(this, null);
     }
 
-    public void startDrawing() {
-        getNoteViewHelper().startDrawing();
+    private void onEraseClicked() {
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), false);
+        action.execute(this, null);
     }
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
@@ -202,7 +197,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         if (updatePage) {
             drawPage();
         }
-        startDrawing();
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
