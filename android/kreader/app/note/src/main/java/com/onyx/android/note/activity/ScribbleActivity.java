@@ -38,6 +38,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private SurfaceView surfaceView;
     private ImageView pencilButton;
     private ImageView eraseButton;
+    private String activityAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +84,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         if (!intent.hasExtra(Utils.ACTION_TYPE)) {
             return;
         }
-        final String action = intent.getStringExtra(Utils.ACTION_TYPE);
-        if (Utils.ACTION_CREATE.equals(action)) {
+        activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
+        if (Utils.ACTION_CREATE.equals(activityAction)) {
             handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
                     intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
-        } else if (Utils.ACTION_EDIT.equals(action)) {
+        } else if (Utils.ACTION_EDIT.equals(activityAction)) {
             handleDocumentEdit(intent.getStringExtra(Utils.DOCUMENT_ID),
                     intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
         }
@@ -105,38 +106,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     public void onBackPressed() {
-        if (Utils.ACTION_CREATE.equals(action)) {
-            final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
-            Bundle bundle = new Bundle();
-            bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.save_note));
-            bundle.putString(DialogNoteNameInput.ARGS_HINT, Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date()));
-            bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, true);
-            dialogNoteNameInput.setArguments(bundle);
-            dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
-                @Override
-                public boolean onConfirmAction(String input) {
-                    final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(input);
-                    closeAction.execute(ScribbleActivity.this);
-                    return true;
-                }
-
-                @Override
-                public void onCancelAction() {
-                    dialogNoteNameInput.dismiss();
-                }
-
-                @Override
-                public void onDiscardAction() {
-                    dialogNoteNameInput.dismiss();
-                    //TODO:need id.
-                    final DocumentDiscardAction<ScribbleActivity> discardAction = new DocumentDiscardAction<>();
-                    discardAction.execute(ScribbleActivity.this);
-                }
-            });
+        getNoteViewHelper().stopDrawing();
+        if (Utils.ACTION_CREATE.equals(activityAction)) {
+            saveNewNoteDocument();
         } else {
-            //TODO:need obtain title
-            final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>("test");
-            closeAction.execute(this);
+            saveExistingNoteDocument();
         }
     }
 
@@ -156,6 +130,40 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 onEraseClicked();
             }
         });
+    }
+
+    private void saveNewNoteDocument() {
+        final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
+        Bundle bundle = new Bundle();
+        bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.save_note));
+        bundle.putString(DialogNoteNameInput.ARGS_HINT, Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date()));
+        bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, true);
+        dialogNoteNameInput.setArguments(bundle);
+        dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
+            @Override
+            public boolean onConfirmAction(String input) {
+                final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(input);
+                closeAction.execute(ScribbleActivity.this);
+                return true;
+            }
+
+            @Override
+            public void onCancelAction() {
+                dialogNoteNameInput.dismiss();
+            }
+
+            @Override
+            public void onDiscardAction() {
+                dialogNoteNameInput.dismiss();
+                final DocumentDiscardAction<ScribbleActivity> discardAction = new DocumentDiscardAction<>(null);
+                discardAction.execute(ScribbleActivity.this);
+            }
+        });
+    }
+
+    private void saveExistingNoteDocument() {
+        final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(null);
+        closeAction.execute(this);
     }
 
     private void onPencilClicked() {
