@@ -22,7 +22,7 @@ public class NoteLibrarySaveAction<T extends ManageActivity> extends BaseNoteAct
     }
 
     @Override
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
         final NoteLibrarySaveRequest request = new NoteLibrarySaveRequest(targetLibraryModel, targetThumbnail);
         activity.getNoteViewHelper().submit(activity, request, new BaseCallback() {
             @Override

@@ -23,7 +23,7 @@ public class NoteLoadMovableLibraryAction<T extends ManageActivity> extends Base
     private String currentLibID;
 
     @Override
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
         final NoteLoadMovableLibraryRequest loadMovableLibraryRequest = new NoteLoadMovableLibraryRequest(currentLibID, excludeIDList);
         activity.getNoteViewHelper().submit(activity, loadMovableLibraryRequest, new BaseCallback() {
             @Override

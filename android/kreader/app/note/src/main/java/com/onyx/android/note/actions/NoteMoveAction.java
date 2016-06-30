@@ -21,7 +21,7 @@ public class NoteMoveAction<T extends ManageActivity> extends BaseNoteAction<T> 
     }
 
     @Override
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
         final NoteMoveRequest request = new NoteMoveRequest(newParentID, targetMoveLibraryList);
         activity.getNoteViewHelper().submit(activity, request, new BaseCallback() {
             @Override

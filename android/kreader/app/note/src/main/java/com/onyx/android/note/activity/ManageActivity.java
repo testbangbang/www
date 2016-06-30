@@ -110,7 +110,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 for (GObject object : chosenItemsList) {
                     targetRemoveIDList.add(GAdapterUtil.getUniqueId(object));
                 }
-                new NoteLibraryRemoveAction(targetRemoveIDList).execute(ManageActivity.this);
+                new NoteLibraryRemoveAction(targetRemoveIDList).execute(ManageActivity.this, null);
                 switchMode(SelectionMode.NORMAL_MODE);
             }
         });
@@ -122,7 +122,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
                     @Override
                     public void onCreated(String title) {
                         final CreateLibraryAction action = new CreateLibraryAction(getCurrentLibraryId(), title);
-                        action.execute(ManageActivity.this);
+                        action.execute(ManageActivity.this, null);
                     }
                 });
                 dlgCreateFolder.show(getFragmentManager());
@@ -138,7 +138,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 ArrayList<String> excludeList = new ArrayList<>();
                 excludeList.addAll(targetMoveIDList);
                 NoteLoadMovableLibraryAction action = new NoteLoadMovableLibraryAction(getCurrentLibraryId(), excludeList);
-                action.execute(ManageActivity.this);
+                action.execute(ManageActivity.this, null);
             }
         });
         contentView = (ContentView) findViewById(R.id.note_content_view);
@@ -266,12 +266,12 @@ public class ManageActivity extends OnyxAppCompatActivity {
 
     public void loadNoteList() {
         final LoadNoteListAction action = new LoadNoteListAction(getCurrentLibraryId());
-        action.execute(this);
+        action.execute(this, null);
     }
 
     private void gotoUp() {
         final GotoUpAction action = new GotoUpAction(getCurrentLibraryId());
-        action.execute(this);
+        action.execute(this, null);
     }
 
     private void gotoLibrary(final String id) {
@@ -329,7 +329,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
             @Override
             public void onMove(String targetParentId) {
                 NoteMoveAction noteMoveAction = new NoteMoveAction<>(targetParentId, targetMoveIDList);
-                noteMoveAction.execute(ManageActivity.this);
+                noteMoveAction.execute(ManageActivity.this, null);
                 dialogMoveFolder.dismiss();
                 switchMode(SelectionMode.NORMAL_MODE);
             }

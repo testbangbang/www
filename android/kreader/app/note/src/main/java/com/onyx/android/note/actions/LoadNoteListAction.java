@@ -16,7 +16,7 @@ public class LoadNoteListAction<T extends ManageActivity>  extends BaseNoteActio
     }
 
     @Override
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
         final NoteLibraryLoadRequest loadRequest = new NoteLibraryLoadRequest(parentLibraryId);
         activity.getNoteViewHelper().submit(activity, loadRequest, new BaseCallback() {
             @Override

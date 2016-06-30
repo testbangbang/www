@@ -18,7 +18,7 @@ public class DocumentEditAction<T extends ScribbleActivity> extends BaseNoteActi
         parentUniqueId = parentId;
     }
 
-    public void execute(final T activity) {
+    public void execute(final T activity , final BaseCallback callback) {
         final NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId);
         activity.getNoteViewHelper().submit(activity, openRequest, new BaseCallback() {
             @Override

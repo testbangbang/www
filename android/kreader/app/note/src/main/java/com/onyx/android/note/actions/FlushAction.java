@@ -20,12 +20,16 @@ public class FlushAction<T extends ScribbleActivity> extends BaseNoteAction<T> {
         shapeListd = list;
     }
 
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
+        activity.getNoteViewHelper().stopDrawing();
         final PageFlushRequest flushRequest = new PageFlushRequest(shapeListd);
         activity.getNoteViewHelper().submit(activity, flushRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 activity.onRequestFinished(true);
+                if (callback != null) {
+                    callback.done(request, e);
+                }
             }
         });
     }

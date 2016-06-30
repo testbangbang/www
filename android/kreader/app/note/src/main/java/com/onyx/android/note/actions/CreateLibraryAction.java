@@ -20,7 +20,7 @@ public class CreateLibraryAction<T extends ManageActivity> extends BaseNoteActio
     }
 
     @Override
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
         final NoteLibraryCreateRequest createRequest = new NoteLibraryCreateRequest(parentLibraryId, title);
         activity.getNoteViewHelper().submit(activity, createRequest, new BaseCallback() {
             @Override

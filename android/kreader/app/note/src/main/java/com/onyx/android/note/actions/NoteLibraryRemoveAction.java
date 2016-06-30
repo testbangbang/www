@@ -19,7 +19,7 @@ public class NoteLibraryRemoveAction<T extends ManageActivity> extends BaseNoteA
     }
 
     @Override
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
         final NoteLibraryRemoveRequest request = new NoteLibraryRemoveRequest(targetRemoveLibraryList);
         activity.getNoteViewHelper().submit(activity, request, new BaseCallback() {
             @Override

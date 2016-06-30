@@ -17,7 +17,7 @@ public class DocumentSaveAndCloseAction<T extends ScribbleActivity> extends Base
         title = t;
     }
 
-    public void execute(final T activity) {
+    public void execute(final T activity,  final BaseCallback callback) {
         final NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(title);
         activity.getNoteViewHelper().submit(activity, saveRequest, new BaseCallback() {
             @Override

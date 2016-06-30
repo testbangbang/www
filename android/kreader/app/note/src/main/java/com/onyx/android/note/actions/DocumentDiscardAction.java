@@ -17,7 +17,7 @@ public class DocumentDiscardAction <T extends ScribbleActivity> extends BaseNote
         uniqueId = id;
     }
 
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
         final NoteDocumentRemoveRequest removeRequest = new NoteDocumentRemoveRequest(uniqueId);
         activity.getNoteViewHelper().submit(activity, removeRequest, new BaseCallback() {
             @Override

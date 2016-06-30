@@ -23,6 +23,8 @@ import com.onyx.android.note.actions.DocumentSaveAndCloseAction;
 import com.onyx.android.note.actions.FlushAction;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 
@@ -143,7 +145,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             @Override
             public boolean onConfirmAction(String input) {
                 final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(input);
-                closeAction.execute(ScribbleActivity.this);
+                closeAction.execute(ScribbleActivity.this, null);
                 return true;
             }
 
@@ -156,14 +158,21 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             public void onDiscardAction() {
                 dialogNoteNameInput.dismiss();
                 final DocumentDiscardAction<ScribbleActivity> discardAction = new DocumentDiscardAction<>(null);
-                discardAction.execute(ScribbleActivity.this);
+                discardAction.execute(ScribbleActivity.this, null);
+            }
+        });
+        final FlushAction<ScribbleActivity> action = new FlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash());
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dialogNoteNameInput.show(getFragmentManager());
             }
         });
     }
 
     private void saveExistingNoteDocument() {
         final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(null);
-        closeAction.execute(this);
+        closeAction.execute(this, null);
     }
 
     private void onPencilClicked() {
@@ -171,9 +180,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onEraseClicked() {
-        getNoteViewHelper().stopDrawing();
         final FlushAction<ScribbleActivity> action = new FlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash());
-        action.execute(this);
+        action.execute(this, null);
     }
 
     public void startDrawing() {
@@ -182,12 +190,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
         final DocumentCreateAction<ScribbleActivity> action = new DocumentCreateAction<ScribbleActivity>(uniqueId, parentId);
-        action.execute(this);
+        action.execute(this, null);
     }
 
     private void handleDocumentEdit(final String uniqueId, final String parentId) {
         final DocumentEditAction<ScribbleActivity> action = new DocumentEditAction<ScribbleActivity>(uniqueId, parentId);
-        action.execute(this);
+        action.execute(this, null);
     }
 
     public void onRequestFinished(boolean updatePgae) {
