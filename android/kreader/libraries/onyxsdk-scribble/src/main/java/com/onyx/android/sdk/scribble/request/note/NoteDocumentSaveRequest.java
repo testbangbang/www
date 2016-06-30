@@ -12,6 +12,8 @@ public class NoteDocumentSaveRequest extends BaseNoteRequest {
 
     public NoteDocumentSaveRequest(final String t) {
         title = t;
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(false);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {

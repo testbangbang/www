@@ -26,7 +26,7 @@ public class BaseNoteRequest extends BaseRequest {
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private boolean debugPathBenchmark = false;
     private boolean pauseInputProcessor = true;
-    private boolean resumeInputProcessor = true;
+    private boolean resumeInputProcessor = false;
 
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;

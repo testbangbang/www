@@ -15,6 +15,8 @@ public class NoteDocumentRemoveRequest extends BaseNoteRequest {
 
     public NoteDocumentRemoveRequest(final String id) {
         documentUniqueId = id;
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(false);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {

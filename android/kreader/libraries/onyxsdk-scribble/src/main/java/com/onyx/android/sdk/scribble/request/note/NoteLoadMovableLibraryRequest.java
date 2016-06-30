@@ -12,14 +12,16 @@ import java.util.List;
  * Created by solskjaer49 on 6/20/16 16:46.
  */
 public class NoteLoadMovableLibraryRequest extends BaseNoteRequest {
-    public NoteLoadMovableLibraryRequest(String currentLibID, List<String> excludeIDList) {
-        this.currentLibID = currentLibID;
-        this.excludeIDList = excludeIDList;
-    }
-
     private String currentLibID;
     private List<String> excludeIDList;
     private List<NoteModel> noteList;
+
+    public NoteLoadMovableLibraryRequest(String currentLibID, List<String> excludeIDList) {
+        this.currentLibID = currentLibID;
+        this.excludeIDList = excludeIDList;
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(false);
+    }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
         noteList = NoteDataProvider.loadMovableNoteLibraryList(getContext());
