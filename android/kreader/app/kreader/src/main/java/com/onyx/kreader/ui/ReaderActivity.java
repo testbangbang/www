@@ -382,7 +382,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initShapeViewDelegate() {
-        getNoteViewHelper().setView(surfaceView);
+        getNoteViewHelper().setView(this, surfaceView, null);
         // when page changed, choose to flush
         //noteViewHelper.flushPendingShapes();
 
