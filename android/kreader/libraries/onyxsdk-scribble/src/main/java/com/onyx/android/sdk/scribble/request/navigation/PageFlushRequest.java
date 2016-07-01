@@ -15,8 +15,10 @@ public class PageFlushRequest extends BaseNoteRequest {
     private volatile List<Shape> shapeList;
     private volatile boolean save = false;
 
-    public PageFlushRequest(final List<Shape> list, boolean resume) {
+
+    public PageFlushRequest(final List<Shape> list, boolean r, boolean resume) {
         shapeList = list;
+        setRender(r);
         setPauseInputProcessor(true);
         setResumeInputProcessor(resume);
     }

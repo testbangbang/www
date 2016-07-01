@@ -15,14 +15,16 @@ public class DocumentFlushAction<T extends ScribbleActivity> extends BaseNoteAct
 
     private volatile List<Shape> shapeList;
     private volatile boolean resumeDrawing;
+    private volatile boolean render;
 
-    public DocumentFlushAction(final List<Shape> list, boolean resume) {
+    public DocumentFlushAction(final List<Shape> list, boolean r, boolean resume) {
         shapeList = list;
+        render = r;
         resumeDrawing = resume;
     }
 
     public void execute(final T activity, final BaseCallback callback) {
-        final PageFlushRequest flushRequest = new PageFlushRequest(shapeList, resumeDrawing);
+        final PageFlushRequest flushRequest = new PageFlushRequest(shapeList, render, resumeDrawing);
         activity.getNoteViewHelper().submit(activity, flushRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

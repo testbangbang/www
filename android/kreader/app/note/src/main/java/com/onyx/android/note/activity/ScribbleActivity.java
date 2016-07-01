@@ -153,19 +153,19 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             case PenType.FOUNTAIN_PEN:
                 break;
             case PenType.BRUSH:
+                
                 break;
             case PenType.RULER:
-                onRulerClicked();
+                onAddNewPage();
                 break;
             case PenType.ERASER:
-                onEraseClicked();
+                onNextPage();
                 break;
         }
     }
 
     private void showBGSetupWindow() {
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(getNoteViewHelper().deatchStash(), false);
-        action.execute(this, new BaseCallback() {
+        flushWithCallback(true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (bgTypePopupMenu == null) {
@@ -277,8 +277,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onBeginErasing() {
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), false);
-        action.execute(this, new BaseCallback() {
+        flushWithCallback(true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 drawPage();
@@ -345,8 +344,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 discardAction.execute(ScribbleActivity.this, null);
             }
         });
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), false);
-        action.execute(this, new BaseCallback() {
+        flushWithCallback(true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dialogNoteNameInput.show(getFragmentManager());
@@ -360,8 +358,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void resumeWriting() {
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), true);
-        action.execute(this, null);
+        flushWithCallback(true, null);
     }
 
     private void onPencilClicked() {
@@ -369,8 +366,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onRulerClicked() {
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(getNoteViewHelper().deatchStash(), false);
-        action.execute(this, new BaseCallback() {
+        flushWithCallback(true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (penWidthPopupMenu == null) {
@@ -396,8 +392,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onEraseClicked() {
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(getNoteViewHelper().deatchStash(), false);
-        action.execute(this, null);
+        flushWithCallback(true, null);
     }
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
@@ -410,35 +405,44 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this, null);
     }
 
-    private void flushWithCallback(final BaseCallback callback) {
+    private void flushWithCallback(boolean render, final BaseCallback callback) {
         final List<Shape> stash = getNoteViewHelper().deatchStash();
         if (stash == null || stash.size() <= 0) {
             callback.done(null, null);
             return;
         }
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, false);
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, render, false);
         action.execute(this, callback);
     }
 
     private void onAddNewPage() {
-        flushWithCallback(new BaseCallback() {
+        flushWithCallback(false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
                 action.execute(ScribbleActivity.this, null);
             }
         });
-
     }
 
     private void onNextPage() {
-        final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
-        action.execute(this, null);
+        flushWithCallback(false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
+                action.execute(ScribbleActivity.this, null);
+            }
+        });
     }
 
     private void onPrevPage() {
-        final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
-        action.execute(this, null);
+        flushWithCallback(false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
+                action.execute(ScribbleActivity.this, null);
+            }
+        });
     }
 
     public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {

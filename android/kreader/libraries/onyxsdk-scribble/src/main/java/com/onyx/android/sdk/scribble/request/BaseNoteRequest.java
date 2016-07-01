@@ -4,7 +4,6 @@ import android.graphics.*;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.BuildConfig;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -21,12 +20,13 @@ public class BaseNoteRequest extends BaseRequest {
 
     private ShapeDataInfo shapeDataInfo;
     private String docUniqueId;
-    private String parentLibrayId;
+    private String parentLibraryId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private boolean debugPathBenchmark = false;
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = false;
+    private volatile boolean render = true;
 
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;
@@ -44,6 +44,14 @@ public class BaseNoteRequest extends BaseRequest {
         this.pauseInputProcessor = pauseInputProcessor;
     }
 
+    public boolean isRender() {
+        return render;
+    }
+
+    public void setRender(boolean render) {
+        this.render = render;
+    }
+
     public BaseNoteRequest() {
         setAbortPendingTasks();
     }
@@ -56,12 +64,12 @@ public class BaseNoteRequest extends BaseRequest {
         return docUniqueId;
     }
 
-    public String getParentLibrayId() {
-        return parentLibrayId;
+    public String getParentLibraryId() {
+        return parentLibraryId;
     }
 
-    public void setParentLibrayId(String parentLibrayId) {
-        this.parentLibrayId = parentLibrayId;
+    public void setParentLibraryId(String parentLibraryId) {
+        this.parentLibraryId = parentLibraryId;
     }
 
     public void setViewportSize(final Rect size) {
@@ -204,6 +212,9 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void renderCurrentPage(final NoteViewHelper helper) {
+        if (!isRender()) {
+            return;
+        }
         currentPageAsVisiblePage(helper);
         renderVisiblePages(helper);
     }
@@ -218,7 +229,7 @@ public class BaseNoteRequest extends BaseRequest {
         if (!parent.getNoteDocument().isOpen()) {
             parent.getNoteDocument().open(getContext(),
                     getDocUniqueId(),
-                    getParentLibrayId());
+                    getParentLibraryId());
         }
     }
 

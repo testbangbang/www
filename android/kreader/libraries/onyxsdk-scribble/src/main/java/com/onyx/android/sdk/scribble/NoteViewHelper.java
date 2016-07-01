@@ -46,7 +46,7 @@ public class NoteViewHelper {
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
-    private List<Shape> stash = new ArrayList<Shape>();
+    private List<Shape> dirtyStash = new ArrayList<Shape>();
     private RawInputProcessor.InputCallback callback;
 
     public void setView(final Context context, final SurfaceView view, final RawInputProcessor.InputCallback c) {
@@ -262,7 +262,7 @@ public class NoteViewHelper {
             public void onNewTouchPointListReceived(TouchPointList pointList) {
                 Shape shape = new NormalScribbleShape();
                 shape.addPoints(pointList);
-                stash.add(shape);
+                dirtyStash.add(shape);
             }
 
             @Override
@@ -289,8 +289,8 @@ public class NoteViewHelper {
     }
 
     public List<Shape> deatchStash() {
-        final List<Shape> temp = stash;
-        stash = new ArrayList<Shape>();
+        final List<Shape> temp = dirtyStash;
+        dirtyStash = new ArrayList<Shape>();
         return temp;
     }
 

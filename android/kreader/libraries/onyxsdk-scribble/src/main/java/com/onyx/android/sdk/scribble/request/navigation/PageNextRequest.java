@@ -14,10 +14,9 @@ public class PageNextRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
-        if (!helper.getNoteDocument().nextPage()) {
-            return;
+        if (helper.getNoteDocument().nextPage()) {
+            renderCurrentPage(helper);
         }
-        renderCurrentPage(helper);
         updateShapeDataInfo(helper);
     }
 

@@ -19,7 +19,7 @@ public class PageAddRequest extends BaseNoteRequest {
     @Override
     public void execute(final NoteViewHelper parent) throws Exception {
         if (pageIndex < 0) {
-            pageIndex = parent.getNoteDocument().getCurrentPageIndex();
+            pageIndex = parent.getNoteDocument().getCurrentPageIndex() + 1;
         }
         parent.getNoteDocument().createBlankPage(getContext(), pageIndex);
         renderCurrentPage(parent);
