@@ -118,8 +118,8 @@ public class NoteModel extends BaseModel {
         extraAttributes = attributes;
     }
 
-    public void setTitle(final String id) {
-        title = id;
+    public void setTitle(final String t) {
+        title = t;
     }
 
     public String getTitle() {

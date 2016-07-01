@@ -64,9 +64,6 @@ public class NoteDocument {
         final PageNameList pageNameList = new PageNameList();
         pageNameList.addAll(pageDataMap.keyList());
         model.setPageNameList(pageNameList);
-        if (StringUtils.isNotBlank(title)) {
-            model.setTitle(title);
-        }
         return model;
     }
 
