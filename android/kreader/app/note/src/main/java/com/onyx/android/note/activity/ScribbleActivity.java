@@ -9,9 +9,12 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
@@ -22,7 +25,9 @@ import com.onyx.android.note.actions.DocumentDiscardAction;
 import com.onyx.android.note.actions.DocumentEditAction;
 import com.onyx.android.note.actions.DocumentFlushAction;
 import com.onyx.android.note.actions.DocumentSaveAndCloseAction;
+import com.onyx.android.note.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
+import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.dialog.PenWidthPopupMenu;
 import com.onyx.android.note.utils.Utils;
@@ -54,9 +59,19 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private
     @PenType.PenTypeDef
     int currentPenType = PenType.PENCIL;
+    @NoteBackgroundType.NoteBackgroundDef
+    int currentNoteBackground = NoteBackgroundType.EMPTY;
+    //TODO:just as psd value.
+    int minPenWidth = 15;
+    int maxPenWidth = 40;
+    int currentPenWidth = 32;
     private TextView titleTextView;
-    ContentView penStyleContentView;
-    GAdapter adapter;
+    private ContentView penStyleContentView;
+    private GAdapter adapter;
+    PenWidthPopupMenu penWidthPopupMenu;
+    BackGroundTypePopupMenu bgTypePopupMenu;
+    private ImageView addPageBtn, changeBGBtn;
+    private Button pageIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +93,10 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void initView() {
         titleTextView = (TextView) findViewById(R.id.note_title);
+        addPageBtn = (ImageView) findViewById(R.id.button_new_page);
+        changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
+        //TODO:update page status by this widget.
+        pageIndicator = (Button) findViewById(R.id.button_page_progress);
         penStyleContentView = (ContentView) findViewById(R.id.pen_style_content_view);
         penStyleContentView.setShowPageInfoArea(false);
         penStyleContentView.setSubLayoutParameter(R.layout.pen_style_item, getItemViewDataMap());
@@ -95,6 +114,18 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             }
         });
         penStyleContentView.setupContent(1, 6, getPenStyleAdapter(), 0);
+        addPageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        changeBGBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBGSetupWindow();
+            }
+        });
     }
 
     private void invokePenStyleCallBack(int penType) {
@@ -117,12 +148,57 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         }
     }
 
+    private void showBGSetupWindow() {
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(getNoteViewHelper().deatchStash(), false);
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (bgTypePopupMenu == null) {
+                    bgTypePopupMenu = new BackGroundTypePopupMenu(ScribbleActivity.this, getLayoutInflater(), currentNoteBackground, getWindow().getDecorView(), getWindow().getDecorView().getWidth() -
+                            getResources().getDimensionPixelSize(R.dimen.note_bg_popup_width) - 10,
+                            getSupportActionBar().getHeight() + 10, new BackGroundTypePopupMenu.PopupMenuCallback() {
+                        @Override
+                        public void onBackGroundChanged(@NoteBackgroundType.NoteBackgroundDef int newBackground) {
+
+                        }
+                    });
+                    bgTypePopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                        @Override
+                        public void onDismiss() {
+                            resumeWriting();
+                        }
+                    });
+                }
+                bgTypePopupMenu.show();
+            }
+        });
+    }
+
     private void onRulerClicked() {
-        PenWidthPopupMenu menu = new PenWidthPopupMenu(getLayoutInflater(), this);
-        menu.showAtLocation(getWindow().getDecorView(), Gravity.NO_GRAVITY, 50,
-                getWindow().getDecorView().getHeight() -
-                        getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
-                        getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height) - 10);
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(getNoteViewHelper().deatchStash(), false);
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (penWidthPopupMenu == null) {
+                    penWidthPopupMenu = new PenWidthPopupMenu(ScribbleActivity.this, getLayoutInflater(), currentPenWidth, minPenWidth, maxPenWidth, getWindow().getDecorView(), 50, getWindow().getDecorView().getHeight() -
+                            getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
+                            getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height) - 10, new PenWidthPopupMenu.PopupMenuCallback() {
+
+                        @Override
+                        public void onValueChanged(int newValue) {
+
+                        }
+                    });
+                    penWidthPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                        @Override
+                        public void onDismiss() {
+                            resumeWriting();
+                        }
+                    });
+                }
+                penWidthPopupMenu.show();
+            }
+        });
     }
 
     private HashMap<String, Integer> getItemViewDataMap() {
@@ -230,7 +306,19 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        cleanUpAllPopMenu();
         super.onDestroy();
+    }
+
+    private void cleanUpAllPopMenu() {
+        if (penWidthPopupMenu != null && penWidthPopupMenu.isShowing()) {
+            penWidthPopupMenu.dismiss();
+        }
+        if (bgTypePopupMenu != null && bgTypePopupMenu.isShowing()) {
+            bgTypePopupMenu.dismiss();
+        }
+        penWidthPopupMenu = null;
+        bgTypePopupMenu = null;
     }
 
     public void onBackPressed() {
@@ -283,9 +371,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         closeAction.execute(this, null);
     }
 
-    private void onPencilClicked() {
+    private void resumeWriting() {
         final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), true);
         action.execute(this, null);
+    }
+
+    private void onPencilClicked() {
+        resumeWriting();
     }
 
     private void onEraseClicked() {

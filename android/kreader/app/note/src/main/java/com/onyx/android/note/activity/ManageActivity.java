@@ -314,10 +314,12 @@ public class ManageActivity extends OnyxAppCompatActivity {
                     deleteButton.setEnabled(true);
                     moveButton.setEnabled(true);
                 }
+                chooseModeButton.setText(R.string.disselect);
                 break;
             case SelectionMode.NORMAL_MODE:
                 deleteButton.setVisibility(View.GONE);
                 moveButton.setVisibility(View.GONE);
+                chooseModeButton.setText(R.string.select_mode);
                 break;
         }
     }
