@@ -18,10 +18,6 @@
                 android:id="@id/back_function_layout"
                 style="@style/global_activities_back_function_layout">
 
-                <ImageView
-                    android:id="@+id/imageView_back"
-                    style="@style/global_activities_back_btn_image" />
-
                 <TextView
                     android:id="@+id/textView_main_title"
                     style="@style/global_activities_back_btn_category_tittle"
@@ -29,15 +25,44 @@
                     android:ellipsize="middle"
                     android:gravity="left|center_vertical"
                     android:maxLines="1"
-                    android:text="@string/app_name" />
+                    android:text="@string/finish"
+                    android:textSize="20sp" />
             </RelativeLayout>
 
-            <Button
-                style="@style/Widget.AppCompat.Button.Borderless"
+            <TextView
+                android:id="@+id/note_title"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:ellipsize="middle"
+                android:gravity="center"
+                android:lines="1"
+                android:maxWidth="500dp"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large" />
+
+            <ImageView
+                android:id="@+id/button_new_page"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="match_parent"
+                android:layout_marginRight="12dp"
+                android:layout_toLeftOf="@+id/change_note_bg"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_business_write_add_gray_40dp" />
+
+            <ImageView
+                android:id="@+id/change_note_bg"
+                android:layout_width="?attr/actionBarSize"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:text="@string/switch_bg" />
+                android:layout_marginRight="12dp"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_business_note_bg_gray_40dp" />
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
@@ -46,8 +71,8 @@
         android:id="@+id/note_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tool_bar"
-        android:layout_above="@+id/divider"/>
+        android:layout_above="@+id/divider"
+        android:layout_below="@id/tool_bar" />
 
 
     <View
@@ -60,126 +85,41 @@
     <RelativeLayout
         android:id="@+id/layout_footer"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="@dimen/sub_menu_height"
         android:layout_alignParentBottom="true">
-
-        <LinearLayout
-            android:id="@+id/pen_width_style"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_above="@+id/style_panel">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_student_note_circle_minus_gray_64dp" />
-
-            <SeekBar
-                android:id="@+id/scribble_seek_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="250dp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_student_note_circle_plus_gray_64dp" />
-        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/style_panel"
             android:layout_width="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_height="@dimen/sub_menu_height">
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true">
 
-            <LinearLayout
-                android:id="@+id/pen_style_panel"
+
+            <com.onyx.android.sdk.ui.view.ContentView
+                android:id="@+id/pen_style_content_view"
                 android:layout_width="@dimen/note_style_width"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="45dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/pencil_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/imagebtn_bg"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_student_note_pencil_black_60dp" />
-
-                <ImageView
-                    android:id="@+id/brush_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/imagebtn_bg"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_student_note_brush_black_60dp" />
-
-                <ImageView
-                    android:id="@+id/pen_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/imagebtn_bg"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_student_note_pen_black_60dp" />
-
-                <ImageView
-                    android:id="@+id/rule_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/imagebtn_bg"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_student_note_rule_black_60dp" />
-
-            </LinearLayout>
+                android:layout_marginLeft="15dp" />
 
             <ImageView
                 android:id="@+id/color_indicator"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/erase_button"
-                android:layout_toRightOf="@+id/pen_style_panel"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_student_note_color_gray_1_gray_64dp" />
-
-            <ImageView
-                android:id="@+id/erase_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/button_new_page"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="center"
-                android:src="@drawable/ic_student_note_eraser_black_64dp" />
-
-            <ImageView
-                android:id="@+id/button_new_page"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/page_indicator"
+                android:layout_toRightOf="@+id/pen_style_content_view"
                 android:background="@drawable/imagebtn_bg"
+                android:layout_marginBottom="8dp"
+                android:layout_alignParentBottom="true"
+                android:clickable="true"
+                android:focusable="true"
                 android:scaleType="center"
-                android:src="@drawable/ic_student_note_circle_plus_gray_64dp" />
+                android:src="@drawable/ic_business_write_color_black_44dp" />
 
             <LinearLayout
                 android:id="@+id/page_indicator"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -191,7 +131,7 @@
                     android:background="@drawable/imagebtn_bg"
                     android:focusable="true"
                     android:padding="2dp"
-                    android:src="@drawable/ic_dialog_prev" />
+                    android:src="@drawable/ic_note_prev_page_gray_32dp" />
 
                 <Button
                     android:id="@+id/button_page_progress"
@@ -201,8 +141,7 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:text="@string/paged_init_text"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
+                    android:textSize="22sp" />
 
                 <ImageView
                     android:id="@+id/button_next_page"
@@ -211,7 +150,7 @@
                     android:background="@drawable/imagebtn_bg"
                     android:focusable="true"
                     android:padding="2dp"
-                    android:src="@drawable/ic_dialog_next" />
+                    android:src="@drawable/ic_note_next_page_gray_32dp" />
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>

@@ -12,4 +12,5 @@
     <string name="note_name">Name:</string>
     <string name="discard">Discard</string>
     <string name="save_note">Save Note</string>
+    <string name="finish">Finish</string>
 </resources>
