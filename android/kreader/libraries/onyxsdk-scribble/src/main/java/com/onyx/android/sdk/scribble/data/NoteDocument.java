@@ -236,7 +236,6 @@ public class NoteDocument {
     }
 
     public NotePage getCurrentPage(final Context context) {
-        String string = JSON.toJSONString(pageDataMap);
         final String pageId = getCurrentPageUniqueId();
         return getNotePage(context, pageId);
     }

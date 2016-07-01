@@ -11,7 +11,7 @@ import com.onyx.android.sdk.scribble.request.note.NoteDocumentSaveRequest;
  */
 public class DocumentSaveAndCloseAction<T extends ScribbleActivity> extends BaseNoteAction<T> {
 
-    private String title;
+    private volatile String title;
 
     public DocumentSaveAndCloseAction(final String t) {
         title = t;

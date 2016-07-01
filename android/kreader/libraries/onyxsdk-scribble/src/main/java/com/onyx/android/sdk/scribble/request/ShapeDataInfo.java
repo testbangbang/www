@@ -40,7 +40,7 @@ public class ShapeDataInfo {
     }
 
     public int getCurrentPageIndex() {
-        return getCurrentPageIndex();
+        return currentPageIndex;
     }
 
 }
