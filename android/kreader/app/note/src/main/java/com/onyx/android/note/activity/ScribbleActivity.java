@@ -9,7 +9,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -73,7 +72,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private GAdapter adapter;
     PenWidthPopupMenu penWidthPopupMenu;
     BackGroundTypePopupMenu bgTypePopupMenu;
-    private ImageView addPageBtn, changeBGBtn;
+    private ImageView addPageBtn, changeBGBtn, prevPage, nextPage;
     private Button pageIndicator;
 
     @Override
@@ -98,6 +97,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         titleTextView = (TextView) findViewById(R.id.note_title);
         addPageBtn = (ImageView) findViewById(R.id.button_new_page);
         changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
+        prevPage = (ImageView) findViewById(R.id.button_previous_page);
+        nextPage = (ImageView) findViewById(R.id.button_new_page);
         //TODO:update page status by this widget.
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         penStyleContentView = (ContentView) findViewById(R.id.pen_style_content_view);
@@ -120,13 +121,25 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onAddNewPage();
             }
         });
         changeBGBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showBGSetupWindow();
+            }
+        });
+        prevPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPrevPage();
+            }
+        });
+        nextPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNextPage();
             }
         });
     }
@@ -422,8 +435,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void updateDataInfo(final BaseNoteRequest request) {
         final ShapeDataInfo shapeDataInfo = request.getShapeDataInfo();
-        shapeDataInfo.getCurrentPageIndex();
-        shapeDataInfo.getPageCount();
+        titleTextView.setText(shapeDataInfo.getCurrentPageIndex() + "/" + shapeDataInfo.getPageCount());
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
