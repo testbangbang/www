@@ -23,7 +23,7 @@ public class DocumentEditAction<T extends ScribbleActivity> extends BaseNoteActi
         activity.getNoteViewHelper().submit(activity, openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                activity.onRequestFinished(true);
+                activity.onRequestFinished(openRequest, true);
             }
         });
     }

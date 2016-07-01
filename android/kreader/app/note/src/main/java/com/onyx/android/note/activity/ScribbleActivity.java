@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -40,6 +41,8 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.RawInputProcessor;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -170,33 +173,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                     });
                 }
                 bgTypePopupMenu.show();
-            }
-        });
-    }
-
-    private void onRulerClicked() {
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(getNoteViewHelper().deatchStash(), false);
-        action.execute(this, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (penWidthPopupMenu == null) {
-                    penWidthPopupMenu = new PenWidthPopupMenu(ScribbleActivity.this, getLayoutInflater(), currentPenWidth, minPenWidth, maxPenWidth, getWindow().getDecorView(), 50, getWindow().getDecorView().getHeight() -
-                            getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
-                            getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height) - 10, new PenWidthPopupMenu.PopupMenuCallback() {
-
-                        @Override
-                        public void onValueChanged(int newValue) {
-
-                        }
-                    });
-                    penWidthPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                        @Override
-                        public void onDismiss() {
-                            resumeWriting();
-                        }
-                    });
-                }
-                penWidthPopupMenu.show();
             }
         });
     }
@@ -380,6 +356,33 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         resumeWriting();
     }
 
+    private void onRulerClicked() {
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(getNoteViewHelper().deatchStash(), false);
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (penWidthPopupMenu == null) {
+                    penWidthPopupMenu = new PenWidthPopupMenu(ScribbleActivity.this, getLayoutInflater(), currentPenWidth, minPenWidth, maxPenWidth, getWindow().getDecorView(), 50, getWindow().getDecorView().getHeight() -
+                            getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
+                            getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height) - 10, new PenWidthPopupMenu.PopupMenuCallback() {
+
+                        @Override
+                        public void onValueChanged(int newValue) {
+
+                        }
+                    });
+                    penWidthPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                        @Override
+                        public void onDismiss() {
+                            resumeWriting();
+                        }
+                    });
+                }
+                penWidthPopupMenu.show();
+            }
+        });
+    }
+
     private void onEraseClicked() {
         final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), false);
         action.execute(this, null);
@@ -396,14 +399,31 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onAddNewPage() {
-        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>();
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>(-1);
         action.execute(this, null);
     }
 
-    public void onRequestFinished(boolean updatePage) {
+    private void onNextPage() {
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>(-1);
+        action.execute(this, null);
+    }
+
+    private void onPrevPage() {
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>(-1);
+        action.execute(this, null);
+    }
+
+    public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
         if (updatePage) {
             drawPage();
         }
+        updateDataInfo(request);
+    }
+
+    private void updateDataInfo(final BaseNoteRequest request) {
+        final ShapeDataInfo shapeDataInfo = request.getShapeDataInfo();
+        shapeDataInfo.getCurrentPageIndex();
+        shapeDataInfo.getPageCount();
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
