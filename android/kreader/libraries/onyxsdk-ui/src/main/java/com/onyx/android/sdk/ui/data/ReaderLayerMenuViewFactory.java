@@ -47,6 +47,8 @@ public class ReaderLayerMenuViewFactory {
     public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         if (parent.getURI().getRawPath().compareTo("/Font") == 0) {
             return createFontStyleView(context, items, state, callback);
+        } else if (parent.getURI().getRawPath().compareTo("/TTS") == 0) {
+            return createTTSView(context, items, state, callback);
         }
         return createSimpleButtonContainerView(context, items, state, callback);
     }
@@ -139,6 +141,11 @@ public class ReaderLayerMenuViewFactory {
     private static View createFontStyleView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         View view = LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_font_style_view, null);
         mapViewMenuItemFunction(view, items, state, callback);
+        return view;
+    }
+
+    private static View createTTSView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+        View view = LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_tts_view, null);
         return view;
     }
 

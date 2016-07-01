@@ -197,4 +197,14 @@
         <item name="android:maxHeight">64px</item>
     </style>
 
+    <style name="seek_bar_tts" parent="@android:style/Widget.SeekBar">
+        <item name="android:progressDrawable">@drawable/ic_tts_progress_bar</item>
+        <item name="android:indeterminateDrawable">@drawable/ic_tts_progress_bar</item>
+        <item name="android:minHeight">2dip</item>
+        <item name="android:maxHeight">2dip</item>
+        <item name="android:thumb">@drawable/ic_tts_thumb</item>
+        <item name="android:thumbOffset">8dip</item>
+        <item name="android:focusable">true</item>
+    </style>
+
 </resources>
