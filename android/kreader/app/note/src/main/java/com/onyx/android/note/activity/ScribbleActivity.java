@@ -19,12 +19,7 @@ import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
-import com.onyx.android.note.actions.DocumentAddNewPageAction;
-import com.onyx.android.note.actions.DocumentCreateAction;
-import com.onyx.android.note.actions.DocumentDiscardAction;
-import com.onyx.android.note.actions.DocumentEditAction;
-import com.onyx.android.note.actions.DocumentFlushAction;
-import com.onyx.android.note.actions.DocumentSaveAndCloseAction;
+import com.onyx.android.note.actions.*;
 import com.onyx.android.note.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
@@ -42,11 +37,13 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -118,6 +115,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             }
         });
         penStyleContentView.setupContent(1, 6, getPenStyleAdapter(), 0);
+
+
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -411,18 +410,34 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this, null);
     }
 
+    private void flushWithCallback(final BaseCallback callback) {
+        final List<Shape> stash = getNoteViewHelper().deatchStash();
+        if (stash == null || stash.size() <= 0) {
+            callback.done(null, null);
+            return;
+        }
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, false);
+        action.execute(this, callback);
+    }
+
     private void onAddNewPage() {
-        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
-        action.execute(this, null);
+        flushWithCallback(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
+                action.execute(ScribbleActivity.this, null);
+            }
+        });
+
     }
 
     private void onNextPage() {
-        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
+        final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
         action.execute(this, null);
     }
 
     private void onPrevPage() {
-        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
+        final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
         action.execute(this, null);
     }
 
@@ -435,7 +450,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void updateDataInfo(final BaseNoteRequest request) {
         final ShapeDataInfo shapeDataInfo = request.getShapeDataInfo();
-        pageIndicator.setText(shapeDataInfo.getCurrentPageIndex() + "/" + shapeDataInfo.getPageCount());
+        int currentPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
+        int pageCount = shapeDataInfo.getPageCount();
+        pageIndicator.setText(currentPageIndex  + " / " + pageCount);
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {

@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class ShapeDataInfo {
 
-    private PageNameList pageNameList = new PageNameList();
+    private volatile PageNameList pageNameList = new PageNameList();
     private int currentPageIndex;
     public boolean canUndoShape;
     public boolean canRedoShape;
@@ -30,8 +30,8 @@ public class ShapeDataInfo {
         return (pageNameList.size() > 0);
     }
 
-    public void updateShapePageMap(final PageNameList pageNameList, int currentPage) {
-        pageNameList.addAll(pageNameList.getPageNameList());
+    public void updateShapePageMap(final PageNameList src, int currentPage) {
+        pageNameList.addAll(src.getPageNameList());
         currentPageIndex = currentPage;
     }
 
