@@ -51,13 +51,11 @@ public class ReaderDeviceManager {
     }
 
     public static void startScreenHandWriting(final View view) {
-        EpdController.enablePost(view, 0);
-        EpdController.enableScreenHandWriting(view, 1);
+        EpdController.setScreenHandWritingPenState(view, 1);
     }
 
     public static void stopScreenHandWriting(final View view) {
-        EpdController.enablePost(view, 1);
-        EpdController.enableScreenHandWriting(view, 0);
+        EpdController.setScreenHandWritingPenState(view, 0);
     }
 
 }
