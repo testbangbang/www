@@ -3,11 +3,11 @@ package com.onyx.kreader.ui.menu;
 import android.content.Context;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.ReaderMenuItem;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -34,7 +34,7 @@ public class ReaderSideMenuItem extends ReaderMenuItem {
                 ReaderSideMenuItem item = createFromJSON(context, parent, (JSONObject)object);
                 items.add(item);
                 if (parent != null) {
-                    parent.getChildren().add(item);
+                    ((List<ReaderSideMenuItem>)parent.getChildren()).add(item);
                 }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
