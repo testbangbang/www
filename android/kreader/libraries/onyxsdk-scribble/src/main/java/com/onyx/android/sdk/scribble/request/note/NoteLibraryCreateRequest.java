@@ -17,6 +17,8 @@ public class NoteLibraryCreateRequest extends BaseNoteRequest {
     public NoteLibraryCreateRequest(final String pid, final String t) {
         parentUniqueId = pid;
         title = t;
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(false);
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {

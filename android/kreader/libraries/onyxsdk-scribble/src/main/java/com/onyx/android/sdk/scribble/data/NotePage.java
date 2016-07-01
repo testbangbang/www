@@ -82,6 +82,11 @@ public class NotePage {
         }
     }
 
+    public void addShapeList(final List<Shape> shapes) {
+        newAddedShapeList.addAll(shapes);
+        shapeList.addAll(shapes);
+    }
+
     public void removeShape(final Shape shape) {
         removedShapeList.add(shape);
         newAddedShapeList.remove(shape);
@@ -170,14 +175,16 @@ public class NotePage {
      * save new added shapes and remove shapes has been removed.
      * @return
      */
-    public boolean savePage() {
+    public boolean savePage(final Context context) {
+        List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
         for(Shape shape : newAddedShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
-            model.save();
+            modelList.add(model);
         }
+        ShapeDataProvider.saveShapeList(context, modelList);
 
         for(Shape shape: removedShapeList) {
-            ShapeDataProvider.removeShape(null, shape.getShapeUniqueId());
+            ShapeDataProvider.removeShape(context, shape.getShapeUniqueId());
         }
         return true;
     }

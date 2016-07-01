@@ -2,6 +2,7 @@ package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.raizlabs.android.dbflow.annotation.Database;
 import com.raizlabs.android.dbflow.config.DatabaseConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;

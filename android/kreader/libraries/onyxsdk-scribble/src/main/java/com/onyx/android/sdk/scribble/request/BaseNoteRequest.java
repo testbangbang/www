@@ -21,11 +21,12 @@ public class BaseNoteRequest extends BaseRequest {
 
     private ShapeDataInfo shapeDataInfo;
     private String docUniqueId;
+    private String parentLibrayId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
-    private boolean debugPathBenchmark = true;
+    private boolean debugPathBenchmark = false;
     private boolean pauseInputProcessor = true;
-    private boolean resumeInputProcessor = true;
+    private boolean resumeInputProcessor = false;
 
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;
@@ -53,6 +54,14 @@ public class BaseNoteRequest extends BaseRequest {
 
     public final String getDocUniqueId() {
         return docUniqueId;
+    }
+
+    public String getParentLibrayId() {
+        return parentLibrayId;
+    }
+
+    public void setParentLibrayId(String parentLibrayId) {
+        this.parentLibrayId = parentLibrayId;
     }
 
     public void setViewportSize(final Rect size) {
@@ -142,9 +151,12 @@ public class BaseNoteRequest extends BaseRequest {
         paint.setAntiAlias(true);
         paint.setStrokeWidth(3.0f);
 
+        final Matrix renderMatrix = new Matrix();
+        renderMatrix.postScale(getViewportSize().width(), getViewportSize().height());
+
         for(PageInfo page: getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-            notePage.render(canvas, paint, page.normalizeMatrix(), new NotePage.RenderCallback() {
+            notePage.render(canvas, paint, renderMatrix, new NotePage.RenderCallback() {
                 @Override
                 public boolean isRenderAbort() {
                     return isAbort();
@@ -167,7 +179,7 @@ public class BaseNoteRequest extends BaseRequest {
         Path path = new Path();
         int width = getViewportSize().width();
         int height = getViewportSize().height();
-        int max = TestUtils.randInt(0, 50);
+        int max = TestUtils.randInt(0, 1000);
         path.moveTo(TestUtils.randInt(0, width), TestUtils.randInt(0, height));
         for(int i = 0; i < max; ++i) {
             float xx = TestUtils.randInt(0, width);
@@ -204,7 +216,9 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void ensureDocumentOpened(final NoteViewHelper parent) {
         if (!parent.getNoteDocument().isOpen()) {
-            parent.getNoteDocument().open(getContext(), getDocUniqueId());
+            parent.getNoteDocument().open(getContext(),
+                    getDocUniqueId(),
+                    getParentLibrayId());
         }
     }
 

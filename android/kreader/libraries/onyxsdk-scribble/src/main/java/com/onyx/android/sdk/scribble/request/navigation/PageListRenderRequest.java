@@ -20,6 +20,8 @@ public class PageListRenderRequest extends BaseNoteRequest {
         setAbortPendingTasks();
         setViewportSize(size);
         setVisiblePages(pages);
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(true);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {

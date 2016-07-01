@@ -20,7 +20,7 @@ public class GotoUpAction<T extends ManageActivity>  extends BaseNoteAction<T> {
     }
 
     @Override
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
         final NoteModel noteModel = NoteDataProvider.load(activity, uniqueId);
         final NoteLibraryLoadRequest loadRequest = new NoteLibraryLoadRequest(noteModel.getParentUniqueId());
         activity.getNoteViewHelper().submit(activity, loadRequest, new BaseCallback() {

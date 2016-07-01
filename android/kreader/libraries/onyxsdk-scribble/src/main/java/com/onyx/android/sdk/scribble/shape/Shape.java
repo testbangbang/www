@@ -66,6 +66,8 @@ public interface Shape {
 
     void addPoints(final TouchPointList points);
 
+    TouchPointList getPoints();
+
     boolean supportDFB();
 
     void render(final Canvas canvas, final Paint paint, final Matrix matrix);

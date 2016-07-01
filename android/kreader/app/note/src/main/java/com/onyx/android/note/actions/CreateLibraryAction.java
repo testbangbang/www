@@ -5,7 +5,6 @@ import com.onyx.android.note.activity.ManageActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.request.note.NoteLibraryCreateRequest;
-import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
 
 /**
  * Created by zhuzeng on 6/26/16.
@@ -21,7 +20,7 @@ public class CreateLibraryAction<T extends ManageActivity> extends BaseNoteActio
     }
 
     @Override
-    public void execute(final T activity) {
+    public void execute(final T activity, final BaseCallback callback) {
         final NoteLibraryCreateRequest createRequest = new NoteLibraryCreateRequest(parentLibraryId, title);
         activity.getNoteViewHelper().submit(activity, createRequest, new BaseCallback() {
             @Override

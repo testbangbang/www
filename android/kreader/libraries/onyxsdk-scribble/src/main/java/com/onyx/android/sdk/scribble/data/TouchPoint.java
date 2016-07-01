@@ -67,14 +67,10 @@ public class TouchPoint implements Serializable {
         return timestamp;
     }
 
-    public void mapInPlace(final Matrix matrix) {
-        float src[] = new float[2];
+    public void mapPoint(final Matrix matrix, final float[] src, final float[] dst) {
         src[0] = x;
         src[1] = y;
-        float dst[] = new float[2];
         matrix.mapPoints(dst, src);
-        x = dst[0];
-        y = dst[1];
     }
 
 }

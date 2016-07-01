@@ -12,7 +12,6 @@ import android.view.ViewTreeObserver;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.RawInputProcessor;
@@ -21,6 +20,10 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhuzeng on 6/16/16.
@@ -43,19 +46,27 @@ public class NoteViewHelper {
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
+    private List<Shape> stash = new ArrayList<Shape>();
+    private RawInputProcessor.InputCallback callback;
 
-    public void setView(final SurfaceView view) {
+    public void setView(final Context context, final SurfaceView view, final RawInputProcessor.InputCallback c) {
+        initRawResource(context);
         initWithSurfaceView(view);
         initRawInputProcessor();
         updateScreenMatrix();
         updateViewMatrix();
         updateLimitRect();
         stopDrawing();
+        setCallback(c);
     }
 
     public void stop() {
         stopDrawing();
         removeLayoutListener();
+    }
+
+    private void initRawResource(final Context context) {
+
     }
 
     private void initWithSurfaceView(final SurfaceView view) {
@@ -82,21 +93,43 @@ public class NoteViewHelper {
         return globalLayoutListener;
     }
 
+    private void setCallback(final RawInputProcessor.InputCallback c) {
+        callback = c;
+    }
+
     private float getEpdWidth() {
-        final float epdWidth = 1600;
+        final float epdWidth = 1200;
         return epdWidth;
     }
 
     private float getEpdHeight() {
-        final float epdHeight = 1200;
+        final float epdHeight = 825;
         return epdHeight;
     }
 
-    // the same orientation with epd and digitizer.
+    private int getEpdOrientation() {
+        return 90;
+    }
+
+    private int getTouchOrientation() {
+        return 90;
+    }
+
+    private int getTouchWidth() {
+        return 8192;
+    }
+
+    private int getTouchHeight() {
+        return 6144;
+    }
+
+    // matrix from input touch panel to system view with correct orientation.
     private void updateScreenMatrix() {
         final Matrix screenMatrix = new Matrix();
-        screenMatrix.postRotate(90);
+        screenMatrix.postRotate(getEpdOrientation());
         screenMatrix.postTranslate(getEpdHeight(), 0);
+        screenMatrix.preScale((float) getEpdWidth() / (float) getTouchWidth(),
+                (float) getEpdHeight() / (float) getTouchHeight());
         rawInputProcessor.setScreenMatrix(screenMatrix);
     }
 
@@ -110,28 +143,27 @@ public class NoteViewHelper {
         rawInputProcessor.setViewMatrix(viewMatrix);
     }
 
+    // matrix from android view to epd.
+    private Matrix matrixFromViewToEpd() {
+        final Matrix matrix = new Matrix();
+        matrix.postRotate(360 - getEpdOrientation());
+        matrix.postTranslate(0, getEpdHeight());
+        return matrix;
+    }
+
     private void updateLimitRect() {
-        final Rect rect = new Rect();
-        surfaceView.getGlobalVisibleRect(rect);
+        limitRect = new Rect();
+        surfaceView.getGlobalVisibleRect(limitRect);
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
-        rect.offsetTo(viewPosition[0], viewPosition[1]);
-        final Matrix matrix = new Matrix();
-        matrix.postRotate(270);
-        matrix.postTranslate(0, getEpdHeight());
-        float src[] = new float[4];
-        src[0] = rect.left;
-        src[1] = rect.top;
-        src[2] = rect.right;
-        src[3] = rect.bottom;
-        float dst[] = new float[4];
-        matrix.mapPoints(dst, src);
-        rect.set((int)dst[0], (int)dst[1], (int)dst[2], (int)dst[3]);
+        limitRect.offsetTo(viewPosition[0], viewPosition[1]);
+        final Matrix matrix = matrixFromViewToEpd();
+        ShapeUtils.mapInPlace(limitRect, matrix);
         EpdController.setScreenHandWritingRegionLimit(surfaceView,
-                Math.min(rect.left, rect.right),
-                Math.min(rect.top, rect.bottom),
-                Math.max(rect.left, rect.right),
-                Math.max(rect.top, rect.bottom));
+                Math.min(limitRect.left, limitRect.right),
+                Math.min(limitRect.top, limitRect.bottom),
+                Math.max(limitRect.left, limitRect.right),
+                Math.max(limitRect.top, limitRect.bottom));
     }
 
     public void startDrawing() {
@@ -166,8 +198,6 @@ public class NoteViewHelper {
         if (rect != null) {
             request.setViewportSize(rect);
         }
-        request.setPauseInputProcessor(true);
-        request.setResumeInputProcessor(false);
     }
 
     public final RequestManager getRequestManager() {
@@ -226,32 +256,42 @@ public class NoteViewHelper {
         rawInputProcessor.setInputCallback(new RawInputProcessor.InputCallback() {
             @Override
             public void onBeginHandWriting() {
-
             }
 
             @Override
             public void onNewTouchPointListReceived(TouchPointList pointList) {
-                // create shape and add to memory.
                 Shape shape = new NormalScribbleShape();
                 shape.addPoints(pointList);
-                // send request and send to request manager.
+                stash.add(shape);
             }
 
             @Override
             public void onBeginErasing() {
-
+                if (callback != null) {
+                    callback.onBeginErasing();
+                }
             }
 
             @Override
             public void onErasing(TouchPoint touchPoint) {
-
+                if (callback != null) {
+                    callback.onErasing(touchPoint);
+                }
             }
 
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
-
+                if (callback != null) {
+                    callback.onEraseTouchPointListReceived(pointList);
+                }
             }
         });
+    }
+
+    public List<Shape> deatchStash() {
+        final List<Shape> temp = stash;
+        stash = new ArrayList<Shape>();
+        return temp;
     }
 
 }

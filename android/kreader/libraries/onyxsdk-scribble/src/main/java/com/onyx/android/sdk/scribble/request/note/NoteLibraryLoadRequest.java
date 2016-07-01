@@ -19,6 +19,8 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
     public NoteLibraryLoadRequest(final String id) {
         parentUniqueId = id;
         loadThumbnail = true;
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(false);
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
