@@ -168,4 +168,43 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@android:color/black</item>
     </style>
+
+    <style name="fontSize_textView_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:minWidth">@dimen/button_minHeight</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_marginLeft">@dimen/font_size_item_margin</item>
+        <item name="android:layout_marginRight">@dimen/font_size_button_margin</item>
+        <item name="android:gravity">bottom|center_horizontal</item>
+        <item name="android:focusable">true</item>
+        <item name="android:text">@string/font_size_example_text</item>
+    </style>
+
+    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="LightSettingsRatingBarStyle">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:thumb">@null</item>
+        <item name="android:minHeight">64px</item>
+        <item name="android:maxHeight">64px</item>
+    </style>
+
+    <style name="seek_bar_tts" parent="@android:style/Widget.SeekBar">
+        <item name="android:progressDrawable">@drawable/ic_tts_progress_bar</item>
+        <item name="android:indeterminateDrawable">@drawable/ic_tts_progress_bar</item>
+        <item name="android:minHeight">2dip</item>
+        <item name="android:maxHeight">2dip</item>
+        <item name="android:thumb">@drawable/ic_tts_thumb</item>
+        <item name="android:thumbOffset">8dip</item>
+        <item name="android:focusable">true</item>
+    </style>
+
 </resources>

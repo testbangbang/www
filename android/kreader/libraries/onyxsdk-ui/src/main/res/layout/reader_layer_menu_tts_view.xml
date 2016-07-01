@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="5dp"
+              android:paddingBottom="5dp">
+
+    <ImageButton
+            android:id="@+id/button_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:background="@drawable/imagebtn_bg"
+            android:src="@drawable/ic_dialog_reader_menu_tts_stop_black_36dp"/>
+
+    <ImageButton android:id="@+id/button_play"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:paddingLeft="30dp"
+                 android:paddingRight="30dp"
+                 android:background="@drawable/imagebtn_bg"
+                 android:src="@drawable/ic_dialog_reader_menu_tts_play_black_36dp"/>
+
+    <ImageButton android:id="@+id/button_decrease_volume"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:paddingLeft="30dp"
+                 android:paddingRight="30dp"
+                 android:background="@drawable/imagebtn_bg"
+                 android:src="@drawable/ic_dialog_reader_menu_tts_sound_min_black_36dp"/>
+
+    <SeekBar
+            android:id="@+id/seek_bar_tts"
+            style="@style/seek_bar_tts"
+            android:layout_width="@dimen/reader_layer_menu_tts_seek_bar_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:focusable="false"
+            android:max="100"
+            android:thumb="@drawable/ic_tts_thumb" />
+
+    <ImageButton android:id="@+id/button_increase_volume"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:paddingLeft="30dp"
+                 android:paddingRight="30dp"
+                 android:background="@drawable/imagebtn_bg"
+                 android:src="@drawable/ic_dialog_reader_menu_tts_sound_max_black_36dp"/>
+
+</LinearLayout>

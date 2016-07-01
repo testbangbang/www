@@ -1,4 +1,4 @@
-package com.onyx.kreader.ui.menu;
+package com.onyx.android.sdk.data;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public abstract class ReaderMenuItem implements Comparable<ReaderMenuItem> {
         return parent;
     }
 
-    public List<ReaderMenuItem> getChildren() {
+    public List<? extends ReaderMenuItem> getChildren() {
         return children;
     }
 

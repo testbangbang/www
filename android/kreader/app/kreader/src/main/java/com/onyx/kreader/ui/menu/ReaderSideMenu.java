@@ -3,6 +3,9 @@ package com.onyx.kreader.ui.menu;
 import android.app.Activity;
 import android.view.View;
 import android.widget.LinearLayout;
+import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuItem;
+import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.kreader.R;
 import yalantis.com.sidemenu.interfaces.Resourceble;
 import yalantis.com.sidemenu.interfaces.ScreenShotable;
@@ -65,7 +68,7 @@ public class ReaderSideMenu extends ReaderMenu {
     }
 
     @Override
-    public void show() {
+    public void show(ReaderMenuState state) {
         if (!isShown()) {
             readerMenuLayout.setVisibility(View.VISIBLE);
             readerMenuViewAnimator.showMenuContent();
