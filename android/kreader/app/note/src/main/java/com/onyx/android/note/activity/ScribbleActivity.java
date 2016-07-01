@@ -397,32 +397,32 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onEraseClicked() {
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), false);
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(getNoteViewHelper().deatchStash(), false);
         action.execute(this, null);
     }
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
-        final DocumentCreateAction<ScribbleActivity> action = new DocumentCreateAction<ScribbleActivity>(uniqueId, parentId);
+        final DocumentCreateAction<ScribbleActivity> action = new DocumentCreateAction<>(uniqueId, parentId);
         action.execute(this, null);
     }
 
     private void handleDocumentEdit(final String uniqueId, final String parentId) {
-        final DocumentEditAction<ScribbleActivity> action = new DocumentEditAction<ScribbleActivity>(uniqueId, parentId);
+        final DocumentEditAction<ScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
         action.execute(this, null);
     }
 
     private void onAddNewPage() {
-        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>(-1);
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
         action.execute(this, null);
     }
 
     private void onNextPage() {
-        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>(-1);
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
         action.execute(this, null);
     }
 
     private void onPrevPage() {
-        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>(-1);
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
         action.execute(this, null);
     }
 
@@ -435,7 +435,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void updateDataInfo(final BaseNoteRequest request) {
         final ShapeDataInfo shapeDataInfo = request.getShapeDataInfo();
-        titleTextView.setText(shapeDataInfo.getCurrentPageIndex() + "/" + shapeDataInfo.getPageCount());
+        pageIndicator.setText(shapeDataInfo.getCurrentPageIndex() + "/" + shapeDataInfo.getPageCount());
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
