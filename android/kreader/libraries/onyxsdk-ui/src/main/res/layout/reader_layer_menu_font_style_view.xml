@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+            android:id="@+id/font_size_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/reader_layer_menu_font_style_font_size_layout_height"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+        <ImageView
+                android:id="@+id/image_view_decrease_font_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/imagebtn_bg"
+                android:focusable="true"
+                android:src="@drawable/ic_dialog_reader_menu_font_small_black_36dp"/>
+
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_gravity="center_vertical">
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                    android:id="@+id/text_view_font_size_0"
+                    style="@style/fontSize_textView_style"
+                    android:textSize="10sp"
+                    app:lastLineDescent="12dp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                    android:id="@+id/text_view_font_size_1"
+                    style="@style/fontSize_textView_style"
+                    android:textSize="12sp"
+                    app:lastLineDescent="12dp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                    android:id="@+id/text_view_font_size_2"
+                    style="@style/fontSize_textView_style"
+                    android:textSize="14sp"
+                    app:lastLineDescent="12dp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                    android:id="@+id/text_view_font_size_3"
+                    style="@style/fontSize_textView_style"
+                    android:textSize="16sp"
+                    app:lastLineDescent="12dp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                    android:id="@+id/text_view_font_size_4"
+                    style="@style/fontSize_textView_style"
+                    android:textSize="18sp"
+                    app:lastLineDescent="12dp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                    android:id="@+id/text_view_font_size_5"
+                    style="@style/fontSize_textView_style"
+                    android:textSize="20sp"
+                    app:lastLineDescent="12dp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                    android:id="@+id/text_view_font_size_6"
+                    style="@style/fontSize_textView_style"
+                    android:textSize="22sp"
+                    app:lastLineDescent="12dp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                    android:id="@+id/text_view_font_size_7"
+                    style="@style/fontSize_textView_style"
+                    android:textSize="24sp"
+                    app:lastLineDescent="12dp"/>
+
+        </LinearLayout>
+
+        <ImageView
+                android:id="@+id/image_view_increase_font_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/reader_layer_menu_font_style_font_size_button_margin"
+                android:background="@drawable/imagebtn_bg"
+                android:focusable="true"
+                android:src="@drawable/ic_dialog_reader_menu_font_big_black_36dp"/>
+
+    </LinearLayout>
+
+    <View
+            style="@style/single_line_X_axis_View"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+    <LinearLayout
+            android:id="@+id/font_indent_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/font_face"
+                    android:textStyle="bold"/>
+
+                <Button
+                        android:id="@+id/button_set_font_face"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:paddingRight="@dimen/reader_layer_menu_font_style_font_face_button_right_padding"
+                        android:background="@drawable/ic_dialog_reader_menu_font_style_font_face_box"
+                        android:ellipsize="middle"
+                        android:focusable="true"
+                        android:singleLine="true"
+                        android:textSize="18sp"/>
+
+        </LinearLayout>
+
+        <View
+                style="@style/single_line_Y_axis_View"
+                android:layout_width="1dp"/>
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/reader_layer_menu_font_style_font_indent"
+                    android:textStyle="bold"/>
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_gravity="center">
+                <ImageView android:id="@+id/image_view_indent"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_marginTop="5dp" android:layout_marginRight="50dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_indent_black_36dp"/>
+                <ImageView android:id="@+id/image_view_no_indent"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_marginTop="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_indent_black_36dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+            style="@style/single_line_X_axis_View"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+        <LinearLayout
+                android:id="@+id/line_spacing_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/reader_layer_menu_font_style_font_line_spacing"
+                    android:textStyle="bold"/>
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_gravity="center">
+                <ImageView android:id="@+id/image_view_small_line_spacing"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_small_black_36dp"/>
+                <ImageView android:id="@+id/image_view_middle_line_spacing"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_mid_black_36dp"/>
+                <ImageView android:id="@+id/image_view_large_line_spacing"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_big_black_36dp"/>
+                <ImageView android:id="@+id/image_view_decrease_line_spacing"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_shrink_black_36dp"/>
+                <ImageView android:id="@+id/image_view_increase_line_spacing"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_expand_black_36dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+                style="@style/single_line_Y_axis_View"
+                android:layout_width="1dp"/>
+
+        <LinearLayout
+                android:id="@+id/page_margin_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/reader_layer_menu_font_style_page_margins"
+                    android:textStyle="bold"/>
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_gravity="center">
+                <ImageView android:id="@+id/image_view_small_page_margins"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_small_black_36dp"/>
+                <ImageView android:id="@+id/image_view_middle_page_margins"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_mid_black_36dp"/>
+                <ImageView android:id="@+id/image_view_large_page_margins"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_big_black_36dp"/>
+                <ImageView android:id="@+id/image_view_decrease_page_margins"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_shrink_black_36dp"/>
+                <ImageView android:id="@+id/image_view_increase_page_margins"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="5dp"
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_expand_black_36dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

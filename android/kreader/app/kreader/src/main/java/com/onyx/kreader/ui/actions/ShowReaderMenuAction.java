@@ -6,8 +6,12 @@ import android.widget.LinearLayout;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
+import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
+import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.PageConstants;
@@ -17,8 +21,8 @@ import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.handler.HandlerManager;
-import com.onyx.kreader.ui.menu.ReaderMenu;
-import com.onyx.kreader.ui.menu.ReaderMenuItem;
+import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.kreader.ui.menu.ReaderSideMenu;
 import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
 import com.onyx.kreader.utils.RawResourceUtil;
@@ -33,7 +37,7 @@ public class ShowReaderMenuAction extends BaseAction {
     public static final String TAG = ShowReaderMenuAction.class.getSimpleName();
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
-    private static ReaderSideMenu readerMenu;
+    private static ReaderLayerMenu readerMenu;
 
     @Override
     public void execute(ReaderActivity readerActivity) {
@@ -49,15 +53,15 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     public static void hideReaderMenu(final ReaderActivity readerActivity) {
-        readerActivity.hideToolbar();
+//        readerActivity.hideToolbar();
         if (isReaderMenuShown()) {
             readerMenu.hide();
         }
     }
 
     private void showReaderMenu(final ReaderActivity readerActivity) {
-        readerActivity.showToolbar();
-        getReaderMenu(readerActivity).show();
+//        readerActivity.showToolbar();
+        getReaderMenu(readerActivity).show(new ReaderLayerMenuState());
     }
 
     private ReaderMenu getReaderMenu(final ReaderActivity readerActivity) {
@@ -73,13 +77,13 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void createReaderSideMenu(final ReaderActivity readerActivity, LinearLayout drawerLayout) {
-        readerMenu = new ReaderSideMenu(readerActivity, drawerLayout);
+        readerMenu = new ReaderLayerMenu(readerActivity);
         updateReaderMenuCallback(readerMenu, readerActivity);
-        List<ReaderSideMenuItem> items = createReaderSideMenuItems(readerActivity);
+        List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerActivity);
         readerMenu.fillItems(items);
     }
 
-    private void updateReaderMenuCallback(final ReaderSideMenu menu, final ReaderActivity readerActivity) {
+    private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderActivity readerActivity) {
         menu.setReaderMenuCallback(new ReaderMenu.ReaderMenuCallback() {
             @Override
             public void onHideMenu() {
@@ -175,13 +179,18 @@ public class ShowReaderMenuAction extends BaseAction {
 
                 }
             }
+
+            @Override
+            public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
+                Debug.d("onMenuItemValueChanged: " + menuItem.getURI().getRawPath() + ", " + oldValue + ", " + newValue);
+            }
         });
     }
 
-    private List<ReaderSideMenuItem> createReaderSideMenuItems(final ReaderActivity readerActivity) {
+    private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderActivity readerActivity) {
         JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(readerActivity, R.raw.reader_menu));
         JSONArray array = json.getJSONArray("menu_list");
-        return ReaderSideMenuItem.createFromJSON(readerActivity, array);
+        return ReaderLayerMenuItem.createFromJSON(readerActivity, array);
     }
 
     private void rotateScreen(final ReaderActivity readerActivity, int rotationOperation) {

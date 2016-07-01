@@ -22,6 +22,8 @@
     native <methods>;
 }
 
+-keepnames class org.apache.lucene.analysis.** { *; }
+
 -keepnames class com.onyx.android.sdk.data.PageInfo { *; }
 -keepnames class com.onyx.android.sdk.utils.StringUtils { *; }
 

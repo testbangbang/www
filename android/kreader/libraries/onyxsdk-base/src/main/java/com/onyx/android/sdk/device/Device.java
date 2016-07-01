@@ -11,18 +11,19 @@ import android.os.Build;
  * @author joy
  *
  */
-public class DeviceInfo
+public class Device
 {
     @SuppressWarnings("unused")
-    private final static String TAG = "DeviceInfo";
-    
-    private static DeviceInfo sInstance = new DeviceInfo();
-
+    private final static String TAG = "Device";
     
     public static final BaseDevice currentDevice;
     
     static {
-        currentDevice = sInstance.detectDevice();
+        currentDevice = Device.detectDevice();
+    }
+
+    public static BaseDevice currentDevice() {
+        return currentDevice;
     }
     
     /**
@@ -34,6 +35,8 @@ public class DeviceInfo
     {
         if (Build.HARDWARE.contains("freescale")) {
             return IMX6Device.createDevice();
+        } else if (Build.HARDWARE.contentEquals("rk30board")) {
+            return RK3026Device.createDevice();
         }
 
         return new BaseDevice();

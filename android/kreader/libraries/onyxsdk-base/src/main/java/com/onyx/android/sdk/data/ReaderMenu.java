@@ -1,6 +1,4 @@
-package com.onyx.kreader.ui.menu;
-
-import android.view.MenuItem;
+package com.onyx.android.sdk.data;
 
 import java.util.List;
 
@@ -10,13 +8,14 @@ import java.util.List;
 public abstract class ReaderMenu {
     public static abstract class ReaderMenuCallback {
         public abstract void onMenuItemClicked(ReaderMenuItem menuItem);
+        public abstract void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue);
         public abstract void onHideMenu();
     }
 
     private ReaderMenuCallback callback = null;
 
     public abstract boolean isShown();
-    public abstract void show();
+    public abstract void show(ReaderMenuState state);
     public abstract void hide();
 
     public abstract void fillItems(List<? extends ReaderMenuItem> items);
@@ -25,10 +24,15 @@ public abstract class ReaderMenu {
         this.callback = callback;
     }
 
-    public void notifyMenuItemClicked(ReaderMenuItem menuItem)
-    {
+    public void notifyMenuItemClicked(ReaderMenuItem menuItem) {
         if (callback != null) {
             callback.onMenuItemClicked(menuItem);
+        }
+    }
+
+    public void notifyMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
+        if (callback != null) {
+            callback.onMenuItemValueChanged(menuItem, oldValue, newValue);
         }
     }
 
