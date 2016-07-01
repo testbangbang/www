@@ -27,6 +27,7 @@ import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -229,7 +230,9 @@ public class ManageActivity extends OnyxAppCompatActivity {
             noteTitle = Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date());
             uniqueID = ShapeUtils.generateUniqueId();
         } else {
-            noteTitle = object.getString(GAdapterUtil.TAG_TITLE_STRING);
+            noteTitle = StringUtils.isNullOrEmpty(object.getString(GAdapterUtil.TAG_TITLE_STRING)) ?
+                    Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date()) :
+                    object.getString(GAdapterUtil.TAG_TITLE_STRING);
             uniqueID = GAdapterUtil.getUniqueId(object);
         }
         intent.putExtra(ScribbleActivity.TAG_NOTE_TITLE, noteTitle);
@@ -314,10 +317,12 @@ public class ManageActivity extends OnyxAppCompatActivity {
                     deleteButton.setEnabled(true);
                     moveButton.setEnabled(true);
                 }
+                chooseModeButton.setText(R.string.disselect);
                 break;
             case SelectionMode.NORMAL_MODE:
                 deleteButton.setVisibility(View.GONE);
                 moveButton.setVisibility(View.GONE);
+                chooseModeButton.setText(R.string.select_mode);
                 break;
         }
     }

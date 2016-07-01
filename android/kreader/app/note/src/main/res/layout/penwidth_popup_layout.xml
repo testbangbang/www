@@ -7,18 +7,43 @@
     android:gravity="center_vertical">
 
     <ImageView
+        android:id="@+id/minus_btn"
+        android:layout_marginLeft="18dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_business_write_minus_black_32dp" />
 
-    <SeekBar
-        android:id="@+id/scribble_seek_bar"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="250dp" />
+        android:layout_height="match_parent">
+
+        <SeekBar
+            android:id="@+id/note_width_seek_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:minWidth="250dp" />
+
+        <TextView
+            android:id="@+id/min_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/note_width_seek_bar"
+            android:layout_alignLeft="@id/note_width_seek_bar" />
+
+        <TextView
+            android:id="@+id/max_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/note_width_seek_bar"
+            android:layout_alignRight="@id/note_width_seek_bar" />
+
+    </RelativeLayout>
 
     <ImageView
+        android:id="@+id/add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="18dp"
         android:src="@drawable/ic_business_write_plus_black_32dp" />
 </LinearLayout>

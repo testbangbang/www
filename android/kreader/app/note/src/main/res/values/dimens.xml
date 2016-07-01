@@ -7,4 +7,6 @@
     <dimen name="sub_menu_height">104dp</dimen>
     <dimen name="note_style_width">480dp</dimen>
     <dimen name="pen_width_popup_height">64dp</dimen>
+    <dimen name="note_bg_popup_width">140dp</dimen>
+    <dimen name="note_bg_popup_height">140dp</dimen>
 </resources>
