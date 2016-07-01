@@ -35,6 +35,8 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.RawInputProcessor;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -115,14 +117,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 onEraseClicked();
                 break;
         }
-    }
-
-    private void onRulerClicked() {
-        PenWidthPopupMenu menu = new PenWidthPopupMenu(getLayoutInflater(), this);
-        menu.showAtLocation(getWindow().getDecorView(), Gravity.NO_GRAVITY, 50,
-                getWindow().getDecorView().getHeight() -
-                        getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
-                        getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height) - 10);
     }
 
     private HashMap<String, Integer> getItemViewDataMap() {
@@ -293,6 +287,20 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this, null);
     }
 
+    private void onRulerClicked() {
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<ScribbleActivity>(getNoteViewHelper().deatchStash(), false);
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                PenWidthPopupMenu menu = new PenWidthPopupMenu(getLayoutInflater(), ScribbleActivity.this);
+                menu.showAtLocation(getWindow().getDecorView(), Gravity.NO_GRAVITY, 50,
+                        getWindow().getDecorView().getHeight() -
+                                getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
+                                getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height) - 10);
+            }
+        });
+    }
+
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
         final DocumentCreateAction<ScribbleActivity> action = new DocumentCreateAction<ScribbleActivity>(uniqueId, parentId);
         action.execute(this, null);
@@ -304,14 +312,31 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onAddNewPage() {
-        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>();
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>(-1);
         action.execute(this, null);
     }
 
-    public void onRequestFinished(boolean updatePage) {
+    private void onNextPage() {
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>(-1);
+        action.execute(this, null);
+    }
+
+    private void onPrevPage() {
+        final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<ScribbleActivity>(-1);
+        action.execute(this, null);
+    }
+
+    public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
         if (updatePage) {
             drawPage();
         }
+        updateDataInfo(request);
+    }
+
+    private void updateDataInfo(final BaseNoteRequest request) {
+        final ShapeDataInfo shapeDataInfo = request.getShapeDataInfo();
+        shapeDataInfo.getCurrentPageIndex();
+        shapeDataInfo.getPageCount();
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {

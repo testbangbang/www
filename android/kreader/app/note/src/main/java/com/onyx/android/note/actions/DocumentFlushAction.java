@@ -26,7 +26,7 @@ public class DocumentFlushAction<T extends ScribbleActivity> extends BaseNoteAct
         activity.getNoteViewHelper().submit(activity, flushRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                activity.onRequestFinished(true);
+                activity.onRequestFinished(flushRequest, true);
                 if (callback != null) {
                     callback.done(request, e);
                 }

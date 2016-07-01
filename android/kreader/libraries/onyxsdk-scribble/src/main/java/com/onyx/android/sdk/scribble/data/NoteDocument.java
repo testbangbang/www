@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -235,6 +236,7 @@ public class NoteDocument {
     }
 
     public NotePage getCurrentPage(final Context context) {
+        String string = JSON.toJSONString(pageDataMap);
         final String pageId = getCurrentPageUniqueId();
         return getNotePage(context, pageId);
     }
