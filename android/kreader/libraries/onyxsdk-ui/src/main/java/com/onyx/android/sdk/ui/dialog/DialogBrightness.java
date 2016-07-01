@@ -11,7 +11,6 @@ import android.view.Window;
 import android.widget.*;
 import android.widget.RatingBar.OnRatingBarChangeListener;
 import com.onyx.android.sdk.api.device.FrontLightController;
-import com.onyx.android.sdk.device.DeviceInfo;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.utils.IntentFilterFactory;
 
@@ -60,7 +59,7 @@ public class DialogBrightness extends Dialog {
         super(context, R.style.CustomDialog);
         mContext = context;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mLightSteps = DeviceInfo.currentDevice.getFrontLightValueList(getContext());
+        mLightSteps = FrontLightController.getFrontLightValueList(getContext());
         int targetLayoutID = R.layout.dialog_brightness_normal_step;
         if (mLightSteps != null && mLightSteps.size() < BIG_STEP_LIMIT) {
             targetLayoutID = R.layout.dialog_brightness_big_step;
