@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.android.sdk.api.ReaderBitmap;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
@@ -11,7 +12,6 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.kreader.utils.TestUtils;
 
 /**
  * Created by zhuzeng on 10/5/15.

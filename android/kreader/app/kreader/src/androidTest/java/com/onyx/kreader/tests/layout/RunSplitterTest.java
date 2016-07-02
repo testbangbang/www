@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.formats.model.BookModel;
 import com.onyx.kreader.formats.model.Paragraph;
 import com.onyx.kreader.formats.model.TextModel;
@@ -13,7 +14,6 @@ import com.onyx.kreader.formats.model.entry.ParagraphEntry;
 import com.onyx.kreader.formats.model.entry.TextParagraphEntry;
 import com.onyx.kreader.tests.ReaderTestActivity;
 import com.onyx.kreader.text.*;
-import com.onyx.kreader.utils.TestUtils;
 
 import java.util.ArrayList;
 import java.util.List;

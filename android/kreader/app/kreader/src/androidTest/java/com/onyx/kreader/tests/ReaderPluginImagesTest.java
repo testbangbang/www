@@ -3,12 +3,12 @@ package com.onyx.kreader.tests;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.kreader.utils.StringUtils;
-import com.onyx.kreader.utils.TestUtils;
 
 /**
  * Created by zhuzeng on 2/18/16.

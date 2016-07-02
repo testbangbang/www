@@ -3,10 +3,10 @@ package com.onyx.kreader.tests;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import com.onyx.android.sdk.api.ReaderBitmap;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.utils.PagePositionUtils;
-import com.onyx.kreader.utils.TestUtils;
 
 import java.util.ArrayList;
 import java.util.List;

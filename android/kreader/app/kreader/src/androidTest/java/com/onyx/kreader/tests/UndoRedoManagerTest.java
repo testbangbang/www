@@ -2,7 +2,7 @@ package com.onyx.kreader.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.android.sdk.scribble.data.UndoRedoManager;
-import com.onyx.android.sdk.scribble.shape.NormalShape;
+import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 /**
@@ -16,7 +16,7 @@ public class UndoRedoManagerTest extends ActivityInstrumentationTestCase2<Reader
 
     public void testUndoRedo1() {
         UndoRedoManager undoRedoManager = new UndoRedoManager();
-        final Shape shape = new NormalShape();
+        final Shape shape = new NormalScribbleShape();
         UndoRedoManager.Action<Shape> action = new UndoRedoManager.Action<>("add", shape);
         undoRedoManager.addToHistory(action, false);
         final UndoRedoManager.Action undo = undoRedoManager.undo();
@@ -36,11 +36,11 @@ public class UndoRedoManagerTest extends ActivityInstrumentationTestCase2<Reader
 
     public void testUndoRedo2() {
         UndoRedoManager undoRedoManager = new UndoRedoManager();
-        final Shape shape = new NormalShape();
+        final Shape shape = new NormalScribbleShape();
         UndoRedoManager.Action<Shape> action1 = new UndoRedoManager.Action<>("1", shape);
         undoRedoManager.addToHistory(action1, false);
 
-        final Shape shape2 = new NormalShape();
+        final Shape shape2 = new NormalScribbleShape();
         UndoRedoManager.Action<Shape> action2 = new UndoRedoManager.Action<>("2", shape2);
         undoRedoManager.addToHistory(action2, false);
 

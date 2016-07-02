@@ -2,9 +2,10 @@ package com.onyx.kreader.tests;
 
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.utils.TestUtils;
+
 
 /**
  * Created by zengzhu on 2/23/16.

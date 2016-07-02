@@ -2,12 +2,12 @@ package com.onyx.kreader.tests;
 
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.kreader.utils.TestUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,13 +23,13 @@ public class ShapeModelProviderTest extends ActivityInstrumentationTestCase2<Rea
         super(ReaderTestActivity.class);
     }
 
-    private static ShapeModel randomScribble(final String md5,
+    private static ShapeModel randomScribble(final String documentUniqueId,
                                     final String pageName,
                                     final String subPageName,
                                     final RectF boundingRect,
                                     final TouchPointList points) {
         ShapeModel shapeModel = new ShapeModel();
-        shapeModel.setMd5(md5);
+        shapeModel.setDocumentUniqueId(documentUniqueId);
         shapeModel.setPageUniqueId(pageName);
         shapeModel.setShapeUniqueId(UUID.randomUUID().toString());
         shapeModel.setUpdatedAt(new Date());
@@ -38,7 +38,6 @@ public class ShapeModelProviderTest extends ActivityInstrumentationTestCase2<Rea
         shapeModel.setSubPageName(subPageName);
         shapeModel.setExtraAttributes(UUID.randomUUID().toString());
         shapeModel.setPoints(points);
-        shapeModel.setPosition(UUID.randomUUID().toString());
         shapeModel.setShapeType(0);
         return shapeModel;
     }

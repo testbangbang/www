@@ -6,6 +6,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import com.onyx.android.sdk.api.ReaderBitmap;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -14,7 +15,6 @@ import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.plugins.comic.ComicArchiveZip;
 import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.comic.UnrarJniWrapper;
-import com.onyx.kreader.utils.StringUtils;
 
 import java.io.File;
 import java.io.InputStream;
