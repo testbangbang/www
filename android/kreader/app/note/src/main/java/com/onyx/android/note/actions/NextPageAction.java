@@ -25,9 +25,7 @@ public class NextPageAction<T extends ScribbleActivity> extends BaseNoteAction<T
             @Override
             public void done(BaseRequest request, Throwable e) {
                 activity.onRequestFinished(nextRequest, true);
-                if (callback != null) {
-                    callback.done(request, e);
-                }
+                callback.invoke(callback, request, e);
             }
         });
     }

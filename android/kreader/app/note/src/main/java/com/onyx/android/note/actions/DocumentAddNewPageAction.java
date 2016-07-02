@@ -23,9 +23,7 @@ public class DocumentAddNewPageAction<T extends ScribbleActivity> extends BaseNo
             @Override
             public void done(BaseRequest request, Throwable e) {
                 activity.onRequestFinished(pageAddRequest, true);
-                if (callback != null) {
-                    callback.done(request, e);
-                }
+                callback.invoke(callback, request, e);
             }
         });
     }

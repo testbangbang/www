@@ -6,6 +6,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.request.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,12 +14,12 @@ import java.util.List;
  */
 public class DocumentFlushAction<T extends ScribbleActivity> extends BaseNoteAction<T> {
 
-    private volatile List<Shape> shapeList;
+    private volatile List<Shape> shapeList = new ArrayList<>();
     private volatile boolean resumeDrawing;
     private volatile boolean render;
 
     public DocumentFlushAction(final List<Shape> list, boolean r, boolean resume) {
-        shapeList = list;
+        shapeList.addAll(list);
         render = r;
         resumeDrawing = resume;
     }
@@ -29,9 +30,7 @@ public class DocumentFlushAction<T extends ScribbleActivity> extends BaseNoteAct
             @Override
             public void done(BaseRequest request, Throwable e) {
                 activity.onRequestFinished(flushRequest, true);
-                if (callback != null) {
-                    callback.done(request, e);
-                }
+                callback.invoke(callback, request, e);
             }
         });
     }
