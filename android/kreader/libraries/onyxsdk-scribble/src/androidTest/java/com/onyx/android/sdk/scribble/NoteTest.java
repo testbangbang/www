@@ -146,7 +146,7 @@ public class NoteTest extends ApplicationTestCase<Application> {
     public void testCreateAndRemove2() {
         initDB();
         Delete.tables(NoteModel.class);
-        final NoteModel noteModel = NoteDataProvider.createNote(getContext(), null, UUID.randomUUID().toString());
+        final NoteModel noteModel = NoteDataProvider.createNote(getContext(), UUID.randomUUID().toString(),  null, UUID.randomUUID().toString());
         final NoteModel result = NoteDataProvider.load(getContext(), noteModel.getUniqueId());
         assertNotNull(result);
         assertEquals(result.getTitle(), noteModel.getTitle());
@@ -159,7 +159,7 @@ public class NoteTest extends ApplicationTestCase<Application> {
     public void testPageNameList() {
         initDB();
         Delete.tables(NoteModel.class);
-        final NoteModel noteModel = NoteDataProvider.createNote(getContext(), null, UUID.randomUUID().toString());
+        final NoteModel noteModel = NoteDataProvider.createNote(getContext(), UUID.randomUUID().toString(), null, UUID.randomUUID().toString());
         final NoteModel result = NoteDataProvider.load(getContext(), noteModel.getUniqueId());
         assertNotNull(result);
         assertEquals(result.getTitle(), noteModel.getTitle());

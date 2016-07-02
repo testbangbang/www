@@ -7,7 +7,9 @@ import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -139,5 +141,49 @@ public class ShapeDataProviderTest extends ApplicationTestCase<Application> {
         ShapeDataProvider.saveShapeList(getContext(), list);
         long end = System.currentTimeMillis();
         Log.e("Benchmark", "save shapes " + max + " points: " + count + " takes: " + (end - start));
+    }
+
+    private Shape randomShape(final String documentId, final String pageUniqueId, int min, int max) {
+        Shape shape = new NormalScribbleShape();
+        shape.setDocumentUniqueId(documentId);
+        shape.setPageUniqueId(pageUniqueId);
+        shape.setShapeUniqueId(UUID.randomUUID().toString());
+        int points = TestUtils.randInt(min, max);
+        final TouchPointList list = new TouchPointList(points);
+        for(int i = 0; i < points; ++i) {
+            list.add(randomTouchPoint());
+        }
+        shape.addPoints(list);
+        return shape;
+    }
+
+    public void testShapeDataProviderModel() {
+        initDB();
+        Delete.tables(ShapeModel.class);
+
+        final String documentId = UUID.randomUUID().toString();
+        final String pageId = UUID.randomUUID().toString();
+        Map<String, ShapeModel> modelMap = new HashMap<>();
+        Map<String, Shape> shapeMap = new HashMap<>();
+        int max = TestUtils.randInt(10, 20);
+        for(int i = 0; i < max; ++i) {
+            Shape shape = randomShape(documentId, pageId, 100, 300);
+            final ShapeModel model = ShapeFactory.modelFromShape(shape);
+            modelMap.put(shape.getShapeUniqueId(), model);
+            shapeMap.put(shape.getShapeUniqueId(), shape);
+        }
+        ShapeDataProvider.saveShapeList(null, modelMap.values());
+        List<ShapeModel> result = ShapeDataProvider.loadShapeList(null, documentId, pageId, null);
+        assertEquals(modelMap.size(), result.size());
+        assertEquals(max, result.size());
+        for(int i = 0; i < max; ++i) {
+            ShapeModel target = result.get(i);
+            ShapeModel src = modelMap.get(target.getShapeUniqueId());
+            assertNotNull(src);
+            final Shape targetShape = ShapeFactory.shapeFromModel(target);
+            final Shape srcShape = shapeMap.get(src.getShapeUniqueId());
+            assertEquals(targetShape.getPoints().size(), srcShape.getPoints().size());
+            assertEquals(targetShape.getType(), srcShape.getType());
+        }
     }
 }

@@ -27,14 +27,14 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     public void testShapeDocumentOpen() {
         NoteDocument noteDocument = new NoteDocument();
-        noteDocument.open(getContext(), UUID.randomUUID().toString());
+        noteDocument.open(getContext(), UUID.randomUUID().toString(), null);
         final NotePage page = noteDocument.getPageByIndex(0);
         assertNotNull(page);
     }
 
     public void testShapeDocumentCreatePage() {
         NoteDocument noteDocument = new NoteDocument();
-        noteDocument.open(getContext(), UUID.randomUUID().toString());
+        noteDocument.open(getContext(), UUID.randomUUID().toString(), null);
         NotePage page = noteDocument.getPageByIndex(0);
         assertNotNull(page);
         noteDocument.createBlankPage(getContext(), 1);
@@ -48,7 +48,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     public void testShapeDocumentCreatePage2() {
         NoteDocument noteDocument = new NoteDocument();
-        noteDocument.open(getContext(), UUID.randomUUID().toString());
+        noteDocument.open(getContext(), UUID.randomUUID().toString(), null);
 
         // get original first page
         NotePage page = noteDocument.getPageByIndex(0);
@@ -71,7 +71,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     public void testShapeDocumentCreatePage3() {
         NoteDocument noteDocument = new NoteDocument();
-        noteDocument.open(getContext(), UUID.randomUUID().toString());
+        noteDocument.open(getContext(), UUID.randomUUID().toString(), null);
 
         // get original first page
         NotePage page = noteDocument.getPageByIndex(0);
@@ -94,7 +94,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     public void testShapeDocumentNavigation() {
         NoteDocument noteDocument = new NoteDocument();
-        noteDocument.open(getContext(), UUID.randomUUID().toString());
+        noteDocument.open(getContext(), UUID.randomUUID().toString(), null);
 
         List<String> pages = new ArrayList<String>();
         int max = TestUtils.randInt(10, 30);
