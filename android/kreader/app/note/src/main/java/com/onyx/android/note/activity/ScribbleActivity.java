@@ -376,8 +376,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void saveExistingNoteDocument() {
-        final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(noteTitle);
-        closeAction.execute(this, null);
+        flushWithCallback(true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(noteTitle);
+                closeAction.execute(ScribbleActivity.this, null);
+            }
+        });
     }
 
     private void resumeWriting() {
