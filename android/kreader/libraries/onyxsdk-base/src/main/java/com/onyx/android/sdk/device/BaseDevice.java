@@ -185,6 +185,8 @@ public class BaseDevice {
     public void setStrokeStyle(int style) {
     }
 
+    public void setStrokeWidth(float width) {}
+
     public void setPainterStyle(boolean antiAlias, Paint.Style strokeStyle, Paint.Join joinStyle, Paint.Cap capStyle) {
     }
 

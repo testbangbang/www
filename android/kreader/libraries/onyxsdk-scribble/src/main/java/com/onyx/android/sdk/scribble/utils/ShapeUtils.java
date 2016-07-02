@@ -92,4 +92,8 @@ public class ShapeUtils {
         canvas.drawPath(path, paint);
     }
 
+    public static boolean withinRange(int last, int current, int range) {
+        return Math.abs(current - last) <= range;
+    }
+
 }

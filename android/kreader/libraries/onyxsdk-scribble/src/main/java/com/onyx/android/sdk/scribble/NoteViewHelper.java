@@ -24,6 +24,7 @@ import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/16/16.
@@ -65,8 +66,16 @@ public class NoteViewHelper {
         removeLayoutListener();
     }
 
-    private void initRawResource(final Context context) {
+    public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
+        getNoteDocument().open(context, documentUniqueId, parentUniqueId);
+        onDocumentOpened();
+    }
 
+    private void onDocumentOpened() {
+        EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
+    }
+
+    private void initRawResource(final Context context) {
     }
 
     private void initWithSurfaceView(final SurfaceView view) {

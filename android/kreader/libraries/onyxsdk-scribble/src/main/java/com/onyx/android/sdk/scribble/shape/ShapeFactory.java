@@ -32,8 +32,10 @@ public class ShapeFactory {
 
     public static final ShapeModel modelFromShape(final Shape shape) {
         final ShapeModel shapeModel = new ShapeModel();
-        shapeModel.setBoundingRect(shape.getBoundingRect());
+        shapeModel.setDocumentUniqueId(shape.getDocumentUniqueId());
+        shapeModel.setPageUniqueId(shape.getPageUniqueId());
         shapeModel.setShapeUniqueId(shape.getShapeUniqueId());
+        shapeModel.setBoundingRect(shape.getBoundingRect());
         shapeModel.setColor(shape.getColor());
         shapeModel.setPoints(shape.getPoints());
         shapeModel.setThickness(shape.getStrokeWidth());
@@ -65,8 +67,12 @@ public class ShapeFactory {
         return shape;
     }
 
-    private static void syncShapeDataFromModel(final Shape shape, final ShapeModel shapeModel) {
-        shape.setShapeUniqueId(shapeModel.getShapeUniqueId());
-        shape.addPoints(shapeModel.getPoints());
+    private static void syncShapeDataFromModel(final Shape shape, final ShapeModel model) {
+        shape.setDocumentUniqueId(model.getDocumentUniqueId());
+        shape.setPageUniqueId(model.getPageUniqueId());
+        shape.setColor(model.getColor());
+        shape.setStrokeWidth(model.getThickness());
+        shape.setShapeUniqueId(model.getShapeUniqueId());
+        shape.addPoints(model.getPoints());
     }
 }

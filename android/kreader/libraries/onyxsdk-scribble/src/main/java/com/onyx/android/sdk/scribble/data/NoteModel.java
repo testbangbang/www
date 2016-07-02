@@ -49,10 +49,15 @@ public class NoteModel extends BaseModel {
     @Column
     int type;
 
+    @Column
+    float strokeWidth;
+
     @Column(typeConverter = ConverterStringList.class)
     PageNameList pageNameList = null;
 
     Bitmap thumbnail;
+
+    private static final float DEFAULT_STROKE_WIDTH = 1.5f;
 
     public NoteModel() {
     }
@@ -158,19 +163,34 @@ public class NoteModel extends BaseModel {
         thumbnail = bmp;
     }
 
-    public static NoteModel createNote(final String parentUniqueId, final String title) {
+    public void setStrokeWidth(float w) {
+        strokeWidth = w;
+    }
+
+    public float getStrokeWidth() {
+        if (strokeWidth <= 0) {
+            return getDefaultStrokeWidth();
+        }
+        return strokeWidth;
+    }
+
+    public static float getDefaultStrokeWidth() {
+        return DEFAULT_STROKE_WIDTH;
+    }
+
+    public static NoteModel createNote(final String documentUniqueId, final String parentUniqueId, final String title) {
         final NoteModel document = new NoteModel();
         document.setType(TYPE_DOCUMENT);
-        document.setUniqueId(ShapeUtils.generateUniqueId());
+        document.setUniqueId(documentUniqueId);
         document.setParentUniqueId(parentUniqueId);
         document.setTitle(title);
         return document;
     }
 
-    public static NoteModel createLibrary(final String parentUniqueId, final String title) {
+    public static NoteModel createLibrary(final String libraryUniqueId, final String parentUniqueId, final String title) {
         final NoteModel library = new NoteModel();
         library.setType(TYPE_LIBRARY);
-        library.setUniqueId(ShapeUtils.generateUniqueId());
+        library.setUniqueId(libraryUniqueId);
         library.setParentUniqueId(parentUniqueId);
         library.setTitle(title);
         return library;

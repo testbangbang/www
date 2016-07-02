@@ -8,6 +8,7 @@ import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 /**
  * Created by zhuzeng on 6/23/16.
@@ -52,6 +53,12 @@ public class BaseShape implements Shape {
 
     public String getShapeUniqueId() {
         return uniqueId;
+    }
+
+    public void ensureShapeUniqueId() {
+        if (uniqueId == null || uniqueId.trim().isEmpty()) {
+            uniqueId = ShapeUtils.generateUniqueId();
+        }
     }
 
     public int getZOrder() {

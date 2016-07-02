@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import com.onyx.android.sdk.scribble.shape.*;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class NotePage {
 
-    private String docUniqueId;
+    private String documentUniqueId;
     private String pageUniqueId;
     private String subPageName;
 
@@ -39,13 +40,13 @@ public class NotePage {
     }
 
     public NotePage(final String docId, final String pageId, final String spn) {
-        docUniqueId = docId;
+        documentUniqueId = docId;
         pageUniqueId = pageId;
         subPageName = spn;
     }
 
-    public final String getDocUniqueId() {
-        return docUniqueId;
+    public final String getDocumentUniqueId() {
+        return documentUniqueId;
     }
 
     public final String getPageUniqueId() {
@@ -76,6 +77,7 @@ public class NotePage {
     }
 
     public void addShape(final Shape shape) {
+        updateShape(shape);
         newAddedShapeList.add(shape);
         if (isAddToActionHistory()) {
             undoRedoManager.addToHistory(ShapeActions.addShapeAction(shape), false);
@@ -83,11 +85,21 @@ public class NotePage {
     }
 
     public void addShapeList(final List<Shape> shapes) {
-        newAddedShapeList.addAll(shapes);
+        for(Shape shape : shapes) {
+            updateShape(shape);
+            newAddedShapeList.add(shape);
+        }
         shapeList.addAll(shapes);
     }
 
+    private void updateShape(final Shape shape) {
+        shape.setDocumentUniqueId(getDocumentUniqueId());
+        shape.setPageUniqueId(getPageUniqueId());
+        shape.ensureShapeUniqueId();
+    }
+
     public void removeShape(final Shape shape) {
+        updateShape(shape);
         removedShapeList.add(shape);
         newAddedShapeList.remove(shape);
         shapeList.remove(shape);
@@ -166,6 +178,13 @@ public class NotePage {
         return notePage;
     }
 
+    public void loadPage(final Context context) {
+        final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
+        for(ShapeModel model : modelList) {
+            addShapeFromModel(ShapeFactory.shapeFromModel(model));
+        }
+    }
+
     public static final NotePage createPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
         final NotePage page = new NotePage(docUniqueId, pageName, subPageName);
         return page;
@@ -181,7 +200,9 @@ public class NotePage {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
         }
-        ShapeDataProvider.saveShapeList(context, modelList);
+        if (modelList.size() > 0) {
+            ShapeDataProvider.saveShapeList(context, modelList);
+        }
 
         for(Shape shape: removedShapeList) {
             ShapeDataProvider.removeShape(context, shape.getShapeUniqueId());

@@ -89,14 +89,14 @@ public class NoteDataProvider {
         return true;
     }
 
-    public static NoteModel createNote(final Context context, final String parentUniqueId, final String title) {
-        NoteModel noteModel = NoteModel.createNote(parentUniqueId, title);
+    public static NoteModel createNote(final Context context, final String uniqueId, final String parentUniqueId, final String title) {
+        NoteModel noteModel = NoteModel.createNote(uniqueId, parentUniqueId, title);
         saveNote(context, noteModel);
         return noteModel;
     }
 
-    public static NoteModel createLibrary(final Context context, final String parentUniqueId, final String title) {
-        NoteModel noteModel = NoteModel.createLibrary(parentUniqueId, title);
+    public static NoteModel createLibrary(final Context context, final String uniqueId, final String parentUniqueId, final String title) {
+        NoteModel noteModel = NoteModel.createLibrary(uniqueId, parentUniqueId, title);
         saveNote(context, noteModel);
         return noteModel;
     }

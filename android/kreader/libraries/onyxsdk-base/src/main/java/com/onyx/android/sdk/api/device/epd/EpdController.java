@@ -107,8 +107,8 @@ public abstract class EpdController
         Device.currentDevice().refreshScreenRegion(view, left, top, width, height, mode);
     }
 
-    public static void setStrokeWidth(View view, int width) {
-
+    public static void setStrokeWidth(float width) {
+        Device.currentDevice().setStrokeWidth(width);
     }
 
     public static void setScreenHandWritingPenState(View view, int penState) {

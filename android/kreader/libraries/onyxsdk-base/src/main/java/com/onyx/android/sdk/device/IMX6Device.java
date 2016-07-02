@@ -63,6 +63,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodMoveTo = null;
     private static Method sMethodSetStrokeColor = null;
     private static Method sMethodSetStrokeStyle = null;
+    private static Method sMethodSetStrokeWidth = null;
     private static Method sMethodSetPainterStyle = null;
     private static Method sMethodLineTo = null;
     private static Method sMethodQuadTo = null;
@@ -325,6 +326,14 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void setStrokeWidth(float width) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodSetStrokeWidth, null, width);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void moveTo(float x, float y, float width) {
         try {
             ReflectUtil.invokeMethodSafely(sMethodMoveTo, null, x, y, width);
@@ -514,6 +523,7 @@ public class IMX6Device extends BaseDevice {
 
             sMethodSetStrokeColor = ReflectUtil.getMethodSafely(cls, "setStrokeColor", int.class);
             sMethodSetStrokeStyle = ReflectUtil.getMethodSafely(cls, "setStrokeStyle", int.class);
+            sMethodSetStrokeWidth = ReflectUtil.getMethodSafely(cls, "setStrokeWidth", float.class);
             sMethodSetPainterStyle = ReflectUtil.getMethodSafely(cls, "setPainterStyle", boolean.class, Paint.Style.class, Paint.Join.class, Paint.Cap.class);
             sMethodMoveTo = ReflectUtil.getMethodSafely(cls, "moveTo", float.class, float.class, float.class);
             sMethodLineTo = ReflectUtil.getMethodSafely(cls, "lineTo", float.class, float.class, int.class);

@@ -110,7 +110,7 @@ public class RawInputProcessor {
     }
 
     public void stop() {
-        stop = true;
+//        stop = true;
         clearInternalState();
         EpdController.setScreenHandWritingPenState(parentView, 0);
     }

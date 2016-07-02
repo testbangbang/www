@@ -18,7 +18,7 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
-        parent.getNoteDocument().open(getContext(), documentUniqueId, getParentLibraryId());
+        parent.openDocument(getContext(), documentUniqueId, getParentLibraryId());
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
     }

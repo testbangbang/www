@@ -22,6 +22,7 @@ public class ShapeDataInfo {
     public boolean canUndoShape;
     public boolean canRedoShape;
 
+
     public final PageNameList getPageNameList() {
         return pageNameList;
     }

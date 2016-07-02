@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -23,13 +22,14 @@ public class NoteDocument {
     private ListOrderedMap<String, NotePage> pageDataMap = new ListOrderedMap<String, NotePage>();
     private int currentPageIndex = 0;
     private boolean isOpen = false;
+    private NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
 
     public void open(final Context context,
                      final String uniqueId,
                      final String parentLibraryUniqueId) {
         setDocumentUniqueId(uniqueId);
         setParentUniqueId(parentLibraryUniqueId);
-        setupPageDataMap(context);
+        setup(context);
         ensureDocumentNotBlank(context);
         gotoFirst();
         markDocumentOpen();
@@ -59,11 +59,11 @@ public class NoteDocument {
         if (noteModel != null) {
             return noteModel;
         }
-        NoteModel model = NoteModel.createNote(getParentUniqueId(), title);
-        model.setUniqueId(getDocumentUniqueId());
+        NoteModel model = NoteModel.createNote(getDocumentUniqueId(), getParentUniqueId(), title);
         final PageNameList pageNameList = new PageNameList();
         pageNameList.addAll(pageDataMap.keyList());
         model.setPageNameList(pageNameList);
+        model.strokeWidth = noteDrawingArgs.strokeWidth;
         return model;
     }
 
@@ -89,17 +89,33 @@ public class NoteDocument {
         return pageNameList;
     }
 
-    private void setupPageDataMap(final Context context) {
-        final LinkedHashSet<String> pageIndex = loadPageIndex(context);
+    private void setup(final Context context) {
+        final NoteModel noteModel = NoteDataProvider.load(context, getDocumentUniqueId());
+        setupPageDataMap(noteModel);
+        setupDrawingArgs(noteModel);
+    }
+
+    private void setupPageDataMap(final NoteModel noteModel) {
+        final LinkedHashSet<String> pageIndex = loadPageIndex(noteModel);
         int index = 0;
         for(String key : pageIndex) {
             createPage(index++, key);
         }
     }
 
-    private LinkedHashSet<String> loadPageIndex(final Context context) {
+    private void setupDrawingArgs(final NoteModel noteModel) {
+        noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
+        if (noteModel != null) {
+            noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
+        }
+    }
+
+    public NoteDrawingArgs getNoteDrawingArgs() {
+        return noteDrawingArgs;
+    }
+
+    private LinkedHashSet<String> loadPageIndex(final NoteModel noteModel) {
         final LinkedHashSet<String> index = new LinkedHashSet<String>();
-        final NoteModel noteModel = NoteDataProvider.load(context, getDocumentUniqueId());
         if (noteModel == null || noteModel.getPageNameList() == null) {
             return index;
         }
@@ -225,10 +241,7 @@ public class NoteDocument {
         if (notePage != null && notePage.hasShapes()) {
             return notePage;
         }
-        final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), pageUniqueName, null);
-        for(ShapeModel model : modelList) {
-            notePage.addShapeFromModel(ShapeFactory.shapeFromModel(model));
-        }
+        notePage.loadPage(context);
         return notePage;
     }
 

@@ -36,6 +36,8 @@ public interface Shape {
 
     String getShapeUniqueId();
 
+    void ensureShapeUniqueId();
+
     int getZOrder();
 
     void setZOrder(int order);
