@@ -350,7 +350,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(String input) {
-                final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(input);
+                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(input);
                 closeAction.execute(ScribbleActivity.this, null);
                 return true;
             }
@@ -379,7 +379,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         flushWithCallback(true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final DocumentSaveAndCloseAction<ScribbleActivity> closeAction = new DocumentSaveAndCloseAction<>(noteTitle);
+                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(noteTitle);
                 closeAction.execute(ScribbleActivity.this, null);
             }
         });

@@ -2,7 +2,6 @@ package com.onyx.android.sdk.scribble.request.note;
 
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
-import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -24,7 +23,7 @@ public class NoteDocumentRemoveRequest extends BaseNoteRequest {
         if (StringUtils.isNotBlank(documentUniqueId)) {
             uniqueId = documentUniqueId;
         }
-        parent.getNoteDocument().cleanDocument(getContext());
+        parent.getNoteDocument().close(getContext());
         ShapeDataProvider.removeAllShapeOfDocument(getContext(), uniqueId);
         NoteDataProvider.remove(getContext(), uniqueId);
     }

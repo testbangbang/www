@@ -72,7 +72,14 @@ public class NoteViewHelper {
     }
 
     private void onDocumentOpened() {
+        bitmapWrapper.clear();
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
+    }
+
+    public void close(final Context context, final String title) {
+        getNoteDocument().save(context, title);
+        getNoteDocument().close(context);
+        bitmapWrapper.clear();
     }
 
     private void initRawResource(final Context context) {

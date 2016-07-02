@@ -32,19 +32,23 @@ public class NoteDocument {
         setup(context);
         ensureDocumentNotBlank(context);
         gotoFirst();
-        markDocumentOpen();
+        markDocumentOpen(true);
     }
 
-    public void cleanDocument(final Context context) {
+    public void close(final Context context) {
         pageDataMap.clear();
+        documentUniqueId = null;
+        parentUniqueId = null;
+        currentPageIndex = 0;
+        markDocumentOpen(false);
     }
 
     public boolean isOpen() {
         return isOpen;
     }
 
-    private void markDocumentOpen() {
-        isOpen = true;
+    private void markDocumentOpen(boolean open) {
+        isOpen = open;
     }
 
     public void save(final Context context, final String title) {
@@ -56,15 +60,14 @@ public class NoteDocument {
 
     private NoteModel getNoteModel(final Context context, final String title) {
         NoteModel noteModel = NoteDataProvider.load(context, getDocumentUniqueId());
-        if (noteModel != null) {
-            return noteModel;
+        if (noteModel == null) {
+            noteModel = NoteModel.createNote(getDocumentUniqueId(), getParentUniqueId(), title);
         }
-        NoteModel model = NoteModel.createNote(getDocumentUniqueId(), getParentUniqueId(), title);
         final PageNameList pageNameList = new PageNameList();
         pageNameList.addAll(pageDataMap.keyList());
-        model.setPageNameList(pageNameList);
-        model.strokeWidth = noteDrawingArgs.strokeWidth;
-        return model;
+        noteModel.setPageNameList(pageNameList);
+        noteModel.strokeWidth = noteDrawingArgs.strokeWidth;
+        return noteModel;
     }
 
     private void setDocumentUniqueId(final String id) {

@@ -6,18 +6,18 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 /**
  * Created by zhuzeng on 6/23/16.
  */
-public class NoteDocumentSaveRequest extends BaseNoteRequest {
+public class NoteDocumentCloseRequest extends BaseNoteRequest {
 
     private volatile String title;
 
-    public NoteDocumentSaveRequest(final String t) {
+    public NoteDocumentCloseRequest(final String t) {
         title = t;
         setPauseInputProcessor(true);
         setResumeInputProcessor(false);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
-        parent.getNoteDocument().save(getContext(), title);
+        parent.close(getContext(), title);
     }
 
 }
