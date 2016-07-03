@@ -8,4 +8,6 @@ public class NoteDrawingArgs {
     public float strokeWidth;
     public int color;
     public int style;
+    public float eraserRadius = 15.0f;
+    public int background;
 }

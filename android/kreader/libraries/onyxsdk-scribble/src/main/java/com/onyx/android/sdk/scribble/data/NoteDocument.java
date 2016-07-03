@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import android.graphics.Matrix;
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -19,7 +21,6 @@ public class NoteDocument {
 
     private String documentUniqueId;
     private String parentUniqueId;
-    private int background;
     private ListOrderedMap<String, NotePage> pageDataMap = new ListOrderedMap<String, NotePage>();
     private int currentPageIndex = 0;
     private boolean isOpen = false;
@@ -74,7 +75,7 @@ public class NoteDocument {
         pageNameList.addAll(pageDataMap.keyList());
         noteModel.setPageNameList(pageNameList);
         noteModel.strokeWidth = noteDrawingArgs.strokeWidth;
-        noteModel.background = background;
+        noteModel.background = noteDrawingArgs.background;
         return noteModel;
     }
 
@@ -95,11 +96,19 @@ public class NoteDocument {
     }
 
     public int getBackground() {
-        return background;
+        return noteDrawingArgs.background;
     }
 
     public void setBackground(int background) {
-        this.background = background;
+        noteDrawingArgs.background = background;
+    }
+
+    public float getEraserRadius() {
+        return noteDrawingArgs.eraserRadius;
+    }
+
+    public void setEraserRadius(final float r) {
+        noteDrawingArgs.eraserRadius = r;
     }
 
     public PageNameList getPageNameList() {
@@ -126,7 +135,7 @@ public class NoteDocument {
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
         if (noteModel != null) {
             noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
-            background = noteModel.getBackground();
+            noteDrawingArgs.background = noteModel.getBackground();
         }
     }
 
@@ -202,6 +211,11 @@ public class NoteDocument {
         ensureDocumentNotBlank(context);
         final int value = Math.min(index, pageDataMap.size() - 1);
         return gotoPage(value);
+    }
+
+    public void removeShapesByTouchPointList(final Context context, final TouchPointList touchPointList, final float scale) {
+        final NotePage notePage = getCurrentPage(context);
+        notePage.removeShapesByTouchPointList(touchPointList, noteDrawingArgs.eraserRadius * scale);
     }
 
     public int getCurrentPageIndex() {

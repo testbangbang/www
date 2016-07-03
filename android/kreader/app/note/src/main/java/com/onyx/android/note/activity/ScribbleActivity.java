@@ -58,6 +58,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     int currentPenType = PenType.PENCIL;
     @NoteBackgroundType.NoteBackgroundDef
     int currentNoteBackground = NoteBackgroundType.EMPTY;
+    float eraserRadius;
     //TODO:just as psd value.
     int minPenWidth = 15;
     int maxPenWidth = 40;
@@ -261,7 +262,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onNewTouchPointListReceived(TouchPointList pointList) {
-
+                ScribbleActivity.this.onNewTouchPointListReceived(pointList);
             }
 
             @Override
@@ -281,9 +282,16 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         };
     }
 
+    private void onNewTouchPointListReceived(TouchPointList pointList) {
+        final List<Shape> stash = getNoteViewHelper().deatchStash();
+        final RenderInBackgroundAction<ScribbleActivity> action = new RenderInBackgroundAction<>(stash);
+        action.execute(this, null);
+    }
+
+    static final String TAG = "###########";
     private void onBeginErasing() {
         erasePoint = new PointF();
-        flushWithCallback(true, null);
+        getNoteViewHelper().stopDrawing();
     }
 
     private void onErasing(final MotionEvent touchPoint) {
@@ -296,8 +304,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
-        drawPage();
-        resumeDrawing();
+        RemoveByPointListAction<ScribbleActivity> removeByPointListAction = new RemoveByPointListAction<>(pointList);
+        removeByPointListAction.execute(this, null);
     }
 
     @Override
@@ -423,10 +431,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void flushWithCallback(boolean render, final BaseCallback callback) {
         final List<Shape> stash = getNoteViewHelper().deatchStash();
-        if (stash == null || stash.size() <= 0) {
-            callback.invoke(callback, null, null);
-            return;
-        }
         final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, render, false);
         action.execute(this, callback);
     }
@@ -478,6 +482,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         int pageCount = shapeDataInfo.getPageCount();
         pageIndicator.setText(currentPageIndex + " / " + pageCount);
         currentNoteBackground = shapeDataInfo.getBackground();
+        eraserRadius = shapeDataInfo.getEraserRadius();
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
@@ -523,13 +528,15 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             return;
         }
 
+
         float x = erasePoint.x;
         float y = erasePoint.y;
+        Log.e(TAG, "drawing erasing indicator: " + x + " " + y);
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
         paint.setStrokeWidth(2.0f);
-        canvas.drawCircle(x, y, 15.0f, paint);
+        canvas.drawCircle(x, y, eraserRadius, paint);
     }
 
     public Rect getViewportSize() {

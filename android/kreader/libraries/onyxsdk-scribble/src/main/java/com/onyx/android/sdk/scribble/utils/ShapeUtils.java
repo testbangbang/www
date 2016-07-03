@@ -96,4 +96,41 @@ public class ShapeUtils {
         return Math.abs(current - last) <= range;
     }
 
+    public static boolean contains(float x, float y, float cx, float cy, float limit) {
+        float d = (cx - x) * (cx - x) + (cy - y) * (cy - y);
+        return d < limit;
+    }
+
+    public static boolean contains(float x0, float y0, float x1, float y1, float cx, float cy, float limit) {
+        if (contains(x0, y0, cx, cy, limit)) {
+            return true;
+        }
+        if (contains(x1, y1, cx, cy, limit)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean contains(final RectF rect, float cx, float cy, float limit) {
+        if (rect == null) {
+            return false;
+        }
+
+        if (rect.contains(cx, cy)) {
+            return true;
+        }
+        if (contains(rect.left, rect.top, cx, cy, limit)) {
+            return true;
+        }
+        if (contains(rect.left, rect.bottom, cx, cy, limit)) {
+            return true;
+        }
+        if (contains(rect.right, rect.top, cx, cy, limit)) {
+            return true;
+        }
+        if (contains(rect.right, rect.bottom, cx, cy, limit)) {
+            return true;
+        }
+        return false;
+    }
 }

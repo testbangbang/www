@@ -236,6 +236,7 @@ public class BaseNoteRequest extends BaseRequest {
                 parent.getNoteDocument().getPageNameList(),
                 parent.getNoteDocument().getCurrentPageIndex());
         getShapeDataInfo().setBackground(parent.getNoteDocument().getBackground());
+        getShapeDataInfo().setEraserRadius(parent.getNoteDocument().getEraserRadius());
     }
 
     public void ensureDocumentOpened(final NoteViewHelper parent) {

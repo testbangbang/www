@@ -52,6 +52,8 @@ public interface Shape {
 
     RectF getBoundingRect();
 
+    void updateBoundingRect();
+
     void moveTo(final float x, final float y);
 
     void resize(final float width, final float height);
@@ -74,6 +76,6 @@ public interface Shape {
 
     void render(final Canvas canvas, final Paint paint, final Matrix matrix);
 
-    boolean hitTest(final float x, final float y);
+    boolean hitTest(final float x, final float y, final float radius);
 
 }

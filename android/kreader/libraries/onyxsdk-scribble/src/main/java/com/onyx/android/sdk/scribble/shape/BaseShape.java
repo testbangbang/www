@@ -10,6 +10,8 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
+import java.util.List;
+
 /**
  * Created by zhuzeng on 6/23/16.
  */
@@ -86,9 +88,15 @@ public class BaseShape implements Shape {
         return false;
     }
 
+    public void updateBoundingRect() {
+        List<TouchPoint> list = normalizedPoints.getPoints();
+        for(TouchPoint touchPoint: list) {
+            boundingRect.union(touchPoint.x, touchPoint.y);
+        }
+    }
 
     public RectF getBoundingRect() {
-        return null;
+        return boundingRect;
     }
 
     public void moveTo(final float x, final float y) {
@@ -126,6 +134,7 @@ public class BaseShape implements Shape {
 
     public void addPoints(final TouchPointList points) {
         normalizedPoints.addAll(points);
+        updateBoundingRect();
         if (points.size() < 2) {
             return;
         }
@@ -140,8 +149,55 @@ public class BaseShape implements Shape {
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
     }
 
-    public boolean hitTest(final float x, final float y) {
-        return false;
+    public boolean hitTest(final float x, final float y, final float radius) {
+        final RectF boundingRect = getBoundingRect();
+        final float limit = radius * radius;
+        if (!ShapeUtils.contains(boundingRect, x, y, limit)) {
+            return false;
+        }
+
+        float thickness = getStrokeWidth();
+        float x1, y1, x2, y2;
+        float left, top, right, bottom;
+        float xMin = Float.MAX_VALUE, xMax = Float.MIN_VALUE, yMin = Float.MAX_VALUE, yMax = Float.MIN_VALUE;
+        boolean hit = false;
+        int first, second;
+        final List<TouchPoint> points = normalizedPoints.getPoints();
+        for (int i = 0; i < points.size() - 1; ++i) {
+            first = i;
+            second = i + 1;
+
+            x1 = points.get(first).getX();
+            y1 = points.get(first).getY();
+
+            x2 = points.get(second).getX();
+            y2 = points.get(second).getY();
+
+            left = x1 - thickness;
+            top = y1 - thickness;
+            right = x1 + thickness;
+            bottom = y1 + thickness;
+
+            boolean isIntersect = ShapeUtils.contains(x1, y1, x2, y2, x, y, limit);
+            if (isIntersect) {
+                hit = true;
+                break;
+            }
+            if (xMin > left) {
+                xMin = left;
+            }
+            if (xMax < right) {
+                xMax = right;
+            }
+            if (yMin > top) {
+                yMin = top;
+            }
+            if (yMax < bottom) {
+                yMax = bottom;
+            }
+        }
+        return hit;
+
     }
 
     public final TouchPoint getCurrentPoint() {

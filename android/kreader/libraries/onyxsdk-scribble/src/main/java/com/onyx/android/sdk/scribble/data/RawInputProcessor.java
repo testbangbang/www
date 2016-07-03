@@ -111,9 +111,13 @@ public class RawInputProcessor {
     }
 
     public void stop() {
-//        stop = true;
-        clearInternalState();
         EpdController.setScreenHandWritingPenState(parentView, 0);
+    }
+
+    public void quit() {
+        stop = true;
+        clearInternalState();
+        getSingleThreadPool().shutdown();
     }
 
     private void clearInternalState() {
@@ -188,42 +192,17 @@ public class RawInputProcessor {
         } else if (type == EV_KEY) {
             if (code ==  BTN_TOUCH)  {
                 erasing = false;
+                lastErasing = false;
                 pressed = value > 0;
                 lastPressed = false;
             } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
                 erasing = false;
             } else if (code == BTN_TOOL_RUBBER) {
-                erasing = true;
                 pressed = value > 0;
-                lastPressed = false;
+                erasing = true;
+                lastErasing = true;
             }
-            onModeChanged();
         }
-    }
-
-    private void onModeChanged() {
-        if (lastErasing == erasing) {
-            return;
-        }
-        Log.d(TAG, "on erasing state changed last: " + lastErasing + " now: " + erasing);
-        if (!lastErasing && erasing) {
-            onErasing();
-        } else if (lastErasing && !erasing) {
-            onDrawing();
-        }
-        lastErasing = erasing;
-    }
-
-    private void resetToNormalState() {
-        EpdController.setScreenHandWritingPenState(parentView, 0);
-    }
-
-    private void onErasing() {
-        //EpdController.setScreenHandWritingPenState(parentView, 2);
-    }
-
-    private void onDrawing() {
-        //EpdController.setScreenHandWritingPenState(parentView, 1);
     }
 
     /**
@@ -312,7 +291,6 @@ public class RawInputProcessor {
     private void resetPointList() {
         touchPointList = null;
     }
-
 
     private void invokeTouchPointListBegin(final boolean erasing) {
         if (inputCallback == null) {

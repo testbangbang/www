@@ -19,9 +19,10 @@ public class ShapeDataInfo {
 
     private volatile PageNameList pageNameList = new PageNameList();
     private int currentPageIndex;
-    public boolean canUndoShape;
-    public boolean canRedoShape;
+    private boolean canUndoShape;
+    private boolean canRedoShape;
     private int background;
+    private float eraserRadius;
 
     public final PageNameList getPageNameList() {
         return pageNameList;
@@ -50,6 +51,30 @@ public class ShapeDataInfo {
 
     public int getCurrentPageIndex() {
         return currentPageIndex;
+    }
+
+    public boolean isCanUndoShape() {
+        return canUndoShape;
+    }
+
+    public void setCanUndoShape(boolean canUndoShape) {
+        this.canUndoShape = canUndoShape;
+    }
+
+    public boolean isCanRedoShape() {
+        return canRedoShape;
+    }
+
+    public void setCanRedoShape(boolean canRedoShape) {
+        this.canRedoShape = canRedoShape;
+    }
+
+    public float getEraserRadius() {
+        return eraserRadius;
+    }
+
+    public void setEraserRadius(float eraserRadius) {
+        this.eraserRadius = eraserRadius;
     }
 
 }

@@ -65,6 +65,7 @@ public class NoteViewHelper {
 
     public void stop() {
         stopDrawing();
+        quitDrawing();
         removeLayoutListener();
     }
 
@@ -193,6 +194,10 @@ public class NoteViewHelper {
 
     public void stopDrawing() {
         getRawInputProcessor().stop();
+    }
+
+    public void quitDrawing() {
+        getRawInputProcessor().quit();
     }
 
     private void removeLayoutListener() {

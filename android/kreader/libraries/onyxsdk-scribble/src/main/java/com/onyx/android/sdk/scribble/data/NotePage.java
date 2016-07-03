@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.util.Log;
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
@@ -96,6 +98,7 @@ public class NotePage {
         shape.setDocumentUniqueId(getDocumentUniqueId());
         shape.setPageUniqueId(getPageUniqueId());
         shape.ensureShapeUniqueId();
+        shape.updateBoundingRect();
     }
 
     public void removeShape(final Shape shape) {
@@ -105,6 +108,20 @@ public class NotePage {
         shapeList.remove(shape);
         if (isAddToActionHistory()) {
             undoRedoManager.addToHistory(ShapeActions.removeShapeAction(shape), false);
+        }
+    }
+
+    public void removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius) {
+        List<Shape> hitShapes = new ArrayList<>();
+        for(Shape shape : shapeList) {
+            for(TouchPoint touchPoint : touchPointList.getPoints()) {
+                if (shape.hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                    hitShapes.add(shape);
+                }
+            }
+        }
+        for(Shape shape : hitShapes) {
+            removeShape(shape);
         }
     }
 
@@ -207,6 +224,7 @@ public class NotePage {
         for(Shape shape: removedShapeList) {
             ShapeDataProvider.removeShape(context, shape.getShapeUniqueId());
         }
+
         return true;
     }
 

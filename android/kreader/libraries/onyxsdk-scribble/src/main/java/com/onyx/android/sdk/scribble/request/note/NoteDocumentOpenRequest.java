@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble.request.note;
 
+import android.util.Log;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
@@ -18,9 +19,13 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
+        Log.e("#############", "opening document");
+        benchmarkStart();
         parent.openDocument(getContext(), documentUniqueId, getParentLibraryId());
+        Log.e("#############", "rending page");
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
+        Log.e("#############", "document open and render finished :" + benchmarkEnd());
     }
 
 }
