@@ -14,9 +14,8 @@ public class PagePrevRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
-        if (helper.getNoteDocument().prevPage()) {
-            renderCurrentPage(helper);
-        }
+        helper.getNoteDocument().prevPage();
+        renderCurrentPage(helper);
         updateShapeDataInfo(helper);
     }
 

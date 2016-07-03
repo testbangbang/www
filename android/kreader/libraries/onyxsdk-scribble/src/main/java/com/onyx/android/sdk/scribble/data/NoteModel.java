@@ -52,6 +52,9 @@ public class NoteModel extends BaseModel {
     @Column
     float strokeWidth;
 
+    @Column
+    int background;
+
     @Column(typeConverter = ConverterStringList.class)
     PageNameList pageNameList = null;
 
@@ -172,6 +175,26 @@ public class NoteModel extends BaseModel {
             return getDefaultStrokeWidth();
         }
         return strokeWidth;
+    }
+
+    public int getBackground() {
+        return background;
+    }
+
+    public void setBackground(int background) {
+        this.background = background;
+    }
+
+    private void beforeSave() {
+        if (createdAt == null) {
+            createdAt = new Date();
+        }
+        updatedAt = new Date();
+    }
+
+    public void save() {
+        beforeSave();
+        super.save();
     }
 
     public static float getDefaultStrokeWidth() {

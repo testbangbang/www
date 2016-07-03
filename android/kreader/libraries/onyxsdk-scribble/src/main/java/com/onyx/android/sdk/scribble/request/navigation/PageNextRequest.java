@@ -13,10 +13,10 @@ public class PageNextRequest extends BaseNoteRequest {
         setResumeInputProcessor(true);
     }
 
+    // always render page.
     public void execute(final NoteViewHelper helper) throws Exception {
-        if (helper.getNoteDocument().nextPage()) {
-            renderCurrentPage(helper);
-        }
+        helper.getNoteDocument().nextPage();
+        renderCurrentPage(helper);
         updateShapeDataInfo(helper);
     }
 

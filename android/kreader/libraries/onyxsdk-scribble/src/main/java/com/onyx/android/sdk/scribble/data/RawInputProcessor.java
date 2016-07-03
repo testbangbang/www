@@ -4,6 +4,7 @@ import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -54,7 +55,7 @@ public class RawInputProcessor {
         public abstract void onBeginErasing();
 
         // caller should draw erase indicator
-        public abstract void onErasing(final TouchPoint touchPoint);
+        public abstract void onErasing(final MotionEvent motionEvent);
 
         // caller should do hit test in current page, remove shapes hit-tested.
         public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
@@ -296,11 +297,7 @@ public class RawInputProcessor {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapInputToScreenPoint(touchPoint);
         mapScreenPointToPage(touchPoint);
-        if (addToList(touchPoint, false)) {
-            if (erasing) {
-                invokeCallbackErasing(touchPoint);
-            }
-        }
+        addToList(touchPoint, false);
         // Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
@@ -329,18 +326,6 @@ public class RawInputProcessor {
                 } else {
                     inputCallback.onBeginHandWriting();
                 }
-            }
-        });
-    }
-
-    private void invokeCallbackErasing(final TouchPoint touchPoint) {
-        if (inputCallback == null) {
-            return;
-        }
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                inputCallback.onErasing(touchPoint);
             }
         });
     }

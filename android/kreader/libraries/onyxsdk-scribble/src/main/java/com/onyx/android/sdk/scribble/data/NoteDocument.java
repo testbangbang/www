@@ -19,6 +19,7 @@ public class NoteDocument {
 
     private String documentUniqueId;
     private String parentUniqueId;
+    private int background;
     private ListOrderedMap<String, NotePage> pageDataMap = new ListOrderedMap<String, NotePage>();
     private int currentPageIndex = 0;
     private boolean isOpen = false;
@@ -58,6 +59,12 @@ public class NoteDocument {
         }
     }
 
+    /**
+     * sync data from noteDocument to noteModel.
+     * @param context
+     * @param title
+     * @return
+     */
     private NoteModel getNoteModel(final Context context, final String title) {
         NoteModel noteModel = NoteDataProvider.load(context, getDocumentUniqueId());
         if (noteModel == null) {
@@ -67,6 +74,7 @@ public class NoteDocument {
         pageNameList.addAll(pageDataMap.keyList());
         noteModel.setPageNameList(pageNameList);
         noteModel.strokeWidth = noteDrawingArgs.strokeWidth;
+        noteModel.background = background;
         return noteModel;
     }
 
@@ -84,6 +92,14 @@ public class NoteDocument {
 
     public void setParentUniqueId(String parentUniqueId) {
         this.parentUniqueId = parentUniqueId;
+    }
+
+    public int getBackground() {
+        return background;
+    }
+
+    public void setBackground(int background) {
+        this.background = background;
     }
 
     public PageNameList getPageNameList() {
@@ -110,6 +126,7 @@ public class NoteDocument {
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
         if (noteModel != null) {
             noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
+            background = noteModel.getBackground();
         }
     }
 

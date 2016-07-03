@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.text.method.Touch;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -44,6 +45,7 @@ public class NoteViewHelper {
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl bitmapWrapper = new ReaderBitmapImpl();
     private boolean enableBitmap = true;
+    private boolean inErasing = false;
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
@@ -51,6 +53,7 @@ public class NoteViewHelper {
     private RawInputProcessor.InputCallback callback;
 
     public void setView(final Context context, final SurfaceView view, final RawInputProcessor.InputCallback c) {
+        setCallback(c);
         initRawResource(context);
         initWithSurfaceView(view);
         initRawInputProcessor();
@@ -58,7 +61,6 @@ public class NoteViewHelper {
         updateViewMatrix();
         updateLimitRect();
         stopDrawing();
-        setCallback(c);
     }
 
     public void stop() {
@@ -90,7 +92,10 @@ public class NoteViewHelper {
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                return false;
+                if (!inErasing) {
+                    return true;
+                }
+                return onErasing(motionEvent);
             }
         });
         surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener());
@@ -276,32 +281,53 @@ public class NoteViewHelper {
 
             @Override
             public void onNewTouchPointListReceived(TouchPointList pointList) {
-                Shape shape = new NormalScribbleShape();
-                shape.addPoints(pointList);
-                dirtyStash.add(shape);
+                NoteViewHelper.this.onNewTouchPointListReceived(pointList);
             }
 
             @Override
             public void onBeginErasing() {
-                if (callback != null) {
-                    callback.onBeginErasing();
-                }
+                NoteViewHelper.this.onBeginErasing();
             }
 
             @Override
-            public void onErasing(TouchPoint touchPoint) {
-                if (callback != null) {
-                    callback.onErasing(touchPoint);
-                }
+            public void onErasing(final MotionEvent touchPoint) {
             }
 
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
-                if (callback != null) {
-                    callback.onEraseTouchPointListReceived(pointList);
-                }
+                NoteViewHelper.this.onFinishErasing(pointList);
             }
         });
+    }
+
+    private void onNewTouchPointListReceived(final TouchPointList pointList) {
+        Shape shape = new NormalScribbleShape();
+        shape.addPoints(pointList);
+        dirtyStash.add(shape);
+        if (callback != null) {
+            callback.onNewTouchPointListReceived(pointList);
+        }
+    }
+
+    private void onBeginErasing() {
+        inErasing = true;
+        if (callback != null) {
+            callback.onBeginErasing();
+        }
+    }
+
+    private boolean onErasing(final MotionEvent motionEvent) {
+        if (callback != null) {
+            callback.onErasing(motionEvent);
+        }
+        return true;
+    }
+
+    private void onFinishErasing(TouchPointList pointList) {
+        inErasing = false;
+        if (callback != null) {
+            callback.onEraseTouchPointListReceived(pointList);
+        }
     }
 
     public List<Shape> deatchStash() {

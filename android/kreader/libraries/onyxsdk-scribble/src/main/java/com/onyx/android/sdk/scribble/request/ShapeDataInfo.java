@@ -21,7 +21,7 @@ public class ShapeDataInfo {
     private int currentPageIndex;
     public boolean canUndoShape;
     public boolean canRedoShape;
-
+    private int background;
 
     public final PageNameList getPageNameList() {
         return pageNameList;
@@ -34,6 +34,14 @@ public class ShapeDataInfo {
     public void updateShapePageMap(final PageNameList src, int currentPage) {
         pageNameList.addAll(src.getPageNameList());
         currentPageIndex = currentPage;
+    }
+
+    public void setBackground(final int bg) {
+        background = bg;
+    }
+
+    public int getBackground() {
+        return background;
     }
 
     public int getPageCount() {

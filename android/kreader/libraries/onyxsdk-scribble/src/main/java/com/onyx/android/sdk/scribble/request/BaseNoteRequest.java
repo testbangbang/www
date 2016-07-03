@@ -151,13 +151,15 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void renderVisiblePages(final NoteViewHelper parent) {
         Bitmap bitmap = parent.updateBitmap(getViewportSize());
-        bitmap.eraseColor(Color.TRANSPARENT);
+        bitmap.eraseColor(Color.WHITE);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
         paint.setStrokeWidth(3.0f);
+
+        drawBackground(canvas, paint);
 
         final Matrix renderMatrix = new Matrix();
         renderMatrix.postScale(getViewportSize().width(), getViewportSize().height());
@@ -174,6 +176,16 @@ public class BaseNoteRequest extends BaseRequest {
 
         // draw test path.
         drawRandomTestPath(canvas, paint);
+    }
+
+    private void drawBackground(final Canvas canvas, final Paint paint) {
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(1.0f);
+        int max = 10;
+        for(int i = 0; i < max; ++i) {
+            float y = i * canvas.getHeight() / max;
+            canvas.drawLine(0, y, canvas.getWidth(), y, paint);
+        }
     }
 
     private boolean isRenderRandomTestPath() {
@@ -223,6 +235,7 @@ public class BaseNoteRequest extends BaseRequest {
         getShapeDataInfo().updateShapePageMap(
                 parent.getNoteDocument().getPageNameList(),
                 parent.getNoteDocument().getCurrentPageIndex());
+        getShapeDataInfo().setBackground(parent.getNoteDocument().getBackground());
     }
 
     public void ensureDocumentOpened(final NoteViewHelper parent) {
