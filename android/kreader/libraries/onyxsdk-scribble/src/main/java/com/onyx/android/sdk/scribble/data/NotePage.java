@@ -10,7 +10,9 @@ import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 4/23/16.
@@ -112,17 +114,23 @@ public class NotePage {
     }
 
     public void removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius) {
-        List<Shape> hitShapes = new ArrayList<>();
+        Map<String, Shape> hitShapes = new HashMap<>();
         for(Shape shape : shapeList) {
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
-                if (shape.hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
-                    hitShapes.add(shape);
+                if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                    hitShapes.put(shape.getShapeUniqueId(), shape);
                     continue;
                 }
             }
         }
-        for(Shape shape : hitShapes) {
-            removeShape(shape);
+
+        for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
+            for(TouchPoint touchPoint : touchPointList.getPoints()) {
+                if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                    removeShape(entry.getValue());
+                    continue;
+                }
+            }
         }
     }
 
@@ -197,10 +205,16 @@ public class NotePage {
     }
 
     public void loadPage(final Context context) {
+        long start = System.currentTimeMillis();
         final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
+        long end = System.currentTimeMillis();
+        Log.e("##############", "load page takes: " + (end - start) + "ms");
+        start = end;
         for(ShapeModel model : modelList) {
             addShapeFromModel(ShapeFactory.shapeFromModel(model));
         }
+        end = System.currentTimeMillis();
+        Log.e("##############", "setup shape from model takes:  " + (end - start) + "ms");
     }
 
     public static final NotePage createPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {

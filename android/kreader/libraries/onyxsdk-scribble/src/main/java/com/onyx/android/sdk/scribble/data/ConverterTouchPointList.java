@@ -1,8 +1,8 @@
 package com.onyx.android.sdk.scribble.data;
 
+import com.onyx.android.sdk.scribble.utils.SerializationUtils;
 import com.raizlabs.android.dbflow.converter.TypeConverter;
 import com.raizlabs.android.dbflow.data.Blob;
-import org.nustaq.serialization.FSTConfiguration;
 
 /**
  * Created by zhuzeng on 6/4/16.
@@ -10,15 +10,16 @@ import org.nustaq.serialization.FSTConfiguration;
 @com.raizlabs.android.dbflow.annotation.TypeConverter
 public class ConverterTouchPointList extends TypeConverter<Blob, TouchPointList> {
 
-    static FSTConfiguration singletonConf = FSTConfiguration.createAndroidDefaultConfiguration();
 
     @Override
     public TouchPointList getModelValue(final Blob blob) {
-        return (TouchPointList)singletonConf.asObject(blob.getBlob());
+        return SerializationUtils.pointsFromByteArray(blob.getBlob());
     }
 
     @Override
     public Blob getDBValue(final TouchPointList list) {
-        return new Blob(singletonConf.asByteArray(list));
+        return new Blob(SerializationUtils.pointsToByteArray(list));
     }
+
+
 }
