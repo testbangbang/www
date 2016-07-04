@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.*;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -45,6 +46,7 @@ import java.util.List;
  * when any button clicked, flush at first and render page, after that always switch to drawing state.
  */
 public class ScribbleActivity extends OnyxAppCompatActivity {
+    static final String TAG = ScribbleActivity.class.getSimpleName();
     static final String TAG_NOTE_TITLE = "note_title";
 
     private SurfaceView surfaceView;
@@ -93,7 +95,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         addPageBtn = (ImageView) findViewById(R.id.button_new_page);
         changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
         prevPage = (ImageView) findViewById(R.id.button_previous_page);
-        nextPage = (ImageView) findViewById(R.id.button_new_page);
+        nextPage = (ImageView) findViewById(R.id.button_next_page);
         //TODO:update page status by this widget.
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         penStyleContentView = (ContentView) findViewById(R.id.pen_style_content_view);
@@ -151,13 +153,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             case PenType.FOUNTAIN_PEN:
                 break;
             case PenType.BRUSH:
-
                 break;
             case PenType.RULER:
-                onAddNewPage();
+                onRulerClicked();
                 break;
             case PenType.ERASER:
-                onNextPage();
+                onEraseClicked();
                 break;
         }
     }
@@ -285,7 +286,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this, null);
     }
 
-    static final String TAG = "###########";
     private void onBeginErasing() {
         erasePoint = new PointF();
         getNoteViewHelper().stopDrawing();
@@ -546,5 +546,23 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             object.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
         }
         return object;
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+                onNextPage();
+                return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
+                onPrevPage();
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
