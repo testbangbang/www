@@ -25,10 +25,17 @@ public class RequestManager {
     private boolean debugWakelock = false;
     private List<BaseRequest> requestList;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private int threadPriority = Thread.MAX_PRIORITY;
 
     public RequestManager() {
         initRequestList();
     }
+
+    public RequestManager(int priority) {
+        threadPriority = priority;
+        initRequestList();
+    }
+
 
     private void initRequestList() {
         requestList = Collections.synchronizedList(new ArrayList<BaseRequest>());
@@ -102,7 +109,7 @@ public class RequestManager {
                 @Override
                 public Thread newThread(Runnable r) {
                     Thread t = new Thread(r);
-                    t.setPriority(Thread.MAX_PRIORITY);
+                    t.setPriority(threadPriority);
                     return t;
                 }
             });
