@@ -60,7 +60,7 @@ public class NoteViewHelper {
         stopDrawing();
     }
 
-    public void stop() {
+    public void quit() {
         stopDrawing();
         quitDrawing();
         removeLayoutListener();

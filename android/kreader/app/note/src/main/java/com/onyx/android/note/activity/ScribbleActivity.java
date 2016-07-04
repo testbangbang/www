@@ -75,7 +75,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
-        initView();
+        initToolbars();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -88,7 +88,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         initSurfaceView();
     }
 
-    private void initView() {
+    private void initToolbars() {
         titleTextView = (TextView) findViewById(R.id.note_title);
         addPageBtn = (ImageView) findViewById(R.id.button_new_page);
         changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
@@ -308,7 +308,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        getNoteViewHelper().stop();
+        getNoteViewHelper().quit();
     }
 
     @Override
