@@ -117,6 +117,7 @@ public class NotePage {
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (shape.hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                     hitShapes.add(shape);
+                    continue;
                 }
             }
         }

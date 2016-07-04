@@ -4,6 +4,7 @@ import android.util.Log;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 
@@ -25,7 +26,9 @@ public class PageFlushRequest extends BaseNoteRequest {
 
     public void execute(final NoteViewHelper helper) throws Exception {
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
-        renderCurrentPage(helper);
+        if (!CollectionUtils.isEmpty(shapeList)) {
+            renderCurrentPage(helper);
+        }
         saveDocument(helper);
         updateShapeDataInfo(helper);
     }
