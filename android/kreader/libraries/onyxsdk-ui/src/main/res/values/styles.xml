@@ -121,6 +121,12 @@
         <item name="android:background">@drawable/imagebtn_bg</item>
     </style>
 
+    <style name="global_activities_back_btn_category_image">
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
     <style name="global_activities_back_btn_image">
         <item name="android:layout_height">36dp</item>
         <item name="android:layout_width">24dp</item>
