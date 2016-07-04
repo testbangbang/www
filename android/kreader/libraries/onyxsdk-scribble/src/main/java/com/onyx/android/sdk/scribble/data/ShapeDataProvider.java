@@ -46,19 +46,19 @@ public class ShapeDataProvider {
 
     public static void removeAllShapeOfDocument(final Context context, final String documentUniqueId) {
         Delete delete = new Delete();
-        delete.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId));
+        delete.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId)).query();
     }
 
     public static boolean removeShape(final Context context,
                                       final String uniqueId) {
         Delete delete = new Delete();
-        delete.from(ShapeModel.class).where(ShapeModel_Table.shapeUniqueId.eq(uniqueId));
+        delete.from(ShapeModel.class).where(ShapeModel_Table.shapeUniqueId.eq(uniqueId)).query();
         return true;
     }
 
     public static boolean removePage(final Context context, final String pageUniqueId) {
         Delete delete = new Delete();
-        delete.from(ShapeModel.class).where(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));
+        delete.from(ShapeModel.class).where(ShapeModel_Table.pageUniqueId.eq(pageUniqueId)).query();
         return true;
     }
 
