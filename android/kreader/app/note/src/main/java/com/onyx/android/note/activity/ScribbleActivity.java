@@ -76,15 +76,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private ImageView addPageBtn, changeBGBtn, prevPage, nextPage, penColorBtn;
     private Button pageIndicator;
     private PointF erasePoint = null;
-    DialogLoading loadingDialog, savingDialog;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
-        initView();
+        initToolbarButtons();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -98,7 +96,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         initSurfaceView();
     }
 
-    private void initView() {
+    private void initToolbarButtons() {
         titleTextView = (TextView) findViewById(R.id.note_title);
         addPageBtn = (ImageView) findViewById(R.id.button_new_page);
         changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
@@ -255,11 +253,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
         noteTitle = intent.getStringExtra(TAG_NOTE_TITLE);
         titleTextView.setText(noteTitle);
-        loadingDialog = new DialogLoading();
-        Bundle args = new Bundle();
-        args.putString(DialogLoading.ARGS_LOADING_MSG, getString(R.string.loading));
-        loadingDialog.setArguments(args);
-        loadingDialog.show(getFragmentManager());
         if (Utils.ACTION_CREATE.equals(activityAction)) {
             handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
                     intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
@@ -351,11 +344,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     public void onBackPressed() {
         getNoteViewHelper().stopDrawing();
-        savingDialog = new DialogLoading();
-        Bundle args = new Bundle();
-        args.putString(DialogLoading.ARGS_LOADING_MSG, getString(R.string.saving_note));
-        savingDialog.setArguments(args);
-        savingDialog.show(getFragmentManager());
         if (Utils.ACTION_CREATE.equals(activityAction)) {
             saveNewNoteDocument();
         } else {
@@ -374,14 +362,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             @Override
             public boolean onConfirmAction(String input) {
                 final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(input);
-                closeAction.execute(ScribbleActivity.this, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        if (savingDialog != null && savingDialog.isVisible()) {
-                            savingDialog.dismiss();
-                        }
-                    }
-                });
+                closeAction.execute(ScribbleActivity.this, null);
                 return true;
             }
 
@@ -410,14 +391,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(noteTitle);
-                closeAction.execute(ScribbleActivity.this, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        if (savingDialog != null && savingDialog.isVisible()) {
-                            savingDialog.dismiss();
-                        }
-                    }
-                });
+                closeAction.execute(ScribbleActivity.this, null);
             }
         });
     }
@@ -490,26 +464,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
         final DocumentCreateAction<ScribbleActivity> action = new DocumentCreateAction<>(uniqueId, parentId);
-        action.execute(this, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (loadingDialog != null) {
-                    loadingDialog.dismiss();
-                }
-            }
-        });
+        action.execute(this, null);
     }
 
     private void handleDocumentEdit(final String uniqueId, final String parentId) {
         final DocumentEditAction<ScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
-        action.execute(this, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (loadingDialog != null) {
-                    loadingDialog.dismiss();
-                }
-            }
-        });
+        action.execute(this, null);
     }
 
     private void flushWithCallback(boolean render, final BaseCallback callback) {
