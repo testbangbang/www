@@ -45,6 +45,7 @@ import java.util.List;
  * when any button clicked, flush at first and render page, after that always switch to drawing state.
  */
 public class ScribbleActivity extends OnyxAppCompatActivity {
+    static final String TAG = ScribbleActivity.class.getSimpleName();
     static final String TAG_NOTE_TITLE = "note_title";
 
     private SurfaceView surfaceView;
@@ -93,7 +94,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         addPageBtn = (ImageView) findViewById(R.id.button_new_page);
         changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
         prevPage = (ImageView) findViewById(R.id.button_previous_page);
-        nextPage = (ImageView) findViewById(R.id.button_new_page);
+        nextPage = (ImageView) findViewById(R.id.button_next_page);
         //TODO:update page status by this widget.
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         penStyleContentView = (ContentView) findViewById(R.id.pen_style_content_view);
@@ -151,13 +152,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             case PenType.FOUNTAIN_PEN:
                 break;
             case PenType.BRUSH:
-
                 break;
             case PenType.RULER:
-                onAddNewPage();
+                onRulerClicked();
                 break;
             case PenType.ERASER:
-                onNextPage();
+                onEraseClicked();
                 break;
         }
     }
@@ -285,7 +285,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this, null);
     }
 
-    static final String TAG = "###########";
     private void onBeginErasing() {
         erasePoint = new PointF();
         getNoteViewHelper().stopDrawing();
