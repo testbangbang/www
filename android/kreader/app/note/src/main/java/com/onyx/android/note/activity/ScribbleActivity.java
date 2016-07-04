@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.*;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -545,5 +546,23 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             object.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
         }
         return object;
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+                onNextPage();
+                return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
+                onPrevPage();
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
