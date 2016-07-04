@@ -126,11 +126,12 @@ public class BaseNoteRequest extends BaseRequest {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (isResumeInputProcessor()) {
-                    helper.startDrawing();
-                }
+                helper.copyBitmap();
                 if (getCallback() != null) {
                     getCallback().done(BaseNoteRequest.this, getException());
+                }
+                if (isResumeInputProcessor()) {
+                    helper.startDrawing();
                 }
                 helper.getRequestManager().releaseWakeLock();
             }};
@@ -150,7 +151,7 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void renderVisiblePages(final NoteViewHelper parent) {
-        Bitmap bitmap = parent.updateBitmap(getViewportSize());
+        Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
         bitmap.eraseColor(Color.WHITE);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();

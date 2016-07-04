@@ -45,23 +45,20 @@ public class ShapeDataProvider {
     }
 
     public static void removeAllShapeOfDocument(final Context context, final String documentUniqueId) {
-        Select select = new Select();
-        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId));
-        where.querySingle().delete();
+        Delete delete = new Delete();
+        delete.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId));
     }
 
     public static boolean removeShape(final Context context,
                                       final String uniqueId) {
-        Select select = new Select();
-        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.shapeUniqueId.eq(uniqueId));
-        where.querySingle().delete();
+        Delete delete = new Delete();
+        delete.from(ShapeModel.class).where(ShapeModel_Table.shapeUniqueId.eq(uniqueId));
         return true;
     }
 
     public static boolean removePage(final Context context, final String pageUniqueId) {
-        Select select = new Select();
-        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));
-        where.querySingle().delete();
+        Delete delete = new Delete();
+        delete.from(ShapeModel.class).where(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));
         return true;
     }
 
