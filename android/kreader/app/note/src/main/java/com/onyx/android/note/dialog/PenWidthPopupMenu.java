@@ -33,7 +33,7 @@ public class PenWidthPopupMenu extends PopupWindow {
 
     public PenWidthPopupMenu(Context context, LayoutInflater inflater, int curValue, int minValue,
                              int maxValue, View parentView, int locX, int locY, PopupMenuCallback menuCallback) {
-        super(inflater.inflate(R.layout.penwidth_popup_layout, null),
+        super(inflater.inflate(R.layout.pen_width_popup_layout, null),
                 ViewGroup.LayoutParams.WRAP_CONTENT, context.getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height));
         setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
         setOutsideTouchable(true);

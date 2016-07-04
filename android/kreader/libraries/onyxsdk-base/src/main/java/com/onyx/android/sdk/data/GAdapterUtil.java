@@ -298,6 +298,10 @@ public final class GAdapterUtil {
         updateAdapterContent(originalAdapter, newDataAdapter, key, list, lookupTable, isReplaceOldObject);
     }
 
+    static public int getUniqueIdAsIntegerType(GObject object) {
+        return object.getInt(GAdapterUtil.TAG_UNIQUE_ID);
+    }
+
     static public String getUniqueId(GObject object) {
         return object.getString(GAdapterUtil.TAG_UNIQUE_ID);
     }
