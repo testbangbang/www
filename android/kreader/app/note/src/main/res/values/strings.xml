@@ -17,4 +17,6 @@
     <string name="note_bg_empty">Empty</string>
     <string name="note_bg_grid">Grid</string>
     <string name="note_bg_line">Line</string>
+    <string name="loading">Loading Note.</string>
+    <string name="saving_note">Saving Note.</string>
 </resources>

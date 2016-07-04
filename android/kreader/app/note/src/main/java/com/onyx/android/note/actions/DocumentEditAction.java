@@ -24,6 +24,7 @@ public class DocumentEditAction<T extends ScribbleActivity> extends BaseNoteActi
             @Override
             public void done(BaseRequest request, Throwable e) {
                 activity.onRequestFinished(openRequest, true);
+                callback.invoke(callback, request, e);
             }
         });
     }

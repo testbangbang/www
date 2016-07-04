@@ -106,7 +106,7 @@
             android:clickable="true"
             android:focusable="true"
             android:scaleType="center"
-            android:src="@drawable/ic_business_write_color_black_44dp" />
+            android:src="@drawable/ic_business_write_color_black_black_46dp" />
 
         <LinearLayout
             android:id="@+id/page_indicator"
