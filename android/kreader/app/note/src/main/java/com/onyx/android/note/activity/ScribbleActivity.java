@@ -3,7 +3,6 @@ package com.onyx.android.note.activity;
 import android.content.Intent;
 import android.graphics.*;
 import android.os.Bundle;
-import android.text.method.Touch;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -30,12 +29,10 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.RawInputProcessor;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -78,7 +75,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
-        initView();
+        initToolbars();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -91,7 +88,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         initSurfaceView();
     }
 
-    private void initView() {
+    private void initToolbars() {
         titleTextView = (TextView) findViewById(R.id.note_title);
         addPageBtn = (ImageView) findViewById(R.id.button_new_page);
         changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
@@ -311,7 +308,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        getNoteViewHelper().stop();
+        getNoteViewHelper().quit();
     }
 
     @Override
@@ -516,7 +513,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void drawContent(final Canvas canvas, final Paint paint) {
         long ts = System.currentTimeMillis();
-        Bitmap bitmap = getNoteViewHelper().getShapeBitmap();
+        Bitmap bitmap = getNoteViewHelper().getViewBitmap();
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, 0, 0, paint);
         }
@@ -527,7 +524,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         if (erasePoint == null) {
             return;
         }
-
 
         float x = erasePoint.x;
         float y = erasePoint.y;

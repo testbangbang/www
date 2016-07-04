@@ -117,13 +117,18 @@ public class RawInputProcessor {
     public void quit() {
         stop = true;
         clearInternalState();
-        getSingleThreadPool().shutdown();
+        shutdown();
     }
 
     private void clearInternalState() {
         pressed = false;
         lastErasing = false;
         lastPressed = false;
+    }
+
+    private void shutdown() {
+        getSingleThreadPool().shutdown();
+        singleThreadPool = null;
     }
 
     private ExecutorService getSingleThreadPool()   {

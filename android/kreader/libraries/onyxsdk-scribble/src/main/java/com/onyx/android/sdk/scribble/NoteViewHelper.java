@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.text.method.Touch;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -16,7 +15,6 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.RawInputProcessor;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
@@ -25,7 +23,6 @@ import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/16/16.
@@ -40,11 +37,11 @@ public class NoteViewHelper {
 
     private static final String TAG = NoteViewHelper.class.getSimpleName();
 
-    private RequestManager requestManager = new RequestManager();
+    private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private RawInputProcessor rawInputProcessor = new RawInputProcessor();
     private NoteDocument noteDocument = new NoteDocument();
-    private ReaderBitmapImpl bitmapWrapper = new ReaderBitmapImpl();
-    private boolean enableBitmap = true;
+    private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
+    private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private boolean inErasing = false;
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
@@ -63,7 +60,7 @@ public class NoteViewHelper {
         stopDrawing();
     }
 
-    public void stop() {
+    public void quit() {
         stopDrawing();
         quitDrawing();
         removeLayoutListener();
@@ -75,14 +72,14 @@ public class NoteViewHelper {
     }
 
     private void onDocumentOpened() {
-        bitmapWrapper.clear();
+        renderBitmapWrapper.clear();
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
     }
 
     public void close(final Context context, final String title) {
         getNoteDocument().save(context, title);
         getNoteDocument().close(context);
-        bitmapWrapper.clear();
+        renderBitmapWrapper.clear();
     }
 
     private void initRawResource(final Context context) {
@@ -238,23 +235,28 @@ public class NoteViewHelper {
         return noteDocument;
     }
 
-    public Bitmap updateBitmap(final Rect viewportSize) {
-        bitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
-        return bitmapWrapper.getBitmap();
+    public Bitmap updateRenderBitmap(final Rect viewportSize) {
+        renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
+        return renderBitmapWrapper.getBitmap();
     }
 
-    public Bitmap getShapeBitmap() {
-        if (bitmapWrapper == null || !enableBitmap) {
+    // copy from render bitmap to view bitmap.
+    public void copyBitmap() {
+        if (renderBitmapWrapper == null) {
+            return;
+        }
+        final Bitmap bitmap = renderBitmapWrapper.getBitmap();
+        if (bitmap == null) {
+            return;
+        }
+        viewBitmapWrapper.copyFrom(bitmap);
+    }
+
+    public Bitmap getViewBitmap() {
+        if (viewBitmapWrapper == null) {
             return null;
         }
-        return bitmapWrapper.getBitmap();
-    }
-
-    public void enableBitmap(boolean enable) {
-        enableBitmap = enable;
-        if (enableBitmap && bitmapWrapper == null) {
-            bitmapWrapper = new ReaderBitmapImpl();
-        }
+        return viewBitmapWrapper.getBitmap();
     }
 
     private final Runnable generateRunnable(final BaseNoteRequest request) {

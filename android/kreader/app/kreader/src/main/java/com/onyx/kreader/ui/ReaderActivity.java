@@ -649,7 +649,7 @@ public class ReaderActivity extends ActionBarActivity {
         if (!isShapeBitmapReady()) {
             return;
         }
-        final Bitmap bitmap = getNoteViewHelper().getShapeBitmap();
+        final Bitmap bitmap = getNoteViewHelper().getViewBitmap();
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
@@ -667,7 +667,7 @@ public class ReaderActivity extends ActionBarActivity {
 //            return false;
 //        }
 
-        final Bitmap bitmap = getNoteViewHelper().getShapeBitmap();
+        final Bitmap bitmap = getNoteViewHelper().getViewBitmap();
         if (bitmap == null) {
             return false;
         }
@@ -675,7 +675,6 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void resetShapeData() {
-        getNoteViewHelper().enableBitmap(false);
         shapeDataInfo = null;
     }
 
@@ -684,7 +683,6 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
 
-        getNoteViewHelper().enableBitmap(true);
         final PageListRenderRequest loadRequest = new PageListRenderRequest(reader.getDocumentMd5(), getReaderViewInfo().getVisiblePages(), getDisplayRect());
         getNoteViewHelper().submit(this, loadRequest, new BaseCallback() {
             @Override
