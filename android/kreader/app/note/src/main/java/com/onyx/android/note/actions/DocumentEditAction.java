@@ -23,16 +23,12 @@ public class DocumentEditAction<T extends ScribbleActivity> extends BaseNoteActi
     }
 
     public void execute(final T activity , final BaseCallback callback) {
-        loadingDialog = new DialogLoading();
-        Bundle args = new Bundle();
-        args.putString(DialogLoading.ARGS_LOADING_MSG, activity.getString(R.string.loading));
-        loadingDialog.setArguments(args);
-        loadingDialog.show(activity.getFragmentManager());
+        showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.loading);
         final NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId);
         activity.getNoteViewHelper().submit(activity, openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                loadingDialog.dismiss();
+                dismissLoadingDialog();
                 activity.onRequestFinished(openRequest, true);
                 callback.invoke(callback, request, e);
             }

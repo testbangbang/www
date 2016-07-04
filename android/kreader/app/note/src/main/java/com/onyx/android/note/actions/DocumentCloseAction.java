@@ -21,16 +21,12 @@ public class DocumentCloseAction<T extends ScribbleActivity> extends BaseNoteAct
     }
 
     public void execute(final T activity,  final BaseCallback callback) {
-        loadingDialog = new DialogLoading();
-        Bundle args = new Bundle();
-        args.putString(DialogLoading.ARGS_LOADING_MSG, activity.getString(R.string.saving_note));
-        loadingDialog.setArguments(args);
-        loadingDialog.show(activity.getFragmentManager());
+        showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.saving_note);
         final NoteDocumentCloseRequest saveRequest = new NoteDocumentCloseRequest(title);
         activity.getNoteViewHelper().submit(activity, saveRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                loadingDialog.dismiss();
+                dismissLoadingDialog();
                 activity.finish();
             }
         });
