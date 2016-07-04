@@ -78,4 +78,6 @@ public interface Shape {
 
     boolean hitTest(final float x, final float y, final float radius);
 
+    boolean fastHitTest(final float x, final float y, final float radius);
+
 }

@@ -149,13 +149,14 @@ public class BaseShape implements Shape {
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
     }
 
-    public boolean hitTest(final float x, final float y, final float radius) {
+    public boolean fastHitTest(final float x, final float y, final float radius) {
         final RectF boundingRect = getBoundingRect();
         final float limit = radius * radius;
-        if (!ShapeUtils.contains(boundingRect, x, y, limit)) {
-            return false;
-        }
+        return ShapeUtils.contains(boundingRect, x, y, limit);
+    }
 
+    public boolean hitTest(final float x, final float y, final float radius) {
+        final float limit = radius * radius;
         float thickness = getStrokeWidth();
         float x1, y1, x2, y2;
         float left, top, right, bottom;
