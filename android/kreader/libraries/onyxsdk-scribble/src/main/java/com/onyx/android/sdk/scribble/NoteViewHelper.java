@@ -37,12 +37,11 @@ public class NoteViewHelper {
 
     private static final String TAG = NoteViewHelper.class.getSimpleName();
 
-    private RequestManager requestManager = new RequestManager();
+    private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private RawInputProcessor rawInputProcessor = new RawInputProcessor();
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
-    private boolean enableBitmap = true;
     private boolean inErasing = false;
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
