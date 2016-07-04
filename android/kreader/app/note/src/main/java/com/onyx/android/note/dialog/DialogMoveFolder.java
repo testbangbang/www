@@ -59,8 +59,8 @@ public class DialogMoveFolder extends OnyxAlertDialog {
                         ContentView targetLibraryContentView = (ContentView) customView.findViewById(R.id.contentView_move_folder);
                         targetLibraryContentView.setupGridLayout(5, 1);
                         GAdapter adapter = Utils.adapterFromNoteModelListWithFullPathTitle(dataList,
-                                R.drawable.ic_student_note_folder_gray_250dp,
-                                R.drawable.ic_student_note_pic_gray_250dp);
+                                R.drawable.ic_student_note_folder_gray,
+                                R.drawable.ic_student_note_pic_gray);
                         HashMap<String, Integer> mapping = new HashMap<String, Integer>();
                         mapping.put(GAdapterUtil.TAG_TITLE_STRING, R.id.textview_title);
                         mapping.put(GAdapterUtil.TAG_DIVIDER_VIEW, R.id.divider);

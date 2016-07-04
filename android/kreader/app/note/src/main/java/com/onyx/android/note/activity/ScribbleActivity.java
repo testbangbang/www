@@ -20,7 +20,9 @@ import com.onyx.android.note.actions.*;
 import com.onyx.android.note.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
+import com.onyx.android.note.dialog.DialogLoading;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
+import com.onyx.android.note.dialog.PenColorPopupMenu;
 import com.onyx.android.note.dialog.PenWidthPopupMenu;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -38,6 +40,7 @@ import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,28 +59,30 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @PenType.PenTypeDef
     int currentPenType = PenType.PENCIL;
     @NoteBackgroundType.NoteBackgroundDef
+    private
     int currentNoteBackground = NoteBackgroundType.EMPTY;
-    float eraserRadius;
+    private float eraserRadius;
     //TODO:just as psd value.
-    int minPenWidth = 15;
-    int maxPenWidth = 40;
-    int currentPenWidth = 32;
+    private int minPenWidth = 15;
+    private int maxPenWidth = 40;
+    private int currentPenWidth = 32;
+    private int currentPenColor = Color.BLACK;
     private TextView titleTextView;
     private ContentView penStyleContentView;
     private GAdapter adapter;
-    PenWidthPopupMenu penWidthPopupMenu;
-    BackGroundTypePopupMenu bgTypePopupMenu;
-    private ImageView addPageBtn, changeBGBtn, prevPage, nextPage;
+    private PenWidthPopupMenu penWidthPopupMenu;
+    private BackGroundTypePopupMenu bgTypePopupMenu;
+    PenColorPopupMenu penColorPopupMenu;
+    private ImageView addPageBtn, changeBGBtn, prevPage, nextPage, penColorBtn;
     private Button pageIndicator;
     private PointF erasePoint = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
-        initToolbars();
+        initToolbarButtons();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -87,15 +92,17 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateColorIndicator();
         initSurfaceView();
     }
 
-    private void initToolbars() {
+    private void initToolbarButtons() {
         titleTextView = (TextView) findViewById(R.id.note_title);
         addPageBtn = (ImageView) findViewById(R.id.button_new_page);
         changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
         prevPage = (ImageView) findViewById(R.id.button_previous_page);
         nextPage = (ImageView) findViewById(R.id.button_next_page);
+        penColorBtn = (ImageView) findViewById(R.id.color_indicator);
         //TODO:update page status by this widget.
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         penStyleContentView = (ContentView) findViewById(R.id.pen_style_content_view);
@@ -115,8 +122,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             }
         });
         penStyleContentView.setupContent(1, 6, getPenStyleAdapter(), 0);
-
-
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,6 +144,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             @Override
             public void onClick(View v) {
                 onNextPage();
+            }
+        });
+        penColorBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onColorClicked();
             }
         });
     }
@@ -324,6 +335,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         if (bgTypePopupMenu != null && bgTypePopupMenu.isShowing()) {
             bgTypePopupMenu.dismiss();
         }
+        if (penColorPopupMenu != null && penColorPopupMenu.isShowing()) {
+            penColorPopupMenu.dismiss();
+        }
         penWidthPopupMenu = null;
         bgTypePopupMenu = null;
     }
@@ -412,6 +426,38 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         });
     }
 
+    private void onColorClicked() {
+        flushWithCallback(true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (penColorPopupMenu == null) {
+                    penColorPopupMenu = new PenColorPopupMenu(ScribbleActivity.this,
+                            getLayoutInflater(),
+                            getWindow().getDecorView(),
+                            penColorBtn.getLeft() + (penColorBtn.getWidth() / 2) - (getResources().getDimensionPixelSize(R.dimen.pen_color_popup_width) / 2),
+                            getWindow().getDecorView().getHeight() -
+                                    getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
+                                    getResources().getDimensionPixelSize(R.dimen.pen_color_popup_height) - 10,
+                            new PenColorPopupMenu.PopupMenuCallback() {
+                                @Override
+                                public void onPenColorChanged(int newPenColor) {
+                                    currentPenColor = newPenColor;
+                                    updateColorIndicator();
+                                    penColorPopupMenu.dismiss();
+                                }
+                            });
+                    penColorPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                        @Override
+                        public void onDismiss() {
+                            resumeDrawing();
+                        }
+                    });
+                }
+                penColorPopupMenu.show();
+            }
+        });
+    }
+
     private void onEraseClicked() {
         flushWithCallback(true, null);
     }
@@ -477,7 +523,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         final ShapeDataInfo shapeDataInfo = request.getShapeDataInfo();
         int currentPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
         int pageCount = shapeDataInfo.getPageCount();
-        pageIndicator.setText(currentPageIndex + " / " + pageCount);
+        pageIndicator.setText(currentPageIndex + File.separator + pageCount);
         currentNoteBackground = shapeDataInfo.getBackground();
         eraserRadius = shapeDataInfo.getEraserRadius();
     }
@@ -549,11 +595,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        return super.dispatchKeyEvent(event);
-    }
-
-    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_PAGE_DOWN:
@@ -564,5 +605,27 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void updateColorIndicator() {
+        int targetColorIconRes;
+        switch (currentPenColor) {
+            case Color.BLACK:
+                targetColorIconRes = R.drawable.ic_business_write_color_black_black_46dp;
+                break;
+            case Color.LTGRAY:
+                targetColorIconRes = R.drawable.ic_business_write_color_gray_1_gray_46dp;
+                break;
+            case Color.GRAY:
+                targetColorIconRes = R.drawable.ic_business_write_color_gray_2_gray_46dp;
+                break;
+            case Color.WHITE:
+                targetColorIconRes = R.drawable.ic_business_write_color_white_46dp;
+                break;
+            default:
+                targetColorIconRes = R.drawable.ic_business_write_color_black_black_46dp;
+                break;
+        }
+        penColorBtn.setImageResource(targetColorIconRes);
     }
 }

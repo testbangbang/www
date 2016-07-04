@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">笔记</string>
+    <string name="app_name">手写备忘</string>
     <string name="switch_bg">更换背景</string>
     <string name="add_new_page">新增页面</string>
     <string name="new_folder">新文件夹</string>
@@ -17,4 +17,6 @@
     <string name="note_bg_grid">田字格</string>
     <string name="note_bg_line">四线格</string>
     <string name="disselect">取消选择</string>
+    <string name="loading">正在加载.</string>
+    <string name="saving_note">正在保存.</string>
 </resources>
