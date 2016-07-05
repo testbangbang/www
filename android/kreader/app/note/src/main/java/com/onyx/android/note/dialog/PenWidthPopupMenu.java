@@ -20,7 +20,7 @@ import com.onyx.android.note.R;
 
 public class PenWidthPopupMenu extends PopupWindow {
     private ImageView addBtn, minusBtn;
-    private SeekBar penWidthControlSeekbar;
+    private SeekBar penWidthControlSeekBar;
     private int currentValue;
     private PopupMenuCallback callback;
     private View parentView;
@@ -31,7 +31,7 @@ public class PenWidthPopupMenu extends PopupWindow {
         void onValueChanged(int newValue);
     }
 
-    public PenWidthPopupMenu(Context context, LayoutInflater inflater, int curValue, int minValue,
+    public PenWidthPopupMenu(Context context, LayoutInflater inflater, int curValue, final int minValue,
                              int maxValue, View parentView, int locX, int locY, PopupMenuCallback menuCallback) {
         super(inflater.inflate(R.layout.pen_width_popup_layout, null),
                 ViewGroup.LayoutParams.WRAP_CONTENT, context.getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height));
@@ -49,11 +49,12 @@ public class PenWidthPopupMenu extends PopupWindow {
         minusBtn = (ImageView) getContentView().findViewById(R.id.minus_btn);
         minValueIndicator = (TextView) getContentView().findViewById(R.id.min_value);
         maxValueIndicator = (TextView) getContentView().findViewById(R.id.max_value);
-        penWidthControlSeekbar = (SeekBar) getContentView().findViewById(R.id.note_width_seek_bar);
-        minValueIndicator.setText(Integer.toString(this.minValue));
-        maxValueIndicator.setText(Integer.toString(this.maxValue));
-        penWidthControlSeekbar.setMax(maxValue - minValue);
-        penWidthControlSeekbar.setProgress(curValue - minValue);
+        penWidthControlSeekBar = (SeekBar) getContentView().findViewById(R.id.note_width_seek_bar);
+        //TODO:use hard code string for test show.15-40 is too large for writing.
+        minValueIndicator.setText("15");
+        maxValueIndicator.setText("40");
+        penWidthControlSeekBar.setMax(maxValue - minValue);
+        penWidthControlSeekBar.setProgress(curValue - minValue);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,13 +73,9 @@ public class PenWidthPopupMenu extends PopupWindow {
                 }
             }
         });
-        penWidthControlSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        penWidthControlSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                currentValue = currentValue + progress;
-                if (callback != null) {
-                    callback.onValueChanged(currentValue);
-                }
             }
 
             @Override
@@ -88,7 +85,10 @@ public class PenWidthPopupMenu extends PopupWindow {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                currentValue = minValue + seekBar.getProgress();
+                if (callback != null) {
+                    callback.onValueChanged(currentValue);
+                }
             }
         });
     }

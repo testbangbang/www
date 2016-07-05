@@ -5,11 +5,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import com.onyx.android.note.R;
-import com.onyx.android.note.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;

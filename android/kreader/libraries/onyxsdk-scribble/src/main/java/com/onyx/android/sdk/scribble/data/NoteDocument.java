@@ -1,13 +1,12 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
-import android.graphics.Matrix;
-import com.alibaba.fastjson.JSON;
+
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+
 import org.apache.commons.collections4.map.ListOrderedMap;
 
 import java.util.LinkedHashSet;
@@ -103,6 +102,14 @@ public class NoteDocument {
         noteDrawingArgs.background = background;
     }
 
+    public float getStrokeWidth() {
+        return noteDrawingArgs.strokeWidth;
+    }
+
+    public void setStrokeWidth(float newStrokeWidth) {
+        noteDrawingArgs.strokeWidth = newStrokeWidth;
+    }
+
     public float getEraserRadius() {
         return noteDrawingArgs.eraserRadius;
     }
@@ -133,6 +140,7 @@ public class NoteDocument {
 
     private void setupDrawingArgs(final NoteModel noteModel) {
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
+        noteDrawingArgs.background = NoteModel.getDefaultBackground();
         if (noteModel != null) {
             noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
             noteDrawingArgs.background = noteModel.getBackground();
