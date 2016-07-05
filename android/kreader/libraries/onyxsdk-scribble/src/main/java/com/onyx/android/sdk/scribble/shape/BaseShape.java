@@ -1,9 +1,6 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.*;
 import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -24,6 +21,8 @@ public class BaseShape implements Shape {
     private String uniqueId;
     private String documentUniqueId;
     private String pageUniqueId;
+    private int color = Color.BLACK;
+    private float strokeWidth;
 
     /**
      * rectangle, circle, etc.
@@ -71,18 +70,20 @@ public class BaseShape implements Shape {
     }
 
     public int getColor() {
-        return 0;
+        return color;
     }
 
     public void setColor(int color) {
-
+        this.color = color;
     }
 
     public float getStrokeWidth() {
-        return 3.0f;
+        return strokeWidth;
     }
 
-    public void setStrokeWidth(final float width) {}
+    public void setStrokeWidth(final float width) {
+        strokeWidth = width;
+    }
 
     public boolean supportDFB() {
         return false;
