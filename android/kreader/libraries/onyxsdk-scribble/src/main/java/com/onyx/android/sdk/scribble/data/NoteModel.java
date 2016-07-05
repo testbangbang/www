@@ -1,12 +1,15 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.Bitmap;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
-import com.raizlabs.android.dbflow.annotation.*;
+
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.Index;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by zhuzeng on 6/21/16.
@@ -199,6 +202,10 @@ public class NoteModel extends BaseModel {
 
     public static float getDefaultStrokeWidth() {
         return DEFAULT_STROKE_WIDTH;
+    }
+
+    public static int getDefaultBackground() {
+        return NoteBackgroundType.EMPTY;
     }
 
     public static NoteModel createNote(final String documentUniqueId, final String parentUniqueId, final String title) {

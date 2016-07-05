@@ -1,7 +1,12 @@
 package com.onyx.android.note.activity;
 
 import android.content.Intent;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,11 +21,21 @@ import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
-import com.onyx.android.note.actions.*;
-import com.onyx.android.note.data.NoteBackgroundType;
+import com.onyx.android.note.actions.DocumentAddNewPageAction;
+import com.onyx.android.note.actions.DocumentCloseAction;
+import com.onyx.android.note.actions.DocumentCreateAction;
+import com.onyx.android.note.actions.DocumentDiscardAction;
+import com.onyx.android.note.actions.DocumentEditAction;
+import com.onyx.android.note.actions.DocumentFlushAction;
+import com.onyx.android.note.actions.GotoNextPageAction;
+import com.onyx.android.note.actions.GotoPrevPageAction;
+import com.onyx.android.note.actions.NoteBackgroundChangeAction;
+import com.onyx.android.note.actions.NoteStrokeWidthChangeAction;
+import com.onyx.android.note.actions.RemoveByPointListAction;
+import com.onyx.android.note.actions.RenderInBackgroundAction;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
-import com.onyx.android.note.dialog.DialogLoading;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.dialog.PenColorPopupMenu;
 import com.onyx.android.note.dialog.PenWidthPopupMenu;
@@ -62,10 +77,10 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private
     int currentNoteBackground = NoteBackgroundType.EMPTY;
     private float eraserRadius;
-    //TODO:just as psd value.
-    private int minPenWidth = 15;
-    private int maxPenWidth = 40;
-    private int currentPenWidth = 32;
+    //TODO:just as psd value(minValue 15/5 ->3,add 25 level).
+    private int minPenWidth = 3;
+    private int maxPenWidth = 28;
+    private int currentPenWidth = 20;
     private int currentPenColor = Color.BLACK;
     private TextView titleTextView;
     private ContentView penStyleContentView;
@@ -189,6 +204,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                                 @Override
                                 public void onBackGroundChanged(@NoteBackgroundType.NoteBackgroundDef int newBackground) {
                                     currentNoteBackground = newBackground;
+                                    NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(currentNoteBackground);
+                                    changeBGAction.execute(ScribbleActivity.this, null);
                                     bgTypePopupMenu.dismiss();
                                 }
                             });
@@ -411,7 +428,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
                         @Override
                         public void onValueChanged(int newValue) {
-
+                            NoteStrokeWidthChangeAction action = new NoteStrokeWidthChangeAction(newValue);
+                            action.execute(ScribbleActivity.this, null);
+                            penWidthPopupMenu.dismiss();
                         }
                     });
                     penWidthPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -443,6 +462,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                                 public void onPenColorChanged(int newPenColor) {
                                     currentPenColor = newPenColor;
                                     updateColorIndicator();
+                                    onColorChange(newPenColor);
                                     penColorPopupMenu.dismiss();
                                 }
                             });
@@ -456,6 +476,10 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 penColorPopupMenu.show();
             }
         });
+    }
+
+    private void onColorChange(int currentPenColor){
+
     }
 
     private void onEraseClicked() {
@@ -525,6 +549,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         int pageCount = shapeDataInfo.getPageCount();
         pageIndicator.setText(currentPageIndex + File.separator + pageCount);
         currentNoteBackground = shapeDataInfo.getBackground();
+        currentPenWidth = (int) shapeDataInfo.getStrokeWidth();
         eraserRadius = shapeDataInfo.getEraserRadius();
     }
 

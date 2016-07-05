@@ -4,7 +4,6 @@ import com.onyx.android.note.activity.ScribbleActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.request.navigation.PageChangeBackgroundRequest;
 import com.onyx.android.sdk.scribble.request.shape.ShapeRemoveByPointListRequest;
 
 /**
