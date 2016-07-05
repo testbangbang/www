@@ -17,7 +17,7 @@ public class PenWidthChangeRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
-        parent.getNoteDocument().setStrokeWidth(penWidth);
+        parent.setStrokeWidth(penWidth);
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
     }

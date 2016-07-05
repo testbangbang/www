@@ -5,9 +5,11 @@ package com.onyx.android.sdk.scribble.data;
  */
 public class NoteDrawingArgs {
 
-    public float strokeWidth;
-    public int color;
-    public int style;
-    public float eraserRadius = 15.0f;
-    public int background;
+    public volatile float strokeWidth;
+    public volatile int color;
+    public volatile int style;
+    public volatile int currentShapeType;
+    public volatile float eraserRadius = 15.0f;
+    public volatile int background;
+
 }

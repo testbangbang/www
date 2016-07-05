@@ -197,6 +197,15 @@ public class NoteViewHelper {
         getRawInputProcessor().quit();
     }
 
+    public void setBackground(int bgType) {
+        getNoteDocument().setBackground(bgType);
+    }
+
+    public void setStrokeWidth(float width) {
+        getNoteDocument().setStrokeWidth(width);
+        EpdController.setStrokeWidth(width);
+    }
+
     private void removeLayoutListener() {
         if (surfaceView == null || globalLayoutListener == null) {
             return;
@@ -309,6 +318,7 @@ public class NoteViewHelper {
 
     private void onNewTouchPointListReceived(final TouchPointList pointList) {
         Shape shape = new NormalScribbleShape();
+        shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.addPoints(pointList);
         dirtyStash.add(shape);
         if (callback != null) {
