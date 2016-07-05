@@ -17,7 +17,7 @@ public class NoteBackgroundChangeRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
-        parent.getNoteDocument().setBackground(bgType);
+        parent.setBackground(bgType);
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
     }
