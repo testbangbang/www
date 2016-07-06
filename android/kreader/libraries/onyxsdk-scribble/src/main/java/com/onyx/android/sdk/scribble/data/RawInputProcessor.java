@@ -106,15 +106,20 @@ public class RawInputProcessor {
 
     public void start() {
         stop = false;
-        reportData = true;
+        reportData = false;
         clearInternalState();
         submitJob(parentView);
         EpdController.setScreenHandWritingPenState(parentView, 1);
     }
 
-    public void stop() {
+    public void resume() {
+        reportData = true;
+        EpdController.setScreenHandWritingPenState(parentView, 2);
+    }
+
+    public void pause() {
         reportData = false;
-        EpdController.setScreenHandWritingPenState(parentView, 0);
+        EpdController.setScreenHandWritingPenState(parentView, 3);
     }
 
     public void quit() {

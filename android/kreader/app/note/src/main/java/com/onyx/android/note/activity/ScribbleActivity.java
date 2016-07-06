@@ -32,7 +32,6 @@ import com.onyx.android.note.actions.GotoPrevPageAction;
 import com.onyx.android.note.actions.NoteBackgroundChangeAction;
 import com.onyx.android.note.actions.NoteStrokeWidthChangeAction;
 import com.onyx.android.note.actions.RemoveByPointListAction;
-import com.onyx.android.note.actions.RenderInBackgroundAction;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
@@ -245,7 +244,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                drawPage();
+                clearSurfaceView();
                 getNoteViewHelper().setView(ScribbleActivity.this, surfaceView, inputCallback());
                 handleActivityIntent(getIntent());
             }
@@ -315,7 +314,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void onBeginErasing() {
         erasePoint = new PointF();
-        getNoteViewHelper().stopDrawing();
+        getNoteViewHelper().pauseDrawing();
     }
 
     private void onErasing(final MotionEvent touchPoint) {
@@ -341,6 +340,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onDestroy() {
         cleanUpAllPopMenu();
+        clearSurfaceView();
         super.onDestroy();
     }
 
@@ -359,7 +359,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     public void onBackPressed() {
-        getNoteViewHelper().stopDrawing();
+        getNoteViewHelper().pauseDrawing();
         if (Utils.ACTION_CREATE.equals(activityAction)) {
             saveNewNoteDocument();
         } else {
@@ -547,6 +547,18 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         currentNoteBackground = shapeDataInfo.getBackground();
         currentPenWidth = (int) shapeDataInfo.getStrokeWidth();
         eraserRadius = shapeDataInfo.getEraserRadius();
+    }
+
+    private void clearSurfaceView() {
+        Rect rect = getViewportSize();
+        Canvas canvas = beforeDraw(rect);
+        if (canvas == null) {
+            return;
+        }
+
+        Paint paint = new Paint();
+        cleanup(canvas, paint, rect);
+        afterDraw(canvas);
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {

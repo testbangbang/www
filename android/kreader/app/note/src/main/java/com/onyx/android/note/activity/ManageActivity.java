@@ -73,7 +73,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
     private void initNoteViewHelper() {
-        getNoteViewHelper().stopDrawing();
+        getNoteViewHelper().pauseDrawing();
     }
 
     public NoteViewHelper getNoteViewHelper() {

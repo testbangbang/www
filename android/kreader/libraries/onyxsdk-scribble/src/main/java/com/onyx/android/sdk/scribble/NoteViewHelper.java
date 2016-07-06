@@ -57,11 +57,11 @@ public class NoteViewHelper {
         updateScreenMatrix();
         updateViewMatrix();
         updateLimitRect();
-        stopDrawing();
+        pauseDrawing();
     }
 
     public void quit() {
-        stopDrawing();
+        pauseDrawing();
         quitDrawing();
         removeLayoutListener();
     }
@@ -185,12 +185,16 @@ public class NoteViewHelper {
                 Math.max(limitRect.top, limitRect.bottom));
     }
 
-    public void startDrawing() {
+    private void startDrawing() {
         getRawInputProcessor().start();
     }
 
-    public void stopDrawing() {
-        getRawInputProcessor().stop();
+    public void resumeDrawing() {
+        getRawInputProcessor().resume();
+    }
+
+    public void pauseDrawing() {
+        getRawInputProcessor().pause();
     }
 
     public void quitDrawing() {
@@ -314,6 +318,7 @@ public class NoteViewHelper {
                 NoteViewHelper.this.onFinishErasing(pointList);
             }
         });
+        startDrawing();
     }
 
     private void onNewTouchPointListReceived(final TouchPointList pointList) {
