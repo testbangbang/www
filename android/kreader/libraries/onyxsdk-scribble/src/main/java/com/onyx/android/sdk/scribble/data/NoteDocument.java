@@ -280,7 +280,7 @@ public class NoteDocument {
             notePage = NotePage.createPage(context, getDocumentUniqueId(), pageUniqueName, null);
             pageDataMap.put(pageUniqueName, notePage);
         }
-        if (notePage != null && notePage.hasShapes()) {
+        if (notePage != null && notePage.isLoaded()) {
             return notePage;
         }
         notePage.loadPage(context);

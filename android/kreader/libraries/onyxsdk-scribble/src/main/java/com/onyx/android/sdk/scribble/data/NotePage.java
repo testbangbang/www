@@ -32,6 +32,7 @@ public class NotePage {
 
     private int currentShapeType;
     private Shape currentShape;
+    private boolean loaded = false;
     private boolean addToActionHistory = true;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
@@ -215,6 +216,7 @@ public class NotePage {
         }
         end = System.currentTimeMillis();
         Log.e("##############", "setup shape from model takes:  " + (end - start) + "ms");
+        setLoaded(true);
     }
 
     public static final NotePage createPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
@@ -241,6 +243,14 @@ public class NotePage {
         }
 
         return true;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean l) {
+        loaded = l;
     }
 
     public boolean hasShapes() {
