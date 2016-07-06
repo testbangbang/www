@@ -2,6 +2,7 @@ package com.onyx.kreader.plugins.pdfium;
 
 import android.graphics.Bitmap;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.api.ReaderTextSplitter;
@@ -58,6 +59,8 @@ public class PdfiumJniWrapper {
     private native int nativeSearchInPage(int id, int page, int x, int y, int width, int height, int rotation, final byte [] buffer, boolean caseSensitive, boolean matchWholeWord, final List<ReaderSelection> list);
 
     private native byte [] nativeGetPageText(int id, int page);
+
+    private native boolean nativeGetTableOfContent(int id, ReaderDocumentTableOfContentEntry root);
 
     private int id;
     private String filePath = null;
@@ -129,6 +132,10 @@ public class PdfiumJniWrapper {
             return null;
         }
         return StringUtils.utf16le(data);
+    }
+
+    public boolean getTableOfContent(ReaderDocumentTableOfContentEntry root) {
+        return nativeGetTableOfContent(id, root);
     }
 
 }

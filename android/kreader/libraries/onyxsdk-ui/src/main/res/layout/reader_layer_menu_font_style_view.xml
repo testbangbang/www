@@ -19,7 +19,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/imagebtn_bg"
                 android:focusable="true"
-                android:src="@drawable/ic_dialog_reader_menu_font_small_black_36dp"/>
+                android:src="@drawable/ic_dialog_reader_menu_font_small_black"/>
 
         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:layout_gravity="center_vertical">
@@ -81,7 +81,7 @@
                 android:layout_marginLeft="@dimen/reader_layer_menu_font_style_font_size_button_margin"
                 android:background="@drawable/imagebtn_bg"
                 android:focusable="true"
-                android:src="@drawable/ic_dialog_reader_menu_font_big_black_36dp"/>
+                android:src="@drawable/ic_dialog_reader_menu_font_big_black"/>
 
     </LinearLayout>
 
@@ -152,11 +152,11 @@
                 <ImageView android:id="@+id/image_view_indent"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_marginTop="5dp" android:layout_marginRight="50dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_indent_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_indent_black"/>
                 <ImageView android:id="@+id/image_view_no_indent"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_marginTop="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_indent_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_indent_black"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -196,23 +196,23 @@
                 <ImageView android:id="@+id/image_view_small_line_spacing"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_small_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_small_black"/>
                 <ImageView android:id="@+id/image_view_middle_line_spacing"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_mid_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_mid_black"/>
                 <ImageView android:id="@+id/image_view_large_line_spacing"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_big_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_big_black"/>
                 <ImageView android:id="@+id/image_view_decrease_line_spacing"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_shrink_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_shrink_black"/>
                 <ImageView android:id="@+id/image_view_increase_line_spacing"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_expand_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_line_space_expand_black"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -243,23 +243,23 @@
                 <ImageView android:id="@+id/image_view_small_page_margins"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_margin_small_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_small_black"/>
                 <ImageView android:id="@+id/image_view_middle_page_margins"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_margin_mid_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_mid_black"/>
                 <ImageView android:id="@+id/image_view_large_page_margins"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_margin_big_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_big_black"/>
                 <ImageView android:id="@+id/image_view_decrease_page_margins"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_margin_shrink_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_shrink_black"/>
                 <ImageView android:id="@+id/image_view_increase_page_margins"
                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                            android:layout_margin="5dp"
-                           android:src="@drawable/ic_dialog_reader_menu_font_margin_expand_black_36dp"/>
+                           android:src="@drawable/ic_dialog_reader_menu_font_margin_expand_black"/>
             </LinearLayout>
 
         </LinearLayout>
