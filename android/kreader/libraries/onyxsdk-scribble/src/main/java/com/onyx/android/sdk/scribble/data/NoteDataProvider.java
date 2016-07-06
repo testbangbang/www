@@ -9,6 +9,7 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 
@@ -71,9 +72,8 @@ public class NoteDataProvider {
     }
 
     public static boolean remove(final Context context, final String uniqueId) {
-        Select select = new Select();
-        Where where = select.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId));
-        where.querySingle().delete();
+        Delete delete = new Delete();
+        delete.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId)).query();
         return true;
     }
 
