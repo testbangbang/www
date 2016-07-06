@@ -308,9 +308,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onNewTouchPointListReceived(TouchPointList pointList) {
-        final List<Shape> stash = getNoteViewHelper().deatchStash();
-        final RenderInBackgroundAction<ScribbleActivity> action = new RenderInBackgroundAction<>(stash);
-        action.execute(this, null);
+//        final List<Shape> stash = getNoteViewHelper().deatchStash();
+//        final RenderInBackgroundAction<ScribbleActivity> action = new RenderInBackgroundAction<>(stash);
+//        action.execute(this, null);
     }
 
     private void onBeginErasing() {
@@ -417,6 +417,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onRulerClicked() {
+
         flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -435,6 +436,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                     penWidthPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
+                            NoteStrokeWidthChangeAction action = new NoteStrokeWidthChangeAction(currentPenWidth);
+                            action.execute(ScribbleActivity.this, null);
                         }
                     });
                 }

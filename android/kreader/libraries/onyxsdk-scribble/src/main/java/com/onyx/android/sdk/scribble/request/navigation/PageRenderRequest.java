@@ -5,6 +5,7 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,10 +14,10 @@ import java.util.List;
 public class PageRenderRequest extends BaseNoteRequest {
 
     private static final String TAG = PageRenderRequest.class.getSimpleName();
-    private volatile List<Shape> shapeList;
+    private volatile List<Shape> shapeList = new ArrayList<>();
 
     public PageRenderRequest(final List<Shape> list) {
-        shapeList = list;
+        shapeList.addAll(list);
         setRender(true);
         setPauseInputProcessor(false);
         setResumeInputProcessor(false);

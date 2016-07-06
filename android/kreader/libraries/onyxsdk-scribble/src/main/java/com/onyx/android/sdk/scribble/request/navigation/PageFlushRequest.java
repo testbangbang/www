@@ -6,6 +6,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,12 +14,12 @@ import java.util.List;
  */
 public class PageFlushRequest extends BaseNoteRequest {
 
-    private volatile List<Shape> shapeList;
+    private volatile List<Shape> shapeList = new ArrayList<>();
     private volatile boolean save = false;
 
 
     public PageFlushRequest(final List<Shape> list, boolean r, boolean resume) {
-        shapeList = list;
+        shapeList.addAll(list);
         setRender(r);
         setPauseInputProcessor(true);
         setResumeInputProcessor(resume);
@@ -26,9 +27,7 @@ public class PageFlushRequest extends BaseNoteRequest {
 
     public void execute(final NoteViewHelper helper) throws Exception {
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
-        if (!CollectionUtils.isEmpty(shapeList)) {
-            renderCurrentPage(helper);
-        }
+        renderCurrentPage(helper);
         saveDocument(helper);
         updateShapeDataInfo(helper);
     }

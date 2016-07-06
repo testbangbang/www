@@ -46,16 +46,4 @@ public class EPDShape extends BaseShape {
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
     }
 
-    /**
-     * check with normalized point.
-     * @param x
-     * @param y
-     * @return
-     */
-    public boolean hitTest(final float x, final float y) {
-        if (!getBoundingRect().contains(x, y)) {
-            return false;
-        }
-        return true;
-    }
 }

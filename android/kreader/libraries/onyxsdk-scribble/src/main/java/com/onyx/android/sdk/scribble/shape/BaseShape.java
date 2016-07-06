@@ -219,5 +219,8 @@ public class BaseShape implements Shape {
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setDither(true);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeMiter(4.0f);
     }
 }

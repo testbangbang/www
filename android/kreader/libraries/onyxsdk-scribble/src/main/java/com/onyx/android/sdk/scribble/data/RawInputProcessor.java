@@ -276,9 +276,6 @@ public class RawInputProcessor {
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        if (!isReportData()) {
-            return;
-        }
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapInputToScreenPoint(touchPoint);
         mapScreenPointToPage(touchPoint);
@@ -289,10 +286,6 @@ public class RawInputProcessor {
     }
 
     private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        if (!isReportData()) {
-            return;
-        }
-
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapInputToScreenPoint(touchPoint);
         mapScreenPointToPage(touchPoint);
@@ -301,10 +294,6 @@ public class RawInputProcessor {
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        if (!isReportData()) {
-            return;
-        }
-
         if (touchPointList != null && touchPointList.size() > 0) {
             invokeTouchPointListFinished(touchPointList, erasing);
         }
@@ -317,7 +306,7 @@ public class RawInputProcessor {
     }
 
     private void invokeTouchPointListBegin(final boolean erasing) {
-        if (inputCallback == null) {
+        if (inputCallback == null || !isReportData()) {
             return;
         }
         handler.post(new Runnable() {
@@ -333,7 +322,7 @@ public class RawInputProcessor {
     }
 
     private void invokeTouchPointListFinished(final TouchPointList touchPointList, final boolean erasing) {
-        if (inputCallback == null || touchPointList == null) {
+        if (inputCallback == null || touchPointList == null || !isReportData()) {
             return;
         }
         handler.post(new Runnable() {
