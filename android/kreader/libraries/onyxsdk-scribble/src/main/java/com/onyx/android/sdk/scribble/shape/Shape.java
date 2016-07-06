@@ -80,4 +80,6 @@ public interface Shape {
 
     boolean fastHitTest(final float x, final float y, final float radius);
 
+    void clear();
+
 }

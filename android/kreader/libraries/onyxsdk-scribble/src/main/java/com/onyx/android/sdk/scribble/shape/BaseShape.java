@@ -23,6 +23,7 @@ public class BaseShape implements Shape {
     private String pageUniqueId;
     private int color = Color.BLACK;
     private float strokeWidth;
+    private Path displayPath;
 
     /**
      * rectangle, circle, etc.
@@ -222,5 +223,17 @@ public class BaseShape implements Shape {
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeMiter(4.0f);
+    }
+
+    public Path getDisplayPath() {
+        return displayPath;
+    }
+
+    public void setDisplayPath(final Path p) {
+        displayPath = p;
+    }
+
+    public void clear() {
+        displayPath = null;
     }
 }
