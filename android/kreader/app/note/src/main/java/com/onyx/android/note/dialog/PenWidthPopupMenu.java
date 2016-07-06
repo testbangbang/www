@@ -21,6 +21,11 @@ import com.onyx.android.note.R;
 public class PenWidthPopupMenu extends PopupWindow {
     private ImageView addBtn, minusBtn;
     private SeekBar penWidthControlSeekBar;
+
+    public int getCurrentValue() {
+        return currentValue;
+    }
+
     private int currentValue;
     private PopupMenuCallback callback;
     private View parentView;
