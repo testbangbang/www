@@ -36,7 +36,7 @@ public class PenWidthPopupMenu extends PopupWindow {
         void onValueChanged(int newValue);
     }
 
-    public PenWidthPopupMenu(Context context, LayoutInflater inflater, int curValue, final int minValue,
+    public PenWidthPopupMenu(Context context, LayoutInflater inflater, final int curValue, final int minValue,
                              int maxValue, View parentView, int locX, int locY, PopupMenuCallback menuCallback) {
         super(inflater.inflate(R.layout.pen_width_popup_layout, null),
                 ViewGroup.LayoutParams.WRAP_CONTENT, context.getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height));
@@ -64,6 +64,7 @@ public class PenWidthPopupMenu extends PopupWindow {
             @Override
             public void onClick(View v) {
                 stepChangeValue(1);
+                penWidthControlSeekBar.setProgress(currentValue);
                 if (callback != null) {
                     callback.onValueChanged(currentValue);
                 }
@@ -73,6 +74,7 @@ public class PenWidthPopupMenu extends PopupWindow {
             @Override
             public void onClick(View v) {
                 stepChangeValue(-1);
+                penWidthControlSeekBar.setProgress(currentValue);
                 if (callback != null) {
                     callback.onValueChanged(currentValue);
                 }
@@ -81,6 +83,7 @@ public class PenWidthPopupMenu extends PopupWindow {
         penWidthControlSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            
             }
 
             @Override
