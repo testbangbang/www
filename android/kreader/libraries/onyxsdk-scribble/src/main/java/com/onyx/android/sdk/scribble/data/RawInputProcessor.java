@@ -68,6 +68,7 @@ public class RawInputProcessor {
     private volatile boolean pressed = false;
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
+    private volatile boolean reportData = false;
     private String systemPath = "/dev/input/event1";
     private volatile Matrix screenMatrix;
     private volatile Matrix viewMatrix;
@@ -105,16 +106,19 @@ public class RawInputProcessor {
 
     public void start() {
         stop = false;
+        reportData = true;
         clearInternalState();
-        EpdController.setScreenHandWritingPenState(parentView, 1);
         submitJob(parentView);
+        EpdController.setScreenHandWritingPenState(parentView, 1);
     }
 
     public void stop() {
+        reportData = false;
         EpdController.setScreenHandWritingPenState(parentView, 0);
     }
 
     public void quit() {
+        reportData = false;
         stop = true;
         clearInternalState();
         shutdown();
@@ -267,7 +271,14 @@ public class RawInputProcessor {
         return true;
     }
 
+    private boolean isReportData() {
+        return reportData;
+    }
+
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+        if (!isReportData()) {
+            return;
+        }
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapInputToScreenPoint(touchPoint);
         mapScreenPointToPage(touchPoint);
@@ -278,6 +289,10 @@ public class RawInputProcessor {
     }
 
     private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+        if (!isReportData()) {
+            return;
+        }
+
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapInputToScreenPoint(touchPoint);
         mapScreenPointToPage(touchPoint);
@@ -286,6 +301,10 @@ public class RawInputProcessor {
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+        if (!isReportData()) {
+            return;
+        }
+
         if (touchPointList != null && touchPointList.size() > 0) {
             invokeTouchPointListFinished(touchPointList, erasing);
         }
