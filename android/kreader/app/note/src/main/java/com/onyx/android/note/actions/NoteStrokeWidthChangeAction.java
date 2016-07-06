@@ -23,6 +23,7 @@ public class NoteStrokeWidthChangeAction<T extends ScribbleActivity> extends Bas
         activity.getNoteViewHelper().submit(activity, penWidthChangeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                activity.onRequestFinished(penWidthChangeRequest, true);
                 callback.invoke(callback, request, e);
             }
         });

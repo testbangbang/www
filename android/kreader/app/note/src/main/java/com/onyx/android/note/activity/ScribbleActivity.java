@@ -190,7 +190,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void showBGSetupWindow() {
-        flushWithCallback(true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (bgTypePopupMenu == null) {
@@ -204,15 +204,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                                 @Override
                                 public void onBackGroundChanged(@NoteBackgroundType.NoteBackgroundDef int newBackground) {
                                     currentNoteBackground = newBackground;
+                                    bgTypePopupMenu.dismiss();
                                     NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(currentNoteBackground);
                                     changeBGAction.execute(ScribbleActivity.this, null);
-                                    bgTypePopupMenu.dismiss();
                                 }
                             });
                     bgTypePopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
-                            resumeDrawing();
                         }
                     });
                 }
@@ -395,7 +394,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 discardAction.execute(ScribbleActivity.this, null);
             }
         });
-        flushWithCallback(true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dialogNoteNameInput.show(getFragmentManager());
@@ -404,7 +403,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void saveExistingNoteDocument() {
-        flushWithCallback(true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(noteTitle);
@@ -414,11 +413,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onPencilClicked() {
-        flushWithCallback(true, null);
+        flushWithCallback(true, true, null);
     }
 
     private void onRulerClicked() {
-        flushWithCallback(true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (penWidthPopupMenu == null) {
@@ -428,15 +427,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
                         @Override
                         public void onValueChanged(int newValue) {
+                            penWidthPopupMenu.dismiss();
                             NoteStrokeWidthChangeAction action = new NoteStrokeWidthChangeAction(newValue);
                             action.execute(ScribbleActivity.this, null);
-                            penWidthPopupMenu.dismiss();
                         }
                     });
                     penWidthPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
-                            resumeDrawing();
                         }
                     });
                 }
@@ -446,7 +444,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onColorClicked() {
-        flushWithCallback(true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (penColorPopupMenu == null) {
@@ -461,15 +459,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                                 @Override
                                 public void onPenColorChanged(int newPenColor) {
                                     currentPenColor = newPenColor;
+                                    penColorPopupMenu.dismiss();
                                     updateColorIndicator();
                                     onColorChange(newPenColor);
-                                    penColorPopupMenu.dismiss();
                                 }
                             });
                     penColorPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
-                            resumeDrawing();
                         }
                     });
                 }
@@ -483,7 +480,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onEraseClicked() {
-        flushWithCallback(true, null);
+        flushWithCallback(true, false, null);
     }
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
@@ -496,18 +493,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this, null);
     }
 
-    private void flushWithCallback(boolean render, final BaseCallback callback) {
+    private void flushWithCallback(boolean render, boolean resume, final BaseCallback callback) {
         final List<Shape> stash = getNoteViewHelper().deatchStash();
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, render, false);
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, render, resume);
         action.execute(this, callback);
     }
 
-    private void resumeDrawing() {
-        getNoteViewHelper().startDrawing();
-    }
-
     private void onAddNewPage() {
-        flushWithCallback(false, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
@@ -517,7 +510,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onNextPage() {
-        flushWithCallback(false, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
@@ -527,7 +520,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onPrevPage() {
-        flushWithCallback(false, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();

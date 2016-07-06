@@ -213,4 +213,11 @@ public class BaseShape implements Shape {
     public final TouchPointList getNormalizedPoints() {
         return normalizedPoints;
     }
+
+    public void applyStrokeStyle(final Paint paint) {
+        paint.setStrokeWidth(getStrokeWidth());
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setDither(true);
+    }
 }
