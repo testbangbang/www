@@ -4,6 +4,8 @@
 #include "onyx_context.h"
 #include "JNIUtils.h"
 
+#include "fpdf_doc.h"
+
 #include <memory>
 
 static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
@@ -420,4 +422,53 @@ JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapp
     env->SetByteArrayRegion(array, 0, size, data);
     delete [] data;
     return array;
+}
+
+static bool buildTableOfContentTree(JNIEnv *env, jclass entryClazz, jmethodID addEntryMethodID, jobject parent, FPDF_DOCUMENT doc, FPDF_BOOKMARK entry) {
+    FPDF_DEST dest = FPDFBookmark_GetDest(doc, entry);
+    int pageIndex = dest ? FPDFDest_GetPageIndex(doc, dest) : -1;
+
+    long len = FPDFBookmark_GetTitle(entry, NULL, 0) / 2;
+    std::vector<unsigned short> buf(len);
+    FPDFBookmark_GetTitle(entry, (void *)buf.data(), len * 2);
+    jstring title = env->NewString((jchar *)buf.data(), len - 1);
+    jobject tocEntry = env->CallStaticObjectMethod(entryClazz, addEntryMethodID, parent, title, pageIndex);
+    env->DeleteLocalRef(title);
+
+    FPDF_BOOKMARK child = FPDFBookmark_GetFirstChild(doc, entry);
+    while (child != NULL) {
+        if (!buildTableOfContentTree(env, entryClazz, addEntryMethodID, tocEntry, doc, child)) {
+            env->DeleteLocalRef(tocEntry);
+            return false;
+        }
+        child = FPDFBookmark_GetNextSibling(doc, child);
+    }
+
+    env->DeleteLocalRef(tocEntry);
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetTableOfContent
+  (JNIEnv *env, jobject thiz, jint id, jobject rootEntry) {
+    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
+    if (doc == NULL) {
+        return false;
+    }
+
+    FPDF_BOOKMARK bookmark = FPDFBookmark_GetFirstChild(doc, NULL);
+    if (bookmark == NULL) {
+        return false;
+    }
+
+    JNILocalRef<jclass> clz = JNILocalRef<jclass>(env, env->GetObjectClass(rootEntry));
+    jmethodID addEntryMethodID = env->GetStaticMethodID(clz.getValue(), "addEntry", "(Lcom/onyx/kreader/api/ReaderDocumentTableOfContentEntry;Ljava/lang/String;I)Lcom/onyx/kreader/api/ReaderDocumentTableOfContentEntry;");
+
+    do {
+        if (!buildTableOfContentTree(env, clz.getValue(), addEntryMethodID, rootEntry, doc, bookmark)) {
+            return false;
+        }
+        bookmark = FPDFBookmark_GetNextSibling(doc, bookmark);
+    } while (bookmark != NULL);
+
+    return true;
 }

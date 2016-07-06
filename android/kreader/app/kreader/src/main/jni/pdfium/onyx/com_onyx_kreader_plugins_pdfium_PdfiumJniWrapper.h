@@ -74,7 +74,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeHitTest
- * Signature: (IIIIIIIIIIILcom/onyx/kreader/utils/ReaderTextSplitter;Lcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
+ * Signature: (IIIIIIIIIIILcom/onyx/kreader/api/ReaderTextSplitter;Lcom/onyx/kreader/plugins/pdfium/PdfiumSelection;)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
   (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject, jobject);
@@ -102,6 +102,14 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
  */
 JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetPageText
   (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    nativeGetTableOfContent
+ * Signature: (ILcom/onyx/kreader/api/ReaderDocumentTableOfContentEntry;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetTableOfContent
+  (JNIEnv *, jobject, jint, jobject);
 
 #ifdef __cplusplus
 }
