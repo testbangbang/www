@@ -112,7 +112,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
-        return false;
+        return getPluginImpl().getTableOfContent(toc.getRootEntry());
     }
 
     public ReaderView getView(final ReaderViewOptions viewOptions) {

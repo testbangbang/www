@@ -24,5 +24,9 @@ public class PagePositionUtils {
         return String.valueOf(position);
     }
 
+    public static boolean isValidPosition(final String position) {
+        int page = getPageNumber(position);
+        return page >= 0;
+    }
 
 }
