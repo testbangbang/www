@@ -77,9 +77,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     int currentNoteBackground = NoteBackgroundType.EMPTY;
     private float eraserRadius;
     //TODO:just as psd value(minValue 15/5 ->3,add 25 level).
-    private int minPenWidth = 3;
-    private int maxPenWidth = 28;
-    private int currentPenWidth = 20;
+    private int minPenWidth = 1;
+    private int maxPenWidth = 20;
+    private int currentPenWidth = 1;
     private int currentPenColor = Color.BLACK;
     private TextView titleTextView;
     private ContentView penStyleContentView;
@@ -334,11 +334,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        getNoteViewHelper().quit();
     }
 
     @Override
     protected void onDestroy() {
+        getNoteViewHelper().quit();
         cleanUpAllPopMenu();
         clearSurfaceView();
         super.onDestroy();
@@ -417,7 +417,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onRulerClicked() {
-
         flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
