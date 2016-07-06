@@ -3,6 +3,7 @@ package com.onyx.kreader.common;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 
 import java.util.*;
 
@@ -20,6 +21,7 @@ public class ReaderViewInfo {
     public int scale;
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();
+    public ReaderDocumentTableOfContent toc;
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;
@@ -56,5 +58,13 @@ public class ReaderViewInfo {
 
     public boolean isSpecialScale() {
         return PageConstants.isSpecialScale(scale);
+    }
+
+    public void setTableOfContent(ReaderDocumentTableOfContent toc) {
+        this.toc = toc;
+    }
+
+    public ReaderDocumentTableOfContent getTableOfContent() {
+        return toc;
     }
 }

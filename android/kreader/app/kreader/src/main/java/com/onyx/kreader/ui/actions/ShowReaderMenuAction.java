@@ -160,15 +160,16 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/Font/FontReflow":
                         imageReflow(readerActivity);
                         break;
-                    case "/Font/TOC":
+                    case "/Directory/TOC":
+                        showToc(readerActivity);
                         break;
-                    case "/Font/Bookmark":
+                    case "/Directory/Bookmark":
                         break;
-                    case "/Font/Note":
+                    case "/Directory/Note":
                         break;
-                    case "/Font/ShapeModel":
+                    case "/Directory/ShapeModel":
                         break;
-                    case "/Font/Export":
+                    case "/Directory/Export":
                         break;
                     case "/More/shape":
                         startShapeDrawing(readerActivity);
@@ -269,6 +270,11 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void imageReflow(final ReaderActivity readerActivity) {
         final ImageReflowAction action = new ImageReflowAction();
+        action.execute(readerActivity);
+    }
+
+    private void showToc(final ReaderActivity readerActivity) {
+        final GetTableOfContentAction action = new GetTableOfContentAction();
         action.execute(readerActivity);
     }
 
