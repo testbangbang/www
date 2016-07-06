@@ -43,7 +43,7 @@ public class NoteDataProvider {
         } else {
             condition = NoteModel_Table.parentUniqueId.eq(parentUniqueId);
         }
-        Where where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.updatedAt, false);
+        Where where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.createdAt, false);
         List<NoteModel> list = where.queryList();
         return list;
     }
