@@ -311,7 +311,7 @@ public class RawInputProcessor {
     }
 
     private void invokeTouchPointListBegin(final boolean erasing) {
-        if (inputCallback == null || !isReportData()) {
+        if (inputCallback == null || (!isReportData() && !erasing)) {
             return;
         }
         handler.post(new Runnable() {
@@ -327,7 +327,7 @@ public class RawInputProcessor {
     }
 
     private void invokeTouchPointListFinished(final TouchPointList touchPointList, final boolean erasing) {
-        if (inputCallback == null || touchPointList == null || !isReportData()) {
+        if (inputCallback == null || touchPointList == null || (!isReportData() && !erasing)) {
             return;
         }
         handler.post(new Runnable() {
