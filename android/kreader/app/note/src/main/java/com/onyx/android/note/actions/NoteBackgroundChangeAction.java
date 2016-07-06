@@ -22,6 +22,7 @@ public class NoteBackgroundChangeAction<T extends ScribbleActivity> extends Base
         activity.getNoteViewHelper().submit(activity, bgChangeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                activity.onRequestFinished(bgChangeRequest, true);
                 callback.invoke(callback, request, e);
             }
         });
