@@ -334,11 +334,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        getNoteViewHelper().quit();
     }
 
     @Override
     protected void onDestroy() {
-        getNoteViewHelper().quit();
         cleanUpAllPopMenu();
         clearSurfaceView();
         super.onDestroy();
