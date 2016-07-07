@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.DataInputStream;
@@ -49,7 +50,7 @@ public class RawInputProcessor {
         public abstract void onBeginHandWriting();
 
         // when pen released.
-        public abstract void onNewTouchPointListReceived(final TouchPointList pointList);
+        public abstract void onNewTouchPointListReceived(final Shape shape, final TouchPointList pointList);
 
         // caller should render the page here.
         public abstract void onBeginErasing();
@@ -266,10 +267,6 @@ public class RawInputProcessor {
             touchPointList = new TouchPointList(600);
         }
 
-        if (touchPoint.x <= 0 || touchPoint.x >= 1 || touchPoint.y <= 0 || touchPoint.y >= 1) {
-            return false;
-        }
-
         if (touchPoint != null && touchPointList != null) {
             touchPointList.add(touchPoint);
         }
@@ -336,7 +333,7 @@ public class RawInputProcessor {
                 if (erasing) {
                     inputCallback.onEraseTouchPointListReceived(touchPointList);
                 } else {
-                    inputCallback.onNewTouchPointListReceived(touchPointList);
+                    inputCallback.onNewTouchPointListReceived(null, touchPointList);
                 }
             }
         });

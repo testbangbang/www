@@ -14,6 +14,7 @@ public class ShapeDataInfo {
     private int background;
     private float eraserRadius;
     private float strokeWidth;
+    private int strokeColor;
 
     public final PageNameList getPageNameList() {
         return pageNameList;
@@ -74,6 +75,14 @@ public class ShapeDataInfo {
 
     public void setStrokeWidth(float strokeWidth) {
         this.strokeWidth = strokeWidth;
+    }
+
+    public int getStrokeColor() {
+        return strokeColor;
+    }
+
+    public void setStrokeColor(int strokeColor) {
+        this.strokeColor = strokeColor;
     }
 
 

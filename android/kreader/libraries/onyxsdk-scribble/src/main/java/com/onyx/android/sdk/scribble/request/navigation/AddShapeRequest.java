@@ -6,17 +6,22 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by zhuzeng on 7/3/16.
  */
-public class PageRenderRequest extends BaseNoteRequest {
+public class AddShapeRequest extends BaseNoteRequest {
 
-    private static final String TAG = PageRenderRequest.class.getSimpleName();
-    private volatile List<Shape> shapeList = new ArrayList<>();
+    private static final String TAG = AddShapeRequest.class.getSimpleName();
+    private volatile List<Shape> shapeList = Collections.synchronizedList(new ArrayList<Shape>());
 
-    public PageRenderRequest(final List<Shape> list) {
+    public AddShapeRequest(final List<Shape> list) {
+        for(Shape shape : list) {
+            Log.e("######", "origin shape with size: " + shape.getPoints().size());
+        }
         shapeList.addAll(list);
         setRender(true);
         setPauseInputProcessor(false);

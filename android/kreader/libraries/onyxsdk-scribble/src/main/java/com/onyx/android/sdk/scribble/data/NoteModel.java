@@ -63,7 +63,7 @@ public class NoteModel extends BaseModel {
 
     Bitmap thumbnail;
 
-    private static final float DEFAULT_STROKE_WIDTH = 3.0f;
+    private static final float DEFAULT_STROKE_WIDTH = 2.0f;
 
     public NoteModel() {
     }

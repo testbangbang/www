@@ -91,6 +91,7 @@ public class NotePage {
 
     public void addShapeList(final List<Shape> shapes) {
         for(Shape shape : shapes) {
+            Log.e("######", "add shape with size: " + shape.getPoints().size());
             updateShape(shape);
             newAddedShapeList.add(shape);
         }

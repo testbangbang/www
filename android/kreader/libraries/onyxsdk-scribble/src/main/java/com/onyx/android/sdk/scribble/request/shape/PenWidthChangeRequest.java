@@ -8,7 +8,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 
 public class PenWidthChangeRequest extends BaseNoteRequest {
-    private float penWidth;
+    private volatile float penWidth;
 
     public PenWidthChangeRequest(float pw) {
         penWidth = pw;

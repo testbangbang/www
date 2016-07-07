@@ -24,6 +24,8 @@ public class BaseShape implements Shape {
     private int color = Color.BLACK;
     private float strokeWidth;
     private Path displayPath;
+    private int originWidth;
+    private int originHeight;
 
     /**
      * rectangle, circle, etc.
@@ -224,6 +226,7 @@ public class BaseShape implements Shape {
 
     public void applyStrokeStyle(final Paint paint) {
         paint.setStrokeWidth(getStrokeWidth());
+        paint.setColor(getColor());
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setDither(true);
@@ -243,4 +246,21 @@ public class BaseShape implements Shape {
     public void clear() {
         displayPath = null;
     }
+
+    public void setPageOriginWidth(int width) {
+        originWidth = width;
+    }
+
+    public int getPageOriginWidth() {
+        return originWidth;
+    }
+
+    public void setPageOriginHeight(int height) {
+        originHeight = height;
+    }
+
+    public int getPageOriginHeight() {
+        return originHeight;
+    }
+
 }

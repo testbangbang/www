@@ -21,17 +21,7 @@ import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
-import com.onyx.android.note.actions.DocumentAddNewPageAction;
-import com.onyx.android.note.actions.DocumentCloseAction;
-import com.onyx.android.note.actions.DocumentCreateAction;
-import com.onyx.android.note.actions.DocumentDiscardAction;
-import com.onyx.android.note.actions.DocumentEditAction;
-import com.onyx.android.note.actions.DocumentFlushAction;
-import com.onyx.android.note.actions.GotoNextPageAction;
-import com.onyx.android.note.actions.GotoPrevPageAction;
-import com.onyx.android.note.actions.NoteBackgroundChangeAction;
-import com.onyx.android.note.actions.NoteStrokeWidthChangeAction;
-import com.onyx.android.note.actions.RemoveByPointListAction;
+import com.onyx.android.note.actions.*;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
@@ -189,7 +179,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void showBGSetupWindow() {
-        flushWithCallback(true, false, new BaseCallback() {
+        flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (bgTypePopupMenu == null) {
@@ -285,8 +275,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             }
 
             @Override
-            public void onNewTouchPointListReceived(TouchPointList pointList) {
-                ScribbleActivity.this.onNewTouchPointListReceived(pointList);
+            public void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+                ScribbleActivity.this.onNewTouchPointListReceived(shape, pointList);
             }
 
             @Override
@@ -306,26 +296,32 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         };
     }
 
-    private void onNewTouchPointListReceived(TouchPointList pointList) {
-//        final List<Shape> stash = getNoteViewHelper().deatchStash();
-//        final RenderInBackgroundAction<ScribbleActivity> action = new RenderInBackgroundAction<>(stash);
-//        action.execute(this, null);
+    private void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+        final AddShapeInBackgroundAction<ScribbleActivity> action = new AddShapeInBackgroundAction<>(shape);
+        action.execute(this, null);
     }
 
     private void onBeginErasing() {
-        erasePoint = new PointF();
-        getNoteViewHelper().pauseDrawing();
+        flushWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                erasePoint = new PointF();
+            }
+        });
     }
 
     private void onErasing(final MotionEvent touchPoint) {
         if (erasePoint == null) {
-            erasePoint = new PointF();
+            return;
         }
         erasePoint.set(touchPoint.getX(), touchPoint.getY());
         drawPage();
     }
 
     private void onFinishErasing(TouchPointList pointList) {
+        if (erasePoint == null) {
+            return;
+        }
         erasePoint = null;
         RemoveByPointListAction<ScribbleActivity> removeByPointListAction = new RemoveByPointListAction<>(pointList);
         removeByPointListAction.execute(this, null);
@@ -394,7 +390,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 discardAction.execute(ScribbleActivity.this, null);
             }
         });
-        flushWithCallback(true, false, new BaseCallback() {
+        flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dialogNoteNameInput.show(getFragmentManager());
@@ -403,7 +399,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void saveExistingNoteDocument() {
-        flushWithCallback(true, false, new BaseCallback() {
+        flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(noteTitle);
@@ -413,11 +409,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onPencilClicked() {
-        flushWithCallback(true, true, null);
+        flushWithCallback(false, true, null);
     }
 
     private void onRulerClicked() {
-        flushWithCallback(true, false, new BaseCallback() {
+        flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (penWidthPopupMenu == null) {
@@ -446,7 +442,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onColorClicked() {
-        flushWithCallback(true, false, new BaseCallback() {
+        flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (penColorPopupMenu == null) {
@@ -478,11 +474,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onColorChange(int currentPenColor){
-
+        final ChangePenColorAction changePenColorAction = new ChangePenColorAction(currentPenColor);
+        changePenColorAction.execute(this, null);
     }
 
     private void onEraseClicked() {
-        flushWithCallback(true, false, null);
+        flushWithCallback(false, false, null);
     }
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
@@ -496,13 +493,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void flushWithCallback(boolean render, boolean resume, final BaseCallback callback) {
-        final List<Shape> stash = getNoteViewHelper().deatchStash();
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, render, resume);
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(null, render, resume);
         action.execute(this, callback);
     }
 
     private void onAddNewPage() {
-        flushWithCallback(true, false, new BaseCallback() {
+        flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
@@ -512,23 +508,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onNextPage() {
-        flushWithCallback(true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
-                action.execute(ScribbleActivity.this, null);
-            }
-        });
+        final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
+        action.execute(ScribbleActivity.this, null);
     }
 
     private void onPrevPage() {
-        flushWithCallback(true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
-                action.execute(ScribbleActivity.this, null);
-            }
-        });
+        final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
+        action.execute(ScribbleActivity.this, null);
     }
 
     public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
@@ -590,12 +576,10 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void drawContent(final Canvas canvas, final Paint paint) {
-        long ts = System.currentTimeMillis();
         Bitmap bitmap = getNoteViewHelper().getViewBitmap();
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, 0, 0, paint);
         }
-        long end = System.currentTimeMillis();
     }
 
     private void drawErasingIndicator(final Canvas canvas, final Paint paint) {

@@ -158,7 +158,6 @@ public class NoteViewHelper {
         surfaceView.getLocationOnScreen(viewPosition);
         final Matrix viewMatrix = new Matrix();
         viewMatrix.postTranslate(-viewPosition[0], -viewPosition[1]);
-        viewMatrix.postScale(1.0f / surfaceView.getWidth(), 1.0f / surfaceView.getHeight());
         rawInputProcessor.setViewMatrix(viewMatrix);
     }
 
@@ -208,6 +207,11 @@ public class NoteViewHelper {
     public void setStrokeWidth(float width) {
         getNoteDocument().setStrokeWidth(width);
         EpdController.setStrokeWidth(width);
+    }
+
+    public void setStrokeColor(int color) {
+        getNoteDocument().setStrokeColor(color);
+        EpdController.setStrokeColor(color);
     }
 
     private void removeLayoutListener() {
@@ -300,7 +304,7 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onNewTouchPointListReceived(TouchPointList pointList) {
+            public void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
             }
 
@@ -324,10 +328,11 @@ public class NoteViewHelper {
     private void onNewTouchPointListReceived(final TouchPointList pointList) {
         Shape shape = new NormalScribbleShape();
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
+        shape.setColor(getNoteDocument().getStrokeColor());
         shape.addPoints(pointList);
         dirtyStash.add(shape);
         if (callback != null) {
-            callback.onNewTouchPointListReceived(pointList);
+            callback.onNewTouchPointListReceived(shape, pointList);
         }
     }
 

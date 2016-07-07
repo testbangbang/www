@@ -110,6 +110,14 @@ public class NoteDocument {
         noteDrawingArgs.strokeWidth = newStrokeWidth;
     }
 
+    public void setStrokeColor(int color) {
+        noteDrawingArgs.strokeColor = color;
+    }
+
+    public int getStrokeColor() {
+        return noteDrawingArgs.strokeColor;
+    }
+
     public float getEraserRadius() {
         return noteDrawingArgs.eraserRadius;
     }

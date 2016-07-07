@@ -14,19 +14,23 @@ import java.util.List;
  */
 public class PageFlushRequest extends BaseNoteRequest {
 
-    private volatile List<Shape> shapeList = new ArrayList<>();
+    private List<Shape> shapeList = new ArrayList<>();
     private volatile boolean save = false;
 
 
     public PageFlushRequest(final List<Shape> list, boolean r, boolean resume) {
-        shapeList.addAll(list);
+        synchronized (this) {
+            shapeList.addAll(list);
+        }
         setRender(r);
         setPauseInputProcessor(true);
         setResumeInputProcessor(resume);
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
-        helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
+        synchronized (this) {
+            helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
+        }
         renderCurrentPage(helper);
         saveDocument(helper);
         updateShapeDataInfo(helper);

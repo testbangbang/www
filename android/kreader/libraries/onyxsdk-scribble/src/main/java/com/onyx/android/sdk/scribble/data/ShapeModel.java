@@ -45,6 +45,12 @@ public class ShapeModel extends BaseModel {
     String appId;
 
     @Column
+    int pageOriginWidth;
+
+    @Column
+    int pageOriginHeight;
+
+    @Column
     int color;
 
     @Column
@@ -203,5 +209,21 @@ public class ShapeModel extends BaseModel {
 
     public String getAppId() {
         return appId;
+    }
+
+    public int getPageOriginWidth() {
+        return pageOriginWidth;
+    }
+
+    public void setPageOriginWidth(int pageOriginWidth) {
+        this.pageOriginWidth = pageOriginWidth;
+    }
+
+    public int getPageOriginHeight() {
+        return pageOriginHeight;
+    }
+
+    public void setPageOriginHeight(int pageOriginHeight) {
+        this.pageOriginHeight = pageOriginHeight;
     }
 }

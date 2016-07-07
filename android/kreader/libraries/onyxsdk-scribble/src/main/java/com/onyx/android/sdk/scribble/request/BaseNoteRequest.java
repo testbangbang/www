@@ -135,7 +135,9 @@ public class BaseNoteRequest extends BaseRequest {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                helper.copyBitmap();
+                if (isRender()) {
+                    helper.copyBitmap();
+                }
                 if (getCallback() != null) {
                     getCallback().done(BaseNoteRequest.this, getException());
                 }
@@ -170,9 +172,7 @@ public class BaseNoteRequest extends BaseRequest {
         paint.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
 
         drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
-
         final Matrix renderMatrix = new Matrix();
-        renderMatrix.postScale(getViewportSize().width(), getViewportSize().height());
 
         for(PageInfo page: getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
@@ -255,6 +255,7 @@ public class BaseNoteRequest extends BaseRequest {
                 parent.getNoteDocument().getPageNameList(),
                 parent.getNoteDocument().getCurrentPageIndex());
         getShapeDataInfo().setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
+        getShapeDataInfo().setStrokeColor(parent.getNoteDocument().getStrokeColor());
         getShapeDataInfo().setBackground(parent.getNoteDocument().getBackground());
         getShapeDataInfo().setEraserRadius(parent.getNoteDocument().getEraserRadius());
     }

@@ -38,6 +38,14 @@ public interface Shape {
 
     void ensureShapeUniqueId();
 
+    void setPageOriginWidth(int width);
+
+    int getPageOriginWidth();
+
+    void setPageOriginHeight(int height);
+
+    int getPageOriginHeight();
+
     int getZOrder();
 
     void setZOrder(int order);
