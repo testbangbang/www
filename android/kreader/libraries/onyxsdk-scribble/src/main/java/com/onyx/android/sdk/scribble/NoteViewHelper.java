@@ -172,9 +172,13 @@ public class NoteViewHelper {
     private void updateLimitRect() {
         limitRect = new Rect();
         surfaceView.getGlobalVisibleRect(limitRect);
+        limitRect.offsetTo(0, 0);
+        rawInputProcessor.setLimitRect(limitRect);
+
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
         limitRect.offsetTo(viewPosition[0], viewPosition[1]);
+
         final Matrix matrix = matrixFromViewToEpd();
         ShapeUtils.mapInPlace(limitRect, matrix);
         EpdController.setScreenHandWritingRegionLimit(surfaceView,
@@ -194,6 +198,10 @@ public class NoteViewHelper {
 
     public void pauseDrawing() {
         getRawInputProcessor().pause();
+    }
+
+    public void enableScreenPost() {
+        EpdController.enablePost(surfaceView, 1);
     }
 
     public void quitDrawing() {

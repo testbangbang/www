@@ -131,13 +131,13 @@ public class BaseNoteRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
-
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if (isRender()) {
                     helper.copyBitmap();
                 }
+                helper.enableScreenPost();
                 if (getCallback() != null) {
                     getCallback().done(BaseNoteRequest.this, getException());
                 }

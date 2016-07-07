@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -80,6 +82,7 @@ public class RawInputProcessor {
     private Handler handler = new Handler(Looper.getMainLooper());
     private volatile SurfaceView parentView;
     private ExecutorService singleThreadPool = null;
+    private volatile RectF limitRect = new RectF();
 
     /**
      * matrix used to map point from input device to screen display.
@@ -128,6 +131,10 @@ public class RawInputProcessor {
         stop = true;
         clearInternalState();
         shutdown();
+    }
+
+    public void setLimitRect(final Rect rect) {
+        limitRect.set(rect);
     }
 
     private void clearInternalState() {
@@ -267,6 +274,10 @@ public class RawInputProcessor {
             touchPointList = new TouchPointList(600);
         }
 
+        if (!limitRect.contains(touchPoint.x, touchPoint.y)) {
+            return false;
+        }
+
         if (touchPoint != null && touchPointList != null) {
             touchPointList.add(touchPoint);
         }
@@ -311,6 +322,7 @@ public class RawInputProcessor {
         if (inputCallback == null || (!isReportData() && !erasing)) {
             return;
         }
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -327,6 +339,7 @@ public class RawInputProcessor {
         if (inputCallback == null || touchPointList == null || (!isReportData() && !erasing)) {
             return;
         }
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -338,9 +351,6 @@ public class RawInputProcessor {
             }
         });
     }
-
-
-
 
 
 }

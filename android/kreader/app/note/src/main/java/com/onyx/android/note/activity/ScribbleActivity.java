@@ -297,8 +297,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
-        final AddShapeInBackgroundAction<ScribbleActivity> action = new AddShapeInBackgroundAction<>(shape);
-        action.execute(this, null);
+        //final AddShapeInBackgroundAction<ScribbleActivity> action = new AddShapeInBackgroundAction<>(shape);
+        //action.execute(this, null);
     }
 
     private void onBeginErasing() {
@@ -409,7 +409,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onPencilClicked() {
-        flushWithCallback(false, true, null);
+        flushWithCallback(true, true, null);
     }
 
     private void onRulerClicked() {
@@ -493,7 +493,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void flushWithCallback(boolean render, boolean resume, final BaseCallback callback) {
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(null, render, resume);
+        final List<Shape> stash = getNoteViewHelper().deatchStash();
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, render, resume);
         action.execute(this, callback);
     }
 
@@ -508,13 +509,23 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onNextPage() {
-        final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
-        action.execute(ScribbleActivity.this, null);
+        flushWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
+                action.execute(ScribbleActivity.this, null);
+            }
+        });
     }
 
     private void onPrevPage() {
-        final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
-        action.execute(ScribbleActivity.this, null);
+        flushWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
+                action.execute(ScribbleActivity.this, null);
+            }
+        });
     }
 
     public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
