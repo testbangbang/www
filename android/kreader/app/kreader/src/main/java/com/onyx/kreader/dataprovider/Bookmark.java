@@ -13,9 +13,6 @@ public class Bookmark extends BaseData {
     private String quote = null;
 
     @Column
-    private String location = null;
-
-    @Column
     private String application = null;
 
     @Column
@@ -27,14 +24,6 @@ public class Bookmark extends BaseData {
 
     public String getQuote() {
         return quote;
-    }
-
-    public void setLocation(final String l) {
-        location = l;
-    }
-
-    public String getLocation() {
-        return location;
     }
 
     public void setApplication(final String app) {
