@@ -20,7 +20,7 @@ public class ReaderUserDataInfo {
     private final static String HIGHLIGHT_TAG = "highlight";
     private Map<String, List<ReaderSelection>> selectionMap = new HashMap<String, List<ReaderSelection>>();
 
-    private Map<String, List<Bookmark>> bookmarkMap = new HashMap<String, List<Bookmark>>();
+    private Map<String, Bookmark> bookmarkMap = new HashMap<>();
     private Map<String, List<Annotation>> annotationMap = new HashMap<String, List<Annotation>>();
 
     public boolean hasSearchResults() {
@@ -60,10 +60,18 @@ public class ReaderUserDataInfo {
         return true;
     }
 
-    public boolean loadBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+    public boolean hasBookmark(final PageInfo pageInfo) {
+        return bookmarkMap.get(pageInfo.getName()) != null;
+    }
+
+    public Bookmark getBookmark(final PageInfo pageInfo) {
+        return bookmarkMap.get(pageInfo.getName());
+    }
+
+    public boolean loadBookmarks(Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            final List<Bookmark> bookmarks = BookmarkProvider.loadBookmarks(context, reader.getDocumentMd5(), pageInfo.getName());
-            bookmarkMap.put(pageInfo.getName(), bookmarks);
+            final Bookmark bookmark = BookmarkProvider.loadBookmark(reader.getDocumentMd5(), reader.getPlugin().displayName(), pageInfo.getName());
+            bookmarkMap.put(pageInfo.getName(), bookmark);
         }
         return true;
     }

@@ -39,6 +39,7 @@ import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
@@ -147,6 +148,9 @@ public class ReaderActivity extends ActionBarActivity {
     public boolean tryHitTest(float x, float y) {
         if (ShowReaderMenuAction.isReaderMenuShown()) {
             ShowReaderMenuAction.hideReaderMenu(this);
+            return true;
+        }
+        if (tryBookmark(x, y)) {
             return true;
         }
         return false;
@@ -442,8 +446,6 @@ public class ReaderActivity extends ActionBarActivity {
         action.execute(this);
     }
 
-
-
     public void onDocumentOpened(String path) {
         documentPath = path;
         hideToolbar();
@@ -584,6 +586,7 @@ public class ReaderActivity extends ActionBarActivity {
         drawBitmap(canvas, paint, pageBitmap);
         drawSearchResults(canvas, paint);
         drawHighlightResult(canvas, paint);
+        drawBookmark(canvas);
         drawShapes(canvas, paint);
 
         holder.unlockCanvasAndPost(canvas);
@@ -611,6 +614,18 @@ public class ReaderActivity extends ActionBarActivity {
             drawReaderSelection(canvas, paint, getReaderUserDataInfo().getHighlightResult());
             drawSelectionCursor(canvas, paint, xorMode);
         }
+    }
+
+    private void drawBookmark(Canvas canvas) {
+        Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(this, hasBookmark());
+        final Point point = bookmarkPosition(bitmap);
+        canvas.drawBitmap(bitmap, point.x, point.y, null);
+    }
+
+    private Point bookmarkPosition(Bitmap bitmap) {
+        Point point = new Point();
+        point.set(getDisplayWidth() - bitmap.getWidth(), 10);
+        return point;
     }
 
     private void drawReaderSelection(Canvas canvas, Paint paint, ReaderSelection selection) {
@@ -759,8 +774,6 @@ public class ReaderActivity extends ActionBarActivity {
         return handlerManager.onKeyUp(this, keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
-
-
     public final HandlerManager getHandlerManager() {
         return handlerManager;
     }
@@ -849,5 +862,37 @@ public class ReaderActivity extends ActionBarActivity {
 
     public final String getFirstVisiblePageName() {
         return getReaderViewInfo().getFirstVisiblePage().getName();
+    }
+
+    private boolean hasBookmark() {
+        return getReaderUserDataInfo().hasBookmark(getFirstPageInfo());
+    }
+
+    private boolean tryBookmark(final float x, final float y) {
+        Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(this, hasBookmark());
+        final Point point = bookmarkPosition(bitmap);
+        final int margin = bitmap.getWidth() / 4;
+        boolean hit = (x >= point.x - margin && x < point.x + bitmap.getWidth() + margin &&
+                y >= point.y - margin && y < point.y + bitmap.getHeight() + margin);
+        if (hit) {
+            toggleBookmark();
+        }
+        return hit;
+    }
+
+    private void toggleBookmark() {
+        if (hasBookmark()) {
+            removeBookmark();
+        } else {
+            addBookmark();
+        }
+    }
+
+    private void removeBookmark() {
+        new ToggleBookmarkAction(getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.Off).execute(this);
+    }
+
+    private void addBookmark() {
+        new ToggleBookmarkAction(getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.On).execute(this);
     }
 }
