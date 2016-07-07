@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class BaseShape implements Shape {
 
-    private RectF boundingRect = new RectF();
+    private RectF boundingRect;
     private TouchPointList normalizedPoints = new TouchPointList();
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();
@@ -93,7 +93,11 @@ public class BaseShape implements Shape {
     public void updateBoundingRect() {
         List<TouchPoint> list = normalizedPoints.getPoints();
         for(TouchPoint touchPoint: list) {
-            boundingRect.union(touchPoint.x, touchPoint.y);
+            if (boundingRect == null) {
+                boundingRect = new RectF(touchPoint.x, touchPoint.y, touchPoint.x, touchPoint.y);
+            } else {
+                boundingRect.union(touchPoint.x, touchPoint.y);
+            }
         }
     }
 
@@ -153,6 +157,9 @@ public class BaseShape implements Shape {
 
     public boolean fastHitTest(final float x, final float y, final float radius) {
         final RectF boundingRect = getBoundingRect();
+        if (boundingRect == null) {
+            return false;
+        }
         final float limit = radius * radius;
         return ShapeUtils.contains(boundingRect, x, y, limit);
     }

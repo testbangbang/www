@@ -20,6 +20,7 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
 
     // remove and render.
     public void execute(final NoteViewHelper helper) throws Exception {
+        Log.e("############", "erasing with points list size " + touchPointList.size());
         benchmarkStart();
         final float scale = Math.min(1.0f / (float)getViewportSize().width(), 1.0f / (float)getViewportSize().height());
         helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, scale);

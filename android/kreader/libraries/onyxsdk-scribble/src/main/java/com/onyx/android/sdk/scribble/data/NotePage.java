@@ -120,7 +120,7 @@ public class NotePage {
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                     hitShapes.put(shape.getShapeUniqueId(), shape);
-                    continue;
+                    break;
                 }
             }
         }
@@ -129,7 +129,7 @@ public class NotePage {
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                     removeShape(entry.getValue());
-                    continue;
+                    break;
                 }
             }
         }
