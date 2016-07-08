@@ -26,6 +26,10 @@ public class AnnotationProvider {
         annotation.save();
     }
 
+    public static void updateAnnotation(final Annotation annotation){
+        annotation.save();
+    }
+
     public static void deleteAnnotation(final Annotation annotation) {
         annotation.delete();
     }

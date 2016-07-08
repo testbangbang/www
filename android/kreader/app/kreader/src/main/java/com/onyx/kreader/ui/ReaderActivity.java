@@ -162,6 +162,9 @@ public class ReaderActivity extends ActionBarActivity {
         if (tryBookmark(x, y)) {
             return true;
         }
+        if (tryAnnotation(x, y)) {
+            return true;
+        }
         return false;
     }
 
@@ -1037,6 +1040,15 @@ public class ReaderActivity extends ActionBarActivity {
                 selection.getRectangles(), selection.getText(), note).execute(this);
     }
 
+    private void updateAnnotation(Annotation annotation, String note) {
+        PageInfo pageInfo = getReaderViewInfo().getPageInfo(annotation.getPosition());
+        new UpdateAnnotationAction(pageInfo, annotation, note).execute(this);
+    }
+
+    private void deleteAnnotation(Annotation annotation) {
+        new DeleteAnnotationAction(annotation).execute(this);
+    }
+
     private void lookupInDictionary(final String text) {
         OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
         Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
@@ -1047,6 +1059,45 @@ public class ReaderActivity extends ActionBarActivity {
         } catch (ActivityNotFoundException e ) {
             e.printStackTrace();
         }
+    }
+
+    public boolean tryAnnotation(final float x, final float y) {
+        for (PageInfo pageInfo : getReaderViewInfo().getVisiblePages()) {
+            if (!getReaderUserDataInfo().hasAnnotations(pageInfo)) {
+                continue;
+            }
+
+            List<Annotation> annotations = getReaderUserDataInfo().getAnnotations(pageInfo);
+            for (Annotation annotation : annotations) {
+                for (RectF rect : annotation.getRectangles()) {
+                    if (rect.contains(x, y)) {
+                        editAnnotationWithDialog(annotation);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void editAnnotationWithDialog(final Annotation annotation) {
+        DialogAnnotation dlg = new DialogAnnotation(ReaderActivity.this,
+                DialogAnnotation.AnnotationAction.update, annotation.getNote(), new DialogAnnotation.Callback() {
+            @Override
+            public void onAddAnnotation(String note) {
+            }
+
+            @Override
+            public void onUpdateAnnotation(String note) {
+                ReaderActivity.this.updateAnnotation(annotation, note);
+            }
+
+            @Override
+            public void onRemoveAnnotation() {
+                ReaderActivity.this.deleteAnnotation(annotation);
+            }
+        });
+        dlg.show();
     }
 
 }
