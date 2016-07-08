@@ -55,7 +55,7 @@ public class PenColorPopupMenu extends PopupWindow {
                 }
             }
         });
-        colorContentView.setupContent(4, 1, getPenColorAdapter(), 0);
+        colorContentView.setupContent(getPenColorAdapter().size(), 1, getPenColorAdapter(), 0);
     }
 
     public void toggleStatus() {
