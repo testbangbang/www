@@ -45,7 +45,7 @@ public class DialogTableOfContent extends Dialog {
             }
         });
 
-        if (hasChildren(toc.getRootEntry())) {
+        if (toc != null && hasChildren(toc.getRootEntry())) {
             ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), activity.getCurrentPage());
             TreeRecyclerView.TreeNode treeNode = findTreeNodeByTag(rootNodes, entry);
             if (treeNode != null) {
