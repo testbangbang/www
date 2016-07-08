@@ -422,14 +422,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
                         @Override
                         public void onValueChanged(int newValue) {
+                            currentPenWidth = newValue;
                             penWidthPopupMenu.dismiss();
-                            onStrokeWidthChanged(newValue);
                         }
                     });
                     penWidthPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
-
+                            onStrokeWidthChanged(currentPenWidth);
                         }
                     });
                 }
@@ -466,12 +466,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                                     currentPenColor = newPenColor;
                                     penColorPopupMenu.dismiss();
                                     updateColorIndicator();
-                                    onColorChange(newPenColor);
                                 }
                             });
                     penColorPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
+                            onColorChange(currentPenColor);
                         }
                     });
                 }
