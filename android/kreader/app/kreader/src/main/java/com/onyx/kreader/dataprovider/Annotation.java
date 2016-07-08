@@ -1,6 +1,7 @@
 package com.onyx.kreader.dataprovider;
 
-import android.graphics.Rect;
+import android.graphics.RectF;
+import com.onyx.kreader.utils.DBFlowTypeConverters;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
@@ -31,8 +32,8 @@ public class Annotation extends BaseData {
     @Column
     String position = null;
 
-//    @Column
-    private List<Rect> rects = new ArrayList<Rect>();
+    @Column(typeConverter = DBFlowTypeConverters.RectangleListConverter.class)
+    private List rectangles = new ArrayList();
 
     public void setQuote(final String q) {
         quote = q;
@@ -82,12 +83,13 @@ public class Annotation extends BaseData {
         return position;
     }
 
-    public void setRects(final List<Rect> rectList) {
-        rects.addAll(rectList);
+    public void setRectangles(final List<RectF> rectList) {
+        rectangles.addAll(rectList);
     }
 
-    public List<Rect> getRects() {
-        return rects;
+    public List<RectF> getRectangles() {
+        return rectangles;
     }
+
 }
 

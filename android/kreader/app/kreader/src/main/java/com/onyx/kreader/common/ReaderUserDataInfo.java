@@ -1,12 +1,14 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
+import com.alibaba.fastjson.JSON;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.dataprovider.AnnotationProvider;
 import com.onyx.kreader.dataprovider.Bookmark;
 import com.onyx.kreader.dataprovider.BookmarkProvider;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 
 import java.util.*;
@@ -52,10 +54,24 @@ public class ReaderUserDataInfo {
         selectionMap.put(HIGHLIGHT_TAG, Arrays.asList(new ReaderSelection[] { selection }));
     }
 
+    public boolean hasAnnotations(final PageInfo pageInfo) {
+        List<Annotation> list = getAnnotations(pageInfo);
+        return list != null && list.size() > 0;
+    }
+
+    public List<Annotation> getAnnotations(final PageInfo pageInfo) {
+        return annotationMap.get(pageInfo.getName());
+    }
+
     public boolean loadAnnotations(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            final List<Annotation> annotations = AnnotationProvider.loadAnnotations(context, reader.getDocumentMd5(), pageInfo.getName());
-            annotationMap.put(pageInfo.getName(), annotations);
+            final List<Annotation> annotations = AnnotationProvider.loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
+            if (annotations != null && annotations.size() > 0) {
+                for (Annotation annotation : annotations) {
+                    translateToScreen(pageInfo, annotation);
+                }
+                annotationMap.put(pageInfo.getName(), annotations);
+            }
         }
         return true;
     }
@@ -70,10 +86,20 @@ public class ReaderUserDataInfo {
 
     public boolean loadBookmarks(Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            final Bookmark bookmark = BookmarkProvider.loadBookmark(reader.getDocumentMd5(), reader.getPlugin().displayName(), pageInfo.getName());
+            final Bookmark bookmark = BookmarkProvider.loadBookmark(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
             bookmarkMap.put(pageInfo.getName(), bookmark);
         }
         return true;
+    }
+
+    private Annotation translateToScreen(PageInfo pageInfo, Annotation annotation) {
+        for (int i = 0; i < annotation.getRectangles().size(); i++) {
+            PageUtils.translate(pageInfo.getDisplayRect().left,
+                    pageInfo.getDisplayRect().top,
+                    pageInfo.getActualScale(),
+                    annotation.getRectangles().get(i));
+        }
+        return annotation;
     }
 
 }

@@ -186,4 +186,10 @@ public class PageUtils {
         return vp;
     }
 
+    public static RectF translateToDocument(final PageInfo pageInfo, final RectF rectInScreen) {
+        PageUtils.translateCoordinates(rectInScreen, pageInfo.getDisplayRect());
+        PageUtils.scaleRect(rectInScreen, 1 / pageInfo.getActualScale());
+        return rectInScreen;
+    }
+
 }

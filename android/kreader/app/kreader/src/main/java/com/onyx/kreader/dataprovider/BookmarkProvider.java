@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
  */
 public class BookmarkProvider {
 
-    public static final Bookmark loadBookmark(final String md5, final String application, final String position) {
+    public static final Bookmark loadBookmark(final String application, final String md5, final String position) {
         return new Select().from(Bookmark.class).where(Bookmark_Table.md5.eq(md5))
                 .and(Bookmark_Table.application.eq(application))
                 .and(Bookmark_Table.position.eq(position))

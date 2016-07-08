@@ -26,6 +26,14 @@ public class SelectWordRequest extends BaseReaderRequest {
         pageName = name;
     }
 
+    public PointF getstart() {
+        return start;
+    }
+
+    public PointF getEnd() {
+        return end;
+    }
+
     // check page at first. and then goto the location.
     public void execute(final Reader reader) throws Exception {
         createReaderViewInfo();

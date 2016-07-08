@@ -1,6 +1,9 @@
 package com.onyx.kreader.ui;
 
 import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
+import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.*;
@@ -11,10 +14,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -23,6 +28,7 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.common.*;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -42,7 +48,9 @@ import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
+import com.onyx.kreader.ui.dialog.DialogAnnotation;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
+import com.onyx.kreader.ui.dialog.PopupSelectionMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -80,6 +88,7 @@ public class ReaderActivity extends ActionBarActivity {
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
 
     private ReaderSelectionManager selectionManager;
+    private PopupSelectionMenu popupSelectionMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -240,7 +249,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void highlight(float x1, float y1, float x2, float y2) {
-
+        hideTextSelectionPopupWindow(false);
     }
 
     public void selectWord(float x1, float y1, float x2, float y2, boolean b) {
@@ -483,6 +492,8 @@ public class ReaderActivity extends ActionBarActivity {
 
         handlerManager.setActiveProvider(HandlerManager.WORD_SELECTION_PROVIDER);
         onRenderRequestFinished(request, e);
+
+        showHighlightSelectionDialog((int)request.getEnd().x, (int)request.getEnd().y, PopupSelectionMenu.SelectionType.MultiWordsType);
     }
 
     public void backward() {
@@ -586,6 +597,7 @@ public class ReaderActivity extends ActionBarActivity {
         drawBitmap(canvas, paint, pageBitmap);
         drawSearchResults(canvas, paint);
         drawHighlightResult(canvas, paint);
+        drawAnnotations(canvas, paint);
         drawBookmark(canvas);
         drawShapes(canvas, paint);
 
@@ -613,6 +625,17 @@ public class ReaderActivity extends ActionBarActivity {
         if (getReaderUserDataInfo().hasHighlightResult()) {
             drawReaderSelection(canvas, paint, getReaderUserDataInfo().getHighlightResult());
             drawSelectionCursor(canvas, paint, xorMode);
+        }
+    }
+
+    private void drawAnnotations(Canvas canvas, Paint paint) {
+        for (PageInfo pageInfo : getReaderViewInfo().getVisiblePages()) {
+            if (getReaderUserDataInfo().hasAnnotations(pageInfo)) {
+                List<Annotation> annotations = getReaderUserDataInfo().getAnnotations(pageInfo);
+                for (Annotation annotation : annotations) {
+                    drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
+                }
+            }
         }
     }
 
@@ -826,6 +849,10 @@ public class ReaderActivity extends ActionBarActivity {
 
     }
 
+    public void highlightFinished(final float x1, final float y1, final float x2, final float y2) {
+        showHighlightSelectionDialog((int)x1, (int)y1, PopupSelectionMenu.SelectionType.MultiWordsType);
+    }
+
     public int getCursorSelected(int x, int y) {
         if (getSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX).hitTest(x, y)) {
             return HighlightCursor.BEGIN_CURSOR_INDEX;
@@ -895,4 +922,131 @@ public class ReaderActivity extends ActionBarActivity {
     private void addBookmark() {
         new ToggleBookmarkAction(getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.On).execute(this);
     }
+
+    private void showHighlightSelectionDialog(int startY, int endY, PopupSelectionMenu.SelectionType type) {
+        switch (type){
+            case SingleWordType:
+                getTextSelectionPopupMenu().showTranslation();
+                break;
+            case MultiWordsType:
+                getTextSelectionPopupMenu().hideTranslation();
+                break;
+        }
+        getTextSelectionPopupMenu().show();
+        getTextSelectionPopupMenu().move(startY, endY);
+    }
+
+    public void hideTextSelectionPopupWindow(boolean clear) {
+        hideTextSelectionPopupWindow(clear, false);
+    }
+
+    public void hideTextSelectionPopupWindow(boolean clear, boolean instantRefresh) {
+        if (popupSelectionMenu == null) {
+            return;
+        }
+        popupSelectionMenu.hide();
+        if (clear) {
+            popupSelectionMenu = null;
+            handlerManager.resetToDefaultProvider();
+        }
+    }
+
+    private PopupSelectionMenu getTextSelectionPopupMenu() {
+        if (popupSelectionMenu == null) {
+            popupSelectionMenu = new PopupSelectionMenu(this, (RelativeLayout) findViewById(R.id.main_view), new PopupSelectionMenu.MenuCallback() {
+                @Override
+                public void resetSelection() {
+
+                }
+
+                @Override
+                public String getSelectionText() {
+                    return getReaderUserDataInfo().getHighlightResult().getText();
+                }
+
+                @Override
+                public void copy() {
+                    ReaderActivity.this.copyText(getSelectionText());
+                    closeMenu();
+                }
+
+                @Override
+                public void highLight() {
+                    ReaderActivity.this.addAnnotation("");
+                    closeMenu();
+                }
+
+                @Override
+                public void addAnnotation() {
+                    DialogAnnotation dialogAnnotation = new DialogAnnotation(ReaderActivity.this, DialogAnnotation.AnnotationAction.add, new DialogAnnotation.Callback() {
+                        @Override
+                        public void onAddAnnotation(String annotation) {
+                            ReaderActivity.this.addAnnotation(annotation);
+                            closeMenu();
+                        }
+
+                        @Override
+                        public void onUpdateAnnotation(String annotation) {
+
+                        }
+
+                        @Override
+                        public void onRemoveAnnotation() {
+
+                        }
+                    });
+                    dialogAnnotation.show();
+                }
+
+                @Override
+                public void showDictionary() {
+                    String text = getSelectionText();
+                    if (StringUtils.isNullOrEmpty(text)) {
+                        return;
+                    }
+                    ReaderActivity.this.lookupInDictionary(text);
+                    closeMenu();
+                }
+
+                @Override
+                public boolean supportSelectionMode() {
+                    return false;
+                }
+
+                @Override
+                public void closeMenu() {
+                    hideTextSelectionPopupWindow(true);
+                    redrawPage();
+                }
+            });
+        }
+        return popupSelectionMenu;
+    }
+
+    private void copyText(String text) {
+        ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+            clipboard.setText(text);
+        }
+    }
+
+    private void addAnnotation(String note) {
+        ReaderSelection selection = getReaderUserDataInfo().getHighlightResult();
+        PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
+        new AddAnnotationAction(pageInfo, selection.getStartPosition(), selection.getEndPosition(),
+                selection.getRectangles(), selection.getText(), note).execute(this);
+    }
+
+    private void lookupInDictionary(final String text) {
+        OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
+        Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
+        intent.putExtra(info.dataKey, text);
+
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e ) {
+            e.printStackTrace();
+        }
+    }
+
 }
