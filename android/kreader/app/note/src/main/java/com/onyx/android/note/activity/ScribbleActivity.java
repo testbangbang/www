@@ -79,7 +79,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     PenColorPopupMenu penColorPopupMenu;
     private ImageView addPageBtn, changeBGBtn, prevPage, nextPage, penColorBtn;
     private Button pageIndicator;
-    private PointF erasePoint = null;
+    private MotionEvent erasePoint = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -302,27 +302,17 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onBeginErasing() {
-        flushWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                erasePoint = new PointF();
-            }
-        });
+        flushWithCallback(true, false, null);
     }
 
     private void onErasing(final MotionEvent touchPoint) {
-        if (erasePoint == null) {
-            return;
-        }
-        erasePoint.set(touchPoint.getX(), touchPoint.getY());
+        erasePoint = touchPoint;
         drawPage();
     }
 
     private void onFinishErasing(TouchPointList pointList) {
-        if (erasePoint == null) {
-            return;
-        }
         erasePoint = null;
+        drawPage();
         RemoveByPointListAction<ScribbleActivity> removeByPointListAction = new RemoveByPointListAction<>(pointList);
         removeByPointListAction.execute(this, null);
     }
@@ -551,6 +541,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
+        if (request.isAbort()) {
+            return;
+        }
         updateDataInfo(request);
         if (updatePage) {
             drawPage();
@@ -620,9 +613,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             return;
         }
 
-        float x = erasePoint.x;
-        float y = erasePoint.y;
-        Log.e(TAG, "drawing erasing indicator: " + x + " " + y);
+        float x = erasePoint.getX();
+        float y = erasePoint.getY();
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);

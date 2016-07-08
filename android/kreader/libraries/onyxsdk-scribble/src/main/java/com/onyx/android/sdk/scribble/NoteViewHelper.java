@@ -15,6 +15,7 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.RawInputProcessor;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
@@ -48,6 +49,8 @@ public class NoteViewHelper {
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private List<Shape> dirtyStash = new ArrayList<Shape>();
     private RawInputProcessor.InputCallback callback;
+    private int state;
+    private TouchPointList erasePoints;
 
     public void setView(final Context context, final SurfaceView view, final RawInputProcessor.InputCallback c) {
         setCallback(c);
@@ -355,14 +358,19 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onErasing(motionEvent);
         }
+        if (erasePoints == null) {
+            erasePoints = new TouchPointList();
+        }
+        erasePoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
         return true;
     }
 
     private void onFinishErasing(TouchPointList pointList) {
         inErasing = false;
         if (callback != null) {
-            callback.onEraseTouchPointListReceived(pointList);
+            callback.onEraseTouchPointListReceived(erasePoints);
         }
+        erasePoints = null;
     }
 
     public List<Shape> deatchStash() {

@@ -19,18 +19,14 @@ public class PageFlushRequest extends BaseNoteRequest {
 
 
     public PageFlushRequest(final List<Shape> list, boolean r, boolean resume) {
-        synchronized (this) {
-            shapeList.addAll(list);
-        }
+        shapeList.addAll(list);
         setRender(r);
         setPauseInputProcessor(true);
         setResumeInputProcessor(resume);
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
-        synchronized (this) {
-            helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
-        }
+        helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
         renderCurrentPage(helper);
         saveDocument(helper);
         updateShapeDataInfo(helper);
