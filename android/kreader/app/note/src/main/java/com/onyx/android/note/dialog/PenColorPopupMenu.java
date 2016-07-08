@@ -82,8 +82,9 @@ public class PenColorPopupMenu extends PopupWindow {
         if (adapter == null) {
             adapter = new GAdapter();
             adapter.addObject(createColorItem(R.drawable.ic_business_write_color_white_46dp, Color.WHITE));
-            adapter.addObject(createColorItem(R.drawable.ic_business_write_color_gray_1_gray_46dp, Color.LTGRAY));
-            adapter.addObject(createColorItem(R.drawable.ic_business_write_color_gray_2_gray_46dp, Color.GRAY));
+            //TODO:temp disable grey color.
+//            adapter.addObject(createColorItem(R.drawable.ic_business_write_color_gray_1_gray_46dp, Color.LTGRAY));
+//            adapter.addObject(createColorItem(R.drawable.ic_business_write_color_gray_2_gray_46dp, Color.GRAY));
             adapter.addObject(createColorItem(R.drawable.ic_business_write_color_black_black_46dp, Color.BLACK));
         }
         return adapter;
