@@ -2,6 +2,7 @@ package com.onyx.kreader.common;
 
 import android.content.Context;
 import com.alibaba.fastjson.JSON;
+import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.dataprovider.AnnotationProvider;
@@ -22,6 +23,7 @@ public class ReaderUserDataInfo {
     private final static String HIGHLIGHT_TAG = "highlight";
     private Map<String, List<ReaderSelection>> selectionMap = new HashMap<String, List<ReaderSelection>>();
 
+    public ReaderDocumentTableOfContent toc;
     private Map<String, Bookmark> bookmarkMap = new HashMap<>();
     private Map<String, List<Annotation>> annotationMap = new HashMap<String, List<Annotation>>();
 
@@ -54,6 +56,14 @@ public class ReaderUserDataInfo {
         selectionMap.put(HIGHLIGHT_TAG, Arrays.asList(new ReaderSelection[] { selection }));
     }
 
+    public void setTableOfContent(ReaderDocumentTableOfContent toc) {
+        this.toc = toc;
+    }
+
+    public ReaderDocumentTableOfContent getTableOfContent() {
+        return toc;
+    }
+
     public boolean hasAnnotations(final PageInfo pageInfo) {
         List<Annotation> list = getAnnotations(pageInfo);
         return list != null && list.size() > 0;
@@ -61,6 +71,15 @@ public class ReaderUserDataInfo {
 
     public List<Annotation> getAnnotations(final PageInfo pageInfo) {
         return annotationMap.get(pageInfo.getName());
+    }
+
+    public List<Annotation> getAnnotations() {
+        ArrayList<Annotation> list = new ArrayList<>();
+        Collection<List<Annotation>> values = annotationMap.values();
+        for (List<Annotation> l : values) {
+            list.addAll(l);
+        }
+        return list;
     }
 
     public boolean loadAnnotations(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
@@ -76,6 +95,19 @@ public class ReaderUserDataInfo {
         return true;
     }
 
+    public boolean loadAnnotations(final Context context, final Reader reader) {
+        final List<Annotation> annotations = AnnotationProvider.loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5());
+        if (annotations != null && annotations.size() > 0) {
+            for (Annotation annotation : annotations) {
+                if (annotationMap.get(annotation.getPosition()) == null) {
+                    annotationMap.put(annotation.getPosition(), new ArrayList<Annotation>());
+                }
+                annotationMap.get(annotation.getPosition()).add(annotation);
+            }
+        }
+        return false;
+    }
+
     public boolean hasBookmark(final PageInfo pageInfo) {
         return bookmarkMap.get(pageInfo.getName()) != null;
     }
@@ -84,10 +116,26 @@ public class ReaderUserDataInfo {
         return bookmarkMap.get(pageInfo.getName());
     }
 
-    public boolean loadBookmarks(Context context, final Reader reader, final List<PageInfo> visiblePages) {
+    public List<Bookmark> getBookmarks() {
+        ArrayList<Bookmark> list = new ArrayList<>();
+        list.addAll(bookmarkMap.values());
+        return list;
+    }
+
+    public boolean loadBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
             final Bookmark bookmark = BookmarkProvider.loadBookmark(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
             bookmarkMap.put(pageInfo.getName(), bookmark);
+        }
+        return true;
+    }
+
+    public boolean loadBookmarks(final Context context, final Reader reader) {
+        List<Bookmark> bookmarks = BookmarkProvider.loadBookmarks(reader.getPlugin().displayName(), reader.getDocumentMd5());
+        if (bookmarks != null) {
+            for (Bookmark bookmark : bookmarks) {
+                bookmarkMap.put(bookmark.getPosition(), bookmark);
+            }
         }
         return true;
     }

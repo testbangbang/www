@@ -22,6 +22,12 @@ public class AnnotationProvider {
                 .queryList();
     }
 
+    public static final List<Annotation> loadAnnotations(final String application, final String md5) {
+        return new Select().from(Annotation.class).where(Bookmark_Table.md5.eq(md5))
+                .and(Bookmark_Table.application.eq(application))
+                .queryList();
+    }
+
     public static void addAnnotation(final Annotation annotation){
         annotation.save();
     }

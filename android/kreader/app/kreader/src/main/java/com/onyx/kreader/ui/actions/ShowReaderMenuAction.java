@@ -20,11 +20,10 @@ import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
-import com.onyx.kreader.ui.menu.ReaderSideMenu;
-import com.onyx.kreader.ui.menu.ReaderSideMenuItem;
 import com.onyx.kreader.utils.RawResourceUtil;
 
 import java.util.List;
@@ -161,11 +160,13 @@ public class ShowReaderMenuAction extends BaseAction {
                         imageReflow(readerActivity);
                         break;
                     case "/Directory/TOC":
-                        showToc(readerActivity);
+                        showTocDialog(readerActivity, DialogTableOfContent.DirectoryTab.TOC);
                         break;
                     case "/Directory/Bookmark":
+                        showTocDialog(readerActivity, DialogTableOfContent.DirectoryTab.Bookmark);
                         break;
                     case "/Directory/Note":
+                        showTocDialog(readerActivity, DialogTableOfContent.DirectoryTab.Annotation);
                         break;
                     case "/Directory/ShapeModel":
                         break;
@@ -273,8 +274,8 @@ public class ShowReaderMenuAction extends BaseAction {
         action.execute(readerActivity);
     }
 
-    private void showToc(final ReaderActivity readerActivity) {
-        final GetTableOfContentAction action = new GetTableOfContentAction();
+    private void showTocDialog(final ReaderActivity readerActivity, DialogTableOfContent.DirectoryTab tab) {
+        final GetTableOfContentAction action = new GetTableOfContentAction(tab);
         action.execute(readerActivity);
     }
 

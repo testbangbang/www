@@ -17,7 +17,9 @@ public class GetTableOfContentRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         createReaderViewInfo();
         if (reader.getDocument().readTableOfContent(toc)) {
-            getReaderViewInfo().setTableOfContent(toc);
+            getReaderUserDataInfo().setTableOfContent(toc);
         }
+        getReaderUserDataInfo().loadAnnotations(getContext(), reader);
+        getReaderUserDataInfo().loadBookmarks(getContext(), reader);
     }
 }
