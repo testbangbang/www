@@ -176,12 +176,7 @@ public class BaseNoteRequest extends BaseRequest {
 
         for(PageInfo page: getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-            notePage.render(canvas, paint, renderMatrix, new NotePage.RenderCallback() {
-                @Override
-                public boolean isRenderAbort() {
-                    return isAbort();
-                }
-            });
+            notePage.render(canvas, paint, renderMatrix, null);
         }
 
         // draw test path.

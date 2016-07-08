@@ -38,6 +38,13 @@ public class NoteViewHelper {
 
     private static final String TAG = NoteViewHelper.class.getSimpleName();
 
+    private enum PenState {
+        PEN_NULL,
+        PEN_WRITING,                // in drawing state
+        PEN_WRITING_ERASING,        // in drawing state, but use eraser
+        PEN_ERASING,                // in erasing state
+    }
+
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private RawInputProcessor rawInputProcessor = new RawInputProcessor();
     private NoteDocument noteDocument = new NoteDocument();
@@ -49,8 +56,10 @@ public class NoteViewHelper {
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private List<Shape> dirtyStash = new ArrayList<Shape>();
     private RawInputProcessor.InputCallback callback;
-    private int state;
+    private PenState penState;
     private TouchPointList erasePoints;
+
+
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, 3);
@@ -101,7 +110,12 @@ public class NoteViewHelper {
                 if (!inErasing) {
                     return true;
                 }
-                return onErasing(motionEvent);
+                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                    onErasing(motionEvent);
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    onFinishErasing();
+                }
+                return true;
             }
         });
         surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener());
@@ -337,7 +351,7 @@ public class NoteViewHelper {
 
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
-                NoteViewHelper.this.onFinishErasing(pointList);
+
             }
         });
         startDrawing();
@@ -372,7 +386,7 @@ public class NoteViewHelper {
         return true;
     }
 
-    private void onFinishErasing(TouchPointList pointList) {
+    private void onFinishErasing() {
         inErasing = false;
         if (callback != null) {
             callback.onEraseTouchPointListReceived(erasePoints);
