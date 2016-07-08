@@ -8,6 +8,10 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.raizlabs.android.dbflow.config.DatabaseConfig;
+import com.raizlabs.android.dbflow.runtime.DBBatchSaveQueue;
+import com.raizlabs.android.dbflow.structure.database.transaction.DefaultTransactionManager;
+import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,7 +95,6 @@ public class NotePage {
 
     public void addShapeList(final List<Shape> shapes) {
         for(Shape shape : shapes) {
-            Log.e("######", "add shape with size: " + shape.getPoints().size());
             updateShape(shape);
             newAddedShapeList.add(shape);
         }
@@ -207,16 +210,12 @@ public class NotePage {
     }
 
     public void loadPage(final Context context) {
-        long start = System.currentTimeMillis();
+        newAddedShapeList.clear();
+        removedShapeList.clear();
         final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
-        long end = System.currentTimeMillis();
-        Log.e("##############", "load page takes: " + (end - start) + "ms");
-        start = end;
         for(ShapeModel model : modelList) {
             addShapeFromModel(ShapeFactory.shapeFromModel(model));
         }
-        end = System.currentTimeMillis();
-        Log.e("##############", "setup shape from model takes:  " + (end - start) + "ms");
         setLoaded(true);
     }
 
@@ -225,10 +224,27 @@ public class NotePage {
         return page;
     }
 
-    /**
-     * save new added shapes and remove shapes has been removed.
-     * @return
-     */
+    public List<ShapeModel> getNewAddedShapeModeList() {
+        List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
+        for(Shape shape : newAddedShapeList) {
+            final ShapeModel model = ShapeFactory.modelFromShape(shape);
+            modelList.add(model);
+        }
+        return modelList;
+    }
+
+    public List<String> getRemovedShapeIdList() {
+        List<String> list = new ArrayList<>();
+        for(Shape shape: removedShapeList) {
+            list.add(shape.getShapeUniqueId());
+        }
+        return list;
+    }
+
+    public boolean savePageInBackground(final Context context) {
+        return false;
+    }
+
     public boolean savePage(final Context context) {
         List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
         for(Shape shape : newAddedShapeList) {
@@ -239,10 +255,13 @@ public class NotePage {
             ShapeDataProvider.saveShapeList(context, modelList);
         }
 
+        List<String> list = new ArrayList<>();
         for(Shape shape: removedShapeList) {
-            ShapeDataProvider.removeShape(context, shape.getShapeUniqueId());
+            list.add(shape.getShapeUniqueId());
         }
-
+        ShapeDataProvider.removeShapesByIdList(context, list);
+        newAddedShapeList.clear();
+        removedShapeList.clear();
         return true;
     }
 

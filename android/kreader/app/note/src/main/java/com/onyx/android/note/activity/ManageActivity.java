@@ -62,8 +62,8 @@ public class ManageActivity extends OnyxAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager);
-        initNoteViewHelper();
         initView();
+        initNoteViewHelper();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
     private void initNoteViewHelper() {
-        getNoteViewHelper().pauseDrawing();
+        getNoteViewHelper().reset(contentView);
     }
 
     public NoteViewHelper getNoteViewHelper() {
