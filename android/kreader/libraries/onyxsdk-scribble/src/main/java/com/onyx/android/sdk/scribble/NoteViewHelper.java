@@ -370,6 +370,7 @@ public class NoteViewHelper {
 
     private void onBeginErasing() {
         inErasing = true;
+        erasePoints = new TouchPointList();
         if (callback != null) {
             callback.onBeginErasing();
         }
@@ -378,9 +379,6 @@ public class NoteViewHelper {
     private boolean onErasing(final MotionEvent motionEvent) {
         if (callback != null) {
             callback.onErasing(motionEvent);
-        }
-        if (erasePoints == null) {
-            erasePoints = new TouchPointList();
         }
         erasePoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
         return true;
@@ -391,7 +389,6 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onEraseTouchPointListReceived(erasePoints);
         }
-        erasePoints = null;
     }
 
     public List<Shape> deatchStash() {
