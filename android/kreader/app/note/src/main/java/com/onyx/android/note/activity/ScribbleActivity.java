@@ -179,7 +179,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void showBGSetupWindow() {
-        flushWithCallback(false, false, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (bgTypePopupMenu == null) {
@@ -194,19 +194,23 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                                 public void onBackGroundChanged(@NoteBackgroundType.NoteBackgroundDef int newBackground) {
                                     currentNoteBackground = newBackground;
                                     bgTypePopupMenu.dismiss();
-                                    NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(currentNoteBackground);
-                                    changeBGAction.execute(ScribbleActivity.this, null);
                                 }
                             });
                     bgTypePopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
+                            onBackgroundChanged(currentNoteBackground);
                         }
                     });
                 }
                 bgTypePopupMenu.show();
             }
         });
+    }
+
+    private void onBackgroundChanged(int newBackground) {
+        final NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(newBackground);
+        changeBGAction.execute(ScribbleActivity.this, null);
     }
 
     private HashMap<String, Integer> getItemViewDataMap() {
