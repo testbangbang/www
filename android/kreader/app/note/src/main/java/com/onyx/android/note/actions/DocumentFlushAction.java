@@ -22,7 +22,7 @@ public class DocumentFlushAction<T extends ScribbleActivity> extends BaseNoteAct
         if (list != null) {
             shapeList.addAll(list);
         }
-        render = true;
+        render = r;
         resumeDrawing = resume;
     }
 
