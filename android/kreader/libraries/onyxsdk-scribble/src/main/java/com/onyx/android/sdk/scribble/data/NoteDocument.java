@@ -7,6 +7,8 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 import org.apache.commons.collections4.map.ListOrderedMap;
 
 import java.util.LinkedHashSet;

@@ -1,15 +1,17 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Database;
 import com.raizlabs.android.dbflow.config.DatabaseConfig;
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.raizlabs.android.dbflow.structure.database.transaction.DefaultTransactionManager;
+import com.raizlabs.android.dbflow.structure.database.transaction.*;
 
 import java.util.*;
 
@@ -18,6 +20,12 @@ import java.util.*;
  * CRUD for shape data.
  */
 public class ShapeDataProvider {
+
+
+    public static abstract class DataProviderCallback {
+        public abstract void finished();
+    }
+
 
     public static List<ShapeModel> loadShapeList(final Context context,
                                                  final String documentUniqueId,
@@ -44,6 +52,28 @@ public class ShapeDataProvider {
         database.endTransaction();
     }
 
+    public static void svaeShapeListInBackground(final Context context,
+                                                 final Collection<ShapeModel> list,
+                                                 final DataProviderCallback callback) {
+        final DatabaseDefinition database= FlowManager.getDatabase(ShapeDatabase.NAME);
+        ProcessModelTransaction<ShapeModel> processModelTransaction =
+                new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<ShapeModel>() {
+                    @Override
+                    public void processModel(ShapeModel model) {
+                        model.save();
+                    }
+                }).processListener(new ProcessModelTransaction.OnModelProcessListener<ShapeModel>() {
+                    @Override
+                    public void onModelProcessed(long current, long total, ShapeModel modifiedModel) {
+                        if (callback != null && current >= total - 1) {
+                            callback.finished();
+                        }
+                    }
+                }).addAll(list).build();
+        Transaction transaction = database.beginTransactionAsync(processModelTransaction).build();
+        transaction.execute();
+    }
+
     public static void removeAllShapeOfDocument(final Context context, final String documentUniqueId) {
         Delete delete = new Delete();
         delete.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId)).query();
@@ -54,6 +84,29 @@ public class ShapeDataProvider {
         Delete delete = new Delete();
         delete.from(ShapeModel.class).where(ShapeModel_Table.shapeUniqueId.eq(uniqueId)).query();
         return true;
+    }
+
+    public static boolean removeShapesByIdList(final Context context, final List<String> list) {
+        Delete delete = new Delete();
+        delete.from(ShapeModel.class).where(ShapeModel_Table.shapeUniqueId.in(list)).query();
+        return true;
+    }
+
+    public static void removeShapesByIdListInBackground(final Context context,
+                                                        final List<String> list,
+                                                        final DataProviderCallback callback) {
+        final DatabaseDefinition database= FlowManager.getDatabase(ShapeDatabase.NAME);
+        Transaction transaction = database.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                Delete delete = new Delete();
+                delete.from(ShapeModel.class).where(ShapeModel_Table.shapeUniqueId.in(list)).query();
+                if (callback != null) {
+                    callback.finished();
+                }
+            }
+        }).build();
+        transaction.execute();
     }
 
     public static boolean removePage(final Context context, final String pageUniqueId) {
