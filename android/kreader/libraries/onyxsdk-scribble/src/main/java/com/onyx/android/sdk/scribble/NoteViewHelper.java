@@ -52,6 +52,11 @@ public class NoteViewHelper {
     private int state;
     private TouchPointList erasePoints;
 
+    public void reset(final View view) {
+        EpdController.setScreenHandWritingPenState(view, 3);
+        EpdController.enablePost(view, 1);
+    }
+
     public void setView(final Context context, final SurfaceView view, final RawInputProcessor.InputCallback c) {
         setCallback(c);
         initRawResource(context);
@@ -204,7 +209,9 @@ public class NoteViewHelper {
     }
 
     public void enableScreenPost() {
-        EpdController.enablePost(surfaceView, 1);
+        if (surfaceView != null) {
+            EpdController.enablePost(surfaceView, 1);
+        }
     }
 
     public void quitDrawing() {
