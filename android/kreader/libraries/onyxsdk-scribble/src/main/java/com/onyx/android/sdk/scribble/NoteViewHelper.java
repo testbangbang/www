@@ -343,9 +343,7 @@ public class NoteViewHelper {
 
             @Override
             public void onBeginErasing() {
-                if (!inUserErasing()) {
-                    setPenState(PenState.PEN_ERASER_DRAWING);
-                }
+                ensureErasing();
             }
 
             @Override
@@ -404,6 +402,12 @@ public class NoteViewHelper {
 
     public void setPenState(PenState penState) {
         this.penState = penState;
+    }
+
+    public void ensureErasing() {
+        if (!inUserErasing()) {
+            setPenState(PenState.PEN_ERASER_DRAWING);
+        }
     }
 
     public boolean inErasing() {
