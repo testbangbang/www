@@ -38,11 +38,11 @@ public class NoteViewHelper {
 
     private static final String TAG = NoteViewHelper.class.getSimpleName();
 
-    private enum PenState {
-        PEN_NULL,
-        PEN_WRITING,                // in drawing state
-        PEN_WRITING_ERASING,        // in drawing state, but use eraser
-        PEN_ERASING,                // in erasing state
+    public enum PenState {
+        PEN_NULL,                   // not initialized yet.
+        PEN_DRAWING,                // in drawing state
+        PEN_ERASER_DRAWING,         // in drawing state, but use eraser
+        PEN_USER_ERASING,           // in user erasing state
     }
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
@@ -50,7 +50,6 @@ public class NoteViewHelper {
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
-    private boolean inErasing = false;
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
@@ -58,7 +57,6 @@ public class NoteViewHelper {
     private RawInputProcessor.InputCallback callback;
     private PenState penState;
     private TouchPointList erasePoints;
-
 
 
     public void reset(final View view) {
@@ -107,10 +105,12 @@ public class NoteViewHelper {
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (!inErasing) {
+                if (!inErasing()) {
                     return true;
                 }
-                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    onBeginErasing();
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                     onErasing(motionEvent);
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     onFinishErasing();
@@ -215,6 +215,7 @@ public class NoteViewHelper {
     }
 
     public void resumeDrawing() {
+        setPenState(PenState.PEN_DRAWING);
         getRawInputProcessor().resume();
     }
 
@@ -342,7 +343,9 @@ public class NoteViewHelper {
 
             @Override
             public void onBeginErasing() {
-                NoteViewHelper.this.onBeginErasing();
+                if (!inUserErasing()) {
+                    setPenState(PenState.PEN_ERASER_DRAWING);
+                }
             }
 
             @Override
@@ -369,7 +372,6 @@ public class NoteViewHelper {
     }
 
     private void onBeginErasing() {
-        inErasing = true;
         erasePoints = new TouchPointList();
         if (callback != null) {
             callback.onBeginErasing();
@@ -385,7 +387,6 @@ public class NoteViewHelper {
     }
 
     private void onFinishErasing() {
-        inErasing = false;
         if (callback != null) {
             callback.onEraseTouchPointListReceived(erasePoints);
         }
@@ -397,4 +398,19 @@ public class NoteViewHelper {
         return temp;
     }
 
+    public PenState getPenState() {
+        return penState;
+    }
+
+    public void setPenState(PenState penState) {
+        this.penState = penState;
+    }
+
+    public boolean inErasing() {
+        return (penState == PenState.PEN_ERASER_DRAWING || penState == PenState.PEN_USER_ERASING);
+    }
+
+    public boolean inUserErasing() {
+        return penState == PenState.PEN_USER_ERASING;
+    }
 }

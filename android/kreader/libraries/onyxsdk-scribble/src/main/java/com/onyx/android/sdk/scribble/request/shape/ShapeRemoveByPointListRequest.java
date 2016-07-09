@@ -18,8 +18,8 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
         setResumeInputProcessor(true);
     }
 
-    // remove and render.
     public void execute(final NoteViewHelper helper) throws Exception {
+        setResumeInputProcessor(!helper.inUserErasing());
         benchmarkStart();
         helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);
         renderCurrentPage(helper);
