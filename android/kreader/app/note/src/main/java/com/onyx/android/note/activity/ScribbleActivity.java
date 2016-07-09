@@ -623,7 +623,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void drawErasingIndicator(final Canvas canvas, final Paint paint) {
-        if (erasePoint == null) {
+        if (erasePoint == null || erasePoint.getX() <= 0 || erasePoint.getY() <= 0) {
             return;
         }
 
