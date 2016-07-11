@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.scribble.request;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -13,6 +15,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -189,21 +192,32 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {
-        switch (bgType){
+        Resources res = getContext().getResources();
+        Bitmap bitmap = null;
+        paint.setColor(Color.BLACK);
+        switch (bgType) {
             case NoteBackgroundType.EMPTY:
                 break;
             case NoteBackgroundType.LINE:
-                //TODO:should use method to wrap code.
-                paint.setColor(Color.BLACK);
-                paint.setStrokeWidth(1.0f);
-                int max = 10;
-                for(int i = 0; i < max; ++i) {
-                    float y = i * canvas.getHeight() / max;
-                    canvas.drawLine(0, y, canvas.getWidth(), y, paint);
-                }
+                bitmap = BitmapFactory.decodeResource(res, R.drawable.scribble_back_ground_line);
+                canvas.drawBitmap(bitmap, 0, 0, paint);
+//                canvas.draw
+//                //TODO:should use method to wrap code.
+//                paint.setColor(Color.BLACK);
+//                paint.setStrokeWidth(1.0f);
+//                int max = 10;
+//                for(int i = 0; i < max; ++i) {
+//                    float y = i * canvas.getHeight() / max;
+//                    canvas.drawLine(0, y, canvas.getWidth(), y, paint);
+//                }
                 break;
             case NoteBackgroundType.GRID:
+                bitmap = BitmapFactory.decodeResource(res, R.drawable.scribble_back_ground_grid);
+                canvas.drawBitmap(bitmap, 0, 0, paint);
                 break;
+        }
+        if (bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
         }
     }
 
