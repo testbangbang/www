@@ -1,9 +1,6 @@
 package com.onyx.kreader.ui;
 
 import android.app.SearchManager;
-import android.content.ActivityNotFoundException;
-import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.*;
@@ -14,29 +11,27 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.OnyxDictionaryInfo;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-
-import com.onyx.kreader.common.*;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.dataprovider.Annotation;
-import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.android.sdk.scribble.data.NotePage;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
-import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.common.ReaderUserDataInfo;
+import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
@@ -45,6 +40,8 @@ import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
@@ -56,7 +53,9 @@ import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
-import com.onyx.kreader.utils.*;
+import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.kreader.utils.RectUtils;
+import com.onyx.kreader.utils.TreeObserverUtils;
 
 import java.util.List;
 
@@ -88,7 +87,6 @@ public class ReaderActivity extends ActionBarActivity {
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
 
     private ReaderSelectionManager selectionManager;
-    private PopupSelectionMenu popupSelectionMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -140,8 +138,14 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        ShowReaderMenuAction.resetReaderMenu();
+        resetMenus();
         super.onDestroy();
+    }
+
+    private void resetMenus() {
+        ShowReaderMenuAction.resetReaderMenu();
+        ShowSearchMenuAction.resetSearchMenu();
+        ShowTextSelectionMenuAction.resetSelectionMenu();
     }
 
     @Override
@@ -252,7 +256,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void highlight(float x1, float y1, float x2, float y2) {
-        hideTextSelectionPopupWindow(false);
+        ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(this, false);
     }
 
     public void selectWord(float x1, float y1, float x2, float y2, boolean b) {
@@ -924,139 +928,8 @@ public class ReaderActivity extends ActionBarActivity {
         new ToggleBookmarkAction(getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.On).execute(this);
     }
 
-    private void showHighlightSelectionDialog(int startY, int endY, PopupSelectionMenu.SelectionType type) {
-        switch (type){
-            case SingleWordType:
-                getTextSelectionPopupMenu().showTranslation();
-                break;
-            case MultiWordsType:
-                getTextSelectionPopupMenu().hideTranslation();
-                break;
-        }
-        getTextSelectionPopupMenu().show();
-        getTextSelectionPopupMenu().move(startY, endY);
-    }
-
-    public void hideTextSelectionPopupWindow(boolean clear) {
-        hideTextSelectionPopupWindow(clear, false);
-    }
-
-    public void hideTextSelectionPopupWindow(boolean clear, boolean instantRefresh) {
-        if (popupSelectionMenu == null) {
-            return;
-        }
-        popupSelectionMenu.hide();
-        if (clear) {
-            popupSelectionMenu = null;
-            handlerManager.resetToDefaultProvider();
-        }
-    }
-
-    private PopupSelectionMenu getTextSelectionPopupMenu() {
-        if (popupSelectionMenu == null) {
-            popupSelectionMenu = new PopupSelectionMenu(this, (RelativeLayout) findViewById(R.id.main_view), new PopupSelectionMenu.MenuCallback() {
-                @Override
-                public void resetSelection() {
-
-                }
-
-                @Override
-                public String getSelectionText() {
-                    return getReaderUserDataInfo().getHighlightResult().getText();
-                }
-
-                @Override
-                public void copy() {
-                    ReaderActivity.this.copyText(getSelectionText());
-                    closeMenu();
-                }
-
-                @Override
-                public void highLight() {
-                    ReaderActivity.this.addAnnotation("");
-                    closeMenu();
-                }
-
-                @Override
-                public void addAnnotation() {
-                    DialogAnnotation dialogAnnotation = new DialogAnnotation(ReaderActivity.this, DialogAnnotation.AnnotationAction.add, new DialogAnnotation.Callback() {
-                        @Override
-                        public void onAddAnnotation(String annotation) {
-                            ReaderActivity.this.addAnnotation(annotation);
-                            closeMenu();
-                        }
-
-                        @Override
-                        public void onUpdateAnnotation(String annotation) {
-
-                        }
-
-                        @Override
-                        public void onRemoveAnnotation() {
-
-                        }
-                    });
-                    dialogAnnotation.show();
-                }
-
-                @Override
-                public void showDictionary() {
-                    String text = getSelectionText();
-                    if (StringUtils.isNullOrEmpty(text)) {
-                        return;
-                    }
-                    ReaderActivity.this.lookupInDictionary(text);
-                    closeMenu();
-                }
-
-                @Override
-                public boolean supportSelectionMode() {
-                    return false;
-                }
-
-                @Override
-                public void closeMenu() {
-                    hideTextSelectionPopupWindow(true);
-                    redrawPage();
-                }
-            });
-        }
-        return popupSelectionMenu;
-    }
-
-    private void copyText(String text) {
-        ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-        if (clipboard != null) {
-            clipboard.setText(text);
-        }
-    }
-
-    private void addAnnotation(String note) {
-        ReaderSelection selection = getReaderUserDataInfo().getHighlightResult();
-        PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
-        new AddAnnotationAction(pageInfo, selection.getStartPosition(), selection.getEndPosition(),
-                selection.getRectangles(), selection.getText(), note).execute(this);
-    }
-
-    private void updateAnnotation(Annotation annotation, String note) {
-        PageInfo pageInfo = getReaderViewInfo().getPageInfo(annotation.getPosition());
-        new UpdateAnnotationAction(pageInfo, annotation, note).execute(this);
-    }
-
-    private void deleteAnnotation(Annotation annotation) {
-        new DeleteAnnotationAction(annotation).execute(this);
-    }
-
-    private void lookupInDictionary(final String text) {
-        OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
-        Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
-        intent.putExtra(info.dataKey, text);
-
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e ) {
-            e.printStackTrace();
-        }
+    private void showHighlightSelectionDialog(int x, int y, PopupSelectionMenu.SelectionType type) {
+        new ShowTextSelectionMenuAction(this, x, y, type).execute(this);
     }
 
     public boolean tryAnnotation(final float x, final float y) {
@@ -1069,33 +942,13 @@ public class ReaderActivity extends ActionBarActivity {
             for (Annotation annotation : annotations) {
                 for (RectF rect : annotation.getRectangles()) {
                     if (rect.contains(x, y)) {
-                        editAnnotationWithDialog(annotation);
+                        new ShowAnnotationEditDialogAction(annotation).execute(ReaderActivity.this);
                         return true;
                     }
                 }
             }
         }
         return false;
-    }
-
-    private void editAnnotationWithDialog(final Annotation annotation) {
-        DialogAnnotation dlg = new DialogAnnotation(ReaderActivity.this,
-                DialogAnnotation.AnnotationAction.update, annotation.getNote(), new DialogAnnotation.Callback() {
-            @Override
-            public void onAddAnnotation(String note) {
-            }
-
-            @Override
-            public void onUpdateAnnotation(String note) {
-                ReaderActivity.this.updateAnnotation(annotation, note);
-            }
-
-            @Override
-            public void onRemoveAnnotation() {
-                ReaderActivity.this.deleteAnnotation(annotation);
-            }
-        });
-        dlg.show();
     }
 
 }
