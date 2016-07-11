@@ -20,6 +20,7 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class NoteViewHelper {
     private RawInputProcessor.InputCallback callback;
     private PenState penState;
     private TouchPointList erasePoints;
+    private DeviceConfig deviceConfig;
 
 
     public void reset(final View view) {
@@ -98,6 +100,7 @@ public class NoteViewHelper {
     }
 
     private void initRawResource(final Context context) {
+        deviceConfig = DeviceConfig.sharedInstance(context, "note");
     }
 
     private void initWithSurfaceView(final SurfaceView view) {
@@ -138,39 +141,13 @@ public class NoteViewHelper {
         callback = c;
     }
 
-    private float getEpdWidth() {
-        final float epdWidth = 1200;
-        return epdWidth;
-    }
-
-    private float getEpdHeight() {
-        final float epdHeight = 825;
-        return epdHeight;
-    }
-
-    private int getEpdOrientation() {
-        return 90;
-    }
-
-    private int getTouchOrientation() {
-        return 90;
-    }
-
-    private int getTouchWidth() {
-        return 8192;
-    }
-
-    private int getTouchHeight() {
-        return 6144;
-    }
-
     // matrix from input touch panel to system view with correct orientation.
     private void updateScreenMatrix() {
         final Matrix screenMatrix = new Matrix();
-        screenMatrix.postRotate(getEpdOrientation());
-        screenMatrix.postTranslate(getEpdHeight(), 0);
-        screenMatrix.preScale((float) getEpdWidth() / (float) getTouchWidth(),
-                (float) getEpdHeight() / (float) getTouchHeight());
+        screenMatrix.postRotate(deviceConfig.getEpdPostOrientation());
+        screenMatrix.postTranslate(deviceConfig.getEpdPostTx(), deviceConfig.getEpdPostTy());
+        screenMatrix.preScale(deviceConfig.getEpdWidth() / deviceConfig.getTouchWidth(),
+                deviceConfig.getEpdHeight() / deviceConfig.getTouchHeight());
         rawInputProcessor.setScreenMatrix(screenMatrix);
     }
 
@@ -186,8 +163,8 @@ public class NoteViewHelper {
     // matrix from android view to epd.
     private Matrix matrixFromViewToEpd() {
         final Matrix matrix = new Matrix();
-        matrix.postRotate(360 - getEpdOrientation());
-        matrix.postTranslate(0, getEpdHeight());
+        matrix.postRotate(deviceConfig.getViewPostOrientation());
+        matrix.postTranslate(deviceConfig.getViewPostTx(), deviceConfig.getViewPostTy());
         return matrix;
     }
 
