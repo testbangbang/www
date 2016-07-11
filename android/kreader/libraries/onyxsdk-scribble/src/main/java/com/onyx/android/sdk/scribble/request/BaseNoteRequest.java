@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.request;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -13,6 +14,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -188,21 +190,26 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {
-        switch (bgType){
+        int bgResID = 0;
+        switch (bgType) {
             case NoteBackgroundType.EMPTY:
-                break;
+                return;
             case NoteBackgroundType.LINE:
-                //TODO:should use method to wrap code.
-                paint.setColor(Color.BLACK);
-                paint.setStrokeWidth(1.0f);
-                int max = 10;
-                for(int i = 0; i < max; ++i) {
-                    float y = i * canvas.getHeight() / max;
-                    canvas.drawLine(0, y, canvas.getWidth(), y, paint);
-                }
+                bgResID = R.drawable.scribble_back_ground_line;
                 break;
             case NoteBackgroundType.GRID:
+                bgResID = R.drawable.scribble_back_ground_grid;
                 break;
+        }
+        drawBackgroundResource(canvas, paint, bgResID);
+
+    }
+
+    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resID);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        if (!bitmap.isRecycled()) {
+            bitmap.recycle();
         }
     }
 
