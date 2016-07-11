@@ -5,10 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -36,6 +34,7 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.RawInputProcessor;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
@@ -79,7 +78,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     PenColorPopupMenu penColorPopupMenu;
     private ImageView addPageBtn, changeBGBtn, prevPage, nextPage, penColorBtn;
     private Button pageIndicator;
-    private MotionEvent erasePoint = null;
+    private TouchPoint erasePoint = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -306,11 +305,20 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onBeginErasing() {
-        flushWithCallback(true, false, null);
+        flushWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                erasePoint = new TouchPoint();
+            }
+        });
     }
 
     private void onErasing(final MotionEvent touchPoint) {
-        erasePoint = touchPoint;
+        if (erasePoint == null) {
+            return;
+        }
+        erasePoint.x = touchPoint.getX();
+        erasePoint.y = touchPoint.getY();
         drawPage();
     }
 
@@ -495,7 +503,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onEraseClicked() {
-        flushWithCallback(true, false, null);
+        flushWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final ChangePenStateAction changePenStateAction = new ChangePenStateAction(NoteViewHelper.PenState.PEN_USER_ERASING);
+                changePenStateAction.execute(ScribbleActivity.this, null);
+            }
+        });
     }
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
@@ -613,7 +627,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void drawErasingIndicator(final Canvas canvas, final Paint paint) {
-        if (erasePoint == null) {
+        if (erasePoint == null || erasePoint.getX() <= 0 || erasePoint.getY() <= 0) {
             return;
         }
 

@@ -12,6 +12,7 @@ import com.raizlabs.android.dbflow.config.DatabaseConfig;
 import com.raizlabs.android.dbflow.runtime.DBBatchSaveQueue;
 import com.raizlabs.android.dbflow.structure.database.transaction.DefaultTransactionManager;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,6 +120,9 @@ public class NotePage {
     }
 
     public void removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius) {
+        if (touchPointList == null) {
+            return;
+        }
         Map<String, Shape> hitShapes = new HashMap<>();
         for(Shape shape : shapeList) {
             for(TouchPoint touchPoint : touchPointList.getPoints()) {

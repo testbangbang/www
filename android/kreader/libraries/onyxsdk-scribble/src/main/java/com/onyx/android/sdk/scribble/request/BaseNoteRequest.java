@@ -138,7 +138,9 @@ public class BaseNoteRequest extends BaseRequest {
             @Override
             public void run() {
                 if (isRender()) {
-                    helper.copyBitmap();
+                    synchronized (helper) {
+                        helper.copyBitmap();
+                    }
                 }
                 helper.enableScreenPost();
                 if (getCallback() != null) {
@@ -165,30 +167,27 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void renderVisiblePages(final NoteViewHelper parent) {
-        Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
-        bitmap.eraseColor(Color.WHITE);
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
+        synchronized (parent) {
+            Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
+            bitmap.eraseColor(Color.WHITE);
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint();
+            paint.setColor(Color.BLACK);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setAntiAlias(true);
+            paint.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
 
-        drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
-        final Matrix renderMatrix = new Matrix();
+            drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
+            final Matrix renderMatrix = new Matrix();
 
-        for(PageInfo page: getVisiblePages()) {
-            final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-            notePage.render(canvas, paint, renderMatrix, new NotePage.RenderCallback() {
-                @Override
-                public boolean isRenderAbort() {
-                    return isAbort();
-                }
-            });
+            for (PageInfo page : getVisiblePages()) {
+                final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
+                notePage.render(canvas, paint, renderMatrix, null);
+            }
+
+            // draw test path.
+            drawRandomTestPath(canvas, paint);
         }
-
-        // draw test path.
-        drawRandomTestPath(canvas, paint);
     }
 
     private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {

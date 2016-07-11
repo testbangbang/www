@@ -20,7 +20,7 @@ public class PageFlushRequest extends BaseNoteRequest {
 
     public PageFlushRequest(final List<Shape> list, boolean r, boolean resume) {
         shapeList.addAll(list);
-        setRender(r);
+        setRender(shapeList.size() > 0);
         setPauseInputProcessor(true);
         setResumeInputProcessor(resume);
     }
