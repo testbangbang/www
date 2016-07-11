@@ -26,6 +26,9 @@ public class PageFlushRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
+        if (!helper.getNoteDocument().isOpen()) {
+            return;
+        }
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
         renderCurrentPage(helper);
         saveDocument(helper);
