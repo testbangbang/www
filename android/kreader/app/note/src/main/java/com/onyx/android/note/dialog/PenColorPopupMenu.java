@@ -39,6 +39,7 @@ public class PenColorPopupMenu extends PopupWindow {
                 context.getResources().getDimensionPixelSize(R.dimen.pen_color_popup_height));
         setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
         setOutsideTouchable(true);
+        setFocusable(true);
         this.callback = menuCallback;
         this.parentView = parentView;
         this.displayLocX = locX;
