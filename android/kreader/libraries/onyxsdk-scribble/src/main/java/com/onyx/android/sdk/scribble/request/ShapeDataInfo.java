@@ -15,6 +15,7 @@ public class ShapeDataInfo {
     private float eraserRadius;
     private float strokeWidth;
     private int strokeColor;
+    private boolean inUserErasing;
 
     public final PageNameList getPageNameList() {
         return pageNameList;
@@ -85,5 +86,11 @@ public class ShapeDataInfo {
         this.strokeColor = strokeColor;
     }
 
+    public boolean isInUserErasing() {
+        return inUserErasing;
+    }
 
+    public void setInUserErasing(boolean inUserErasing) {
+        this.inUserErasing = inUserErasing;
+    }
 }

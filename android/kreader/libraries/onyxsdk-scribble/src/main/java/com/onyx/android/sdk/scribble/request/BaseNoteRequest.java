@@ -264,6 +264,7 @@ public class BaseNoteRequest extends BaseRequest {
         getShapeDataInfo().setStrokeColor(parent.getNoteDocument().getStrokeColor());
         getShapeDataInfo().setBackground(parent.getNoteDocument().getBackground());
         getShapeDataInfo().setEraserRadius(parent.getNoteDocument().getEraserRadius());
+        getShapeDataInfo().setInUserErasing(parent.inUserErasing());
     }
 
     public void ensureDocumentOpened(final NoteViewHelper parent) {

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.*;
+import com.onyx.android.note.receiver.DeviceReceiver;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
@@ -79,6 +80,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private ImageView addPageBtn, changeBGBtn, prevPage, nextPage, penColorBtn;
     private Button pageIndicator;
     private TouchPoint erasePoint = null;
+    private ShapeDataInfo shapeDataInfo;
+    private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +89,37 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
+        registerDeviceReceiver();
     }
 
     public NoteViewHelper getNoteViewHelper() {
         return NoteApplication.getNoteViewHelper();
+    }
+
+    private void registerDeviceReceiver() {
+        deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
+             @Override
+             public void onSystemUIChanged(String type, boolean open) {
+                 if (open) {
+                     onSystemUIOpened();
+                 } else {
+                     onSystemUIClosed();
+                 }
+             }
+        });
+        deviceReceiver.registerReceiver(this);
+    }
+
+    private void unregisterDeviceReceiver() {
+        deviceReceiver.unregisterReceiver(this);
+    }
+
+    private void onSystemUIOpened() {
+        flushWithCallback(true, false, null);
+    }
+
+    private void onSystemUIClosed() {
+        flushWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
     }
 
     @Override
@@ -332,6 +362,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterDeviceReceiver();
         flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -575,7 +606,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void updateDataInfo(final BaseNoteRequest request) {
-        final ShapeDataInfo shapeDataInfo = request.getShapeDataInfo();
+        shapeDataInfo = request.getShapeDataInfo();
         int currentPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
         int pageCount = shapeDataInfo.getPageCount();
         pageIndicator.setText(currentPageIndex + File.separator + pageCount);
