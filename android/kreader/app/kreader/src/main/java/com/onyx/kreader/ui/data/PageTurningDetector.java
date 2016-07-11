@@ -23,7 +23,7 @@ public abstract class PageTurningDetector {
             return PageTurningDirection.None;
         }
 
-        return deltaY < 0 ? PageTurningDirection.Left : PageTurningDirection.Right;
+        return deltaY > 0 ? PageTurningDirection.Left : PageTurningDirection.Right;
     }
 
     public static PageTurningDirection detectBothAxisTuring(Context context, int deltaX, int deltaY) {
