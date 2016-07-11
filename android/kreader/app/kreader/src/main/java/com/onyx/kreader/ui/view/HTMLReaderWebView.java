@@ -13,6 +13,8 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import com.onyx.kreader.ui.data.PageTurningDetector;
+import com.onyx.kreader.ui.data.PageTurningDirection;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -201,31 +203,26 @@ public class HTMLReaderWebView extends WebView
                     float y = event.getY();
 
                     if (pageTurnType == PAGE_TURN_TYPE_HORIZOTAL) {
-                        if (x - mX > pageTurnThreshold) {
+                        PageTurningDirection direction = PageTurningDetector.detectHorizontalTuring(getContext(), (int)(x - mX));
+                        if (direction == PageTurningDirection.Left) {
                             prevPage();
-                        } else if (mX - x > pageTurnThreshold) {
+                        } else if (direction == PageTurningDirection.Right) {
                             nextPage();
                         }
 
                     } else if (pageTurnType == PAGE_TURN_TYPE_VERTICAL) {
-                        if (y - mY > pageTurnThreshold) {
+                        PageTurningDirection direction = PageTurningDetector.detectVerticalTuring(getContext(), (int)(y - mY));
+                        if (direction == PageTurningDirection.Left) {
                             prevPage();
-                        } else if (mY - y > pageTurnThreshold) {
+                        } else if (direction == PageTurningDirection.Right) {
                             nextPage();
                         }
                     } else if (pageTurnType == (PAGE_TURN_TYPE_VERTICAL & PAGE_TURN_TYPE_HORIZOTAL)) {
-                        if (Math.abs(x - mX) > Math.abs(y - mY)) {
-                            if (x - mX > pageTurnThreshold) {
-                                prevPage();
-                            } else if (mX - x > pageTurnThreshold) {
-                                nextPage();
-                            }
-                        } else {
-                            if (y - mY > pageTurnThreshold) {
-                                prevPage();
-                            } else if (mY - y > pageTurnThreshold) {
-                                nextPage();
-                            }
+                        PageTurningDirection direction = PageTurningDetector.detectVerticalTuring(getContext(), (int)(y - mY));
+                        if (direction == PageTurningDirection.Left) {
+                            prevPage();
+                        } else if (direction == PageTurningDirection.Right) {
+                            nextPage();
                         }
                     }
                     break;
