@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.scribble.request;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -191,31 +190,25 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {
-        Resources res = getContext().getResources();
-        Bitmap bitmap = null;
-        paint.setColor(Color.BLACK);
+        int bgResID = 0;
         switch (bgType) {
             case NoteBackgroundType.EMPTY:
-                break;
+                return;
             case NoteBackgroundType.LINE:
-                bitmap = BitmapFactory.decodeResource(res, R.drawable.scribble_back_ground_line);
-                canvas.drawBitmap(bitmap, 0, 0, paint);
-//                canvas.draw
-//                //TODO:should use method to wrap code.
-//                paint.setColor(Color.BLACK);
-//                paint.setStrokeWidth(1.0f);
-//                int max = 10;
-//                for(int i = 0; i < max; ++i) {
-//                    float y = i * canvas.getHeight() / max;
-//                    canvas.drawLine(0, y, canvas.getWidth(), y, paint);
-//                }
+                bgResID = R.drawable.scribble_back_ground_line;
                 break;
             case NoteBackgroundType.GRID:
-                bitmap = BitmapFactory.decodeResource(res, R.drawable.scribble_back_ground_grid);
-                canvas.drawBitmap(bitmap, 0, 0, paint);
+                bgResID = R.drawable.scribble_back_ground_grid;
                 break;
         }
-        if (bitmap != null && !bitmap.isRecycled()) {
+        drawBackgroundResource(canvas, paint, bgResID);
+
+    }
+
+    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resID);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        if (!bitmap.isRecycled()) {
             bitmap.recycle();
         }
     }
