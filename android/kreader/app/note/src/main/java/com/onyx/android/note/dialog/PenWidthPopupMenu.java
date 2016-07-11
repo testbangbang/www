@@ -42,6 +42,7 @@ public class PenWidthPopupMenu extends PopupWindow {
                 ViewGroup.LayoutParams.WRAP_CONTENT, context.getResources().getDimensionPixelSize(R.dimen.pen_width_popup_height));
         setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
         setOutsideTouchable(true);
+        setFocusable(true);
         TextView minValueIndicator, maxValueIndicator;
         this.callback = menuCallback;
         this.currentValue = curValue;

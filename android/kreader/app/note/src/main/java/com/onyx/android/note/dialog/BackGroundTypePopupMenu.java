@@ -40,6 +40,7 @@ public class BackGroundTypePopupMenu extends PopupWindow {
                 context.getResources().getDimensionPixelSize(R.dimen.note_bg_popup_width), context.getResources().getDimensionPixelSize(R.dimen.note_bg_popup_height));
         setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
         setOutsideTouchable(true);
+        setFocusable(true);
         this.callback = menuCallback;
         this.currentBackground = curBackGround;
         this.parentView = parentView;
