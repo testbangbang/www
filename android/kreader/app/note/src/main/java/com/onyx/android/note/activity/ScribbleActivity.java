@@ -89,7 +89,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
-        registerDeviceReceiver();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -98,14 +97,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void registerDeviceReceiver() {
         deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
-             @Override
-             public void onSystemUIChanged(String type, boolean open) {
-                 if (open) {
-                     onSystemUIOpened();
-                 } else {
-                     onSystemUIClosed();
-                 }
-             }
+            @Override
+            public void onSystemUIChanged(String type, boolean open) {
+                if (open) {
+                    onSystemUIOpened();
+                } else {
+                    onSystemUIClosed();
+                }
+            }
         });
         deviceReceiver.registerReceiver(this);
     }
@@ -125,6 +124,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        registerDeviceReceiver();
         updateColorIndicator();
         initSurfaceView();
     }
@@ -363,19 +363,19 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterDeviceReceiver();
-        flushWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                getNoteViewHelper().quit();
-            }
-        });
-
+        flushWithCallback(true, false, null);
     }
 
     @Override
     protected void onDestroy() {
         cleanUpAllPopMenu();
         clearSurfaceView();
+        flushWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getNoteViewHelper().quit();
+            }
+        });
         super.onDestroy();
     }
 
