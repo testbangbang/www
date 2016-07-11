@@ -332,7 +332,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        getNoteViewHelper().quit();
+        flushWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getNoteViewHelper().quit();
+            }
+        });
+
     }
 
     @Override
