@@ -23,7 +23,6 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/image_border"
         android:padding="1dp"
-        android:scaleType="fitXY"
         android:src="@drawable/unknown_application" />
 
     <CheckBox
@@ -31,7 +30,7 @@
         style="@style/MX.CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:clickable="false"
         android:focusable="false"
         android:visibility="invisible" />

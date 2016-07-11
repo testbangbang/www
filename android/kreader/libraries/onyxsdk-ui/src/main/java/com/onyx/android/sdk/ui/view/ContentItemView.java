@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Checkable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.data.GAdapterUtil;
@@ -28,7 +29,7 @@ import java.util.Map;
  * Date: 3/16/14
  * Time: 12:21 PM
  */
-public final class ContentItemView extends RelativeLayout {
+public final class ContentItemView extends LinearLayout {
     private GObject dataObject;
     private int layoutResourceId;
     private Map<String, Integer> dataLayoutMapping;
@@ -106,7 +107,7 @@ public final class ContentItemView extends RelativeLayout {
             return;
         }
         View view = inflater.inflate(resourceId, this, false);
-        ((RelativeLayout.LayoutParams)view.getLayoutParams()).addRule(CENTER_IN_PARENT);
+        ((LayoutParams) view.getLayoutParams()).gravity = Gravity.CENTER;
         addView(view);
     }
 

@@ -111,6 +111,10 @@ public abstract class EpdController
         Device.currentDevice().setStrokeWidth(width);
     }
 
+    public static void setStrokeColor(int color) {
+        Device.currentDevice().setStrokeColor(color);
+    }
+
     public static void setScreenHandWritingPenState(View view, int penState) {
         Device.currentDevice().setScreenHandWritingPenState(view, penState);
     }

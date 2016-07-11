@@ -1,10 +1,13 @@
 package com.onyx.android.note.activity;
 
 import android.content.Intent;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.text.method.Touch;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -17,10 +20,11 @@ import android.widget.TextView;
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.*;
-import com.onyx.android.note.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
+import com.onyx.android.note.dialog.PenColorPopupMenu;
 import com.onyx.android.note.dialog.PenWidthPopupMenu;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -35,11 +39,11 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,6 +52,7 @@ import java.util.List;
  * when any button clicked, flush at first and render page, after that always switch to drawing state.
  */
 public class ScribbleActivity extends OnyxAppCompatActivity {
+    static final String TAG = ScribbleActivity.class.getSimpleName();
     static final String TAG_NOTE_TITLE = "note_title";
 
     private SurfaceView surfaceView;
@@ -57,28 +62,30 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @PenType.PenTypeDef
     int currentPenType = PenType.PENCIL;
     @NoteBackgroundType.NoteBackgroundDef
+    private
     int currentNoteBackground = NoteBackgroundType.EMPTY;
-    float eraserRadius;
-    //TODO:just as psd value.
-    int minPenWidth = 15;
-    int maxPenWidth = 40;
-    int currentPenWidth = 32;
+    private float eraserRadius;
+    //TODO:just as psd value(minValue 15/5 ->3,add 25 level).
+    private int minPenWidth = 1;
+    private int maxPenWidth = 20;
+    private int currentPenWidth = 1;
+    private int currentPenColor = Color.BLACK;
     private TextView titleTextView;
     private ContentView penStyleContentView;
     private GAdapter adapter;
-    PenWidthPopupMenu penWidthPopupMenu;
-    BackGroundTypePopupMenu bgTypePopupMenu;
-    private ImageView addPageBtn, changeBGBtn, prevPage, nextPage;
+    private PenWidthPopupMenu penWidthPopupMenu;
+    private BackGroundTypePopupMenu bgTypePopupMenu;
+    PenColorPopupMenu penColorPopupMenu;
+    private ImageView addPageBtn, changeBGBtn, prevPage, nextPage, penColorBtn;
     private Button pageIndicator;
-    private PointF erasePoint = null;
-
+    private TouchPoint erasePoint = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
-        initView();
+        initToolbarButtons();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -88,15 +95,17 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateColorIndicator();
         initSurfaceView();
     }
 
-    private void initView() {
+    private void initToolbarButtons() {
         titleTextView = (TextView) findViewById(R.id.note_title);
         addPageBtn = (ImageView) findViewById(R.id.button_new_page);
         changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
         prevPage = (ImageView) findViewById(R.id.button_previous_page);
-        nextPage = (ImageView) findViewById(R.id.button_new_page);
+        nextPage = (ImageView) findViewById(R.id.button_next_page);
+        penColorBtn = (ImageView) findViewById(R.id.color_indicator);
         //TODO:update page status by this widget.
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         penStyleContentView = (ContentView) findViewById(R.id.pen_style_content_view);
@@ -116,8 +125,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             }
         });
         penStyleContentView.setupContent(1, 6, getPenStyleAdapter(), 0);
-
-
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,6 +149,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 onNextPage();
             }
         });
+        penColorBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onColorClicked();
+            }
+        });
     }
 
     private void invokePenStyleCallBack(int penType) {
@@ -154,19 +167,18 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             case PenType.FOUNTAIN_PEN:
                 break;
             case PenType.BRUSH:
-
                 break;
             case PenType.RULER:
-                onAddNewPage();
+                onRulerClicked();
                 break;
             case PenType.ERASER:
-                onNextPage();
+                onEraseClicked();
                 break;
         }
     }
 
     private void showBGSetupWindow() {
-        flushWithCallback(true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (bgTypePopupMenu == null) {
@@ -186,13 +198,18 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                     bgTypePopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
-                            resumeDrawing();
+                            onBackgroundChanged(currentNoteBackground);
                         }
                     });
                 }
                 bgTypePopupMenu.show();
             }
         });
+    }
+
+    private void onBackgroundChanged(int newBackground) {
+        final NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(newBackground);
+        changeBGAction.execute(ScribbleActivity.this, null);
     }
 
     private HashMap<String, Integer> getItemViewDataMap() {
@@ -220,7 +237,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                drawPage();
+                clearSurfaceView();
                 getNoteViewHelper().setView(ScribbleActivity.this, surfaceView, inputCallback());
                 handleActivityIntent(getIntent());
             }
@@ -261,8 +278,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             }
 
             @Override
-            public void onNewTouchPointListReceived(TouchPointList pointList) {
-                ScribbleActivity.this.onNewTouchPointListReceived(pointList);
+            public void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+                ScribbleActivity.this.onNewTouchPointListReceived(shape, pointList);
             }
 
             @Override
@@ -282,28 +299,32 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         };
     }
 
-    private void onNewTouchPointListReceived(TouchPointList pointList) {
-        final List<Shape> stash = getNoteViewHelper().deatchStash();
-        final RenderInBackgroundAction<ScribbleActivity> action = new RenderInBackgroundAction<>(stash);
-        action.execute(this, null);
+    private void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+        //final AddShapeInBackgroundAction<ScribbleActivity> action = new AddShapeInBackgroundAction<>(shape);
+        //action.execute(this, null);
     }
 
-    static final String TAG = "###########";
     private void onBeginErasing() {
-        erasePoint = new PointF();
-        getNoteViewHelper().stopDrawing();
+        flushWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                erasePoint = new TouchPoint();
+            }
+        });
     }
 
     private void onErasing(final MotionEvent touchPoint) {
         if (erasePoint == null) {
-            erasePoint = new PointF();
+            return;
         }
-        erasePoint.set(touchPoint.getX(), touchPoint.getY());
+        erasePoint.x = touchPoint.getX();
+        erasePoint.y = touchPoint.getY();
         drawPage();
     }
 
     private void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
+        drawPage();
         RemoveByPointListAction<ScribbleActivity> removeByPointListAction = new RemoveByPointListAction<>(pointList);
         removeByPointListAction.execute(this, null);
     }
@@ -311,12 +332,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        getNoteViewHelper().stop();
+        getNoteViewHelper().quit();
     }
 
     @Override
     protected void onDestroy() {
         cleanUpAllPopMenu();
+        clearSurfaceView();
         super.onDestroy();
     }
 
@@ -327,12 +349,15 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         if (bgTypePopupMenu != null && bgTypePopupMenu.isShowing()) {
             bgTypePopupMenu.dismiss();
         }
+        if (penColorPopupMenu != null && penColorPopupMenu.isShowing()) {
+            penColorPopupMenu.dismiss();
+        }
         penWidthPopupMenu = null;
         bgTypePopupMenu = null;
     }
 
     public void onBackPressed() {
-        getNoteViewHelper().stopDrawing();
+        getNoteViewHelper().pauseDrawing();
         if (Utils.ACTION_CREATE.equals(activityAction)) {
             saveNewNoteDocument();
         } else {
@@ -350,8 +375,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(String input) {
-                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(input);
-                closeAction.execute(ScribbleActivity.this, null);
+                onDocumentClose(input);
                 return true;
             }
 
@@ -367,7 +391,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 discardAction.execute(ScribbleActivity.this, null);
             }
         });
-        flushWithCallback(true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dialogNoteNameInput.show(getFragmentManager());
@@ -375,8 +399,18 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         });
     }
 
+    private void onDocumentClose(final String title) {
+        flushWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(title);
+                closeAction.execute(ScribbleActivity.this, null);
+            }
+        });
+    }
+
     private void saveExistingNoteDocument() {
-        flushWithCallback(true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(noteTitle);
@@ -386,11 +420,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onPencilClicked() {
-        flushWithCallback(true, null);
+        flushWithCallback(true, true, null);
     }
 
     private void onRulerClicked() {
-        flushWithCallback(true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (penWidthPopupMenu == null) {
@@ -400,13 +434,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
                         @Override
                         public void onValueChanged(int newValue) {
-
+                            currentPenWidth = newValue;
+                            penWidthPopupMenu.dismiss();
                         }
                     });
                     penWidthPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
-                            resumeDrawing();
+                            onStrokeWidthChanged(currentPenWidth);
                         }
                     });
                 }
@@ -415,8 +450,66 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         });
     }
 
+    private void onStrokeWidthChanged(final int newWidth) {
+        flushWithCallback(true, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                NoteStrokeWidthChangeAction action = new NoteStrokeWidthChangeAction(newWidth);
+                action.execute(ScribbleActivity.this, null);
+            }
+        });
+    }
+
+    private void onColorClicked() {
+        flushWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (penColorPopupMenu == null) {
+                    penColorPopupMenu = new PenColorPopupMenu(ScribbleActivity.this,
+                            getLayoutInflater(),
+                            getWindow().getDecorView(),
+                            penColorBtn.getLeft() + (penColorBtn.getWidth() / 2) - (getResources().getDimensionPixelSize(R.dimen.pen_color_popup_width) / 2),
+                            getWindow().getDecorView().getHeight() -
+                                    getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
+                                    getResources().getDimensionPixelSize(R.dimen.pen_color_popup_height) - 10,
+                            new PenColorPopupMenu.PopupMenuCallback() {
+                                @Override
+                                public void onPenColorChanged(int newPenColor) {
+                                    currentPenColor = newPenColor;
+                                    penColorPopupMenu.dismiss();
+                                    updateColorIndicator();
+                                }
+                            });
+                    penColorPopupMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                        @Override
+                        public void onDismiss() {
+                            onColorChange(currentPenColor);
+                        }
+                    });
+                }
+                penColorPopupMenu.show();
+            }
+        });
+    }
+
+    private void onColorChange(final int currentPenColor){
+        flushWithCallback(true, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final ChangePenColorAction changePenColorAction = new ChangePenColorAction(currentPenColor);
+                changePenColorAction.execute(ScribbleActivity.this, null);
+            }
+        });
+    }
+
     private void onEraseClicked() {
-        flushWithCallback(true, null);
+        flushWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final ChangePenStateAction changePenStateAction = new ChangePenStateAction(NoteViewHelper.PenState.PEN_USER_ERASING);
+                changePenStateAction.execute(ScribbleActivity.this, null);
+            }
+        });
     }
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
@@ -429,18 +522,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         action.execute(this, null);
     }
 
-    private void flushWithCallback(boolean render, final BaseCallback callback) {
+    private void flushWithCallback(boolean render, boolean resume, final BaseCallback callback) {
         final List<Shape> stash = getNoteViewHelper().deatchStash();
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, render, false);
+        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash, render, resume);
         action.execute(this, callback);
     }
 
-    private void resumeDrawing() {
-        getNoteViewHelper().startDrawing();
-    }
-
     private void onAddNewPage() {
-        flushWithCallback(false, new BaseCallback() {
+        flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
@@ -450,7 +539,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onNextPage() {
-        flushWithCallback(false, new BaseCallback() {
+        flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
@@ -460,7 +549,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onPrevPage() {
-        flushWithCallback(false, new BaseCallback() {
+        flushWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
@@ -470,6 +559,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
+        if (request.isAbort()) {
+            return;
+        }
         updateDataInfo(request);
         if (updatePage) {
             drawPage();
@@ -480,9 +572,22 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         final ShapeDataInfo shapeDataInfo = request.getShapeDataInfo();
         int currentPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
         int pageCount = shapeDataInfo.getPageCount();
-        pageIndicator.setText(currentPageIndex + " / " + pageCount);
+        pageIndicator.setText(currentPageIndex + File.separator + pageCount);
         currentNoteBackground = shapeDataInfo.getBackground();
+        currentPenWidth = (int) shapeDataInfo.getStrokeWidth();
         eraserRadius = shapeDataInfo.getEraserRadius();
+    }
+
+    private void clearSurfaceView() {
+        Rect rect = getViewportSize();
+        Canvas canvas = beforeDraw(rect);
+        if (canvas == null) {
+            return;
+        }
+
+        Paint paint = new Paint();
+        cleanup(canvas, paint, rect);
+        afterDraw(canvas);
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
@@ -515,23 +620,19 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void drawContent(final Canvas canvas, final Paint paint) {
-        long ts = System.currentTimeMillis();
-        Bitmap bitmap = getNoteViewHelper().getShapeBitmap();
+        Bitmap bitmap = getNoteViewHelper().getViewBitmap();
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, 0, 0, paint);
         }
-        long end = System.currentTimeMillis();
     }
 
     private void drawErasingIndicator(final Canvas canvas, final Paint paint) {
-        if (erasePoint == null) {
+        if (erasePoint == null || erasePoint.getX() <= 0 || erasePoint.getY() <= 0) {
             return;
         }
 
-
-        float x = erasePoint.x;
-        float y = erasePoint.y;
-        Log.e(TAG, "drawing erasing indicator: " + x + " " + y);
+        float x = erasePoint.getX();
+        float y = erasePoint.getY();
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
@@ -550,5 +651,40 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             object.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
         }
         return object;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+                onNextPage();
+                return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
+                onPrevPage();
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void updateColorIndicator() {
+        int targetColorIconRes;
+        switch (currentPenColor) {
+            case Color.BLACK:
+                targetColorIconRes = R.drawable.ic_business_write_color_black_black_46dp;
+                break;
+            case Color.LTGRAY:
+                targetColorIconRes = R.drawable.ic_business_write_color_gray_1_gray_46dp;
+                break;
+            case Color.GRAY:
+                targetColorIconRes = R.drawable.ic_business_write_color_gray_2_gray_46dp;
+                break;
+            case Color.WHITE:
+                targetColorIconRes = R.drawable.ic_business_write_color_white_46dp;
+                break;
+            default:
+                targetColorIconRes = R.drawable.ic_business_write_color_black_black_46dp;
+                break;
+        }
+        penColorBtn.setImageResource(targetColorIconRes);
     }
 }

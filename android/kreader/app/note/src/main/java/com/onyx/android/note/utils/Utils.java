@@ -102,6 +102,9 @@ public class Utils {
 
     public static GAdapter adapterFromNoteModelList(final List<NoteModel> noteModelList, final int folderRes, final int docRes) {
         GAdapter adapter = new GAdapter();
+        if (noteModelList == null) {
+            return adapter;
+        }
         for (NoteModel model : noteModelList) {
             adapter.addObject(createNoteItem(model, folderRes, docRes));
         }

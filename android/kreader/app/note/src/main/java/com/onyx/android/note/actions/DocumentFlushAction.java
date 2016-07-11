@@ -19,7 +19,9 @@ public class DocumentFlushAction<T extends ScribbleActivity> extends BaseNoteAct
     private volatile boolean render;
 
     public DocumentFlushAction(final List<Shape> list, boolean r, boolean resume) {
-        shapeList.addAll(list);
+        if (list != null) {
+            shapeList.addAll(list);
+        }
         render = r;
         resumeDrawing = resume;
     }

@@ -667,10 +667,12 @@ public class ContentView extends RelativeLayout {
         int cols = getGridColumnCount();
         gridLayout.removeAllViews();
         gridLayout.setAlignmentMode(GridLayout.ALIGN_MARGINS);
+        GObject item = dummyObject;
+        int itemWidth = width / gridLayout.getColumnCount();
+        int itemHeight = height / gridLayout.getRowCount();
         for (int i = gridLayout.getChildCount(); i < rows * cols; ++i) {
             int row = i / cols;
             int col = i % cols;
-            GObject item = dummyObject;
             ContentItemView itemView = ContentItemView.create(inflater, item, itemViewResourceId, dataToViewMapping, styleLayoutList);
             if (hyphenCallback != null) {
                 itemView.setHyphenCallback(hyphenCallback);
@@ -678,8 +680,8 @@ public class ContentView extends RelativeLayout {
             GridLayout.Spec rowSpec = GridLayout.spec(row);
             GridLayout.Spec columnSpec = GridLayout.spec(col);
             GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
-            params.width = width / gridLayout.getColumnCount();
-            params.height = height / gridLayout.getRowCount();
+            params.width = itemWidth;
+            params.height = itemHeight;
             params.setGravity(Gravity.FILL);
             gridLayout.addView(itemView, i, params);
         }
@@ -689,10 +691,12 @@ public class ContentView extends RelativeLayout {
         int rows = getGridRowCount();
         int cols = getGridColumnCount();
         gridLayout.setAlignmentMode(GridLayout.ALIGN_MARGINS);
+        GObject item = dummyObject;
+        int itemWidth = gridLayout.getMeasuredWidth() / gridLayout.getColumnCount();
+        int itemHeight =  gridLayout.getMeasuredHeight() / gridLayout.getRowCount();
         for (int i = gridLayout.getChildCount(); i < rows * cols; ++i) {
             int row = i / cols;
             int col = i % cols;
-            GObject item = dummyObject;
             ContentItemView itemView = ContentItemView.create(inflater, item, itemViewResourceId, dataToViewMapping, styleLayoutList);
             if (hyphenCallback != null) {
                 itemView.setHyphenCallback(hyphenCallback);
@@ -700,8 +704,8 @@ public class ContentView extends RelativeLayout {
             GridLayout.Spec rowSpec = GridLayout.spec(row);
             GridLayout.Spec columnSpec = GridLayout.spec(col);
             GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
-            params.width = gridLayout.getMeasuredWidth() / gridLayout.getColumnCount();
-            params.height = gridLayout.getMeasuredHeight() / gridLayout.getRowCount();
+            params.width = itemWidth;
+            params.height = itemHeight;
             params.setGravity(Gravity.FILL);
             gridLayout.addView(itemView, i, params);
         }

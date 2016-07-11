@@ -67,9 +67,9 @@ public class ShapeUtils {
         return origin;
     }
 
-    public static void renderShape(final Canvas canvas, final Paint paint, final Matrix matrix, final TouchPointList pointList) {
+    public static Path renderShape(final Canvas canvas, final Paint paint, final Matrix matrix, final TouchPointList pointList) {
         if (pointList == null || pointList.size() <= 0) {
-            return;
+            return null;
         }
         final Iterator<TouchPoint> iterator = pointList.iterator();
         TouchPoint touchPoint = iterator.next();
@@ -89,7 +89,7 @@ public class ShapeUtils {
             lastDst[0] = dst[0];
             lastDst[1] = dst[1];
         }
-        canvas.drawPath(path, paint);
+        return path;
     }
 
     public static boolean withinRange(int last, int current, int range) {

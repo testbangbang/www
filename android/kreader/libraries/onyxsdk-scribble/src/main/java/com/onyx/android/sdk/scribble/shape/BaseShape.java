@@ -1,9 +1,6 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.*;
 import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -17,13 +14,18 @@ import java.util.List;
  */
 public class BaseShape implements Shape {
 
-    private RectF boundingRect = new RectF();
+    private RectF boundingRect;
     private TouchPointList normalizedPoints = new TouchPointList();
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();
     private String uniqueId;
     private String documentUniqueId;
     private String pageUniqueId;
+    private int color = Color.BLACK;
+    private float strokeWidth;
+    private Path displayPath;
+    private int originWidth;
+    private int originHeight;
 
     /**
      * rectangle, circle, etc.
@@ -71,18 +73,20 @@ public class BaseShape implements Shape {
     }
 
     public int getColor() {
-        return 0;
+        return color;
     }
 
     public void setColor(int color) {
-
+        this.color = color;
     }
 
     public float getStrokeWidth() {
-        return 3.0f;
+        return strokeWidth;
     }
 
-    public void setStrokeWidth(final float width) {}
+    public void setStrokeWidth(final float width) {
+        strokeWidth = width;
+    }
 
     public boolean supportDFB() {
         return false;
@@ -91,7 +95,11 @@ public class BaseShape implements Shape {
     public void updateBoundingRect() {
         List<TouchPoint> list = normalizedPoints.getPoints();
         for(TouchPoint touchPoint: list) {
-            boundingRect.union(touchPoint.x, touchPoint.y);
+            if (boundingRect == null) {
+                boundingRect = new RectF(touchPoint.x, touchPoint.y, touchPoint.x, touchPoint.y);
+            } else {
+                boundingRect.union(touchPoint.x, touchPoint.y);
+            }
         }
     }
 
@@ -149,13 +157,17 @@ public class BaseShape implements Shape {
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
     }
 
-    public boolean hitTest(final float x, final float y, final float radius) {
+    public boolean fastHitTest(final float x, final float y, final float radius) {
         final RectF boundingRect = getBoundingRect();
-        final float limit = radius * radius;
-        if (!ShapeUtils.contains(boundingRect, x, y, limit)) {
+        if (boundingRect == null) {
             return false;
         }
+        final float limit = radius * radius;
+        return ShapeUtils.contains(boundingRect, x, y, limit);
+    }
 
+    public boolean hitTest(final float x, final float y, final float radius) {
+        final float limit = radius * radius;
         float thickness = getStrokeWidth();
         float x1, y1, x2, y2;
         float left, top, right, bottom;
@@ -211,4 +223,44 @@ public class BaseShape implements Shape {
     public final TouchPointList getNormalizedPoints() {
         return normalizedPoints;
     }
+
+    public void applyStrokeStyle(final Paint paint) {
+        paint.setStrokeWidth(getStrokeWidth());
+        paint.setColor(getColor());
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setDither(true);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeMiter(4.0f);
+    }
+
+    public Path getDisplayPath() {
+        return displayPath;
+    }
+
+    public void setDisplayPath(final Path p) {
+        displayPath = p;
+    }
+
+    public void clear() {
+        displayPath = null;
+    }
+
+    public void setPageOriginWidth(int width) {
+        originWidth = width;
+    }
+
+    public int getPageOriginWidth() {
+        return originWidth;
+    }
+
+    public void setPageOriginHeight(int height) {
+        originHeight = height;
+    }
+
+    public int getPageOriginHeight() {
+        return originHeight;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.request.shape;
 
 import android.graphics.Matrix;
+import android.util.Log;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -17,12 +18,13 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
         setResumeInputProcessor(true);
     }
 
-    // remove and render.
     public void execute(final NoteViewHelper helper) throws Exception {
-        final float scale = Math.min(1.0f / (float)getViewportSize().width(), 1.0f / (float)getViewportSize().height());
-        helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, scale);
+        setResumeInputProcessor(!helper.inUserErasing());
+        benchmarkStart();
+        helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);
         renderCurrentPage(helper);
         updateShapeDataInfo(helper);
+        Log.e("############", "erase takes: " + benchmarkEnd());
     }
 
 }

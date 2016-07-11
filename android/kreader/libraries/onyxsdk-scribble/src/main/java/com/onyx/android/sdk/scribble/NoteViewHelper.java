@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.text.method.Touch;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -25,7 +24,6 @@ import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/16/16.
@@ -40,17 +38,31 @@ public class NoteViewHelper {
 
     private static final String TAG = NoteViewHelper.class.getSimpleName();
 
-    private RequestManager requestManager = new RequestManager();
+    public enum PenState {
+        PEN_NULL,                   // not initialized yet.
+        PEN_DRAWING,                // in drawing state
+        PEN_ERASER_DRAWING,         // in drawing state, but use eraser
+        PEN_USER_ERASING,           // in user erasing state
+    }
+
+    private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private RawInputProcessor rawInputProcessor = new RawInputProcessor();
     private NoteDocument noteDocument = new NoteDocument();
-    private ReaderBitmapImpl bitmapWrapper = new ReaderBitmapImpl();
-    private boolean enableBitmap = true;
-    private boolean inErasing = false;
+    private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
+    private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private List<Shape> dirtyStash = new ArrayList<Shape>();
     private RawInputProcessor.InputCallback callback;
+    private PenState penState;
+    private TouchPointList erasePoints;
+
+
+    public void reset(final View view) {
+        EpdController.setScreenHandWritingPenState(view, 3);
+        EpdController.enablePost(view, 1);
+    }
 
     public void setView(final Context context, final SurfaceView view, final RawInputProcessor.InputCallback c) {
         setCallback(c);
@@ -60,11 +72,11 @@ public class NoteViewHelper {
         updateScreenMatrix();
         updateViewMatrix();
         updateLimitRect();
-        stopDrawing();
+        pauseDrawing();
     }
 
-    public void stop() {
-        stopDrawing();
+    public void quit() {
+        pauseDrawing();
         quitDrawing();
         removeLayoutListener();
     }
@@ -75,14 +87,14 @@ public class NoteViewHelper {
     }
 
     private void onDocumentOpened() {
-        bitmapWrapper.clear();
+        renderBitmapWrapper.clear();
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
     }
 
     public void close(final Context context, final String title) {
         getNoteDocument().save(context, title);
         getNoteDocument().close(context);
-        bitmapWrapper.clear();
+        renderBitmapWrapper.clear();
     }
 
     private void initRawResource(final Context context) {
@@ -93,10 +105,17 @@ public class NoteViewHelper {
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (!inErasing) {
+                if (!inErasing()) {
                     return true;
                 }
-                return onErasing(motionEvent);
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    onBeginErasing();
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                    onErasing(motionEvent);
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    onFinishErasing();
+                }
+                return true;
             }
         });
         surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener());
@@ -161,7 +180,6 @@ public class NoteViewHelper {
         surfaceView.getLocationOnScreen(viewPosition);
         final Matrix viewMatrix = new Matrix();
         viewMatrix.postTranslate(-viewPosition[0], -viewPosition[1]);
-        viewMatrix.postScale(1.0f / surfaceView.getWidth(), 1.0f / surfaceView.getHeight());
         rawInputProcessor.setViewMatrix(viewMatrix);
     }
 
@@ -176,9 +194,13 @@ public class NoteViewHelper {
     private void updateLimitRect() {
         limitRect = new Rect();
         surfaceView.getGlobalVisibleRect(limitRect);
+        limitRect.offsetTo(0, 0);
+        rawInputProcessor.setLimitRect(limitRect);
+
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
         limitRect.offsetTo(viewPosition[0], viewPosition[1]);
+
         final Matrix matrix = matrixFromViewToEpd();
         ShapeUtils.mapInPlace(limitRect, matrix);
         EpdController.setScreenHandWritingRegionLimit(surfaceView,
@@ -188,16 +210,41 @@ public class NoteViewHelper {
                 Math.max(limitRect.top, limitRect.bottom));
     }
 
-    public void startDrawing() {
+    private void startDrawing() {
         getRawInputProcessor().start();
     }
 
-    public void stopDrawing() {
-        getRawInputProcessor().stop();
+    public void resumeDrawing() {
+        setPenState(PenState.PEN_DRAWING);
+        getRawInputProcessor().resume();
+    }
+
+    public void pauseDrawing() {
+        getRawInputProcessor().pause();
+    }
+
+    public void enableScreenPost() {
+        if (surfaceView != null) {
+            EpdController.enablePost(surfaceView, 1);
+        }
     }
 
     public void quitDrawing() {
         getRawInputProcessor().quit();
+    }
+
+    public void setBackground(int bgType) {
+        getNoteDocument().setBackground(bgType);
+    }
+
+    public void setStrokeWidth(float width) {
+        getNoteDocument().setStrokeWidth(width);
+        EpdController.setStrokeWidth(width);
+    }
+
+    public void setStrokeColor(int color) {
+        getNoteDocument().setStrokeColor(color);
+        EpdController.setStrokeColor(color);
     }
 
     private void removeLayoutListener() {
@@ -238,23 +285,28 @@ public class NoteViewHelper {
         return noteDocument;
     }
 
-    public Bitmap updateBitmap(final Rect viewportSize) {
-        bitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
-        return bitmapWrapper.getBitmap();
+    public Bitmap updateRenderBitmap(final Rect viewportSize) {
+        renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
+        return renderBitmapWrapper.getBitmap();
     }
 
-    public Bitmap getShapeBitmap() {
-        if (bitmapWrapper == null || !enableBitmap) {
+    // copy from render bitmap to view bitmap.
+    public void copyBitmap() {
+        if (renderBitmapWrapper == null) {
+            return;
+        }
+        final Bitmap bitmap = renderBitmapWrapper.getBitmap();
+        if (bitmap == null) {
+            return;
+        }
+        viewBitmapWrapper.copyFrom(bitmap);
+    }
+
+    public Bitmap getViewBitmap() {
+        if (viewBitmapWrapper == null) {
             return null;
         }
-        return bitmapWrapper.getBitmap();
-    }
-
-    public void enableBitmap(boolean enable) {
-        enableBitmap = enable;
-        if (enableBitmap && bitmapWrapper == null) {
-            bitmapWrapper = new ReaderBitmapImpl();
-        }
+        return viewBitmapWrapper.getBitmap();
     }
 
     private final Runnable generateRunnable(final BaseNoteRequest request) {
@@ -285,13 +337,13 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onNewTouchPointListReceived(TouchPointList pointList) {
+            public void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
             }
 
             @Override
             public void onBeginErasing() {
-                NoteViewHelper.this.onBeginErasing();
+                ensureErasing();
             }
 
             @Override
@@ -300,22 +352,25 @@ public class NoteViewHelper {
 
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
-                NoteViewHelper.this.onFinishErasing(pointList);
+
             }
         });
+        startDrawing();
     }
 
     private void onNewTouchPointListReceived(final TouchPointList pointList) {
         Shape shape = new NormalScribbleShape();
+        shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
+        shape.setColor(getNoteDocument().getStrokeColor());
         shape.addPoints(pointList);
         dirtyStash.add(shape);
         if (callback != null) {
-            callback.onNewTouchPointListReceived(pointList);
+            callback.onNewTouchPointListReceived(shape, pointList);
         }
     }
 
     private void onBeginErasing() {
-        inErasing = true;
+        erasePoints = new TouchPointList();
         if (callback != null) {
             callback.onBeginErasing();
         }
@@ -325,13 +380,13 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onErasing(motionEvent);
         }
+        erasePoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
         return true;
     }
 
-    private void onFinishErasing(TouchPointList pointList) {
-        inErasing = false;
+    private void onFinishErasing() {
         if (callback != null) {
-            callback.onEraseTouchPointListReceived(pointList);
+            callback.onEraseTouchPointListReceived(erasePoints);
         }
     }
 
@@ -341,4 +396,25 @@ public class NoteViewHelper {
         return temp;
     }
 
+    public PenState getPenState() {
+        return penState;
+    }
+
+    public void setPenState(PenState penState) {
+        this.penState = penState;
+    }
+
+    public void ensureErasing() {
+        if (!inUserErasing()) {
+            setPenState(PenState.PEN_ERASER_DRAWING);
+        }
+    }
+
+    public boolean inErasing() {
+        return (penState == PenState.PEN_ERASER_DRAWING || penState == PenState.PEN_USER_ERASING);
+    }
+
+    public boolean inUserErasing() {
+        return penState == PenState.PEN_USER_ERASING;
+    }
 }

@@ -74,5 +74,6 @@ public class ShapeFactory {
         shape.setStrokeWidth(model.getThickness());
         shape.setShapeUniqueId(model.getShapeUniqueId());
         shape.addPoints(model.getPoints());
+        shape.setPageOriginWidth(model.getPageOriginWidth());
     }
 }

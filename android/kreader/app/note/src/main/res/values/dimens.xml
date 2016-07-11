@@ -9,4 +9,6 @@
     <dimen name="pen_width_popup_height">64dp</dimen>
     <dimen name="note_bg_popup_width">140dp</dimen>
     <dimen name="note_bg_popup_height">140dp</dimen>
+    <dimen name="pen_color_popup_width">60dp</dimen>
+    <dimen name="pen_color_popup_height">125dp</dimen>
 </resources>

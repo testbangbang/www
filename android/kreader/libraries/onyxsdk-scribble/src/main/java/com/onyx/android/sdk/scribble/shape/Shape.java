@@ -38,6 +38,14 @@ public interface Shape {
 
     void ensureShapeUniqueId();
 
+    void setPageOriginWidth(int width);
+
+    int getPageOriginWidth();
+
+    void setPageOriginHeight(int height);
+
+    int getPageOriginHeight();
+
     int getZOrder();
 
     void setZOrder(int order);
@@ -77,5 +85,9 @@ public interface Shape {
     void render(final Canvas canvas, final Paint paint, final Matrix matrix);
 
     boolean hitTest(final float x, final float y, final float radius);
+
+    boolean fastHitTest(final float x, final float y, final float radius);
+
+    void clear();
 
 }

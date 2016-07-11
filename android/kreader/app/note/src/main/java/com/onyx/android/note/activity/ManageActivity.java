@@ -2,7 +2,10 @@ package com.onyx.android.note.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
@@ -29,6 +32,7 @@ import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +50,8 @@ public class ManageActivity extends OnyxAppCompatActivity {
     private int currentPage;
 
     private TextView chooseModeButton, addFolderButton, moveButton, deleteButton;
+    private ImageView nextPageBtn, prevPageBtn;
+    private Button progressBtn;
     private ArrayList<GObject> chosenItemsList = new ArrayList<>();
     private ArrayList<String> targetMoveIDList = new ArrayList<>();
     private ContentView contentView;
@@ -55,9 +61,9 @@ public class ManageActivity extends OnyxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initNoteViewHelper();
+        setContentView(R.layout.activity_manager);
         initView();
+        initNoteViewHelper();
     }
 
     @Override
@@ -67,7 +73,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
     private void initNoteViewHelper() {
-        getNoteViewHelper().stopDrawing();
+        getNoteViewHelper().reset(contentView);
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -89,6 +95,9 @@ public class ManageActivity extends OnyxAppCompatActivity {
         addFolderButton = (TextView) findViewById(R.id.add_folder);
         moveButton = (TextView) findViewById(R.id.move);
         deleteButton = (TextView) findViewById(R.id.delete);
+        nextPageBtn = (ImageView) findViewById(R.id.button_next_page);
+        prevPageBtn = (ImageView) findViewById(R.id.button_previous_page);
+        progressBtn = (Button) findViewById(R.id.button_page_progress);
         chooseModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,16 +157,22 @@ public class ManageActivity extends OnyxAppCompatActivity {
         contentView.setupGridLayout(getRows(), getColumns());
         contentView.setShowPageInfoArea(false);
         contentView.setCallback(new ContentView.ContentViewCallback() {
+
+            @Override
+            public void afterPageChanged(ContentView contentView, int newPage, int oldPage) {
+                updateTextViewPage();
+            }
+
             @Override
             public void beforeSetupData(ContentItemView view, GObject object) {
                 if (object.isDummyObject()) {
                     return;
                 }
                 switch (Utils.getItemType(object)) {
-                    case DataItemType.TYPE_CREATE:
                     case DataItemType.TYPE_DOCUMENT:
                         view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, R.drawable.image_border);
                         break;
+                    case DataItemType.TYPE_CREATE:
                     case DataItemType.TYPE_LIBRARY:
                         view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, 0);
                         break;
@@ -187,7 +202,18 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 }
                 updateButtonsStatusByMode();
             }
-
+        });
+        prevPageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contentView.prevPage();
+            }
+        });
+        nextPageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contentView.nextPage();
+            }
         });
     }
 
@@ -297,9 +323,9 @@ public class ManageActivity extends OnyxAppCompatActivity {
 
     public void updateWithNoteList(final List<NoteModel> noteModelList) {
         contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
-        adapter = Utils.adapterFromNoteModelList(noteModelList, R.drawable.ic_student_note_folder_gray_250dp,
-                R.drawable.ic_student_note_pic_gray_250dp);
-        adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_student_note_plus_gray_250dp));
+        adapter = Utils.adapterFromNoteModelList(noteModelList, R.drawable.ic_student_note_folder_gray,
+                R.drawable.ic_student_note_pic_gray);
+        adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));
         contentView.setupContent(getRows(), getColumns(), adapter, 0, true);
         contentView.updateCurrentPage();
         updateButtonsStatusByMode();
@@ -358,5 +384,22 @@ public class ManageActivity extends OnyxAppCompatActivity {
             }
         });
         dialogMoveFolder.show(getFragmentManager());
+    }
+
+    private void updateTextViewPage() {
+        progressBtn.setText((contentView.getCurrentPage() + 1) + File.separator + contentView.getTotalPageCount());
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+                contentView.nextPage();
+                return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
+                contentView.prevPage();
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

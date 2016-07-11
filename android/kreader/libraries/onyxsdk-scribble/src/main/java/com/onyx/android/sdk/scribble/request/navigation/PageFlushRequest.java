@@ -4,7 +4,9 @@ import android.util.Log;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,13 +14,13 @@ import java.util.List;
  */
 public class PageFlushRequest extends BaseNoteRequest {
 
-    private volatile List<Shape> shapeList;
+    private List<Shape> shapeList = new ArrayList<>();
     private volatile boolean save = false;
 
 
     public PageFlushRequest(final List<Shape> list, boolean r, boolean resume) {
-        shapeList = list;
-        setRender(r);
+        shapeList.addAll(list);
+        setRender(shapeList.size() > 0);
         setPauseInputProcessor(true);
         setResumeInputProcessor(resume);
     }

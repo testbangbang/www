@@ -1,10 +1,19 @@
 package com.onyx.android.sdk.scribble.request;
 
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.RectF;
+
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.utils.TestUtils;
 
@@ -89,10 +98,10 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void beforeExecute(final NoteViewHelper helper) {
-        if (isPauseInputProcessor()) {
-            helper.stopDrawing();
-        }
         helper.getRequestManager().acquireWakeLock(getContext());
+        if (isPauseInputProcessor()) {
+            helper.pauseDrawing();
+        }
         benchmarkStart();
         invokeStartCallback(helper.getRequestManager());
     }
@@ -122,15 +131,20 @@ public class BaseNoteRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
-
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (isResumeInputProcessor()) {
-                    helper.startDrawing();
+                if (isRender()) {
+                    synchronized (helper) {
+                        helper.copyBitmap();
+                    }
                 }
+                helper.enableScreenPost();
                 if (getCallback() != null) {
                     getCallback().done(BaseNoteRequest.this, getException());
+                }
+                if (isResumeInputProcessor()) {
+                    helper.resumeDrawing();
                 }
                 helper.getRequestManager().releaseWakeLock();
             }};
@@ -150,41 +164,45 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void renderVisiblePages(final NoteViewHelper parent) {
-        Bitmap bitmap = parent.updateBitmap(getViewportSize());
-        bitmap.eraseColor(Color.WHITE);
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(3.0f);
+        synchronized (parent) {
+            Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
+            bitmap.eraseColor(Color.WHITE);
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint();
+            paint.setColor(Color.BLACK);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setAntiAlias(true);
+            paint.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
 
-        drawBackground(canvas, paint);
+            drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
+            final Matrix renderMatrix = new Matrix();
 
-        final Matrix renderMatrix = new Matrix();
-        renderMatrix.postScale(getViewportSize().width(), getViewportSize().height());
+            for (PageInfo page : getVisiblePages()) {
+                final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
+                notePage.render(canvas, paint, renderMatrix, null);
+            }
 
-        for(PageInfo page: getVisiblePages()) {
-            final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-            notePage.render(canvas, paint, renderMatrix, new NotePage.RenderCallback() {
-                @Override
-                public boolean isRenderAbort() {
-                    return isAbort();
-                }
-            });
+            // draw test path.
+            drawRandomTestPath(canvas, paint);
         }
-
-        // draw test path.
-        drawRandomTestPath(canvas, paint);
     }
 
-    private void drawBackground(final Canvas canvas, final Paint paint) {
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(1.0f);
-        int max = 10;
-        for(int i = 0; i < max; ++i) {
-            float y = i * canvas.getHeight() / max;
-            canvas.drawLine(0, y, canvas.getWidth(), y, paint);
+    private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {
+        switch (bgType){
+            case NoteBackgroundType.EMPTY:
+                break;
+            case NoteBackgroundType.LINE:
+                //TODO:should use method to wrap code.
+                paint.setColor(Color.BLACK);
+                paint.setStrokeWidth(1.0f);
+                int max = 10;
+                for(int i = 0; i < max; ++i) {
+                    float y = i * canvas.getHeight() / max;
+                    canvas.drawLine(0, y, canvas.getWidth(), y, paint);
+                }
+                break;
+            case NoteBackgroundType.GRID:
+                break;
         }
     }
 
@@ -235,6 +253,8 @@ public class BaseNoteRequest extends BaseRequest {
         getShapeDataInfo().updateShapePageMap(
                 parent.getNoteDocument().getPageNameList(),
                 parent.getNoteDocument().getCurrentPageIndex());
+        getShapeDataInfo().setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
+        getShapeDataInfo().setStrokeColor(parent.getNoteDocument().getStrokeColor());
         getShapeDataInfo().setBackground(parent.getNoteDocument().getBackground());
         getShapeDataInfo().setEraserRadius(parent.getNoteDocument().getEraserRadius());
     }

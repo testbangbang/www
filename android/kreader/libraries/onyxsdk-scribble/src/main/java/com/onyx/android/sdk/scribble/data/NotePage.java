@@ -8,9 +8,16 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.raizlabs.android.dbflow.config.DatabaseConfig;
+import com.raizlabs.android.dbflow.runtime.DBBatchSaveQueue;
+import com.raizlabs.android.dbflow.structure.database.transaction.DefaultTransactionManager;
+import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 4/23/16.
@@ -30,6 +37,7 @@ public class NotePage {
 
     private int currentShapeType;
     private Shape currentShape;
+    private boolean loaded = false;
     private boolean addToActionHistory = true;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
@@ -112,16 +120,26 @@ public class NotePage {
     }
 
     public void removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius) {
-        List<Shape> hitShapes = new ArrayList<>();
+        if (touchPointList == null) {
+            return;
+        }
+        Map<String, Shape> hitShapes = new HashMap<>();
         for(Shape shape : shapeList) {
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
-                if (shape.hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
-                    hitShapes.add(shape);
+                if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                    hitShapes.put(shape.getShapeUniqueId(), shape);
+                    break;
                 }
             }
         }
-        for(Shape shape : hitShapes) {
-            removeShape(shape);
+
+        for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
+            for(TouchPoint touchPoint : touchPointList.getPoints()) {
+                if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                    removeShape(entry.getValue());
+                    break;
+                }
+            }
         }
     }
 
@@ -196,10 +214,13 @@ public class NotePage {
     }
 
     public void loadPage(final Context context) {
+        newAddedShapeList.clear();
+        removedShapeList.clear();
         final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
         for(ShapeModel model : modelList) {
             addShapeFromModel(ShapeFactory.shapeFromModel(model));
         }
+        setLoaded(true);
     }
 
     public static final NotePage createPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
@@ -207,10 +228,27 @@ public class NotePage {
         return page;
     }
 
-    /**
-     * save new added shapes and remove shapes has been removed.
-     * @return
-     */
+    public List<ShapeModel> getNewAddedShapeModeList() {
+        List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
+        for(Shape shape : newAddedShapeList) {
+            final ShapeModel model = ShapeFactory.modelFromShape(shape);
+            modelList.add(model);
+        }
+        return modelList;
+    }
+
+    public List<String> getRemovedShapeIdList() {
+        List<String> list = new ArrayList<>();
+        for(Shape shape: removedShapeList) {
+            list.add(shape.getShapeUniqueId());
+        }
+        return list;
+    }
+
+    public boolean savePageInBackground(final Context context) {
+        return false;
+    }
+
     public boolean savePage(final Context context) {
         List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
         for(Shape shape : newAddedShapeList) {
@@ -221,11 +259,22 @@ public class NotePage {
             ShapeDataProvider.saveShapeList(context, modelList);
         }
 
+        List<String> list = new ArrayList<>();
         for(Shape shape: removedShapeList) {
-            ShapeDataProvider.removeShape(context, shape.getShapeUniqueId());
+            list.add(shape.getShapeUniqueId());
         }
-
+        ShapeDataProvider.removeShapesByIdList(context, list);
+        newAddedShapeList.clear();
+        removedShapeList.clear();
         return true;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean l) {
+        loaded = l;
     }
 
     public boolean hasShapes() {

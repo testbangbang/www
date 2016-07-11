@@ -1,10 +1,10 @@
 package com.onyx.android.note.actions;
 
+import android.util.Log;
 import com.onyx.android.note.activity.ScribbleActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.request.navigation.PageChangeBackgroundRequest;
 import com.onyx.android.sdk.scribble.request.shape.ShapeRemoveByPointListRequest;
 
 /**
@@ -20,6 +20,9 @@ public class RemoveByPointListAction<T extends ScribbleActivity> extends BaseNot
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
+        if (touchPointList == null) {
+            return;
+        }
         final ShapeRemoveByPointListRequest changeRequest = new ShapeRemoveByPointListRequest(touchPointList);
         activity.getNoteViewHelper().submit(activity, changeRequest, new BaseCallback() {
             @Override

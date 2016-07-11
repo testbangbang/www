@@ -1,12 +1,15 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.DataInputStream;
@@ -49,7 +52,7 @@ public class RawInputProcessor {
         public abstract void onBeginHandWriting();
 
         // when pen released.
-        public abstract void onNewTouchPointListReceived(final TouchPointList pointList);
+        public abstract void onNewTouchPointListReceived(final Shape shape, final TouchPointList pointList);
 
         // caller should render the page here.
         public abstract void onBeginErasing();
@@ -68,6 +71,7 @@ public class RawInputProcessor {
     private volatile boolean pressed = false;
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
+    private volatile boolean reportData = false;
     private String systemPath = "/dev/input/event1";
     private volatile Matrix screenMatrix;
     private volatile Matrix viewMatrix;
@@ -78,6 +82,7 @@ public class RawInputProcessor {
     private Handler handler = new Handler(Looper.getMainLooper());
     private volatile SurfaceView parentView;
     private ExecutorService singleThreadPool = null;
+    private volatile RectF limitRect = new RectF();
 
     /**
      * matrix used to map point from input device to screen display.
@@ -105,25 +110,42 @@ public class RawInputProcessor {
 
     public void start() {
         stop = false;
+        reportData = false;
         clearInternalState();
-        EpdController.setScreenHandWritingPenState(parentView, 1);
         submitJob(parentView);
+        EpdController.setScreenHandWritingPenState(parentView, 1);
     }
 
-    public void stop() {
-        EpdController.setScreenHandWritingPenState(parentView, 0);
+    public void resume() {
+        reportData = true;
+        EpdController.setScreenHandWritingPenState(parentView, 2);
+    }
+
+    public void pause() {
+        reportData = false;
+        EpdController.setScreenHandWritingPenState(parentView, 3);
     }
 
     public void quit() {
+        reportData = false;
         stop = true;
         clearInternalState();
-        getSingleThreadPool().shutdown();
+        shutdown();
+    }
+
+    public void setLimitRect(final Rect rect) {
+        limitRect.set(rect);
     }
 
     private void clearInternalState() {
         pressed = false;
         lastErasing = false;
         lastPressed = false;
+    }
+
+    private void shutdown() {
+        getSingleThreadPool().shutdown();
+        singleThreadPool = null;
     }
 
     private ExecutorService getSingleThreadPool()   {
@@ -252,7 +274,7 @@ public class RawInputProcessor {
             touchPointList = new TouchPointList(600);
         }
 
-        if (touchPoint.x <= 0 || touchPoint.x >= 1 || touchPoint.y <= 0 || touchPoint.y >= 1) {
+        if (!limitRect.contains(touchPoint.x, touchPoint.y)) {
             return false;
         }
 
@@ -260,6 +282,10 @@ public class RawInputProcessor {
             touchPointList.add(touchPoint);
         }
         return true;
+    }
+
+    private boolean isReportData() {
+        return reportData;
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
@@ -293,9 +319,10 @@ public class RawInputProcessor {
     }
 
     private void invokeTouchPointListBegin(final boolean erasing) {
-        if (inputCallback == null) {
+        if (inputCallback == null || (!isReportData() && !erasing)) {
             return;
         }
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -309,23 +336,21 @@ public class RawInputProcessor {
     }
 
     private void invokeTouchPointListFinished(final TouchPointList touchPointList, final boolean erasing) {
-        if (inputCallback == null || touchPointList == null) {
+        if (inputCallback == null || touchPointList == null || (!isReportData() && !erasing)) {
             return;
         }
+
         handler.post(new Runnable() {
             @Override
             public void run() {
                 if (erasing) {
                     inputCallback.onEraseTouchPointListReceived(touchPointList);
                 } else {
-                    inputCallback.onNewTouchPointListReceived(touchPointList);
+                    inputCallback.onNewTouchPointListReceived(null, touchPointList);
                 }
             }
         });
     }
-
-
-
 
 
 }

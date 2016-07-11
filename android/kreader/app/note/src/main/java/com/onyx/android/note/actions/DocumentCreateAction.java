@@ -1,6 +1,10 @@
 package com.onyx.android.note.actions;
 
+import android.os.Bundle;
+
+import com.onyx.android.note.R;
 import com.onyx.android.note.activity.ScribbleActivity;
+import com.onyx.android.note.dialog.DialogLoading;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.request.note.NoteDocumentOpenRequest;
@@ -19,11 +23,14 @@ public class DocumentCreateAction<T extends ScribbleActivity> extends BaseNoteAc
     }
 
     public void execute(final T activity, final BaseCallback callback) {
+        showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.loading);
         final NoteDocumentOpenRequest createRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId);
         activity.getNoteViewHelper().submit(activity, createRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                dismissLoadingDialog();
                 activity.onRequestFinished(createRequest, true);
+                callback.invoke(callback, request, e);
             }
         });
     }
