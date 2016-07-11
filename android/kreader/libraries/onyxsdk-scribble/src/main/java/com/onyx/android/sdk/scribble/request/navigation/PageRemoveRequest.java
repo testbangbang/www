@@ -10,19 +10,14 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class PageRemoveRequest extends BaseNoteRequest {
 
-    private String documentIndex;
-    private volatile int pageIndex;
-
-    public PageRemoveRequest(final String doc, final int value) {
+    public PageRemoveRequest() {
         setPauseInputProcessor(true);
         setResumeInputProcessor(true);
-        documentIndex = doc;
-        pageIndex = value;
     }
 
     @Override
     public void execute(final NoteViewHelper parent) throws Exception {
-        parent.getNoteDocument().removePage(getContext(), pageIndex);
+        parent.getNoteDocument().removePage(getContext(), parent.getNoteDocument().getCurrentPageIndex());
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
     }
