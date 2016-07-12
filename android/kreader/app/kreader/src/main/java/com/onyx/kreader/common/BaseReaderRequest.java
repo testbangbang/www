@@ -13,8 +13,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     private static final String TAG = BaseReaderRequest.class.getSimpleName();
     private volatile boolean saveOptions = false;
-    private volatile boolean loadAnnotationData = false;
-    private volatile boolean loadBookmarkData = false;
+    private volatile boolean loadAnnotationData = true;
+    private volatile boolean loadBookmarkData = true;
 
     private ReaderBitmapImpl renderBitmap;
     private ReaderViewInfo readerViewInfo;

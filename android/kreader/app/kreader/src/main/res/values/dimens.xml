@@ -7,4 +7,13 @@
     <dimen name="dialog_reflow_control_item_text_size">20sp</dimen>
     <dimen name="border_stroke_width">3dp</dimen>
     <dimen name="dialog_loading_text_size">25sp</dimen>
+    <dimen name="reader_bookmark_width">120dp</dimen>
+    <dimen name="reader_bookmark_height">120dp</dimen>
+    <dimen name="reader_bookmark_moveto_x">100dp</dimen>
+    <dimen name="reader_bookmark_moveto_y">0dp</dimen>
+    <dimen name="reader_bookmark_lineto_x">120dp</dimen>
+    <dimen name="reader_bookmark_lineto_y">20dp</dimen>
+    <dimen name="dialog_annotation_title_size">27sp</dimen>
+    <dimen name="control_panel_floating_tittle_text_size">22sp</dimen>
+    <dimen name="popup_selection_menu_button_text_size">22sp</dimen>
 </resources>

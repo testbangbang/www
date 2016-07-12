@@ -1,6 +1,6 @@
 package com.onyx.kreader.dataprovider;
 
-import android.content.Context;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.List;
 
@@ -9,14 +9,25 @@ import java.util.List;
  */
 public class BookmarkProvider {
 
-    public static final List<Bookmark> loadBookmarks(final Context context, final String docUniqueId, final String pageName) {
-        return null;
+    public static final Bookmark loadBookmark(final String application, final String md5, final String position) {
+        return new Select().from(Bookmark.class).where(Bookmark_Table.md5.eq(md5))
+                .and(Bookmark_Table.application.eq(application))
+                .and(Bookmark_Table.position.eq(position))
+                .querySingle();
     }
 
-    public static void deleteBookmark(final Context context, final Bookmark bookmark) {
+    public static final List<Bookmark> loadBookmarks(final String application, final String md5) {
+        return new Select().from(Bookmark.class).where(Bookmark_Table.md5.eq(md5))
+                .and(Bookmark_Table.application.eq(application))
+                .queryList();
     }
 
-    public static boolean hasBookmark(final Context context, final String docUniqueId, final String pageName) {
-        return false;
+    public static void addBookmark(final Bookmark bookmark) {
+        bookmark.save();
     }
+
+    public static void deleteBookmark(final Bookmark bookmark) {
+        bookmark.delete();
+    }
+
 }

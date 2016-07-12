@@ -51,4 +51,17 @@
     <string name="dialog_password_text_password">Password</string>
     <string name="dialog_password_set">Set</string>
     <string name="dialog_password_cancel">Cancel</string>
+    <string name="Annotation">Annotation</string>
+    <string name="Cancel">Cancel</string>
+    <string name="add_annotation">Add</string>
+    <string name="update">Update</string>
+    <string name="dialog_dictionary_title">No Explanation</string>
+    <string name="popup_selection_menu_page_indicator_default_value">1/1</string>
+    <string name="Copy">Copy</string>
+    <string name="Highlight">Highlight</string>
+    <string name="Dictionary">Dictionary</string>
+    <string name="popup_selection_menu_start_tts">Start TTS</string>
+    <string name="toc">TOC</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="annotation">Annotation</string>
 </resources>

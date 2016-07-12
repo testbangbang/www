@@ -31,6 +31,10 @@ public class ShowSearchMenuAction extends BaseAction {
         getSearchMenu(readerActivity).searchDone(searchResult);
     }
 
+    public static void resetSearchMenu() {
+        searchMenu = null;
+    }
+
     private PopupSearchMenu getSearchMenu(final ReaderActivity readerActivity) {
         if (searchMenu == null) {
             searchMenu = new PopupSearchMenu(readerActivity, (RelativeLayout)readerActivity.getSurfaceView().getParent(), new PopupSearchMenu.MenuCallback() {

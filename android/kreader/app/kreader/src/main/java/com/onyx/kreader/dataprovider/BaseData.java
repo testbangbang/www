@@ -23,7 +23,6 @@ public class BaseData extends BaseModel {
     long id = INVALID_ID;
 
     @Column
-    @Unique
     String md5 = null;
 
     @Column

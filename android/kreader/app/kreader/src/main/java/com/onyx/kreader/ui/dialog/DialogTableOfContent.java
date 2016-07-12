@@ -1,15 +1,17 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.*;
+import android.widget.TabHost;
+import android.widget.TextView;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
-import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.dataprovider.Annotation;
+import com.onyx.kreader.dataprovider.Bookmark;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -22,15 +24,102 @@ import java.util.List;
  */
 public class DialogTableOfContent extends Dialog {
 
-    public DialogTableOfContent(final ReaderActivity activity, final ReaderDocumentTableOfContent toc) {
+    public enum DirectoryTab { TOC, Bookmark, Annotation }
+
+    private class SimpleListViewItemViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView textViewTitle;
+        private TextView textViewDescription;
+        private String position;
+
+        public SimpleListViewItemViewHolder(final ReaderActivity readerActivity, final View itemView) {
+            super(itemView);
+
+            textViewTitle = (TextView)itemView.findViewById(R.id.text_view_title);
+            textViewDescription = (TextView)itemView.findViewById(R.id.text_view_description);
+
+            textViewTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogTableOfContent.this.hide();
+                    new GotoPageAction(position).execute(readerActivity);
+                }
+            });
+        }
+
+        public void setTitle(String title) {
+            textViewTitle.setText(title);
+        }
+
+        public void setDescription(String description) {
+            textViewDescription.setText(description);
+        }
+
+        public void setPosition(String position) {
+            this.position = position;
+        }
+    }
+
+    public DialogTableOfContent(final ReaderActivity activity, DirectoryTab tab,
+                                final ReaderDocumentTableOfContent toc,
+                                final List<Bookmark> bookmarks,
+                                final List<Annotation> annotations) {
         super(activity);
 
         setContentView(R.layout.dialog_table_of_content);
         fitDialogToWindow();
 
+        setupTabHost(tab);
+        setupToc(activity, toc);
+        setupBookmarks(activity, bookmarks);
+        setupAnnotations(activity, annotations);
+    }
+
+    private void fitDialogToWindow() {
+        Window mWindow = getWindow();
+        WindowManager.LayoutParams mParams = mWindow.getAttributes();
+        mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        mParams.gravity = Gravity.BOTTOM;
+        mWindow.setAttributes(mParams);
+        //force use all space in the screen.
+        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    private void setupTabHost(DirectoryTab tab) {
+        TabHost tabHost = (TabHost)findViewById(R.id.tab_host);
+        tabHost.setup();
+
+        TextView toc = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.dialog_table_of_content_tab_indicator_view, null);
+        toc.setText(R.string.toc);
+        TextView bookmark = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.dialog_table_of_content_tab_indicator_view, null);
+        bookmark.setText(R.string.bookmark);
+        TextView annotation = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.dialog_table_of_content_tab_indicator_view, null);
+        annotation.setText(R.string.annotation);
+
+        tabHost.addTab(tabHost.newTabSpec(getContext().getResources().getString(R.string.toc)).setIndicator(toc).setContent(R.id.tree_view_toc));
+        tabHost.addTab(tabHost.newTabSpec(getContext().getResources().getString(R.string.bookmark)).setIndicator(bookmark).setContent(R.id.list_view_bookmark));
+        tabHost.addTab(tabHost.newTabSpec(getContext().getResources().getString(R.string.annotation)).setIndicator(annotation).setContent(R.id.list_view_annotation));
+
+        tabHost.setCurrentTab(getTabIndex(tab));
+    }
+
+    private int getTabIndex(DirectoryTab tab) {
+        switch (tab) {
+            case TOC:
+                return 0;
+            case Bookmark:
+                return 1;
+            case Annotation:
+                return 2;
+            default:
+                return 0;
+        }
+    }
+
+    private void setupToc(final ReaderActivity activity, final ReaderDocumentTableOfContent toc) {
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = buildTreeNodesFromToc(toc);
 
-        TreeRecyclerView view = (TreeRecyclerView)findViewById(R.id.treeview);
+        TreeRecyclerView view = (TreeRecyclerView)findViewById(R.id.tree_view_toc);
         view.bindTree(rootNodes, new TreeRecyclerView.Callback() {
             @Override
             public void onTreeNodeClicked(TreeRecyclerView.TreeNode node) {
@@ -45,7 +134,7 @@ public class DialogTableOfContent extends Dialog {
             }
         });
 
-        if (hasChildren(toc.getRootEntry())) {
+        if (toc != null && hasChildren(toc.getRootEntry())) {
             ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), activity.getCurrentPage());
             TreeRecyclerView.TreeNode treeNode = findTreeNodeByTag(rootNodes, entry);
             if (treeNode != null) {
@@ -54,14 +143,48 @@ public class DialogTableOfContent extends Dialog {
         }
     }
 
-    private void fitDialogToWindow() {
-        Window mWindow = getWindow();
-        WindowManager.LayoutParams mParams = mWindow.getAttributes();
-        mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        mParams.gravity = Gravity.BOTTOM;
-        mWindow.setAttributes(mParams);
-        //force use all space in the screen.
-        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    private void setupBookmarks(final ReaderActivity activity, final List<Bookmark> bookmarks) {
+        PageRecyclerView view = (PageRecyclerView) findViewById(R.id.list_view_bookmark);
+        view.setAdapter(new RecyclerView.Adapter() {
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new SimpleListViewItemViewHolder(activity, LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_table_of_content_list_item_view, parent, false));
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+                ((SimpleListViewItemViewHolder)holder).setTitle(bookmarks.get(position).getQuote());
+                ((SimpleListViewItemViewHolder)holder).setDescription(bookmarks.get(position).getPosition());
+                ((SimpleListViewItemViewHolder)holder).setPosition(bookmarks.get(position).getPosition());
+            }
+
+            @Override
+            public int getItemCount() {
+                return bookmarks.size();
+            }
+        });
+    }
+
+    private void setupAnnotations(final ReaderActivity activity, final List<Annotation> annotations) {
+        PageRecyclerView view = (PageRecyclerView) findViewById(R.id.list_view_annotation);
+        view.setAdapter(new RecyclerView.Adapter() {
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new SimpleListViewItemViewHolder(activity, LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_table_of_content_list_item_view, parent, false));
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+                ((SimpleListViewItemViewHolder)holder).setTitle(annotations.get(position).getQuote());
+                ((SimpleListViewItemViewHolder)holder).setDescription(annotations.get(position).getPosition());
+                ((SimpleListViewItemViewHolder)holder).setPosition(annotations.get(position).getPosition());
+            }
+
+            @Override
+            public int getItemCount() {
+                return annotations.size();
+            }
+        });
     }
 
     private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int page) {

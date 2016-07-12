@@ -15,22 +15,23 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-
-import com.onyx.kreader.common.*;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.android.sdk.scribble.data.NotePage;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
-import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.common.ReaderUserDataInfo;
+import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
@@ -39,15 +40,22 @@ import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.ui.actions.*;
+import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
+import com.onyx.kreader.ui.dialog.DialogAnnotation;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
+import com.onyx.kreader.ui.dialog.PopupSelectionMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
-import com.onyx.kreader.utils.*;
+import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.kreader.utils.RectUtils;
+import com.onyx.kreader.utils.TreeObserverUtils;
 
 import java.util.List;
 
@@ -130,8 +138,14 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        ShowReaderMenuAction.resetReaderMenu();
+        resetMenus();
         super.onDestroy();
+    }
+
+    private void resetMenus() {
+        ShowReaderMenuAction.resetReaderMenu();
+        ShowSearchMenuAction.resetSearchMenu();
+        ShowTextSelectionMenuAction.resetSelectionMenu();
     }
 
     @Override
@@ -147,6 +161,12 @@ public class ReaderActivity extends ActionBarActivity {
     public boolean tryHitTest(float x, float y) {
         if (ShowReaderMenuAction.isReaderMenuShown()) {
             ShowReaderMenuAction.hideReaderMenu(this);
+            return true;
+        }
+        if (tryBookmark(x, y)) {
+            return true;
+        }
+        if (tryAnnotation(x, y)) {
             return true;
         }
         return false;
@@ -236,7 +256,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void highlight(float x1, float y1, float x2, float y2) {
-
+        ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(this, false);
     }
 
     public void selectWord(float x1, float y1, float x2, float y2, boolean b) {
@@ -442,8 +462,6 @@ public class ReaderActivity extends ActionBarActivity {
         action.execute(this);
     }
 
-
-
     public void onDocumentOpened(String path) {
         documentPath = path;
         hideToolbar();
@@ -481,6 +499,8 @@ public class ReaderActivity extends ActionBarActivity {
 
         handlerManager.setActiveProvider(HandlerManager.WORD_SELECTION_PROVIDER);
         onRenderRequestFinished(request, e);
+
+        showHighlightSelectionDialog((int)request.getEnd().x, (int)request.getEnd().y, PopupSelectionMenu.SelectionType.MultiWordsType);
     }
 
     public void backward() {
@@ -584,6 +604,8 @@ public class ReaderActivity extends ActionBarActivity {
         drawBitmap(canvas, paint, pageBitmap);
         drawSearchResults(canvas, paint);
         drawHighlightResult(canvas, paint);
+        drawAnnotations(canvas, paint);
+        drawBookmark(canvas);
         drawShapes(canvas, paint);
 
         holder.unlockCanvasAndPost(canvas);
@@ -611,6 +633,29 @@ public class ReaderActivity extends ActionBarActivity {
             drawReaderSelection(canvas, paint, getReaderUserDataInfo().getHighlightResult());
             drawSelectionCursor(canvas, paint, xorMode);
         }
+    }
+
+    private void drawAnnotations(Canvas canvas, Paint paint) {
+        for (PageInfo pageInfo : getReaderViewInfo().getVisiblePages()) {
+            if (getReaderUserDataInfo().hasAnnotations(pageInfo)) {
+                List<Annotation> annotations = getReaderUserDataInfo().getAnnotations(pageInfo);
+                for (Annotation annotation : annotations) {
+                    drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
+                }
+            }
+        }
+    }
+
+    private void drawBookmark(Canvas canvas) {
+        Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(this, hasBookmark());
+        final Point point = bookmarkPosition(bitmap);
+        canvas.drawBitmap(bitmap, point.x, point.y, null);
+    }
+
+    private Point bookmarkPosition(Bitmap bitmap) {
+        Point point = new Point();
+        point.set(getDisplayWidth() - bitmap.getWidth(), 10);
+        return point;
     }
 
     private void drawReaderSelection(Canvas canvas, Paint paint, ReaderSelection selection) {
@@ -757,8 +802,6 @@ public class ReaderActivity extends ActionBarActivity {
         return handlerManager.onKeyUp(this, keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
-
-
     public final HandlerManager getHandlerManager() {
         return handlerManager;
     }
@@ -811,6 +854,10 @@ public class ReaderActivity extends ActionBarActivity {
 
     }
 
+    public void highlightFinished(final float x1, final float y1, final float x2, final float y2) {
+        showHighlightSelectionDialog((int)x1, (int)y1, PopupSelectionMenu.SelectionType.MultiWordsType);
+    }
+
     public int getCursorSelected(int x, int y) {
         if (getSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX).hitTest(x, y)) {
             return HighlightCursor.BEGIN_CURSOR_INDEX;
@@ -848,4 +895,60 @@ public class ReaderActivity extends ActionBarActivity {
     public final String getFirstVisiblePageName() {
         return getReaderViewInfo().getFirstVisiblePage().getName();
     }
+
+    private boolean hasBookmark() {
+        return getReaderUserDataInfo().hasBookmark(getFirstPageInfo());
+    }
+
+    private boolean tryBookmark(final float x, final float y) {
+        Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(this, hasBookmark());
+        final Point point = bookmarkPosition(bitmap);
+        final int margin = bitmap.getWidth() / 4;
+        boolean hit = (x >= point.x - margin && x < point.x + bitmap.getWidth() + margin &&
+                y >= point.y - margin && y < point.y + bitmap.getHeight() + margin);
+        if (hit) {
+            toggleBookmark();
+        }
+        return hit;
+    }
+
+    private void toggleBookmark() {
+        if (hasBookmark()) {
+            removeBookmark();
+        } else {
+            addBookmark();
+        }
+    }
+
+    private void removeBookmark() {
+        new ToggleBookmarkAction(getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.Off).execute(this);
+    }
+
+    private void addBookmark() {
+        new ToggleBookmarkAction(getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.On).execute(this);
+    }
+
+    private void showHighlightSelectionDialog(int x, int y, PopupSelectionMenu.SelectionType type) {
+        new ShowTextSelectionMenuAction(this, x, y, type).execute(this);
+    }
+
+    public boolean tryAnnotation(final float x, final float y) {
+        for (PageInfo pageInfo : getReaderViewInfo().getVisiblePages()) {
+            if (!getReaderUserDataInfo().hasAnnotations(pageInfo)) {
+                continue;
+            }
+
+            List<Annotation> annotations = getReaderUserDataInfo().getAnnotations(pageInfo);
+            for (Annotation annotation : annotations) {
+                for (RectF rect : annotation.getRectangles()) {
+                    if (rect.contains(x, y)) {
+                        new ShowAnnotationEditDialogAction(annotation).execute(ReaderActivity.this);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 }

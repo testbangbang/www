@@ -21,7 +21,6 @@ public class ReaderViewInfo {
     public int scale;
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();
-    public ReaderDocumentTableOfContent toc;
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;
@@ -60,11 +59,4 @@ public class ReaderViewInfo {
         return PageConstants.isSpecialScale(scale);
     }
 
-    public void setTableOfContent(ReaderDocumentTableOfContent toc) {
-        this.toc = toc;
-    }
-
-    public ReaderDocumentTableOfContent getTableOfContent() {
-        return toc;
-    }
 }

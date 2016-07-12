@@ -61,6 +61,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public boolean onActionUp(ReaderActivity activity, final float startX, final float startY, final float endX, final float endY) {
+        activity.highlightFinished(startX, startY, endX, endY);
         return true;
     }
 
