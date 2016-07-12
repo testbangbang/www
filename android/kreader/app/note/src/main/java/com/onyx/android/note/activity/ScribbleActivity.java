@@ -82,6 +82,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private TouchPoint erasePoint = null;
     private ShapeDataInfo shapeDataInfo;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
+    private SurfaceHolder.Callback surfaceCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -264,24 +265,31 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void initSurfaceView() {
         surfaceView = (SurfaceView) findViewById(R.id.note_view);
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                clearSurfaceView();
-                getNoteViewHelper().setView(ScribbleActivity.this, surfaceView, inputCallback());
-                handleActivityIntent(getIntent());
-            }
+        surfaceView.getHolder().addCallback(surfaceCallback());
+    }
 
-            @Override
-            public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+    private SurfaceHolder.Callback surfaceCallback() {
+        if (surfaceCallback == null) {
+            surfaceCallback = new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(SurfaceHolder surfaceHolder) {
+                    clearSurfaceView();
+                    getNoteViewHelper().setView(ScribbleActivity.this, surfaceView, inputCallback());
+                    handleActivityIntent(getIntent());
+                }
 
-            }
+                @Override
+                public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+                }
 
-            @Override
-            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-
-            }
-        });
+                @Override
+                public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+                    surfaceHolder.removeCallback(surfaceCallback);
+                    surfaceCallback = null;
+                }
+            };
+        }
+        return surfaceCallback;
     }
 
     private void handleActivityIntent(final Intent intent) {
@@ -488,7 +496,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onStrokeWidthChanged(final int newWidth) {
-        flushWithCallback(true, true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 NoteStrokeWidthChangeAction action = new NoteStrokeWidthChangeAction(newWidth);
@@ -530,7 +538,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onColorChange(final int currentPenColor){
-        flushWithCallback(true, true, new BaseCallback() {
+        flushWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final ChangePenColorAction changePenColorAction = new ChangePenColorAction(currentPenColor);
