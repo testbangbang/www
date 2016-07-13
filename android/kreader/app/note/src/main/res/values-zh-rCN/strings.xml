@@ -19,4 +19,5 @@
     <string name="disselect">取消选择</string>
     <string name="loading">正在加载.</string>
     <string name="saving_note">正在保存.</string>
+    <string name="new_document">新文档</string>
 </resources>
