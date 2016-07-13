@@ -30,7 +30,7 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private void restoreLayoutType(final Reader reader) throws Exception {
         if (StringUtils.isNotBlank(baseOptions.getLayoutType())) {
-            reader.getReaderLayoutManager().setCurrentLayout(baseOptions.getLayoutType(), null);
+            reader.getReaderLayoutManager().setCurrentLayout(baseOptions.getLayoutType(), baseOptions.getNavigationArgs());
         }
     }
 

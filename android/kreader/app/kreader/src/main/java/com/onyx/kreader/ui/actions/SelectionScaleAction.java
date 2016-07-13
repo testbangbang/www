@@ -4,13 +4,12 @@ import android.content.IntentFilter;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Environment;
-import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.host.request.ScaleByRectRequest;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.android.cropimage.CropImage;
 import com.onyx.android.cropimage.CropImageResultReceiver;
 import com.onyx.android.cropimage.data.CropArgs;
-
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.host.request.ScaleByRectRequest;
+import com.onyx.kreader.ui.ReaderActivity;
 
 import java.io.File;
 
@@ -18,20 +17,42 @@ import java.io.File;
  * Created by zhuzeng on 5/18/16.
  */
 public class SelectionScaleAction extends BaseAction {
+    public static abstract class Callback {
+        public abstract void onSelectionFinished(final ReaderActivity readerActivity, final CropArgs args);
+    }
 
+    private CropArgs cropArgs;
+    private Callback callback;
     private CropImageResultReceiver selectionZoomAreaReceiver;
+
+    public SelectionScaleAction() {
+        cropArgs = new CropArgs();
+        cropArgs.manualCropPage = true;
+        cropArgs.manualSplitPage = false;
+        callback = new Callback() {
+            @Override
+            public void onSelectionFinished(final ReaderActivity readerActivity, final CropArgs args) {
+                scaleByRect(readerActivity, new RectF(args.selectionRect));
+            }
+        };
+    }
+
+    public SelectionScaleAction(CropArgs args, Callback callback) {
+        this.cropArgs = args;
+        this.callback = callback;
+    }
 
     public void execute(final ReaderActivity readerActivity) {
         scaleByRect(readerActivity);
     }
 
     private void scaleByRect(final ReaderActivity readerActivity) {
-        CropArgs args = new CropArgs();
-        args.manualCropPage = true;
-        showSelectionActivity(readerActivity, args, new CropImage.SelectionCallback() {
+        showSelectionActivity(readerActivity, cropArgs, new CropImage.SelectionCallback() {
             @Override
             public void onSelectionFinished(CropArgs args) {
-                scaleByRect(readerActivity, new RectF(args.selectionRect));
+                if (callback != null) {
+                    callback.onSelectionFinished(readerActivity, args);
+                }
             }
          });
     }

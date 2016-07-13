@@ -1,6 +1,8 @@
 package com.onyx.kreader.host.navigation;
 
 import android.graphics.RectF;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.onyx.android.cropimage.data.PointMatrix;
 import com.onyx.kreader.host.math.PageUtils;
 
 import java.util.HashMap;
@@ -11,15 +13,29 @@ import java.util.Map;
  */
 public class NavigationArgs {
 
-    private Type type;
-    private Map<Type, NavigationList> map = new HashMap();
+    public Type type;
+    public Map<Type, NavigationList> map = new HashMap();
 
     public enum Type {
         ALL, ODD, EVEN,
     }
 
+    public NavigationList rowsLeftToRight(final Type t, PointMatrix pointMatrix, final RectF limit) {
+        NavigationList list = NavigationList.rowsLeftToRight(pointMatrix, limit);
+        type = t;
+        map.put(type, list);
+        return list;
+    }
+
     public NavigationList rowsLeftToRight(final Type t, int rows, int cols, final RectF limit) {
         NavigationList list = NavigationList.rowsLeftToRight(rows, cols, limit);
+        type = t;
+        map.put(type, list);
+        return list;
+    }
+
+    public NavigationList rowsRightToLeft(final Type t, PointMatrix pointMatrix, final RectF limit) {
+        NavigationList list = NavigationList.rowsRightToLeft(pointMatrix, limit);
         type = t;
         map.put(type, list);
         return list;
@@ -32,8 +48,22 @@ public class NavigationArgs {
         return list;
     }
 
+    public NavigationList columnsLeftToRight(final Type t, PointMatrix pointMatrix, final RectF limit) {
+        NavigationList list = NavigationList.columnsLeftToRight(pointMatrix, limit);
+        type = t;
+        map.put(type, list);
+        return list;
+    }
+
     public NavigationList columnsLeftToRight(final Type t, int rows, int cols, final RectF limit) {
         NavigationList list = NavigationList.columnsLeftToRight(rows, cols, limit);
+        type = t;
+        map.put(type, list);
+        return list;
+    }
+
+    public NavigationList columnsRightToLeft(final Type t, PointMatrix pointMatrix, final RectF limit) {
+        NavigationList list = NavigationList.columnsRightToLeft(pointMatrix, limit);
         type = t;
         map.put(type, list);
         return list;
@@ -49,6 +79,15 @@ public class NavigationArgs {
     public NavigationArgs() {
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public Map<Type, NavigationList> getMap() {
+        return map;
+    }
+
+    @JSONField(serialize = false)
     public NavigationList getList() {
         return map.get(type);
     }

@@ -2,12 +2,12 @@ package com.onyx.kreader.host.options;
 
 import android.content.Context;
 import android.graphics.RectF;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
+import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.utils.GObject;
 
 import java.util.List;
@@ -49,6 +49,7 @@ public class BaseOptions {
     transient static public final String NAVIGATION_COLUMNS = "navigation_columns";
     transient static public final String NAVIGATION_CURRENT_ROW = "current_navigation_row";
     transient static public final String NAVIGATION_CURRENT_COLUMN = "current_navigation_column";
+    transient static public final String NAVIGATION_ARGUMENTS = "navigation_arguments";
 
     transient static public final String PAGE_LEFT_MARGIN = "page_left_margin";
     transient static public final String PAGE_TOP_MARGIN = "page_top_margin";
@@ -398,6 +399,13 @@ public class BaseOptions {
         backend.putInt(NAVIGATION_CURRENT_COLUMN, column);
     }
 
+    public NavigationArgs getNavigationArgs() {
+        return backend.getObject(NAVIGATION_ARGUMENTS, NavigationArgs.class);
+    }
+
+    public void setNavigationArgs(NavigationArgs args) {
+        backend.putObject(NAVIGATION_ARGUMENTS, args);
+    }
 
     static public int getDefaultNavigationRows() {
         return 1;

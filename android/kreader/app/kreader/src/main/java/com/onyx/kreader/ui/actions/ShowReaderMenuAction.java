@@ -20,6 +20,7 @@ import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.android.sdk.data.ReaderMenu;
@@ -133,6 +134,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         resetNavigationMode(readerActivity);
                         break;
                     case "/Navigation/MoreSetting":
+                        showNavigationSettingsDialog(readerActivity);
                         break;
                     case "/Spacing/DecreaseSpacing":
                         break;
@@ -257,6 +259,12 @@ public class ShowReaderMenuAction extends BaseAction {
     private void resetNavigationMode(final ReaderActivity readerActivity) {
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE, new NavigationArgs());
         readerActivity.submitRequest(request);
+    }
+
+    private void showNavigationSettingsDialog(ReaderActivity readerActivity) {
+        hideReaderMenu(readerActivity);
+        DialogNavigationSettings dlg = new DialogNavigationSettings(readerActivity);
+        dlg.show();
     }
 
     private void adjustContrast(final ReaderActivity readerActivity) {
