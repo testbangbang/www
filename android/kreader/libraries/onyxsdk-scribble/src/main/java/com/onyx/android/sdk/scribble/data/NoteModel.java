@@ -56,6 +56,12 @@ public class NoteModel extends BaseModel {
     float strokeWidth;
 
     @Column
+    int strokeColor;
+
+    @Column
+    int currentShapeType;
+
+    @Column
     int background;
 
     @Column(typeConverter = ConverterStringList.class)
@@ -186,6 +192,22 @@ public class NoteModel extends BaseModel {
 
     public void setBackground(int background) {
         this.background = background;
+    }
+
+    public int getStrokeColor() {
+        return strokeColor;
+    }
+
+    public void setStrokeColor(int strokeColor) {
+        this.strokeColor = strokeColor;
+    }
+
+    public int getCurrentShapeType() {
+        return currentShapeType;
+    }
+
+    public void setCurrentShapeType(int currentShapeType) {
+        this.currentShapeType = currentShapeType;
     }
 
     private void beforeSave() {

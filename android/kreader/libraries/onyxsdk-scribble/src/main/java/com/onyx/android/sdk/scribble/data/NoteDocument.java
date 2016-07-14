@@ -7,8 +7,6 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
-import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 import org.apache.commons.collections4.map.ListOrderedMap;
 
 import java.util.LinkedHashSet;
@@ -87,8 +85,10 @@ public class NoteDocument {
         final PageNameList pageNameList = new PageNameList();
         pageNameList.addAll(pageDataMap.keyList());
         noteModel.setPageNameList(pageNameList);
+        noteModel.setCurrentShapeType(noteDrawingArgs.currentShapeType);
         noteModel.strokeWidth = noteDrawingArgs.strokeWidth;
         noteModel.background = noteDrawingArgs.background;
+        noteModel.strokeColor = noteDrawingArgs.strokeColor;
         return noteModel;
     }
 
@@ -166,6 +166,8 @@ public class NoteDocument {
         if (noteModel != null) {
             noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
             noteDrawingArgs.background = noteModel.getBackground();
+            noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
+            noteDrawingArgs.currentShapeType = noteModel.getCurrentShapeType();
         }
     }
 

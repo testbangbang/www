@@ -10,11 +10,11 @@ public class PageNextRequest extends BaseNoteRequest {
 
     public PageNextRequest() {
         setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
     }
 
     // always render page.
     public void execute(final NoteViewHelper helper) throws Exception {
+        setResumeInputProcessor(helper.isDFBForCurrentShape());
         helper.getNoteDocument().nextPage();
         renderCurrentPage(helper);
         updateShapeDataInfo(helper);

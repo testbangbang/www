@@ -13,10 +13,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.scribble.data.NoteDocument;
-import com.onyx.android.sdk.scribble.data.RawInputProcessor;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.LineShape;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
@@ -60,7 +57,6 @@ public class NoteViewHelper {
     private RawInputProcessor.InputCallback callback;
     private TouchPointList erasePoints;
     private DeviceConfig deviceConfig;
-    private volatile int currentShapeType = ShapeFactory.SHAPE_NORMAL_SCRIBBLE;
     private Shape currentShape = null;
     private PenState penState;
 
@@ -222,6 +218,14 @@ public class NoteViewHelper {
         EpdController.setStrokeColor(color);
     }
 
+    public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
+        setStrokeColor(drawingArgs.strokeColor);
+        setStrokeWidth(drawingArgs.strokeWidth);
+        setCurrentShapeType(drawingArgs.currentShapeType);
+        setBackground(drawingArgs.background);
+
+    }
+
     private void removeLayoutListener() {
         if (surfaceView == null || globalLayoutListener == null) {
             return;
@@ -354,7 +358,7 @@ public class NoteViewHelper {
 
     private Shape createNewShape() {
         Shape shape = null;
-        switch (currentShapeType) {
+        switch (getNoteDocument().getNoteDrawingArgs().currentShapeType) {
             case ShapeFactory.SHAPE_NORMAL_SCRIBBLE:
                 shape = new NormalScribbleShape();
                 break;
@@ -390,6 +394,10 @@ public class NoteViewHelper {
         }
     }
 
+    public List<Shape> getDirtyStash() {
+        return dirtyStash;
+    }
+
     public List<Shape> deatchStash() {
         final List<Shape> temp = dirtyStash;
         dirtyStash = new ArrayList<Shape>();
@@ -419,15 +427,19 @@ public class NoteViewHelper {
     }
 
     public int getCurrentShapeType() {
-        return currentShapeType;
+        return getNoteDocument().getNoteDrawingArgs().currentShapeType;
     }
 
     public void setCurrentShapeType(int currentShapeType) {
-        this.currentShapeType = currentShapeType;
+        getNoteDocument().getNoteDrawingArgs().currentShapeType = currentShapeType;
     }
 
     private boolean useRawData() {
-        return deviceConfig.useRawInput() && ShapeFactory.isDFBShape(currentShapeType);
+        return deviceConfig.useRawInput() && ShapeFactory.isDFBShape(getCurrentShapeType());
+    }
+
+    public boolean isDFBForCurrentShape() {
+        return ShapeFactory.isDFBShape(getCurrentShapeType()) && !inUserErasing();
     }
 
     private boolean processTouchEvent(final MotionEvent motionEvent) {

@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.utils.TestUtils;
 
@@ -38,7 +39,7 @@ public class BaseNoteRequest extends BaseRequest {
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = false;
     private volatile boolean render = true;
-    private volatile int currentShapeType;
+    private volatile NoteDrawingArgs drawingArgs = new NoteDrawingArgs();
 
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;
@@ -262,12 +263,8 @@ public class BaseNoteRequest extends BaseRequest {
         shapeDataInfo.updateShapePageMap(
                 parent.getNoteDocument().getPageNameList(),
                 parent.getNoteDocument().getCurrentPageIndex());
-        shapeDataInfo.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
-        shapeDataInfo.setStrokeColor(parent.getNoteDocument().getStrokeColor());
-        shapeDataInfo.setBackground(parent.getNoteDocument().getBackground());
-        shapeDataInfo.setEraserRadius(parent.getNoteDocument().getEraserRadius());
         shapeDataInfo.setInUserErasing(parent.inUserErasing());
-        shapeDataInfo.setCurrentShape(parent.getCurrentShapeType());
+        shapeDataInfo.updateDrawingArgs(parent.getNoteDocument().getNoteDrawingArgs());
     }
 
     public void ensureDocumentOpened(final NoteViewHelper parent) {
@@ -278,11 +275,11 @@ public class BaseNoteRequest extends BaseRequest {
         }
     }
 
-    public int getCurrentShapeType() {
-        return currentShapeType;
+    public void syncDrawingArgs(final NoteDrawingArgs args) {
+        drawingArgs.syncFrom(args);
     }
 
-    public void setCurrentShapeType(int currentShapeType) {
-        this.currentShapeType = currentShapeType;
+    public final NoteDrawingArgs getDrawingArgs() {
+        return drawingArgs;
     }
 }

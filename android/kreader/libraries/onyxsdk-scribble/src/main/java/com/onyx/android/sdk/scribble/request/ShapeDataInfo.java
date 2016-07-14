@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble.request;
 
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.PageNameList;
 
 /**
@@ -11,12 +12,9 @@ public class ShapeDataInfo {
     private int currentPageIndex;
     private boolean canUndoShape;
     private boolean canRedoShape;
-    private int background;
-    private float eraserRadius;
-    private float strokeWidth;
-    private int strokeColor;
-    private int currentShape;
     private boolean inUserErasing;
+    private NoteDrawingArgs drawingArgs = new NoteDrawingArgs();
+
 
     public final PageNameList getPageNameList() {
         return pageNameList;
@@ -32,11 +30,11 @@ public class ShapeDataInfo {
     }
 
     public void setBackground(final int bg) {
-        background = bg;
+        drawingArgs.background = bg;
     }
 
     public int getBackground() {
-        return background;
+        return drawingArgs.background;
     }
 
     public int getPageCount() {
@@ -64,27 +62,27 @@ public class ShapeDataInfo {
     }
 
     public float getEraserRadius() {
-        return eraserRadius;
+        return drawingArgs.eraserRadius;
     }
 
     public void setEraserRadius(float eraserRadius) {
-        this.eraserRadius = eraserRadius;
+        drawingArgs.eraserRadius = eraserRadius;
     }
 
     public float getStrokeWidth() {
-        return strokeWidth;
+        return drawingArgs.strokeWidth;
     }
 
     public void setStrokeWidth(float strokeWidth) {
-        this.strokeWidth = strokeWidth;
+        drawingArgs.strokeWidth = strokeWidth;
     }
 
     public int getStrokeColor() {
-        return strokeColor;
+        return drawingArgs.strokeColor;
     }
 
     public void setStrokeColor(int strokeColor) {
-        this.strokeColor = strokeColor;
+        drawingArgs.strokeColor = strokeColor;
     }
 
     public boolean isInUserErasing() {
@@ -95,11 +93,19 @@ public class ShapeDataInfo {
         this.inUserErasing = inUserErasing;
     }
 
-    public int getCurrentShape() {
-        return currentShape;
+    public int getCurrentShapeType() {
+        return drawingArgs.currentShapeType;
     }
 
-    public void setCurrentShape(int currentShape) {
-        this.currentShape = currentShape;
+    public void setCurrentShapeType(int currentShape) {
+        drawingArgs.currentShapeType = currentShape;
+    }
+
+    public NoteDrawingArgs getDrawingArgs() {
+        return drawingArgs;
+    }
+
+    public void updateDrawingArgs(NoteDrawingArgs drawingArgs) {
+        drawingArgs.syncFrom(drawingArgs);
     }
 }

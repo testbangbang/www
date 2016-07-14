@@ -12,12 +12,12 @@ public class PageAddRequest extends BaseNoteRequest {
 
     public PageAddRequest(final int value) {
         setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
         pageIndex = value;
     }
 
     @Override
     public void execute(final NoteViewHelper parent) throws Exception {
+        setResumeInputProcessor(parent.isDFBForCurrentShape());
         if (pageIndex < 0) {
             pageIndex = parent.getNoteDocument().getCurrentPageIndex() + 1;
         }

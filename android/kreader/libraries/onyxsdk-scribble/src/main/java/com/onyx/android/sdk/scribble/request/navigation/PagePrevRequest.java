@@ -11,16 +11,13 @@ public class PagePrevRequest extends BaseNoteRequest {
 
     public PagePrevRequest() {
         setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
-        long start = System.currentTimeMillis();
+        setResumeInputProcessor(helper.isDFBForCurrentShape());
         helper.getNoteDocument().prevPage();
         renderCurrentPage(helper);
         updateShapeDataInfo(helper);
-        long end = System.currentTimeMillis();
-        Log.e("######", "render takes: " + (end - start));
     }
 
 }
