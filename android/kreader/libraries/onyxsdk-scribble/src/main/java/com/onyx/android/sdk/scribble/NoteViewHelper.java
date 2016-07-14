@@ -18,8 +18,10 @@ import com.onyx.android.sdk.scribble.data.RawInputProcessor;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.shape.LineShape;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
@@ -56,10 +58,11 @@ public class NoteViewHelper {
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private List<Shape> dirtyStash = new ArrayList<Shape>();
     private RawInputProcessor.InputCallback callback;
-    private PenState penState;
     private TouchPointList erasePoints;
     private DeviceConfig deviceConfig;
-
+    private volatile int currentShapeType = ShapeFactory.SHAPE_NORMAL_SCRIBBLE;
+    private Shape currentShape = null;
+    private PenState penState;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, 3);
@@ -88,6 +91,11 @@ public class NoteViewHelper {
         onDocumentOpened();
     }
 
+    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
+        getNoteDocument().create(context, documentUniqueId, parentUniqueId);
+        onDocumentOpened();
+    }
+
     private void onDocumentOpened() {
         renderBitmapWrapper.clear();
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
@@ -108,17 +116,7 @@ public class NoteViewHelper {
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (!inErasing()) {
-                    return true;
-                }
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    onBeginErasing();
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                    onErasing(motionEvent);
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    onFinishErasing();
-                }
-                return true;
+                return processTouchEvent(motionEvent);
             }
         });
         surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener());
@@ -310,12 +308,22 @@ public class NoteViewHelper {
         rawInputProcessor.setParentView(surfaceView);
         rawInputProcessor.setInputCallback(new RawInputProcessor.InputCallback() {
             @Override
-            public void onBeginHandWriting() {
+            public void onBeginRawData() {
             }
 
             @Override
-            public void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
+            }
+
+            public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
+
+            }
+
+            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape) {
+            }
+
+            public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
             }
 
             @Override
@@ -336,14 +344,29 @@ public class NoteViewHelper {
     }
 
     private void onNewTouchPointListReceived(final TouchPointList pointList) {
-        Shape shape = new NormalScribbleShape();
-        shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
-        shape.setColor(getNoteDocument().getStrokeColor());
+        Shape shape = createNewShape();
         shape.addPoints(pointList);
         dirtyStash.add(shape);
         if (callback != null) {
-            callback.onNewTouchPointListReceived(shape, pointList);
+            callback.onRawTouchPointListReceived(shape, pointList);
         }
+    }
+
+    private Shape createNewShape() {
+        Shape shape = null;
+        switch (currentShapeType) {
+            case ShapeFactory.SHAPE_NORMAL_SCRIBBLE:
+                shape = new NormalScribbleShape();
+                break;
+            case ShapeFactory.SHAPE_LINE:
+                shape = new LineShape();
+                break;
+            default:
+                shape = new NormalScribbleShape();
+        }
+        shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
+        shape.setColor(getNoteDocument().getStrokeColor());
+        return shape;
     }
 
     private void onBeginErasing() {
@@ -394,4 +417,84 @@ public class NoteViewHelper {
     public boolean inUserErasing() {
         return penState == PenState.PEN_USER_ERASING;
     }
+
+    public int getCurrentShapeType() {
+        return currentShapeType;
+    }
+
+    public void setCurrentShapeType(int currentShapeType) {
+        this.currentShapeType = currentShapeType;
+    }
+
+    private boolean useRawData() {
+        return deviceConfig.useRawInput() && ShapeFactory.isDFBShape(currentShapeType);
+    }
+
+    private boolean processTouchEvent(final MotionEvent motionEvent) {
+        if (useRawData()) {
+            return processRawDataTouchEvent(motionEvent);
+        }
+        return processNormalTouchEvent(motionEvent);
+    }
+
+    private boolean processRawDataTouchEvent(final MotionEvent motionEvent) {
+        if (!inErasing()) {
+            return true;
+        }
+        return forwardErasing(motionEvent);
+    }
+
+    private boolean processNormalTouchEvent(final MotionEvent motionEvent) {
+        if (inErasing()) {
+            return forwardErasing(motionEvent);
+        }
+        return forwardDrawing(motionEvent);
+    }
+
+    private boolean forwardDrawing(final MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            onDrawingTouchDown(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            onDrawingTouchMove(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            onDrawingTouchUp(motionEvent);
+        }
+        return true;
+    }
+
+    private boolean forwardErasing(final MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            onBeginErasing();
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            onErasing(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            onFinishErasing();
+        }
+        return true;
+    }
+
+    private void onDrawingTouchDown(final MotionEvent motionEvent) {
+        currentShape = createNewShape();
+        dirtyStash.add(currentShape);
+        currentShape.onDown(new TouchPoint(motionEvent), new TouchPoint(motionEvent));
+        if (callback != null) {
+            callback.onDrawingTouchDown(motionEvent, currentShape);
+        }
+    }
+
+    private void onDrawingTouchMove(final MotionEvent motionEvent) {
+        currentShape.onMove(new TouchPoint(motionEvent), new TouchPoint(motionEvent));
+        if (callback != null) {
+            callback.onDrawingTouchMove(motionEvent, currentShape);
+        }
+    }
+
+    private void onDrawingTouchUp(final MotionEvent motionEvent) {
+        currentShape.onUp(new TouchPoint(motionEvent), new TouchPoint(motionEvent));
+        if (callback != null) {
+            callback.onDrawingTouchUp(motionEvent, currentShape);
+        }
+    }
+
+
 }

@@ -24,7 +24,7 @@ public class DocumentEditAction<T extends ScribbleActivity> extends BaseNoteActi
 
     public void execute(final T activity , final BaseCallback callback) {
         showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.loading);
-        final NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId);
+        final NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId, false);
         activity.getNoteViewHelper().submit(activity, openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

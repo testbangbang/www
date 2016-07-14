@@ -33,6 +33,8 @@ public class DeviceConfig {
     static public final String TOUCH_WIDTH = "touch_width";
     static public final String TOUCH_HEIGHT = "touch_height";
 
+    static public final String USE_RAW_INPUT = "use_raw_input";
+
     static public boolean useDebugConfig = false;
 
 
@@ -105,6 +107,10 @@ public class DeviceConfig {
             return 1.0f;
         }
         return backend.getFloat(TOUCH_HEIGHT);
+    }
+
+    public boolean useRawInput() {
+        return backend.hasKey(USE_RAW_INPUT) && backend.getBoolean(USE_RAW_INPUT);
     }
 
     static public DeviceConfig sharedInstance(Context context) {

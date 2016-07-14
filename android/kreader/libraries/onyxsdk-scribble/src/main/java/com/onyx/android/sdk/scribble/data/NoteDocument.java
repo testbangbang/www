@@ -30,9 +30,21 @@ public class NoteDocument {
     public void open(final Context context,
                      final String uniqueId,
                      final String parentLibraryUniqueId) {
+        close(context);
         setDocumentUniqueId(uniqueId);
         setParentUniqueId(parentLibraryUniqueId);
         setup(context);
+        ensureDocumentNotBlank(context);
+        gotoFirst();
+        markDocumentOpen(true);
+    }
+
+    public void create(final Context context,
+                       final String uniqueId,
+                       final String parentLibraryUniqueId) {
+        close(context);
+        setDocumentUniqueId(uniqueId);
+        setParentUniqueId(parentLibraryUniqueId);
         ensureDocumentNotBlank(context);
         gotoFirst();
         markDocumentOpen(true);

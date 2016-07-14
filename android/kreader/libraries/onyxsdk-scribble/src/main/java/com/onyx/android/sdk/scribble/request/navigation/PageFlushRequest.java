@@ -17,12 +17,12 @@ public class PageFlushRequest extends BaseNoteRequest {
     private List<Shape> shapeList = new ArrayList<>();
     private volatile boolean save = false;
 
-
-    public PageFlushRequest(final List<Shape> list, boolean r, boolean resume) {
+    public PageFlushRequest(final List<Shape> list, boolean r, boolean resume, int newShapeType) {
         shapeList.addAll(list);
         setRender(shapeList.size() > 0);
         setPauseInputProcessor(true);
         setResumeInputProcessor(resume);
+        setCurrentShapeType(newShapeType);
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
@@ -30,6 +30,7 @@ public class PageFlushRequest extends BaseNoteRequest {
             return;
         }
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
+        helper.setCurrentShapeType(getCurrentShapeType());
         renderCurrentPage(helper);
         saveDocument(helper);
         updateShapeDataInfo(helper);

@@ -10,18 +10,24 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 public class NoteDocumentOpenRequest extends BaseNoteRequest {
 
     private volatile String documentUniqueId;
+    private volatile boolean newCreate;
 
-    public NoteDocumentOpenRequest(final String id, final String parentUniqueId) {
-        setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
+    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create) {
+        newCreate = create;
         setParentLibraryId(parentUniqueId);
         documentUniqueId = id;
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(true);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
         Log.e("#############", "opening document");
         benchmarkStart();
-        parent.openDocument(getContext(), documentUniqueId, getParentLibraryId());
+        if (newCreate) {
+            parent.createDocument(getContext(), documentUniqueId, getParentLibraryId());
+        } else {
+            parent.openDocument(getContext(), documentUniqueId, getParentLibraryId());
+        }
         Log.e("#############", "rending page");
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
