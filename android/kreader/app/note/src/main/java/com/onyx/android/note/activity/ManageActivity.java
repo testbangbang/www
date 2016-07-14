@@ -184,10 +184,12 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 }
                 switch (Utils.getItemType(object)) {
                     case DataItemType.TYPE_DOCUMENT:
-                        view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, R.drawable.note_bg_shadow);
+                        view.setThumbnailScaleType(GAdapterUtil.TAG_IMAGE_RESOURCE, ImageView.ScaleType.FIT_XY);
+                        view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, R.drawable.shadow);
                         break;
                     case DataItemType.TYPE_CREATE:
                     case DataItemType.TYPE_LIBRARY:
+                        view.setThumbnailScaleType(GAdapterUtil.TAG_IMAGE_RESOURCE, ImageView.ScaleType.FIT_CENTER);
                         view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, 0);
                         break;
                 }
