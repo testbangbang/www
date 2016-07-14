@@ -26,6 +26,7 @@ public class DialogNavigationSettings extends DialogBase {
         // ROWS X COLUMNS
         SUB_SCREEN_1_1,
         SUB_SCREEN_1_2,
+        SUB_SCREEN_1_3,
         SUB_SCREEN_2_1,
         SUB_SCREEN_2_2,
         SUB_SCREEN_2_3,
@@ -33,6 +34,12 @@ public class DialogNavigationSettings extends DialogBase {
         SUB_SCREEN_3_2,
         SUB_SCREEN_3_3,
     }
+
+    public static SubScreenMode[][] SubScreenModeMatrix = new SubScreenMode[][] {
+        { SubScreenMode.SUB_SCREEN_1_1, SubScreenMode.SUB_SCREEN_1_2, SubScreenMode.SUB_SCREEN_1_3},
+            { SubScreenMode.SUB_SCREEN_2_1, SubScreenMode.SUB_SCREEN_2_2, SubScreenMode.SUB_SCREEN_3_3},
+            { SubScreenMode.SUB_SCREEN_3_1, SubScreenMode.SUB_SCREEN_3_2, SubScreenMode.SUB_SCREEN_3_3},
+    };
 
     private static abstract class ObjectSelectedCallback {
         public abstract void onObjectSelected(GObject object);
@@ -51,9 +58,9 @@ public class DialogNavigationSettings extends DialogBase {
     private SubScreenMode currentUsingSubScreenMode = SubScreenMode.SUB_SCREEN_1_1;
     private ReaderCropArgs navigationArgs = new ReaderCropArgs();
     private ReaderCropArgs.NavigationMode currentChoosingNavigationMode =
-            ReaderCropArgs.NavigationMode.SINGLE_PAGE_MODE;
+            ReaderCropArgs.NavigationMode.ROWS_LEFT_TO_RIGHT_MODE;
     private ReaderCropArgs.NavigationMode currentUsingNavigationMode =
-            ReaderCropArgs.NavigationMode.SINGLE_PAGE_MODE;
+            ReaderCropArgs.NavigationMode.ROWS_LEFT_TO_RIGHT_MODE;
 
     public DialogNavigationSettings(ReaderActivity readerActivity) {
         super(readerActivity);
@@ -65,10 +72,10 @@ public class DialogNavigationSettings extends DialogBase {
         setContentView(R.layout.dialog_navigation_settings);
         currentChoosingCropMode = ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE;
         currentChoosingSubScreenMode = getSubScreenModeFromReader(2, 2);
-        currentChoosingNavigationMode = ReaderCropArgs.NavigationMode.SINGLE_PAGE_MODE;
+        currentChoosingNavigationMode = ReaderCropArgs.NavigationMode.ROWS_LEFT_TO_RIGHT_MODE;
         currentUsingCropMode = ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE;
         currentUsingSubScreenMode = getSubScreenModeFromReader(2, 2);
-        currentUsingNavigationMode = ReaderCropArgs.NavigationMode.SINGLE_PAGE_MODE;
+        currentUsingNavigationMode = ReaderCropArgs.NavigationMode.ROWS_LEFT_TO_RIGHT_MODE;
 
         mCropContentView = (ContentView) findViewById(R.id.crop_contentView);
         setupContentView(mCropContentView, new ObjectSelectedCallback() {
@@ -308,28 +315,7 @@ public class DialogNavigationSettings extends DialogBase {
     }
 
     private SubScreenMode getSubScreenModeFromReader(int rows, int columns) {
-        int combination = rows * 10 + columns;
-        switch (combination){
-            case 11:
-                return SubScreenMode.SUB_SCREEN_1_1;
-            case 12:
-                return SubScreenMode.SUB_SCREEN_1_2;
-            case 21:
-                return SubScreenMode.SUB_SCREEN_2_1;
-            case 22:
-                return SubScreenMode.SUB_SCREEN_2_2;
-            case 23:
-                return SubScreenMode.SUB_SCREEN_2_3;
-            case 31:
-                return SubScreenMode.SUB_SCREEN_3_1;
-            case 32:
-                return SubScreenMode.SUB_SCREEN_3_2;
-            case 33:
-                return SubScreenMode.SUB_SCREEN_3_3;
-            default:
-                assert(false);
-                return SubScreenMode.SUB_SCREEN_1_1;
-        }
+        return SubScreenModeMatrix[rows - 1][columns - 1];
     }
 
     private int getRowNumber() {
