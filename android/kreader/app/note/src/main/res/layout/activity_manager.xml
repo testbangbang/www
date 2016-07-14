@@ -48,16 +48,18 @@
             <CheckedTextView
                 android:id="@+id/selectMode"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/mx_imagebtn_bg"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:minWidth="@dimen/button_minHeight"
+                android:padding="10dp"
                 android:text="@string/select_mode"
+                android:textColor="@color/mx_button_item_text_color"
                 android:textSize="18sp" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
@@ -73,8 +75,8 @@
         android:id="@+id/page_indicator_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp">
 
         <LinearLayout
             android:id="@+id/control_panel"
@@ -86,29 +88,47 @@
             android:orientation="horizontal"
             android:visibility="gone">
 
-            <TextView
-                android:id="@+id/delete"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="@string/delete"
-                android:textSize="18sp" />
+                android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/move"
+                <TextView
+                    android:id="@+id/delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/mx_imagebtn_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/delete"
+                    android:textColor="@color/mx_button_item_text_color"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="@string/move"
-                android:textSize="18sp" />
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/move"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/mx_imagebtn_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/move"
+                    android:textColor="@color/mx_button_item_text_color"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+
         </LinearLayout>
 
         <LinearLayout

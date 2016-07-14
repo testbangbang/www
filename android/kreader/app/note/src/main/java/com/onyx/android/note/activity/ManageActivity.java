@@ -115,6 +115,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
         chooseModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chooseModeButton.setChecked(!chooseModeButton.isChecked());
                 switch (currentSelectMode) {
                     case SelectionMode.NORMAL_MODE:
                         switchMode(SelectionMode.MULTISELECT_MODE);
