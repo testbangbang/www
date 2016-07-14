@@ -38,6 +38,7 @@ public class BaseNoteRequest extends BaseRequest {
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = false;
     private volatile boolean render = true;
+    private volatile int currentShapeType;
 
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;
@@ -257,14 +258,16 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void updateShapeDataInfo(final NoteViewHelper parent) {
-        getShapeDataInfo().updateShapePageMap(
+        final ShapeDataInfo shapeDataInfo = getShapeDataInfo();
+        shapeDataInfo.updateShapePageMap(
                 parent.getNoteDocument().getPageNameList(),
                 parent.getNoteDocument().getCurrentPageIndex());
-        getShapeDataInfo().setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
-        getShapeDataInfo().setStrokeColor(parent.getNoteDocument().getStrokeColor());
-        getShapeDataInfo().setBackground(parent.getNoteDocument().getBackground());
-        getShapeDataInfo().setEraserRadius(parent.getNoteDocument().getEraserRadius());
-        getShapeDataInfo().setInUserErasing(parent.inUserErasing());
+        shapeDataInfo.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
+        shapeDataInfo.setStrokeColor(parent.getNoteDocument().getStrokeColor());
+        shapeDataInfo.setBackground(parent.getNoteDocument().getBackground());
+        shapeDataInfo.setEraserRadius(parent.getNoteDocument().getEraserRadius());
+        shapeDataInfo.setInUserErasing(parent.inUserErasing());
+        shapeDataInfo.setCurrentShape(parent.getCurrentShapeType());
     }
 
     public void ensureDocumentOpened(final NoteViewHelper parent) {
@@ -275,6 +278,11 @@ public class BaseNoteRequest extends BaseRequest {
         }
     }
 
+    public int getCurrentShapeType() {
+        return currentShapeType;
+    }
 
-
+    public void setCurrentShapeType(int currentShapeType) {
+        this.currentShapeType = currentShapeType;
+    }
 }

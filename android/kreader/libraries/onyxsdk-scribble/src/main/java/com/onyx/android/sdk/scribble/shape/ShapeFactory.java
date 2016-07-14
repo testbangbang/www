@@ -13,6 +13,7 @@ public class ShapeFactory {
     static public final int SHAPE_NORMAL_SCRIBBLE = 2;
     static public final int SHAPE_VARY_SCRIBBLE = 3;
     static public final int SHAPE_TEXT = 4;
+    static public final int SHAPE_LINE = 5;
 
 
     public static final Shape shapeFromModel(final ShapeModel shapeModel) {
@@ -25,9 +26,15 @@ public class ShapeFactory {
                 return createCircleShape(shapeModel);
             case SHAPE_RECTANGLE:
                 return createRectangleShape(shapeModel);
+            case SHAPE_LINE:
+                return createLineShape(shapeModel);
             default:
                 return createNormalScribbleShape(shapeModel);
         }
+    }
+
+    public static boolean isDFBShape(int shape) {
+        return shape == SHAPE_NORMAL_SCRIBBLE || shape == SHAPE_VARY_SCRIBBLE;
     }
 
     public static final ShapeModel modelFromShape(final Shape shape) {
@@ -63,6 +70,12 @@ public class ShapeFactory {
 
     private static final Shape createRectangleShape(final ShapeModel shapeModel) {
         final RectangleShape shape = new RectangleShape();
+        syncShapeDataFromModel(shape, shapeModel);
+        return shape;
+    }
+
+    private static final Shape createLineShape(final ShapeModel shapeModel) {
+        final LineShape shape = new LineShape();
         syncShapeDataFromModel(shape, shapeModel);
         return shape;
     }

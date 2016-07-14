@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -18,7 +17,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by zhuzeng on 6/17/16.
@@ -49,10 +47,16 @@ public class RawInputProcessor {
     public static abstract class InputCallback {
 
         // when received pen down or stylus button
-        public abstract void onBeginHandWriting();
+        public abstract void onBeginRawData();
 
         // when pen released.
-        public abstract void onNewTouchPointListReceived(final Shape shape, final TouchPointList pointList);
+        public abstract void onRawTouchPointListReceived(final Shape shape, final TouchPointList pointList);
+
+        public abstract void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape);
+
+        public abstract void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape);
+
+        public abstract void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape);
 
         // caller should render the page here.
         public abstract void onBeginErasing();
@@ -329,7 +333,7 @@ public class RawInputProcessor {
                 if (erasing) {
                     inputCallback.onBeginErasing();
                 } else {
-                    inputCallback.onBeginHandWriting();
+                    inputCallback.onBeginRawData();
                 }
             }
         });
@@ -346,7 +350,7 @@ public class RawInputProcessor {
                 if (erasing) {
                     inputCallback.onEraseTouchPointListReceived(touchPointList);
                 } else {
-                    inputCallback.onNewTouchPointListReceived(null, touchPointList);
+                    inputCallback.onRawTouchPointListReceived(null, touchPointList);
                 }
             }
         });

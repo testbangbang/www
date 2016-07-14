@@ -122,22 +122,22 @@ public class BaseShape implements Shape {
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         downPoint.x = normalizedPoint.x;
         downPoint.y = normalizedPoint.y;
-        boundingRect.union(normalizedPoint.x, normalizedPoint.y);
+        currentPoint.x = normalizedPoint.x;
+        currentPoint.y = normalizedPoint.y;
         normalizedPoints.add(normalizedPoint);
+        updateBoundingRect();
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
-        boundingRect.union(normalizedPoint.x, normalizedPoint.y);
-        normalizedPoints.add(normalizedPoint);
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
-        boundingRect.union(normalizedPoint.x, normalizedPoint.y);
         normalizedPoints.add(normalizedPoint);
+        updateBoundingRect();
     }
 
     public void addPoints(final TouchPointList points) {

@@ -7,7 +7,7 @@ import android.graphics.Color;
  */
 public class NoteDrawingArgs {
 
-    public volatile float strokeWidth;
+    public volatile float strokeWidth = 1.0f;
     public volatile int strokeColor = Color.BLACK;
     public volatile int style;
     public volatile int currentShapeType;

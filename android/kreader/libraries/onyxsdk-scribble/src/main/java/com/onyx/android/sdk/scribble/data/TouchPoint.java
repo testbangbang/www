@@ -2,6 +2,7 @@ package com.onyx.android.sdk.scribble.data;
 
 
 import android.graphics.Matrix;
+import android.view.MotionEvent;
 import org.nustaq.serialization.annotations.Flat;
 
 import java.io.Serializable;
@@ -28,7 +29,6 @@ public class TouchPoint implements Serializable {
     public long timestamp;
 
     public TouchPoint() {
-
     }
 
     public TouchPoint(final float px, final float py, final float p, final float s, final long ts) {
@@ -37,6 +37,14 @@ public class TouchPoint implements Serializable {
         pressure = p;
         size = s;
         timestamp = ts;
+    }
+
+    public TouchPoint(final MotionEvent motionEvent) {
+        x = motionEvent.getX();
+        y = motionEvent.getY();
+        pressure = motionEvent.getPressure();
+        size = motionEvent.getSize();
+        timestamp = motionEvent.getEventTime();
     }
 
     public void set(final TouchPoint point) {

@@ -15,6 +15,7 @@ public class ShapeDataInfo {
     private float eraserRadius;
     private float strokeWidth;
     private int strokeColor;
+    private int currentShape;
     private boolean inUserErasing;
 
     public final PageNameList getPageNameList() {
@@ -92,5 +93,13 @@ public class ShapeDataInfo {
 
     public void setInUserErasing(boolean inUserErasing) {
         this.inUserErasing = inUserErasing;
+    }
+
+    public int getCurrentShape() {
+        return currentShape;
+    }
+
+    public void setCurrentShape(int currentShape) {
+        this.currentShape = currentShape;
     }
 }
