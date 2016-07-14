@@ -38,6 +38,10 @@ public class Utils {
     public static final String ACTION_EDIT = "edit";
     public static final String ITEM_TYPE_TAG = "item_type";
 
+    public static SimpleDateFormat getDateFormat() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
+
     public static SimpleDateFormat getDateFormat(Locale locale) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
     }
@@ -61,6 +65,7 @@ public class Utils {
     public static GObject createNewItem(String title, int imageRes) {
         GObject object = GAdapterUtil.createTableItem(title, null, imageRes, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, null);
+        object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, "");
         putItemType(object, TYPE_CREATE);
         return object;
     }
@@ -75,6 +80,7 @@ public class Utils {
     public static GObject createLibraryItem(final NoteModel noteModel, final int folderRes) {
         GObject object = GAdapterUtil.createTableItem(noteModel.getTitle(), null, folderRes, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
+        object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getCreatedAt()));
         putItemType(object, TYPE_LIBRARY);
         return object;
     }
@@ -82,6 +88,7 @@ public class Utils {
     public static GObject createDocumentItem(final NoteModel noteModel, final int docRes) {
         GObject object = GAdapterUtil.createTableItem(noteModel.getTitle(), null, docRes, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
+        object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getCreatedAt()));
         putItemType(object, TYPE_DOCUMENT);
         return object;
     }

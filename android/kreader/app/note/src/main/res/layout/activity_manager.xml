@@ -14,7 +14,8 @@
 
             <RelativeLayout
                 android:id="@id/back_function_layout"
-                style="@style/global_activities_back_function_layout">
+                style="@style/global_activities_back_function_layout"
+                android:layout_marginLeft="23dp">
 
                 <ImageView
                     android:id="@+id/imageView_main_title"
@@ -32,60 +33,32 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/move"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:textSize="18sp"
-                android:layout_marginRight="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/delete"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/move"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/add_folder"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:textSize="18sp"
-                android:layout_marginRight="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/move"
-                android:visibility="gone" />
-
-            <TextView
                 android:id="@+id/add_folder"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/selectMode"
                 android:background="@drawable/imagebtn_bg"
                 android:clickable="true"
                 android:focusable="true"
-                android:textSize="18sp"
-                android:layout_marginRight="10dp"
                 android:gravity="center_vertical"
-                android:text="@string/add_folder" />
+                android:text="@string/add_folder"
+                android:textSize="18sp" />
 
-            <TextView
+            <CheckedTextView
                 android:id="@+id/selectMode"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
-                android:textSize="18sp"
                 android:background="@drawable/imagebtn_bg"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:minWidth="@dimen/button_minHeight"
-                android:text="@string/select_mode" />
+                android:text="@string/select_mode"
+                android:textSize="18sp" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 
@@ -93,46 +66,89 @@
         android:id="@+id/note_content_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/page_indicator"
+        android:layout_above="@+id/page_indicator_area"
         android:layout_below="@id/tool_bar" />
 
-    <LinearLayout
-        android:id="@+id/page_indicator"
+    <RelativeLayout
+        android:id="@+id/page_indicator_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true">
 
-        <ImageView
-            android:id="@+id/button_previous_page"
+        <LinearLayout
+            android:id="@+id/control_panel"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/imagebtn_bg"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="2dp"
-            android:src="@drawable/ic_note_prev_page_gray_32dp" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/page_indicator"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
-        <Button
-            android:id="@+id/button_page_progress"
+            <TextView
+                android:id="@+id/delete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/delete"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/move"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/move"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/page_indicator"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/imagebtn_bg"
-            android:focusable="true"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="@string/paged_init_text"
-            android:textSize="22sp" />
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/button_next_page"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/imagebtn_bg"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="2dp"
-            android:src="@drawable/ic_note_next_page_gray_32dp" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/button_previous_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp"
+                android:src="@drawable/ic_note_prev_page_gray_32dp" />
+
+            <Button
+                android:id="@+id/button_page_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/imagebtn_bg"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/paged_init_text"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:id="@+id/button_next_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp"
+                android:src="@drawable/ic_note_next_page_gray_32dp" />
+        </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
