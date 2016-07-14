@@ -58,7 +58,6 @@ public class NoteViewHelper {
     private TouchPointList erasePoints;
     private DeviceConfig deviceConfig;
     private Shape currentShape = null;
-    private PenState penState;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, 3);
@@ -405,11 +404,11 @@ public class NoteViewHelper {
     }
 
     public PenState getPenState() {
-        return penState;
+        return getNoteDocument().getPenState();
     }
 
     public void setPenState(PenState penState) {
-        this.penState = penState;
+        getNoteDocument().setPenState(penState);
     }
 
     public void ensureErasing() {
@@ -419,11 +418,11 @@ public class NoteViewHelper {
     }
 
     public boolean inErasing() {
-        return (penState == PenState.PEN_ERASER_DRAWING || penState == PenState.PEN_USER_ERASING);
+        return (getPenState() == PenState.PEN_ERASER_DRAWING || getPenState() == PenState.PEN_USER_ERASING);
     }
 
     public boolean inUserErasing() {
-        return penState == PenState.PEN_USER_ERASING;
+        return getPenState() == PenState.PEN_USER_ERASING;
     }
 
     public int getCurrentShapeType() {

@@ -492,31 +492,31 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void onPencilClicked() {
         setCurrentShapeType(ShapeFactory.SHAPE_NORMAL_SCRIBBLE);
-        setStrokeWidth(15.0f);
+        setStrokeWidth(3.0f);
         syncWithCallback(true, true, null);
     }
 
     private void onOilyPenClicked() {
         setCurrentShapeType(ShapeFactory.SHAPE_NORMAL_SCRIBBLE);
-        setStrokeWidth(15.0f);
+        setStrokeWidth(3.0f);
         syncWithCallback(true, true, null);
     }
 
     private void onFountainPenClicked() {
         setCurrentShapeType(ShapeFactory.SHAPE_NORMAL_SCRIBBLE);
-        setStrokeWidth(20.0f);
+        setStrokeWidth(4.0f);
         syncWithCallback(true, true, null);
     }
 
     private void onBrushPenClicked() {
         setCurrentShapeType(ShapeFactory.SHAPE_NORMAL_SCRIBBLE);
-        setStrokeWidth(30.0f);
+        setStrokeWidth(6.0f);
         syncWithCallback(true, true, null);
     }
 
     private void onLineClicked() {
         setCurrentShapeType(ShapeFactory.SHAPE_LINE);
-        setStrokeWidth(5.0f);
+        setStrokeWidth(1.0f);
         syncWithCallback(true, false, null);
     }
 

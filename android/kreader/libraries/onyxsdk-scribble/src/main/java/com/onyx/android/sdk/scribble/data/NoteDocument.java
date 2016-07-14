@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.data;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -138,6 +139,14 @@ public class NoteDocument {
 
     public void setEraserRadius(final float r) {
         noteDrawingArgs.eraserRadius = r;
+    }
+
+    public NoteViewHelper.PenState getPenState() {
+        return noteDrawingArgs.penState;
+    }
+
+    public void setPenState(final NoteViewHelper.PenState penState) {
+        noteDrawingArgs.penState = penState;
     }
 
     public PageNameList getPageNameList() {

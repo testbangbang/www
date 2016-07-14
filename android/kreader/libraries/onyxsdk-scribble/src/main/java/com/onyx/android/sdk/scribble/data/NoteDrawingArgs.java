@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.Color;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
 /**
@@ -8,12 +9,13 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
  */
 public class NoteDrawingArgs {
 
-    public volatile float strokeWidth = 15.0f;
+    public volatile float strokeWidth = 3.0f;
     public volatile int strokeColor = Color.BLACK;
     public volatile int style;
     public volatile int currentShapeType = ShapeFactory.SHAPE_NORMAL_SCRIBBLE;
     public volatile float eraserRadius = 15.0f;
     public volatile int background;
+    public volatile NoteViewHelper.PenState penState;
 
     public void syncFrom(final NoteDrawingArgs other) {
         strokeWidth = other.strokeWidth;
@@ -22,6 +24,7 @@ public class NoteDrawingArgs {
         currentShapeType = other.currentShapeType;
         eraserRadius = other.eraserRadius;
         background = other.background;
+        penState = other.penState;
     }
 
 }
