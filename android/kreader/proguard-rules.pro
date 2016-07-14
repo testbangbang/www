@@ -16,6 +16,8 @@
 #   public *;
 #}
 
+-keepattributes Signature,*Annotation*,EnclosingMethod,SourceFile,LineNumberTable
+
 -dontnote android.support.**
 -dontnote com.alibaba.**
 -dontnote com.android.**
