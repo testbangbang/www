@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
@@ -49,14 +51,19 @@ public class ManageActivity extends OnyxAppCompatActivity {
     int currentSelectMode = SelectionMode.NORMAL_MODE;
     private int currentPage;
 
-    private TextView chooseModeButton, addFolderButton, moveButton, deleteButton;
+    private CheckedTextView chooseModeButton;
+    private TextView addFolderButton, moveButton, deleteButton;
     private ImageView nextPageBtn, prevPageBtn;
+    private LinearLayout controlPanel;
     private Button progressBtn;
     private ArrayList<GObject> chosenItemsList = new ArrayList<>();
     private ArrayList<String> targetMoveIDList = new ArrayList<>();
     private ContentView contentView;
     private GAdapter adapter;
     private String currentLibraryId;
+    private ImageView toolBarIcon;
+    private TextView toolBarTitle;
+    private String currentLibraryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +95,23 @@ public class ManageActivity extends OnyxAppCompatActivity {
         this.currentLibraryId = currentLibraryId;
     }
 
+    public void setCurrentLibraryName(String currentLibraryName) {
+        this.currentLibraryName = currentLibraryName;
+    }
+
     private void initView() {
         initSupportActionBarWithCustomBackFunction();
         getSupportActionBar().setTitle(ManageActivity.class.getSimpleName());
-        chooseModeButton = (TextView) findViewById(R.id.selectMode);
+        chooseModeButton = (CheckedTextView) findViewById(R.id.selectMode);
         addFolderButton = (TextView) findViewById(R.id.add_folder);
+        toolBarIcon = (ImageView) findViewById(R.id.imageView_main_title);
+        toolBarTitle = (TextView) findViewById(R.id.textView_main_title);
         moveButton = (TextView) findViewById(R.id.move);
         deleteButton = (TextView) findViewById(R.id.delete);
         nextPageBtn = (ImageView) findViewById(R.id.button_next_page);
         prevPageBtn = (ImageView) findViewById(R.id.button_previous_page);
         progressBtn = (Button) findViewById(R.id.button_page_progress);
+        controlPanel = (LinearLayout) findViewById(R.id.control_panel);
         chooseModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,7 +171,6 @@ public class ManageActivity extends OnyxAppCompatActivity {
         contentView.setupGridLayout(getRows(), getColumns());
         contentView.setShowPageInfoArea(false);
         contentView.setCallback(new ContentView.ContentViewCallback() {
-
             @Override
             public void afterPageChanged(ContentView contentView, int newPage, int oldPage) {
                 updateTextViewPage();
@@ -170,7 +183,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 }
                 switch (Utils.getItemType(object)) {
                     case DataItemType.TYPE_DOCUMENT:
-                        view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, R.drawable.image_border);
+                        view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, R.drawable.note_bg_shadow);
                         break;
                     case DataItemType.TYPE_CREATE:
                     case DataItemType.TYPE_LIBRARY:
@@ -253,7 +266,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
         String noteTitle = "";
         String uniqueID = "";
         if (action.equals(Utils.ACTION_CREATE)) {
-            noteTitle = Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date());
+            noteTitle = getString(R.string.new_document);
             uniqueID = ShapeUtils.generateUniqueId();
         } else {
             noteTitle = StringUtils.isNullOrEmpty(object.getString(GAdapterUtil.TAG_TITLE_STRING)) ?
@@ -274,12 +287,14 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 mapping = new HashMap<>();
                 mapping.put(GAdapterUtil.TAG_IMAGE_RESOURCE, R.id.imageview_bg);
                 mapping.put(GAdapterUtil.TAG_TITLE_STRING, R.id.textview_title);
+                mapping.put(GAdapterUtil.TAG_SUB_TITLE_STRING,R.id.textview_date);
                 break;
             case SelectionMode.MULTISELECT_MODE:
                 mapping = new HashMap<>();
                 mapping.put(GAdapterUtil.TAG_IMAGE_RESOURCE, R.id.imageview_bg);
                 mapping.put(GAdapterUtil.TAG_TITLE_STRING, R.id.textview_title);
                 mapping.put(GAdapterUtil.TAG_SELECTABLE, R.id.checkbox_multi_select);
+                mapping.put(GAdapterUtil.TAG_SUB_TITLE_STRING,R.id.textview_date);
                 break;
         }
         return mapping;
@@ -303,7 +318,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
 
     private int getColumns() {
         //TODO:should use res file to control actual rows and cols.
-        return 3;
+        return 4;
     }
 
     public void loadNoteList() {
@@ -329,13 +344,13 @@ public class ManageActivity extends OnyxAppCompatActivity {
         contentView.setupContent(getRows(), getColumns(), adapter, 0, true);
         contentView.updateCurrentPage();
         updateButtonsStatusByMode();
+        updateActivityTitleAndIcon();
     }
 
     private void updateButtonsStatusByMode() {
         switch (currentSelectMode) {
             case SelectionMode.MULTISELECT_MODE:
-                deleteButton.setVisibility(View.VISIBLE);
-                moveButton.setVisibility(View.VISIBLE);
+                controlPanel.setVisibility(View.VISIBLE);
                 if (chosenItemsList.size() <= 0) {
                     deleteButton.setEnabled(false);
                     moveButton.setEnabled(false);
@@ -346,8 +361,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 chooseModeButton.setText(R.string.disselect);
                 break;
             case SelectionMode.NORMAL_MODE:
-                deleteButton.setVisibility(View.GONE);
-                moveButton.setVisibility(View.GONE);
+                controlPanel.setVisibility(View.GONE);
                 chooseModeButton.setText(R.string.select_mode);
                 break;
         }
@@ -401,5 +415,19 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void updateActivityTitleAndIcon() {
+        int iconRes = 0;
+        String titleResString;
+        if (currentLibraryId != null) {
+            iconRes = R.drawable.title_back;
+            titleResString = currentLibraryName;
+        } else {
+            iconRes = R.drawable.ic_business_write_pen_gray_34dp;
+            titleResString = getString(R.string.app_name);
+        }
+        toolBarIcon.setImageResource(iconRes);
+        toolBarTitle.setText(titleResString);
     }
 }

@@ -8,9 +8,9 @@
 
     <ImageView
         android:id="@+id/minus_btn"
-        android:layout_marginLeft="18dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="18dp"
         android:src="@drawable/ic_business_write_minus_black_32dp" />
 
     <RelativeLayout
@@ -30,6 +30,14 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/note_width_seek_bar"
             android:layout_alignLeft="@id/note_width_seek_bar" />
+
+        <TextView
+            android:id="@+id/current_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/min_value"
+            android:layout_centerHorizontal="true"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/max_value"

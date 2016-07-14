@@ -30,7 +30,11 @@ public class PenWidthPopupMenu extends PopupWindow {
     private PopupMenuCallback callback;
     private View parentView;
     private int displayLocX, displayLocY;
+    private TextView currentTextSizeIndicator;
     private int minValue, maxValue;
+    //TODO:use hard code string for test show.15-40 is too large for writing.
+    private static final int visualMinValue = 15;
+    private static final int visualMaxValue = 40;
 
     public interface PopupMenuCallback {
         void onValueChanged(int newValue);
@@ -55,10 +59,11 @@ public class PenWidthPopupMenu extends PopupWindow {
         minusBtn = (ImageView) getContentView().findViewById(R.id.minus_btn);
         minValueIndicator = (TextView) getContentView().findViewById(R.id.min_value);
         maxValueIndicator = (TextView) getContentView().findViewById(R.id.max_value);
+        currentTextSizeIndicator = (TextView) getContentView().findViewById(R.id.current_value);
         penWidthControlSeekBar = (SeekBar) getContentView().findViewById(R.id.note_width_seek_bar);
-        //TODO:use hard code string for test show.15-40 is too large for writing.
-        minValueIndicator.setText("15");
-        maxValueIndicator.setText("40");
+        currentTextSizeIndicator.setText(Integer.toString(visualMinValue + currentValue - minValue));
+        minValueIndicator.setText(Integer.toString(visualMinValue));
+        maxValueIndicator.setText(Integer.toString(visualMaxValue));
         penWidthControlSeekBar.setMax(maxValue - minValue);
         penWidthControlSeekBar.setProgress(curValue - minValue);
         addBtn.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +89,7 @@ public class PenWidthPopupMenu extends PopupWindow {
         penWidthControlSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            
+                currentTextSizeIndicator.setText(Integer.toString(visualMinValue + progress));
             }
 
             @Override
