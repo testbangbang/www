@@ -73,6 +73,7 @@
         android:id="@+id/page_indicator_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:layout_alignParentBottom="true">
 
         <LinearLayout
