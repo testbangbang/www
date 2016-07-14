@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.navigation;
 
 import android.graphics.RectF;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.cropimage.data.PointMatrix;
 
 import java.util.ArrayList;
@@ -193,10 +194,12 @@ public class NavigationList {
         limitedRect = limit;
     }
 
+    @JSONField(serialize = false)
     public int getSubScreenCount() {
         return subScreenList.size();
     }
 
+    @JSONField(serialize = false)
     public int getLastSubScreenIndex() {
         if (subScreenList.size() > 0) {
             return subScreenList.size() - 1;
