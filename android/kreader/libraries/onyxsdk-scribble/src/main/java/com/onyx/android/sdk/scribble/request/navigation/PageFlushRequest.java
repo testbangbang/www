@@ -18,6 +18,7 @@ public class PageFlushRequest extends BaseNoteRequest {
     private volatile boolean save = false;
 
     public PageFlushRequest(final List<Shape> list, boolean r, boolean resume, final NoteDrawingArgs args) {
+        super();
         shapeList.addAll(list);
         setRender(shapeList.size() > 0);
         setPauseInputProcessor(true);

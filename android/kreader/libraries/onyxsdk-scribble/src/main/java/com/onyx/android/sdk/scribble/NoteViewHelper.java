@@ -15,6 +15,7 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.LineShape;
 import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -222,7 +223,14 @@ public class NoteViewHelper {
         setStrokeWidth(drawingArgs.strokeWidth);
         setCurrentShapeType(drawingArgs.currentShapeType);
         setBackground(drawingArgs.background);
+    }
 
+    public void updateShapeDataInfo(final ShapeDataInfo shapeDataInfo) {
+        shapeDataInfo.updateShapePageMap(
+                getNoteDocument().getPageNameList(),
+                getNoteDocument().getCurrentPageIndex());
+        shapeDataInfo.setInUserErasing(inUserErasing());
+        shapeDataInfo.updateDrawingArgs(getNoteDocument().getNoteDrawingArgs());
     }
 
     private void removeLayoutListener() {
@@ -417,6 +425,12 @@ public class NoteViewHelper {
         }
     }
 
+    public void ensurePenState() {
+        if (!inUserErasing()) {
+            setPenState(PenState.PEN_NULL);
+        }
+    }
+
     public boolean inErasing() {
         return (getPenState() == PenState.PEN_ERASER_DRAWING || getPenState() == PenState.PEN_USER_ERASING);
     }
@@ -437,29 +451,26 @@ public class NoteViewHelper {
         return deviceConfig.useRawInput() && ShapeFactory.isDFBShape(getCurrentShapeType());
     }
 
-    public boolean isDFBForCurrentShape() {
+    public boolean useDFBForCurrentState() {
         return ShapeFactory.isDFBShape(getCurrentShapeType()) && !inUserErasing();
     }
 
     private boolean processTouchEvent(final MotionEvent motionEvent) {
-        if (useRawData()) {
-            return processRawDataTouchEvent(motionEvent);
-        }
-        return processNormalTouchEvent(motionEvent);
-    }
-
-    private boolean processRawDataTouchEvent(final MotionEvent motionEvent) {
-        if (!inErasing()) {
+        if (motionEvent.getPointerCount() > 1) {
             return true;
         }
-        return forwardErasing(motionEvent);
-    }
+        int toolType = motionEvent.getToolType(0);
+        if (toolType == MotionEvent.TOOL_TYPE_FINGER) {
+            return true;
+        }
 
-    private boolean processNormalTouchEvent(final MotionEvent motionEvent) {
-        if (inErasing()) {
+        if (toolType == MotionEvent.TOOL_TYPE_ERASER || inErasing()) {
             return forwardErasing(motionEvent);
         }
-        return forwardDrawing(motionEvent);
+        if (!useRawData()) {
+            return forwardDrawing(motionEvent);
+        }
+        return true;
     }
 
     private boolean forwardDrawing(final MotionEvent motionEvent) {

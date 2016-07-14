@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class BaseNoteRequest extends BaseRequest {
 
-    private ShapeDataInfo shapeDataInfo;
+    private volatile ShapeDataInfo shapeDataInfo;
     private String docUniqueId;
     private String parentLibraryId;
     private Rect viewportSize;
@@ -39,7 +39,6 @@ public class BaseNoteRequest extends BaseRequest {
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = false;
     private volatile boolean render = true;
-    private volatile NoteDrawingArgs drawingArgs = new NoteDrawingArgs();
 
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;
@@ -260,11 +259,7 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void updateShapeDataInfo(final NoteViewHelper parent) {
         final ShapeDataInfo shapeDataInfo = getShapeDataInfo();
-        shapeDataInfo.updateShapePageMap(
-                parent.getNoteDocument().getPageNameList(),
-                parent.getNoteDocument().getCurrentPageIndex());
-        shapeDataInfo.setInUserErasing(parent.inUserErasing());
-        shapeDataInfo.updateDrawingArgs(parent.getNoteDocument().getNoteDrawingArgs());
+        parent.updateShapeDataInfo(shapeDataInfo);
     }
 
     public void ensureDocumentOpened(final NoteViewHelper parent) {
@@ -276,10 +271,10 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void syncDrawingArgs(final NoteDrawingArgs args) {
-        drawingArgs.syncFrom(args);
+        getShapeDataInfo().getDrawingArgs().syncFrom(args);
     }
 
     public final NoteDrawingArgs getDrawingArgs() {
-        return drawingArgs;
+        return getShapeDataInfo().getDrawingArgs();
     }
 }

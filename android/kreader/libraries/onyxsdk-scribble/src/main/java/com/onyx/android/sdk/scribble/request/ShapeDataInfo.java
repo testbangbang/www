@@ -105,7 +105,7 @@ public class ShapeDataInfo {
         return drawingArgs;
     }
 
-    public void updateDrawingArgs(NoteDrawingArgs drawingArgs) {
-        drawingArgs.syncFrom(drawingArgs);
+    public void updateDrawingArgs(NoteDrawingArgs other) {
+        drawingArgs.syncFrom(other);
     }
 }
