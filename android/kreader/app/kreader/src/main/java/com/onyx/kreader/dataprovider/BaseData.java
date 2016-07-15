@@ -63,4 +63,9 @@ public class BaseData extends BaseModel {
         updatedAt = d;
     }
 
+    public void setBothCreateAndUpdateTime(final Date d) {
+        createdAt = d;
+        updatedAt = d;
+    }
+
 }

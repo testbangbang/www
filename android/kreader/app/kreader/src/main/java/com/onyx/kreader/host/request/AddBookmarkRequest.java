@@ -34,9 +34,7 @@ public class AddBookmarkRequest extends BaseReaderRequest {
         bookmark.setPosition(pageInfo.getName());
         bookmark.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));
         bookmark.setQuote(getQuote(reader.getDocument().getPageText(pageInfo.getName())));
-        Date time = new Date();
-        bookmark.setCreatedAt(time);
-        bookmark.setUpdatedAt(time);
+        bookmark.setBothCreateAndUpdateTime(new Date());
         return bookmark;
     }
 
