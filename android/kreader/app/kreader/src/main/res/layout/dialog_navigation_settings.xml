@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/dialog_tittleArea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageView_Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/title"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_menu_more" />
+
+        <TextView
+            android:id="@+id/textView_dialog_Tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/imageView_Icon"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:text="@string/navigation_mode"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/black" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/top_divider_line"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="2dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/radio_group_divider_line"
+            style="@style/single_line_X_axis_View"
+            android:layout_height="2dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/title"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_dialog_navigation_settings_crop_page" />
+
+            <View
+                style="@style/single_line_Y_axis_View"
+                android:layout_margin="20dp"
+                android:layout_width="1dp"
+                android:background="@android:color/black" />
+
+            <com.onyx.android.sdk.ui.view.ContentView
+                android:id="@+id/crop_contentView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_navigation_settings_mode_icon_contentView_height"/>
+        </LinearLayout>
+
+        <View
+            style="@style/single_line_X_axis_View"
+            android:layout_height="2dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/title"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_dialog_navigation_settings_subscreen" />
+
+            <View
+                style="@style/single_line_Y_axis_View"
+                android:layout_margin="20dp"
+                android:layout_width="1dp"
+                android:background="@android:color/black" />
+
+            <com.onyx.android.sdk.ui.view.ContentView
+                android:id="@+id/subscreen_contentView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_navigation_settings_navigation_subscreen_content_view_height"/>
+        </LinearLayout>
+
+        <View
+            style="@style/single_line_X_axis_View"
+            android:layout_height="2dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/title"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_dialog_navigation_settings_navigation_mode" />
+
+            <View
+                style="@style/single_line_Y_axis_View"
+                android:layout_margin="20dp"
+                android:layout_width="1dp"
+                android:background="@android:color/black" />
+
+            <com.onyx.android.sdk.ui.view.ContentView
+                android:id="@+id/navigation_contentView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_navigation_settings_mode_icon_contentView_height"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/bottom_divider_line"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="2dp" />
+
+    <LinearLayout
+        android:id="@+id/control_area"
+        android:orientation="horizontal"
+        android:layout_margin="3dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/buttonCancel"
+            android:layout_margin="3dp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_minHeight"
+            android:text="@android:string/cancel"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/buttonConfirm"
+            android:layout_margin="3dp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_minHeight"
+            android:layout_weight="1"
+            android:text="@android:string/ok" />
+    </LinearLayout>
+</LinearLayout>

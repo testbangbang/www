@@ -29,6 +29,8 @@ public class PageManager {
     private String firstVisiblePageName;
     private int pageRepeat = 0;
 
+    private ArrayList<RectF> manualBoundingRegionList = new ArrayList<>();
+
     private RectF pagesBoundingRect = new RectF();
     private RectF viewportRect = new RectF();   // screen viewport rectangle in document coordinates system.
 

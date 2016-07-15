@@ -2,7 +2,6 @@ package com.onyx.kreader.utils;
 
 
 import android.graphics.Bitmap;
-
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.Date;
@@ -292,6 +291,13 @@ public class GObject {
             return null;
         }
         return backend.get(key);
+    }
+
+    public <T> T getObject(final String key, Class<T> clazz) {
+        if (isDummyObject()){
+            return null;
+        }
+        return backend.getObject(key, clazz);
     }
 
     public Bitmap getBitmap(final String key, final Bitmap fallbackBitmap) {

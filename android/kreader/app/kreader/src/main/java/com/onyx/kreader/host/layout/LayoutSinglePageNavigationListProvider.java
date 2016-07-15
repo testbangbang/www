@@ -33,7 +33,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         getPageManager().setPageRepeat(0);
     }
 
-    private NavigationArgs getNavigationArgs() {
+    public NavigationArgs getNavigationArgs() {
         return navigationArgs;
     }
 

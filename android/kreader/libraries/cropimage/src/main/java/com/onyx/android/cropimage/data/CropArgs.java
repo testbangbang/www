@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class CropArgs {
     public Rect selectionRect;
-    public ArrayList<PointMatrix> pointMatrixList = new ArrayList<>();
+    public PointMatrix pointMatrixList;
     public int rows;
     public int columns;
     public boolean manualCropPage = false;

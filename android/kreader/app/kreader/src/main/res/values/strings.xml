@@ -64,4 +64,5 @@
     <string name="toc">TOC</string>
     <string name="bookmark">Bookmark</string>
     <string name="annotation">Annotation</string>
+    <string name="navigation_mode">Navigation Mode</string>
 </resources>

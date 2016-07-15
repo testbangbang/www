@@ -38,6 +38,10 @@ public class LayoutProvider {
         return getLayoutManager().getPageManager();
     }
 
+    public NavigationArgs getNavigationArgs() {
+        return null;
+    }
+
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         return false;
     }

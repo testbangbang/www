@@ -331,6 +331,7 @@ public class ReaderHelper {
             getDocumentOptions().setCurrentPage(getReaderLayoutManager().getCurrentPageName());
             getDocumentOptions().setTotalPage(getNavigator().getTotalPage());
             getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
+            getDocumentOptions().setNavigationArgs(getReaderLayoutManager().getCurrentLayoutProvider().getNavigationArgs());
         } catch (Exception e) {
 
         }

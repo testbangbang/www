@@ -1,6 +1,8 @@
 package com.onyx.kreader.host.navigation;
 
 import android.graphics.RectF;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.onyx.android.cropimage.data.PointMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,22 +13,50 @@ import java.util.List;
  */
 public class NavigationList {
 
-    private List<RectF> subScreenList = new ArrayList<RectF>();
-    private int currentIndex = -1;
-    private RectF limitedRect;
-    private boolean autoCrop;
-    private float autoCropThreshold;
+    public List<RectF> subScreenList = new ArrayList<RectF>();
+    public int currentIndex = -1;
+    public RectF limitedRect;
+
+    static public NavigationList rowsLeftToRight(final PointMatrix pointMatrix, final RectF limited) {
+        final int rows = pointMatrix.rows() + 1;
+        final int cols = pointMatrix.cols() + 1;
+        RectF child = new RectF(0, 0, 1, 1);
+        List<RectF> list = new ArrayList<RectF>();
+        for(int r = 0; r < rows; ++r) {
+            for(int c = 0; c < cols; ++c) {
+                RectF sub = getSubScreenRect(child, pointMatrix, rows, cols, r, c);
+                list.add(sub);
+            }
+        }
+        NavigationList navigationList = new NavigationList();
+        navigationList.setLimitedRect(limited);
+        navigationList.addAll(list);
+        return navigationList;
+    }
 
     static public NavigationList rowsLeftToRight(int rows, int cols, final RectF limited) {
         RectF child = new RectF(0, 0, 1, 1);
         List<RectF> list = new ArrayList<RectF>();
         for(int r = 0; r < rows; ++r) {
             for(int c = 0; c < cols; ++c) {
-                float left = child.left + child.width() / cols * c;
-                float right = left + child.width() / cols;
-                float top = child.top + child.height() / rows * r;
-                float bottom = top + child.height() / rows;
-                RectF sub = new RectF(left, top, right, bottom);
+                RectF sub = getEquallySubScreenRect(child, rows, cols, r, c);
+                list.add(sub);
+            }
+        }
+        NavigationList navigationList = new NavigationList();
+        navigationList.setLimitedRect(limited);
+        navigationList.addAll(list);
+        return navigationList;
+    }
+
+    static public NavigationList rowsRightToLeft(final PointMatrix pointMatrix, final RectF limited) {
+        final int rows = pointMatrix.rows() + 1;
+        final int cols = pointMatrix.cols() + 1;
+        RectF child = new RectF(0, 0, 1, 1);
+        List<RectF> list = new ArrayList<RectF>();
+        for(int r = 0; r < rows; ++r) {
+            for(int c = 0; c < cols; ++c) {
+                RectF sub = getSubScreenRect(child, pointMatrix, rows, cols, r, cols -c - 1);
                 list.add(sub);
             }
         }
@@ -41,11 +71,24 @@ public class NavigationList {
         List<RectF> list = new ArrayList<RectF>();
         for(int r = 0; r < rows; ++r) {
             for(int c = 0; c < cols; ++c) {
-                float left = child.left + child.width() / cols * (cols - c - 1);
-                float right = left + child.width() / cols;
-                float top = child.top + child.height() / rows * r;
-                float bottom = top + child.height() / rows;
-                RectF sub = new RectF(left, top, right, bottom);
+                RectF sub = getEquallySubScreenRect(child, rows, cols, r, cols - c - 1);
+                list.add(sub);
+            }
+        }
+        NavigationList navigationList = new NavigationList();
+        navigationList.setLimitedRect(limited);
+        navigationList.addAll(list);
+        return navigationList;
+    }
+
+    static public NavigationList columnsLeftToRight(final PointMatrix pointMatrix, final RectF limited) {
+        final int rows = pointMatrix.rows() + 1;
+        final int cols = pointMatrix.cols() + 1;
+        RectF child = new RectF(0, 0, 1, 1);
+        List<RectF> list = new ArrayList<RectF>();
+        for(int c = 0; c < cols; ++c) {
+            for(int r = 0; r < rows; ++r) {
+                RectF sub = getSubScreenRect(child, pointMatrix, rows, cols, r, c);
                 list.add(sub);
             }
         }
@@ -60,11 +103,24 @@ public class NavigationList {
         List<RectF> list = new ArrayList<RectF>();
         for(int c = 0; c < cols; ++c) {
             for(int r = 0; r < rows; ++r) {
-                float left = child.left + child.width() / cols * c;
-                float right = left + child.width() / cols;
-                float top = child.top + child.height() / rows * r;
-                float bottom = top + child.height() / rows;
-                RectF sub = new RectF(left, top, right, bottom);
+                RectF sub = getEquallySubScreenRect(child, rows, cols, r, c);
+                list.add(sub);
+            }
+        }
+        NavigationList navigationList = new NavigationList();
+        navigationList.setLimitedRect(limited);
+        navigationList.addAll(list);
+        return navigationList;
+    }
+
+    static public NavigationList columnsRightToLeft(final PointMatrix pointMatrix, final RectF limited) {
+        final int rows = pointMatrix.rows() + 1;
+        final int cols = pointMatrix.cols() + 1;
+        RectF child = new RectF(0, 0, 1, 1);
+        List<RectF> list = new ArrayList<RectF>();
+        for(int c = 0; c < cols; ++c) {
+            for(int r = 0; r < rows; ++r) {
+                RectF sub = getSubScreenRect(child, pointMatrix, rows, cols, r, cols - c - 1);
                 list.add(sub);
             }
         }
@@ -79,11 +135,7 @@ public class NavigationList {
         List<RectF> list = new ArrayList<RectF>();
         for(int c = 0; c < cols; ++c) {
             for(int r = 0; r < rows; ++r) {
-                float left = child.left + child.width() / cols * (cols - c - 1);
-                float right = left + child.width() / cols;
-                float top = child.top + child.height() / rows * r;
-                float bottom = top + child.height() / rows;
-                RectF sub = new RectF(left, top, right, bottom);
+                RectF sub = getEquallySubScreenRect(child, rows, cols, r, cols - c - 1);
                 list.add(sub);
             }
         }
@@ -93,17 +145,61 @@ public class NavigationList {
         return navigationList;
     }
 
+    private static RectF getSubScreenRect(RectF parent, PointMatrix pointMatrix, int rows, int cols, int row, int col) {
+        boolean useLeftEdge = col <= 0;
+        boolean useTopEdge = row <= 0;
+        boolean useRightEdge = col >= pointMatrix.cols();// screensSplitPoints[0].length;
+        boolean useBottomEdge = row >= pointMatrix.rows();//screensSplitPoints.length;
+
+        final Float left, top, right, bottom;
+        // separating single row/column screen to simplify the logic of sub screen computation
+        if (rows <= 1) {
+            left = useLeftEdge ? 0.0f : pointMatrix.get(0, col - 1).x;// screensSplitPoints[0][column - 1].x;
+            top = 0.0f;
+            right = useRightEdge ? 1.0f : pointMatrix.get(0, col).x;// screensSplitPoints[0][column].x;
+            bottom = 1.0f;
+        } else if (cols <= 1) {
+            left = 0.0f;
+            top = useTopEdge ? 0.0f : pointMatrix.get(row - 1, 0).y;// screensSplitPoints[row - 1][0].y;
+            right = 1.0f;
+            bottom = useBottomEdge ? 1.0f : pointMatrix.get(row, 0).y;// screensSplitPoints[row][0].y;
+        } else {
+            left = useLeftEdge ? 0.0f : pointMatrix.safeGetX(useTopEdge ? 0 : row -1, col - 1);
+            top = useTopEdge ? 0.0f : pointMatrix.safeGetY(row - 1, useLeftEdge ? 0 : col - 1);
+            right = useRightEdge ? 1.0f : pointMatrix.safeGetX(useBottomEdge ? row - 1 : row, col);
+            bottom = useBottomEdge ? 1.0f : pointMatrix.safeGetY(row, useRightEdge ? col - 1 : col);
+        }
+        return new RectF(parent.left + parent.width() * left,
+                parent.top + parent.height() * top,
+                parent.left + parent.width() * right,
+                parent.top + parent.height() * bottom);
+    }
+
+    private static RectF getEquallySubScreenRect(RectF parent, int rows, int cols, int row, int col) {
+        float left = parent.left + parent.width() / cols * col;
+        float right = left + parent.width() / cols;
+        float top = parent.top + parent.height() / rows * row;
+        float bottom = top + parent.height() / rows;
+        return new RectF(left, top, right, bottom);
+    }
+
     public NavigationList() {
+    }
+
+    public List<RectF> getSubScreenList() {
+        return subScreenList;
     }
 
     public void setLimitedRect(final RectF limit) {
         limitedRect = limit;
     }
 
+    @JSONField(serialize = false)
     public int getSubScreenCount() {
         return subScreenList.size();
     }
 
+    @JSONField(serialize = false)
     public int getLastSubScreenIndex() {
         if (subScreenList.size() > 0) {
             return subScreenList.size() - 1;

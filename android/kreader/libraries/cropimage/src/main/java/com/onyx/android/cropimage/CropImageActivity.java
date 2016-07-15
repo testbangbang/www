@@ -340,8 +340,7 @@ public class CropImageActivity extends MonitoredActivity {
                     cropView.getScaledCropRect(sampleSize).top,
                     cropView.getScaledCropRect(sampleSize).right,
                     cropView.getScaledCropRect(sampleSize).bottom);
-            args.pointMatrixList = new ArrayList<PointMatrix>();
-            args.pointMatrixList.add(cropView.getPointMatrix());
+            args.pointMatrixList = cropView.getPointMatrix();
             Intent sendRectBroadcast = new Intent();
             sendRectBroadcast.setAction(CropImage.INTENT_ACTION_SELECT_ZOOM_RECT);
             sendRectBroadcast.putExtra(CropImage.CROP_ARGS, JSON.toJSONString(args));
