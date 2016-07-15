@@ -3,6 +3,7 @@ package com.onyx.kreader.dataprovider;
 import android.graphics.Rect;
 import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,4 +64,23 @@ public class BaseData extends BaseModel {
         updatedAt = d;
     }
 
+    private void beforeSave() {
+        Date now = new Date();
+        if (createdAt == null) {
+            createdAt = now;
+        }
+        updatedAt = now;
+    }
+
+    @Override
+    public void save() {
+        beforeSave();
+        super.save();
+    }
+
+    @Override
+    public void save(DatabaseWrapper databaseWrapper) {
+        beforeSave();
+        super.save(databaseWrapper);
+    }
 }
