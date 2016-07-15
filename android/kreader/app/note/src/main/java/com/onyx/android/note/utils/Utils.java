@@ -63,8 +63,9 @@ public class Utils {
     }
 
     public static GObject createNewItem(String title, int imageRes) {
-        GObject object = GAdapterUtil.createTableItem(title, null, imageRes, 0, null);
+        GObject object = GAdapterUtil.createTableItem(title, null, 0, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, null);
+        object.putInt(GAdapterUtil.TAG_THUMBNAIL, imageRes);
         object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, "");
         putItemType(object, TYPE_CREATE);
         return object;
@@ -78,17 +79,19 @@ public class Utils {
     }
 
     public static GObject createLibraryItem(final NoteModel noteModel, final int folderRes) {
-        GObject object = GAdapterUtil.createTableItem(noteModel.getTitle(), null, folderRes, 0, null);
+        GObject object = GAdapterUtil.createTableItem(noteModel.getTitle(), null, 0, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
+        object.putNonNullObject(GAdapterUtil.TAG_THUMBNAIL, folderRes);
         object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getCreatedAt()));
         putItemType(object, TYPE_LIBRARY);
         return object;
     }
 
     public static GObject createDocumentItem(final NoteModel noteModel, final int docRes) {
-        GObject object = GAdapterUtil.createTableItem(noteModel.getTitle(), null, docRes, 0, null);
+        GObject object = GAdapterUtil.createTableItem(noteModel.getTitle(), null, 0, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
         object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getCreatedAt()));
+        object.putNonNullObject(GAdapterUtil.TAG_THUMBNAIL, noteModel.getThumbnail() == null ? docRes : noteModel.getThumbnail());
         putItemType(object, TYPE_DOCUMENT);
         return object;
     }

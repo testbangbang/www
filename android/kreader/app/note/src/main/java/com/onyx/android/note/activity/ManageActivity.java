@@ -15,6 +15,7 @@ import com.onyx.android.note.R;
 import com.onyx.android.note.actions.CreateLibraryAction;
 import com.onyx.android.note.actions.GotoUpAction;
 import com.onyx.android.note.actions.LoadNoteListAction;
+import com.onyx.android.note.actions.ManageLoadPageAction;
 import com.onyx.android.note.actions.NoteLibraryRemoveAction;
 import com.onyx.android.note.actions.NoteLoadMovableLibraryAction;
 import com.onyx.android.note.actions.NoteMoveAction;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ManageActivity extends OnyxAppCompatActivity {
@@ -58,12 +60,27 @@ public class ManageActivity extends OnyxAppCompatActivity {
     private Button progressBtn;
     private ArrayList<GObject> chosenItemsList = new ArrayList<>();
     private ArrayList<String> targetMoveIDList = new ArrayList<>();
+
+    public ContentView getContentView() {
+        return contentView;
+    }
+
     private ContentView contentView;
     private GAdapter adapter;
     private String currentLibraryId;
     private ImageView toolBarIcon;
     private TextView toolBarTitle;
     private String currentLibraryName;
+
+    public Map<String, Integer> getLookupTable() {
+        return lookupTable;
+    }
+
+    public void setLookupTable(Map<String, Integer> lookupTable) {
+        this.lookupTable = lookupTable;
+    }
+
+    private Map<String, Integer> lookupTable = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,10 +188,17 @@ public class ManageActivity extends OnyxAppCompatActivity {
         contentView.setBlankAreaAnswerLongClick(false);
         contentView.setupGridLayout(getRows(), getColumns());
         contentView.setShowPageInfoArea(false);
+        contentView.setSyncLoad(false);
         contentView.setCallback(new ContentView.ContentViewCallback() {
             @Override
             public void afterPageChanged(ContentView contentView, int newPage, int oldPage) {
                 updateTextViewPage();
+            }
+
+            @Override
+            public void beforePageChanging(ContentView contentView, int newPage, int oldPage) {
+                ManageLoadPageAction loadPageAction = new ManageLoadPageAction(newPage);
+                loadPageAction.execute(ManageActivity.this, null);
             }
 
             @Override
@@ -184,13 +208,13 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 }
                 switch (Utils.getItemType(object)) {
                     case DataItemType.TYPE_DOCUMENT:
-                        view.setThumbnailScaleType(GAdapterUtil.TAG_IMAGE_RESOURCE, ImageView.ScaleType.FIT_XY);
-                        view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, R.drawable.shadow);
+                        view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_XY);
+                        view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, R.drawable.shadow);
                         break;
                     case DataItemType.TYPE_CREATE:
                     case DataItemType.TYPE_LIBRARY:
-                        view.setThumbnailScaleType(GAdapterUtil.TAG_IMAGE_RESOURCE, ImageView.ScaleType.FIT_CENTER);
-                        view.setImageViewBackGround(GAdapterUtil.TAG_IMAGE_RESOURCE, 0);
+                        view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_CENTER);
+                        view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, 0);
                         break;
                 }
             }
@@ -288,16 +312,16 @@ public class ManageActivity extends OnyxAppCompatActivity {
             case SelectionMode.PASTE_MODE:
             case SelectionMode.NORMAL_MODE:
                 mapping = new HashMap<>();
-                mapping.put(GAdapterUtil.TAG_IMAGE_RESOURCE, R.id.imageview_bg);
+                mapping.put(GAdapterUtil.TAG_THUMBNAIL, R.id.imageview_bg);
                 mapping.put(GAdapterUtil.TAG_TITLE_STRING, R.id.textview_title);
-                mapping.put(GAdapterUtil.TAG_SUB_TITLE_STRING,R.id.textview_date);
+                mapping.put(GAdapterUtil.TAG_SUB_TITLE_STRING, R.id.textview_date);
                 break;
             case SelectionMode.MULTISELECT_MODE:
                 mapping = new HashMap<>();
-                mapping.put(GAdapterUtil.TAG_IMAGE_RESOURCE, R.id.imageview_bg);
+                mapping.put(GAdapterUtil.TAG_THUMBNAIL, R.id.imageview_bg);
                 mapping.put(GAdapterUtil.TAG_TITLE_STRING, R.id.textview_title);
                 mapping.put(GAdapterUtil.TAG_SELECTABLE, R.id.checkbox_multi_select);
-                mapping.put(GAdapterUtil.TAG_SUB_TITLE_STRING,R.id.textview_date);
+                mapping.put(GAdapterUtil.TAG_SUB_TITLE_STRING, R.id.textview_date);
                 break;
         }
         return mapping;

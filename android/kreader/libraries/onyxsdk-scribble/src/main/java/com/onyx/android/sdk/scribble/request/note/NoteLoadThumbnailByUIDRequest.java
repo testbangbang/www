@@ -1,45 +1,42 @@
 package com.onyx.android.sdk.scribble.request.note;
 
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
+import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by zhuzeng on 6/20/16.
  */
-public class NoteLibraryLoadRequest extends BaseNoteRequest {
-
-    private String parentUniqueId;
-    private List<NoteModel> noteList;
-    private volatile boolean loadThumbnail;
+public class NoteLoadThumbnailByUIDRequest extends BaseNoteRequest {
+    private List<NoteModel> noteList = new ArrayList<>();
+    private List<String> targetIdList;
     public int thumbnailLimit;
 
-    public NoteLibraryLoadRequest(final String id, int thumbLimit) {
-        parentUniqueId = id;
-        loadThumbnail = true;
+    public NoteLoadThumbnailByUIDRequest(final List<String> idList, int thumbLimit) {
+        targetIdList = idList;
         thumbnailLimit = thumbLimit;
         setPauseInputProcessor(true);
         setResumeInputProcessor(false);
     }
 
-    public NoteLibraryLoadRequest(final String id) {
-        this(id, Integer.MAX_VALUE);
+    public NoteLoadThumbnailByUIDRequest(final List<String> idList) {
+        this(idList, Integer.MAX_VALUE);
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
-        noteList = NoteDataProvider.loadNoteList(getContext(), parentUniqueId);
-        if (!loadThumbnail) {
-            return;
-        }
         int i = 0;
-        for (NoteModel noteModel : noteList) {
-            if (noteModel.isDocument() && i < thumbnailLimit) {
+        for (String id : targetIdList) {
+            NoteModel noteModel = NoteDataProvider.load(getContext(), id);
+            if (noteModel != null && noteModel.isDocument() && i < thumbnailLimit) {
                 noteModel.setThumbnail(NoteDataProvider.loadThumbnail(getContext(), noteModel.getUniqueId()));
                 i++;
             }
+            noteList.add(noteModel);
         }
     }
 
