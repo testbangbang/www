@@ -19,9 +19,11 @@ public class NoteDocumentCloseRequest extends BaseNoteRequest {
 
     public void execute(final NoteViewHelper parent) throws Exception {
         renderCurrentPage(parent);
-        NoteDataProvider.saveThumbnail(getContext(),
+        NoteDataProvider.saveThumbnailWithSize(getContext(),
                 parent.getNoteDocument().getDocumentUniqueId(),
-                parent.getRenderBitmap());
+                parent.getRenderBitmap(),
+                512,
+                512);
         parent.close(getContext(), title);
     }
 

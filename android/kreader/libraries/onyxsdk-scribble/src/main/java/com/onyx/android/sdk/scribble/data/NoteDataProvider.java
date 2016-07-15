@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 
+import android.util.Size;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -112,6 +113,15 @@ public class NoteDataProvider {
         }
         final String path = thumbnailPath(context, documentUniqueId);
         return BitmapUtils.saveBitmap(bitmap, path);
+    }
+
+    public static boolean saveThumbnailWithSize(final Context context, final String documentUniqueId, final Bitmap src, int width, int height) {
+        if (StringUtils.isNullOrEmpty(documentUniqueId) || src == null) {
+            return false;
+        }
+        final String path = thumbnailPath(context, documentUniqueId);
+        final Bitmap dst = Bitmap.createScaledBitmap(src, width, height, true);
+        return BitmapUtils.saveBitmap(dst, path);
     }
 
     public static Bitmap loadThumbnail(final Context context, final String documentUniqueId) {

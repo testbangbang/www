@@ -29,17 +29,18 @@ public class DeviceReceiver extends BroadcastReceiver {
     }
 
     public void registerReceiver(final Context context) {
-        context.registerReceiver(this, systemUIFilter());
+        context.registerReceiver(this, systemIntentFilter());
     }
 
     public void unregisterReceiver(final Context context) {
         context.unregisterReceiver(this);
     }
 
-    public IntentFilter systemUIFilter() {
+    public IntentFilter systemIntentFilter() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(SYSTEM_UI_DIALOG_OPEN_ACTION);
         filter.addAction(SYSTEM_UI_DIALOG_CLOSE_ACTION);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
         return filter;
     }
 
@@ -48,6 +49,8 @@ public class DeviceReceiver extends BroadcastReceiver {
         if (SYSTEM_UI_DIALOG_OPEN_ACTION.equalsIgnoreCase(action)) {
             notifySystemUIChange(intent, true);
         } else if (SYSTEM_UI_DIALOG_CLOSE_ACTION.equalsIgnoreCase(action)) {
+            notifySystemUIChange(intent, false);
+        } else if (Intent.ACTION_SCREEN_ON.equalsIgnoreCase(action)) {
             notifySystemUIChange(intent, false);
         }
     }

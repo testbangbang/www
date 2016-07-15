@@ -2,6 +2,8 @@ package com.onyx.android.note;
 
 import android.app.Application;
 import android.content.Context;
+import android.view.View;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -26,12 +28,24 @@ public class NoteApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initDataProvider(this);
+        installExceptionHandler();
     }
 
     private void initDataProvider(final Context context) {
         FlowConfig.Builder builder = new FlowConfig.Builder(context);
         builder.addDatabaseHolder(ShapeGeneratedDatabaseHolder.class);
         FlowManager.init(builder.build());
-
     }
+
+    private void installExceptionHandler() {
+        Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler() {
+
+            @Override
+            public void uncaughtException (Thread thread, Throwable e) {
+                final View view = getNoteViewHelper().getView();
+                getNoteViewHelper().reset(view);
+            }
+        });
+    }
+
 }

@@ -75,6 +75,10 @@ public class NoteViewHelper {
         pauseDrawing();
     }
 
+    public View getView() {
+        return surfaceView;
+    }
+
     public void quit() {
         pauseDrawing();
         quitDrawing();

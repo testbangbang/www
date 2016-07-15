@@ -84,6 +84,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
+        registerDeviceReceiver();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -119,7 +120,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerDeviceReceiver();
+
         updateColorIndicator();
         initSurfaceView();
     }
@@ -379,7 +380,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterDeviceReceiver();
         syncWithCallback(true, false, null);
     }
 
@@ -392,6 +392,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 getNoteViewHelper().quit();
             }
         });
+        unregisterDeviceReceiver();
         super.onDestroy();
     }
 
