@@ -100,6 +100,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return new RectF(0, 0, imageInformation.getWidth(), imageInformation.getHeight());
     }
 
+    @Override
+    public String getPageText(String position) {
+        return "";
+    }
+
     /**
      * Read the document table of content.
      *

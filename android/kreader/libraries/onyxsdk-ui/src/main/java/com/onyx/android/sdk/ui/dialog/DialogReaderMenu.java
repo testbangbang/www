@@ -54,6 +54,13 @@ public class DialogReaderMenu extends Dialog {
     }
 
     private void initDialogContent() {
+        findViewById(R.id.dismiss_zone).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onHideMenu();
+            }
+        });
+
         menuLayout = (ReaderLayerMenuLayout)findViewById(R.id.layout_reader_menu);
 
         findViewById(R.id.layout_back_area).setOnClickListener(new View.OnClickListener() {

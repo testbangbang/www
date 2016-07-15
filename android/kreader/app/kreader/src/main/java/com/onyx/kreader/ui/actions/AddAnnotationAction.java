@@ -6,6 +6,7 @@ import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.AddAnnotationRequest;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -42,6 +43,7 @@ public class AddAnnotationAction extends BaseAction {
         annotation.setMd5(readerActivity.getReader().getDocumentMd5());
         annotation.setApplication(readerActivity.getReader().getPlugin().displayName());
         annotation.setPosition(pageInfo.getName());
+        annotation.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));
         annotation.setLocationBegin(locationBegin);
         annotation.setLocationEnd(locationEnd);
         annotation.setQuote(quote);

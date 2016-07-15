@@ -97,6 +97,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return new RectF(0, 0, imageInformation.getWidth(), imageInformation.getHeight());
     }
 
+    @Override
+    public String getPageText(String position) {
+        return "";
+    }
+
     public void abortCurrentJob() {
 
     }

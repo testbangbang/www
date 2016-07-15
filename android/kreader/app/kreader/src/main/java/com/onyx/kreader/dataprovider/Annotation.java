@@ -32,6 +32,9 @@ public class Annotation extends BaseData {
     @Column
     String position = null;
 
+    @Column
+    int pageNumber = -1;
+
     @Column(typeConverter = DBFlowTypeConverters.RectangleListConverter.class)
     private List rectangles = new ArrayList();
 
@@ -81,6 +84,14 @@ public class Annotation extends BaseData {
 
     public String getPosition() {
         return position;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
     }
 
     public void setRectangles(final List<RectF> rectList) {
