@@ -64,6 +64,11 @@ public class FakeReader implements ReaderDocument,
         return null;
     }
 
+    @Override
+    public String getPageText(String position) {
+        return "";
+    }
+
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         return false;
     }

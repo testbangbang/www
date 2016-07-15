@@ -28,6 +28,13 @@ public interface ReaderDocument {
     public RectF getPageOriginSize(final String position);
 
     /**
+     * Retrieve page text
+     * @param position
+     * @return
+     */
+    public String getPageText(final String position);
+
+    /**
      * Read the document table of content.
      * @param toc
      * @return
