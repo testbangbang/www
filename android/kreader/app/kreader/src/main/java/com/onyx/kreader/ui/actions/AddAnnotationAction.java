@@ -49,7 +49,6 @@ public class AddAnnotationAction extends BaseAction {
         annotation.setQuote(quote);
         annotation.setNote(note);
         annotation.setRectangles(rects);
-        annotation.setBothCreateAndUpdateTime(new Date());
         return annotation;
     }
 
