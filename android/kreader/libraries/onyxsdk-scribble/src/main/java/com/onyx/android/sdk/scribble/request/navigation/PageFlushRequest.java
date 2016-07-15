@@ -20,7 +20,7 @@ public class PageFlushRequest extends BaseNoteRequest {
     public PageFlushRequest(final List<Shape> list, boolean r, boolean resume, final NoteDrawingArgs args) {
         super();
         shapeList.addAll(list);
-        setRender(shapeList.size() > 0);
+        setRender((shapeList.size() > 0) || r);
         setPauseInputProcessor(true);
         setResumeInputProcessor(resume);
         syncDrawingArgs(args);
@@ -35,6 +35,7 @@ public class PageFlushRequest extends BaseNoteRequest {
         renderCurrentPage(helper);
         saveDocument(helper);
         updateShapeDataInfo(helper);
+        setResumeInputProcessor(helper.useDFBForCurrentState() && isResumeInputProcessor());
     }
 
     private void saveDocument(final NoteViewHelper helper) {

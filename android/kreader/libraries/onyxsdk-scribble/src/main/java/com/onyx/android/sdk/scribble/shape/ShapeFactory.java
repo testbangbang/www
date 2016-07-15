@@ -7,7 +7,9 @@ import com.onyx.android.sdk.scribble.data.ShapeModel;
  */
 public class ShapeFactory {
 
+    static public final int SHAPE_ERASER = -2;
     static public final int SHAPE_INVALID = -1;
+
     static public final int SHAPE_CIRCLE = 0;
     static public final int SHAPE_RECTANGLE = 1;
     static public final int SHAPE_NORMAL_SCRIBBLE = 2;
@@ -15,6 +17,20 @@ public class ShapeFactory {
     static public final int SHAPE_TEXT = 4;
     static public final int SHAPE_LINE = 5;
 
+    public static final Shape createShape(int type) {
+        Shape shape;
+        switch (type) {
+            case ShapeFactory.SHAPE_NORMAL_SCRIBBLE:
+                shape = new NormalScribbleShape();
+                break;
+            case ShapeFactory.SHAPE_LINE:
+                shape = new LineShape();
+                break;
+            default:
+                shape = new NormalScribbleShape();
+        }
+        return shape;
+    }
 
     public static final Shape shapeFromModel(final ShapeModel shapeModel) {
         switch (shapeModel.getShapeType()) {

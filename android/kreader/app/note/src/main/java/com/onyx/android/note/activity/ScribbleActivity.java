@@ -558,17 +558,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void onColorChange(final int currentPenColor){
         setStrokeColor(currentPenColor);
-        syncWithCallback(true, false, null);
+        syncWithCallback(true, true, null);
     }
 
     private void onEraseClicked() {
-        syncWithCallback(true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                final ChangePenStateAction changePenStateAction = new ChangePenStateAction(NoteViewHelper.PenState.PEN_USER_ERASING);
-                changePenStateAction.execute(ScribbleActivity.this, null);
-            }
-        });
+        setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
+        syncWithCallback(true, false, null);
     }
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {

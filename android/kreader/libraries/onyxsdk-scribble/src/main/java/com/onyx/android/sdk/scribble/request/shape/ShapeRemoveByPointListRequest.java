@@ -22,7 +22,6 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
         helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);
         renderCurrentPage(helper);
         updateShapeDataInfo(helper);
-        helper.ensurePenState();
         Log.e("############", "erase takes: " + benchmarkEnd());
     }
 

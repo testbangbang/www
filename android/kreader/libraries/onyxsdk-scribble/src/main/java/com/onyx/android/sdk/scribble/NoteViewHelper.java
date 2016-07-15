@@ -16,8 +16,6 @@ import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.android.sdk.scribble.shape.LineShape;
-import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
@@ -41,8 +39,8 @@ public class NoteViewHelper {
 
     public enum PenState {
         PEN_NULL,                   // not initialized yet.
-        PEN_DRAWING,                // in drawing state
-        PEN_ERASER_DRAWING,         // in drawing state, but use eraser
+        PEN_SCREEN_DRAWING,         // in direct screen drawing state
+        PEN_CANVAS_DRAWING,         // in canvas drawing state
         PEN_USER_ERASING,           // in user erasing state
     }
 
@@ -59,6 +57,7 @@ public class NoteViewHelper {
     private TouchPointList erasePoints;
     private DeviceConfig deviceConfig;
     private Shape currentShape = null;
+    private boolean shortcutErasing = false;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, 3);
@@ -186,7 +185,7 @@ public class NoteViewHelper {
     }
 
     public void resumeDrawing() {
-        setPenState(PenState.PEN_DRAWING);
+        setPenState(PenState.PEN_SCREEN_DRAWING);
         getRawInputProcessor().resume();
     }
 
@@ -364,17 +363,7 @@ public class NoteViewHelper {
     }
 
     private Shape createNewShape() {
-        Shape shape = null;
-        switch (getNoteDocument().getNoteDrawingArgs().currentShapeType) {
-            case ShapeFactory.SHAPE_NORMAL_SCRIBBLE:
-                shape = new NormalScribbleShape();
-                break;
-            case ShapeFactory.SHAPE_LINE:
-                shape = new LineShape();
-                break;
-            default:
-                shape = new NormalScribbleShape();
-        }
+        Shape shape = ShapeFactory.createShape(getNoteDocument().getNoteDrawingArgs().currentShapeType);
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
         return shape;
@@ -399,6 +388,7 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onEraseTouchPointListReceived(erasePoints);
         }
+        shortcutErasing = false;
     }
 
     public List<Shape> getDirtyStash() {
@@ -420,19 +410,22 @@ public class NoteViewHelper {
     }
 
     public void ensureErasing() {
-        if (!inUserErasing()) {
-            setPenState(PenState.PEN_ERASER_DRAWING);
-        }
+        shortcutErasing = true;
     }
 
-    public void ensurePenState() {
-        if (!inUserErasing()) {
-            setPenState(PenState.PEN_NULL);
+    public void updatePenStateByCurrentShapeType() {
+        int type = getCurrentShapeType();
+        if (ShapeFactory.isDFBShape(type)) {
+            setPenState(PenState.PEN_SCREEN_DRAWING);
+        } else if (type == ShapeFactory.SHAPE_ERASER) {
+            setPenState(PenState.PEN_USER_ERASING);
+        } else {
+            setPenState(PenState.PEN_CANVAS_DRAWING);
         }
     }
 
     public boolean inErasing() {
-        return (getPenState() == PenState.PEN_ERASER_DRAWING || getPenState() == PenState.PEN_USER_ERASING);
+        return (shortcutErasing || getPenState() == PenState.PEN_USER_ERASING);
     }
 
     public boolean inUserErasing() {
@@ -445,6 +438,7 @@ public class NoteViewHelper {
 
     public void setCurrentShapeType(int currentShapeType) {
         getNoteDocument().getNoteDrawingArgs().currentShapeType = currentShapeType;
+        updatePenStateByCurrentShapeType();
     }
 
     private boolean useRawData() {
