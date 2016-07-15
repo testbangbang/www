@@ -386,7 +386,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onDestroy() {
         cleanUpAllPopMenu();
-        clearSurfaceView();
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

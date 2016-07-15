@@ -275,6 +275,10 @@ public class NoteViewHelper {
         return renderBitmapWrapper.getBitmap();
     }
 
+    public Bitmap getRenderBitmap() {
+        return renderBitmapWrapper.getBitmap();
+    }
+
     // copy from render bitmap to view bitmap.
     public void copyBitmap() {
         if (renderBitmapWrapper == null) {
