@@ -86,6 +86,12 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public String getPageText(String position) {
+        // TODO to be implemented
+        return "";
+    }
+
+    @Override
     public boolean readTableOfContent(ReaderDocumentTableOfContent toc) {
         return false;
     }

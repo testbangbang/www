@@ -103,6 +103,11 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return new RectF(0, 0, size[0], size[1]);
     }
 
+    @Override
+    public String getPageText(String position) {
+        return getPluginImpl().getPageText(PagePositionUtils.getPageNumber(position));
+    }
+
     public void abortCurrentJob() {
 
     }
