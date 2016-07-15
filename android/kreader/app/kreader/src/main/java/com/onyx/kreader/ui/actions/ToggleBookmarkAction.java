@@ -27,23 +27,10 @@ public class ToggleBookmarkAction extends BaseAction {
     @Override
     public void execute(ReaderActivity readerActivity) {
         if (toggleSwitch == ToggleSwitch.On) {
-            Bookmark bookmark = createBookmark(readerActivity);
-            readerActivity.submitRequest(new AddBookmarkRequest(bookmark));
+            readerActivity.submitRequest(new AddBookmarkRequest(pageInfo));
         } else if (toggleSwitch == ToggleSwitch.Off) {
             Bookmark bookmark = readerActivity.getReaderUserDataInfo().getBookmark(pageInfo);
             readerActivity.submitRequest(new DeleteBookmarkRequest(bookmark));
         }
-    }
-
-    private Bookmark createBookmark(ReaderActivity readerActivity) {
-        Bookmark bookmark = new Bookmark();
-        bookmark.setMd5(readerActivity.getReader().getDocumentMd5());
-        bookmark.setApplication(readerActivity.getReader().getPlugin().displayName());
-        bookmark.setPosition(pageInfo.getName());
-        bookmark.setQuote("");
-        Date time = new Date();
-        bookmark.setCreatedAt(time);
-        bookmark.setUpdatedAt(time);
-        return bookmark;
     }
 }
