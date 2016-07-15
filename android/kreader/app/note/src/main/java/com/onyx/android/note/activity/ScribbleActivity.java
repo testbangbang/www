@@ -474,11 +474,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void setCurrentShapeType(int type) {
-        if (shapeDataInfo == null) {
-            Log.e(TAG, "null shape info, could not change shape!");
-            return;
-        }
-
         shapeDataInfo.setCurrentShapeType(type);
     }
 
