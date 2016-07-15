@@ -43,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.onyx.android.sdk.data.GAdapterUtil.hasThumbnail;
+
 
 public class ManageActivity extends OnyxAppCompatActivity {
     private static final String TAG_CONTENT_ID = "content_id";
@@ -197,7 +199,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
 
             @Override
             public void beforePageChanging(ContentView contentView, int newPage, int oldPage) {
-                ManageLoadPageAction loadPageAction = new ManageLoadPageAction(newPage);
+                ManageLoadPageAction loadPageAction = new ManageLoadPageAction(getPreloadIDList(newPage, false));
                 loadPageAction.execute(ManageActivity.this, null);
             }
 
@@ -456,5 +458,27 @@ public class ManageActivity extends OnyxAppCompatActivity {
         }
         toolBarIcon.setImageResource(iconRes);
         toolBarTitle.setText(titleResString);
+    }
+
+    private List<String> getPreloadIDList(int targetPage, boolean forceUpdate) {
+        lookupTable.clear();
+        final int begin = contentView.getPageBegin(targetPage);
+        final int end = contentView.getPageEnd(targetPage);
+        if (begin < 0 || end < 0 || GAdapterUtil.isNullOrEmpty(contentView.getCurrentAdapter())) {
+            return null;
+        }
+
+        List<String> list = new ArrayList<String>();
+        for (int i = begin; i <= end && i < contentView.getCurrentAdapter().size(); ++i) {
+            GObject object = contentView.getCurrentAdapter().get(i);
+            if (!hasThumbnail(object) || forceUpdate) {
+                final String key = GAdapterUtil.getUniqueId(object);
+                if (!StringUtils.isNullOrEmpty(key)) {
+                    lookupTable.put(key, i);
+                    list.add(key);
+                }
+            }
+        }
+        return list;
     }
 }
