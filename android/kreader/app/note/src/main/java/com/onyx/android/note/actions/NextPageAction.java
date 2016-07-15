@@ -3,10 +3,7 @@ package com.onyx.android.note.actions;
 import com.onyx.android.note.activity.ScribbleActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
-import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.navigation.PageNextRequest;
-import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
 
 /**
  * Created by zhuzeng on 7/1/16.
