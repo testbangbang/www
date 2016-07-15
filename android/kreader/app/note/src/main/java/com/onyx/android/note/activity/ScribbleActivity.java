@@ -435,6 +435,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             @Override
             public void onCancelAction() {
                 dialogNoteNameInput.dismiss();
+                syncWithCallback(true, true, null);
             }
 
             @Override
