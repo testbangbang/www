@@ -9,7 +9,10 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
  */
 public class NoteDrawingArgs {
 
-    public volatile float strokeWidth = 3.0f;
+    public static float defaultStrokeWidth() {
+        return 3.0f;
+    }
+    public volatile float strokeWidth = defaultStrokeWidth();
     public volatile int strokeColor = Color.BLACK;
     public volatile int style;
     public volatile int currentShapeType = ShapeFactory.SHAPE_NORMAL_SCRIBBLE;

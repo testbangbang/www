@@ -5,6 +5,7 @@ import android.content.Context;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -87,7 +88,9 @@ public class NoteDocument {
         pageNameList.addAll(pageDataMap.keyList());
         noteModel.setPageNameList(pageNameList);
         noteModel.setCurrentShapeType(noteDrawingArgs.currentShapeType);
-        noteModel.strokeWidth = noteDrawingArgs.strokeWidth;
+
+        // todo: // noteDrawingArgs.strokeWidth;
+        noteModel.strokeWidth = noteDrawingArgs.defaultStrokeWidth();
         noteModel.background = noteDrawingArgs.background;
         noteModel.strokeColor = noteDrawingArgs.strokeColor;
         return noteModel;
@@ -169,14 +172,17 @@ public class NoteDocument {
         }
     }
 
+    // load args from model.
     private void setupDrawingArgs(final NoteModel noteModel) {
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
         noteDrawingArgs.background = NoteModel.getDefaultBackground();
         if (noteModel != null) {
-            noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
+            noteDrawingArgs.strokeWidth = NoteDrawingArgs.defaultStrokeWidth();
             noteDrawingArgs.background = noteModel.getBackground();
             noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
-            noteDrawingArgs.currentShapeType = noteModel.getCurrentShapeType();
+
+            // TODO:  save shape type: //noteModel.getCurrentShapeType();
+            noteDrawingArgs.currentShapeType = ShapeFactory.SHAPE_NORMAL_SCRIBBLE;
         }
     }
 

@@ -463,6 +463,10 @@ public class NoteViewHelper {
         return deviceConfig.useRawInput() && ShapeFactory.isDFBShape(getCurrentShapeType());
     }
 
+    private boolean isSingleTouch() {
+        return deviceConfig.isSingleTouch();
+    }
+
     public boolean useDFBForCurrentState() {
         return ShapeFactory.isDFBShape(getCurrentShapeType()) && !inUserErasing();
     }
@@ -472,7 +476,7 @@ public class NoteViewHelper {
             return true;
         }
         int toolType = motionEvent.getToolType(0);
-        if (toolType == MotionEvent.TOOL_TYPE_FINGER) {
+        if (toolType == MotionEvent.TOOL_TYPE_FINGER && !isSingleTouch()) {
             return true;
         }
 

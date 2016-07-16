@@ -34,6 +34,7 @@ public class DeviceConfig {
     static public final String TOUCH_HEIGHT = "touch_height";
 
     static public final String USE_RAW_INPUT = "use_raw_input";
+    static public final String SINGLE_TOUCH = "single_touch";
 
     static public boolean useDebugConfig = false;
 
@@ -111,6 +112,10 @@ public class DeviceConfig {
 
     public boolean useRawInput() {
         return backend.hasKey(USE_RAW_INPUT) && backend.getBoolean(USE_RAW_INPUT);
+    }
+
+    public boolean isSingleTouch() {
+        return backend.hasKey(SINGLE_TOUCH) && backend.getBoolean(SINGLE_TOUCH);
     }
 
     static public DeviceConfig sharedInstance(Context context) {

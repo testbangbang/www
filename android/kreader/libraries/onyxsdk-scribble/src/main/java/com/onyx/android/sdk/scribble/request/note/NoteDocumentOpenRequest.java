@@ -29,6 +29,7 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
         }
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
+        setResumeInputProcessor(parent.useDFBForCurrentState());
     }
 
 }
