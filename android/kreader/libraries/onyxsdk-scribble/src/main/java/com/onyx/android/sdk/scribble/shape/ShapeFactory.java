@@ -26,27 +26,29 @@ public class ShapeFactory {
             case ShapeFactory.SHAPE_LINE:
                 shape = new LineShape();
                 break;
+            case ShapeFactory.SHAPE_VARY_SCRIBBLE:
+                shape = new BrushScribbleShape();
+                break;
+            case ShapeFactory.SHAPE_CIRCLE:
+                shape = new CircleShape();
+                break;
+            case ShapeFactory.SHAPE_RECTANGLE:
+                shape = new RectangleShape();
+                break;
+            case ShapeFactory.SHAPE_TEXT:
+                shape = new TexShape();
+                break;
             default:
                 shape = new NormalScribbleShape();
+                break;
         }
         return shape;
     }
 
     public static final Shape shapeFromModel(final ShapeModel shapeModel) {
-        switch (shapeModel.getShapeType()) {
-            case SHAPE_NORMAL_SCRIBBLE:
-                return createNormalScribbleShape(shapeModel);
-            case SHAPE_VARY_SCRIBBLE:
-                return createVaryScribbleShape(shapeModel);
-            case SHAPE_CIRCLE:
-                return createCircleShape(shapeModel);
-            case SHAPE_RECTANGLE:
-                return createRectangleShape(shapeModel);
-            case SHAPE_LINE:
-                return createLineShape(shapeModel);
-            default:
-                return createNormalScribbleShape(shapeModel);
-        }
+        Shape shape = createShape(shapeModel.getShapeType());
+        syncShapeDataFromModel(shape, shapeModel);
+        return shape;
     }
 
     public static boolean isDFBShape(int shape) {
@@ -64,36 +66,6 @@ public class ShapeFactory {
         shapeModel.setThickness(shape.getStrokeWidth());
         shapeModel.setShapeType(shape.getType());
         return shapeModel;
-    }
-
-    private static final Shape createNormalScribbleShape(final ShapeModel shapeModel) {
-        final NormalScribbleShape shape = new NormalScribbleShape();
-        syncShapeDataFromModel(shape, shapeModel);
-        return shape;
-    }
-
-    private static final Shape createVaryScribbleShape(final ShapeModel shapeModel) {
-        final BrushScribbleShape shape = new BrushScribbleShape();
-        syncShapeDataFromModel(shape, shapeModel);
-        return shape;
-    }
-
-    private static final Shape createCircleShape(final ShapeModel shapeModel) {
-        final CircleShape shape = new CircleShape();
-        syncShapeDataFromModel(shape, shapeModel);
-        return shape;
-    }
-
-    private static final Shape createRectangleShape(final ShapeModel shapeModel) {
-        final RectangleShape shape = new RectangleShape();
-        syncShapeDataFromModel(shape, shapeModel);
-        return shape;
-    }
-
-    private static final Shape createLineShape(final ShapeModel shapeModel) {
-        final LineShape shape = new LineShape();
-        syncShapeDataFromModel(shape, shapeModel);
-        return shape;
     }
 
     private static void syncShapeDataFromModel(final Shape shape, final ShapeModel model) {
