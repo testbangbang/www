@@ -89,6 +89,7 @@ public class NotePage {
     public void addShape(final Shape shape) {
         updateShape(shape);
         newAddedShapeList.add(shape);
+        shapeList.add(shape);
         if (isAddToActionHistory()) {
             undoRedoManager.addToHistory(ShapeActions.addShapeAction(shape), false);
         }
@@ -96,10 +97,16 @@ public class NotePage {
 
     public void addShapeList(final List<Shape> shapes) {
         for(Shape shape : shapes) {
-            updateShape(shape);
-            newAddedShapeList.add(shape);
+            addShape(shape);
         }
-        shapeList.addAll(shapes);
+    }
+
+    public boolean canRedo() {
+        return undoRedoManager.canRedo();
+    }
+
+    public boolean canUndo() {
+        return undoRedoManager.canUndo();
     }
 
     private void updateShape(final Shape shape) {

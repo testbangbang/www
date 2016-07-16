@@ -227,15 +227,6 @@ public class NoteDocument {
         return null;
     }
 
-    public void addShapeToPage(final int index, final String pageUniqueId, final Shape shape) {
-        final NotePage notePage = getPage(index, pageUniqueId);
-        if (notePage != null && shape != null) {
-            notePage.addShape(shape);
-            shape.setDocumentUniqueId(getDocumentUniqueId());
-            shape.setPageUniqueId(pageUniqueId);
-        }
-    }
-
     public boolean createBlankPage(final Context context, final int index) {
         final int value = Math.min(index, pageDataMap.size());
         createPage(value, ShapeUtils.generateUniqueId());

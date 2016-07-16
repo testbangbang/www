@@ -228,12 +228,14 @@ public class NoteViewHelper {
         setBackground(drawingArgs.background);
     }
 
-    public void updateShapeDataInfo(final ShapeDataInfo shapeDataInfo) {
+    public void updateShapeDataInfo(final Context context, final ShapeDataInfo shapeDataInfo) {
         shapeDataInfo.updateShapePageMap(
                 getNoteDocument().getPageNameList(),
                 getNoteDocument().getCurrentPageIndex());
         shapeDataInfo.setInUserErasing(inUserErasing());
         shapeDataInfo.updateDrawingArgs(getNoteDocument().getNoteDrawingArgs());
+        shapeDataInfo.setCanRedoShape(getNoteDocument().getCurrentPage(context).canRedo());
+        shapeDataInfo.setCanUndoShape(getNoteDocument().getCurrentPage(context).canUndo());
     }
 
     private void removeLayoutListener() {
