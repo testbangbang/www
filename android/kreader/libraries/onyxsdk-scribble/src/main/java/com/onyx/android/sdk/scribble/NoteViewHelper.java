@@ -100,6 +100,14 @@ public class NoteViewHelper {
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
     }
 
+    public void undo(final Context context) {
+        getNoteDocument().getCurrentPage(context).undo();
+    }
+
+    public void redo(final Context context) {
+        getNoteDocument().getCurrentPage(context).redo();
+    }
+
     public void close(final Context context, final String title) {
         getNoteDocument().save(context, title);
         getNoteDocument().close(context);

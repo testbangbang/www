@@ -105,8 +105,27 @@ public class NotePage {
         return undoRedoManager.canRedo();
     }
 
+    public void redo() {
+        final UndoRedoManager.Action action = undoRedoManager.redo();
+        if (action == null) {
+            return;
+        }
+    }
+
     public boolean canUndo() {
         return undoRedoManager.canUndo();
+    }
+
+    public void undo() {
+        final UndoRedoManager.Action<Shape> action = undoRedoManager.undo();
+        if (action == null) {
+            return;
+        }
+        if (ShapeActions.ACTION_ADD_SHAPE.equals(action)) {
+            removeShape(action.object);
+        } else if (ShapeActions.ACTION_REMOVE_SHAPE.equals(action)) {
+            addShape(action.object);
+        }
     }
 
     private void updateShape(final Shape shape) {

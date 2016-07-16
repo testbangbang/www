@@ -1,6 +1,7 @@
 package com.onyx.android.note.dialog;
 
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -78,6 +79,13 @@ public class DialogNoteNameInput extends OnyxAlertDialog {
 
     public void show(FragmentManager fm) {
         super.show(fm, DialogNoteNameInput.class.getSimpleName());
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        if (mCallBack != null) {
+            mCallBack.onCancelAction();
+        }
     }
 
 }
