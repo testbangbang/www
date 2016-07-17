@@ -12,21 +12,29 @@ public class ShapeFactory {
 
     static public final int SHAPE_CIRCLE = 0;
     static public final int SHAPE_RECTANGLE = 1;
-    static public final int SHAPE_NORMAL_SCRIBBLE = 2;
-    static public final int SHAPE_VARY_SCRIBBLE = 3;
-    static public final int SHAPE_TEXT = 4;
-    static public final int SHAPE_LINE = 5;
+    static public final int SHAPE_PENCIL_SCRIBBLE = 2;
+    static public final int SHAPE_OILY_PEN_SCRIBBLE = 3;
+    static public final int SHAPE_FOUNTAIN_PEN_SCRIBBLE = 4;
+    static public final int SHAPE_BRUSH_SCRIBBLE = 5;
+    static public final int SHAPE_TEXT = 6;
+    static public final int SHAPE_LINE = 7;
 
     public static final Shape createShape(int type) {
         Shape shape;
         switch (type) {
-            case ShapeFactory.SHAPE_NORMAL_SCRIBBLE:
-                shape = new NormalScribbleShape();
+            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
+                shape = new NormalPencilShape();
                 break;
             case ShapeFactory.SHAPE_LINE:
                 shape = new LineShape();
                 break;
-            case ShapeFactory.SHAPE_VARY_SCRIBBLE:
+            case ShapeFactory.SHAPE_OILY_PEN_SCRIBBLE:
+                shape = new NormalPencilShape();
+                break;
+            case ShapeFactory.SHAPE_FOUNTAIN_PEN_SCRIBBLE:
+                shape = new NormalPencilShape();
+                break;
+            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
                 shape = new BrushScribbleShape();
                 break;
             case ShapeFactory.SHAPE_CIRCLE:
@@ -39,7 +47,7 @@ public class ShapeFactory {
                 shape = new TexShape();
                 break;
             default:
-                shape = new NormalScribbleShape();
+                shape = new NormalPencilShape();
                 break;
         }
         return shape;
@@ -52,7 +60,7 @@ public class ShapeFactory {
     }
 
     public static boolean isDFBShape(int shape) {
-        return shape == SHAPE_NORMAL_SCRIBBLE || shape == SHAPE_VARY_SCRIBBLE;
+        return shape == SHAPE_PENCIL_SCRIBBLE || shape == SHAPE_BRUSH_SCRIBBLE || shape == SHAPE_OILY_PEN_SCRIBBLE || shape == SHAPE_FOUNTAIN_PEN_SCRIBBLE;
     }
 
     public static final ShapeModel modelFromShape(final Shape shape) {

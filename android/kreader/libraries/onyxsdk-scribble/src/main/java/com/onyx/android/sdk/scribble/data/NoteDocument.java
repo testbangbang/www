@@ -88,9 +88,7 @@ public class NoteDocument {
         pageNameList.addAll(pageDataMap.keyList());
         noteModel.setPageNameList(pageNameList);
         noteModel.setCurrentShapeType(noteDrawingArgs.currentShapeType);
-
-        // todo: // noteDrawingArgs.strokeWidth;
-        noteModel.strokeWidth = noteDrawingArgs.defaultStrokeWidth();
+        noteModel.strokeWidth = noteDrawingArgs.strokeWidth;
         noteModel.background = noteDrawingArgs.background;
         noteModel.strokeColor = noteDrawingArgs.strokeColor;
         return noteModel;
@@ -174,15 +172,15 @@ public class NoteDocument {
 
     // load args from model.
     private void setupDrawingArgs(final NoteModel noteModel) {
+        noteDrawingArgs.currentShapeType = NoteModel.getDefaultShapeType();
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
         noteDrawingArgs.background = NoteModel.getDefaultBackground();
+        noteDrawingArgs.strokeColor = NoteModel.getDefaultStrokeColor();
         if (noteModel != null) {
-            noteDrawingArgs.strokeWidth = NoteDrawingArgs.defaultStrokeWidth();
             noteDrawingArgs.background = noteModel.getBackground();
             noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
-
-            // TODO:  save shape type: //noteModel.getCurrentShapeType();
-            noteDrawingArgs.currentShapeType = ShapeFactory.SHAPE_NORMAL_SCRIBBLE;
+            noteDrawingArgs.currentShapeType = noteModel.getCurrentShapeType();
+            noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
         }
     }
 

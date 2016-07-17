@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -45,6 +44,7 @@ import com.onyx.android.sdk.ui.view.ContentView;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -487,25 +487,25 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void onPencilClicked() {
-        setCurrentShapeType(ShapeFactory.SHAPE_NORMAL_SCRIBBLE);
+        setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
         setStrokeWidth(3.0f);
         syncWithCallback(true, true, null);
     }
 
     private void onOilyPenClicked() {
-        setCurrentShapeType(ShapeFactory.SHAPE_NORMAL_SCRIBBLE);
+        setCurrentShapeType(ShapeFactory.SHAPE_OILY_PEN_SCRIBBLE);
         setStrokeWidth(3.0f);
         syncWithCallback(true, true, null);
     }
 
     private void onFountainPenClicked() {
-        setCurrentShapeType(ShapeFactory.SHAPE_NORMAL_SCRIBBLE);
+        setCurrentShapeType(ShapeFactory.SHAPE_FOUNTAIN_PEN_SCRIBBLE);
         setStrokeWidth(4.0f);
         syncWithCallback(true, true, null);
     }
 
     private void onBrushPenClicked() {
-        setCurrentShapeType(ShapeFactory.SHAPE_NORMAL_SCRIBBLE);
+        setCurrentShapeType(ShapeFactory.SHAPE_BRUSH_SCRIBBLE);
         setStrokeWidth(6.0f);
         syncWithCallback(true, true, null);
     }
@@ -640,6 +640,36 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         int currentPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
         int pageCount = shapeDataInfo.getPageCount();
         pageIndicator.setText(currentPageIndex + File.separator + pageCount);
+        updatePenIndicator(shapeDataInfo);
+    }
+
+    private int indexOf(int shapeType) {
+        int pen = PenType.shapeToPen(shapeType);
+        final List<GObject> list = getPenStyleAdapter().getList();
+        for(int i = 0; i < list.size(); ++i) {
+            int value = Integer.decode(GAdapterUtil.getUniqueId(list.get(i)));
+            if (value == pen) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void updatePenIndicator(final ShapeDataInfo shapeDataInfo) {
+        int type = shapeDataInfo.getCurrentShapeType();
+        int index = indexOf(type);
+        if (index < 0) {
+            return;
+        }
+        selectPenStyle(index);
+    }
+
+    private void selectPenStyle(int index) {
+        final GObject object = penStyleContentView.getCurrentAdapter().get(index);
+        object.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
+        penStyleContentView.getCurrentAdapter().setObject(index, object);
+        penStyleContentView.unCheckOtherViews(index, true);
+        penStyleContentView.updateCurrentPage();
     }
 
     private void clearSurfaceView() {

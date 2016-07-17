@@ -3,11 +3,9 @@ package com.onyx.android.sdk.scribble.shape;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
 
 /**
  * Created by zhuzeng on 4/26/16.
@@ -21,7 +19,7 @@ public class EPDShape extends BaseShape {
      * @return
      */
     public int getType() {
-        return ShapeFactory.SHAPE_NORMAL_SCRIBBLE;
+        return ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
     }
 
     public boolean supportDFB() {

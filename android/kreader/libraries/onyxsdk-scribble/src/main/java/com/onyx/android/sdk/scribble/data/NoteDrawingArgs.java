@@ -9,13 +9,10 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
  */
 public class NoteDrawingArgs {
 
-    public static float defaultStrokeWidth() {
-        return 3.0f;
-    }
-    public volatile float strokeWidth = defaultStrokeWidth();
+    public volatile float strokeWidth = NoteModel.getDefaultStrokeWidth();
     public volatile int strokeColor = Color.BLACK;
     public volatile int style;
-    public volatile int currentShapeType = ShapeFactory.SHAPE_NORMAL_SCRIBBLE;
+    public volatile int currentShapeType = ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
     public volatile float eraserRadius = 15.0f;
     public volatile int background;
     public volatile NoteViewHelper.PenState penState;

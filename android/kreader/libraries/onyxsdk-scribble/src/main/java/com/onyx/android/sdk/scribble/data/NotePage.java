@@ -4,15 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.util.Log;
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.scribble.shape.*;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
-import com.raizlabs.android.dbflow.config.DatabaseConfig;
-import com.raizlabs.android.dbflow.runtime.DBBatchSaveQueue;
-import com.raizlabs.android.dbflow.structure.database.transaction.DefaultTransactionManager;
-import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -198,8 +190,8 @@ public class NotePage {
     // create a new shape if not exist and make it as current shape.
     public final Shape getShapeFromPool() {
         switch (currentShapeType) {
-            case ShapeFactory.SHAPE_NORMAL_SCRIBBLE:
-                currentShape = new NormalScribbleShape();
+            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
+                currentShape = new NormalPencilShape();
                 break;
             case ShapeFactory.SHAPE_CIRCLE:
                 currentShape = new CircleShape();
@@ -210,7 +202,7 @@ public class NotePage {
             case ShapeFactory.SHAPE_TEXT:
                 currentShape = new TexShape();
                 break;
-            case ShapeFactory.SHAPE_VARY_SCRIBBLE:
+            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
                 currentShape = new BrushScribbleShape();
                 break;
         }

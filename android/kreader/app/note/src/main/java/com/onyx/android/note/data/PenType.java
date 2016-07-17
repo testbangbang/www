@@ -1,9 +1,11 @@
 package com.onyx.android.note.data;
 
 import android.support.annotation.IntDef;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Map;
 
 /**
  * Created by solskjaer49 on 16/6/30 18:41.
@@ -25,4 +27,24 @@ public class PenType {
     public static final int BRUSH = 3;
     public static final int RULER = 4;
     public static final int ERASER = 5;
+
+    public static int shapeToPen(int shape) {
+        switch (shape) {
+            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
+                return PenType.PENCIL;
+            case ShapeFactory.SHAPE_FOUNTAIN_PEN_SCRIBBLE:
+                return PenType.FOUNTAIN_PEN;
+            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
+                return PenType.BRUSH;
+            case ShapeFactory.SHAPE_OILY_PEN_SCRIBBLE:
+                return PenType.OILY_PEN;
+            case ShapeFactory.SHAPE_ERASER:
+                return PenType.ERASER;
+            case ShapeFactory.SHAPE_LINE:
+                return PenType.RULER;
+            default:
+                return PenType.PENCIL;
+        }
+    }
+
 }
