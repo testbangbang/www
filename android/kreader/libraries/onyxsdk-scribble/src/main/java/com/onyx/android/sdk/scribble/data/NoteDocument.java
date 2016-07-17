@@ -55,6 +55,7 @@ public class NoteDocument {
         documentUniqueId = null;
         parentUniqueId = null;
         currentPageIndex = 0;
+        resetNoteDrawingArgs();
         markDocumentOpen(false);
     }
 
@@ -170,12 +171,16 @@ public class NoteDocument {
         }
     }
 
-    // load args from model.
-    private void setupDrawingArgs(final NoteModel noteModel) {
+    private void resetNoteDrawingArgs() {
         noteDrawingArgs.currentShapeType = NoteModel.getDefaultShapeType();
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
         noteDrawingArgs.background = NoteModel.getDefaultBackground();
         noteDrawingArgs.strokeColor = NoteModel.getDefaultStrokeColor();
+    }
+
+    // load args from model.
+    private void setupDrawingArgs(final NoteModel noteModel) {
+        resetNoteDrawingArgs();
         if (noteModel != null) {
             noteDrawingArgs.background = noteModel.getBackground();
             noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
