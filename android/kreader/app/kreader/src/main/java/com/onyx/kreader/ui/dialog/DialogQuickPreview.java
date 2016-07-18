@@ -277,18 +277,15 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void initPageProgress() {
-        seekBarProgress.setMax(pageCount);
         seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int page = progress - 1;
-                if (paginator.pageByIndex(page) != paginator.getCurrentPage()) {
-                    paginator.gotoPageByIndex(page);
-                    onPageDataChanged();
-                } else {
-                    currentPage = page;
-                    updatePageProgressTextView();
+                if (!fromUser) {
+                    return;
                 }
+                int page = progress - 1;
+                paginator.gotoPage(page);
+                onPageDataChanged();
             }
 
             @Override
@@ -306,12 +303,9 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void updatePageProgress() {
-        seekBarProgress.setProgress(currentPage + 1);
-        updatePageProgressTextView();
-    }
-
-    private void updatePageProgressTextView() {
-        textViewProgress.setText((currentPage + 1) + "/" + pageCount);
+        seekBarProgress.setMax(paginator.pages());
+        seekBarProgress.setProgress(paginator.getCurrentPage() + 1);
+        textViewProgress.setText((paginator.getCurrentPage() + 1) + "/" + paginator.pages());
     }
 
 }
