@@ -19,6 +19,7 @@
 -dontshrink
 
 -dontwarn com.onyx.android.sdk.ui.dialog.DialogReaderMenu
+-dontwarn com.onyx.android.sdk.scribble.request.shape.PenStateChangeRequest
 
 -keepnames class * {
     native <methods>;
@@ -36,6 +37,8 @@
 
 -keepnames class com.onyx.kreader.api.ReaderTextSplitter { *; }
 -keepnames class * implements com.onyx.kreader.api.ReaderTextSplitter { *; }
+-keepnames class com.onyx.kreader.api.ReaderDocumentTableOfContent { *; }
+-keepnames class com.onyx.kreader.api.ReaderDocumentTableOfContentEntry { *; }
 
 -keepnames class com.onyx.kreader.host.navigation.NavigationArgs { *; }
 -keepnames class com.onyx.kreader.host.navigation.NavigationList { *; }
