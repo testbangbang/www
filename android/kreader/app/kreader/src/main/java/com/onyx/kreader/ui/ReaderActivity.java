@@ -99,6 +99,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        redrawPage();
     }
 
     @Override
