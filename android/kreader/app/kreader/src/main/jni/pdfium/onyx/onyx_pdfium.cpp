@@ -392,7 +392,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     while (searchHandle != NULL && FPDFText_FindNext(searchHandle)) {
         ++count;
         int startIndex = FPDFText_GetSchResultIndex(searchHandle);
-        int endIndex = startIndex + FPDFText_GetSchCount(searchHandle);
+        int endIndex = startIndex + FPDFText_GetSchCount(searchHandle) - 1;
         std::vector<int> list;
         getSelectionRectangles(page, textPage, x, y, width, height, rotation, startIndex, endIndex, list);
         JNIIntArray intArray(env, list.size(), &list[0]);

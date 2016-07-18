@@ -1,19 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/image_view_bookmark"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/text_view_page"
+        android:src="@drawable/ic_dialog_reader_bookmark_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <TextView
-            android:id="@+id/text_view_description"
+            android:text=""
+            android:id="@+id/text_view_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"/>
 
     <TextView
+            android:text="第一编 第2章"
+            android:textSize="25sp"
             android:id="@+id/text_view_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/text_view_description"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+        android:gravity="center_vertical"
+        android:ellipsize="end"
+        android:textSize="18sp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/text_view_page"
+        android:layout_above="@+id/layout_bottom"
+        android:text="魅族之前已经公布了即将在7月19日发布魅族MX6的消息。与此同时，魅族还公布了将会提升魅族MX6售价。而今，有网友曝光了一份据说是来自魅族内部的文件——文件显示魅族MX6与最新的定制皮套套装版售价将定在2299元。"
+        android:id="@+id/text_view_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_marginBottom="4dp"
+        android:id="@+id/layout_bottom"
+        android:layout_above="@+id/split_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:text="2016-07-07 13:42"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/text_view_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/image_view_edit"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/text_view_edit"
+            android:src="@drawable/ic_dialog_reader_edit_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_toLeftOf="@+id/image_view_delete"
+            android:layout_marginRight="45dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/text_view_edit"
+            android:text="@string/edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/image_view_delete"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/text_view_delete"
+            android:src="@drawable/ic_dialog_reader_delet_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/text_view_delete"
+            android:layout_alignParentRight="true"
+            android:text="@string/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:id="@+id/split_line"
+        android:layerType="software"
+        android:background="@drawable/dash_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
 
 </RelativeLayout>

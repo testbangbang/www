@@ -65,4 +65,8 @@
     <string name="bookmark">Bookmark</string>
     <string name="annotation">Annotation</string>
     <string name="navigation_mode">Navigation Mode</string>
+    <string name="action_return">Return</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="page" formatted="false">第%s页</string>
 </resources>

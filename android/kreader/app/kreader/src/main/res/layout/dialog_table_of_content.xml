@@ -1,44 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-         android:id="@+id/tab_host"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:background="@android:color/white">
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-        <TabWidget
-                android:id="@android:id/tabs"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/dialog_table_of_content_tab_button_background"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_above="@+id/layout_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v4.view.ViewPager>
+    <RadioGroup
+        android:id="@+id/layout_menu"
+        android:layout_above="@+id/layout_turn"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/directory_tab_height">
 
-            <com.onyx.android.sdk.ui.view.TreeRecyclerView
-                    android:id="@+id/tree_view_toc"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="vertical"/>
+        <RadioButton
+            android:gravity="center"
+            android:textSize="24sp"
+            android:id="@+id/btn_directory"
+            android:background="@drawable/radio_button_bg"
+            android:button="@null"
+            android:text="@string/toc"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
 
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                    android:id="@+id/list_view_bookmark"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+        <RadioButton
+            android:gravity="center"
+            android:textSize="24sp"
+            android:id="@+id/btn_bookmark"
+            android:background="@drawable/radio_button_bg"
+            android:button="@null"
+            android:text="@string/bookmark"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
 
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                    android:id="@+id/list_view_annotation"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+        <RadioButton
+            android:gravity="center"
+            android:textSize="24sp"
+            android:id="@+id/btn_annotation"
+            android:background="@drawable/radio_button_bg"
+            android:button="@null"
+            android:text="@string/annotation"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+    </RadioGroup>
 
-        </FrameLayout>
+    <RelativeLayout
+        android:id="@+id/layout_turn"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/directory_page_indicator_height">
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/pre_icon"
+            android:scaleType="fitXY"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_dialog_reader_arrow_left_black"
+            android:layout_toLeftOf="@+id/page_size_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-</TabHost>
+        <TextView
+            android:id="@+id/page_size_indicator"
+            android:layout_centerInParent="true"
+            android:text="1/7"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/next_icon"
+            android:scaleType="fitXY"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_dialog_reader_arrow_right_black"
+            android:layout_toRightOf="@+id/page_size_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/back_icon"
+            android:scaleType="fitXY"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="2dp"
+            android:src="@drawable/ic_dialog_reader_back_black"
+            android:layout_toLeftOf="@+id/back_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/back_text"
+            android:layout_marginRight="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/action_return"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+</RelativeLayout>
