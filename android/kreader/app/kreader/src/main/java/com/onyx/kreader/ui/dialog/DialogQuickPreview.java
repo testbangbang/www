@@ -9,6 +9,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.*;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.kreader.R;
@@ -150,6 +152,9 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private RecyclerView gridRecyclerView;
+    private TextView textViewProgress;
+    private SeekBar seekBarProgress;
+
     private Grid grid = new Grid();
     private GPaginator paginator;
     private PreviewAdapter adapter = new PreviewAdapter();
@@ -187,11 +192,13 @@ public class DialogQuickPreview extends Dialog {
         gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
         gridRecyclerView.setAdapter(adapter);
 
+        textViewProgress = (TextView)findViewById(R.id.text_view_progress);
+        seekBarProgress = (SeekBar)findViewById(R.id.seek_bar_page);
+
         findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (paginator.prevPage()) {
-                    currentPage = paginator.getCurrentPageBegin();
                     onPageDataChanged();
                 }
             }
@@ -201,7 +208,6 @@ public class DialogQuickPreview extends Dialog {
             @Override
             public void onClick(View v) {
                 if (paginator.nextPage()) {
-                    currentPage = paginator.getCurrentPageBegin();
                     onPageDataChanged();
                 }
             }
@@ -245,6 +251,7 @@ public class DialogQuickPreview extends Dialog {
         if (callback != null) {
             adapter.requestMissingBitmaps();
         }
+        initPageProgress();
     }
 
     /**
@@ -263,8 +270,48 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void onPageDataChanged() {
+        currentPage = paginator.getCurrentPageBegin();
         adapter.resetListSize(paginator.itemsInCurrentPage());
         adapter.requestMissingBitmaps();
+        updatePageProgress();
+    }
+
+    private void initPageProgress() {
+        seekBarProgress.setMax(pageCount);
+        seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int page = progress - 1;
+                if (paginator.pageByIndex(page) != paginator.getCurrentPage()) {
+                    paginator.gotoPageByIndex(page);
+                    onPageDataChanged();
+                } else {
+                    currentPage = page;
+                    updatePageProgressTextView();
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        updatePageProgress();
+    }
+
+    private void updatePageProgress() {
+        seekBarProgress.setProgress(currentPage + 1);
+        updatePageProgressTextView();
+    }
+
+    private void updatePageProgressTextView() {
+        textViewProgress.setText((currentPage + 1) + "/" + pageCount);
     }
 
 }
