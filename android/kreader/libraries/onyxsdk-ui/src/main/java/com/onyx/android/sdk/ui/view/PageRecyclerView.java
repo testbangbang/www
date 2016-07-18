@@ -73,7 +73,7 @@ public class PageRecyclerView extends RecyclerView {
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
         if (!(adapter instanceof PageAdapter)){
-            throw new IllegalArgumentException("Use PageAdapter");
+            throw new IllegalArgumentException("Please use PageAdapter!");
         }
         rows = ((PageAdapter) adapter).getRowCount();
         columns = ((PageAdapter) adapter).getColumnCount();
