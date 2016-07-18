@@ -2,6 +2,8 @@ package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.Bitmap;
 
+import android.graphics.Color;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Index;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -69,7 +71,7 @@ public class NoteModel extends BaseModel {
 
     Bitmap thumbnail;
 
-    private static final float DEFAULT_STROKE_WIDTH = 2.0f;
+    private static final float DEFAULT_STROKE_WIDTH = 3.0f;
 
     public NoteModel() {
     }
@@ -224,6 +226,14 @@ public class NoteModel extends BaseModel {
 
     public static float getDefaultStrokeWidth() {
         return DEFAULT_STROKE_WIDTH;
+    }
+
+    public static int getDefaultShapeType() {
+        return ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
+    }
+
+    public static int getDefaultStrokeColor() {
+        return Color.BLACK;
     }
 
     public static int getDefaultBackground() {

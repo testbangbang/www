@@ -13,6 +13,7 @@
   "touch_width" : 8192,
   "touch_height": 6144,
 
-  "use_raw_input" : 1
+  "use_raw_input" : 1,
+  "single_touch" : 1
 
 }

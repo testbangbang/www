@@ -7,7 +7,7 @@ import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.NormalScribbleShape;
+import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
@@ -144,7 +144,7 @@ public class ShapeDataProviderTest extends ApplicationTestCase<Application> {
     }
 
     private Shape randomShape(final String documentId, final String pageUniqueId, int min, int max) {
-        Shape shape = new NormalScribbleShape();
+        Shape shape = new NormalPencilShape();
         shape.setDocumentUniqueId(documentId);
         shape.setPageUniqueId(pageUniqueId);
         shape.setShapeUniqueId(UUID.randomUUID().toString());

@@ -14,7 +14,7 @@ public class DeviceReceiver extends BroadcastReceiver {
 
     public static final String SYSTEM_UI_DIALOG_OPEN_ACTION = "com.android.systemui.SYSTEM_UI_DIALOG_OPEN_ACTION";
     public static final String SYSTEM_UI_DIALOG_CLOSE_ACTION = "com.android.systemui.SYSTEM_UI_DIALOG_CLOSE_ACTION";
-
+    public static final String SYSTEM_WAKE_UP = "com.android.system.WAKE_UP";
 
     public static abstract class SystemUIChangeListener {
         public abstract void onSystemUIChanged(final String type, boolean open);
@@ -40,7 +40,7 @@ public class DeviceReceiver extends BroadcastReceiver {
         IntentFilter filter = new IntentFilter();
         filter.addAction(SYSTEM_UI_DIALOG_OPEN_ACTION);
         filter.addAction(SYSTEM_UI_DIALOG_CLOSE_ACTION);
-        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(SYSTEM_WAKE_UP);
         return filter;
     }
 
@@ -50,7 +50,7 @@ public class DeviceReceiver extends BroadcastReceiver {
             notifySystemUIChange(intent, true);
         } else if (SYSTEM_UI_DIALOG_CLOSE_ACTION.equalsIgnoreCase(action)) {
             notifySystemUIChange(intent, false);
-        } else if (Intent.ACTION_SCREEN_ON.equalsIgnoreCase(action)) {
+        } else if (SYSTEM_WAKE_UP.equalsIgnoreCase(action)) {
             notifySystemUIChange(intent, false);
         }
     }

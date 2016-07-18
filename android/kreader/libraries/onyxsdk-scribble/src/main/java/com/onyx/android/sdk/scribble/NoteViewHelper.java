@@ -100,6 +100,14 @@ public class NoteViewHelper {
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
     }
 
+    public void undo(final Context context) {
+        getNoteDocument().getCurrentPage(context).undo();
+    }
+
+    public void redo(final Context context) {
+        getNoteDocument().getCurrentPage(context).redo();
+    }
+
     public void close(final Context context, final String title) {
         getNoteDocument().save(context, title);
         getNoteDocument().close(context);
@@ -228,12 +236,14 @@ public class NoteViewHelper {
         setBackground(drawingArgs.background);
     }
 
-    public void updateShapeDataInfo(final ShapeDataInfo shapeDataInfo) {
+    public void updateShapeDataInfo(final Context context, final ShapeDataInfo shapeDataInfo) {
         shapeDataInfo.updateShapePageMap(
                 getNoteDocument().getPageNameList(),
                 getNoteDocument().getCurrentPageIndex());
         shapeDataInfo.setInUserErasing(inUserErasing());
         shapeDataInfo.updateDrawingArgs(getNoteDocument().getNoteDrawingArgs());
+        shapeDataInfo.setCanRedoShape(getNoteDocument().getCurrentPage(context).canRedo());
+        shapeDataInfo.setCanUndoShape(getNoteDocument().getCurrentPage(context).canUndo());
     }
 
     private void removeLayoutListener() {
@@ -453,6 +463,10 @@ public class NoteViewHelper {
         return deviceConfig.useRawInput() && ShapeFactory.isDFBShape(getCurrentShapeType());
     }
 
+    private boolean isSingleTouch() {
+        return deviceConfig.isSingleTouch();
+    }
+
     public boolean useDFBForCurrentState() {
         return ShapeFactory.isDFBShape(getCurrentShapeType()) && !inUserErasing();
     }
@@ -462,7 +476,7 @@ public class NoteViewHelper {
             return true;
         }
         int toolType = motionEvent.getToolType(0);
-        if (toolType == MotionEvent.TOOL_TYPE_FINGER) {
+        if (toolType == MotionEvent.TOOL_TYPE_FINGER && !isSingleTouch()) {
             return true;
         }
 

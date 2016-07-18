@@ -259,7 +259,7 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void updateShapeDataInfo(final NoteViewHelper parent) {
         final ShapeDataInfo shapeDataInfo = getShapeDataInfo();
-        parent.updateShapeDataInfo(shapeDataInfo);
+        parent.updateShapeDataInfo(getContext(), shapeDataInfo);
     }
 
     public void ensureDocumentOpened(final NoteViewHelper parent) {

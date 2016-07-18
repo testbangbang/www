@@ -4,15 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.util.Log;
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.scribble.shape.*;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
-import com.raizlabs.android.dbflow.config.DatabaseConfig;
-import com.raizlabs.android.dbflow.runtime.DBBatchSaveQueue;
-import com.raizlabs.android.dbflow.structure.database.transaction.DefaultTransactionManager;
-import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,6 +81,7 @@ public class NotePage {
     public void addShape(final Shape shape) {
         updateShape(shape);
         newAddedShapeList.add(shape);
+        shapeList.add(shape);
         if (isAddToActionHistory()) {
             undoRedoManager.addToHistory(ShapeActions.addShapeAction(shape), false);
         }
@@ -96,10 +89,35 @@ public class NotePage {
 
     public void addShapeList(final List<Shape> shapes) {
         for(Shape shape : shapes) {
-            updateShape(shape);
-            newAddedShapeList.add(shape);
+            addShape(shape);
         }
-        shapeList.addAll(shapes);
+    }
+
+    public boolean canRedo() {
+        return undoRedoManager.canRedo();
+    }
+
+    public void redo() {
+        final UndoRedoManager.Action action = undoRedoManager.redo();
+        if (action == null) {
+            return;
+        }
+    }
+
+    public boolean canUndo() {
+        return undoRedoManager.canUndo();
+    }
+
+    public void undo() {
+        final UndoRedoManager.Action<Shape> action = undoRedoManager.undo();
+        if (action == null) {
+            return;
+        }
+        if (ShapeActions.ACTION_ADD_SHAPE.equals(action)) {
+            removeShape(action.object);
+        } else if (ShapeActions.ACTION_REMOVE_SHAPE.equals(action)) {
+            addShape(action.object);
+        }
     }
 
     private void updateShape(final Shape shape) {
@@ -172,8 +190,8 @@ public class NotePage {
     // create a new shape if not exist and make it as current shape.
     public final Shape getShapeFromPool() {
         switch (currentShapeType) {
-            case ShapeFactory.SHAPE_NORMAL_SCRIBBLE:
-                currentShape = new NormalScribbleShape();
+            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
+                currentShape = new NormalPencilShape();
                 break;
             case ShapeFactory.SHAPE_CIRCLE:
                 currentShape = new CircleShape();
@@ -184,7 +202,7 @@ public class NotePage {
             case ShapeFactory.SHAPE_TEXT:
                 currentShape = new TexShape();
                 break;
-            case ShapeFactory.SHAPE_VARY_SCRIBBLE:
+            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
                 currentShape = new BrushScribbleShape();
                 break;
         }

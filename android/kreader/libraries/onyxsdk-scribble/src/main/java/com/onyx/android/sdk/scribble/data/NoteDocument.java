@@ -5,6 +5,7 @@ import android.content.Context;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -54,6 +55,7 @@ public class NoteDocument {
         documentUniqueId = null;
         parentUniqueId = null;
         currentPageIndex = 0;
+        resetNoteDrawingArgs();
         markDocumentOpen(false);
     }
 
@@ -169,14 +171,21 @@ public class NoteDocument {
         }
     }
 
-    private void setupDrawingArgs(final NoteModel noteModel) {
+    private void resetNoteDrawingArgs() {
+        noteDrawingArgs.currentShapeType = NoteModel.getDefaultShapeType();
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
         noteDrawingArgs.background = NoteModel.getDefaultBackground();
+        noteDrawingArgs.strokeColor = NoteModel.getDefaultStrokeColor();
+    }
+
+    // load args from model.
+    private void setupDrawingArgs(final NoteModel noteModel) {
+        resetNoteDrawingArgs();
         if (noteModel != null) {
-            noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
             noteDrawingArgs.background = noteModel.getBackground();
             noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
             noteDrawingArgs.currentShapeType = noteModel.getCurrentShapeType();
+            noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
         }
     }
 
@@ -225,15 +234,6 @@ public class NoteDocument {
             return pageDataMap.getValue(index);
         }
         return null;
-    }
-
-    public void addShapeToPage(final int index, final String pageUniqueId, final Shape shape) {
-        final NotePage notePage = getPage(index, pageUniqueId);
-        if (notePage != null && shape != null) {
-            notePage.addShape(shape);
-            shape.setDocumentUniqueId(getDocumentUniqueId());
-            shape.setPageUniqueId(pageUniqueId);
-        }
     }
 
     public boolean createBlankPage(final Context context, final int index) {
