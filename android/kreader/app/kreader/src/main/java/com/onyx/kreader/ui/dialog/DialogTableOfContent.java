@@ -59,6 +59,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     private RadioButton btnAnt;
     private ViewPager viewPager;
 
+    private ReaderDocumentTableOfContent toc;
     private DirectoryTab currentTab;
     private List<PageRecyclerView> viewList = new ArrayList<>();
     private Map<DirectoryTab,Integer> recordPosition = new Hashtable<>();
@@ -211,6 +212,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         super(activity);
         readerActivity = activity;
         currentTab = tab;
+        this.toc = toc;
 
         setContentView(R.layout.dialog_table_of_content);
         fitDialogToWindow();
@@ -365,7 +367,12 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 Bookmark bookmark = bookmarks.get(position);
-                ((SimpleListViewItemViewHolder)holder).bindView("",
+                String title = "";
+                if (toc != null && hasChildren(toc.getRootEntry())) {
+                    ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), PagePositionUtils.getPosition(bookmark.getPosition()));
+                    title = entry.getTitle();
+                }
+                ((SimpleListViewItemViewHolder)holder).bindView(title,
                         bookmark.getQuote(),
                         bookmark.getPosition(),
                         bookmark.getCreatedAt().getTime(),
@@ -530,6 +537,9 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
         if (pageAdapter != null){
             updatePageIndicator(recordPosition.get(tab),row,pageAdapter.getItemCount());
+            if (tab != DirectoryTab.TOC){
+                pageAdapter.notifyDataSetChanged();
+            }
         }
     }
 

@@ -192,10 +192,16 @@ public class TreeRecyclerView extends PageRecyclerView {
 
         public void bindView(final FlattenTreeNodeDataList list, final int position,int rowCount,ViewGroup parent) {
             final TreeNode node = list.get(position);
-            final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)imageViewIndicator.getLayoutParams();
-            int paddingLeftPx = DimenUtils.dip2px(parent.getContext(),20);
-            params.leftMargin = paddingLeftPx * node.treeDepth;
-            imageViewIndicator.setLayoutParams(params);
+            final RelativeLayout.LayoutParams imageParams = (RelativeLayout.LayoutParams)imageViewIndicator.getLayoutParams();
+            final RelativeLayout.LayoutParams lineParams= (RelativeLayout.LayoutParams)splitLine.getLayoutParams();
+            float imageSize = parent.getContext().getResources().getDimension(R.dimen.image_view_indicator_size);
+            float marginRight = parent.getContext().getResources().getDimension(R.dimen.image_view_indicator_margin_right);
+            int paddingLeftPx = DimenUtils.dip2px(parent.getContext(),imageSize + marginRight);
+            imageParams.leftMargin = paddingLeftPx * node.treeDepth;
+            imageViewIndicator.setLayoutParams(imageParams);
+            lineParams.leftMargin = paddingLeftPx;
+            splitLine.setLayoutParams(lineParams);
+
             textViewTitle.setText(node.title);
             textViewDescription.setText(node.description);
             splitLine.setVisibility(VISIBLE);

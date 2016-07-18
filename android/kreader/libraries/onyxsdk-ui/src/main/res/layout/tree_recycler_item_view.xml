@@ -6,11 +6,11 @@
                 android:paddingLeft="20dp">
 
     <ImageView
-            android:layout_marginRight="4dp"
+            android:layout_marginRight="@dimen/image_view_indicator_margin_right"
             android:layout_centerVertical="true"
             android:id="@+id/image_view_indicator"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="@dimen/image_view_indicator_size"
+            android:layout_height="@dimen/image_view_indicator_size"
             android:src="@drawable/ic_tree_recycler_item_view_indicator"/>
 
     <TextView
@@ -30,7 +30,6 @@
             android:layout_toRightOf="@id/image_view_indicator"/>
 
     <View
-        android:layout_marginLeft="24dp"
         android:layout_alignParentBottom="true"
         android:id="@+id/split_line"
         android:layerType="software"
