@@ -53,7 +53,7 @@ public class ReaderLayerMenu extends ReaderMenu {
     public void show(ReaderMenuState state) {
         this.state = (ReaderLayerMenuState)state;
         updateMenuContent();
-        getDialog().show();
+        getDialog().show(this.state);
     }
 
     @Override

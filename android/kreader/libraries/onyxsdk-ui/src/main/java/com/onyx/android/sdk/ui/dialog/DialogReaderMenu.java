@@ -7,14 +7,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.view.*;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
+import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
+import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.net.URI;
 
@@ -114,6 +118,13 @@ public class DialogReaderMenu extends Dialog {
             }
         });
 
+        findViewById(R.id.text_view_progress).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/GotoPage"));
+            }
+        });
+
     }
 
     public boolean startDictionaryApp() {
@@ -135,5 +146,19 @@ public class DialogReaderMenu extends Dialog {
 
     private ReaderMenuItem createVirtualMenuItem(String uri) {
         return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, URI.create(uri), null, null, -1);
+    }
+
+    public void show(ReaderLayerMenuState state) {
+        updateReaderState(state);
+        show();
+    }
+
+    private void updateReaderState(ReaderLayerMenuState state) {
+        ((TextView)findViewById(R.id.text_view_title)).setText(state.getTitle());
+        ((TextView)findViewById(R.id.text_view_progress)).setText(formatPageProgress(state));
+    }
+
+    private String formatPageProgress(ReaderMenuState state) {
+        return String.valueOf(state.getPageIndex() + 1) + "/" + String.valueOf(state.getPageCount());
     }
 }

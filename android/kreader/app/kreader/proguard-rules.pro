@@ -18,6 +18,8 @@
 
 -dontshrink
 
+-dontwarn com.onyx.android.sdk.ui.dialog.DialogReaderMenu
+
 -keepnames class * {
     native <methods>;
 }

@@ -52,6 +52,15 @@ public class GPaginator {
         return itemsPerPage;
     }
 
+    public int itemsInCurrentPage() {
+        int items = itemsPerPage();
+        if (currentPage < lastPage()) {
+            return items;
+        }
+        int n = size % items;
+        return n != 0 ? n : items;
+    }
+
     public int pages() {
         int itemsPerPage = itemsPerPage();
         int pages = size / itemsPerPage;
@@ -59,6 +68,10 @@ public class GPaginator {
             return pages + 1;
         }
         return pages;
+    }
+
+    public int lastPage() {
+        return pages() - 1;
     }
 
     public boolean gotoPageByIndex(int index) {
@@ -118,6 +131,14 @@ public class GPaginator {
         }
         currentPage = newPage;
         return true;
+    }
+
+    public int indexByPageOffset(int offset) {
+        return getCurrentPageBegin() + offset;
+    }
+
+    public boolean isItemInCurrentPage(int index) {
+        return getCurrentPageBegin() <= index && index < (getCurrentPageBegin() + itemsInCurrentPage());
     }
 
     public int getCurrentPageBegin() {
