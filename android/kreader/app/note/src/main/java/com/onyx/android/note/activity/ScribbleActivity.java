@@ -641,6 +641,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         int pageCount = shapeDataInfo.getPageCount();
         pageIndicator.setText(currentPageIndex + File.separator + pageCount);
         updatePenIndicator(shapeDataInfo);
+        updateColorIndicator();
     }
 
     private int indexOf(int shapeType) {
