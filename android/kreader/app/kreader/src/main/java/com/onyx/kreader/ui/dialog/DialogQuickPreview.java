@@ -9,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.*;
 import android.widget.ImageView;
+import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
@@ -47,94 +48,6 @@ public class DialogQuickPreview extends Dialog {
         }
     }
 
-    private static class Paginator {
-        private final int itemCount;
-        private int pageSize;
-        private int lastPageIndex;
-        private int currentPage;
-        private int currentItemIndex;
-
-        public Paginator(int itemCount, int pageSize) {
-            this.itemCount = itemCount;
-            this.pageSize = pageSize;
-            this.lastPageIndex = getLastPageIndex(itemCount, pageSize);
-        }
-
-        public int getCurrentPage() {
-            return currentPage;
-        }
-
-        public void setCurrentPage(int currentPage) {
-            this.currentPage = currentPage;
-        }
-
-        public void gotoPageOfItem(int itemIndex) {
-            setCurrentPage(itemIndex / pageSize);
-            currentItemIndex = itemIndex;
-        }
-
-        public boolean previousPage() {
-            if (currentPage > 0) {
-                currentPage--;
-                updateCurrentItemIndexAfterPageChanged();
-                return true;
-            }
-            return false;
-        }
-
-        public boolean nextPage() {
-            if (currentPage < lastPageIndex - 1) {
-                currentPage++;
-                updateCurrentItemIndexAfterPageChanged();
-                return true;
-            }
-            return false;
-        }
-
-        public void setPageSize(int pageSize) {
-            this.pageSize = pageSize;
-            lastPageIndex = getLastPageIndex(itemCount, pageSize);
-            gotoPageOfItem(currentItemIndex);
-        }
-
-        public boolean isItemInCurrentPage(int itemIndex) {
-            int idx = getIndexInCurrentPage(itemIndex);
-            return idx >= 0 && idx < getItemCountInCurrentPage();
-        }
-
-        public int getIndexInCurrentPage(int itemIndex) {
-            return itemIndex - getPageStartItemIndex();
-        }
-
-        public int getItemIndexFromCurrentPage(int indexInPage) {
-            return indexInPage + getPageStartItemIndex();
-        }
-
-        public int getPageStartItemIndex() {
-            return currentPage * pageSize;
-        }
-
-        public int getPageLastItemIndex() {
-            return getPageStartItemIndex() + getItemCountInCurrentPage() - 1;
-        }
-
-        public int getItemCountInCurrentPage() {
-            if (currentPage < lastPageIndex) {
-                return pageSize;
-            }
-            int n = itemCount % pageSize;
-            return n != 0 ? n : pageSize;
-        }
-
-        private int getLastPageIndex(int itemCount, int pageSize) {
-            return itemCount / pageSize;
-        }
-
-        private void updateCurrentItemIndexAfterPageChanged() {
-            currentItemIndex = currentPage * pageSize;
-        }
-    }
-
     private static class PreviewViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
 
@@ -167,7 +80,7 @@ public class DialogQuickPreview extends Dialog {
         public void requestMissingBitmaps() {
             HashMap<Integer, Bitmap> cache = new HashMap<>();
             for (int i = 0; i < bitmapList.size(); i++) {
-                int page = paginator.getItemIndexFromCurrentPage(i);
+                int page = paginator.indexByPageOffset(i);
                 if (bitmapCache.containsKey(page)) {
                     cache.put(page, bitmapCache.get(page));
                     setBitmap(i, cache.get(page));
@@ -198,7 +111,7 @@ public class DialogQuickPreview extends Dialog {
         public void setBitmap(int index, Bitmap bitmap) {
             Debug.d("setBitmap: " + bitmap);
             bitmapList.set(index, bitmap);
-            bitmapCache.put(paginator.getItemIndexFromCurrentPage(index), bitmap);
+            bitmapCache.put(paginator.indexByPageOffset(index), bitmap);
             notifyItemChanged(index);
         }
 
@@ -236,10 +149,13 @@ public class DialogQuickPreview extends Dialog {
         }
     }
 
-    RecyclerView gridRecyclerView;
+    private RecyclerView gridRecyclerView;
     private Grid grid = new Grid();
-    private Paginator paginator;
+    private GPaginator paginator;
     private PreviewAdapter adapter = new PreviewAdapter();
+
+    private int pageCount;
+    private int currentPage;
     private Callback callback;
 
     public DialogQuickPreview(@NonNull Context context, final int pageCount, final int currentPage,
@@ -247,6 +163,8 @@ public class DialogQuickPreview extends Dialog {
         super(context, R.style.dialog_no_title);
         setContentView(R.layout.dialog_quick_preview);
 
+        this.pageCount = pageCount;
+        this.currentPage = currentPage;
         this.callback = callback;
 
         fitDialogToWindow();
@@ -272,7 +190,8 @@ public class DialogQuickPreview extends Dialog {
         findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (paginator.previousPage()) {
+                if (paginator.prevPage()) {
+                    currentPage = paginator.getCurrentPageBegin();
                     onPageDataChanged();
                 }
             }
@@ -282,6 +201,7 @@ public class DialogQuickPreview extends Dialog {
             @Override
             public void onClick(View v) {
                 if (paginator.nextPage()) {
+                    currentPage = paginator.getCurrentPageBegin();
                     onPageDataChanged();
                 }
             }
@@ -298,7 +218,8 @@ public class DialogQuickPreview extends Dialog {
             @Override
             public void onClick(View v) {
                 grid.setGridType(GridType.Four);
-                paginator.setPageSize(4);
+                paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
+                paginator.gotoPageByIndex(currentPage);
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
                 onPageDataChanged();
             }
@@ -308,7 +229,8 @@ public class DialogQuickPreview extends Dialog {
             @Override
             public void onClick(View v) {
                 grid.setGridType(GridType.Nine);
-                paginator.setPageSize(9);
+                paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
+                paginator.gotoPageByIndex(currentPage);
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
                 onPageDataChanged();
             }
@@ -316,19 +238,23 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void setupContent(int pageCount, int currentPage, Bitmap currentPageBitmap) {
-        final int pageSize = grid.getGridSize();
-        paginator = new Paginator(pageCount, pageSize);
-        paginator.gotoPageOfItem(currentPage);
-        adapter.resetListSize(paginator.getItemCountInCurrentPage());
+        paginator = new GPaginator(grid.getRows(), grid.getColumns(), pageCount);
+        paginator.gotoPageByIndex(currentPage);
+        adapter.resetListSize(paginator.itemsInCurrentPage());
         updatePreview(currentPage, currentPageBitmap);
         if (callback != null) {
             adapter.requestMissingBitmaps();
         }
     }
 
-    public void updatePreview(int page, Bitmap preview) {
+    /**
+     * will clone a copy of passed in bitmap
+     * @param page
+     * @param bitmap
+     */
+    public void updatePreview(int page, Bitmap bitmap) {
         if (paginator.isItemInCurrentPage(page)) {
-            adapter.setBitmap(paginator.getIndexInCurrentPage(page), getScaledPreview(preview));
+            adapter.setBitmap(paginator.offsetInCurrentPage(page), getScaledPreview(bitmap));
         }
     }
 
@@ -337,7 +263,7 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void onPageDataChanged() {
-        adapter.resetListSize(paginator.getItemCountInCurrentPage());
+        adapter.resetListSize(paginator.itemsInCurrentPage());
         adapter.requestMissingBitmaps();
     }
 
