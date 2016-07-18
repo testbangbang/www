@@ -5,8 +5,12 @@ import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 
@@ -18,6 +22,8 @@ import java.util.List;
  */
 public class PageRecyclerView extends RecyclerView {
 
+    private static final String TAG = PageRecyclerView.class.getSimpleName();
+    private boolean hasAdjust = false;
     public enum TouchDirection {Horizontal, Vertical}
 
     private static class DisableScrollLinearManager extends LinearLayoutManager {
@@ -48,7 +54,6 @@ public class PageRecyclerView extends RecyclerView {
         public boolean canScrollHorizontally() {
             return canScroll;
         }
-
     }
 
     public PageRecyclerView(Context context) {
@@ -66,11 +71,21 @@ public class PageRecyclerView extends RecyclerView {
         init();
     }
 
+    @Override
+    public void setAdapter(Adapter adapter) {
+        super.setAdapter(adapter);
+        if (!(adapter instanceof PageAdapter)){
+            throw new IllegalArgumentException("Use PageAdapter");
+        }
+        mRow = ((PageAdapter) adapter).getRowCount();
+        mColumn = ((PageAdapter) adapter).getColumnCount();
+    }
+
     private void init() {
-        getItemAnimator().setAddDuration(0);
-        getItemAnimator().setRemoveDuration(0);
-        getItemAnimator().setChangeDuration(0);
-        getItemAnimator().setMoveDuration(0);
+        setItemAnimator(null);
+        setClipToPadding(true);
+        setClipChildren(true);
+        invalidateItemDecorations();
         setLayoutManager(new DisableScrollLinearManager(getContext(), LinearLayoutManager.VERTICAL, false));
     }
 
@@ -127,6 +142,30 @@ public class PageRecyclerView extends RecyclerView {
         return super.onTouchEvent(ev);
     }
 
+    @Override
+    protected void onMeasure(int widthSpec, int heightSpec) {
+        super.onMeasure(widthSpec, heightSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        int firstVisiblePosition = getFirstVisiblePosition();
+        int lastVisiblePosition = getLastVisiblePosition();
+        int index = lastVisiblePosition - firstVisiblePosition;
+        if (getChildCount() > index){
+            int top = getChildAt(lastVisiblePosition - firstVisiblePosition).getTop();
+            int bottom = getChildAt(lastVisiblePosition - firstVisiblePosition).getBottom();
+            int height = getMeasuredHeight();
+            if (bottom > height && top < height && getChildCount() > 0 && !hasAdjust){
+                Log.d(TAG, "top: "+top +" bottom:"+bottom + " height:" + height);
+                setPadding(getPaddingLeft(),getPaddingTop(),getPaddingRight(),getPaddingBottom() + height - top);
+                hasAdjust = true;
+                getAdapter().notifyDataSetChanged();
+            }
+        }
+    }
+
     private OnPagingListener onPagingListener;
 
     public void setOnPagingListener(OnPagingListener listener) {
@@ -134,36 +173,27 @@ public class PageRecyclerView extends RecyclerView {
     }
 
     public interface OnPagingListener {
-        void onPrevPage(int prevPosition);
+        void onPrevPage(int prevPosition,int itemCount,int pageSize);
 
-        void onNextPage(int nextPosition);
+        void onNextPage(int nextPosition,int itemCount,int pageSize);
     }
 
     private List<Integer> positionCount = new ArrayList<>();
     private int currentPosition = 0;
+    private int mRow = 0;
+    private int mColumn = 1;
 
-    private void prevPage() {
-        if (currentPosition > 0) {
-            managerScrollToPosition(positionCount.get(--currentPosition));
+    public void prevPage() {
+        int finalPosition = getFirstCompletelyVisibleItemPosition() - mRow;
+        finalPosition = finalPosition > 0 ? finalPosition : 0;
+        managerScrollToPosition(finalPosition);
+        scrollBy(0,-getMeasuredHeight());
+        if (onPagingListener != null){
+            onPagingListener.onPrevPage(finalPosition,getAdapter().getItemCount(),mRow * mColumn);
         }
     }
 
-    public int getFirstVisiblePosition() {
-        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
-        return linearManager.findFirstVisibleItemPosition();
-    }
-
-    public int getLastVisiblePosition() {
-        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
-        return linearManager.findLastVisibleItemPosition();
-    }
-
-    private void managerScrollToPosition(int position) {
-        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
-        linearManager.scrollToPositionWithOffset(position, 0);
-    }
-
-    private void nextPage() {
+    public void nextPage() {
         LayoutManager layoutManager = getLayoutManager();
         if (!(layoutManager instanceof DisableScrollLinearManager)) {
             return;
@@ -182,9 +212,33 @@ public class PageRecyclerView extends RecyclerView {
             if (finalPosition < getAdapter().getItemCount()) {
                 positionCount.add(getFirstVisiblePosition());
                 currentPosition++;
+                managerScrollToPosition(finalPosition);
+                if (onPagingListener != null){
+                    onPagingListener.onNextPage(finalPosition,getAdapter().getItemCount(),mRow * mColumn);
+                }
             }
-            managerScrollToPosition(finalPosition);
+
         }
+    }
+
+    public int getFirstCompletelyVisibleItemPosition() {
+        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
+        return linearManager.findFirstCompletelyVisibleItemPosition();
+    }
+
+    public int getFirstVisiblePosition() {
+        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
+        return linearManager.findFirstVisibleItemPosition();
+    }
+
+    public int getLastVisiblePosition() {
+        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
+        return linearManager.findLastVisibleItemPosition();
+    }
+
+    private void managerScrollToPosition(int position) {
+        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
+        linearManager.scrollToPositionWithOffset(position, 0);
     }
 
     private boolean isClipView(Rect rect, View view) {
@@ -195,5 +249,56 @@ public class PageRecyclerView extends RecyclerView {
                 return (rect.bottom - rect.top) < view.getHeight();
         }
         return false;
+    }
+
+    public static abstract class PageAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>{
+
+        protected ViewGroup mParent;
+
+        public abstract int getRowCount();
+        public abstract int getColumnCount();
+        public abstract int getDataCount();
+        public abstract VH onPageCreateViewHolder(ViewGroup parent, int viewType);
+        public abstract void onPageBindViewHolder(VH holder, int position);
+
+        @Override
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            mParent = parent;
+            return onPageCreateViewHolder(parent,viewType);
+        }
+
+        @Override
+        public void onBindViewHolder(VH holder, int position) {
+            final View view = holder.itemView;
+            if (view != null){
+                if (position < getDataCount()){
+                    view.setVisibility(VISIBLE);
+                    onPageBindViewHolder(holder,position);
+                }else {
+                    view.setVisibility(INVISIBLE);
+                }
+
+                int paddingBottom = mParent.getPaddingBottom();
+                int paddingTop = mParent.getPaddingTop();
+                int itemHeight = (mParent.getMeasuredHeight() - paddingBottom - paddingTop) / getRowCount();
+                view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,itemHeight));
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            int itemCountOfPage = getRowCount() * getColumnCount();
+            int size = getDataCount();
+            if (size != 0){
+                int remainder = size % itemCountOfPage;
+                if (remainder > 0){
+                    int blankCount =  itemCountOfPage - remainder;
+                    return size + blankCount;
+                }else {
+                    return size;
+                }
+            }
+            return size;
+        }
     }
 }

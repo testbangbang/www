@@ -18,5 +18,5 @@
     <dimen name="popup_selection_menu_button_text_size">22sp</dimen>
     <dimen name="dialog_navigation_settings_mode_icon_contentView_height">150dp</dimen>
     <dimen name="dialog_navigation_settings_navigation_subscreen_content_view_height">200dp</dimen>
-    <dimen name="toc_tree_padding_top">10dp</dimen>
+    <dimen name="toc_tree_padding_top">15dp</dimen>
 </resources>

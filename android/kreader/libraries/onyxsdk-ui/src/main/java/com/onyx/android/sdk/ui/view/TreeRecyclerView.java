@@ -2,7 +2,6 @@ package com.onyx.android.sdk.ui.view;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.utils.DimenUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,7 @@ public class TreeRecyclerView extends PageRecyclerView {
 
     public static abstract class Callback {
         public abstract void onTreeNodeClicked(TreeNode node);
+        public abstract void onItemCountChanged(int position,int itemCount);
     }
 
     public static class TreeNode {
@@ -169,32 +171,34 @@ public class TreeRecyclerView extends PageRecyclerView {
         }
     }
 
-    private static class TreeNodeViewHolder extends ViewHolder {
-        private View itemView;
+    private static class TreeNodeViewHolder extends PageRecyclerView.ViewHolder {
         private Callback callback;
 
         private ImageView imageViewIndicator;
         private TextView textViewTitle;
         private TextView textViewDescription;
+        private View splitLine;
 
         public TreeNodeViewHolder(View itemView, Callback callback) {
             super(itemView);
 
-            this.itemView = itemView;
             this.callback = callback;
 
             imageViewIndicator = (ImageView)itemView.findViewById(R.id.image_view_indicator);
             textViewTitle = (TextView)itemView.findViewById(R.id.text_view_title);
             textViewDescription = (TextView)itemView.findViewById(R.id.text_view_description);
+            splitLine = itemView.findViewById(R.id.split_line);
         }
 
-        public void bindView(final FlattenTreeNodeDataList list, final int position) {
+        public void bindView(final FlattenTreeNodeDataList list, final int position,int rowCount,ViewGroup parent) {
             final TreeNode node = list.get(position);
             final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)imageViewIndicator.getLayoutParams();
-            params.leftMargin = 20 * node.treeDepth;
+            int paddingLeftPx = DimenUtils.dip2px(parent.getContext(),34);
+            params.leftMargin = paddingLeftPx * node.treeDepth;
             imageViewIndicator.setLayoutParams(params);
             textViewTitle.setText(node.title);
             textViewDescription.setText(node.description);
+            splitLine.setVisibility(VISIBLE);
 
             if (!node.hasChildren()) {
                 imageViewIndicator.setVisibility(INVISIBLE);
@@ -202,18 +206,18 @@ public class TreeRecyclerView extends PageRecyclerView {
                 imageViewIndicator.setVisibility(VISIBLE);
             }
             if (list.isNodeExpanded(node)) {
-                imageViewIndicator.setRotation(90);
+                imageViewIndicator.setImageResource(R.drawable.ic_tree_recycler_item_view_indicator_expand);
             } else {
-                imageViewIndicator.setRotation(0);
+                imageViewIndicator.setImageResource(R.drawable.ic_tree_recycler_item_view_indicator);
             }
             imageViewIndicator.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (list.isNodeExpanded(node)) {
-                        imageViewIndicator.setRotation(0);
+                        imageViewIndicator.setImageResource(R.drawable.ic_tree_recycler_item_view_indicator);
                         list.collapse(node);
                     } else {
-                        imageViewIndicator.setRotation(90);
+                        imageViewIndicator.setImageResource(R.drawable.ic_tree_recycler_item_view_indicator_expand);
                         list.expand(node);
                     }
                 }
@@ -227,47 +231,70 @@ public class TreeRecyclerView extends PageRecyclerView {
                     }
                 }
             });
+
+            if ((position + 1) % rowCount == 0){
+                splitLine.setVisibility(GONE);
+            }
         }
 
     }
 
-    private static class TreeAdapter extends RecyclerView.Adapter<ViewHolder> {
+    private static class TreeAdapter extends PageRecyclerView.PageAdapter<TreeNodeViewHolder> {
 
         private FlattenTreeNodeDataList list;
         private Callback callback;
+        private int mRowCount;
 
-        public TreeAdapter(FlattenTreeNodeDataList list, Callback callback) {
+        public TreeAdapter(FlattenTreeNodeDataList list, final Callback callback, int rowCount) {
             this.list = list;
             this.callback = callback;
+            this.mRowCount = rowCount;
 
             this.list.registerCallback(new FlattenTreeNodeDataList.Callback() {
                 @Override
                 public void notifyItemRangeInserted(int position, int size) {
                     TreeAdapter.this.notifyItemRangeInserted(position, size);
+                    if (callback != null){
+                        callback.onItemCountChanged(position - 1,getItemCount());
+                    }
                 }
 
                 @Override
                 public void notifyItemRangeRemoved(int position, int size) {
                     TreeAdapter.this.notifyItemRangeRemoved(position, size);
+                    if (callback != null){
+                        callback.onItemCountChanged(position - 1,getItemCount());
+                    }
                 }
             });
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public int getRowCount() {
+            return mRowCount;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 1;
+        }
+
+        @Override
+        public int getDataCount() {
+            return list.size();
+        }
+
+        @Override
+        public TreeNodeViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tree_recycler_item_view, parent, false);
             return new TreeNodeViewHolder(view, callback);
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            ((TreeNodeViewHolder)holder).bindView(list, position);
+        public void onPageBindViewHolder(TreeNodeViewHolder holder, int position) {
+            holder.bindView(list, position,mRowCount,mParent);
         }
 
-        @Override
-        public int getItemCount() {
-            return list.size();
-        }
     }
 
     FlattenTreeNodeDataList list = new FlattenTreeNodeDataList();
@@ -284,9 +311,9 @@ public class TreeRecyclerView extends PageRecyclerView {
         super(context, attrs, defStyle);
     }
 
-    public void bindTree(Collection<TreeNode> rootNodes, Callback callback) {
+    public void bindTree(Collection<TreeNode> rootNodes, Callback callback,int row) {
         list.init(rootNodes);
-        TreeAdapter adapter = new TreeAdapter(list, callback);
+        TreeAdapter adapter = new TreeAdapter(list, callback,row);
         this.setAdapter(adapter);
     }
 
