@@ -15,6 +15,10 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.host.request.GotoLocationRequest;
+import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.actions.GotoPageAction;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,18 +54,35 @@ public class DialogQuickPreview extends Dialog {
         }
     }
 
-    private static class PreviewViewHolder extends RecyclerView.ViewHolder {
+    private class PreviewViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
+        private int page;
 
         public PreviewViewHolder(ImageView itemView) {
             super(itemView);
 
             imageView = itemView;
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogQuickPreview.this.hide();
+                    new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerActivity);
+                }
+            });
         }
 
         public void bindPreview(Bitmap bitmap) {
             imageView.setImageBitmap(bitmap);
+        }
+
+        public int getPage() {
+            return page;
+        }
+
+        public void setPage(int page) {
+            this.page = page;
         }
     }
 
@@ -143,6 +164,7 @@ public class DialogQuickPreview extends Dialog {
                 bmp = BlankBitmap;
             }
             holder.bindPreview(bmp);
+            holder.setPage(paginator.indexByPageOffset(position));
         }
 
         @Override
@@ -159,15 +181,17 @@ public class DialogQuickPreview extends Dialog {
     private GPaginator paginator;
     private PreviewAdapter adapter = new PreviewAdapter();
 
+    private ReaderActivity readerActivity;
     private int pageCount;
     private int currentPage;
     private Callback callback;
 
-    public DialogQuickPreview(@NonNull Context context, final int pageCount, final int currentPage,
+    public DialogQuickPreview(@NonNull final ReaderActivity readerActivity, final int pageCount, final int currentPage,
                               final Bitmap currentPageBitmap, Callback callback) {
-        super(context, R.style.dialog_no_title);
+        super(readerActivity, R.style.dialog_no_title);
         setContentView(R.layout.dialog_quick_preview);
 
+        this.readerActivity = readerActivity;
         this.pageCount = pageCount;
         this.currentPage = currentPage;
         this.callback = callback;
