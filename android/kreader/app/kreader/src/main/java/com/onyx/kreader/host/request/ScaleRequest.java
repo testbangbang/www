@@ -1,6 +1,9 @@
 package com.onyx.kreader.host.request;
 
+import android.graphics.RectF;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -20,6 +23,10 @@ public class ScaleRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        final RectF page = reader.getDocument().getPageOriginSize(pageName);
+        final float toPageScale = PageUtils.scaleToPage(page.width(), page.height(), reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight());
+        scale = Math.max(scale, toPageScale);
+
         setSaveOptions(true);
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().setSavePosition(true);

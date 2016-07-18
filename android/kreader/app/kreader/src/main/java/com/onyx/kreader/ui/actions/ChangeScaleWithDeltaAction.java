@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.graphics.RectF;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 
@@ -16,6 +17,10 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
     }
 
     public void execute(final ReaderActivity readerActivity) {
+        if (scaleDelta < 0 && !canScaleDown(readerActivity)) {
+            return;
+        }
+
         final RectF viewport = readerActivity.getReaderViewInfo().viewportInDoc;
         final RectF pos = new RectF();
         float offset = viewport.width() * scaleDelta;
@@ -24,6 +29,12 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
                 viewport.right - offset,
                 viewport.bottom - offset);
         scaleByRect(readerActivity, pos);
+    }
+
+    private boolean canScaleDown(final ReaderActivity readerActivity) {
+        final RectF page = readerActivity.getReader().getDocument().getPageOriginSize(readerActivity.getCurrentPageName());
+        final float toPageScale = PageUtils.scaleToPage(page.width(), page.height(), readerActivity.getReader().getViewOptions().getViewWidth(), readerActivity.getReader().getViewOptions().getViewHeight());
+        return readerActivity.getReaderViewInfo().getFirstVisiblePage().getActualScale() > toPageScale;
     }
 
     private void scaleByRect(final ReaderActivity readerActivity, final RectF rect) {
