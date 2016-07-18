@@ -37,6 +37,8 @@
 
 -keepnames class com.onyx.kreader.api.ReaderTextSplitter { *; }
 -keepnames class * implements com.onyx.kreader.api.ReaderTextSplitter { *; }
+-keepnames class com.onyx.kreader.api.ReaderDocumentTableOfContent { *; }
+-keepnames class com.onyx.kreader.api.ReaderDocumentTableOfContentEntry { *; }
 
 -keepnames class com.onyx.kreader.host.navigation.NavigationArgs { *; }
 -keepnames class com.onyx.kreader.host.navigation.NavigationList { *; }
