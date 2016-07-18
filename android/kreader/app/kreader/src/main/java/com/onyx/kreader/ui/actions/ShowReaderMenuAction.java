@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
@@ -61,7 +62,11 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void showReaderMenu(final ReaderActivity readerActivity) {
 //        readerActivity.showToolbar();
-        getReaderMenu(readerActivity).show(new ReaderLayerMenuState());
+        ReaderLayerMenuState state = new ReaderLayerMenuState();
+        state.setTitle(FileUtils.getFileName(readerActivity.getReader().getDocumentPath()));
+        state.setPageCount(readerActivity.getPageCount());
+        state.setPageIndex(readerActivity.getCurrentPage());
+        getReaderMenu(readerActivity).show(state);
     }
 
     private ReaderMenu getReaderMenu(final ReaderActivity readerActivity) {
@@ -177,6 +182,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/More/shape":
                         startShapeDrawing(readerActivity);
                         break;
+                    case "/GotoPage":
+                        gotoPage(readerActivity);
+                        break;
                     case "/Exit":
                         readerActivity.onBackPressed();
                         break;
@@ -291,5 +299,10 @@ public class ShowReaderMenuAction extends BaseAction {
         // get current page and start rendering.
         readerActivity.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         ReaderDeviceManager.startScreenHandWriting(readerActivity.getSurfaceView());
+    }
+
+    private void gotoPage(final ReaderActivity readerActivity) {
+        hideReaderMenu(readerActivity);
+        new ShowQuickPreviewAction().execute(readerActivity);
     }
 }
