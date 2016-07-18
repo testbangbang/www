@@ -15,13 +15,11 @@
         android:layout_above="@+id/layout_turn"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/directory_tab_height">
 
         <RadioButton
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
             android:gravity="center"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:id="@+id/btn_directory"
             android:background="@drawable/radio_button_bg"
             android:button="@null"
@@ -32,7 +30,7 @@
 
         <RadioButton
             android:gravity="center"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:id="@+id/btn_bookmark"
             android:background="@drawable/radio_button_bg"
             android:button="@null"
@@ -43,7 +41,7 @@
 
         <RadioButton
             android:gravity="center"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:id="@+id/btn_annotation"
             android:background="@drawable/radio_button_bg"
             android:button="@null"
@@ -57,7 +55,7 @@
         android:id="@+id/layout_turn"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/directory_page_indicator_height">
 
         <ImageView
             android:id="@+id/pre_icon"
@@ -73,7 +71,7 @@
             android:id="@+id/page_size_indicator"
             android:layout_centerInParent="true"
             android:text="1/7"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -88,8 +86,6 @@
             android:layout_height="wrap_content"/>
 
         <ImageView
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp"
             android:id="@+id/back_icon"
             android:scaleType="fitXY"
             android:layout_centerVertical="true"
@@ -106,7 +102,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:text="@string/action_return"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

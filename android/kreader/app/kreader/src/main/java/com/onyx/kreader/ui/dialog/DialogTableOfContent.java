@@ -47,23 +47,23 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private static final String TAG = DialogTableOfContent.class.getSimpleName();
 
-    private ReaderActivity mActivity;
+    private ReaderActivity readerActivity;
 
-    private ImageView mPreIcon;
-    private ImageView mNextIcon;
-    private ImageView mBackIcon;
-    private TextView mPageIndicator;
-    private TextView mBackText;
-    private RadioButton mBtnToc;
-    private RadioButton mBtnBookmark;
-    private RadioButton mBtnAnt;
-    private ViewPager mViewPager;
+    private ImageView preIcon;
+    private ImageView nextIcon;
+    private ImageView backIcon;
+    private TextView pageIndicator;
+    private TextView backText;
+    private RadioButton btnToc;
+    private RadioButton btnBookmark;
+    private RadioButton btnAnt;
+    private ViewPager viewPager;
 
-    private int mCurrentPosition = 0;
-    private List<PageRecyclerView> mViewList = new ArrayList<>();
-    private Map<Integer,Integer> mRecordPosition = new Hashtable<>();
-    List<Bookmark> mBookmarkList;
-    List<Annotation> mAnnotationList;
+    private DirectoryTab currentTab;
+    private List<PageRecyclerView> viewList = new ArrayList<>();
+    private Map<DirectoryTab,Integer> recordPosition = new Hashtable<>();
+    List<Bookmark> bookmarkList;
+    List<Annotation> annotationList;
 
     public enum DirectoryTab { TOC , Bookmark, Annotation }
 
@@ -116,8 +116,8 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
             boolean showPageLastLine = (position + 1) % getPageSize(tab) != 0;
             this.splitLine.setVisibility(showPageLastLine ? View.VISIBLE :View.INVISIBLE);
-            textViewEdit.setVisibility(mCurrentPosition == getTabIndex(DirectoryTab.Annotation) ? View.VISIBLE : View.GONE);
-            imageViewEdit.setVisibility(mCurrentPosition == getTabIndex(DirectoryTab.Annotation) ? View.VISIBLE : View.GONE);
+            textViewEdit.setVisibility(currentTab == DirectoryTab.Annotation ? View.VISIBLE : View.GONE);
+            imageViewEdit.setVisibility(currentTab == DirectoryTab.Annotation ? View.VISIBLE : View.GONE);
         }
 
         @Override
@@ -126,7 +126,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
                 DialogTableOfContent.this.hide();
                 new GotoPageAction(page).execute(mActivity);
             }else if (v.equals(textViewDelete) || v.equals(imageViewDelete)){
-                if (mCurrentPosition == getTabIndex(DirectoryTab.Bookmark)){
+                if (currentTab == DirectoryTab.Bookmark){
                     deleteBookmark(mActivity,position);
                 }else {
                     deleteAnnotation(mActivity,position);
@@ -138,44 +138,44 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     }
 
     private void showAnnotationEditDialog(final int position){
-        ShowAnnotationEditDialogAction action = new ShowAnnotationEditDialogAction(mAnnotationList.get(position));
+        ShowAnnotationEditDialogAction action = new ShowAnnotationEditDialogAction(annotationList.get(position));
         action.setOnEditListener(new ShowAnnotationEditDialogAction.OnEditListener() {
             @Override
             public void onUpdateFinished(Annotation annotation) {
-                mAnnotationList.set(position,annotation);
-                mViewList.get(mCurrentPosition).getAdapter().notifyDataSetChanged();
+                annotationList.set(position,annotation);
+                getPageAdapter(currentTab).notifyDataSetChanged();
             }
 
             @Override
             public void onDeleteFinished() {
-                mAnnotationList.remove(position);
-                mViewList.get(mCurrentPosition).getAdapter().notifyDataSetChanged();
-                updatePageIndicator(position,getPageSize(DirectoryTab.Annotation),mViewList.get(mCurrentPosition).getAdapter().getItemCount());
+                annotationList.remove(position);
+                getPageAdapter(currentTab).notifyDataSetChanged();
+                updatePageIndicator(position,getPageSize(DirectoryTab.Annotation),getPageAdapter(currentTab).getItemCount());
             }
         });
-        action.execute(mActivity);
+        action.execute(readerActivity);
     }
 
     private void deleteBookmark(ReaderActivity readerActivity, final int position){
-        final DeleteBookmarkRequest DbRequest = new DeleteBookmarkRequest(mBookmarkList.get(position));
+        final DeleteBookmarkRequest DbRequest = new DeleteBookmarkRequest(bookmarkList.get(position));
         readerActivity.getReader().submitRequest(readerActivity,DbRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                mBookmarkList.remove(position);
-                mViewList.get(mCurrentPosition).getAdapter().notifyDataSetChanged();
-                updatePageIndicator(position,getPageSize(DirectoryTab.Bookmark),mViewList.get(mCurrentPosition).getAdapter().getItemCount());
+                bookmarkList.remove(position);
+                getPageAdapter(currentTab).notifyDataSetChanged();
+                updatePageIndicator(position,getPageSize(DirectoryTab.Bookmark),getPageAdapter(currentTab).getItemCount());
             }
         });
     }
 
     private void deleteAnnotation(ReaderActivity readerActivity, final int position){
-        final DeleteAnnotationRequest DaRequest = new DeleteAnnotationRequest(mAnnotationList.get(position));
+        final DeleteAnnotationRequest DaRequest = new DeleteAnnotationRequest(annotationList.get(position));
         readerActivity.getReader().submitRequest(readerActivity,DaRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                mAnnotationList.remove(position);
-                mViewList.get(mCurrentPosition).getAdapter().notifyDataSetChanged();
-                updatePageIndicator(position,getPageSize(DirectoryTab.Annotation),mViewList.get(mCurrentPosition).getAdapter().getItemCount());
+                annotationList.remove(position);
+                getPageAdapter(currentTab).notifyDataSetChanged();
+                updatePageIndicator(position,getPageSize(DirectoryTab.Annotation),getPageAdapter(currentTab).getItemCount());
             }
         });
     }
@@ -193,14 +193,14 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            PageRecyclerView view = mViewList.get(position);
+            PageRecyclerView view = viewList.get(position);
             container.addView(view);
             return view;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(mViewList.get(position));
+            container.removeView(viewList.get(position));
         }
     }
 
@@ -209,31 +209,32 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
                                 final List<Bookmark> bookmarks,
                                 final List<Annotation> annotations) {
         super(activity);
-        mActivity = activity;
+        readerActivity = activity;
+        currentTab = tab;
 
         setContentView(R.layout.dialog_table_of_content);
         fitDialogToWindow();
-        mPreIcon = (ImageView) findViewById(R.id.pre_icon);
-        mNextIcon = (ImageView) findViewById(R.id.next_icon);
-        mBackIcon = (ImageView) findViewById(R.id.back_icon);
-        mPageIndicator = (TextView) findViewById(R.id.page_size_indicator);
-        mBackText = (TextView) findViewById(R.id.back_text);
-        mBtnToc = (RadioButton) findViewById(R.id.btn_directory);
-        mBtnBookmark = (RadioButton) findViewById(R.id.btn_bookmark);
-        mBtnAnt = (RadioButton) findViewById(R.id.btn_annotation);
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mPreIcon.setOnClickListener(this);
-        mNextIcon.setOnClickListener(this);
-        mBackIcon.setOnClickListener(this);
-        mBackText.setOnClickListener(this);
-        mBtnToc.setOnCheckedChangeListener(this);
-        mBtnBookmark.setOnCheckedChangeListener(this);
-        mBtnAnt.setOnCheckedChangeListener(this);
+        preIcon = (ImageView) findViewById(R.id.pre_icon);
+        nextIcon = (ImageView) findViewById(R.id.next_icon);
+        backIcon = (ImageView) findViewById(R.id.back_icon);
+        pageIndicator = (TextView) findViewById(R.id.page_size_indicator);
+        backText = (TextView) findViewById(R.id.back_text);
+        btnToc = (RadioButton) findViewById(R.id.btn_directory);
+        btnBookmark = (RadioButton) findViewById(R.id.btn_bookmark);
+        btnAnt = (RadioButton) findViewById(R.id.btn_annotation);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        preIcon.setOnClickListener(this);
+        nextIcon.setOnClickListener(this);
+        backIcon.setOnClickListener(this);
+        backText.setOnClickListener(this);
+        btnToc.setOnCheckedChangeListener(this);
+        btnBookmark.setOnCheckedChangeListener(this);
+        btnAnt.setOnCheckedChangeListener(this);
 
-        mViewList.add(initTocView(mActivity,toc));
-        mViewList.add(initBookmarkView(mActivity,bookmarks));
-        mViewList.add(initAnnotationsView(mActivity,annotations));
-        mViewPager.setAdapter(new ViewPagerAdapter());
+        viewList.add(initTocView(readerActivity,toc));
+        viewList.add(initBookmarkView(readerActivity,bookmarks));
+        viewList.add(initAnnotationsView(readerActivity,annotations));
+        viewPager.setAdapter(new ViewPagerAdapter());
         checkRadioButton(tab);
     }
 
@@ -262,19 +263,19 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     private void checkRadioButton(DirectoryTab tab) {
         switch (tab) {
             case TOC:
-                mBtnToc.setChecked(true);
+                btnToc.setChecked(true);
                 break;
             case Bookmark:
-                mBtnBookmark.setChecked(true);
+                btnBookmark.setChecked(true);
                 break;
             case Annotation:
-                mBtnAnt.setChecked(true);
+                btnAnt.setChecked(true);
                 break;
         }
     }
 
     private int getPageSize(DirectoryTab tab){
-        Resources res = mActivity.getResources();
+        Resources res = readerActivity.getResources();
         switch (tab){
             case TOC:
                 return res.getInteger(R.integer.table_of_content_row);
@@ -286,14 +287,22 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         return 0;
     }
 
+    private PageRecyclerView.PageAdapter getPageAdapter(DirectoryTab tab){
+        int pos = getTabIndex(tab);
+        if (viewList.size() > pos){
+            return (PageRecyclerView.PageAdapter) viewList.get(pos).getAdapter();
+        }
+        return null;
+    }
+
     private PageRecyclerView initTocView(final ReaderActivity activity,final ReaderDocumentTableOfContent toc){
-        mRecordPosition.put(getTabIndex(DirectoryTab.TOC),0);
+        recordPosition.put(DirectoryTab.TOC,0);
         Resources res = getContext().getResources();
         final int row = getPageSize(DirectoryTab.TOC);
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = buildTreeNodesFromToc(toc);
-        TreeRecyclerView treeRecyclerView = new TreeRecyclerView(mViewPager.getContext());
+        TreeRecyclerView treeRecyclerView = new TreeRecyclerView(viewPager.getContext());
         int paddingTop = DimenUtils.dip2px(activity,res.getDimension(R.dimen.toc_tree_padding_top));
-        treeRecyclerView.setPadding(0,paddingTop,0,paddingTop);
+        treeRecyclerView.setPadding(0,paddingTop,0,0);
         treeRecyclerView.bindTree(rootNodes, new TreeRecyclerView.Callback() {
             @Override
             public void onTreeNodeClicked(TreeRecyclerView.TreeNode node) {
@@ -327,13 +336,10 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     }
 
     private PageRecyclerView initBookmarkView(final ReaderActivity activity, final List<Bookmark> bookmarks) {
-        mBookmarkList = bookmarks;
-        mRecordPosition.put(getTabIndex(DirectoryTab.Bookmark),0);
+        bookmarkList = bookmarks;
+        recordPosition.put(DirectoryTab.Bookmark,0);
         final int row = getPageSize(DirectoryTab.Bookmark);
-        PageRecyclerView view = new PageRecyclerView(mViewPager.getContext());
-        Resources res = getContext().getResources();
-        int paddingTop = DimenUtils.dip2px(activity,res.getDimension(R.dimen.toc_tree_padding_top));
-        view.setPadding(0,0,0,15);
+        PageRecyclerView view = new PageRecyclerView(viewPager.getContext());
         view.setAdapter(new PageRecyclerView.PageAdapter() {
 
             @Override
@@ -348,7 +354,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
             @Override
             public int getDataCount() {
-                return mBookmarkList.size();
+                return bookmarkList.size();
             }
 
             @Override
@@ -373,10 +379,10 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     }
 
     private PageRecyclerView initAnnotationsView(final ReaderActivity activity, final List<Annotation> annotations) {
-        mAnnotationList = annotations;
-        mRecordPosition.put(getTabIndex(DirectoryTab.Annotation),0);
+        annotationList = annotations;
+        recordPosition.put(DirectoryTab.Annotation,0);
         final int row = getPageSize(DirectoryTab.Annotation);
-        PageRecyclerView view = new PageRecyclerView(mViewPager.getContext());
+        PageRecyclerView view = new PageRecyclerView(viewPager.getContext());
         view.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
@@ -390,17 +396,17 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
             @Override
             public int getDataCount() {
-                return mAnnotationList.size();
+                return annotationList.size();
             }
 
             @Override
             public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-                return new SimpleListViewItemViewHolder(mActivity, LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_table_of_content_list_item_view, parent, false));
+                return new SimpleListViewItemViewHolder(readerActivity, LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_table_of_content_list_item_view, parent, false));
             }
 
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                Annotation annotation = mAnnotationList.get(position);
+                Annotation annotation = annotationList.get(position);
                 ((SimpleListViewItemViewHolder)holder).bindView(annotation.getNote(),
                         annotation.getQuote(),
                         annotation.getPosition(),
@@ -418,8 +424,8 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         int page = itemCount / itemCountOfPage;
         int currentPage = page > 0 ? position / itemCountOfPage + 1 : 0;
         String show = String.format("%d/%d",currentPage,page);
-        mPageIndicator.setText(show);
-        mRecordPosition.put(mCurrentPosition,position);
+        pageIndicator.setText(show);
+        recordPosition.put(currentTab,position);
     }
 
     private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int page) {
@@ -491,11 +497,11 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        if (v.equals(mPreIcon)){
-            mViewList.get(mCurrentPosition).prevPage();
-        }else if (v.equals(mNextIcon)){
-            mViewList.get(mCurrentPosition).nextPage();
-        }else if (v.equals(mBackIcon) || v.equals(mBackText)){
+        if (v.equals(preIcon)){
+            viewList.get(getTabIndex(currentTab)).prevPage();
+        }else if (v.equals(nextIcon)){
+            viewList.get(getTabIndex(currentTab)).nextPage();
+        }else if (v.equals(backIcon) || v.equals(backText)){
             DialogTableOfContent.this.hide();
         }
     }
@@ -506,24 +512,25 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         int normalColor = getContext().getResources().getColor(android.R.color.black);
         buttonView.setTextColor(isChecked ? pressedColor : normalColor);
         if (isChecked){
-            if (buttonView.equals(mBtnToc)){
+            if (buttonView.equals(btnToc)){
                 switchViewPage(DirectoryTab.TOC);
-            }else if (buttonView.equals(mBtnBookmark)){
+            }else if (buttonView.equals(btnBookmark)){
                 switchViewPage(DirectoryTab.Bookmark);
-                mViewList.get(getTabIndex(DirectoryTab.Bookmark)).getAdapter().notifyDataSetChanged();
-            }else if (buttonView.equals(mBtnAnt)){
+            }else if (buttonView.equals(btnAnt)){
                 switchViewPage(DirectoryTab.Annotation);
-                mViewList.get(getTabIndex(DirectoryTab.Annotation)).getAdapter().notifyDataSetChanged();
             }
         }
     }
 
     private void switchViewPage(DirectoryTab tab){
         int position = getTabIndex(tab);
-        mCurrentPosition = position;
-        mViewPager.setCurrentItem(position,false);
+        currentTab = tab;
+        viewPager.setCurrentItem(position,false);
         final int row = getPageSize(tab);
-        updatePageIndicator(mRecordPosition.get(position),row,mViewList.get(position).getAdapter().getItemCount());
+        PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
+        if (pageAdapter != null){
+            updatePageIndicator(recordPosition.get(tab),row,pageAdapter.getItemCount());
+        }
     }
 
     @Override

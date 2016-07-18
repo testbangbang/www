@@ -5,17 +5,14 @@ import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
+import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by suicheng on 2016/6/27.
@@ -24,6 +21,7 @@ public class PageRecyclerView extends RecyclerView {
 
     private static final String TAG = PageRecyclerView.class.getSimpleName();
     private boolean hasAdjust = false;
+    private GPaginator paginator;
     public enum TouchDirection {Horizontal, Vertical}
 
     private static class DisableScrollLinearManager extends LinearLayoutManager {
@@ -77,8 +75,15 @@ public class PageRecyclerView extends RecyclerView {
         if (!(adapter instanceof PageAdapter)){
             throw new IllegalArgumentException("Use PageAdapter");
         }
-        mRow = ((PageAdapter) adapter).getRowCount();
-        mColumn = ((PageAdapter) adapter).getColumnCount();
+        rows = ((PageAdapter) adapter).getRowCount();
+        columns = ((PageAdapter) adapter).getColumnCount();
+        int size = adapter.getItemCount();
+        paginator = new GPaginator(rows, columns,size);
+        paginator.gotoPageByIndex(0);
+    }
+
+    public void resize(int newRows, int newColumns, int newSize){
+        paginator.resize(newRows,newColumns,newSize);
     }
 
     private void init() {
@@ -158,7 +163,6 @@ public class PageRecyclerView extends RecyclerView {
             int bottom = getChildAt(lastVisiblePosition - firstVisiblePosition).getBottom();
             int height = getMeasuredHeight();
             if (bottom > height && top < height && getChildCount() > 0 && !hasAdjust){
-                Log.d(TAG, "top: "+top +" bottom:"+bottom + " height:" + height);
                 setPadding(getPaddingLeft(),getPaddingTop(),getPaddingRight(),getPaddingBottom() + height - top);
                 hasAdjust = true;
                 getAdapter().notifyDataSetChanged();
@@ -178,52 +182,27 @@ public class PageRecyclerView extends RecyclerView {
         void onNextPage(int nextPosition,int itemCount,int pageSize);
     }
 
-    private List<Integer> positionCount = new ArrayList<>();
-    private int currentPosition = 0;
-    private int mRow = 0;
-    private int mColumn = 1;
+    private int rows = 0;
+    private int columns = 1;
 
     public void prevPage() {
-        int finalPosition = getFirstCompletelyVisibleItemPosition() - mRow;
-        finalPosition = finalPosition > 0 ? finalPosition : 0;
-        managerScrollToPosition(finalPosition);
-        scrollBy(0,-getMeasuredHeight());
-        if (onPagingListener != null){
-            onPagingListener.onPrevPage(finalPosition,getAdapter().getItemCount(),mRow * mColumn);
+        if (paginator.prevPage()){
+            int position =  paginator.getCurrentPageBegin();
+            managerScrollToPosition(position);
+            if (onPagingListener != null){
+                onPagingListener.onPrevPage(position,getAdapter().getItemCount(), rows * columns);
+            }
         }
     }
 
     public void nextPage() {
-        LayoutManager layoutManager = getLayoutManager();
-        if (!(layoutManager instanceof DisableScrollLinearManager)) {
-            return;
-        }
-        if (getLastVisiblePosition() < getAdapter().getItemCount()) {
-            int lastPosition = getLastVisiblePosition() - getFirstVisiblePosition();
-            Rect rect = new Rect();
-            View view;
-            do {
-                view = getChildAt(lastPosition--);
-                if (view != null) {
-                    view.getGlobalVisibleRect(rect);
-                }
-            } while (view != null && isClipView(rect, view));
-            int finalPosition = lastPosition + getFirstVisiblePosition() + 2;
-            if (finalPosition < getAdapter().getItemCount()) {
-                positionCount.add(getFirstVisiblePosition());
-                currentPosition++;
-                managerScrollToPosition(finalPosition);
-                if (onPagingListener != null){
-                    onPagingListener.onNextPage(finalPosition,getAdapter().getItemCount(),mRow * mColumn);
-                }
+        if (paginator.nextPage()){
+            int position =  paginator.getCurrentPageBegin() ;
+            managerScrollToPosition(position);
+            if (onPagingListener != null){
+                onPagingListener.onNextPage(position,getAdapter().getItemCount(), rows * columns);
             }
-
         }
-    }
-
-    public int getFirstCompletelyVisibleItemPosition() {
-        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
-        return linearManager.findFirstCompletelyVisibleItemPosition();
     }
 
     public int getFirstVisiblePosition() {
@@ -293,10 +272,12 @@ public class PageRecyclerView extends RecyclerView {
                 int remainder = size % itemCountOfPage;
                 if (remainder > 0){
                     int blankCount =  itemCountOfPage - remainder;
-                    return size + blankCount;
-                }else {
-                    return size;
+                    size=  size + blankCount;
                 }
+            }
+            PageRecyclerView pageRecyclerView = (PageRecyclerView)mParent;
+            if (pageRecyclerView != null){
+                pageRecyclerView.resize(getRowCount(),getColumnCount(),size);
             }
             return size;
         }
