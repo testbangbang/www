@@ -1,13 +1,11 @@
 package com.onyx.kreader.ui.actions;
 
 import android.graphics.Bitmap;
-import com.onyx.android.sdk.api.ReaderBitmap;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.Size;
-import com.onyx.kreader.host.request.GotoLocationRequest;
-import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;

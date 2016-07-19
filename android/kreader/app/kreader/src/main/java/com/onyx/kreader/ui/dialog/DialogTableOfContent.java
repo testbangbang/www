@@ -329,6 +329,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             TreeRecyclerView.TreeNode treeNode = findTreeNodeByTag(rootNodes, entry);
             if (treeNode != null) {
                 treeRecyclerView.expandTo(treeNode);
+                treeRecyclerView.setCurrentNode(treeNode);
             }
         }
 

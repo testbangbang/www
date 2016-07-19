@@ -1,21 +1,26 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.request.GotoLocationRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -41,6 +46,10 @@ public class DialogQuickPreview extends Dialog {
             this.grid = grid;
         }
 
+        public GridType getGridType() {
+            return grid;
+        }
+
         public int getRows() {
             return grid == GridType.Four ? 2 : 3;
         }
@@ -55,14 +64,16 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private class PreviewViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageView;
         private int page;
+        private ImageView imageView;
+        private TextView pageTextView;
+        private Button btnPage;
 
-        public PreviewViewHolder(ImageView itemView) {
+        public PreviewViewHolder(View itemView) {
             super(itemView);
-
-            imageView = itemView;
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView = (ImageView) itemView.findViewById(R.id.image_view);
+            pageTextView = (TextView) itemView.findViewById(R.id.text_view_page);
+            btnPage = (Button) itemView.findViewById(R.id.btn_page);
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -73,8 +84,18 @@ public class DialogQuickPreview extends Dialog {
             });
         }
 
-        public void bindPreview(Bitmap bitmap) {
+        public void bindPreview(Bitmap bitmap,Grid grid, ViewGroup parent) {
             imageView.setImageBitmap(bitmap);
+            if (grid.getGridType() == GridType.Four){
+                pageTextView.setVisibility(View.VISIBLE);
+                btnPage.setVisibility(View.GONE);
+                String str = String.format(parent.getContext().getString(R.string.page),page + 1);
+                pageTextView.setText(str);
+            }else if (grid.getGridType() == GridType.Nine){
+                pageTextView.setVisibility(View.GONE);
+                btnPage.setVisibility(View.VISIBLE);
+                btnPage.setText(String.valueOf(page + 1));
+            }
         }
 
         public int getPage() {
@@ -91,9 +112,9 @@ public class DialogQuickPreview extends Dialog {
         private final Bitmap BlankBitmap = Bitmap.createBitmap(300, 400, Bitmap.Config.ARGB_8888);
 
         private ViewGroup parent;
+        private Grid grid;
         private Size childSize = new Size(300, 400);
         private ArrayList<Bitmap> bitmapList = new ArrayList<>();
-
         private HashMap<Integer, Bitmap> bitmapCache = new HashMap<>();
 
         public PreviewAdapter() {
@@ -138,33 +159,44 @@ public class DialogQuickPreview extends Dialog {
             notifyItemChanged(index);
         }
 
+        public void setGridType(Grid grid) {
+            this.grid = grid;
+        }
+
         @Override
         public PreviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             this.parent = parent;
-            ImageView imageView = new ImageView(parent.getContext());
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            return new PreviewViewHolder(new ImageView(parent.getContext()));
+            return new PreviewViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_quick_preview_list_item_view, parent, false));
         }
 
         @Override
         public void onBindViewHolder(PreviewViewHolder holder, int position) {
-            ViewGroup.LayoutParams params = holder.imageView.getLayoutParams();
+            GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams)holder.itemView.getLayoutParams();
             if (params == null) {
-                params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
+                params = new GridLayoutManager.LayoutParams(GridLayoutManager.LayoutParams.MATCH_PARENT,
+                        GridLayoutManager.LayoutParams.MATCH_PARENT);
             }
-            childSize.width = parent.getMeasuredWidth() / grid.getColumns();
-            childSize.height = parent.getMeasuredHeight() / grid.getRows();
+            int spaceHeight = ((GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams()).topMargin +
+                    ((GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams()).bottomMargin;
+            spaceHeight = spaceHeight * grid.getRows();
+            int spaceWidth = ((GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams()).leftMargin +
+                    ((GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams()).rightMargin;
+            spaceWidth = spaceWidth * grid.getColumns();
+            int itemWidth = (parent.getMeasuredWidth() - spaceWidth)  / grid.getColumns();
+            int itemHeight = (parent.getMeasuredHeight() - spaceHeight) / grid.getRows();
+            childSize.width = itemWidth;
+            childSize.height = itemHeight;
 
-            params.height = parent.getMeasuredHeight() / grid.getRows();
-            holder.imageView.setLayoutParams(params);
+            params.height = itemHeight;
+            params.width = itemWidth;
+            holder.itemView.setLayoutParams(params);
             Bitmap bmp = bitmapList.get(position);
             if (bmp == null) {
                 bmp = BlankBitmap;
             }
-            holder.bindPreview(bmp);
+
             holder.setPage(paginator.indexByPageOffset(position));
+            holder.bindPreview(bmp,grid,parent);
         }
 
         @Override
@@ -251,6 +283,7 @@ public class DialogQuickPreview extends Dialog {
                 paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
                 paginator.gotoPageByIndex(currentPage);
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
+                adapter.setGridType(grid);
                 onPageDataChanged();
             }
         });
@@ -262,6 +295,7 @@ public class DialogQuickPreview extends Dialog {
                 paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
                 paginator.gotoPageByIndex(currentPage);
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
+                adapter.setGridType(grid);
                 onPageDataChanged();
             }
         });
@@ -270,6 +304,7 @@ public class DialogQuickPreview extends Dialog {
     private void setupContent(int pageCount, int currentPage, Bitmap currentPageBitmap) {
         paginator = new GPaginator(grid.getRows(), grid.getColumns(), pageCount);
         paginator.gotoPageByIndex(currentPage);
+        adapter.setGridType(grid);
         adapter.resetListSize(paginator.itemsInCurrentPage());
         updatePreview(currentPage, currentPageBitmap);
         if (callback != null) {
