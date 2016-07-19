@@ -30,7 +30,6 @@ public class NotePage {
     private int currentShapeType;
     private Shape currentShape;
     private boolean loaded = false;
-    private boolean addToActionHistory = true;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
 
@@ -59,14 +58,6 @@ public class NotePage {
         return subPageName;
     }
 
-    public boolean isAddToActionHistory() {
-        return addToActionHistory;
-    }
-
-    public void setAddToActionHistory(boolean add) {
-        addToActionHistory = add;
-    }
-
     public void clear() {
         shapeList.clear();
         newAddedShapeList.clear();
@@ -78,18 +69,18 @@ public class NotePage {
         shapeList.add(shape);
     }
 
-    public void addShape(final Shape shape) {
+    public void addShape(final Shape shape, boolean addToHistory) {
         updateShape(shape);
         newAddedShapeList.add(shape);
         shapeList.add(shape);
-        if (isAddToActionHistory()) {
+        if (addToHistory) {
             undoRedoManager.addToHistory(ShapeActions.addShapeAction(shape), false);
         }
     }
 
     public void addShapeList(final List<Shape> shapes) {
         for(Shape shape : shapes) {
-            addShape(shape);
+            addShape(shape, true);
         }
     }
 
@@ -98,9 +89,14 @@ public class NotePage {
     }
 
     public void redo() {
-        final UndoRedoManager.Action action = undoRedoManager.redo();
+        final UndoRedoManager.Action<Shape> action = undoRedoManager.redo();
         if (action == null) {
             return;
+        }
+        if (ShapeActions.ACTION_ADD_SHAPE.equalsIgnoreCase(action.getActionName())) {
+            addShape(action.getObject(), false);
+        } else if (ShapeActions.ACTION_REMOVE_SHAPE.equalsIgnoreCase(action.getActionName())) {
+            removeShape(action.getObject(), false);
         }
     }
 
@@ -113,10 +109,10 @@ public class NotePage {
         if (action == null) {
             return;
         }
-        if (ShapeActions.ACTION_ADD_SHAPE.equals(action)) {
-            removeShape(action.object);
-        } else if (ShapeActions.ACTION_REMOVE_SHAPE.equals(action)) {
-            addShape(action.object);
+        if (ShapeActions.ACTION_ADD_SHAPE.equalsIgnoreCase(action.getActionName())) {
+            removeShape(action.getObject(), false);
+        } else if (ShapeActions.ACTION_REMOVE_SHAPE.equalsIgnoreCase(action.getActionName())) {
+            addShape(action.getObject(), false);
         }
     }
 
@@ -127,12 +123,12 @@ public class NotePage {
         shape.updateBoundingRect();
     }
 
-    public void removeShape(final Shape shape) {
+    public void removeShape(final Shape shape, boolean addToActionHistory) {
         updateShape(shape);
         removedShapeList.add(shape);
         newAddedShapeList.remove(shape);
         shapeList.remove(shape);
-        if (isAddToActionHistory()) {
+        if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.removeShapeAction(shape), false);
         }
     }
@@ -154,7 +150,7 @@ public class NotePage {
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
-                    removeShape(entry.getValue());
+                    removeShape(entry.getValue(), true);
                     break;
                 }
             }

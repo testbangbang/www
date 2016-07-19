@@ -492,6 +492,27 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         syncWithCallback(true, true, null);
     }
 
+    private void undo() {
+        syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final UndoAction<ScribbleActivity> undoAction = new UndoAction<>();
+                undoAction.execute(ScribbleActivity.this, null);
+
+            }
+        });
+    }
+
+    private void redo() {
+        syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final RedoAction<ScribbleActivity> redoAction = new RedoAction<>();
+                redoAction.execute(ScribbleActivity.this, null);
+            }
+        });
+    }
+
     private void onOilyPenClicked() {
         setCurrentShapeType(ShapeFactory.SHAPE_OILY_PEN_SCRIBBLE);
         setStrokeWidth(3.0f);

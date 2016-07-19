@@ -15,8 +15,8 @@ import java.util.List;
 public class UndoRedoManager {
 
     public static class Action<T> {
-        public String actionName;
-        public T object;
+        private String actionName;
+        private T object;
 
         public Action(final String name, final T ref) {
             actionName = name;
@@ -37,6 +37,13 @@ public class UndoRedoManager {
             return actionName.equals(that.actionName) && object == that.object;
         }
 
+        public String getActionName() {
+            return actionName;
+        }
+
+        public T getObject() {
+            return object;
+        }
     }
 
     private Action current;
