@@ -98,6 +98,7 @@ public class NoteViewHelper {
     private void onDocumentOpened() {
         renderBitmapWrapper.clear();
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
+        EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
     }
 
     public void undo(final Context context) {

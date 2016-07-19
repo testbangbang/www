@@ -22,7 +22,7 @@ public class GetTableOfContentAction extends BaseAction {
 
     public void execute(final ReaderActivity readerActivity) {
         final GetTableOfContentRequest tocRequest = new GetTableOfContentRequest();
-        readerActivity.getReader().submitRequest(readerActivity, tocRequest, new BaseCallback() {
+        readerActivity.getReader().submitRequest(readerActivity,tocRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 showTableOfContentDialog(readerActivity,

@@ -451,6 +451,8 @@ public class RK3026Device extends BaseDevice {
     }
 
     @Override
+
+
     public int getVCom(Context context, String path) {
 
         String value = FileUtils.readContentOfFile(new File(path));

@@ -176,6 +176,7 @@ public class NoteDocument {
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
         noteDrawingArgs.background = NoteModel.getDefaultBackground();
         noteDrawingArgs.strokeColor = NoteModel.getDefaultStrokeColor();
+        noteDrawingArgs.penState = NoteViewHelper.PenState.PEN_SCREEN_DRAWING;
     }
 
     // load args from model.
