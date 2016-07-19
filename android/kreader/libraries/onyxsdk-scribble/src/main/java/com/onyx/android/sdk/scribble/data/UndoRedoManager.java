@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 2/21/16.
+ * Generic undo redo manager.
  *
  * a1 a2 a3 a4 a5  |  a6 a7 a8 a9 aa
  *     back     current    forward

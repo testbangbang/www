@@ -89,15 +89,7 @@ public class NotePage {
     }
 
     public void redo() {
-        final UndoRedoManager.Action<Shape> action = undoRedoManager.redo();
-        if (action == null) {
-            return;
-        }
-        if (ShapeActions.ACTION_ADD_SHAPE.equalsIgnoreCase(action.getActionName())) {
-            addShape(action.getObject(), false);
-        } else if (ShapeActions.ACTION_REMOVE_SHAPE.equalsIgnoreCase(action.getActionName())) {
-            removeShape(action.getObject(), false);
-        }
+        NotePageUndoRedoManager.redo(this, undoRedoManager);
     }
 
     public boolean canUndo() {
@@ -105,15 +97,7 @@ public class NotePage {
     }
 
     public void undo() {
-        final UndoRedoManager.Action<Shape> action = undoRedoManager.undo();
-        if (action == null) {
-            return;
-        }
-        if (ShapeActions.ACTION_ADD_SHAPE.equalsIgnoreCase(action.getActionName())) {
-            removeShape(action.getObject(), false);
-        } else if (ShapeActions.ACTION_REMOVE_SHAPE.equalsIgnoreCase(action.getActionName())) {
-            addShape(action.getObject(), false);
-        }
+        NotePageUndoRedoManager.undo(this, undoRedoManager);
     }
 
     private void updateShape(final Shape shape) {
