@@ -27,10 +27,7 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.common.ReaderUserDataInfo;
-import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.kreader.common.*;
 import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
@@ -45,7 +42,6 @@ import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
-import com.onyx.kreader.ui.dialog.DialogAnnotation;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.ui.dialog.PopupSelectionMenu;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
@@ -99,6 +95,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        redrawPage();
     }
 
     @Override
@@ -637,9 +634,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void drawAnnotations(Canvas canvas, Paint paint) {
         for (PageInfo pageInfo : getReaderViewInfo().getVisiblePages()) {
-            if (getReaderUserDataInfo().hasAnnotations(pageInfo)) {
-                List<Annotation> annotations = getReaderUserDataInfo().getAnnotations(pageInfo);
-                for (Annotation annotation : annotations) {
+            if (getReaderUserDataInfo().hasPageAnnotations(pageInfo)) {
+                List<PageAnnotation> annotations = getReaderUserDataInfo().getPageAnnotations(pageInfo);
+                for (PageAnnotation annotation : annotations) {
                     drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
                 }
             }
@@ -934,15 +931,15 @@ public class ReaderActivity extends ActionBarActivity {
 
     public boolean tryAnnotation(final float x, final float y) {
         for (PageInfo pageInfo : getReaderViewInfo().getVisiblePages()) {
-            if (!getReaderUserDataInfo().hasAnnotations(pageInfo)) {
+            if (!getReaderUserDataInfo().hasPageAnnotations(pageInfo)) {
                 continue;
             }
 
-            List<Annotation> annotations = getReaderUserDataInfo().getAnnotations(pageInfo);
-            for (Annotation annotation : annotations) {
+            List<PageAnnotation> annotations = getReaderUserDataInfo().getPageAnnotations(pageInfo);
+            for (PageAnnotation annotation : annotations) {
                 for (RectF rect : annotation.getRectangles()) {
                     if (rect.contains(x, y)) {
-                        new ShowAnnotationEditDialogAction(annotation).execute(ReaderActivity.this);
+                        new ShowAnnotationEditDialogAction(annotation.getAnnotation()).execute(ReaderActivity.this);
                         return true;
                     }
                 }

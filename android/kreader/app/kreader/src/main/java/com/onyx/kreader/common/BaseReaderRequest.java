@@ -169,7 +169,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     private void loadUserData(final Reader reader) {
         if (isLoadAnnotationData() && readerViewInfo != null) {
-            getReaderUserDataInfo().loadAnnotations(getContext(), reader, readerViewInfo.getVisiblePages());
+            getReaderUserDataInfo().loadPageAnnotations(getContext(), reader, readerViewInfo.getVisiblePages());
         }
         if (isLoadBookmarkData() && readerViewInfo != null) {
             getReaderUserDataInfo().loadBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
