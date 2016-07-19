@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.AutofitRecyclerView;
@@ -18,6 +20,8 @@ import java.util.List;
  * Created by joy on 6/28/16.
  */
 public class ReaderLayerMenuViewFactory {
+
+    private static int mainMenuContainerViewHeight  = 0;
 
     private static class MainMenuItemViewHolder extends RecyclerView.ViewHolder {
         private View view;
@@ -41,7 +45,14 @@ public class ReaderLayerMenuViewFactory {
     }
 
     public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        return createSimpleButtonContainerView(context, items, state, callback);
+        final View view =  createSimpleButtonContainerView(context, items, state, callback);
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                mainMenuContainerViewHeight = view.getMeasuredHeight();
+            }
+        });
+        return view;
     }
 
     public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
@@ -54,7 +65,7 @@ public class ReaderLayerMenuViewFactory {
     }
 
     private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        AutofitRecyclerView view = (AutofitRecyclerView)LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
+        final AutofitRecyclerView view = (AutofitRecyclerView)LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
         final LayoutInflater inflater = LayoutInflater.from(context);
         view.setAdapter(new RecyclerView.Adapter() {
             @Override
@@ -146,6 +157,7 @@ public class ReaderLayerMenuViewFactory {
 
     private static View createTTSView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         View view = LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_tts_view, null);
+        view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,mainMenuContainerViewHeight));
         return view;
     }
 
