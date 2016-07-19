@@ -70,6 +70,8 @@ public class RestoreRequest extends BaseReaderRequest {
             reader.getReaderLayoutManager().scaleToHeight(position);
         } else if (PageConstants.isScaleToPageContent(baseOptions.getSpecialScale())) {
             reader.getReaderLayoutManager().scaleToPageContent(position);
+        } else if (PageConstants.isWidthCrop(baseOptions.getSpecialScale())) {
+            reader.getReaderLayoutManager().scaleToWidthContent(position);
         }
     }
 

@@ -200,6 +200,8 @@ public class PageManager {
             scaleToHeight(pageName);
         } else if (isScaleToPageContent()) {
             scaleToPageContent(pageName);
+        } else if (isWidthCrop()) {
+            scaleToWidthContent(pageName);
         }
     }
 
@@ -243,6 +245,31 @@ public class PageManager {
             return false;
         }
 
+        RectF region = getPageCropRegion(pageName);
+        // crop region is in origin size, so just use scaleByRect to viewport.
+        float scale = PageUtils.scaleByRect(region, viewportRect);
+        setScaleImpl(pageName, scale);
+
+        adjustCropRegionInViewport(region);
+        return true;
+    }
+
+    public boolean scaleToWidthContent(final String pageName) {
+        specialScale = PageConstants.SCALE_TO_WIDTH_CONTENT;
+        if (!contains(pageName) || !hasValidViewport()) {
+            return false;
+        }
+
+        RectF region = getPageCropRegion(pageName);
+        float scale = PageUtils.scaleToWidth(region.width(), viewportRect.width());
+        setScaleImpl(pageName, scale);
+
+        region.set(region.left * scale, region.top * scale, region.right * scale, region.bottom * scale);
+        adjustCropRegionInViewport(region);
+        return true;
+    }
+
+    private RectF getPageCropRegion(String pageName) {
         PageInfo pageInfo = getPageInfo(pageName);
         if (pageInfo.getAutoCropContentRegion() == null || pageInfo.getAutoCropContentRegion().isEmpty()) {
             if (cropProvider == null) {
@@ -253,15 +280,16 @@ public class PageManager {
             }
         }
 
-        // crop region is in origin size, so just use scaleByRect to viewport.
-        RectF region = new RectF(pageInfo.getAutoCropContentRegion());
-        float scale = PageUtils.scaleByRect(region, viewportRect);
-        setScaleImpl(pageName, scale);
+        return new RectF(pageInfo.getAutoCropContentRegion());
+    }
 
-        // make crop region center in center of viewport to make it looks nice
+    /**
+     * make crop region center in center of viewport to make it looks nice
+     * @param region
+     */
+    private void adjustCropRegionInViewport(RectF region) {
         float delta = (viewportRect.width() - region.width()) / 2;
         panViewportPosition(region.left - delta, region.top);
-        return true;
     }
 
     /**
