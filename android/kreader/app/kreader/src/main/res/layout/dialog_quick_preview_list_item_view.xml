@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_toLeftOf="@+id/right_shadow"
+        android:layout_above="@+id/bottom_shadow"
+        android:padding="1dp"
+        android:background="@drawable/radio_button_bg_off"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:scaleType="fitXY"
+            android:layout_above="@+id/text_view_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/text_view_page"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:text="第三页"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btn_page"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:textSize="15sp"
+            android:textColor="@android:color/white"
+            android:text="5"
+            android:gravity="center"
+            android:background="@android:color/black"
+            android:layout_width="40dp"
+            android:layout_height="20dp"/>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/right_shadow"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/library_book_cover_shadow"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"></View>
+
+    <View
+        android:id="@+id/bottom_shadow"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/library_book_cover_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"></View>
+
+</RelativeLayout>

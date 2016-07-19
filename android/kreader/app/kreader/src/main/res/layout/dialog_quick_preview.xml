@@ -27,6 +27,7 @@
     </LinearLayout>
 
     <TextView
+            android:layout_marginBottom="10dp"
             android:id="@+id/text_view_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,12 +37,14 @@
             android:text="1/1"/>
 
     <SeekBar
+            android:thumb="@drawable/seekbar_thumb"
             android:id="@+id/seek_bar_page"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginTop="20dp"
             android:layout_alignLeft="@+id/grid_view_preview"
             android:layout_alignRight="@id/grid_view_preview"
-            android:layout_above="@id/text_view_progress"/>
+            android:layout_above="@id/text_view_progress"
             android:focusable="true"
             android:progressDrawable="@drawable/seekbar_progress"
             android:max="20"/>
@@ -76,6 +79,7 @@
             android:layout_alignParentRight="true">
 
         <ImageView
+                android:layout_marginTop="10dp"
                 android:id="@+id/image_view_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,6 +95,8 @@
     </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:id="@+id/grid_view_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
