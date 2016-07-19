@@ -107,6 +107,12 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         getPageManager().scaleToPageContent(pageName);
     }
 
+    @Override
+    public void scaleToWidthContent(String pageName) throws ReaderException {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
+        getPageManager().scaleToWidthContent(pageName);
+    }
+
     public void scaleToWidth(final String pageName) throws ReaderException {
         LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().scaleToWidth(pageName);

@@ -22,10 +22,21 @@ public class ReaderUserDataInfo {
     private final static String HIGHLIGHT_TAG = "highlight";
     private Map<String, List<ReaderSelection>> selectionMap = new HashMap<>();
 
-    public ReaderDocumentTableOfContent toc;
+    private String documentPath;
+
+    private ReaderDocumentTableOfContent toc;
     private Map<String, Bookmark> bookmarkMap = new HashMap<>();
     private Map<String, List<Annotation>> annotationMap = new HashMap<>();
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
+
+    public void saveDocumentPath(final String path) {
+        Debug.d("saveDocumentPath: " + path);
+        documentPath = path;
+    }
+
+    public String getDocumentPath() {
+        return documentPath;
+    }
 
     public boolean hasSearchResults() {
         List<ReaderSelection> list = getSearchResults();

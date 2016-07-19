@@ -87,6 +87,9 @@ public class LayoutProvider {
     public void scaleToPageContent(final String pageName) throws ReaderException {
     }
 
+    public void scaleToWidthContent(final String pageName) throws ReaderException {
+    }
+
     public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
     }
 
