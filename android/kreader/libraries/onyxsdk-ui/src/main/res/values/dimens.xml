@@ -27,4 +27,7 @@
     <dimen name="reader_layer_menu_tts_seek_bar_width">300dp</dimen>
     <dimen name="image_view_indicator_size">20dp</dimen>
     <dimen name="image_view_indicator_margin_right">4dp</dimen>
+    <dimen name="navigatorHeight">42dp</dimen>
+    <dimen name="reader_status_bar_text_size">20sp</dimen>
+    <dimen name="navigatorWidth">30dp</dimen>
 </resources>
