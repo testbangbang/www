@@ -16,13 +16,11 @@ import java.util.List;
  */
 public class UpdateAnnotationAction extends BaseAction {
 
-    private PageInfo pageInfo;
     private Annotation annotation;
     private String note;
 
-    public UpdateAnnotationAction(PageInfo pageInfo, Annotation annotation, String note) {
-        this.pageInfo = pageInfo;
-        this.annotation = translateToDocument(annotation);
+    public UpdateAnnotationAction(Annotation annotation, String note) {
+        this.annotation = annotation;
         this.note = note;
     }
 
@@ -30,12 +28,5 @@ public class UpdateAnnotationAction extends BaseAction {
     public void execute(ReaderActivity readerActivity) {
         annotation.setNote(note);
         readerActivity.submitRequest(new UpdateAnnotationRequest(annotation));
-    }
-
-    private Annotation translateToDocument(Annotation annotation) {
-        for (RectF rect : annotation.getRectangles()) {
-            PageUtils.translateToDocument(pageInfo, rect);
-        }
-        return annotation;
     }
 }
