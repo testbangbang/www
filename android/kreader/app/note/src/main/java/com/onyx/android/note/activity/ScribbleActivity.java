@@ -512,7 +512,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
     private void onLineClicked() {
         setCurrentShapeType(ShapeFactory.SHAPE_LINE);
-        setStrokeWidth(1.0f);
+        setStrokeWidth(3.0f);
         syncWithCallback(true, false, null);
     }
 
