@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.ui.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -190,12 +191,14 @@ public class TreeRecyclerView extends PageRecyclerView {
             splitLine = itemView.findViewById(R.id.split_line);
         }
 
-        public void bindView(final FlattenTreeNodeDataList list, final int position,int rowCount,ViewGroup parent) {
+        public void bindView(final FlattenTreeNodeDataList list, final int position,int rowCount,ViewGroup parent,TreeNode currentNode) {
             final TreeNode node = list.get(position);
+
             final RelativeLayout.LayoutParams imageParams = (RelativeLayout.LayoutParams)imageViewIndicator.getLayoutParams();
             final RelativeLayout.LayoutParams lineParams= (RelativeLayout.LayoutParams)splitLine.getLayoutParams();
-            float imageSize = parent.getContext().getResources().getDimension(R.dimen.image_view_indicator_size);
-            float marginRight = parent.getContext().getResources().getDimension(R.dimen.image_view_indicator_margin_right);
+            Resources res = parent.getContext().getResources();
+            float imageSize = res.getDimension(R.dimen.image_view_indicator_size);
+            float marginRight = res.getDimension(R.dimen.image_view_indicator_margin_right);
             int paddingLeftPx = DimenUtils.dip2px(parent.getContext(),imageSize + marginRight);
             imageParams.leftMargin = paddingLeftPx * node.treeDepth;
             imageViewIndicator.setLayoutParams(imageParams);
@@ -204,6 +207,7 @@ public class TreeRecyclerView extends PageRecyclerView {
 
             textViewTitle.setText(node.title);
             textViewDescription.setText(node.description);
+            textViewTitle.getPaint().setUnderlineText(currentNode.equals(node));
             splitLine.setVisibility(VISIBLE);
 
             if (!node.hasChildren()) {
@@ -250,6 +254,7 @@ public class TreeRecyclerView extends PageRecyclerView {
         private FlattenTreeNodeDataList list;
         private Callback callback;
         private int mRowCount;
+        private TreeNode currentNode;
 
         public TreeAdapter(FlattenTreeNodeDataList list, final Callback callback, int rowCount) {
             this.list = list;
@@ -275,6 +280,10 @@ public class TreeRecyclerView extends PageRecyclerView {
             });
         }
 
+        public void setCurrentNode(TreeNode currentNode) {
+            this.currentNode = currentNode;
+        }
+
         @Override
         public int getRowCount() {
             return mRowCount;
@@ -298,12 +307,13 @@ public class TreeRecyclerView extends PageRecyclerView {
 
         @Override
         public void onPageBindViewHolder(TreeNodeViewHolder holder, int position) {
-            holder.bindView(list, position,mRowCount,mParent);
+            holder.bindView(list, position,mRowCount,mParent,currentNode);
         }
 
     }
 
     FlattenTreeNodeDataList list = new FlattenTreeNodeDataList();
+    TreeAdapter adapter;
 
     public TreeRecyclerView(Context context) {
         super(context);
@@ -319,11 +329,15 @@ public class TreeRecyclerView extends PageRecyclerView {
 
     public void bindTree(Collection<TreeNode> rootNodes, Callback callback,int row) {
         list.init(rootNodes);
-        TreeAdapter adapter = new TreeAdapter(list, callback,row);
+        adapter = new TreeAdapter(list, callback,row);
         this.setAdapter(adapter);
     }
 
     public void expandTo(TreeNode node) {
         list.expandTo(node);
+    }
+
+    public void setCurrentNode(TreeNode node){
+        adapter.setCurrentNode(node);
     }
 }

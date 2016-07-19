@@ -50,8 +50,7 @@ public class ShowAnnotationEditDialogAction extends BaseAction {
     }
 
     private void updateAnnotation(final ReaderActivity readerActivity, final Annotation annotation, final String note) {
-        PageInfo pageInfo = readerActivity.getReaderViewInfo().getPageInfo(annotation.getPosition());
-        new UpdateAnnotationAction(pageInfo, annotation, note).execute(readerActivity, new BaseCallback() {
+        new UpdateAnnotationAction(annotation, note).execute(readerActivity, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (mOnEditListener != null){

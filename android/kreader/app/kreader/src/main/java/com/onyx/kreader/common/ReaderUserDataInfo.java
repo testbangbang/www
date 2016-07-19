@@ -1,7 +1,6 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
-import com.alibaba.fastjson.JSON;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.dataprovider.Annotation;
@@ -21,11 +20,12 @@ public class ReaderUserDataInfo {
 
     private final static String SEARCH_TAG = "search";
     private final static String HIGHLIGHT_TAG = "highlight";
-    private Map<String, List<ReaderSelection>> selectionMap = new HashMap<String, List<ReaderSelection>>();
+    private Map<String, List<ReaderSelection>> selectionMap = new HashMap<>();
 
     public ReaderDocumentTableOfContent toc;
     private Map<String, Bookmark> bookmarkMap = new HashMap<>();
-    private Map<String, List<Annotation>> annotationMap = new HashMap<String, List<Annotation>>();
+    private Map<String, List<Annotation>> annotationMap = new HashMap<>();
+    private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
 
     public boolean hasSearchResults() {
         List<ReaderSelection> list = getSearchResults();
@@ -64,15 +64,6 @@ public class ReaderUserDataInfo {
         return toc;
     }
 
-    public boolean hasAnnotations(final PageInfo pageInfo) {
-        List<Annotation> list = getAnnotations(pageInfo);
-        return list != null && list.size() > 0;
-    }
-
-    public List<Annotation> getAnnotations(final PageInfo pageInfo) {
-        return annotationMap.get(pageInfo.getName());
-    }
-
     public List<Annotation> getAnnotations() {
         ArrayList<Annotation> list = new ArrayList<>();
         Collection<List<Annotation>> values = annotationMap.values();
@@ -80,19 +71,6 @@ public class ReaderUserDataInfo {
             list.addAll(l);
         }
         return list;
-    }
-
-    public boolean loadAnnotations(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        for(PageInfo pageInfo: visiblePages) {
-            final List<Annotation> annotations = AnnotationProvider.loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
-            if (annotations != null && annotations.size() > 0) {
-                for (Annotation annotation : annotations) {
-                    translateToScreen(pageInfo, annotation);
-                }
-                annotationMap.put(pageInfo.getName(), annotations);
-            }
-        }
-        return true;
     }
 
     public boolean loadAnnotations(final Context context, final Reader reader) {
@@ -106,6 +84,29 @@ public class ReaderUserDataInfo {
             }
         }
         return false;
+    }
+
+    public boolean hasPageAnnotations(final PageInfo pageInfo) {
+        List<PageAnnotation> list = getPageAnnotations(pageInfo);
+        return list != null && list.size() > 0;
+    }
+
+    public List<PageAnnotation> getPageAnnotations(final PageInfo pageInfo) {
+        return pageAnnotationMap.get(pageInfo.getName());
+    }
+
+    public boolean loadPageAnnotations(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        for(PageInfo pageInfo: visiblePages) {
+            final List<Annotation> annotations = AnnotationProvider.loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
+            if (annotations != null && annotations.size() > 0) {
+                List<PageAnnotation> list = new ArrayList<>();
+                for (Annotation annotation : annotations) {
+                    list.add(new PageAnnotation(pageInfo, annotation));
+                }
+                pageAnnotationMap.put(pageInfo.getName(), list);
+            }
+        }
+        return true;
     }
 
     public boolean hasBookmark(final PageInfo pageInfo) {
