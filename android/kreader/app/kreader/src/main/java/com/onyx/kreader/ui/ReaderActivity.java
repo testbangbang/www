@@ -21,6 +21,8 @@ import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
+import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
+import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
@@ -28,10 +30,10 @@ import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.*;
-import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SearchRequest;
@@ -69,6 +71,8 @@ public class ReaderActivity extends ActionBarActivity {
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
+
+    private ReaderStatusBar statusBar;
 
     private HandlerManager handlerManager;
     private GestureDetector gestureDetector;
@@ -289,10 +293,15 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initActivity() {
+        initStatusBar();
         initToolbar();
         initSurfaceView();
         initHandlerManager();
         initShapeViewDelegate();
+    }
+
+    private void initStatusBar() {
+        statusBar = (ReaderStatusBar)findViewById(R.id.status_bar);
     }
 
     private void initToolbar() {
@@ -579,6 +588,7 @@ public class ReaderActivity extends ActionBarActivity {
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
         updateToolbarProgress();
+        updateStatusBar();
 
         //ReaderDeviceManager.applyGCInvalidate(surfaceView);
         drawPage(reader.getViewportBitmap().getBitmap());
@@ -738,6 +748,15 @@ public class ReaderActivity extends ActionBarActivity {
         });
     }
 
+    public String getDocumentPath() {
+        return getReaderUserDataInfo().getDocumentPath();
+    }
+
+    public String getBookName() {
+        Debug.d("getBookName: " + getDocumentPath());
+        return FileUtils.getFileName(getDocumentPath());
+    }
+
     public String getCurrentPageName() {
         return getReaderViewInfo().getFirstVisiblePage().getName();
     }
@@ -825,6 +844,28 @@ public class ReaderActivity extends ActionBarActivity {
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_bottom);
             ((TextView) toolbar.findViewById(R.id.toolbar_progress)).setText((pn + 1) + "/" + getPageCount());
         }
+    }
+
+    private void updateStatusBar() {
+        PageInfo pageInfo = getFirstPageInfo();
+        Rect pageRect = new Rect();
+        Rect displayRect = new Rect();
+        pageInfo.getPositionRect().round(pageRect);
+        translateDisplayRectToViewportRect(pageInfo.getDisplayRect()).round(displayRect);
+        Debug.d("pageRect: " + JSON.toJSON(pageRect));
+        Debug.d("displayRect: " + JSON.toJSON(displayRect));
+        int current = getCurrentPage() + 1;
+        int total = getPageCount();
+        String title = getBookName();
+        statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
+                current, total, 0, title));
+    }
+
+    private RectF translateDisplayRectToViewportRect(RectF displayRect) {
+        RectF rect = new RectF(displayRect);
+        rect.intersect(0, 0, getDisplayWidth(), getDisplayHeight());
+        rect.offset(-displayRect.left, -displayRect.top);
+        return rect;
     }
 
     public void setFullScreen(boolean fullScreen) {

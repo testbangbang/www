@@ -168,6 +168,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     private void loadUserData(final Reader reader) {
+        getReaderUserDataInfo().saveDocumentPath(reader.getDocumentPath());
         if (isLoadAnnotationData() && readerViewInfo != null) {
             getReaderUserDataInfo().loadPageAnnotations(getContext(), reader, readerViewInfo.getVisiblePages());
         }
