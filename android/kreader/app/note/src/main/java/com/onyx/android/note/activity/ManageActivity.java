@@ -392,6 +392,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
             case SelectionMode.NORMAL_MODE:
                 controlPanel.setVisibility(View.GONE);
                 chooseModeButton.setText(R.string.select_mode);
+                chooseModeButton.setChecked(false);
                 break;
         }
     }
