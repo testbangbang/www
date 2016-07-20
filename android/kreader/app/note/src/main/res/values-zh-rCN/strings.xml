@@ -20,4 +20,7 @@
     <string name="loading">正在加载.</string>
     <string name="saving_note">正在保存.</string>
     <string name="new_document">新文档</string>
+    <string name="original_name">当前名称:</string>
+    <string name="new_name">新名称:</string>
+    <string name="rename">重命名</string>
 </resources>
