@@ -201,4 +201,10 @@ public class NoteDataProvider {
         }
         return path;
     }
+
+    public static boolean checkNoteNameLegality(final String targetName) {
+        Select select = new Select();
+        Where where = select.from(NoteModel.class).where(NoteModel_Table.title.eq(targetName));
+        return where.queryList().size() == 0;
+    }
 }

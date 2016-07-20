@@ -29,7 +29,7 @@ public class DialogCreateNewFolder extends OnyxAlertDialog {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.new_folder))
-                .setCustomLayoutResID(R.layout.alert_dialog_content_input)
+                .setCustomContentLayoutResID(R.layout.alert_dialog_content_input)
                 .setCustomViewAction(new OnyxAlertDialog.CustomViewAction() {
                     @Override
                     public void onCreateCustomView(View customView, TextView pageIndicator) {

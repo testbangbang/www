@@ -30,7 +30,7 @@ public class DialogRenameNote extends OnyxAlertDialog {
     public void onCreate(Bundle savedInstanceState) {
         final String fileName = getArguments().getString(ARGS_CURRENT_NOTE_NAME);
         setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.rename))
-                .setCustomLayoutResID(R.layout.alert_dialog_content_rename_note)
+                .setCustomContentLayoutResID(R.layout.alert_dialog_content_rename_note)
                 .setCustomViewAction(new OnyxAlertDialog.CustomViewAction() {
                     @Override
                     public void onCreateCustomView(View customView, TextView pageIndicator) {
