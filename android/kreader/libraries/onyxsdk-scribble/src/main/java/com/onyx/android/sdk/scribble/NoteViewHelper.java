@@ -195,15 +195,18 @@ public class NoteViewHelper {
 
     private void startDrawing() {
         getRawInputProcessor().start();
+        EpdController.setScreenHandWritingPenState(surfaceView, 1);
     }
 
     public void resumeDrawing() {
         setPenState(PenState.PEN_SCREEN_DRAWING);
         getRawInputProcessor().resume();
+        EpdController.setScreenHandWritingPenState(surfaceView, 2);
     }
 
     public void pauseDrawing() {
         getRawInputProcessor().pause();
+        EpdController.setScreenHandWritingPenState(surfaceView, 3);
     }
 
     public void enableScreenPost() {
@@ -334,7 +337,6 @@ public class NoteViewHelper {
     }
 
     private void initRawInputProcessor() {
-        rawInputProcessor.setParentView(surfaceView);
         rawInputProcessor.setInputCallback(new RawInputProcessor.InputCallback() {
             @Override
             public void onBeginRawData() {
@@ -346,7 +348,6 @@ public class NoteViewHelper {
             }
 
             public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
-
             }
 
             public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape) {
