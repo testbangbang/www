@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 2/21/16.
+ * Generic undo redo manager.
  *
  * a1 a2 a3 a4 a5  |  a6 a7 a8 a9 aa
  *     back     current    forward
@@ -15,8 +16,8 @@ import java.util.List;
 public class UndoRedoManager {
 
     public static class Action<T> {
-        public String actionName;
-        public T object;
+        private String actionName;
+        private T object;
 
         public Action(final String name, final T ref) {
             actionName = name;
@@ -37,6 +38,13 @@ public class UndoRedoManager {
             return actionName.equals(that.actionName) && object == that.object;
         }
 
+        public String getActionName() {
+            return actionName;
+        }
+
+        public T getObject() {
+            return object;
+        }
     }
 
     private Action current;

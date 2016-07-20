@@ -6,4 +6,8 @@
         <attr name="lastLineDescent" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="StatusBarTextView">
+        <attr name="textSize" format="dimension" />
+    </declare-styleable>
+
 </resources>

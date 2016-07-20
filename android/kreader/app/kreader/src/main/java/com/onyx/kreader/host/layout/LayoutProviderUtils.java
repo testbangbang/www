@@ -90,6 +90,7 @@ public class LayoutProviderUtils {
                         ", bitmap: " + bitmap.getBitmap().getWidth() + ", " + bitmap.getBitmap().getHeight() +
                         ", display rect: " + displayRect +
                         ", position rect: " + positionRect +
+                        ", viewport: " + layoutManager.getPageManager().getViewportRect() +
                         ", page rect: " + pageRect +
                         ", visible rect: " + visibleRect);
                 renderer.draw(documentPosition, pageInfo.getActualScale(),
