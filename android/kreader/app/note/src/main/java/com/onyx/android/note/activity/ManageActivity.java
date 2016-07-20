@@ -73,6 +73,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     private ImageView toolBarIcon;
     private TextView toolBarTitle;
     private String currentLibraryName;
+    private boolean isAlreadyToNewActivity = false;
 
     public Map<String, Integer> getLookupTable() {
         return lookupTable;
@@ -95,6 +96,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        isAlreadyToNewActivity = false;
         loadNoteList();
     }
 
@@ -289,23 +291,26 @@ public class ManageActivity extends OnyxAppCompatActivity {
     }
 
     private void startScribbleActivity(GObject object, final String parentId, final String action) {
-        final Intent intent = Utils.getScribbleIntent(this);
-        intent.putExtra(Utils.ACTION_TYPE, action);
-        intent.putExtra(Utils.PARENT_LIBRARY_ID, parentId);
-        String noteTitle = "";
-        String uniqueID = "";
-        if (action.equals(Utils.ACTION_CREATE)) {
-            noteTitle = getString(R.string.new_document);
-            uniqueID = ShapeUtils.generateUniqueId();
-        } else {
-            noteTitle = StringUtils.isNullOrEmpty(object.getString(GAdapterUtil.TAG_TITLE_STRING)) ?
-                    Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date()) :
-                    object.getString(GAdapterUtil.TAG_TITLE_STRING);
-            uniqueID = GAdapterUtil.getUniqueId(object);
+        if (!isAlreadyToNewActivity) {
+            final Intent intent = Utils.getScribbleIntent(this);
+            intent.putExtra(Utils.ACTION_TYPE, action);
+            intent.putExtra(Utils.PARENT_LIBRARY_ID, parentId);
+            String noteTitle = "";
+            String uniqueID = "";
+            if (action.equals(Utils.ACTION_CREATE)) {
+                noteTitle = getString(R.string.new_document);
+                uniqueID = ShapeUtils.generateUniqueId();
+            } else {
+                noteTitle = StringUtils.isNullOrEmpty(object.getString(GAdapterUtil.TAG_TITLE_STRING)) ?
+                        Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date()) :
+                        object.getString(GAdapterUtil.TAG_TITLE_STRING);
+                uniqueID = GAdapterUtil.getUniqueId(object);
+            }
+            intent.putExtra(ScribbleActivity.TAG_NOTE_TITLE, noteTitle);
+            intent.putExtra(Utils.DOCUMENT_ID, uniqueID);
+            startActivity(intent);
+            isAlreadyToNewActivity = true;
         }
-        intent.putExtra(ScribbleActivity.TAG_NOTE_TITLE, noteTitle);
-        intent.putExtra(Utils.DOCUMENT_ID, uniqueID);
-        startActivity(intent);
     }
 
     private HashMap<String, Integer> getItemViewDataMap(@SelectionMode.SelectionModeDef int mode) {
