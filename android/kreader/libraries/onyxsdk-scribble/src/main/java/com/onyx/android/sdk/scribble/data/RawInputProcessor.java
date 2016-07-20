@@ -6,8 +6,6 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -84,7 +82,6 @@ public class RawInputProcessor {
     private volatile TouchPointList touchPointList;
     private InputCallback inputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
-    private volatile SurfaceView parentView;
     private ExecutorService singleThreadPool = null;
     private volatile RectF limitRect = new RectF();
 
@@ -104,10 +101,6 @@ public class RawInputProcessor {
         viewMatrix = vm;
     }
 
-    public void setParentView(final SurfaceView view) {
-        parentView = view;
-    }
-
     public void setInputCallback(final InputCallback callback) {
         inputCallback = callback;
     }
@@ -116,18 +109,15 @@ public class RawInputProcessor {
         stop = false;
         reportData = false;
         clearInternalState();
-        submitJob(parentView);
-        EpdController.setScreenHandWritingPenState(parentView, 1);
+        submitJob();
     }
 
     public void resume() {
         reportData = true;
-        EpdController.setScreenHandWritingPenState(parentView, 2);
     }
 
     public void pause() {
         reportData = false;
-        EpdController.setScreenHandWritingPenState(parentView, 3);
     }
 
     public void quit() {
@@ -159,7 +149,7 @@ public class RawInputProcessor {
         return singleThreadPool;
     }
 
-    private void submitJob(final SurfaceView view) {
+    private void submitJob() {
         getSingleThreadPool().submit(new Runnable() {
             @Override
             public void run() {
