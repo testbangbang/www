@@ -24,7 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ScribbleActivity"></activity>
+        <activity
+            android:name=".activity.ScribbleActivity"/>
     </application>
 
 </manifest>
