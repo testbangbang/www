@@ -63,7 +63,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showReaderMenu(final ReaderActivity readerActivity) {
 //        readerActivity.showToolbar();
         ReaderLayerMenuState state = new ReaderLayerMenuState();
-        state.setTitle(FileUtils.getFileName(readerActivity.getReader().getDocumentPath()));
+        state.setTitle(readerActivity.getBookName());
         state.setPageCount(readerActivity.getPageCount());
         state.setPageIndex(readerActivity.getCurrentPage());
         getReaderMenu(readerActivity).show(state);
