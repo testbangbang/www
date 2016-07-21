@@ -9,7 +9,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
@@ -45,7 +44,7 @@ public class ShowReaderMenuAction extends BaseAction {
         showReaderMenu(readerActivity);
     }
 
-    public static void resetReaderMenu() {
+    public static void resetReaderMenu(final ReaderActivity readerActivity) {
         readerMenu = null;
     }
 
@@ -63,9 +62,12 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showReaderMenu(final ReaderActivity readerActivity) {
 //        readerActivity.showToolbar();
         ReaderLayerMenuState state = new ReaderLayerMenuState();
+        updateReaderMenuState(readerActivity, state);
+
         state.setTitle(readerActivity.getBookName());
         state.setPageCount(readerActivity.getPageCount());
         state.setPageIndex(readerActivity.getCurrentPage());
+
         getReaderMenu(readerActivity).show(state);
     }
 
@@ -86,6 +88,20 @@ public class ShowReaderMenuAction extends BaseAction {
         updateReaderMenuCallback(readerMenu, readerActivity);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerActivity);
         readerMenu.fillItems(items);
+    }
+
+    private static void updateReaderMenuState(final ReaderActivity readerActivity, final ReaderLayerMenuState state) {
+        state.setTtsState(getTtsState(readerActivity));
+    }
+
+    private static ReaderLayerMenuState.TtsState getTtsState(final ReaderActivity readerActivity) {
+        if (readerActivity.getTtsManager().isSpeaking()) {
+            return ReaderLayerMenuState.TtsState.Speaking;
+        } else if (readerActivity.getTtsManager().isPaused()) {
+            return ReaderLayerMenuState.TtsState.Paused;
+        } else {
+            return ReaderLayerMenuState.TtsState.Stopped;
+        }
     }
 
     private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderActivity readerActivity) {
@@ -178,6 +194,15 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/Directory/ShapeModel":
                         break;
                     case "/Directory/Export":
+                        break;
+                    case "/TTS/Play":
+                        ttsPlay(readerActivity);
+                        break;
+                    case "/TTS/Pause":
+                        ttsPause(readerActivity);
+                        break;
+                    case "/TTS/Stop":
+                        ttsStop(readerActivity);
                         break;
                     case "/More/shape":
                         startShapeDrawing(readerActivity);
@@ -293,6 +318,18 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showTocDialog(final ReaderActivity readerActivity, DialogTableOfContent.DirectoryTab tab) {
         final GetTableOfContentAction action = new GetTableOfContentAction(tab);
         action.execute(readerActivity);
+    }
+
+    private void ttsPlay(final ReaderActivity readerActivity) {
+        readerActivity.getTtsManager().play();
+    }
+
+    private void ttsPause(final ReaderActivity readerActivity) {
+        readerActivity.getTtsManager().pause();
+    }
+
+    private void ttsStop(final ReaderActivity readerActivity) {
+        readerActivity.getTtsManager().stop();
     }
 
     private void startShapeDrawing(final ReaderActivity readerActivity) {

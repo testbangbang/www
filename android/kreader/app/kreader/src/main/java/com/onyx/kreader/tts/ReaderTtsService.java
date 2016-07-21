@@ -1,0 +1,359 @@
+/**
+ *
+ */
+package com.onyx.kreader.tts;
+
+import android.app.Activity;
+import android.media.MediaPlayer;
+import android.os.PowerManager;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
+import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.common.Debug;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Locale;
+
+/**
+ * @author dxwts
+ */
+public class ReaderTtsService {
+
+    private static final String TAG = ReaderTtsService.class.getSimpleName();
+
+    public enum TtsState { Ready, SynthesizeTtsPrepare, SynthesizeTtsStart, SynthesizeTtsDone, MediaPlayStart, MediaPaused, MediaResume, MediaPlayDone, Stopped, Error}
+
+    public static abstract class Callback {
+        public abstract void onStart();
+        public abstract void onPaused();
+        public abstract void onDone();
+        public abstract void onStopped();
+        public abstract void onError();
+    }
+
+    private static final String UTTERANCE_ID = TAG;
+
+    private volatile PowerManager.WakeLock wakeLock;
+
+    private Activity activity = null;
+    private Callback callback = null;
+
+    private Locale currentLocale = null;
+    private TextToSpeech ttsService = null;
+
+    private MediaPlayer mediaPlayer = new MediaPlayer();
+
+    private String text = null;
+    private TtsState ttsState = TtsState.Ready;
+
+    public ReaderTtsService(final Activity activity, Callback callback) {
+        this.activity = activity;
+        this.callback = callback;
+
+        ttsService = new TextToSpeech(activity, new TextToSpeech.OnInitListener() {
+
+            @Override
+            public void onInit(int status) {
+                initTtsService();
+            }
+        });
+    }
+
+    private void initTtsService() {
+        Debug.d(TAG, "initTtsService");
+        ttsService.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(final String utteranceId) {
+                Debug.d(TAG, "UtteranceProgressListener: onStart");
+            }
+
+            @Override
+            public void onDone(final String utteranceId) {
+                Debug.d(TAG, "UtteranceProgressListener: onDone");
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!UTTERANCE_ID.equals(utteranceId)) {
+                            return;
+                        }
+                        handleState(TtsState.SynthesizeTtsDone);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final String utteranceId) {
+                Debug.d(TAG, "UtteranceProgressListener: onError");
+                handleState(TtsState.Error);
+            }
+        });
+
+        initTtsLanguage();
+    }
+
+    private void initTtsLanguage() {
+        Locale locale = null;
+        final String languageCode = activity.getResources().getConfiguration().locale.getISO3Language();
+        Debug.d(TAG, "languageCode = " + languageCode);
+        if (!languageCode.equals("other")) {
+            try {
+                locale = new Locale(languageCode);
+            } catch (Exception e) {
+                Log.w(TAG, e);
+            }
+        }
+        if (locale == null || ttsService.isLanguageAvailable(locale) < 0) {
+            locale = Locale.getDefault();
+            if (ttsService.isLanguageAvailable(locale) < 0) {
+                locale = Locale.ENGLISH;
+            }
+        }
+        currentLocale = locale;
+        ttsService.setLanguage(locale);
+    }
+
+    public boolean isSpeaking() {
+        return ttsState == TtsState.SynthesizeTtsStart || ttsState == TtsState.MediaPlayStart;
+    }
+
+    public boolean isPaused() {
+        return ttsState == TtsState.MediaPaused;
+    }
+
+    /**
+     * stop or wait current playing finished to start a new play
+     *
+     * @param text
+     */
+    public void startTts(String text) {
+        this.text = text;
+        handleState(TtsState.SynthesizeTtsPrepare);
+    }
+
+    public void pause() {
+        handleState(TtsState.MediaPaused);
+    }
+
+    public void resume() {
+        handleState(TtsState.MediaResume);
+    }
+
+    public void stop() {
+        if (mediaPlayer != null) {
+            closeMediaPlayer();
+        }
+        ttsService.stop();
+        handleState(TtsState.Stopped);
+    }
+
+    public void shutdown() {
+        stop();
+        ttsService.shutdown();
+        ttsService = null;
+    }
+
+    private void handleState(TtsState state) {
+        switch (state) {
+            case SynthesizeTtsPrepare:
+                if (ttsState == TtsState.SynthesizeTtsPrepare || ttsState == TtsState.SynthesizeTtsStart ||
+                        ttsState == TtsState.SynthesizeTtsDone || ttsState == TtsState.MediaPlayStart) {
+                    return;
+                }
+                if (StringUtils.isNullOrEmpty(text)) {
+                    handleState(TtsState.Error);
+                    return;
+                }
+                if (synthesizeTts(text)) {
+                    setTtsState(TtsState.SynthesizeTtsStart);
+                    onStart();
+                } else {
+                    handleState(TtsState.Error);
+                }
+                break;
+            case SynthesizeTtsDone:
+                if (ttsState != TtsState.Stopped) {
+                    if (prepareMediaPlayer()) {
+                        handleState(TtsState.MediaPlayStart);
+                    } else {
+                        handleState(TtsState.Error);
+                    }
+                }
+                break;
+            case MediaPlayStart:
+                if (ttsState != TtsState.Stopped && ttsState != TtsState.MediaPaused) {
+                    setTtsState(TtsState.MediaPlayStart);
+                    startMediaPlayer();
+                    onStart();
+                }
+                break;
+            case MediaPaused:
+                if (ttsState == TtsState.MediaPlayStart) {
+                    pauseMediaPlayer();
+                }
+                setTtsState(TtsState.MediaPaused);
+                onPaused();
+                break;
+            case MediaResume:
+                if (ttsState == TtsState.MediaPaused) {
+                    setTtsState(TtsState.MediaPlayStart);
+                    handleState(TtsState.MediaPlayStart);
+                }
+                break;
+            case MediaPlayDone:
+                if (ttsState != TtsState.Stopped) {
+                    setTtsState(TtsState.Ready);
+                    onDone();
+                }
+                break;
+            case Stopped:
+                setTtsState(TtsState.Stopped);
+                onStopped();
+                break;
+            case Error:
+                setTtsState(TtsState.Error);
+                onError();
+                break;
+            default:
+                assert(false);
+        }
+    }
+
+    private boolean synthesizeTts(String text) {
+        Benchmark benchmark = new Benchmark();
+        HashMap<String, String> callbackMap = new HashMap<String, String>();
+        callbackMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID);
+        int res = ttsService.synthesizeToFile(text, callbackMap, getTempWaveFile().getAbsolutePath());
+        benchmark.report("synthesizeToFile");
+
+        if (res == TextToSpeech.ERROR) {
+            Log.w(TAG, "TTS synthesize failed");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private boolean prepareMediaPlayer() {
+        try {
+            if (!getTempWaveFile().exists()) {
+                Log.w(TAG, "tts wave file not exists: " + getTempWaveFile().getAbsolutePath());
+                return false;
+            }
+
+            if (mediaPlayer != null) {
+                closeMediaPlayer();
+            }
+
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    Debug.d("media player onCompletion");
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            handleState(TtsState.MediaPlayDone);
+                        }
+                    });
+                }
+            });
+
+            Debug.d("play wave file: " + ttsState);
+            mediaPlayer.setDataSource(getTempWaveFile().getAbsolutePath());
+            mediaPlayer.prepare();
+            return true;
+        } catch (Exception e) {
+            Log.w(TAG, e);
+            return false;
+        }
+    }
+
+    private void startMediaPlayer() {
+        mediaPlayer.start();
+    }
+
+    private void pauseMediaPlayer() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
+    private void closeMediaPlayer() {
+        try {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer.setOnCompletionListener(null);
+        } catch (Throwable tr) {
+            Log.w(TAG, tr);
+        }
+    }
+
+    private File getTempWaveFile() {
+        File cache_folder = new File("/mnt/ramdisk");
+        if (!cache_folder.exists()) {
+            cache_folder = activity.getExternalCacheDir();
+        }
+
+        return new File(cache_folder, "tts_temp.wav");
+    }
+
+    private void setTtsState(TtsState state) {
+        Debug.d("setTtsState: " + state);
+        ttsState = state;
+        if (ttsState == TtsState.SynthesizeTtsStart || ttsState == TtsState.MediaPlayStart) {
+            acquireWakeLock();
+        } else {
+            releaseWakeLock();
+        }
+    }
+
+    private void acquireWakeLock() {
+        if (wakeLock == null) {
+            wakeLock = Device.currentDevice().newWakeLock(activity, TAG);
+            wakeLock.acquire();
+        }
+    }
+
+    private void releaseWakeLock() {
+        if (wakeLock != null) {
+            wakeLock.release();
+            wakeLock = null;
+        }
+    }
+
+    private void onStart() {
+        if (callback != null) {
+            callback.onStart();
+        }
+    }
+
+    private void onPaused() {
+        if (callback != null) {
+            callback.onPaused();
+        }
+    }
+
+    private void onDone() {
+        if (callback != null) {
+            callback.onDone();
+        }
+    }
+
+    private void onStopped() {
+        if (callback != null) {
+            callback.onStopped();
+        }
+    }
+
+    private void onError() {
+        if (callback != null) {
+            callback.onError();
+        }
+    }
+}

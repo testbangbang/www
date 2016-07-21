@@ -40,6 +40,7 @@ import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
@@ -87,6 +88,7 @@ public class ReaderActivity extends ActionBarActivity {
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
 
     private ReaderSelectionManager selectionManager;
+    private ReaderTtsManager ttsManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -144,7 +146,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void resetMenus() {
-        ShowReaderMenuAction.resetReaderMenu();
+        ShowReaderMenuAction.resetReaderMenu(this);
         ShowSearchMenuAction.resetSearchMenu();
         ShowTextSelectionMenuAction.resetSelectionMenu();
     }
@@ -578,6 +580,18 @@ public class ReaderActivity extends ActionBarActivity {
             selectionManager = new ReaderSelectionManager();
         }
         return selectionManager;
+    }
+
+    public ReaderTtsManager getTtsManager() {
+        if (ttsManager == null) {
+            ttsManager = new ReaderTtsManager(this, new ReaderTtsManager.Callback() {
+                @Override
+                public void onStateChanged() {
+                    new ShowReaderMenuAction().execute(ReaderActivity.this);
+                }
+            });
+        }
+        return ttsManager;
     }
 
     private void onRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
