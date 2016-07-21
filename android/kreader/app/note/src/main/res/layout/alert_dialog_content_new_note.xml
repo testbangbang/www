@@ -10,6 +10,9 @@
         android:id="@+id/textView_note_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:minHeight="@dimen/button_minHeight"
         android:text="@string/note_name"
         android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
 
@@ -17,5 +20,10 @@
         android:id="@+id/editText_Input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"/>
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/mx_button_bg_no_selected"
+        android:maxLines="1"
+        android:minHeight="@dimen/button_minHeight"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" />
 </LinearLayout>

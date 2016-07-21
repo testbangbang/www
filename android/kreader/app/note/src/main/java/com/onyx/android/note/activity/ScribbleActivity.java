@@ -39,6 +39,7 @@ import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
@@ -465,7 +466,19 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     }
 
     private void showNoteNameIllegal() {
-        Toast.makeText(ScribbleActivity.this, "Note_already_exists", Toast.LENGTH_SHORT).show();
+        final OnyxAlertDialog illegalDialog = new OnyxAlertDialog();
+        illegalDialog.setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.noti))
+                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
+                .setAlertMsgString(getString(R.string.note_name_already_exist))
+                .setEnableNegativeButton(false).setCanceledOnTouchOutside(false)
+        .setPositiveAction(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                illegalDialog.dismiss();
+                syncWithCallback(true,true,null);
+            }
+        }));
+        illegalDialog.show(getFragmentManager(),"illegalDialog");
     }
 
     private void onDocumentClose(final String title) {

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
+import com.onyx.android.note.actions.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.CreateLibraryAction;
 import com.onyx.android.note.actions.GotoUpAction;
 import com.onyx.android.note.actions.LoadNoteListAction;
@@ -23,6 +24,8 @@ import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.utils.Utils;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
@@ -30,6 +33,7 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -167,9 +171,19 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 DialogCreateNewFolder dlgCreateFolder = new DialogCreateNewFolder();
                 dlgCreateFolder.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
                     @Override
-                    public void onCreated(String title) {
-                        final CreateLibraryAction action = new CreateLibraryAction(getCurrentLibraryId(), title);
-                        action.execute(ManageActivity.this, null);
+                    public void onCreated(final String title) {
+                        final CheckNoteNameLegalityAction action = new CheckNoteNameLegalityAction(title);
+                        action.execute(ManageActivity.this, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                if(action.isLegal()){
+                                    final CreateLibraryAction action = new CreateLibraryAction(getCurrentLibraryId(), title);
+                                    action.execute(ManageActivity.this, null);
+                                }else {
+                                    showNoteNameIllegal();
+                                }
+                            }
+                        });
                     }
                 });
                 dlgCreateFolder.show(getFragmentManager());
@@ -259,6 +273,15 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 contentView.nextPage();
             }
         });
+    }
+
+    private void showNoteNameIllegal() {
+        final OnyxAlertDialog illegalDialog = new OnyxAlertDialog();
+        illegalDialog.setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.noti))
+                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
+                .setAlertMsgString(getString(R.string.note_name_already_exist))
+                .setEnableNegativeButton(false).setCanceledOnTouchOutside(false));
+        illegalDialog.show(getFragmentManager(),"illegalDialog");
     }
 
     private void onNormalModeItemClick(final ContentItemView view) {

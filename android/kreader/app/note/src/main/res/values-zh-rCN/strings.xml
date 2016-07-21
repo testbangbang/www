@@ -23,4 +23,6 @@
     <string name="original_name">当前名称:</string>
     <string name="new_name">新名称:</string>
     <string name="rename">重命名</string>
+    <string name="noti">通知</string>
+    <string name="note_name_already_exist">此文件已重名\n请更换文件名后重新保存</string>
 </resources>
