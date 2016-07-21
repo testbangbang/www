@@ -96,8 +96,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     private void addShape(final NotePage notePage, final Shape shape) {
-        notePage.setAddToActionHistory(true);
-        notePage.addShape(shape);
+        notePage.addShape(shape, true);
     }
 
     private TouchPoint normalized(final PageInfo pageInfo, final MotionEvent e) {

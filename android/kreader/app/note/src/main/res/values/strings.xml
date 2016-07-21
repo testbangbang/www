@@ -20,4 +20,7 @@
     <string name="loading">Loading Note.</string>
     <string name="saving_note">Saving Note.</string>
     <string name="new_document">New Document</string>
+    <string name="original_name">Onriginal Name:</string>
+    <string name="new_name">New Name:</string>
+    <string name="rename">Rename</string>
 </resources>
