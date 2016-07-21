@@ -1,5 +1,5 @@
 <resources>
-    <dimen name="button_minHeight">48dp</dimen>
+    <dimen name="button_minHeight">40dp</dimen>
     <dimen name="contentView_button_X_axis_margin">30dp</dimen>
     <dimen name="contentView_button_progress_minWidth">100dp</dimen>
     <dimen name="global_dialog_imageView_tittle_size">70dp</dimen>
@@ -27,6 +27,9 @@
     <dimen name="reader_layer_menu_tts_seek_bar_width">300dp</dimen>
     <dimen name="image_view_indicator_size">20dp</dimen>
     <dimen name="image_view_indicator_margin_right">4dp</dimen>
+    <dimen name="tree_recycler_item_view_padding">10dp</dimen>
+    <dimen name="reader_layer_menu_tts_item_padding">30dp</dimen>
+    <dimen name="dialog_reader_menu_text_view_size">26sp</dimen>
     <dimen name="navigatorHeight">42dp</dimen>
     <dimen name="reader_status_bar_text_size">20sp</dimen>
     <dimen name="navigatorWidth">30dp</dimen>

@@ -1,9 +1,9 @@
 package com.onyx.kreader.ui.data;
 
 import android.graphics.RectF;
+
 import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.android.cropimage.data.PointMatrix;
-import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ public class ReaderCropArgs {
     public enum CropPageMode {
         None,
         AUTO_CROP_PAGE,
+        TWO_CROP_PAGE,
         MANUAL_CROP_PAGE,
         MANUAL_CROP_PAGE_BY_ODD_AND_EVEN,
     }

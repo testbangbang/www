@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.ui.data;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.ui.R;
-import com.onyx.android.sdk.ui.view.AutofitRecyclerView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class ReaderLayerMenuViewFactory {
 
-    private static int mainMenuContainerViewHeight  = 0;
+    public static int mainMenuContainerViewHeight  = 0;
 
     private static class MainMenuItemViewHolder extends RecyclerView.ViewHolder {
         private View view;
@@ -65,7 +65,10 @@ public class ReaderLayerMenuViewFactory {
     }
 
     private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        final AutofitRecyclerView view = (AutofitRecyclerView)LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
+        final RecyclerView view = (RecyclerView)LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(context,1);
+        gridLayoutManager.setSpanCount(6);
+        view.setLayoutManager(gridLayoutManager);
         final LayoutInflater inflater = LayoutInflater.from(context);
         view.setAdapter(new RecyclerView.Adapter() {
             @Override
