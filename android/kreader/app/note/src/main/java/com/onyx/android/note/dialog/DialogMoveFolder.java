@@ -50,7 +50,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setParams(new Params().setTittleString(getString(R.string.move))
-                .setCustomLayoutResID(R.layout.alert_dialog_content_move_folder)
+                .setCustomContentLayoutResID(R.layout.alert_dialog_content_move_folder)
                 .setEnableFunctionPanel(false)
                 .setCustomLayoutHeight((int) (5 * getResources().getDimension(R.dimen.button_minHeight)))
                 .setCustomViewAction(new CustomViewAction() {

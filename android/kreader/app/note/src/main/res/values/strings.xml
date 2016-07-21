@@ -23,4 +23,6 @@
     <string name="original_name">Onriginal Name:</string>
     <string name="new_name">New Name:</string>
     <string name="rename">Rename</string>
+    <string name="noti">Notification</string>
+    <string name="note_name_already_exist">Note Name Already Exist.</string>
 </resources>

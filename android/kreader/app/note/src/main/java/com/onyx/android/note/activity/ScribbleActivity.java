@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
@@ -38,13 +39,13 @@ import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -428,8 +429,18 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         dialogNoteNameInput.setArguments(bundle);
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
-            public boolean onConfirmAction(String input) {
-                onDocumentClose(input);
+            public boolean onConfirmAction(final String input) {
+                final CheckNoteNameLegalityAction action = new CheckNoteNameLegalityAction(input);
+                action.execute(ScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if(action.isLegal()){
+                            onDocumentClose(input);
+                        }else {
+                            showNoteNameIllegal();
+                        }
+                    }
+                });
                 return true;
             }
 
@@ -452,6 +463,22 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 dialogNoteNameInput.show(getFragmentManager());
             }
         });
+    }
+
+    private void showNoteNameIllegal() {
+        final OnyxAlertDialog illegalDialog = new OnyxAlertDialog();
+        illegalDialog.setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.noti))
+                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
+                .setAlertMsgString(getString(R.string.note_name_already_exist))
+                .setEnableNegativeButton(false).setCanceledOnTouchOutside(false)
+        .setPositiveAction(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                illegalDialog.dismiss();
+                syncWithCallback(true,true,null);
+            }
+        }));
+        illegalDialog.show(getFragmentManager(),"illegalDialog");
     }
 
     private void onDocumentClose(final String title) {
