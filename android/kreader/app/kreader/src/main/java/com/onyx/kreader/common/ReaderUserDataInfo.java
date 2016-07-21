@@ -1,6 +1,7 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
+import com.alibaba.fastjson.JSON;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.dataprovider.Annotation;
@@ -64,6 +65,7 @@ public class ReaderUserDataInfo {
     }
 
     public void saveHighlightResult(ReaderSelection selection) {
+        Debug.d("saveHighlightResult: " + JSON.toJSONString(selection));
         selectionMap.put(HIGHLIGHT_TAG, Arrays.asList(new ReaderSelection[] { selection }));
     }
 

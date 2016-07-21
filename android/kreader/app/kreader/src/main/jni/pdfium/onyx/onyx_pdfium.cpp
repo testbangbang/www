@@ -10,6 +10,7 @@
 
 static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
 static const char * splitterClassName = "com/onyx/kreader/api/ReaderTextSplitter";
+static const char * sentenceClassName = "com/onyx/kreader/api/ReaderSentence";
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
@@ -197,6 +198,14 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     return count;
 }
 
+static jobject createEmptySelection(JNIEnv *env, int page) {
+    JNIUtils utils(env);
+    if (!utils.findMethod(selectionClassName, "<init>", "(I)V")) {
+        return NULL;
+    }
+    return env->NewObject(utils.getClazz(), utils.getMethodId(), page);
+}
+
 static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, std::vector<int> & list) {
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
@@ -272,6 +281,16 @@ static int getTextRightBoundary(JNIEnv * env, jobject splitter, jstring str, jst
         return -1;
     }
     return env->CallIntMethod(splitter, method, str, left, right);
+}
+
+static int getTextSentenceBreakPoint(JNIEnv * env, jobject splitter, jstring text) {
+    JNILocalRef<jclass> clz = JNILocalRef<jclass>(env, env->GetObjectClass(splitter));
+    jmethodID method = env->GetMethodID(clz.getValue(), "getTextSentenceBreakPoint", "(Ljava/lang/String;)I");
+    if (!method) {
+        LOGE("find method getTextSentenceBreakPoint failed!");
+        return -1;
+    }
+    return env->CallIntMethod(splitter, method, text);
 }
 
 static std::shared_ptr<_jstring> getJStringText(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int start, int end) {
@@ -422,6 +441,60 @@ JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapp
     env->SetByteArrayRegion(array, 0, size, data);
     delete [] data;
     return array;
+}
+
+JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetSentence
+  (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jint sentenceStartIndex, jobject splitter) {
+    FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
+    if (textPage == NULL) {
+        LOGE("get text page failed");
+       return NULL;
+    }
+    int count = FPDFText_CountChars(textPage);
+    if (count <= 0) {
+        return NULL;
+    }
+
+    int limit = std::min(200, count - sentenceStartIndex);
+    int lastIndex = sentenceStartIndex + limit - 1;
+    LOGE("text range: %d, %d", sentenceStartIndex, lastIndex);
+    std::shared_ptr<_jstring> text = getJStringText(env, textPage, splitter, sentenceStartIndex, lastIndex);
+    int index = getTextSentenceBreakPoint(env, splitter, text.get());
+    LOGE("sentence break point: %d", index);
+    if (index > 0) {
+        lastIndex = sentenceStartIndex + index;
+    }
+    LOGE("sentence range: %d, %d", sentenceStartIndex, lastIndex);
+
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    if (page == NULL) {
+        LOGE("get page failed");
+    }
+
+    jobject selection = createEmptySelection(env, pageIndex);
+    if (selection == NULL) {
+        LOGE("createEmptySelection failed");
+        return NULL;
+    }
+    reportSelection(env, page, textPage, 0, 0, 0, 0, 0, sentenceStartIndex, lastIndex, selection);
+
+    JNIUtils utils(env);
+    if (!utils.findStaticMethod(sentenceClassName, "create", "(Lcom/onyx/kreader/api/ReaderSelection;IZZ)Lcom/onyx/kreader/api/ReaderSentence;")) {
+        return NULL;
+    }
+
+    FPDF_DOCUMENT document = OnyxPdfiumManager::getDocument(env, id);
+    if (document == NULL) {
+        LOGE("getDocument failed");
+        return 0;
+    }
+    int pageCount = FPDF_GetPageCount(document);
+
+    bool pageEnd = (lastIndex >= (count - 1));
+    bool docEnd = pageEnd && (pageIndex >= (pageCount - 1));
+    LOGE("pageEnd: %d, docEnd: %d", pageEnd, docEnd);
+
+    return env->CallStaticObjectMethod(utils.getClazz(), utils.getMethodId(), selection, lastIndex + 1, pageEnd, docEnd);
 }
 
 static bool buildTableOfContentTree(JNIEnv *env, jclass entryClazz, jmethodID addEntryMethodID, jobject parent, FPDF_DOCUMENT doc, FPDF_BOOKMARK entry) {

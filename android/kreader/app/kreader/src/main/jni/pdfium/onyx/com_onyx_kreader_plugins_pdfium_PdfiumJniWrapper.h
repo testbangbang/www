@@ -105,6 +105,14 @@ JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapp
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    nativeGetSentence
+ * Signature: (IIILcom/onyx/kreader/api/ReaderTextSplitter;)Lcom/onyx/kreader/api/ReaderSentence;
+ */
+JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetSentence
+  (JNIEnv *, jobject, jint, jint, jint, jobject);
+
+/*
+ * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeGetTableOfContent
  * Signature: (ILcom/onyx/kreader/api/ReaderDocumentTableOfContentEntry;)Z
  */

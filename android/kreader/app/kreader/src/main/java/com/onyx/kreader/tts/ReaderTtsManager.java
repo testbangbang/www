@@ -2,7 +2,10 @@ package com.onyx.kreader.tts;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.host.request.GetPageTextRequest;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.api.ReaderSentence;
+import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.host.request.GetSentenceRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -16,12 +19,11 @@ public class ReaderTtsManager {
     }
 
     private ReaderActivity readerActivity;
-    private Callback callback;
     private ReaderTtsService ttsService;
+    private ReaderSentence currentSentence;
 
     public ReaderTtsManager(final ReaderActivity readerActivity, final Callback callback) {
         this.readerActivity = readerActivity;
-        this.callback = callback;
 
         ttsService = new ReaderTtsService(readerActivity, new ReaderTtsService.Callback() {
             @Override
@@ -36,16 +38,8 @@ public class ReaderTtsManager {
 
             @Override
             public void onDone() {
-                callback.onStateChanged();
-                if (readerActivity.getCurrentPage() < readerActivity.getPageCount() - 1) {
-                    String next = PagePositionUtils.fromPageNumber(readerActivity.getCurrentPage() + 1);
-                    new GotoPageAction(next).execute(readerActivity, new BaseCallback() {
-                        @Override
-                        public void done(BaseRequest request, Throwable e) {
-                            requestPageTextForTts();
-                        }
-                    });
-                }
+//                callback.onStateChanged();
+                requestSentenceForTts();
             }
 
             @Override
@@ -74,7 +68,7 @@ public class ReaderTtsManager {
             return;
         }
 
-        requestPageTextForTts();
+        requestSentenceForTts();
     }
 
     public void pause() {
@@ -89,16 +83,44 @@ public class ReaderTtsManager {
         ttsService.shutdown();
     }
 
-    private void requestPageTextForTts() {
-        final GetPageTextRequest textRequest = new GetPageTextRequest(readerActivity.getCurrentPage());
-        readerActivity.getReader().submitRequest(readerActivity,
-                textRequest, new BaseCallback() {
+    private void requestSentenceForTts() {
+        String startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
+        final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerActivity.getCurrentPage(), startPosition);
+        readerActivity.submitRequest(sentenceRequest, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (e != null) {
                             return;
                         }
-                        ttsService.startTts(textRequest.getText());
+                        currentSentence = sentenceRequest.getSentenceResult();
+                        if (currentSentence == null || currentSentence.isEndOfDocument()) {
+                            if (currentSentence == null) {
+                                Debug.d("getSentenceResult failed");
+                            }
+                            if (currentSentence != null && currentSentence.isEndOfDocument()) {
+                                Debug.d("sentence at end of document");
+                            }
+                            return;
+                        }
+                        Debug.d("current sentence: " + currentSentence.getReaderSelection().getText() +
+                                ", " + currentSentence.isEndOfScreen() +
+                                ", " + currentSentence.isEndOfDocument());
+                        if (currentSentence.isEndOfScreen()) {
+                            currentSentence = null;
+                            String next = PagePositionUtils.fromPageNumber(readerActivity.getCurrentPage() + 1);
+                            new GotoPageAction(next).execute(readerActivity, new BaseCallback() {
+                                @Override
+                                public void done(BaseRequest request, Throwable e) {
+                                    requestSentenceForTts();
+                                }
+                            });
+                            return;
+                        }
+                        if (StringUtils.isNullOrEmpty(currentSentence.getReaderSelection().getText())) {
+                            requestSentenceForTts();
+                            return;
+                        }
+                        ttsService.startTts(currentSentence.getReaderSelection().getText());
                     }
                 });
     }

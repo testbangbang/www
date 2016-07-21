@@ -34,6 +34,8 @@ public interface ReaderDocument {
      */
     public String getPageText(final String position);
 
+    public ReaderSentence getSentence(final String position, final String sentenceStartPosition);
+
     /**
      * Read the document table of content.
      * @param toc

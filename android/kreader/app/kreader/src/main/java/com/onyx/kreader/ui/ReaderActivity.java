@@ -587,7 +587,10 @@ public class ReaderActivity extends ActionBarActivity {
             ttsManager = new ReaderTtsManager(this, new ReaderTtsManager.Callback() {
                 @Override
                 public void onStateChanged() {
-                    new ShowReaderMenuAction().execute(ReaderActivity.this);
+                    if (ShowReaderMenuAction.isReaderMenuShown()) {
+                        // TODO update menu state
+                        new ShowReaderMenuAction().execute(ReaderActivity.this);
+                    }
                 }
             });
         }
@@ -680,6 +683,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawReaderSelection(Canvas canvas, Paint paint, ReaderSelection selection) {
+        Debug.d("highlight selection result: " + JSON.toJSON(selection));
         PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
         if (pageInfo != null) {
             drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
@@ -696,6 +700,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
+        Debug.d("drawHighlightRectangles: " + JSON.toJSON(rectangles));
         if (rectangles == null) {
             return;
         }
