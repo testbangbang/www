@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
-import com.onyx.android.sdk.utils.DimenUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -199,10 +198,10 @@ public class TreeRecyclerView extends PageRecyclerView {
             Resources res = parent.getContext().getResources();
             float imageSize = res.getDimension(R.dimen.image_view_indicator_size);
             float marginRight = res.getDimension(R.dimen.image_view_indicator_margin_right);
-            int paddingLeftPx = DimenUtils.dip2px(parent.getContext(),imageSize + marginRight);
+            int paddingLeftPx = (int)(imageSize + marginRight);
             imageParams.leftMargin = paddingLeftPx * node.treeDepth;
             imageViewIndicator.setLayoutParams(imageParams);
-            lineParams.leftMargin = paddingLeftPx;
+            lineParams.leftMargin = (int)(imageSize + marginRight);
             splitLine.setLayoutParams(lineParams);
 
             textViewTitle.setText(node.title);

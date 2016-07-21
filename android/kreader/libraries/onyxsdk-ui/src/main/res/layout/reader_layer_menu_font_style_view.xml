@@ -26,50 +26,42 @@
             <com.onyx.android.sdk.ui.view.AlignTextView
                     android:id="@+id/text_view_font_size_0"
                     style="@style/fontSize_textView_style"
-                    android:textSize="10sp"
-                    app:lastLineDescent="12dp"/>
+                    android:textSize="10sp"/>
 
             <com.onyx.android.sdk.ui.view.AlignTextView
                     android:id="@+id/text_view_font_size_1"
                     style="@style/fontSize_textView_style"
-                    android:textSize="12sp"
-                    app:lastLineDescent="12dp"/>
+                    android:textSize="12sp"/>
 
             <com.onyx.android.sdk.ui.view.AlignTextView
                     android:id="@+id/text_view_font_size_2"
                     style="@style/fontSize_textView_style"
-                    android:textSize="14sp"
-                    app:lastLineDescent="12dp"/>
+                    android:textSize="14sp"/>
 
             <com.onyx.android.sdk.ui.view.AlignTextView
                     android:id="@+id/text_view_font_size_3"
                     style="@style/fontSize_textView_style"
-                    android:textSize="16sp"
-                    app:lastLineDescent="12dp"/>
+                    android:textSize="16sp"/>
 
             <com.onyx.android.sdk.ui.view.AlignTextView
                     android:id="@+id/text_view_font_size_4"
                     style="@style/fontSize_textView_style"
-                    android:textSize="18sp"
-                    app:lastLineDescent="12dp"/>
+                    android:textSize="18sp"/>
 
             <com.onyx.android.sdk.ui.view.AlignTextView
                     android:id="@+id/text_view_font_size_5"
                     style="@style/fontSize_textView_style"
-                    android:textSize="20sp"
-                    app:lastLineDescent="12dp"/>
+                    android:textSize="20sp"/>
 
             <com.onyx.android.sdk.ui.view.AlignTextView
                     android:id="@+id/text_view_font_size_6"
                     style="@style/fontSize_textView_style"
-                    android:textSize="22sp"
-                    app:lastLineDescent="12dp"/>
+                    android:textSize="22sp"/>
 
             <com.onyx.android.sdk.ui.view.AlignTextView
                     android:id="@+id/text_view_font_size_7"
                     style="@style/fontSize_textView_style"
-                    android:textSize="24sp"
-                    app:lastLineDescent="12dp"/>
+                    android:textSize="24sp"/>
 
         </LinearLayout>
 

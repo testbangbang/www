@@ -2,31 +2,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/mode_icon"
+    <LinearLayout
+        android:id="@+id/middle_layout"
+        android:gravity="center"
         android:layout_centerInParent="true"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/title"
-        android:scaleType="center" />
+        android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/anchor_view"
-        android:visibility="invisible"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_centerHorizontal="true"/>
+        <ImageView
+            android:id="@+id/mode_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/title"
+            android:scaleType="center" />
+
+        <TextView
+            android:textSize="12sp"
+            android:id="@+id/text_view_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <CheckBox
         android:layout_centerHorizontal="true"
+        android:layout_below="@+id/middle_layout"
         android:id="@+id/checkbox_current_select"
         android:button="@drawable/custom_btn_radio"
-        android:layout_alignLeft="@+id/anchor_view"
-        android:layout_alignRight="@+id/anchor_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/mode_icon"
-        android:paddingLeft="10dp"
         android:clickable="false"
         android:focusable="false"
         android:visibility="invisible" />

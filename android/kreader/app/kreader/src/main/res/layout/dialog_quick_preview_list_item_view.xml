@@ -42,18 +42,21 @@
             android:layout_height="20dp"/>
     </RelativeLayout>
 
-    <View
+    <ImageView
+        android:scaleType="fitXY"
         android:id="@+id/right_shadow"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/library_book_cover_shadow"
-        android:layout_width="4dp"
-        android:layout_height="match_parent"></View>
+        android:src="@drawable/library_book_cover_shadow"
+        android:layout_width="@dimen/dialog_quick_preview_list_item_shadow_height"
+        android:layout_height="match_parent"/>
 
-    <View
+    <ImageView
+        android:scaleType="fitXY"
         android:id="@+id/bottom_shadow"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/library_book_cover_shadow"
+        android:src="@drawable/library_book_cover_shadow"
         android:layout_width="match_parent"
-        android:layout_height="4dp"></View>
+        android:layout_height="@dimen/dialog_quick_preview_list_item_shadow_height"/>
 
 </RelativeLayout>
