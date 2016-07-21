@@ -5,12 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuItem;
+import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.AutofitRecyclerView;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 
@@ -116,7 +120,7 @@ public class ReaderLayerMenuViewFactory {
         fontStyleViewItemMap.put(R.id.image_view_increase_page_margins, "/Font/IncreasePageMargins");
     }
 
-    private static void mapViewMenuItemFunction(final View fontStyleView, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+    private static void mapFontStyleViewMenuItemFunction(final View fontStyleView, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         for (final HashMap.Entry<Integer, String> entry : fontStyleViewItemMap.entrySet()) {
             final View view = fontStyleView.findViewById(entry.getKey());
             final ReaderLayerMenuItem item = findItem(items, entry.getValue());
@@ -140,13 +144,46 @@ public class ReaderLayerMenuViewFactory {
 
     private static View createFontStyleView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         View view = LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_font_style_view, null);
-        mapViewMenuItemFunction(view, items, state, callback);
+        mapFontStyleViewMenuItemFunction(view, items, state, callback);
         return view;
+    }
+
+    private static void updateTTSViewState(final View view, final ReaderLayerMenuState state) {
+        ImageButton button = (ImageButton) view.findViewById(R.id.button_play);
+        if (state.getTtsState() == ReaderLayerMenuState.TtsState.Speaking) {
+            button.setImageResource(R.drawable.ic_dialog_reader_menu_tts_pause_black);
+        } else {
+            button.setImageResource(R.drawable.ic_dialog_reader_menu_tts_play_black);
+        }
+    }
+
+    private static void mapTtsViewMenuItemFunction(final View view, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+        view.findViewById(R.id.button_stop).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.onMenuItemClicked(createVirtualMenuItem("/TTS/Stop"));
+            }
+        });
+        view.findViewById(R.id.button_play).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (state.getTtsState() == ReaderLayerMenuState.TtsState.Speaking) {
+                    callback.onMenuItemClicked(createVirtualMenuItem("/TTS/Pause"));
+                } else {
+                    callback.onMenuItemClicked(createVirtualMenuItem("/TTS/Play"));
+                }
+            }
+        });
     }
 
     private static View createTTSView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         View view = LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_tts_view, null);
+        updateTTSViewState(view, state);
+        mapTtsViewMenuItemFunction(view, state, callback);
         return view;
     }
 
+    private static ReaderMenuItem createVirtualMenuItem(String uri) {
+        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, URI.create(uri), null, null, -1);
+    }
 }
