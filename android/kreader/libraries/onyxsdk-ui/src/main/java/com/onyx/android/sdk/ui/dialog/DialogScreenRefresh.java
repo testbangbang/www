@@ -37,7 +37,7 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
 //        interval = OnyxSysCenter.getScreenUpdateGCInterval(getActivity(), DEFAULT_INTERVAL_COUNT);
         buildScreenRefreshAdapter();
         setParams(new Params().setTittleString(getString(R.string.screen_refresh))
-                .setCustomLayoutResID(R.layout.dialog_screen_refresh)
+                .setCustomContentLayoutResID(R.layout.dialog_screen_refresh)
                 .setEnableFunctionPanel(false)
                 .setEnablePageIndicator(false)
                 .setCustomLayoutHeight((int) (mAdapter.size() * getResources().getDimension(R.dimen.button_minHeight)))

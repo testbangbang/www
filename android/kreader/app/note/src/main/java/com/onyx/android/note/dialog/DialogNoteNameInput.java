@@ -38,7 +38,9 @@ public class DialogNoteNameInput extends OnyxAlertDialog {
         final boolean enableNeutralOption = getArguments().getBoolean(ARGS_ENABLE_NEUTRAL_OPTION, false);
         setParams(new Params().setTittleString(dialog_tittle)
                 .setEnableNeutralButton(enableNeutralOption)
-                .setCustomLayoutResID(R.layout.alert_dialog_content_new_note)
+                //TODO:hardcode mx style,if this app use on default branch,here could set layout id depend on config.
+                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
+                .setCustomContentLayoutResID(R.layout.alert_dialog_content_new_note)
                 .setCustomViewAction(new CustomViewAction() {
                     @Override
                     public void onCreateCustomView(View customView, TextView pageIndicator) {

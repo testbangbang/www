@@ -27,7 +27,7 @@
     </LinearLayout>
 
     <TextView
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/dialog_quick_preview_page_margin_bottom"
             android:id="@+id/text_view_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,8 +40,8 @@
             android:thumb="@drawable/seekbar_thumb"
             android:id="@+id/seek_bar_page"
             android:layout_width="fill_parent"
-            android:layout_height="25dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="@dimen/dialog_quick_preview_seek_bar_height"
+            android:layout_marginTop="@dimen/dialog_quick_preview_seek_bar_margin_top"
             android:layout_alignLeft="@+id/grid_view_preview"
             android:layout_alignRight="@id/grid_view_preview"
             android:layout_above="@id/text_view_progress"

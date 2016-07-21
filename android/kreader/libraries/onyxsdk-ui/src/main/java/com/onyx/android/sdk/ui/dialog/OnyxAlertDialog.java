@@ -75,7 +75,8 @@ public class OnyxAlertDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.onyx_custom_alert_dialog, container, false);
+        View view = inflater.inflate(params.customLayoutResID == -1 ?
+                params.defaultLayoutResID : params.customLayoutResID, container, false);
         alertTittleBarLayout = (RelativeLayout) view.findViewById(R.id.dialog_tittleBar);
         tittleTextView = (TextView) alertTittleBarLayout.findViewById(R.id.textView_title);
         pageSizeIndicator = (TextView) alertTittleBarLayout.findViewById(R.id.page_size_indicator);
@@ -163,8 +164,8 @@ public class OnyxAlertDialog extends DialogFragment {
 
         pageSizeIndicator.setVisibility(params.enablePageIndicator ? View.VISIBLE : View.GONE);
 
-        if (params.customLayoutResID != -1) {
-            setCustomContentLayout(parentView, params.customLayoutResID,
+        if (params.customContentLayoutResID != -1) {
+            setCustomContentLayout(parentView, params.customContentLayoutResID,
                     params.customLayoutHeight, params.customLayoutWidth);
             params.customViewAction.onCreateCustomView(customContentView, pageSizeIndicator);
         } else {
@@ -202,7 +203,10 @@ public class OnyxAlertDialog extends DialogFragment {
          * @param enableNeutralButton use this value to configure NeutralButton Button visibility.
          * @param enablePageIndicator use this value to configure Page Indicator visibility.
          * @param canceledOnTouchOutside use this value to configure cancel this dialog when touch outside.
-         * @param customLayoutResID use this value to configure Custom Layout ID.
+         * @param customContentLayoutResID use this value to configure Custom Content Layout ID.
+         * @param customLayoutResID use this value to configure CustomLayout ID,Some Custom Manufacture will require a total different
+         * layout,so use this id to change the whole dialog outside Layout,but remember should provide all id exist in
+         * onyx_custom_alert_dialog.(Future will add id check.)
          * @param customLayoutHeight use this value to configure Custom Layout Height.
          * @param customLayoutWidth use this value to configure Custom Layout Width.
          * @param dialogWidth use this value to configure Dialog Width.
@@ -226,8 +230,10 @@ public class OnyxAlertDialog extends DialogFragment {
         boolean enablePageIndicator = false;
         boolean canceledOnTouchOutside = true;
         boolean usePercentageWidth = true;
+        int customContentLayoutResID = -1;
         int customLayoutResID = -1;
         String neutralButtonText = "";
+        final int defaultLayoutResID = R.layout.onyx_custom_alert_dialog;
 
         int customLayoutHeight = ViewGroup.LayoutParams.WRAP_CONTENT;
         int customLayoutWidth = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -270,12 +276,12 @@ public class OnyxAlertDialog extends DialogFragment {
             return this;
         }
 
-        public int getCustomLayoutResID() {
-            return customLayoutResID;
+        public int getCustomContentLayoutResID() {
+            return customContentLayoutResID;
         }
 
-        public Params setCustomLayoutResID(int customLayoutResID) {
-            this.customLayoutResID = customLayoutResID;
+        public Params setCustomContentLayoutResID(int customContentLayoutResID) {
+            this.customContentLayoutResID = customContentLayoutResID;
             return this;
         }
 
@@ -410,5 +416,15 @@ public class OnyxAlertDialog extends DialogFragment {
             this.neutralAction = neutralAction;
             return this;
         }
+
+        public int getCustomLayoutResID() {
+            return customLayoutResID;
+        }
+
+        public Params setCustomLayoutResID(int customLayoutResID) {
+            this.customLayoutResID = customLayoutResID;
+            return this;
+        }
+
     }
 }

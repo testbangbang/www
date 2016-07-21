@@ -189,7 +189,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
                     android:textColor="@android:color/primary_text_light"
-                    android:textSize="26sp"
+                    android:textSize="@dimen/dialog_reader_menu_text_view_size"
                     android:text="1/1"/>
 
             <TextView
@@ -199,7 +199,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@id/text_view_progress"
                     android:textColor="@android:color/primary_text_light"
-                    android:textSize="26sp"/>
+                    android:textSize="@dimen/dialog_reader_menu_text_view_size"/>
 
         </RelativeLayout>>
     </LinearLayout>

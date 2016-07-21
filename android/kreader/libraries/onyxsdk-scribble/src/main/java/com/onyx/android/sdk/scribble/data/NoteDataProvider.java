@@ -201,4 +201,19 @@ public class NoteDataProvider {
         }
         return path;
     }
+
+    public static boolean checkNoteNameLegality(final String targetName) {
+        Select select = new Select();
+        Where where = select.from(NoteModel.class).where(NoteModel_Table.title.eq(targetName));
+        return where.queryList().size() == 0;
+    }
+
+    public static void renameNote(final Context context, final String id, final String name) {
+        if (StringUtils.isNullOrEmpty(id)) {
+            return;
+        }
+        NoteModel model = load(context, id);
+        model.setTitle(name);
+        model.save();
+    }
 }
