@@ -42,7 +42,7 @@ public class RawInputProcessor {
 
     private static final int PEN_SIZE = 0;
 
-    public static abstract class InputCallback {
+    public static abstract class RawInputCallback {
 
         // when received pen down or stylus button
         public abstract void onBeginRawData();
@@ -50,21 +50,11 @@ public class RawInputProcessor {
         // when pen released.
         public abstract void onRawTouchPointListReceived(final Shape shape, final TouchPointList pointList);
 
-        public abstract void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape);
-
-        public abstract void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape);
-
-        public abstract void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape);
-
         // caller should render the page here.
         public abstract void onBeginErasing();
 
-        // caller should draw erase indicator
-        public abstract void onErasing(final MotionEvent motionEvent);
-
         // caller should do hit test in current page, remove shapes hit-tested.
         public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
-
     }
 
     private volatile int px, py, pressure;
@@ -80,7 +70,7 @@ public class RawInputProcessor {
     private volatile float[] srcPoint = new float[2];
     private volatile float[] dstPoint = new float[2];
     private volatile TouchPointList touchPointList;
-    private InputCallback inputCallback;
+    private RawInputCallback rawInputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
     private ExecutorService singleThreadPool = null;
     private volatile RectF limitRect = new RectF();
@@ -101,8 +91,8 @@ public class RawInputProcessor {
         viewMatrix = vm;
     }
 
-    public void setInputCallback(final InputCallback callback) {
-        inputCallback = callback;
+    public void setRawInputCallback(final RawInputCallback callback) {
+        rawInputCallback = callback;
     }
 
     public void start() {
@@ -313,7 +303,7 @@ public class RawInputProcessor {
     }
 
     private void invokeTouchPointListBegin(final boolean erasing) {
-        if (inputCallback == null || (!isReportData() && !erasing)) {
+        if (rawInputCallback == null || (!isReportData() && !erasing)) {
             return;
         }
 
@@ -321,16 +311,16 @@ public class RawInputProcessor {
             @Override
             public void run() {
                 if (erasing) {
-                    inputCallback.onBeginErasing();
+                    rawInputCallback.onBeginErasing();
                 } else {
-                    inputCallback.onBeginRawData();
+                    rawInputCallback.onBeginRawData();
                 }
             }
         });
     }
 
     private void invokeTouchPointListFinished(final TouchPointList touchPointList, final boolean erasing) {
-        if (inputCallback == null || touchPointList == null || (!isReportData() && !erasing)) {
+        if (rawInputCallback == null || touchPointList == null || (!isReportData() && !erasing)) {
             return;
         }
 
@@ -338,9 +328,9 @@ public class RawInputProcessor {
             @Override
             public void run() {
                 if (erasing) {
-                    inputCallback.onEraseTouchPointListReceived(touchPointList);
+                    rawInputCallback.onEraseTouchPointListReceived(touchPointList);
                 } else {
-                    inputCallback.onRawTouchPointListReceived(null, touchPointList);
+                    rawInputCallback.onRawTouchPointListReceived(null, touchPointList);
                 }
             }
         });

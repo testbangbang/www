@@ -44,6 +44,31 @@ public class NoteViewHelper {
         PEN_USER_ERASING,           // in user erasing state
     }
 
+    public static abstract class InputCallback {
+
+        // when received pen down or stylus button
+        public abstract void onBeginRawData();
+
+        // when pen released.
+        public abstract void onRawTouchPointListReceived(final Shape shape, final TouchPointList pointList);
+
+        public abstract void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape);
+
+        public abstract void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape);
+
+        public abstract void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape);
+
+        // caller should render the page here.
+        public abstract void onBeginErasing();
+
+        // caller should draw erase indicator
+        public abstract void onErasing(final MotionEvent motionEvent);
+
+        // caller should do hit test in current page, remove shapes hit-tested.
+        public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
+
+    }
+
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private RawInputProcessor rawInputProcessor = new RawInputProcessor();
     private NoteDocument noteDocument = new NoteDocument();
@@ -53,18 +78,19 @@ public class NoteViewHelper {
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private List<Shape> dirtyStash = new ArrayList<Shape>();
-    private RawInputProcessor.InputCallback callback;
+    private InputCallback callback;
     private TouchPointList erasePoints;
     private DeviceConfig deviceConfig;
     private Shape currentShape = null;
     private boolean shortcutErasing = false;
+
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, 3);
         EpdController.enablePost(view, 1);
     }
 
-    public void setView(final Context context, final SurfaceView view, final RawInputProcessor.InputCallback c) {
+    public void setView(final Context context, final SurfaceView view, final InputCallback c) {
         setCallback(c);
         initRawResource(context);
         initWithSurfaceView(view);
@@ -143,7 +169,7 @@ public class NoteViewHelper {
         return globalLayoutListener;
     }
 
-    private void setCallback(final RawInputProcessor.InputCallback c) {
+    private void setCallback(final InputCallback c) {
         callback = c;
     }
 
@@ -337,7 +363,7 @@ public class NoteViewHelper {
     }
 
     private void initRawInputProcessor() {
-        rawInputProcessor.setInputCallback(new RawInputProcessor.InputCallback() {
+        rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
             public void onBeginRawData() {
             }
@@ -347,33 +373,24 @@ public class NoteViewHelper {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
             }
 
-            public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
-            }
-
-            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape) {
-            }
-
-            public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-            }
-
             @Override
             public void onBeginErasing() {
                 ensureErasing();
             }
 
             @Override
-            public void onErasing(final MotionEvent touchPoint) {
+            public void onEraseTouchPointListReceived(final TouchPointList pointList) {
             }
 
-            @Override
-            public void onEraseTouchPointListReceived(TouchPointList pointList) {
 
-            }
         });
         startDrawing();
     }
 
     private void onNewTouchPointListReceived(final TouchPointList pointList) {
+        if (!useRawInput()) {
+            return;
+        }
         Shape shape = createNewShape();
         shape.addPoints(pointList);
         dirtyStash.add(shape);
@@ -461,8 +478,8 @@ public class NoteViewHelper {
         updatePenStateByCurrentShapeType();
     }
 
-    private boolean useRawData() {
-        return deviceConfig.useRawInput() && ShapeFactory.isDFBShape(getCurrentShapeType());
+    private boolean useRawInput() {
+        return deviceConfig.useRawInput();
     }
 
     private boolean isSingleTouch() {
@@ -485,7 +502,7 @@ public class NoteViewHelper {
         if (toolType == MotionEvent.TOOL_TYPE_ERASER || inErasing()) {
             return forwardErasing(motionEvent);
         }
-        if (!useRawData()) {
+        if (!useRawInput()) {
             return forwardDrawing(motionEvent);
         }
         return true;
@@ -523,6 +540,9 @@ public class NoteViewHelper {
     }
 
     private void onDrawingTouchMove(final MotionEvent motionEvent) {
+        if (currentShape == null) {
+            return;
+        }
         currentShape.onMove(new TouchPoint(motionEvent), new TouchPoint(motionEvent));
         if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape);
@@ -530,6 +550,9 @@ public class NoteViewHelper {
     }
 
     private void onDrawingTouchUp(final MotionEvent motionEvent) {
+        if (currentShape == null) {
+            return;
+        }
         currentShape.onUp(new TouchPoint(motionEvent), new TouchPoint(motionEvent));
         if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);

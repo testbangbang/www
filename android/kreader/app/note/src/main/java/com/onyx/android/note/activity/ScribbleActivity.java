@@ -44,7 +44,6 @@ import com.onyx.android.sdk.ui.view.ContentView;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -305,8 +304,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         }
     }
 
-    private RawInputProcessor.InputCallback inputCallback() {
-        return new RawInputProcessor.InputCallback() {
+    private NoteViewHelper.InputCallback inputCallback() {
+        return new NoteViewHelper.InputCallback() {
             @Override
             public void onBeginRawData() {
 
