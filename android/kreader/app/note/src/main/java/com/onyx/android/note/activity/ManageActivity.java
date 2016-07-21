@@ -20,9 +20,11 @@ import com.onyx.android.note.actions.ManageLoadPageAction;
 import com.onyx.android.note.actions.NoteLibraryRemoveAction;
 import com.onyx.android.note.actions.NoteLoadMovableLibraryAction;
 import com.onyx.android.note.actions.NoteMoveAction;
+import com.onyx.android.note.actions.RenameNoteOrLibraryAction;
 import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogMoveFolder;
+import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -47,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
 import static com.onyx.android.sdk.data.GAdapterUtil.hasThumbnail;
 
 
@@ -260,6 +263,16 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 }
                 updateButtonsStatusByMode();
             }
+
+            @Override
+            public boolean onItemLongClick(ContentItemView view) {
+                switch (currentSelectMode) {
+                    case SelectionMode.NORMAL_MODE:
+                        renameNoteOrLibrary(view);
+                        return true;
+                }
+                return super.onItemLongClick(view);
+            }
         });
         prevPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,6 +286,44 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 contentView.nextPage();
             }
         });
+    }
+
+    private void renameNoteOrLibrary(final ContentItemView view) {
+        final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
+        Bundle bundle = new Bundle();
+        bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.rename));
+        bundle.putString(DialogNoteNameInput.ARGS_HINT, view.getData().getString(GAdapterUtil.TAG_TITLE_STRING));
+        bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, false);
+        dialogNoteNameInput.setArguments(bundle);
+        dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
+            @Override
+            public boolean onConfirmAction(final String input) {
+                final CheckNoteNameLegalityAction action = new CheckNoteNameLegalityAction(input);
+                action.execute(ManageActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (action.isLegal()) {
+                            RenameNoteOrLibraryAction reNameAction = new RenameNoteOrLibraryAction(getUniqueId(view.getData()), input);
+                            reNameAction.execute(ManageActivity.this, null);
+                        } else {
+                            showNoteNameIllegal();
+                        }
+                    }
+                });
+                return true;
+            }
+
+            @Override
+            public void onCancelAction() {
+                dialogNoteNameInput.dismiss();
+            }
+
+            @Override
+            public void onDiscardAction() {
+
+            }
+        });
+        dialogNoteNameInput.show(getFragmentManager());
     }
 
     private void showNoteNameIllegal() {
