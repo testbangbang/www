@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context="com.onyx.android.note.activity.ScribbleActivity">
 
-
     <android.support.v7.widget.Toolbar
         style="@style/OnyxToolBarStyle"
         android:layout_alignParentTop="true">
@@ -99,7 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="20dp"
             android:layout_toLeftOf="@+id/page_indicator"
             android:layout_toRightOf="@+id/pen_style_content_view"
             android:background="@drawable/imagebtn_bg"
