@@ -96,6 +96,27 @@ public class OnyxCmsCenter {
         return true;
     }
 
+    public static boolean hasThumbnail(Context context, OnyxMetadata metadata) {
+        if (metadata == null) {
+            assert (false);
+            return false;
+        }
+
+        Cursor c = null;
+        try {
+            c = getThumbnailCursor(context, metadata.getMD5(), OnyxThumbnail.ThumbnailKind.Original);
+            if (c == null) {
+                Log.w(TAG, "query original thumbnail failed");
+                return false;
+            }
+            return c.moveToFirst();
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
     public static boolean getThumbnail(Context context, OnyxMetadata metadata,
                                        OnyxThumbnail.ThumbnailKind thumbnailKind, RefValue<Bitmap> result) {
         if (metadata == null) {

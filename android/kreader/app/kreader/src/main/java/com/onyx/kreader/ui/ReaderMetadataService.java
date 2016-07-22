@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.RefValue;
 import com.onyx.android.sdk.reader.IMetadataService;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.compatability.OnyxCmsCenter;
 import com.onyx.kreader.compatability.OnyxMetadata;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -137,19 +138,13 @@ public class ReaderMetadataService extends Service {
                     Log.w(TAG, "update viewport failed: " + documentPath);
                     return;
                 }
-
-                OnyxMetadata data = OnyxMetadata.createFromFile(documentPath);
-                if (data == null) {
-                    Log.w(TAG, "create metadata failed: " + documentPath);
-                    return;
-                }
-                result.setValue(saveDocumentMetadata(service, data) &&
-                        saveDocumentThumbnail(service, data));
+                result.setValue(saveDocumentMetadata(service, documentPath) &&
+                        saveDocumentThumbnail(service, documentPath));
             }
         });
     }
 
-    private boolean saveDocumentMetadata(final ReaderMetadataService service, final OnyxMetadata metadata) {
+    private boolean saveDocumentMetadata(final ReaderMetadataService service, final String documentPath) {
         final RefValue<Boolean> result = new RefValue<>(false);
         final ReadDocumentMetadataRequest metadataRequest = new ReadDocumentMetadataRequest();
         metadataRequest.setRunInBackground(false);
@@ -160,22 +155,15 @@ public class ReaderMetadataService extends Service {
                     Log.w(TAG, "read document metadata failed: " + documentPath);
                     return;
                 }
-                initDataWithDocumentMetadata(metadata, metadataRequest.getMetadata());
-                boolean succ = OnyxCmsCenter.insertMetadata(service, metadata);
+                boolean succ = LegacySdkDataUtils.saveMetadata(service, documentPath,
+                        metadataRequest.getMetadata());
                 result.setValue(succ);
             }
         });
         return result.getValue();
     }
 
-    private void initDataWithDocumentMetadata(final OnyxMetadata metadata, final ReaderDocumentMetadata documentMetadata) {
-        metadata.setTitle(documentMetadata.getTitle());
-        metadata.setDescription(documentMetadata.getDescription());
-        metadata.setAuthors(new ArrayList<>(documentMetadata.getAuthors()));
-        metadata.setPublisher(documentMetadata.getPublisher());
-    }
-
-    private boolean saveDocumentThumbnail(final ReaderMetadataService service, final OnyxMetadata metadata) {
+    private boolean saveDocumentThumbnail(final ReaderMetadataService service, final String documentPath) {
         final RefValue<Boolean> result = new RefValue<>(false);
         final ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(reader.getViewOptions().getViewWidth(),
                 reader.getViewOptions().getViewHeight(), Bitmap.Config.ARGB_8888);
@@ -188,7 +176,8 @@ public class ReaderMetadataService extends Service {
                     Log.w(TAG, "read document cover failed: " + documentPath);
                     return;
                 }
-                boolean succ = OnyxCmsCenter.insertThumbnail(service, metadata, coverRequest.getCover().getBitmap());
+                boolean succ = LegacySdkDataUtils.saveThumbnail(service, documentPath,
+                        coverRequest.getCover().getBitmap());
                 result.setValue(succ);
             }
         });
