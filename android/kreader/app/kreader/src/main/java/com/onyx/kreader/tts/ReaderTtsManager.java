@@ -6,6 +6,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSentence;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.request.GetSentenceRequest;
+import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -45,11 +46,13 @@ public class ReaderTtsManager {
             @Override
             public void onStopped() {
                 callback.onStateChanged();
+                readerActivity.submitRequest(new RenderRequest());
             }
 
             @Override
             public void onError() {
                 callback.onStateChanged();
+                readerActivity.submitRequest(new RenderRequest());
             }
         });
     }
