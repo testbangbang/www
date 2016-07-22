@@ -49,7 +49,7 @@ public class LegacySdkDataUtils {
         }
         data.setProgress(new OnyxBookProgress(currentPage + 1, totalPage));
         data.updateLastAccess();
-        return false;
+        return OnyxCmsCenter.updateMetadata(context, data);
     }
 
     public static boolean saveThumbnail(final Context context, final String documentPath,
