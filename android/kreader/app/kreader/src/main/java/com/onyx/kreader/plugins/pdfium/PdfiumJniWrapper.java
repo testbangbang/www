@@ -90,7 +90,7 @@ public class PdfiumJniWrapper {
     public String metadataString(final String tag) {
         byte [] data  = new byte[4096];
         int size = nativeMetadata(id, tag, data);
-        return StringUtils.utf16le(data);
+        return StringUtils.utf16le(data).trim();
     }
 
     public int pageCount() {

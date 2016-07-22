@@ -90,11 +90,14 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public boolean readMetadata(final ReaderDocumentMetadata metadata) {
-        return false;
+        metadata.setTitle(getPluginImpl().metadataString("Title"));
+        metadata.getAuthors().add(getPluginImpl().metadataString("Author"));
+        return true;
     }
 
     public boolean readCover(final ReaderBitmap bitmap) {
-        return false;
+        return getPluginImpl().drawPage(0, 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(),
+                0, bitmap.getBitmap());
     }
 
     public RectF getPageOriginSize(final String position) {
