@@ -9,7 +9,6 @@ import android.os.RemoteException;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -17,11 +16,13 @@ import com.onyx.android.sdk.data.RefValue;
 import com.onyx.android.sdk.reader.IMetadataService;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.compatability.OnyxCmsCenter;
 import com.onyx.kreader.compatability.OnyxMetadata;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.host.request.*;
+import com.onyx.kreader.host.request.CreateViewRequest;
+import com.onyx.kreader.host.request.OpenRequest;
+import com.onyx.kreader.host.request.ReadDocumentMetadataRequest;
+import com.onyx.kreader.host.request.ReaderDocumentCoverRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 
@@ -85,7 +86,6 @@ public class ReaderMetadataService extends Service {
     Reader reader;
 
     private boolean extract(final ReaderMetadataService service, final String documentPath) {
-        Debug.d("extracting: " + documentPath);
         this.documentPath = documentPath;
         reader = ReaderManager.getReader(documentPath);
 
@@ -93,7 +93,6 @@ public class ReaderMetadataService extends Service {
         extractMetadataAndThumbnail(service, documentPath, result);
         close();
 
-        Debug.d("extract result: " + result.getValue());
         return result.getValue();
     }
 
@@ -163,11 +162,9 @@ public class ReaderMetadataService extends Service {
                 }
                 initDataWithDocumentMetadata(metadata, metadataRequest.getMetadata());
                 boolean succ = OnyxCmsCenter.insertMetadata(service, metadata);
-                Debug.d("insert metadata: " + succ + ", " + JSON.toJSONString(metadata));
                 result.setValue(succ);
             }
         });
-        Debug.d("saveDocumentMetadata: " + result.getValue());
         return result.getValue();
     }
 
@@ -192,11 +189,9 @@ public class ReaderMetadataService extends Service {
                     return;
                 }
                 boolean succ = OnyxCmsCenter.insertThumbnail(service, metadata, coverRequest.getCover().getBitmap());
-                Debug.d("insert thumbnail: " + succ);
                 result.setValue(succ);
             }
         });
-        Debug.d("saveDocumentThumbnail: " + result.getValue());
         return result.getValue();
     }
 
