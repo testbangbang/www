@@ -27,8 +27,14 @@ public class LegacySdkDataUtils {
             Log.w(TAG, "saveMetadata: create file metadata failed, " + documentPath);
             return false;
         }
+        // get metadata from cms will overwrite existing data, so we update metadata after it
+        if (!OnyxCmsCenter.getMetadata(context, data)) {
+            initDataWithDocumentMetadata(data, metadata);
+            return OnyxCmsCenter.insertMetadata(context, data);
+        }
+
         initDataWithDocumentMetadata(data, metadata);
-        return OnyxCmsCenter.insertMetadata(context, data);
+        return OnyxCmsCenter.updateMetadata(context, data);
     }
 
     public static boolean updateProgress(final Context context, final String documentPath,
@@ -38,7 +44,9 @@ public class LegacySdkDataUtils {
             Log.w(TAG, "updateProgress: create file metadata failed, " + documentPath);
             return false;
         }
-        OnyxCmsCenter.getMetadata(context, data);
+        if (!OnyxCmsCenter.getMetadata(context, data)) {
+            return false;
+        }
         data.setProgress(new OnyxBookProgress(currentPage + 1, totalPage));
         data.updateLastAccess();
         return false;
