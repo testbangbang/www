@@ -72,7 +72,7 @@ public class DialogReaderMenu extends Dialog {
         findViewById(R.id.layout_back_area).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/Exit"));
             }
         });
 
