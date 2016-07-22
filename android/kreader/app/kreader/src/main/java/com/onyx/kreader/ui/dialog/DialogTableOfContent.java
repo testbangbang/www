@@ -21,7 +21,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
-import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
@@ -209,7 +208,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
                                 final ReaderDocumentTableOfContent toc,
                                 final List<Bookmark> bookmarks,
                                 final List<Annotation> annotations) {
-        super(activity);
+        super(activity, R.style.dialog_no_title);
         readerActivity = activity;
         currentTab = tab;
         this.toc = toc;
@@ -299,12 +298,9 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private PageRecyclerView initTocView(final ReaderActivity activity,final ReaderDocumentTableOfContent toc){
         recordPosition.put(DirectoryTab.TOC,0);
-        Resources res = getContext().getResources();
         final int row = getPageSize(DirectoryTab.TOC);
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = buildTreeNodesFromToc(toc);
         TreeRecyclerView treeRecyclerView = new TreeRecyclerView(viewPager.getContext());
-        int paddingTop = DimenUtils.dip2px(activity,res.getDimension(R.dimen.toc_tree_padding_top));
-        treeRecyclerView.setPadding(0,paddingTop,0,0);
         treeRecyclerView.bindTree(rootNodes, new TreeRecyclerView.Callback() {
             @Override
             public void onTreeNodeClicked(TreeRecyclerView.TreeNode node) {

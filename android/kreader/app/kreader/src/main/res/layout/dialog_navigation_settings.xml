@@ -6,22 +6,15 @@
 
     <RelativeLayout
         android:id="@+id/dialog_tittleArea"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageView_Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/title"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_menu_more" />
-
         <TextView
+            android:padding="5dp"
+            android:layout_centerInParent="true"
             android:id="@+id/textView_dialog_Tittle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/imageView_Icon"
             android:layout_centerVertical="true"
             android:singleLine="true"
             android:ellipsize="middle"
@@ -45,25 +38,39 @@
         <View
             android:id="@+id/radio_group_divider_line"
             style="@style/single_line_X_axis_View"
-            android:layout_height="2dp" />
+            android:layout_height="1dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/title"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_dialog_navigation_settings_crop_page" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="@dimen/dialog_navigation_setting_left_item_width"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/title"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_dialog_navigation_settings_crop_page" />
+
+                <TextView
+                    android:text="@string/trim"
+                    android:textSize="12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
 
             <View
+                android:layout_marginTop="@dimen/dialog_navigation_setting_item_margin"
+                android:layout_marginBottom="@dimen/dialog_navigation_setting_item_margin"
+                android:layout_marginRight="@dimen/dialog_navigation_setting_item_margin"
                 style="@style/single_line_Y_axis_View"
-                android:layout_margin="20dp"
                 android:layout_width="1dp"
                 android:background="@android:color/black" />
 
@@ -82,18 +89,31 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/title"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_dialog_navigation_settings_subscreen" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="@dimen/dialog_navigation_setting_left_item_width"
+                android:gravity="center"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/title"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_dialog_navigation_settings_subscreen" />
+
+                <TextView
+                    android:text="@string/column"
+                    android:textSize="10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
             <View
+                android:layout_marginTop="@dimen/dialog_navigation_setting_item_margin"
+                android:layout_marginBottom="@dimen/dialog_navigation_setting_item_margin"
+                android:layout_marginRight="@dimen/dialog_navigation_setting_item_margin"
                 style="@style/single_line_Y_axis_View"
-                android:layout_margin="20dp"
                 android:layout_width="1dp"
                 android:background="@android:color/black" />
 
@@ -112,18 +132,35 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/title"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_dialog_navigation_settings_navigation_mode" />
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_width="@dimen/dialog_navigation_setting_left_item_width"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_centerInParent="true"
+                    android:id="@+id/image_view_direction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/title"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_dialog_navigation_settings_navigation_mode" />
+
+                <TextView
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:layout_below="@+id/image_view_direction"
+                    android:text="@string/direction"
+                    android:textSize="10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
 
             <View
+                android:layout_marginTop="@dimen/dialog_navigation_setting_item_margin"
+                android:layout_marginBottom="@dimen/dialog_navigation_setting_item_margin"
+                android:layout_marginRight="@dimen/dialog_navigation_setting_item_margin"
                 style="@style/single_line_Y_axis_View"
-                android:layout_margin="20dp"
                 android:layout_width="1dp"
                 android:background="@android:color/black" />
 
@@ -147,6 +184,7 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:background="@drawable/radio_button_bg"
             android:id="@+id/buttonCancel"
             android:layout_margin="3dp"
             android:layout_width="0dp"
@@ -155,6 +193,7 @@
             android:layout_weight="1" />
 
         <Button
+            android:background="@drawable/radio_button_bg"
             android:id="@+id/buttonConfirm"
             android:layout_margin="3dp"
             android:layout_width="0dp"
