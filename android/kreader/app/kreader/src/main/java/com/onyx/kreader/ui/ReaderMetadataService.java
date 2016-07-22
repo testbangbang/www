@@ -155,9 +155,8 @@ public class ReaderMetadataService extends Service {
                     Log.w(TAG, "read document metadata failed: " + documentPath);
                     return;
                 }
-                boolean succ = LegacySdkDataUtils.saveMetadata(service, documentPath,
-                        metadataRequest.getMetadata());
-                result.setValue(succ);
+                result.setValue(LegacySdkDataUtils.saveMetadata(service, documentPath,
+                        metadataRequest.getMetadata()));
             }
         });
         return result.getValue();
@@ -176,9 +175,9 @@ public class ReaderMetadataService extends Service {
                     Log.w(TAG, "read document cover failed: " + documentPath);
                     return;
                 }
-                boolean succ = LegacySdkDataUtils.saveThumbnail(service, documentPath,
-                        coverRequest.getCover().getBitmap());
-                result.setValue(succ);
+                result.setValue(LegacySdkDataUtils.saveThumbnail(service, documentPath,
+                        bitmap.getBitmap()));
+                bitmap.recycleBitmap();
             }
         });
         return result.getValue();
