@@ -28,4 +28,5 @@
     <dimen name="dialog_quick_preview_list_item_shadow_height">1.8dp</dimen>
     <dimen name="dialog_navigation_setting_item_margin">14dp</dimen>
     <dimen name="dialog_navigation_setting_left_item_width">80dp</dimen>
+    <dimen name="dialog_search_title_height">40dp</dimen>
 </resources>

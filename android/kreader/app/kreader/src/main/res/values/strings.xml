@@ -79,4 +79,7 @@
     <string name="single_page">Single</string>
     <string name="double_page">Double</string>
     <string name="nothing">Nothing</string>
+    <string name="search">Search</string>
+    <string name="total_page" formatted="false">共 %d 条</string>
+    <string name="page_indicator" formatted="false">%d/%d 页</string>
 </resources>

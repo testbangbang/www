@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <RelativeLayout
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_search_title_height">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/image_view_back"
+            android:src="@drawable/title_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/image_view_back"
+            style="@style/single_line_Y_axis_View"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:text="title"
+            android:textSize="20sp"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+    <RelativeLayout
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/search_button"
+            android:background="@drawable/radio_button_bg_off"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_centerVertical="true"
+                android:id="@+id/image_view_search"
+                android:src="@drawable/search"
+                android:layout_width="@dimen/dialog_search_title_height"
+                android:layout_height="@dimen/dialog_search_title_height"/>
+
+            <EditText
+                android:id="@+id/edit_view_search"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/image_view_search"
+                android:textSize="20sp"
+                android:background="@null"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+        <Button
+            android:textSize="20sp"
+            android:id="@+id/search_button"
+            android:background="@drawable/corner_button_bg"
+            android:text="@string/search"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dialog_search_title_height"/>
+    </RelativeLayout>
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/search_recycler_view"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.onyx.android.sdk.ui.view.PageRecyclerView>
+
+    <RelativeLayout
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/total_page"
+            android:text="@string/total_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/page_indicator"
+            android:layout_alignParentRight="true"
+            android:text="@string/page_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</LinearLayout>

@@ -21,6 +21,7 @@ import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
+import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.android.sdk.data.ReaderMenu;
@@ -210,6 +211,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/GotoPage":
                         gotoPage(readerActivity);
                         break;
+                    case "/Search":
+                        showSearchDialog(readerActivity);
+                        break;
                     case "/Exit":
                         readerActivity.onBackPressed();
                         break;
@@ -341,5 +345,10 @@ public class ShowReaderMenuAction extends BaseAction {
     private void gotoPage(final ReaderActivity readerActivity) {
         hideReaderMenu(readerActivity);
         new ShowQuickPreviewAction().execute(readerActivity);
+    }
+
+    private void showSearchDialog(final ReaderActivity readerActivity){
+        DialogSearch dialogSearch = new DialogSearch(readerActivity);
+        dialogSearch.show();
     }
 }
