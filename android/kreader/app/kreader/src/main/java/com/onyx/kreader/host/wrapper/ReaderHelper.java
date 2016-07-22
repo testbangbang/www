@@ -134,6 +134,7 @@ public class ReaderHelper {
         window.getDefaultDisplay().getMetrics(display);
         ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(display.widthPixels, display.heightPixels,
                 Bitmap.Config.ARGB_8888);
+        bitmap.clear();
         if (getDocument().readCover(bitmap)) {
             LegacySdkDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
         }
