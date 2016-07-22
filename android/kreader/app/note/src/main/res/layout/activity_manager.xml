@@ -98,14 +98,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/mx_imagebtn_bg"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
                     android:padding="10dp"
                     android:text="@string/delete"
-                    android:textColor="@color/mx_button_item_text_color"
-                    android:textSize="18sp" />
+                    android:minWidth="120dp"
+                    android:background="@drawable/mx_button_bg_selected"
+                    android:textColor="@android:color/white"                    android:textSize="18sp" />
             </RelativeLayout>
 
 
@@ -119,13 +119,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/mx_imagebtn_bg"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
+                    android:minWidth="120dp"
                     android:padding="10dp"
                     android:text="@string/move"
-                    android:textColor="@color/mx_button_item_text_color"
+                    android:background="@drawable/mx_button_bg_selected"
+                    android:textColor="@android:color/white"
                     android:textSize="18sp" />
             </RelativeLayout>
 
