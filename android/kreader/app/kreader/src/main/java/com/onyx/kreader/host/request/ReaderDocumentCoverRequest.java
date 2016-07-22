@@ -18,8 +18,4 @@ public class ReaderDocumentCoverRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         reader.getDocument().readCover(cover);
     }
-
-    public ReaderBitmap getCover() {
-        return cover;
-    }
 }
