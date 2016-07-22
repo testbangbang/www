@@ -4,21 +4,23 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.view.*;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
-import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import java.net.URI;
 
@@ -107,7 +109,8 @@ public class DialogReaderMenu extends Dialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onHideMenu();
-                activity.onSearchRequested();
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/Search"));
+//                activity.onSearchRequested();
             }
         });
 
