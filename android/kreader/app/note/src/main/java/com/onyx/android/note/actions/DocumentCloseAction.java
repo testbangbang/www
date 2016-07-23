@@ -15,20 +15,24 @@ import com.onyx.android.sdk.scribble.request.note.NoteDocumentCloseRequest;
 public class DocumentCloseAction<T extends ScribbleActivity> extends BaseNoteAction<T> {
 
     private volatile String title;
+    private volatile String documentUniqueId;
 
-    public DocumentCloseAction(final String t) {
+    public DocumentCloseAction(final String uniqueId, final String t) {
         title = t;
+        documentUniqueId = uniqueId;
     }
 
     public void execute(final T activity,  final BaseCallback callback) {
         showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.saving_note);
         final NoteDocumentCloseRequest saveRequest = new NoteDocumentCloseRequest(title);
-        activity.getNoteViewHelper().submit(activity, saveRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                dismissLoadingDialog();
-                activity.finish();
-            }
+        activity.getNoteViewHelper().submitRequestWithIdentifier(activity,
+                documentUniqueId,
+                saveRequest, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        dismissLoadingDialog();
+                        activity.finish();
+                    }
         });
     }
 }

@@ -14,6 +14,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.*;
+import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -43,6 +44,12 @@ public class NoteViewHelper {
         PEN_CANVAS_DRAWING,         // in canvas drawing state
         PEN_USER_ERASING,           // in user erasing state
     }
+
+    private static final int PEN_STOP = 0;
+    private static final int PEN_START = 1;
+    private static final int PEN_DRAWING = 2;
+    private static final int PEN_PAUSE = 3;
+    private static final int PEN_ERASING = 4;
 
     public static abstract class InputCallback {
 
@@ -83,16 +90,18 @@ public class NoteViewHelper {
     private DeviceConfig deviceConfig;
     private Shape currentShape = null;
     private boolean shortcutErasing = false;
+    private OnyxMatrix viewToEpdMatrix = null;
 
 
     public void reset(final View view) {
-        EpdController.setScreenHandWritingPenState(view, 3);
+        EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
         EpdController.enablePost(view, 1);
     }
 
     public void setView(final Context context, final SurfaceView view, final InputCallback c) {
         setCallback(c);
         initRawResource(context);
+        initViewToEpdMatrix();
         initWithSurfaceView(view);
         initRawInputProcessor();
         updateScreenMatrix();
@@ -192,12 +201,16 @@ public class NoteViewHelper {
         rawInputProcessor.setViewMatrix(viewMatrix);
     }
 
+    private OnyxMatrix initViewToEpdMatrix() {
+        viewToEpdMatrix = new OnyxMatrix();
+        viewToEpdMatrix.postRotate(deviceConfig.getViewPostOrientation());
+        viewToEpdMatrix.postTranslate(deviceConfig.getViewPostTx(), deviceConfig.getViewPostTy());
+        return viewToEpdMatrix;
+    }
+
     // matrix from android view to epd.
-    private Matrix matrixFromViewToEpd() {
-        final Matrix matrix = new Matrix();
-        matrix.postRotate(deviceConfig.getViewPostOrientation());
-        matrix.postTranslate(deviceConfig.getViewPostTx(), deviceConfig.getViewPostTy());
-        return matrix;
+    private OnyxMatrix matrixFromViewToEpd() {
+        return viewToEpdMatrix;
     }
 
     private void updateLimitRect() {
@@ -210,8 +223,8 @@ public class NoteViewHelper {
         surfaceView.getLocationOnScreen(viewPosition);
         limitRect.offsetTo(viewPosition[0], viewPosition[1]);
 
-        final Matrix matrix = matrixFromViewToEpd();
-        ShapeUtils.mapInPlace(limitRect, matrix);
+        final OnyxMatrix matrix = matrixFromViewToEpd();
+        matrix.mapInPlace(limitRect);
         EpdController.setScreenHandWritingRegionLimit(surfaceView,
                 Math.min(limitRect.left, limitRect.right),
                 Math.min(limitRect.top, limitRect.bottom),
@@ -221,18 +234,18 @@ public class NoteViewHelper {
 
     private void startDrawing() {
         getRawInputProcessor().start();
-        EpdController.setScreenHandWritingPenState(surfaceView, 1);
+        EpdController.setScreenHandWritingPenState(surfaceView, PEN_START);
     }
 
     public void resumeDrawing() {
         setPenState(PenState.PEN_SCREEN_DRAWING);
         getRawInputProcessor().resume();
-        EpdController.setScreenHandWritingPenState(surfaceView, 2);
+        EpdController.setScreenHandWritingPenState(surfaceView, PEN_DRAWING);
     }
 
     public void pauseDrawing() {
         getRawInputProcessor().pause();
-        EpdController.setScreenHandWritingPenState(surfaceView, 3);
+        EpdController.setScreenHandWritingPenState(surfaceView, PEN_PAUSE);
     }
 
     public void enableScreenPost() {
@@ -242,6 +255,7 @@ public class NoteViewHelper {
     }
 
     public void quitDrawing() {
+        EpdController.setScreenHandWritingPenState(surfaceView, PEN_STOP);
         getRawInputProcessor().quit();
     }
 
@@ -274,6 +288,7 @@ public class NoteViewHelper {
         shapeDataInfo.updateDrawingArgs(getNoteDocument().getNoteDrawingArgs());
         shapeDataInfo.setCanRedoShape(getNoteDocument().getCurrentPage(context).canRedo());
         shapeDataInfo.setCanUndoShape(getNoteDocument().getCurrentPage(context).canUndo());
+        shapeDataInfo.setDocumentUniqueId(getNoteDocument().getDocumentUniqueId());
     }
 
     private void removeLayoutListener() {
@@ -293,6 +308,14 @@ public class NoteViewHelper {
     public void submit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
         beforeSubmit(context, request, callback);
         getRequestManager().submitRequest(context, request, generateRunnable(request), callback);
+    }
+
+    public void submitRequestWithIdentifier(final Context context,
+                                            final String identifier,
+                                            final BaseNoteRequest request,
+                                            final BaseCallback callback) {
+        beforeSubmit(context, request, callback);
+        getRequestManager().submitRequest(context, identifier, request, generateRunnable(request), callback);
     }
 
     private void beforeSubmit(final Context context, final BaseNoteRequest request, final BaseCallback callback) {
@@ -482,6 +505,10 @@ public class NoteViewHelper {
         return deviceConfig.useRawInput();
     }
 
+    private boolean renderByFramework() {
+        return ShapeFactory.isDFBShape(getCurrentShapeType());
+    }
+
     private boolean isSingleTouch() {
         return deviceConfig.isSingleTouch();
     }
@@ -502,7 +529,7 @@ public class NoteViewHelper {
         if (toolType == MotionEvent.TOOL_TYPE_ERASER || inErasing()) {
             return forwardErasing(motionEvent);
         }
-        if (!useRawInput()) {
+        if (!(useRawInput() && renderByFramework())) {
             return forwardDrawing(motionEvent);
         }
         return true;
@@ -533,7 +560,9 @@ public class NoteViewHelper {
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
         currentShape = createNewShape();
         dirtyStash.add(currentShape);
-        currentShape.onDown(new TouchPoint(motionEvent), new TouchPoint(motionEvent));
+        final TouchPoint normalized = new TouchPoint(motionEvent);
+        final TouchPoint screen = viewToEpdMatrix.map(normalized);
+        currentShape.onDown(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchDown(motionEvent, currentShape);
         }
@@ -543,7 +572,18 @@ public class NoteViewHelper {
         if (currentShape == null) {
             return;
         }
-        currentShape.onMove(new TouchPoint(motionEvent), new TouchPoint(motionEvent));
+        int n = motionEvent.getHistorySize();
+        for(int i = 0; i < n; ++i) {
+            final TouchPoint normalized = fromHistorical(motionEvent, i);
+            final TouchPoint screen = viewToEpdMatrix.map(normalized);
+            currentShape.onMove(normalized, screen);
+            if (callback != null) {
+                callback.onDrawingTouchMove(motionEvent, currentShape);
+            }
+        }
+        final TouchPoint normalized = new TouchPoint(motionEvent);
+        final TouchPoint screen = viewToEpdMatrix.map(normalized);
+        currentShape.onMove(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape);
         }
@@ -553,11 +593,21 @@ public class NoteViewHelper {
         if (currentShape == null) {
             return;
         }
-        currentShape.onUp(new TouchPoint(motionEvent), new TouchPoint(motionEvent));
+        final TouchPoint normalized = new TouchPoint(motionEvent);
+        final TouchPoint screen = viewToEpdMatrix.map(normalized);
+        currentShape.onUp(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);
         }
     }
 
+    private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
+        final TouchPoint normalized = new TouchPoint(motionEvent.getHistoricalX(i),
+                motionEvent.getHistoricalX(i),
+                motionEvent.getHistoricalPressure(i),
+                motionEvent.getHistoricalSize(i),
+                motionEvent.getHistoricalEventTime(i));
+        return normalized;
+    }
 
 }

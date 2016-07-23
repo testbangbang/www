@@ -11,10 +11,11 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 public class EPDRenderer {
 
     static public void moveTo(float x, float y, float strokeWidth) {
+        EpdController.moveTo(x, y, strokeWidth);
     }
 
     static public void quadTo(float x, float y, final UpdateMode updateMode) {
-
+        EpdController.quadTo(x, y, updateMode);
     }
 
 }

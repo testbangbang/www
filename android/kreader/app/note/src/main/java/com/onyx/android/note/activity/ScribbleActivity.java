@@ -457,7 +457,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(title);
+                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), title);
                 closeAction.execute(ScribbleActivity.this, null);
             }
         });
@@ -467,7 +467,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(noteTitle);
+                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle);
                 closeAction.execute(ScribbleActivity.this, null);
             }
         });
