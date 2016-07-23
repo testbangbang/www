@@ -6,12 +6,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by zhuzeng on 5/31/16.
@@ -21,50 +16,26 @@ public class RequestManager {
     private static final String TAG = RequestManager.class.getSimpleName();
     private PowerManager.WakeLock wakeLock;
     private int wakeLockCounting = 0;
-    private ExecutorService singleThreadPool = null;
     private boolean debugWakelock = false;
-    private List<BaseRequest> requestList;
+
+    private ExecutorContext singleThreadExecutor;
+    private ConcurrentHashMap<String, ExecutorContext> threadPoolMap = new ConcurrentHashMap<>();
     private Handler handler = new Handler(Looper.getMainLooper());
-    private int threadPriority = Thread.MAX_PRIORITY;
 
     public RequestManager() {
-        initRequestList();
+        initExecutorContext(Thread.NORM_PRIORITY);
     }
 
     public RequestManager(int priority) {
-        threadPriority = priority;
-        initRequestList();
+        initExecutorContext(priority);
     }
 
-
-    private void initRequestList() {
-        requestList = Collections.synchronizedList(new ArrayList<BaseRequest>());
+    private void initExecutorContext(int priority) {
+        singleThreadExecutor = new ExecutorContext(priority);
     }
 
-    public void removeRequest(final BaseRequest request) {
-        synchronized (requestList) {
-            requestList.remove(request);
-        }
-    }
-
-    public void addRequest(final BaseRequest request) {
-        synchronized (requestList) {
-            requestList.add(request);
-        }
-    }
-
-    public void abortAllRequests() {
-        synchronized (requestList) {
-            for(BaseRequest request : requestList) {
-                request.setAbort();
-            }
-        }
-    }
-
-    public boolean hasPendingRequests() {
-        synchronized (requestList) {
-            return requestList.size() > 0;
-        }
+    private final ExecutorContext getSingleThreadExecutor() {
+        return singleThreadExecutor;
     }
 
     public void acquireWakeLock(Context context) {
@@ -103,18 +74,8 @@ public class RequestManager {
         }
     }
 
-    public ExecutorService getSingleThreadPool()   {
-        if (singleThreadPool == null) {
-            singleThreadPool = Executors.newSingleThreadExecutor(new ThreadFactory() {
-                @Override
-                public Thread newThread(Runnable r) {
-                    Thread t = new Thread(r);
-                    t.setPriority(threadPriority);
-                    return t;
-                }
-            });
-        }
-        return singleThreadPool;
+    public void removeRequest(final BaseRequest request) {
+        getSingleThreadExecutor().removeRequest(request);
     }
 
     public Handler getLooperHandler() {
@@ -127,7 +88,7 @@ public class RequestManager {
         }
 
         if (request.isRunInBackground()) {
-            getSingleThreadPool().submit(runnable);
+            getSingleThreadExecutor().submitToSingleThreadPool(runnable);
         } else {
             runnable.run();
         }
@@ -144,10 +105,51 @@ public class RequestManager {
         request.setContext(context);
         request.setCallback(callback);
         if (request.isAbortPendingTasks()) {
-            abortAllRequests();
+            getSingleThreadExecutor().abortAllRequests();
         }
-        addRequest(request);
+        getSingleThreadExecutor().addRequest(request);
         return true;
+    }
+
+    public boolean submitRequest(final Context context, final String identifier, final BaseRequest request, final Runnable runnable, final BaseCallback callback) {
+        final ExecutorContext executor = getExecutorByIdentifier(identifier);
+        if (!beforeSubmitRequestToExecutor(executor, context, request, callback)) {
+            return false;
+        }
+
+        if (request.isRunInBackground()) {
+            executor.submitToSingleThreadPool(runnable);
+        } else {
+            runnable.run();
+        }
+        return true;
+    }
+
+    private boolean beforeSubmitRequestToExecutor(final ExecutorContext executor, final Context context, final BaseRequest request, final BaseCallback callback) {
+        if (request == null) {
+            if (callback != null) {
+                callback.done(null,  null);
+            }
+            return false;
+        }
+        request.setContext(context);
+        request.setCallback(callback);
+        if (request.isAbortPendingTasks()) {
+            executor.abortAllRequests();
+        }
+        executor.addRequest(request);
+        return true;
+    }
+
+    private final ExecutorContext getExecutorByIdentifier(final String identifier) {
+        if (threadPoolMap.containsKey(identifier)) {
+            return threadPoolMap.get(identifier);
+        }
+        synchronized (threadPoolMap) {
+            final ExecutorContext executorContext = new ExecutorContext();
+            threadPoolMap.put(identifier, executorContext);
+            return executorContext;
+        }
     }
 
 
