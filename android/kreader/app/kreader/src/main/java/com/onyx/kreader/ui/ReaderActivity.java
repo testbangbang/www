@@ -123,6 +123,7 @@ public class ReaderActivity extends ActionBarActivity {
     private boolean preRender = true;
     private boolean preRenderNext = true;
 
+    private final ReaderPainter painter = new ReaderPainter();
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
 
     private ReaderSelectionManager selectionManager;
@@ -661,106 +662,9 @@ public class ReaderActivity extends ActionBarActivity {
         if (canvas == null) {
             return;
         }
-        Paint paint = new Paint();
-        drawBackground(canvas, paint);
-        drawBitmap(canvas, paint, pageBitmap);
-        drawSearchResults(canvas, paint);
-        drawHighlightResult(canvas, paint);
-        drawAnnotations(canvas, paint);
-        drawBookmark(canvas);
-        drawShapes(canvas, paint);
-
+        painter.drawPage(this, canvas, pageBitmap, getReaderUserDataInfo(), getReaderViewInfo(),
+                getSelectionManager(), getNoteViewHelper(), shapeDataInfo);
         holder.unlockCanvasAndPost(canvas);
-    }
-
-    private void drawBackground(Canvas canvas, Paint paint) {
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
-    }
-
-    private void drawBitmap(Canvas canvas, Paint paint, Bitmap bitmap) {
-        if (bitmap == null) {
-            return;
-        }
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-    }
-
-    private void drawSearchResults(Canvas canvas, Paint paint) {
-        drawReaderSelections(canvas, paint, getReaderUserDataInfo().getSearchResults());
-    }
-
-    private void drawHighlightResult(Canvas canvas, Paint paint) {
-        if (getReaderUserDataInfo().hasHighlightResult()) {
-            drawReaderSelection(canvas, paint, getReaderUserDataInfo().getHighlightResult());
-            drawSelectionCursor(canvas, paint, xorMode);
-        }
-    }
-
-    private void drawAnnotations(Canvas canvas, Paint paint) {
-        for (PageInfo pageInfo : getReaderViewInfo().getVisiblePages()) {
-            if (getReaderUserDataInfo().hasPageAnnotations(pageInfo)) {
-                List<PageAnnotation> annotations = getReaderUserDataInfo().getPageAnnotations(pageInfo);
-                for (PageAnnotation annotation : annotations) {
-                    drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
-                }
-            }
-        }
-    }
-
-    private void drawBookmark(Canvas canvas) {
-        Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(this, hasBookmark());
-        final Point point = bookmarkPosition(bitmap);
-        canvas.drawBitmap(bitmap, point.x, point.y, null);
-    }
-
-    private Point bookmarkPosition(Bitmap bitmap) {
-        Point point = new Point();
-        point.set(getDisplayWidth() - bitmap.getWidth(), 10);
-        return point;
-    }
-
-    private void drawReaderSelection(Canvas canvas, Paint paint, ReaderSelection selection) {
-        Debug.d("highlight selection result: " + JSON.toJSON(selection));
-        PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
-        if (pageInfo != null) {
-            drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
-        }
-    }
-
-    private void drawReaderSelections(Canvas canvas, Paint paint, List<ReaderSelection> list) {
-        if (list == null || list.size() <= 0) {
-            return;
-        }
-        for (ReaderSelection sel : list) {
-            drawReaderSelection(canvas, paint, sel);
-        }
-    }
-
-    private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
-        Debug.d("drawHighlightRectangles: " + JSON.toJSON(rectangles));
-        if (rectangles == null) {
-            return;
-        }
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setXfermode(xorMode);
-        for (int i = 0; i < rectangles.size(); ++i) {
-            canvas.drawRect(rectangles.get(i), paint);
-        }
-    }
-
-    private void drawSelectionCursor(Canvas canvas, Paint paint, PixelXorXfermode xor) {
-        getSelectionManager().draw(canvas, paint, xor);
-    }
-
-    private void drawShapes(final Canvas canvas, Paint paint) {
-        if (!isShapeBitmapReady()) {
-            return;
-        }
-        final Bitmap bitmap = getNoteViewHelper().getViewBitmap();
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
-        canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
     private NoteViewHelper getNoteViewHelper() {
@@ -768,19 +672,6 @@ public class ReaderActivity extends ActionBarActivity {
             noteViewHelper = new NoteViewHelper();
         }
         return noteViewHelper;
-    }
-
-    private boolean isShapeBitmapReady() {
-        // TODO
-//        if (!hasShapes()) {
-//            return false;
-//        }
-
-        final Bitmap bitmap = getNoteViewHelper().getViewBitmap();
-        if (bitmap == null) {
-            return false;
-        }
-        return true;
     }
 
     private void resetShapeData() {
@@ -997,7 +888,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     private boolean tryBookmark(final float x, final float y) {
         Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(this, hasBookmark());
-        final Point point = bookmarkPosition(bitmap);
+        final Point point = BookmarkIconFactory.bookmarkPosition(getDisplayWidth(), bitmap);
         final int margin = bitmap.getWidth() / 4;
         boolean hit = (x >= point.x - margin && x < point.x + bitmap.getWidth() + margin &&
                 y >= point.y - margin && y < point.y + bitmap.getHeight() + margin);
