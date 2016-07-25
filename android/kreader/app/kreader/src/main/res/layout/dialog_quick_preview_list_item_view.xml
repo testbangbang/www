@@ -6,10 +6,11 @@
                 android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/item_container"
         android:layout_toLeftOf="@+id/right_shadow"
         android:layout_above="@+id/bottom_shadow"
-        android:padding="1dp"
-        android:background="@drawable/radio_button_bg_off"
+        android:padding="3dp"
+        android:background="@drawable/preview_item_view_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

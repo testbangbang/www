@@ -102,6 +102,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             textViewEdit.setOnClickListener(this);
             imageViewEdit.setOnClickListener(this);
             textViewTitle.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         public void bindView(String title,String description,String page,long time,int position,DirectoryTab tab){
@@ -122,7 +123,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
         @Override
         public void onClick(View v) {
-            if (v.equals(textViewTitle)){
+            if (v.equals(itemView)){
                 DialogTableOfContent.this.hide();
                 new GotoPageAction(page).execute(mActivity);
             }else if (v.equals(textViewDelete) || v.equals(imageViewDelete)){
