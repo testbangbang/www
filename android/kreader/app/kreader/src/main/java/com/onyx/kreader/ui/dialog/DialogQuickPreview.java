@@ -81,6 +81,7 @@ public class DialogQuickPreview extends Dialog {
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // TODO: add delay because refresh problem 16/7/25
                     container.postDelayed(new Runnable() {
                         @Override
                         public void run() {
