@@ -20,7 +20,6 @@ import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 public class PageRecyclerView extends RecyclerView {
 
     private static final String TAG = PageRecyclerView.class.getSimpleName();
-    private boolean hasAdjust = false;
     private GPaginator paginator;
     public enum TouchDirection {Horizontal, Vertical}
 
@@ -152,24 +151,6 @@ public class PageRecyclerView extends RecyclerView {
         super.onMeasure(widthSpec, heightSpec);
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        int firstVisiblePosition = getFirstVisiblePosition();
-        int lastVisiblePosition = getLastVisiblePosition();
-        int index = lastVisiblePosition - firstVisiblePosition;
-        if (getChildCount() > index){
-            int top = getChildAt(lastVisiblePosition - firstVisiblePosition).getTop();
-            int bottom = getChildAt(lastVisiblePosition - firstVisiblePosition).getBottom();
-            int height = getMeasuredHeight();
-            if (bottom > height && top < height && getChildCount() > 0 && !hasAdjust){
-                setPadding(getPaddingLeft(),getPaddingTop(),getPaddingRight(),getPaddingBottom() + height - top);
-                hasAdjust = true;
-                getAdapter().notifyDataSetChanged();
-            }
-        }
-    }
-
     private OnPagingListener onPagingListener;
 
     public void setOnPagingListener(OnPagingListener listener) {
@@ -259,8 +240,8 @@ public class PageRecyclerView extends RecyclerView {
 
                 int paddingBottom = mParent.getPaddingBottom();
                 int paddingTop = mParent.getPaddingTop();
-                int itemHeight = (mParent.getMeasuredHeight() - paddingBottom - paddingTop) / getRowCount();
-                view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,itemHeight));
+                double itemHeight = ((double)mParent.getMeasuredHeight() - paddingBottom - paddingTop) / getRowCount();
+                view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int) Math.ceil(itemHeight)));
             }
         }
 

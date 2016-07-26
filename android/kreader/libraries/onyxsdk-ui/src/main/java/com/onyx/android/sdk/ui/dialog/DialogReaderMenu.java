@@ -97,6 +97,14 @@ public class DialogReaderMenu extends Dialog {
             }
         });
 
+        findViewById(R.id.button_toc).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onHideMenu();
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/Directory/TOC"));
+            }
+        });
+
         findViewById(R.id.button_dict).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

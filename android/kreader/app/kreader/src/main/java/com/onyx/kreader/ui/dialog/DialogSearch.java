@@ -120,6 +120,11 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
     }
 
     private void test(){
+        searchList.clear();
+        searchList.add("test data");
+        searchList.add("test data");
+        searchList.add("test data");
+        searchList.add("test data");
         searchList.add("test data");
         searchList.add("test data");
     }
@@ -131,6 +136,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
         }else if (v.equals(btnSearch)){
             hideSoftInputWindow();
             test();
+
             pageRecyclerView.postDelayed(new Runnable() {
                 @Override
                 public void run() {

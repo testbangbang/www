@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -68,18 +69,27 @@ public class DialogQuickPreview extends Dialog {
         private ImageView imageView;
         private TextView pageTextView;
         private Button btnPage;
+        private RelativeLayout container;
 
         public PreviewViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.image_view);
             pageTextView = (TextView) itemView.findViewById(R.id.text_view_page);
             btnPage = (Button) itemView.findViewById(R.id.btn_page);
+            container = (RelativeLayout) itemView.findViewById(R.id.item_container);
 
-            imageView.setOnClickListener(new View.OnClickListener() {
+            container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogQuickPreview.this.hide();
-                    new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerActivity);
+                    // TODO: add delay because refresh problem 16/7/25
+                    container.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            DialogQuickPreview.this.hide();
+                            new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerActivity);
+                        }
+                    },400);
+
                 }
             });
         }

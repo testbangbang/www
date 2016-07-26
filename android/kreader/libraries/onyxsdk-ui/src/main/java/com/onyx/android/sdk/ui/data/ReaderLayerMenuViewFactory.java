@@ -192,7 +192,7 @@ public class ReaderLayerMenuViewFactory {
 
     private static View createTTSView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         View view = LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_tts_view, null);
-        view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,mainMenuContainerViewHeight));
+        view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,mainMenuContainerViewHeight > 0 ? mainMenuContainerViewHeight : ViewGroup.LayoutParams.WRAP_CONTENT));
         updateTTSViewState(view, state);
         mapTtsViewMenuItemFunction(view, state, callback);
         return view;
