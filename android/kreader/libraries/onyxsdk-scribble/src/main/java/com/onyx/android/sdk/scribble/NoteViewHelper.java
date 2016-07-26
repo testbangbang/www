@@ -217,6 +217,7 @@ public class NoteViewHelper {
 
     public void quitDrawing() {
         getRawInputProcessor().quit();
+        EpdController.setScreenHandWritingPenState(surfaceView, 0);
     }
 
     public void setBackground(int bgType) {

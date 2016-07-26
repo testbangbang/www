@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -54,6 +55,7 @@ import java.util.List;
 public class ScribbleActivity extends OnyxAppCompatActivity {
     static final String TAG = ScribbleActivity.class.getSimpleName();
     static final String TAG_NOTE_TITLE = "note_title";
+    static final boolean TEMP_HIDE_ITEM = true;
 
     private SurfaceView surfaceView;
     private String activityAction;
@@ -102,6 +104,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                     onSystemUIClosed();
                 }
             }
+
+            @Override
+            public void onHomeClicked() {
+                getNoteViewHelper().enableScreenPost();
+                finish();
+            }
         });
         deviceReceiver.registerReceiver(this);
     }
@@ -121,7 +129,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         updateColorIndicator();
         initSurfaceView();
     }
@@ -181,6 +188,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 onColorClicked();
             }
         });
+        if (TEMP_HIDE_ITEM){
+            penColorBtn.setVisibility(View.GONE);
+        }
     }
 
     private void invokePenStyleCallBack(int penType) {
@@ -255,7 +265,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
             adapter.addObject(createPenItem(R.drawable.ic_business_write_marker_gray_70dp, PenType.OILY_PEN));
             adapter.addObject(createPenItem(R.drawable.ic_business_write_pen_gray_70dp, PenType.FOUNTAIN_PEN));
             adapter.addObject(createPenItem(R.drawable.ic_business_write_brush_gray_70dp, PenType.BRUSH));
-            adapter.addObject(createPenItem(R.drawable.ic_business_write_rule_gray_70dp, PenType.RULER));
+            if (!TEMP_HIDE_ITEM) {
+                adapter.addObject(createPenItem(R.drawable.ic_business_write_rule_gray_70dp, PenType.RULER));
+            }
             adapter.addObject(createPenItem(R.drawable.ic_business_write_eraser_gray_60dp, PenType.ERASER));
         }
         return adapter;
