@@ -15,9 +15,11 @@ public class DeviceReceiver extends BroadcastReceiver {
     public static final String SYSTEM_UI_DIALOG_OPEN_ACTION = "com.android.systemui.SYSTEM_UI_DIALOG_OPEN_ACTION";
     public static final String SYSTEM_UI_DIALOG_CLOSE_ACTION = "com.android.systemui.SYSTEM_UI_DIALOG_CLOSE_ACTION";
     public static final String SYSTEM_WAKE_UP = "com.android.system.WAKE_UP";
+    public static final String SYSTEM_HOME = "com.android.systemui.HOME_BUTTON_CLICK";
 
     public static abstract class SystemUIChangeListener {
         public abstract void onSystemUIChanged(final String type, boolean open);
+        public abstract void onHomeClicked();
     }
 
     public void setSystemUIChangeListener(final SystemUIChangeListener listener) {
@@ -41,6 +43,7 @@ public class DeviceReceiver extends BroadcastReceiver {
         filter.addAction(SYSTEM_UI_DIALOG_OPEN_ACTION);
         filter.addAction(SYSTEM_UI_DIALOG_CLOSE_ACTION);
         filter.addAction(SYSTEM_WAKE_UP);
+        filter.addAction(SYSTEM_HOME);
         return filter;
     }
 
@@ -52,6 +55,8 @@ public class DeviceReceiver extends BroadcastReceiver {
             notifySystemUIChange(intent, false);
         } else if (SYSTEM_WAKE_UP.equalsIgnoreCase(action)) {
             notifySystemUIChange(intent, false);
+        } else if (SYSTEM_HOME.equalsIgnoreCase(action)) {
+            notifyHomeClicked(intent);
         }
     }
 
@@ -62,8 +67,12 @@ public class DeviceReceiver extends BroadcastReceiver {
         getSystemUIChangeListener().onSystemUIChanged(intent.getAction(), open);
     }
 
-
-
+    private void notifyHomeClicked(final Intent intent) {
+        if (getSystemUIChangeListener() == null) {
+            return;
+        }
+        getSystemUIChangeListener().onHomeClicked();
+    }
 
 
 }

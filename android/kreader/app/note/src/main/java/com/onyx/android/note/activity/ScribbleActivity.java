@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -102,6 +103,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                     onSystemUIClosed();
                 }
             }
+
+            @Override
+            public void onHomeClicked() {
+                getNoteViewHelper().enableScreenPost();
+                finish();
+            }
         });
         deviceReceiver.registerReceiver(this);
     }
@@ -121,7 +128,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         updateColorIndicator();
         initSurfaceView();
     }
