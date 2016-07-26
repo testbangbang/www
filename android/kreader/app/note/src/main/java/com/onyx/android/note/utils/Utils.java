@@ -82,7 +82,7 @@ public class Utils {
         GObject object = GAdapterUtil.createTableItem(noteModel.getTitle(), null, 0, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
         object.putNonNullObject(GAdapterUtil.TAG_THUMBNAIL, folderRes);
-        object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getCreatedAt()));
+        object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getUpdatedAt()));
         putItemType(object, TYPE_LIBRARY);
         return object;
     }
@@ -90,7 +90,7 @@ public class Utils {
     public static GObject createDocumentItem(final NoteModel noteModel, final int docRes) {
         GObject object = GAdapterUtil.createTableItem(noteModel.getTitle(), null, 0, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
-        object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getCreatedAt()));
+        object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getUpdatedAt()));
         object.putNonNullObject(GAdapterUtil.TAG_THUMBNAIL, noteModel.getThumbnail() == null ? docRes : noteModel.getThumbnail());
         putItemType(object, TYPE_DOCUMENT);
         return object;
