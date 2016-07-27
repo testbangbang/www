@@ -3,6 +3,7 @@ package com.onyx.kreader.dataprovider.compatability;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
 
 import java.util.ArrayList;
@@ -64,6 +65,10 @@ public class LegacySdkDataUtils {
             return true;
         }
         return OnyxCmsCenter.insertThumbnail(context, data, bitmap);
+    }
+
+    public static OnyxDictionaryInfo getDictionary(final Context context) {
+        return OnyxSysCenter.getDictionary(context);
     }
 
     private static OnyxMetadata getMetadataByPath(final String documentPath) {

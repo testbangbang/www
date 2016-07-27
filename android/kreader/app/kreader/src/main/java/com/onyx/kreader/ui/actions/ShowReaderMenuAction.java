@@ -1,17 +1,23 @@
 package com.onyx.kreader.ui.actions;
 
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.PageConstants;
@@ -211,6 +217,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/GotoPage":
                         gotoPage(readerActivity);
                         break;
+                    case "/StartDictApp":
+                        startDictionaryApp(readerActivity);
+                        break;
                     case "/Search":
                         showSearchDialog(readerActivity);
                         break;
@@ -345,6 +354,22 @@ public class ShowReaderMenuAction extends BaseAction {
     private void gotoPage(final ReaderActivity readerActivity) {
         hideReaderMenu(readerActivity);
         new ShowQuickPreviewAction().execute(readerActivity);
+    }
+
+    private boolean startDictionaryApp(final ReaderActivity readerActivity) {
+        OnyxDictionaryInfo info = LegacySdkDataUtils.getDictionary(readerActivity);
+        if (info == null) {
+            Toast.makeText(readerActivity, R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
+        try {
+            readerActivity.startActivity(intent);
+        } catch ( ActivityNotFoundException e ) {
+            Toast.makeText(readerActivity, R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
     private void showSearchDialog(final ReaderActivity readerActivity){
