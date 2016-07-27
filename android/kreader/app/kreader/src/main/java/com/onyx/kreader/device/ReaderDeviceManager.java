@@ -61,6 +61,11 @@ public class ReaderDeviceManager {
         EpdController.setScreenHandWritingPenState(view, 0);
     }
 
+    public static void prepareInitialUpdate(int interval) {
+        gcInterval = interval - 1;
+        refreshCount = gcInterval;
+    }
+
     public static void setGcInterval(int interval) {
         gcInterval = interval - 1;
         refreshCount = 0;

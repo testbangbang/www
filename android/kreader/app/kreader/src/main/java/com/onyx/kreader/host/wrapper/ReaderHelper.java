@@ -12,6 +12,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
@@ -22,6 +23,7 @@ import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 import com.onyx.kreader.reflow.ImageReflowManager;
+import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.utils.ImageUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
@@ -115,6 +117,9 @@ public class ReaderHelper {
         getDocumentOptions().setPassword(options.getPassword());
         saveMetadata(context, documentPath);
         saveThumbnail(context, documentPath);
+
+        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(context,
+                DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
     }
 
     private void saveMetadata(final Context context, final String path) {
