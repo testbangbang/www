@@ -449,7 +449,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initShapeViewDelegate() {
-//        getNoteViewHelper().setView(this, surfaceView, null);
+        getNoteViewHelper().setView(this, surfaceView, null);
         // when page changed, choose to flush
         //noteViewHelper.flushPendingShapes();
 
@@ -681,7 +681,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void renderShapeDataInBackground() {
-        if (true || hasShapes()) {
+        if (hasShapes()) {
             return;
         }
 
