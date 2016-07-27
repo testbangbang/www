@@ -93,4 +93,12 @@ public class OnyxMatrix {
         return result;
     }
 
+    public TouchPoint mapWithOffset(final TouchPoint touchPoint, int dx, int dy) {
+        src[0] = touchPoint.getX() + dx;
+        src[1] = touchPoint.getY() + dy;
+        mapPoints(dst, src);
+        TouchPoint result = new TouchPoint(dst[0], dst[1], touchPoint.getPressure(), touchPoint.getSize(), touchPoint.getTimestamp());
+        return result;
+    }
+
 }

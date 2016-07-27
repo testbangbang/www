@@ -16,6 +16,10 @@ public class LineShape extends BaseShape {
         return ShapeFactory.SHAPE_LINE;
     }
 
+    public boolean addMovePoint() {
+        return false;
+    }
+
     public boolean hitTest(final float x, final float y, final float radius) {
         return ShapeUtils.hitTestLine(getDownPoint().x, getDownPoint().y, getCurrentPoint().x, getCurrentPoint().y, x, y, radius);
     }

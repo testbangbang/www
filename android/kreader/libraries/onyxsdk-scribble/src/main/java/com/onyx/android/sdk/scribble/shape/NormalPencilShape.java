@@ -19,17 +19,14 @@ public class NormalPencilShape extends EPDShape {
 
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         super.onDown(normalizedPoint, screenPoint);
-        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getStrokeWidth());
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         super.onMove(normalizedPoint, screenPoint);
-        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         super.onUp(normalizedPoint, screenPoint);
-        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
     }
 
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {

@@ -8,7 +8,7 @@ import android.util.Pair;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
-import com.onyx.android.sdk.scribble.data.RawInputProcessor;
+import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;

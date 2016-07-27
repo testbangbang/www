@@ -145,7 +145,7 @@ public class BaseNoteRequest extends BaseRequest {
                         helper.copyBitmap();
                     }
                 }
-                helper.enableScreenPost();
+                helper.enableScreenPost(true);
                 if (getCallback() != null) {
                     getCallback().done(BaseNoteRequest.this, getException());
                 }

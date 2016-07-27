@@ -1,11 +1,12 @@
-package com.onyx.android.sdk.scribble.data;
+package com.onyx.android.sdk.scribble.touch;
 
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.MotionEvent;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -147,7 +148,6 @@ public class RawInputProcessor {
                     detectInputDevicePath();
                     readLoop();
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         });
