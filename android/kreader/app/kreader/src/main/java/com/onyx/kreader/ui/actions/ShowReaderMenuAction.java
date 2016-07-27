@@ -366,6 +366,7 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onRefreshIntervalChanged(int oldValue, int newValue) {
                 LegacySdkDataUtils.setScreenUpdateGCInterval(readerActivity, newValue);
+                ReaderDeviceManager.setGcInterval(newValue);
             }
         });
         dlg.show(readerActivity.getFragmentManager());

@@ -18,6 +18,9 @@ public class ReaderDeviceManager {
     private final static String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
 
+    private static int gcInterval;
+    private static int refreshCount;
+
     public static void setFullScreen(Activity activity, boolean fullScreen) {
         if (Build.VERSION.SDK_INT >= 19) {
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -38,7 +41,7 @@ public class ReaderDeviceManager {
         activity.sendBroadcast(intent);
     }
 
-    public static void applyGCInvalidate(View view) {
+    public static void applyGCUpdate(View view) {
         EpdController.setViewDefaultUpdateMode(view, UpdateMode.GC);
     }
 
@@ -56,6 +59,24 @@ public class ReaderDeviceManager {
 
     public static void stopScreenHandWriting(final View view) {
         EpdController.setScreenHandWritingPenState(view, 0);
+    }
+
+    public static void setGcInterval(int interval) {
+        gcInterval = interval - 1;
+        refreshCount = 0;
+    }
+
+    public static void applyWithGCInterval(View view) {
+        if (refreshCount++ >= gcInterval) {
+            refreshCount = 0;
+            applyGCUpdate(view);
+        } else {
+            resetUpdate(view);
+        }
+    }
+
+    public static void resetUpdate(View view) {
+        EpdController.resetUpdateMode(view);
     }
 
 }

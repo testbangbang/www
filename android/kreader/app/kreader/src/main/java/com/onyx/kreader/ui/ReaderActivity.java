@@ -658,6 +658,8 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawPage(final Bitmap pageBitmap) {
+        ReaderDeviceManager.applyWithGCInterval(surfaceView);
+
         Canvas canvas = holder.lockCanvas();
         if (canvas == null) {
             return;
