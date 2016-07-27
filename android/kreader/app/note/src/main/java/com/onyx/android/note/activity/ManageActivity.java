@@ -466,12 +466,14 @@ public class ManageActivity extends OnyxAppCompatActivity {
                     deleteButton.setEnabled(true);
                     moveButton.setEnabled(true);
                 }
+                addFolderButton.setEnabled(false);
                 chooseModeButton.setText(R.string.disselect);
                 break;
             case SelectionMode.NORMAL_MODE:
                 controlPanel.setVisibility(View.GONE);
                 chooseModeButton.setText(R.string.select_mode);
                 chooseModeButton.setChecked(false);
+                addFolderButton.setEnabled(true);
                 break;
         }
     }
