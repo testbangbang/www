@@ -60,6 +60,15 @@ public abstract class EpdController
         return Device.currentDevice().getViewDefaultUpdateMode(view);
     }
 
+    public static void useFastScheme() {
+        EpdController.setDisplayScheme(EpdController.SCHEME_SCRIBBLE);
+    }
+
+    public static void resetUpdateMode(View view) {
+        EpdController.resetViewUpdateMode(view);
+        useFastScheme();
+    }
+
     public static boolean resetViewUpdateMode(View view) {
         Device.currentDevice().resetViewUpdateMode(view);
         return true;
