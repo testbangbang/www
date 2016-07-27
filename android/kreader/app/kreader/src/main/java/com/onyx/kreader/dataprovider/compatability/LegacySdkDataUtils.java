@@ -1,10 +1,12 @@
 package com.onyx.kreader.dataprovider.compatability;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
+import com.onyx.kreader.ui.ReaderActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +71,14 @@ public class LegacySdkDataUtils {
 
     public static OnyxDictionaryInfo getDictionary(final Context context) {
         return OnyxSysCenter.getDictionary(context);
+    }
+
+    public static int getScreenUpdateGCInterval(final Context context, int defaultIntervalCount) {
+        return OnyxSysCenter.getScreenUpdateGCInterval(context, defaultIntervalCount);
+    }
+
+    public static void setScreenUpdateGCInterval(final Context context, final int newValue) {
+        OnyxSysCenter.setScreenUpdateGCInterval(context, newValue);
     }
 
     private static OnyxMetadata getMetadataByPath(final String documentPath) {

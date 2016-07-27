@@ -27,6 +27,7 @@ import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
+import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -217,6 +218,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/GotoPage":
                         gotoPage(readerActivity);
                         break;
+                    case "/SetScreenRefreshRate":
+                        showScreenRefreshDialog(readerActivity);
+                        break;
                     case "/StartDictApp":
                         startDictionaryApp(readerActivity);
                         break;
@@ -354,6 +358,17 @@ public class ShowReaderMenuAction extends BaseAction {
     private void gotoPage(final ReaderActivity readerActivity) {
         hideReaderMenu(readerActivity);
         new ShowQuickPreviewAction().execute(readerActivity);
+    }
+
+    private void showScreenRefreshDialog(final ReaderActivity readerActivity) {
+        DialogScreenRefresh dlg = new DialogScreenRefresh();
+        dlg.setListener(new DialogScreenRefresh.onScreenRefreshChangedListener() {
+            @Override
+            public void onRefreshIntervalChanged(int oldValue, int newValue) {
+                LegacySdkDataUtils.setScreenUpdateGCInterval(readerActivity, newValue);
+            }
+        });
+        dlg.show(readerActivity.getFragmentManager());
     }
 
     private boolean startDictionaryApp(final ReaderActivity readerActivity) {
