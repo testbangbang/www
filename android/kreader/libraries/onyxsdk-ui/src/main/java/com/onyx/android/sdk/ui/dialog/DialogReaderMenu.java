@@ -109,7 +109,7 @@ public class DialogReaderMenu extends Dialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onHideMenu();
-                startDictionaryApp();
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/StartDictApp"));
             }
         });
 
@@ -136,23 +136,6 @@ public class DialogReaderMenu extends Dialog {
             }
         });
 
-    }
-
-    public boolean startDictionaryApp() {
-//        OnyxDictionaryInfo info = OnyxSysCenter.getDictionary(this.getContext());
-        OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
-        if (info == null) {
-            Toast.makeText(this.getContext(), R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
-            return false;
-        }
-        Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
-        try {
-            getContext().startActivity(intent);
-        } catch ( ActivityNotFoundException e ) {
-            Toast.makeText(this.getContext(), R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
     }
 
     private ReaderMenuItem createVirtualMenuItem(String uri) {
