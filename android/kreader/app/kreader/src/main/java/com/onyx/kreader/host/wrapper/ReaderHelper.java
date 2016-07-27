@@ -11,7 +11,7 @@ import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.cache.BitmapLruCache;
-import com.onyx.kreader.compatability.LegacySdkDataUtils;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;

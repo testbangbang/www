@@ -14,11 +14,8 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.RefValue;
 import com.onyx.android.sdk.reader.IMetadataService;
-import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.compatability.LegacySdkDataUtils;
-import com.onyx.kreader.compatability.OnyxCmsCenter;
-import com.onyx.kreader.compatability.OnyxMetadata;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.CreateViewRequest;
 import com.onyx.kreader.host.request.OpenRequest;
@@ -27,7 +24,6 @@ import com.onyx.kreader.host.request.ReaderDocumentCoverRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

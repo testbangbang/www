@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.onyx.kreader.compatability;
+package com.onyx.kreader.dataprovider.compatability;
 
 import android.content.Context;
 import android.database.Cursor;

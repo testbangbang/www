@@ -1,4 +1,4 @@
-package com.onyx.kreader.compatability;
+package com.onyx.kreader.dataprovider.compatability;
 
 import android.database.Cursor;
 

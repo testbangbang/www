@@ -2,7 +2,7 @@ package com.onyx.kreader.common;
 
 import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.compatability.LegacySdkDataUtils;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
