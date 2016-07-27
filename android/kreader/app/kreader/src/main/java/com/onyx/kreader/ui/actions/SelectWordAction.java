@@ -13,11 +13,13 @@ public class SelectWordAction extends BaseAction {
     private String pageName;
     private PointF startPoint;
     private PointF endPoint;
+    private boolean touchMoved;
 
-    public SelectWordAction(final String pageName, final PointF startPoint, final PointF endPoint) {
+    public SelectWordAction(final String pageName, final PointF startPoint, final PointF endPoint,final boolean touchMoved) {
         this.pageName = pageName;
         this.startPoint = startPoint;
         this.endPoint = endPoint;
+        this.touchMoved = touchMoved;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class SelectWordAction extends BaseAction {
         readerActivity.getReader().submitRequest(readerActivity, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                readerActivity.onSelectWordFinished((SelectWordRequest)request, e);
+                readerActivity.onSelectWordFinished((SelectWordRequest)request, e, touchMoved);
             }
         });
     }

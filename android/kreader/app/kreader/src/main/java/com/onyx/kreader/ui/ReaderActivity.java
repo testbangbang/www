@@ -303,7 +303,7 @@ public class ReaderActivity extends ActionBarActivity {
         if (page == null) {
             return;
         }
-        new SelectWordAction(page.getName(), new PointF(x1, y1), new PointF(x2, y2)).execute(this);
+        new SelectWordAction(page.getName(), new PointF(x1, y1), new PointF(x2, y2),false).execute(this);
     }
 
     private PageInfo hitTestPage(float x, float y) {
@@ -525,7 +525,7 @@ public class ReaderActivity extends ActionBarActivity {
         new ShowSearchMenuAction(request.getSearchOptions(), result).execute(this);
     }
 
-    public void onSelectWordFinished(SelectWordRequest request, Throwable e) {
+    public void onSelectWordFinished(SelectWordRequest request, Throwable e,boolean touchMoved) {
         if (e != null) {
             return;
         }
@@ -544,7 +544,7 @@ public class ReaderActivity extends ActionBarActivity {
         handlerManager.setActiveProvider(HandlerManager.WORD_SELECTION_PROVIDER);
         onRenderRequestFinished(request, e);
 
-        showHighlightSelectionDialog((int)request.getEnd().x, (int)request.getEnd().y, PopupSelectionMenu.SelectionType.MultiWordsType);
+        showHighlightSelectionDialog((int)request.getEnd().x, (int)request.getEnd().y, touchMoved ? PopupSelectionMenu.SelectionType.MultiWordsType : PopupSelectionMenu.SelectionType.SingleWordType);
     }
 
     public void backward() {
@@ -921,17 +921,26 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
         if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
+            PointF leftTop = new PointF(x, y);
             PointF bottomRight = RectUtils.getBottomRight(selection.getRectangles());
-            new SelectWordAction(pageInfo.getName(), new PointF(x, y), bottomRight).execute(this);
+            if (isTopToBottom(leftTop,bottomRight)){
+                new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true).execute(this);
+            }
         } else {
             PointF leftTop = RectUtils.getTopLeft(selection.getRectangles());
-            new SelectWordAction(pageInfo.getName(), leftTop, new PointF(x, y)).execute(this);
+            PointF bottomRight = new PointF(x, y);
+            if (isTopToBottom(leftTop,bottomRight)){
+                new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true).execute(this);
+            }
         }
-
     }
 
-    public void highlightFinished(final float x1, final float y1, final float x2, final float y2) {
-        showHighlightSelectionDialog((int)x1, (int)y1, PopupSelectionMenu.SelectionType.MultiWordsType);
+    private boolean isTopToBottom(PointF leftTop,PointF bottomRight){
+        return bottomRight.y >= leftTop.y;
+    }
+
+    public void highlightFinished(final float x1, final float y1, final float x2, final float y2,boolean touchMoved) {
+        showHighlightSelectionDialog((int)x1, (int)y1, touchMoved ? PopupSelectionMenu.SelectionType.MultiWordsType : PopupSelectionMenu.SelectionType.SingleWordType);
     }
 
     public int getCursorSelected(int x, int y) {

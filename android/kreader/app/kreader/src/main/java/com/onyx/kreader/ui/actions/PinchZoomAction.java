@@ -1,10 +1,16 @@
 package com.onyx.kreader.ui.actions;
 
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
-import com.onyx.kreader.device.ReaderDeviceManager;
+
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.ui.ReaderActivity;

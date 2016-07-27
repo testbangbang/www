@@ -1,6 +1,9 @@
 package com.onyx.kreader.ui.actions;
 
 import android.graphics.RectF;
+import android.widget.Toast;
+
+import com.onyx.kreader.R;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.ui.ReaderActivity;
@@ -18,6 +21,8 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
 
     public void execute(final ReaderActivity readerActivity) {
         if (scaleDelta < 0 && !canScaleDown(readerActivity)) {
+            Toast.makeText(readerActivity,
+                    R.string.min_scroll_toast, Toast.LENGTH_SHORT).show();
             return;
         }
 

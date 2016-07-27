@@ -82,4 +82,6 @@
     <string name="search">Search</string>
     <string name="total_page" formatted="false">共 %d 条</string>
     <string name="page_indicator" formatted="false">%d/%d 页</string>
+    <string name="min_scroll_toast">Has been scaled to the minimum value</string>
+    <string name="max_scroll_toast">Has been scaled to the maximum value</string>
 </resources>

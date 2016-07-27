@@ -5,9 +5,15 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.actions.SelectWordAction;
 import com.onyx.kreader.ui.data.ReaderConfig;
+import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.utils.MathUtils;
+import com.onyx.kreader.utils.RectUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -61,7 +67,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public boolean onActionUp(ReaderActivity activity, final float startX, final float startY, final float endX, final float endY) {
-        activity.highlightFinished(startX, startY, endX, endY);
+        activity.highlightFinished(startX, startY, endX, endY,moveAfterLongPress);
         return true;
     }
 
@@ -123,6 +129,9 @@ public class WordSelectionHandler extends BaseHandler {
         float x = e.getX();
         float y = e.getY();
         switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                moveAfterLongPress = false;
+                break;
             case MotionEvent.ACTION_MOVE:
                 touchMoveTime = System.currentTimeMillis();
                 boolean cursorNotSelected = cursorSelected < 0;
@@ -142,7 +151,8 @@ public class WordSelectionHandler extends BaseHandler {
                     return true;
                 }
                 lastTouchMoveTime = touchMoveTime;
-                activity.highlightAlongTouchMoved(x, y, cursorSelected);
+                moveAfterLongPress = true;
+                highlightAlongTouchMoved(activity,x, y, cursorSelected);
                 return true;
             default:
                 break;
@@ -150,4 +160,40 @@ public class WordSelectionHandler extends BaseHandler {
         return super.onTouchEvent(activity, e);
     }
 
+    public void highlightAlongTouchMoved(ReaderActivity activity,float x, float y, int cursorSelected) {
+        ReaderSelection selection = activity.getReaderUserDataInfo().getHighlightResult();
+        PageInfo pageInfo = activity.getReaderViewInfo().getPageInfo(selection.getPagePosition());
+        if (hitTestPage(activity,x, y) != pageInfo) {
+            return;
+        }
+        if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
+            PointF leftTop = new PointF(x, y);
+            PointF bottomRight = RectUtils.getBottomRight(selection.getRectangles());
+            if (isTopToBottom(leftTop,bottomRight)){
+                new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true).execute(activity);
+            }
+        } else {
+            PointF leftTop = RectUtils.getTopLeft(selection.getRectangles());
+            PointF bottomRight = new PointF(x, y);
+            if (isTopToBottom(leftTop,bottomRight)){
+                new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true).execute(activity);
+            }
+        }
+    }
+
+    private PageInfo hitTestPage(ReaderActivity activity,float x, float y) {
+        if (activity.getReaderViewInfo().getVisiblePages() == null) {
+            return null;
+        }
+        for (PageInfo pageInfo : activity.getReaderViewInfo().getVisiblePages()) {
+            if (pageInfo.getDisplayRect().contains(x, y)) {
+                return pageInfo;
+            }
+        }
+        return null;
+    }
+
+    private boolean isTopToBottom(PointF leftTop,PointF bottomRight){
+        return bottomRight.y >= leftTop.y;
+    }
 }

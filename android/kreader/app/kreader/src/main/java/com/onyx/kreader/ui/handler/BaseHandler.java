@@ -130,7 +130,7 @@ public class BaseHandler  {
         return true;
     }
 
-    protected Point getStartPoint() {
+    public Point getStartPoint() {
         return startPoint;
     }
 
