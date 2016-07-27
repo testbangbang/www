@@ -35,7 +35,7 @@ public class ReaderPainter {
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager);
         drawAnnotations(canvas, paint, userDataInfo, viewInfo);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
-        drawShapes(canvas, paint, noteViewHelper, shapeDataInfo);
+//        drawShapes(canvas, paint, noteViewHelper, shapeDataInfo);
     }
 
     private void drawBackground(Canvas canvas, Paint paint) {
