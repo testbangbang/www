@@ -37,7 +37,10 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
     }
 
     private boolean canScaleDown(final ReaderActivity readerActivity) {
-        final float toPageScale = PageUtils.scaleToPage(readerActivity.getFirstPageInfo().getOriginWidth(), readerActivity.getFirstPageInfo().getOriginHeight(), readerActivity.getReader().getViewOptions().getViewWidth(), readerActivity.getReader().getViewOptions().getViewHeight());
+        final float toPageScale = PageUtils.scaleToPage(readerActivity.getFirstPageInfo().getOriginWidth(),
+                readerActivity.getFirstPageInfo().getOriginHeight(),
+                readerActivity.getDisplayWidth(),
+                readerActivity.getDisplayHeight());
         return readerActivity.getReaderViewInfo().getFirstVisiblePage().getActualScale() > toPageScale;
     }
 

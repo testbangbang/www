@@ -248,17 +248,19 @@ public class ManageActivity extends OnyxAppCompatActivity {
                         break;
                     case SelectionMode.MULTISELECT_MODE:
                         GObject temp = view.getData();
-                        int dataIndex = adapter.getGObjectIndex(temp);
-                        if (view.getData().getBoolean(GAdapterUtil.TAG_SELECTABLE, false)) {
-                            temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, false);
-                            chosenItemsList.remove(temp);
-                        } else {
-                            temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
-                            chosenItemsList.add(temp);
+                        if (!(Utils.getItemType(temp) == DataItemType.TYPE_CREATE)) {
+                            int dataIndex = adapter.getGObjectIndex(temp);
+                            if (view.getData().getBoolean(GAdapterUtil.TAG_SELECTABLE, false)) {
+                                temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, false);
+                                chosenItemsList.remove(temp);
+                            } else {
+                                temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
+                                chosenItemsList.add(temp);
+                            }
+                            adapter.setObject(dataIndex, temp);
+                            contentView.updateCurrentPage();
+                            contentView.setCustomInfo(Integer.toString(chosenItemsList.size()), true);
                         }
-                        adapter.setObject(dataIndex, temp);
-                        contentView.updateCurrentPage();
-                        contentView.setCustomInfo(Integer.toString(chosenItemsList.size()), true);
                         break;
                 }
                 updateButtonsStatusByMode();

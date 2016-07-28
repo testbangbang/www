@@ -72,6 +72,27 @@
 
         <activity android:name="com.onyx.android.cropimage.CropImageActivity" />
 
+        <service android:name="com.onyx.kreader.ui.ReaderMetadataService"
+                 android:process=":metadataservice"
+                 android:enabled="true" android:exported="true">
+
+            <intent-filter>
+                <action android:name="com.onyx.android.sdk.data.IntentFactory.ACTION_EXTRACT_METADATA" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:host="*" android:scheme="file" />
+                <data android:host="*" android:scheme="content" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="com.onyx.android.sdk.data.IntentFactory.ACTION_EXTRACT_METADATA" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:host="*"/>
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:pathPattern=".*\\.[pP][dD][fF]" />
+            </intent-filter>
+        </service>
 
     </application>
 

@@ -2,6 +2,7 @@ package com.onyx.kreader.common;
 
 import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -165,6 +166,11 @@ public abstract class BaseReaderRequest extends BaseRequest {
                 reader.getDocumentPath(),
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions());
+
+        int currentPage = Integer.parseInt(reader.getDocumentOptions().getCurrentPage());
+        int totalPage = reader.getDocumentOptions().getTotalPage();
+        LegacySdkDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
+                currentPage + 1, totalPage);
     }
 
     private void loadUserData(final Reader reader) {

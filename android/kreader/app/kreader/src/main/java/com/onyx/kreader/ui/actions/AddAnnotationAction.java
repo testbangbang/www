@@ -35,21 +35,7 @@ public class AddAnnotationAction extends BaseAction {
 
     @Override
     public void execute(ReaderActivity readerActivity) {
-        readerActivity.submitRequest(new AddAnnotationRequest(createAnnotation(readerActivity)));
-    }
-
-    private Annotation createAnnotation(ReaderActivity readerActivity) {
-        Annotation annotation = new Annotation();
-        annotation.setMd5(readerActivity.getReader().getDocumentMd5());
-        annotation.setApplication(readerActivity.getReader().getPlugin().displayName());
-        annotation.setPosition(pageInfo.getName());
-        annotation.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));
-        annotation.setLocationBegin(locationBegin);
-        annotation.setLocationEnd(locationEnd);
-        annotation.setQuote(quote);
-        annotation.setNote(note);
-        annotation.setRectangles(rects);
-        return annotation;
+        readerActivity.submitRequest(new AddAnnotationRequest(pageInfo, locationBegin, locationEnd, rects, quote, note));
     }
 
     private List<RectF> translateToDocument(List<RectF> rects) {

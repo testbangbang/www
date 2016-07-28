@@ -6,6 +6,7 @@ import com.onyx.kreader.common.Debug;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Locale;
 
 /**
@@ -72,9 +73,18 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
     }
 
     // TODO, use json later.
-    static private final String  Splitters[] = {"。", "？", "！", ".", "!"};
+    static private final HashSet<Character> Splitters;
     static private ReaderTextSplitterImpl instance;
     static boolean hasSpace = false;
+
+    static {
+        Splitters = new HashSet<>();
+        Splitters.add('。');
+        Splitters.add('？');
+        Splitters.add('！');
+        Splitters.add('.');
+        Splitters.add('!');
+    }
 
     private SentenceAnalyzeResult analyzeResult = null;
 
@@ -108,6 +118,18 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
             analyzeResult = SentenceAnalyzeResult.analyze(w, l, r);
         }
         return analyzeResult.getRightBoundaryOfWord();
+    }
+
+    @Override
+    public int getTextSentenceBreakPoint(String text) {
+        for (int i = 0; i < text.length(); i++) {
+            if (Splitters.contains(text.charAt(i))) {
+                Debug.d("getTextSentenceBreakPoint, find: " + text.charAt(i));
+                return i;
+            }
+        }
+        Debug.d("getTextSentenceBreakPoint, find nothing!");
+        return text.length() - 1;
     }
 
     boolean hasSpace(final String string) {
@@ -172,14 +194,14 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         return position;
     }
 
-    int isSentenceBoundary(final String text) {
-        for(String splitter: Splitters) {
-            if (text.endsWith(splitter)) {
-                return 1;
-            }
-        }
-        return 0;
-    }
+//    int isSentenceBoundary(final String text) {
+//        for(String splitter: Splitters) {
+//            if (text.endsWith(splitter)) {
+//                return 1;
+//            }
+//        }
+//        return 0;
+//    }
 
     private static boolean isAlpha(char ch) {
         /**
