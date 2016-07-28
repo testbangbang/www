@@ -3,10 +3,14 @@ package com.onyx.kreader.tests;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.Suppress;
 import com.onyx.android.sdk.api.ReaderBitmap;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
@@ -22,6 +26,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
         super(ReaderTestActivity.class);
     }
 
+    @Suppress
     public void testPluginUsage() throws Exception {
         ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/normal.pdf", null, null);
@@ -40,7 +45,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
         document.close();
     }
 
-
+    @Suppress
     public void testPluginRendering() throws Exception {
         ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/normal.pdf", null, null);
@@ -73,6 +78,38 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
         document.close();
     }
 
+    @Suppress
+    public void testReaderSentence() throws Exception {
+        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
+        ReaderDocument document = plugin.open("/mnt/sdcard/Books/西游记.pdf", null, null);
+        assertNotNull(document);
 
+        String page = "1";
+        ReaderSentence sentence = document.getSentence(page, "");
+        assertNotNull(sentence);
+        Debug.d("sentence text: " + sentence.getReaderSelection().getText());
+        while (sentence != null && !sentence.isEndOfScreen() && !sentence.isEndOfDocument()) {
+            sentence = document.getSentence(page, sentence.getNextPosition());
+            Debug.d("sentence text: " + sentence.getReaderSelection().getText());
+        }
+    }
+
+    public void testMetadata() throws Exception {
+        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
+        ReaderDocument document = plugin.open("/mnt/sdcard/Books/pdf_reference_1-7.pdf", null, null);
+        assertNotNull(document);
+
+        assertTrue(document.readMetadata(new ReaderDocumentMetadataImpl()));
+    }
+
+    public void testCover() throws Exception {
+        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
+        ReaderDocument document = plugin.open("/mnt/sdcard/Books/pdf_reference_1-7.pdf", null, null);
+        assertNotNull(document);
+
+        ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(600, 800, Bitmap.Config.ARGB_8888);
+        assertTrue(document.readCover(bitmap));
+        assertTrue(BitmapUtils.saveBitmap(bitmap.getBitmap(), "/sdcard/cover.png"));
+    }
 
 }

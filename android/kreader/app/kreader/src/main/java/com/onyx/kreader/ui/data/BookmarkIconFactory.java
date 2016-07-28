@@ -15,6 +15,12 @@ public class BookmarkIconFactory {
         return activated ? getBookmarkActivated(context) : getBookmarkDeactivated(context);
     }
 
+    public static Point bookmarkPosition(int displayWidth, Bitmap bitmap) {
+        Point point = new Point();
+        point.set(displayWidth - bitmap.getWidth(), 10);
+        return point;
+    }
+
     private static Bitmap getBookmarkActivated(Context context) {
         if (sBookmarkActivated == null) {
             sBookmarkActivated = generateBookmarkDrawable(context, true);

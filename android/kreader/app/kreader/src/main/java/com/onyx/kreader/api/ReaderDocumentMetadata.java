@@ -1,5 +1,7 @@
 package com.onyx.kreader.api;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 /**
@@ -7,17 +9,18 @@ import java.util.List;
  */
 public interface ReaderDocumentMetadata {
 
+    String getTitle();
 
-    public List<String> getAuthors();
+    void setTitle(final String title);
 
-    public String getTitle();
+    String getDescription();
 
-    public String getDescription();
+    void setDescription(final String description);
 
-    public List<String> getCreator();
+    @NonNull List<String> getAuthors();
 
-    public List<String> getPublisher();
+    String getPublisher();
 
-
+    void setPublisher(final String publisher);
 
 }

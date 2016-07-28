@@ -11,6 +11,8 @@ import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
 import com.onyx.kreader.utils.PagePositionUtils;
 
+import java.util.List;
+
 /**
  * Created by joy on 7/15/16.
  */
@@ -23,28 +25,35 @@ public class ShowQuickPreviewAction extends BaseAction {
         dialogQuickPreview = new DialogQuickPreview(readerActivity,
                 readerActivity.getPageCount(), readerActivity.getCurrentPage(),
                 readerActivity.getReader().getViewportBitmap().getBitmap(), new DialogQuickPreview.Callback() {
+
             @Override
-            public void requestPreview(final int pageStart, final int pageEnd, final Size desiredSize) {
-                for (int i = pageStart; i <= pageEnd; i++) {
-                    final int page = i;
-                    int width = readerActivity.getDisplayWidth();
-                    int height = readerActivity.getDisplayHeight();
-                    if (!readerActivity.getReader().getRendererFeatures().supportScale()) {
-                        width = desiredSize.width;
-                        height = desiredSize.height;
-                    }
-                    final ReaderBitmapImpl bitmap = new ReaderBitmapImpl(width, height, Bitmap.Config.ARGB_8888);
-                    RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(PagePositionUtils.fromPageNumber(page), bitmap);
-                    readerActivity.getReader().submitRequest(readerActivity, thumbnailRequest, new BaseCallback() {
-                        @Override
-                        public void done(BaseRequest request, Throwable e) {
-                            dialogQuickPreview.updatePreview(page, bitmap.getBitmap());
-                            bitmap.recycleBitmap();
-                        }
-                    });
-                }
+            public void requestPreview(final List<Integer> pages, final Size desiredSize) {
+                requestPreviewBySequence(readerActivity, pages, desiredSize);
             }
         });
         dialogQuickPreview.show();
+    }
+
+    private void requestPreviewBySequence(final ReaderActivity readerActivity, final List<Integer> pages, final Size desiredSize) {
+        if (pages.size() <= 0) {
+            return;
+        }
+        final int current = pages.remove(0);
+        int width = readerActivity.getDisplayWidth();
+        int height = readerActivity.getDisplayHeight();
+        if (!readerActivity.getReader().getRendererFeatures().supportScale()) {
+            width = desiredSize.width;
+            height = desiredSize.height;
+        }
+        final ReaderBitmapImpl bitmap = new ReaderBitmapImpl(width, height, Bitmap.Config.ARGB_8888);
+        RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(PagePositionUtils.fromPageNumber(current), bitmap);
+        readerActivity.getReader().submitRequest(readerActivity, thumbnailRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dialogQuickPreview.updatePreview(current, bitmap.getBitmap());
+                bitmap.recycleBitmap();
+                requestPreviewBySequence(readerActivity, pages, desiredSize);
+            }
+        });
     }
 }
