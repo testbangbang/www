@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.graphics.RectF;
+
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.android.cropimage.data.PointMatrix;
@@ -15,8 +16,8 @@ import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.GotoLocationRequest;
 import com.onyx.kreader.host.request.ScaleToPageCropRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderCropArgs;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
@@ -34,19 +35,19 @@ public class ChangeNavigationSettingsAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderActivity readerActivity) {
-        setupNavigationSettings(readerActivity, readerActivity.getCurrentPage());
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        setupNavigationSettings(readerDataHolder, readerDataHolder.getCurrentPage());
     }
 
-    private void setupNavigationSettings(final ReaderActivity readerActivity, final int page) {
+    private void setupNavigationSettings(final ReaderDataHolder readerDataHolder, final int page) {
         int scale = PageConstants.SCALE_TO_PAGE;
         if (cropArgs.getCropPageMode() == ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE) {
             scale = PageConstants.SCALE_TO_PAGE_CONTENT;
         }
-        scalePage(readerActivity, page, scale);
+        scalePage(readerDataHolder, page, scale);
     }
 
-    private void scalePage(final ReaderActivity readerActivity, final int page, final int scale) {
+    private void scalePage(final ReaderDataHolder readerDataHolder, final int page, final int scale) {
         final BaseReaderRequest scaleRequest;
         if (scale == PageConstants.SCALE_TO_PAGE_CONTENT) {
             scaleRequest = new ScaleToPageCropRequest(PagePositionUtils.fromPageNumber(page));
@@ -54,22 +55,22 @@ public class ChangeNavigationSettingsAction extends BaseAction {
             scaleRequest = new ScaleToPageRequest(PagePositionUtils.fromPageNumber(page));
         }
 
-        readerActivity.submitRequest(scaleRequest, new BaseCallback() {
+        readerDataHolder.submitRequest(scaleRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 int page = PagePositionUtils.getPageNumber(scaleRequest.getReaderViewInfo().getFirstVisiblePage().getName());
-                cropAndSplitPage(readerActivity, scaleRequest, page);
+                cropAndSplitPage(readerDataHolder, scaleRequest, page);
             }
         });
     }
 
-    private void cropAndSplitPage(final ReaderActivity readerActivity, final BaseReaderRequest request, final int currentPage) {
+    private void cropAndSplitPage(final ReaderDataHolder readerDataHolder, final BaseReaderRequest request, final int currentPage) {
         if (isManualCropPageByOddAndEven() && step == CropByOddAndEventStep.First) {
             initNavigationArgsForOddAndEvenCrop();
         }
         new SelectionScaleAction(cropArgs.getCropArgs(), new SelectionScaleAction.Callback() {
             @Override
-            public void onSelectionFinished(ReaderActivity readerActivity, CropArgs args) {
+            public void onSelectionFinished(ReaderDataHolder dataHolder, CropArgs args) {
                 Debug.d("cropping page: " + currentPage);
                 if (isManualCropPageByOddAndEven()) {
                     int index = currentPage % 2;
@@ -78,7 +79,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
 
                     if (step == CropByOddAndEventStep.First) {
                         step = CropByOddAndEventStep.Second;
-                        cropOddAndEventPageNextStep(readerActivity, readerActivity.getCurrentPage());
+                        cropOddAndEventPageNextStep(dataHolder, dataHolder.getCurrentPage());
                         return;
                     }
                 } else {
@@ -88,20 +89,20 @@ public class ChangeNavigationSettingsAction extends BaseAction {
 
                 Debug.d("final cropped args: " + JSON.toJSONString(cropArgs));
                 NavigationArgs navigationArgs = new NavigationArgs();
-                buildNavigationArgs(readerActivity, request, navigationArgs);
-                readerActivity.submitRequest(new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
+                buildNavigationArgs(dataHolder, request, navigationArgs);
+                dataHolder.submitRequest(new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
             }
-        }).execute(readerActivity);
+        }).execute(readerDataHolder);
     }
 
-    private void buildNavigationArgs(final ReaderActivity readerActivity, final BaseReaderRequest request, final NavigationArgs navigationArgs) {
-        RectF defaultLimit = getNavigationArgsLimitRect(readerActivity, request, cropArgs.getManualCropDocRegions().get(0));
+    private void buildNavigationArgs(final ReaderDataHolder readerDataHolder, final BaseReaderRequest request, final NavigationArgs navigationArgs) {
+        RectF defaultLimit = getNavigationArgsLimitRect(readerDataHolder, request, cropArgs.getManualCropDocRegions().get(0));
         PointMatrix defaultMatrix = cropArgs.getManualPointMatrixList().get(0);
         Debug.d("limit region: " + JSON.toJSONString(defaultLimit));
         RectF oddLimit = null;
         PointMatrix oddMatrix = null;
         if (isManualCropPageByOddAndEven()) {
-            oddLimit = getNavigationArgsLimitRect(readerActivity, request, cropArgs.getManualCropDocRegions().get(1));
+            oddLimit = getNavigationArgsLimitRect(readerDataHolder, request, cropArgs.getManualCropDocRegions().get(1));
             oddMatrix = cropArgs.getManualPointMatrixList().get(1);
         }
         switch (cropArgs.getNavigationMode()) {
@@ -148,7 +149,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
         }
     }
 
-    private RectF getNavigationArgsLimitRect(final ReaderActivity readerActivity, final BaseReaderRequest request, final RectF selectionRect) {
+    private RectF getNavigationArgsLimitRect(final ReaderDataHolder readerDataHolder, final BaseReaderRequest request, final RectF selectionRect) {
         RectF docRect = PageUtils.translateToDocument(request.getReaderViewInfo().getFirstVisiblePage(), selectionRect);
         return new RectF(docRect.left / request.getReaderViewInfo().getFirstVisiblePage().getOriginWidth(),
                 docRect.top / request.getReaderViewInfo().getFirstVisiblePage().getOriginHeight(),
@@ -156,18 +157,18 @@ public class ChangeNavigationSettingsAction extends BaseAction {
                 docRect.bottom / request.getReaderViewInfo().getFirstVisiblePage().getOriginHeight());
     }
 
-    private void cropOddAndEventPageNextStep(final ReaderActivity readerActivity, final int currentPage) {
+    private void cropOddAndEventPageNextStep(final ReaderDataHolder readerDataHolder, final int currentPage) {
         final int nextPage;
-        if (isLastPage(readerActivity, currentPage)) {
+        if (isLastPage(readerDataHolder, currentPage)) {
             nextPage = Math.max(currentPage - 1, 0);
         } else {
             nextPage = currentPage + 1;
         }
         BaseReaderRequest request = new GotoLocationRequest(PagePositionUtils.fromPageNumber(nextPage));
-        readerActivity.submitRequest(request, new BaseCallback() {
+        readerDataHolder.submitRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                setupNavigationSettings(readerActivity, nextPage);
+                setupNavigationSettings(readerDataHolder, nextPage);
             }
         });
     }
@@ -183,8 +184,8 @@ public class ChangeNavigationSettingsAction extends BaseAction {
         cropArgs.getManualPointMatrixList().add(new PointMatrix());
     }
 
-    private boolean isLastPage(final ReaderActivity readerActivity, final int page) {
-        return page >= readerActivity.getPageCount() - 1;
+    private boolean isLastPage(final ReaderDataHolder readerDataHolder, final int page) {
+        return page >= readerDataHolder.getPageCount() - 1;
     }
 
 }

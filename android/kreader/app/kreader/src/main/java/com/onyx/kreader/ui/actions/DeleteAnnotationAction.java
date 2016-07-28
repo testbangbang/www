@@ -3,7 +3,7 @@ package com.onyx.kreader.ui.actions;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.host.request.DeleteAnnotationRequest;
-import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
  * Created by joy on 7/7/16.
@@ -17,12 +17,12 @@ public class DeleteAnnotationAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderActivity readerActivity) {
-        execute(readerActivity,null);
+    public void execute(ReaderDataHolder readerDataHolder) {
+        execute(readerDataHolder,null);
     }
 
     @Override
-    public void execute(ReaderActivity readerActivity, BaseCallback baseCallback) {
-        readerActivity.submitRequest(new DeleteAnnotationRequest(annotation), baseCallback);
+    public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
+        readerDataHolder.submitRequest(new DeleteAnnotationRequest(annotation), baseCallback);
     }
 }

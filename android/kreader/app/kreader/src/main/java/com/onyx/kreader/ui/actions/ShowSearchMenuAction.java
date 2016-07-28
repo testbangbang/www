@@ -1,9 +1,11 @@
 package com.onyx.kreader.ui.actions;
 
 import android.widget.RelativeLayout;
+
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSearchOptions;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
 import com.onyx.kreader.utils.PagePositionUtils;
 
@@ -25,27 +27,28 @@ public class ShowSearchMenuAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderActivity readerActivity) {
-        getSearchMenu(readerActivity).setSearchOptions(searchOptions);
-        getSearchMenu(readerActivity).show();
-        getSearchMenu(readerActivity).searchDone(searchResult);
+    public void execute(ReaderDataHolder readerDataHolder) {
+        getSearchMenu(readerDataHolder).setSearchOptions(searchOptions);
+        getSearchMenu(readerDataHolder).show();
+        getSearchMenu(readerDataHolder).searchDone(searchResult);
     }
 
     public static void resetSearchMenu() {
         searchMenu = null;
     }
 
-    private PopupSearchMenu getSearchMenu(final ReaderActivity readerActivity) {
+    private PopupSearchMenu getSearchMenu(final ReaderDataHolder readerDataHolder) {
+        ReaderActivity readerActivity = (ReaderActivity)readerDataHolder.getContext();
         if (searchMenu == null) {
-            searchMenu = new PopupSearchMenu(readerActivity, (RelativeLayout)readerActivity.getSurfaceView().getParent(), new PopupSearchMenu.MenuCallback() {
+            searchMenu = new PopupSearchMenu(readerActivity, (RelativeLayout) readerActivity.getSurfaceView().getParent(), new PopupSearchMenu.MenuCallback() {
                 @Override
                 public void search(PopupSearchMenu.SearchDirection mSearchDirection) {
                     switch (mSearchDirection){
                         case Forward:
-                            searchContent(readerActivity, readerActivity.getCurrentPage() + 1, searchMenu.getSearchOptions().pattern(), true);
+                            searchContent(readerDataHolder, readerDataHolder.getCurrentPage() + 1, searchMenu.getSearchOptions().pattern(), true);
                             break;
                         case Backward:
-                            searchContent(readerActivity, readerActivity.getCurrentPage() - 1, searchMenu.getSearchOptions().pattern(), false);
+                            searchContent(readerDataHolder, readerDataHolder.getCurrentPage() - 1, searchMenu.getSearchOptions().pattern(), false);
                             break;
                         default:
                             break;
@@ -56,7 +59,7 @@ public class ShowSearchMenuAction extends BaseAction {
                 public void disMissMenu() {
                     searchMenu.hide();
                     searchMenu = null;
-                    readerActivity.redrawPage();
+                    readerDataHolder.redrawPage();
                 }
 
                 @Override
@@ -68,13 +71,13 @@ public class ShowSearchMenuAction extends BaseAction {
         return searchMenu;
     }
 
-    public void searchContent(final ReaderActivity readerActivity, int page, String query, boolean forward) {
-        searchContent(readerActivity, PagePositionUtils.fromPageNumber(page), query, forward);
+    public void searchContent(final ReaderDataHolder readerDataHolder, int page, String query, boolean forward) {
+        searchContent(readerDataHolder, PagePositionUtils.fromPageNumber(page), query, forward);
     }
 
-    private void searchContent(final ReaderActivity readerActivity, String page, String query, boolean forward) {
+    private void searchContent(final ReaderDataHolder readerDataHolder, String page, String query, boolean forward) {
         if (StringUtils.isNotBlank(query)) {
-            new SearchContentAction(page, query, forward).execute(readerActivity);
+            new SearchContentAction(page, query, forward).execute(readerDataHolder);
         }
     }
 }

@@ -22,8 +22,8 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.GotoPageAction;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class DialogQuickPreview extends Dialog {
                         @Override
                         public void run() {
                             DialogQuickPreview.this.hide();
-                            new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerActivity);
+                            new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder);
                         }
                     },400);
 
@@ -223,17 +223,17 @@ public class DialogQuickPreview extends Dialog {
     private GPaginator paginator;
     private PreviewAdapter adapter = new PreviewAdapter();
 
-    private ReaderActivity readerActivity;
+    private ReaderDataHolder readerDataHolder;
     private int pageCount;
     private int currentPage;
     private Callback callback;
 
-    public DialogQuickPreview(@NonNull final ReaderActivity readerActivity, final int pageCount, final int currentPage,
+    public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, final int pageCount, final int currentPage,
                               final Bitmap currentPageBitmap, Callback callback) {
-        super(readerActivity, R.style.dialog_no_title);
+        super(readerDataHolder.getContext(), R.style.dialog_no_title);
         setContentView(R.layout.dialog_quick_preview);
 
-        this.readerActivity = readerActivity;
+        this.readerDataHolder = readerDataHolder;
         this.pageCount = pageCount;
         this.currentPage = currentPage;
         this.callback = callback;

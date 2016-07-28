@@ -8,6 +8,7 @@ import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.dataprovider.Bookmark;
 import com.onyx.kreader.host.request.GetTableOfContentRequest;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 
 import java.util.List;
@@ -20,12 +21,12 @@ public class GetTableOfContentAction extends BaseAction {
         this.tab = tab;
     }
 
-    public void execute(final ReaderActivity readerActivity) {
+    public void execute(final ReaderDataHolder readerDataHolder) {
         final GetTableOfContentRequest tocRequest = new GetTableOfContentRequest();
-        readerActivity.getReader().submitRequest(readerActivity,tocRequest, new BaseCallback() {
+        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),tocRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                showTableOfContentDialog(readerActivity,
+                showTableOfContentDialog(readerDataHolder,
                         tocRequest.getReaderUserDataInfo().getTableOfContent(),
                         tocRequest.getReaderUserDataInfo().getBookmarks(),
                         tocRequest.getReaderUserDataInfo().getAnnotations());
@@ -33,11 +34,11 @@ public class GetTableOfContentAction extends BaseAction {
         });
     }
 
-    private void showTableOfContentDialog(final ReaderActivity activity,
+    private void showTableOfContentDialog(final ReaderDataHolder readerDataHolder,
                                           final ReaderDocumentTableOfContent tableOfContent,
                                           final List<Bookmark> bookmarks,
                                           final List<Annotation> annotations) {
-        DialogTableOfContent dlg = new DialogTableOfContent(activity, tab, tableOfContent, bookmarks, annotations);
+        DialogTableOfContent dlg = new DialogTableOfContent(readerDataHolder, tab, tableOfContent, bookmarks, annotations);
         dlg.show();
     }
 

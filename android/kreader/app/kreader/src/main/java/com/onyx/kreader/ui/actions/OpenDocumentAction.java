@@ -15,6 +15,7 @@ import com.onyx.kreader.host.request.RestoreRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
 
@@ -31,25 +32,29 @@ public class OpenDocumentAction extends BaseAction {
     private String documentPath;
     private DialogLoading dialogLoading;
     private DataProvider dataProvider;
+    private ReaderActivity readerActivity;
+    private ReaderDataHolder readerDataHolder;
 
-    public OpenDocumentAction(final String path) {
+    public OpenDocumentAction(final String path,final ReaderActivity readerActivity) {
         documentPath = path;
+        this.readerActivity = readerActivity;
         dataProvider = new DataProvider();
     }
 
-    public void execute(final ReaderActivity readerActivity) {
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
         showLoadingDialog(readerActivity);
         final Reader reader = ReaderManager.getReader(documentPath);
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
-                readerActivity.getReader().getDocumentMd5());
-        dataProvider.submit(readerActivity, loadDocumentOptionsRequest, new BaseCallback() {
+                readerDataHolder.getReader().getDocumentMd5());
+        dataProvider.submit(readerDataHolder.getContext(), loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    cleanup(readerActivity);
+                    cleanup();
                     return;
                 }
-                openWithOptions(readerActivity, reader, loadDocumentOptionsRequest.getDocumentOptions());
+                openWithOptions(readerActivity,reader, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
     }
@@ -71,21 +76,21 @@ public class OpenDocumentAction extends BaseAction {
     private void onFileOpenSucceed(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options) {
         readerActivity.onDocumentOpened(documentPath);
         readerActivity.getHandlerManager().setEnable(true);
-        final BaseReaderRequest config = new CreateViewRequest(readerActivity.getDisplayWidth(), readerActivity.getDisplayHeight());
+        final BaseReaderRequest config = new CreateViewRequest(readerDataHolder.getDisplayWidth(), readerDataHolder.getDisplayHeight());
         reader.submitRequest(readerActivity, config, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    cleanup(readerActivity);
+                    cleanup();
                     return;
                 }
-                restoreWithOptions(readerActivity, options);
+                restoreWithOptions(options);
             }
         });
     }
 
     private void showPasswordDialog(final ReaderActivity readerActivity) {
-        hideLoadingDialog(readerActivity);
+        hideLoadingDialog();
         final DialogPassword dlg = new DialogPassword(readerActivity);
         dlg.setOnPasswordEnteredListener(new DialogPassword.OnPasswordEnteredListener() {
             @Override
@@ -94,8 +99,8 @@ public class OpenDocumentAction extends BaseAction {
                 if (!success) {
                     readerActivity.quitApplication();
                 } else {
-                    readerActivity.getReader().getDocumentOptions().setPassword(password);
-                    openWithOptions(readerActivity, readerActivity.getReader(), readerActivity.getReader().getDocumentOptions());
+                    readerDataHolder.getReader().getDocumentOptions().setPassword(password);
+                    openWithOptions(readerActivity, readerDataHolder.getReader(), readerDataHolder.getReader().getDocumentOptions());
                 }
             }
         });
@@ -116,23 +121,23 @@ public class OpenDocumentAction extends BaseAction {
         return dialogLoading;
     }
 
-    private void hideLoadingDialog(final ReaderActivity activity) {
+    private void hideLoadingDialog() {
         if (dialogLoading != null) {
             dialogLoading.dismiss();
             dialogLoading = null;
         }
     }
 
-    private void cleanup(final ReaderActivity readerActivity) {
-        hideLoadingDialog(readerActivity);
+    private void cleanup() {
+        hideLoadingDialog();
     }
 
-    private void restoreWithOptions(final ReaderActivity readerActivity, final BaseOptions options) {
+    private void restoreWithOptions(final BaseOptions options) {
         final RestoreRequest restoreRequest = new RestoreRequest(options);
-        readerActivity.submitRequest(restoreRequest, new BaseCallback() {
+        readerDataHolder.submitRequest(restoreRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                hideLoadingDialog(readerActivity);
+                hideLoadingDialog();
             }
         });
     }

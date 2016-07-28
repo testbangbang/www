@@ -11,6 +11,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogAnnotation;
 import com.onyx.kreader.ui.dialog.PopupSelectionMenu;
 
@@ -23,14 +24,16 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
     private static PopupSelectionMenu popupSelectionMenu = null;
     private int x, y;
+    private ReaderActivity readerActivity;
 
-    public ShowTextSelectionMenuAction(final ReaderActivity readerActivity, final int x, final int y, final PopupSelectionMenu.SelectionType type) {
+    public ShowTextSelectionMenuAction(final ReaderDataHolder readerDataHolder, final int x, final int y, final PopupSelectionMenu.SelectionType type) {
+        readerActivity = (ReaderActivity)readerDataHolder.getContext();
         switch (type){
             case SingleWordType:
-                getTextSelectionPopupMenu(readerActivity).showTranslation();
+                getTextSelectionPopupMenu(readerDataHolder).showTranslation();
                 break;
             case MultiWordsType:
-                getTextSelectionPopupMenu(readerActivity).hideTranslation();
+                getTextSelectionPopupMenu(readerDataHolder).hideTranslation();
                 break;
         }
         this.x = x;
@@ -38,18 +41,18 @@ public class ShowTextSelectionMenuAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderActivity readerActivity) {
-        getTextSelectionPopupMenu(readerActivity).show();
-        getTextSelectionPopupMenu(readerActivity).move(x, y);
+    public void execute(ReaderDataHolder readerDataHolder) {
+        getTextSelectionPopupMenu(readerDataHolder).show();
+        getTextSelectionPopupMenu(readerDataHolder).move(x, y);
     }
 
     public static void resetSelectionMenu() {
         popupSelectionMenu = null;
     }
 
-    private PopupSelectionMenu getTextSelectionPopupMenu(final ReaderActivity readerActivity) {
+    private PopupSelectionMenu getTextSelectionPopupMenu(final ReaderDataHolder readerDataHolder) {
         if (popupSelectionMenu == null) {
-            popupSelectionMenu = new PopupSelectionMenu(readerActivity, (RelativeLayout) readerActivity.findViewById(R.id.main_view), new PopupSelectionMenu.MenuCallback() {
+            popupSelectionMenu = new PopupSelectionMenu(readerDataHolder, (RelativeLayout) readerActivity.findViewById(R.id.main_view), new PopupSelectionMenu.MenuCallback() {
                 @Override
                 public void resetSelection() {
 
@@ -57,7 +60,7 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
                 @Override
                 public String getSelectionText() {
-                    return readerActivity.getReaderUserDataInfo().getHighlightResult().getText();
+                    return readerDataHolder.getReaderUserDataInfo().getHighlightResult().getText();
                 }
 
                 @Override
@@ -68,7 +71,7 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
                 @Override
                 public void highLight() {
-                    ShowTextSelectionMenuAction.this.addAnnotation(readerActivity, "");
+                    ShowTextSelectionMenuAction.this.addAnnotation(readerDataHolder, "");
                     closeMenu();
                 }
 
@@ -77,7 +80,7 @@ public class ShowTextSelectionMenuAction extends BaseAction {
                     DialogAnnotation dialogAnnotation = new DialogAnnotation(readerActivity, DialogAnnotation.AnnotationAction.add, new DialogAnnotation.Callback() {
                         @Override
                         public void onAddAnnotation(String annotation) {
-                            ShowTextSelectionMenuAction.this.addAnnotation(readerActivity, annotation);
+                            ShowTextSelectionMenuAction.this.addAnnotation(readerDataHolder, annotation);
                             closeMenu();
                         }
 
@@ -111,41 +114,41 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
                 @Override
                 public void closeMenu() {
-                    ShowTextSelectionMenuAction.this.hideTextSelectionPopupWindow(readerActivity, true);
-                    readerActivity.redrawPage();
+                    ShowTextSelectionMenuAction.this.hideTextSelectionPopupWindow(readerDataHolder, true);
+                    readerDataHolder.redrawPage();
                 }
             });
         }
         return popupSelectionMenu;
     }
 
-    public static void hideTextSelectionPopupWindow(final ReaderActivity activity, final boolean clear) {
-        hideTextSelectionPopupWindow(activity, clear, false);
+    public static void hideTextSelectionPopupWindow(final ReaderDataHolder readerDataHolder, final boolean clear) {
+        hideTextSelectionPopupWindow(readerDataHolder, clear, false);
     }
 
-    public static void hideTextSelectionPopupWindow(final ReaderActivity activity, final boolean clear, boolean instantRefresh) {
+    public static void hideTextSelectionPopupWindow(final ReaderDataHolder readerDataHolder, final boolean clear, boolean instantRefresh) {
         if (popupSelectionMenu == null) {
             return;
         }
         popupSelectionMenu.hide();
         if (clear) {
             popupSelectionMenu = null;
-            activity.getHandlerManager().resetToDefaultProvider();
+            readerDataHolder.getHandlerManager().resetToDefaultProvider();
         }
     }
 
     private void copyText(final ReaderActivity readerActivity, final String text) {
-        ClipboardManager clipboard = (ClipboardManager)readerActivity.getSystemService(CLIPBOARD_SERVICE);
+        ClipboardManager clipboard = (ClipboardManager) readerActivity.getSystemService(CLIPBOARD_SERVICE);
         if (clipboard != null) {
             clipboard.setText(text);
         }
     }
 
-    private void addAnnotation(final ReaderActivity readerActivity, final String note) {
-        ReaderSelection selection = readerActivity.getReaderUserDataInfo().getHighlightResult();
-        PageInfo pageInfo = readerActivity.getReaderViewInfo().getPageInfo(selection.getPagePosition());
+    private void addAnnotation(final ReaderDataHolder readerDataHolder, final String note) {
+        ReaderSelection selection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
+        PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getPageInfo(selection.getPagePosition());
         new AddAnnotationAction(pageInfo, selection.getStartPosition(), selection.getEndPosition(),
-                selection.getRectangles(), selection.getText(), note).execute(readerActivity);
+                selection.getRectangles(), selection.getText(), note).execute(readerDataHolder);
     }
 
     private void lookupInDictionary(final ReaderActivity activity, final String text) {
@@ -159,5 +162,4 @@ public class ShowTextSelectionMenuAction extends BaseAction {
             e.printStackTrace();
         }
     }
-
 }

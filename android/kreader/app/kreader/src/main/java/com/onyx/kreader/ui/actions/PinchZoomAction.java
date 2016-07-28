@@ -14,6 +14,7 @@ import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
  * Created by zhuzeng on 5/26/16.
@@ -36,19 +37,19 @@ public class PinchZoomAction extends BaseAction {
         detector = d;
     }
 
-    public void execute(final ReaderActivity readerActivity) {
-        scaling(readerActivity, detector);
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        scaling(readerDataHolder, detector);
     }
 
-    static public void scaleBegin(final ReaderActivity readerActivity, final ScaleGestureDetector detector) {
+    static public void scaleBegin(final ReaderDataHolder readerDataHolder, final ScaleGestureDetector detector) {
         lastFocusX = detector.getFocusX();
         lastFocusY = detector.getFocusY();
         scaleMatrix.reset();
-        initScale = readerActivity.getReaderViewInfo().getFirstVisiblePage().getActualScale();
+        initScale = readerDataHolder.getReaderViewInfo().getFirstVisiblePage().getActualScale();
         ReaderDeviceManager.enterAnimationUpdate(true);
     }
 
-    static public void scaling(final ReaderActivity readerActivity, final ScaleGestureDetector detector) {
+    static public void scaling(final ReaderDataHolder readerDataHolder, final ScaleGestureDetector detector) {
         float focusX = detector.getFocusX();
         float focusY = detector.getFocusY();
         transformationMatrix.reset();
@@ -71,7 +72,7 @@ public class PinchZoomAction extends BaseAction {
         if (!animateDisplay) {
             return;
         }
-        fastRedrawScalingBitmap(readerActivity);
+        fastRedrawScalingBitmap(readerDataHolder);
     }
 
     static void showScalingInfo(final float scale) {
@@ -79,23 +80,24 @@ public class PinchZoomAction extends BaseAction {
 //        getTextZoomingPopupMenu().showAndUpdate(TextZoomingPopupMenu.MessageToShown.ZoomFactor, string);
     }
 
-    static public void fastRedrawScalingBitmap(final ReaderActivity readerActivity) {
+    static public void fastRedrawScalingBitmap(final ReaderDataHolder readerDataHolder) {
+        ReaderActivity readerActivity = (ReaderActivity)readerDataHolder.getContext();
         final SurfaceHolder holder = readerActivity.getHolder();
         Canvas canvas =  holder.lockCanvas();
-        Bitmap bmp = readerActivity.getReader().getViewportBitmap().getBitmap();
+        Bitmap bmp = readerDataHolder.getReader().getViewportBitmap().getBitmap();
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
-        canvas.drawRect(0, 0, readerActivity.getDisplayWidth(), readerActivity.getDisplayHeight(), paint);
+        canvas.drawRect(0, 0, readerDataHolder.getDisplayWidth(), readerDataHolder.getDisplayHeight(), paint);
         canvas.drawBitmap(bmp, scaleMatrix, null);
         holder.unlockCanvasAndPost(canvas);
     }
 
-    static public void scaleEnd(final ReaderActivity readerActivity) {
+    static public void scaleEnd(final ReaderDataHolder readerDataHolder) {
         float values[] = new float[9];
         scaleMatrix.getValues(values);
-        final RectF viewport = readerActivity.getReaderViewInfo().viewportInDoc;
-        final PageInfo pageInfo = readerActivity.getReaderViewInfo().getFirstVisiblePage();
+        final RectF viewport = readerDataHolder.getReaderViewInfo().viewportInDoc;
+        final PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
         float deltaScale =  values[Matrix.MSCALE_X];
         float deltaX = values[Matrix.MTRANS_X];
         float deltaY = values[Matrix.MTRANS_Y];
@@ -111,7 +113,7 @@ public class PinchZoomAction extends BaseAction {
         ReaderDeviceManager.exitAnimationUpdate(false);
         float newScale = pageInfo.getActualScale() * deltaScale;
         final ScaleRequest scaleRequest = new ScaleRequest(pageInfo.getName(), newScale, left, top);
-        readerActivity.submitRequest(scaleRequest);
+        readerDataHolder.submitRequest(scaleRequest);
     }
 
     static private float filterScale(float currentScale, float targetScale, Matrix matrix) {

@@ -2,7 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.kreader.dataprovider.Bookmark;
 import com.onyx.kreader.host.request.DeleteBookmarkRequest;
-import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
  * Created by ming on 16/7/15.
@@ -16,7 +16,7 @@ public class DeleteBookmarkAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderActivity readerActivity) {
-        readerActivity.submitRequest(new DeleteBookmarkRequest(mBookmark));
+    public void execute(ReaderDataHolder readerDataHolder) {
+        readerDataHolder.submitRequest(new DeleteBookmarkRequest(mBookmark));
     }
 }

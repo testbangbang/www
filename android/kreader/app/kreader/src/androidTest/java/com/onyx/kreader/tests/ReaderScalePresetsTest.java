@@ -1,7 +1,7 @@
 package com.onyx.kreader.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
+
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderScalePresets;
 import junit.framework.Assert;

@@ -2,7 +2,7 @@ package com.onyx.kreader.ui.gesture;
 
 import android.view.ScaleGestureDetector;
 
-import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
  * Created by zhuzeng on 4/17/16.
@@ -14,17 +14,17 @@ public class MyScaleGestureListener implements ScaleGestureDetector.OnScaleGestu
     private long lastScaleBeginTime = 0;
     private long lastScaleEndTime = 0;
     private long lastScalingTime = 0;
-    private ReaderActivity readerActivity;
+    private ReaderDataHolder readerDataHolder;
 
-    public MyScaleGestureListener(final ReaderActivity activity) {
-        readerActivity = activity;
+    public MyScaleGestureListener(final ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
     }
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
         if (inMinScaleTime(lastScaleEndTime)){
             lastScaleEndTime = System.currentTimeMillis();
-            readerActivity.getHandlerManager().onScaleEnd(readerActivity, detector);
+            readerDataHolder.getHandlerManager().onScaleEnd(readerDataHolder, detector);
         }
     }
 
@@ -32,7 +32,7 @@ public class MyScaleGestureListener implements ScaleGestureDetector.OnScaleGestu
     public boolean onScaleBegin(ScaleGestureDetector detector) {
         if (inMinScaleTime(lastScaleBeginTime)){
             lastScaleBeginTime = System.currentTimeMillis();
-            return readerActivity.getHandlerManager().onScaleBegin(readerActivity, detector);
+            return readerDataHolder.getHandlerManager().onScaleBegin(readerDataHolder, detector);
         }
         return false;
     }
@@ -41,7 +41,7 @@ public class MyScaleGestureListener implements ScaleGestureDetector.OnScaleGestu
     public boolean onScale(ScaleGestureDetector detector) {
         if (inMinScaleTime(lastScalingTime)){
             lastScalingTime = System.currentTimeMillis();
-            return readerActivity.getHandlerManager().onScale(readerActivity, detector);
+            return readerDataHolder.getHandlerManager().onScale(readerDataHolder, detector);
         }
         return false;
     }
