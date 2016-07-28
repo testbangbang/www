@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.gesture;
 
 import android.view.ScaleGestureDetector;
 
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
@@ -22,6 +23,7 @@ public class MyScaleGestureListener implements ScaleGestureDetector.OnScaleGestu
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
+        Debug.d(TAG,"onScaleEnd");
         if (inMinScaleTime(lastScaleEndTime)){
             lastScaleEndTime = System.currentTimeMillis();
             readerDataHolder.getHandlerManager().onScaleEnd(readerDataHolder, detector);
@@ -30,6 +32,7 @@ public class MyScaleGestureListener implements ScaleGestureDetector.OnScaleGestu
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
+        Debug.d(TAG,"onScaleBegin");
         if (inMinScaleTime(lastScaleBeginTime)){
             lastScaleBeginTime = System.currentTimeMillis();
             return readerDataHolder.getHandlerManager().onScaleBegin(readerDataHolder, detector);
@@ -39,11 +42,12 @@ public class MyScaleGestureListener implements ScaleGestureDetector.OnScaleGestu
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        if (inMinScaleTime(lastScalingTime)){
-            lastScalingTime = System.currentTimeMillis();
-            return readerDataHolder.getHandlerManager().onScale(readerDataHolder, detector);
-        }
-        return false;
+        Debug.d(TAG,"onScaling");
+//        if (inMinScaleTime(lastScalingTime)){
+//            lastScalingTime = System.currentTimeMillis();
+//            return readerDataHolder.getHandlerManager().onScale(readerDataHolder, detector);
+//        }
+        return readerDataHolder.getHandlerManager().onScale(readerDataHolder, detector);
     }
 
     private boolean inMinScaleTime(long lastTime){

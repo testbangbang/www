@@ -36,16 +36,16 @@ public class RectUtils {
 
     static public PointF getTopLeft(List<RectF> list) {
         RectF target = list.get(0);
-//        for (RectF rect : list) {
-//            int compare = compareBaseLine(rect, target);
-//            if (compare == 0) {
-//                if (rect.left < target.left) {
-//                    target = rect;
-//                }
-//            } else if (compare < 0) {
-//                target = rect;
-//            }
-//        }
+        for (RectF rect : list) {
+            int compare = compareBaseLine(rect, target);
+            if (compare == 0) {
+                if (rect.left < target.left) {
+                    target = rect;
+                }
+            } else if (compare < 0) {
+                target = rect;
+            }
+        }
         Debug.d("getTopLeft, target: " + JSON.toJSONString(target) + ", " + JSON.toJSONString(list));
         return new PointF(target.left, target.top);
     }
