@@ -102,6 +102,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return "";
     }
 
+    @Override
+    public ReaderSentence getSentence(String position, String sentenceStartPosition) {
+        return null;
+    }
+
     public void abortCurrentJob() {
 
     }

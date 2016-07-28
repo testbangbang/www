@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.api.ReaderSentence;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
@@ -60,6 +61,8 @@ public class PdfiumJniWrapper {
 
     private native byte [] nativeGetPageText(int id, int page);
 
+    private native ReaderSentence nativeGetSentence(int id, int page, int sentenceStartIndex, final ReaderTextSplitter splitter);
+
     private native boolean nativeGetTableOfContent(int id, ReaderDocumentTableOfContentEntry root);
 
     private int id;
@@ -87,7 +90,7 @@ public class PdfiumJniWrapper {
     public String metadataString(final String tag) {
         byte [] data  = new byte[4096];
         int size = nativeMetadata(id, tag, data);
-        return StringUtils.utf16le(data);
+        return StringUtils.utf16le(data).trim();
     }
 
     public int pageCount() {
@@ -132,6 +135,10 @@ public class PdfiumJniWrapper {
             return null;
         }
         return StringUtils.utf16le(data);
+    }
+
+    public ReaderSentence getSentence(int page, int sentenceStartIndex) {
+        return nativeGetSentence(id, page, sentenceStartIndex, ReaderTextSplitterImpl.sharedInstance());
     }
 
     public boolean getTableOfContent(ReaderDocumentTableOfContentEntry root) {

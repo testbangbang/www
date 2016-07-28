@@ -11,12 +11,10 @@
     <string name="reader_layer_menu_font_style_page_margins">Page margins</string>
     <string name="font_size_example_text" translatable="false">Aa</string>
     <string name="brightness">Brightness</string>
-    <string name="screen_refresh">Screen Refresh</string>
     <string name="always">Always</string>
     <string name="every_3_pages">Every 3 pages</string>
     <string name="every_5_pages">Every 5 pages</string>
     <string name="every_7_pages">Every 7 pages</string>
     <string name="every_9_pages">Every 9 pages</string>
     <string name="never">Never</string>
-    <string name="did_not_find_the_dictionary">Didn\'t find the dictionary</string>
 </resources>

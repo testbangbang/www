@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.ui.dialog;
+package com.onyx.kreader.ui.dialog;
 
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -7,9 +7,11 @@ import android.widget.TextView;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
-import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.kreader.R;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 
 import java.util.HashMap;
 
@@ -21,8 +23,9 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
         void onRefreshIntervalChanged(int oldValue, int newValue);
     }
 
+    public static final int DEFAULT_INTERVAL_COUNT = 5;
+
     private GAdapter mAdapter = null;
-    static final int DEFAULT_INTERVAL_COUNT = 5;
     int interval = DEFAULT_INTERVAL_COUNT;
 
     public void setListener(onScreenRefreshChangedListener listener) {
@@ -34,7 +37,7 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // TODO not sure how to use OnyxSysCenter
-//        interval = OnyxSysCenter.getScreenUpdateGCInterval(getActivity(), DEFAULT_INTERVAL_COUNT);
+        interval = LegacySdkDataUtils.getScreenUpdateGCInterval(getActivity(), DEFAULT_INTERVAL_COUNT);
         buildScreenRefreshAdapter();
         setParams(new Params().setTittleString(getString(R.string.screen_refresh))
                 .setCustomContentLayoutResID(R.layout.dialog_screen_refresh)

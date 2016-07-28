@@ -82,4 +82,6 @@
     <string name="search">Search</string>
     <string name="total_page" formatted="false">共 %d 条</string>
     <string name="page_indicator" formatted="false">%d/%d 页</string>
+    <string name="did_not_find_the_dictionary">Didn\'t find the dictionary</string>
+    <string name="screen_refresh">Screen Refresh</string>
 </resources>

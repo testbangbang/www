@@ -3,12 +3,10 @@ package com.onyx.android.sdk.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -103,6 +101,11 @@ public class FileUtils {
             result = ref.substring(0, index + 1) + path;
         }
         return result;
+    }
+
+    public static long getLastChangeTime(File file)
+    {
+        return file.lastModified();
     }
 
     public static boolean isImageFile(String fileName) {
