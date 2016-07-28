@@ -262,7 +262,7 @@ public class ReaderHelper {
     public void initData(Context context) {
         initImageReflowManager(context);
         initBitmapLruCache(context);
-        initChineseAnalyzer(context);
+        //initChineseAnalyzer(context);
     }
 
     private void initChineseAnalyzer(Context context) {
