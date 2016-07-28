@@ -3,15 +3,16 @@ package com.onyx.kreader.ui.dialog;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
+
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.ChangeNavigationSettingsAction;
 import com.onyx.kreader.ui.data.ReaderCropArgs;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.HashMap;
 
@@ -45,7 +46,7 @@ public class DialogNavigationSettings extends DialogBase {
         public abstract void onObjectSelected(GObject object);
     }
 
-    private ReaderActivity readerActivity;
+    private ReaderDataHolder readerDataHolder;
     private ContentView mCropContentView;
     private ContentView mSubScreenContentView;
     private ContentView mNavigationContentView;
@@ -62,9 +63,9 @@ public class DialogNavigationSettings extends DialogBase {
     private ReaderCropArgs.NavigationMode currentUsingNavigationMode =
             ReaderCropArgs.NavigationMode.ROWS_LEFT_TO_RIGHT_MODE;
 
-    public DialogNavigationSettings(ReaderActivity readerActivity) {
-        super(readerActivity);
-        this.readerActivity = readerActivity;
+    public DialogNavigationSettings(ReaderDataHolder readerDataHolder) {
+        super(readerDataHolder.getContext());
+        this.readerDataHolder = readerDataHolder;
         initLayout();
     }
 
@@ -125,7 +126,7 @@ public class DialogNavigationSettings extends DialogBase {
                 navigationArgs.setCropPageMode(currentChoosingCropMode);
                 navigationArgs.setRows(getRowNumber());
                 navigationArgs.setColumns(getColumnNumber());
-                new ChangeNavigationSettingsAction(navigationArgs).execute(readerActivity);
+                new ChangeNavigationSettingsAction(navigationArgs).execute(readerDataHolder);
                 DialogNavigationSettings.this.dismiss();
             }
         });

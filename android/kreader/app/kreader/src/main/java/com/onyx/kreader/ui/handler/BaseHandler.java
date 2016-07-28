@@ -1,61 +1,48 @@
 package com.onyx.kreader.ui.handler;
 
-
 import android.graphics.Point;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.ui.ReaderActivity;
 
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
- * Created with IntelliJ IDEA.
- * User: zhuzeng
- * Date: 3/19/14
- * Time: 8:42 PM
- * Basic event handler.
+ * Created by ming on 16/7/27.
  */
-public class BaseHandler  {
+public abstract class BaseHandler {
+    private static final String TAG = BaseHandler.class.getSimpleName();
 
     public static  final int KEYCDOE_SCRIBE = 213;
     public static  final int KEYCDOE_ERASE = 214;
     public static  final int KEYCDOE_SCRIBE_KK = 226;
     public static  final int KEYCDOE_ERASE_KK = 227;
 
-
-    private static final String TAG = BaseHandler.class.getSimpleName();
-
     private Point startPoint = new Point();
-
-    private boolean scaling = false;
-    private boolean scrolling = false;
-    private boolean longPress = false;
-
     private HandlerManager parent;
-    public BaseHandler(HandlerManager p) {
-        super();
-        parent = p;
+    private boolean longPress;
+
+    public BaseHandler(HandlerManager parent){
+        this.parent = parent;
     }
 
     public HandlerManager getParent() {
         return parent;
     }
 
-    public boolean preKeyDown(ReaderActivity activity, int keyCode, KeyEvent event) {
+    public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        startPoint = new Point((int)e.getX(), (int)e.getY());
+        return true;
+    }
+
+    public boolean preKeyDown(ReaderDataHolder readerDataHolder,int keyCode, KeyEvent event) {
         return false;
     }
 
-    /**
-     * Process key down event.
-     * @param activity
-     * @param keyCode
-     * @param event
-     * @return
-     */
-    public boolean onKeyDown(ReaderActivity activity, int keyCode, KeyEvent event) {
-        preKeyDown(activity, keyCode, event);
+    public boolean onKeyDown(ReaderDataHolder readerDataHolder,int keyCode, KeyEvent event) {
+        preKeyDown(readerDataHolder, keyCode, event);
 
         final String key = KeyEvent.keyCodeToString(keyCode);
         final String action = getParent().getKeyAction(TAG, key);
@@ -64,10 +51,10 @@ public class BaseHandler  {
             Log.w(TAG, "No action found for key: " + key);
         }
 
-        return parent.processKeyDown(activity, action, args);
+        return parent.processKeyDown(readerDataHolder, action, args);
     }
 
-    public boolean onKeyUp(ReaderActivity activity, int keyCode, KeyEvent event) {
+    public boolean onKeyUp(ReaderDataHolder readerDataHolder,int keyCode, KeyEvent event) {
         boolean ret = true;
         switch (keyCode) {
             case KeyEvent.KEYCODE_CLEAR:
@@ -79,96 +66,8 @@ public class BaseHandler  {
         return ret;
     }
 
-    public boolean onTouchEvent(ReaderActivity activity, MotionEvent e) {
+    public boolean onTouchEvent(ReaderDataHolder readerDataHolder,MotionEvent e) {
         return true;
-    }
-
-    public boolean onDown(ReaderActivity activity, MotionEvent e) {
-        startPoint = new Point((int)e.getX(), (int)e.getY());
-        return true;
-    }
-
-    public boolean onDoubleTap(ReaderActivity activity, MotionEvent e) {
-        return false;
-    }
-
-    public void onShowPress(ReaderActivity activity, MotionEvent e) {
-
-    }
-
-    public boolean onSingleTapUp(ReaderActivity activity,  MotionEvent e) {
-        if (activity.tryHitTest(e.getX(), e.getY())) {
-            return true;
-        } else if (e.getX() > activity.getDisplayWidth() * 2 / 3) {
-            activity.nextScreen();
-        } else if (e.getX() < activity.getDisplayWidth() / 3) {
-            activity.prevScreen();
-        } else {
-            activity.showReaderMenu();
-        }
-        return true;
-    }
-
-    public boolean onSingleTapConfirmed(ReaderActivity activity, MotionEvent e) {
-        return true;
-    }
-
-    public boolean onScaleEnd(ReaderActivity activity, ScaleGestureDetector detector) {
-        activity.scaleEnd();
-        setScaling(false);
-        return true;
-    }
-
-    public boolean onScaleBegin(ReaderActivity activity, ScaleGestureDetector detector) {
-        setScaling(true);
-        activity.scaleBegin(detector);
-        return true;
-    }
-
-    public boolean onScale(ReaderActivity activity, ScaleGestureDetector detector)  {
-        activity.scaling(detector);
-        return true;
-    }
-
-    protected Point getStartPoint() {
-        return startPoint;
-    }
-
-    public boolean onActionUp(ReaderActivity activity, final float startX, final float startY, final float endX, final float endY) {
-        if (isLongPress()) {
-        } else if (isScrolling()) {
-            activity.panFinished((int) (getStartPoint().x - endX), (int) (getStartPoint().y - endY));
-        }
-        resetState();
-        return true;
-    }
-
-    public boolean onScroll(ReaderActivity activity,  MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (isScaling()) {
-            // scrolling may happens before scale, so we always reset scroll state to avoid conflicts
-            setScrolling(false);
-            return true;
-        }
-        setScrolling(true);
-        getStartPoint().set((int)e1.getX(), (int)e1.getY());
-        if (e2.getAction() == MotionEvent.ACTION_MOVE) {
-            activity.panning((int)(e2.getX() - getStartPoint().x), (int)(e2.getY() - getStartPoint().y));
-        }
-        return true;
-    }
-
-    public boolean onScrollAfterLongPress(ReaderActivity activity, final float x1, final float y1, final float x2, final float y2) {
-        activity.highlight(x1, y1, x2, y2);
-        return true;
-    }
-
-    public void onLongPress(ReaderActivity activity, final float x1, final float y1, final float x2, final float y2) {
-        setLongPress(true);
-        activity.selectWord(x1, y1, x2, y2, true);
-    }
-
-    public boolean onFling(ReaderActivity activity, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
     }
 
     public boolean isLongPress() {
@@ -179,41 +78,62 @@ public class BaseHandler  {
         longPress = l;
     }
 
-    public boolean isScrolling() {
-        return scrolling;
+    public Point getStartPoint() {
+        return startPoint;
     }
 
-    public void setScrolling(boolean s) {
-        scrolling = s;
+    public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        return false;
     }
 
-    public void setScaling(boolean s) {
-        scaling = s;
+    public void onShowPress(ReaderDataHolder readerDataHolder, MotionEvent e) {
     }
 
-    public boolean isScaling() {
-        return scaling;
+    public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        return false;
     }
 
-    public void resetState() {
-        scrolling = false;
-        longPress = false;
+    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        return false;
     }
 
-    public void setPenErasing(boolean c) {
-        parent.setPenErasing(c);
+    public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
+        return false;
     }
 
-    public boolean isPenErasing() {
-        return parent.isPenErasing();
+    public boolean onScaleBegin(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
+        return false;
     }
 
-    public void setPenStart(boolean s) {
-        parent.setPenStart(s);
+    public boolean onScale(ReaderDataHolder readerDataHolder,ScaleGestureDetector detector) {
+        return false;
     }
 
-    public boolean isPenStart() {
-        return parent.isPenStart();
+    public boolean onActionUp(ReaderDataHolder readerDataHolder,final float startX, final float startY, final float endX, final float endY)  {
+        return false;
     }
 
+    public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    public boolean onScrollAfterLongPress(ReaderDataHolder readerDataHolder, float x1, float y1, float x2, float y2) {
+        return false;
+    }
+
+    public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+        setLongPress(true);
+    }
+
+    public boolean onFling(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
+    }
+
+    public void nextPage(ReaderDataHolder readerDataHolder) {}
+
+    public void prevPage(ReaderDataHolder readerDataHolder) {}
+
+    public void nextScreen(ReaderDataHolder readerDataHolder) {}
+
+    public void prevScreen(ReaderDataHolder readerDataHolder) {}
 }

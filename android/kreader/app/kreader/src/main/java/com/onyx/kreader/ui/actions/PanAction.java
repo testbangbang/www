@@ -6,6 +6,7 @@ import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.request.PanRequest;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
  * Created by zhuzeng on 5/27/16.
@@ -20,26 +21,27 @@ public class PanAction extends BaseAction {
         offsetY = y;
     }
 
-    public void execute(final ReaderActivity readerActivity) {
+    public void execute(final ReaderDataHolder readerDataHolder) {
         translateMatrix.reset();
         ReaderDeviceManager.exitAnimationUpdate(false);
         final BaseReaderRequest request = new PanRequest(offsetX, offsetY);
-        readerActivity.submitRequest(request);
+        readerDataHolder.submitRequest(request);
     }
 
-    public static void panning(final ReaderActivity readerActivity, int offsetX, int offsetY) {
-        fastRedrawPanningBitmap(readerActivity, offsetX, offsetY);
+    public static void panning(final ReaderDataHolder readerDataHolder, int offsetX, int offsetY) {
+        fastRedrawPanningBitmap(readerDataHolder, offsetX, offsetY);
     }
 
-    static public void fastRedrawPanningBitmap(final ReaderActivity readerActivity, int dx, int dy) {
+    static public void fastRedrawPanningBitmap(final ReaderDataHolder readerDataHolder, int dx, int dy) {
+        ReaderActivity readerActivity = (ReaderActivity) readerDataHolder.getContext();
         ReaderDeviceManager.enterAnimationUpdate(true);
         final SurfaceHolder holder = readerActivity.getHolder();
         Canvas canvas =  holder.lockCanvas();
-        Bitmap bmp = readerActivity.getReader().getViewportBitmap().getBitmap();
+        Bitmap bmp = readerDataHolder.getReader().getViewportBitmap().getBitmap();
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
-        canvas.drawRect(0, 0, readerActivity.getDisplayWidth(), readerActivity.getDisplayHeight(), paint);
+        canvas.drawRect(0, 0, readerDataHolder.getDisplayWidth(), readerDataHolder.getDisplayHeight(), paint);
         translateMatrix.setTranslate(dx, dy);
         canvas.drawBitmap(bmp, translateMatrix, null);
         holder.unlockCanvasAndPost(canvas);

@@ -1,5 +1,7 @@
 package com.onyx.kreader.tts;
 
+import android.app.Activity;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -7,8 +9,8 @@ import com.onyx.kreader.api.ReaderSentence;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.request.GetSentenceRequest;
 import com.onyx.kreader.host.request.RenderRequest;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.GotoPageAction;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
@@ -19,14 +21,14 @@ public class ReaderTtsManager {
         public abstract void onStateChanged();
     }
 
-    private ReaderActivity readerActivity;
+    private ReaderDataHolder readerDataHolder;
     private ReaderTtsService ttsService;
     private ReaderSentence currentSentence;
 
-    public ReaderTtsManager(final ReaderActivity readerActivity, final Callback callback) {
-        this.readerActivity = readerActivity;
+    public ReaderTtsManager(final ReaderDataHolder readerDataHolder, final Callback callback) {
+        this.readerDataHolder = readerDataHolder;
 
-        ttsService = new ReaderTtsService(readerActivity, new ReaderTtsService.Callback() {
+        ttsService = new ReaderTtsService((Activity) readerDataHolder.getContext(), new ReaderTtsService.Callback() {
             @Override
             public void onStart() {
                 callback.onStateChanged();
@@ -46,13 +48,13 @@ public class ReaderTtsManager {
             @Override
             public void onStopped() {
                 callback.onStateChanged();
-                readerActivity.submitRequest(new RenderRequest());
+                readerDataHolder.submitRequest(new RenderRequest());
             }
 
             @Override
             public void onError() {
                 callback.onStateChanged();
-                readerActivity.submitRequest(new RenderRequest());
+                readerDataHolder.submitRequest(new RenderRequest());
             }
         });
     }
@@ -88,8 +90,8 @@ public class ReaderTtsManager {
 
     private void requestSentenceForTts() {
         String startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
-        final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerActivity.getCurrentPage(), startPosition);
-        readerActivity.submitRequest(sentenceRequest, new BaseCallback() {
+        final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerDataHolder.getCurrentPage(), startPosition);
+        readerDataHolder.submitRequest(sentenceRequest, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (e != null) {
@@ -110,8 +112,8 @@ public class ReaderTtsManager {
                                 ", " + currentSentence.isEndOfDocument());
                         if (currentSentence.isEndOfScreen()) {
                             currentSentence = null;
-                            String next = PagePositionUtils.fromPageNumber(readerActivity.getCurrentPage() + 1);
-                            new GotoPageAction(next).execute(readerActivity, new BaseCallback() {
+                            String next = PagePositionUtils.fromPageNumber(readerDataHolder.getCurrentPage() + 1);
+                            new GotoPageAction(next).execute(readerDataHolder, new BaseCallback() {
                                 @Override
                                 public void done(BaseRequest request, Throwable e) {
                                     requestSentenceForTts();

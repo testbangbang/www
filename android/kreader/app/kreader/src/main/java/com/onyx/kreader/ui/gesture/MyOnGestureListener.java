@@ -2,54 +2,55 @@ package com.onyx.kreader.ui.gesture;
 
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import com.onyx.kreader.ui.ReaderActivity;
+
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
  * Created by zhuzeng on 4/17/16.
  */
 public class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener {
 
-    private ReaderActivity readerActivity;
+    private ReaderDataHolder readerDataHolder;
 
-    public MyOnGestureListener(final ReaderActivity activity) {
-        readerActivity = activity;
+    public MyOnGestureListener(final ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        return readerActivity.getHandlerManager().onSingleTapUp(readerActivity, e);
+        return readerDataHolder.getHandlerManager().onSingleTapUp(readerDataHolder, e);
     }
 
     @Override
     public void onLongPress(MotionEvent e) {
-        readerActivity.getHandlerManager().onLongPress(readerActivity, e);
+        readerDataHolder.getHandlerManager().onLongPress(readerDataHolder, e);
     }
 
     // http://stackoverflow.com/questions/3081711/android-view-gesturedetector-ongesturelistener-onfling-vs-onscroll
     // keep on called
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return readerActivity.getHandlerManager().onScroll(readerActivity, e1, e2, distanceX, distanceY);
+        return readerDataHolder.getHandlerManager().onScroll(readerDataHolder, e1, e2, distanceX, distanceY);
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return readerActivity.getHandlerManager().onFling(readerActivity, e1, e2, velocityX, velocityY);
+        return readerDataHolder.getHandlerManager().onFling(readerDataHolder, e1, e2, velocityX, velocityY);
     }
 
     @Override
     public void onShowPress(MotionEvent e) {
-        readerActivity.getHandlerManager().onShowPress(readerActivity, e);
+        readerDataHolder.getHandlerManager().onShowPress(readerDataHolder, e);
     }
 
     @Override
     public boolean onDown(MotionEvent e) {
-        return readerActivity.getHandlerManager().onDown(readerActivity, e);
+        return readerDataHolder.getHandlerManager().onDown(readerDataHolder, e);
     }
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        return readerActivity.getHandlerManager().onDoubleTap(readerActivity, e);
+        return readerDataHolder.getHandlerManager().onDoubleTap(readerDataHolder, e);
     }
 
     @Override
@@ -59,6 +60,6 @@ public class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
-        return readerActivity.getHandlerManager().onSingleTapConfirmed(readerActivity, e);
+        return readerDataHolder.getHandlerManager().onSingleTapConfirmed(readerDataHolder, e);
     }
 }

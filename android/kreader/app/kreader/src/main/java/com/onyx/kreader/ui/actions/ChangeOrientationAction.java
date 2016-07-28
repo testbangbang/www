@@ -1,7 +1,9 @@
 package com.onyx.kreader.ui.actions;
 
+import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -13,9 +15,10 @@ public class ChangeOrientationAction extends BaseAction {
         newOrientation = targetOrientation;
     }
 
-    public void execute(final ReaderActivity readerActivity) {
-        int orientation = computeNewRotation(readerActivity.getRequestedOrientation(), newOrientation);
-        readerActivity.setRequestedOrientation(orientation);
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        Activity activity = (Activity)readerDataHolder.getContext();
+        int orientation = computeNewRotation(activity.getRequestedOrientation(), newOrientation);
+        activity.setRequestedOrientation(orientation);
     }
 
     private int computeNewRotation(int currentOrientation, int rotationOperation) {

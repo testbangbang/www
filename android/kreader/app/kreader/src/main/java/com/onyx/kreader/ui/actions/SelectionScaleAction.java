@@ -10,6 +10,7 @@ import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.io.File;
 
@@ -18,7 +19,7 @@ import java.io.File;
  */
 public class SelectionScaleAction extends BaseAction {
     public static abstract class Callback {
-        public abstract void onSelectionFinished(final ReaderActivity readerActivity, final CropArgs args);
+        public abstract void onSelectionFinished(final ReaderDataHolder readerDataHolder, final CropArgs args);
     }
 
     private CropArgs cropArgs;
@@ -31,8 +32,8 @@ public class SelectionScaleAction extends BaseAction {
         cropArgs.manualSplitPage = false;
         callback = new Callback() {
             @Override
-            public void onSelectionFinished(final ReaderActivity readerActivity, final CropArgs args) {
-                scaleByRect(readerActivity, new RectF(args.selectionRect));
+            public void onSelectionFinished(final ReaderDataHolder readerDataHolder, final CropArgs args) {
+                scaleByRect(readerDataHolder, new RectF(args.selectionRect));
             }
         };
     }
@@ -42,28 +43,28 @@ public class SelectionScaleAction extends BaseAction {
         this.callback = callback;
     }
 
-    public void execute(final ReaderActivity readerActivity) {
-        scaleByRect(readerActivity);
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        scaleByRect(readerDataHolder);
     }
 
-    private void scaleByRect(final ReaderActivity readerActivity) {
-        showSelectionActivity(readerActivity, cropArgs, new CropImage.SelectionCallback() {
+    private void scaleByRect(final ReaderDataHolder readerDataHolder) {
+        showSelectionActivity(readerDataHolder, cropArgs, new CropImage.SelectionCallback() {
             @Override
             public void onSelectionFinished(CropArgs args) {
                 if (callback != null) {
-                    callback.onSelectionFinished(readerActivity, args);
+                    callback.onSelectionFinished(readerDataHolder, args);
                 }
             }
          });
     }
 
-    private void showSelectionActivity(final ReaderActivity readerActivity, final CropArgs args, final CropImage.SelectionCallback callback) {
+    private void showSelectionActivity(final ReaderDataHolder readerDataHolder, final CropArgs args, final CropImage.SelectionCallback callback) {
         Uri outputUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "cropped.png"));
         IntentFilter filter = new IntentFilter();
         filter.addAction(CropImage.INTENT_ACTION_SELECT_ZOOM_RECT);
 
         if (selectionZoomAreaReceiver != null) {
-            readerActivity.unregisterReceiver(selectionZoomAreaReceiver);
+            readerDataHolder.getContext().unregisterReceiver(selectionZoomAreaReceiver);
         }
         selectionZoomAreaReceiver = new CropImageResultReceiver() {
             @Override
@@ -71,26 +72,26 @@ public class SelectionScaleAction extends BaseAction {
                 if (callback != null) {
                     callback.onSelectionFinished(navigationArgs);
                 }
-                resetEventListener(readerActivity);
+                resetEventListener(readerDataHolder);
             }
         };
-        readerActivity.registerReceiver(selectionZoomAreaReceiver, filter);
-        CropImage crop = new CropImage(readerActivity.getReader().getViewportBitmap().getBitmap());
-        crop.output(outputUri).start(readerActivity, false, false, false, args);
+        readerDataHolder.getContext().registerReceiver(selectionZoomAreaReceiver, filter);
+        CropImage crop = new CropImage(readerDataHolder.getReader().getViewportBitmap().getBitmap());
+        crop.output(outputUri).start((ReaderActivity)readerDataHolder.getContext(), false, false, false, args);
     }
 
-    private void resetEventListener(final ReaderActivity readerActivity) {
+    private void resetEventListener(final ReaderDataHolder readerDataHolder) {
         if (selectionZoomAreaReceiver != null) {
-            readerActivity.unregisterReceiver(selectionZoomAreaReceiver);
+            readerDataHolder.getContext().unregisterReceiver(selectionZoomAreaReceiver);
             selectionZoomAreaReceiver = null;
         }
     }
 
-    private void scaleByRect(final ReaderActivity readerActivity, final RectF rect) {
-        final PageInfo pageInfo = readerActivity.getReaderViewInfo().getVisiblePages().get(0);
+    private void scaleByRect(final ReaderDataHolder readerDataHolder, final RectF rect) {
+        final PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getVisiblePages().get(0);
         RectF docRect = ScaleByRectRequest.rectInDocument(pageInfo, rect);
-        final ScaleByRectRequest request = new ScaleByRectRequest(readerActivity.getCurrentPageName(), docRect);
-        readerActivity.submitRequest(request);
+        final ScaleByRectRequest request = new ScaleByRectRequest(readerDataHolder.getCurrentPageName(), docRect);
+        readerDataHolder.submitRequest(request);
     }
 
 }

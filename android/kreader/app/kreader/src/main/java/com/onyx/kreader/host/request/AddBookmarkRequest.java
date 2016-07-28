@@ -6,10 +6,7 @@ import com.onyx.kreader.dataprovider.Bookmark;
 import com.onyx.kreader.dataprovider.BookmarkProvider;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.utils.PagePositionUtils;
-
-import java.util.Date;
 
 /**
  * Created by zhuzeng on 10/15/15.

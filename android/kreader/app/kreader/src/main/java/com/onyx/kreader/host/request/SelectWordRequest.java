@@ -1,12 +1,13 @@
 package com.onyx.kreader.host.request;
 
 import android.graphics.PointF;
+
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.api.ReaderHitTestArgs;
 import com.onyx.kreader.api.ReaderHitTestManager;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -55,6 +56,7 @@ public class SelectWordRequest extends BaseReaderRequest {
                     pageInfo.getDisplayRect().top,
                     pageInfo.getActualScale(),
                     selection.getRectangles().get(i));
+//            Log.d("SelectWordRequest", "left: " + selection.getRectangles().get(i).left + "top:" + selection.getRectangles().get(i).top);
         }
         return selection;
     }

@@ -1,10 +1,10 @@
 package com.onyx.kreader.ui.actions;
 
+import com.onyx.kreader.R;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.EmboldenGlyphRequest;
-import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSetValue;
-import com.onyx.kreader.R;
 
 /**
  * Created by zhuzeng on 5/18/16.
@@ -12,35 +12,35 @@ import com.onyx.kreader.R;
 public class EmboldenAction extends BaseAction {
     private DialogSetValue emboldenDialog;
 
-    public void execute(final ReaderActivity readerActivity) {
-        showEmboldenDialog(readerActivity);
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        showEmboldenDialog(readerDataHolder);
     }
 
-    public DialogSetValue showEmboldenDialog(final ReaderActivity readerActivity)  {
+    public DialogSetValue showEmboldenDialog(final ReaderDataHolder readerDataHolder)  {
         if (emboldenDialog == null) {
             DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
                 @Override
                 public void valueChange(int newValue) {
                     EmboldenGlyphRequest request = new EmboldenGlyphRequest(newValue);
-                    readerActivity.submitRequest(request);
+                    readerDataHolder.submitRequest(request);
                 }
 
                 @Override
                 public void done(boolean isValueChange, int oldValue, int newValue) {
                     if (!isValueChange) {
                         EmboldenGlyphRequest request = new EmboldenGlyphRequest(oldValue);
-                        readerActivity.submitRequest(request);
+                        readerDataHolder.submitRequest(request);
                     }
                     hideEmboldenDialog();
                 }
             };
-            int current = readerActivity.getReader().getDocumentOptions().getEmboldenLevel();
-            emboldenDialog = new DialogSetValue(readerActivity,
+            int current = readerDataHolder.getReader().getDocumentOptions().getEmboldenLevel();
+            emboldenDialog = new DialogSetValue(readerDataHolder.getContext(),
                     current,
                     BaseOptions.minEmboldenLevel(),
                     BaseOptions.maxEmboldenLevel(), true, true,
-                    readerActivity.getString(R.string.embolden),
-                    readerActivity.getString(R.string.embolden_level), callback);
+                    readerDataHolder.getContext().getString(R.string.embolden),
+                    readerDataHolder.getContext().getString(R.string.embolden_level), callback);
         }
         emboldenDialog.show();
         return emboldenDialog;

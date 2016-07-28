@@ -7,32 +7,35 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
+import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.handler.HandlerManager;
-import com.onyx.android.sdk.data.ReaderMenu;
-import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.kreader.utils.RawResourceUtil;
 
 import java.util.List;
@@ -43,13 +46,15 @@ import java.util.List;
 public class ShowReaderMenuAction extends BaseAction {
 
     public static final String TAG = ShowReaderMenuAction.class.getSimpleName();
+    ReaderActivity readerActivity;
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderLayerMenu readerMenu;
 
     @Override
-    public void execute(ReaderActivity readerActivity) {
-        showReaderMenu(readerActivity);
+    public void execute(ReaderDataHolder readerDataHolder) {
+        readerActivity = (ReaderActivity)readerDataHolder.getContext();
+        showReaderMenu(readerDataHolder);
     }
 
     public static void resetReaderMenu(final ReaderActivity readerActivity) {
@@ -60,63 +65,61 @@ public class ShowReaderMenuAction extends BaseAction {
         return readerMenu != null && readerMenu.isShown();
     }
 
-    public static void hideReaderMenu(final ReaderActivity readerActivity) {
+    public static void hideReaderMenu() {
 //        readerActivity.hideToolbar();
         if (isReaderMenuShown()) {
             readerMenu.hide();
         }
     }
 
-    private void showReaderMenu(final ReaderActivity readerActivity) {
+    private void showReaderMenu(final ReaderDataHolder readerDataHolder) {
 //        readerActivity.showToolbar();
         ReaderLayerMenuState state = new ReaderLayerMenuState();
-        updateReaderMenuState(readerActivity, state);
-
-        state.setTitle(readerActivity.getBookName());
-        state.setPageCount(readerActivity.getPageCount());
-        state.setPageIndex(readerActivity.getCurrentPage());
-
-        getReaderMenu(readerActivity).show(state);
+        updateReaderMenuState(readerDataHolder, state);
+        state.setTitle(FileUtils.getFileName(readerDataHolder.getReader().getDocumentPath()));
+        state.setPageCount(readerDataHolder.getPageCount());
+        state.setPageIndex(readerDataHolder.getCurrentPage());
+        getReaderMenu(readerDataHolder).show(state);
     }
 
-    private ReaderMenu getReaderMenu(final ReaderActivity readerActivity) {
+    private ReaderMenu getReaderMenu(final ReaderDataHolder readerDataHolder) {
         if (readerMenu == null) {
-            initReaderMenu(readerActivity);
+            initReaderMenu(readerDataHolder);
         }
         return readerMenu;
     }
 
-    private void initReaderMenu(final ReaderActivity readerActivity) {
-        LinearLayout layout = (LinearLayout)readerActivity.findViewById(R.id.left_drawer);
-        createReaderSideMenu(readerActivity, layout);
+    private void initReaderMenu(final ReaderDataHolder readerDataHolder) {
+        LinearLayout layout = (LinearLayout) readerActivity.findViewById(R.id.left_drawer);
+        createReaderSideMenu(readerDataHolder, layout);
     }
 
-    private void createReaderSideMenu(final ReaderActivity readerActivity, LinearLayout drawerLayout) {
+    private void createReaderSideMenu(final ReaderDataHolder readerDataHolder, LinearLayout drawerLayout) {
         readerMenu = new ReaderLayerMenu(readerActivity);
-        updateReaderMenuCallback(readerMenu, readerActivity);
-        List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerActivity);
+        updateReaderMenuCallback(readerMenu, readerDataHolder);
+        List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
         readerMenu.fillItems(items);
     }
 
-    private static void updateReaderMenuState(final ReaderActivity readerActivity, final ReaderLayerMenuState state) {
-        state.setTtsState(getTtsState(readerActivity));
+    private static void updateReaderMenuState(final ReaderDataHolder readerDataHolder, final ReaderLayerMenuState state) {
+        state.setTtsState(getTtsState(readerDataHolder));
     }
 
-    private static ReaderLayerMenuState.TtsState getTtsState(final ReaderActivity readerActivity) {
-        if (readerActivity.getTtsManager().isSpeaking()) {
+    private static ReaderLayerMenuState.TtsState getTtsState(final ReaderDataHolder readerreaderDataHolderctivity) {
+        if (readerreaderDataHolderctivity.getTtsManager().isSpeaking()) {
             return ReaderLayerMenuState.TtsState.Speaking;
-        } else if (readerActivity.getTtsManager().isPaused()) {
+        } else if (readerreaderDataHolderctivity.getTtsManager().isPaused()) {
             return ReaderLayerMenuState.TtsState.Paused;
         } else {
             return ReaderLayerMenuState.TtsState.Stopped;
         }
     }
 
-    private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderActivity readerActivity) {
+    private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderDataHolder readerDataHolder) {
         menu.setReaderMenuCallback(new ReaderMenu.ReaderMenuCallback() {
             @Override
             public void onHideMenu() {
-                hideReaderMenu(readerActivity);
+                hideReaderMenu();
             }
 
             @Override
@@ -124,46 +127,46 @@ public class ShowReaderMenuAction extends BaseAction {
                 Log.d(TAG, "onMenuItemClicked: " + menuItem.getURI().getRawPath());
                 switch (menuItem.getURI().getRawPath()) {
                     case "/Rotation/Rotation0":
-                        rotateScreen(readerActivity, 0);
+                        rotateScreen(readerDataHolder, 0);
                         break;
                     case "/Rotation/Rotation90":
-                        rotateScreen(readerActivity, 90);
+                        rotateScreen(readerDataHolder, 90);
                         break;
                     case "/Rotation/Rotation180":
-                        rotateScreen(readerActivity, 180);
+                        rotateScreen(readerDataHolder, 180);
                         break;
                     case "/Rotation/Rotation270":
-                        rotateScreen(readerActivity, 270);
+                        rotateScreen(readerDataHolder, 270);
                         break;
                     case "/Zoom/ZoomIn":
-                        scaleUp(readerActivity);
+                        scaleUp(readerDataHolder);
                         break;
                     case "/Zoom/ZoomOut":
-                        scaleDown(readerActivity);
+                        scaleDown(readerDataHolder);
                         break;
                     case "/Zoom/ToPage":
-                        scaleToPage(readerActivity);
+                        scaleToPage(readerDataHolder);
                         break;
                     case "/Zoom/ToWidth":
-                        scaleToWidth(readerActivity);
+                        scaleToWidth(readerDataHolder);
                         break;
                     case "/Zoom/ByRect":
-                        scaleByRect(readerActivity);
+                        scaleByRect(readerDataHolder);
                         break;
                     case "/Zoom/Crop":
-                        scaleByAutoCrop(readerActivity);
+                        scaleByAutoCrop(readerDataHolder);
                         break;
                     case "/Navigation/ArticleMode":
-                        switchNavigationToArticleMode(readerActivity);
+                        switchNavigationToArticleMode(readerDataHolder);
                         break;
                     case "/Navigation/ComicMode":
-                        switchNavigationToComicMode(readerActivity);
+                        switchNavigationToComicMode(readerDataHolder);
                         break;
                     case "/Navigation/Reset":
-                        resetNavigationMode(readerActivity);
+                        resetNavigationMode(readerDataHolder);
                         break;
                     case "/Navigation/MoreSetting":
-                        showNavigationSettingsDialog(readerActivity);
+                        showNavigationSettingsDialog(readerDataHolder);
                         break;
                     case "/Spacing/DecreaseSpacing":
                         break;
@@ -182,41 +185,41 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/Font/IncreaseSpacing":
                         break;
                     case "/Font/Gamma":
-                        adjustContrast(readerActivity);
+                        adjustContrast(readerDataHolder);
                         break;
                     case "/Font/Embolden":
-                        adjustEmbolden(readerActivity);
+                        adjustEmbolden(readerDataHolder);
                         break;
                     case "/Font/FontReflow":
-                        imageReflow(readerActivity);
+                        imageReflow(readerDataHolder);
                         break;
                     case "/Directory/TOC":
-                        showTocDialog(readerActivity, DialogTableOfContent.DirectoryTab.TOC);
+                        showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.TOC);
                         break;
                     case "/Directory/Bookmark":
-                        showTocDialog(readerActivity, DialogTableOfContent.DirectoryTab.Bookmark);
+                        showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.Bookmark);
                         break;
                     case "/Directory/Note":
-                        showTocDialog(readerActivity, DialogTableOfContent.DirectoryTab.Annotation);
+                        showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.Annotation);
                         break;
                     case "/Directory/ShapeModel":
                         break;
                     case "/Directory/Export":
                         break;
                     case "/TTS/Play":
-                        ttsPlay(readerActivity);
+                        ttsPlay(readerDataHolder);
                         break;
                     case "/TTS/Pause":
-                        ttsPause(readerActivity);
+                        ttsPause(readerDataHolder);
                         break;
                     case "/TTS/Stop":
-                        ttsStop(readerActivity);
+                        ttsStop(readerDataHolder);
                         break;
                     case "/More/shape":
-                        startShapeDrawing(readerActivity);
+                        startShapeDrawing(readerDataHolder);
                         break;
                     case "/GotoPage":
-                        gotoPage(readerActivity);
+                        gotoPage(readerDataHolder);
                         break;
                     case "/SetScreenRefreshRate":
                         showScreenRefreshDialog(readerActivity);
@@ -225,12 +228,11 @@ public class ShowReaderMenuAction extends BaseAction {
                         startDictionaryApp(readerActivity);
                         break;
                     case "/Search":
-                        showSearchDialog(readerActivity);
+                        showSearchDialog(readerDataHolder);
                         break;
                     case "/Exit":
                         readerActivity.onBackPressed();
                         break;
-
                 }
             }
 
@@ -241,123 +243,123 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderActivity readerActivity) {
-        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(readerActivity, R.raw.reader_menu));
+    private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
+        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(readerDataHolder.getContext(), R.raw.reader_menu));
         JSONArray array = json.getJSONArray("menu_list");
-        return ReaderLayerMenuItem.createFromJSON(readerActivity, array);
+        return ReaderLayerMenuItem.createFromJSON(readerDataHolder.getContext(), array);
     }
 
-    private void rotateScreen(final ReaderActivity readerActivity, int rotationOperation) {
+    private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
         final ChangeOrientationAction action = new ChangeOrientationAction(rotationOperation);
-        action.execute(readerActivity);
+        action.execute(readerDataHolder);
     }
 
-    private void scaleUp(final ReaderActivity readerActivity) {
+    private void scaleUp(final ReaderDataHolder readerDataHolder) {
         final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.1f);
-        action.execute(readerActivity);
+        action.execute(readerDataHolder);
     }
 
-    private void scaleDown(final ReaderActivity readerActivity) {
+    private void scaleDown(final ReaderDataHolder readerDataHolder) {
         final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.1f);
-        action.execute(readerActivity);
+        action.execute(readerDataHolder);
     }
 
-    private void scaleByValue(final ReaderActivity readerActivity, float scale) {
-        final ScaleRequest request = new ScaleRequest(readerActivity.getCurrentPageName(), scale, readerActivity.getDisplayWidth() / 2, readerActivity.getDisplayHeight() / 2);
-        readerActivity.submitRequest(request);
+    private void scaleByValue(final ReaderDataHolder readerDataHolder, float scale) {
+        final ScaleRequest request = new ScaleRequest(readerDataHolder.getCurrentPageName(), scale, readerDataHolder.getDisplayWidth() / 2, readerDataHolder.getDisplayHeight() / 2);
+        readerDataHolder.submitRequest(request);
     }
 
-    private void scaleToPage(final ReaderActivity readerActivity) {
-        final ScaleToPageRequest request = new ScaleToPageRequest(readerActivity.getCurrentPageName());
-        readerActivity.submitRequest(request);
+    private void scaleToPage(final ReaderDataHolder readerDataHolder) {
+        final ScaleToPageRequest request = new ScaleToPageRequest(readerDataHolder.getCurrentPageName());
+        readerDataHolder.submitRequest(request);
     }
 
-    private void scaleToWidth(final ReaderActivity readerActivity) {
-        final ScaleToWidthRequest request = new ScaleToWidthRequest(readerActivity.getCurrentPageName());
-        readerActivity.submitRequest(request);
+    private void scaleToWidth(final ReaderDataHolder readerDataHolder) {
+        final ScaleToWidthRequest request = new ScaleToWidthRequest(readerDataHolder.getCurrentPageName());
+        readerDataHolder.submitRequest(request);
     }
 
-    private void scaleByRect(final ReaderActivity readerActivity) {
+    private void scaleByRect(final ReaderDataHolder readerDataHolder) {
         final SelectionScaleAction action = new SelectionScaleAction();
-        action.execute(readerActivity);
+        action.execute(readerDataHolder);
     }
 
-    private void scaleByAutoCrop(final ReaderActivity readerActivity) {
-        final PageCropAction action = new PageCropAction(readerActivity.getCurrentPageName());
-        action.execute(readerActivity);
+    private void scaleByAutoCrop(final ReaderDataHolder readerDataHolder) {
+        final PageCropAction action = new PageCropAction(readerDataHolder.getCurrentPageName());
+        action.execute(readerDataHolder);
     }
 
-    private void switchNavigationToArticleMode(final ReaderActivity readerActivity) {
+    private void switchNavigationToArticleMode(final ReaderDataHolder readerDataHolder) {
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.columnsLeftToRight(NavigationArgs.Type.ALL, 2, 2, limit);
-        switchPageNavigationMode(readerActivity, args);
+        switchPageNavigationMode(readerDataHolder, args);
     }
 
-    private void switchNavigationToComicMode(final ReaderActivity readerActivity) {
+    private void switchNavigationToComicMode(final ReaderDataHolder readerDataHolder) {
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
-        switchPageNavigationMode(readerActivity, args);
+        switchPageNavigationMode(readerDataHolder, args);
     }
 
-    private void switchPageNavigationMode(final ReaderActivity readerActivity, NavigationArgs args) {
+    private void switchPageNavigationMode(final ReaderDataHolder readerDataHolder, NavigationArgs args) {
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
-        readerActivity.submitRequest(request);
+        readerDataHolder.submitRequest(request);
     }
 
-    private void resetNavigationMode(final ReaderActivity readerActivity) {
+    private void resetNavigationMode(final ReaderDataHolder readerDataHolder) {
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE, new NavigationArgs());
-        readerActivity.submitRequest(request);
+        readerDataHolder.submitRequest(request);
     }
 
-    private void showNavigationSettingsDialog(ReaderActivity readerActivity) {
-        hideReaderMenu(readerActivity);
-        DialogNavigationSettings dlg = new DialogNavigationSettings(readerActivity);
+    private void showNavigationSettingsDialog(ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        DialogNavigationSettings dlg = new DialogNavigationSettings(readerDataHolder);
         dlg.show();
     }
 
-    private void adjustContrast(final ReaderActivity readerActivity) {
+    private void adjustContrast(final ReaderDataHolder readerDataHolder) {
         final AdjustContrastAction action = new AdjustContrastAction();
-        action.execute(readerActivity);
+        action.execute(readerDataHolder);
     }
 
-    private void adjustEmbolden(final ReaderActivity readerActivity) {
+    private void adjustEmbolden(final ReaderDataHolder readerDataHolder) {
         final EmboldenAction action = new EmboldenAction();
-        action.execute(readerActivity);
+        action.execute(readerDataHolder);
     }
 
-    private void imageReflow(final ReaderActivity readerActivity) {
+    private void imageReflow(final ReaderDataHolder readerDataHolder) {
         final ImageReflowAction action = new ImageReflowAction();
-        action.execute(readerActivity);
+        action.execute(readerDataHolder);
     }
 
-    private void showTocDialog(final ReaderActivity readerActivity, DialogTableOfContent.DirectoryTab tab) {
+    private void showTocDialog(final ReaderDataHolder readerDataHolder, DialogTableOfContent.DirectoryTab tab) {
         final GetTableOfContentAction action = new GetTableOfContentAction(tab);
-        action.execute(readerActivity);
+        action.execute(readerDataHolder);
     }
 
-    private void ttsPlay(final ReaderActivity readerActivity) {
-        readerActivity.getTtsManager().play();
+    private void ttsPlay(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getTtsManager().play();
     }
 
-    private void ttsPause(final ReaderActivity readerActivity) {
-        readerActivity.getTtsManager().pause();
+    private void ttsPause(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getTtsManager().pause();
     }
 
-    private void ttsStop(final ReaderActivity readerActivity) {
-        readerActivity.getTtsManager().stop();
+    private void ttsStop(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getTtsManager().stop();
     }
 
-    private void startShapeDrawing(final ReaderActivity readerActivity) {
+    private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {
         // get current page and start rendering.
         readerActivity.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         ReaderDeviceManager.startScreenHandWriting(readerActivity.getSurfaceView());
     }
 
-    private void gotoPage(final ReaderActivity readerActivity) {
-        hideReaderMenu(readerActivity);
-        new ShowQuickPreviewAction().execute(readerActivity);
+    private void gotoPage(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        new ShowQuickPreviewAction().execute(readerDataHolder);
     }
 
     private void showScreenRefreshDialog(final ReaderActivity readerActivity) {
@@ -388,8 +390,8 @@ public class ShowReaderMenuAction extends BaseAction {
         return true;
     }
 
-    private void showSearchDialog(final ReaderActivity readerActivity){
-        DialogSearch dialogSearch = new DialogSearch(readerActivity);
+    private void showSearchDialog(final ReaderDataHolder readerDataHolder){
+        DialogSearch dialogSearch = new DialogSearch(readerDataHolder);
         dialogSearch.show();
     }
 }

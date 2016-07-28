@@ -16,6 +16,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.TextSize;
 import android.widget.*;
 import com.onyx.kreader.R;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.view.HTMLReaderWebView;
 
 public class PopupSelectionMenu extends LinearLayout {
@@ -37,6 +38,7 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     private final Activity mActivity;
+    private ReaderDataHolder readerDataHolder;
     private TextView mDictTitle;
     private HTMLReaderWebView mWebView;
     private TextView mPageIndicator;
@@ -54,14 +56,14 @@ public class PopupSelectionMenu extends LinearLayout {
         throw new IllegalAccessError();
     }
 
-    public PopupSelectionMenu(Activity activity, RelativeLayout layout, MenuCallback menuCallback) {
-        super(activity);
-        mActivity = activity;
+    public PopupSelectionMenu(ReaderDataHolder readerDataHolder, RelativeLayout layout, MenuCallback menuCallback) {
+        super(readerDataHolder.getContext());
+        mActivity = (Activity)readerDataHolder.getContext();
 
         setFocusable(false);
 
         final LayoutInflater inflater = (LayoutInflater)
-                activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                readerDataHolder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.popup_selection_menu, this, true);
         mMenuCallback = menuCallback;
         RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

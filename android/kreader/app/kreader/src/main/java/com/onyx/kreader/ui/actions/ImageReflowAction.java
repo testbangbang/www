@@ -1,11 +1,13 @@
 package com.onyx.kreader.ui.actions;
 
+import android.app.Activity;
+
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.reflow.ImageReflowSettings;
-import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogReflowSettings;
 
 /**
@@ -14,21 +16,22 @@ import com.onyx.kreader.ui.dialog.DialogReflowSettings;
 public class ImageReflowAction extends BaseAction {
     private DialogReflowSettings reflowSettingsDialog;
 
-    public void execute(final ReaderActivity readerActivity) {
-        showReflowSettingsDialog(readerActivity);
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        showReflowSettingsDialog(readerDataHolder);
     }
 
-    private void showReflowSettingsDialog(final ReaderActivity readerActivity) {
+    private void showReflowSettingsDialog(final ReaderDataHolder readerDataHolder) {
+        Activity activity = (Activity) readerDataHolder.getContext();
         if (reflowSettingsDialog == null) {
-            ImageReflowSettings settings = readerActivity.getReader().getImageReflowSettings();
-            settings.dev_width = readerActivity.getDisplayWidth();
-            settings.dev_height = readerActivity.getDisplayHeight();
-            reflowSettingsDialog = new DialogReflowSettings(readerActivity, settings, new DialogReflowSettings.ReflowCallback() {
+            ImageReflowSettings settings = readerDataHolder.getReader().getImageReflowSettings();
+            settings.dev_width = readerDataHolder.getDisplayWidth();
+            settings.dev_height = readerDataHolder.getDisplayHeight();
+            reflowSettingsDialog = new DialogReflowSettings(activity, settings, new DialogReflowSettings.ReflowCallback() {
                 @Override
                 public void onFinished(boolean confirm, ImageReflowSettings settings) {
                     if (confirm && settings != null) {
                         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
-                        readerActivity.submitRequest(request);
+                        readerDataHolder.submitRequest(request);
                     }
                     hideReflowSettingsDialog();
                 }

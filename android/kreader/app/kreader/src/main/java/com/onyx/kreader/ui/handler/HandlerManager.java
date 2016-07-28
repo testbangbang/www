@@ -9,10 +9,10 @@ import android.view.ScaleGestureDetector;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.scribble.ScribbleHandler;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.ui.ReaderActivity;
-import com.onyx.kreader.ui.data.ReaderConfig;
-import com.onyx.kreader.ui.data.CustomBindKeyBean;
 import com.onyx.kreader.dataprovider.SharedPreferenceProvider;
+import com.onyx.kreader.ui.data.CustomBindKeyBean;
+import com.onyx.kreader.ui.data.ReaderConfig;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +42,7 @@ public class HandlerManager {
     private boolean penStart = false;
     private ReaderConfig readerConfig;
     private int lastToolType = MotionEvent.TOOL_TYPE_FINGER;
+    private com.onyx.kreader.ui.data.ReaderDataHolder readerDataHolder;
 
     public HandlerManager(final Context context) {
         super();
@@ -49,13 +50,18 @@ public class HandlerManager {
     }
 
     private void initProviderMap(final Context context) {
-        providerMap.put(BASE_PROVIDER, new BaseHandler(this));
-        providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, context));
+        readerDataHolder = new com.onyx.kreader.ui.data.ReaderDataHolder(context,this);
+        providerMap.put(BASE_PROVIDER, new ReaderHandler(this));
+        providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, readerDataHolder.getContext()));
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
         activeProvider = BASE_PROVIDER;
         enable = true;
         enableTouch = true;
         readerConfig = ReaderConfig.sharedInstance(context);
+    }
+
+    public com.onyx.kreader.ui.data.ReaderDataHolder getReaderDataHolder() {
+        return readerDataHolder;
     }
 
     public Map<String, Map<String, JSONObject>> getKeyBinding() {
@@ -157,21 +163,21 @@ public class HandlerManager {
         return getActiveProvider().isLongPress();
     }
 
-    public boolean onKeyDown(ReaderActivity activity, int keyCode, KeyEvent event) {
+    public boolean onKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
         if (!isEnable()) {
             return false;
         }
-        return getActiveProvider().onKeyDown(activity, keyCode, event);
+        return getActiveProvider().onKeyDown(readerDataHolder, keyCode, event);
     }
 
-    public boolean onKeyUp(ReaderActivity activity, int keyCode, KeyEvent event) {
+    public boolean onKeyUp(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
         if (!isEnable()) {
             return false;
         }
-        return getActiveProvider().onKeyUp(activity, keyCode, event);
+        return getActiveProvider().onKeyUp(readerDataHolder, keyCode, event);
     }
 
-    public boolean onTouchEvent(ReaderActivity activity, MotionEvent e) {
+    public boolean onTouchEvent(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnable()) {
             return false;
         }
@@ -188,31 +194,20 @@ public class HandlerManager {
             lastToolType = toolType;
         }
 
-        return getActiveProvider().onTouchEvent(activity, e);
+        return getActiveProvider().onTouchEvent(readerDataHolder, e);
     }
 
-    public boolean onActionUp(ReaderActivity activity, MotionEvent e) {
+    public boolean onActionUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnable()) {
             return false;
         }
         if (!isEnableTouch()) {
             return false;
         }
-        return getActiveProvider().onActionUp(activity, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
+        return getActiveProvider().onActionUp(readerDataHolder, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
     }
 
-    public boolean onDown(ReaderActivity activity, MotionEvent e) {
-        if (!isEnable()) {
-            return false;
-        }
-        if (!isEnableTouch()) {
-            return false;
-        }
-
-        return getActiveProvider().onDown(activity, e);
-    }
-
-    public boolean onDoubleTap(ReaderActivity activity, MotionEvent e) {
+    public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnable()) {
             return false;
         }
@@ -220,37 +215,48 @@ public class HandlerManager {
             return false;
         }
 
-        return getActiveProvider().onDoubleTap(activity, e);
+        return getActiveProvider().onDown(readerDataHolder, e);
     }
 
-    public void onShowPress(ReaderActivity activity, MotionEvent e) {
+    public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        if (!isEnable()) {
+            return false;
+        }
+        if (!isEnableTouch()) {
+            return false;
+        }
+
+        return getActiveProvider().onDoubleTap(readerDataHolder, e);
+    }
+
+    public void onShowPress(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnable()) {
             return;
         }
-        getActiveProvider().onShowPress(activity, e);
+        getActiveProvider().onShowPress(readerDataHolder, e);
     }
 
-    public boolean onSingleTapUp(ReaderActivity activity,  MotionEvent e) {
+    public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnable()) {
             return false;
         }
         if (!isEnableTouch()) {
             return false;
         }
-        return getActiveProvider().onSingleTapUp(activity, e);
+        return getActiveProvider().onSingleTapUp(readerDataHolder, e);
     }
 
-    public boolean onSingleTapConfirmed(ReaderActivity activity, MotionEvent e) {
+    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnable()) {
             return false;
         }
         if (!isEnableTouch()) {
             return false;
         }
-        return getActiveProvider().onSingleTapConfirmed(activity, e);
+        return getActiveProvider().onSingleTapConfirmed(readerDataHolder, e);
     }
 
-    public boolean onScrollAfterLongPress(ReaderActivity activity,  float x1, float y1, float x2, float y2) {
+    public boolean onScrollAfterLongPress(ReaderDataHolder readerDataHolder, float x1, float y1, float x2, float y2) {
         if (enableScrollAfterLongPress) {
             if (!isEnable()) {
                 return false;
@@ -258,69 +264,72 @@ public class HandlerManager {
             if (!isEnableTouch()) {
                 return false;
             }
-            return getActiveProvider().onScrollAfterLongPress(activity, x1, y1, x2, y2);
+            return getActiveProvider().onScrollAfterLongPress(readerDataHolder, x1, y1, x2, y2);
         }
         return false;
     }
 
-    public boolean onScroll(ReaderActivity activity,  MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+    public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (!isEnable()) {
             return false;
         }
         if (!isEnableTouch()) {
             return false;
         }
-        return getActiveProvider().onScroll(activity, e1, e2, distanceX, distanceY);
+        return getActiveProvider().onScroll(readerDataHolder, e1, e2, distanceX, distanceY);
     }
 
-    public void onLongPress(ReaderActivity activity, MotionEvent e) {
+    public void onLongPress(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnable()) {
             return;
         }
         if (!isEnableTouch()) {
             return;
         }
-        getActiveProvider().onLongPress(activity, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
+        if (getActiveProvider() instanceof ReaderHandler){
+            setActiveProvider(HandlerManager.WORD_SELECTION_PROVIDER);
+        }
+        getActiveProvider().onLongPress(readerDataHolder, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
     }
 
-    public boolean onFling(ReaderActivity activity, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+    public boolean onFling(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (!isEnable()) {
             return false;
         }
         if (!isEnableTouch()) {
             return false;
         }
-        return getActiveProvider().onFling(activity, e1, e2, velocityX, velocityY);
+        return getActiveProvider().onFling(readerDataHolder, e1, e2, velocityX, velocityY);
     }
 
-    public boolean onScaleEnd(ReaderActivity activity, ScaleGestureDetector detector) {
+    public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
         if (!isEnable()) {
             return false;
         }
         if (!isEnableTouch()) {
             return false;
         }
-        return getActiveProvider().onScaleEnd(activity, detector);
+        return getActiveProvider().onScaleEnd(readerDataHolder, detector);
     }
 
-    public boolean onScaleBegin(ReaderActivity activity, ScaleGestureDetector detector) {
+    public boolean onScaleBegin(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
         if (!isEnable()) {
             return false;
         }
         if (!isEnableTouch()) {
             return false;
         }
-        return getActiveProvider().onScaleBegin(activity, detector);
+        return getActiveProvider().onScaleBegin(readerDataHolder, detector);
     }
 
-    public boolean onScale(ReaderActivity activity, ScaleGestureDetector detector)  {
+    public boolean onScale(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector)  {
         if (!isEnable()) {
             return false;
         }
         if (!isEnableTouch()) {
             return false;
         }
-        return getActiveProvider().onScale(activity, detector);
+        return getActiveProvider().onScale(readerDataHolder, detector);
     }
 
     public void setPenErasing(boolean c) {
@@ -345,22 +354,22 @@ public class HandlerManager {
         lastToolType = MotionEvent.TOOL_TYPE_FINGER;
     }
 
-    public boolean processKeyDown(ReaderActivity activity,  final String action, final String args) {
+    public boolean processKeyDown(ReaderDataHolder readerDataHolder, final String action, final String args) {
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }
         if (action.equals(ReaderConfig.NEXT_SCREEN)) {
-            activity.beforePageChangeByUser();
-            activity.nextScreen();
+//            activity.beforePageChangeByUser();
+            getActiveProvider().nextScreen(readerDataHolder);
         } else if (action.equals(ReaderConfig.NEXT_PAGE)) {
-            activity.beforePageChangeByUser();
-            activity.nextPage();
+//            activity.beforePageChangeByUser();
+            getActiveProvider().nextPage(readerDataHolder);
         } else if (action.equals(ReaderConfig.PREV_SCREEN)) {
-            activity.beforePageChangeByUser();
-            activity.prevScreen();
+//            activity.beforePageChangeByUser();
+            getActiveProvider().prevScreen(readerDataHolder);
         } else if (action.equals(ReaderConfig.PREV_PAGE)) {
-            activity.beforePageChangeByUser();
-            activity.prevPage();
+//            activity.beforePageChangeByUser();
+            getActiveProvider().prevPage(readerDataHolder);
         } else if (action.equals(ReaderConfig.MOVE_LEFT)) {
             //activity.moveLeft();
         } else if (action.equals(ReaderConfig.MOVE_RIGHT)) {
@@ -372,7 +381,7 @@ public class HandlerManager {
         } else if (action.equals(ReaderConfig.TOGGLE_BOOKMARK)) {
             //activity.toggleBookmark();
         } else if (action.equals(ReaderConfig.SHOW_MENU)) {
-            activity.showReaderMenu();
+//            activity.showReaderMenu();
         } else if (action.equals(ReaderConfig.CHANGE_TO_ERASE_MODE)) {
 
 

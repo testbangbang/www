@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
     private static final String TAG = DialogSearch.class.getSimpleName();
     private static int SEARCH_CONTENT_ROW = 4;
 
-    private ReaderActivity readerActivity;
+    private ReaderDataHolder readerDataHolder;
 
     private Button btnSearch;
     private PageRecyclerView pageRecyclerView;
@@ -47,12 +47,12 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
 
     private List<String> searchList = new ArrayList<>();
 
-    public DialogSearch(final ReaderActivity activity) {
-        super(activity, R.style.dialog_no_title);
+    public DialogSearch(final ReaderDataHolder readerDataHolder) {
+        super(readerDataHolder.getContext(), R.style.dialog_no_title);
 
         setContentView(R.layout.dialog_search);
         fitDialogToWindow();
-        readerActivity = activity;
+        this.readerDataHolder = readerDataHolder;
         init();
     }
 
@@ -78,7 +78,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
         back.setOnClickListener(this);
         btnSearch.setOnClickListener(this);
 
-        title.setText(readerActivity.getBookName());
+        title.setText(readerDataHolder.getBookName());
         pageRecyclerView.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
@@ -179,8 +179,8 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
     private void updatePageIndicator(int position, int itemCount){
         int page = itemCount / SEARCH_CONTENT_ROW;
         int currentPage = page > 0 ? position / SEARCH_CONTENT_ROW + 1 : 0;
-        String indicator = String.format(readerActivity.getString(R.string.page_indicator),currentPage,page);
-        String total = String.format(readerActivity.getString(R.string.total_page),searchList.size());
+        String indicator = String.format(readerDataHolder.getContext().getString(R.string.page_indicator),currentPage,page);
+        String total = String.format(readerDataHolder.getContext().getString(R.string.total_page),searchList.size());
         pageIndicator.setText(indicator);
         totalPage.setText(total);
     }
