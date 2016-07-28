@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PixelXorXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -27,24 +26,16 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderDocumentOptions;
-import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
-import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
-import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
@@ -56,10 +47,14 @@ import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.MessageEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.utils.TreeObserverUtils;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by Joy on 2016/4/14.
@@ -69,21 +64,16 @@ public class ReaderActivity extends ActionBarActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
     private String documentPath;
-    private Reader reader;
-    private NoteViewHelper noteViewHelper;
 
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
-
     private ReaderStatusBar statusBar;
 
-    private HandlerManager handlerManager;
+    private ReaderDataHolder readerDataHolder;
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
-
-    private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
-
+    private EventBus eventBus;
     private final ReaderPainter readerPainter = new ReaderPainter();
 
     @Override
@@ -91,7 +81,7 @@ public class ReaderActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setFullScreen(true);
         setContentView(R.layout.activity_reader);
-        initActivity();
+        initComponents();
     }
 
     @Override
@@ -157,8 +147,12 @@ public class ReaderActivity extends ActionBarActivity {
         return processKeyUp(keyCode, event);
     }
 
-    private final com.onyx.kreader.ui.data.ReaderDataHolder getReaderDataHolder(){
-        return handlerManager.getReaderDataHolder();
+    private final ReaderDataHolder getReaderDataHolder(){
+        return readerDataHolder;
+    }
+
+    public final HandlerManager getHandlerManager() {
+        return readerDataHolder.getHandlerManager();
     }
 
     @Override
@@ -173,10 +167,10 @@ public class ReaderActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initActivity() {
+    private void initComponents() {
         initStatusBar();
         initToolbar();
-        initHandlerManager();
+        initReaderDataHolder();
         initSurfaceView();
         initShapeViewDelegate();
     }
@@ -250,15 +244,15 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                handlerManager.setTouchStartEvent(event);
+                getHandlerManager().setTouchStartEvent(event);
                 scaleDetector.onTouchEvent(event);
                 gestureDetector.onTouchEvent(event);
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    handlerManager.onActionUp(getReaderDataHolder(), event);
-                    handlerManager.resetTouchStartPosition();
+                    getHandlerManager().onActionUp(getReaderDataHolder(), event);
+                    getHandlerManager().resetTouchStartPosition();
                 }
 
-                handlerManager.onTouchEvent(getReaderDataHolder(), event);
+                getHandlerManager().onTouchEvent(getReaderDataHolder(), event);
                 return true;
             }
         });
@@ -285,27 +279,27 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
-    private void initHandlerManager() {
-        handlerManager = new HandlerManager(this);
-        getReaderDataHolder().setCallBack(new com.onyx.kreader.ui.data.ReaderDataHolder.CallBack() {
-            @Override
-            public void onRenderRequestFinished() {
-                updateToolbarProgress();
-                updateStatusBar();
-
-                //ReaderDeviceManager.applyGCInvalidate(surfaceView);
-                drawPage(reader.getViewportBitmap().getBitmap());
-                renderShapeDataInBackground();
-            }
-        });
-        handlerManager.setEnable(false);
+    private void initReaderDataHolder() {
+        readerDataHolder = new ReaderDataHolder(this);
+        readerDataHolder.getEventBus().register(this);
+        getHandlerManager().setEnable(false);
     }
 
     private void initShapeViewDelegate() {
 //        getNoteViewHelper().setView(this, surfaceView, null);
         // when page changed, choose to flush
         //noteViewHelper.flushPendingShapes();
+    }
 
+    @Subscribe
+    public void onRequestFinished(final MessageEvent event) {
+        Log.e(TAG, "on received");
+        updateToolbarProgress();
+        updateStatusBar();
+
+        //ReaderDeviceManager.applyGCInvalidate(surfaceView);
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        renderShapeDataInBackground();
     }
 
     private void clearCanvas(SurfaceHolder holder) {
@@ -352,8 +346,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
-        reader = ReaderManager.getReader(path);
-        getReaderDataHolder().setReader(reader);
+        getReaderDataHolder().setReader(ReaderManager.getReader(path));
         final OpenDocumentAction action = new OpenDocumentAction(path,this);
         action.execute(getReaderDataHolder());
     }
@@ -385,19 +378,15 @@ public class ReaderActivity extends ActionBarActivity {
         if (canvas == null) {
             return;
         }
-        readerPainter.drawPage(this, canvas, pageBitmap, getReaderDataHolder().getReaderUserDataInfo(),
+        readerPainter.drawPage(this,
+                canvas,
+                pageBitmap,
+                getReaderDataHolder().getReaderUserDataInfo(),
                 getReaderDataHolder().getReaderViewInfo(),
                 getReaderDataHolder().getSelectionManager(),
-                getNoteViewHelper(),
+                getReaderDataHolder().getNoteViewHelper(),
                 getReaderDataHolder().getShapeDataInfo());
         holder.unlockCanvasAndPost(canvas);
-    }
-
-    private NoteViewHelper getNoteViewHelper() {
-        if (noteViewHelper == null) {
-            noteViewHelper = new NoteViewHelper();
-        }
-        return noteViewHelper;
     }
 
     private boolean isShapeBitmapReady() {
@@ -406,7 +395,7 @@ public class ReaderActivity extends ActionBarActivity {
 //            return false;
 //        }
 
-        final Bitmap bitmap = getNoteViewHelper().getViewBitmap();
+        final Bitmap bitmap = getReaderDataHolder().getNoteViewHelper().getViewBitmap();
         if (bitmap == null) {
             return false;
         }
@@ -418,6 +407,7 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
 
+        /*
         final PageListRenderRequest loadRequest = new PageListRenderRequest(reader.getDocumentMd5(), getReaderDataHolder().getReaderViewInfo().getVisiblePages(), getReaderDataHolder().getDisplayRect());
         getNoteViewHelper().submit(this, loadRequest, new BaseCallback() {
             @Override
@@ -429,14 +419,7 @@ public class ReaderActivity extends ActionBarActivity {
                 drawPage(reader.getViewportBitmap().getBitmap());
             }
         });
-    }
-
-    public ReaderPluginOptions getPluginOptions() {
-        return new ReaderPluginOptionsImpl();
-    }
-
-    public ReaderDocumentOptions getDocumentOptions() {
-        return new ReaderDocumentOptionsImpl("", "");
+        */
     }
 
     public SurfaceHolder getHolder() {
@@ -473,15 +456,11 @@ public class ReaderActivity extends ActionBarActivity {
                 return true;
             }
         }
-        return handlerManager.onKeyDown(getReaderDataHolder(), keyCode, event) || super.onKeyDown(keyCode, event);
+        return getHandlerManager().onKeyDown(getReaderDataHolder(), keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     private boolean processKeyUp(int keyCode, KeyEvent event) {
-        return handlerManager.onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
-    }
-
-    public final HandlerManager getHandlerManager() {
-        return handlerManager;
+        return getHandlerManager().onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
     public void showToolbar() {

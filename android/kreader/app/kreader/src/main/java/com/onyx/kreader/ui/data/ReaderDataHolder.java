@@ -3,10 +3,12 @@ package com.onyx.kreader.ui.data;
 import android.content.Context;
 import android.graphics.Rect;
 
+import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -18,9 +20,11 @@ import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.tts.ReaderTtsManager;
+import com.onyx.kreader.ui.events.MessageEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by ming on 16/7/27.
@@ -42,17 +46,23 @@ public class ReaderDataHolder {
     private CallBack callBack;
     private int displayWidth;
     private int displayHeight;
+
     private HandlerManager handlerManager;
     private ReaderSelectionManager selectionManager;
     private ReaderTtsManager ttsManager;
+    private NoteViewHelper noteViewHelper;
+    private EventBus eventBus = new EventBus();
 
-    public ReaderDataHolder(Context context,HandlerManager handlerManager){
+    public ReaderDataHolder(Context context){
         this.context = context;
-        this.handlerManager = handlerManager;
     }
 
     public Context getContext() {
         return context;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public void saveReaderViewInfo(final BaseReaderRequest request) {
@@ -144,6 +154,9 @@ public class ReaderDataHolder {
     }
 
     public final HandlerManager getHandlerManager() {
+        if (handlerManager == null) {
+            handlerManager = new HandlerManager(this);
+        }
         return handlerManager;
     }
 
@@ -164,6 +177,13 @@ public class ReaderDataHolder {
             });
         }
         return ttsManager;
+    }
+
+    public NoteViewHelper getNoteViewHelper() {
+        if (noteViewHelper == null) {
+            noteViewHelper = new NoteViewHelper();
+        }
+        return noteViewHelper;
     }
 
     public String getDocumentPath() {
@@ -216,9 +236,8 @@ public class ReaderDataHolder {
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        if (callBack != null){
-            callBack.onRenderRequestFinished();
-        }
+        Log.e(TAG, "beofre post");
+        eventBus.post(MessageEvent.fromRequest(request, e));
     }
 
     public void redrawPage() {

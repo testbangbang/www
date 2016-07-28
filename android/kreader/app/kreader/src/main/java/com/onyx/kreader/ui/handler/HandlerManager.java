@@ -42,15 +42,15 @@ public class HandlerManager {
     private boolean penStart = false;
     private ReaderConfig readerConfig;
     private int lastToolType = MotionEvent.TOOL_TYPE_FINGER;
-    private com.onyx.kreader.ui.data.ReaderDataHolder readerDataHolder;
+    private ReaderDataHolder readerDataHolder;
 
-    public HandlerManager(final Context context) {
+    public HandlerManager(final ReaderDataHolder holder) {
         super();
-        initProviderMap(context);
+        readerDataHolder = holder;
+        initProviderMap(readerDataHolder.getContext());
     }
 
     private void initProviderMap(final Context context) {
-        readerDataHolder = new com.onyx.kreader.ui.data.ReaderDataHolder(context,this);
         providerMap.put(BASE_PROVIDER, new ReaderHandler(this));
         providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, readerDataHolder.getContext()));
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
