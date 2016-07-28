@@ -28,6 +28,7 @@ import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by joy on 7/15/16.
@@ -35,7 +36,7 @@ import java.util.HashMap;
 public class DialogQuickPreview extends Dialog {
 
     public static abstract class Callback {
-        public abstract void requestPreview(final int pageStart, final int pageEnd, final Size desiredSize);
+        public abstract void requestPreview(final List<Integer> pages, final Size desiredSize);
     }
 
     private enum GridType { Four, Nine }
@@ -132,6 +133,7 @@ public class DialogQuickPreview extends Dialog {
         }
 
         public void requestMissingBitmaps() {
+            ArrayList<Integer> toRequest = new ArrayList<>();
             HashMap<Integer, Bitmap> cache = new HashMap<>();
             for (int i = 0; i < bitmapList.size(); i++) {
                 int page = paginator.indexByPageOffset(i);
@@ -141,13 +143,15 @@ public class DialogQuickPreview extends Dialog {
                     bitmapCache.remove(page);
                     continue;
                 }
-                callback.requestPreview(page, page, childSize);
+                toRequest.add(page);
             }
             for (Bitmap bitmap : bitmapCache.values()) {
                 bitmap.recycle();
             }
             bitmapCache.clear();
             bitmapCache.putAll(cache);
+
+            callback.requestPreview(toRequest, childSize);
         }
 
         public void resetListSize(int size) {
