@@ -7,10 +7,10 @@ import android.widget.TextView;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
-import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 
 import java.util.HashMap;
