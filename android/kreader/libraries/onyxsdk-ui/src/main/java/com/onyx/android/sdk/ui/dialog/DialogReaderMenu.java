@@ -2,18 +2,13 @@ package com.onyx.android.sdk.ui.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
-import android.content.Intent;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
@@ -72,7 +67,7 @@ public class DialogReaderMenu extends Dialog {
         findViewById(R.id.layout_back_area).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/Exit"));
             }
         });
 
@@ -86,14 +81,8 @@ public class DialogReaderMenu extends Dialog {
         findViewById(R.id.button_screen_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogScreenRefresh dlg = new DialogScreenRefresh();
-                dlg.setListener(new DialogScreenRefresh.onScreenRefreshChangedListener() {
-                    @Override
-                    public void onRefreshIntervalChanged(int oldValue, int newValue) {
-                        readerMenuCallback.onMenuItemValueChanged(createVirtualMenuItem("/SetRefreshInterval"), oldValue, newValue);
-                    }
-                });
-                dlg.show(activity.getFragmentManager());
+                readerMenuCallback.onHideMenu();
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/SetScreenRefreshRate"));
             }
         });
 
@@ -109,7 +98,7 @@ public class DialogReaderMenu extends Dialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onHideMenu();
-                startDictionaryApp();
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/StartDictApp"));
             }
         });
 
@@ -136,23 +125,6 @@ public class DialogReaderMenu extends Dialog {
             }
         });
 
-    }
-
-    public boolean startDictionaryApp() {
-//        OnyxDictionaryInfo info = OnyxSysCenter.getDictionary(this.getContext());
-        OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
-        if (info == null) {
-            Toast.makeText(this.getContext(), R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
-            return false;
-        }
-        Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
-        try {
-            getContext().startActivity(intent);
-        } catch ( ActivityNotFoundException e ) {
-            Toast.makeText(this.getContext(), R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
     }
 
     private ReaderMenuItem createVirtualMenuItem(String uri) {

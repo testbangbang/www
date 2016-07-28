@@ -9,6 +9,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.scribble.request.note.NoteLoadThumbnailByUIDRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,11 +35,13 @@ public class ManageLoadPageAction<T extends ManageActivity> extends BaseNoteActi
                     return;
                 }
 
+                ArrayList<String> updateTagList = new ArrayList<>();
+                updateTagList.add(GAdapterUtil.TAG_THUMBNAIL);
                 GAdapterUtil.updateAdapterContent(activity.getContentView().getCurrentAdapter(),
                         Utils.adapterFromNoteModelList(loadThumbnailByUIDRequest.getNoteList(),
                                 R.drawable.ic_student_note_folder_gray,
                                 R.drawable.ic_student_note_pic_gray),
-                        GAdapterUtil.TAG_UNIQUE_ID, activity.getLookupTable());
+                        GAdapterUtil.TAG_UNIQUE_ID, updateTagList, activity.getLookupTable(), false);
                 activity.getContentView().updateCurrentPage(true, false);
                 if (callback != null) {
                     callback.done(request, e);

@@ -6,11 +6,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PixelXorXfermode;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -43,9 +39,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
-import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.common.PageAnnotation;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
@@ -62,14 +56,10 @@ import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
-import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
-import com.onyx.kreader.utils.RectUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
-
-import java.util.List;
 
 /**
  * Created by Joy on 2016/4/14.
@@ -93,6 +83,8 @@ public class ReaderActivity extends ActionBarActivity {
     private ScaleGestureDetector scaleDetector;
 
     private final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
+
+    private final ReaderPainter readerPainter = new ReaderPainter();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -150,7 +142,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void resetMenus() {
-        ShowReaderMenuAction.resetReaderMenu();
+        ShowReaderMenuAction.resetReaderMenu(this);
         ShowSearchMenuAction.resetSearchMenu();
         ShowTextSelectionMenuAction.resetSelectionMenu();
     }
@@ -388,108 +380,17 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawPage(final Bitmap pageBitmap) {
+        ReaderDeviceManager.applyWithGCInterval(surfaceView);
         Canvas canvas = holder.lockCanvas();
         if (canvas == null) {
             return;
         }
-        Paint paint = new Paint();
-        drawBackground(canvas, paint);
-        drawBitmap(canvas, paint, pageBitmap);
-        drawSearchResults(canvas, paint);
-        drawHighlightResult(canvas, paint);
-        drawAnnotations(canvas, paint);
-        drawBookmark(canvas);
-        drawShapes(canvas, paint);
-
+        readerPainter.drawPage(this, canvas, pageBitmap, getReaderDataHolder().getReaderUserDataInfo(),
+                getReaderDataHolder().getReaderViewInfo(),
+                getReaderDataHolder().getSelectionManager(),
+                getNoteViewHelper(),
+                getReaderDataHolder().getShapeDataInfo());
         holder.unlockCanvasAndPost(canvas);
-    }
-
-    private void drawBackground(Canvas canvas, Paint paint) {
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
-    }
-
-    private void drawBitmap(Canvas canvas, Paint paint, Bitmap bitmap) {
-        if (bitmap == null) {
-            return;
-        }
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-    }
-
-    private void drawSearchResults(Canvas canvas, Paint paint) {
-        drawReaderSelections(canvas, paint, getReaderDataHolder().getReaderUserDataInfo().getSearchResults());
-    }
-
-    private void drawHighlightResult(Canvas canvas, Paint paint) {
-        if (getReaderDataHolder().getReaderUserDataInfo().hasHighlightResult()) {
-            drawReaderSelection(canvas, paint, getReaderDataHolder().getReaderUserDataInfo().getHighlightResult());
-            drawSelectionCursor(canvas, paint, xorMode);
-        }
-    }
-
-    private void drawAnnotations(Canvas canvas, Paint paint) {
-        for (PageInfo pageInfo : getReaderDataHolder().getReaderViewInfo().getVisiblePages()) {
-            if (getReaderDataHolder().getReaderUserDataInfo().hasPageAnnotations(pageInfo)) {
-                List<PageAnnotation> annotations = getReaderDataHolder().getReaderUserDataInfo().getPageAnnotations(pageInfo);
-                for (PageAnnotation annotation : annotations) {
-                    drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
-                }
-            }
-        }
-    }
-
-    private void drawBookmark(Canvas canvas) {
-        Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(this, getReaderDataHolder().hasBookmark());
-        final Point point = bookmarkPosition(bitmap);
-        canvas.drawBitmap(bitmap, point.x, point.y, null);
-    }
-
-    private Point bookmarkPosition(Bitmap bitmap) {
-        Point point = new Point();
-        point.set(getReaderDataHolder().getDisplayWidth() - bitmap.getWidth(), 10);
-        return point;
-    }
-
-    private void drawReaderSelection(Canvas canvas, Paint paint, ReaderSelection selection) {
-        PageInfo pageInfo = getReaderDataHolder().getReaderViewInfo().getPageInfo(selection.getPagePosition());
-        if (pageInfo != null) {
-            drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
-        }
-    }
-
-    private void drawReaderSelections(Canvas canvas, Paint paint, List<ReaderSelection> list) {
-        if (list == null || list.size() <= 0) {
-            return;
-        }
-        for (ReaderSelection sel : list) {
-            drawReaderSelection(canvas, paint, sel);
-        }
-    }
-
-    private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
-        if (rectangles == null) {
-            return;
-        }
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setXfermode(xorMode);
-        for (int i = 0; i < rectangles.size(); ++i) {
-            canvas.drawRect(rectangles.get(i), paint);
-        }
-    }
-
-    private void drawSelectionCursor(Canvas canvas, Paint paint, PixelXorXfermode xor) {
-        getReaderDataHolder().getSelectionManager().draw(canvas, paint, xor);
-    }
-
-    private void drawShapes(final Canvas canvas, Paint paint) {
-        if (!isShapeBitmapReady()) {
-            return;
-        }
-        final Bitmap bitmap = getNoteViewHelper().getViewBitmap();
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
-        canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
     private NoteViewHelper getNoteViewHelper() {

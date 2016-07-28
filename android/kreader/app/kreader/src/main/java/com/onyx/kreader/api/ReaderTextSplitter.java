@@ -25,4 +25,6 @@ public interface ReaderTextSplitter {
      */
     @SuppressWarnings("unused")
     int getTextRightBoundary(final String character, final String left, final String right);
+
+    int getTextSentenceBreakPoint(final String text);
 }

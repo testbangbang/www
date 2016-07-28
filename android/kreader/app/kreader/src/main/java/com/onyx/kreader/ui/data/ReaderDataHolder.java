@@ -17,6 +17,7 @@ import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -43,6 +44,7 @@ public class ReaderDataHolder {
     private int displayHeight;
     private HandlerManager handlerManager;
     private ReaderSelectionManager selectionManager;
+    private ReaderTtsManager ttsManager;
 
     public ReaderDataHolder(Context context,HandlerManager handlerManager){
         this.context = context;
@@ -150,6 +152,18 @@ public class ReaderDataHolder {
             selectionManager = new ReaderSelectionManager();
         }
         return selectionManager;
+    }
+
+    public ReaderTtsManager getTtsManager() {
+        if (ttsManager == null) {
+            ttsManager = new ReaderTtsManager(this, new ReaderTtsManager.Callback() {
+                @Override
+                public void onStateChanged() {
+
+                }
+            });
+        }
+        return ttsManager;
     }
 
     public String getDocumentPath() {

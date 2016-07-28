@@ -33,4 +33,20 @@ public class ReaderMenuState {
     public void setPageCount(int count) {
         data.putInt(PAGE_COUNT_TAG, count);
     }
+
+    public int getValue(String key, int defaultValue) {
+        return data.getInt(key, defaultValue);
+    }
+
+    public void setValue(String key, int value) {
+        data.putInt(key, value);
+    }
+
+    public Object getValue(String key) {
+        return data.getObject(key);
+    }
+
+    public void setValue(String key, Object value) {
+        data.putObject(key, value);
+    }
 }

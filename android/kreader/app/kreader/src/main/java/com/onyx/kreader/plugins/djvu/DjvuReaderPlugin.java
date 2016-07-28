@@ -4,28 +4,7 @@ import android.content.Context;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
-import com.onyx.kreader.api.ReaderDRMCallback;
-import com.onyx.kreader.api.ReaderDocument;
-import com.onyx.kreader.api.ReaderDocumentMetadata;
-import com.onyx.kreader.api.ReaderDocumentOptions;
-import com.onyx.kreader.api.ReaderDocumentTableOfContent;
-import com.onyx.kreader.api.ReaderDrmManager;
-import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.api.ReaderHitTestArgs;
-import com.onyx.kreader.api.ReaderHitTestManager;
-import com.onyx.kreader.api.ReaderLink;
-import com.onyx.kreader.api.ReaderNavigator;
-import com.onyx.kreader.api.ReaderPlugin;
-import com.onyx.kreader.api.ReaderPluginOptions;
-import com.onyx.kreader.api.ReaderRenderer;
-import com.onyx.kreader.api.ReaderRendererFeatures;
-import com.onyx.kreader.api.ReaderSearchManager;
-import com.onyx.kreader.api.ReaderSearchOptions;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.api.ReaderTextSplitter;
-import com.onyx.kreader.api.ReaderTextStyleManager;
-import com.onyx.kreader.api.ReaderView;
-import com.onyx.kreader.api.ReaderViewOptions;
+import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -89,6 +68,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     public String getPageText(String position) {
         // TODO to be implemented
         return "";
+    }
+
+    @Override
+    public ReaderSentence getSentence(String position, String sentenceStartPosition) {
+        return null;
     }
 
     @Override

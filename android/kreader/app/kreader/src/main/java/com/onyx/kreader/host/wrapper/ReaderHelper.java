@@ -2,12 +2,18 @@ package com.onyx.kreader.host.wrapper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.WindowManager;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.cache.BitmapLruCache;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
+import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
@@ -17,6 +23,7 @@ import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 import com.onyx.kreader.reflow.ImageReflowManager;
+import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.utils.ImageUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
@@ -29,6 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Save all helper data objects in this class.
  */
 public class ReaderHelper {
+    private static final String TAG = ReaderHelper.class.getSimpleName();
 
     public class BitmapCopyCoordinator {
         private ReentrantLock lock = new ReentrantLock();
@@ -101,12 +109,41 @@ public class ReaderHelper {
         return (plugin != null);
     }
 
-    public void onDocumentOpened(final String path, final ReaderDocument doc, final BaseOptions options) throws Exception {
+    public void onDocumentOpened(final Context context, final String path, final ReaderDocument doc, final BaseOptions options) throws Exception {
         documentPath = path;
         document = doc;
         documentMd5 = FileUtils.computeMD5(new File(documentPath));
         getDocumentOptions().setZipPassword(options.getZipPassword());
         getDocumentOptions().setPassword(options.getPassword());
+        saveMetadata(context, documentPath);
+        saveThumbnail(context, documentPath);
+
+        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(context,
+                DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
+    }
+
+    private void saveMetadata(final Context context, final String path) {
+        ReaderDocumentMetadata metadata = new ReaderDocumentMetadataImpl();
+        if (getDocument().readMetadata(metadata)) {
+            LegacySdkDataUtils.saveMetadata(context, path, metadata);
+        }
+    }
+
+    private void saveThumbnail(final Context context, final String path) {
+        WindowManager window = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        if (window == null) {
+            Log.w(TAG, "get display metrics failed: " + documentPath);
+            return;
+        }
+        DisplayMetrics display = new DisplayMetrics();
+        window.getDefaultDisplay().getMetrics(display);
+        ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(display.widthPixels, display.heightPixels,
+                Bitmap.Config.ARGB_8888);
+        bitmap.clear();
+        if (getDocument().readCover(bitmap)) {
+            LegacySdkDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
+        }
+        bitmap.recycleBitmap();
     }
 
     public void onViewSizeChanged() {

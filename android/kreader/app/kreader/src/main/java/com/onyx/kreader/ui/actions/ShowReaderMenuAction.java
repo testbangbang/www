@@ -1,12 +1,17 @@
 package com.onyx.kreader.ui.actions;
 
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
@@ -17,6 +22,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
@@ -26,6 +32,7 @@ import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
+import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -50,7 +57,7 @@ public class ShowReaderMenuAction extends BaseAction {
         showReaderMenu(readerDataHolder);
     }
 
-    public static void resetReaderMenu() {
+    public static void resetReaderMenu(final ReaderActivity readerActivity) {
         readerMenu = null;
     }
 
@@ -68,6 +75,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showReaderMenu(final ReaderDataHolder readerDataHolder) {
 //        readerActivity.showToolbar();
         ReaderLayerMenuState state = new ReaderLayerMenuState();
+        updateReaderMenuState(readerDataHolder, state);
         state.setTitle(FileUtils.getFileName(readerDataHolder.getReader().getDocumentPath()));
         state.setPageCount(readerDataHolder.getPageCount());
         state.setPageIndex(readerDataHolder.getCurrentPage());
@@ -91,6 +99,20 @@ public class ShowReaderMenuAction extends BaseAction {
         updateReaderMenuCallback(readerMenu, readerDataHolder);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
         readerMenu.fillItems(items);
+    }
+
+    private static void updateReaderMenuState(final ReaderDataHolder readerDataHolder, final ReaderLayerMenuState state) {
+        state.setTtsState(getTtsState(readerDataHolder));
+    }
+
+    private static ReaderLayerMenuState.TtsState getTtsState(final ReaderDataHolder readerreaderDataHolderctivity) {
+        if (readerreaderDataHolderctivity.getTtsManager().isSpeaking()) {
+            return ReaderLayerMenuState.TtsState.Speaking;
+        } else if (readerreaderDataHolderctivity.getTtsManager().isPaused()) {
+            return ReaderLayerMenuState.TtsState.Paused;
+        } else {
+            return ReaderLayerMenuState.TtsState.Stopped;
+        }
     }
 
     private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderDataHolder readerDataHolder) {
@@ -184,11 +206,26 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case "/Directory/Export":
                         break;
+                    case "/TTS/Play":
+                        ttsPlay(readerDataHolder);
+                        break;
+                    case "/TTS/Pause":
+                        ttsPause(readerDataHolder);
+                        break;
+                    case "/TTS/Stop":
+                        ttsStop(readerDataHolder);
+                        break;
                     case "/More/shape":
                         startShapeDrawing(readerDataHolder);
                         break;
                     case "/GotoPage":
                         gotoPage(readerDataHolder);
+                        break;
+                    case "/SetScreenRefreshRate":
+                        showScreenRefreshDialog(readerActivity);
+                        break;
+                    case "/StartDictApp":
+                        startDictionaryApp(readerActivity);
                         break;
                     case "/Search":
                         showSearchDialog(readerDataHolder);
@@ -302,6 +339,18 @@ public class ShowReaderMenuAction extends BaseAction {
         action.execute(readerDataHolder);
     }
 
+    private void ttsPlay(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getTtsManager().play();
+    }
+
+    private void ttsPause(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getTtsManager().pause();
+    }
+
+    private void ttsStop(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getTtsManager().stop();
+    }
+
     private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {
         // get current page and start rendering.
         readerActivity.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
@@ -311,6 +360,34 @@ public class ShowReaderMenuAction extends BaseAction {
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         new ShowQuickPreviewAction().execute(readerDataHolder);
+    }
+
+    private void showScreenRefreshDialog(final ReaderActivity readerActivity) {
+        DialogScreenRefresh dlg = new DialogScreenRefresh();
+        dlg.setListener(new DialogScreenRefresh.onScreenRefreshChangedListener() {
+            @Override
+            public void onRefreshIntervalChanged(int oldValue, int newValue) {
+                LegacySdkDataUtils.setScreenUpdateGCInterval(readerActivity, newValue);
+                ReaderDeviceManager.setGcInterval(newValue);
+            }
+        });
+        dlg.show(readerActivity.getFragmentManager());
+    }
+
+    private boolean startDictionaryApp(final ReaderActivity readerActivity) {
+        OnyxDictionaryInfo info = LegacySdkDataUtils.getDictionary(readerActivity);
+        if (info == null) {
+            Toast.makeText(readerActivity, R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
+        try {
+            readerActivity.startActivity(intent);
+        } catch ( ActivityNotFoundException e ) {
+            Toast.makeText(readerActivity, R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
