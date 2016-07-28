@@ -360,16 +360,16 @@ public class HandlerManager {
         }
         if (action.equals(ReaderConfig.NEXT_SCREEN)) {
 //            activity.beforePageChangeByUser();
-//            activity.nextScreen();
+            getActiveProvider().nextScreen(readerDataHolder);
         } else if (action.equals(ReaderConfig.NEXT_PAGE)) {
 //            activity.beforePageChangeByUser();
-//            activity.nextPage();
+            getActiveProvider().nextPage(readerDataHolder);
         } else if (action.equals(ReaderConfig.PREV_SCREEN)) {
 //            activity.beforePageChangeByUser();
-//            activity.prevScreen();
+            getActiveProvider().prevScreen(readerDataHolder);
         } else if (action.equals(ReaderConfig.PREV_PAGE)) {
 //            activity.beforePageChangeByUser();
-//            activity.prevPage();
+            getActiveProvider().prevPage(readerDataHolder);
         } else if (action.equals(ReaderConfig.MOVE_LEFT)) {
             //activity.moveLeft();
         } else if (action.equals(ReaderConfig.MOVE_RIGHT)) {

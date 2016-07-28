@@ -128,4 +128,12 @@ public abstract class BaseHandler {
     public boolean onFling(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         return false;
     }
+
+    public void nextPage(ReaderDataHolder readerDataHolder) {}
+
+    public void prevPage(ReaderDataHolder readerDataHolder) {}
+
+    public void nextScreen(ReaderDataHolder readerDataHolder) {}
+
+    public void prevScreen(ReaderDataHolder readerDataHolder) {}
 }
