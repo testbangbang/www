@@ -170,7 +170,8 @@ public class DialogQuickPreview extends Dialog {
             Debug.d("setBitmap: " + bitmap);
             bitmapList.set(index, bitmap);
             bitmapCache.put(paginator.indexByPageOffset(index), bitmap);
-            notifyItemChanged(index);
+            // notifyItemChanged() will cause delayed update on UI, not sure why
+            notifyDataSetChanged();
         }
 
         public void setGridType(Grid grid) {
