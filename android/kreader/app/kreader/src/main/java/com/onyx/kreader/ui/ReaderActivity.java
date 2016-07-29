@@ -24,10 +24,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
-
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
