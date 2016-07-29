@@ -43,8 +43,6 @@ public class DialogLoading extends DialogBase
         });
     }
 
-
-
     public void setMessage(String msg)
     {
         if (!mTextViewMessage.getText().equals(msg)) {
