@@ -44,6 +44,7 @@ import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.GotoPageDialogAction;
 import com.onyx.kreader.ui.actions.OpenDocumentAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;
+import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
@@ -177,6 +178,12 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void initStatusBar() {
         statusBar = (ReaderStatusBar)findViewById(R.id.status_bar);
+        statusBar.setCallback(new ReaderStatusBar.Callback() {
+            @Override
+            public void onGotoPage() {
+                new ShowQuickPreviewAction().execute(readerDataHolder);
+            }
+        });
     }
 
     private void initToolbar() {
