@@ -1,0 +1,164 @@
+{
+  "menu_list": [
+    {
+      "id": "Zoom",
+      "type": "Group",
+      "title": "Zoom",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_black",
+      "children": [
+        {
+          "id": "FontReflow",
+          "type": "Item",
+          "title": "Font Reflow",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_reset_black"
+        },
+        {
+          "id": "ZoomIn",
+          "type": "Item",
+          "title": "Zoom In",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_magnify_black"
+        },
+        {
+          "id": "ZoomOut",
+          "type": "Item",
+          "title": "Zoom Out",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_shrink_black"
+        },
+        {
+          "id": "ToPage",
+          "type": "Item",
+          "title": "To Page",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_fit_page_black"
+        },
+        {
+          "id": "ToWidth",
+          "type": "Item",
+          "title": "To Width",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_fit_width_black"
+        },
+        {
+          "id": "ByRect",
+          "type": "Item",
+          "title": "By Rect",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_choose_black"
+        }
+      ]
+    },
+    {
+      "id": "Navigation",
+      "type": "Group",
+      "title": "Navigation",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_black",
+      "children": [
+        {
+          "id": "ComicMode",
+          "type": "Item",
+          "title": "Comic Mode",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_cartoon_black"
+        },
+        {
+          "id": "ArticleMode",
+          "type": "Item",
+          "title": "Article Mode",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_thesis_black"
+        },
+        {
+          "id": "Reset",
+          "type": "Item",
+          "title": "Reset",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_reset_black"
+        },
+        {
+          "id": "MoreSetting",
+          "type": "Item",
+          "title": "More Setting",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_more_black"
+        }
+      ]
+    },
+    {
+      "id": "Directory",
+      "type": "Group",
+      "title": "Directory",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_note_black",
+      "children": [
+        {
+          "id": "TOC",
+          "type": "Item",
+          "title": "TOC",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_list_black"
+        },
+        {
+          "id": "Bookmark",
+          "type": "Item",
+          "title": "Bookmark",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_bookmark_black"
+        },
+        {
+          "id": "Note",
+          "type": "Item",
+          "title": "Note",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_label_black"
+        },
+        {
+          "id": "Export",
+          "type": "Item",
+          "title": "Export",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_export_black"
+        }
+      ]
+    },
+    {
+      "id": "Rotation",
+      "type": "Group",
+      "title": "Rotation",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_black",
+      "children": [
+        {
+          "id": "Rotation90",
+          "type": "Item",
+          "title": "Rotation 90",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_left_black"
+        },
+        {
+          "id": "Rotation0",
+          "type": "Item",
+          "title": "Rotation 0",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_up_black"
+        },
+        {
+          "id": "Rotation270",
+          "type": "Item",
+          "title": "Rotation 270",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_right_black"
+        },
+        {
+          "id": "Rotation180",
+          "type": "Item",
+          "title": "Rotation 180",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_down_black"
+        }
+      ]
+    },
+    {
+      "id": "TTS",
+      "type": "Group",
+      "title": "TTS",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_black",
+      "children": [
+        {
+          "id": "TTSStop",
+          "type": "Item",
+          "title": "TTS Stop",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_stop_black"
+        },
+        {
+          "id": "TTSPlay",
+          "type": "Item",
+          "title": "TTS Play",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_play_black"
+        }
+      ]
+    }
+  ]
+}

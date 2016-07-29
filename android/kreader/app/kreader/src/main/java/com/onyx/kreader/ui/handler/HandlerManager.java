@@ -31,6 +31,7 @@ public class HandlerManager {
     public static final String SCRIBBLE_PROVIDER = "scribble";
     public static final String ERASER_PROVIDER = "eraser";
     public static final String SELECTION_ZOOM = "sz";
+    public static final String TTS_PROVIDER = "tts";
 
     private String activeProvider;
     private Map<String, BaseHandler> providerMap = new HashMap<String, BaseHandler>();
@@ -54,6 +55,7 @@ public class HandlerManager {
         providerMap.put(BASE_PROVIDER, new ReaderHandler(this));
         providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, readerDataHolder.getContext()));
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
+        providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         activeProvider = BASE_PROVIDER;
         enable = true;
         enableTouch = true;

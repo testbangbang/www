@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderMenu;
@@ -90,11 +92,10 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void initReaderMenu(final ReaderDataHolder readerDataHolder) {
-        LinearLayout layout = (LinearLayout) readerActivity.findViewById(R.id.left_drawer);
-        createReaderSideMenu(readerDataHolder, layout);
+        createReaderSideMenu(readerDataHolder);
     }
 
-    private void createReaderSideMenu(final ReaderDataHolder readerDataHolder, LinearLayout drawerLayout) {
+    private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
         readerMenu = new ReaderLayerMenu(readerActivity);
         updateReaderMenuCallback(readerMenu, readerDataHolder);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
@@ -244,7 +245,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(readerDataHolder.getContext(), R.raw.reader_menu));
+        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(readerDataHolder.getContext(), R.raw.reader_menu_fixed_page));
         JSONArray array = json.getJSONArray("menu_list");
         return ReaderLayerMenuItem.createFromJSON(readerDataHolder.getContext(), array);
     }
@@ -340,7 +341,13 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void ttsPlay(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getTtsManager().play();
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
+        readerDataHolder.submitRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.getTtsManager().play();
+            }
+        });
     }
 
     private void ttsPause(final ReaderDataHolder readerDataHolder) {
@@ -349,6 +356,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void ttsStop(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getTtsManager().stop();
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.BASE_PROVIDER);
     }
 
     private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {

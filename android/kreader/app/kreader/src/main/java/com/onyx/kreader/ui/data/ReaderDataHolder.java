@@ -20,6 +20,7 @@ import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.tts.ReaderTtsManager;
+import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.events.MessageEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
@@ -172,7 +173,9 @@ public class ReaderDataHolder {
             ttsManager = new ReaderTtsManager(this, new ReaderTtsManager.Callback() {
                 @Override
                 public void onStateChanged() {
-
+                    if (ShowReaderMenuAction.isReaderMenuShown()) {
+                        new ShowReaderMenuAction().execute(ReaderDataHolder.this);
+                    }
                 }
             });
         }
@@ -208,10 +211,10 @@ public class ReaderDataHolder {
         reader.submitRequest(context, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                onRenderRequestFinished(renderRequest, e);
                 if (callback != null) {
                     callback.done(request, e);
                 }
-                onRenderRequestFinished(renderRequest, e);
                 preRenderNext();
             }
         });
