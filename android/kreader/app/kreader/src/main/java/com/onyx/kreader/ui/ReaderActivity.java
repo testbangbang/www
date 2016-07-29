@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -23,7 +22,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
@@ -32,14 +30,12 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.ForwardAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
-import com.onyx.kreader.ui.actions.GotoPageDialogAction;
 import com.onyx.kreader.ui.actions.OpenDocumentAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
@@ -168,7 +164,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void initComponents() {
         initStatusBar();
-        initToolbar();
         initReaderDataHolder();
         initSurfaceView();
         initShapeViewDelegate();
@@ -180,42 +175,6 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGotoPage() {
                 new ShowQuickPreviewAction().execute(readerDataHolder);
-            }
-        });
-    }
-
-    private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_bottom);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        toolbar.findViewById(R.id.toolbar_backward).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                backward();
-            }
-        });
-        toolbar.findViewById(R.id.toolbar_forward).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                forward();
-            }
-        });
-        toolbar.findViewById(R.id.toolbar_progress).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new GotoPageDialogAction().execute(getReaderDataHolder());
-            }
-        });
-
-        toolbar = (Toolbar)findViewById(R.id.toolbar_top);
-        toolbar.findViewById(R.id.toolbar_search).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShowReaderMenuAction.hideReaderMenu();
-                onSearchRequested();
             }
         });
     }
@@ -299,7 +258,6 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onRequestFinished(final MessageEvent event) {
         Log.e(TAG, "on received");
-        updateToolbarProgress();
         updateStatusBar();
 
         //ReaderDeviceManager.applyGCInvalidate(surfaceView);
@@ -363,8 +321,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     public void onDocumentOpened(String path) {
         documentPath = path;
-        hideToolbar();
-        updateToolbarTitle();
     }
 
     public void backward() {
@@ -466,31 +422,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     private boolean processKeyUp(int keyCode, KeyEvent event) {
         return getHandlerManager().onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
-    }
-
-    public void showToolbar() {
-        findViewById(R.id.toolbar_top).setVisibility(View.VISIBLE);
-        findViewById(R.id.toolbar_bottom).setVisibility(View.VISIBLE);
-    }
-
-    public void hideToolbar() {
-        findViewById(R.id.toolbar_top).setVisibility(View.GONE);
-        findViewById(R.id.toolbar_bottom).setVisibility(View.GONE);
-    }
-
-    private void updateToolbarTitle() {
-        String name = FileUtils.getFileName(documentPath);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_top);
-        ((TextView)toolbar.findViewById(R.id.toolbar_title)).setText(name);
-    }
-
-    private void updateToolbarProgress() {
-        ReaderViewInfo readerViewInfo = getReaderDataHolder().getReaderViewInfo();
-        if (readerViewInfo != null && readerViewInfo.getFirstVisiblePage() != null) {
-            int pn = Integer.parseInt(readerViewInfo.getFirstVisiblePage().getName());
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_bottom);
-            ((TextView) toolbar.findViewById(R.id.toolbar_progress)).setText((pn + 1) + "/" + getReaderDataHolder().getPageCount());
-        }
     }
 
     private void updateStatusBar() {

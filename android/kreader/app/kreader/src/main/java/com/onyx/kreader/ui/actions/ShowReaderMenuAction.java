@@ -92,11 +92,10 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void initReaderMenu(final ReaderDataHolder readerDataHolder) {
-        LinearLayout layout = (LinearLayout) readerActivity.findViewById(R.id.left_drawer);
-        createReaderSideMenu(readerDataHolder, layout);
+        createReaderSideMenu(readerDataHolder);
     }
 
-    private void createReaderSideMenu(final ReaderDataHolder readerDataHolder, LinearLayout drawerLayout) {
+    private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
         readerMenu = new ReaderLayerMenu(readerActivity);
         updateReaderMenuCallback(readerMenu, readerDataHolder);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
