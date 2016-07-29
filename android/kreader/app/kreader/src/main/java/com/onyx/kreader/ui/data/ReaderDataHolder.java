@@ -211,10 +211,10 @@ public class ReaderDataHolder {
         reader.submitRequest(context, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                onRenderRequestFinished(renderRequest, e);
                 if (callback != null) {
                     callback.done(request, e);
                 }
-                onRenderRequestFinished(renderRequest, e);
                 preRenderNext();
             }
         });
