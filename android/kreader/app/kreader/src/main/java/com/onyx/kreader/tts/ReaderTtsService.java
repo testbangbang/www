@@ -158,6 +158,7 @@ public class ReaderTtsService {
     }
 
     private void handleState(TtsState state) {
+        Debug.d("handleState: " + state + ", current state: " + ttsState);
         switch (state) {
             case SynthesizeTtsPrepare:
                 if (ttsState == TtsState.SynthesizeTtsPrepare || ttsState == TtsState.SynthesizeTtsStart ||
@@ -169,8 +170,10 @@ public class ReaderTtsService {
                     return;
                 }
                 if (synthesizeTts(text)) {
-                    setTtsState(TtsState.SynthesizeTtsStart);
-                    onStart();
+                    if (ttsState != TtsState.MediaPaused) {
+                        setTtsState(TtsState.SynthesizeTtsStart);
+                        onStart();
+                    }
                 } else {
                     handleState(TtsState.Error);
                 }
@@ -205,7 +208,7 @@ public class ReaderTtsService {
                 }
                 break;
             case MediaPlayDone:
-                if (ttsState != TtsState.Stopped) {
+                if (ttsState != TtsState.Stopped && ttsState != TtsState.MediaPaused) {
                     setTtsState(TtsState.Ready);
                     onDone();
                 }
