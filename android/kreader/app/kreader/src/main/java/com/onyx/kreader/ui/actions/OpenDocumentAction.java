@@ -109,10 +109,10 @@ public class OpenDocumentAction extends BaseAction {
 
     private DialogLoading showLoadingDialog(final ReaderActivity activity) {
         if (dialogLoading == null) {
-            dialogLoading = new DialogLoading(activity, activity.getResources().getString(R.string.loading_document), true);
-            dialogLoading.setCancelButtonClickListener(new View.OnClickListener() {
+            dialogLoading = new DialogLoading(activity, activity.getResources().getString(R.string.loading_document),
+                    true, new DialogLoading.Callback() {
                 @Override
-                public void onClick(View v) {
+                public void onCanceled() {
                     activity.quitApplication();
                 }
             });
