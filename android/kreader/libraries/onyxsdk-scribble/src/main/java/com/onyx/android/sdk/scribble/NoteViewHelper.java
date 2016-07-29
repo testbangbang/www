@@ -13,6 +13,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
@@ -147,13 +148,30 @@ public class NoteViewHelper {
         callback = c;
     }
 
+    private float getTouchWidth() {
+        float value = Device.currentDevice().getTouchWidth();
+        if (value <= 0) {
+            return deviceConfig.getTouchWidth();
+        }
+        return value;
+    }
+
+    private float getTouchHeight() {
+        float value = Device.currentDevice().getTouchHeight();
+        if (value <= 0) {
+            return deviceConfig.getTouchHeight();
+        }
+        return value;
+    }
+
+
     // matrix from input touch panel to system view with correct orientation.
     private void updateScreenMatrix() {
         final Matrix screenMatrix = new Matrix();
         screenMatrix.postRotate(deviceConfig.getEpdPostOrientation());
         screenMatrix.postTranslate(deviceConfig.getEpdPostTx(), deviceConfig.getEpdPostTy());
-        screenMatrix.preScale(deviceConfig.getEpdWidth() / deviceConfig.getTouchWidth(),
-                deviceConfig.getEpdHeight() / deviceConfig.getTouchHeight());
+        screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
+                deviceConfig.getEpdHeight() / getTouchHeight());
         rawInputProcessor.setScreenMatrix(screenMatrix);
     }
 
