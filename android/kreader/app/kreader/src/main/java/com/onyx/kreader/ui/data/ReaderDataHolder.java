@@ -20,7 +20,7 @@ import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.tts.ReaderTtsManager;
-import com.onyx.kreader.ui.events.MessageEvent;
+import com.onyx.kreader.ui.events.MainMessageEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -237,7 +237,7 @@ public class ReaderDataHolder {
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
         Log.e(TAG, "beofre post");
-        eventBus.post(MessageEvent.fromRequest(request, e));
+        eventBus.post(MainMessageEvent.fromRequest(request, e));
     }
 
     public void redrawPage() {

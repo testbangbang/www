@@ -27,7 +27,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -48,13 +47,15 @@ import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.MessageEvent;
+import com.onyx.kreader.ui.events.MainMessageEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.utils.TreeObserverUtils;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by Joy on 2016/4/14.
@@ -291,8 +292,19 @@ public class ReaderActivity extends ActionBarActivity {
         //noteViewHelper.flushPendingShapes();
     }
 
-    @Subscribe
-    public void onRequestFinished(final MessageEvent event) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMainMessageEvent(final MainMessageEvent event){
+        switch (event.getEventType()){
+            case REQUEST_FINISHED:
+                onRequestFinished(event);
+                break;
+            case QUIT_APPLICATION:
+                quitApplication();
+                break;
+        }
+    }
+
+    public void onRequestFinished(final MainMessageEvent event) {
         Log.e(TAG, "on received");
         updateToolbarProgress();
         updateStatusBar();
@@ -427,7 +439,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void quitApplication() {
-
+        finish();
     }
 
     private void openBuiltInDoc() {

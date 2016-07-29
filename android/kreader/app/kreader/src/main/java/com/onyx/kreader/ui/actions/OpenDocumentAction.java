@@ -18,6 +18,9 @@ import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
+import com.onyx.kreader.ui.events.MainMessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -97,7 +100,7 @@ public class OpenDocumentAction extends BaseAction {
             public void onPasswordEntered(boolean success, String password) {
                 dlg.dismiss();
                 if (!success) {
-                    readerActivity.quitApplication();
+                    EventBus.getDefault().post(MainMessageEvent.quitApplication());
                 } else {
                     readerDataHolder.getReader().getDocumentOptions().setPassword(password);
                     openWithOptions(readerActivity, readerDataHolder.getReader(), readerDataHolder.getReader().getDocumentOptions());
@@ -113,7 +116,7 @@ public class OpenDocumentAction extends BaseAction {
             dialogLoading.setCancelButtonClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.quitApplication();
+                    EventBus.getDefault().post(MainMessageEvent.quitApplication());
                 }
             });
         }
@@ -151,7 +154,7 @@ public class OpenDocumentAction extends BaseAction {
             showPasswordDialog(readerActivity);
             return;
         }
-        readerActivity.quitApplication();
+        EventBus.getDefault().post(MainMessageEvent.quitApplication());
     }
 
 }
