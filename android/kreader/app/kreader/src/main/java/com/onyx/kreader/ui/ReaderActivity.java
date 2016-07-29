@@ -434,7 +434,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void quitApplication() {
-
+        finish();
     }
 
     private void openBuiltInDoc() {
