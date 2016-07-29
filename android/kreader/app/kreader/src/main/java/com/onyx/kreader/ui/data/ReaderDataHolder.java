@@ -3,7 +3,6 @@ package com.onyx.kreader.ui.data;
 import android.content.Context;
 import android.graphics.Rect;
 
-import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -21,7 +20,7 @@ import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.events.MessageEvent;
+import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -33,10 +32,6 @@ import org.greenrobot.eventbus.EventBus;
 public class ReaderDataHolder {
     private static final String TAG = ReaderDataHolder.class.getSimpleName();
 
-    public interface CallBack {
-        void onRenderRequestFinished();
-    }
-
     private Context context;
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
@@ -44,7 +39,6 @@ public class ReaderDataHolder {
     private ShapeDataInfo shapeDataInfo;
     private boolean preRender = true;
     private boolean preRenderNext = true;
-    private CallBack callBack;
     private int displayWidth;
     private int displayHeight;
 
@@ -104,10 +98,6 @@ public class ReaderDataHolder {
 
     public void setPreRenderNext(boolean preRenderNext) {
         this.preRenderNext = preRenderNext;
-    }
-
-    public void setCallBack(CallBack callBack) {
-        this.callBack = callBack;
     }
 
     public Reader getReader() {
@@ -202,11 +192,23 @@ public class ReaderDataHolder {
         return getReaderUserDataInfo().hasBookmark(getFirstPageInfo());
     }
 
-    public void submitRequest(final BaseReaderRequest renderRequest) {
-        submitRequest(renderRequest, null);
+    public void submitNonRenderRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
+        beforeSubmitRequest();
+        reader.submitRequest(context, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (callback != null) {
+                    callback.done(request, e);
+                }
+            }
+        });
     }
 
-    public void submitRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
+    public void submitRenderRequest(final BaseReaderRequest renderRequest) {
+        submitRenderRequest(renderRequest, null);
+    }
+
+    public void submitRenderRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
         beforeSubmitRequest();
         reader.submitRequest(context, renderRequest, new BaseCallback() {
             @Override
@@ -239,13 +241,12 @@ public class ReaderDataHolder {
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        Log.e(TAG, "beofre post");
-        eventBus.post(MessageEvent.fromRequest(request, e));
+        eventBus.post(RequestFinishEvent.fromRequest(request, e));
     }
 
     public void redrawPage() {
         if (getReader() != null) {
-            submitRequest(new RenderRequest());
+            submitRenderRequest(new RenderRequest());
         }
     }
 }

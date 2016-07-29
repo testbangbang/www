@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -251,7 +250,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
-        final ChangeOrientationAction action = new ChangeOrientationAction(rotationOperation);
+        final ChangeOrientationAction action = new ChangeOrientationAction(readerActivity.getRequestedOrientation(), rotationOperation);
         action.execute(readerDataHolder);
     }
 
@@ -267,17 +266,17 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void scaleByValue(final ReaderDataHolder readerDataHolder, float scale) {
         final ScaleRequest request = new ScaleRequest(readerDataHolder.getCurrentPageName(), scale, readerDataHolder.getDisplayWidth() / 2, readerDataHolder.getDisplayHeight() / 2);
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void scaleToPage(final ReaderDataHolder readerDataHolder) {
         final ScaleToPageRequest request = new ScaleToPageRequest(readerDataHolder.getCurrentPageName());
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void scaleToWidth(final ReaderDataHolder readerDataHolder) {
         final ScaleToWidthRequest request = new ScaleToWidthRequest(readerDataHolder.getCurrentPageName());
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void scaleByRect(final ReaderDataHolder readerDataHolder) {
@@ -306,12 +305,12 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void switchPageNavigationMode(final ReaderDataHolder readerDataHolder, NavigationArgs args) {
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void resetNavigationMode(final ReaderDataHolder readerDataHolder) {
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE, new NavigationArgs());
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void showNavigationSettingsDialog(ReaderDataHolder readerDataHolder) {
@@ -342,7 +341,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void ttsPlay(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
-        readerDataHolder.submitRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
+        readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 readerDataHolder.getTtsManager().play();

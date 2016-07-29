@@ -55,7 +55,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
             scaleRequest = new ScaleToPageRequest(PagePositionUtils.fromPageNumber(page));
         }
 
-        readerDataHolder.submitRequest(scaleRequest, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(scaleRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 int page = PagePositionUtils.getPageNumber(scaleRequest.getReaderViewInfo().getFirstVisiblePage().getName());
@@ -90,7 +90,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
                 Debug.d("final cropped args: " + JSON.toJSONString(cropArgs));
                 NavigationArgs navigationArgs = new NavigationArgs();
                 buildNavigationArgs(dataHolder, request, navigationArgs);
-                dataHolder.submitRequest(new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
+                dataHolder.submitRenderRequest(new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
             }
         }).execute(readerDataHolder);
     }
@@ -165,7 +165,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
             nextPage = currentPage + 1;
         }
         BaseReaderRequest request = new GotoLocationRequest(PagePositionUtils.fromPageNumber(nextPage));
-        readerDataHolder.submitRequest(request, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 setupNavigationSettings(readerDataHolder, nextPage);

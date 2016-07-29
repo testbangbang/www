@@ -17,6 +17,6 @@ public class DeleteBookmarkAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        readerDataHolder.submitRequest(new DeleteBookmarkRequest(mBookmark));
+        readerDataHolder.submitRenderRequest(new DeleteBookmarkRequest(mBookmark));
     }
 }

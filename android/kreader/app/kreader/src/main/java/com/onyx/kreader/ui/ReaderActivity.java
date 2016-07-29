@@ -43,7 +43,10 @@ import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.MessageEvent;
+import com.onyx.kreader.ui.events.ChangeOrientationEvent;
+import com.onyx.kreader.ui.events.DocumentOpenEvent;
+import com.onyx.kreader.ui.events.RequestFinishEvent;
+import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -68,7 +71,6 @@ public class ReaderActivity extends ActionBarActivity {
     private ReaderDataHolder readerDataHolder;
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
-    private EventBus eventBus;
     private final ReaderPainter readerPainter = new ReaderPainter();
 
     @Override
@@ -256,8 +258,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
-    public void onRequestFinished(final MessageEvent event) {
-        Log.e(TAG, "on received");
+    public void onRequestFinished(final RequestFinishEvent event) {
         updateStatusBar();
 
         //ReaderDeviceManager.applyGCInvalidate(surfaceView);
@@ -282,7 +283,7 @@ public class ReaderActivity extends ActionBarActivity {
             if (StringUtils.isNullOrEmpty(action)) {
                 openBuiltInDoc();
             } else if (action.equals(Intent.ACTION_MAIN)) {
-                quitApplication();
+                quitApplication(null);
             } else if (action.equals(Intent.ACTION_VIEW)) {
                 openFileFromIntent();
             } else if (action.equals(Intent.ACTION_SEARCH)) {
@@ -310,7 +311,7 @@ public class ReaderActivity extends ActionBarActivity {
 
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         getReaderDataHolder().setReader(ReaderManager.getReader(path));
-        final OpenDocumentAction action = new OpenDocumentAction(path,this);
+        final OpenDocumentAction action = new OpenDocumentAction(path);
         action.execute(getReaderDataHolder());
     }
 
@@ -319,8 +320,14 @@ public class ReaderActivity extends ActionBarActivity {
         action.execute(getReaderDataHolder());
     }
 
-    public void onDocumentOpened(String path) {
-        documentPath = path;
+    @Subscribe
+    public void onDocumentOpened(final DocumentOpenEvent event) {
+        documentPath = event.getPath();
+    }
+
+    @Subscribe
+    public void onChangeOrientation(final ChangeOrientationEvent event) {
+        setRequestedOrientation(event.getOrientation());
     }
 
     public void backward() {
@@ -387,7 +394,8 @@ public class ReaderActivity extends ActionBarActivity {
         return holder;
     }
 
-    public void quitApplication() {
+    @Subscribe
+    public void quitApplication(final QuitEvent event) {
         finish();
     }
 

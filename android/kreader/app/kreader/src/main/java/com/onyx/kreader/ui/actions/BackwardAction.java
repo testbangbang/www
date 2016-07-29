@@ -14,7 +14,7 @@ public class BackwardAction extends BaseAction {
         }
 
         final BackwardRequest backwardRequest = new BackwardRequest();
-        readerDataHolder.submitRequest(backwardRequest);
+        readerDataHolder.submitRenderRequest(backwardRequest);
     }
 
 

@@ -22,14 +22,14 @@ public class EmboldenAction extends BaseAction {
                 @Override
                 public void valueChange(int newValue) {
                     EmboldenGlyphRequest request = new EmboldenGlyphRequest(newValue);
-                    readerDataHolder.submitRequest(request);
+                    readerDataHolder.submitRenderRequest(request);
                 }
 
                 @Override
                 public void done(boolean isValueChange, int oldValue, int newValue) {
                     if (!isValueChange) {
                         EmboldenGlyphRequest request = new EmboldenGlyphRequest(oldValue);
-                        readerDataHolder.submitRequest(request);
+                        readerDataHolder.submitRenderRequest(request);
                     }
                     hideEmboldenDialog();
                 }

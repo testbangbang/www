@@ -6,13 +6,13 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 /**
  * Created by zhuzeng on 7/28/16.
  */
-public class MessageEvent {
+public class RequestFinishEvent {
 
     private Bitmap bitmap;
 
-    public static MessageEvent fromRequest(final BaseRequest request, final Throwable throwable) {
-        MessageEvent messageEvent = new MessageEvent();
-        return messageEvent;
+    public static RequestFinishEvent fromRequest(final BaseRequest request, final Throwable throwable) {
+        RequestFinishEvent requestFinishEvent = new RequestFinishEvent();
+        return requestFinishEvent;
     }
 
     public final Bitmap getBitmap() {

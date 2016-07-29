@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.actions;
 
-import android.view.View;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -12,12 +11,11 @@ import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.CreateViewRequest;
 import com.onyx.kreader.host.request.OpenRequest;
 import com.onyx.kreader.host.request.RestoreRequest;
-import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
+import com.onyx.kreader.ui.events.DocumentOpenEvent;
+import com.onyx.kreader.ui.events.QuitEvent;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -32,19 +30,14 @@ public class OpenDocumentAction extends BaseAction {
     private String documentPath;
     private DialogLoading dialogLoading;
     private DataProvider dataProvider;
-    private ReaderActivity readerActivity;
-    private ReaderDataHolder readerDataHolder;
 
-    public OpenDocumentAction(final String path,final ReaderActivity readerActivity) {
+    public OpenDocumentAction(final String path) {
         documentPath = path;
-        this.readerActivity = readerActivity;
         dataProvider = new DataProvider();
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
-        showLoadingDialog(readerActivity);
-        final Reader reader = ReaderManager.getReader(documentPath);
+        showLoadingDialog(readerDataHolder);
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
                 readerDataHolder.getReader().getDocumentMd5());
         dataProvider.submit(readerDataHolder.getContext(), loadDocumentOptionsRequest, new BaseCallback() {
@@ -54,71 +47,76 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup();
                     return;
                 }
-                openWithOptions(readerActivity,reader, loadDocumentOptionsRequest.getDocumentOptions());
+                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
     }
 
-    private void openWithOptions(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options) {
+    private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
         final BaseReaderRequest openRequest = new OpenRequest(documentPath, options);
-        reader.submitRequest(readerActivity, openRequest, new BaseCallback() {
+        readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    processOpenException(readerActivity, reader, options, e);
+                    processOpenException(readerDataHolder, options, e);
                     return;
                 }
-                onFileOpenSucceed(readerActivity, reader, options);
+                onFileOpenSucceed(readerDataHolder, options);
             }
         });
     }
 
-    private void onFileOpenSucceed(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options) {
-        readerActivity.onDocumentOpened(documentPath);
-        readerActivity.getHandlerManager().setEnable(true);
+    private void onFileOpenSucceed(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
+        readerDataHolder.getEventBus().post(new DocumentOpenEvent(documentPath));
+        readerDataHolder.getHandlerManager().setEnable(true);
         final BaseReaderRequest config = new CreateViewRequest(readerDataHolder.getDisplayWidth(), readerDataHolder.getDisplayHeight());
-        reader.submitRequest(readerActivity, config, new BaseCallback() {
+        readerDataHolder.submitNonRenderRequest(config, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     cleanup();
                     return;
                 }
-                restoreWithOptions(options);
+                restoreWithOptions(readerDataHolder, options);
             }
         });
     }
 
-    private void showPasswordDialog(final ReaderActivity readerActivity) {
+    private void showPasswordDialog(final ReaderDataHolder readerDataHolder) {
         hideLoadingDialog();
-        final DialogPassword dlg = new DialogPassword(readerActivity);
+        final DialogPassword dlg = new DialogPassword(readerDataHolder.getContext());
         dlg.setOnPasswordEnteredListener(new DialogPassword.OnPasswordEnteredListener() {
             @Override
             public void onPasswordEntered(boolean success, String password) {
                 dlg.dismiss();
                 if (!success) {
-                    readerActivity.quitApplication();
+                    postQuitEvent(readerDataHolder);
                 } else {
                     readerDataHolder.getReader().getDocumentOptions().setPassword(password);
-                    openWithOptions(readerActivity, readerDataHolder.getReader(), readerDataHolder.getReader().getDocumentOptions());
+                    openWithOptions(readerDataHolder, readerDataHolder.getReader().getDocumentOptions());
                 }
             }
         });
         dlg.show();
     }
 
-    private DialogLoading showLoadingDialog(final ReaderActivity activity) {
+    private DialogLoading showLoadingDialog(final ReaderDataHolder holder) {
         if (dialogLoading == null) {
-            dialogLoading = new DialogLoading(activity, activity.getResources().getString(R.string.loading_document),
+            dialogLoading = new DialogLoading(holder.getContext(),
+                    holder.getContext().getResources().getString(R.string.loading_document),
                     true, new DialogLoading.Callback() {
                 @Override
                 public void onCanceled() {
-                    activity.quitApplication();
+                    postQuitEvent(holder);
                 }
             });
         }
         dialogLoading.show();
         return dialogLoading;
+    }
+
+    private void postQuitEvent(final ReaderDataHolder holder) {
+        holder.getEventBus().post(new QuitEvent());
     }
 
     private void hideLoadingDialog() {
@@ -132,9 +130,9 @@ public class OpenDocumentAction extends BaseAction {
         hideLoadingDialog();
     }
 
-    private void restoreWithOptions(final BaseOptions options) {
+    private void restoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
         final RestoreRequest restoreRequest = new RestoreRequest(options);
-        readerDataHolder.submitRequest(restoreRequest, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(restoreRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog();
@@ -142,16 +140,16 @@ public class OpenDocumentAction extends BaseAction {
         });
     }
 
-    private void processOpenException(final ReaderActivity readerActivity, final Reader reader, final BaseOptions options, final Throwable e) {
+    private void processOpenException(final ReaderDataHolder holder, final BaseOptions options, final Throwable e) {
         if (!(e instanceof ReaderException)) {
             return;
         }
         final ReaderException readerException = (ReaderException)e;
         if (readerException.getCode() == ReaderException.PASSWORD_REQUIRED) {
-            showPasswordDialog(readerActivity);
+            showPasswordDialog(holder);
             return;
         }
-        readerActivity.quitApplication();
+        postQuitEvent(holder);
     }
 
 }
