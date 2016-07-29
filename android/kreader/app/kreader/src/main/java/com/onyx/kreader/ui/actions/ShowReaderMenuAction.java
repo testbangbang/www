@@ -244,7 +244,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(readerDataHolder.getContext(), R.raw.reader_menu));
+        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(readerDataHolder.getContext(), R.raw.reader_menu_fixed_page));
         JSONArray array = json.getJSONArray("menu_list");
         return ReaderLayerMenuItem.createFromJSON(readerDataHolder.getContext(), array);
     }
