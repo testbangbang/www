@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.actions;
 
-import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
