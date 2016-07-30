@@ -3,25 +3,29 @@ package com.onyx.kreader.ui.dialog;
 import android.content.Context;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.onyx.kreader.R;
 
 public class DialogLoading extends DialogBase
 {
-
     private static final String TAG = DialogLoading.class.getSimpleName();
 
+    public static abstract class Callback {
+        public abstract void onCanceled();
+    }
+
+    private Callback callback;
     private TextView mTextViewMessage = null;
     private ImageView mCancelButton=null;
 
-    public DialogLoading(Context context, String msg, boolean enableCancel)
+    public DialogLoading(Context context, String msg, boolean enableCancel, Callback callback)
     {
         super(context,  R.style.dialog_progress);
 
         setContentView(R.layout.dialog_loading);
 
+        this.callback = callback;
         mTextViewMessage = (TextView) findViewById(R.id.textview_message);
         mTextViewMessage.setText(msg);
         mCancelButton=(ImageView)findViewById(R.id.button_cancel);
@@ -30,9 +34,14 @@ public class DialogLoading extends DialogBase
             mCancelButton.setVisibility(View.INVISIBLE);
         }
         setCanceledOnTouchOutside(false);
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCanceled();
+            }
+        });
     }
-
-
 
     public void setMessage(String msg)
     {
@@ -45,14 +54,17 @@ public class DialogLoading extends DialogBase
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            this.cancel();
+            onCanceled();
             return true;
         }
 
         return super.onKeyDown(keyCode, event);
     }
 
-    public void setCancelButtonClickListener(Button.OnClickListener mCancelButtonOnClickListener){
-        mCancelButton.setOnClickListener(mCancelButtonOnClickListener);
+    private void onCanceled() {
+        this.cancel();
+        if (callback != null) {
+            callback.onCanceled();
+        }
     }
 }

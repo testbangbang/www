@@ -25,7 +25,7 @@ public class PanAction extends BaseAction {
         translateMatrix.reset();
         ReaderDeviceManager.exitAnimationUpdate(false);
         final BaseReaderRequest request = new PanRequest(offsetX, offsetY);
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     public static void panning(final ReaderDataHolder readerDataHolder, int offsetX, int offsetY) {

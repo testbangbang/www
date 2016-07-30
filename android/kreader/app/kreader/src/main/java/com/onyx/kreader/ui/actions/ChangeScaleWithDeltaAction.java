@@ -43,7 +43,7 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
 
     private void scaleByRect(final ReaderDataHolder readerDataHolder, final RectF rect) {
         final ScaleByRectRequest request = new ScaleByRectRequest(readerDataHolder.getCurrentPageName(), rect);
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
 }

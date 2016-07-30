@@ -91,7 +91,7 @@ public class SelectionScaleAction extends BaseAction {
         final PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getVisiblePages().get(0);
         RectF docRect = ScaleByRectRequest.rectInDocument(pageInfo, rect);
         final ScaleByRectRequest request = new ScaleByRectRequest(readerDataHolder.getCurrentPageName(), docRect);
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
 }

@@ -19,7 +19,11 @@ import java.util.Calendar;
 /**
  * Created by solskjaer49 on 14-4-21.
  */
-public class ReaderStatusBar extends LinearLayout{
+public class ReaderStatusBar extends LinearLayout {
+
+    public static abstract class Callback {
+        public abstract void onGotoPage();
+    }
 
     private StatusBarAlProgressLine mProgressLine;
     private StatusBarTextView progressTextView;
@@ -29,6 +33,9 @@ public class ReaderStatusBar extends LinearLayout{
     private StatusBarNavigatorView mStatusBarNavigatorView;
     private RelativeLayout statusPageButton;
     private boolean is24HourFormat=false;
+
+    private Callback callback;
+
     public ReaderStatusBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         final LayoutInflater inflater = (LayoutInflater)
@@ -54,6 +61,19 @@ public class ReaderStatusBar extends LinearLayout{
         batteryView.setTypeface(Typeface.SERIF);
         timeView.setTypeface(Typeface.SERIF);
         timeView.setText(onTimeChanged());
+
+        progressTextView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null) {
+                    callback.onGotoPage();
+                }
+            }
+        });
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 
     public void updateStatusBar(ReaderStatusInfo info) {

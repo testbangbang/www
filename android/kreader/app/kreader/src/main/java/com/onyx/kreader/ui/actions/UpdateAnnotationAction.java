@@ -26,6 +26,6 @@ public class UpdateAnnotationAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
         annotation.setNote(note);
-        readerDataHolder.submitRequest(new UpdateAnnotationRequest(annotation), baseCallback);
+        readerDataHolder.submitRenderRequest(new UpdateAnnotationRequest(annotation), baseCallback);
     }
 }
