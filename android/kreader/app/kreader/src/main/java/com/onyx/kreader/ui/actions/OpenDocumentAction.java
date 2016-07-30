@@ -1,10 +1,10 @@
 package com.onyx.kreader.ui.actions;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderException;
-import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.dataprovider.request.LoadDocumentOptionsRequest;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -26,6 +26,7 @@ import com.onyx.kreader.ui.events.QuitEvent;
  * 4. restoreWithOptions.
  */
 public class OpenDocumentAction extends BaseAction {
+    private static final String TAG = OpenDocumentAction.class.getSimpleName();
 
     private String documentPath;
     private DialogLoading dialogLoading;
@@ -82,7 +83,7 @@ public class OpenDocumentAction extends BaseAction {
         });
     }
 
-    private void showPasswordDialog(final ReaderDataHolder readerDataHolder) {
+    private void showPasswordDialog(final ReaderDataHolder readerDataHolder,final BaseOptions options) {
         hideLoadingDialog();
         final DialogPassword dlg = new DialogPassword(readerDataHolder.getContext());
         dlg.setOnPasswordEnteredListener(new DialogPassword.OnPasswordEnteredListener() {
@@ -92,8 +93,8 @@ public class OpenDocumentAction extends BaseAction {
                 if (!success) {
                     postQuitEvent(readerDataHolder);
                 } else {
-                    readerDataHolder.getReader().getDocumentOptions().setPassword(password);
-                    openWithOptions(readerDataHolder, readerDataHolder.getReader().getDocumentOptions());
+                    options.setPassword(password);
+                    openWithOptions(readerDataHolder, options);
                 }
             }
         });
@@ -146,7 +147,7 @@ public class OpenDocumentAction extends BaseAction {
         }
         final ReaderException readerException = (ReaderException)e;
         if (readerException.getCode() == ReaderException.PASSWORD_REQUIRED) {
-            showPasswordDialog(holder);
+            showPasswordDialog(holder, options);
             return;
         }
         postQuitEvent(holder);
