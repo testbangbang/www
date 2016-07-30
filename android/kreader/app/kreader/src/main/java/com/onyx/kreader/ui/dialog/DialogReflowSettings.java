@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,7 +35,7 @@ public class DialogReflowSettings extends DialogBase {
     private int[] leftTabCurrentChoice=new int[5];
     private int[] rightTabCurrentChoice=new int[5];
 
-    public DialogReflowSettings(Activity context, ImageReflowSettings s, final ReflowCallback c) {
+    public DialogReflowSettings(Context context, ImageReflowSettings s, final ReflowCallback c) {
         super(context);
         setContentView(R.layout.dialog_reflow_settings);
         setCanceledOnTouchOutside(true);
@@ -56,7 +57,7 @@ public class DialogReflowSettings extends DialogBase {
         dialogReflowControlItems[4] = (DialogReflowControlItem) findViewById(R.id.item4);
     }
 
-    private void initStringSource(Activity context) {
+    private void initStringSource(Context context) {
         leftTabItemName[0] = context.getString(R.string.dialog_reflow_settings_defect_size);
         leftTabItemName[1] = context.getString(R.string.dialog_reflow_settings_page_margins);
         leftTabItemName[2] = context.getString(R.string.dialog_reflow_settings_line_spacing);
@@ -149,7 +150,7 @@ public class DialogReflowSettings extends DialogBase {
         }
     }
 
-    private void updateDensity(Activity context, ImageReflowSettings settings) {
+    private void updateDensity(Context context, ImageReflowSettings settings) {
         if (settings == null) {
             return;
         }
