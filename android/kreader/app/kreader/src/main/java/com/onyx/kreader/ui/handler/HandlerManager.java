@@ -361,16 +361,12 @@ public class HandlerManager {
             return false;
         }
         if (action.equals(ReaderConfig.NEXT_SCREEN)) {
-//            activity.beforePageChangeByUser();
             getActiveProvider().nextScreen(readerDataHolder);
         } else if (action.equals(ReaderConfig.NEXT_PAGE)) {
-//            activity.beforePageChangeByUser();
             getActiveProvider().nextPage(readerDataHolder);
         } else if (action.equals(ReaderConfig.PREV_SCREEN)) {
-//            activity.beforePageChangeByUser();
             getActiveProvider().prevScreen(readerDataHolder);
         } else if (action.equals(ReaderConfig.PREV_PAGE)) {
-//            activity.beforePageChangeByUser();
             getActiveProvider().prevPage(readerDataHolder);
         } else if (action.equals(ReaderConfig.MOVE_LEFT)) {
             //activity.moveLeft();
