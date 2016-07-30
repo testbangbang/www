@@ -31,14 +31,14 @@ import java.util.List;
  * Time: 8:42 PM
  * Basic event handler.
  */
-public class ReaderHandler extends BaseHandler{
+public class ReadingHandler extends BaseHandler{
 
-    private static final String TAG = ReaderHandler.class.getSimpleName();
+    private static final String TAG = ReadingHandler.class.getSimpleName();
 
     private boolean scaling = false;
     private boolean scrolling = false;
 
-    public ReaderHandler(HandlerManager p) {
+    public ReadingHandler(HandlerManager p) {
         super(p);
     }
 
