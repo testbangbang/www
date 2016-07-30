@@ -26,8 +26,6 @@ import com.onyx.kreader.ui.events.QuitEvent;
  * 4. restoreWithOptions.
  */
 public class OpenDocumentAction extends BaseAction {
-    private static final String TAG = OpenDocumentAction.class.getSimpleName();
-
     private String documentPath;
     private DialogLoading dialogLoading;
     private DataProvider dataProvider;
