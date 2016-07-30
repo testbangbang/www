@@ -23,20 +23,21 @@
             android:layout_marginRight="10dp"/>
 
     <TextView
-            android:text="第一编 第2章"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textSize="25sp"
             android:id="@+id/text_view_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     <TextView
+        android:maxLines="3"
         android:gravity="center_vertical"
         android:ellipsize="end"
         android:textSize="18sp"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/text_view_page"
         android:layout_above="@+id/layout_bottom"
-        android:text="魅族之前已经公布了即将在7月19日发布魅族MX6的消息。与此同时，魅族还公布了将会提升魅族MX6售价。而今，有网友曝光了一份据说是来自魅族内部的文件——文件显示魅族MX6与最新的定制皮套套装版售价将定在2299元。"
         android:id="@+id/text_view_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

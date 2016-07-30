@@ -131,6 +131,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void resetMenus() {
+        ShowReaderMenuAction.hideReaderMenu();
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         ShowSearchMenuAction.resetSearchMenu();
         ShowTextSelectionMenuAction.resetSelectionMenu();
