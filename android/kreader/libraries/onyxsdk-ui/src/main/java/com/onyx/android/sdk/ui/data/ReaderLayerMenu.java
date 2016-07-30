@@ -1,8 +1,8 @@
 package com.onyx.android.sdk.ui.data;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
+
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
