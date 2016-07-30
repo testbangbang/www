@@ -19,6 +19,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.*;
 import com.onyx.android.note.receiver.DeviceReceiver;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
@@ -84,6 +85,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NoteApplication.initWithAppConfig(this);
         setContentView(R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
@@ -132,6 +134,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         updateColorIndicator();
         initSurfaceView();
     }
+
+
 
     private void initToolbarButtons() {
         titleTextView = (TextView) findViewById(R.id.note_title);

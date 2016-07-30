@@ -1,8 +1,12 @@
 package com.onyx.android.note;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -22,6 +26,15 @@ public class NoteApplication extends Application {
             noteViewHelper = new NoteViewHelper();
         }
         return noteViewHelper;
+    }
+
+    public static void initWithAppConfig(final Activity activity) {
+        if (!NoteAppConfig.sharedInstance(activity).useFullScreen()) {
+            return;
+        }
+        activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @Override

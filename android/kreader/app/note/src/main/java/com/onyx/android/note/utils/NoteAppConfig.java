@@ -28,8 +28,9 @@ public class NoteAppConfig {
     private GObject backend;
     private static NoteAppConfig globalInstance;
 
-    static public final String HOME_ACTIVITY_PKG_NAME = "home_activity_pkg";
-    static public final String HOME_ACTIVITY_CLS_NAME = "home_activity_cls";
+    public static final String HOME_ACTIVITY_PKG_NAME = "home_activity_pkg";
+    public static final String HOME_ACTIVITY_CLS_NAME = "home_activity_cls";
+    public static final String USE_FULL_SCREEN = "full_screen";
 
     static public final boolean useDebugConfig = false;
 
@@ -52,6 +53,10 @@ public class NoteAppConfig {
             return backend.getString(HOME_ACTIVITY_CLS_NAME);
         }
         return null;
+    }
+
+    public boolean useFullScreen() {
+        return backend.hasKey(USE_FULL_SCREEN) && backend.getBoolean(USE_FULL_SCREEN);
     }
 
     private NoteAppConfig(Context context) {

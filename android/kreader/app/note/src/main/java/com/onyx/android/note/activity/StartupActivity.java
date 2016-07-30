@@ -7,6 +7,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
+import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
@@ -17,6 +20,7 @@ public class StartupActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NoteApplication.initWithAppConfig(this);
         setContentView(R.layout.activity_startup);
         getWindow().getDecorView().setBackgroundColor(Color.WHITE);
         startHomeActivityByDeviceConfig(NoteAppConfig.sharedInstance(this));
