@@ -25,9 +25,8 @@ public class ShowQuickPreviewAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        dialogQuickPreview = new DialogQuickPreview(readerDataHolder,
-                readerDataHolder.getPageCount(), readerDataHolder.getCurrentPage(),
-                readerDataHolder.getReader().getViewportBitmap().getBitmap(), new DialogQuickPreview.Callback() {
+        dialogQuickPreview = new DialogQuickPreview(readerDataHolder, readerDataHolder.getPageCount(),
+                readerDataHolder.getCurrentPage(), new DialogQuickPreview.Callback() {
 
             @Override
             public void requestPreview(final List<Integer> pages, final Size desiredSize) {
