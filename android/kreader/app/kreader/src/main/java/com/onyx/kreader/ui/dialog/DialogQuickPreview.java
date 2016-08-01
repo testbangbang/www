@@ -234,7 +234,7 @@ public class DialogQuickPreview extends Dialog {
     private Callback callback;
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, final int pageCount, final int currentPage,
-                              final Bitmap currentPageBitmap, Callback callback) {
+                              Callback callback) {
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
         setContentView(R.layout.dialog_quick_preview);
 
@@ -245,7 +245,7 @@ public class DialogQuickPreview extends Dialog {
 
         fitDialogToWindow();
         setupLayout();
-        setupContent(pageCount, currentPage, currentPageBitmap);
+        setupContent(pageCount, currentPage);
     }
 
     private void fitDialogToWindow() {
@@ -316,12 +316,11 @@ public class DialogQuickPreview extends Dialog {
         });
     }
 
-    private void setupContent(int pageCount, int currentPage, Bitmap currentPageBitmap) {
+    private void setupContent(int pageCount, int currentPage) {
         paginator = new GPaginator(grid.getRows(), grid.getColumns(), pageCount);
         paginator.gotoPageByIndex(currentPage);
         adapter.setGridType(grid);
         adapter.resetListSize(paginator.itemsInCurrentPage());
-        updatePreview(currentPage, currentPageBitmap);
         if (callback != null) {
             adapter.requestMissingBitmaps();
         }
