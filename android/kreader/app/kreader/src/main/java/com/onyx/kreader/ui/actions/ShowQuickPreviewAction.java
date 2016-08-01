@@ -2,10 +2,12 @@ package com.onyx.kreader.ui.actions;
 
 import android.graphics.Bitmap;
 
+import android.os.PowerManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.Size;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.kreader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
@@ -17,6 +19,7 @@ import java.util.List;
  * Created by joy on 7/15/16.
  */
 public class ShowQuickPreviewAction extends BaseAction {
+    private static final String TAG = ShowQuickPreviewAction.class.getSimpleName();
 
     private DialogQuickPreview dialogQuickPreview;
 
@@ -50,9 +53,15 @@ public class ShowQuickPreviewAction extends BaseAction {
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dialogQuickPreview.updatePreview(current, bitmap.getBitmap());
-                bitmap.recycleBitmap();
-                requestPreviewBySequence(readerDataHolder, pages, desiredSize);
+                PowerManager.WakeLock lock = Device.currentDevice().newWakeLock(readerDataHolder.getContext(), TAG);
+                lock.acquire();
+                try {
+                    dialogQuickPreview.updatePreview(current, bitmap.getBitmap());
+                    bitmap.recycleBitmap();
+                    requestPreviewBySequence(readerDataHolder, pages, desiredSize);
+                } finally {
+                    lock.release();
+                }
             }
         });
     }

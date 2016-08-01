@@ -1,9 +1,11 @@
 package com.onyx.kreader.host.request;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageUtils;
+import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -23,6 +25,7 @@ public class ScaleByRectRequest extends BaseReaderRequest {
         setSaveOptions(true);
         useRenderBitmap(reader);
         reader.getReaderLayoutManager().setSavePosition(true);
+        reader.getReaderLayoutManager().setCurrentLayout(PageConstants.SINGLE_PAGE, new NavigationArgs());
         reader.getReaderLayoutManager().scaleByRect(pageName, childInDocument);
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
