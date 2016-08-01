@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
+import com.onyx.android.sdk.device.Device;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,8 +71,7 @@ public class RequestManager {
     public void acquireWakeLock(Context context) {
         try {
             if (wakeLock == null) {
-                PowerManager powerManager = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
-                wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Reader: ");
+                wakeLock = Device.currentDevice().newWakeLock(context, "Reader: ");
             }
             wakeLock.acquire();
             ++wakeLockCounting;
