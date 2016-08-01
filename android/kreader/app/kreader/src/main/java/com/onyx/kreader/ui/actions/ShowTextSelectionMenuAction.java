@@ -57,7 +57,8 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
                 @Override
                 public String getSelectionText() {
-                    return readerDataHolder.getReaderUserDataInfo().getHighlightResult().getText();
+                    ReaderSelection readerSelection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
+                    return readerSelection != null ? readerSelection.getText() : "";
                 }
 
                 @Override
