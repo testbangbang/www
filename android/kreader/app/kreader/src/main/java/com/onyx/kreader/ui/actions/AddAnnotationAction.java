@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.AddAnnotationRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -27,10 +28,18 @@ public class AddAnnotationAction extends BaseAction {
         this.locationEnd = locationEnd;
         this.quote = quote;
         this.note = note;
+        this.rects = translateToDocument(rects);
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.submitRenderRequest(new AddAnnotationRequest(pageInfo, locationBegin, locationEnd, rects, quote, note));
+    }
+
+    private List<RectF> translateToDocument(List<RectF> rects) {
+        for (RectF rect : rects) {
+            PageUtils.translateToDocument(pageInfo, rect);
+        }
+        return rects;
     }
 }
