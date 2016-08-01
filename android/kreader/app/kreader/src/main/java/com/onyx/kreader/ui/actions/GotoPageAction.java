@@ -22,6 +22,6 @@ public class GotoPageAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
         BaseReaderRequest gotoPosition = new GotoLocationRequest(pageName);
-        readerDataHolder.submitRequest(gotoPosition, baseCallback);
+        readerDataHolder.submitRenderRequest(gotoPosition, baseCallback);
     }
 }

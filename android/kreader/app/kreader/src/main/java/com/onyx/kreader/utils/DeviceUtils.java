@@ -1,6 +1,7 @@
 package com.onyx.kreader.utils;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
@@ -37,9 +38,8 @@ public class DeviceUtils {
         return uuid.toString();
     }
 
-    public static float getDensity(Activity activity) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    public static float getDensity(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return displayMetrics.density * 160;
     }
 

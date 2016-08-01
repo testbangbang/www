@@ -1,7 +1,5 @@
 package com.onyx.kreader.ui.actions;
 
-import android.app.Activity;
-
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -21,17 +19,16 @@ public class ImageReflowAction extends BaseAction {
     }
 
     private void showReflowSettingsDialog(final ReaderDataHolder readerDataHolder) {
-        Activity activity = (Activity) readerDataHolder.getContext();
         if (reflowSettingsDialog == null) {
             ImageReflowSettings settings = readerDataHolder.getReader().getImageReflowSettings();
             settings.dev_width = readerDataHolder.getDisplayWidth();
             settings.dev_height = readerDataHolder.getDisplayHeight();
-            reflowSettingsDialog = new DialogReflowSettings(activity, settings, new DialogReflowSettings.ReflowCallback() {
+            reflowSettingsDialog = new DialogReflowSettings(readerDataHolder.getContext(), settings, new DialogReflowSettings.ReflowCallback() {
                 @Override
                 public void onFinished(boolean confirm, ImageReflowSettings settings) {
                     if (confirm && settings != null) {
                         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
-                        readerDataHolder.submitRequest(request);
+                        readerDataHolder.submitRenderRequest(request);
                     }
                     hideReflowSettingsDialog();
                 }

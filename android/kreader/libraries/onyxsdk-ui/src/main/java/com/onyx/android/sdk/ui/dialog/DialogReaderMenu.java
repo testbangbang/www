@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +24,13 @@ import java.net.URI;
  */
 public class DialogReaderMenu extends Dialog {
 
-    private Activity activity;
+    private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;
     private ReaderLayerMenuLayout menuLayout;
 
-    public DialogReaderMenu(Activity activity, ReaderMenu.ReaderMenuCallback menuCallback) {
-        super(activity, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-        this.activity = activity;
+    public DialogReaderMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
+        super(context, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        this.context = context;
         readerMenuCallback = menuCallback;
 
         setContentView(R.layout.dialog_reader_menu);

@@ -67,6 +67,8 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodSetPainterStyle = null;
     private static Method sMethodLineTo = null;
     private static Method sMethodQuadTo = null;
+    private static Method sMethodGetTouchWidth = null;
+    private static Method sMethodGetTouchHeight = null;
     private static Method sMethodEnablePost = null;
     private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
@@ -364,6 +366,26 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public float getTouchWidth() {
+        try {
+            Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetTouchWidth, null);
+            return value.floatValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public float getTouchHeight() {
+        try {
+            Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetTouchHeight, null);
+            return value.floatValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
         try {
             Float value = (Float) ReflectUtil.invokeMethodSafely(sMethodStartStroke, null, baseWidth, x, y, pressure, size, time);
@@ -528,6 +550,8 @@ public class IMX6Device extends BaseDevice {
             sMethodMoveTo = ReflectUtil.getMethodSafely(cls, "moveTo", float.class, float.class, float.class);
             sMethodLineTo = ReflectUtil.getMethodSafely(cls, "lineTo", float.class, float.class, int.class);
             sMethodQuadTo = ReflectUtil.getMethodSafely(cls, "quadTo", float.class, float.class, int.class);
+            sMethodGetTouchWidth = ReflectUtil.getMethodSafely(cls, "getTouchWidth");
+            sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int.class, int.class, int.class, int.class);

@@ -113,7 +113,7 @@ public class PinchZoomAction extends BaseAction {
         ReaderDeviceManager.exitAnimationUpdate(false);
         float newScale = pageInfo.getActualScale() * deltaScale;
         final ScaleRequest scaleRequest = new ScaleRequest(pageInfo.getName(), newScale, left, top);
-        readerDataHolder.submitRequest(scaleRequest);
+        readerDataHolder.submitRenderRequest(scaleRequest);
     }
 
     static private float filterScale(float currentScale, float targetScale, Matrix matrix) {

@@ -1,7 +1,8 @@
 package com.onyx.android.sdk.ui.data;
 
-import android.app.Activity;
+import android.content.Context;
 import android.view.View;
+
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ReaderLayerMenu extends ReaderMenu {
     public static final String TAG = ReaderLayerMenu.class.getSimpleName();
 
-    private Activity activity;
+    private Context context;
     private DialogReaderMenu dialog;
     private ReaderLayerMenuState state;
     private List<ReaderLayerMenuItem> menuItems;
@@ -40,8 +41,8 @@ public class ReaderLayerMenu extends ReaderMenu {
         }
     };
 
-    public ReaderLayerMenu(Activity activity) {
-        this.activity = activity;
+    public ReaderLayerMenu(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -70,17 +71,17 @@ public class ReaderLayerMenu extends ReaderMenu {
 
     private DialogReaderMenu getDialog() {
         if (dialog == null) {
-            dialog = new DialogReaderMenu(activity, readerMenuCallback);
+            dialog = new DialogReaderMenu(context, readerMenuCallback);
         }
         return dialog;
     }
 
     private View createMainMenuContainerView(List<ReaderLayerMenuItem> items, ReaderLayerMenuState state) {
-        return ReaderLayerMenuViewFactory.createMainMenuContainerView(activity, items, state, readerMenuCallback);
+        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback);
     }
 
     private View createSubMenuContainerView(ReaderLayerMenuItem parent, List<ReaderLayerMenuItem> items, ReaderLayerMenuState state) {
-        return ReaderLayerMenuViewFactory.createSubMenuContainerView(activity, parent, items, state, readerMenuCallback);
+        return ReaderLayerMenuViewFactory.createSubMenuContainerView(context, parent, items, state, readerMenuCallback);
     }
 
     private void handleMenuItemClicked(ReaderMenuItem item) {

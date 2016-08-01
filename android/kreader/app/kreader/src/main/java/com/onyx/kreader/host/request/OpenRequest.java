@@ -1,11 +1,9 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.api.ReaderDocument;
-import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -25,7 +23,7 @@ public class OpenRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        setSaveOptions(false);
+        setSaveOptions(true);
         final ReaderDocumentOptionsImpl documentOptions = srcOptions.documentOptions();
         final ReaderPluginOptions pluginOptions = srcOptions.pluginOptions();
 

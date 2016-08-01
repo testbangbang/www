@@ -1,9 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
-import android.content.ActivityNotFoundException;
-import android.content.ClipboardManager;
-import android.content.ComponentName;
-import android.content.Intent;
+import android.content.*;
 import android.widget.RelativeLayout;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageInfo;
@@ -137,8 +134,8 @@ public class ShowTextSelectionMenuAction extends BaseAction {
         }
     }
 
-    private void copyText(final ReaderActivity readerActivity, final String text) {
-        ClipboardManager clipboard = (ClipboardManager) readerActivity.getSystemService(CLIPBOARD_SERVICE);
+    private void copyText(final Context context, final String text) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
         if (clipboard != null) {
             clipboard.setText(text);
         }

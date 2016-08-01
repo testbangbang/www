@@ -1,0 +1,5 @@
+{
+  "home_activity_pkg": "com.onyx.android.note",
+  "home_activity_cls": ".activity.ManageActivity",
+  "full_screen" : 1
+}

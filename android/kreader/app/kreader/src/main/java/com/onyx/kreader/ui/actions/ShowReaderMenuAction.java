@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -59,7 +58,7 @@ public class ShowReaderMenuAction extends BaseAction {
         showReaderMenu(readerDataHolder);
     }
 
-    public static void resetReaderMenu(final ReaderActivity readerActivity) {
+    public static void resetReaderMenu(final ReaderDataHolder readerDataHolder) {
         readerMenu = null;
     }
 
@@ -68,14 +67,12 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     public static void hideReaderMenu() {
-//        readerActivity.hideToolbar();
         if (isReaderMenuShown()) {
             readerMenu.hide();
         }
     }
 
     private void showReaderMenu(final ReaderDataHolder readerDataHolder) {
-//        readerActivity.showToolbar();
         ReaderLayerMenuState state = new ReaderLayerMenuState();
         updateReaderMenuState(readerDataHolder, state);
         state.setTitle(FileUtils.getFileName(readerDataHolder.getReader().getDocumentPath()));
@@ -96,7 +93,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
-        readerMenu = new ReaderLayerMenu(readerActivity);
+        readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());
         updateReaderMenuCallback(readerMenu, readerDataHolder);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
         readerMenu.fillItems(items);
@@ -223,10 +220,10 @@ public class ShowReaderMenuAction extends BaseAction {
                         gotoPage(readerDataHolder);
                         break;
                     case "/SetScreenRefreshRate":
-                        showScreenRefreshDialog(readerActivity);
+                        showScreenRefreshDialog(readerDataHolder);
                         break;
                     case "/StartDictApp":
-                        startDictionaryApp(readerActivity);
+                        startDictionaryApp(readerDataHolder);
                         break;
                     case "/Search":
                         showSearchDialog(readerDataHolder);
@@ -251,7 +248,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
-        final ChangeOrientationAction action = new ChangeOrientationAction(rotationOperation);
+        final ChangeOrientationAction action = new ChangeOrientationAction(readerActivity.getRequestedOrientation(), rotationOperation);
         action.execute(readerDataHolder);
     }
 
@@ -267,17 +264,17 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void scaleByValue(final ReaderDataHolder readerDataHolder, float scale) {
         final ScaleRequest request = new ScaleRequest(readerDataHolder.getCurrentPageName(), scale, readerDataHolder.getDisplayWidth() / 2, readerDataHolder.getDisplayHeight() / 2);
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void scaleToPage(final ReaderDataHolder readerDataHolder) {
         final ScaleToPageRequest request = new ScaleToPageRequest(readerDataHolder.getCurrentPageName());
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void scaleToWidth(final ReaderDataHolder readerDataHolder) {
         final ScaleToWidthRequest request = new ScaleToWidthRequest(readerDataHolder.getCurrentPageName());
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void scaleByRect(final ReaderDataHolder readerDataHolder) {
@@ -306,12 +303,12 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void switchPageNavigationMode(final ReaderDataHolder readerDataHolder, NavigationArgs args) {
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void resetNavigationMode(final ReaderDataHolder readerDataHolder) {
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE, new NavigationArgs());
-        readerDataHolder.submitRequest(request);
+        readerDataHolder.submitRenderRequest(request);
     }
 
     private void showNavigationSettingsDialog(ReaderDataHolder readerDataHolder) {
@@ -342,7 +339,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void ttsPlay(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
-        readerDataHolder.submitRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
+        readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 readerDataHolder.getTtsManager().play();
@@ -361,7 +358,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {
         // get current page and start rendering.
-        readerActivity.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         ReaderDeviceManager.startScreenHandWriting(readerActivity.getSurfaceView());
     }
 
@@ -370,29 +367,29 @@ public class ShowReaderMenuAction extends BaseAction {
         new ShowQuickPreviewAction().execute(readerDataHolder);
     }
 
-    private void showScreenRefreshDialog(final ReaderActivity readerActivity) {
+    private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
         DialogScreenRefresh dlg = new DialogScreenRefresh();
         dlg.setListener(new DialogScreenRefresh.onScreenRefreshChangedListener() {
             @Override
             public void onRefreshIntervalChanged(int oldValue, int newValue) {
-                LegacySdkDataUtils.setScreenUpdateGCInterval(readerActivity, newValue);
+                LegacySdkDataUtils.setScreenUpdateGCInterval(readerDataHolder.getContext(), newValue);
                 ReaderDeviceManager.setGcInterval(newValue);
             }
         });
         dlg.show(readerActivity.getFragmentManager());
     }
 
-    private boolean startDictionaryApp(final ReaderActivity readerActivity) {
-        OnyxDictionaryInfo info = LegacySdkDataUtils.getDictionary(readerActivity);
+    private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
+        OnyxDictionaryInfo info = LegacySdkDataUtils.getDictionary(readerDataHolder.getContext());
         if (info == null) {
-            Toast.makeText(readerActivity, R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
+            Toast.makeText(readerDataHolder.getContext(), R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
             return false;
         }
         Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
         try {
-            readerActivity.startActivity(intent);
+            readerDataHolder.getContext().startActivity(intent);
         } catch ( ActivityNotFoundException e ) {
-            Toast.makeText(readerActivity, R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
+            Toast.makeText(readerDataHolder.getContext(), R.string.did_not_find_the_dictionary, Toast.LENGTH_LONG).show();
             return false;
         }
         return true;

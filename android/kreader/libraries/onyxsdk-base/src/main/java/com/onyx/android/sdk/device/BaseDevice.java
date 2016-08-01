@@ -71,6 +71,14 @@ public class BaseDevice {
     public void enableTpd(boolean enable) {
     }
 
+    public float getTouchWidth() {
+        return 0;
+    }
+
+    public float getTouchHeight() {
+        return 0;
+    }
+
     public int getFrontLightBrightnessMinimum(Context context) {
         return 0;
     }

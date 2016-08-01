@@ -25,6 +25,7 @@ import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -95,6 +96,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NoteApplication.initWithAppConfig(this);
         setContentView(R.layout.activity_manager);
         initView();
         initNoteViewHelper();

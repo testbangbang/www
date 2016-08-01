@@ -23,8 +23,15 @@ import java.util.Map;
  * @author dxw
  *
  */
-public class RawResourceUtil
-{
+public class RawResourceUtil {
+
+    static public int getResourceIdByName(Context context, final String resourceType, final String resourceName) {
+        if (StringUtils.isNotBlank(resourceName)) {
+            String packageName = context.getPackageName();
+            return context.getResources().getIdentifier(resourceName, resourceType, packageName);
+        }
+        return 0;
+    }
    
     public static String contentOfRawResource(Context context, int rawResourceId) {
         BufferedReader breader = null;

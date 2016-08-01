@@ -52,7 +52,7 @@ public class HandlerManager {
     }
 
     private void initProviderMap(final Context context) {
-        providerMap.put(BASE_PROVIDER, new ReaderHandler(this));
+        providerMap.put(BASE_PROVIDER, new ReadingHandler(this));
         providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, readerDataHolder.getContext()));
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
@@ -288,7 +288,7 @@ public class HandlerManager {
         if (!isEnableTouch()) {
             return;
         }
-        if (getActiveProvider() instanceof ReaderHandler){
+        if (getActiveProvider() instanceof ReadingHandler){
             setActiveProvider(HandlerManager.WORD_SELECTION_PROVIDER);
         }
         getActiveProvider().onLongPress(readerDataHolder, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
@@ -361,16 +361,12 @@ public class HandlerManager {
             return false;
         }
         if (action.equals(ReaderConfig.NEXT_SCREEN)) {
-//            activity.beforePageChangeByUser();
             getActiveProvider().nextScreen(readerDataHolder);
         } else if (action.equals(ReaderConfig.NEXT_PAGE)) {
-//            activity.beforePageChangeByUser();
             getActiveProvider().nextPage(readerDataHolder);
         } else if (action.equals(ReaderConfig.PREV_SCREEN)) {
-//            activity.beforePageChangeByUser();
             getActiveProvider().prevScreen(readerDataHolder);
         } else if (action.equals(ReaderConfig.PREV_PAGE)) {
-//            activity.beforePageChangeByUser();
             getActiveProvider().prevPage(readerDataHolder);
         } else if (action.equals(ReaderConfig.MOVE_LEFT)) {
             //activity.moveLeft();

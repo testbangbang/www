@@ -14,7 +14,7 @@ public class ForwardAction extends BaseAction {
         }
 
         final ForwardRequest forwardRequest = new ForwardRequest();
-        readerDataHolder.submitRequest(forwardRequest);
+        readerDataHolder.submitRenderRequest(forwardRequest);
     }
 
 }

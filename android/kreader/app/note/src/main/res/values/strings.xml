@@ -25,4 +25,8 @@
     <string name="rename">Rename</string>
     <string name="noti">Notification</string>
     <string name="note_name_already_exist">Note Name Already Exist.</string>
+    <string name="title_activity_startup">StartupActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

@@ -51,13 +51,13 @@ public class ReaderTtsManager {
             @Override
             public void onStopped() {
                 callback.onStateChanged();
-                readerDataHolder.submitRequest(new RenderRequest());
+                readerDataHolder.submitRenderRequest(new RenderRequest());
             }
 
             @Override
             public void onError() {
                 callback.onStateChanged();
-                readerDataHolder.submitRequest(new RenderRequest());
+                readerDataHolder.submitRenderRequest(new RenderRequest());
             }
         });
     }
@@ -124,26 +124,26 @@ public class ReaderTtsManager {
 
         String startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
         final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerDataHolder.getCurrentPage(), startPosition);
-        readerDataHolder.submitRequest(sentenceRequest, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        if (e != null) {
-                            Log.w(TAG, e);
-                            return;
-                        }
-                        currentSentence = sentenceRequest.getSentenceResult();
-                        if (currentSentence == null) {
-                            Log.w(TAG, "get sentence failed");
-                            return;
-                        }
-                        dumpCurrentSentence();
-                        if (StringUtils.isNullOrEmpty(currentSentence.getReaderSelection().getText())) {
-                            requestSentenceForTts();
-                            return;
-                        }
-                        ttsService.startTts(currentSentence.getReaderSelection().getText());
-                    }
-                });
+        readerDataHolder.submitRenderRequest(sentenceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    Log.w(TAG, e);
+                    return;
+                }
+                currentSentence = sentenceRequest.getSentenceResult();
+                if (currentSentence == null) {
+                    Log.w(TAG, "get sentence failed");
+                    return;
+                }
+                dumpCurrentSentence();
+                if (StringUtils.isNullOrEmpty(currentSentence.getReaderSelection().getText())) {
+                    requestSentenceForTts();
+                    return;
+                }
+                ttsService.startTts(currentSentence.getReaderSelection().getText());
+            }
+        });
         return true;
     }
 

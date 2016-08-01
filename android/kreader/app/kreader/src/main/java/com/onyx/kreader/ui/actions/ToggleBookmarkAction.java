@@ -24,10 +24,10 @@ public class ToggleBookmarkAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
         if (toggleSwitch == ToggleSwitch.On) {
-            readerDataHolder.submitRequest(new AddBookmarkRequest(pageInfo));
+            readerDataHolder.submitRenderRequest(new AddBookmarkRequest(pageInfo));
         } else if (toggleSwitch == ToggleSwitch.Off) {
             Bookmark bookmark = readerDataHolder.getReaderUserDataInfo().getBookmark(pageInfo);
-            readerDataHolder.submitRequest(new DeleteBookmarkRequest(bookmark));
+            readerDataHolder.submitRenderRequest(new DeleteBookmarkRequest(bookmark));
         }
     }
 }
