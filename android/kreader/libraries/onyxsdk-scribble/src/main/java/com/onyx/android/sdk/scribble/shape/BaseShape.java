@@ -72,6 +72,10 @@ public class BaseShape implements Shape {
     public void setZOrder(int order) {
     }
 
+    public boolean addMovePoint() {
+        return true;
+    }
+
     public int getColor() {
         return color;
     }
@@ -131,6 +135,9 @@ public class BaseShape implements Shape {
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
+        if (addMovePoint()) {
+            normalizedPoints.add(normalizedPoint);
+        }
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {

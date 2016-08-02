@@ -13,6 +13,7 @@ public class ShapeDataInfo {
     private boolean canUndoShape;
     private boolean canRedoShape;
     private boolean inUserErasing;
+    private String documentUniqueId;
     private NoteDrawingArgs drawingArgs = new NoteDrawingArgs();
 
 
@@ -99,6 +100,14 @@ public class ShapeDataInfo {
 
     public void setCurrentShapeType(int currentShape) {
         drawingArgs.currentShapeType = currentShape;
+    }
+
+    public String getDocumentUniqueId() {
+        return documentUniqueId;
+    }
+
+    public void setDocumentUniqueId(String documentUniqueId) {
+        this.documentUniqueId = documentUniqueId;
     }
 
     public NoteDrawingArgs getDrawingArgs() {

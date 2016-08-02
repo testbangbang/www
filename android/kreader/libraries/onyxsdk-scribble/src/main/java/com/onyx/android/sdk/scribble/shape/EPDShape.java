@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.shape;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.util.Log;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -12,7 +13,9 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
  */
 public class EPDShape extends BaseShape {
 
-    static public final UpdateMode updateMode = UpdateMode.DU;
+
+    private static final String TAG = EPDShape.class.getSimpleName();
+    public static final UpdateMode updateMode = UpdateMode.DU;
 
     /**
      * rectangle, circle, etc.

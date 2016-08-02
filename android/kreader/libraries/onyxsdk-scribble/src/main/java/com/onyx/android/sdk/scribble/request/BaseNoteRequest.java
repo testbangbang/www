@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.hanvon.core.HWColorPaint;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
@@ -39,6 +40,8 @@ public class BaseNoteRequest extends BaseRequest {
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = false;
     private volatile boolean render = true;
+    private int [] renderingBuffer = null;
+    private boolean useExternal = false;
 
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;
@@ -142,7 +145,7 @@ public class BaseNoteRequest extends BaseRequest {
                         helper.copyBitmap();
                     }
                 }
-                helper.enableScreenPost();
+                helper.enableScreenPost(true);
                 if (getCallback() != null) {
                     getCallback().done(BaseNoteRequest.this, getException());
                 }
@@ -171,23 +174,44 @@ public class BaseNoteRequest extends BaseRequest {
             Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
             bitmap.eraseColor(Color.WHITE);
             Canvas canvas = new Canvas(bitmap);
-            Paint paint = new Paint();
-            paint.setColor(Color.BLACK);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setAntiAlias(true);
-            paint.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
+            Paint paint = preparePaint(parent);
 
             drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
-            final Matrix renderMatrix = new Matrix();
+            prepareRenderingBuffer(bitmap);
 
+            final Matrix renderMatrix = new Matrix();
             for (PageInfo page : getVisiblePages()) {
                 final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
                 notePage.render(canvas, paint, renderMatrix, null);
             }
-
-            // draw test path.
+            flushRenderingBuffer(bitmap);
             drawRandomTestPath(canvas, paint);
         }
+    }
+
+    private Paint preparePaint(final NoteViewHelper parent) {
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
+        return paint;
+    }
+
+    private void prepareRenderingBuffer(final Bitmap bitmap) {
+        if (!useExternal) {
+            return;
+        }
+        renderingBuffer = new int[bitmap.getWidth() * bitmap.getHeight()];
+        bitmap.getPixels(renderingBuffer, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        HWColorPaint.initializeEx(bitmap.getWidth(), bitmap.getHeight(), renderingBuffer);
+    }
+
+    private void flushRenderingBuffer(final Bitmap bitmap) {
+        if (!useExternal) {
+            return;
+        }
+        bitmap.setPixels(renderingBuffer, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
 
     private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {
