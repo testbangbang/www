@@ -23,6 +23,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
@@ -379,22 +381,21 @@ public class ReaderActivity extends ActionBarActivity {
     private void renderShapeDataInBackground() {
         if (true || getReaderDataHolder().hasShapes()) {
             return;
-        }/*
+        }
         final PageListRenderRequest loadRequest = new PageListRenderRequest(
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 getReaderDataHolder().getReaderViewInfo().getVisiblePages(),
                 getReaderDataHolder().getDisplayRect());
-        getNoteViewHelper().submit(this, loadRequest, new BaseCallback() {
+        getReaderDataHolder().getNoteViewHelper().submit(this, loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || request.isAbort()) {
                     return;
                 }
                 getReaderDataHolder().saveShapeDataInfo(loadRequest);
-                drawPage(reader.getViewportBitmap().getBitmap());
+                onRequestFinished(null);
             }
         });
-        */
     }
 
     public SurfaceHolder getHolder() {
