@@ -117,9 +117,6 @@ public class ReaderHelper {
         getDocumentOptions().setPassword(options.getPassword());
         saveMetadata(context, documentPath);
         saveThumbnail(context, documentPath);
-
-        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(context,
-                DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
     }
 
     private void saveMetadata(final Context context, final String path) {

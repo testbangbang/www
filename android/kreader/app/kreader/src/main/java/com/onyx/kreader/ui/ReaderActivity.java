@@ -24,12 +24,14 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.BackwardAction;
@@ -43,6 +45,7 @@ import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
@@ -262,10 +265,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
-        updateStatusBar();
-
-        //ReaderDeviceManager.applyGCInvalidate(surfaceView);
+        ReaderDeviceManager.applyWithGCInterval(surfaceView);
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        updateStatusBar();
         renderShapeDataInBackground();
     }
 
@@ -326,6 +328,8 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onDocumentOpened(final DocumentOpenEvent event) {
         documentPath = event.getPath();
+        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this,
+                DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
     }
 
     @Subscribe
@@ -344,7 +348,6 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawPage(final Bitmap pageBitmap) {
-        ReaderDeviceManager.applyWithGCInterval(surfaceView);
         Canvas canvas = holder.lockCanvas();
         if (canvas == null) {
             return;
@@ -376,10 +379,11 @@ public class ReaderActivity extends ActionBarActivity {
     private void renderShapeDataInBackground() {
         if (true || getReaderDataHolder().hasShapes()) {
             return;
-        }
-
-        /*
-        final PageListRenderRequest loadRequest = new PageListRenderRequest(reader.getDocumentMd5(), getReaderDataHolder().getReaderViewInfo().getVisiblePages(), getReaderDataHolder().getDisplayRect());
+        }/*
+        final PageListRenderRequest loadRequest = new PageListRenderRequest(
+                getReaderDataHolder().getReader().getDocumentMd5(),
+                getReaderDataHolder().getReaderViewInfo().getVisiblePages(),
+                getReaderDataHolder().getDisplayRect());
         getNoteViewHelper().submit(this, loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
