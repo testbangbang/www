@@ -12,6 +12,6 @@ public class GetAnnotationRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        getReaderUserDataInfo().loadAnnotations(getContext(), reader);
+        getReaderUserDataInfo().loadDocumentAnnotations(getContext(), reader);
     }
 }

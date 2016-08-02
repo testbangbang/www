@@ -9,17 +9,13 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class GetTableOfContentRequest extends BaseReaderRequest {
 
-    private ReaderDocumentTableOfContent toc = new ReaderDocumentTableOfContent();
-
     public GetTableOfContentRequest() {
     }
 
     public void execute(final Reader reader) throws Exception {
         createReaderViewInfo();
-        if (reader.getDocument().readTableOfContent(toc)) {
-            getReaderUserDataInfo().setTableOfContent(toc);
-        }
-        getReaderUserDataInfo().loadAnnotations(getContext(), reader);
-        getReaderUserDataInfo().loadBookmarks(getContext(), reader);
+        getReaderUserDataInfo().loadDocumentTableOfContent(getContext(), reader);
+        getReaderUserDataInfo().loadDocumentAnnotations(getContext(), reader);
+        getReaderUserDataInfo().loadDocumentBookmarks(getContext(), reader);
     }
 }

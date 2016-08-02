@@ -30,8 +30,8 @@ public class ReaderUserDataInfo {
     private Map<String, List<Annotation>> annotationMap = new HashMap<>();
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
 
-    public void saveDocumentPath(final String path) {
-        Debug.d("saveDocumentPath: " + path);
+    public void setDocumentPath(final String path) {
+        Debug.d("setDocumentPath: " + path);
         documentPath = path;
     }
 
@@ -86,7 +86,12 @@ public class ReaderUserDataInfo {
         return list;
     }
 
-    public boolean loadAnnotations(final Context context, final Reader reader) {
+    public boolean loadDocumentTableOfContent(final Context context, final Reader reader) {
+        toc = new ReaderDocumentTableOfContent();
+        return reader.getDocument().readTableOfContent(toc);
+    }
+
+    public boolean loadDocumentAnnotations(final Context context, final Reader reader) {
         final List<Annotation> annotations = AnnotationProvider.loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5());
         if (annotations != null && annotations.size() > 0) {
             for (Annotation annotation : annotations) {
@@ -123,7 +128,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean hasBookmark(final PageInfo pageInfo) {
-        return bookmarkMap.get(pageInfo.getName()) != null;
+        return bookmarkMap.containsKey(pageInfo.getName());
     }
 
     public Bookmark getBookmark(final PageInfo pageInfo) {
@@ -144,7 +149,7 @@ public class ReaderUserDataInfo {
         return true;
     }
 
-    public boolean loadBookmarks(final Context context, final Reader reader) {
+    public boolean loadDocumentBookmarks(final Context context, final Reader reader) {
         List<Bookmark> bookmarks = BookmarkProvider.loadBookmarks(reader.getPlugin().displayName(), reader.getDocumentMd5());
         if (bookmarks != null) {
             for (Bookmark bookmark : bookmarks) {

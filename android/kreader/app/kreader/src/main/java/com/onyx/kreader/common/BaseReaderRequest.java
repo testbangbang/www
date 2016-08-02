@@ -14,8 +14,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     private static final String TAG = BaseReaderRequest.class.getSimpleName();
     private volatile boolean saveOptions = false;
-    private volatile boolean loadAnnotationData = true;
-    private volatile boolean loadBookmarkData = true;
 
     private ReaderBitmapImpl renderBitmap;
     private ReaderViewInfo readerViewInfo;
@@ -39,22 +37,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     public boolean isSaveOptions() {
         return saveOptions;
-    }
-
-    public boolean isLoadAnnotationData() {
-        return loadAnnotationData;
-    }
-
-    public void setLoadAnnotationData(boolean load) {
-        loadAnnotationData = load;
-    }
-
-    public boolean isLoadBookmarkData() {
-        return loadBookmarkData;
-    }
-
-    public void setLoadBookmarkData(boolean load) {
-        loadBookmarkData = load;
     }
 
     public ReaderBitmapImpl getRenderBitmap() {
@@ -174,11 +156,11 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     private void loadUserData(final Reader reader) {
-        getReaderUserDataInfo().saveDocumentPath(reader.getDocumentPath());
-        if (isLoadAnnotationData() && readerViewInfo != null) {
+        getReaderUserDataInfo().setDocumentPath(reader.getDocumentPath());
+        if (readerViewInfo != null) {
             getReaderUserDataInfo().loadPageAnnotations(getContext(), reader, readerViewInfo.getVisiblePages());
         }
-        if (isLoadBookmarkData() && readerViewInfo != null) {
+        if (readerViewInfo != null) {
             getReaderUserDataInfo().loadBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
         }
     }
