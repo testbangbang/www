@@ -102,6 +102,8 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 removeGlobalOnLayoutListener(this);
+                getReaderDataHolder().setDisplayHeight(surfaceView.getHeight());
+                getReaderDataHolder().setDisplayWidth(surfaceView.getWidth());
                 new ChangeViewConfigAction().execute(getReaderDataHolder());
             }
         });
