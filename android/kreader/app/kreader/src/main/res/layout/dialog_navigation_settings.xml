@@ -56,10 +56,10 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/title"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_navigation_settings_crop_page" />
+                    android:src="@drawable/ic_dialog_reader_browse_cut" />
 
                 <TextView
-                    android:text="@string/trim"
+                    android:text="@string/crop"
                     android:textSize="12sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -89,25 +89,29 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <RelativeLayout
                 android:orientation="vertical"
                 android:layout_width="@dimen/dialog_navigation_setting_left_item_width"
-                android:gravity="center"
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:layout_centerInParent="true"
+                    android:id="@+id/image_view_column"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/title"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_navigation_settings_subscreen" />
+                    android:src="@drawable/ic_dialog_reader_browse_subfield" />
 
                 <TextView
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:layout_below="@+id/image_view_column"
                     android:text="@string/column"
                     android:textSize="10sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-            </LinearLayout>
+            </RelativeLayout>
 
             <View
                 android:layout_marginTop="@dimen/dialog_navigation_setting_item_margin"
