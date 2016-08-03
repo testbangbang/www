@@ -114,6 +114,10 @@ public class ReaderLayoutManager {
             return false;
         }
 
+        if (currentProvider.equals(layoutName)) {
+            return true;
+        }
+
         // before change layout, record current position.
         String pagePosition = getCurrentPageName();
 
