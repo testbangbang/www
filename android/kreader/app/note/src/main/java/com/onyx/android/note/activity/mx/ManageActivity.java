@@ -1,4 +1,4 @@
-package com.onyx.android.note.activity;
+package com.onyx.android.note.activity.mx;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +21,7 @@ import com.onyx.android.note.actions.manager.NoteLibraryRemoveAction;
 import com.onyx.android.note.actions.manager.NoteLoadMovableLibraryAction;
 import com.onyx.android.note.actions.manager.NoteMoveAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
+import com.onyx.android.note.activity.BaseManagerActivity;
 import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogMoveFolder;

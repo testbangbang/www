@@ -2,7 +2,7 @@ package com.onyx.android.note.actions.scribble;
 
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.BaseNoteAction;
-import com.onyx.android.note.activity.ScribbleActivity;
+import com.onyx.android.note.activity.mx.ScribbleActivity;
 import com.onyx.android.note.dialog.DialogLoading;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;

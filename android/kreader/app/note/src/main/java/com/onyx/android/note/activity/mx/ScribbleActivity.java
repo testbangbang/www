@@ -1,4 +1,4 @@
-package com.onyx.android.note.activity;
+package com.onyx.android.note.activity.mx;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,8 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,6 +28,7 @@ import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
 import com.onyx.android.note.actions.scribble.UndoAction;
+import com.onyx.android.note.activity.BaseScribbleActivity;
 import com.onyx.android.note.receiver.DeviceReceiver;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
@@ -57,8 +56,6 @@ import com.onyx.android.sdk.ui.view.ContentView;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-
-import static android.R.attr.action;
 
 
 /**
