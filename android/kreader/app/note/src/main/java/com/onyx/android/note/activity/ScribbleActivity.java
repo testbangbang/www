@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,9 +17,20 @@ import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
-import com.onyx.android.note.actions.*;
+import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
+import com.onyx.android.note.actions.scribble.DocumentAddNewPageAction;
+import com.onyx.android.note.actions.scribble.DocumentCloseAction;
+import com.onyx.android.note.actions.scribble.DocumentCreateAction;
+import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
+import com.onyx.android.note.actions.scribble.DocumentEditAction;
+import com.onyx.android.note.actions.scribble.DocumentFlushAction;
+import com.onyx.android.note.actions.scribble.GotoNextPageAction;
+import com.onyx.android.note.actions.scribble.GotoPrevPageAction;
+import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
+import com.onyx.android.note.actions.scribble.RedoAction;
+import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
+import com.onyx.android.note.actions.scribble.UndoAction;
 import com.onyx.android.note.receiver.DeviceReceiver;
-import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
@@ -37,7 +50,6 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -46,11 +58,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.R.attr.action;
+
 
 /**
  * when any button clicked, flush at first and render page, after that always switch to drawing state.
  */
-public class ScribbleActivity extends OnyxAppCompatActivity {
+public class ScribbleActivity extends BaseScribbleActivity {
     static final String TAG = ScribbleActivity.class.getSimpleName();
     static final String TAG_NOTE_TITLE = "note_title";
     static final boolean TEMP_HIDE_ITEM = true;
@@ -61,8 +75,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private
     @PenType.PenTypeDef
     int currentPenType = PenType.PENCIL;
-    @NoteBackgroundType.NoteBackgroundDef
     private
+    @NoteBackgroundType.NoteBackgroundDef
     int currentNoteBackground = NoteBackgroundType.EMPTY;
     private int minPenWidth = 1;
     private int maxPenWidth = 20;
@@ -78,6 +92,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private SurfaceHolder.Callback surfaceCallback;
+    private boolean mEatKeyUpEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,8 +146,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         updateColorIndicator();
         initSurfaceView();
     }
-
-
 
     private void initToolbarButtons() {
         titleTextView = (TextView) findViewById(R.id.note_title);
@@ -850,5 +863,15 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
                 break;
         }
         penColorBtn.setImageResource(targetColorIconRes);
+    }
+
+    @Override
+    public void afterBackgroundChange() {
+
+    }
+
+    @Override
+    public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submit(this, request, callback);
     }
 }

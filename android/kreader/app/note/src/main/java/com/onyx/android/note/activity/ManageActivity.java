@@ -12,20 +12,19 @@ import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
-import com.onyx.android.note.actions.CheckNoteNameLegalityAction;
-import com.onyx.android.note.actions.CreateLibraryAction;
-import com.onyx.android.note.actions.GotoUpAction;
-import com.onyx.android.note.actions.LoadNoteListAction;
-import com.onyx.android.note.actions.ManageLoadPageAction;
-import com.onyx.android.note.actions.NoteLibraryRemoveAction;
-import com.onyx.android.note.actions.NoteLoadMovableLibraryAction;
-import com.onyx.android.note.actions.NoteMoveAction;
-import com.onyx.android.note.actions.RenameNoteOrLibraryAction;
+import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
+import com.onyx.android.note.actions.manager.CreateLibraryAction;
+import com.onyx.android.note.actions.manager.GotoUpAction;
+import com.onyx.android.note.actions.manager.LoadNoteListAction;
+import com.onyx.android.note.actions.manager.ManageLoadPageAction;
+import com.onyx.android.note.actions.manager.NoteLibraryRemoveAction;
+import com.onyx.android.note.actions.manager.NoteLoadMovableLibraryAction;
+import com.onyx.android.note.actions.manager.NoteMoveAction;
+import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
-import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -34,8 +33,8 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
-import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -54,7 +53,7 @@ import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
 import static com.onyx.android.sdk.data.GAdapterUtil.hasThumbnail;
 
 
-public class ManageActivity extends OnyxAppCompatActivity {
+public class ManageActivity extends BaseManagerActivity {
     private static final String TAG_CONTENT_ID = "content_id";
     private static final String TAG_CONTENT_TAG = "content_tag";
     private SimpleDateFormat dateFormat;
@@ -70,11 +69,6 @@ public class ManageActivity extends OnyxAppCompatActivity {
     private Button progressBtn;
     private ArrayList<GObject> chosenItemsList = new ArrayList<>();
     private ArrayList<String> targetMoveIDList = new ArrayList<>();
-
-    public ContentView getContentView() {
-        return contentView;
-    }
-
     private ContentView contentView;
     private GAdapter adapter;
     private String currentLibraryId;
@@ -83,9 +77,6 @@ public class ManageActivity extends OnyxAppCompatActivity {
     private String currentLibraryName;
     private boolean isAlreadyToNewActivity = false;
 
-    public Map<String, Integer> getLookupTable() {
-        return lookupTable;
-    }
 
     public void setLookupTable(Map<String, Integer> lookupTable) {
         this.lookupTable = lookupTable;
@@ -166,7 +157,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 for (GObject object : chosenItemsList) {
                     targetRemoveIDList.add(GAdapterUtil.getUniqueId(object));
                 }
-                new NoteLibraryRemoveAction(targetRemoveIDList).execute(ManageActivity.this, null);
+                new NoteLibraryRemoveAction<ManageActivity>(targetRemoveIDList).execute(ManageActivity.this);
                 switchMode(SelectionMode.NORMAL_MODE);
             }
         });
@@ -177,14 +168,15 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 dlgCreateFolder.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
                     @Override
                     public void onCreated(final String title) {
-                        final CheckNoteNameLegalityAction action = new CheckNoteNameLegalityAction(title);
+                        final CheckNoteNameLegalityAction<ManageActivity> action = new CheckNoteNameLegalityAction<ManageActivity>(title);
                         action.execute(ManageActivity.this, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
-                                if(action.isLegal()){
-                                    final CreateLibraryAction action = new CreateLibraryAction(getCurrentLibraryId(), title);
-                                    action.execute(ManageActivity.this, null);
-                                }else {
+                                if (action.isLegal()) {
+                                    final CreateLibraryAction<ManageActivity> action =
+                                            new CreateLibraryAction<>(getCurrentLibraryId(), title);
+                                    action.execute(ManageActivity.this);
+                                } else {
                                     showNoteNameIllegal();
                                 }
                             }
@@ -203,8 +195,8 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 }
                 ArrayList<String> excludeList = new ArrayList<>();
                 excludeList.addAll(targetMoveIDList);
-                NoteLoadMovableLibraryAction action = new NoteLoadMovableLibraryAction(getCurrentLibraryId(), excludeList);
-                action.execute(ManageActivity.this, null);
+                NoteLoadMovableLibraryAction<ManageActivity> action = new NoteLoadMovableLibraryAction<>(getCurrentLibraryId(), excludeList);
+                action.execute(ManageActivity.this);
             }
         });
         contentView = (ContentView) findViewById(R.id.note_content_view);
@@ -220,8 +212,8 @@ public class ManageActivity extends OnyxAppCompatActivity {
 
             @Override
             public void beforePageChanging(ContentView contentView, int newPage, int oldPage) {
-                ManageLoadPageAction loadPageAction = new ManageLoadPageAction(getPreloadIDList(newPage, false));
-                loadPageAction.execute(ManageActivity.this, null);
+                ManageLoadPageAction<ManageActivity> loadPageAction = new ManageLoadPageAction<>(getPreloadIDList(newPage, false));
+                loadPageAction.execute(ManageActivity.this);
             }
 
             @Override
@@ -302,13 +294,13 @@ public class ManageActivity extends OnyxAppCompatActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction action = new CheckNoteNameLegalityAction(input);
+                final CheckNoteNameLegalityAction<ManageActivity> action = new CheckNoteNameLegalityAction<>(input);
                 action.execute(ManageActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (action.isLegal()) {
-                            RenameNoteOrLibraryAction reNameAction = new RenameNoteOrLibraryAction(getUniqueId(view.getData()), input);
-                            reNameAction.execute(ManageActivity.this, null);
+                            RenameNoteOrLibraryAction<ManageActivity> reNameAction = new RenameNoteOrLibraryAction<>(getUniqueId(view.getData()), input);
+                            reNameAction.execute(ManageActivity.this);
                         } else {
                             showNoteNameIllegal();
                         }
@@ -336,7 +328,7 @@ public class ManageActivity extends OnyxAppCompatActivity {
                 .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
                 .setAlertMsgString(getString(R.string.note_name_already_exist))
                 .setEnableNegativeButton(false).setCanceledOnTouchOutside(false));
-        illegalDialog.show(getFragmentManager(),"illegalDialog");
+        illegalDialog.show(getFragmentManager(), "illegalDialog");
     }
 
     private void onNormalModeItemClick(final ContentItemView view) {
@@ -433,30 +425,14 @@ public class ManageActivity extends OnyxAppCompatActivity {
         return 4;
     }
 
-    public void loadNoteList() {
-        final LoadNoteListAction action = new LoadNoteListAction(getCurrentLibraryId());
-        action.execute(this, null);
-    }
-
     private void gotoUp() {
-        final GotoUpAction action = new GotoUpAction(getCurrentLibraryId());
-        action.execute(this, null);
+        final GotoUpAction<ManageActivity> action = new GotoUpAction<>(getCurrentLibraryId());
+        action.execute(this);
     }
 
     private void gotoLibrary(final String id) {
         setCurrentLibraryId(id);
         loadNoteList();
-    }
-
-    public void updateWithNoteList(final List<NoteModel> noteModelList) {
-        contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
-        adapter = Utils.adapterFromNoteModelList(noteModelList, R.drawable.ic_student_note_folder_gray,
-                R.drawable.ic_student_note_pic_gray);
-        adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));
-        contentView.setupContent(getRows(), getColumns(), adapter, 0, true);
-        contentView.updateCurrentPage();
-        updateButtonsStatusByMode();
-        updateActivityTitleAndIcon();
     }
 
     private void updateButtonsStatusByMode() {
@@ -493,26 +469,6 @@ public class ManageActivity extends OnyxAppCompatActivity {
         } else {
             super.onBackPressed();
         }
-    }
-
-    public void showMoveFolderDialog(final List<NoteModel> libraryList) {
-        final DialogMoveFolder dialogMoveFolder = new DialogMoveFolder();
-        dialogMoveFolder.setDataList(libraryList);
-        dialogMoveFolder.setCallback(new DialogMoveFolder.DialogMoveFolderCallback() {
-            @Override
-            public void onMove(String targetParentId) {
-                NoteMoveAction noteMoveAction = new NoteMoveAction<>(targetParentId, targetMoveIDList);
-                noteMoveAction.execute(ManageActivity.this, null);
-                dialogMoveFolder.dismiss();
-                switchMode(SelectionMode.NORMAL_MODE);
-            }
-
-            @Override
-            public void onDismiss() {
-                switchMode(SelectionMode.NORMAL_MODE);
-            }
-        });
-        dialogMoveFolder.show(getFragmentManager());
     }
 
     private void updateTextViewPage() {
@@ -567,4 +523,69 @@ public class ManageActivity extends OnyxAppCompatActivity {
         }
         return list;
     }
+
+    @Override
+    public void loadNoteList() {
+        final LoadNoteListAction<ManageActivity> action = new LoadNoteListAction<>(getCurrentLibraryId());
+        action.execute(this);
+    }
+
+    @Override
+    public void updateCurLibID(String curLibID) {
+        this.currentLibraryId = curLibID;
+    }
+
+    @Override
+    public void updateCurLibName(String curLibName) {
+        this.currentLibraryName = curLibName;
+    }
+
+    @Override
+    public void updateUIWithNewNoteList(List<NoteModel> curLibSubContList) {
+        contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
+        adapter = Utils.adapterFromNoteModelList(curLibSubContList, R.drawable.ic_student_note_folder_gray,
+                R.drawable.ic_student_note_pic_gray);
+        adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));
+        contentView.setupContent(getRows(), getColumns(), adapter, 0, true);
+        contentView.updateCurrentPage();
+        updateButtonsStatusByMode();
+        updateActivityTitleAndIcon();
+    }
+
+    @Override
+    public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submit(this, request, callback);
+    }
+
+    @Override
+    public Map<String, Integer> getLookupTable() {
+        return lookupTable;
+    }
+
+    @Override
+    public void showMovableFolderDialog(List<NoteModel> curLibSubContList) {
+        final DialogMoveFolder dialogMoveFolder = new DialogMoveFolder();
+        dialogMoveFolder.setDataList(curLibSubContList);
+        dialogMoveFolder.setCallback(new DialogMoveFolder.DialogMoveFolderCallback() {
+            @Override
+            public void onMove(String targetParentId) {
+                NoteMoveAction<ManageActivity> noteMoveAction = new NoteMoveAction<>(targetParentId, targetMoveIDList);
+                noteMoveAction.execute(ManageActivity.this);
+                dialogMoveFolder.dismiss();
+                switchMode(SelectionMode.NORMAL_MODE);
+            }
+
+            @Override
+            public void onDismiss() {
+                switchMode(SelectionMode.NORMAL_MODE);
+            }
+        });
+        dialogMoveFolder.show(getFragmentManager());
+    }
+
+    @Override
+    public ContentView getContentView() {
+        return contentView;
+    }
+
 }

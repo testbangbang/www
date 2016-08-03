@@ -1,5 +1,6 @@
-package com.onyx.android.note.actions;
+package com.onyx.android.note.actions.scribble;
 
+import com.onyx.android.note.actions.BaseNoteAction;
 import com.onyx.android.note.activity.ScribbleActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;

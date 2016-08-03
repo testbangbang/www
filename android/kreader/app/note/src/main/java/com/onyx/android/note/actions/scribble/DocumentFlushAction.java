@@ -1,9 +1,9 @@
-package com.onyx.android.note.actions;
+package com.onyx.android.note.actions.scribble;
 
+import com.onyx.android.note.actions.BaseNoteAction;
 import com.onyx.android.note.activity.ScribbleActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.request.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;

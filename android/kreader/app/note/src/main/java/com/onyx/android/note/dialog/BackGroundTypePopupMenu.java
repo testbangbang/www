@@ -27,8 +27,7 @@ public class BackGroundTypePopupMenu extends PopupWindow {
     private PopupMenuCallback callback;
     private View parentView;
     private int displayLocX, displayLocY;
-    @NoteBackgroundType.NoteBackgroundDef
-    private int currentBackground;
+    private @NoteBackgroundType.NoteBackgroundDef int currentBackground;
     private GAdapter adapter;
 
     public interface PopupMenuCallback {
