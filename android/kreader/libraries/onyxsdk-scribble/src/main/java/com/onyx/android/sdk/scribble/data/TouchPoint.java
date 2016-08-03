@@ -55,6 +55,11 @@ public class TouchPoint implements Serializable {
         timestamp = point.timestamp;
     }
 
+    public void offset(int dx, int dy) {
+        x += dx;
+        y += dy;
+    }
+
     public float getX() {
         return x;
     }

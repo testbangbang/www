@@ -9,6 +9,7 @@ import com.jakewharton.disklrucache.DiskLruCache;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
@@ -109,17 +110,21 @@ public class ReaderHelper {
         return (plugin != null);
     }
 
-    public void onDocumentOpened(final Context context, final String path, final ReaderDocument doc, final BaseOptions options) throws Exception {
+    public void onDocumentOpened(final Context context,
+                                 final String path,
+                                 final ReaderDocument doc,
+                                 final BaseOptions options) throws Exception {
         documentPath = path;
         document = doc;
-        documentMd5 = FileUtils.computeMD5(new File(documentPath));
+        if (StringUtils.isNotBlank(options.getMd5())) {
+            documentMd5 = options.getMd5();
+        } else {
+            documentMd5 = FileUtils.computeMD5(new File(documentPath));
+        }
         getDocumentOptions().setZipPassword(options.getZipPassword());
         getDocumentOptions().setPassword(options.getPassword());
         saveMetadata(context, documentPath);
         saveThumbnail(context, documentPath);
-
-        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(context,
-                DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
     }
 
     private void saveMetadata(final Context context, final String path) {

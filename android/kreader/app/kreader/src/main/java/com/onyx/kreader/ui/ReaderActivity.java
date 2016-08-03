@@ -23,13 +23,17 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.BackwardAction;
@@ -43,6 +47,7 @@ import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
@@ -262,10 +267,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
-        updateStatusBar();
-
-        //ReaderDeviceManager.applyGCInvalidate(surfaceView);
+        ReaderDeviceManager.applyWithGCInterval(surfaceView);
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        updateStatusBar();
         renderShapeDataInBackground();
     }
 
@@ -326,6 +330,8 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onDocumentOpened(final DocumentOpenEvent event) {
         documentPath = event.getPath();
+        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this,
+                DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
     }
 
     @Subscribe
@@ -344,7 +350,6 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawPage(final Bitmap pageBitmap) {
-        ReaderDeviceManager.applyWithGCInterval(surfaceView);
         // lock dirty region instead of whole surface view, which will cause strange duplicated GC update issue
         Canvas canvas = holder.lockCanvas(new Rect(surfaceView.getLeft(), surfaceView.getTop(),
                 surfaceView.getRight(), surfaceView.getBottom()));
@@ -379,20 +384,20 @@ public class ReaderActivity extends ActionBarActivity {
         if (true || getReaderDataHolder().hasShapes()) {
             return;
         }
-
-        /*
-        final PageListRenderRequest loadRequest = new PageListRenderRequest(reader.getDocumentMd5(), getReaderDataHolder().getReaderViewInfo().getVisiblePages(), getReaderDataHolder().getDisplayRect());
-        getNoteViewHelper().submit(this, loadRequest, new BaseCallback() {
+        final PageListRenderRequest loadRequest = new PageListRenderRequest(
+                getReaderDataHolder().getReader().getDocumentMd5(),
+                getReaderDataHolder().getReaderViewInfo().getVisiblePages(),
+                getReaderDataHolder().getDisplayRect());
+        getReaderDataHolder().getNoteViewHelper().submit(this, loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || request.isAbort()) {
                     return;
                 }
                 getReaderDataHolder().saveShapeDataInfo(loadRequest);
-                drawPage(reader.getViewportBitmap().getBitmap());
+                onRequestFinished(null);
             }
         });
-        */
     }
 
     public SurfaceHolder getHolder() {

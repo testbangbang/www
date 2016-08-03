@@ -59,6 +59,7 @@ public class BaseOptions {
     transient static public final String WAVEFORM_MODE = "waveform";
     transient static public final String RESET_SCALE = "reset_scale";
     transient static public final String ORIENTATION = "orientation";
+    transient static public final String MD5 = "md5";
 
     private GObject backend;
     private static final double fallbackFontSize = 8.0;
@@ -535,5 +536,16 @@ public class BaseOptions {
 
     public final ReaderPluginOptions pluginOptions() {
         return null;
+    }
+
+    public final String getMd5() {
+        if (backend.hasKey(MD5)) {
+            return backend.getString(MD5);
+        }
+        return null;
+    }
+
+    public void setMd5(final String value) {
+        backend.putString(MD5, value);
     }
 }

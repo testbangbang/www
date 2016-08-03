@@ -69,16 +69,16 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="page" formatted="false">第%s页</string>
-    <string name="trim">Trim</string>
+    <string name="crop">Crop</string>
     <string name="column">Column</string>
     <string name="direction">Direction</string>
-    <string name="two">Two</string>
-    <string name="four">Four</string>
+    <string name="two">two\nsides</string>
+    <string name="four">four\nsides</string>
     <string name="six">Six</string>
     <string name="nine">Nine</string>
-    <string name="single_page">Single</string>
-    <string name="double_page">Double</string>
-    <string name="nothing">Nothing</string>
+    <string name="single_page">single\npage</string>
+    <string name="double_page">double\npage</string>
+    <string name="nothing">no\ncrop</string>
     <string name="search">Search</string>
     <string name="total_page" formatted="false">共 %d 条</string>
     <string name="page_indicator" formatted="false">%d/%d 页</string>

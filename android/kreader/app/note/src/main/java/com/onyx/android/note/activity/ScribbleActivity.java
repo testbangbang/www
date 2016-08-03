@@ -7,13 +7,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
@@ -33,7 +31,6 @@ import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.RawInputProcessor;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -109,7 +106,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onHomeClicked() {
-                getNoteViewHelper().enableScreenPost();
+                getNoteViewHelper().enableScreenPost(true);
                 finish();
             }
         });
@@ -322,8 +319,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         }
     }
 
-    private RawInputProcessor.InputCallback inputCallback() {
-        return new RawInputProcessor.InputCallback() {
+    private NoteViewHelper.InputCallback inputCallback() {
+        return new NoteViewHelper.InputCallback() {
             @Override
             public void onBeginRawData() {
 
@@ -501,7 +498,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(title);
+                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), title);
                 closeAction.execute(ScribbleActivity.this, null);
             }
         });
@@ -511,7 +508,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(noteTitle);
+                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle);
                 closeAction.execute(ScribbleActivity.this, null);
             }
         });

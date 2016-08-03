@@ -31,12 +31,12 @@ public class DocumentOptionsProvider {
         return options;
     }
 
-    public static BaseOptions loadDocumentOptions(final Context context, final String path, String md5) {
-        final DocumentOptions options = findDocumentOptions(context, path, md5);
+    public static DocumentOptions loadDocumentOptions(final Context context, final String path, String md5) {
+        DocumentOptions options = findDocumentOptions(context, path, md5);
         if (options == null) {
-            return new BaseOptions();
+            options = new DocumentOptions();
         }
-        return options.getBaseOptions();
+        return options;
     }
 
     public static boolean saveDocumentOptions(final Context context, final String path, String md5, final BaseOptions baseOptions) {

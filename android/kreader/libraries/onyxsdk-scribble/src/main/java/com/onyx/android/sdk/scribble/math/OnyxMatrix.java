@@ -1,6 +1,9 @@
 package com.onyx.android.sdk.scribble.math;
 
 
+import android.graphics.Rect;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+
 /**
  * Created by zhuzeng on 10/2/15.
  */
@@ -44,6 +47,8 @@ public class OnyxMatrix {
     private int dx = 0;
     private int dy = 0;
     private OnyxMatrixMap impl;
+    private float src[] = new float[2];
+    private float dst[] = new float[2];
 
     public void postRotate(final int degree) {
         rotate = degree;
@@ -67,5 +72,33 @@ public class OnyxMatrix {
         impl.mapPoints(dst, src, dx, dy);
     }
 
+    public Rect mapInPlace(final Rect origin) {
+        float dstB[] = new float[2];
+        src[0] = origin.left;
+        src[1] = origin.top;
+        mapPoints(dst, src);
+
+        src[0] = origin.right;
+        src[1] = origin.bottom;
+        mapPoints(dstB, src);
+        origin.set((int) dst[0], (int) dst[1], (int) dstB[0], (int) dstB[1]);
+        return origin;
+    }
+
+    public TouchPoint map(final TouchPoint touchPoint) {
+        src[0] = touchPoint.getX();
+        src[1] = touchPoint.getY();
+        mapPoints(dst, src);
+        TouchPoint result = new TouchPoint(dst[0], dst[1], touchPoint.getPressure(), touchPoint.getSize(), touchPoint.getTimestamp());
+        return result;
+    }
+
+    public TouchPoint mapWithOffset(final TouchPoint touchPoint, int dx, int dy) {
+        src[0] = touchPoint.getX() + dx;
+        src[1] = touchPoint.getY() + dy;
+        mapPoints(dst, src);
+        TouchPoint result = new TouchPoint(dst[0], dst[1], touchPoint.getPressure(), touchPoint.getSize(), touchPoint.getTimestamp());
+        return result;
+    }
 
 }

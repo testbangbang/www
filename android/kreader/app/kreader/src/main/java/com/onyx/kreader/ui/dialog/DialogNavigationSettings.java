@@ -198,8 +198,8 @@ public class DialogNavigationSettings extends DialogBase {
         return object;
     }
 
-    private GObject createSubScreenModeItem(int iconResource, String title, SubScreenMode mode) {
-        GObject object = GAdapterUtil.createTableItem(title, "", iconResource, 0, null);
+    private GObject createSubScreenModeItem(int iconResource, SubScreenMode mode) {
+        GObject object = GAdapterUtil.createTableItem(0, 0, iconResource, 0, null);
         setSubScreenMode(object, mode);
         if (mode == currentChoosingSubScreenMode) {
             setSelected(object, true);
@@ -209,24 +209,25 @@ public class DialogNavigationSettings extends DialogBase {
         return object;
     }
 
+
     private GAdapter buildCropModeAdapter() {
         mCropAdapter = new GAdapter();
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_tow,getContext().getString(R.string.two), ReaderCropArgs.CropPageMode.TWO_CROP_PAGE));
-        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_navigation_settings_crop_to_page,getContext().getString(R.string.four), ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE));
-        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_navigation_settings_manual_crop,getContext().getString(R.string.single_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE));
-        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_navigation_settings_manual_crop_by_odd_and_even,getContext().getString(R.string.double_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE_BY_ODD_AND_EVEN));
-        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_navigation_settings_crop_none,getContext().getString(R.string.nothing), ReaderCropArgs.CropPageMode.None));
+        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_four,getContext().getString(R.string.four), ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE));
+        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_single,getContext().getString(R.string.single_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE));
+        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_double,getContext().getString(R.string.double_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE_BY_ODD_AND_EVEN));
+        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_nothing,getContext().getString(R.string.nothing), ReaderCropArgs.CropPageMode.None));
         return mCropAdapter;
     }
 
     private GAdapter buildSubScreenAdapter() {
         mSubScreenAdapter = new GAdapter();
-        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_1, getContext().getString(R.string.two), SubScreenMode.SUB_SCREEN_2_1));
-        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_2, getContext().getString(R.string.four), SubScreenMode.SUB_SCREEN_2_2));
-        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_3_2, getContext().getString(R.string.six), SubScreenMode.SUB_SCREEN_3_2));
-        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_3, getContext().getString(R.string.six), SubScreenMode.SUB_SCREEN_2_3));
-        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_3_3, getContext().getString(R.string.nine), SubScreenMode.SUB_SCREEN_3_3));
-        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_1_1, getContext().getString(R.string.nothing), SubScreenMode.SUB_SCREEN_1_1));
+        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_1, SubScreenMode.SUB_SCREEN_2_1));
+        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_2, SubScreenMode.SUB_SCREEN_2_2));
+        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_3_2, SubScreenMode.SUB_SCREEN_3_2));
+        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_3, SubScreenMode.SUB_SCREEN_2_3));
+        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_3_3, SubScreenMode.SUB_SCREEN_3_3));
+        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_1_1, SubScreenMode.SUB_SCREEN_1_1));
         return mSubScreenAdapter;
     }
 

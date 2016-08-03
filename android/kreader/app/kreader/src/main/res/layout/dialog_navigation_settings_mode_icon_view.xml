@@ -18,6 +18,7 @@
             android:scaleType="center" />
 
         <TextView
+            android:gravity="center_horizontal"
             android:textSize="12sp"
             android:id="@+id/text_view_title"
             android:layout_width="wrap_content"

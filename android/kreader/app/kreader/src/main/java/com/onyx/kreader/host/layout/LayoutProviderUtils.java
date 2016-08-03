@@ -40,7 +40,6 @@ public class LayoutProviderUtils {
                                         final ReaderDrawContext drawContext,
                                         final ReaderBitmapImpl bitmap,
                                         final ReaderViewInfo readerViewInfo) throws ReaderException {
-
         // step1: prepare.
         final ReaderRenderer renderer = reader.getRenderer();
         final BitmapLruCache cache = reader.getBitmapLruCache();

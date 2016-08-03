@@ -225,6 +225,9 @@ public class WordSelectionHandler extends BaseHandler implements SelectWordActio
     }
 
     private void showHighlightSelectionDialog(ReaderDataHolder readerDataHolder, int x, int y, PopupSelectionMenu.SelectionType type) {
+        if (!readerDataHolder.getReaderUserDataInfo().hasHighlightResult()) {
+            return;
+        }
         new ShowTextSelectionMenuAction(readerDataHolder, x, y, type).execute(readerDataHolder);
     }
 
@@ -233,10 +236,13 @@ public class WordSelectionHandler extends BaseHandler implements SelectWordActio
     }
 
     public int getCursorSelected(ReaderDataHolder readerDataHolder, int x, int y) {
-        if (readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX).hitTest(x, y)) {
+        HighlightCursor beginHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX);
+        if (beginHighlightCursor != null && beginHighlightCursor.hitTest(x, y)) {
             return HighlightCursor.BEGIN_CURSOR_INDEX;
         }
-        if (readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.END_CURSOR_INDEX).hitTest(x, y)) {
+
+        HighlightCursor endHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.END_CURSOR_INDEX);
+        if (endHighlightCursor != null && endHighlightCursor.hitTest(x, y)) {
             return HighlightCursor.END_CURSOR_INDEX;
         }
         return -1;
