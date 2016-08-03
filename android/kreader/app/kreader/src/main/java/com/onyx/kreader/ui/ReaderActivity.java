@@ -102,6 +102,8 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 removeGlobalOnLayoutListener(this);
+                getReaderDataHolder().setDisplayHeight(surfaceView.getHeight());
+                getReaderDataHolder().setDisplayWidth(surfaceView.getWidth());
                 new ChangeViewConfigAction().execute(getReaderDataHolder());
             }
         });
@@ -350,7 +352,9 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawPage(final Bitmap pageBitmap) {
-        Canvas canvas = holder.lockCanvas();
+        // lock dirty region instead of whole surface view, which will cause strange duplicated GC update issue
+        Canvas canvas = holder.lockCanvas(new Rect(surfaceView.getLeft(), surfaceView.getTop(),
+                surfaceView.getRight(), surfaceView.getBottom()));
         if (canvas == null) {
             return;
         }

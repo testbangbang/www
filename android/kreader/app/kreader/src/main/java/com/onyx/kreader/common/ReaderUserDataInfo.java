@@ -144,7 +144,9 @@ public class ReaderUserDataInfo {
     public boolean loadBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
             final Bookmark bookmark = BookmarkProvider.loadBookmark(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
-            bookmarkMap.put(pageInfo.getName(), bookmark);
+            if (bookmark != null) {
+                bookmarkMap.put(pageInfo.getName(), bookmark);
+            }
         }
         return true;
     }

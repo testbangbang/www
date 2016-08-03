@@ -84,7 +84,10 @@ public class BaseOptions {
 
     public static BaseOptions optionsFromJSONString(final String jsonString) {
         BaseOptions options = new BaseOptions();
-        options.backend = JSON.parseObject(jsonString, GObject.class);
+        GObject data = JSON.parseObject(jsonString, GObject.class);
+        if (data != null) {
+            options.setBackend(data);
+        }
         return options;
     }
 
