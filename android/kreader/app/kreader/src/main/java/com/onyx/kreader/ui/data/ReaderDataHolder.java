@@ -259,4 +259,14 @@ public class ReaderDataHolder {
             submitRenderRequest(new RenderRequest());
         }
     }
+
+    public void destroy() {
+        isDocumentReady = false;
+        if (reader != null) {
+            reader.getDocument().close();
+        }
+        if (ttsManager != null) {
+            ttsManager.shutdown();
+        }
+    }
 }
