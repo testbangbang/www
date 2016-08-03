@@ -74,7 +74,8 @@ public class NoteDataProvider {
 
     public static boolean remove(final Context context, final String uniqueId) {
         Delete delete = new Delete();
-        delete.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId)).query();
+        delete.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId))
+                .or(NoteModel_Table.parentUniqueId.eq(uniqueId)).query();
         return true;
     }
 
