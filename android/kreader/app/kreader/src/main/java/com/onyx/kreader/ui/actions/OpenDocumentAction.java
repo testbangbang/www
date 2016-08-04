@@ -41,6 +41,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.initReaderFromPath(documentPath);
         showLoadingDialog(readerDataHolder);
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
                 readerDataHolder.getReader().getDocumentMd5());
@@ -82,7 +83,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void onFileOpenSucceed(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
-        readerDataHolder.getEventBus().post(new DocumentOpenEvent(documentPath));
+        readerDataHolder.onDocumentOpened();
         readerDataHolder.getHandlerManager().setEnable(true);
         final BaseReaderRequest config = new CreateViewRequest(readerDataHolder.getDisplayWidth(), readerDataHolder.getDisplayHeight());
         readerDataHolder.submitNonRenderRequest(config, new BaseCallback() {

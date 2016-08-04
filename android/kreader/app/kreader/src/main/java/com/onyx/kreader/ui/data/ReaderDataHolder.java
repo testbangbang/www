@@ -17,8 +17,10 @@ import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
@@ -32,12 +34,15 @@ public class ReaderDataHolder {
     private static final String TAG = ReaderDataHolder.class.getSimpleName();
 
     private Context context;
+    private String documentPath;
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     private ShapeDataInfo shapeDataInfo;
     private boolean preRender = true;
     private boolean preRenderNext = true;
+    private boolean documentOpened = false;
+
     private int displayWidth;
     private int displayHeight;
 
@@ -103,8 +108,19 @@ public class ReaderDataHolder {
         return reader;
     }
 
-    public void setReader(Reader reader) {
-        this.reader = reader;
+    public void initReaderFromPath(final String path) {
+        documentOpened = false;
+        documentPath = path;
+        reader = ReaderManager.getReader(documentPath);
+    }
+
+    public void onDocumentOpened() {
+        documentOpened = true;
+        getEventBus().post(new DocumentOpenEvent(documentPath));
+    }
+
+    public boolean isDocumentOpened() {
+        return documentOpened;
     }
 
     public String getCurrentPageName() {
@@ -135,12 +151,9 @@ public class ReaderDataHolder {
         return new Rect(0, 0, getDisplayWidth(), getDisplayHeight());
     }
 
-    public void setDisplayWidth(int displayWidth) {
-        this.displayWidth = displayWidth;
-    }
-
-    public void setDisplayHeight(int displayHeight) {
-        this.displayHeight = displayHeight;
+    public void setDisplaySize(int width, int height) {
+        displayWidth = width;
+        displayHeight = height;
     }
 
     public final HandlerManager getHandlerManager() {
@@ -179,7 +192,7 @@ public class ReaderDataHolder {
     }
 
     public String getDocumentPath() {
-        return getReaderUserDataInfo().getDocumentPath();
+        return documentPath;
     }
 
     public String getBookName() {
@@ -255,9 +268,11 @@ public class ReaderDataHolder {
     }
 
     private void closeDocument() {
+        documentOpened = false;
         if (reader != null && reader.getDocument() != null) {
             reader.getDocument().close();
         }
+        ReaderManager.releaseReader(documentPath);
     }
 
     private void closeTts() {

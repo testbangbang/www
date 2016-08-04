@@ -224,9 +224,7 @@ public class ReflectUtil
             if (result.getValue() != null) {
                 return result.getValue();
             }
-            else {
-                return sDummyObject;
-            }
+            return sDummyObject;
         }
         
         return null;

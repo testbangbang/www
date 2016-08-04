@@ -65,8 +65,6 @@ public class ReaderActivity extends ActionBarActivity {
     private final static String TAG = ReaderActivity.class.getSimpleName();
     private static final String DOCUMENT_PATH_TAG = "document";
 
-    private String documentPath;
-
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
@@ -99,9 +97,8 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 removeGlobalOnLayoutListener(this);
-                getReaderDataHolder().setDisplayHeight(surfaceView.getHeight());
-                getReaderDataHolder().setDisplayWidth(surfaceView.getWidth());
-                if (isDocumentReady()) {
+                getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+                if (getReaderDataHolder().isDocumentOpened()) {
                     new ChangeViewConfigAction().execute(getReaderDataHolder());
                 } else {
                     handleActivityIntent();
@@ -116,7 +113,7 @@ public class ReaderActivity extends ActionBarActivity {
     public void startActivity(Intent intent) {
         // check if search intent
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            intent.putExtra(DOCUMENT_PATH_TAG, documentPath);
+            intent.putExtra(DOCUMENT_PATH_TAG, readerDataHolder.getDocumentPath());
         }
 
         super.startActivity(intent);
@@ -136,13 +133,7 @@ public class ReaderActivity extends ActionBarActivity {
     protected void onDestroy() {
         resetMenus();
         closeDataHolder();
-        resetLocalData();
         super.onDestroy();
-    }
-
-    private void resetLocalData() {
-        ReaderManager.releaseReader(documentPath);
-        documentPath = null;
     }
 
     private void closeDataHolder() {
@@ -209,8 +200,7 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceHolderCallback = new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                getReaderDataHolder().setDisplayHeight(surfaceView.getHeight());
-                getReaderDataHolder().setDisplayWidth(surfaceView.getWidth());
+                getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                 clearCanvas(holder);
             }
 
@@ -332,7 +322,6 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
-        getReaderDataHolder().setReader(ReaderManager.getReader(path));
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder());
     }
@@ -344,13 +333,8 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onDocumentOpened(final DocumentOpenEvent event) {
-        documentPath = event.getPath();
         ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this,
                 DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
-    }
-
-    private boolean isDocumentReady() {
-        return documentPath != null;
     }
 
     @Subscribe
