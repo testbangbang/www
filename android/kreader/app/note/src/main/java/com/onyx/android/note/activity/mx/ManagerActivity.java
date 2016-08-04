@@ -559,6 +559,11 @@ public class ManagerActivity extends BaseManagerActivity {
     }
 
     @Override
+    public void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submitRequestWithIdentifier(this, identifier, request, callback);
+    }
+
+    @Override
     public Map<String, Integer> getLookupTable() {
         return lookupTable;
     }

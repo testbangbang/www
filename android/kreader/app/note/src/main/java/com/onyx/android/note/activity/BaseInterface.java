@@ -9,4 +9,6 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
 public interface BaseInterface {
     void submitRequest(BaseNoteRequest request, BaseCallback callback);
+
+    void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback);
 }

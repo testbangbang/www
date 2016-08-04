@@ -15,22 +15,27 @@ public class DocumentCreateAction<T extends ScribbleActivity> extends BaseNoteAc
 
     private volatile String uniqueId;
     private volatile String parentUniqueId;
+    private NoteDocumentOpenRequest createRequest;
 
     public DocumentCreateAction(final String id, final String parent) {
         uniqueId = id;
         parentUniqueId = parent;
     }
 
-    public void execute(final T activity, final BaseCallback callback) {
-        showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.loading);
-        final NoteDocumentOpenRequest createRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId, true);
-        activity.getNoteViewHelper().submit(activity, createRequest, new BaseCallback() {
+    public void execute(final T activity) {
+        execute(activity, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dismissLoadingDialog();
                 activity.onRequestFinished(createRequest, true);
-                callback.invoke(callback, request, e);
             }
         });
+    }
+
+    @Override
+    public void execute(final T activity, final BaseCallback callback) {
+        showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.loading);
+        createRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId, true);
+        activity.getNoteViewHelper().submit(activity, createRequest, callback);
     }
 }
