@@ -14,7 +14,6 @@ import com.onyx.kreader.host.request.RestoreRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
-import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 
@@ -46,11 +45,6 @@ public class OpenDocumentAction extends BaseAction {
                 if (e != null) {
                     cleanup();
                     return;
-                }
-                if (loadDocumentOptionsRequest.getDocumentOptions() != null &&
-                        loadDocumentOptionsRequest.getDocumentOptions().getOrientation() > 0) {
-                    int orientation = loadDocumentOptionsRequest.getDocumentOptions().getOrientation();
-                    readerDataHolder.getEventBus().post(new ChangeOrientationEvent(orientation));
                 }
                 openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }
@@ -141,7 +135,6 @@ public class OpenDocumentAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog();
-                readerDataHolder.setDocumentReady(true);
             }
         });
     }

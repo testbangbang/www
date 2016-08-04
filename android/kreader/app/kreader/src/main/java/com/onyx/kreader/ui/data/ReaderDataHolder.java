@@ -32,8 +32,6 @@ import org.greenrobot.eventbus.EventBus;
 public class ReaderDataHolder {
     private static final String TAG = ReaderDataHolder.class.getSimpleName();
 
-    private boolean isDocumentReady;
-
     private Context context;
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
@@ -52,14 +50,6 @@ public class ReaderDataHolder {
 
     public ReaderDataHolder(Context context){
         this.context = context;
-    }
-
-    public boolean isDocumentReady() {
-        return isDocumentReady;
-    }
-
-    public void setDocumentReady(boolean ready) {
-        isDocumentReady = ready;
     }
 
     public Context getContext() {
