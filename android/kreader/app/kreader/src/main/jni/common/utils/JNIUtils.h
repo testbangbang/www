@@ -216,6 +216,14 @@ public:
                 str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
     }
 
+    static std::shared_ptr<_jstring> newLocalString(JNIEnv *env, const jchar *str, int len)
+    {
+        jstring text = env->NewString(str, len);
+        return std::shared_ptr<_jstring>(text, [=](_jstring *s) {
+            env->DeleteLocalRef(s);
+        });
+    }
+
     static std::shared_ptr<_jstring> newLocalStringUTF(JNIEnv *env, const char *str)
     {
         jstring text = env->NewStringUTF(str);
