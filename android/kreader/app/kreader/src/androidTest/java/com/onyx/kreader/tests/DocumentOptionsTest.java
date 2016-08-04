@@ -24,6 +24,7 @@ public class DocumentOptionsTest  extends ActivityInstrumentationTestCase2<Reade
 
         final DocumentOptions result = DocumentOptionsProvider.loadDocumentOptions(getActivity(), "", md5);
         assertNotNull(result);
+        assertEquals(origin.getPassword(), result.getBaseOptions().getPassword());
     }
 
 
@@ -36,6 +37,7 @@ public class DocumentOptionsTest  extends ActivityInstrumentationTestCase2<Reade
         final String wrongMd5 = UUID.randomUUID().toString();
         final DocumentOptions result = DocumentOptionsProvider.loadDocumentOptions(getActivity(), "", wrongMd5);
         assertNotNull(result);
+        assertNotNull(origin.getPassword(), result.getBaseOptions().getPassword());
     }
 
 
