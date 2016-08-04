@@ -2,7 +2,6 @@ package com.onyx.kreader.ui.data;
 
 import android.content.Context;
 import android.graphics.Rect;
-
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -257,8 +256,7 @@ public class ReaderDataHolder {
 
     private void closeDocument() {
         if (reader != null && reader.getDocument() != null) {
-            // avoid close document now, or else will fail to reopen the book
-//            reader.getDocument().close();
+            reader.getDocument().close();
         }
     }
 

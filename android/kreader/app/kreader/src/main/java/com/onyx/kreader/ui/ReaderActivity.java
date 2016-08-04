@@ -135,8 +135,19 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         resetMenus();
-        getReaderDataHolder().destroy();
+        closeDataHolder();
+        resetLocalData();
         super.onDestroy();
+    }
+
+    private void resetLocalData() {
+        ReaderManager.releaseReader(documentPath);
+        documentPath = null;
+    }
+
+    private void closeDataHolder() {
+        getReaderDataHolder().getEventBus().unregister(this);
+        getReaderDataHolder().destroy();
     }
 
     private void resetMenus() {
