@@ -3,6 +3,7 @@ package com.onyx.kreader.tests;
 import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -157,15 +158,17 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
 
     public void testSearch() {
         PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
-        String path = "/mnt/sdcard/Books/text.pdf";
+        String path = "/mnt/sdcard/Books/西游记.pdf";
         assertTrue(wrapper.nativeInitLibrary());
         assertTrue(wrapper.openDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
-        String pattern = "广州";
+//        String pattern = "上卷";
+        String pattern = "邵康节";
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
-        wrapper.searchInPage(0, 0, 0, 1024, 768, 0, pattern, false, true, list);
+        wrapper.searchInPage(1, 0, 0, 1024, 768, 0, pattern, false, false, 50, list);
         assertTrue(list.size() > 0);
         for(ReaderSelection selection : list) {
             assertTrue(selection.getText().equals(pattern));
+            Log.d(TAG, JSON.toJSONString(selection));
         }
         assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());

@@ -63,6 +63,16 @@ public class DjvuSelection implements ReaderSelection {
         return text;
     }
 
+    @Override
+    public String getLeftText() {
+        return "";
+    }
+
+    @Override
+    public String getRightText() {
+        return "";
+    }
+
     /**
      * Retrieve selected rectangle list in page coordinates system.
      *

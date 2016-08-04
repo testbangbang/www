@@ -29,4 +29,11 @@ public interface ReaderSearchOptions {
      * @return
      */
     public String fromPage();
+
+    /**
+     * Besides search result, we also want to fetch context text around the result,
+     * this method specifies the length of context text should be
+     * @return
+     */
+    public int contextLength();
 }

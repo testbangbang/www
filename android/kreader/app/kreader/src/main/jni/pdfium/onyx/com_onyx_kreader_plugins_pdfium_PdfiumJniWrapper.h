@@ -90,10 +90,10 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeSearchInPage
- * Signature: (IIIIIII[BZZLjava/util/List;)I
+ * Signature: (IIIIIII[BZZILjava/util/List;)I
  */
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSearchInPage
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jbyteArray, jboolean, jboolean, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jbyteArray, jboolean, jboolean, jint, jobject);
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper

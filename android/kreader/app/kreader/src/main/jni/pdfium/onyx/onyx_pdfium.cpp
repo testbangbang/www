@@ -293,16 +293,13 @@ static int getTextSentenceBreakPoint(JNIEnv * env, jobject splitter, jstring tex
     return env->CallIntMethod(splitter, method, text);
 }
 
-static std::shared_ptr<_jstring> getJStringText(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int start, int end) {
+static std::shared_ptr<_jstring> getJStringText(JNIEnv *env, FPDF_TEXTPAGE page, int start, int end) {
     const int count = end - start + 1;
     int textSize = (count + 1) * sizeof(unsigned short);
     JNIByteArray arrayWrapper(env, textSize);
     FPDFText_GetText(page, start, count, (unsigned short *)(arrayWrapper.getBuffer()));
 
-    jstring str = env->NewString((jchar *)arrayWrapper.getBuffer(), textSize / 2);
-    return std::shared_ptr<_jstring>(str, [=](_jstring *s) {
-        env->DeleteLocalRef(s);
-    });
+    return StringUtils::newLocalString(env, (jchar *)arrayWrapper.getBuffer(), count);
 }
 
 static void selectByWord(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int start, int end, int *newStart, int *newEnd) {
@@ -317,9 +314,9 @@ static void selectByWord(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int 
     const int right = std::min(end + extend, count - 1);
     LOGE("selectByWord: start %d, end %d, left %d, right %d", start, end, left, right);
     
-    std::shared_ptr<_jstring> word = getJStringText(env, page, splitter, start, end);
-    std::shared_ptr<_jstring> leftStr = getJStringText(env, page, splitter, left, start - 1);
-    std::shared_ptr<_jstring> rightStr = getJStringText(env, page, splitter, end + 1, right);
+    std::shared_ptr<_jstring> word = getJStringText(env, page, start, end);
+    std::shared_ptr<_jstring> leftStr = getJStringText(env, page, left, start - 1);
+    std::shared_ptr<_jstring> rightStr = getJStringText(env, page, end + 1, right);
     
     int leftBoundary = getTextLeftBoundary(env, splitter, word.get(), leftStr.get(), rightStr.get());
     int rightBoundary = getTextRightBoundary(env, splitter, word.get(), leftStr.get(), rightStr.get());
@@ -379,7 +376,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSearchInPage
-  (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, int rotation, jbyteArray array, jboolean caseSensitive, jboolean matchWholeWord, jobject objectList) {
+  (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, int rotation, jbyteArray array, jboolean caseSensitive, jboolean matchWholeWord, jint contextLength, jobject objectList) {
 
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
@@ -404,18 +401,38 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
         flags |= FPDF_MATCHWHOLEWORD;
     }
 
+    int pageTextCount = FPDFText_CountChars(textPage);
+    int contextOffset = (contextLength - length) / 2;
+
     int count = 0;
     FPDF_SCHHANDLE searchHandle = FPDFText_FindStart(textPage, (unsigned short *)stringData, flags, 0);
     JNIUtils utils(env);
-    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[I[BII)V");
+    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[I[BIILjava/lang/String;Ljava/lang/String;)V");
     while (searchHandle != NULL && FPDFText_FindNext(searchHandle)) {
         ++count;
         int startIndex = FPDFText_GetSchResultIndex(searchHandle);
         int endIndex = startIndex + FPDFText_GetSchCount(searchHandle) - 1;
         std::vector<int> list;
         getSelectionRectangles(page, textPage, x, y, width, height, rotation, startIndex, endIndex, list);
+
+        int contextLeftIndex = std::max(startIndex - contextOffset, 0);
+        std::shared_ptr<_jstring> leftText;
+        if (startIndex > 0) {
+            leftText = getJStringText(env, textPage, contextLeftIndex, startIndex - 1);
+        } else {
+            leftText = StringUtils::newLocalStringUTF(env, "");
+        }
+
+        int contextRightIndex = std::min(endIndex + contextOffset, pageTextCount - 1);
+        std::shared_ptr<_jstring> rightText;
+        if (endIndex < pageTextCount - 1) {
+            rightText = getJStringText(env, textPage, endIndex + 1, contextRightIndex);
+        } else {
+            rightText = StringUtils::newLocalStringUTF(env, "");
+        }
+
         JNIIntArray intArray(env, list.size(), &list[0]);
-        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, intArray.getIntArray(true), array, startIndex, endIndex);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, intArray.getIntArray(true), array, startIndex, endIndex, leftText.get(), rightText.get());
     }
     FPDFText_FindClose(searchHandle);
     delete [] stringData;
@@ -458,7 +475,7 @@ JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_
     int limit = std::min(200, count - sentenceStartIndex);
     int lastIndex = sentenceStartIndex + limit - 1;
     LOGE("text range: %d, %d", sentenceStartIndex, lastIndex);
-    std::shared_ptr<_jstring> text = getJStringText(env, textPage, splitter, sentenceStartIndex, lastIndex);
+    std::shared_ptr<_jstring> text = getJStringText(env, textPage, sentenceStartIndex, lastIndex);
     int index = getTextSentenceBreakPoint(env, splitter, text.get());
     LOGE("sentence break point: %d", index);
     if (index > 0) {

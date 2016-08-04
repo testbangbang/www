@@ -1,10 +1,12 @@
 package com.onyx.kreader.ui.actions;
 
+import android.app.Activity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.dataprovider.request.LoadDocumentOptionsRequest;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -14,6 +16,7 @@ import com.onyx.kreader.host.request.RestoreRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
+import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 
@@ -26,11 +29,13 @@ import com.onyx.kreader.ui.events.QuitEvent;
  * 4. restoreWithOptions.
  */
 public class OpenDocumentAction extends BaseAction {
+    private Activity activity;
     private String documentPath;
     private DialogLoading dialogLoading;
     private DataProvider dataProvider;
 
-    public OpenDocumentAction(final String path) {
+    public OpenDocumentAction(final Activity activity, final String path) {
+        this.activity = activity;
         documentPath = path;
         dataProvider = new DataProvider();
     }
@@ -45,6 +50,17 @@ public class OpenDocumentAction extends BaseAction {
                 if (e != null) {
                     cleanup();
                     return;
+                }
+                if (loadDocumentOptionsRequest.getDocumentOptions() != null &&
+                        loadDocumentOptionsRequest.getDocumentOptions().getOrientation() > 0) {
+                    int orientation = loadDocumentOptionsRequest.getDocumentOptions().getOrientation();
+                    Debug.d("current orientation: " + activity.getRequestedOrientation() +
+                            ", target orientation: " + orientation);
+                    if (activity.getRequestedOrientation() != orientation) {
+                        readerDataHolder.getEventBus().post(new ChangeOrientationEvent(orientation));
+                        hideLoadingDialog();
+                        return;
+                    }
                 }
                 openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }

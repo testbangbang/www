@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.content.pm.ActivityInfo;
+import com.onyx.kreader.host.request.UpdateScreenOrientationOptionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 
@@ -19,6 +20,7 @@ public class ChangeOrientationAction extends BaseAction {
     public void execute(final ReaderDataHolder readerDataHolder) {
         int orientation = computeNewRotation(currentOrientation, newOrientation);
         readerDataHolder.getEventBus().post(new ChangeOrientationEvent(orientation));
+        readerDataHolder.submitNonRenderRequest(new UpdateScreenOrientationOptionRequest(orientation), null);
     }
 
     private int computeNewRotation(int currentOrientation, int rotationOperation) {

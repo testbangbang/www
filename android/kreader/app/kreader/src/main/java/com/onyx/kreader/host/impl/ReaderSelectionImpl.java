@@ -49,6 +49,16 @@ public class ReaderSelectionImpl implements ReaderSelection {
         return text;
     }
 
+    @Override
+    public String getLeftText() {
+        return "";
+    }
+
+    @Override
+    public String getRightText() {
+        return "";
+    }
+
     public boolean hasText() {
         return false;
     }

@@ -50,16 +50,13 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
-import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
+import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.utils.TreeObserverUtils;
-
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by Joy on 2016/4/14.
@@ -104,7 +101,11 @@ public class ReaderActivity extends ActionBarActivity {
                 removeGlobalOnLayoutListener(this);
                 getReaderDataHolder().setDisplayHeight(surfaceView.getHeight());
                 getReaderDataHolder().setDisplayWidth(surfaceView.getWidth());
-                new ChangeViewConfigAction().execute(getReaderDataHolder());
+                if (isDocumentReady()) {
+                    new ChangeViewConfigAction().execute(getReaderDataHolder());
+                } else {
+                    handleActivityIntent();
+                }
             }
         });
 
@@ -134,7 +135,19 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         resetMenus();
+        closeDataHolder();
+        resetLocalData();
         super.onDestroy();
+    }
+
+    private void resetLocalData() {
+        ReaderManager.releaseReader(documentPath);
+        documentPath = null;
+    }
+
+    private void closeDataHolder() {
+        getReaderDataHolder().getEventBus().unregister(this);
+        getReaderDataHolder().destroy();
     }
 
     private void resetMenus() {
@@ -320,7 +333,7 @@ public class ReaderActivity extends ActionBarActivity {
 
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         getReaderDataHolder().setReader(ReaderManager.getReader(path));
-        final OpenDocumentAction action = new OpenDocumentAction(path);
+        final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder());
     }
 
@@ -334,6 +347,10 @@ public class ReaderActivity extends ActionBarActivity {
         documentPath = event.getPath();
         ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this,
                 DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
+    }
+
+    private boolean isDocumentReady() {
+        return documentPath != null;
     }
 
     @Subscribe
@@ -473,4 +490,5 @@ public class ReaderActivity extends ActionBarActivity {
     public SurfaceView getSurfaceView() {
         return surfaceView;
     }
+
 }

@@ -2,7 +2,6 @@ package com.onyx.kreader.ui.data;
 
 import android.content.Context;
 import android.graphics.Rect;
-
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -247,6 +246,23 @@ public class ReaderDataHolder {
     public void redrawPage() {
         if (getReader() != null) {
             submitRenderRequest(new RenderRequest());
+        }
+    }
+
+    public void destroy() {
+        closeDocument();
+        closeTts();
+    }
+
+    private void closeDocument() {
+        if (reader != null && reader.getDocument() != null) {
+            reader.getDocument().close();
+        }
+    }
+
+    private void closeTts() {
+        if (ttsManager != null) {
+            ttsManager.shutdown();
         }
     }
 }

@@ -29,5 +29,7 @@
 -dontwarn org.nustaq.**
 -dontnote org.objenesis.**
 -dontwarn org.objenesis.**
--keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 
+-keepnames class org.greenrobot.eventbus.** { *; }
+
+-keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }

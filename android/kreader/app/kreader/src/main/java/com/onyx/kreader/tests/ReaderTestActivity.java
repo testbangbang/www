@@ -644,7 +644,7 @@ public class ReaderTestActivity extends Activity {
 
     private void drawSearchResult(final Canvas canvas) {
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
-        wrapper.searchInPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, searchEdit.getText().toString(), false, false, list);
+        wrapper.searchInPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, searchEdit.getText().toString(), false, false, 100, list);
         if (list.size() <= 0) {
             return;
         }
