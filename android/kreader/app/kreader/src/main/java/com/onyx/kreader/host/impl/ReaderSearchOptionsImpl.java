@@ -35,4 +35,8 @@ public class ReaderSearchOptionsImpl implements ReaderSearchOptions {
         return pageName;
     }
 
+    @Override
+    public int contextLength() {
+        return 100;
+    }
 }

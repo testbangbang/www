@@ -38,6 +38,10 @@ public interface ReaderSelection {
      */
     public String getText();
 
+    public String getLeftText();
+
+    public String getRightText();
+
     /**
      * Retrieve selected rectangle list in page coordinates system.
      * @return

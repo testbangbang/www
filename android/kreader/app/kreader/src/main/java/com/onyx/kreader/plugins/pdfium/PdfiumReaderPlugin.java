@@ -331,7 +331,8 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
                 getViewOptions().getViewWidth(),
                 getViewOptions().getViewHeight(),
                 0, options.pattern(), options.isCaseSensitive(),
-                options.isMatchWholeWord(), searchResults);
+                options.isMatchWholeWord(), options.contextLength(),
+                searchResults);
         return searchResults.size() > 0;
     }
 

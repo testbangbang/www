@@ -18,12 +18,16 @@ public class PdfiumSelection implements ReaderSelection {
     private int startCharIndex;
     private int endCharIndex;
     private String text;
+    private String leftText;
+    private String rightText;
+
     /**
      * rectangles in page's coordinate from left-top origin
      */
     private List<RectF> rectangles = new ArrayList<RectF>();
 
     public PdfiumSelection() {
+
     }
 
     public PdfiumSelection(int pageNumber) {
@@ -34,7 +38,7 @@ public class PdfiumSelection implements ReaderSelection {
         this.pagePosition = pagePosition;
     }
 
-    public PdfiumSelection(int page, int [] data, byte [] string, int start, int end) {
+    public PdfiumSelection(int page, int [] data, byte [] string, int start, int end, String leftText, String rightText) {
         pagePosition = PagePositionUtils.fromPosition(page);
         for(int i = 0; i < data.length / 4; ++i) {
             rectangles.add(new RectF(data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3]));
@@ -42,6 +46,8 @@ public class PdfiumSelection implements ReaderSelection {
         text = StringUtils.utf16le(string);
         startCharIndex = start;
         endCharIndex = end;
+        this.leftText = leftText;
+        this.rightText = rightText;
     }
 
     public String getPagePosition() {
@@ -58,6 +64,14 @@ public class PdfiumSelection implements ReaderSelection {
 
     public String getText() {
         return text;
+    }
+
+    public String getLeftText() {
+        return leftText;
+    }
+
+    public String getRightText() {
+        return rightText;
     }
 
     @SuppressWarnings("unused")
@@ -94,8 +108,8 @@ public class PdfiumSelection implements ReaderSelection {
     }
 
     @SuppressWarnings("unused")
-    public static void addToSelectionList(List<ReaderSelection> list, int page, int [] rectangles, final byte[] utf16le, int startIndex, int endIndex) {
-        list.add(new PdfiumSelection(page, rectangles, utf16le, startIndex, endIndex));
+    public static void addToSelectionList(List<ReaderSelection> list, int page, int [] rectangles, final byte[] utf16le, int startIndex, int endIndex, String leftText, String rightText) {
+        list.add(new PdfiumSelection(page, rectangles, utf16le, startIndex, endIndex, leftText, rightText));
     }
 
 }

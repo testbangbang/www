@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include <jni.h>
 #include <android/log.h>
@@ -178,7 +179,7 @@ public:
             localString = 0;
         }
     }
-    
+
 public:
     const char * getLocalString() {
         return localString;
@@ -213,6 +214,14 @@ public:
     {
         return str.size() >= suffix.size() &&
                 str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+    }
+
+    static std::shared_ptr<_jstring> newLocalStringUTF(JNIEnv *env, const char *str)
+    {
+        jstring text = env->NewStringUTF(str);
+        return std::shared_ptr<_jstring>(text, [=](_jstring *s) {
+            env->DeleteLocalRef(s);
+        });
     }
 };
 
