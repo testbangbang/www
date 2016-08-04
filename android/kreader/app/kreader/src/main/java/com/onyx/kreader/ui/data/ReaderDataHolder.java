@@ -251,8 +251,9 @@ public class ReaderDataHolder {
     }
 
     public void destroy() {
-        if (reader != null) {
-            reader.getDocument().close();
+        if (reader != null && reader.getDocument() != null) {
+            // avoid close document now, or else will fail to reopen the book
+//            reader.getDocument().close();
         }
         if (ttsManager != null) {
             ttsManager.shutdown();
