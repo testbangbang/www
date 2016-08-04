@@ -6,7 +6,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.onyx.android.note.activity.ScribbleActivity;
+import com.onyx.android.note.activity.mx.ScribbleActivity;
 import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;

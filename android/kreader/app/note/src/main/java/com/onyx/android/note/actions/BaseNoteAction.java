@@ -1,13 +1,10 @@
 package com.onyx.android.note.actions;
 
 import android.app.Activity;
-
 import android.os.Bundle;
-import com.onyx.android.note.R;
+
 import com.onyx.android.note.dialog.DialogLoading;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.request.note.NoteDocumentOpenRequest;
 
 /**
  * Created by zhuzeng on 6/26/16.
