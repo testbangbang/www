@@ -251,7 +251,6 @@ public class ReaderDataHolder {
     }
 
     public void destroy() {
-        isDocumentReady = false;
         if (reader != null) {
             reader.getDocument().close();
         }
