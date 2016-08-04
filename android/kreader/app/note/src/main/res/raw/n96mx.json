@@ -1,4 +1,4 @@
 {
   "home_activity_pkg": "com.onyx.android.note",
-  "home_activity_cls": ".activity.ManageActivity"
+  "home_activity_cls": ".activity.onyx.ScribbleActivity"
 }

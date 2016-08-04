@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.onyx.android.sdk.ui.view.ContentView
+        android:background="@android:color/white"
+        android:id="@+id/layout_sub_menu"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="@dimen/mx_note_menu_height" />
+
+    <View
+        android:id="@+id/subMenuTopBoundary"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"
+        android:layout_above="@id/layout_sub_menu"/>
+
+    <View
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/subMenuTopBoundary"
+        android:id="@+id/dismiss_zone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent" />
+</RelativeLayout>

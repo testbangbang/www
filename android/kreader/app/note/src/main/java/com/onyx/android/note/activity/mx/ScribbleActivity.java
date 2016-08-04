@@ -62,7 +62,7 @@ import java.util.List;
  * when any button clicked, flush at first and render page, after that always switch to drawing state.
  */
 public class ScribbleActivity extends BaseScribbleActivity {
-    static final String TAG = ScribbleActivity.class.getSimpleName();
+    static final String TAG = ScribbleActivity.class.getCanonicalName();
     static final String TAG_NOTE_TITLE = "note_title";
     static final boolean TEMP_HIDE_ITEM = true;
 
@@ -95,7 +95,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NoteApplication.initWithAppConfig(this);
-        setContentView(R.layout.activity_scribble);
+        setContentView(R.layout.mx_activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
         registerDeviceReceiver();
@@ -603,7 +603,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     getWindow().getDecorView(),
                     penColorBtn.getLeft() + (penColorBtn.getWidth() / 2) - (getResources().getDimensionPixelSize(R.dimen.pen_color_popup_width) / 2),
                     getWindow().getDecorView().getHeight() -
-                            getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
+                            getResources().getDimensionPixelSize(R.dimen.mx_note_menu_height) -
                             getResources().getDimensionPixelSize(R.dimen.pen_color_popup_height) - 10,
                     new PenColorPopupMenu.PopupMenuCallback() {
                         @Override

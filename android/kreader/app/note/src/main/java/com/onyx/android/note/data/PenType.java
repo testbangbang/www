@@ -1,11 +1,11 @@
 package com.onyx.android.note.data;
 
 import android.support.annotation.IntDef;
+
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Map;
 
 /**
  * Created by solskjaer49 on 16/6/30 18:41.
@@ -45,6 +45,12 @@ public class PenType {
             default:
                 return PenType.PENCIL;
         }
+    }
+
+    public
+    @PenTypeDef
+    static int translate(int val) {
+        return val;
     }
 
 }

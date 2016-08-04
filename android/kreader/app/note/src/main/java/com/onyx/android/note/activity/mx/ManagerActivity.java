@@ -89,7 +89,7 @@ public class ManagerActivity extends BaseManagerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NoteApplication.initWithAppConfig(this);
-        setContentView(R.layout.activity_manager);
+        setContentView(R.layout.mx_activity_manager);
         initView();
         initNoteViewHelper();
     }

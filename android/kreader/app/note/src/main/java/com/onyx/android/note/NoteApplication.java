@@ -6,8 +6,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
 import com.onyx.android.note.utils.NoteAppConfig;
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
