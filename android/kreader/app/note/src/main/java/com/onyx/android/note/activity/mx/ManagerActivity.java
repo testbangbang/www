@@ -54,7 +54,7 @@ import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
 import static com.onyx.android.sdk.data.GAdapterUtil.hasThumbnail;
 
 
-public class ManageActivity extends BaseManagerActivity {
+public class ManagerActivity extends BaseManagerActivity {
     private static final String TAG_CONTENT_ID = "content_id";
     private static final String TAG_CONTENT_TAG = "content_tag";
     private SimpleDateFormat dateFormat;
@@ -89,7 +89,7 @@ public class ManageActivity extends BaseManagerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NoteApplication.initWithAppConfig(this);
-        setContentView(R.layout.activity_manager);
+        setContentView(R.layout.mx_activity_manager);
         initView();
         initNoteViewHelper();
     }
@@ -123,7 +123,7 @@ public class ManageActivity extends BaseManagerActivity {
 
     private void initView() {
         initSupportActionBarWithCustomBackFunction();
-        getSupportActionBar().setTitle(ManageActivity.class.getSimpleName());
+        getSupportActionBar().setTitle(ManagerActivity.class.getSimpleName());
         chooseModeButton = (CheckedTextView) findViewById(R.id.selectMode);
         addFolderButton = (TextView) findViewById(R.id.add_folder);
         toolBarIcon = (ImageView) findViewById(R.id.imageView_main_title);
@@ -158,7 +158,7 @@ public class ManageActivity extends BaseManagerActivity {
                 for (GObject object : chosenItemsList) {
                     targetRemoveIDList.add(GAdapterUtil.getUniqueId(object));
                 }
-                new NoteLibraryRemoveAction<ManageActivity>(targetRemoveIDList).execute(ManageActivity.this);
+                new NoteLibraryRemoveAction<ManagerActivity>(targetRemoveIDList).execute(ManagerActivity.this);
                 switchMode(SelectionMode.NORMAL_MODE);
             }
         });
@@ -169,14 +169,14 @@ public class ManageActivity extends BaseManagerActivity {
                 dlgCreateFolder.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
                     @Override
                     public void onCreated(final String title) {
-                        final CheckNoteNameLegalityAction<ManageActivity> action = new CheckNoteNameLegalityAction<ManageActivity>(title);
-                        action.execute(ManageActivity.this, new BaseCallback() {
+                        final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<ManagerActivity>(title);
+                        action.execute(ManagerActivity.this, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
                                 if (action.isLegal()) {
-                                    final CreateLibraryAction<ManageActivity> action =
+                                    final CreateLibraryAction<ManagerActivity> action =
                                             new CreateLibraryAction<>(getCurrentLibraryId(), title);
-                                    action.execute(ManageActivity.this);
+                                    action.execute(ManagerActivity.this);
                                 } else {
                                     showNoteNameIllegal();
                                 }
@@ -196,8 +196,8 @@ public class ManageActivity extends BaseManagerActivity {
                 }
                 ArrayList<String> excludeList = new ArrayList<>();
                 excludeList.addAll(targetMoveIDList);
-                NoteLoadMovableLibraryAction<ManageActivity> action = new NoteLoadMovableLibraryAction<>(getCurrentLibraryId(), excludeList);
-                action.execute(ManageActivity.this);
+                NoteLoadMovableLibraryAction<ManagerActivity> action = new NoteLoadMovableLibraryAction<>(getCurrentLibraryId(), excludeList);
+                action.execute(ManagerActivity.this);
             }
         });
         contentView = (ContentView) findViewById(R.id.note_content_view);
@@ -213,8 +213,8 @@ public class ManageActivity extends BaseManagerActivity {
 
             @Override
             public void beforePageChanging(ContentView contentView, int newPage, int oldPage) {
-                ManageLoadPageAction<ManageActivity> loadPageAction = new ManageLoadPageAction<>(getPreloadIDList(newPage, false));
-                loadPageAction.execute(ManageActivity.this);
+                ManageLoadPageAction<ManagerActivity> loadPageAction = new ManageLoadPageAction<>(getPreloadIDList(newPage, false));
+                loadPageAction.execute(ManagerActivity.this);
             }
 
             @Override
@@ -295,13 +295,13 @@ public class ManageActivity extends BaseManagerActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ManageActivity> action = new CheckNoteNameLegalityAction<>(input);
-                action.execute(ManageActivity.this, new BaseCallback() {
+                final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(input);
+                action.execute(ManagerActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (action.isLegal()) {
-                            RenameNoteOrLibraryAction<ManageActivity> reNameAction = new RenameNoteOrLibraryAction<>(getUniqueId(view.getData()), input);
-                            reNameAction.execute(ManageActivity.this);
+                            RenameNoteOrLibraryAction<ManagerActivity> reNameAction = new RenameNoteOrLibraryAction<>(getUniqueId(view.getData()), input);
+                            reNameAction.execute(ManagerActivity.this);
                         } else {
                             showNoteNameIllegal();
                         }
@@ -427,7 +427,7 @@ public class ManageActivity extends BaseManagerActivity {
     }
 
     private void gotoUp() {
-        final GotoUpAction<ManageActivity> action = new GotoUpAction<>(getCurrentLibraryId());
+        final GotoUpAction<ManagerActivity> action = new GotoUpAction<>(getCurrentLibraryId());
         action.execute(this);
     }
 
@@ -527,7 +527,7 @@ public class ManageActivity extends BaseManagerActivity {
 
     @Override
     public void loadNoteList() {
-        final LoadNoteListAction<ManageActivity> action = new LoadNoteListAction<>(getCurrentLibraryId());
+        final LoadNoteListAction<ManagerActivity> action = new LoadNoteListAction<>(getCurrentLibraryId());
         action.execute(this);
     }
 
@@ -559,6 +559,11 @@ public class ManageActivity extends BaseManagerActivity {
     }
 
     @Override
+    public void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submitRequestWithIdentifier(this, identifier, request, callback);
+    }
+
+    @Override
     public Map<String, Integer> getLookupTable() {
         return lookupTable;
     }
@@ -570,8 +575,8 @@ public class ManageActivity extends BaseManagerActivity {
         dialogMoveFolder.setCallback(new DialogMoveFolder.DialogMoveFolderCallback() {
             @Override
             public void onMove(String targetParentId) {
-                NoteMoveAction<ManageActivity> noteMoveAction = new NoteMoveAction<>(targetParentId, targetMoveIDList);
-                noteMoveAction.execute(ManageActivity.this);
+                NoteMoveAction<ManagerActivity> noteMoveAction = new NoteMoveAction<>(targetParentId, targetMoveIDList);
+                noteMoveAction.execute(ManagerActivity.this);
                 dialogMoveFolder.dismiss();
                 switchMode(SelectionMode.NORMAL_MODE);
             }

@@ -28,4 +28,10 @@ public class DataItemType {
     public static boolean isValidDataItemType(int data) {
         return !(data < TYPE_CREATE || data > TYPE_DOCUMENT);
     }
+
+    public
+    @DataItemTypeDef
+    static int translate(int val) {
+        return val;
+    }
 }

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.onyx.android.note.activity.mx.ScribbleActivity">
+
+    <android.support.v7.widget.Toolbar
+        style="@style/OnyxToolBarStyle"
+        android:layout_alignParentTop="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@id/back_function_layout"
+                style="@style/global_activities_back_function_layout">
+
+                <TextView
+                    android:id="@+id/textView_main_title"
+                    style="@style/global_activities_back_btn_category_tittle"
+                    android:layout_toRightOf="@+id/imageView_back"
+                    android:ellipsize="middle"
+                    android:gravity="left|center_vertical"
+                    android:maxLines="1"
+                    android:text="@string/finish"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/note_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:ellipsize="middle"
+                android:gravity="center"
+                android:lines="1"
+                android:maxWidth="500dp"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large" />
+
+            <ImageView
+                android:id="@+id/button_new_page"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="match_parent"
+                android:layout_marginRight="12dp"
+                android:layout_toLeftOf="@+id/change_note_bg"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_business_write_add_gray_40dp" />
+
+            <ImageView
+                android:id="@+id/change_note_bg"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_business_note_bg_gray_40dp" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <SurfaceView
+        android:id="@+id/note_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/divider"
+        android:layout_below="@id/tool_bar" />
+
+
+    <View
+        android:id="@+id/divider"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"
+        android:layout_above="@+id/layout_footer" />
+
+
+    <RelativeLayout
+        android:id="@+id/layout_footer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mx_note_menu_height"
+        android:layout_alignParentBottom="true">
+
+        <com.onyx.android.sdk.ui.view.ContentView
+            android:id="@+id/pen_style_content_view"
+            android:layout_width="@dimen/note_style_width"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp" />
+
+        <ImageView
+            android:id="@+id/color_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:layout_toLeftOf="@+id/page_indicator"
+            android:layout_toRightOf="@+id/pen_style_content_view"
+            android:background="@drawable/imagebtn_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="center"
+            android:src="@drawable/ic_business_write_color_black_black_46dp" />
+
+        <LinearLayout
+            android:id="@+id/page_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/button_previous_page"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp"
+                android:src="@drawable/ic_note_prev_page_gray_32dp" />
+
+            <Button
+                android:id="@+id/button_page_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/imagebtn_bg"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/paged_init_text"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:id="@+id/button_next_page"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp"
+                android:src="@drawable/ic_note_next_page_gray_32dp" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

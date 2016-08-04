@@ -23,4 +23,9 @@ public class ContentID {
     public @interface ContentIDDef {
     }
 
+    public
+    @ContentIDDef
+    static int translate(int val) {
+        return val;
+    }
 }

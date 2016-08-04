@@ -62,7 +62,7 @@ import java.util.List;
  * when any button clicked, flush at first and render page, after that always switch to drawing state.
  */
 public class ScribbleActivity extends BaseScribbleActivity {
-    static final String TAG = ScribbleActivity.class.getSimpleName();
+    static final String TAG = ScribbleActivity.class.getCanonicalName();
     static final String TAG_NOTE_TITLE = "note_title";
     static final boolean TEMP_HIDE_ITEM = true;
 
@@ -95,7 +95,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NoteApplication.initWithAppConfig(this);
-        setContentView(R.layout.activity_scribble);
+        setContentView(R.layout.mx_activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
         registerDeviceReceiver();
@@ -199,7 +199,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onColorClicked();
             }
         });
-        if (TEMP_HIDE_ITEM){
+        if (TEMP_HIDE_ITEM) {
             penColorBtn.setVisibility(View.GONE);
         }
     }
@@ -258,8 +258,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onBackgroundChanged(int newBackground) {
-        final NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(newBackground);
-        changeBGAction.execute(ScribbleActivity.this, null);
+        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(newBackground);
+        changeBGAction.execute(ScribbleActivity.this);
     }
 
     private HashMap<String, Integer> getItemViewDataMap() {
@@ -398,7 +398,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         erasePoint = null;
         drawPage();
         RemoveByPointListAction<ScribbleActivity> removeByPointListAction = new RemoveByPointListAction<>(pointList);
-        removeByPointListAction.execute(this, null);
+        removeByPointListAction.execute(this);
     }
 
     @Override
@@ -453,13 +453,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction action = new CheckNoteNameLegalityAction(input);
+                final CheckNoteNameLegalityAction<ScribbleActivity> action = new CheckNoteNameLegalityAction<ScribbleActivity>(input);
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        if(action.isLegal()){
+                        if (action.isLegal()) {
                             onDocumentClose(input);
-                        }else {
+                        } else {
                             showNoteNameIllegal();
                         }
                     }
@@ -477,7 +477,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             public void onDiscardAction() {
                 dialogNoteNameInput.dismiss();
                 final DocumentDiscardAction<ScribbleActivity> discardAction = new DocumentDiscardAction<>(null);
-                discardAction.execute(ScribbleActivity.this, null);
+                discardAction.execute(ScribbleActivity.this);
             }
         });
         syncWithCallback(true, false, new BaseCallback() {
@@ -494,14 +494,14 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
                 .setAlertMsgString(getString(R.string.note_name_already_exist))
                 .setEnableNegativeButton(false).setCanceledOnTouchOutside(false)
-        .setPositiveAction(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                illegalDialog.dismiss();
-                syncWithCallback(true,true,null);
-            }
-        }));
-        illegalDialog.show(getFragmentManager(),"illegalDialog");
+                .setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        illegalDialog.dismiss();
+                        syncWithCallback(true, true, null);
+                    }
+                }));
+        illegalDialog.show(getFragmentManager(), "illegalDialog");
     }
 
     private void onDocumentClose(final String title) {
@@ -509,7 +509,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), title);
-                closeAction.execute(ScribbleActivity.this, null);
+                closeAction.execute(ScribbleActivity.this);
             }
         });
     }
@@ -519,7 +519,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle);
-                closeAction.execute(ScribbleActivity.this, null);
+                closeAction.execute(ScribbleActivity.this);
             }
         });
     }
@@ -547,7 +547,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final UndoAction<ScribbleActivity> undoAction = new UndoAction<>();
-                undoAction.execute(ScribbleActivity.this, null);
+                undoAction.execute(ScribbleActivity.this);
 
             }
         });
@@ -558,7 +558,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final RedoAction<ScribbleActivity> redoAction = new RedoAction<>();
-                redoAction.execute(ScribbleActivity.this, null);
+                redoAction.execute(ScribbleActivity.this);
             }
         });
     }
@@ -603,7 +603,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     getWindow().getDecorView(),
                     penColorBtn.getLeft() + (penColorBtn.getWidth() / 2) - (getResources().getDimensionPixelSize(R.dimen.pen_color_popup_width) / 2),
                     getWindow().getDecorView().getHeight() -
-                            getResources().getDimensionPixelSize(R.dimen.sub_menu_height) -
+                            getResources().getDimensionPixelSize(R.dimen.mx_note_menu_height) -
                             getResources().getDimensionPixelSize(R.dimen.pen_color_popup_height) - 10,
                     new PenColorPopupMenu.PopupMenuCallback() {
                         @Override
@@ -623,7 +623,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         penColorPopupMenu.show();
     }
 
-    private void onColorChange(final int currentPenColor){
+    private void onColorChange(final int currentPenColor) {
         setStrokeColor(currentPenColor);
         syncWithCallback(true, true, null);
     }
@@ -635,12 +635,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void handleDocumentCreate(final String uniqueId, final String parentId) {
         final DocumentCreateAction<ScribbleActivity> action = new DocumentCreateAction<>(uniqueId, parentId);
-        action.execute(this, null);
+        action.execute(this);
     }
 
     private void handleDocumentEdit(final String uniqueId, final String parentId) {
         final DocumentEditAction<ScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
-        action.execute(this, null);
+        action.execute(this);
     }
 
     private void syncWithCallback(boolean render,
@@ -651,7 +651,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 render,
                 resume,
                 shapeDataInfo.getDrawingArgs());
-        action.execute(this, callback);
+        if (callback == null) {
+            action.execute(this);
+        } else {
+            action.execute(this, callback);
+        }
     }
 
     private void onAddNewPage() {
@@ -659,7 +663,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
-                action.execute(ScribbleActivity.this, null);
+                action.execute(ScribbleActivity.this);
             }
         });
     }
@@ -669,7 +673,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
-                action.execute(ScribbleActivity.this, null);
+                action.execute(ScribbleActivity.this);
             }
         });
     }
@@ -679,19 +683,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
-                action.execute(ScribbleActivity.this, null);
+                action.execute(ScribbleActivity.this);
             }
         });
-    }
-
-    public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
-        updateDataInfo(request);
-        if (request.isAbort()) {
-            return;
-        }
-        if (updatePage) {
-            drawPage();
-        }
     }
 
     private int getCurrentShapeType() {
@@ -718,7 +712,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private int indexOf(int shapeType) {
         int pen = PenType.shapeToPen(shapeType);
         final List<GObject> list = getPenStyleAdapter().getList();
-        for(int i = 0; i < list.size(); ++i) {
+        for (int i = 0; i < list.size(); ++i) {
             int value = Integer.decode(GAdapterUtil.getUniqueId(list.get(i)));
             if (value == pen) {
                 return i;
@@ -795,7 +789,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void drawStashShape(final Canvas canvas, final Paint paint) {
         final List<Shape> stash = getNoteViewHelper().getDirtyStash();
-        for(Shape shape : stash) {
+        for (Shape shape : stash) {
             shape.render(canvas, paint, null);
         }
     }
@@ -863,12 +857,23 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     @Override
-    public void afterBackgroundChange() {
-
+    public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submit(this, request, callback);
     }
 
     @Override
-    public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
-        getNoteViewHelper().submit(this, request, callback);
+    public void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submitRequestWithIdentifier(this, identifier, request, callback);
+    }
+
+    @Override
+    public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
+        updateDataInfo(request);
+        if (request.isAbort()) {
+            return;
+        }
+        if (updatePage) {
+            drawPage();
+        }
     }
 }

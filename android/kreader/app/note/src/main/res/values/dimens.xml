@@ -4,11 +4,12 @@
     <dimen name="activity_vertical_margin">0dp</dimen>
     <dimen name="scribble_bg_item_height">160dp</dimen>
     <dimen name="scribble_bg_item_width">107dp</dimen>
-    <dimen name="sub_menu_height">110dp</dimen>
+    <dimen name="mx_note_menu_height">110dp</dimen>
     <dimen name="note_style_width">480dp</dimen>
     <dimen name="pen_width_popup_height">80dp</dimen>
     <dimen name="note_bg_popup_width">140dp</dimen>
     <dimen name="note_bg_popup_height">140dp</dimen>
     <dimen name="pen_color_popup_width">60dp</dimen>
     <dimen name="pen_color_popup_height">125dp</dimen>
+    <dimen name="onyx_note_menu_height">53dp</dimen>
 </resources>

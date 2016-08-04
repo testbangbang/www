@@ -3,8 +3,8 @@ package com.onyx.android.note.actions.common;
 import android.app.Activity;
 
 import com.onyx.android.note.actions.BaseNoteAction;
-import com.onyx.android.note.activity.mx.ManageActivity;
-import com.onyx.android.note.activity.mx.ScribbleActivity;
+import com.onyx.android.note.activity.BaseManagerActivity;
+import com.onyx.android.note.activity.BaseScribbleActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.request.note.NoteNameCheckLegalityRequest;
@@ -29,16 +29,16 @@ public class CheckNoteNameLegalityAction<T extends Activity> extends BaseNoteAct
     @Override
     public void execute(T activity, final BaseCallback callback) {
         final NoteNameCheckLegalityRequest legalityRequest = new NoteNameCheckLegalityRequest(targetName);
-        if (activity instanceof ScribbleActivity) {
-            ((ScribbleActivity) activity).getNoteViewHelper().submit(activity, legalityRequest, new BaseCallback() {
+        if (activity instanceof BaseScribbleActivity) {
+            ((BaseScribbleActivity) activity).submitRequest(legalityRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     isLegal = legalityRequest.isLegal();
                     callback.done(request, e);
                 }
             });
-        } else if (activity instanceof ManageActivity) {
-            ((ManageActivity) activity).getNoteViewHelper().submit(activity, legalityRequest, new BaseCallback() {
+        } else if (activity instanceof BaseManagerActivity) {
+            ((BaseManagerActivity) activity).submitRequest(legalityRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     isLegal = legalityRequest.isLegal();

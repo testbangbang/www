@@ -41,6 +41,7 @@ public final class GAdapterUtil {
     public static final String TAG_ORIGIN_OBJ = "origin_obj";
     public static final String TAG_SELECTABLE = "selectable";
     public static final String TAG_DIVIDER_VIEW = "divider_view";
+    public static final String TAG_MENU_CLOSE_AFTER_CLICK = "menu_close_after_click";
 
     public static GObject createThumbnailItem(int titleResource, int subTitleResource, int imageResource, int layoutResource,
                                               Map<String, Integer> layoutMapping) {
