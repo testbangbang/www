@@ -9,6 +9,7 @@ import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.kreader.dataprovider.request.LoadDocumentOptionsRequest;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.CreateViewRequest;
 import com.onyx.kreader.host.request.OpenRequest;
@@ -54,11 +55,11 @@ public class OpenDocumentAction extends BaseAction {
                 }
                 if (loadDocumentOptionsRequest.getDocumentOptions() != null &&
                         loadDocumentOptionsRequest.getDocumentOptions().getOrientation() > 0) {
-                    int orientation = loadDocumentOptionsRequest.getDocumentOptions().getOrientation();
-                    Debug.d("current orientation: " + activity.getRequestedOrientation() +
-                            ", target orientation: " + orientation);
-                    if (activity.getRequestedOrientation() != orientation) {
-                        readerDataHolder.getEventBus().post(new ChangeOrientationEvent(orientation));
+                    int current = ReaderDeviceManager.getScreenOrientation(activity);
+                    int target = loadDocumentOptionsRequest.getDocumentOptions().getOrientation();
+                    Debug.d("current orientation: " + current + ", target orientation: " + target);
+                    if (current != target) {
+                        readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
                         hideLoadingDialog();
                         return;
                     }
