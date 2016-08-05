@@ -20,9 +20,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,14 +125,21 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
         updatePageIndicator(0,0);
     }
 
-    private void test(){
+    private void loadSearchData(){
         searchList.clear();
-        searchList.add("test data");
-        searchList.add("test data");
-        searchList.add("test data");
-        searchList.add("test data");
-        searchList.add("test data");
-        searchList.add("test data");
+        final String query = searchEditText.getText().toString();
+        if (StringUtils.isNullOrEmpty(query)){
+            return;
+        }
+        new SearchContentAction(PagePositionUtils.fromPageNumber(0),query,true).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                List<ReaderSelection> searchResults = readerDataHolder.getReader().getSearchManager().searchResults();
+                for (ReaderSelection selection : searchResults) {
+                    searchList.add(selection.getLeftText().trim() + query + selection.getRightText().trim());
+                }
+            }
+        });
     }
 
     @Override
@@ -135,7 +148,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
             hide();
         }else if (v.equals(btnSearch)){
             hideSoftInputWindow();
-            test();
+            loadSearchData();
 
             pageRecyclerView.postDelayed(new Runnable() {
                 @Override

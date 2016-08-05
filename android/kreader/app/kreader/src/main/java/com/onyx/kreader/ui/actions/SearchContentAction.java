@@ -23,16 +23,24 @@ public class SearchContentAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
+        execute(readerDataHolder,null);
+    }
+
+    @Override
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         SearchRequest request = new SearchRequest(page, query, false, false, forward);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), request, new BaseCallback() {
             @Override
             public void done(final BaseRequest request, Throwable e) {
-                onSearchFinished((SearchRequest)request, e,readerDataHolder);
+                if (baseCallback != null){
+                    baseCallback.done(request,e);
+                }
+//                onSearchFinished((SearchRequest)request, e,readerDataHolder);
             }
         });
     }
 
-    public void onSearchFinished(SearchRequest request, Throwable e,ReaderDataHolder readerDataHolder) {
+    public void onSearchFinished(SearchRequest request, Throwable e, ReaderDataHolder readerDataHolder) {
         if (e != null) {
             return;
         }
