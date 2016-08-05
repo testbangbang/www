@@ -25,60 +25,84 @@ public class LegacySdkDataUtils {
 
     public static boolean saveMetadata(final Context context, final String documentPath,
                                          final ReaderDocumentMetadata metadata) {
-        OnyxMetadata data = getMetadataByPath(documentPath);
-        if (data == null) {
-            Log.w(TAG, "saveMetadata: create file metadata failed, " + documentPath);
+        try {
+            OnyxMetadata data = getMetadataByPath(documentPath);
+            if (data == null) {
+                Log.w(TAG, "saveMetadata: create file metadata failed, " + documentPath);
+                return false;
+            }
+            // get metadata from cms will overwrite existing data, so we update metadata after it
+            if (!OnyxCmsCenter.getMetadata(context, data)) {
+                initDataWithDocumentMetadata(data, metadata);
+                return OnyxCmsCenter.insertMetadata(context, data);
+            }
+
+            initDataWithDocumentMetadata(data, metadata);
+            return OnyxCmsCenter.updateMetadata(context, data);
+        } catch (Throwable tr) {
             return false;
         }
-        // get metadata from cms will overwrite existing data, so we update metadata after it
-        if (!OnyxCmsCenter.getMetadata(context, data)) {
-            initDataWithDocumentMetadata(data, metadata);
-            return OnyxCmsCenter.insertMetadata(context, data);
-        }
-
-        initDataWithDocumentMetadata(data, metadata);
-        return OnyxCmsCenter.updateMetadata(context, data);
     }
 
     public static boolean updateProgress(final Context context, final String documentPath,
                                          final int currentPage, final int totalPage) {
-        OnyxMetadata data = getMetadataByPath(documentPath);
-        if (data == null) {
-            Log.w(TAG, "updateProgress: create file metadata failed, " + documentPath);
+        try {
+            OnyxMetadata data = getMetadataByPath(documentPath);
+            if (data == null) {
+                Log.w(TAG, "updateProgress: create file metadata failed, " + documentPath);
+                return false;
+            }
+            if (!OnyxCmsCenter.getMetadata(context, data)) {
+                return false;
+            }
+            data.setProgress(new OnyxBookProgress(currentPage + 1, totalPage));
+            data.updateLastAccess();
+            return OnyxCmsCenter.updateMetadata(context, data);
+        } catch (Throwable tr) {
             return false;
         }
-        if (!OnyxCmsCenter.getMetadata(context, data)) {
-            return false;
-        }
-        data.setProgress(new OnyxBookProgress(currentPage + 1, totalPage));
-        data.updateLastAccess();
-        return OnyxCmsCenter.updateMetadata(context, data);
     }
 
     public static boolean saveThumbnail(final Context context, final String documentPath,
                                         final Bitmap bitmap) {
-        OnyxMetadata data = getMetadataByPath(documentPath);
-        if (data == null) {
-            Log.w(TAG, "saveThumbnail: create file metadata failed, " + documentPath);
+        try {
+            OnyxMetadata data = getMetadataByPath(documentPath);
+            if (data == null) {
+                Log.w(TAG, "saveThumbnail: create file metadata failed, " + documentPath);
+                return false;
+            }
+            // insert thumbnail is heavy, so we check it first
+            if (OnyxCmsCenter.hasThumbnail(context, data)) {
+                return true;
+            }
+            return OnyxCmsCenter.insertThumbnail(context, data, bitmap);
+        } catch (Throwable tr) {
             return false;
         }
-        // insert thumbnail is heavy, so we check it first
-        if (OnyxCmsCenter.hasThumbnail(context, data)) {
-            return true;
-        }
-        return OnyxCmsCenter.insertThumbnail(context, data, bitmap);
     }
 
     public static OnyxDictionaryInfo getDictionary(final Context context) {
-        return OnyxSysCenter.getDictionary(context);
+        try {
+            return OnyxSysCenter.getDictionary(context);
+        } catch (Throwable tr) {
+            return OnyxDictionaryInfo.getDefaultDictionary();
+        }
     }
 
     public static int getScreenUpdateGCInterval(final Context context, int defaultIntervalCount) {
-        return OnyxSysCenter.getScreenUpdateGCInterval(context, defaultIntervalCount);
+        try {
+            return OnyxSysCenter.getScreenUpdateGCInterval(context, defaultIntervalCount);
+        } catch (Throwable tr) {
+            return 5;
+        }
     }
 
     public static void setScreenUpdateGCInterval(final Context context, final int newValue) {
-        OnyxSysCenter.setScreenUpdateGCInterval(context, newValue);
+        try {
+            OnyxSysCenter.setScreenUpdateGCInterval(context, newValue);
+        } catch (Throwable tr) {
+
+        }
     }
 
     private static OnyxMetadata getMetadataByPath(final String documentPath) {
