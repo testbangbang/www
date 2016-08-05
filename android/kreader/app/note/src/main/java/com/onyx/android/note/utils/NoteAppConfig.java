@@ -1,19 +1,9 @@
 package com.onyx.android.note.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
-import android.preference.PreferenceActivity;
-import android.provider.Settings;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSONArray;
 import com.onyx.android.note.BuildConfig;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;

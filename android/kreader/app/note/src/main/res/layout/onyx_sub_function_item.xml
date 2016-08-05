@@ -3,19 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:layout_marginTop="@dimen/onyx_note_sub_menu_img_top_margin"
+        android:id="@+id/item_img"
+        android:layout_width="@dimen/onyx_note_item_img_size"
+        android:layout_height="@dimen/onyx_note_item_img_size"
+        android:scaleType="fitCenter"
+        android:layout_centerHorizontal="true" />
+
     <RadioButton
-        android:id="@+id/pen_indicator"
+        android:id="@+id/item_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:focusable="false"
+        android:layout_below="@id/item_img"
         android:clickable="false"
+        android:visibility="gone"
         android:button="@drawable/note_check_indicator" />
 
-    <ImageView
-        android:id="@+id/pen_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/pen_indicator"
-        android:layout_centerHorizontal="true" />
 </RelativeLayout>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.onyx.android.note.activity.mx.ManagerActivity">
 
-    <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+    <android.support.v7.widget.Toolbar style="@style/MxToolBarStyle">
 
         <RelativeLayout
             android:layout_width="match_parent"
