@@ -1,55 +1,67 @@
 package com.onyx.kreader.ui.actions;
 
+import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.request.SearchRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.dialog.PopupSearchMenu;
+import com.onyx.kreader.utils.PagePositionUtils;
+
+import java.util.List;
 
 /**
  * Created by Joy on 2016/5/31.
  */
 public class SearchContentAction extends BaseAction {
+    private static final String TAG = SearchContentAction.class.getSimpleName();
 
-    private String page;
     private String query;
-    private boolean forward;
+    private OnSearchContentCallBack onSearchContentCallBack;
+    private boolean stopSearch = false;
 
-    public SearchContentAction(final String page, final String query, final boolean forward) {
-        this.page = page;
+    public interface OnSearchContentCallBack{
+        void OnNext(List<ReaderSelection> results);
+    }
+
+    public SearchContentAction(final String query) {
         this.query = query;
-        this.forward = forward;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        execute(readerDataHolder,null);
+        execute(readerDataHolder,onSearchContentCallBack);
     }
 
-    @Override
-    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        SearchRequest request = new SearchRequest(page, query, false, false, forward);
+    public void execute(final ReaderDataHolder readerDataHolder, final OnSearchContentCallBack onSearchContentCallBack) {
+        this.onSearchContentCallBack = onSearchContentCallBack;
+        stopSearch = false;
+        requestSearchBySequence(readerDataHolder,0,query);
+    }
+
+    private void requestSearchBySequence(final ReaderDataHolder readerDataHolder, final int page, final String query){
+        if (page >= readerDataHolder.getPageCount() || stopSearch){
+            return;
+        }
+        SearchRequest request = new SearchRequest(PagePositionUtils.fromPageNumber(page), query, false, false, true);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), request, new BaseCallback() {
             @Override
             public void done(final BaseRequest request, Throwable e) {
-                if (baseCallback != null){
-                    baseCallback.done(request,e);
+                List<ReaderSelection> selections = readerDataHolder.getReader().getSearchManager().searchResults();
+                Log.d(TAG, "result: " + JSON.toJSONString(selections));
+                Log.d(TAG, "page: " + page);
+                if (onSearchContentCallBack != null){
+                    onSearchContentCallBack.OnNext(selections);
                 }
-//                onSearchFinished((SearchRequest)request, e,readerDataHolder);
+                int next = page + 1;
+                requestSearchBySequence(readerDataHolder,next,query);
             }
         });
     }
 
-    public void onSearchFinished(SearchRequest request, Throwable e, ReaderDataHolder readerDataHolder) {
-        if (e != null) {
-            return;
-        }
-
-        PopupSearchMenu.SearchResult result = PopupSearchMenu.SearchResult.EMPTY;
-        if (request.getReaderUserDataInfo().hasSearchResults()) {
-            result = PopupSearchMenu.SearchResult.SUCCEED;
-            readerDataHolder.onRenderRequestFinished(request, e);
-        }
-        new ShowSearchMenuAction(request.getSearchOptions(), result).execute(readerDataHolder);
+    public void stopSearch(){
+        stopSearch = true;
     }
 }
