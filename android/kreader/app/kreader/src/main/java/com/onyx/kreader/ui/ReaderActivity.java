@@ -298,21 +298,12 @@ public class ReaderActivity extends ActionBarActivity {
                 quitApplication(null);
             } else if (action.equals(Intent.ACTION_VIEW)) {
                 openFileFromIntent();
-            } else if (action.equals(Intent.ACTION_SEARCH)) {
-                searchContent(getIntent(), true);
             }
             return true;
         } catch (java.lang.Exception e) {
             e.printStackTrace();
         }
         return false;
-    }
-
-    private void searchContent(Intent intent, boolean forward) {
-        final String query = intent.getStringExtra(SearchManager.QUERY);
-        if (StringUtils.isNotBlank(query)) {
-            new SearchContentAction(getReaderDataHolder().getCurrentPageName(), query, forward).execute(getReaderDataHolder());
-        }
     }
 
     private void openFileFromIntent() {

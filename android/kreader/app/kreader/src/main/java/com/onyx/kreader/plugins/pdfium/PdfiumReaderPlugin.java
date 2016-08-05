@@ -308,7 +308,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         searchResults.clear();
         int page = Integer.parseInt(options.fromPage());
         for (int i = page; i >= 0; i--) {
-            if (searchInPage(i, options)) {
+            if (searchInPage(i, options,false)) {
                 return true;
             }
         }
@@ -319,14 +319,17 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         searchResults.clear();
         int page = Integer.parseInt(options.fromPage());
         for (int i = page; i < getTotalPage(); i++) {
-            if (searchInPage(i, options)) {
+            if (searchInPage(i, options,false)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean searchInPage(final int currentPage, final ReaderSearchOptions options) {
+    public boolean searchInPage(final int currentPage, final ReaderSearchOptions options, boolean clear) {
+        if (clear){
+            searchResults.clear();
+        }
         getPluginImpl().searchInPage(currentPage, 0, 0,
                 getViewOptions().getViewWidth(),
                 getViewOptions().getViewHeight(),

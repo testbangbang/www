@@ -393,6 +393,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     jbyte * stringData = new jbyte[length + 2];
     memset(stringData, 0, length + 2);
     memcpy(stringData, temp, length);
+    env->ReleaseByteArrayElements(array,temp,0);
     int flags = 0;
     if (caseSensitive) {
         flags |= FPDF_MATCHCASE;

@@ -458,6 +458,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean searchInPage(int currentPage, ReaderSearchOptions options,boolean clear) {
+        return false;
+    }
+
+    @Override
     public List<ReaderSelection> searchResults() {
         return null;
     }

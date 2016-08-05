@@ -298,6 +298,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return false;
     }
 
+    @Override
+    public boolean searchInPage(int currentPage, ReaderSearchOptions options, boolean clear) {
+        return false;
+    }
+
     public List<ReaderSelection> searchResults() {
         return null;
     }
