@@ -1,8 +1,5 @@
 package com.onyx.kreader.ui.actions;
 
-import android.util.Log;
-
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.api.ReaderSelection;
@@ -45,13 +42,11 @@ public class SearchContentAction extends BaseAction {
         if (page >= readerDataHolder.getPageCount() || stopSearch){
             return;
         }
-        SearchRequest request = new SearchRequest(PagePositionUtils.fromPageNumber(page), query, false, false, true);
+        SearchRequest request = new SearchRequest(PagePositionUtils.fromPageNumber(page), query, false, false,readerDataHolder);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), request, new BaseCallback() {
             @Override
             public void done(final BaseRequest request, Throwable e) {
-                List<ReaderSelection> selections = readerDataHolder.getReader().getSearchManager().searchResults();
-                Log.d(TAG, "result: " + JSON.toJSONString(selections));
-                Log.d(TAG, "page: " + page);
+                List<ReaderSelection> selections = readerDataHolder.getReaderUserDataInfo().getSearchResults();
                 if (onSearchContentCallBack != null){
                     onSearchContentCallBack.OnNext(selections);
                 }

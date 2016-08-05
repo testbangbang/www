@@ -1,13 +1,15 @@
 package com.onyx.kreader.host.request;
 
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.api.ReaderSearchOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.impl.ReaderSearchOptionsImpl;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.List;
 
@@ -17,27 +19,23 @@ import java.util.List;
 public class SearchRequest extends BaseReaderRequest {
 
     private ReaderSearchOptionsImpl searchOptions;
-    private boolean searchForward;
+    private String currentPage;
+    private ReaderDataHolder readerDataHolder;
 
-    public SearchRequest(final String fromPage, final String text,  boolean caseSensitive, boolean match, boolean forward) {
-        searchOptions = new ReaderSearchOptionsImpl(fromPage, text, caseSensitive, match);
-        searchForward = forward;
+    public SearchRequest(final String currentPage, final String text, boolean caseSensitive, boolean match, ReaderDataHolder readerDataHolder) {
+        searchOptions = new ReaderSearchOptionsImpl(currentPage, text, caseSensitive, match);
+        this.currentPage = currentPage;
+        this.readerDataHolder = readerDataHolder;
     }
 
     // in document coordinates system. forward to layout manager to scale
     public void execute(final Reader reader) throws Exception {
         createReaderViewInfo();
         reader.getReaderLayoutManager().getPageManager().collectVisiblePages();
-        if (searchForward) {
-            reader.getSearchManager().searchNext(searchOptions);
-        } else {
-            reader.getSearchManager().searchPrevious(searchOptions);
-        }
+        reader.getSearchManager().searchInPage(PagePositionUtils.getPageNumber(currentPage),searchOptions,true);
         if (reader.getSearchManager().searchResults().size() > 0) {
-            final String page = reader.getSearchManager().searchResults().get(0).getPagePosition();
-            new GotoLocationRequest(page).execute(reader);
             LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
-            getReaderUserDataInfo().saveSearchResults(translateToScreen(reader.getSearchManager().searchResults()));
+            readerDataHolder.getReaderUserDataInfo().saveSearchResults(translateToScreen(reader.getSearchManager().searchResults()));
         }
     }
 

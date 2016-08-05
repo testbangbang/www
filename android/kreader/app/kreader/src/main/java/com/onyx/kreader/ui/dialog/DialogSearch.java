@@ -24,6 +24,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -39,7 +40,9 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
     private static int SEARCH_CONTENT_ROW = 4;
 
     private ReaderDataHolder readerDataHolder;
+    private SearchContentAction searchContentAction;
     private int currentPagePosition = 0;
+
     private Button btnSearch;
     private PageRecyclerView pageRecyclerView;
     private ImageView back;
@@ -48,7 +51,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
     private TextView title;
     private EditText searchEditText;
 
-    private List<String> searchList = new ArrayList<>();
+    private List<ReaderSelection> searchList = new ArrayList<>();
 
     public DialogSearch(final ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
@@ -128,18 +131,18 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
         if (StringUtils.isNullOrEmpty(query)){
             return;
         }
-        new SearchContentAction(query).execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
+
+        searchContentAction = new SearchContentAction(query);
+        searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
             @Override
             public void OnNext(final List<ReaderSelection> results) {
                 if (results == null || results.size() < 1){
                     return;
                 }
                 final int hasCount = searchList.size();
-                for (ReaderSelection selection : results) {
-                    searchList.add(selection.getLeftText().trim() + query + selection.getRightText().trim());
-                }
+                searchList.addAll(results);
                 updatePageIndicator(currentPagePosition,pageRecyclerView.getAdapter().getItemCount());
-                pageRecyclerView.getAdapter().notifyItemRangeInserted(hasCount > 0 ? hasCount - 1 : 0,results.size());
+                pageRecyclerView.getAdapter().notifyItemRangeInserted(hasCount,results.size());
             }
         });
     }
@@ -147,10 +150,16 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.equals(back)){
-            hide();
+            hideSearchDialog();
         }else if (v.equals(btnSearch)){
             hideSoftInputWindow();
             loadSearchData();
+        }
+    }
+
+    private void stopSearch(){
+        if (searchContentAction != null){
+            searchContentAction.stopSearch();
         }
     }
 
@@ -159,17 +168,26 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
         imm.hideSoftInputFromWindow(searchEditText.getWindowToken(),0);
     }
 
-    private static class SearchViewHolder extends RecyclerView.ViewHolder{
+    private class SearchViewHolder extends RecyclerView.ViewHolder{
 
         private TextView contentTextView;
+        private ReaderSelection readerSelection;
 
         public SearchViewHolder(View itemView) {
             super(itemView);
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hideSearchDialog();
+                    new GotoPageAction(readerSelection.getPagePosition()).execute(readerDataHolder);
+                }
+            });
             contentTextView = (TextView)itemView.findViewById(R.id.search_content);
         }
 
-        public void bindView(String content,String search){
+        public void bindView(ReaderSelection selection,String search){
+            readerSelection = selection;
+            String content = selection.getLeftText().trim() + search + selection.getRightText().trim();
             SpannableStringBuilder style = new SpannableStringBuilder(content);
             int start = content.indexOf(search);
             if (start < 0){
@@ -190,5 +208,10 @@ public class DialogSearch extends Dialog implements View.OnClickListener {
         String total = String.format(readerDataHolder.getContext().getString(R.string.total_page),searchList.size());
         pageIndicator.setText(indicator);
         totalPage.setText(total);
+    }
+
+    private void hideSearchDialog(){
+        hide();
+        stopSearch();
     }
 }
