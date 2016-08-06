@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.onyx.ManagerActivity" />
-        <activity android:name=".activity.onyx.ScribbleActivity"></activity>
+        <activity android:name=".activity.onyx.ScribbleActivity"/>
     </application>
 
 </manifest>
