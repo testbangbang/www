@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.shape;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
@@ -28,11 +29,9 @@ public class CircleShape extends BaseShape {
         float sy = getDownPoint().getY();
         float ex = getCurrentPoint().getX();
         float ey = getCurrentPoint().getY();
-        float cx = (sx + ex) / 2;
-        float cy = (sy + ey) / 2;
-        float radius = Math.min(Math.abs(ex - sx) / 2, Math.abs(ey - sy) / 2);
+        RectF rect = new RectF(sx, sy, ex, ey);
         applyStrokeStyle(paint);
-        canvas.drawCircle(cx, cy, radius, paint);
+        canvas.drawOval(rect, paint);
     }
 
 
