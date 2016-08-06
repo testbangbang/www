@@ -1,5 +1,7 @@
 package com.onyx.android.note.activity.onyx;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -7,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -56,6 +59,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
@@ -232,7 +236,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onExport() {
-
+        testSpan();
     }
 
     private void onSetting() {
@@ -913,5 +917,27 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (updatePage) {
             drawPage();
         }
+    }
+
+    private void testSpan() {
+        final List<Shape> stash = getNoteViewHelper().deatchStash();
+        final SpannableRequest spannableRequest = new SpannableRequest(stash);
+        getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final Dialog dlg = new Dialog(ScribbleActivity.this);
+                dlg.setContentView(R.layout.span_text_view);
+                dlg.setTitle("Message");
+                TextView textView = (TextView)dlg.findViewById(R.id.text_view);
+                textView.setText(spannableRequest.getSpannableStringBuilder());
+                syncWithCallback(true, false, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        dlg.show();
+                    }
+                });
+
+            }
+        });
     }
 }

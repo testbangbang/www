@@ -31,13 +31,9 @@ public class SpannableRequest extends BaseNoteRequest {
             return;
         }
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < shapeList.size(); ++i) {
-            builder.append(" ");
-        }
+        builder.append(" ");
         spannableStringBuilder = new SpannableStringBuilder(builder.toString());
-        for(int i = 0; i < shapeList.size(); ++i) {
-            spannableStringBuilder.setSpan(new ShapeSpan(shapeList.get(i)), i, i + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        }
+        spannableStringBuilder.setSpan(new ShapeSpan(shapeList), 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
     }
 
     public SpannableStringBuilder getSpannableStringBuilder() {
