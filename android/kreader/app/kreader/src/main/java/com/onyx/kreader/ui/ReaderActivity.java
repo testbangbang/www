@@ -11,6 +11,7 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -26,6 +27,7 @@ import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
@@ -65,6 +67,8 @@ public class ReaderActivity extends ActionBarActivity {
     private final static String TAG = ReaderActivity.class.getSimpleName();
     private static final String DOCUMENT_PATH_TAG = "document";
 
+    private PowerManager.WakeLock startupWakeLock;
+
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
@@ -78,6 +82,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        acquireStartupWakeLock();
         setFullScreen(true);
         setContentView(R.layout.activity_reader);
         initComponents();
@@ -133,6 +138,7 @@ public class ReaderActivity extends ActionBarActivity {
     protected void onDestroy() {
         resetMenus();
         closeDataHolder();
+        releaseStartupWakeLock();
         super.onDestroy();
     }
 
@@ -289,6 +295,20 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
+    private void acquireStartupWakeLock() {
+        if (startupWakeLock == null) {
+            startupWakeLock = Device.currentDevice().newWakeLock(this, "ReaderActivity");
+        }
+        startupWakeLock.acquire();
+    }
+
+    private void releaseStartupWakeLock() {
+        if (startupWakeLock != null && startupWakeLock.isHeld()) {
+            startupWakeLock.release();
+            startupWakeLock = null;
+        }
+    }
+
     private boolean handleActivityIntent() {
         try {
             String action = getIntent().getAction();
@@ -315,6 +335,7 @@ public class ReaderActivity extends ActionBarActivity {
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder());
+        releaseStartupWakeLock();
     }
 
     private void gotoPage(int page) {
