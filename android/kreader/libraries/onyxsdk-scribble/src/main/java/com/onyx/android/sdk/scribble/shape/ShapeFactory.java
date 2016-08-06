@@ -48,6 +48,9 @@ public class ShapeFactory {
             case ShapeFactory.SHAPE_TEXT:
                 shape = new TexShape();
                 break;
+            case ShapeFactory.SHAPE_TRIANGLE:
+                shape = new TriangleShape();
+                break;
             default:
                 shape = new NormalPencilShape();
                 break;
