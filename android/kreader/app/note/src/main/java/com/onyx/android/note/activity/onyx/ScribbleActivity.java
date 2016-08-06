@@ -21,7 +21,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.DocumentAddNewPageAction;
-import com.onyx.android.note.actions.scribble.DocumentCloseAction;
+import com.onyx.android.note.actions.scribble.DocumentSaveAction;
 import com.onyx.android.note.actions.scribble.DocumentCreateAction;
 import com.onyx.android.note.actions.scribble.DocumentDeletePageAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
@@ -62,16 +62,13 @@ import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_CIRCLE;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_LINE;
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_RECTANGLE;
 
 
 /**
@@ -243,7 +240,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onSave() {
-
+        syncWithCallback(true, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                saveDocument(false);
+            }
+        });
     }
 
     private void onRedo() {
@@ -531,14 +533,23 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     public void onBackPressed() {
         getNoteViewHelper().pauseDrawing();
-        if (Utils.ACTION_CREATE.equals(activityAction)) {
-            saveNewNoteDocument();
+        saveDocument(true);
+    }
+
+    private void saveDocument(boolean finishAfterSave) {
+        if (isNewDocument()) {
+            saveNewNoteDocument(finishAfterSave);
         } else {
-            saveExistingNoteDocument();
+            saveExistingNoteDocument(finishAfterSave);
         }
     }
 
-    private void saveNewNoteDocument() {
+    private boolean isNewDocument() {
+        return (Utils.ACTION_CREATE.equals(activityAction) || StringUtils.isNullOrEmpty(activityAction)) &&
+                StringUtils.isNullOrEmpty(noteTitle);
+    }
+
+    private void saveNewNoteDocument(final boolean finishAfterSave) {
         final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
         Bundle bundle = new Bundle();
         bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.save_note));
@@ -553,7 +564,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (action.isLegal()) {
-                            onDocumentClose(input);
+                            saveDocumentWithTitle(input, finishAfterSave);
                         } else {
                             showNoteNameIllegal();
                         }
@@ -599,24 +610,25 @@ public class ScribbleActivity extends BaseScribbleActivity {
         illegalDialog.show(getFragmentManager(), "illegalDialog");
     }
 
-    private void onDocumentClose(final String title) {
+    private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final DocumentCloseAction<ScribbleActivity> closeAction = new
-                        DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), title);
-                closeAction.execute(ScribbleActivity.this);
+                noteTitle = title;
+                final DocumentSaveAction<ScribbleActivity> closeAction = new
+                        DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+                closeAction.execute(ScribbleActivity.this, null);
             }
         });
     }
 
-    private void saveExistingNoteDocument() {
+    private void saveExistingNoteDocument(final boolean finishAfterSave) {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final DocumentCloseAction<ScribbleActivity> closeAction = new
-                        DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle);
-                closeAction.execute(ScribbleActivity.this);
+                final DocumentSaveAction<ScribbleActivity> closeAction = new
+                        DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+                closeAction.execute(ScribbleActivity.this, null);
             }
         });
     }

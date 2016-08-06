@@ -17,7 +17,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.DocumentAddNewPageAction;
-import com.onyx.android.note.actions.scribble.DocumentCloseAction;
+import com.onyx.android.note.actions.scribble.DocumentSaveAction;
 import com.onyx.android.note.actions.scribble.DocumentCreateAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentEditAction;
@@ -510,8 +510,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), title);
-                closeAction.execute(ScribbleActivity.this);
+                final DocumentSaveAction<ScribbleActivity> closeAction = new DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), title, true);
+                closeAction.execute(ScribbleActivity.this, null);
             }
         });
     }
@@ -520,8 +520,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final DocumentCloseAction<ScribbleActivity> closeAction = new DocumentCloseAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle);
-                closeAction.execute(ScribbleActivity.this);
+                final DocumentSaveAction<ScribbleActivity> closeAction = new DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, true);
+                closeAction.execute(ScribbleActivity.this, null);
             }
         });
     }
