@@ -7,12 +7,14 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 /**
  * Created by zhuzeng on 6/23/16.
  */
-public class NoteDocumentCloseRequest extends BaseNoteRequest {
+public class NoteDocumentSaveRequest extends BaseNoteRequest {
 
     private volatile String title;
+    private volatile boolean close;
 
-    public NoteDocumentCloseRequest(final String t) {
+    public NoteDocumentSaveRequest(final String t, boolean c) {
         title = t;
+        close = c;
         setPauseInputProcessor(true);
         setResumeInputProcessor(false);
     }
@@ -24,7 +26,9 @@ public class NoteDocumentCloseRequest extends BaseNoteRequest {
                 parent.getRenderBitmap(),
                 512,
                 512);
-        parent.close(getContext(), title);
+        if (close) {
+            parent.close(getContext(), title);
+        }
     }
 
 }
