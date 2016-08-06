@@ -411,7 +411,11 @@ public class ManagerActivity extends BaseManagerActivity {
         currentSelectMode = selectionMode;
         contentView.setSubLayoutParameter(R.layout.scribble_item,
                 getItemViewDataMap(selectionMode));
-        contentView.unCheckAllViews();
+        if (selectionMode == SelectionMode.MULTISELECT_MODE) {
+            contentView.unCheckOtherViews(0, false);
+        } else {
+            contentView.unCheckAllViews(true);
+        }
         contentView.setupContent(getRows(), getColumns(), adapter, 0, true);
         updateButtonsStatusByMode();
     }

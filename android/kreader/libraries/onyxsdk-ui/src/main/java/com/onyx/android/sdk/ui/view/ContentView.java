@@ -1234,9 +1234,17 @@ public class ContentView extends RelativeLayout {
     }
 
     public void unCheckAllViews() {
-        for (int i = 1; i < adapter.getList().size(); i++) {
+        unCheckAllViews(false);
+    }
+
+    public void unCheckAllViews(boolean hideOtherIcon) {
+        for (int i = 0; i < adapter.getList().size(); i++) {
             GObject temp = adapter.getList().get(i);
-            temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, false);
+            if (hideOtherIcon) {
+                temp.removeObject(GAdapterUtil.TAG_SELECTABLE);
+            } else {
+                temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, false);
+            }
             adapter.setObject(i, temp);
         }
     }

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@android:color/transparent">
 
     <com.onyx.android.sdk.ui.view.ContentView
         android:background="@android:color/white"
         android:id="@+id/layout_sub_menu"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_height="@dimen/mx_note_menu_height" />
+        android:layout_height="@dimen/onyx_sub_note_menu_height" />
 
     <View
         android:id="@+id/subMenuTopBoundary"
@@ -24,4 +24,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent" />
-</RelativeLayout>
+</merge>

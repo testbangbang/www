@@ -6,7 +6,7 @@
     tools:context="com.onyx.android.note.activity.mx.ScribbleActivity">
 
     <android.support.v7.widget.Toolbar
-        style="@style/OnyxToolBarStyle"
+        style="@style/MxToolBarStyle"
         android:layout_alignParentTop="true">
 
         <RelativeLayout
