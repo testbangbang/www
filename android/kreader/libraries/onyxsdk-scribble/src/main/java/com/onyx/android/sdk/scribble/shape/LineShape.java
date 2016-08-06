@@ -28,7 +28,7 @@ public class LineShape extends BaseShape {
         float sx = getDownPoint().getX();
         float sy = getDownPoint().getY();
         float ex = getCurrentPoint().getX();
-            float ey = getCurrentPoint().getY();
+        float ey = getCurrentPoint().getY();
 
         applyStrokeStyle(paint);
         canvas.drawLine(sx, sy, ex, ey, paint);

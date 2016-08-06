@@ -31,10 +31,6 @@ public class DocumentFlushAction<T extends BaseScribbleActivity> extends BaseNot
         drawingArgs = args;
     }
 
-    public void execute(final T activity) {
-        execute(activity, null);
-    }
-
     @Override
     public void execute(final T activity, final BaseCallback callback) {
         flushRequest = new PageFlushRequest(shapeList, render, resumeDrawing, drawingArgs);
@@ -42,9 +38,7 @@ public class DocumentFlushAction<T extends BaseScribbleActivity> extends BaseNot
             @Override
             public void done(BaseRequest request, Throwable e) {
                 activity.onRequestFinished(flushRequest, true);
-                if (callback != null) {
-                    callback.done(request, e);
-                }
+                callback.invoke(callback, request, e);
             }
         });
     }

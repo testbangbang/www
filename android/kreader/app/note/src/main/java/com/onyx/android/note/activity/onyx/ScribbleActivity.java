@@ -58,6 +58,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -324,22 +325,22 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onEraseClicked(false);
                 break;
             case ScribbleSubMenuID.NORMAL_PEN_STYLE:
-                onNoteShapeChanged(true, true, SHAPE_PENCIL_SCRIBBLE, 3.0f, null);
+                onNoteShapeChanged(true, true, ShapeFactory.SHAPE_PENCIL_SCRIBBLE, null);
                 break;
             case ScribbleSubMenuID.BRUSH_PEN_STYLE:
-                onNoteShapeChanged(true, true, SHAPE_BRUSH_SCRIBBLE, 7.0f, null);
+                onNoteShapeChanged(true, true, ShapeFactory.SHAPE_BRUSH_SCRIBBLE, null);
                 break;
             case ScribbleSubMenuID.LINE_STYLE:
-                onNoteShapeChanged(true, false, SHAPE_LINE, 3.0f, null);
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_LINE, null);
                 break;
             case ScribbleSubMenuID.CIRCLE_STYLE:
-                onNoteShapeChanged(true, false, SHAPE_CIRCLE, 3.0f, null);
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_CIRCLE, null);
                 break;
             case ScribbleSubMenuID.RECT_STYLE:
-                onNoteShapeChanged(true, false, SHAPE_RECTANGLE, 3.0f, null);
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_RECTANGLE, null);
                 break;
             case ScribbleSubMenuID.TRIANGLE_STYLE:
-//                onNoteShapeChanged(true, false, SHAPE_TRIANGLE, 3.0f, null);
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE, null);
                 break;
             case ScribbleSubMenuID.BG_EMPTY:
                 onBackgroundChanged(NoteBackgroundType.EMPTY);
@@ -406,6 +407,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void handleActivityIntent(final Intent intent) {
         if (!intent.hasExtra(Utils.ACTION_TYPE)) {
+            handleDocumentCreate(ShapeUtils.generateUniqueId(), null);
             return;
         }
         activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
@@ -451,8 +453,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 ScribbleActivity.this.drawPage();
             }
 
-            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape) {
-                ScribbleActivity.this.drawPage();
+            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
+                if (last) {
+                    ScribbleActivity.this.drawPage();
+                }
             }
 
             public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
@@ -656,11 +660,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void onNoteShapeChanged(boolean render, boolean resume, int type, float width, BaseCallback callback) {
+    private void onNoteShapeChanged(boolean render, boolean resume, int type, BaseCallback callback) {
         setCurrentShapeType(type);
-        if (width > 0) {
-            setStrokeWidth(width);
-        }
         syncWithCallback(render, resume, callback);
     }
 
@@ -705,11 +706,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 render,
                 resume,
                 shapeDataInfo.getDrawingArgs());
-        if (callback == null) {
-            action.execute(this);
-        } else {
-            action.execute(this, callback);
-        }
+        action.execute(this, callback);
     }
 
     private void onAddNewPage() {

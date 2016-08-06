@@ -4,25 +4,34 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 /**
  * Created by zhuzeng on 4/20/16.
  */
 public class CircleShape extends BaseShape {
 
-    private TouchPoint downPoint = new TouchPoint();
-    private TouchPoint currentPoint = new TouchPoint();
-
     public int getType() {
         return ShapeFactory.SHAPE_CIRCLE;
     }
 
+    public boolean addMovePoint() {
+        return false;
+    }
+
+    public boolean hitTest(final float x, final float y, final float radius) {
+        return false;
+    }
 
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
-        float cx = (downPoint.x + currentPoint.x) / 2;
-        float cy = (downPoint.y + currentPoint.y) / 2;
-        float radius = Math.abs(cx - downPoint.x);
-        paint.setStyle(Paint.Style.STROKE);
+        float sx = getDownPoint().getX();
+        float sy = getDownPoint().getY();
+        float ex = getCurrentPoint().getX();
+        float ey = getCurrentPoint().getY();
+        float cx = (sx + ex) / 2;
+        float cy = (sy + ey) / 2;
+        float radius = Math.min(Math.abs(ex - sx) / 2, Math.abs(ey - sy) / 2);
+        applyStrokeStyle(paint);
         canvas.drawCircle(cx, cy, radius, paint);
     }
 

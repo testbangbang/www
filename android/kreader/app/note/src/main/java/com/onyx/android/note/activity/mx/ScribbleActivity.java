@@ -360,8 +360,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 ScribbleActivity.this.drawPage();
             }
 
-            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape) {
-                ScribbleActivity.this.drawPage();
+            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
+                if (last) {
+                    ScribbleActivity.this.drawPage();
+                }
             }
 
             public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
@@ -651,11 +653,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 render,
                 resume,
                 shapeDataInfo.getDrawingArgs());
-        if (callback == null) {
-            action.execute(this);
-        } else {
-            action.execute(this, callback);
-        }
+        action.execute(this, callback);
     }
 
     private void onAddNewPage() {

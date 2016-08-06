@@ -15,14 +15,16 @@ public class RectangleShape extends BaseShape {
         return ShapeFactory.SHAPE_RECTANGLE;
     }
 
+    public boolean addMovePoint() {
+        return false;
+    }
 
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
         RectF rect = new RectF(getDownPoint().x,
                 getDownPoint().y,
                 getCurrentPoint().x,
                 getCurrentPoint().y);
-        canvas.setMatrix(matrix);
-        paint.setStyle(Paint.Style.STROKE);
+        applyStrokeStyle(paint);
         canvas.drawRect(rect, paint);
     }
 
