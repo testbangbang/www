@@ -255,6 +255,15 @@ public class NoteDocument {
         return gotoPage(value);
     }
 
+    public boolean clearPage(final Context context, final int index) {
+        final NotePage notePage = getPageByIndex(index);
+        if (notePage == null) {
+            return false;
+        }
+        notePage.clear();
+        return true;
+    }
+
     public void removeShapesByTouchPointList(final Context context, final TouchPointList touchPointList, final float scale) {
         final NotePage notePage = getCurrentPage(context);
         notePage.removeShapesByTouchPointList(touchPointList, noteDrawingArgs.eraserRadius * scale);

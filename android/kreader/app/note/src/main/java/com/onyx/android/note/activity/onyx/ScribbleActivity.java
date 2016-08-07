@@ -23,20 +23,7 @@ import android.widget.TextView;
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
-import com.onyx.android.note.actions.scribble.DocumentAddNewPageAction;
-import com.onyx.android.note.actions.scribble.DocumentSaveAction;
-import com.onyx.android.note.actions.scribble.DocumentCreateAction;
-import com.onyx.android.note.actions.scribble.DocumentDeletePageAction;
-import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
-import com.onyx.android.note.actions.scribble.DocumentEditAction;
-import com.onyx.android.note.actions.scribble.DocumentFlushAction;
-import com.onyx.android.note.actions.scribble.GotoNextPageAction;
-import com.onyx.android.note.actions.scribble.GotoPrevPageAction;
-import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
-import com.onyx.android.note.actions.scribble.RedoAction;
-import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
-import com.onyx.android.note.actions.scribble.RemovePageAction;
-import com.onyx.android.note.actions.scribble.UndoAction;
+import com.onyx.android.note.actions.scribble.*;
 import com.onyx.android.note.activity.BaseScribbleActivity;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.data.ScribbleMenuCategory;
@@ -277,7 +264,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentDeletePageAction<ScribbleActivity> action = new DocumentDeletePageAction<>();
-                action.execute(ScribbleActivity.this);
+                action.execute(ScribbleActivity.this, null);
             }
         });
     }
@@ -700,8 +687,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            RemovePageAction<ScribbleActivity> action = new RemovePageAction<>();
-            action.execute(this);
+            ClearPageAction<ScribbleActivity> action = new ClearPageAction<>();
+            action.execute(this, null);
         }
     }
 
