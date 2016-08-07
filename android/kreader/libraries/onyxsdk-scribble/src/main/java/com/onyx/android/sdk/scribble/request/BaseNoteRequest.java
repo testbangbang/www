@@ -68,7 +68,7 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public BaseNoteRequest() {
-        setAbortPendingTasks();
+        setAbortPendingTasks(true);
     }
 
     public void setDocUniqueId(final String id) {

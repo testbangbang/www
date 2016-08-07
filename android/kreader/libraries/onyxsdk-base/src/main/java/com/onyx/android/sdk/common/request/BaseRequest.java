@@ -59,8 +59,8 @@ public class BaseRequest {
         return abort;
     }
 
-    public void setAbortPendingTasks() {
-        abortPendingTasks = true;
+    public void setAbortPendingTasks(boolean abort) {
+        abortPendingTasks = abort;
     }
 
     public boolean isAbortPendingTasks() {

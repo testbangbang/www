@@ -217,7 +217,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSave();
+                onSave(false);
             }
         });
         settingBtn.setOnClickListener(new View.OnClickListener() {
@@ -243,11 +243,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     }
 
-    private void onSave() {
-        syncWithCallback(true, true, new BaseCallback() {
+    private void onSave(final boolean finishAfterSave) {
+        syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                saveDocument(false);
+                saveDocument(finishAfterSave);
             }
         });
     }
@@ -293,7 +293,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
                         @Override
                         public void dismiss() {
-                            syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+                            syncWithCallback(true, true, null);
                         }
 
                         @Override
@@ -349,20 +349,23 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE, null);
                 break;
             case ScribbleSubMenuID.BG_EMPTY:
-                onBackgroundChanged(NoteBackgroundType.EMPTY);
+                setBackgroundType(NoteBackgroundType.EMPTY);
+                onBackgroundChanged();
                 break;
             case ScribbleSubMenuID.BG_LINE:
-                onBackgroundChanged(NoteBackgroundType.LINE);
+                setBackgroundType(NoteBackgroundType.LINE);
+                onBackgroundChanged();
                 break;
             case ScribbleSubMenuID.BG_GRID:
-                onBackgroundChanged(NoteBackgroundType.GRID);
+                setBackgroundType(NoteBackgroundType.GRID);
+                onBackgroundChanged();
                 break;
         }
     }
 
-    private void onBackgroundChanged(int newBackground) {
-        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(newBackground);
-        changeBGAction.execute(ScribbleActivity.this);
+    private void onBackgroundChanged() {
+        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(getBackgroundType());
+        changeBGAction.execute(ScribbleActivity.this, null);
     }
 
     private HashMap<String, Integer> getItemViewDataMap() {
@@ -537,7 +540,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     public void onBackPressed() {
         getNoteViewHelper().pauseDrawing();
-        saveDocument(true);
+        onSave(true);
     }
 
     private void saveDocument(boolean finishAfterSave) {
@@ -615,30 +618,28 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
-        syncWithCallback(true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                noteTitle = title;
-                final DocumentSaveAction<ScribbleActivity> closeAction = new
-                        DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-                closeAction.execute(ScribbleActivity.this, null);
-            }
-        });
+        noteTitle = title;
+        final DocumentSaveAction<ScribbleActivity> saveAction = new
+                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+        saveAction.execute(ScribbleActivity.this, null);
     }
 
     private void saveExistingNoteDocument(final boolean finishAfterSave) {
-        syncWithCallback(true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                final DocumentSaveAction<ScribbleActivity> closeAction = new
-                        DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-                closeAction.execute(ScribbleActivity.this, null);
-            }
-        });
+        final DocumentSaveAction<ScribbleActivity> saveAction = new
+                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+        saveAction.execute(ScribbleActivity.this, null);
     }
 
     private void setCurrentShapeType(int type) {
         shapeDataInfo.setCurrentShapeType(type);
+    }
+
+    private void setBackgroundType(int type) {
+        shapeDataInfo.setBackground(type);
+    }
+
+    private int getBackgroundType() {
+        return shapeDataInfo.getBackground();
     }
 
     private void setStrokeWidth(float width) {

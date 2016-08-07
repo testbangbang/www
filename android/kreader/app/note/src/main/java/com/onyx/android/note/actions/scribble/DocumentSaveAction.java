@@ -26,14 +26,15 @@ public class DocumentSaveAction<T extends BaseScribbleActivity> extends BaseNote
     @Override
     public void execute(final T activity, final BaseCallback callback) {
         showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.saving_note);
-        final NoteDocumentSaveRequest closeRequest = new NoteDocumentSaveRequest(title, close);
-        activity.submitRequestWithIdentifier(documentUniqueId, closeRequest, new BaseCallback() {
+        final NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(title, close);
+        activity.submitRequestWithIdentifier(documentUniqueId, saveRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dismissLoadingDialog();
                 if (close) {
                     activity.finish();
                 }
+                callback.invoke(callback, saveRequest, e);
             }
         });
     }

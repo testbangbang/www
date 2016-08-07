@@ -17,7 +17,7 @@ public class PageListRenderRequest extends BaseNoteRequest {
 
     public PageListRenderRequest(final String id, final List<PageInfo> pages, final Rect size) {
         setDocUniqueId(id);
-        setAbortPendingTasks();
+        setAbortPendingTasks(true);
         setViewportSize(size);
         setVisiblePages(pages);
         setPauseInputProcessor(true);

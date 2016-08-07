@@ -54,7 +54,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         mMenuCallback.onItemSelect(getMenuUniqueId(scribbleMenu));
         boolean close = getMenuCloseAfterClick(scribbleMenu);
         if (close) {
-            this.hide();
+            this.hide(false);
         }
     }
 
@@ -87,7 +87,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         dismissZone.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                hide();
+                hide(true);
             }
         });
         initContentView();
@@ -134,8 +134,8 @@ public class ScribbleSubMenu extends RelativeLayout {
         setVisibility(View.VISIBLE);
     }
 
-    public void hide() {
-        if (mMenuCallback != null) {
+    public void hide(boolean notify) {
+        if (mMenuCallback != null && notify) {
             mMenuCallback.dismiss();
         }
         setVisibility(GONE);

@@ -259,7 +259,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void onBackgroundChanged(int newBackground) {
         final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(newBackground);
-        changeBGAction.execute(ScribbleActivity.this);
+        changeBGAction.execute(ScribbleActivity.this, null);
     }
 
     private HashMap<String, Integer> getItemViewDataMap() {

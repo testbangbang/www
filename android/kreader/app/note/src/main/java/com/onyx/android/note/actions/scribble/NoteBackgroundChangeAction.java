@@ -18,18 +18,15 @@ public class NoteBackgroundChangeAction<T extends BaseScribbleActivity> extends 
         this.backgroundType = backgroundType;
     }
 
-    public void execute(final T activity) {
-        execute(activity, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                activity.onRequestFinished(bgChangeRequest, true);
-            }
-        });
-    }
-
     @Override
     public void execute(final T activity, final BaseCallback callback) {
         bgChangeRequest = new NoteBackgroundChangeRequest(backgroundType);
-        activity.submitRequest(bgChangeRequest, callback);
+        activity.submitRequest(bgChangeRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                activity.onRequestFinished(bgChangeRequest, true);
+                callback.invoke(callback, bgChangeRequest, e);
+            }
+        });
     }
 }
