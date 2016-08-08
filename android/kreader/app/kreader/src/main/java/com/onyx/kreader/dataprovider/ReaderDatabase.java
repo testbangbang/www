@@ -9,6 +9,6 @@ import com.raizlabs.android.dbflow.annotation.Database;
 public class ReaderDatabase {
 
     public static final String NAME = "ReaderDataBase";
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
 }

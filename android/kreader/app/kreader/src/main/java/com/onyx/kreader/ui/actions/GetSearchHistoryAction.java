@@ -1,0 +1,40 @@
+package com.onyx.kreader.ui.actions;
+
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.kreader.dataprovider.SearchHistory;
+import com.onyx.kreader.host.request.GetSearchHistoryRequest;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
+
+import java.util.List;
+
+/**
+ * Created by ming on 16/8/8.
+ */
+public class GetSearchHistoryAction extends BaseAction {
+
+    private int count;
+    private CallBack callBack;
+
+    public interface CallBack{
+        void loadFinished(List<SearchHistory> searchHistoryList);
+    }
+
+    public GetSearchHistoryAction(int count,CallBack callBack) {
+        this.count = count;
+        this.callBack = callBack;
+    }
+
+    @Override
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        final GetSearchHistoryRequest searchRequest = new GetSearchHistoryRequest(count);
+        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),searchRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (callBack != null){
+                    callBack.loadFinished(searchRequest.getReaderUserDataInfo().getSearchHistoryList());
+                }
+            }
+        });
+    }
+}
