@@ -5,7 +5,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 
-import android.util.Size;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -51,18 +50,16 @@ public class NoteDataProvider {
     }
 
     /**
-     * Returns movable library.
+     * Returns all library.
      *
-     * @param context
      * @return
      */
-    public static List<NoteModel> loadMovableNoteLibraryList(final Context context) {
+    public static List<NoteModel> loadAllNoteLibraryList() {
         Select select = new Select();
         Condition condition;
         condition = NoteModel_Table.type.eq(NoteModel.TYPE_LIBRARY);
-        Where where = select.from(NoteModel.class).where(condition);
-        List<NoteModel> list = where.queryList();
-        return list;
+        Where<NoteModel> where = select.from(NoteModel.class).where(condition);
+        return where.queryList();
     }
 
     public static void saveNote(final Context context, final NoteModel model) {
