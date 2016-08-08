@@ -1,7 +1,6 @@
 package com.onyx.android.note.activity.onyx;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -23,7 +21,20 @@ import android.widget.TextView;
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
-import com.onyx.android.note.actions.scribble.*;
+import com.onyx.android.note.actions.scribble.ClearPageAction;
+import com.onyx.android.note.actions.scribble.DocumentAddNewPageAction;
+import com.onyx.android.note.actions.scribble.DocumentCreateAction;
+import com.onyx.android.note.actions.scribble.DocumentDeletePageAction;
+import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
+import com.onyx.android.note.actions.scribble.DocumentEditAction;
+import com.onyx.android.note.actions.scribble.DocumentFlushAction;
+import com.onyx.android.note.actions.scribble.DocumentSaveAction;
+import com.onyx.android.note.actions.scribble.GotoNextPageAction;
+import com.onyx.android.note.actions.scribble.GotoPrevPageAction;
+import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
+import com.onyx.android.note.actions.scribble.RedoAction;
+import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
+import com.onyx.android.note.actions.scribble.UndoAction;
 import com.onyx.android.note.activity.BaseScribbleActivity;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.data.ScribbleMenuCategory;
@@ -279,7 +290,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         }
 
                         @Override
-                        public void dismiss() {
+                        public void onCancel() {
                             syncWithCallback(true, true, null);
                         }
 
