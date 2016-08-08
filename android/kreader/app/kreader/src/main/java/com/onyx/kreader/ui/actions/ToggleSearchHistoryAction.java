@@ -9,21 +9,19 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class ToggleSearchHistoryAction extends BaseAction {
 
-    public enum SearchToggleSwitch { On, Off }
-
     private String content;
-    private SearchToggleSwitch searchToggleSwitch;
+    private boolean add;
 
-    public ToggleSearchHistoryAction(String content, SearchToggleSwitch searchToggleSwitch) {
+    public ToggleSearchHistoryAction(String content, boolean add) {
         this.content = content;
-        this.searchToggleSwitch = searchToggleSwitch;
+        this.add = add;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        if (searchToggleSwitch == SearchToggleSwitch.On) {
+        if (add) {
             readerDataHolder.submitRenderRequest(new AddSearchHistoryRequest(content));
-        } else if (searchToggleSwitch == SearchToggleSwitch.Off) {
+        } else {
             readerDataHolder.submitRenderRequest(new DeleteSearchHistoryRequest());
         }
     }

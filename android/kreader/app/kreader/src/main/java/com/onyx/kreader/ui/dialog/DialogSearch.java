@@ -226,7 +226,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
             return;
         }
 
-        new ToggleSearchHistoryAction(query, ToggleSearchHistoryAction.SearchToggleSwitch.On).execute(readerDataHolder);
+        new ToggleSearchHistoryAction(query, true).execute(readerDataHolder);
         pageRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -260,7 +260,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
             searchHistory.setVisibility(View.GONE);
             hideSoftInputWindow();
         }else if (v.equals(deleteHistory)){
-            new ToggleSearchHistoryAction("", ToggleSearchHistoryAction.SearchToggleSwitch.Off).execute(readerDataHolder);
+            new ToggleSearchHistoryAction("", false).execute(readerDataHolder);
             searchHistory.setVisibility(View.GONE);
         }else if (v.equals(searchEditText)){
             loadSearchHistoryData();
