@@ -32,23 +32,58 @@
                     android:text="@string/app_name" />
             </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/add_folder_btn"
+            <LinearLayout
+                android:id="@+id/control_panel"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/add_folder_btn"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/delete_btn"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@drawable/imagebtn_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_delete_black_36dp"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/move_btn"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/imagebtn_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_move_to_inbox_black_36dp" />
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/add_folder_btn"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/selectMode"
+                android:layout_toLeftOf="@+id/multi_select_mode"
                 android:background="@drawable/imagebtn_bg"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center_vertical"
-                android:text="@string/add_folder"
-                android:textSize="18sp" />
+                android:src="@drawable/ic_create_new_folder_black_36dp" />
 
-<ImageView
-    android:id="@+id/multi_select_mode"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+            <com.onyx.android.note.view.CheckableImageView
+                android:id="@+id/multi_select_mode"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/onyx_multi_select_btn" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 
@@ -65,61 +100,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp">
-
-        <LinearLayout
-            android:id="@+id/control_panel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/page_indicator"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/delete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/mx_button_bg_selected"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:minWidth="120dp"
-                    android:padding="10dp"
-                    android:text="@string/delete"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/move"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/mx_button_bg_selected"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:minWidth="120dp"
-                    android:padding="10dp"
-                    android:text="@string/move"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-            </RelativeLayout>
-
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/page_indicator"

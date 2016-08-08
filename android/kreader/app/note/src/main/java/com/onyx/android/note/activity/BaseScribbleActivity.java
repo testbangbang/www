@@ -7,4 +7,5 @@ import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
  */
 
 public abstract class BaseScribbleActivity extends OnyxAppCompatActivity implements ScribbleInterface {
+    public static final String TAG_NOTE_TITLE = "note_title";
 }

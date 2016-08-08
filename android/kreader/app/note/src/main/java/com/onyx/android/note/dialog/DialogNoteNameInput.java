@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.onyx.android.note.R;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 
 public class DialogNoteNameInput extends OnyxAlertDialog {
@@ -36,10 +37,8 @@ public class DialogNoteNameInput extends OnyxAlertDialog {
         final String dialog_tittle = getArguments().getString(ARGS_TITTLE);
         final String dialog_hint = getArguments().getString(ARGS_HINT);
         final boolean enableNeutralOption = getArguments().getBoolean(ARGS_ENABLE_NEUTRAL_OPTION, false);
-        setParams(new Params().setTittleString(dialog_tittle)
+        Params params = new Params().setTittleString(dialog_tittle)
                 .setEnableNeutralButton(enableNeutralOption)
-                //TODO:hardcode mx style,if this app use on default branch,here could set layout id depend on config.
-                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
                 .setCustomContentLayoutResID(R.layout.alert_dialog_content_new_note)
                 .setCustomViewAction(new CustomViewAction() {
                     @Override
@@ -75,7 +74,11 @@ public class DialogNoteNameInput extends OnyxAlertDialog {
                             mCallBack.onCancelAction();
                         }
                     }
-                }));
+                });
+        if (NoteAppConfig.sharedInstance(getActivity()).useMXStyleDialog()) {
+            params.setCustomLayoutResID(R.layout.mx_custom_alert_dialog);
+        }
+        setParams(params);
         super.onCreate(savedInstanceState);
     }
 

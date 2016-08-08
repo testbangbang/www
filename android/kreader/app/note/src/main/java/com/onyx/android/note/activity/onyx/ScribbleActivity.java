@@ -78,7 +78,6 @@ import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_PENCIL_SCRI
  */
 public class ScribbleActivity extends BaseScribbleActivity {
     static final String TAG = ScribbleActivity.class.getCanonicalName();
-    static final String TAG_NOTE_TITLE = "note_title";
 
     private SurfaceView surfaceView;
     private String activityAction;
@@ -230,7 +229,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onExport();
             }
         });
-
     }
 
     private void onExport() {
@@ -419,7 +417,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         }
         activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
         noteTitle = intent.getStringExtra(TAG_NOTE_TITLE);
-        titleTextView.setText(noteTitle);
+        if (StringUtils.isNotBlank(noteTitle)) {
+            titleTextView.setText(noteTitle);
+        }
         if (Utils.ACTION_CREATE.equals(activityAction)) {
             handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
                     intent.getStringExtra(Utils.PARENT_LIBRARY_ID));

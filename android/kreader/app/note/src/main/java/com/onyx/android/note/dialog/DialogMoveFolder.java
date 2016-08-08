@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.onyx.android.note.R;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
@@ -49,9 +50,8 @@ public class DialogMoveFolder extends OnyxAlertDialog {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setParams(new Params().setTittleString(getString(R.string.move))
+        Params params = new Params().setTittleString(getString(R.string.move))
                 .setCustomContentLayoutResID(R.layout.alert_dialog_content_move_folder)
-                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
                 .setEnableFunctionPanel(false)
                 .setCustomLayoutHeight((int) (5 * getResources().getDimension(R.dimen.button_minHeight)))
                 .setCustomViewAction(new CustomViewAction() {
@@ -76,7 +76,11 @@ public class DialogMoveFolder extends OnyxAlertDialog {
                             }
                         });
                     }
-                }));
+                });
+        if (NoteAppConfig.sharedInstance(getActivity()).useMXStyleDialog()) {
+            params.setCustomLayoutResID(R.layout.mx_custom_alert_dialog);
+        }
+        setParams(params);
         super.onCreate(savedInstanceState);
     }
 
