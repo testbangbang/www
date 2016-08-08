@@ -28,6 +28,10 @@ public class NoteLibraryRemoveRequest extends BaseNoteRequest {
         noteList = NoteDataProvider.loadAllNoteLibraryList();
         targetRemoveList = new ArrayList<>();
         for (String id : uniqueIdList) {
+            if (NoteDataProvider.load(getContext(), id).getType() == NoteModel.TYPE_DOCUMENT) {
+                NoteDataProvider.remove(getContext(), id);
+                continue;
+            }
             for (NoteModel model : noteList) {
                 if (NoteDataProvider.isChildLibrary(getContext(),
                         model.getUniqueId(), id) ||
@@ -36,8 +40,10 @@ public class NoteLibraryRemoveRequest extends BaseNoteRequest {
                 }
             }
         }
-        for (String id : targetRemoveList) {
-            NoteDataProvider.remove(getContext(), id);
+        if (targetRemoveList.size() > 0) {
+            for (String id : targetRemoveList) {
+                NoteDataProvider.remove(getContext(), id);
+            }
         }
     }
 
