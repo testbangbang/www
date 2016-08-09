@@ -31,11 +31,11 @@ public class SelectWordAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        SelectWordRequest request = new SelectWordRequest(pageName, startPoint, endPoint);
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), request, new BaseCallback() {
+        final SelectWordRequest selectWordRequest = new SelectWordRequest(pageName, startPoint, endPoint);
+        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), selectWordRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                onSelectWordCallBack.onSelectWordFinished(readerDataHolder,(SelectWordRequest)request, e, touchMoved);
+                onSelectWordCallBack.onSelectWordFinished(readerDataHolder, selectWordRequest, e, touchMoved);
             }
         });
     }
