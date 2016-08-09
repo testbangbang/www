@@ -14,6 +14,7 @@ import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.kreader.host.request.CloseRequest;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -204,9 +205,13 @@ public class ReaderDataHolder {
         return getReaderUserDataInfo().hasBookmark(getFirstPageInfo());
     }
 
-    public void submitNonRenderRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
+    public void submitNonRenderRequest(final BaseReaderRequest request) {
+        submitNonRenderRequest(request, null);
+    }
+
+    public void submitNonRenderRequest(final BaseReaderRequest request, final BaseCallback callback) {
         beforeSubmitRequest();
-        reader.submitRequest(context, renderRequest, new BaseCallback() {
+        reader.submitRequest(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (callback != null) {
@@ -270,7 +275,8 @@ public class ReaderDataHolder {
     private void closeDocument() {
         documentOpened = false;
         if (reader != null && reader.getDocument() != null) {
-            reader.getDocument().close();
+            CloseRequest closeRequest = new CloseRequest();
+            submitNonRenderRequest(closeRequest);
         }
         ReaderManager.releaseReader(documentPath);
     }
