@@ -24,6 +24,7 @@ public class RestoreRequest extends BaseReaderRequest {
         restoreLayoutType(reader);
         restorePagePosition(reader);
         restoreScale(reader);
+        restoreOrientation(reader);
         restoreViewport(reader);
         restoreOthers(reader);
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
@@ -49,6 +50,10 @@ public class RestoreRequest extends BaseReaderRequest {
         } else {
             setActualScale(reader, baseOptions, position);
         }
+    }
+
+    private void restoreOrientation(final Reader reader) {
+        reader.getDocumentOptions().setOrientation(baseOptions.getOrientation());
     }
 
     private void restoreViewport(final Reader reader) throws Exception {
