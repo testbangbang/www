@@ -214,6 +214,10 @@ public class ReaderDataHolder {
         reader.submitRequest(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (!documentOpened) {
+                    return;
+                }
+
                 if (callback != null) {
                     callback.done(request, e);
                 }
@@ -230,6 +234,10 @@ public class ReaderDataHolder {
         reader.submitRequest(context, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (!documentOpened) {
+                    return;
+                }
+
                 onRenderRequestFinished(renderRequest, e);
                 if (callback != null) {
                     callback.done(request, e);
