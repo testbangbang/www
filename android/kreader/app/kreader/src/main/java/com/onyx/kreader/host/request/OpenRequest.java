@@ -23,7 +23,6 @@ public class OpenRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        setSaveOptions(true);
         final ReaderDocumentOptionsImpl documentOptions = srcOptions.documentOptions();
         final ReaderPluginOptions pluginOptions = srcOptions.pluginOptions();
 
