@@ -31,7 +31,7 @@ public class GetSearchHistoryAction extends BaseAction {
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),searchRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (callBack != null){
+                if (callBack != null && e != null){
                     callBack.loadFinished(searchRequest.getReaderUserDataInfo().getSearchHistoryList());
                 }
             }
