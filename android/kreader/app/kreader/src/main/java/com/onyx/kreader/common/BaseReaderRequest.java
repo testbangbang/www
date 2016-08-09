@@ -139,7 +139,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return readerViewInfo;
     }
 
-    private void saveReaderOptions(final Reader reader) {
+    public void saveReaderOptions(final Reader reader) {
         if (hasException() || !isSaveOptions()) {
             return;
         }

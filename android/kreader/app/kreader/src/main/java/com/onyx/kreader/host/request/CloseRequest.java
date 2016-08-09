@@ -1,5 +1,6 @@
 package com.onyx.kreader.host.request;
 
+import android.util.Log;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -13,6 +14,9 @@ public class CloseRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        setSaveOptions(true);
+        // force save document options before document is closed
+        saveReaderOptions(reader);
         reader.getDocument().close();
         reader.getReaderHelper().onDocumentClosed();
     }
