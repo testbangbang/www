@@ -1,12 +1,10 @@
 package com.onyx.android.note.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.onyx.android.note.activity.mx.ScribbleActivity;
 import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
@@ -163,7 +161,4 @@ public class Utils {
         return type == value;
     }
 
-    public static Intent getScribbleIntent(Context context) {
-        return new Intent(context, ScribbleActivity.class);
-    }
 }

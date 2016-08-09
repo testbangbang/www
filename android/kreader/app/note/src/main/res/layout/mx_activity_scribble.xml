@@ -89,7 +89,7 @@
 
         <com.onyx.android.sdk.ui.view.ContentView
             android:id="@+id/pen_style_content_view"
-            android:layout_width="@dimen/note_style_width"
+            android:layout_width="@dimen/mx_note_style_width"
             android:layout_height="match_parent"
             android:layout_marginLeft="15dp" />
 

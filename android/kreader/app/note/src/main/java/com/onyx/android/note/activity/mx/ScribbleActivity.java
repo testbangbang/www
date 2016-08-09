@@ -63,7 +63,6 @@ import java.util.List;
  */
 public class ScribbleActivity extends BaseScribbleActivity {
     static final String TAG = ScribbleActivity.class.getCanonicalName();
-    static final String TAG_NOTE_TITLE = "note_title";
     static final boolean TEMP_HIDE_ITEM = true;
 
     private SurfaceView surfaceView;

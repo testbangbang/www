@@ -26,6 +26,7 @@ import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -43,7 +44,6 @@ import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,9 +55,6 @@ import static com.onyx.android.sdk.data.GAdapterUtil.hasThumbnail;
 
 
 public class ManagerActivity extends BaseManagerActivity {
-    private static final String TAG_CONTENT_ID = "content_id";
-    private static final String TAG_CONTENT_TAG = "content_tag";
-    private SimpleDateFormat dateFormat;
     private
     @SelectionMode.SelectionModeDef
     int currentSelectMode = SelectionMode.NORMAL_MODE;
@@ -265,7 +262,9 @@ public class ManagerActivity extends BaseManagerActivity {
             public boolean onItemLongClick(ContentItemView view) {
                 switch (currentSelectMode) {
                     case SelectionMode.NORMAL_MODE:
-                        renameNoteOrLibrary(view);
+                        if (!(Utils.getItemType(view.getData()) == DataItemType.TYPE_CREATE)) {
+                            renameNoteOrLibrary(view);
+                        }
                         return true;
                 }
                 return super.onItemLongClick(view);
@@ -363,7 +362,7 @@ public class ManagerActivity extends BaseManagerActivity {
 
     private void startScribbleActivity(GObject object, final String parentId, final String action) {
         if (!isAlreadyToNewActivity) {
-            final Intent intent = Utils.getScribbleIntent(this);
+            final Intent intent = NoteAppConfig.sharedInstance(this).getScribbleIntent(this);
             intent.putExtra(Utils.ACTION_TYPE, action);
             intent.putExtra(Utils.PARENT_LIBRARY_ID, parentId);
             String noteTitle = "";
