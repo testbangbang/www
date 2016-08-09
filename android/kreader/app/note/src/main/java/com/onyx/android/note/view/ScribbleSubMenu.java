@@ -155,10 +155,6 @@ public class ScribbleSubMenu extends RelativeLayout {
         setVisibility(GONE);
     }
 
-    public boolean isShown() {
-        return getVisibility() == VISIBLE;
-    }
-
     private void updateButtonIndicator(GObject menuItem) {
         int dataIndex = mMenuContentView.getCurrentAdapter().getGObjectIndex(menuItem);
         setSelected(menuItem, true);

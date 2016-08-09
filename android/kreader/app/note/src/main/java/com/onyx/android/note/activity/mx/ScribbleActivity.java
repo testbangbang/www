@@ -1,13 +1,9 @@
 package com.onyx.android.note.activity.mx;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.*;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -16,21 +12,12 @@ import android.widget.TextView;
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
-import com.onyx.android.note.actions.scribble.DocumentAddNewPageAction;
-import com.onyx.android.note.actions.scribble.DocumentSaveAction;
-import com.onyx.android.note.actions.scribble.DocumentCreateAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
-import com.onyx.android.note.actions.scribble.DocumentEditAction;
-import com.onyx.android.note.actions.scribble.DocumentFlushAction;
-import com.onyx.android.note.actions.scribble.GotoNextPageAction;
-import com.onyx.android.note.actions.scribble.GotoPrevPageAction;
+import com.onyx.android.note.actions.scribble.DocumentSaveAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
-import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
 import com.onyx.android.note.actions.scribble.UndoAction;
 import com.onyx.android.note.activity.BaseScribbleActivity;
-import com.onyx.android.note.receiver.DeviceReceiver;
-import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.dialog.BackGroundTypePopupMenu;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
@@ -43,17 +30,13 @@ import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,18 +47,12 @@ import java.util.List;
 public class ScribbleActivity extends BaseScribbleActivity {
     static final String TAG = ScribbleActivity.class.getCanonicalName();
     static final boolean TEMP_HIDE_ITEM = true;
-
-    private SurfaceView surfaceView;
-    private String activityAction;
-    private String noteTitle;
     private
     @PenType.PenTypeDef
     int currentPenType = PenType.PENCIL;
     private
     @NoteBackgroundType.NoteBackgroundDef
     int currentNoteBackground = NoteBackgroundType.EMPTY;
-    private int minPenWidth = 1;
-    private int maxPenWidth = 20;
     private TextView titleTextView;
     private ContentView penStyleContentView;
     private GAdapter adapter;
@@ -83,12 +60,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private BackGroundTypePopupMenu bgTypePopupMenu;
     PenColorPopupMenu penColorPopupMenu;
     private ImageView addPageBtn, changeBGBtn, prevPage, nextPage, penColorBtn;
-    private Button pageIndicator;
-    private TouchPoint erasePoint = null;
-    private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
-    private DeviceReceiver deviceReceiver = new DeviceReceiver();
-    private SurfaceHolder.Callback surfaceCallback;
-    private boolean mEatKeyUpEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,50 +68,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
         setContentView(R.layout.mx_activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
-        registerDeviceReceiver();
     }
 
     public NoteViewHelper getNoteViewHelper() {
         return NoteApplication.getNoteViewHelper();
     }
 
-    private void registerDeviceReceiver() {
-        deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
-            @Override
-            public void onSystemUIChanged(String type, boolean open) {
-                if (open) {
-                    onSystemUIOpened();
-                } else {
-                    onSystemUIClosed();
-                }
-            }
-
-            @Override
-            public void onHomeClicked() {
-                getNoteViewHelper().enableScreenPost(true);
-                finish();
-            }
-        });
-        deviceReceiver.registerReceiver(this);
-    }
-
-    private void unregisterDeviceReceiver() {
-        deviceReceiver.unregisterReceiver(this);
-    }
-
-    private void onSystemUIOpened() {
-        syncWithCallback(true, false, null);
-    }
-
-    private void onSystemUIClosed() {
-        syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         updateColorIndicator();
-        initSurfaceView();
     }
 
     private void initToolbarButtons() {
@@ -160,7 +97,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 GObject temp = view.getData();
                 int dataIndex = penStyleContentView.getCurrentAdapter().getGObjectIndex(temp);
                 temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
-                currentPenType = Integer.decode(GAdapterUtil.getUniqueId(temp));
+                currentPenType = PenType.translate(Integer.decode(GAdapterUtil.getUniqueId(temp)));
                 penStyleContentView.getCurrentAdapter().setObject(dataIndex, temp);
                 penStyleContentView.unCheckOtherViews(dataIndex, true);
                 penStyleContentView.updateCurrentPage();
@@ -283,145 +220,14 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return adapter;
     }
 
-    private void initSurfaceView() {
-        surfaceView = (SurfaceView) findViewById(R.id.note_view);
-        surfaceView.getHolder().addCallback(surfaceCallback());
-    }
-
-    private SurfaceHolder.Callback surfaceCallback() {
-        if (surfaceCallback == null) {
-            surfaceCallback = new SurfaceHolder.Callback() {
-                @Override
-                public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                    clearSurfaceView();
-                    getNoteViewHelper().setView(ScribbleActivity.this, surfaceView, inputCallback());
-                    handleActivityIntent(getIntent());
-                }
-
-                @Override
-                public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-                }
-
-                @Override
-                public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                    surfaceHolder.removeCallback(surfaceCallback);
-                    surfaceCallback = null;
-                }
-            };
-        }
-        return surfaceCallback;
-    }
-
-    private void handleActivityIntent(final Intent intent) {
-        if (!intent.hasExtra(Utils.ACTION_TYPE)) {
-            return;
-        }
-        activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
-        noteTitle = intent.getStringExtra(TAG_NOTE_TITLE);
+    @Override
+    protected void handleActivityIntent(final Intent intent) {
+        super.handleActivityIntent(intent);
         titleTextView.setText(noteTitle);
-        if (Utils.ACTION_CREATE.equals(activityAction)) {
-            handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
-                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
-        } else if (Utils.ACTION_EDIT.equals(activityAction)) {
-            handleDocumentEdit(intent.getStringExtra(Utils.DOCUMENT_ID),
-                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
-        }
-    }
-
-    private NoteViewHelper.InputCallback inputCallback() {
-        return new NoteViewHelper.InputCallback() {
-            @Override
-            public void onBeginRawData() {
-
-            }
-
-            @Override
-            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
-                ScribbleActivity.this.onNewTouchPointListReceived(shape, pointList);
-            }
-
-            @Override
-            public void onBeginErasing() {
-                ScribbleActivity.this.onBeginErasing();
-            }
-
-            @Override
-            public void onErasing(final MotionEvent touchPoint) {
-                ScribbleActivity.this.onErasing(touchPoint);
-            }
-
-            @Override
-            public void onEraseTouchPointListReceived(TouchPointList pointList) {
-                ScribbleActivity.this.onFinishErasing(pointList);
-            }
-
-            public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
-                ScribbleActivity.this.drawPage();
-            }
-
-            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
-                if (last) {
-                    ScribbleActivity.this.drawPage();
-                }
-            }
-
-            public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-                ScribbleActivity.this.drawPage();
-            }
-
-        };
-    }
-
-    private void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
-        //final AddShapeInBackgroundAction<ScribbleActivity> action = new AddShapeInBackgroundAction<>(shape);
-        //action.execute(this, null);
-    }
-
-    private void onBeginErasing() {
-        syncWithCallback(true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                erasePoint = new TouchPoint();
-            }
-        });
-    }
-
-    private void onErasing(final MotionEvent touchPoint) {
-        if (erasePoint == null) {
-            return;
-        }
-        erasePoint.x = touchPoint.getX();
-        erasePoint.y = touchPoint.getY();
-        drawPage();
-    }
-
-    private void onFinishErasing(TouchPointList pointList) {
-        erasePoint = null;
-        drawPage();
-        RemoveByPointListAction<ScribbleActivity> removeByPointListAction = new RemoveByPointListAction<>(pointList);
-        removeByPointListAction.execute(this);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        syncWithCallback(true, false, null);
-    }
-
-    @Override
-    protected void onDestroy() {
-        cleanUpAllPopMenu();
-        syncWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                getNoteViewHelper().quit();
-            }
-        });
-        unregisterDeviceReceiver();
-        super.onDestroy();
-    }
-
-    private void cleanUpAllPopMenu() {
+    protected void cleanUpAllPopMenu() {
         if (penWidthPopupMenu != null && penWidthPopupMenu.isShowing()) {
             penWidthPopupMenu.dismiss();
         }
@@ -435,6 +241,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         bgTypePopupMenu = null;
     }
 
+    @Override
     public void onBackPressed() {
         getNoteViewHelper().pauseDrawing();
         if (Utils.ACTION_CREATE.equals(activityAction)) {
@@ -489,22 +296,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void showNoteNameIllegal() {
-        final OnyxAlertDialog illegalDialog = new OnyxAlertDialog();
-        illegalDialog.setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.noti))
-                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
-                .setAlertMsgString(getString(R.string.note_name_already_exist))
-                .setEnableNegativeButton(false).setCanceledOnTouchOutside(false)
-                .setPositiveAction(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        illegalDialog.dismiss();
-                        syncWithCallback(true, true, null);
-                    }
-                }));
-        illegalDialog.show(getFragmentManager(), "illegalDialog");
-    }
-
     private void onDocumentClose(final String title) {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
@@ -523,18 +314,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 closeAction.execute(ScribbleActivity.this, null);
             }
         });
-    }
-
-    private void setCurrentShapeType(int type) {
-        shapeDataInfo.setCurrentShapeType(type);
-    }
-
-    private void setStrokeWidth(float width) {
-        shapeDataInfo.setStrokeWidth(width);
-    }
-
-    private void setStrokeColor(int color) {
-        shapeDataInfo.setStrokeColor(color);
     }
 
     private void onPencilClicked() {
@@ -634,74 +413,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, false, null);
     }
 
-    private void handleDocumentCreate(final String uniqueId, final String parentId) {
-        final DocumentCreateAction<ScribbleActivity> action = new DocumentCreateAction<>(uniqueId, parentId);
-        action.execute(this);
-    }
 
-    private void handleDocumentEdit(final String uniqueId, final String parentId) {
-        final DocumentEditAction<ScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
-        action.execute(this);
-    }
-
-    private void syncWithCallback(boolean render,
-                                  boolean resume,
-                                  final BaseCallback callback) {
-        final List<Shape> stash = getNoteViewHelper().deatchStash();
-        final DocumentFlushAction<ScribbleActivity> action = new DocumentFlushAction<>(stash,
-                render,
-                resume,
-                shapeDataInfo.getDrawingArgs());
-        action.execute(this, callback);
-    }
-
-    private void onAddNewPage() {
-        syncWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                final DocumentAddNewPageAction<ScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
-                action.execute(ScribbleActivity.this);
-            }
-        });
-    }
-
-    private void onNextPage() {
-        syncWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                final GotoNextPageAction<ScribbleActivity> action = new GotoNextPageAction<>();
-                action.execute(ScribbleActivity.this);
-            }
-        });
-    }
-
-    private void onPrevPage() {
-        syncWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                final GotoPrevPageAction<ScribbleActivity> action = new GotoPrevPageAction<>();
-                action.execute(ScribbleActivity.this);
-            }
-        });
-    }
-
-    private int getCurrentShapeType() {
-        return shapeDataInfo.getCurrentShapeType();
-    }
-
-    private int getCurrentShapeColor() {
-        return shapeDataInfo.getStrokeColor();
-    }
-
-    private float getCurrentStrokeWidth() {
-        return shapeDataInfo.getStrokeWidth();
-    }
-
-    private void updateDataInfo(final BaseNoteRequest request) {
-        shapeDataInfo = request.getShapeDataInfo();
-        int currentPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
-        int pageCount = shapeDataInfo.getPageCount();
-        pageIndicator.setText(currentPageIndex + File.separator + pageCount);
+    @Override
+    protected void updateDataInfo(final BaseNoteRequest request) {
+        super.updateDataInfo(request);
         updatePenIndicator(shapeDataInfo);
         updateColorIndicator();
     }
@@ -735,80 +450,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
         penStyleContentView.updateCurrentPage();
     }
 
-    private void clearSurfaceView() {
-        Rect rect = getViewportSize();
-        Canvas canvas = beforeDraw(rect);
-        if (canvas == null) {
-            return;
-        }
-
-        Paint paint = new Paint();
-        cleanup(canvas, paint, rect);
-        afterDraw(canvas);
-    }
-
-    private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(rect, paint);
-    }
-
-    public void drawPage() {
-        Rect rect = getViewportSize();
-        Canvas canvas = beforeDraw(rect);
-        if (canvas == null) {
-            return;
-        }
-
-        Paint paint = new Paint();
-        cleanup(canvas, paint, rect);
-        drawContent(canvas, paint);
-        drawStashShape(canvas, paint);
-        drawErasingIndicator(canvas, paint);
-        afterDraw(canvas);
-    }
-
-    private Canvas beforeDraw(final Rect rect) {
-        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
-        return canvas;
-    }
-
-    private void afterDraw(final Canvas canvas) {
-        surfaceView.getHolder().unlockCanvasAndPost(canvas);
-    }
-
-    private void drawContent(final Canvas canvas, final Paint paint) {
-        Bitmap bitmap = getNoteViewHelper().getViewBitmap();
-        if (bitmap != null) {
-            canvas.drawBitmap(bitmap, 0, 0, paint);
-        }
-    }
-
-    private void drawStashShape(final Canvas canvas, final Paint paint) {
-        final List<Shape> stash = getNoteViewHelper().getDirtyStash();
-        for (Shape shape : stash) {
-            shape.render(canvas, paint, null);
-        }
-    }
-
-    private void drawErasingIndicator(final Canvas canvas, final Paint paint) {
-        if (erasePoint == null || erasePoint.getX() <= 0 || erasePoint.getY() <= 0) {
-            return;
-        }
-
-        float x = erasePoint.getX();
-        float y = erasePoint.getY();
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(2.0f);
-        canvas.drawCircle(x, y, shapeDataInfo.getEraserRadius(), paint);
-    }
-
-    public Rect getViewportSize() {
-        return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
-    }
-
     private GObject createPenItem(final int penIconRes, @PenType.PenTypeDef int penType) {
         GObject object = GAdapterUtil.createTableItem(0, 0, penIconRes, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, Integer.toString(penType));
@@ -816,19 +457,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
             object.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
         }
         return object;
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-                onNextPage();
-                return true;
-            case KeyEvent.KEYCODE_PAGE_UP:
-                onPrevPage();
-                return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     private void updateColorIndicator() {
