@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:paddingBottom="1dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:padding="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -10,16 +8,8 @@
         android:layout_centerVertical="true"
         android:ellipsize="end"
         android:textSize="16sp"
-        android:id="@+id/search_content"
+        android:id="@+id/search_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
-    <View
-        android:layout_alignParentBottom="true"
-        android:id="@+id/split_line"
-        android:layerType="software"
-        android:background="@drawable/dash_line"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"/>
 
 </RelativeLayout>

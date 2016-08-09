@@ -9,6 +9,8 @@ import com.onyx.kreader.dataprovider.AnnotationProvider;
 import com.onyx.kreader.dataprovider.Bookmark;
 import com.onyx.kreader.dataprovider.BookmarkProvider;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.dataprovider.SearchHistory;
+import com.onyx.kreader.dataprovider.SearchHistoryProvider;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -29,6 +31,7 @@ public class ReaderUserDataInfo {
     private Map<String, Bookmark> bookmarkMap = new HashMap<>();
     private Map<String, List<Annotation>> annotationMap = new HashMap<>();
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
+    private List<SearchHistory> searchHistoryList = new ArrayList<>();
 
     public void setDocumentPath(final String path) {
         Debug.d("setDocumentPath: " + path);
@@ -159,6 +162,15 @@ public class ReaderUserDataInfo {
             }
         }
         return true;
+    }
+
+    public boolean loadSearchHistory(final Context context, final Reader reader, int count){
+        searchHistoryList = SearchHistoryProvider.getLatestSearchHistory(reader.getDocumentMd5(),count);
+        return true;
+    }
+
+    public List<SearchHistory> getSearchHistoryList() {
+        return searchHistoryList;
     }
 
     private Annotation translateToScreen(PageInfo pageInfo, Annotation annotation) {
