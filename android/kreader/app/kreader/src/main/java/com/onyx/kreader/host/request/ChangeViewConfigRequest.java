@@ -20,6 +20,14 @@ public class ChangeViewConfigRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
         reader.getReaderHelper().updateViewportSize(newWidth, newHeight);
-        reader.getReaderLayoutManager().gotoPosition(position);
+        if (isPortrait()) {
+            reader.getReaderLayoutManager().getCurrentLayoutProvider().scaleToPageContent(position);
+        } else {
+            reader.getReaderLayoutManager().getCurrentLayoutProvider().scaleToWidthContent(position);
+        }
+    }
+
+    private boolean isPortrait() {
+        return newWidth < newHeight;
     }
 }
