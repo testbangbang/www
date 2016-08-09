@@ -217,10 +217,7 @@ public class ReaderDataHolder {
                 if (!documentOpened) {
                     return;
                 }
-
-                if (callback != null) {
-                    callback.done(request, e);
-                }
+                callback.invoke(callback, request, e);
             }
         });
     }
@@ -239,9 +236,7 @@ public class ReaderDataHolder {
                 }
 
                 onRenderRequestFinished(renderRequest, e);
-                if (callback != null) {
-                    callback.done(request, e);
-                }
+                callback.invoke(callback, request, e);
                 preRenderNext();
             }
         });
