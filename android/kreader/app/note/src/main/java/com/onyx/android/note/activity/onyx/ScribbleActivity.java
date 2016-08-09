@@ -300,6 +300,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         }
     }
 
+    @Override
     public void onBackPressed() {
         getNoteViewHelper().pauseDrawing();
         onSave(true);
@@ -410,27 +411,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
         GObject object = GAdapterUtil.createTableItem(0, 0, functionIconRes, 0, null);
         object.putInt(GAdapterUtil.TAG_UNIQUE_ID, menuCategory);
         return object;
-    }
-
-    @Override
-    public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
-        getNoteViewHelper().submit(this, request, callback);
-    }
-
-    @Override
-    public void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback) {
-        getNoteViewHelper().submitRequestWithIdentifier(this, identifier, request, callback);
-    }
-
-    @Override
-    public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
-        updateDataInfo(request);
-        if (request.isAbort()) {
-            return;
-        }
-        if (updatePage) {
-            drawPage();
-        }
     }
 
     private void testSpan() {

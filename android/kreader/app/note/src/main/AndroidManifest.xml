@@ -19,8 +19,7 @@
         <activity android:name=".activity.mx.ManagerActivity" />
         <activity android:name=".activity.mx.ScribbleActivity" />
         <activity
-            android:name=".activity.StartupActivity"
-            android:label="@string/title_activity_startup">
+            android:name=".activity.StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

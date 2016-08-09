@@ -11,6 +11,8 @@ import com.onyx.android.note.R;
 import com.onyx.android.note.actions.manager.GotoUpAction;
 import com.onyx.android.note.actions.manager.LoadNoteListAction;
 import com.onyx.android.note.actions.manager.ManageLoadPageAction;
+import com.onyx.android.note.actions.manager.NoteLibraryRemoveAction;
+import com.onyx.android.note.actions.manager.NoteLoadMovableLibraryAction;
 import com.onyx.android.note.actions.manager.NoteMoveAction;
 import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogMoveFolder;
@@ -267,14 +269,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
 
             @Override
             public boolean onItemLongClick(ContentItemView view) {
-                switch (currentSelectMode) {
-                    case SelectionMode.NORMAL_MODE:
-                        if (!(Utils.getItemType(view.getData()) == DataItemType.TYPE_CREATE)) {
-                            renameNoteOrLibrary(view);
-                        }
-                        return true;
-                }
-                return super.onItemLongClick(view);
+              return onItemLongClicked(view);
             }
         };
     }
@@ -414,7 +409,36 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
 
     protected abstract void updateButtonsStatusByMode();
 
-    protected abstract void renameNoteOrLibrary(final ContentItemView view);
+    protected abstract void renameNoteOrLibrary(final GObject object);
 
+    protected boolean onItemLongClicked(ContentItemView view) {
+        switch (currentSelectMode) {
+            case SelectionMode.NORMAL_MODE:
+                if (!(Utils.getItemType(view.getData()) == DataItemType.TYPE_CREATE)) {
+                    renameNoteOrLibrary(view.getData());
+                }
+                return true;
+        }
+        return false;
+    }
 
+    protected void onItemDelete(){
+        ArrayList<String> targetRemoveIDList = new ArrayList<>();
+        for (GObject object : chosenItemsList) {
+            targetRemoveIDList.add(GAdapterUtil.getUniqueId(object));
+        }
+        new NoteLibraryRemoveAction<>(targetRemoveIDList).execute(BaseManagerActivity.this);
+        switchMode(SelectionMode.NORMAL_MODE);
+    }
+
+    protected void onItemMove() {
+        targetMoveIDList = new ArrayList<>();
+        for (GObject object : chosenItemsList) {
+            targetMoveIDList.add(GAdapterUtil.getUniqueId(object));
+        }
+        ArrayList<String> excludeList = new ArrayList<>();
+        excludeList.addAll(targetMoveIDList);
+        NoteLoadMovableLibraryAction<BaseManagerActivity> action = new NoteLoadMovableLibraryAction<>(getCurrentLibraryId(), excludeList);
+        action.execute(BaseManagerActivity.this);
+    }
 }

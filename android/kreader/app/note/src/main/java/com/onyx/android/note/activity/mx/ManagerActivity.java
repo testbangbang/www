@@ -12,8 +12,6 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
-import com.onyx.android.note.actions.manager.NoteLibraryRemoveAction;
-import com.onyx.android.note.actions.manager.NoteLoadMovableLibraryAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.android.note.activity.BaseManagerActivity;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
@@ -25,10 +23,8 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
-import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
@@ -88,13 +84,7 @@ public class ManagerActivity extends BaseManagerActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:need distinguish doc/library.
-                ArrayList<String> targetRemoveIDList = new ArrayList<>();
-                for (GObject object : chosenItemsList) {
-                    targetRemoveIDList.add(GAdapterUtil.getUniqueId(object));
-                }
-                new NoteLibraryRemoveAction<ManagerActivity>(targetRemoveIDList).execute(ManagerActivity.this);
-                switchMode(SelectionMode.NORMAL_MODE);
+              onItemDelete();
             }
         });
         addFolderButton.setOnClickListener(new View.OnClickListener() {
@@ -126,14 +116,7 @@ public class ManagerActivity extends BaseManagerActivity {
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                targetMoveIDList = new ArrayList<>();
-                for (GObject object : chosenItemsList) {
-                    targetMoveIDList.add(GAdapterUtil.getUniqueId(object));
-                }
-                ArrayList<String> excludeList = new ArrayList<>();
-                excludeList.addAll(targetMoveIDList);
-                NoteLoadMovableLibraryAction<ManagerActivity> action = new NoteLoadMovableLibraryAction<>(getCurrentLibraryId(), excludeList);
-                action.execute(ManagerActivity.this);
+                onItemMove();
             }
         });
         contentView = (ContentView) findViewById(R.id.note_content_view);
@@ -157,11 +140,11 @@ public class ManagerActivity extends BaseManagerActivity {
     }
 
     @Override
-    protected void renameNoteOrLibrary(final ContentItemView view) {
+    protected void renameNoteOrLibrary(final GObject object) {
         final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
         Bundle bundle = new Bundle();
         bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.rename));
-        bundle.putString(DialogNoteNameInput.ARGS_HINT, view.getData().getString(GAdapterUtil.TAG_TITLE_STRING));
+        bundle.putString(DialogNoteNameInput.ARGS_HINT, object.getString(GAdapterUtil.TAG_TITLE_STRING));
         bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, false);
         dialogNoteNameInput.setArguments(bundle);
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
@@ -172,7 +155,7 @@ public class ManagerActivity extends BaseManagerActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (action.isLegal()) {
-                            RenameNoteOrLibraryAction<ManagerActivity> reNameAction = new RenameNoteOrLibraryAction<>(getUniqueId(view.getData()), input);
+                            RenameNoteOrLibraryAction<ManagerActivity> reNameAction = new RenameNoteOrLibraryAction<>(getUniqueId(object), input);
                             reNameAction.execute(ManagerActivity.this);
                         } else {
                             showNoteNameIllegal();

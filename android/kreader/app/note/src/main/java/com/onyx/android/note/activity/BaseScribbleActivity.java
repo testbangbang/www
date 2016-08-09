@@ -102,6 +102,27 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         super.onDestroy();
     }
 
+    @Override
+    public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submit(this, request, callback);
+    }
+
+    @Override
+    public void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submitRequestWithIdentifier(this, identifier, request, callback);
+    }
+
+    @Override
+    public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
+        updateDataInfo(request);
+        if (request.isAbort()) {
+            return;
+        }
+        if (updatePage) {
+            drawPage();
+        }
+    }
+
     protected void updateDataInfo(final BaseNoteRequest request) {
         shapeDataInfo = request.getShapeDataInfo();
         int currentPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;

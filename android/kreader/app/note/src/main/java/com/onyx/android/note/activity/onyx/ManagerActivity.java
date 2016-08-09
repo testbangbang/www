@@ -1,6 +1,10 @@
 package com.onyx.android.note.activity.onyx;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,10 +15,9 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
-import com.onyx.android.note.actions.manager.NoteLibraryRemoveAction;
-import com.onyx.android.note.actions.manager.NoteLoadMovableLibraryAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.android.note.activity.BaseManagerActivity;
+import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
@@ -28,20 +31,15 @@ import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
 
 
 public class ManagerActivity extends BaseManagerActivity {
-
     private CheckableImageView chooseModeButton;
     private ImageView addFolderButton, moveButton, deleteButton;
-    private ImageView nextPageBtn, prevPageBtn;
     private LinearLayout controlPanel;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +57,24 @@ public class ManagerActivity extends BaseManagerActivity {
     private void initView() {
         initSupportActionBarWithCustomBackFunction();
         getSupportActionBar().setTitle(ManagerActivity.class.getSimpleName());
+        getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+            //AppCompat would not called onOptionMenuClosed();
+            // Use this listener to obtain menu visibility.
+            @Override
+            public void onMenuVisibilityChanged(boolean isVisible) {
+                if (!isVisible && currentSelectMode == SelectionMode.NORMAL_MODE) {
+                    chosenItemsList.clear();
+                }
+            }
+        });
         chooseModeButton = (CheckableImageView) findViewById(R.id.multi_select_mode);
         addFolderButton = (ImageView) findViewById(R.id.add_folder_btn);
         toolBarIcon = (ImageView) findViewById(R.id.imageView_main_title);
         toolBarTitle = (TextView) findViewById(R.id.textView_main_title);
         moveButton = (ImageView) findViewById(R.id.move_btn);
         deleteButton = (ImageView) findViewById(R.id.delete_btn);
-        nextPageBtn = (ImageView) findViewById(R.id.button_next_page);
-        prevPageBtn = (ImageView) findViewById(R.id.button_previous_page);
+        ImageView nextPageBtn = (ImageView) findViewById(R.id.button_next_page);
+        ImageView prevPageBtn = (ImageView) findViewById(R.id.button_previous_page);
         progressBtn = (Button) findViewById(R.id.button_page_progress);
         controlPanel = (LinearLayout) findViewById(R.id.control_panel);
         chooseModeButton.setOnClickListener(new View.OnClickListener() {
@@ -88,13 +96,7 @@ public class ManagerActivity extends BaseManagerActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:need distinguish doc/library.
-                ArrayList<String> targetRemoveIDList = new ArrayList<>();
-                for (GObject object : chosenItemsList) {
-                    targetRemoveIDList.add(GAdapterUtil.getUniqueId(object));
-                }
-                new NoteLibraryRemoveAction<ManagerActivity>(targetRemoveIDList).execute(ManagerActivity.this);
-                switchMode(SelectionMode.NORMAL_MODE);
+               onItemDelete();
             }
         });
         addFolderButton.setOnClickListener(new View.OnClickListener() {
@@ -132,14 +134,7 @@ public class ManagerActivity extends BaseManagerActivity {
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                targetMoveIDList = new ArrayList<>();
-                for (GObject object : chosenItemsList) {
-                    targetMoveIDList.add(GAdapterUtil.getUniqueId(object));
-                }
-                ArrayList<String> excludeList = new ArrayList<>();
-                excludeList.addAll(targetMoveIDList);
-                NoteLoadMovableLibraryAction<ManagerActivity> action = new NoteLoadMovableLibraryAction<>(getCurrentLibraryId(), excludeList);
-                action.execute(ManagerActivity.this);
+                onItemMove();
             }
         });
         contentView = (ContentView) findViewById(R.id.note_content_view);
@@ -163,11 +158,11 @@ public class ManagerActivity extends BaseManagerActivity {
     }
 
     @Override
-    protected void renameNoteOrLibrary(final ContentItemView view) {
+    protected void renameNoteOrLibrary(final GObject object) {
         final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
         Bundle bundle = new Bundle();
         bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.rename));
-        bundle.putString(DialogNoteNameInput.ARGS_HINT, view.getData().getString(GAdapterUtil.TAG_TITLE_STRING));
+        bundle.putString(DialogNoteNameInput.ARGS_HINT, object.getString(GAdapterUtil.TAG_TITLE_STRING));
         bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, false);
         dialogNoteNameInput.setArguments(bundle);
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
@@ -178,7 +173,7 @@ public class ManagerActivity extends BaseManagerActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (action.isLegal()) {
-                            RenameNoteOrLibraryAction<ManagerActivity> reNameAction = new RenameNoteOrLibraryAction<>(getUniqueId(view.getData()), input);
+                            RenameNoteOrLibraryAction<ManagerActivity> reNameAction = new RenameNoteOrLibraryAction<>(getUniqueId(object), input);
                             reNameAction.execute(ManagerActivity.this, new BaseCallback() {
                                 @Override
                                 public void done(BaseRequest request, Throwable e) {
@@ -215,7 +210,6 @@ public class ManagerActivity extends BaseManagerActivity {
         }
     }
 
-
     @Override
     protected void updateButtonsStatusByMode() {
         switch (currentSelectMode) {
@@ -239,6 +233,64 @@ public class ManagerActivity extends BaseManagerActivity {
                 addFolderButton.setEnabled(true);
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.onyx_manager_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete:
+                onItemDelete();
+                break;
+            case R.id.export:
+                break;
+            case R.id.move:
+                onItemMove();
+                break;
+            case R.id.rename:
+                renameNoteOrLibrary(chosenItemsList.get(0));
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (chosenItemsList.size() <= 0 ||
+                (Utils.getItemType((chosenItemsList.get(0))) == DataItemType.TYPE_CREATE)) {
+            menu.findItem(R.id.delete).setEnabled(false);
+            menu.findItem(R.id.move).setEnabled(false);
+            menu.findItem(R.id.export).setEnabled(false);
+            menu.findItem(R.id.rename).setEnabled(false);
+        } else {
+            menu.findItem(R.id.move).setEnabled(true);
+            menu.findItem(R.id.delete).setEnabled(true);
+            menu.findItem(R.id.export).setEnabled(Utils.getItemType((chosenItemsList.get(0))) == DataItemType.TYPE_DOCUMENT);
+            menu.findItem(R.id.rename).setEnabled(true);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    protected boolean onItemLongClicked(ContentItemView view) {
+        switch (currentSelectMode) {
+            case SelectionMode.NORMAL_MODE:
+                if (!(Utils.getItemType(view.getData()) == DataItemType.TYPE_CREATE)) {
+                    chosenItemsList.clear();
+                    chosenItemsList.add(view.getData());
+                    getSupportActionBar().openOptionsMenu();
+                }
+                return true;
+        }
+        return false;
     }
 
     @Override

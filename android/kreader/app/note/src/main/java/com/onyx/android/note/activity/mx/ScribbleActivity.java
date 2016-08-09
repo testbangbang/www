@@ -29,7 +29,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
@@ -59,7 +58,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private PenWidthPopupMenu penWidthPopupMenu;
     private BackGroundTypePopupMenu bgTypePopupMenu;
     PenColorPopupMenu penColorPopupMenu;
-    private ImageView addPageBtn, changeBGBtn, prevPage, nextPage, penColorBtn;
+    private ImageView penColorBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +69,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
         initToolbarButtons();
     }
 
-    public NoteViewHelper getNoteViewHelper() {
-        return NoteApplication.getNoteViewHelper();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -82,10 +77,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void initToolbarButtons() {
         titleTextView = (TextView) findViewById(R.id.note_title);
-        addPageBtn = (ImageView) findViewById(R.id.button_new_page);
-        changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
-        prevPage = (ImageView) findViewById(R.id.button_previous_page);
-        nextPage = (ImageView) findViewById(R.id.button_next_page);
+        ImageView addPageBtn = (ImageView) findViewById(R.id.button_new_page);
+        ImageView changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
+        ImageView prevPage = (ImageView) findViewById(R.id.button_previous_page);
+        ImageView nextPage = (ImageView) findViewById(R.id.button_next_page);
         penColorBtn = (ImageView) findViewById(R.id.color_indicator);
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         penStyleContentView = (ContentView) findViewById(R.id.pen_style_content_view);
@@ -481,24 +476,5 @@ public class ScribbleActivity extends BaseScribbleActivity {
         penColorBtn.setImageResource(targetColorIconRes);
     }
 
-    @Override
-    public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
-        getNoteViewHelper().submit(this, request, callback);
-    }
 
-    @Override
-    public void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback) {
-        getNoteViewHelper().submitRequestWithIdentifier(this, identifier, request, callback);
-    }
-
-    @Override
-    public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
-        updateDataInfo(request);
-        if (request.isAbort()) {
-            return;
-        }
-        if (updatePage) {
-            drawPage();
-        }
-    }
 }
