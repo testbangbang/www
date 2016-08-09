@@ -17,7 +17,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 public class DialogCreateNewFolder extends OnyxAlertDialog {
 
     public interface OnCreateListener {
-        void onCreated(String title);
+        boolean onCreated(String title);
     }
 
     public void setOnCreatedListener(OnCreateListener onCreatedListener) {
@@ -44,8 +44,9 @@ public class DialogCreateNewFolder extends OnyxAlertDialog {
                             Toast.makeText(getActivity(),
                                     R.string.name_can_not_empty, Toast.LENGTH_SHORT).show();
                         } else {
-                            mOnCreatedListener.onCreated(mInputEditText.getText().toString().trim());
-                            dismiss();
+                            if (mOnCreatedListener.onCreated(mInputEditText.getText().toString().trim())) {
+                                dismiss();
+                            }
                         }
                     }
                 });
