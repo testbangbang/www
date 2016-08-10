@@ -6,7 +6,9 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.cloud.service.OnyxAccountService;
 import com.onyx.cloud.store.request.BaseCloudRequest;
+import retrofit2.Retrofit;
 
 /**
  * Created by zhuzeng on 8/10/16.
@@ -65,6 +67,13 @@ public class CloudManager {
             return false;
         }
         return wifi.isConnected();
+    }
+
+    public final OnyxAccountService getAccountService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://dev.onyx-international.cn/api/1")
+                .build();
+        return retrofit.create(OnyxAccountService.class);
     }
 
 }
