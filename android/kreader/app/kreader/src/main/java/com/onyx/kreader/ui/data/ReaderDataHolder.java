@@ -214,9 +214,6 @@ public class ReaderDataHolder {
         reader.submitRequest(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null || request.isAbort()) {
-                    return;
-                }
                 callback.invoke(callback, request, e);
             }
         });
@@ -231,11 +228,12 @@ public class ReaderDataHolder {
         reader.submitRequest(context, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                onRenderRequestFinished(renderRequest, e);
+                callback.invoke(callback, request, e);
+
                 if (e != null || request.isAbort()) {
                     return;
                 }
-                onRenderRequestFinished(renderRequest, e);
-                callback.invoke(callback, request, e);
                 preRenderNext();
             }
         });
@@ -255,6 +253,9 @@ public class ReaderDataHolder {
 
     public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
         Debug.d(TAG, "onRenderRequestFinished: " + request + ", " + e);
+        if (e != null || request.isAbort()) {
+            return;
+        }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
         eventBus.post(RequestFinishEvent.fromRequest(request, e));
