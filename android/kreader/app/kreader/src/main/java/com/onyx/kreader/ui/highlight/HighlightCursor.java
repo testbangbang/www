@@ -1,9 +1,12 @@
 package com.onyx.kreader.ui.highlight;
 
 import android.content.Context;
-import android.graphics.*;
-
-import java.util.List;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PixelXorXfermode;
+import android.graphics.RectF;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,6 +23,7 @@ public class HighlightCursor {
 
     public static final int BEGIN_CURSOR_INDEX = 0;
     public static final int END_CURSOR_INDEX   = 1;
+    public static final int HIT_TEST_SCALE_VALUE = 4;
 
     private Bitmap startCursorBitmap;
     private Bitmap endCursorBitmap;
@@ -29,6 +33,7 @@ public class HighlightCursor {
     private RectF hotPointRect = new RectF();
     private Type cursorType = Type.BEGIN_CURSOR;
     private int hotPointOffset = 0;
+    private float fontHeight = 0;
     static private boolean debugHitTest = false;
     static private boolean debugHotRect = false;
 
@@ -48,22 +53,26 @@ public class HighlightCursor {
         cursorType = t;
     }
 
+    public void setFontHeight(float fontHeight) {
+        this.fontHeight = fontHeight;
+    }
+
     public Type getCursorType() {
         return cursorType;
     }
 
     public void setOriginPosition(final float x, final float y) {
-        float left = x - startCursorBitmap.getWidth() / 2;
+        float left = x - startCursorBitmap.getWidth();
         if (cursorType == Type.BEGIN_CURSOR) {
-            originRect.set(left, y - startCursorBitmap.getHeight(), left + startCursorBitmap.getWidth() - 1, y);
             float width = startCursorBitmap.getWidth();
             float height = startCursorBitmap.getHeight();
-            hitTestRect.set(originRect.left - width*3, originRect.top - height*3, originRect.right + width*3, originRect.bottom + height);
+            originRect.set(left, y - height - fontHeight /2, left + startCursorBitmap.getWidth() - 1, y  - fontHeight /2);
+            hitTestRect.set(originRect.left - width * HIT_TEST_SCALE_VALUE, originRect.top - height * HIT_TEST_SCALE_VALUE, originRect.right + width * HIT_TEST_SCALE_VALUE, originRect.bottom + height);
         } else {
-            originRect.set(left, y, left + endCursorBitmap.getWidth() - 1, y + endCursorBitmap.getHeight() - 1);
             float width = endCursorBitmap.getWidth();
             float height = endCursorBitmap.getHeight();
-            hitTestRect.set(originRect.left - width*3, originRect.top, originRect.right + width*2, originRect.bottom + height);
+            originRect.set(left + endCursorBitmap.getWidth(), y - fontHeight /2, left + endCursorBitmap.getWidth()*2, y + height - fontHeight / 2);
+            hitTestRect.set(originRect.left - width * HIT_TEST_SCALE_VALUE, originRect.top, originRect.right + width * HIT_TEST_SCALE_VALUE, originRect.bottom + height * HIT_TEST_SCALE_VALUE);
         }
     }
 
@@ -129,5 +138,4 @@ public class HighlightCursor {
         hitTestRect.setEmpty();
         displayRect.setEmpty();
     }
-
 }

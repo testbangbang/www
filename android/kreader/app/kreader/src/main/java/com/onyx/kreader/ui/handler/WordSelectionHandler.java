@@ -68,12 +68,12 @@ public class WordSelectionHandler extends BaseHandler implements SelectWordActio
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        selectWord(readerDataHolder,getParent().getTouchStartPosition().x, getParent().getTouchStartPosition().y, e.getX(), e.getY(), false);
+//        selectWord(readerDataHolder,getParent().getTouchStartPosition().x, getParent().getTouchStartPosition().y, e.getX(), e.getY(), false);
         return true;
     }
 
     public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
-        highlightFinished(readerDataHolder,startX, startY, endX, endY,moveAfterLongPress);
+//        highlightFinished(readerDataHolder,startX, startY, endX, endY,moveAfterLongPress);
         return true;
     }
 
@@ -173,6 +173,9 @@ public class WordSelectionHandler extends BaseHandler implements SelectWordActio
 
     public void highlightAlongTouchMoved(ReaderDataHolder readerDataHolder, float x, float y, int cursorSelected) {
         ReaderSelection selection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
+        if (selection == null){
+            return;
+        }
         PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getPageInfo(selection.getPagePosition());
         if (hitTestPage(readerDataHolder,x, y) != pageInfo) {
             return;
@@ -180,15 +183,11 @@ public class WordSelectionHandler extends BaseHandler implements SelectWordActio
         if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
             PointF leftTop = new PointF(x, y);
             PointF bottomRight = RectUtils.getBottomRight(selection.getRectangles());
-            if (isTopToBottom(leftTop,bottomRight)){
-                new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true, this).execute(readerDataHolder);
-            }
+            new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true, this).execute(readerDataHolder);
         } else {
             PointF leftTop = RectUtils.getTopLeft(selection.getRectangles());
             PointF bottomRight = new PointF(x, y);
-            if (isTopToBottom(leftTop,bottomRight)){
-                new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true, this).execute(readerDataHolder);
-            }
+            new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true, this).execute(readerDataHolder);
         }
     }
 

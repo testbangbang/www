@@ -20,11 +20,13 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 public class ShowTextSelectionMenuAction extends BaseAction {
 
     private static PopupSelectionMenu popupSelectionMenu = null;
+    private PopupSelectionMenu.SelectionType selectionType;
     private int x, y;
     private ReaderActivity readerActivity;
 
     public ShowTextSelectionMenuAction(final ReaderDataHolder readerDataHolder, final int x, final int y, final PopupSelectionMenu.SelectionType type) {
         readerActivity = (ReaderActivity)readerDataHolder.getContext();
+        selectionType = type;
         switch (type){
             case SingleWordType:
                 getTextSelectionPopupMenu(readerDataHolder).showTranslation();
@@ -39,8 +41,11 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        getTextSelectionPopupMenu(readerDataHolder).show();
-        getTextSelectionPopupMenu(readerDataHolder).move(x, y);
+        if (selectionType.equals(PopupSelectionMenu.SelectionType.MultiWordsType)){
+            getTextSelectionPopupMenu(readerDataHolder).move(x, y);
+        }else {
+            getTextSelectionPopupMenu(readerDataHolder).show();
+        }
     }
 
     public static void resetSelectionMenu() {
