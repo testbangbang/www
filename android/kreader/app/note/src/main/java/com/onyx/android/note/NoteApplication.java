@@ -55,6 +55,7 @@ public class NoteApplication extends Application {
 
             @Override
             public void uncaughtException (Thread thread, Throwable e) {
+                e.printStackTrace();
                 final View view = getNoteViewHelper().getView();
                 getNoteViewHelper().reset(view);
             }

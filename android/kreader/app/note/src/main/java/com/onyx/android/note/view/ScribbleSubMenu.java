@@ -31,12 +31,19 @@ import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_RECTANGLE;
  * Created by solskjaer49 on 16/8/4 15:05.
  */
 public class ScribbleSubMenu extends RelativeLayout {
+    /**
+     * onItemSelected(int item):let operator(current is Activity) to handle different function.
+     *
+     * onCancel():let operator know the no operate but user dismiss the menu.
+     *
+     * onLayoutStateChanged():use in custom pos.
+     */
     public static abstract class MenuCallback {
         public abstract void onItemSelect(@ScribbleSubMenuID.ScribbleSubMenuIDDef int item);
 
-        public abstract void dismiss();
-
         public abstract void onLayoutStateChanged();
+
+        public abstract void onCancel();
     }
 
     private final MenuCallback mMenuCallback;
@@ -54,7 +61,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         mMenuCallback.onItemSelect(getMenuUniqueId(scribbleMenu));
         boolean close = getMenuCloseAfterClick(scribbleMenu);
         if (close) {
-            this.hide(false);
+            this.dismiss(false);
         }
     }
 
@@ -87,7 +94,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         dismissZone.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                hide(true);
+                dismiss(true);
             }
         });
         initContentView();
@@ -134,9 +141,16 @@ public class ScribbleSubMenu extends RelativeLayout {
         setVisibility(View.VISIBLE);
     }
 
-    public void hide(boolean notify) {
-        if (mMenuCallback != null && notify) {
-            mMenuCallback.dismiss();
+    public void dismiss() {
+        dismiss(true);
+    }
+
+    /**
+     * @param isCancel if no submenu item was previous selected -> true,otherwise false.
+     */
+    private void dismiss(boolean isCancel) {
+        if (mMenuCallback != null && isCancel) {
+            mMenuCallback.onCancel();
         }
         setVisibility(GONE);
     }

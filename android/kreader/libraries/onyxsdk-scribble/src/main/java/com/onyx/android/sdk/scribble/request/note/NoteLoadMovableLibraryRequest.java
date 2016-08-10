@@ -24,7 +24,7 @@ public class NoteLoadMovableLibraryRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
-        noteList = NoteDataProvider.loadMovableNoteLibraryList(getContext());
+        noteList = NoteDataProvider.loadAllNoteLibraryList();
         List<NoteModel> dataList = new ArrayList<>();
         dataList.addAll(noteList);
         for (String id : excludeIDList) {

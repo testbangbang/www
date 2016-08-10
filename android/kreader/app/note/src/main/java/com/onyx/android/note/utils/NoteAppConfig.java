@@ -1,12 +1,17 @@
 package com.onyx.android.note.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
 import com.onyx.android.note.BuildConfig;
+import com.onyx.android.note.activity.onyx.ManagerActivity;
+import com.onyx.android.note.activity.onyx.ScribbleActivity;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.RawResourceUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created with IntelliJ IDEA. User: zhuzeng Date: 5/18/14 Time: 5:21 PM To change this template use
@@ -20,7 +25,10 @@ public class NoteAppConfig {
 
     public static final String HOME_ACTIVITY_PKG_NAME = "home_activity_pkg";
     public static final String HOME_ACTIVITY_CLS_NAME = "home_activity_cls";
+    public static final String SCRIBBLE_ACTIVITY_PKG_NAME = "scribble_activity_pkg";
+    public static final String SCRIBBLE_ACTIVITY_CLS_NAME = "scribble_activity_cls";
     public static final String USE_FULL_SCREEN = "full_screen";
+    public static final String USE_MX_STYLE_DIALOG = "use_mx_style_dialog";
 
     static public final boolean useDebugConfig = false;
 
@@ -29,6 +37,10 @@ public class NoteAppConfig {
             globalInstance = new NoteAppConfig(context);
         }
         return globalInstance;
+    }
+
+    public final boolean useMXStyleDialog() {
+        return backend.hasKey(USE_MX_STYLE_DIALOG) && backend.getBoolean(USE_MX_STYLE_DIALOG, false);
     }
 
     public final String getHomeActivityPackageName() {
@@ -41,6 +53,20 @@ public class NoteAppConfig {
     public final String getHomeActivityClassName() {
         if (backend.hasKey(HOME_ACTIVITY_CLS_NAME)) {
             return backend.getString(HOME_ACTIVITY_CLS_NAME);
+        }
+        return null;
+    }
+
+    public final String getScribbleActivityPackageName() {
+        if (backend.hasKey(SCRIBBLE_ACTIVITY_PKG_NAME)) {
+            return backend.getString(SCRIBBLE_ACTIVITY_PKG_NAME);
+        }
+        return null;
+    }
+
+    public final String getScribbleActivityClassName() {
+        if (backend.hasKey(SCRIBBLE_ACTIVITY_CLS_NAME)) {
+            return backend.getString(SCRIBBLE_ACTIVITY_CLS_NAME);
         }
         return null;
     }
@@ -105,4 +131,19 @@ public class NoteAppConfig {
         }
     }
 
+    public Intent getNoteHomeIntent(Context context) {
+        if (StringUtils.isNotBlank(getHomeActivityClassName()) && StringUtils.isNotBlank(getHomeActivityPackageName())) {
+            return ActivityUtil.createIntent(getHomeActivityPackageName(), getHomeActivityClassName());
+        } else {
+            return new Intent(context, ManagerActivity.class);
+        }
+    }
+
+    public Intent getScribbleIntent(Context context) {
+        if (StringUtils.isNotBlank(getScribbleActivityPackageName()) && StringUtils.isNotBlank(getScribbleActivityClassName())) {
+            return ActivityUtil.createIntent(getScribbleActivityPackageName(), getScribbleActivityClassName());
+        } else {
+            return new Intent(context, ScribbleActivity.class);
+        }
+    }
 }

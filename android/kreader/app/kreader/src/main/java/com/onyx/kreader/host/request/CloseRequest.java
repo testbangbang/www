@@ -8,6 +8,10 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class CloseRequest extends BaseReaderRequest {
 
+    public CloseRequest() {
+        setAbortPendingTasks(true);
+    }
+
     public void execute(final Reader reader) throws Exception {
         reader.getDocument().close();
         reader.getReaderHelper().onDocumentClosed();

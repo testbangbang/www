@@ -10,18 +10,21 @@ import com.onyx.android.sdk.scribble.request.navigation.PageRemoveRequest;
  * Created by zhuzeng on 6/30/16.
  */
 public class DocumentDeletePageAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
+   private PageRemoveRequest pageRemoveRequest;
 
-
-    @Override
-    public void execute(final T activity, final BaseCallback callback) {
-        final PageRemoveRequest pageRemoveRequest = new PageRemoveRequest();
-        activity.submitRequest(pageRemoveRequest, new BaseCallback() {
+    public void execute(final T activity) {
+        execute(activity, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 activity.onRequestFinished(pageRemoveRequest, true);
-                callback.invoke(callback, request, e);
             }
         });
+    }
+
+    @Override
+    public void execute(final T activity, final BaseCallback callback) {
+        pageRemoveRequest = new PageRemoveRequest();
+        activity.submitRequest(pageRemoveRequest, callback);
     }
 
 }

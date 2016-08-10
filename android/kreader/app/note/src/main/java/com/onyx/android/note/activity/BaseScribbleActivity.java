@@ -1,10 +1,469 @@
 package com.onyx.android.note.activity;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
+
+import com.onyx.android.note.NoteApplication;
+import com.onyx.android.note.R;
+import com.onyx.android.note.actions.scribble.DocumentAddNewPageAction;
+import com.onyx.android.note.actions.scribble.DocumentCreateAction;
+import com.onyx.android.note.actions.scribble.DocumentDeletePageAction;
+import com.onyx.android.note.actions.scribble.DocumentEditAction;
+import com.onyx.android.note.actions.scribble.DocumentFlushAction;
+import com.onyx.android.note.actions.scribble.GotoNextPageAction;
+import com.onyx.android.note.actions.scribble.GotoPrevPageAction;
+import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
+import com.onyx.android.note.receiver.DeviceReceiver;
+import com.onyx.android.note.utils.NoteAppConfig;
+import com.onyx.android.note.utils.Utils;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Created by solskjaer49 on 16/8/3 12:25.
  */
 
 public abstract class BaseScribbleActivity extends OnyxAppCompatActivity implements ScribbleInterface {
+    public static final String TAG_NOTE_TITLE = "note_title";
+    protected ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
+    protected DeviceReceiver deviceReceiver = new DeviceReceiver();
+    protected SurfaceHolder.Callback surfaceCallback;
+    protected SurfaceView surfaceView;
+    private TouchPoint erasePoint = null;
+    protected String activityAction;
+    protected String noteTitle;
+    protected Button pageIndicator;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        registerDeviceReceiver();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initSurfaceView();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        syncWithCallback(true, false, null);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+                onNextPage();
+                return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
+                onPrevPage();
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        cleanUpAllPopMenu();
+        syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getNoteViewHelper().quit();
+            }
+        });
+        unregisterDeviceReceiver();
+        super.onDestroy();
+    }
+
+    @Override
+    public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submit(this, request, callback);
+    }
+
+    @Override
+    public void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback) {
+        getNoteViewHelper().submitRequestWithIdentifier(this, identifier, request, callback);
+    }
+
+    @Override
+    public void onRequestFinished(final BaseNoteRequest request, boolean updatePage) {
+        updateDataInfo(request);
+        if (request.isAbort()) {
+            return;
+        }
+        if (updatePage) {
+            drawPage();
+        }
+    }
+
+    protected void updateDataInfo(final BaseNoteRequest request) {
+        shapeDataInfo = request.getShapeDataInfo();
+        int currentPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
+        int pageCount = shapeDataInfo.getPageCount();
+        if (pageIndicator != null) {
+            pageIndicator.setText(currentPageIndex + File.separator + pageCount);
+        }
+    }
+
+    protected NoteViewHelper getNoteViewHelper() {
+        return NoteApplication.getNoteViewHelper();
+    }
+
+    protected void showNoteNameIllegal() {
+        final OnyxAlertDialog illegalDialog = new OnyxAlertDialog();
+        OnyxAlertDialog.Params params = new OnyxAlertDialog.Params().setTittleString(getString(R.string.noti))
+                .setAlertMsgString(getString(R.string.note_name_already_exist))
+                .setEnableNegativeButton(false).setCanceledOnTouchOutside(false)
+                .setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        illegalDialog.dismiss();
+                        syncWithCallback(true, true, null);
+                    }
+                });
+        if (NoteAppConfig.sharedInstance(this).useMXStyleDialog()) {
+            params.setCustomLayoutResID(R.layout.mx_custom_alert_dialog);
+        }
+        illegalDialog.setParams(params);
+        illegalDialog.show(getFragmentManager(), "illegalDialog");
+    }
+
+    protected void syncWithCallback(boolean render,
+                                    boolean resume,
+                                    final BaseCallback callback) {
+        final List<Shape> stash = getNoteViewHelper().deatchStash();
+        final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(stash,
+                render,
+                resume,
+                shapeDataInfo.getDrawingArgs());
+        action.execute(this, callback);
+    }
+
+    protected void registerDeviceReceiver() {
+        deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
+            @Override
+            public void onSystemUIChanged(String type, boolean open) {
+                if (open) {
+                    onSystemUIOpened();
+                } else {
+                    onSystemUIClosed();
+                }
+            }
+
+            @Override
+            public void onHomeClicked() {
+                getNoteViewHelper().enableScreenPost(true);
+                finish();
+            }
+        });
+        deviceReceiver.registerReceiver(this);
+    }
+
+    protected void unregisterDeviceReceiver() {
+        deviceReceiver.unregisterReceiver(this);
+    }
+
+    protected void onSystemUIOpened() {
+        syncWithCallback(true, false, null);
+    }
+
+    protected void onSystemUIClosed() {
+        syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+    }
+
+    protected void initSurfaceView() {
+        surfaceView = (SurfaceView) findViewById(R.id.note_view);
+        surfaceView.getHolder().addCallback(surfaceCallback());
+    }
+
+    protected SurfaceHolder.Callback surfaceCallback() {
+        if (surfaceCallback == null) {
+            surfaceCallback = new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(SurfaceHolder surfaceHolder) {
+                    clearSurfaceView();
+                    getNoteViewHelper().setView(BaseScribbleActivity.this, surfaceView, inputCallback());
+                    handleActivityIntent(getIntent());
+                }
+
+                @Override
+                public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+                    surfaceHolder.removeCallback(surfaceCallback);
+                    surfaceCallback = null;
+                }
+            };
+        }
+        return surfaceCallback;
+    }
+
+    protected void handleActivityIntent(final Intent intent) {
+        if (!intent.hasExtra(Utils.ACTION_TYPE)) {
+            handleDocumentCreate(ShapeUtils.generateUniqueId(), null);
+            return;
+        }
+        activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
+        noteTitle = intent.getStringExtra(TAG_NOTE_TITLE);
+        if (Utils.ACTION_CREATE.equals(activityAction)) {
+            handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
+                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
+        } else if (Utils.ACTION_EDIT.equals(activityAction)) {
+            handleDocumentEdit(intent.getStringExtra(Utils.DOCUMENT_ID),
+                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
+        }
+    }
+
+    protected void handleDocumentCreate(final String uniqueId, final String parentId) {
+        final DocumentCreateAction<BaseScribbleActivity> action = new DocumentCreateAction<>(uniqueId, parentId);
+        action.execute(this);
+    }
+
+    protected void handleDocumentEdit(final String uniqueId, final String parentId) {
+        final DocumentEditAction<BaseScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
+        action.execute(this);
+    }
+
+    protected NoteViewHelper.InputCallback inputCallback() {
+        return new NoteViewHelper.InputCallback() {
+            @Override
+            public void onBeginRawData() {
+
+            }
+
+            @Override
+            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+                onNewTouchPointListReceived(shape, pointList);
+            }
+
+            @Override
+            public void onBeginErasing() {
+                BaseScribbleActivity.this.onBeginErasing();
+            }
+
+            @Override
+            public void onErasing(final MotionEvent touchPoint) {
+                BaseScribbleActivity.this.onErasing(touchPoint);
+            }
+
+            @Override
+            public void onEraseTouchPointListReceived(TouchPointList pointList) {
+                onFinishErasing(pointList);
+            }
+
+            public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
+                drawPage();
+            }
+
+            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
+                if (last) {
+                    drawPage();
+                }
+            }
+
+            public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
+                drawPage();
+            }
+
+        };
+    }
+
+    private void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+        //final AddShapeInBackgroundAction<ScribbleActivity> action = new AddShapeInBackgroundAction<>(shape);
+        //action.execute(this, null);
+    }
+
+    private void onBeginErasing() {
+        syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                erasePoint = new TouchPoint();
+            }
+        });
+    }
+
+    private void onErasing(final MotionEvent touchPoint) {
+        if (erasePoint == null) {
+            return;
+        }
+        erasePoint.x = touchPoint.getX();
+        erasePoint.y = touchPoint.getY();
+        drawPage();
+    }
+
+    private void onFinishErasing(TouchPointList pointList) {
+        erasePoint = null;
+        drawPage();
+        RemoveByPointListAction<BaseScribbleActivity> removeByPointListAction = new
+                RemoveByPointListAction<>(pointList);
+        removeByPointListAction.execute(this);
+    }
+
+    private void drawContent(final Canvas canvas, final Paint paint) {
+        Bitmap bitmap = getNoteViewHelper().getViewBitmap();
+        if (bitmap != null) {
+            canvas.drawBitmap(bitmap, 0, 0, paint);
+        }
+    }
+
+    private void drawStashShape(final Canvas canvas, final Paint paint) {
+        final List<Shape> stash = getNoteViewHelper().getDirtyStash();
+        for (Shape shape : stash) {
+            shape.render(canvas, paint, null);
+        }
+    }
+
+    private void drawErasingIndicator(final Canvas canvas, final Paint paint) {
+        if (erasePoint == null || erasePoint.getX() <= 0 || erasePoint.getY() <= 0) {
+            return;
+        }
+
+        float x = erasePoint.getX();
+        float y = erasePoint.getY();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setStrokeWidth(2.0f);
+        canvas.drawCircle(x, y, shapeDataInfo.getEraserRadius(), paint);
+    }
+
+    public void drawPage() {
+        Rect rect = getViewportSize();
+        Canvas canvas = beforeDraw(rect);
+        if (canvas == null) {
+            return;
+        }
+
+        Paint paint = new Paint();
+        cleanup(canvas, paint, rect);
+        drawContent(canvas, paint);
+        drawStashShape(canvas, paint);
+        drawErasingIndicator(canvas, paint);
+        afterDraw(canvas);
+    }
+
+    protected void clearSurfaceView() {
+        Rect rect = getViewportSize();
+        Canvas canvas = beforeDraw(rect);
+        if (canvas == null) {
+            return;
+        }
+
+        Paint paint = new Paint();
+        cleanup(canvas, paint, rect);
+        afterDraw(canvas);
+    }
+
+    protected Rect getViewportSize() {
+        return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
+    }
+
+    protected void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(rect, paint);
+    }
+
+    protected Canvas beforeDraw(final Rect rect) {
+        return surfaceView.getHolder().lockCanvas(rect);
+    }
+
+    protected void afterDraw(final Canvas canvas) {
+        surfaceView.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    protected void onNextPage() {
+        syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final GotoNextPageAction<BaseScribbleActivity> action = new GotoNextPageAction<>();
+                action.execute(BaseScribbleActivity.this);
+            }
+        });
+    }
+
+    protected void onPrevPage() {
+        syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final GotoPrevPageAction<BaseScribbleActivity> action = new GotoPrevPageAction<>();
+                action.execute(BaseScribbleActivity.this);
+            }
+        });
+    }
+
+    protected void onAddNewPage() {
+        syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final DocumentAddNewPageAction<BaseScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
+                action.execute(BaseScribbleActivity.this);
+            }
+        });
+    }
+
+    protected void onDeletePage() {
+        syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final DocumentDeletePageAction<BaseScribbleActivity> action = new DocumentDeletePageAction<>();
+                action.execute(BaseScribbleActivity.this);
+            }
+        });
+    }
+
+    protected void setCurrentShapeType(int type) {
+        shapeDataInfo.setCurrentShapeType(type);
+    }
+
+    protected void setBackgroundType(int type) {
+        shapeDataInfo.setBackground(type);
+    }
+
+    protected int getBackgroundType() {
+        return shapeDataInfo.getBackground();
+    }
+
+    protected void setStrokeWidth(float width) {
+        shapeDataInfo.setStrokeWidth(width);
+    }
+
+    protected void setStrokeColor(int color) {
+        shapeDataInfo.setStrokeColor(color);
+    }
+
+    protected int getCurrentShapeColor() {
+        return shapeDataInfo.getStrokeColor();
+    }
+
+    protected abstract void cleanUpAllPopMenu();
 }

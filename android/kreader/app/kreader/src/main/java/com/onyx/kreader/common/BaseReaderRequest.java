@@ -1,11 +1,13 @@
 package com.onyx.kreader.common;
 
 import android.util.Log;
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
  * Created by zhuzeng on 10/4/15.
@@ -107,10 +109,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
                 if (isTransferBitmap()) {
                     reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
                 }
-                if (getCallback() != null) {
-                    // we can't foresee what's will be in done(), so we protect it with catch clause
-                    getCallback().done(BaseReaderRequest.this, getException());
-                }
+                BaseCallback.invoke(getCallback(), BaseReaderRequest.this, getException());
                 reader.releaseWakeLock();
         }};
 
@@ -138,7 +137,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return readerViewInfo;
     }
 
-    private void saveReaderOptions(final Reader reader) {
+    public void saveReaderOptions(final Reader reader) {
         if (hasException() || !isSaveOptions()) {
             return;
         }
@@ -149,10 +148,19 @@ public abstract class BaseReaderRequest extends BaseRequest {
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions());
 
-        int currentPage = Integer.parseInt(reader.getDocumentOptions().getCurrentPage());
-        int totalPage = reader.getDocumentOptions().getTotalPage();
-        LegacySdkDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
-                currentPage + 1, totalPage);
+        try {
+            if (reader.getNavigator() != null) {
+                int currentPage = PagePositionUtils.getPageNumber(reader.getReaderLayoutManager().getCurrentPageInfo() != null ?
+                        reader.getReaderLayoutManager().getCurrentPageInfo().getName() :
+                        reader.getNavigator().getInitPosition());
+                int totalPage = reader.getNavigator().getTotalPage();
+                LegacySdkDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
+                        currentPage, totalPage);
+            }
+        } catch (Throwable tr) {
+            Log.w(TAG, this.getClass().toString());
+            Log.w(TAG, tr);
+        }
     }
 
     private void loadUserData(final Reader reader) {
