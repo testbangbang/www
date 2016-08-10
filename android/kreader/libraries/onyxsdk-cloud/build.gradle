@@ -61,5 +61,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'org.apache.commons:commons-collections4:4.0'
     compile 'com.alibaba:fastjson:1.1.34.android'
-    compile 'com.loopj.android:android-async-http:1.4.6'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+
 }
