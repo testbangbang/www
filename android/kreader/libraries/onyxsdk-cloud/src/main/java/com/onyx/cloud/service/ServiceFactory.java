@@ -15,4 +15,14 @@ public class ServiceFactory {
         return retrofit.create(OnyxAccountService.class);
     }
 
+    public static final OnyxBookStoreService getBookStoreService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://store.onyx-international.cn:9000/api/1/")
+                .addConverterFactory(FastJsonConverterFactory.create())
+                .build();
+        return retrofit.create(OnyxBookStoreService.class);
+    }
+
+
+
 }
