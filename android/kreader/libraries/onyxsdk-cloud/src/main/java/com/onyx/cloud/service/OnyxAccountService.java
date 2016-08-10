@@ -1,6 +1,8 @@
 package com.onyx.cloud.service;
 
 import com.onyx.cloud.model.OnyxAccount;
+import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 /**
@@ -9,6 +11,6 @@ import retrofit2.http.POST;
 public interface OnyxAccountService {
 
     @POST("account/signup")
-    boolean signup(final OnyxAccount account);
+    Call<OnyxAccount> signup(@Body final OnyxAccount account);
 
 }
