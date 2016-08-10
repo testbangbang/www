@@ -7,6 +7,7 @@ package com.onyx.kreader.ui.dialog;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,13 +15,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.TextSize;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.onyx.kreader.R;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.view.HTMLReaderWebView;
 
-public class PopupSelectionMenu extends LinearLayout {
+import java.util.List;
 
+public class PopupSelectionMenu extends LinearLayout {
+    private static final String TAG = PopupSelectionMenu.class.getSimpleName();
+
+    public static final int SELECTTION_DIVIDER_HEIGHT = 80;
+    public static final int SELECTTION_DIVIDER_WIDTH = 40;
     public enum SelectionType {
         SingleWordType,
         MultiWordsType
@@ -45,7 +56,11 @@ public class PopupSelectionMenu extends LinearLayout {
     private MenuCallback mMenuCallback;
     private View mDictNextPage;
     private View mDictPrevPage;
-
+    private View topDividerLine;
+    private View bottomDividerLine;
+    private View webViewDividerLine;
+    private boolean isTranslationShow = false;
+    private RelativeLayout layout;
     /**
      * eliminate compiler warning
      *
@@ -58,22 +73,24 @@ public class PopupSelectionMenu extends LinearLayout {
 
     public PopupSelectionMenu(ReaderDataHolder readerDataHolder, RelativeLayout layout, MenuCallback menuCallback) {
         super(readerDataHolder.getContext());
+        this.readerDataHolder = readerDataHolder;
         mActivity = (Activity)readerDataHolder.getContext();
 
         setFocusable(false);
-
+        this.layout = layout;
         final LayoutInflater inflater = (LayoutInflater)
                 readerDataHolder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.popup_selection_menu, this, true);
         mMenuCallback = menuCallback;
-        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+
+        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        p.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        p.addRule(RelativeLayout.CENTER_HORIZONTAL);
         layout.addView(this, p);
 
         mDictTitle = (TextView) findViewById(R.id.dict_title);
-
+        topDividerLine = findViewById(R.id.top_divider_line);
+        bottomDividerLine = findViewById(R.id.bottom_divider_line);
+        webViewDividerLine = findViewById(R.id.webView_divider_line);
         mDictNextPage = findViewById(R.id.dict_next_page);
         mDictNextPage.setOnClickListener(new OnClickListener() {
 
@@ -166,6 +183,12 @@ public class PopupSelectionMenu extends LinearLayout {
             }
         });
         setVisibility(View.GONE);
+        mWebView.post(new Runnable() {
+            @Override
+            public void run() {
+                requestLayoutView();
+            }
+        });
     }
 
     Activity getActivity() {
@@ -195,30 +218,38 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     public void move(int selectionStartY, int selectionEndY) {
+        setVisibility(VISIBLE);
         if (this == null) {
             return;
         }
+        requestLayoutView();
+    }
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-        );
-        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-
-        final int verticalPosition;
-        final int screenHeight = ((View) this.getParent()).getHeight();
-        final int diffTop = screenHeight - selectionEndY;
-        final int diffBottom = selectionEndY;
-        if (diffTop > diffBottom) {
-            verticalPosition = diffTop > this.getHeight() + 20
-                    ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.CENTER_VERTICAL;
-        } else {
-            verticalPosition = diffBottom > this.getHeight() + 20
-                    ? RelativeLayout.ALIGN_PARENT_TOP : RelativeLayout.CENTER_VERTICAL;
+    private void requestLayoutView(){
+        ReaderSelection readerSelection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
+        if (readerSelection == null){
+            return;
         }
-
-        layoutParams.addRule(verticalPosition);
-        setLayoutParams(layoutParams);
+        List<RectF> rectangles = readerSelection.getRectangles();
+        if (rectangles.size() > 0){
+            RectF start = rectangles.get(0);
+            RectF end = rectangles.get(rectangles.size() - 1);
+            final float screenHeight = ((View) this.getParent()).getHeight();
+            final float screenWidth = ((View) this.getParent()).getWidth();
+            final float diffTop = start.top;
+            final float diffBottom = screenHeight - end.bottom;
+            if (diffTop > diffBottom){
+                int x = (int) start.left;
+                setX(Math.min(x,screenWidth - getMeasuredWidth() - SELECTTION_DIVIDER_WIDTH));
+                int y = (int) start.top - SELECTTION_DIVIDER_HEIGHT - getMeasuredHeight();
+                setY(Math.max(y,0));
+            }else {
+                int x = (int) start.left;
+                setX(Math.min(x,screenWidth - getMeasuredWidth() - SELECTTION_DIVIDER_WIDTH));
+                int y = (int) end.bottom + SELECTTION_DIVIDER_HEIGHT;
+                setY(Math.min(y,screenHeight - getMeasuredHeight()));
+            }
+        }
     }
 
     public boolean isShow() {
@@ -226,10 +257,14 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     public void hideTranslation() {
+        isTranslationShow = false;
+        this.webViewDividerLine.setVisibility(GONE);
         this.findViewById(R.id.layout_dict).setVisibility(View.GONE);
     }
 
     public void showTranslation() {
+        isTranslationShow = true;
+        this.webViewDividerLine.setVisibility(VISIBLE);
         this.findViewById(R.id.layout_dict).setVisibility(View.VISIBLE);
     }
 

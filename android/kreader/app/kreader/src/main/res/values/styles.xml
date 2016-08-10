@@ -21,4 +21,17 @@
     <style name="dialog_transparent_no_title" parent="dialog_no_title">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+    <style name="popup_selection_menu_text_view">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/popup_selection_menu_button_text_size</item>
+        <item name="android:layout_marginBottom">@dimen/popup_selection_menu_action_margin_top_bottom</item>
+    </style>
+    <style name="popup_selection_menu_image_view">
+        <item name="android:layout_marginTop">@dimen/popup_selection_menu_action_margin_top_bottom</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>
