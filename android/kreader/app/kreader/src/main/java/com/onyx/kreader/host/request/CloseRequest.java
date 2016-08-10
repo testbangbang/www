@@ -13,8 +13,6 @@ public class CloseRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        // force save document options when document is closed
-        setSaveOptions(true);
         reader.getDocument().close();
         reader.getReaderHelper().onDocumentClosed();
     }

@@ -14,6 +14,7 @@ import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.CreateViewRequest;
 import com.onyx.kreader.host.request.OpenRequest;
 import com.onyx.kreader.host.request.RestoreRequest;
+import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
@@ -153,6 +154,7 @@ public class OpenDocumentAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog();
+                readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
             }
         });
     }
