@@ -16,11 +16,11 @@ public class BaseObject extends BaseModel {
     @Column
     @PrimaryKey(autoincrement = true)
     @Index
-    long id;
+    public long id;
 
     @Column
     @Unique
-    String uniqueId;
+    public String idString;
 
 	@Column
     public Date updatedAt;
@@ -29,6 +29,10 @@ public class BaseObject extends BaseModel {
 
     public BaseObject() {
 
+    }
+
+    public String getIdString() {
+        return idString;
     }
 
     public void checkSave() {

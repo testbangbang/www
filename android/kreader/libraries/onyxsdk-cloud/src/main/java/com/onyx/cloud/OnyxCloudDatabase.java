@@ -2,8 +2,8 @@ package com.onyx.cloud;
 
 import com.raizlabs.android.dbflow.annotation.Database;
 
-@Database(name = OnyxCloseDatabase.NAME, version = OnyxCloseDatabase.VERSION)
-public class OnyxCloseDatabase {
+@Database(name = OnyxCloudDatabase.NAME, version = OnyxCloudDatabase.VERSION)
+public class OnyxCloudDatabase {
 	
 	public static final String NAME = "OnyxCloud";
 	

@@ -10,7 +10,7 @@ import java.util.Set;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.cloud.OnyxCloseDatabase;
+import com.onyx.cloud.OnyxCloudDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
@@ -18,7 +18,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 /**
  * Created by zhuzeng on 11/19/15.
  */
-@Table(database = OnyxCloseDatabase.class)
+@Table(database = OnyxCloudDatabase.class)
 public class Product extends BaseObject {
 
     @Column

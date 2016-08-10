@@ -1,12 +1,12 @@
 package com.onyx.cloud.model;
 
-import com.onyx.cloud.OnyxCloseDatabase;
+import com.onyx.cloud.OnyxCloudDatabase;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 /**
  * Created by zhuzeng on 11/27/15.
  */
-@Table(database = OnyxCloseDatabase.class, name = "DownloadsHistory", allFields = true)
+@Table(database = OnyxCloudDatabase.class, name = "DownloadsHistory", allFields = true)
 public class DownloadLink extends BaseObject {
 
     public String ext;
