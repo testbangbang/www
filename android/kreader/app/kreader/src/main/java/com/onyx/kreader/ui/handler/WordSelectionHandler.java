@@ -181,13 +181,13 @@ public class WordSelectionHandler extends BaseHandler implements SelectWordActio
             return;
         }
         if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
-            PointF leftTop = new PointF(x, y);
-            PointF bottomRight = RectUtils.getBottomRight(selection.getRectangles());
-            new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true, this).execute(readerDataHolder);
+            PointF beginTop = new PointF(x, y);
+            PointF endBottom = RectUtils.getEndBottom(selection.getRectangles());
+            new SelectWordAction(pageInfo.getName(), beginTop, endBottom, true, this).execute(readerDataHolder);
         } else {
-            PointF leftTop = RectUtils.getTopLeft(selection.getRectangles());
-            PointF bottomRight = new PointF(x, y);
-            new SelectWordAction(pageInfo.getName(), leftTop, bottomRight, true, this).execute(readerDataHolder);
+            PointF beginTop = RectUtils.getBeginTop(selection.getRectangles());
+            PointF endBottom = new PointF(x, y);
+            new SelectWordAction(pageInfo.getName(), beginTop, endBottom, true, this).execute(readerDataHolder);
         }
     }
 

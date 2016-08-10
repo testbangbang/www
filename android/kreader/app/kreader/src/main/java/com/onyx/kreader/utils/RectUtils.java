@@ -34,7 +34,7 @@ public class RectUtils {
         return rect;
     }
 
-    static public PointF getTopLeft(List<RectF> list) {
+    static public PointF getBeginTop(List<RectF> list) {
         RectF target = list.get(0);
         for (RectF rect : list) {
             int compare = compareBaseLine(rect, target);
@@ -46,11 +46,11 @@ public class RectUtils {
                 target = rect;
             }
         }
-        Debug.d("getTopLeft, target: " + JSON.toJSONString(target) + ", " + JSON.toJSONString(list));
+        Debug.d("getBeginTop, target: " + JSON.toJSONString(target) + ", " + JSON.toJSONString(list));
         return new PointF(target.left, target.top);
     }
 
-    static public PointF getBottomLeft(List<RectF> list) {
+    static public PointF getBeginBottom(List<RectF> list) {
         RectF target = list.get(0);
         for (RectF rect : list) {
             int compare = compareBaseLine(rect, target);
@@ -62,11 +62,11 @@ public class RectUtils {
                 target = rect;
             }
         }
-        Debug.d("getBottomLeft, target: " + JSON.toJSONString(target) + ", " + JSON.toJSONString(list));
+        Debug.d("getBeginBottom, target: " + JSON.toJSONString(target) + ", " + JSON.toJSONString(list));
         return new PointF(target.left, target.bottom);
     }
 
-    static public PointF getBottomRight(List<RectF> list) {
+    static public PointF getEndBottom(List<RectF> list) {
         RectF target = list.get(0);
         for (RectF rect : list) {
             int compare = compareBaseLine(rect, target);

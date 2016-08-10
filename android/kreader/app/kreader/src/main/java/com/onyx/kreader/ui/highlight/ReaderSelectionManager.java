@@ -95,15 +95,15 @@ public class ReaderSelectionManager {
         }
         HighlightCursor cursor = cursors.get(0);
         float fontHeight = rects.get(0).bottom - rects.get(0).top;
-        PointF bottomLeft = RectUtils.getBottomLeft(rects);
+        PointF beginBottom = RectUtils.getBeginBottom(rects);
         cursor.setFontHeight(fontHeight);
-        cursor.setOriginPosition(bottomLeft.x, bottomLeft.y);
+        cursor.setOriginPosition(beginBottom.x, beginBottom.y);
         cursor.setCursorType(HighlightCursor.Type.BEGIN_CURSOR);
 
         cursor = cursors.get(1);
-        PointF bottomRight = RectUtils.getBottomRight(rects);
+        PointF endBottom = RectUtils.getEndBottom(rects);
         cursor.setFontHeight(fontHeight);
-        cursor.setOriginPosition(bottomRight.x , bottomRight.y);
+        cursor.setOriginPosition(endBottom.x , endBottom.y);
         cursor.setCursorType(HighlightCursor.Type.END_CURSOR);
         return true;
     }
