@@ -99,6 +99,12 @@
         <item name="titleTextAppearance">@style/OnyxAppCompat.TextAppearance.AppCompat.Title</item>
     </style>
 
+
+    <style name="MxToolBarStyle" parent="OnyxToolBarStyle">
+        <item name="android:background">@drawable/mx_toolbar_bg</item>
+    </style>
+
+
     <style name="OnyxAppBarStyle">
         <item name="android:id">@id/app_bar</item>
         <item name="contentInsetStart">0dp</item>

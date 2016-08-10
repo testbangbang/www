@@ -62,7 +62,7 @@ public class NoteViewHelper {
 
         public abstract void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape);
 
-        public abstract void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape);
+        public abstract void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last);
 
         public abstract void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape);
 
@@ -640,14 +640,14 @@ public class NoteViewHelper {
             final TouchPoint screen = touchPointFromNormalized(normalized);;
             currentShape.onMove(normalized, screen);
             if (callback != null && !currentShape.supportDFB()) {
-                callback.onDrawingTouchMove(motionEvent, currentShape);
+                callback.onDrawingTouchMove(motionEvent, currentShape, false);
             }
         }
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);;
         currentShape.onMove(normalized, screen);
         if (callback != null && !currentShape.supportDFB()) {
-            callback.onDrawingTouchMove(motionEvent, currentShape);
+            callback.onDrawingTouchMove(motionEvent, currentShape, true);
         }
     }
 

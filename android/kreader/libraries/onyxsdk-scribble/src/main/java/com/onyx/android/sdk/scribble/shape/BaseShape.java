@@ -1,8 +1,6 @@
 package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.*;
-import com.onyx.android.sdk.scribble.EPDRenderer;
-import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
@@ -23,7 +21,8 @@ public class BaseShape implements Shape {
     private String pageUniqueId;
     private int color = Color.BLACK;
     private float strokeWidth;
-    private Path displayPath;
+    private Path originDisplayPath;
+    private Path scaledDisplayPath;
     private int originWidth;
     private int originHeight;
 
@@ -242,16 +241,24 @@ public class BaseShape implements Shape {
         paint.setStrokeMiter(4.0f);
     }
 
-    public Path getDisplayPath() {
-        return displayPath;
+    public Path getOriginDisplayPath() {
+        return originDisplayPath;
     }
 
-    public void setDisplayPath(final Path p) {
-        displayPath = p;
+    public void setOriginDisplayPath(final Path p) {
+        originDisplayPath = p;
+    }
+
+    public Path getScaledDisplayPath() {
+        return scaledDisplayPath;
+    }
+
+    public void setScaledDisplayPath(Path scaledDisplayPath) {
+        this.scaledDisplayPath = scaledDisplayPath;
     }
 
     public void clear() {
-        displayPath = null;
+        originDisplayPath = null;
     }
 
     public void setPageOriginWidth(int width) {

@@ -2,7 +2,6 @@ package com.onyx.kreader.ui.actions;
 
 import android.widget.RelativeLayout;
 
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSearchOptions;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -76,8 +75,8 @@ public class ShowSearchMenuAction extends BaseAction {
     }
 
     private void searchContent(final ReaderDataHolder readerDataHolder, String page, String query, boolean forward) {
-        if (StringUtils.isNotBlank(query)) {
-            new SearchContentAction(page, query, forward).execute(readerDataHolder);
-        }
+//        if (StringUtils.isNotBlank(query)) {
+//            new SearchContentAction(page, query, forward).execute(readerDataHolder);
+//        }
     }
 }

@@ -9,7 +9,7 @@ import com.onyx.kreader.host.wrapper.Reader;
 public class CloseRequest extends BaseReaderRequest {
 
     public CloseRequest() {
-        setAbortPendingTasks();
+        setAbortPendingTasks(true);
     }
 
     public void execute(final Reader reader) throws Exception {

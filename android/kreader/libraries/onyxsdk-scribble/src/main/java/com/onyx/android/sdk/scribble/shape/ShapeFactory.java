@@ -18,6 +18,8 @@ public class ShapeFactory {
     static public final int SHAPE_BRUSH_SCRIBBLE = 5;
     static public final int SHAPE_TEXT = 6;
     static public final int SHAPE_LINE = 7;
+    static public final int SHAPE_TRIANGLE = 8;
+
 
     public static final Shape createShape(int type) {
         Shape shape;
@@ -45,6 +47,9 @@ public class ShapeFactory {
                 break;
             case ShapeFactory.SHAPE_TEXT:
                 shape = new TexShape();
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE:
+                shape = new TriangleShape();
                 break;
             default:
                 shape = new NormalPencilShape();

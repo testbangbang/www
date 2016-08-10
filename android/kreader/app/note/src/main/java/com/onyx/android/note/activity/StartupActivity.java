@@ -3,16 +3,13 @@ package com.onyx.android.note.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
+
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.utils.NoteAppConfig;
-import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.ActivityUtil;
 
 public class StartupActivity extends Activity {
@@ -27,7 +24,7 @@ public class StartupActivity extends Activity {
     }
 
     private boolean startHomeActivityByDeviceConfig(final NoteAppConfig deviceConfig) {
-        Intent intent = ActivityUtil.createIntent(deviceConfig.getHomeActivityPackageName(), deviceConfig.getHomeActivityClassName());
+        Intent intent = deviceConfig.getNoteHomeIntent(this);
         if (ActivityUtil.startActivitySafely(this, intent)) {
             finish();
             return true;

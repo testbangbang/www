@@ -5,7 +5,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import com.hanvon.core.HWColorPaint;
-import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
@@ -39,10 +38,10 @@ public class NormalPencilShape extends EPDShape {
 
     private void renderByDefault(final Canvas canvas, final Paint paint, final Matrix matrix) {
         applyStrokeStyle(paint);
-        Path path = getDisplayPath();
+        Path path = getOriginDisplayPath();
         if (path == null) {
             path = ShapeUtils.renderShape(canvas, paint, matrix, getNormalizedPoints());
-            setDisplayPath(path);
+            setOriginDisplayPath(path);
         }
         canvas.drawPath(path, paint);
     }

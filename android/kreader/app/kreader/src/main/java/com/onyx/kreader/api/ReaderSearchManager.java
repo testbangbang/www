@@ -11,6 +11,8 @@ public interface ReaderSearchManager {
 
     public boolean searchNext(final ReaderSearchOptions options);
 
+    public boolean searchInPage(final int currentPage, final ReaderSearchOptions options, boolean clear);
+
     public List<ReaderSelection> searchResults();
 
 }

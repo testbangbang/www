@@ -19,6 +19,7 @@ public class PageFlushRequest extends BaseNoteRequest {
 
     public PageFlushRequest(final List<Shape> list, boolean r, boolean resume, final NoteDrawingArgs args) {
         super();
+        setAbortPendingTasks(false);
         shapeList.addAll(list);
         setRender((shapeList.size() > 0) || r);
         setPauseInputProcessor(true);

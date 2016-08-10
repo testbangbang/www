@@ -217,7 +217,7 @@ public class ReaderDataHolder {
                 if (e != null || request.isAbort()) {
                     return;
                 }
-                BaseCallback.invoke(callback, request, e);
+                callback.invoke(callback, request, e);
             }
         });
     }
@@ -235,7 +235,7 @@ public class ReaderDataHolder {
                     return;
                 }
                 onRenderRequestFinished(renderRequest, e);
-                BaseCallback.invoke(callback, request, e);
+                callback.invoke(callback, request, e);
                 preRenderNext();
             }
         });

@@ -62,22 +62,18 @@ public class ShapeUtils {
         }
         final Iterator<TouchPoint> iterator = pointList.iterator();
         TouchPoint touchPoint = iterator.next();
-        Path path = new Path();
-
-        final float src[] = new float[2];
-        final float dst[] = new float[2];
         final float lastDst[] = new float[2];
-        touchPoint.mapPoint(matrix, src, dst);
-        path.moveTo(dst[0], dst[1]);
-        lastDst[0] = dst[0];
-        lastDst[1] = dst[1];
+        Path path = new Path();
+        path.moveTo(touchPoint.getX(), touchPoint.getY());
+        lastDst[0] = touchPoint.getX();
+        lastDst[1] = touchPoint.getY();
         while (iterator.hasNext()) {
             touchPoint = iterator.next();
-            touchPoint.mapPoint(matrix, src, dst);
-            path.quadTo((lastDst[0] + dst[0]) / 2, (lastDst[1] + dst[1]) / 2, dst[0], dst[1]);
-            lastDst[0] = dst[0];
-            lastDst[1] = dst[1];
+            path.quadTo((lastDst[0] + touchPoint.getX()) / 2, (lastDst[1] + touchPoint.getY()) / 2, touchPoint.getX(), touchPoint.getY());
+            lastDst[0] = touchPoint.getX();
+            lastDst[1] = touchPoint.getY();
         }
+        path.transform(matrix);
         return path;
     }
 

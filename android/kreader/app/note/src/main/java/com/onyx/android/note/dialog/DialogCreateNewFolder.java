@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onyx.android.note.R;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 
 /**
@@ -16,7 +17,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 public class DialogCreateNewFolder extends OnyxAlertDialog {
 
     public interface OnCreateListener {
-        void onCreated(String title);
+        boolean onCreated(String title);
     }
 
     public void setOnCreatedListener(OnCreateListener onCreatedListener) {
@@ -28,8 +29,7 @@ public class DialogCreateNewFolder extends OnyxAlertDialog {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.new_folder))
-                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
+        Params params = new OnyxAlertDialog.Params().setTittleString(getString(R.string.new_folder))
                 .setCustomContentLayoutResID(R.layout.alert_dialog_content_input)
                 .setCustomViewAction(new OnyxAlertDialog.CustomViewAction() {
                     @Override
@@ -44,11 +44,16 @@ public class DialogCreateNewFolder extends OnyxAlertDialog {
                             Toast.makeText(getActivity(),
                                     R.string.name_can_not_empty, Toast.LENGTH_SHORT).show();
                         } else {
-                            mOnCreatedListener.onCreated(mInputEditText.getText().toString().trim());
-                            dismiss();
+                            if (mOnCreatedListener.onCreated(mInputEditText.getText().toString().trim())) {
+                                dismiss();
+                            }
                         }
                     }
-                }));
+                });
+        if (NoteAppConfig.sharedInstance(getActivity()).useMXStyleDialog()) {
+            params.setCustomLayoutResID(R.layout.mx_custom_alert_dialog);
+        }
+        setParams(params);
         super.onCreate(savedInstanceState);
     }
 
