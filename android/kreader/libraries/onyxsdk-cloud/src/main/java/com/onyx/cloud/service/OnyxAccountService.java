@@ -9,6 +9,6 @@ import retrofit2.http.POST;
 public interface OnyxAccountService {
 
     @POST("account/signup")
-    boolean signup(final OnyxAccount.AccountInfo accountInfo);
+    boolean signup(final OnyxAccount account);
 
 }
