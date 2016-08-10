@@ -1,0 +1,4 @@
+/.apt_generated/
+src/com/onyx/cloud/model/*_Table.java
+src/com/onyx/cloud/model/*_Adapter.java
+src/com/raizlabs/

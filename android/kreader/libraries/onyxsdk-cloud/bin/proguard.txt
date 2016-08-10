@@ -1,0 +1,80 @@
+# view res/layout/alert_dialog_font_style_setting.xml #generated:16
+# view res/layout/alert_dialog_font_style_setting.xml #generated:21
+# view res/layout/alert_dialog_font_style_setting.xml #generated:26
+# view res/layout/alert_dialog_font_style_setting.xml #generated:31
+# view res/layout/alert_dialog_font_style_setting.xml #generated:36
+-keep class com.onyx.android.sdk.ui.AlignTextView { <init>(...); }
+
+# view res/layout/alert_dialog_font_style_setting.xml #generated:128
+# view res/layout/alert_dialog_font_style_setting.xml #generated:162
+# view res/layout/alert_dialog_font_style_setting.xml #generated:187
+# view res/layout/alert_dialog_screeen_refresh_config.xml #generated:8
+# view res/layout/dialog_font_setting.xml #generated:29
+# view res/layout/dialog_page_margin_setting.xml #generated:29
+# view res/layout/reader_menu_content_layout.xml #generated:19
+# view res/layout/reader_menu_content_layout.xml #generated:9
+-keep class com.onyx.android.sdk.ui.ContentView { <init>(...); }
+
+# view res/layout/dialog_context_menu.xml #generated:15
+# view res/layout/dialog_context_menu.xml #generated:32
+# view res/layout/dialog_context_menu.xml #generated:50
+-keep class com.onyx.android.sdk.ui.ContextMenuGridView { <init>(...); }
+
+# view res/layout/dialog_directory.xml #generated:63
+# view res/layout/dialog_directory.xml #generated:76
+# view res/layout/dialog_directory.xml #generated:89
+# view res/layout/dialog_search_result.xml #generated:6
+-keep class com.onyx.android.sdk.ui.DirectoryGridView { <init>(...); }
+
+# view res/layout/dialog_file_browser_list.xml #generated:51
+-keep class com.onyx.android.sdk.ui.FileBrowserGridView { <init>(...); }
+
+# view res/layout/dialog_bookmarks.xml #generated:13
+# view res/layout/dialog_toc.xml #generated:70
+-keep class com.onyx.android.sdk.ui.GridViewTOC { <init>(...); }
+
+# view res/layout/content_view_layout.xml #generated:7
+-keep class com.onyx.android.sdk.ui.OnyxBaseGridLayout { <init>(...); }
+
+# view res/layout/dialog_go_to_page.xml #generated:44
+# view res/layout/dialog_settings_selection_template.xml #generated:88
+# view res/layout/file_browser_gridview.xml #generated:52
+# view res/layout/gridview_directory.xml #generated:49
+# view res/layout/gridview_toc.xml #generated:51
+# view res/layout/reader_settings.xml #generated:22
+-keep class com.onyx.android.sdk.ui.OnyxGridView { <init>(...); }
+
+# view res/layout/dialog_loading.xml #generated:14
+# view res/layout/dialog_progressbar_rotundity.xml #generated:8
+-keep class com.onyx.android.sdk.ui.OnyxProgressBar { <init>(...); }
+
+# view res/layout/onyx_dialog_selection_settings.xml #generated:86
+-keep class com.onyx.android.sdk.ui.OnyxTableView { <init>(...); }
+
+# view res/layout/scribble_popup_contentmenu.xml #generated:14
+-keep class com.onyx.android.sdk.ui.ReaderMenuContentLayout { <init>(...); }
+
+# view res/layout/onyx_dialog_reader_table_menu.xml #generated:157
+# view res/layout/onyx_dialog_reader_table_menu_ex.xml #generated:9
+# view res/layout/scribble_popuptablemenu.xml #generated:14
+-keep class com.onyx.android.sdk.ui.ReaderMenuLayout { <init>(...); }
+
+# view res/layout/status_bar.xml #generated:8
+-keep class com.onyx.android.sdk.ui.util.AlProgressLine { <init>(...); }
+
+# view res/layout/control_selection_popup_menu.xml #generated:90
+# view res/layout/dialog_dictionary.xml #generated:39
+-keep class com.onyx.android.sdk.ui.util.HTMLReaderWebView { <init>(...); }
+
+# view res/layout/status_bar.xml #generated:33
+# view res/layout/status_bar.xml #generated:43
+# view res/layout/status_bar.xml #generated:56
+# view res/layout/status_bar.xml #generated:68
+-keep class com.onyx.android.sdk.ui.util.MyTextView { <init>(...); }
+
+# view res/layout/status_bar.xml #generated:81
+-keep class com.onyx.android.sdk.ui.util.StatusBarNavigatorView { <init>(...); }
+
+# view AndroidManifest.xml #generated:8
+-keep class com.onyx.cloud.ACTIVITY_ENTRY_NAME { <init>(...); }
+
