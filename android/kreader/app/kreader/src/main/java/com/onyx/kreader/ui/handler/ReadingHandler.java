@@ -15,6 +15,7 @@ import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
+import com.onyx.kreader.ui.actions.TogglePageCropAction;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
@@ -55,6 +56,12 @@ public class ReadingHandler extends BaseHandler{
         } else {
             showReaderMenu(readerDataHolder);
         }
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        new TogglePageCropAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
         return true;
     }
 
