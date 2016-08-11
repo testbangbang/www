@@ -18,9 +18,9 @@ public class TogglePageCropAction extends BaseAction {
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {
-        BaseReaderRequest request = new ScaleToWidthContentRequest(pageName);
-        if (readerDataHolder.getReaderViewInfo().scale == PageConstants.SCALE_TO_WIDTH_CONTENT) {
-            request = new ScaleToPageCropRequest(pageName);
+        BaseReaderRequest request = new ScaleToPageCropRequest(pageName);
+        if (readerDataHolder.getReaderViewInfo().scale == PageConstants.SCALE_TO_PAGE_CONTENT) {
+            request = new ScaleToWidthContentRequest(pageName);
         }
         readerDataHolder.submitRenderRequest(request);
     }
