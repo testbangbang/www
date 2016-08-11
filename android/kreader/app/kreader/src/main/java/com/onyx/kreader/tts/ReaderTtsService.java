@@ -148,6 +148,9 @@ public class ReaderTtsService {
     }
 
     public void stop() {
+        if (ttsState == TtsState.Stopped) {
+            return;
+        }
         if (mediaPlayer != null) {
             closeMediaPlayer();
         }
