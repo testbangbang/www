@@ -33,4 +33,8 @@
     <dimen name="navigatorHeight">42dp</dimen>
     <dimen name="reader_status_bar_text_size">20sp</dimen>
     <dimen name="navigatorWidth">30dp</dimen>
+    <dimen name="global_activities_back_btn_image_height">36dp</dimen>
+    <dimen name="global_activities_back_btn_image_width">24dp</dimen>
+    <dimen name="global_activities_back_btn_category_image_height">36dp</dimen>
+    <dimen name="global_activities_back_btn_category_image_width">36dp</dimen>
 </resources>

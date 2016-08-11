@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -295,7 +296,7 @@ public class ManagerActivity extends BaseManagerActivity {
 
     @Override
     public void updateUIWithNewNoteList(List<NoteModel> curLibSubContList) {
-        contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
+        contentView.setSubLayoutParameter(scribbleItemLayoutID, getItemViewDataMap(currentSelectMode));
         adapter = Utils.adapterFromNoteModelList(curLibSubContList, R.drawable.ic_student_note_folder_gray,
                 R.drawable.ic_student_note_pic_gray);
         adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));
@@ -305,4 +306,43 @@ public class ManagerActivity extends BaseManagerActivity {
         updateActivityTitleAndIcon();
     }
 
+    @Override
+    protected void updateActivityTitleAndIcon() {
+        int iconRes = 0;
+        String titleResString;
+        ViewGroup.LayoutParams params = toolBarIcon.getLayoutParams();
+        if (currentLibraryId != null) {
+            iconRes = R.drawable.title_back;
+            titleResString = currentLibraryName;
+            params.height = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_image_height);
+            params.width = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_image_width);
+        } else {
+            iconRes = R.drawable.ic_business_write_pen_gray_34dp;
+            params.height = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_category_image_height);
+            params.width = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_category_image_width);
+            titleResString = getString(R.string.app_name);
+        }
+        toolBarIcon.setLayoutParams(params);
+        toolBarIcon.setImageResource(iconRes);
+        toolBarTitle.setText(titleResString);
+    }
+
+    @Override
+    protected void beforeSetupItemData(ContentItemView view, GObject object) {
+        if (object.isDummyObject()) {
+            return;
+        }
+        switch (Utils.getItemType(object)) {
+            case DataItemType.TYPE_DOCUMENT:
+                view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_XY);
+                view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, R.drawable.shadow);
+                break;
+            //TODO:temp to use no shadow bg for create item.need update new add icon.
+            case DataItemType.TYPE_CREATE:
+            case DataItemType.TYPE_LIBRARY:
+                view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_CENTER);
+                view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, 0);
+                break;
+        }
+    }
 }

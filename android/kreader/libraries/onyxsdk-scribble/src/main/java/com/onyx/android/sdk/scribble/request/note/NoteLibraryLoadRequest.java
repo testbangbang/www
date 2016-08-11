@@ -1,8 +1,10 @@
 package com.onyx.android.sdk.scribble.request.note;
 
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.SortBy;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
 import java.util.List;
@@ -16,10 +18,23 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
     private List<NoteModel> noteList;
     private volatile boolean loadThumbnail;
     public int thumbnailLimit;
+    private
+    @SortBy.SortByDef
+    int sortBy;
+    private
+    @AscDescOrder.AscDescOrderDef
+    int ascDesc;
 
     public NoteLibraryLoadRequest(final String id, int thumbLimit) {
+        this(id, thumbLimit, SortBy.CREATED_AT, AscDescOrder.DESC);
+    }
+
+    public NoteLibraryLoadRequest(final String id, int thumbLimit,
+                                  @SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascDesc) {
         parentUniqueId = id;
         loadThumbnail = true;
+        this.sortBy = sortBy;
+        this.ascDesc = ascDesc;
         thumbnailLimit = thumbLimit;
         setPauseInputProcessor(true);
         setResumeInputProcessor(false);
@@ -30,7 +45,7 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
-        noteList = NoteDataProvider.loadNoteList(getContext(), parentUniqueId);
+        noteList = NoteDataProvider.loadNoteList(getContext(), parentUniqueId, sortBy, ascDesc);
         if (!loadThumbnail) {
             return;
         }

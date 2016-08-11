@@ -14,8 +14,7 @@
 
             <RelativeLayout
                 android:id="@id/back_function_layout"
-                style="@style/global_activities_back_function_layout"
-                android:layout_marginLeft="23dp">
+                style="@style/global_activities_back_function_layout">
 
                 <ImageView
                     android:id="@+id/imageView_main_title"
@@ -28,6 +27,8 @@
                     android:layout_toRightOf="@+id/imageView_main_title"
                     android:ellipsize="middle"
                     android:gravity="left|center_vertical"
+                    android:maxEms="10"
+                    android:singleLine="true"
                     android:maxLines="1"
                     android:text="@string/app_name" />
             </RelativeLayout>
@@ -101,7 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="@dimen/page_indicator_area_bottom_margin">
 
         <LinearLayout
             android:id="@+id/page_indicator"
@@ -115,9 +116,12 @@
                 android:id="@+id/button_previous_page"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="@dimen/button_minHeight"
+                android:minWidth="@dimen/button_minHeight"
                 android:background="@drawable/imagebtn_bg"
                 android:clickable="true"
                 android:focusable="true"
+                android:scaleType="center"
                 android:padding="2dp"
                 android:src="@drawable/ic_note_prev_page_gray_32dp" />
 
@@ -136,8 +140,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/imagebtn_bg"
+                android:minHeight="@dimen/button_minHeight"
+                android:minWidth="@dimen/button_minHeight"
                 android:clickable="true"
                 android:focusable="true"
+                android:scaleType="center"
                 android:padding="2dp"
                 android:src="@drawable/ic_note_next_page_gray_32dp" />
         </LinearLayout>

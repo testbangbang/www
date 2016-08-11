@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="onyx_scribble_item_title_single_line">true</bool>
+</resources>

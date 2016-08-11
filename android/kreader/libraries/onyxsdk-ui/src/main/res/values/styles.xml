@@ -128,14 +128,14 @@
     </style>
 
     <style name="global_activities_back_btn_category_image">
-        <item name="android:layout_height">36dp</item>
-        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">@dimen/global_activities_back_btn_category_image_height</item>
+        <item name="android:layout_width">@dimen/global_activities_back_btn_category_image_width</item>
         <item name="android:layout_centerVertical">true</item>
     </style>
 
     <style name="global_activities_back_btn_image">
-        <item name="android:layout_height">36dp</item>
-        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">@dimen/global_activities_back_btn_image_height</item>
+        <item name="android:layout_width">@dimen/global_activities_back_btn_image_width</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_centerVertical">true</item>
