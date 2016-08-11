@@ -6,7 +6,6 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.common.PageAnnotation;
 import com.onyx.kreader.ui.actions.NextScreenAction;
@@ -43,6 +42,10 @@ public class ReadingHandler extends BaseHandler{
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        return false;
+    }
+
+    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (tryHitTest(readerDataHolder,e.getX(), e.getY())) {
             return true;
         } else if (e.getX() > readerDataHolder.getDisplayWidth() * 2 / 3) {
@@ -52,10 +55,6 @@ public class ReadingHandler extends BaseHandler{
         } else {
             showReaderMenu(readerDataHolder);
         }
-        return true;
-    }
-
-    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
         return true;
     }
 
