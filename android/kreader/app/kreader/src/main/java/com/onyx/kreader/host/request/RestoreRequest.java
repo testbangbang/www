@@ -19,7 +19,6 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        setSaveOptions(true);
         useRenderBitmap(reader);
         restoreLayoutType(reader);
         restorePagePosition(reader);

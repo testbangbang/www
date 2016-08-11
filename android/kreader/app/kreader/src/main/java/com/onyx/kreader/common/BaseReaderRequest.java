@@ -1,6 +1,7 @@
 package com.onyx.kreader.common;
 
 import android.util.Log;
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
@@ -108,10 +109,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
                 if (isTransferBitmap()) {
                     reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
                 }
-                if (getCallback() != null) {
-                    // we can't foresee what's will be in done(), so we protect it with catch clause
-                    getCallback().done(BaseReaderRequest.this, getException());
-                }
+                BaseCallback.invoke(getCallback(), BaseReaderRequest.this, getException());
                 reader.releaseWakeLock();
         }};
 
@@ -139,7 +137,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return readerViewInfo;
     }
 
-    private void saveReaderOptions(final Reader reader) {
+    public void saveReaderOptions(final Reader reader) {
         if (hasException() || !isSaveOptions()) {
             return;
         }

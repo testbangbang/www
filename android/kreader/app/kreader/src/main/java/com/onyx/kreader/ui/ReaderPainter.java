@@ -1,11 +1,23 @@
 package com.onyx.kreader.ui;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PixelXorXfermode;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
+
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.PageAnnotation;
@@ -33,7 +45,7 @@ public class ReaderPainter {
         drawBitmap(canvas, paint, bitmap);
         drawSearchResults(canvas, paint, userDataInfo, viewInfo);
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager);
-        drawAnnotations(canvas, paint, userDataInfo, viewInfo);
+        drawAnnotations(context, canvas, paint, userDataInfo, viewInfo);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
         drawShapes(canvas, paint, noteViewHelper, shapeDataInfo);
     }
@@ -62,12 +74,16 @@ public class ReaderPainter {
         }
     }
 
-    private void drawAnnotations(Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+    private void drawAnnotations(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
         for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
             if (userDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = userDataInfo.getPageAnnotations(pageInfo);
                 for (PageAnnotation annotation : annotations) {
                     drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
+                    String note = annotation.getAnnotation().getNote();
+                    if (!StringUtils.isNullOrEmpty(note)){
+                        drawHighLightSign(context, canvas, paint, annotation.getRectangles());
+                    }
                 }
             }
         }
@@ -102,11 +118,22 @@ public class ReaderPainter {
             return;
         }
         paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setXfermode(xorMode);
+        paint.setStyle(Paint.Style.STROKE);
+//        paint.setXfermode(xorMode);
+        paint.setStrokeWidth(3);
+        int paddingBottom = 2;
         for (int i = 0; i < rectangles.size(); ++i) {
-            canvas.drawRect(rectangles.get(i), paint);
+            canvas.drawLine(rectangles.get(i).left,rectangles.get(i).bottom + paddingBottom,rectangles.get(i).right,rectangles.get(i).bottom + paddingBottom,paint);
         }
+    }
+
+    private void drawHighLightSign(Context context, Canvas canvas, Paint paint, List<RectF> rectangles){
+        if (rectangles == null || rectangles.size() < 1) {
+            return;
+        }
+        RectF end = rectangles.get(rectangles.size() - 1);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_label_sign);
+        canvas.drawBitmap(bitmap, end.right, end.top - bitmap.getHeight(), null);
     }
 
     private void drawSelectionCursor(Canvas canvas, Paint paint, PixelXorXfermode xor, ReaderSelectionManager selectionManager) {

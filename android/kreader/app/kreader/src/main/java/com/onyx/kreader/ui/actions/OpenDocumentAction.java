@@ -14,6 +14,7 @@ import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.CreateViewRequest;
 import com.onyx.kreader.host.request.OpenRequest;
 import com.onyx.kreader.host.request.RestoreRequest;
+import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
@@ -71,8 +72,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
         final BaseReaderRequest openRequest = new OpenRequest(documentPath, options);
-        // document not opened, so readerDataHolder is still not ready, then we should use reader directly
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), openRequest, new BaseCallback() {
+        readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -154,6 +154,7 @@ public class OpenDocumentAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog();
+                readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
             }
         });
     }
