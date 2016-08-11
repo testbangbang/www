@@ -1,16 +1,16 @@
 package com.onyx.kreader.host.layout;
 
-import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.cache.BitmapHolder;
 import com.onyx.kreader.cache.BitmapLruCache;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PageUtils;
@@ -85,7 +85,7 @@ public class LayoutProviderUtils {
             visibleRect.intersect(layoutManager.getPageManager().getViewportRect());
             PageUtils.translateCoordinates(visibleRect, positionRect);
             if (!hitCache) {
-                Debug.d(TAG, "page: " + documentPosition + ", scale: " + pageInfo.getActualScale() +
+                Debug.d(TAG, "draw visible page: " + documentPosition + ", scale: " + pageInfo.getActualScale() +
                         ", bitmap: " + bitmap.getBitmap().getWidth() + ", " + bitmap.getBitmap().getHeight() +
                         ", display rect: " + displayRect +
                         ", position rect: " + positionRect +
@@ -143,24 +143,21 @@ public class LayoutProviderUtils {
     }
 
     static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        Bitmap copy = bitmap.getBitmap().copy(bitmap.getBitmap().getConfig(), true);
-        if (copy != null) {
-            cache.put(key, copy);
-        }
+        cache.put(key, bitmap.getBitmapReference());
         return true;
     }
 
     static public boolean checkCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        Bitmap result = cache.get(key);
+        BitmapHolder result = cache.get(key);
         if (result == null) {
             return false;
         }
 
-        if (!bitmap.copyFrom(result)) {
-            result = cache.remove(key);
-            bitmap.attach(result);
+        try {
+            return bitmap.attachWith(result);
+        } finally {
+            result.detach();
         }
-        return true;
     }
 
     static public void clear(final ReaderLayoutManager layoutManager) {

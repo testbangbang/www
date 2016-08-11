@@ -7,13 +7,21 @@ import android.util.Log;
 import android.view.WindowManager;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.onyx.android.sdk.api.ReaderBitmap;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.api.*;
+import com.onyx.kreader.api.ReaderDocument;
+import com.onyx.kreader.api.ReaderDocumentMetadata;
+import com.onyx.kreader.api.ReaderHitTestManager;
+import com.onyx.kreader.api.ReaderNavigator;
+import com.onyx.kreader.api.ReaderPlugin;
+import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.api.ReaderRendererFeatures;
+import com.onyx.kreader.api.ReaderSearchManager;
+import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.cache.BitmapLruCache;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
-import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
@@ -24,7 +32,6 @@ import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 import com.onyx.kreader.reflow.ImageReflowManager;
-import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.utils.ImageUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
@@ -197,11 +204,10 @@ public class ReaderHelper {
 
     public void updateRenderBitmap(int width, int height) {
         Bitmap.Config bitmapConfig = Bitmap.Config.ARGB_8888;
-        if (renderBitmap == null) {
-            renderBitmap = ReaderBitmapImpl.create(width, height, bitmapConfig);
-        } else {
-            renderBitmap.update(width, height, bitmapConfig);
+        if (renderBitmap != null) {
+            renderBitmap.recycleBitmap();
         }
+        renderBitmap = ReaderBitmapImpl.create(width, height, bitmapConfig);
     }
 
     public final ReaderBitmapImpl getRenderBitmap() {
@@ -347,7 +353,7 @@ public class ReaderHelper {
     private void copyRenderBitmapToViewportImpl() {
         if (renderBitmap != null && renderBitmap.getBitmap() != null &&
                 !renderBitmap.getBitmap().isRecycled()) {
-            viewportBitmap.copyFrom(renderBitmap.getBitmap());
+            viewportBitmap.attachWith(renderBitmap.getBitmapReference());
         }
    }
 
