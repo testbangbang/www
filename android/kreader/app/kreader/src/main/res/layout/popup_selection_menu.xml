@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:background="@drawable/popup_selection_menu_main_background"
+              android:layout_width="@dimen/popup_selection_menu_width"
     android:layout_height="wrap_content"
-    android:background="@drawable/ic_popup_selection_menu_background"
     android:orientation="vertical">
+
+    <View
+        android:id="@+id/top_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
 
     <LinearLayout
         android:id="@+id/layout_dict"
@@ -12,8 +18,9 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/dict_title"
@@ -38,21 +45,21 @@
                 android:src="@drawable/ic_dialog_close"
                 android:layout_marginRight="5dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/ic_close"
                 />
 
             <ImageView
                 android:id="@+id/dict_next_page"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/button_close"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="20dp"
                 android:contentDescription=""
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:src="@drawable/ic_popup_selection_menu_dic_downward"
+                android:src="@drawable/ic_dialog_reader_arrow_right_black"
                 android:visibility="gone" />
 
             <TextView
@@ -60,8 +67,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@id/dict_next_page"
                 android:text="@string/popup_selection_menu_page_indicator_default_value"
                 android:textColor="@android:color/black"
@@ -70,23 +77,22 @@
 
             <ImageView
                 android:id="@+id/dict_prev_page"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="8dp"
                 android:layout_toLeftOf="@+id/page_indicator"
                 android:contentDescription=""
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:src="@drawable/ic_popup_selection_menu_dic_upward"
+                android:src="@drawable/ic_dialog_reader_arrow_left_black"
                 android:visibility="gone" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#ff000000" />
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
 
         <com.onyx.kreader.ui.view.HTMLReaderWebView
             android:id="@+id/explain"
@@ -94,19 +100,19 @@
             android:layout_height="150dp"
             android:layout_margin="2dp" />
 
-        <View
-            style="@style/single_line_X_axis_View"
-            android:layout_height="2dp" />
     </LinearLayout>
 
     <View
+        android:id="@+id/webView_divider_line"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#ff000000" />
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
 
     <LinearLayout
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp"
         android:id="@+id/tools_plate"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -116,103 +122,62 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/popup_selection_menu_item_background"
+            android:background="@drawable/popup_selection_menu_item_right_background"
             android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
+                style="@style/popup_selection_menu_image_view"
                 android:id="@+id/imageview_copy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:contentDescription=""
-                android:src="@drawable/ic_popup_selection_menu_copy_default" />
+                android:src="@drawable/ic_copy" />
 
             <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="2dp"
-                android:gravity="center"
-                android:lines="2"
-                android:text="@string/Copy"
-                android:textStyle="bold"
-                android:textSize="@dimen/popup_selection_menu_button_text_size" />
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/Copy"/>
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_view_copy_right"
-            android:layout_width="3dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/black" />
 
         <LinearLayout
             android:id="@+id/imagebutton_highlight"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/popup_selection_menu_item_background"
+            android:background="@drawable/popup_selection_menu_item_right_background"
             android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
+                style="@style/popup_selection_menu_image_view"
                 android:id="@+id/imageview_highlight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:contentDescription=""
-                android:src="@drawable/ic_popup_selection_menu_highlight_default" />
+                android:src="@drawable/ic_highlight" />
 
             <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="2dp"
-                android:gravity="center"
-                android:lines="2"
-                android:text="@string/Highlight"
-                android:textStyle="bold"
-                android:textSize="@dimen/popup_selection_menu_button_text_size" />
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/Highlight"/>
         </LinearLayout>
-
-        <TextView
-            android:layout_width="3dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/black" />
 
         <LinearLayout
             android:id="@+id/imagebutton_annotaion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/popup_selection_menu_item_background"
+            android:background="@drawable/popup_selection_menu_item_right_background"
             android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
+                style="@style/popup_selection_menu_image_view"
                 android:id="@+id/imageview_annotation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:contentDescription="@drawable/ic_popup_selection_menu_annotation_default"
-                android:src="@drawable/ic_popup_selection_menu_annotation_default" />
+                android:src="@drawable/ic_label" />
 
             <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="2dp"
-                android:gravity="center"
-                android:lines="2"
-                android:text="@string/Annotation"
-                android:textStyle="bold"
-                android:textSize="@dimen/popup_selection_menu_button_text_size" />
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/Annotation"/>
         </LinearLayout>
-
-        <TextView
-            android:layout_width="3dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/black" />
 
         <LinearLayout
             android:id="@+id/imagebutton_dict"
@@ -221,26 +186,18 @@
             android:layout_weight="1"
             android:background="@drawable/popup_selection_menu_item_background"
             android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
+                style="@style/popup_selection_menu_image_view"
                 android:id="@+id/imageview_translate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
                 android:contentDescription="@drawable/ic_popup_selection_menu_translate_default"
-                android:src="@drawable/ic_popup_selection_menu_translate_default" />
+                android:src="@drawable/ic_hdictionary" />
 
             <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="2dp"
-                android:gravity="center"
-                android:lines="2"
-                android:text="@string/Dictionary"
-                android:textStyle="bold"
-                android:textSize="@dimen/popup_selection_menu_button_text_size" />
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/Dictionary" />
         </LinearLayout>
 
         <TextView
@@ -255,10 +212,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/popup_selection_menu_item_background"
+            android:background="@drawable/popup_selection_menu_item_right_background"
             android:clickable="true"
             android:visibility="gone"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
@@ -281,4 +238,9 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:id="@+id/bottom_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
 </LinearLayout>

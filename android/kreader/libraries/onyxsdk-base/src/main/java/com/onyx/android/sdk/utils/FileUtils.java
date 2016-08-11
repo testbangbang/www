@@ -244,4 +244,13 @@ public class FileUtils {
         return digestBuffer;
     }
 
+    public static boolean deleteFile(final String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+            return true;
+        }
+        return false;
+    }
+
 }

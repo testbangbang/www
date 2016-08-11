@@ -13,6 +13,7 @@ import java.util.concurrent.ThreadFactory;
 public class ExecutorContext {
 
     private ExecutorService singleThreadPool = null;
+    private ExecutorService multiThreadPool = null;
     private List<BaseRequest> requestList;
     private int threadPriority = Thread.MAX_PRIORITY;
 
@@ -71,5 +72,23 @@ public class ExecutorContext {
 
     public void submitToSingleThreadPool(final Runnable runnable) {
         getSingleThreadPool().submit(runnable);
+    }
+
+    public void submitToMultiThreadPool(final Runnable runnable) {
+        getMultiThreadPool().submit(runnable);
+    }
+
+    public ExecutorService getMultiThreadPool() {
+        if (multiThreadPool == null) {
+            multiThreadPool = Executors.newScheduledThreadPool(3, new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r);
+                    t.setPriority(threadPriority);
+                    return t;
+                }
+            });
+        }
+        return singleThreadPool;
     }
 }

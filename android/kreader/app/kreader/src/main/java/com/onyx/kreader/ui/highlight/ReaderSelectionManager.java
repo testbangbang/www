@@ -90,17 +90,20 @@ public class ReaderSelectionManager {
             return false;
         }
         if (cursors.size() <= 0) {
-            cursors.add(new HighlightCursor(context, R.drawable.ic_text_select_handle_left, R.drawable.ic_text_select_handle_right, HighlightCursor.Type.BEGIN_CURSOR));
-            cursors.add(new HighlightCursor(context, R.drawable.ic_text_select_handle_left, R.drawable.ic_text_select_handle_right, HighlightCursor.Type.END_CURSOR));
+            cursors.add(new HighlightCursor(context, R.drawable.ic_choose_left, R.drawable.ic_choose_right, HighlightCursor.Type.BEGIN_CURSOR));
+            cursors.add(new HighlightCursor(context, R.drawable.ic_choose_left, R.drawable.ic_choose_right, HighlightCursor.Type.END_CURSOR));
         }
         HighlightCursor cursor = cursors.get(0);
-        PointF topLeft = RectUtils.getTopLeft(rects);
-        cursor.setOriginPosition(topLeft.x, topLeft.y);
+        float fontHeight = rects.get(0).bottom - rects.get(0).top;
+        PointF beginBottom = RectUtils.getBeginBottom(rects);
+        cursor.setFontHeight(fontHeight);
+        cursor.setOriginPosition(beginBottom.x, beginBottom.y);
         cursor.setCursorType(HighlightCursor.Type.BEGIN_CURSOR);
 
         cursor = cursors.get(1);
-        PointF bottomRight = RectUtils.getBottomRight(rects);
-        cursor.setOriginPosition(bottomRight.x, bottomRight.y);
+        PointF endBottom = RectUtils.getEndBottom(rects);
+        cursor.setFontHeight(fontHeight);
+        cursor.setOriginPosition(endBottom.x , endBottom.y);
         cursor.setCursorType(HighlightCursor.Type.END_CURSOR);
         return true;
     }
