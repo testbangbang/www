@@ -297,10 +297,12 @@ public class ReaderTtsService {
 
     private void closeMediaPlayer() {
         try {
-            mediaPlayer.stop();
+            mediaPlayer.setOnCompletionListener(null);
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
             mediaPlayer.reset();
             mediaPlayer.release();
-            mediaPlayer.setOnCompletionListener(null);
         } catch (Throwable tr) {
             Log.w(TAG, tr);
         }
