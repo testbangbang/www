@@ -115,6 +115,8 @@ public class ReaderLayoutManager {
         }
 
         if (currentProvider.equals(layoutName)) {
+            // even it's same layout provider, user may want to change to a different navigation args
+            getCurrentLayoutProvider().setNavigationArgs(navigationArgs);
             return true;
         }
 
