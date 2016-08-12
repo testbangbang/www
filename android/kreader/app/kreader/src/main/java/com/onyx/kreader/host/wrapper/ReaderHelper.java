@@ -203,11 +203,11 @@ public class ReaderHelper {
     }
 
     public void updateRenderBitmap(int width, int height) {
-        Bitmap.Config bitmapConfig = Bitmap.Config.ARGB_8888;
         if (renderBitmap != null) {
             renderBitmap.recycleBitmap();
         }
-        renderBitmap = ReaderBitmapImpl.create(width, height, bitmapConfig);
+        // delay the init of renderBitmap until we really need it
+        renderBitmap = new ReaderBitmapImpl();
     }
 
     public final ReaderBitmapImpl getRenderBitmap() {

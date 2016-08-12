@@ -1,5 +1,6 @@
 package com.onyx.kreader.host.layout;
 
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.api.ReaderBitmap;
@@ -52,6 +53,7 @@ public class LayoutProviderUtils {
             hitCache = true;
         }
         if (!hitCache) {
+            bitmap.update(reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight(), Bitmap.Config.ARGB_8888);
             bitmap.clear();
         }
 
