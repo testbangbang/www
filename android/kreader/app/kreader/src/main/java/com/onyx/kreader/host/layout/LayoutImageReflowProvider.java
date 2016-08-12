@@ -1,16 +1,16 @@
 package com.onyx.kreader.host.layout;
 
-import android.graphics.Bitmap;
 import android.graphics.RectF;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.cache.BitmapHolder;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -83,10 +83,10 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
-        Bitmap bmp = getCurrentSubPageBitmap();
+        BitmapHolder bmp = getCurrentSubPageBitmap();
         if (bmp != null) {
-            bitmap.copyFrom(bmp);
-            bmp.recycle();
+            bitmap.attachWith(bmp);
+            bmp.detach();
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
             return true;
         }
@@ -103,8 +103,8 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (bmp == null) {
             return false;
         }
-        bitmap.copyFrom(bmp);
-        bmp.recycle();
+        bitmap.attachWith(bmp);
+        bmp.detach();
         return true;
     }
 
@@ -208,7 +208,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return getLayoutManager().getImageReflowManager().getSubPageList(getCurrentPageName());
     }
 
-    private Bitmap getCurrentSubPageBitmap() {
+    private BitmapHolder getCurrentSubPageBitmap() {
         return getLayoutManager().getImageReflowManager().getSubPageBitmap(getCurrentPageName(), getCurrentSubPageIndex());
     }
 

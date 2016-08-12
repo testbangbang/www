@@ -17,6 +17,7 @@ import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.request.CloseRequest;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
+import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.tts.ReaderTtsManager;
@@ -230,17 +231,23 @@ public class ReaderDataHolder {
             public void done(BaseRequest request, Throwable e) {
                 onRenderRequestFinished(renderRequest, e);
                 callback.invoke(callback, request, e);
-
-                if (e != null || request.isAbort()) {
-                    return;
-                }
-                preRenderNext();
+                onPageDrawFinished(renderRequest, e);
             }
         });
     }
 
     private void beforeSubmitRequest() {
         resetShapeData();
+    }
+
+    private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
+        if (e != null || request.isAbort()) {
+            return;
+        }
+        if (request.isSaveOptions()) {
+            submitNonRenderRequest(new SaveDocumentOptionsRequest());
+        }
+        preRenderNext();
     }
 
     public void preRenderNext() {

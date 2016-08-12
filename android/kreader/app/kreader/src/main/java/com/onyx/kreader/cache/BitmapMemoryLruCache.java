@@ -1,13 +1,12 @@
 package com.onyx.kreader.cache;
 
-import android.graphics.Bitmap;
 import android.util.LruCache;
 import com.onyx.android.sdk.utils.BitmapUtils;
 
 /**
  * Created by Joy on 2016/5/5.
  */
-public class BitmapMemoryLruCache extends LruCache<String, Bitmap> {
+public class BitmapMemoryLruCache extends LruCache<String, BitmapHolder> {
 
     /**
      * @param maxSize for caches that do not override {@link #sizeOf}, this is
@@ -19,17 +18,17 @@ public class BitmapMemoryLruCache extends LruCache<String, Bitmap> {
     }
 
     @Override
-    protected void entryRemoved(boolean evicted, String key, Bitmap oldValue, Bitmap newValue) {
-        if (oldValue != null && !oldValue.isRecycled()) {
-            oldValue.recycle();
+    protected void entryRemoved(boolean evicted, String key, BitmapHolder oldValue, BitmapHolder newValue) {
+        if (oldValue != null ) {
+            oldValue.detach();
         }
     }
 
     @Override
-    protected int sizeOf(String key, Bitmap value) {
-        if (!BitmapUtils.isValid(value)) {
+    protected int sizeOf(String key, BitmapHolder value) {
+        if (value == null || !BitmapUtils.isValid(value.getBitmap())) {
             return 0;
         }
-        return BitmapUtils.getSizeInBytes(value);
+        return BitmapUtils.getSizeInBytes(value.getBitmap());
     }
 }

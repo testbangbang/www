@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 /**
+ *
  * Created by Joy on 2016/5/5.
  */
 public class BitmapLruCache implements Closeable {
@@ -131,23 +132,23 @@ public class BitmapLruCache implements Closeable {
         this.diskCache = diskCache;
     }
 
-    public Bitmap get(String key) {
+    public BitmapHolder get(String key) {
         return get(key, null);
     }
 
-    public Bitmap get(String key, BitmapFactory.Options options) {
-        Bitmap bitmap = getFromMemoryCache(key);
+    public BitmapHolder get(String key, BitmapFactory.Options options) {
+        BitmapHolder bitmap = getFromMemoryCache(key);
         if (bitmap != null) {
             return bitmap;
         }
         return getFromDiskCache(key, options);
     }
 
-    public final Bitmap remove(final String key) {
+    public final BitmapHolder remove(final String key) {
         return removeFromMemoryCache(key);
     }
 
-    public Bitmap removeFromMemoryCache(final String key) {
+    public BitmapHolder removeFromMemoryCache(final String key) {
         if (memoryCache == null) {
             return null;
         }
@@ -155,25 +156,29 @@ public class BitmapLruCache implements Closeable {
         return memoryCache.remove(key);
     }
 
-    public Bitmap getFromMemoryCache(final String key) {
+    public BitmapHolder getFromMemoryCache(final String key) {
         if (memoryCache == null) {
             return null;
         }
 
-        Bitmap result;
+        BitmapHolder result;
         synchronized (memoryCache) {
             result = memoryCache.get(key);
+            if (result == null) {
+                return null;
+            }
             // If we get a value, but it has a invalid bitmap, removeShape it
-            if (result != null && result.isRecycled()) {
+            if (result.isRecycled()) {
                 memoryCache.remove(key);
-                result = null;
+                result.detach();
+                return null;
             }
         }
 
-        return result;
+        return result.attach();
     }
 
-    public Bitmap getFromDiskCache(final String key, final BitmapFactory.Options options) {
+    public BitmapHolder getFromDiskCache(final String key, final BitmapFactory.Options options) {
         if (diskCache == null) {
             return null;
         }
@@ -188,18 +193,17 @@ public class BitmapLruCache implements Closeable {
                 InputStream is = snapshot.getInputStream(0);
                 try {
                     Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
-                    if (bitmap != null) {
-                        if (memoryCache != null) {
-                            memoryCache.put(key, bitmap);
-                        }
-                    } else {
+                    if (bitmap == null) {
                         diskCache.remove(key);
                         diskCache.flush();
+                        return null;
                     }
-                    benchmark.report("load disk cache");
-                    return bitmap;
+                    BitmapHolder holder = BitmapHolder.create(bitmap);
+                    putMemoryCache(key, holder);
+                    return holder;
                 } finally {
                     FileUtils.closeQuietly(is);
+                    benchmark.report("load disk cache");
                 }
             } finally {
                 snapshot.close();
@@ -211,13 +215,13 @@ public class BitmapLruCache implements Closeable {
         return null;
     }
 
-    public Bitmap put(String key, Bitmap copy) {
+    public BitmapHolder put(String key, BitmapHolder copy) {
         return put(key, copy, Bitmap.CompressFormat.PNG, 100);
     }
 
-    public Bitmap put(final String key, final Bitmap bitmap,
-                      Bitmap.CompressFormat compressFormat,
-                      int compressQuality) {
+    public BitmapHolder put(final String key, final BitmapHolder bitmap,
+                            Bitmap.CompressFormat compressFormat,
+                            int compressQuality) {
         putMemoryCache(key, bitmap);
         putDiskCache(key, bitmap, compressFormat, compressQuality);
         return bitmap;
@@ -246,13 +250,13 @@ public class BitmapLruCache implements Closeable {
         }
     }
 
-    private void putMemoryCache(final String key, final Bitmap bitmap) {
+    private void putMemoryCache(final String key, final BitmapHolder bitmap) {
         if (memoryCache != null) {
-            memoryCache.put(key, bitmap);
+            memoryCache.put(key, bitmap.attach());
         }
     }
 
-    private void putDiskCache(final String key, final Bitmap bitmap,
+    private void putDiskCache(final String key, final BitmapHolder bitmap,
                               final Bitmap.CompressFormat compressFormat,
                               final int compressQuality) {
         if (diskCache == null) {
@@ -264,7 +268,7 @@ public class BitmapLruCache implements Closeable {
             DiskLruCache.Editor editor = diskCache.edit(key);
             OutputStream os = editor.newOutputStream(0);
             try {
-                bitmap.compress(compressFormat, compressQuality, os);
+                bitmap.getBitmap().compress(compressFormat, compressQuality, os);
                 os.flush();
                 editor.commit();
                 diskCache.flush();
