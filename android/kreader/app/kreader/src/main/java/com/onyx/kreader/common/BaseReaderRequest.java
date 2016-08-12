@@ -3,9 +3,9 @@ package com.onyx.kreader.common;
 import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.PagePositionUtils;
 
@@ -92,7 +92,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
         dumpException();
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
-        saveReaderOptions(reader);
         loadUserData(reader);
     }
 
@@ -138,10 +137,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     public void saveReaderOptions(final Reader reader) {
-        if (hasException() || !isSaveOptions()) {
-            return;
-        }
-
         reader.saveOptions();
         DocumentOptionsProvider.saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),

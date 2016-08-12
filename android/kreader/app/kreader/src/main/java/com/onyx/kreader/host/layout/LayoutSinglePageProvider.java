@@ -3,9 +3,9 @@ package com.onyx.kreader.host.layout;
 import android.graphics.RectF;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.PageConstants;
@@ -32,7 +32,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public void activate()  {
-        getPageManager().setPageRepeat(0);
+        getPageManager().setPageRepeat(50);
         getPageManager().scaleToPageContent(null);
     }
 

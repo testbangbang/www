@@ -3,9 +3,9 @@ package com.onyx.kreader.host.layout;
 import android.graphics.RectF;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
@@ -115,6 +115,8 @@ public class ReaderLayoutManager {
         }
 
         if (currentProvider.equals(layoutName)) {
+            // even it's same layout provider, user may want to change to a different navigation args
+            getCurrentLayoutProvider().setNavigationArgs(navigationArgs);
             return true;
         }
 

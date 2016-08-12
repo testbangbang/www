@@ -1,6 +1,7 @@
 package com.onyx.kreader.api;
 
 import android.graphics.Bitmap;
+import com.onyx.kreader.cache.BitmapHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ReaderBitmapList {
     private int current;
     private int count;
-    transient private List<Bitmap> bitmapList;
+    transient private List<BitmapHolder> bitmapList;
     static transient private boolean keepMemoryCache = false;
 
     public ReaderBitmapList() {
@@ -28,12 +29,12 @@ public class ReaderBitmapList {
         return current;
     }
 
-    public Bitmap getCurrentBitmap() {
+    public BitmapHolder getCurrentBitmap() {
         if (bitmapList == null) {
             return null;
         }
         if (current < bitmapList.size()) {
-            return bitmapList.get(current);
+            return bitmapList.get(current).attach();
         }
         return null;
     }
@@ -95,17 +96,18 @@ public class ReaderBitmapList {
         current = 0;
         count = 0;
         if (bitmapList != null) {
+            // TODO why not recycle bitmaps in the list?
             bitmapList.clear();
         }
     }
 
-    public void addBitmap(Bitmap bitmap) {
+    public void addBitmap(BitmapHolder bitmap) {
         if (bitmapList == null) {
-            bitmapList = new ArrayList<Bitmap>();
+            bitmapList = new ArrayList<BitmapHolder>();
         }
         count++;
         if (keepMemoryCache) {
-            bitmapList.add(bitmap);
+            bitmapList.add(bitmap.attach());
         }
     }
 
@@ -113,8 +115,8 @@ public class ReaderBitmapList {
         if (bitmapList == null) {
             return;
         }
-        for(Bitmap bitmap : bitmapList) {
-            bitmap.recycle();
+        for(BitmapHolder bitmap : bitmapList) {
+            bitmap.detach();
         }
         bitmapList.clear();
     }

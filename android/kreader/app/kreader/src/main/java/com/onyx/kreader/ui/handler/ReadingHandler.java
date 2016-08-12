@@ -6,7 +6,6 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.common.PageAnnotation;
 import com.onyx.kreader.ui.actions.NextScreenAction;
@@ -16,6 +15,7 @@ import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
+import com.onyx.kreader.ui.actions.TogglePageCropAction;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
@@ -43,6 +43,10 @@ public class ReadingHandler extends BaseHandler{
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        return false;
+    }
+
+    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (tryHitTest(readerDataHolder,e.getX(), e.getY())) {
             return true;
         } else if (e.getX() > readerDataHolder.getDisplayWidth() * 2 / 3) {
@@ -55,7 +59,9 @@ public class ReadingHandler extends BaseHandler{
         return true;
     }
 
-    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
+    @Override
+    public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        new TogglePageCropAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
         return true;
     }
 
