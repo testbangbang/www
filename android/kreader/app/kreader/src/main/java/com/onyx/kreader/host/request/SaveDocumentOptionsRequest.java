@@ -9,6 +9,6 @@ import com.onyx.kreader.host.wrapper.Reader;
 public class SaveDocumentOptionsRequest extends BaseReaderRequest {
     @Override
     public void execute(Reader reader) throws Exception {
-        setSaveOptions(true);
+        saveReaderOptions(reader);
     }
 }
