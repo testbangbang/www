@@ -8,6 +8,7 @@ import okhttp3.RequestBody;
 import retrofit2.Converter;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 final class FastJsonRequestBodyConverter<T> implements Converter<T, RequestBody> {
   private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
@@ -32,7 +33,7 @@ final class FastJsonRequestBodyConverter<T> implements Converter<T, RequestBody>
       if (serializerFeatures != null) {
         content = JSON.toJSONBytes(value, serializerFeatures);
       } else {
-        content = JSON.toJSONBytes(value);
+        content = JSON.toJSONString(value).getBytes("UTF-8");
       }
     }
     return RequestBody.create(MEDIA_TYPE, content);
