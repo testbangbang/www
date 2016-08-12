@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="onyx_scribble_item_title_max_line_count">1</integer>
+    <integer name="onyx_scribble_activity_title_max_ems">7</integer>
+</resources>

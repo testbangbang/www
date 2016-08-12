@@ -1,8 +1,8 @@
 package com.onyx.android.note.activity.onyx;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,6 +35,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -419,15 +420,23 @@ public class ScribbleActivity extends BaseScribbleActivity {
         getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final Dialog dlg = new Dialog(ScribbleActivity.this);
-                dlg.setContentView(R.layout.span_text_view);
-                dlg.setTitle("Message");
-                TextView textView = (TextView)dlg.findViewById(R.id.text_view);
-                textView.setText(spannableRequest.getSpannableStringBuilder());
+                final OnyxAlertDialog dlg = new OnyxAlertDialog();
+                dlg.setParams(new OnyxAlertDialog.Params().setCustomContentLayoutResID(R.layout.span_text_view)
+                        .setTittleString("Message")
+                        .setCustomViewAction(new OnyxAlertDialog.CustomViewAction() {
+                    @Override
+                    public void onCreateCustomView(View customView, TextView pageIndicator) {
+                        TextView textView = (TextView)customView.findViewById(R.id.text_view);
+                        Log.e(TAG,"result:"+spannableRequest.getSpannableStringBuilder());
+                        textView.setText(spannableRequest.getSpannableStringBuilder());
+
+                        Log.e(TAG,"textView.getText:"+textView.getText());
+                    }
+                }));
                 syncWithCallback(true, false, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        dlg.show();
+                        dlg.show(getFragmentManager(),"span dlg");
                     }
                 });
 

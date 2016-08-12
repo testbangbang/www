@@ -38,7 +38,6 @@ public class ManagerActivity extends BaseManagerActivity {
     private LinearLayout controlPanel;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +54,7 @@ public class ManagerActivity extends BaseManagerActivity {
     private void initView() {
         initSupportActionBarWithCustomBackFunction();
         getSupportActionBar().setTitle(ManagerActivity.class.getSimpleName());
+        scribbleItemLayoutID = R.layout.mx_scribble_item;
         chooseModeButton = (CheckedTextView) findViewById(R.id.selectMode);
         addFolderButton = (TextView) findViewById(R.id.add_folder);
         toolBarIcon = (ImageView) findViewById(R.id.imageView_main_title);
@@ -213,7 +213,7 @@ public class ManagerActivity extends BaseManagerActivity {
 
     @Override
     public void updateUIWithNewNoteList(List<NoteModel> curLibSubContList) {
-        contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
+        contentView.setSubLayoutParameter(scribbleItemLayoutID, getItemViewDataMap(currentSelectMode));
         adapter = Utils.adapterFromNoteModelList(curLibSubContList, R.drawable.ic_student_note_folder_gray,
                 R.drawable.ic_student_note_pic_gray);
         adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));

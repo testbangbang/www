@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="note_menu_columns">7</integer>
+    <integer name="onyx_scribble_item_title_max_line_count">2</integer>
+    <integer name="onyx_scribble_activity_title_max_ems">10</integer>
 </resources>
