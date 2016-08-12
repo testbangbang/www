@@ -18,14 +18,6 @@ public class ChangeViewConfigAction extends BaseAction {
         BaseReaderRequest config = new ChangeViewConfigRequest(readerDataHolder.getDisplayWidth(),
                 readerDataHolder.getDisplayHeight(),
                 pageInfo != null ? pageInfo.getName() : null);
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), config, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                readerDataHolder.redrawPage();
-            }
-        });
+        readerDataHolder.submitRenderRequest(config);
     }
 }
