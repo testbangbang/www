@@ -566,6 +566,13 @@ public class NoteViewHelper {
         return deviceConfig.isSingleTouch();
     }
 
+    private boolean isEnableFingerErasing() {
+        if (deviceConfig == null) {
+            return false;
+        }
+        return deviceConfig.isEnableFingerErasing();
+    }
+
     public boolean useDFBForCurrentState() {
         return ShapeFactory.isDFBShape(getCurrentShapeType()) && !inUserErasing();
     }
@@ -580,6 +587,12 @@ public class NoteViewHelper {
         }
 
         if (toolType == MotionEvent.TOOL_TYPE_ERASER || inErasing()) {
+            if (toolType == MotionEvent.TOOL_TYPE_FINGER) {
+                if (isEnableFingerErasing()) {
+                    return forwardErasing(motionEvent);
+                }
+                return true;
+            }
             return forwardErasing(motionEvent);
         }
         if (!(useRawInput() && renderByFramework())) {

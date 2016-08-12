@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.onyx.kreader.api.ReaderBitmapList;
+import com.onyx.kreader.cache.BitmapHolder;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.common.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -52,7 +53,7 @@ public class ImageReflowManager {
             this.manager = manager;
         }
 
-        public Bitmap getCurrentBitmap(final String pageName) {
+        public BitmapHolder getCurrentBitmap(final String pageName) {
             synchronized (lockMap) {
                 if (!lockMap.containsKey(pageName)) {
                     lockMap.put(pageName, new Object());
@@ -78,7 +79,9 @@ public class ImageReflowManager {
                 }
             }
             synchronized (lockMap.get(pageName)) {
-                if (getCurrentBitmap(pageName) != null) {
+                BitmapHolder holder = getCurrentBitmap(pageName);
+                if (holder != null) {
+                    holder.detach();
                     return;
                 }
 
@@ -191,11 +194,11 @@ public class ImageReflowManager {
         }
     }
 
-    private void putBitmap(final String key, Bitmap bitmap) {
+    private void putBitmap(final String key, BitmapHolder bitmap) {
         bitmapCache.put(key, bitmap);
     }
 
-    private Bitmap getBitmap(final String key) {
+    private BitmapHolder getBitmap(final String key) {
         return bitmapCache.get(key);
     }
 
@@ -208,7 +211,7 @@ public class ImageReflowManager {
         return list;
     }
 
-    public Bitmap getSubPageBitmap(final String pageName, int subPage) {
+    public BitmapHolder getSubPageBitmap(final String pageName, int subPage) {
         return getBitmap(getKeyOfSubPage(settings, pageName, subPage));
     }
 
@@ -230,9 +233,13 @@ public class ImageReflowManager {
     @SuppressWarnings("unused")
     public void addBitmap(final String pageName, int subPage, Bitmap bitmap) {
         ReaderBitmapList list = getSubPageList(pageName);
-        list.addBitmap(bitmap);
-        putBitmap(getKeyOfSubPage(settings, pageName, subPage), bitmap);
-        bitmap.recycle();
+        BitmapHolder holder = BitmapHolder.create(bitmap);
+        try {
+            list.addBitmap(holder);
+            putBitmap(getKeyOfSubPage(settings, pageName, subPage), holder);
+        } finally {
+            holder.detach();
+        }
     }
 
     public void clearAllCacheFiles() {

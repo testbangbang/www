@@ -29,6 +29,8 @@ public class ReaderTtsManager {
     private ReaderTtsService ttsService;
     private ReaderSentence currentSentence;
 
+    private boolean inPlaying;
+
     public ReaderTtsManager(final ReaderDataHolder readerDataHolder, final Callback callback) {
         this.readerDataHolder = readerDataHolder;
 
@@ -51,13 +53,17 @@ public class ReaderTtsManager {
             @Override
             public void onStopped() {
                 callback.onStateChanged();
-                readerDataHolder.submitRenderRequest(new RenderRequest());
+                if (inPlaying) {
+                    readerDataHolder.submitRenderRequest(new RenderRequest());
+                }
             }
 
             @Override
             public void onError() {
                 callback.onStateChanged();
-                readerDataHolder.submitRenderRequest(new RenderRequest());
+                if (inPlaying) {
+                    readerDataHolder.submitRenderRequest(new RenderRequest());
+                }
             }
         });
     }
@@ -71,6 +77,7 @@ public class ReaderTtsManager {
     }
 
     public void play() {
+        inPlaying = true;
         if (ttsService.isPaused()) {
             ttsService.resume();
             return;
@@ -85,10 +92,12 @@ public class ReaderTtsManager {
     }
 
     public void stop() {
+        inPlaying = false;
         ttsService.stop();
     }
 
     public void shutdown() {
+        inPlaying = false;
         ttsService.shutdown();
     }
 

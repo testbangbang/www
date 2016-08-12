@@ -35,6 +35,7 @@ public class DeviceConfig {
 
     static public final String USE_RAW_INPUT = "use_raw_input";
     static public final String SINGLE_TOUCH = "single_touch";
+    static public final String FINGER_ERASING = "finger_erasing";
 
     static public boolean useDebugConfig = false;
 
@@ -116,6 +117,10 @@ public class DeviceConfig {
 
     public boolean isSingleTouch() {
         return backend.hasKey(SINGLE_TOUCH) && backend.getBoolean(SINGLE_TOUCH);
+    }
+
+    public boolean isEnableFingerErasing() {
+        return backend.hasKey(FINGER_ERASING) && backend.getBoolean(FINGER_ERASING);
     }
 
     static public DeviceConfig sharedInstance(Context context) {
