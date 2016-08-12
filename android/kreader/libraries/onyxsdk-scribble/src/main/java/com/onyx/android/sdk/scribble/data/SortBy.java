@@ -10,12 +10,13 @@ public class SortBy {
     public static final int CREATED_AT = 0;
     public static final int UPDATED_AT = 1;
     public static final int TITLE = 2;
+    public static final int TYPE = 3;
 
     // ... type definitions
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({CREATED_AT, UPDATED_AT, TITLE})
+    @IntDef({CREATED_AT, UPDATED_AT, TITLE, TYPE})
     // Create an interface for validating int types
     public @interface SortByDef {
     }

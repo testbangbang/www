@@ -67,6 +67,9 @@ public class NoteDataProvider {
             case SortBy.TITLE:
                 where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.title, ascending);
                 break;
+            case SortBy.TYPE:
+                where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.type, ascending);
+                break;
             case SortBy.CREATED_AT:
             default:
                 where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.createdAt, ascending);
