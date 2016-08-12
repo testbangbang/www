@@ -32,7 +32,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public void activate()  {
-        getPageManager().setPageRepeat(0);
+        getPageManager().setPageRepeat(50);
         getPageManager().scaleToPageContent(null);
     }
 
