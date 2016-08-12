@@ -67,7 +67,6 @@ public class ReaderDataHolder {
     }
 
     public void saveReaderViewInfo(final BaseReaderRequest request) {
-        Debug.d(TAG, "saveReaderViewInfo: " + JSON.toJSONString(request.getReaderViewInfo().getFirstVisiblePage()));
         readerViewInfo = request.getReaderViewInfo();
     }
 
@@ -198,7 +197,6 @@ public class ReaderDataHolder {
     }
 
     public String getBookName() {
-        Debug.d("getBookName: " + getDocumentPath());
         return FileUtils.getFileName(getDocumentPath());
     }
 
