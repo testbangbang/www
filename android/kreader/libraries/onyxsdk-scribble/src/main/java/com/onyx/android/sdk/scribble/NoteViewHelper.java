@@ -577,17 +577,21 @@ public class NoteViewHelper {
         return ShapeFactory.isDFBShape(getCurrentShapeType()) && !inUserErasing();
     }
 
+    private boolean isFingerTouch(int toolType) {
+        return toolType == MotionEvent.TOOL_TYPE_FINGER || toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
+    }
+
     private boolean processTouchEvent(final MotionEvent motionEvent) {
         if (motionEvent.getPointerCount() > 1) {
             return true;
         }
         int toolType = motionEvent.getToolType(0);
-        if (toolType == MotionEvent.TOOL_TYPE_FINGER && !isSingleTouch()) {
+        if (isFingerTouch(toolType) && !isSingleTouch()) {
             return true;
         }
 
         if (toolType == MotionEvent.TOOL_TYPE_ERASER || inErasing()) {
-            if (toolType == MotionEvent.TOOL_TYPE_FINGER) {
+            if (isFingerTouch(toolType)) {
                 if (isEnableFingerErasing()) {
                     return forwardErasing(motionEvent);
                 }
