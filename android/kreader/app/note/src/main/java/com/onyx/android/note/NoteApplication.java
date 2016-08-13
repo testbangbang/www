@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.onyx.android.note.utils.NoteAppConfig;
+import com.onyx.android.note.utils.NotePreference;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -48,6 +49,7 @@ public class NoteApplication extends Application {
         FlowConfig.Builder builder = new FlowConfig.Builder(context);
         builder.addDatabaseHolder(ShapeGeneratedDatabaseHolder.class);
         FlowManager.init(builder.build());
+        NotePreference.init(this);
     }
 
     private void installExceptionHandler() {
