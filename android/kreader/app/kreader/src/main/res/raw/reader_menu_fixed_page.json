@@ -141,22 +141,16 @@
       ]
     },
     {
-      "id": "TTS",
+      "id": "More",
       "type": "Group",
-      "title": "TTS",
-      "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_black",
+      "title": "MORE",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_setting_black",
       "children": [
         {
-          "id": "TTSStop",
+          "id": "TTS",
           "type": "Item",
-          "title": "TTS Stop",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_stop_black"
-        },
-        {
-          "id": "TTSPlay",
-          "type": "Item",
-          "title": "TTS Play",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_play_black"
+          "title": "TTS",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_black"
         }
       ]
     }

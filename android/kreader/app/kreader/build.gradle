@@ -109,6 +109,6 @@ dependencies {
     compile 'com.jakewharton:disklrucache:2.0.2'
     compile 'org.apache.lucene:lucene-core:2.9.4'
     compile 'org.greenrobot:eventbus:3.0.0'
-
+    compile 'com.jakewharton:butterknife:7.0.1'
 }
 

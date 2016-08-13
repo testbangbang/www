@@ -21,17 +21,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.ui.view.HTMLReaderWebView;
-
-import java.util.List;
 
 public class PopupSelectionMenu extends LinearLayout {
     private static final String TAG = PopupSelectionMenu.class.getSimpleName();
 
-    public static final int SELECTTION_DIVIDER_HEIGHT = 80;
-    public static final int SELECTTION_DIVIDER_WIDTH = 40;
     public enum SelectionType {
         SingleWordType,
         MultiWordsType
@@ -56,11 +52,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private MenuCallback mMenuCallback;
     private View mDictNextPage;
     private View mDictPrevPage;
-    private View topDividerLine;
-    private View bottomDividerLine;
     private View webViewDividerLine;
-    private boolean isTranslationShow = false;
-    private RelativeLayout layout;
     /**
      * eliminate compiler warning
      *
@@ -77,7 +69,6 @@ public class PopupSelectionMenu extends LinearLayout {
         mActivity = (Activity)readerDataHolder.getContext();
 
         setFocusable(false);
-        this.layout = layout;
         final LayoutInflater inflater = (LayoutInflater)
                 readerDataHolder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.popup_selection_menu, this, true);
@@ -88,8 +79,6 @@ public class PopupSelectionMenu extends LinearLayout {
         layout.addView(this, p);
 
         mDictTitle = (TextView) findViewById(R.id.dict_title);
-        topDividerLine = findViewById(R.id.top_divider_line);
-        bottomDividerLine = findViewById(R.id.bottom_divider_line);
         webViewDividerLine = findViewById(R.id.webView_divider_line);
         mDictNextPage = findViewById(R.id.dict_next_page);
         mDictNextPage.setOnClickListener(new OnClickListener() {
@@ -183,12 +172,6 @@ public class PopupSelectionMenu extends LinearLayout {
             }
         });
         setVisibility(View.GONE);
-        mWebView.post(new Runnable() {
-            @Override
-            public void run() {
-                requestLayoutView();
-            }
-        });
     }
 
     Activity getActivity() {
@@ -200,13 +183,16 @@ public class PopupSelectionMenu extends LinearLayout {
         return true;
     }
 
-    public void show() {
-        mActivity.runOnUiThread(new Runnable() {
-            public void run() {
-                PopupSelectionMenu.this.updateTranslation(mMenuCallback.getSelectionText());
-                setVisibility(View.VISIBLE);
-            }
-        });
+    public void show(SelectionType type) {
+        requestLayoutView();
+        if (type == SelectionType.SingleWordType){
+            mActivity.runOnUiThread(new Runnable() {
+                public void run() {
+                    PopupSelectionMenu.this.updateTranslation(mMenuCallback.getSelectionText());
+                }
+            });
+        }
+
     }
 
     public void hide() {
@@ -218,37 +204,42 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     public void move(int selectionStartY, int selectionEndY) {
-        setVisibility(VISIBLE);
-        if (this == null) {
-            return;
-        }
-        requestLayoutView();
+        setVisibility(GONE);
     }
 
     private void requestLayoutView(){
-        ReaderSelection readerSelection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
-        if (readerSelection == null){
-            return;
-        }
-        List<RectF> rectangles = readerSelection.getRectangles();
-        if (rectangles.size() > 0){
-            RectF start = rectangles.get(0);
-            RectF end = rectangles.get(rectangles.size() - 1);
-            final float screenHeight = ((View) this.getParent()).getHeight();
-            final float screenWidth = ((View) this.getParent()).getWidth();
-            final float diffTop = start.top;
-            final float diffBottom = screenHeight - end.bottom;
-            if (diffTop > diffBottom){
-                int x = (int) start.left;
-                setX(Math.min(x,screenWidth - getMeasuredWidth() - SELECTTION_DIVIDER_WIDTH));
-                int y = (int) start.top - SELECTTION_DIVIDER_HEIGHT - getMeasuredHeight();
-                setY(Math.max(y,0));
-            }else {
-                int x = (int) start.left;
-                setX(Math.min(x,screenWidth - getMeasuredWidth() - SELECTTION_DIVIDER_WIDTH));
-                int y = (int) end.bottom + SELECTTION_DIVIDER_HEIGHT;
-                setY(Math.min(y,screenHeight - getMeasuredHeight()));
-            }
+        setVisibility(VISIBLE);
+
+        HighlightCursor beginHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX);
+        RectF beginCursorRectF = beginHighlightCursor.getDisplayRect();
+        HighlightCursor endHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.END_CURSOR_INDEX);
+        RectF endCursorRectF = endHighlightCursor.getDisplayRect();
+
+        float dividerWidth = readerDataHolder.getContext().getResources().getDimension(R.dimen.popup_selection_menu_divider_width);
+        float dividerHeight = readerDataHolder.getContext().getResources().getDimension(R.dimen.popup_selection_menu_divider_height);
+
+        int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+        int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+        this.measure(w, h);
+        int measuredHeight = this.getMeasuredHeight();
+        int measuredWidth = this.getMeasuredWidth();
+
+        RectF start = beginCursorRectF;
+        RectF end = endCursorRectF;
+        final float screenHeight = ((View) this.getParent()).getHeight();
+        final float screenWidth = ((View) this.getParent()).getWidth();
+        final float diffTop = start.top;
+        final float diffBottom = screenHeight - end.bottom;
+        if (diffTop > diffBottom){
+            float x = start.left;
+            setX(Math.min(x,screenWidth - measuredWidth - dividerWidth));
+            float y = start.top - dividerHeight - measuredHeight;
+            setY(Math.max(y,0));
+        }else {
+            float x = start.left;
+            setX(Math.min(x,screenWidth - measuredWidth - dividerWidth));
+            float y = end.bottom + dividerHeight;
+            setY(Math.min(y,screenHeight - measuredHeight));
         }
     }
 
@@ -257,13 +248,11 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     public void hideTranslation() {
-        isTranslationShow = false;
         this.webViewDividerLine.setVisibility(GONE);
         this.findViewById(R.id.layout_dict).setVisibility(View.GONE);
     }
 
     public void showTranslation() {
-        isTranslationShow = true;
         this.webViewDividerLine.setVisibility(VISIBLE);
         this.findViewById(R.id.layout_dict).setVisibility(View.VISIBLE);
     }

@@ -10,8 +10,6 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderMenu;
@@ -36,6 +34,7 @@ import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
+import com.onyx.kreader.ui.dialog.DialogTts;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.utils.RawResourceUtil;
 
@@ -204,14 +203,8 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case "/Directory/Export":
                         break;
-                    case "/TTS/Play":
-                        ttsPlay(readerDataHolder);
-                        break;
-                    case "/TTS/Pause":
-                        ttsPause(readerDataHolder);
-                        break;
-                    case "/TTS/Stop":
-                        ttsStop(readerDataHolder);
+                    case "/More/TTS":
+                        showTtsDialog(readerDataHolder);
                         break;
                     case "/More/shape":
                         startShapeDrawing(readerDataHolder);
@@ -337,25 +330,6 @@ public class ShowReaderMenuAction extends BaseAction {
         action.execute(readerDataHolder);
     }
 
-    private void ttsPlay(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
-        readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.getTtsManager().play();
-            }
-        });
-    }
-
-    private void ttsPause(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getTtsManager().pause();
-    }
-
-    private void ttsStop(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getTtsManager().stop();
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.BASE_PROVIDER);
-    }
-
     private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {
         // get current page and start rendering.
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
@@ -398,5 +372,11 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
         DialogSearch dialogSearch = new DialogSearch(readerDataHolder);
         dialogSearch.show();
+    }
+
+    private void showTtsDialog(final ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
+        DialogTts dialogTts = new DialogTts(readerDataHolder);
+        dialogTts.show();
     }
 }

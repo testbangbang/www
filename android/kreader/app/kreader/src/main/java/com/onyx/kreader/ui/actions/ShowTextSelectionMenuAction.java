@@ -23,10 +23,12 @@ public class ShowTextSelectionMenuAction extends BaseAction {
     private PopupSelectionMenu.SelectionType selectionType;
     private int x, y;
     private ReaderActivity readerActivity;
+    private boolean touchMoving;
 
-    public ShowTextSelectionMenuAction(final ReaderDataHolder readerDataHolder, final int x, final int y, final PopupSelectionMenu.SelectionType type) {
+    public ShowTextSelectionMenuAction(final ReaderDataHolder readerDataHolder, final int x, final int y, final PopupSelectionMenu.SelectionType type, boolean touchMoved) {
         readerActivity = (ReaderActivity)readerDataHolder.getContext();
         selectionType = type;
+        this.touchMoving = touchMoved;
         switch (type){
             case SingleWordType:
                 getTextSelectionPopupMenu(readerDataHolder).showTranslation();
@@ -41,10 +43,10 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        if (selectionType.equals(PopupSelectionMenu.SelectionType.MultiWordsType)){
+        if (touchMoving){
             getTextSelectionPopupMenu(readerDataHolder).move(x, y);
-        }else {
-            getTextSelectionPopupMenu(readerDataHolder).show();
+        }else{
+            getTextSelectionPopupMenu(readerDataHolder).show(selectionType);
         }
     }
 
