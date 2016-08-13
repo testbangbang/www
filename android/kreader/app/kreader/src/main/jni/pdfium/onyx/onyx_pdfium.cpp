@@ -359,9 +359,11 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     
     int newStart = start;
     int newEnd = end;
-    selectByWord(env, textPage, splitter, start, end, &newStart, &newEnd);
-    LOGE("selectByWord finished");
-    
+    if (splitter != NULL) {
+        selectByWord(env, textPage, splitter, start, end, &newStart, &newEnd);
+        LOGE("selectByWord finished");
+    }
+
     return reportSelection(env, page, textPage, x, y, width, height, rotation, newStart, newEnd, selection);
 }
 
