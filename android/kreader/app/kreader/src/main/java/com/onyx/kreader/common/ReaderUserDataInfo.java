@@ -68,7 +68,7 @@ public class ReaderUserDataInfo {
     }
 
     public void saveHighlightResult(ReaderSelection selection) {
-        Debug.d("saveHighlightResult: " + JSON.toJSONString(selection));
+        // Debug.d("saveHighlightResult: " + JSON.toJSONString(selection));
         selectionMap.put(HIGHLIGHT_TAG, Arrays.asList(new ReaderSelection[] { selection }));
     }
 
