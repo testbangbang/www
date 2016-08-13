@@ -197,7 +197,6 @@ public class ReaderDataHolder {
     }
 
     public String getBookName() {
-        Debug.d("getBookName: " + getDocumentPath());
         return FileUtils.getFileName(getDocumentPath());
     }
 

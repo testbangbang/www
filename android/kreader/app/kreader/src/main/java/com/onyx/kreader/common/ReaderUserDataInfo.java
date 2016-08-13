@@ -39,7 +39,6 @@ public class ReaderUserDataInfo {
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
 
     public void setDocumentPath(final String path) {
-        Debug.d("setDocumentPath: " + path);
         documentPath = path;
     }
 
