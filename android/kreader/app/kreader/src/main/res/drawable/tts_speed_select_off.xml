@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item >
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+               android:shape="rectangle">
+            <solid android:color="@android:color/darker_gray" />
+            <size
+                android:width="@dimen/tts_speed_checkbox_width"
+                android:height="@dimen/tts_speed_checkbox_height" />
+        </shape>
+    </item>
+    <item android:top="@dimen/tts_speed_checkbox_height">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+               android:shape="rectangle">
+            <solid android:color="@android:color/black" />
+            <size
+                android:width="@dimen/tts_speed_checkbox_width"
+                android:height="@dimen/tts_speed_checkbox_divider_height" />
+        </shape>
+    </item>
+</layer-list>

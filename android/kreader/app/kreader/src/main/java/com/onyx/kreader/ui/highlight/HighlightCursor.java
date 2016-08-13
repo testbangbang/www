@@ -23,7 +23,7 @@ public class HighlightCursor {
 
     public static final int BEGIN_CURSOR_INDEX = 0;
     public static final int END_CURSOR_INDEX   = 1;
-    public static final int HIT_TEST_SCALE_VALUE = 4;
+    public static final int HIT_TEST_SCALE_VALUE = 3;
 
     private Bitmap startCursorBitmap;
     private Bitmap endCursorBitmap;
@@ -66,12 +66,12 @@ public class HighlightCursor {
         if (cursorType == Type.BEGIN_CURSOR) {
             float width = startCursorBitmap.getWidth();
             float height = startCursorBitmap.getHeight();
-            originRect.set(left, y - height - fontHeight /2, left + startCursorBitmap.getWidth() - 1, y  - fontHeight /2);
+            originRect.set(left, y - height - fontHeight /2, left + width, y  - fontHeight /2);
             hitTestRect.set(originRect.left - width * HIT_TEST_SCALE_VALUE, originRect.top - height * HIT_TEST_SCALE_VALUE, originRect.right + width * HIT_TEST_SCALE_VALUE, originRect.bottom + height);
         } else {
             float width = endCursorBitmap.getWidth();
             float height = endCursorBitmap.getHeight();
-            originRect.set(left + endCursorBitmap.getWidth(), y - fontHeight /2, left + endCursorBitmap.getWidth()*2, y + height - fontHeight / 2);
+            originRect.set(left + width, y - fontHeight /2, left + width*2, y + height - fontHeight / 2);
             hitTestRect.set(originRect.left - width * HIT_TEST_SCALE_VALUE, originRect.top, originRect.right + width * HIT_TEST_SCALE_VALUE, originRect.bottom + height * HIT_TEST_SCALE_VALUE);
         }
     }
