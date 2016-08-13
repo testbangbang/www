@@ -187,6 +187,10 @@ public class BaseDevice {
         return false;
     }
 
+    public boolean supportRegal() {
+        return false;
+    }
+
     public void setStrokeColor(int color) {
     }
 

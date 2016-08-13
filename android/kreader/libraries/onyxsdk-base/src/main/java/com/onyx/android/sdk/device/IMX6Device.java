@@ -35,6 +35,8 @@ public class IMX6Device extends BaseDevice {
     private static int sModeAnimation = 0;
     private static int sModeAnimationQuality = 0;
     private static int sModeGC4 = 0;
+    private static int sModeRegal = 0;
+    private static int sModeRegalD = 0;
 
     private static final int sSchemeSNAPSHOT = 0;
     private static final int sSchemeQUEUE = 1;
@@ -59,6 +61,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodRefreshScreen = null;
     private static Method sMethodRefreshScreenRegion = null;
     private static Method sMethodScreenshot = null;
+    private static Method sMethodSupportRegal = null;
 
     private static Method sMethodMoveTo = null;
     private static Method sMethodSetStrokeColor = null;
@@ -348,6 +351,18 @@ public class IMX6Device extends BaseDevice {
         return (sMethodLineTo != null);
     }
 
+    public boolean supportRegal() {
+        if (sMethodSupportRegal == null) {
+            return false;
+        }
+        Boolean value = (Boolean)ReflectUtil.invokeMethodSafely(sMethodSupportRegal, null);
+        if (value == null) {
+            return false;
+        }
+        return value.booleanValue();
+    }
+
+
     public void lineTo(float x, float y, UpdateMode mode) {
         int value = getUpdateMode(mode);
         try {
@@ -499,11 +514,12 @@ public class IMX6Device extends BaseDevice {
             int value_mode_regional = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_AUTO_MODE_REGIONAL");
             int value_mode_nowait = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAIT_MODE_NOWAIT");
             int value_mode_wait = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAIT_MODE_WAIT");
-
             int value_mode_waveform_du = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_DU");
             int value_mode_waveform_animation = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_ANIM");
             int value_mode_waveform_gc4 = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_GC4");
             int value_mode_waveform_gc16 = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_GC16");
+            int value_mode_waveform_regal = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_REAGL");
+            int value_mode_waveform_regalD = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_REAGL_MODE_REAGLD");
             int value_mode_update_partial = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_UPDATE_MODE_PARTIAL");
             int value_mode_update_full = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_UPDATE_MODE_FULL");
 
@@ -516,6 +532,8 @@ public class IMX6Device extends BaseDevice {
             sModeAnimation = value_mode_regional | value_mode_nowait | value_mode_waveform_animation | value_mode_update_partial;
             sModeAnimationQuality = ReflectUtil.getStaticIntFieldSafely(cls, "UI_A2_QUALITY_MODE");
             sModeGC4 = value_mode_regional | value_mode_nowait | value_mode_waveform_gc4 | value_mode_update_partial;
+            sModeRegal = value_mode_regional | value_mode_nowait | value_mode_waveform_regal | value_mode_update_partial;
+            sModeRegalD = value_mode_regional | value_mode_nowait | value_mode_waveform_regalD | value_mode_update_partial;
 
             Class<?> deviceControllerClass = ReflectUtil.classForName("android.hardware.DeviceController");
 
@@ -547,6 +565,7 @@ public class IMX6Device extends BaseDevice {
             sMethodSetStrokeStyle = ReflectUtil.getMethodSafely(cls, "setStrokeStyle", int.class);
             sMethodSetStrokeWidth = ReflectUtil.getMethodSafely(cls, "setStrokeWidth", float.class);
             sMethodSetPainterStyle = ReflectUtil.getMethodSafely(cls, "setPainterStyle", boolean.class, Paint.Style.class, Paint.Join.class, Paint.Cap.class);
+            sMethodSupportRegal = ReflectUtil.getMethodSafely(cls, "supportRegal");
             sMethodMoveTo = ReflectUtil.getMethodSafely(cls, "moveTo", float.class, float.class, float.class);
             sMethodLineTo = ReflectUtil.getMethodSafely(cls, "lineTo", float.class, float.class, int.class);
             sMethodQuadTo = ReflectUtil.getMethodSafely(cls, "quadTo", float.class, float.class, int.class);
@@ -834,6 +853,12 @@ public class IMX6Device extends BaseDevice {
                 break;
             case GC4:
                 dst_mode = sModeGC4;
+                break;
+            case REGAL:
+                dst_mode = sModeRegal != 0 ? sModeRegal : sModeGU;
+                break;
+            case REGAL_D:
+                dst_mode = sModeRegalD != 0  ? sModeRegalD : sModeGU;
                 break;
             default:
                 assert (false);
