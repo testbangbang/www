@@ -263,7 +263,6 @@ public class WordSelectionHandler extends BaseHandler implements SelectWordActio
 
         if (request.getReaderUserDataInfo().hasHighlightResult()) {
             ReaderSelection selection = request.getReaderUserDataInfo().getHighlightResult();
-            Debug.d(TAG, "select word result: " + JSON.toJSONString(selection));
             readerDataHolder.getSelectionManager().setCurrentSelection(selection);
             readerDataHolder.getSelectionManager().update(readerDataHolder.getContext());
             readerDataHolder.getSelectionManager().updateDisplayPosition();
