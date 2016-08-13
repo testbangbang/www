@@ -203,10 +203,6 @@ public class PopupSelectionMenu extends LinearLayout {
         });
     }
 
-    public void move(int selectionStartY, int selectionEndY) {
-        setVisibility(GONE);
-    }
-
     private void requestLayoutView(){
         setVisibility(VISIBLE);
 

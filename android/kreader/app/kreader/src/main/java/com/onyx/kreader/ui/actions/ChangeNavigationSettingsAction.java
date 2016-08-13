@@ -87,7 +87,6 @@ public class ChangeNavigationSettingsAction extends BaseAction {
                     cropArgs.getManualPointMatrixList().add(args.pointMatrixList);
                 }
 
-                Debug.d("final cropped args: " + JSON.toJSONString(cropArgs));
                 NavigationArgs navigationArgs = new NavigationArgs();
                 buildNavigationArgs(dataHolder, request, navigationArgs);
                 dataHolder.submitRenderRequest(new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
@@ -98,7 +97,6 @@ public class ChangeNavigationSettingsAction extends BaseAction {
     private void buildNavigationArgs(final ReaderDataHolder readerDataHolder, final BaseReaderRequest request, final NavigationArgs navigationArgs) {
         RectF defaultLimit = getNavigationArgsLimitRect(readerDataHolder, request, cropArgs.getManualCropDocRegions().get(0));
         PointMatrix defaultMatrix = cropArgs.getManualPointMatrixList().get(0);
-        Debug.d("limit region: " + JSON.toJSONString(defaultLimit));
         RectF oddLimit = null;
         PointMatrix oddMatrix = null;
         if (isManualCropPageByOddAndEven()) {

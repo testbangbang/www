@@ -46,7 +46,6 @@ public class RectUtils {
                 target = rect;
             }
         }
-        Debug.d("getBeginTop, target: " + JSON.toJSONString(target) + ", " + JSON.toJSONString(list));
         return new PointF(target.left, target.top);
     }
 
@@ -62,7 +61,6 @@ public class RectUtils {
                 target = rect;
             }
         }
-        Debug.d("getBeginBottom, target: " + JSON.toJSONString(target) + ", " + JSON.toJSONString(list));
         return new PointF(target.left, target.bottom);
     }
 

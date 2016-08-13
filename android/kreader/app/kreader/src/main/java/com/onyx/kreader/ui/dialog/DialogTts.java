@@ -26,6 +26,8 @@ import butterknife.ButterKnife;
  */
 public class DialogTts extends Dialog implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
+    public static final int VOLUME_SPAN = 2;
+
     @Bind(R.id.tts_play)
     ImageButton ttsPlay;
     @Bind(R.id.tts_pause)
@@ -119,12 +121,10 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
 
@@ -161,13 +161,12 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     }
 
     private void setSeekBarValue(boolean plus){
-        int speed = 2;
         int volumeProgress = seekBarTts.getProgress();
         if (plus){
-            volumeProgress = volumeProgress + speed;
+            volumeProgress = volumeProgress + VOLUME_SPAN;
             volumeProgress = Math.min(maxVolume,volumeProgress);
         }else {
-            volumeProgress = volumeProgress - speed;
+            volumeProgress = volumeProgress - VOLUME_SPAN;
             volumeProgress = Math.max(0,volumeProgress);
         }
         seekBarTts.setProgress(volumeProgress);

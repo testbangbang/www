@@ -2,6 +2,7 @@ package com.onyx.kreader.host.request;
 
 import android.graphics.PointF;
 
+import android.util.Log;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.api.ReaderHitTestArgs;
 import com.onyx.kreader.api.ReaderHitTestManager;
@@ -37,13 +38,13 @@ public class SelectWordRequest extends BaseReaderRequest {
 
     // check page at first. and then goto the location.
     public void execute(final Reader reader) throws Exception {
+        setTransferBitmap(false);
         createReaderViewInfo();
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
         PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pageName);
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, end);
         selection = hitTestManager.select(argsStart, argsEnd);
-
         LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
@@ -56,7 +57,6 @@ public class SelectWordRequest extends BaseReaderRequest {
                     pageInfo.getDisplayRect().top,
                     pageInfo.getActualScale(),
                     selection.getRectangles().get(i));
-//            Log.d("SelectWordRequest", "left: " + selection.getRectangles().get(i).left + "top:" + selection.getRectangles().get(i).top);
         }
         return selection;
     }

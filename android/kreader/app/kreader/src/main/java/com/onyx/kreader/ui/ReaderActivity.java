@@ -273,7 +273,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
-        ReaderDeviceManager.applyWithGCInterval(surfaceView);
+        if (event.isApplyGCIntervalUpdate()) {
+            ReaderDeviceManager.applyWithGCInterval(surfaceView);
+        }
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         updateStatusBar();
         renderShapeDataInBackground();
@@ -360,7 +362,6 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawPage(final Bitmap pageBitmap) {
-        // lock dirty region instead of whole surface view, which will cause strange duplicated GC update issue
         Canvas canvas = holder.lockCanvas(new Rect(surfaceView.getLeft(), surfaceView.getTop(),
                 surfaceView.getRight(), surfaceView.getBottom()));
         if (canvas == null) {

@@ -8,7 +8,7 @@ import com.onyx.kreader.BuildConfig;
  */
 public class Debug {
     private static final String TAG = Debug.class.getSimpleName();
-    private static boolean debug = false;
+    private static boolean debug = true;
 
     public static void d(String msg) {
         d(TAG, msg);
