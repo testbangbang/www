@@ -46,29 +46,27 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ReaderHelper {
     private static final String TAG = ReaderHelper.class.getSimpleName();
 
-    public class BitmapCopyCoordinator {
+    public class BitmapTransferCoordinator {
         private ReentrantLock lock = new ReentrantLock();
-        Condition condition = lock.newCondition();
-        private boolean renderBitmapDirty = false;
+        private Condition condition = lock.newCondition();
+        private boolean finished = false;
 
-        public void copyRenderBitmapToViewport() {
+        public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
             try {
                 lock.lock();
-                if (!renderBitmapDirty) {
-                    return;
-                }
-                ReaderHelper.this.copyRenderBitmapToViewportImpl();
-                renderBitmapDirty = false;
+                viewportBitmap.attachWith(renderBitmap.getBitmapReference());
+                renderBitmap.recycleBitmap();
+                finished = true;
                 condition.signal();
             } finally {
                 lock.unlock();
             }
         }
 
-        public void waitCopy() {
+        public void waitTransfer() {
             try {
                 lock.lock();
-                while (renderBitmapDirty) {
+                while (!finished) {
                     condition.await();
                 }
             } catch (InterruptedException e) {
@@ -92,10 +90,9 @@ public class ReaderHelper {
     private ReaderRenderer renderer;
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
-    private ReaderBitmapImpl renderBitmap;
-    // copy of renderBitmap, to be used by UI thread
+    // to be used by UI thread
     private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
-    private BitmapCopyCoordinator bitmapCopyCoordinator = new BitmapCopyCoordinator();
+    private BitmapTransferCoordinator bitmapTransferCoordinator = new BitmapTransferCoordinator();
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
     private ImageReflowManager imageReflowManager;
@@ -184,7 +181,6 @@ public class ReaderHelper {
 
     public void updateViewportSize(int newWidth, int newHeight) {
         getViewOptions().setSize(newWidth, newHeight);
-        updateRenderBitmap(newWidth, newHeight);
         onViewSizeChanged();
     }
 
@@ -202,33 +198,12 @@ public class ReaderHelper {
     public void afterDraw(ReaderBitmapImpl bitmap) {
     }
 
-    public void updateRenderBitmap(int width, int height) {
-        if (renderBitmap != null) {
-            renderBitmap.recycleBitmap();
-        }
-        // delay the init of renderBitmap until we really need it
-        renderBitmap = new ReaderBitmapImpl();
-    }
-
-    public final ReaderBitmapImpl getRenderBitmap() {
-        updateRenderBitmap(viewOptions.getViewWidth(), viewOptions.getViewHeight());
-        return renderBitmap;
-    }
-
-    public boolean isRenderBitmapDirty() {
-        return bitmapCopyCoordinator.renderBitmapDirty;
-    }
-
-    public void setRenderBitmapDirty(boolean dirty) {
-        bitmapCopyCoordinator.renderBitmapDirty = dirty;
-    }
-
     public final ReaderBitmapImpl getViewportBitmap() {
         return viewportBitmap;
     }
 
-    public BitmapCopyCoordinator getBitmapCopyCoordinator() {
-        return bitmapCopyCoordinator;
+    public BitmapTransferCoordinator getBitmapTransferCoordinator() {
+        return bitmapTransferCoordinator;
     }
 
     public ReaderPlugin getPlugin() {
@@ -349,13 +324,6 @@ public class ReaderHelper {
             ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel());
         }
     }
-
-    private void copyRenderBitmapToViewportImpl() {
-        if (renderBitmap != null && renderBitmap.getBitmap() != null &&
-                !renderBitmap.getBitmap().isRecycled()) {
-            viewportBitmap.attachWith(renderBitmap.getBitmapReference());
-        }
-   }
 
     public final String getDocumentPath() {
         return documentPath;

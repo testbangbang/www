@@ -29,10 +29,9 @@ public class ScaleRequest extends BaseReaderRequest {
         scale = Math.max(scale, toPageScale);
 
         setSaveOptions(true);
-        prepareRenderBitmap(reader);
         reader.getReaderLayoutManager().setSavePosition(true);
         reader.getReaderLayoutManager().setCurrentLayout(PageConstants.SINGLE_PAGE, new NavigationArgs());
         reader.getReaderLayoutManager().setScale(pageName, scale, x, y);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+        drawVisiblePages(reader);
     }
 }

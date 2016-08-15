@@ -130,20 +130,12 @@ public class Reader {
         return getReaderHelper().getBitmapLruCache();
     }
 
-    public ReaderBitmap getRenderBitmap() {
-        return getReaderHelper().getRenderBitmap();
-    }
-
-    public boolean isRenderBitmapDirty() {
-        return getReaderHelper().isRenderBitmapDirty();
-    }
-
     public ReaderBitmap getViewportBitmap() {
         return getReaderHelper().getViewportBitmap();
     }
 
-    public ReaderHelper.BitmapCopyCoordinator getBitmapCopyCoordinator() {
-        return getReaderHelper().getBitmapCopyCoordinator();
+    public ReaderHelper.BitmapTransferCoordinator getBitmapTransferCoordinator() {
+        return getReaderHelper().getBitmapTransferCoordinator();
     }
 
     public ImageReflowManager getImageReflowManager() {

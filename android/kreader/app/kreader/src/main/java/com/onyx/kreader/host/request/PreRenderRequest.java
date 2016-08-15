@@ -25,17 +25,15 @@ public class PreRenderRequest extends BaseReaderRequest {
 
         // do not save position in history list.
         reader.getReaderLayoutManager().setSavePosition(false);
-        prepareRenderBitmap(reader);
         final ReaderDrawContext drawContext = new ReaderDrawContext();
         final PositionSnapshot snapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
         if (forward && reader.getReaderLayoutManager().nextScreen()) {
-            reader.getReaderLayoutManager().drawVisiblePages(reader, drawContext, getRenderBitmap(), createReaderViewInfo());
+            drawVisiblePages(reader, drawContext);
             reader.getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
         } else if (!forward && reader.getReaderLayoutManager().prevScreen()) {
-            reader.getReaderLayoutManager().drawVisiblePages(reader, drawContext, getRenderBitmap(), createReaderViewInfo());
+            drawVisiblePages(reader, drawContext);
             reader.getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
         }
-        reader.getReaderHelper().setRenderBitmapDirty(false);
         setTransferBitmap(false);
     }
 }

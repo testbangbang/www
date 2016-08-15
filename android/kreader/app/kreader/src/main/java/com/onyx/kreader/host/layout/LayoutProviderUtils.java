@@ -19,6 +19,7 @@ import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.kreader.utils.ObjectHolder;
 
 import java.util.List;
 
@@ -34,14 +35,17 @@ public class LayoutProviderUtils {
      * draw all visible pages. For each page:render the visible part of page. in screen coordinates system.
      * Before draw, make sure all visible pages have been calculated correctly.
      * @param layoutManager
-     * @param bitmap
+     * @param renderedBitmap
      */
     static public void drawVisiblePages(final Reader reader,
                                         final ReaderLayoutManager layoutManager,
                                         final ReaderDrawContext drawContext,
-                                        final ReaderBitmapImpl bitmap,
+                                        final ObjectHolder<ReaderBitmap> renderedBitmap,
                                         final ReaderViewInfo readerViewInfo) throws ReaderException {
         // step1: prepare.
+        final ReaderBitmapImpl bitmap = new ReaderBitmapImpl();
+        renderedBitmap.setObject(bitmap);
+
         final ReaderRenderer renderer = reader.getRenderer();
         final BitmapLruCache cache = reader.getBitmapLruCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
