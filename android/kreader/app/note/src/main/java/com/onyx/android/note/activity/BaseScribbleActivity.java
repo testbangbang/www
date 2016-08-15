@@ -178,7 +178,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected void syncWithCallback(boolean render,
                                     boolean resume,
                                     final BaseCallback callback) {
-        final List<Shape> stash = getNoteViewHelper().deatchStash();
+        final List<Shape> stash = getNoteViewHelper().detachStash();
         final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(stash,
                 render,
                 resume,
@@ -304,18 +304,21 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                 onFinishErasing(pointList);
             }
 
+            @Override
             public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
                 if (!shape.supportDFB()) {
                     drawPage();
                 }
             }
 
+            @Override
             public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
                 if (last && !shape.supportDFB()) {
                     drawPage();
                 }
             }
 
+            @Override
             public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
                 if (!shape.supportDFB()) {
                     drawPage();
@@ -325,12 +328,12 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         };
     }
 
-    private void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+    protected void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
         //final AddShapeInBackgroundAction<ScribbleActivity> action = new AddShapeInBackgroundAction<>(shape);
         //action.execute(this, null);
     }
 
-    private void onBeginErasing() {
+    protected void onBeginErasing() {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -339,7 +342,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         });
     }
 
-    private void onErasing(final MotionEvent touchPoint) {
+    protected void onErasing(final MotionEvent touchPoint) {
         if (erasePoint == null) {
             return;
         }
@@ -348,7 +351,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         drawPage();
     }
 
-    private void onFinishErasing(TouchPointList pointList) {
+    protected void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
         drawPage();
         RemoveByPointListAction<BaseScribbleActivity> removeByPointListAction = new

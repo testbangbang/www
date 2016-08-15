@@ -2,6 +2,8 @@ package com.onyx.android.note.activity.onyx;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,36 +31,49 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
+import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
-
+import java.util.List;
 
 /**
- * when any button clicked, flush at first and render page, after that always switch to drawing state.
+ * Created by solskjaer49 on 16/8/12 18:09.
  */
-public class ScribbleActivity extends BaseScribbleActivity {
+
+public class SpanScribbleActivity extends BaseScribbleActivity {
     static final String TAG = ScribbleActivity.class.getCanonicalName();
     private TextView titleTextView;
+    private TextView spanTextView;
     private GAdapter adapter;
     private ScribbleSubMenu scribbleSubMenu = null;
+    private static final int SPAN_TIME_OUT = 1000;
+    Runnable spanRunnable;
+    long lastUpTime = -1;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NoteApplication.initWithAppConfig(this);
-        setContentView(R.layout.onyx_activity_scribble);
+        setContentView(R.layout.onyx_activity_span_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
+        handler = new Handler(getMainLooper());
     }
 
     private void initToolbarButtons() {
         titleTextView = (TextView) findViewById(R.id.textView_main_title);
+        spanTextView = (TextView)findViewById(R.id.span_text_view);
         ImageView addPageBtn = (ImageView) findViewById(R.id.button_add_page);
         ImageView deletePageBtn = (ImageView) findViewById(R.id.button_delete_page);
         ImageView prevPageBtn = (ImageView) findViewById(R.id.button_previous_page);
@@ -162,8 +177,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<ScribbleActivity> action = new RedoAction<>();
-                action.execute(ScribbleActivity.this);
+                final RedoAction<SpanScribbleActivity> action = new RedoAction<>();
+                action.execute(SpanScribbleActivity.this);
             }
         });
     }
@@ -172,8 +187,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<ScribbleActivity> action = new UndoAction<>();
-                action.execute(ScribbleActivity.this);
+                final UndoAction<SpanScribbleActivity> action = new UndoAction<>();
+                action.execute(SpanScribbleActivity.this);
             }
         });
     }
@@ -260,8 +275,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onBackgroundChanged() {
-        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(getBackgroundType());
-        changeBGAction.execute(ScribbleActivity.this, null);
+        final NoteBackgroundChangeAction<SpanScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(getBackgroundType());
+        changeBGAction.execute(SpanScribbleActivity.this, null);
     }
 
     private HashMap<String, Integer> getItemViewDataMap() {
@@ -299,6 +314,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     public void onBackPressed() {
         getNoteViewHelper().pauseDrawing();
+        getNoteViewHelper().cleanHistoricalDirtyStash();
         onSave(true);
     }
 
@@ -325,8 +341,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ScribbleActivity> action = new CheckNoteNameLegalityAction<ScribbleActivity>(input);
-                action.execute(ScribbleActivity.this, new BaseCallback() {
+                final CheckNoteNameLegalityAction<SpanScribbleActivity> action = new CheckNoteNameLegalityAction<SpanScribbleActivity>(input);
+                action.execute(SpanScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (action.isLegal()) {
@@ -348,8 +364,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onDiscardAction() {
                 dialogNoteNameInput.dismiss();
-                final DocumentDiscardAction<ScribbleActivity> discardAction = new DocumentDiscardAction<>(null);
-                discardAction.execute(ScribbleActivity.this);
+                final DocumentDiscardAction<SpanScribbleActivity> discardAction = new DocumentDiscardAction<>(null);
+                discardAction.execute(SpanScribbleActivity.this);
             }
         });
         syncWithCallback(true, false, new BaseCallback() {
@@ -362,15 +378,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
         noteTitle = title;
-        final DocumentSaveAction<ScribbleActivity> saveAction = new
+        final DocumentSaveAction<SpanScribbleActivity> saveAction = new
                 DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-        saveAction.execute(ScribbleActivity.this, null);
+        saveAction.execute(SpanScribbleActivity.this, null);
     }
 
     private void saveExistingNoteDocument(final boolean finishAfterSave) {
-        final DocumentSaveAction<ScribbleActivity> saveAction = new
+        final DocumentSaveAction<SpanScribbleActivity> saveAction = new
                 DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-        saveAction.execute(ScribbleActivity.this, null);
+        saveAction.execute(SpanScribbleActivity.this, null);
     }
 
     private void onNoteShapeChanged(boolean render, boolean resume, int type, BaseCallback callback) {
@@ -391,7 +407,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            ClearPageAction<ScribbleActivity> action = new ClearPageAction<>();
+            ClearPageAction<SpanScribbleActivity> action = new ClearPageAction<>();
             action.execute(this, null);
         }
     }
@@ -409,30 +425,87 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return object;
     }
 
+    @Override
+    protected NoteViewHelper.InputCallback inputCallback() {
+        return new NoteViewHelper.InputCallback() {
+            @Override
+            public void onBeginRawData() {
+            }
+
+            @Override
+            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+                onNewTouchPointListReceived(shape, pointList);
+                long curTime = System.currentTimeMillis();
+                if (shape instanceof NormalPencilShape) {
+                    if (lastUpTime != -1 && (curTime - lastUpTime <= SPAN_TIME_OUT) && (spanRunnable != null)) {
+                        handler.removeCallbacks(spanRunnable);
+                    }
+                    lastUpTime = curTime;
+                    spanRunnable = buildSpanRunnable();
+                    handler.postDelayed(spanRunnable, SPAN_TIME_OUT);
+                } else {
+                    if (!shape.supportDFB()) {
+                        drawPage();
+                    }
+                }
+            }
+
+            @Override
+            public void onBeginErasing() {
+                SpanScribbleActivity.this.onBeginErasing();
+            }
+
+            @Override
+            public void onErasing(final MotionEvent touchPoint) {
+                SpanScribbleActivity.this.onErasing(touchPoint);
+            }
+
+            @Override
+            public void onEraseTouchPointListReceived(TouchPointList pointList) {
+                onFinishErasing(pointList);
+            }
+
+            public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
+                if (!shape.supportDFB()) {
+                    drawPage();
+                }
+            }
+
+            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
+                if (last && !shape.supportDFB()) {
+                    drawPage();
+                }
+            }
+
+            public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
+                if (shape instanceof NormalPencilShape) {
+                } else {
+                    if (!shape.supportDFB()) {
+                        drawPage();
+                    }
+                }
+            }
+        };
+    }
+
+    private Runnable buildSpanRunnable(){
+        return new Runnable() {
+            @Override
+            public void run() {
+                testSpan();
+            }
+        };
+    }
+
     private void testSpan() {
-//        final List<Shape> stash = getNoteViewHelper().detachStash();
-//        final SpannableRequest spannableRequest = new SpannableRequest(stash);
-//        getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
-//            @Override
-//            public void done(BaseRequest request, Throwable e) {
-//                final OnyxAlertDialog dlg = new OnyxAlertDialog();
-//                dlg.setParams(new OnyxAlertDialog.Params().setCustomContentLayoutResID(R.layout.span_text_view)
-//                        .setTittleString("Message")
-//                        .setCustomViewAction(new OnyxAlertDialog.CustomViewAction() {
-//                    @Override
-//                    public void onCreateCustomView(View customView, TextView pageIndicator) {
-//                        TextView textView = (TextView)customView.findViewById(R.id.text_view);
-//                        textView.setText(spannableRequest.getSpannableStringBuilder());
-//                    }
-//                }));
-//                syncWithCallback(true, false, new BaseCallback() {
-//                    @Override
-//                    public void done(BaseRequest request, Throwable e) {
-//                        dlg.show(getFragmentManager(),"span dlg");
-//                    }
-//                });
-//
-//            }
-//        });
+        getNoteViewHelper().detachStash();
+        final List<List<Shape>> historicalDirtyStashList = getNoteViewHelper().getHistoricalDirtyStash();
+        final SpannableRequest spannableRequest = new SpannableRequest(historicalDirtyStashList);
+        getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                spanTextView.setText(spannableRequest.getSpannableStringBuilder());
+            }
+        });
     }
 }

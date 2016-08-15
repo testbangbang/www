@@ -2,14 +2,15 @@ package com.onyx.android.sdk.scribble.request.shape;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.util.Log;
+
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
+
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,11 +18,11 @@ import java.util.List;
  */
 public class SpannableRequest extends BaseNoteRequest {
 
-    private List<Shape> shapeList;
+    private static List<List<Shape>> shapeList = new ArrayList<>();
     private volatile SpannableStringBuilder spannableStringBuilder;
 
-    public SpannableRequest(final List<Shape> list) {
-        shapeList = list;
+    public SpannableRequest(final List<List<Shape>> list) {
+        shapeList.addAll(list);
         setPauseInputProcessor(true);
     }
 
@@ -31,9 +32,13 @@ public class SpannableRequest extends BaseNoteRequest {
             return;
         }
         StringBuilder builder = new StringBuilder();
-        builder.append(" ");
+        builder.append("                                                          ");
         spannableStringBuilder = new SpannableStringBuilder(builder.toString());
-        spannableStringBuilder.setSpan(new ShapeSpan(shapeList), 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        for (int i = 0; i < shapeList.size(); i++) {
+            spannableStringBuilder.setSpan(new ShapeSpan(shapeList.get(i)), i, i+1,
+                    Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+
     }
 
     public SpannableStringBuilder getSpannableStringBuilder() {
