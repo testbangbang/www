@@ -21,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -46,8 +47,9 @@ import java.util.List;
 public class DialogSearch extends Dialog implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String TAG = DialogSearch.class.getSimpleName();
-    private static int SEARCH_CONTENT_ROW = 4;
+    private static int SEARCH_CONTENT_ROW = 10;
     private static int SEARCH_HISTORY_COUNT = 5;
+    public static final int SEARCH_CONTENT_LENGTH = 30;
 
     private ReaderDataHolder readerDataHolder;
     private SearchContentAction searchContentAction;
@@ -60,8 +62,8 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private TextView totalPage;
     private TextView pageIndicator;
     private EditText searchEditText;
-    private ImageView preIcon;
-    private ImageView nextIcon;
+    private ImageButton preIcon;
+    private ImageButton nextIcon;
     private LinearLayout searchContent;
     private RelativeLayout searchHistory;
     private RelativeLayout searchEditLayout;
@@ -100,8 +102,8 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         searchContent = (LinearLayout) findViewById(R.id.search_content);
         searchHistory = (RelativeLayout) findViewById(R.id.search_history_layout);
         searchEditLayout = (RelativeLayout) findViewById(R.id.search_edit_layout);
-        preIcon = (ImageView) findViewById(R.id.pre_icon);
-        nextIcon = (ImageView) findViewById(R.id.next_icon);
+        preIcon = (ImageButton) findViewById(R.id.pre_icon);
+        nextIcon = (ImageButton) findViewById(R.id.next_icon);
         historyRecyclerView = (RecyclerView) findViewById(R.id.search_history_list);
         deleteHistory = (TextView) findViewById(R.id.delete_history);
         closeHistory = (TextView) findViewById(R.id.close_history);
@@ -230,7 +232,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         pageRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                searchContentAction = new SearchContentAction(query);
+                searchContentAction = new SearchContentAction(query,SEARCH_CONTENT_LENGTH);
                 searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
                     @Override
                     public void OnNext(final List<ReaderSelection> results) {
@@ -295,6 +297,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private class SearchViewHolder extends RecyclerView.ViewHolder{
 
         private TextView contentTextView;
+        private TextView contentPage;
         private ReaderSelection readerSelection;
 
         public SearchViewHolder(View itemView) {
@@ -307,11 +310,12 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
                 }
             });
             contentTextView = (TextView)itemView.findViewById(R.id.search_content);
+            contentPage = (TextView)itemView.findViewById(R.id.search_page);
         }
 
         public void bindView(ReaderSelection selection,String search){
             readerSelection = selection;
-            String content = selection.getLeftText().trim() + search + selection.getRightText().trim();
+            String content = deleteNewlineSymbol(selection.getLeftText().trim()) + search + deleteNewlineSymbol(selection.getRightText().trim());
             SpannableStringBuilder style = new SpannableStringBuilder(content);
             int start = content.indexOf(search);
             if (start < 0){
@@ -321,6 +325,8 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
             style.setSpan(new BackgroundColorSpan(Color.BLACK),start, start + length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             style.setSpan(new ForegroundColorSpan(Color.WHITE),start, start + length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             contentTextView.setText(style);
+            String page = String.format(getContext().getString(R.string.page),readerSelection.getPagePosition());
+            contentPage.setText(page);
         }
     }
 
@@ -360,5 +366,13 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private void hideSearchDialog(){
         hide();
         stopSearch();
+    }
+
+    private String deleteNewlineSymbol(String content){
+        while (content.contains("\n") || content.contains(" ")){
+            content = content.replace("\n","");
+            content = content.replace(" ","");
+        }
+        return content;
     }
 }

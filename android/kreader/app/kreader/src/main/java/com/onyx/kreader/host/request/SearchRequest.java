@@ -22,8 +22,9 @@ public class SearchRequest extends BaseReaderRequest {
     private String currentPage;
     private ReaderDataHolder readerDataHolder;
 
-    public SearchRequest(final String currentPage, final String text, boolean caseSensitive, boolean match, ReaderDataHolder readerDataHolder) {
+    public SearchRequest(final String currentPage, final String text, boolean caseSensitive, boolean match, int contentLength, ReaderDataHolder readerDataHolder) {
         searchOptions = new ReaderSearchOptionsImpl(currentPage, text, caseSensitive, match);
+        searchOptions.setContextLength(contentLength);
         this.currentPage = currentPage;
         this.readerDataHolder = readerDataHolder;
     }

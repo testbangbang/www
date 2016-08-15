@@ -36,7 +36,7 @@ public class TtsHandler extends BaseHandler {
                 return true;
             case KeyEvent.KEYCODE_BACK:
                 getParent().getReaderDataHolder().getTtsManager().stop();
-                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.BASE_PROVIDER);
+                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
                 return true;
         }
         return super.onKeyDown(readerDataHolder, keyCode, event);

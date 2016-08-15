@@ -98,7 +98,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
+                <ImageButton
+                    android:padding="5dp"
+                    android:background="@drawable/imagebtn_bg"
                     android:id="@+id/pre_icon"
                     android:scaleType="fitXY"
                     android:layout_centerVertical="true"
@@ -116,7 +118,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-                <ImageView
+                <ImageButton
+                    android:padding="5dp"
+                    android:background="@drawable/imagebtn_bg"
                     android:id="@+id/next_icon"
                     android:scaleType="fitXY"
                     android:layout_centerVertical="true"
@@ -145,6 +149,7 @@
             </android.support.v7.widget.RecyclerView>
 
             <TextView
+                android:visibility="gone"
                 android:layout_below="@+id/search_history_list"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/delete_history"
