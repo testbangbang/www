@@ -3,8 +3,6 @@ package com.onyx.kreader.utils;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import com.alibaba.fastjson.JSON;
-import com.onyx.kreader.common.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,8 +94,8 @@ public class RectUtils {
         if (Math.abs(compare) < tolerance) {
             return 0;
         }
-        if ((rect1.top < rect2.top && rect1.bottom > rect2.bottom) ||
-                (rect2.top < rect1.top && rect2.bottom > rect1.bottom)) {
+        if ((rect1.top <= rect2.top && rect1.bottom >= rect2.bottom) ||
+                (rect2.top <= rect1.top && rect2.bottom >= rect1.bottom)) {
             // if one rectangle is in the vertical range of another, we treat they as if they are on the same baseline
             return 0;
         }
