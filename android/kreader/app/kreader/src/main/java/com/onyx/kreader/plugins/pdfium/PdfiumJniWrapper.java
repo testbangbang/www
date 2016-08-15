@@ -116,7 +116,7 @@ public class PdfiumJniWrapper {
     }
 
     public int hitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final PdfiumSelection selection) {
-        return nativeHitTest(id, page, x, y, width, height, rotation, startX, startY, endX, endY, ReaderTextSplitterImpl.sharedInstance(), selection);
+        return nativeHitTest(id, page, x, y, width, height, rotation, startX, startY, endX, endY, null, selection);
     }
 
     public int selection(int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final PdfiumSelection selection) {

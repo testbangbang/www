@@ -95,8 +95,8 @@ public class ReaderSelectionManager {
         }
         HighlightCursor cursor = cursors.get(0);
         float fontHeight = rects.get(0).bottom - rects.get(0).top;
-        PointF beginBottom = RectUtils.getBeginBottom(rects);
         cursor.setFontHeight(fontHeight);
+        PointF beginBottom = RectUtils.getBeginBottom(rects);
         cursor.setOriginPosition(beginBottom.x, beginBottom.y);
         cursor.setCursorType(HighlightCursor.Type.BEGIN_CURSOR);
 

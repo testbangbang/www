@@ -12,7 +12,7 @@ public class BackwardRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        useRenderBitmap(reader);
+        prepareRenderBitmap(reader);
         reader.getReaderLayoutManager().goBack();
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }

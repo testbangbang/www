@@ -14,7 +14,7 @@ public class RenderRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        useRenderBitmap(reader);
+        prepareRenderBitmap(reader);
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
 

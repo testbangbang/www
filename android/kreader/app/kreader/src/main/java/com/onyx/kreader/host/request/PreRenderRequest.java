@@ -25,7 +25,7 @@ public class PreRenderRequest extends BaseReaderRequest {
 
         // do not save position in history list.
         reader.getReaderLayoutManager().setSavePosition(false);
-        useRenderBitmap(reader);
+        prepareRenderBitmap(reader);
         final ReaderDrawContext drawContext = new ReaderDrawContext();
         final PositionSnapshot snapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
         if (forward && reader.getReaderLayoutManager().nextScreen()) {

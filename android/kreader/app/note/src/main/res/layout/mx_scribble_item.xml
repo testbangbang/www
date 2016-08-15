@@ -29,8 +29,8 @@
 
     <ImageView
         android:id="@+id/imageview_bg"
-        android:layout_width="@dimen/scribble_bg_item_width"
-        android:layout_height="@dimen/scribble_bg_item_height"
+        android:layout_width="@dimen/mx_scribble_bg_item_width"
+        android:layout_height="@dimen/mx_scribble_bg_item_height"
         android:layout_centerHorizontal="true"
         android:src="@drawable/unknown_application" />
 

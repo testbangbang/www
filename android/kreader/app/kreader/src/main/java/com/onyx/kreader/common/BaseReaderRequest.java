@@ -45,7 +45,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return renderBitmap;
     }
 
-    public void useRenderBitmap(final Reader reader) {
+    public void prepareRenderBitmap(final Reader reader) {
         renderBitmap = reader.getReaderHelper().getRenderBitmap();
     }
 

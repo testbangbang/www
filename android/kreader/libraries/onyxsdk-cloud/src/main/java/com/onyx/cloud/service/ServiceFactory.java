@@ -8,9 +8,11 @@ import retrofit2.Retrofit;
  */
 public class ServiceFactory {
 
+    public static final String API_V1_BASE = "http://store.onyx-international.cn:9000/api/1/";
+
     public static final OnyxAccountService getAccountService() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://store.onyx-international.cn:9000/api/1/")
+                .baseUrl(API_V1_BASE)
                 .addConverterFactory(FastJsonConverterFactory.create())
                 .build();
         return retrofit.create(OnyxAccountService.class);
@@ -18,7 +20,7 @@ public class ServiceFactory {
 
     public static final OnyxBookStoreService getBookStoreService() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://store.onyx-international.cn:9000/api/1/")
+                .baseUrl(API_V1_BASE)
                 .addConverterFactory(FastJsonConverterFactory.create())
                 .build();
         return retrofit.create(OnyxBookStoreService.class);

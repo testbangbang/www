@@ -116,6 +116,10 @@ public abstract class EpdController
         Device.currentDevice().refreshScreenRegion(view, left, top, width, height, mode);
     }
 
+    public static boolean supportRegal() {
+        return Device.currentDevice().supportRegal();
+    }
+
     public static void setStrokeWidth(float width) {
         Device.currentDevice().setStrokeWidth(width);
     }

@@ -257,14 +257,19 @@ public class ReaderDataHolder {
     }
 
     public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
-        Debug.d(TAG, "onRenderRequestFinished: " + request + ", " + e);
+        onRenderRequestFinished(request, e, true);
+    }
+
+
+    public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e, boolean applyGCIntervalUpdate) {
         if (e != null || request.isAbort()) {
             return;
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        eventBus.post(RequestFinishEvent.fromRequest(request, e));
+        eventBus.post(RequestFinishEvent.fromRequest(request, e, applyGCIntervalUpdate));
     }
+
 
     public void redrawPage() {
         if (getReader() != null) {

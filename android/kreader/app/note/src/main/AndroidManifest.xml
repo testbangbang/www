@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/OnyxAppCompat">
         <activity android:name=".activity.mx.ManagerActivity" />
-        <activity android:name=".activity.mx.ScribbleActivity" />
+        <activity android:name=".activity.mx.ScribbleActivity"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".activity.StartupActivity">
             <intent-filter>
@@ -27,7 +28,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.onyx.ManagerActivity" />
-        <activity android:name=".activity.onyx.ScribbleActivity"/>
+        <activity android:name=".activity.onyx.ScribbleActivity"
+            android:windowSoftInputMode="adjustNothing"/>
     </application>
 
 </manifest>

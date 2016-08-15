@@ -8,15 +8,20 @@ import com.onyx.android.sdk.common.request.BaseRequest;
  */
 public class RequestFinishEvent {
 
-    private Bitmap bitmap;
+    private boolean applyGCIntervalUpdate = true;
 
-    public static RequestFinishEvent fromRequest(final BaseRequest request, final Throwable throwable) {
+    public static RequestFinishEvent fromRequest(final BaseRequest request, final Throwable throwable, boolean applyGCInterval) {
         RequestFinishEvent requestFinishEvent = new RequestFinishEvent();
+        requestFinishEvent.setApplyGCIntervalUpdate(applyGCInterval);
         return requestFinishEvent;
     }
 
-    public final Bitmap getBitmap() {
-        return null;
+    public void setApplyGCIntervalUpdate(boolean apply) {
+        applyGCIntervalUpdate = apply;
+    }
+
+    public final boolean isApplyGCIntervalUpdate() {
+        return applyGCIntervalUpdate;
     }
 
 }

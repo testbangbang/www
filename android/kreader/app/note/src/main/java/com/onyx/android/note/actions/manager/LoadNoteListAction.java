@@ -5,8 +5,10 @@ import com.onyx.android.note.activity.BaseManagerActivity;
 import com.onyx.android.note.utils.Constant;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.SortBy;
 import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
 
 /**
@@ -16,10 +18,23 @@ public class LoadNoteListAction<T extends BaseManagerActivity> extends BaseNoteA
     private volatile String parentLibraryId;
     private NoteModel noteModel;
     private NoteLibraryLoadRequest loadRequest;
+    private
+    @SortBy.SortByDef
+    int sortBy;
+    private
+    @AscDescOrder.AscDescOrderDef
+    int ascOrder;
 
     public LoadNoteListAction(final String id) {
-        parentLibraryId = id;
+        this(id, SortBy.CREATED_AT, AscDescOrder.DESC);
     }
+
+    public LoadNoteListAction(final String id, @SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascOrder) {
+        parentLibraryId = id;
+        this.sortBy = sortBy;
+        this.ascOrder = ascOrder;
+    }
+
 
     public void execute(final T activity) {
         execute(activity, new BaseCallback() {
@@ -31,12 +46,10 @@ public class LoadNoteListAction<T extends BaseManagerActivity> extends BaseNoteA
         });
     }
 
-
     @Override
     public void execute(final T activity, BaseCallback callback) {
         noteModel = NoteDataProvider.load(activity, parentLibraryId);
-        loadRequest = new NoteLibraryLoadRequest(parentLibraryId);
-        loadRequest.thumbnailLimit = Constant.PERTIME_THUMBNAIL_LOAD_LIMIT;
+        loadRequest = new NoteLibraryLoadRequest(parentLibraryId, Constant.PERTIME_THUMBNAIL_LOAD_LIMIT, sortBy, ascOrder);
         activity.submitRequest(loadRequest, callback);
     }
 }

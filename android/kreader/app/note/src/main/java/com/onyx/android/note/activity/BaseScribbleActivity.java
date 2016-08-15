@@ -58,22 +58,41 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected String noteTitle;
     protected Button pageIndicator;
 
+    private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY};
+    private ActivityState activityState;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setActivityState(ActivityState.CREATE);
         super.onCreate(savedInstanceState);
         registerDeviceReceiver();
     }
 
     @Override
     protected void onResume() {
+        setActivityState(ActivityState.RESUME);
         super.onResume();
         initSurfaceView();
     }
 
     @Override
     protected void onPause() {
+        setActivityState(ActivityState.PAUSE);
         super.onPause();
         syncWithCallback(true, false, null);
+    }
+
+    public ActivityState getActivityState() {
+        return activityState;
+    }
+
+    public void setActivityState(ActivityState activityState) {
+        this.activityState = activityState;
+    }
+
+    public boolean isActivityRunning() {
+        return getActivityState() == ActivityState.CREATE ||
+                getActivityState() == ActivityState.RESUME;
     }
 
     @Override
@@ -91,6 +110,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     @Override
     protected void onDestroy() {
+        setActivityState(ActivityState.DESTROY);
         cleanUpAllPopMenu();
         syncWithCallback(false, false, new BaseCallback() {
             @Override
@@ -191,11 +211,15 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onSystemUIOpened() {
-        syncWithCallback(true, false, null);
+        if (isActivityRunning()) {
+            syncWithCallback(true, false, null);
+        }
     }
 
     protected void onSystemUIClosed() {
-        syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+        if (isActivityRunning()) {
+            syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+        }
     }
 
     protected void initSurfaceView() {
