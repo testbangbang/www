@@ -204,7 +204,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
     private void ttsStop(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getTtsManager().stop();
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.BASE_PROVIDER);
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }
 
     //调节音量

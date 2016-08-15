@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class HandlerManager {
 
-    public static final String BASE_PROVIDER = "bp";
+    public static final String READING_PROVIDER = "rp";
     public static final String WORD_SELECTION_PROVIDER = "wp";
     public static final String SCRIBBLE_PROVIDER = "scribble";
     public static final String ERASER_PROVIDER = "eraser";
@@ -52,11 +52,11 @@ public class HandlerManager {
     }
 
     private void initProviderMap(final Context context) {
-        providerMap.put(BASE_PROVIDER, new ReadingHandler(this));
+        providerMap.put(READING_PROVIDER, new ReadingHandler(this));
         providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, readerDataHolder.getContext()));
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
-        activeProvider = BASE_PROVIDER;
+        activeProvider = READING_PROVIDER;
         enable = true;
         enableTouch = true;
         readerConfig = ReaderConfig.sharedInstance(context);
@@ -144,7 +144,7 @@ public class HandlerManager {
     }
 
     public void resetToDefaultProvider() {
-        activeProvider = BASE_PROVIDER;
+        activeProvider = READING_PROVIDER;
     }
 
     public void setActiveProvider(final String providerName) {

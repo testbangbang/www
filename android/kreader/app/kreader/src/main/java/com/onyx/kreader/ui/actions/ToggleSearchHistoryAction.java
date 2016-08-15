@@ -20,9 +20,9 @@ public class ToggleSearchHistoryAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
         if (add) {
-            readerDataHolder.submitRenderRequest(new AddSearchHistoryRequest(content));
+            readerDataHolder.submitNonRenderRequest(new AddSearchHistoryRequest(content));
         } else {
-            readerDataHolder.submitRenderRequest(new DeleteSearchHistoryRequest());
+            readerDataHolder.submitNonRenderRequest(new DeleteSearchHistoryRequest());
         }
     }
 }

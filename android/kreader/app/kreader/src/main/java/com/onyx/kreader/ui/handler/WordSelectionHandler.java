@@ -3,7 +3,6 @@ package com.onyx.kreader.ui.handler;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -68,8 +67,12 @@ public class WordSelectionHandler extends BaseHandler{
         return true;
     }
 
+    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        quitWordSelection(readerDataHolder);
+        return true;
+    }
+
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        selectWord(readerDataHolder,getParent().getTouchStartPosition().x, getParent().getTouchStartPosition().y, e.getX(), e.getY(), false);
         return true;
     }
 
@@ -271,6 +274,7 @@ public class WordSelectionHandler extends BaseHandler{
         ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,true);
         getParent().resetToDefaultProvider();
         readerDataHolder.redrawPage();
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }
 
     public void onSelectWordFinished(ReaderDataHolder readerDataHolder, SelectWordRequest request, Throwable e, boolean touchMoving, PopupSelectionMenu.SelectionType selectionType) {
