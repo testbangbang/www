@@ -6,6 +6,7 @@ import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.kreader.cache.BitmapSoftLruCache;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
@@ -128,6 +129,10 @@ public class Reader {
 
     public BitmapLruCache getBitmapLruCache() {
         return getReaderHelper().getBitmapLruCache();
+    }
+
+    public BitmapSoftLruCache getBitmapCache() {
+        return getReaderHelper().getBitmapCache();
     }
 
     public ReaderBitmap getViewportBitmap() {

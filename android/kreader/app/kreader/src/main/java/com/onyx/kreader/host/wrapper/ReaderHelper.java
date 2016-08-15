@@ -20,6 +20,7 @@ import com.onyx.kreader.api.ReaderRendererFeatures;
 import com.onyx.kreader.api.ReaderSearchManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.cache.BitmapLruCache;
+import com.onyx.kreader.cache.BitmapSoftLruCache;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
@@ -36,6 +37,7 @@ import com.onyx.kreader.utils.ImageUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -54,8 +56,8 @@ public class ReaderHelper {
         public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
             try {
                 lock.lock();
-                viewportBitmap.attachWith(renderBitmap.getBitmapReference());
-                renderBitmap.recycleBitmap();
+                bitmapCache.put(viewportBitmap.getKey(), new SoftReference<>(viewportBitmap.getBitmap()));
+                viewportBitmap.attachWith(renderBitmap.getKey(), renderBitmap.getBitmap());
                 finished = true;
                 condition.signal();
             } finally {
@@ -97,6 +99,7 @@ public class ReaderHelper {
     private ReaderHitTestManager hitTestManager;
     private ImageReflowManager imageReflowManager;
     private BitmapLruCache bitmapLruCache;
+    private BitmapSoftLruCache bitmapCache;
 
     public ReaderHelper() {
     }
@@ -245,9 +248,14 @@ public class ReaderHelper {
         return bitmapLruCache;
     }
 
+    public BitmapSoftLruCache getBitmapCache() {
+        return bitmapCache;
+    }
+
     public void initData(Context context) {
         initImageReflowManager(context);
         initBitmapLruCache(context);
+        initBitmapCache();
 //        initChineseAnalyzer(context);
     }
 
@@ -277,6 +285,12 @@ public class ReaderHelper {
             builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
             builder.setDiskCacheEnabled(false).setDiskCacheLocation(cacheLocation);
             bitmapLruCache = builder.build();
+        }
+    }
+
+    private void initBitmapCache() {
+        if (bitmapCache == null) {
+            bitmapCache = new BitmapSoftLruCache(5);
         }
     }
 

@@ -129,7 +129,9 @@ public abstract class BaseReaderRequest extends BaseRequest {
         } else {
             runnable.run();
         }
-        reader.getBitmapTransferCoordinator().waitTransfer();
+        if (isTransferBitmap() && getRenderBitmap() != null) {
+            reader.getBitmapTransferCoordinator().waitTransfer();
+        }
     }
 
     public final ReaderViewInfo getReaderViewInfo() {

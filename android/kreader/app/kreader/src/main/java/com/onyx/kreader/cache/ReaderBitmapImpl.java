@@ -5,12 +5,16 @@ import android.graphics.Color;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.BitmapUtils;
 
+import java.io.Closeable;
+import java.lang.ref.WeakReference;
+
 /**
  * Created by joy on 8/9/16.
  */
 public class ReaderBitmapImpl implements ReaderBitmap {
 
-    private BitmapHolder bitmap;
+    private String key;
+    private Bitmap bitmap;
 
     public static ReaderBitmapImpl create(int width, int height, Bitmap.Config config) {
         ReaderBitmapImpl readerBitmap = new ReaderBitmapImpl(width, height, config);
@@ -23,7 +27,7 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     public ReaderBitmapImpl(int width, int height, Bitmap.Config config) {
         super();
-        bitmap = BitmapHolder.create(width, height, config);
+        bitmap = Bitmap.createBitmap(width, height, config);
     }
 
     public void clear() {
@@ -33,30 +37,23 @@ public class ReaderBitmapImpl implements ReaderBitmap {
     }
 
     public void recycleBitmap() {
-        if (bitmap != null) {
-            bitmap.detach();
+        if (bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
         }
         bitmap = null;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap.getBitmap();
+    public String getKey() {
+        return key;
     }
 
-    public BitmapHolder getBitmapReference()  {
+    public Bitmap getBitmap() {
         return bitmap;
     }
 
-    public void update(int width, int height, Bitmap.Config config) {
-        if (bitmap == null || bitmap.getWidth() != width || bitmap.getHeight() != height) {
-            recycleBitmap();
-            bitmap = BitmapHolder.create(width, height, config);
-        }
-    }
-
-    public boolean attachWith(final BitmapHolder src) {
-        recycleBitmap();
-        bitmap = src.attach();
-        return BitmapUtils.isValid(bitmap.getBitmap());
+    public boolean attachWith(String key, final Bitmap src) {
+        this.key = key;
+        bitmap = src;
+        return BitmapUtils.isValid(bitmap);
     }
 }
