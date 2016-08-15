@@ -59,9 +59,4 @@ public class ReaderBitmapImpl implements ReaderBitmap {
         bitmap = src.attach();
         return BitmapUtils.isValid(bitmap.getBitmap());
     }
-
-    public void attach(final BitmapHolder src) {
-        recycleBitmap();
-        bitmap = src;
-    }
 }
