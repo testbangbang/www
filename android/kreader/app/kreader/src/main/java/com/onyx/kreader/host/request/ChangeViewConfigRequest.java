@@ -25,7 +25,7 @@ public class ChangeViewConfigRequest extends BaseReaderRequest {
         } else {
             reader.getReaderLayoutManager().getCurrentLayoutProvider().scaleToWidthContent(position);
         }
-        useRenderBitmap(reader);
+        prepareRenderBitmap(reader);
         reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
     }
 
