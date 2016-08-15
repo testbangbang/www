@@ -305,17 +305,21 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             }
 
             public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
-                drawPage();
+                if (!shape.supportDFB()) {
+                    drawPage();
+                }
             }
 
             public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
-                if (last) {
+                if (last && !shape.supportDFB()) {
                     drawPage();
                 }
             }
 
             public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-                drawPage();
+                if (!shape.supportDFB()) {
+                    drawPage();
+                }
             }
 
         };

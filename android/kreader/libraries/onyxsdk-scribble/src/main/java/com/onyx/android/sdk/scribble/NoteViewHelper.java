@@ -642,7 +642,7 @@ public class NoteViewHelper {
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
         currentShape.onDown(normalized, screen);
-        if (callback != null && !currentShape.supportDFB()) {
+        if (callback != null) {
             callback.onDrawingTouchDown(motionEvent, currentShape);
         }
     }
@@ -656,14 +656,14 @@ public class NoteViewHelper {
             final TouchPoint normalized = fromHistorical(motionEvent, i);
             final TouchPoint screen = touchPointFromNormalized(normalized);;
             currentShape.onMove(normalized, screen);
-            if (callback != null && !currentShape.supportDFB()) {
+            if (callback != null) {
                 callback.onDrawingTouchMove(motionEvent, currentShape, false);
             }
         }
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);;
         currentShape.onMove(normalized, screen);
-        if (callback != null && !currentShape.supportDFB()) {
+        if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape, true);
         }
     }
@@ -675,7 +675,7 @@ public class NoteViewHelper {
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
         currentShape.onUp(normalized, screen);
-        if (callback != null && !currentShape.supportDFB()) {
+        if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);
         }
     }
