@@ -21,6 +21,8 @@
 -dontwarn com.onyx.android.sdk.ui.dialog.DialogReaderMenu
 -dontwarn com.onyx.android.sdk.scribble.request.shape.PenStateChangeRequest
 
+-dontwarn butterknife.internal.ButterKnifeProcessor
+
 -keepnames class * {
     native <methods>;
 }
