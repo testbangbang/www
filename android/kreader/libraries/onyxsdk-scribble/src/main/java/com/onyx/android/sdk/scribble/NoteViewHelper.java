@@ -85,7 +85,8 @@ public class NoteViewHelper {
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
-    private List<Shape> dirtyStash = new ArrayList<Shape>();
+    private List<Shape> dirtyStash = new ArrayList<>();
+    private List<List<Shape>> historicalDirtyStash = new ArrayList<>();
     private InputCallback callback;
     private TouchPointList erasePoints;
     private DeviceConfig deviceConfig;
@@ -502,9 +503,19 @@ public class NoteViewHelper {
         return dirtyStash;
     }
 
-    public List<Shape> deatchStash() {
-        final List<Shape> temp = dirtyStash;
-        dirtyStash = new ArrayList<Shape>();
+    public List<List<Shape>> getHistoricalDirtyStash(){
+        return historicalDirtyStash;
+    }
+
+    public void cleanHistoricalDirtyStash(){
+        historicalDirtyStash = new ArrayList<>();
+    }
+
+    public List<Shape> detachStash() {
+        final List<Shape> temp = new ArrayList<>();
+        temp.addAll(dirtyStash);
+        historicalDirtyStash.add(temp);
+        dirtyStash = new ArrayList<>();
         return temp;
     }
 

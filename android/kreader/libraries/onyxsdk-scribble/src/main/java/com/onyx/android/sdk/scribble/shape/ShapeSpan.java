@@ -1,8 +1,12 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.text.style.ReplacementSpan;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import android.util.Log;
 
 import java.util.List;
 
@@ -10,7 +14,7 @@ import java.util.List;
  * Created by zhuzeng on 8/6/16.
  */
 public class ShapeSpan extends ReplacementSpan {
-
+    static final String TAG = ShapeSpan.class.getSimpleName();
     private List<Shape> shapeList;
 
     public ShapeSpan(final List<Shape> s) {
@@ -35,14 +39,14 @@ public class ShapeSpan extends ReplacementSpan {
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1.0f);
-        for(Shape shape : shapeList) {
+        for (Shape shape : shapeList) {
             shape.render(canvas, paint, matrix);
         }
     }
 
     private RectF boundingRect() {
         RectF rect = new RectF();
-        for(Shape shape : shapeList) {
+        for (Shape shape : shapeList) {
             rect.union(shape.getBoundingRect());
         }
         return rect;
