@@ -19,14 +19,13 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        prepareRenderBitmap(reader);
         restoreLayoutType(reader);
         restorePagePosition(reader);
         restoreScale(reader);
         restoreOrientation(reader);
         restoreViewport(reader);
         restoreOthers(reader);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+        drawVisiblePages(reader);
     }
 
     private void restoreLayoutType(final Reader reader) throws Exception {

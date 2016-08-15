@@ -16,9 +16,8 @@ public class EmboldenGlyphRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
-        prepareRenderBitmap(reader);
         reader.getDocumentOptions().setEmboldenLevel(emboldenLevel);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+        drawVisiblePages(reader);
     }
 
 }

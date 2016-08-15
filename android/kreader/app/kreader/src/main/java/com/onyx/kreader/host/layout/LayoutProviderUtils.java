@@ -6,8 +6,8 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderRenderer;
-import com.onyx.kreader.cache.BitmapHolder;
 import com.onyx.kreader.cache.BitmapLruCache;
+import com.onyx.kreader.cache.BitmapSoftLruCache;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderDrawContext;
@@ -19,7 +19,9 @@ import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.kreader.utils.ObjectHolder;
 
+import java.lang.ref.SoftReference;
 import java.util.List;
 
 /**
@@ -28,32 +30,35 @@ import java.util.List;
 public class LayoutProviderUtils {
 
     private static final String TAG = LayoutProviderUtils.class.getSimpleName();
-    static boolean enableCache = true;
+    static boolean ENABLE_CACHE = true;
 
     /**
      * draw all visible pages. For each page:render the visible part of page. in screen coordinates system.
      * Before draw, make sure all visible pages have been calculated correctly.
      * @param layoutManager
-     * @param bitmap
+     * @param renderedBitmap
      */
     static public void drawVisiblePages(final Reader reader,
                                         final ReaderLayoutManager layoutManager,
                                         final ReaderDrawContext drawContext,
-                                        final ReaderBitmapImpl bitmap,
+                                        final ObjectHolder<ReaderBitmapImpl> renderedBitmap,
                                         final ReaderViewInfo readerViewInfo) throws ReaderException {
         // step1: prepare.
+        final ReaderBitmapImpl bitmap = new ReaderBitmapImpl();
+        renderedBitmap.setObject(bitmap);
+
         final ReaderRenderer renderer = reader.getRenderer();
-        final BitmapLruCache cache = reader.getBitmapLruCache();
+        final BitmapSoftLruCache cache = reader.getBitmapCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
 
         // step2: check cache.
         final String key = PositionSnapshot.cacheKey(visiblePages);
         boolean hitCache = false;
-        if (enableCache && checkCache(cache, key, bitmap)) {
+        if (ENABLE_CACHE && checkCache(cache, key, bitmap)) {
             hitCache = true;
         }
         if (!hitCache) {
-            bitmap.update(reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight(), Bitmap.Config.ARGB_8888);
+            bitmap.attachWith(key, cache.getFreeBitmap(reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight(), Bitmap.Config.ARGB_8888));
             bitmap.clear();
         }
 
@@ -61,7 +66,7 @@ public class LayoutProviderUtils {
         drawVisiblePagesImpl(renderer, layoutManager, bitmap, visiblePages, hitCache);
 
         // step4: update cache
-        if (!hitCache && enableCache && StringUtils.isNotBlank(key)) {
+        if (!hitCache && ENABLE_CACHE && StringUtils.isNotBlank(key)) {
             addToCache(cache, key, bitmap);
         }
 
@@ -144,22 +149,20 @@ public class LayoutProviderUtils {
                 visibleRect);
     }
 
-    static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        cache.put(key, bitmap.getBitmapReference());
+    static public boolean addToCache(final BitmapSoftLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
+        cache.put(key, new SoftReference<>(bitmap.getBitmap()));
         return true;
     }
 
-    static public boolean checkCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        BitmapHolder result = cache.get(key);
+    static public boolean checkCache(final BitmapSoftLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
+        SoftReference<Bitmap> result = cache.get(key);
         if (result == null) {
             return false;
         }
 
-        try {
-            return bitmap.attachWith(result);
-        } finally {
-            result.detach();
-        }
+        boolean succ = bitmap.attachWith(key, result.get());
+        cache.put(key, null);
+        return succ;
     }
 
     static public void clear(final ReaderLayoutManager layoutManager) {

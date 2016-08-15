@@ -34,8 +34,7 @@ public class GotoLocationRequest extends BaseReaderRequest {
         if (!reader.getReaderHelper().getReaderLayoutManager().gotoPosition(documentPosition)) {
             throw ReaderException.outOfRange();
         }
-        prepareRenderBitmap(reader);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+        drawVisiblePages(reader);
     }
 
 }

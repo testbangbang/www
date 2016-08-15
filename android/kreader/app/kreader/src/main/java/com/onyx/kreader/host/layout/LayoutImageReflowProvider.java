@@ -13,6 +13,7 @@ import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.ObjectHolder;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -82,10 +83,13 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
-    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
+    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ObjectHolder<ReaderBitmapImpl> bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
+        bitmap.setObject(new ReaderBitmapImpl());
+
+        String key = getCurrentSubPageKey();
         BitmapHolder bmp = getCurrentSubPageBitmap();
         if (bmp != null) {
-            bitmap.attachWith(bmp);
+            bitmap.getObject().attachWith(key, bmp.getBitmap());
             bmp.detach();
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
             return true;
@@ -103,18 +107,18 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (bmp == null) {
             return false;
         }
-        bitmap.attachWith(bmp);
+        bitmap.getObject().attachWith(key, bmp.getBitmap());
         bmp.detach();
         return true;
     }
 
     private void reflowFirstVisiblePage(final Reader reader,
                                         final ReaderDrawContext drawContext,
-                                        final ReaderBitmapImpl bitmap,
+                                        final ObjectHolder<ReaderBitmapImpl> bitmap,
                                         final ReaderViewInfo readerViewInfo,
                                         boolean async) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, bitmap, readerViewInfo);
-        reader.getImageReflowManager().reflowBitmap(bitmap.getBitmap(),
+        reader.getImageReflowManager().reflowBitmap(bitmap.getObject().getBitmap(),
                 reader.getViewOptions().getViewWidth(),
                 reader.getViewOptions().getViewHeight(),
                 getCurrentPageName(),
@@ -206,6 +210,10 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     private ReaderBitmapList getCurrentSubPageList() {
         return getLayoutManager().getImageReflowManager().getSubPageList(getCurrentPageName());
+    }
+
+    private String getCurrentSubPageKey() {
+        return getLayoutManager().getImageReflowManager().getSubPageKey(getCurrentPageName(), getCurrentSubPageIndex());
     }
 
     private BitmapHolder getCurrentSubPageBitmap() {

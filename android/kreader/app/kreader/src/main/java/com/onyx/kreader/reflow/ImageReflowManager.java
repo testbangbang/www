@@ -211,6 +211,10 @@ public class ImageReflowManager {
         return list;
     }
 
+    public String getSubPageKey(final String pageName, int subPage) {
+        return getKeyOfSubPage(settings, pageName, subPage);
+    }
+
     public BitmapHolder getSubPageBitmap(final String pageName, int subPage) {
         return getBitmap(getKeyOfSubPage(settings, pageName, subPage));
     }
