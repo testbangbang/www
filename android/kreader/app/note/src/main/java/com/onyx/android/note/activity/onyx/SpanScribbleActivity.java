@@ -498,9 +498,8 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
     }
 
     private void testSpan() {
-        getNoteViewHelper().detachStash();
-        final List<List<Shape>> historicalDirtyStashList = getNoteViewHelper().getHistoricalDirtyStash();
-        final SpannableRequest spannableRequest = new SpannableRequest(historicalDirtyStashList);
+        List<Shape> list = getNoteViewHelper().detachStash();
+        final SpannableRequest spannableRequest = new SpannableRequest(list);
         getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

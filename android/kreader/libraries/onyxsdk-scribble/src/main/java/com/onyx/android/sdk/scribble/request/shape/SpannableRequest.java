@@ -21,8 +21,8 @@ public class SpannableRequest extends BaseNoteRequest {
     private static List<List<Shape>> shapeList = new ArrayList<>();
     private volatile SpannableStringBuilder spannableStringBuilder;
 
-    public SpannableRequest(final List<List<Shape>> list) {
-        shapeList.addAll(list);
+    public SpannableRequest(final List<Shape> list) {
+        shapeList.add(list);
         setPauseInputProcessor(true);
     }
 
@@ -32,7 +32,9 @@ public class SpannableRequest extends BaseNoteRequest {
             return;
         }
         StringBuilder builder = new StringBuilder();
-        builder.append("                                                          ");
+        for(int i = 0; i <= shapeList.size(); ++i) {
+            builder.append(" ");
+        }
         spannableStringBuilder = new SpannableStringBuilder(builder.toString());
         for (int i = 0; i < shapeList.size(); i++) {
             spannableStringBuilder.setSpan(new ShapeSpan(shapeList.get(i)), i, i+1,

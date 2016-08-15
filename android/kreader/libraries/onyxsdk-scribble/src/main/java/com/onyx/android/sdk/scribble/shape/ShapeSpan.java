@@ -34,8 +34,9 @@ public class ShapeSpan extends ReplacementSpan {
         final RectF rect = boundingRect();
         float scale = Math.min(100 / rect.width(), 1.0f);
 
-        matrix.postTranslate(x, top);
         matrix.postScale(scale, scale);
+        matrix.postTranslate(x, top);
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1.0f);
