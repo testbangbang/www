@@ -80,7 +80,7 @@
     <string name="double_page">double\npage</string>
     <string name="nothing">no\ncrop</string>
     <string name="search">Search</string>
-    <string name="total_page" formatted="false">Have found %d results</string>
+    <string name="total_page" formatted="false">Total: %d </string>
     <string name="min_scroll_toast">Has been scaled to the minimum value</string>
     <string name="max_scroll_toast">Has been scaled to the maximum value</string>
     <string name="did_not_find_the_dictionary">Didn\'t find the dictionary</string>
