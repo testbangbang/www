@@ -123,4 +123,14 @@ public class BitmapSoftLruCache {
                 bitmap.getConfig() == config;
     }
 
+    public void clear() {
+        synchronized (map) {
+            for (SoftReference<Bitmap> bitmap : map.values()) {
+                if (bitmap.get() != null && BitmapUtils.isValid(bitmap.get())) {
+                    bitmap.get().recycle();
+                }
+            }
+            map.clear();
+        }
+    }
 }

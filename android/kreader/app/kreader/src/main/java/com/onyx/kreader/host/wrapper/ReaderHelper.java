@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
-import com.jakewharton.disklrucache.DiskLruCache;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -19,7 +18,6 @@ import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.api.ReaderRendererFeatures;
 import com.onyx.kreader.api.ReaderSearchManager;
 import com.onyx.kreader.api.ReaderView;
-import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.cache.BitmapSoftLruCache;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
@@ -98,7 +96,6 @@ public class ReaderHelper {
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
     private ImageReflowManager imageReflowManager;
-    private BitmapLruCache bitmapLruCache;
     private BitmapSoftLruCache bitmapCache;
 
     public ReaderHelper() {
@@ -177,9 +174,9 @@ public class ReaderHelper {
         navigator = null;
         searchManager = null;
         hitTestManager = null;
-        if (bitmapLruCache != null) {
-            FileUtils.closeQuietly(bitmapLruCache);
-        }
+
+        clearBitmapCache();
+        clearImageReflowManager();
     }
 
     public void updateViewportSize(int newWidth, int newHeight) {
@@ -244,17 +241,12 @@ public class ReaderHelper {
         return imageReflowManager;
     }
 
-    public BitmapLruCache getBitmapLruCache() {
-        return bitmapLruCache;
-    }
-
     public BitmapSoftLruCache getBitmapCache() {
         return bitmapCache;
     }
 
     public void initData(Context context) {
         initImageReflowManager(context);
-        initBitmapLruCache(context);
         initBitmapCache();
 //        initChineseAnalyzer(context);
     }
@@ -275,22 +267,22 @@ public class ReaderHelper {
         }
     }
 
-    private void initBitmapLruCache(Context context) {
-        if (bitmapLruCache == null) {
-            File cacheLocation = new File(context.getCacheDir(), DiskLruCache.class.getCanonicalName());
-            if (!cacheLocation.exists()) {
-                cacheLocation.mkdirs();
-            }
-            BitmapLruCache.Builder builder = new BitmapLruCache.Builder();
-            builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
-            builder.setDiskCacheEnabled(false).setDiskCacheLocation(cacheLocation);
-            bitmapLruCache = builder.build();
+    private void clearImageReflowManager() {
+        if (imageReflowManager != null) {
+            imageReflowManager.clearAllCacheFiles();
         }
     }
 
     private void initBitmapCache() {
         if (bitmapCache == null) {
             bitmapCache = new BitmapSoftLruCache(5);
+        }
+    }
+
+    private void clearBitmapCache() {
+        if (bitmapCache != null) {
+            bitmapCache.clear();
+            bitmapCache = null;
         }
     }
 
