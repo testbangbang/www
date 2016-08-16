@@ -1,5 +1,6 @@
 package com.onyx.kreader.host.layout;
 
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -87,10 +88,9 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         bitmap.setObject(new ReaderBitmapImpl());
 
         String key = getCurrentSubPageKey();
-        BitmapHolder bmp = getCurrentSubPageBitmap();
+        Bitmap bmp = getCurrentSubPageBitmap();
         if (bmp != null) {
-            bitmap.getObject().attachWith(key, bmp.getBitmap());
-            bmp.detach();
+            bitmap.getObject().attachWith(key, bmp);
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
             return true;
         }
@@ -107,8 +107,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (bmp == null) {
             return false;
         }
-        bitmap.getObject().attachWith(key, bmp.getBitmap());
-        bmp.detach();
+        bitmap.getObject().attachWith(key, bmp);
         return true;
     }
 
@@ -216,7 +215,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return getLayoutManager().getImageReflowManager().getSubPageKey(getCurrentPageName(), getCurrentSubPageIndex());
     }
 
-    private BitmapHolder getCurrentSubPageBitmap() {
+    private Bitmap getCurrentSubPageBitmap() {
         return getLayoutManager().getImageReflowManager().getSubPageBitmap(getCurrentPageName(), getCurrentSubPageIndex());
     }
 

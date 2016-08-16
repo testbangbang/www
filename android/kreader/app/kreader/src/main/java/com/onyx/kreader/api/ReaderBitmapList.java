@@ -16,7 +16,7 @@ import java.util.List;
 public class ReaderBitmapList {
     private int current;
     private int count;
-    transient private List<BitmapHolder> bitmapList;
+    transient private List<Bitmap> bitmapList;
     static transient private boolean keepMemoryCache = false;
 
     public ReaderBitmapList() {
@@ -29,12 +29,12 @@ public class ReaderBitmapList {
         return current;
     }
 
-    public BitmapHolder getCurrentBitmap() {
+    public Bitmap getCurrentBitmap() {
         if (bitmapList == null) {
             return null;
         }
         if (current < bitmapList.size()) {
-            return bitmapList.get(current).attach();
+            return bitmapList.get(current);
         }
         return null;
     }
@@ -101,13 +101,13 @@ public class ReaderBitmapList {
         }
     }
 
-    public void addBitmap(BitmapHolder bitmap) {
+    public void addBitmap(Bitmap bitmap) {
         if (bitmapList == null) {
-            bitmapList = new ArrayList<BitmapHolder>();
+            bitmapList = new ArrayList<>();
         }
         count++;
         if (keepMemoryCache) {
-            bitmapList.add(bitmap.attach());
+            bitmapList.add(bitmap);
         }
     }
 
@@ -115,8 +115,8 @@ public class ReaderBitmapList {
         if (bitmapList == null) {
             return;
         }
-        for(BitmapHolder bitmap : bitmapList) {
-            bitmap.detach();
+        for(Bitmap bitmap : bitmapList) {
+            bitmap.recycle();
         }
         bitmapList.clear();
     }

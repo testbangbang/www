@@ -3,11 +3,10 @@ package com.onyx.kreader.reflow;
 import android.graphics.Bitmap;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.onyx.kreader.api.ReaderBitmapList;
-import com.onyx.kreader.cache.BitmapHolder;
-import com.onyx.kreader.cache.BitmapLruCache;
-import com.onyx.kreader.common.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.kreader.api.ReaderBitmapList;
+import com.onyx.kreader.cache.BitmapDiskLruCache;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.utils.ImageUtils;
 
 import java.io.File;
@@ -53,7 +52,7 @@ public class ImageReflowManager {
             this.manager = manager;
         }
 
-        public BitmapHolder getCurrentBitmap(final String pageName) {
+        public Bitmap getCurrentBitmap(final String pageName) {
             synchronized (lockMap) {
                 if (!lockMap.containsKey(pageName)) {
                     lockMap.put(pageName, new Object());
@@ -79,9 +78,9 @@ public class ImageReflowManager {
                 }
             }
             synchronized (lockMap.get(pageName)) {
-                BitmapHolder holder = getCurrentBitmap(pageName);
-                if (holder != null) {
-                    holder.detach();
+                Bitmap reflowedBitmap = getCurrentBitmap(pageName);
+                if (reflowedBitmap != null) {
+                    reflowedBitmap.recycle();
                     return;
                 }
 
@@ -122,7 +121,7 @@ public class ImageReflowManager {
 
     private Map<String, ReaderBitmapList> pageMap;
     private File cacheRoot;
-    private BitmapLruCache bitmapCache;
+    private BitmapDiskLruCache bitmapCache;
     private ImageReflowSettings settings;
     private ReflowImpl impl;
 
@@ -134,12 +133,7 @@ public class ImageReflowManager {
         settings.dev_height = dh;
         impl = new ReflowImpl(this);
 
-        BitmapLruCache.Builder builder = new BitmapLruCache.Builder();
-        builder.setMemoryCacheEnabled(false)
-                .setDiskCacheEnabled(true)
-                .setDiskCacheLocation(root)
-                .setDiskCacheMaxSize(MAX_DISK_CACHE_SIZE);
-        bitmapCache = builder.build();
+        bitmapCache = BitmapDiskLruCache.create(root, MAX_DISK_CACHE_SIZE);
     }
 
     public ImageReflowSettings getSettings() {
@@ -194,11 +188,11 @@ public class ImageReflowManager {
         }
     }
 
-    private void putBitmap(final String key, BitmapHolder bitmap) {
+    private void putBitmap(final String key, Bitmap bitmap) {
         bitmapCache.put(key, bitmap);
     }
 
-    private BitmapHolder getBitmap(final String key) {
+    private Bitmap getBitmap(final String key) {
         return bitmapCache.get(key);
     }
 
@@ -215,7 +209,7 @@ public class ImageReflowManager {
         return getKeyOfSubPage(settings, pageName, subPage);
     }
 
-    public BitmapHolder getSubPageBitmap(final String pageName, int subPage) {
+    public Bitmap getSubPageBitmap(final String pageName, int subPage) {
         return getBitmap(getKeyOfSubPage(settings, pageName, subPage));
     }
 
@@ -237,13 +231,8 @@ public class ImageReflowManager {
     @SuppressWarnings("unused")
     public void addBitmap(final String pageName, int subPage, Bitmap bitmap) {
         ReaderBitmapList list = getSubPageList(pageName);
-        BitmapHolder holder = BitmapHolder.create(bitmap);
-        try {
-            list.addBitmap(holder);
-            putBitmap(getKeyOfSubPage(settings, pageName, subPage), holder);
-        } finally {
-            holder.detach();
-        }
+        list.addBitmap(bitmap);
+        putBitmap(getKeyOfSubPage(settings, pageName, subPage), bitmap);
     }
 
     public void clearAllCacheFiles() {

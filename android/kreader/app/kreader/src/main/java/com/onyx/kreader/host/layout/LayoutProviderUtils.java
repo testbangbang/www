@@ -2,23 +2,22 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.api.ReaderBitmap;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderRenderer;
-import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.kreader.cache.BitmapSoftLruCache;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.kreader.utils.ObjectHolder;
 
 import java.lang.ref.SoftReference;
