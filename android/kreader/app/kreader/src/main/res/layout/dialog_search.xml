@@ -168,6 +168,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </RelativeLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:background="@drawable/dialog_border"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/loading_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:gravity="center"
+                style="?android:attr/progressBarStyleInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:id="@+id/progressBar" />
+
+            <TextView
+                android:text="@string/searching"
+                android:id="@+id/textview_message"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:textSize="@dimen/dialog_loading_text_size" />
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>
