@@ -144,13 +144,31 @@
       "id": "More",
       "type": "Group",
       "title": "MORE",
-      "iconResourceId": "R.drawable.ic_dialog_reader_menu_setting_black",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_more",
       "children": [
         {
           "id": "TTS",
           "type": "Item",
           "title": "TTS",
           "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_black"
+        },
+        {
+          "id": "FrontLight",
+          "type": "Item",
+          "title": "Front Light",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_frontlight"
+        },
+        {
+          "id": "Refresh",
+          "type": "Item",
+          "title": "Refresh",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_refresh_black"
+        },
+        {
+          "id": "Setting",
+          "type": "Item",
+          "title": "Setting",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_setting"
         }
       ]
     }

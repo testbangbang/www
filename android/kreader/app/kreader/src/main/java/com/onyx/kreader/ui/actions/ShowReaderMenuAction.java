@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
+import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -212,8 +213,17 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/GotoPage":
                         gotoPage(readerDataHolder);
                         break;
-                    case "/SetScreenRefreshRate":
+                    case "/PrePage":
+                        readerDataHolder.getHandlerManager().getActiveProvider().prevPage(readerDataHolder);
+                        break;
+                    case "/NextPage":
+                        readerDataHolder.getHandlerManager().getActiveProvider().nextPage(readerDataHolder);
+                        break;
+                    case "/More/Refresh":
                         showScreenRefreshDialog(readerDataHolder);
+                        break;
+                    case "/More/FrontLight":
+                        showBrightnessDialog(readerDataHolder);
                         break;
                     case "/StartDictApp":
                         startDictionaryApp(readerDataHolder);
@@ -342,6 +352,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         DialogScreenRefresh dlg = new DialogScreenRefresh();
         dlg.setListener(new DialogScreenRefresh.onScreenRefreshChangedListener() {
             @Override
@@ -351,6 +362,10 @@ public class ShowReaderMenuAction extends BaseAction {
             }
         });
         dlg.show(readerActivity.getFragmentManager());
+    }
+
+    private void showBrightnessDialog(ReaderDataHolder readerDataHolder){
+        new DialogBrightness(readerDataHolder.getContext()).show();
     }
 
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {

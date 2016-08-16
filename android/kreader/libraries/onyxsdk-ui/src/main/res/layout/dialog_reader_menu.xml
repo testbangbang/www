@@ -47,47 +47,7 @@
                 android:visibility="visible">
 
             <ImageButton
-                    android:id="@+id/button_front_light"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/imagebtn_bg"
-                    android:nextFocusLeft="@id/layout_back_area"
-                    android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_reader_menu_frontlight_black"/>
-
-            <ImageView
-                    android:layout_width="1dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="7dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginTop="7dp"
-                    android:src="@drawable/ic_dialog_reader_menu_line_black"/>
-
-            <ImageButton
-                    android:id="@+id/button_screen_refresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/imagebtn_bg"
-                    android:nextFocusLeft="@id/layout_back_area"
-                    android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_reader_menu_refresh_black"/>
-
-            <ImageView
-                    android:layout_width="1dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="7dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginTop="7dp"
-                    android:src="@drawable/ic_dialog_reader_menu_line_black"/>
-
-            <ImageButton
-                android:id="@+id/button_toc"
+                android:id="@+id/pre_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
@@ -95,16 +55,18 @@
                 android:nextFocusLeft="@id/layout_back_area"
                 android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_dialog_reader_menu_browse_list_black"/>
+                android:src="@drawable/ic_dialog_reader_menu_retreat"/>
 
-            <ImageView
-                android:layout_width="1dp"
+            <ImageButton
+                android:id="@+id/next_button"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                android:layout_marginTop="7dp"
-                android:src="@drawable/ic_dialog_reader_menu_line_black"/>
+                android:layout_margin="2dp"
+                android:background="@drawable/imagebtn_bg"
+                android:nextFocusLeft="@id/layout_back_area"
+                android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_dialog_reader_menu_forward"/>
 
             <ImageButton
                     android:id="@+id/button_dict"
@@ -115,16 +77,18 @@
                     android:nextFocusLeft="@id/layout_back_area"
                     android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_reader_menu_dictionary_black"/>
+                    android:src="@drawable/ic_dialog_reader_menu_dic"/>
 
-            <ImageView
-                    android:layout_width="1dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="7dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginTop="7dp"
-                    android:src="@drawable/ic_dialog_reader_menu_line_black"/>
+            <ImageButton
+                android:id="@+id/button_toc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:background="@drawable/imagebtn_bg"
+                android:nextFocusLeft="@id/layout_back_area"
+                android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_dialog_reader_menu_topic"/>
 
             <ImageButton
                     android:id="@+id/button_search"
@@ -135,27 +99,8 @@
                     android:background="@drawable/imagebtn_bg"
                     android:nextFocusLeft="@id/layout_back_area"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_reader_menu_search_black"/>
+                    android:src="@drawable/ic_dialog_reader_menu_search"/>
 
-            <ImageView
-                    android:layout_width="1dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="7dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginTop="7dp"
-                    android:src="@drawable/ic_dialog_reader_menu_line_black"/>
-
-            <ImageButton
-                    android:id="@+id/button_settings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/imagebtn_bg"
-                    android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
-                    android:nextFocusLeft="@id/layout_back_area"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_reader_menu_setting_black"/>
         </LinearLayout>
     </RelativeLayout>
 
