@@ -272,7 +272,6 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE){
-            hideSoftInputWindow();
             loadSearchData();
         }
         return true;
