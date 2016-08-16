@@ -65,6 +65,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private ImageButton preIcon;
     private ImageButton nextIcon;
     private LinearLayout searchContent;
+    private LinearLayout loadingLayout;
     private RelativeLayout searchHistory;
     private RelativeLayout searchEditLayout;
     private TextView deleteHistory;
@@ -100,6 +101,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         pageIndicator = (TextView)findViewById(R.id.page_indicator);
         searchEditText = (EditText)findViewById(R.id.edit_view_search);
         searchContent = (LinearLayout) findViewById(R.id.search_content);
+        loadingLayout = (LinearLayout) findViewById(R.id.loading_layout);
         searchHistory = (RelativeLayout) findViewById(R.id.search_history_layout);
         searchEditLayout = (RelativeLayout) findViewById(R.id.search_edit_layout);
         preIcon = (ImageButton) findViewById(R.id.pre_icon);
@@ -228,6 +230,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
             return;
         }
 
+        showLoadingLayout();
         new ToggleSearchHistoryAction(query, true).execute(readerDataHolder);
         pageRecyclerView.postDelayed(new Runnable() {
             @Override
@@ -239,10 +242,16 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
                         if (results == null || results.size() < 1){
                             return;
                         }
+                        hideLoadingLayout();
                         final int hasCount = searchList.size();
                         searchList.addAll(results);
                         updatePageIndicator(currentPagePosition,pageRecyclerView.getAdapter().getItemCount());
                         pageRecyclerView.getAdapter().notifyItemRangeInserted(hasCount,results.size());
+                    }
+
+                    @Override
+                    public void OnFinishedSearch() {
+                        hideLoadingLayout();
                     }
                 });
             }
@@ -272,6 +281,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE){
+            hideSoftInputWindow();
             loadSearchData();
         }
         return true;
@@ -314,9 +324,11 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
 
         public void bindView(ReaderSelection selection,String search){
             readerSelection = selection;
-            String content = deleteNewlineSymbol(selection.getLeftText().trim()) + search + deleteNewlineSymbol(selection.getRightText().trim());
+            String leftText = deleteNewlineSymbol(selection.getLeftText().trim());
+            String rightText = deleteNewlineSymbol(selection.getRightText().trim());
+            String content = leftText + search + rightText;
             SpannableStringBuilder style = new SpannableStringBuilder(content);
-            int start = content.indexOf(search);
+            int start = leftText.length();
             if (start < 0){
                 return;
             }
@@ -369,10 +381,17 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     }
 
     private String deleteNewlineSymbol(String content){
-        while (content.contains("\n") || content.contains(" ")){
-            content = content.replace("\n","");
-            content = content.replace(" ","");
+        while (content.contains("\n")){
+            content = content.replace("\n"," ");
         }
         return content;
+    }
+
+    private void showLoadingLayout(){
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingLayout(){
+        loadingLayout.setVisibility(View.GONE);
     }
 }
