@@ -533,7 +533,7 @@ public class IMX6Device extends BaseDevice {
             sModeAnimationQuality = ReflectUtil.getStaticIntFieldSafely(cls, "UI_A2_QUALITY_MODE");
             sModeGC4 = value_mode_regional | value_mode_nowait | value_mode_waveform_gc4 | value_mode_update_partial;
             sModeRegal = value_mode_regional | value_mode_nowait | value_mode_waveform_regal | value_mode_update_partial;
-            sModeRegalD = value_mode_regional | value_mode_nowait | value_mode_waveform_regalD | value_mode_update_partial;
+            sModeRegalD = value_mode_regional | value_mode_nowait | value_mode_waveform_regalD | value_mode_waveform_regal | value_mode_update_partial;
 
             Class<?> deviceControllerClass = ReflectUtil.classForName("android.hardware.DeviceController");
 
