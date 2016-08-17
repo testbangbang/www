@@ -31,10 +31,12 @@ public class ShapeSpan extends ReplacementSpan {
     public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
         final Matrix matrix = new Matrix();
         final RectF rect = boundingRect();
-        float scale = Math.min(100 / rect.width(), 1.0f);
+        float xScale = Math.min(100 / rect.width(), 1.0f);
+        float yScale = Math.min((bottom - top) / rect.height(), 1.0f);
+        float scale = Math.min(xScale, yScale);
 
         matrix.postScale(scale, scale);
-        matrix.postTranslate(x, top);
+        matrix.postTranslate(x - rect.left * scale, - rect.top * scale + (bottom - top - rect.height() * scale));
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
