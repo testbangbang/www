@@ -163,19 +163,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
         progressBtn.setText((contentView.getCurrentPage() + 1) + File.separator + contentView.getTotalPageCount());
     }
 
-    protected void updateActivityTitleAndIcon() {
-        int iconRes = 0;
-        String titleResString;
-        if (currentLibraryId != null) {
-            iconRes = R.drawable.title_back;
-            titleResString = currentLibraryName;
-        } else {
-            iconRes = R.drawable.ic_business_write_pen_gray_34dp;
-            titleResString = getString(R.string.app_name);
-        }
-        toolBarIcon.setImageResource(iconRes);
-        toolBarTitle.setText(titleResString);
-    }
+    protected abstract void updateActivityTitleAndIcon();
 
     protected List<String> getPreloadIDList(int targetPage, boolean forceUpdate) {
         lookupTable.clear();

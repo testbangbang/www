@@ -223,4 +223,24 @@ public class ManagerActivity extends BaseManagerActivity {
         updateActivityTitleAndIcon();
     }
 
+    @Override
+    protected void updateActivityTitleAndIcon() {
+        int iconRes = 0;
+        String titleResString;
+        if (currentLibraryId != null) {
+            iconRes = R.drawable.title_back;
+            titleResString = currentLibraryName;
+            backFunctionLayout.setEnabled(true);
+            backFunctionLayout.setClickable(true);
+            backFunctionLayout.setFocusable(true);
+        } else {
+            iconRes = R.drawable.ic_business_write_pen_gray_34dp;
+            titleResString = getString(R.string.app_name);
+            backFunctionLayout.setEnabled(false);
+            backFunctionLayout.setClickable(false);
+            backFunctionLayout.setFocusable(false);
+        }
+        toolBarIcon.setImageResource(iconRes);
+        toolBarTitle.setText(titleResString);
+    }
 }

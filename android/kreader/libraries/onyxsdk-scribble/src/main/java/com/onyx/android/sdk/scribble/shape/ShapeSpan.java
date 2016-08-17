@@ -6,7 +6,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.style.ReplacementSpan;
-import android.util.Log;
 
 import java.util.List;
 
@@ -43,6 +42,7 @@ public class ShapeSpan extends ReplacementSpan {
         for (Shape shape : shapeList) {
             shape.render(canvas, paint, matrix);
         }
+        canvas.drawLine(x, bottom, x + 100, bottom, paint);
     }
 
     private RectF boundingRect() {
