@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
@@ -53,7 +50,7 @@ import java.util.List;
 public class SpanScribbleActivity extends BaseScribbleActivity {
     static final String TAG = ScribbleActivity.class.getCanonicalName();
     private TextView titleTextView;
-    private TextView spanTextView;
+    private EditText spanTextView;
     private GAdapter adapter;
     private ScribbleSubMenu scribbleSubMenu = null;
     private static final int SPAN_TIME_OUT = 1000;
@@ -73,7 +70,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
 
     private void initToolbarButtons() {
         titleTextView = (TextView) findViewById(R.id.textView_main_title);
-        spanTextView = (TextView)findViewById(R.id.span_text_view);
+        spanTextView = (EditText)findViewById(R.id.span_text_view);
         ImageView addPageBtn = (ImageView) findViewById(R.id.button_add_page);
         ImageView deletePageBtn = (ImageView) findViewById(R.id.button_delete_page);
         ImageView prevPageBtn = (ImageView) findViewById(R.id.button_previous_page);
