@@ -21,6 +21,7 @@ public abstract class OnyxAppCompatActivity extends AppCompatActivity {
     final static String TAG = OnyxAppCompatActivity.class.getSimpleName();
     ActionBar actionBar;
     private boolean isCustomBackFunctionLayout = true;
+    protected RelativeLayout backFunctionLayout;
 
     protected void initSupportActionBarWithCustomBackFunction() {
         initSupportActionBar(R.id.tool_bar, true, false, null);
@@ -60,7 +61,7 @@ public abstract class OnyxAppCompatActivity extends AppCompatActivity {
                 actionBar.setDisplayHomeAsUpEnabled(false);
                 actionBar.setDisplayShowHomeEnabled(false);
                 actionBar.setDisplayUseLogoEnabled(false);
-                RelativeLayout backFunctionLayout = (RelativeLayout) findViewById(R.id.back_function_layout);
+                backFunctionLayout= (RelativeLayout) findViewById(R.id.back_function_layout);
                 if (backFunctionLayout != null) {
                     backFunctionLayout.setOnClickListener(new View.OnClickListener() {
                         @Override

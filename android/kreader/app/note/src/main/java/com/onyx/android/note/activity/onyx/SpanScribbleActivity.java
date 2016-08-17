@@ -314,8 +314,13 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
     @Override
     public void onBackPressed() {
         getNoteViewHelper().pauseDrawing();
-        getNoteViewHelper().cleanHistoricalDirtyStash();
         onSave(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        SpannableRequest.cleanHistoryShapeList();
+        super.onDestroy();
     }
 
     private void saveDocument(boolean finishAfterSave) {
