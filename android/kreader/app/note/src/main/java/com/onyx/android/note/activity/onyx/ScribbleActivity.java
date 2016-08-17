@@ -325,7 +325,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ScribbleActivity> action = new CheckNoteNameLegalityAction<ScribbleActivity>(input);
+                final CheckNoteNameLegalityAction<ScribbleActivity> action = new CheckNoteNameLegalityAction<ScribbleActivity>(input, parentID, false);
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

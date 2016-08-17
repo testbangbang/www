@@ -346,7 +346,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<SpanScribbleActivity> action = new CheckNoteNameLegalityAction<SpanScribbleActivity>(input);
+                final CheckNoteNameLegalityAction<SpanScribbleActivity> action = new CheckNoteNameLegalityAction<>(input, parentID, true);
                 action.execute(SpanScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

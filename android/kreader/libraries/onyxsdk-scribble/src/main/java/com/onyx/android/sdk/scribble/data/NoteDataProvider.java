@@ -229,9 +229,15 @@ public class NoteDataProvider {
         return path;
     }
 
-    public static boolean checkNoteNameLegality(final String targetName) {
+    public static boolean checkNoteNameLegality(final String targetName ,final  String parentID ,boolean checkThisLevelOnly) {
         Select select = new Select();
-        Where where = select.from(NoteModel.class).where(NoteModel_Table.title.eq(targetName));
+        Where where;
+        if (checkThisLevelOnly && StringUtils.isNotBlank(parentID)) {
+            where = select.from(NoteModel.class).
+                    where(NoteModel_Table.title.eq(targetName)).and(NoteModel_Table.parentUniqueId.eq(parentID));
+        } else {
+            where = select.from(NoteModel.class).where(NoteModel_Table.title.eq(targetName));
+        }
         return where.queryList().size() == 0;
     }
 
