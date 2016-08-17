@@ -89,7 +89,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         mParams.gravity = Gravity.BOTTOM;
         mWindow.setAttributes(mParams);
-        //force use all space in the screen.| WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+        //force use all space in the screen
         mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
