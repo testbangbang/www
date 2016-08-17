@@ -5,7 +5,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
@@ -218,7 +217,7 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     private void handleTouchMovingUpAction(final ReaderDataHolder readerDataHolder, final float x, final float y, final boolean touchMoving){
-        ReaderSelection selection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
+        final ReaderSelection selection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
         if (selection == null){
             return;
         }
@@ -241,6 +240,19 @@ public class WordSelectionHandler extends BaseHandler{
             @Override
             public void done(BaseRequest request, Throwable e) {
                 onSelectWordFinished(readerDataHolder, (SelectWordRequest)request, e, touchMoving, PopupSelectionMenu.SelectionType.MultiWordsType);
+                final ReaderSelection updatedSelection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
+                if (updatedSelection == null) {
+                    return;
+                }
+                if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
+                    if (selection.getEndPosition().equals(updatedSelection.getStartPosition())) {
+                        cursorSelected = HighlightCursor.END_CURSOR_INDEX;
+                    }
+                } else if (cursorSelected == HighlightCursor.END_CURSOR_INDEX) {
+                    if (selection.getStartPosition().equals(updatedSelection.getEndPosition())) {
+                        cursorSelected = HighlightCursor.BEGIN_CURSOR_INDEX;
+                    }
+                }
             }
         });
     }
