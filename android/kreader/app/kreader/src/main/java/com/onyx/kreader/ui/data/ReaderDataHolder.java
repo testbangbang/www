@@ -54,6 +54,8 @@ public class ReaderDataHolder {
     private NoteViewHelper noteViewHelper;
     private EventBus eventBus = new EventBus();
 
+    private int optionsSkippedTimes = 0;
+
     public ReaderDataHolder(Context context){
         this.context = context;
     }
@@ -243,7 +245,13 @@ public class ReaderDataHolder {
             return;
         }
         if (request.isSaveOptions()) {
-            submitNonRenderRequest(new SaveDocumentOptionsRequest());
+            final int MAX_SKIP_TIMES = 5;
+            if (optionsSkippedTimes < MAX_SKIP_TIMES) {
+                optionsSkippedTimes++;
+            } else {
+                submitNonRenderRequest(new SaveDocumentOptionsRequest());
+                optionsSkippedTimes = 0;
+            }
         }
         preRenderNext();
     }

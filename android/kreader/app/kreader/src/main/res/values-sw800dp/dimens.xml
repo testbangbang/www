@@ -5,7 +5,7 @@
     <dimen name="dialog_title_min_height">50dp</dimen>
     <dimen name="button_minHeight">48sp</dimen>
     <dimen name="dialog_reflow_control_item_text_size">20sp</dimen>
-    <dimen name="border_stroke_width">2dp</dimen>
+    <dimen name="border_stroke_width">1dp</dimen>
     <dimen name="dialog_loading_text_size">25sp</dimen>
     <dimen name="reader_bookmark_width">120dp</dimen>
     <dimen name="reader_bookmark_height">120dp</dimen>
