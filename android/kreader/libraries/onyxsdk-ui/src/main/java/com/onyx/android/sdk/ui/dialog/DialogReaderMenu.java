@@ -105,14 +105,14 @@ public class DialogReaderMenu extends Dialog {
         findViewById(R.id.pre_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/PrePage"));
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/NavigationBackward"));
             }
         });
 
         findViewById(R.id.next_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/NextPage"));
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/NavigationForward"));
             }
         });
 
