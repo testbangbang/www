@@ -244,9 +244,9 @@ public class ImageReflowManager {
                     entry.clearAllBitmap();
                 }
             }
+            pageMap.clear();
+            savePageMap();
         }
-        pageMap.clear();
-        savePageMap();
     }
 
 }
