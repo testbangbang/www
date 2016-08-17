@@ -81,6 +81,9 @@ public class BitmapSoftLruCache {
 
             Map.Entry<String, SoftReference<Bitmap>> find = null;
             for (Map.Entry<String, SoftReference<Bitmap>> entry : map.entrySet()) {
+                if (entry.getValue() == null) {
+                    continue;
+                }
                 Bitmap bitmap = entry.getValue().get();
                 if (canReuse(bitmap, width, height, config)) {
                     find = entry;
