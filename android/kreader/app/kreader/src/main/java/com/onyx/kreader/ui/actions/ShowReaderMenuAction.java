@@ -213,11 +213,11 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/GotoPage":
                         gotoPage(readerDataHolder);
                         break;
-                    case "/PrePage":
-                        readerDataHolder.getHandlerManager().getActiveProvider().prevPage(readerDataHolder);
+                    case "/NavigationBackward":
+                        backward(readerDataHolder);
                         break;
-                    case "/NextPage":
-                        readerDataHolder.getHandlerManager().getActiveProvider().nextPage(readerDataHolder);
+                    case "/NavigationForward":
+                        forward(readerDataHolder);
                         break;
                     case "/More/Refresh":
                         showScreenRefreshDialog(readerDataHolder);
@@ -349,6 +349,14 @@ public class ShowReaderMenuAction extends BaseAction {
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         new ShowQuickPreviewAction().execute(readerDataHolder);
+    }
+
+    private void backward(final ReaderDataHolder readerDataHolder) {
+        new BackwardAction().execute(readerDataHolder);
+    }
+
+    private void forward(final ReaderDataHolder readerDataHolder) {
+        new ForwardAction().execute(readerDataHolder);
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
