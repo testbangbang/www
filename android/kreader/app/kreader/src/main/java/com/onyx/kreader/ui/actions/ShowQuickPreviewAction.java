@@ -6,6 +6,8 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.Size;
+import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.host.request.AbortPendingTasksRequest;
 import com.onyx.kreader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
@@ -19,6 +21,7 @@ import java.util.List;
 public class ShowQuickPreviewAction extends BaseAction {
 
     private DialogQuickPreview dialogQuickPreview;
+    private boolean isAborted = false;
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
@@ -26,7 +29,14 @@ public class ShowQuickPreviewAction extends BaseAction {
                 readerDataHolder.getCurrentPage(), new DialogQuickPreview.Callback() {
 
             @Override
+            public void abort() {
+                readerDataHolder.submitNonRenderRequest(new AbortPendingTasksRequest());
+                isAborted = true;
+            }
+
+            @Override
             public void requestPreview(final List<Integer> pages, final Size desiredSize) {
+                readerDataHolder.submitNonRenderRequest(new AbortPendingTasksRequest());
                 requestPreviewBySequence(readerDataHolder, pages, desiredSize);
             }
         });
@@ -34,7 +44,7 @@ public class ShowQuickPreviewAction extends BaseAction {
     }
 
     private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final List<Integer> pages, final Size desiredSize) {
-        if (pages.size() <= 0) {
+        if (isAborted || pages.size() <= 0) {
             return;
         }
         final int current = pages.remove(0);

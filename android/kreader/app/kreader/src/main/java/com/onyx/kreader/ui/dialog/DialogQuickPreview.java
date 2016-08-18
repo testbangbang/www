@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -36,6 +37,7 @@ import java.util.List;
 public class DialogQuickPreview extends Dialog {
 
     public static abstract class Callback {
+        public abstract void abort();
         public abstract void requestPreview(final List<Integer> pages, final Size desiredSize);
     }
 
@@ -312,6 +314,15 @@ public class DialogQuickPreview extends Dialog {
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
                 adapter.setGridType(grid);
                 onPageDataChanged();
+            }
+        });
+
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (callback != null) {
+                    callback.abort();
+                }
             }
         });
     }
