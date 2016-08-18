@@ -115,6 +115,8 @@
             android:layout_above="@+id/divider_line"
             android:textSize="50sp"
             android:inputType="textMultiLine"
+            android:focusable="false"
+            android:clickable="false"
             android:maxLines="5"
             android:scrollHorizontally="false"
             android:singleLine="false"
