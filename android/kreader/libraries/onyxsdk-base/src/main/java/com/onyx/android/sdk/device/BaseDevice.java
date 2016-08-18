@@ -169,6 +169,9 @@ public class BaseDevice {
         view.invalidate();
     }
 
+    public void invalidate(View view, int left, int top, int right, int bottom, UpdateMode mode) {
+    }
+
     public boolean enableScreenUpdate(View view, boolean enable) {
         return false;
     }

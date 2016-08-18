@@ -35,6 +35,10 @@ public abstract class EpdController
         Device.currentDevice().invalidate(view, mode);
     }
 
+    public static void invalidate(final View view, int left, int top, int right, int bottom, final UpdateMode mode) {
+        Device.currentDevice().invalidate(view, left, top, right, bottom, mode);
+    }
+
     /**
      * be careful when UpdateMode is GC because postInvalidate() does not take effect immediately
      *  
