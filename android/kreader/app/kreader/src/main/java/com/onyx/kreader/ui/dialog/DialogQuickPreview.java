@@ -84,15 +84,8 @@ public class DialogQuickPreview extends Dialog {
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: add delay because refresh problem 16/7/25
-                    container.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            DialogQuickPreview.this.hide();
-                            new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder);
-                        }
-                    },400);
-
+                    DialogQuickPreview.this.dismiss();
+                    new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder);
                 }
             });
         }

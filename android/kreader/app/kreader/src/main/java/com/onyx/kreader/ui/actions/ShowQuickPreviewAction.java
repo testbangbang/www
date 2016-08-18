@@ -22,6 +22,7 @@ public class ShowQuickPreviewAction extends BaseAction {
 
     private DialogQuickPreview dialogQuickPreview;
     private boolean isAborted = false;
+    private List<Integer> pagesToPreview;
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
@@ -30,24 +31,24 @@ public class ShowQuickPreviewAction extends BaseAction {
 
             @Override
             public void abort() {
-                readerDataHolder.submitNonRenderRequest(new AbortPendingTasksRequest());
                 isAborted = true;
+                pagesToPreview.clear();
             }
 
             @Override
             public void requestPreview(final List<Integer> pages, final Size desiredSize) {
-                readerDataHolder.submitNonRenderRequest(new AbortPendingTasksRequest());
-                requestPreviewBySequence(readerDataHolder, pages, desiredSize);
+                pagesToPreview = pages;
+                requestPreviewBySequence(readerDataHolder, desiredSize);
             }
         });
         dialogQuickPreview.show();
     }
 
-    private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final List<Integer> pages, final Size desiredSize) {
-        if (isAborted || pages.size() <= 0) {
+    private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final Size desiredSize) {
+        if (isAborted || pagesToPreview.size() <= 0) {
             return;
         }
-        final int current = pages.remove(0);
+        final int current = pagesToPreview.remove(0);
         int width = readerDataHolder.getDisplayWidth();
         int height = readerDataHolder.getDisplayHeight();
         if (!readerDataHolder.getReader().getRendererFeatures().supportScale()) {
@@ -61,7 +62,7 @@ public class ShowQuickPreviewAction extends BaseAction {
             public void done(BaseRequest request, Throwable e) {
                 dialogQuickPreview.updatePreview(current, bitmap.getBitmap());
                 bitmap.recycleBitmap();
-                requestPreviewBySequence(readerDataHolder, pages, desiredSize);
+                requestPreviewBySequence(readerDataHolder, desiredSize);
             }
         });
     }
