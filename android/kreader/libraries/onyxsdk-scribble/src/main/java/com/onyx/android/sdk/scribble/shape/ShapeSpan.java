@@ -31,7 +31,7 @@ public class ShapeSpan extends ReplacementSpan {
         if (fm == null) {
             return width;
         }
-        float height = fm.bottom - fm.top;
+        float height = fm.bottom - fm.top - 2 * margin;
         RectF rect = boundingRect();
         scale = height / rect.height();
         width = (int)(rect.width() * scale) + 2 * margin;
@@ -47,7 +47,7 @@ public class ShapeSpan extends ReplacementSpan {
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(1.0f);
+        paint.setStrokeWidth(1.0f * scale);
         for (Shape shape : shapeList) {
             shape.render(canvas, paint, matrix);
         }

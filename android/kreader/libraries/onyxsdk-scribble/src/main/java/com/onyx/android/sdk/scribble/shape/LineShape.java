@@ -25,13 +25,16 @@ public class LineShape extends BaseShape {
     }
 
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
-        float sx = getDownPoint().getX();
-        float sy = getDownPoint().getY();
-        float ex = getCurrentPoint().getX();
-        float ey = getCurrentPoint().getY();
-
+        float points[] = new float[4];
+        points[0] = getDownPoint().getX();
+        points[1] = getDownPoint().getY();
+        points[2] = getCurrentPoint().getX();
+        points[3] = getCurrentPoint().getY();
+        if (matrix != null) {
+            matrix.mapPoints(points);
+        }
         applyStrokeStyle(paint);
-        canvas.drawLine(sx, sy, ex, ey, paint);
+        canvas.drawLine(points[0], points[1], points[2], points[3], paint);
     }
 
 }

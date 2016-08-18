@@ -439,18 +439,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
             public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 onNewTouchPointListReceived(shape, pointList);
                 long curTime = System.currentTimeMillis();
-                if (shape instanceof NormalPencilShape) {
-                    if (lastUpTime != -1 && (curTime - lastUpTime <= SPAN_TIME_OUT) && (spanRunnable != null)) {
-                        handler.removeCallbacks(spanRunnable);
-                    }
-                    lastUpTime = curTime;
-                    spanRunnable = buildSpanRunnable();
-                    handler.postDelayed(spanRunnable, SPAN_TIME_OUT);
-                } else {
-                    if (!shape.supportDFB()) {
-                        drawPage();
-                    }
-                }
+                triggerSpan();
             }
 
             @Override
@@ -484,8 +473,19 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
                 if (!shape.supportDFB()) {
                     drawPage();
                 }
+                triggerSpan();
             }
         };
+    }
+
+    private void triggerSpan() {
+        long curTime = System.currentTimeMillis();
+        if (lastUpTime != -1 && (curTime - lastUpTime <= SPAN_TIME_OUT) && (spanRunnable != null)) {
+            handler.removeCallbacks(spanRunnable);
+        }
+        lastUpTime = curTime;
+        spanRunnable = buildSpanRunnable();
+        handler.postDelayed(spanRunnable, SPAN_TIME_OUT);
     }
 
     private Runnable buildSpanRunnable(){

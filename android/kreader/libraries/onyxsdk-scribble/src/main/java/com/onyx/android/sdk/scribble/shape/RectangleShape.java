@@ -25,6 +25,9 @@ public class RectangleShape extends BaseShape {
                 getCurrentPoint().x,
                 getCurrentPoint().y);
         applyStrokeStyle(paint);
+        if (matrix != null) {
+            matrix.mapRect(rect);
+        }
         canvas.drawRect(rect, paint);
     }
 

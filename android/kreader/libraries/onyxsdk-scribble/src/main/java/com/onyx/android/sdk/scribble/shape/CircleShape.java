@@ -30,6 +30,9 @@ public class CircleShape extends BaseShape {
         float ex = getCurrentPoint().getX();
         float ey = getCurrentPoint().getY();
         RectF rect = new RectF(sx, sy, ex, ey);
+        if (matrix != null) {
+            matrix.mapRect(rect);
+        }
         applyStrokeStyle(paint);
         canvas.drawOval(rect, paint);
     }
