@@ -39,14 +39,7 @@ public class SpannableRequest extends BaseNoteRequest {
         spannableStringBuilder = new SpannableStringBuilder(builder.toString());
         for (int i = 0; i < historyShapeList.size(); i++) {
             ShapeSpan span = new ShapeSpan(historyShapeList.get(i));
-            spannableStringBuilder.setSpan(span, i, i + 1,
-                    Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            Log.e("TAG", "execute (" + i + ")");
-            if ((i + 1) % 7 == 0) {
-                Log.e("TAG", "add line changer");
-                spannableStringBuilder = spannableStringBuilder.
-                        insert(spannableStringBuilder.getSpanEnd(span) + 1, System.getProperty("line.separator"));
-            }
+            spannableStringBuilder.setSpan(span, i, i + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
     }

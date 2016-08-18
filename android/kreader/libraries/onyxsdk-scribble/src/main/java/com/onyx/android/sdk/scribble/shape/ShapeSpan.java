@@ -15,6 +15,9 @@ import java.util.List;
 public class ShapeSpan extends ReplacementSpan {
     static final String TAG = ShapeSpan.class.getSimpleName();
     private List<Shape> shapeList;
+    private int margin = 5;
+    private float scale = 1.0f;
+    private int width = 1;
 
     public ShapeSpan(final List<Shape> s) {
         shapeList = s;
@@ -25,18 +28,22 @@ public class ShapeSpan extends ReplacementSpan {
     }
 
     public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
-        return 100;
+        if (fm == null) {
+            return width;
+        }
+        float height = fm.bottom - fm.top;
+        RectF rect = boundingRect();
+        scale = height / rect.height();
+        width = (int)(rect.width() * scale) + 2 * margin;
+        return width;
     }
 
     public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
         final Matrix matrix = new Matrix();
         final RectF rect = boundingRect();
-        float xScale = Math.min(100 / rect.width(), 1.0f);
-        float yScale = Math.min((bottom - top) / rect.height(), 1.0f);
-        float scale = Math.min(xScale, yScale);
 
         matrix.postScale(scale, scale);
-        matrix.postTranslate(x - rect.left * scale, - rect.top * scale + (bottom - top - rect.height() * scale));
+        matrix.postTranslate(x + margin - rect.left * scale, - rect.top * scale + (bottom - top - rect.height() * scale));
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
@@ -44,7 +51,6 @@ public class ShapeSpan extends ReplacementSpan {
         for (Shape shape : shapeList) {
             shape.render(canvas, paint, matrix);
         }
-        canvas.drawLine(x, bottom, x + 100, bottom, paint);
     }
 
     private RectF boundingRect() {

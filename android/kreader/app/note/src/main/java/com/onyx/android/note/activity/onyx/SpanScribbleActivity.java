@@ -154,7 +154,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onExport() {
-        testSpan();
+        buildSpanImpl();
     }
 
     private void onSetting() {
@@ -480,11 +480,8 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
             }
 
             public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-                if (shape instanceof NormalPencilShape) {
-                } else {
-                    if (!shape.supportDFB()) {
-                        drawPage();
-                    }
+                if (!shape.supportDFB()) {
+                    drawPage();
                 }
             }
         };
@@ -494,12 +491,12 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         return new Runnable() {
             @Override
             public void run() {
-                testSpan();
+                buildSpanImpl();
             }
         };
     }
 
-    private void testSpan() {
+    private void buildSpanImpl() {
         List<Shape> list = getNoteViewHelper().detachStash();
         final SpannableRequest spannableRequest = new SpannableRequest(list);
         getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {

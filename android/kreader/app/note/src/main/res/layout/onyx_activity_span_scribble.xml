@@ -107,13 +107,18 @@
         android:layout_above="@+id/divider"
         android:layout_below="@id/tool_bar">
 
-        <EditText
+        <com.onyx.android.note.view.LinedEditText
             android:id="@+id/span_text_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_above="@+id/divider_line"
             android:textSize="50sp"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:scrollHorizontally="false"
+            android:singleLine="false"
+            android:scrollbars="vertical"
             android:textColor="@android:color/black"/>
 
         <View
