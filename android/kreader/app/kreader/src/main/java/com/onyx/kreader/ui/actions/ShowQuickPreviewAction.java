@@ -6,6 +6,8 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.Size;
+import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.host.request.AbortPendingTasksRequest;
 import com.onyx.kreader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
@@ -19,6 +21,8 @@ import java.util.List;
 public class ShowQuickPreviewAction extends BaseAction {
 
     private DialogQuickPreview dialogQuickPreview;
+    private boolean isAborted = false;
+    private List<Integer> pagesToPreview;
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
@@ -26,18 +30,25 @@ public class ShowQuickPreviewAction extends BaseAction {
                 readerDataHolder.getCurrentPage(), new DialogQuickPreview.Callback() {
 
             @Override
+            public void abort() {
+                isAborted = true;
+                pagesToPreview.clear();
+            }
+
+            @Override
             public void requestPreview(final List<Integer> pages, final Size desiredSize) {
-                requestPreviewBySequence(readerDataHolder, pages, desiredSize);
+                pagesToPreview = pages;
+                requestPreviewBySequence(readerDataHolder, desiredSize);
             }
         });
         dialogQuickPreview.show();
     }
 
-    private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final List<Integer> pages, final Size desiredSize) {
-        if (pages.size() <= 0) {
+    private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final Size desiredSize) {
+        if (isAborted || pagesToPreview.size() <= 0) {
             return;
         }
-        final int current = pages.remove(0);
+        final int current = pagesToPreview.remove(0);
         int width = readerDataHolder.getDisplayWidth();
         int height = readerDataHolder.getDisplayHeight();
         if (!readerDataHolder.getReader().getRendererFeatures().supportScale()) {
@@ -51,7 +62,7 @@ public class ShowQuickPreviewAction extends BaseAction {
             public void done(BaseRequest request, Throwable e) {
                 dialogQuickPreview.updatePreview(current, bitmap.getBitmap());
                 bitmap.recycleBitmap();
-                requestPreviewBySequence(readerDataHolder, pages, desiredSize);
+                requestPreviewBySequence(readerDataHolder, desiredSize);
             }
         });
     }

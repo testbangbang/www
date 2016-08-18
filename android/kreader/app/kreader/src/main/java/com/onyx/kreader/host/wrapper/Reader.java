@@ -55,7 +55,9 @@ public class Reader {
             public void run() {
                 try {
                     request.beforeExecute(Reader.this);
-                    request.execute(Reader.this);
+                    if (!request.isAbort()) {
+                        request.execute(Reader.this);
+                    }
                 } catch (Throwable tr) {
                     request.setException(tr);
                 } finally {
