@@ -37,23 +37,32 @@ public class ReadingHandler extends BaseHandler{
 
     private boolean scaling = false;
     private boolean scrolling = false;
+    private boolean singleTapAccepted = false;
 
     public ReadingHandler(HandlerManager p) {
         super(p);
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
+        if (tryHitTest(readerDataHolder,e.getX(), e.getY())) {
+            singleTapAccepted = true;
+        } else if (e.getX() > readerDataHolder.getDisplayWidth() * 2 / 3) {
+            nextScreen(readerDataHolder);
+            singleTapAccepted = true;
+        } else if (e.getX() < readerDataHolder.getDisplayWidth() / 3) {
+            prevScreen(readerDataHolder);
+            singleTapAccepted = true;
+        }
+        return true;
     }
 
     public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (tryHitTest(readerDataHolder,e.getX(), e.getY())) {
+        if (singleTapAccepted) {
+            singleTapAccepted = false;
             return true;
-        } else if (e.getX() > readerDataHolder.getDisplayWidth() * 2 / 3) {
-            nextScreen(readerDataHolder);
-        } else if (e.getX() < readerDataHolder.getDisplayWidth() / 3) {
-            prevScreen(readerDataHolder);
-        } else {
+        }
+        if (readerDataHolder.getDisplayWidth() / 3 <= e.getX() &&
+                e.getX() <= readerDataHolder.getDisplayWidth() * 2 / 3) {
             showReaderMenu(readerDataHolder);
         }
         return true;
@@ -61,6 +70,10 @@ public class ReadingHandler extends BaseHandler{
 
     @Override
     public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        if (singleTapAccepted) {
+            singleTapAccepted = false;
+            return true;
+        }
         new TogglePageCropAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
         return true;
     }
