@@ -178,13 +178,17 @@ public class ReaderDataHolder {
             ttsManager = new ReaderTtsManager(this, new ReaderTtsManager.Callback() {
                 @Override
                 public void onStateChanged() {
-                    if (ShowReaderMenuAction.isReaderMenuShown()) {
-                        new ShowReaderMenuAction().execute(ReaderDataHolder.this);
-                    }
+                    updateReaderMenuState();
                 }
             });
         }
         return ttsManager;
+    }
+
+    private void updateReaderMenuState() {
+        if (ShowReaderMenuAction.isReaderMenuShown()) {
+            new ShowReaderMenuAction().execute(ReaderDataHolder.this);
+        }
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -232,6 +236,8 @@ public class ReaderDataHolder {
                 onRenderRequestFinished(renderRequest, e);
                 callback.invoke(callback, request, e);
                 onPageDrawFinished(renderRequest, e);
+
+                updateReaderMenuState();
             }
         });
     }

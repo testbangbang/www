@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -36,6 +37,7 @@ import java.util.List;
 public class DialogQuickPreview extends Dialog {
 
     public static abstract class Callback {
+        public abstract void abort();
         public abstract void requestPreview(final List<Integer> pages, final Size desiredSize);
     }
 
@@ -82,15 +84,8 @@ public class DialogQuickPreview extends Dialog {
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: add delay because refresh problem 16/7/25
-                    container.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            DialogQuickPreview.this.hide();
-                            new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder);
-                        }
-                    },400);
-
+                    DialogQuickPreview.this.dismiss();
+                    new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder);
                 }
             });
         }
@@ -312,6 +307,15 @@ public class DialogQuickPreview extends Dialog {
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
                 adapter.setGridType(grid);
                 onPageDataChanged();
+            }
+        });
+
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (callback != null) {
+                    callback.abort();
+                }
             }
         });
     }

@@ -129,7 +129,7 @@ public class BitmapSoftLruCache {
     public void clear() {
         synchronized (map) {
             for (SoftReference<Bitmap> bitmap : map.values()) {
-                if (bitmap.get() != null && BitmapUtils.isValid(bitmap.get())) {
+                if (bitmap != null && bitmap.get() != null && BitmapUtils.isValid(bitmap.get())) {
                     bitmap.get().recycle();
                 }
             }
