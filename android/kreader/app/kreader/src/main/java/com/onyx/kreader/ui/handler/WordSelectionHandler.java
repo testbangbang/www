@@ -49,7 +49,7 @@ public class WordSelectionHandler extends BaseHandler{
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
         if (!hasSelectionWord(readerDataHolder)) {
             super.onLongPress(readerDataHolder, x1, y1, x2, y2);
-            selectWord(readerDataHolder,x1, y1, x2, y2, true);
+            selectWord(readerDataHolder,x1, y1, x2, y2, false);
         } else {
             highlight(readerDataHolder,x1, y1, x2, y2);
         }
@@ -75,10 +75,13 @@ public class WordSelectionHandler extends BaseHandler{
         return true;
     }
 
-    public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
+    public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
         if (moveAfterLongPress){
             onActionUpAfterTouchMoved(readerDataHolder,startX, startY, endX, endY);
+        }else if (hasSelectionWord(readerDataHolder) && isLongPress()){
+            selectWord(readerDataHolder,startX, startY, endX, endY, true);
         }
+        setLongPress(false);
         return true;
     }
 
@@ -151,7 +154,7 @@ public class WordSelectionHandler extends BaseHandler{
             case MotionEvent.ACTION_MOVE:
                 touchMoveTime = System.currentTimeMillis();
                 boolean cursorNotSelected = cursorSelected < 0;
-                if (cursorNotSelected && !this.moveAfterLongPress) {
+                if (cursorNotSelected) {
                     return true;
                 }
                 if (touchMoveTime - touchDownTime < TOUCH_DOWN_TO_MOVE_THRESHOLD) {
@@ -195,7 +198,7 @@ public class WordSelectionHandler extends BaseHandler{
         return null;
     }
 
-    public void selectWord(final ReaderDataHolder readerDataHolder, float x1, float y1, float x2, float y2, boolean b) {
+    public void selectWord(final ReaderDataHolder readerDataHolder, final float x1, final float y1, float x2, float y2, final boolean show) {
         PageInfo page = hitTestPage(readerDataHolder,x1, y1);
         if (page == null) {
             return;
@@ -203,7 +206,8 @@ public class WordSelectionHandler extends BaseHandler{
         SelectWordAction.selectWord(readerDataHolder, page.getName(), new PointF(x1, y1), new PointF(x2, y2), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                onSelectWordFinished(readerDataHolder, (SelectWordRequest) request, e, false, PopupSelectionMenu.SelectionType.SingleWordType);
+                onSelectWordFinished(readerDataHolder, (SelectWordRequest) request, e, show, PopupSelectionMenu.SelectionType.SingleWordType);
+                cursorSelected = getCursorSelected(readerDataHolder,(int)x1, (int)y1);
             }
         });
     }
@@ -239,7 +243,7 @@ public class WordSelectionHandler extends BaseHandler{
         SelectWordAction.selectWord(readerDataHolder, pageInfo.getName(), beginTop, endBottom, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                onSelectWordFinished(readerDataHolder, (SelectWordRequest)request, e, touchMoving, PopupSelectionMenu.SelectionType.MultiWordsType);
+                onSelectWordFinished(readerDataHolder, (SelectWordRequest)request, e, !touchMoving, PopupSelectionMenu.SelectionType.MultiWordsType);
                 final ReaderSelection updatedSelection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
                 if (updatedSelection == null) {
                     return;
@@ -255,14 +259,6 @@ public class WordSelectionHandler extends BaseHandler{
                 }
             }
         });
-    }
-
-    private void showHighlightSelectionDialog(ReaderDataHolder readerDataHolder, int x, int y, PopupSelectionMenu.SelectionType type, boolean touchMoving) {
-        if (touchMoving){
-            ShowTextSelectionMenuAction.hideTextSelectionPopupMenu();
-        }else {
-            new ShowTextSelectionMenuAction(readerDataHolder, x, y, type).execute(readerDataHolder);
-        }
     }
 
     public boolean hasSelectionWord(ReaderDataHolder readerDataHolder) {
@@ -289,7 +285,7 @@ public class WordSelectionHandler extends BaseHandler{
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }
 
-    public void onSelectWordFinished(ReaderDataHolder readerDataHolder, SelectWordRequest request, Throwable e, boolean touchMoving, PopupSelectionMenu.SelectionType selectionType) {
+    public void onSelectWordFinished(ReaderDataHolder readerDataHolder, SelectWordRequest request, Throwable e, boolean show, PopupSelectionMenu.SelectionType selectionType) {
         if (e != null) {
             return;
         }
@@ -302,6 +298,10 @@ public class WordSelectionHandler extends BaseHandler{
             readerDataHolder.onRenderRequestFinished(request, e, false);
         }
 
-        showHighlightSelectionDialog(readerDataHolder,(int)request.getEnd().x, (int)request.getEnd().y, selectionType, touchMoving);
+        if (show){
+            new ShowTextSelectionMenuAction(readerDataHolder, (int)request.getEnd().x, (int)request.getEnd().y, selectionType).execute(readerDataHolder);
+        }else {
+            ShowTextSelectionMenuAction.hideTextSelectionPopupMenu();
+        }
     }
 }
