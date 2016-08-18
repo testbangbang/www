@@ -33,15 +33,15 @@ public class SpannableRequest extends BaseNoteRequest {
             return;
         }
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i <= historyShapeList.size(); ++i) {
-            builder.append(" ");
+        for(int i = 0; i < historyShapeList.size(); ++i) {
+            builder.append("A");
         }
+        builder.append(" ");
         spannableStringBuilder = new SpannableStringBuilder(builder.toString());
         for (int i = 0; i < historyShapeList.size(); i++) {
             ShapeSpan span = new ShapeSpan(historyShapeList.get(i));
             spannableStringBuilder.setSpan(span, i, i + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
-
     }
 
     public SpannableStringBuilder getSpannableStringBuilder() {

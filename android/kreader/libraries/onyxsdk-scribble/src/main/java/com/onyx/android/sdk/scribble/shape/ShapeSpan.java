@@ -43,7 +43,7 @@ public class ShapeSpan extends ReplacementSpan {
         final RectF rect = boundingRect();
 
         matrix.postScale(scale, scale);
-        matrix.postTranslate(x + margin - rect.left * scale, - rect.top * scale + (bottom - top - rect.height() * scale));
+        matrix.postTranslate(x + margin - rect.left * scale, top - rect.top * scale + (bottom - top - rect.height() * scale));
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);

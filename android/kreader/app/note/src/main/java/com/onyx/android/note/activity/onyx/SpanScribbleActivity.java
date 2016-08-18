@@ -3,6 +3,7 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableStringBuilder;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
@@ -502,7 +503,9 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                spanTextView.setText(spannableRequest.getSpannableStringBuilder());
+                final SpannableStringBuilder builder = spannableRequest.getSpannableStringBuilder();
+                spanTextView.setText(builder);
+                spanTextView.setSelection(builder.length());
             }
         });
     }
