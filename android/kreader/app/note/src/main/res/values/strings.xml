@@ -36,4 +36,6 @@
     <string name="asc">Asc</string>
     <string name="desc">Desc</string>
     <string name="type">Type</string>
+    <string name="normal_scribble">Normal Scribble</string>
+    <string name="span_scribble">Span Scribble</string>
 </resources>

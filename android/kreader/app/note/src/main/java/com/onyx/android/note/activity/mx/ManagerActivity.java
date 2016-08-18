@@ -1,5 +1,6 @@
 package com.onyx.android.note.activity.mx;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,9 @@ import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.android.note.activity.BaseManagerActivity;
+import com.onyx.android.note.activity.onyx.SpanScribbleActivity;
+import com.onyx.android.note.data.ScribbleMode;
+import com.onyx.android.note.dialog.DialogChooseScribbleMode;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
@@ -186,6 +190,25 @@ public class ManagerActivity extends BaseManagerActivity {
         }
     }
 
+    @Override
+    protected void createDocument(final GObject object) {
+//        super.createDocument(object);
+        DialogChooseScribbleMode dlgMode = new DialogChooseScribbleMode();
+        dlgMode.setCallBack(new DialogChooseScribbleMode.Callback() {
+            @Override
+            public void onModeChosen(@ScribbleMode.ScribbleModeDef int mode) {
+                switch(mode){
+                    case ScribbleMode.MODE_NORMAL_SCRIBBLE:
+                        startScribbleActivity(object,getCurrentLibraryId(),Utils.ACTION_CREATE);
+                        break;
+                    case ScribbleMode.MODE_SPAN_SCRIBBLE:
+                        startActivity(new Intent(ManagerActivity.this, SpanScribbleActivity.class));
+                        break;
+                }
+            }
+        });
+        dlgMode.show(getFragmentManager());
+    }
 
     @Override
     protected void updateButtonsStatusByMode() {
