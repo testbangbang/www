@@ -446,11 +446,6 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeIsTextPage
   (JNIEnv *env, jobject thiz, jint id, jint pageIndex) {
-    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
-    if (doc == NULL) {
-        LOGE("get document failed");
-        return false;
-    }
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     if (page == NULL) {
         LOGE("get page failed: %d", pageIndex);
