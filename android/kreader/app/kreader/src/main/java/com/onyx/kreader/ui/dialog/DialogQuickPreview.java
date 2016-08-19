@@ -85,7 +85,7 @@ public class DialogQuickPreview extends Dialog {
                 @Override
                 public void onClick(View v) {
                     DialogQuickPreview.this.dismiss();
-                    new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder);
+                    new GotoPageAction(PagePositionUtils.fromPageNumber(page), true).execute(readerDataHolder);
                 }
             });
         }

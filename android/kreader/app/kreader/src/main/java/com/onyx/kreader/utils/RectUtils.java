@@ -99,6 +99,11 @@ public class RectUtils {
             // if one rectangle is in the vertical range of another, we treat they as if they are on the same baseline
             return 0;
         }
+        float overlay = Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top);
+        if (overlay > rect1.height() / 2 || overlay > rect2.height() / 2) {
+            // if overlay is big enough, we think they are on the same baseline
+            return 0;
+        }
         return compare;
     }
 
@@ -116,7 +121,7 @@ public class RectUtils {
                 }
             }
             if (!foundBaseLine) {
-                baseList.add(rect);
+                baseList.add(new RectF(rect));
             }
         }
         return baseList;
