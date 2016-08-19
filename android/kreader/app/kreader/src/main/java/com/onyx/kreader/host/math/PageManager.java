@@ -82,9 +82,9 @@ public class PageManager {
     public void add(final PageInfo pageInfo) {
         PageInfo page = pageInfoMap.get(pageInfo.getName());
         if (page == null) {
+            pageInfoMap.put(pageInfo.getName(), pageInfo);
             page = pageInfo;
         }
-        pageInfoMap.put(page.getName(), page);
         pageInfoList.add(page);
     }
 
