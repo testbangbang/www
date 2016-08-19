@@ -38,6 +38,7 @@ public class AnalysisAnswerView extends RelativeLayout{
                 updateButtonText();
             }
         });
+        mAnalysisView.setVisibility(INVISIBLE);
         updateButtonText();
     }
 

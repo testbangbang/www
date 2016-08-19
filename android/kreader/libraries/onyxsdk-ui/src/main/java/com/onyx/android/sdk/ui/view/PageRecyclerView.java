@@ -2,6 +2,7 @@ package com.onyx.android.sdk.ui.view;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -23,7 +24,7 @@ public class PageRecyclerView extends RecyclerView {
     private GPaginator paginator;
     public enum TouchDirection {Horizontal, Vertical}
 
-    private static class DisableScrollLinearManager extends LinearLayoutManager {
+    public static class DisableScrollLinearManager extends LinearLayoutManager {
         private boolean canScroll = false;
 
         public DisableScrollLinearManager(Context context) {
@@ -36,6 +37,36 @@ public class PageRecyclerView extends RecyclerView {
 
         public DisableScrollLinearManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
             super(context, attrs, defStyleAttr, defStyleRes);
+        }
+
+        public void setScrollEnable(boolean enable) {
+            this.canScroll = enable;
+        }
+
+        @Override
+        public boolean canScrollVertically() {
+            return canScroll;
+        }
+
+        @Override
+        public boolean canScrollHorizontally() {
+            return canScroll;
+        }
+    }
+
+    public static class DisableScrollGridManager extends GridLayoutManager{
+        private boolean canScroll = false;
+
+        public DisableScrollGridManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+            super(context, attrs, defStyleAttr, defStyleRes);
+        }
+
+        public DisableScrollGridManager(Context context, int spanCount) {
+            super(context, spanCount);
+        }
+
+        public DisableScrollGridManager(Context context, int spanCount, int orientation, boolean reverseLayout) {
+            super(context, spanCount, orientation, reverseLayout);
         }
 
         public void setScrollEnable(boolean enable) {
@@ -192,19 +223,18 @@ public class PageRecyclerView extends RecyclerView {
         }
     }
 
-    public int getFirstVisiblePosition() {
-        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
-        return linearManager.findFirstVisibleItemPosition();
-    }
-
-    public int getLastVisiblePosition() {
-        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
-        return linearManager.findLastVisibleItemPosition();
-    }
-
     private void managerScrollToPosition(int position) {
-        DisableScrollLinearManager linearManager = (DisableScrollLinearManager) getLayoutManager();
-        linearManager.scrollToPositionWithOffset(position, 0);
+        getDisableLayoutManager().scrollToPositionWithOffset(position,0);
+    }
+
+    private LinearLayoutManager getDisableLayoutManager(){
+        LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
+        if (layoutManager instanceof DisableScrollLinearManager){
+            layoutManager = (DisableScrollLinearManager) getLayoutManager();
+        }else if (layoutManager instanceof DisableScrollGridManager){
+            layoutManager = (DisableScrollGridManager) getLayoutManager();
+        }
+        return layoutManager;
     }
 
     private boolean isClipView(Rect rect, View view) {

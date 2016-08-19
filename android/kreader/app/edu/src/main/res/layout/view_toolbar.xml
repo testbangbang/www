@@ -19,13 +19,15 @@
             android:layout_height="match_parent"
             android:id="@+id/toolbar_content">
 
-            <ImageView
+            <ImageButton
+                android:padding="10dp"
+                android:background="@drawable/imagebtn_bg"
                 android:layout_marginLeft="20dp"
                 android:id="@+id/back"
-                android:layout_width="30dp"
-                android:layout_height="36dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/back"/>
+                android:src="@drawable/ic_exercise_arrow"/>
 
 
             <TextView
@@ -34,10 +36,9 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/back"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
                 android:textSize="25sp"
                 android:textColor="@color/black"
-                android:text="左边"/>
+                android:text=""/>
 
             <TextView
                 android:layout_centerVertical="true"
@@ -45,24 +46,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="title"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="25sp"/>
 
             <TextView
-                android:layout_marginRight="20dp"
-                android:text="右边"
+                android:layout_toLeftOf="@+id/right_arrow"
+                android:text=""
                 android:layout_centerVertical="true"
                 android:id="@+id/right_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:textColor="@color/black"
                 android:textSize="25sp"/>
 
+            <ImageButton
+                android:visibility="invisible"
+                android:padding="10dp"
+                android:background="@drawable/imagebtn_bg"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:id="@+id/right_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_exercise_arrow_go"/>
         </RelativeLayout>
 
         <View
+            android:id="@+id/divider_line"
             android:background="@color/gray"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
