@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.edu.R;
-import com.onyx.android.edu.testpaper.TestPaperActivity;
+import com.onyx.android.edu.ui.exerciserespond.ExerciseRespondActivity;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -135,7 +135,7 @@ public class ChapterExpandListAdapter extends BaseExpandableListAdapter {
                 write.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mContext.startActivity(new Intent(mContext,TestPaperActivity.class));
+                        mContext.startActivity(new Intent(mContext,ExerciseRespondActivity.class));
                     }
                 });
                 viewHolder.mChildView.addView(view);

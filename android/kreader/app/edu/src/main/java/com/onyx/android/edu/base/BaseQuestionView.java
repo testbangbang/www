@@ -20,15 +20,20 @@ public abstract class BaseQuestionView extends LinearLayout {
     protected ImageView mQuesImage;
     protected List<AtomicAnswer> mAnswers;
     protected Context mContext;
+    protected boolean hasAnswer = false;
 
     protected boolean showAnswer = false;
 
-    public BaseQuestionView(Context context) {
+    public BaseQuestionView(Context context, boolean showAnswer) {
         super(context);
         mContext = context;
         mAnswers = new ArrayList<>();
+        this.showAnswer = showAnswer;
         View.inflate(context, getInflateLayoutId(),this);
         initView();
+        if (showAnswer){
+            addAnalysisAnswerView();
+        }
     }
 
     public boolean isShowAnswer() {
@@ -39,11 +44,15 @@ public abstract class BaseQuestionView extends LinearLayout {
         this.showAnswer = showAnswer;
     }
 
+    public void setHasAnswer(boolean hasAnswer) {
+        this.hasAnswer = hasAnswer;
+    }
+
     protected abstract int getInflateLayoutId();
     protected abstract void initView();
     public abstract boolean hasAnswers();
     public abstract List<AtomicAnswer> getAnswers();
     public abstract boolean isRight(int index);
     public abstract float getScore(int index);
-    public abstract void showAnswer(boolean showButton);
+    public abstract void addAnalysisAnswerView();
 }
