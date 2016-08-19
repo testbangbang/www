@@ -10,9 +10,15 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class GotoPageAction extends BaseAction {
     private String pageName;
+    private boolean abortPendingTasks;
 
     public GotoPageAction(final String name) {
+        this(name, false);
+    }
+
+    public GotoPageAction(final String name, final boolean abortPendingTasks) {
         pageName = name;
+        this.abortPendingTasks = abortPendingTasks;
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {
@@ -22,6 +28,7 @@ public class GotoPageAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
         BaseReaderRequest gotoPosition = new GotoLocationRequest(pageName);
+        gotoPosition.setAbortPendingTasks(abortPendingTasks);
         readerDataHolder.submitRenderRequest(gotoPosition, baseCallback);
     }
 }
