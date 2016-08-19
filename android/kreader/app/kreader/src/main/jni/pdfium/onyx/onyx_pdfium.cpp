@@ -6,6 +6,9 @@
 
 #include "fpdf_doc.h"
 
+#include "fpdfapi/fpdf_pageobj.h"
+#include "fpdf_edit.h"
+
 #include <memory>
 
 static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
@@ -29,7 +32,6 @@ OnyxPdfiumContext * OnyxPdfiumManager::createContext(JNIEnv *env, jint id, FPDF_
 void OnyxPdfiumManager::releaseContext(JNIEnv *env, jint id) {
     contextHolder.eraseContext(env, id);
 }
-
 
 static int libraryReference = 0;
 /*
@@ -440,6 +442,34 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     FPDFText_FindClose(searchHandle);
     delete [] stringData;
     return count;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeIsTextPage
+  (JNIEnv *env, jobject thiz, jint id, jint pageIndex) {
+    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
+    if (doc == NULL) {
+        LOGE("get document failed");
+        return false;
+    }
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    if (page == NULL) {
+        LOGE("get page failed: %d", pageIndex);
+        return false;
+    }
+    int objCount = FPDFPage_CountObject(page);
+    LOGI("page %d, object count: %d", pageIndex, objCount);
+    for (int i = 0; i < objCount; i++) {
+        CPDF_PageObject *obj = static_cast<CPDF_PageObject *>(FPDFPage_GetObject(page, i));
+        if (obj == NULL) {
+            LOGE("get page object failed: %d", i);
+            return false;
+        }
+        if (obj->m_Type != FPDF_PAGEOBJ_FORM && obj->m_Type != FPDF_PAGEOBJ_TEXT) {
+            LOGE("non-text page object found: %d", obj->m_Type);
+            return false;
+        }
+    }
+    return true;
 }
 
 JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetPageText
