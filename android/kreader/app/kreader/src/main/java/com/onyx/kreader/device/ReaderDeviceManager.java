@@ -158,7 +158,7 @@ public class ReaderDeviceManager {
     public static void applyWithGCIntervalWitRegal(View view) {
         if (refreshCount++ >= gcInterval) {
             refreshCount = 0;
-            applyRegalClearUpdate(view);
+            applyRegalUpdate(view);
         } else {
             applyRegalUpdate(view);
         }

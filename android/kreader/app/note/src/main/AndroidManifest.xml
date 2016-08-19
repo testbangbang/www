@@ -32,6 +32,7 @@
         <activity android:name=".activity.onyx.ScribbleActivity"
             android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".activity.onyx.SpanScribbleActivity"
+            android:exported="true"
             android:windowSoftInputMode="adjustNothing"/>
     </application>
 

@@ -150,7 +150,7 @@
           "id": "TTS",
           "type": "Item",
           "title": "TTS",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts"
         },
         {
           "id": "FrontLight",

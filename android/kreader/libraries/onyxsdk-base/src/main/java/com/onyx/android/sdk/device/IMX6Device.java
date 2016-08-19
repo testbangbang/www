@@ -88,6 +88,7 @@ public class IMX6Device extends BaseDevice {
      * View.invalidate(int updateMode)
      */
     private static Method sMethodInvalidate = null;
+    private static Method sMethodInvalidateRect = null;
 
 
     /**
@@ -257,6 +258,19 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    @Override
+    public void invalidate(View view, int left, int top, int right, int bottom, UpdateMode mode) {
+        int dst_mode_value = getUpdateMode(mode);
+
+        try {
+            assert (sMethodInvalidateRect != null);
+            sMethodInvalidateRect.invoke(view, left, top, right, bottom, dst_mode_value);
+            return;
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+        }
+    }
 
     @Override
     public void postInvalidate(View view, UpdateMode mode) {
@@ -533,7 +547,7 @@ public class IMX6Device extends BaseDevice {
             sModeAnimationQuality = ReflectUtil.getStaticIntFieldSafely(cls, "UI_A2_QUALITY_MODE");
             sModeGC4 = value_mode_regional | value_mode_nowait | value_mode_waveform_gc4 | value_mode_update_partial;
             sModeRegal = value_mode_regional | value_mode_nowait | value_mode_waveform_regal | value_mode_update_partial;
-            sModeRegalD = value_mode_regional | value_mode_nowait | value_mode_waveform_regalD | value_mode_update_partial;
+            sModeRegalD = value_mode_regional | value_mode_nowait | value_mode_waveform_regalD | value_mode_waveform_regal | value_mode_update_partial;
 
             Class<?> deviceControllerClass = ReflectUtil.classForName("android.hardware.DeviceController");
 
@@ -582,6 +596,7 @@ public class IMX6Device extends BaseDevice {
 
             // signature of "public void invalidate(int updateMode)"
             sMethodInvalidate = ReflectUtil.getMethodSafely(cls, "invalidate", int.class);
+            sMethodInvalidateRect = ReflectUtil.getMethodSafely(cls, "invalidate", int.class, int.class, int.class, int.class, int.class);
             // signature of "public void invalidate(int updateMode)"
             sMethodSetViewDefaultUpdateMode = ReflectUtil.getMethodSafely(cls, "setDefaultUpdateMode", int.class);
             // signature of "public void invalidate(int updateMode)"

@@ -56,6 +56,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     private TouchPoint erasePoint = null;
     protected String activityAction;
     protected String noteTitle;
+    protected String parentID;
     protected Button pageIndicator;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY};
@@ -258,12 +259,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         }
         activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
         noteTitle = intent.getStringExtra(TAG_NOTE_TITLE);
+        parentID = intent.getStringExtra(Utils.PARENT_LIBRARY_ID);
         if (Utils.ACTION_CREATE.equals(activityAction)) {
             handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
-                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
+                    parentID);
         } else if (Utils.ACTION_EDIT.equals(activityAction)) {
             handleDocumentEdit(intent.getStringExtra(Utils.DOCUMENT_ID),
-                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
+                    parentID);
         }
     }
 

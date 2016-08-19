@@ -2,6 +2,7 @@ package com.onyx.android.sdk.scribble.request.shape;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.util.Log;
 
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -18,32 +19,36 @@ import java.util.List;
  */
 public class SpannableRequest extends BaseNoteRequest {
 
-    private static List<List<Shape>> shapeList = new ArrayList<>();
+    private static List<List<Shape>> historyShapeList = new ArrayList<>();
     private volatile SpannableStringBuilder spannableStringBuilder;
 
     public SpannableRequest(final List<Shape> list) {
-        shapeList.add(list);
+        historyShapeList.add(list);
         setPauseInputProcessor(true);
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
-        if (CollectionUtils.isEmpty(shapeList)) {
+        if (CollectionUtils.isEmpty(historyShapeList)) {
             return;
         }
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i <= shapeList.size(); ++i) {
-            builder.append(" ");
+        for(int i = 0; i < historyShapeList.size(); ++i) {
+            builder.append("A");
         }
+        builder.append(" ");
         spannableStringBuilder = new SpannableStringBuilder(builder.toString());
-        for (int i = 0; i < shapeList.size(); i++) {
-            spannableStringBuilder.setSpan(new ShapeSpan(shapeList.get(i)), i, i+1,
-                    Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        for (int i = 0; i < historyShapeList.size(); i++) {
+            ShapeSpan span = new ShapeSpan(historyShapeList.get(i));
+            spannableStringBuilder.setSpan(span, i, i + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
-
     }
 
     public SpannableStringBuilder getSpannableStringBuilder() {
         return spannableStringBuilder;
+    }
+
+    public static void cleanHistoryShapeList(){
+        historyShapeList = new ArrayList<>();
     }
 }

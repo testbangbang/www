@@ -85,6 +85,12 @@ public class PageRecyclerView extends RecyclerView {
         paginator.resize(newRows,newColumns,newSize);
     }
 
+    public void setCurrentPage(int currentPage){
+        if (paginator != null){
+            paginator.setCurrentPage(currentPage);
+        }
+    }
+
     private void init() {
         setItemAnimator(null);
         setClipToPadding(true);

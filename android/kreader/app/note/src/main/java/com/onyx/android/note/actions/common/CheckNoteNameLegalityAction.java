@@ -14,11 +14,15 @@ import com.onyx.android.sdk.scribble.request.note.NoteNameCheckLegalityRequest;
  */
 
 public class CheckNoteNameLegalityAction<T extends Activity> extends BaseNoteAction<T> {
-    public CheckNoteNameLegalityAction(String targetName) {
+    public CheckNoteNameLegalityAction(String targetName, String parentID, boolean checkThisLevelOnly) {
         this.targetName = targetName;
+        this.parentID = parentID;
+        this.checkThisLevelOnly = checkThisLevelOnly;
     }
 
     private String targetName;
+    private String parentID;
+    private boolean checkThisLevelOnly;
 
     public boolean isLegal() {
         return isLegal;
@@ -28,7 +32,7 @@ public class CheckNoteNameLegalityAction<T extends Activity> extends BaseNoteAct
 
     @Override
     public void execute(T activity, final BaseCallback callback) {
-        final NoteNameCheckLegalityRequest legalityRequest = new NoteNameCheckLegalityRequest(targetName);
+        final NoteNameCheckLegalityRequest legalityRequest = new NoteNameCheckLegalityRequest(targetName, parentID, checkThisLevelOnly);
         if (activity instanceof BaseScribbleActivity) {
             ((BaseScribbleActivity) activity).submitRequest(legalityRequest, new BaseCallback() {
                 @Override

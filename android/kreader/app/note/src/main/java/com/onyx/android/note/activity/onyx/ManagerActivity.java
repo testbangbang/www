@@ -120,7 +120,7 @@ public class ManagerActivity extends BaseManagerActivity {
                 dlgCreateFolder.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
                     @Override
                     public boolean onCreated(final String title) {
-                        final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(title);
+                        final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(title, currentLibraryId, false);
                         action.execute(ManagerActivity.this, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
@@ -182,7 +182,7 @@ public class ManagerActivity extends BaseManagerActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(input);
+                final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(input, currentLibraryId, false);
                 action.execute(ManagerActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

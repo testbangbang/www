@@ -3,12 +3,10 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableStringBuilder;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
@@ -53,7 +51,7 @@ import java.util.List;
 public class SpanScribbleActivity extends BaseScribbleActivity {
     static final String TAG = ScribbleActivity.class.getCanonicalName();
     private TextView titleTextView;
-    private TextView spanTextView;
+    private EditText spanTextView;
     private GAdapter adapter;
     private ScribbleSubMenu scribbleSubMenu = null;
     private static final int SPAN_TIME_OUT = 1000;
@@ -73,7 +71,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
 
     private void initToolbarButtons() {
         titleTextView = (TextView) findViewById(R.id.textView_main_title);
-        spanTextView = (TextView)findViewById(R.id.span_text_view);
+        spanTextView = (EditText)findViewById(R.id.span_text_view);
         ImageView addPageBtn = (ImageView) findViewById(R.id.button_add_page);
         ImageView deletePageBtn = (ImageView) findViewById(R.id.button_delete_page);
         ImageView prevPageBtn = (ImageView) findViewById(R.id.button_previous_page);
@@ -157,7 +155,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onExport() {
-        testSpan();
+        buildSpanImpl();
     }
 
     private void onSetting() {
@@ -314,8 +312,13 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
     @Override
     public void onBackPressed() {
         getNoteViewHelper().pauseDrawing();
-        getNoteViewHelper().cleanHistoricalDirtyStash();
         onSave(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        SpannableRequest.cleanHistoryShapeList();
+        super.onDestroy();
     }
 
     private void saveDocument(boolean finishAfterSave) {
@@ -341,7 +344,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<SpanScribbleActivity> action = new CheckNoteNameLegalityAction<SpanScribbleActivity>(input);
+                final CheckNoteNameLegalityAction<SpanScribbleActivity> action = new CheckNoteNameLegalityAction<>(input, parentID, true);
                 action.execute(SpanScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -436,18 +439,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
             public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 onNewTouchPointListReceived(shape, pointList);
                 long curTime = System.currentTimeMillis();
-                if (shape instanceof NormalPencilShape) {
-                    if (lastUpTime != -1 && (curTime - lastUpTime <= SPAN_TIME_OUT) && (spanRunnable != null)) {
-                        handler.removeCallbacks(spanRunnable);
-                    }
-                    lastUpTime = curTime;
-                    spanRunnable = buildSpanRunnable();
-                    handler.postDelayed(spanRunnable, SPAN_TIME_OUT);
-                } else {
-                    if (!shape.supportDFB()) {
-                        drawPage();
-                    }
-                }
+                triggerSpan();
             }
 
             @Override
@@ -478,32 +470,42 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
             }
 
             public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-                if (shape instanceof NormalPencilShape) {
-                } else {
-                    if (!shape.supportDFB()) {
-                        drawPage();
-                    }
+                if (!shape.supportDFB()) {
+                    drawPage();
                 }
+                triggerSpan();
             }
         };
+    }
+
+    private void triggerSpan() {
+        long curTime = System.currentTimeMillis();
+        if (lastUpTime != -1 && (curTime - lastUpTime <= SPAN_TIME_OUT) && (spanRunnable != null)) {
+            handler.removeCallbacks(spanRunnable);
+        }
+        lastUpTime = curTime;
+        spanRunnable = buildSpanRunnable();
+        handler.postDelayed(spanRunnable, SPAN_TIME_OUT);
     }
 
     private Runnable buildSpanRunnable(){
         return new Runnable() {
             @Override
             public void run() {
-                testSpan();
+                buildSpanImpl();
             }
         };
     }
 
-    private void testSpan() {
+    private void buildSpanImpl() {
         List<Shape> list = getNoteViewHelper().detachStash();
         final SpannableRequest spannableRequest = new SpannableRequest(list);
         getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                spanTextView.setText(spannableRequest.getSpannableStringBuilder());
+                final SpannableStringBuilder builder = spannableRequest.getSpannableStringBuilder();
+                spanTextView.setText(builder);
+                spanTextView.setSelection(builder.length());
             }
         });
     }

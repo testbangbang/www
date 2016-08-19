@@ -47,7 +47,7 @@ import java.util.List;
 public class DialogSearch extends Dialog implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String TAG = DialogSearch.class.getSimpleName();
-    private static int SEARCH_CONTENT_ROW = 10;
+    private static int SEARCH_CONTENT_ROW = 8;
     private static int SEARCH_HISTORY_COUNT = 5;
     public static final int SEARCH_CONTENT_LENGTH = 30;
 
@@ -89,7 +89,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         mParams.gravity = Gravity.BOTTOM;
         mWindow.setAttributes(mParams);
-        //force use all space in the screen.
+        //force use all space in the screen
         mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
@@ -223,8 +223,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private void loadSearchData(){
         searchHistory.setVisibility(View.GONE);
         searchContent.setVisibility(View.VISIBLE);
-        searchList.clear();
-        updatePageIndicator(0,0);
+        stopSearch();
         final String query = searchEditText.getText().toString();
         if (StringUtils.isNullOrEmpty(query)){
             return;
@@ -235,6 +234,10 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         pageRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
+                searchList.clear();
+                updatePageIndicator(0,0);
+                pageRecyclerView.setCurrentPage(0);
+
                 searchContentAction = new SearchContentAction(query,SEARCH_CONTENT_LENGTH);
                 searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
                     @Override
@@ -243,10 +246,9 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
                             return;
                         }
                         hideLoadingLayout();
-                        final int hasCount = searchList.size();
                         searchList.addAll(results);
                         updatePageIndicator(currentPagePosition,pageRecyclerView.getAdapter().getItemCount());
-                        pageRecyclerView.getAdapter().notifyItemRangeInserted(hasCount,results.size());
+                        pageRecyclerView.getAdapter().notifyDataSetChanged();
                     }
 
                     @Override

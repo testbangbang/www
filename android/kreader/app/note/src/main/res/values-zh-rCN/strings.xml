@@ -33,4 +33,6 @@
     <string name="asc">升序</string>
     <string name="desc">降序</string>
     <string name="type">类型</string>
+    <string name="normal_scribble">一般手写</string>
+    <string name="span_scribble">矢量手写(测试)</string>
 </resources>
