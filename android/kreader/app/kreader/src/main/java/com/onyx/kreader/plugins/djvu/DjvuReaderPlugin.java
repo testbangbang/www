@@ -65,6 +65,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean isTextPage(int page) {
+        return false;
+    }
+
+    @Override
     public String getPageText(String position) {
         // TODO to be implemented
         return "";

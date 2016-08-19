@@ -27,6 +27,8 @@ public interface ReaderDocument {
      */
     public RectF getPageOriginSize(final String position);
 
+    public boolean isTextPage(final int page);
+
     /**
      * Retrieve page text
      * @param position
