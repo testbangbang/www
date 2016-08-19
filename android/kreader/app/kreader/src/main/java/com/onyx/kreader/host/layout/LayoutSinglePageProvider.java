@@ -34,7 +34,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
 
     public void activate()  {
         getPageManager().setPageRepeat(50);
-        getPageManager().scaleToPageContent(null);
+        getPageManager().scaleToPage(null);
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {

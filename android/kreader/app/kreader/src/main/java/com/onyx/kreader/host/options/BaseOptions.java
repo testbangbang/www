@@ -61,9 +61,13 @@ public class BaseOptions {
     transient static public final String ORIENTATION = "orientation";
     transient static public final String MD5 = "md5";
 
-    private GObject backend;
     private static final double fallbackFontSize = 8.0;
     public static double defaultFontSize = fallbackFontSize;
+
+    static public int GAMMA_LOWER_LIMIT = 100;
+    static public int DEFAULT_GAMMA = 150;
+
+    private GObject backend;
 
     public BaseOptions() {
         super();
@@ -149,12 +153,12 @@ public class BaseOptions {
     }
 
     public boolean isGamaCorrectionEnabled() {
-        return getGammaLevel() > PageConstants.GAMMA_LOWER_LIMIT;
+        return getGammaLevel() > GAMMA_LOWER_LIMIT;
     }
 
     public float getGammaLevel() {
         if (!backend.hasKey(GAMMA_LEVEL)) {
-            return PageConstants.DEFAULT_GAMMA;
+            return DEFAULT_GAMMA;
         }
         return backend.getFloat(GAMMA_LEVEL);
     }
@@ -219,7 +223,7 @@ public class BaseOptions {
 
 
     static public int getDefaultSpecialScale() {
-        return PageConstants.SCALE_TO_PAGE_CONTENT;
+        return PageConstants.SCALE_TO_PAGE;
     }
 
     static public double getScaleDelta() {
