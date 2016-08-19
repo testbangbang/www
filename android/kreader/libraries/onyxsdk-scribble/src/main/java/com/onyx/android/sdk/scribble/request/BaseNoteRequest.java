@@ -232,7 +232,9 @@ public class BaseNoteRequest extends BaseRequest {
 
     private void drawBackgroundResource(Canvas canvas, Paint paint, int resID) {
         Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resID);
-        canvas.drawBitmap(bitmap, 0, 0, paint);
+        Rect src = new Rect(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
+        Rect dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
+        canvas.drawBitmap(bitmap, src, dest, paint);
         if (!bitmap.isRecycled()) {
             bitmap.recycle();
         }
