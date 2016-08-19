@@ -173,15 +173,13 @@ public class ReaderDataHolder {
         return selectionManager;
     }
 
-    public ReaderTtsManager getTtsManager() {
+    public void initTtsManager(ReaderTtsManager.Callback callback) {
         if (ttsManager == null) {
-            ttsManager = new ReaderTtsManager(this, new ReaderTtsManager.Callback() {
-                @Override
-                public void onStateChanged() {
-                    updateReaderMenuState();
-                }
-            });
+            ttsManager = new ReaderTtsManager(this, callback);
         }
+    }
+
+    public ReaderTtsManager getTtsManager() {
         return ttsManager;
     }
 

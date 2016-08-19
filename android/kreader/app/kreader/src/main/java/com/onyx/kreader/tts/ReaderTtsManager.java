@@ -53,9 +53,6 @@ public class ReaderTtsManager {
             @Override
             public void onStopped() {
                 callback.onStateChanged();
-                if (inPlaying) {
-                    readerDataHolder.submitRenderRequest(new RenderRequest());
-                }
             }
 
             @Override

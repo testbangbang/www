@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"/>
 
         <ImageButton
-            android:id="@+id/tts_pause"
+            android:id="@+id/tts_stop"
             style="@style/tts_button"
             android:src="@drawable/ic_dialog_tts_stop"
             android:layout_width="wrap_content"
