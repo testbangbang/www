@@ -34,46 +34,16 @@ public class RectUtils {
 
     static public PointF getBeginTop(List<RectF> list) {
         RectF target = list.get(0);
-        for (RectF rect : list) {
-            int compare = compareBaseLine(rect, target);
-            if (compare == 0) {
-                if (rect.left < target.left) {
-                    target = rect;
-                }
-            } else if (compare < 0) {
-                target = rect;
-            }
-        }
         return new PointF(target.left, target.top);
     }
 
     static public PointF getBeginBottom(List<RectF> list) {
         RectF target = list.get(0);
-        for (RectF rect : list) {
-            int compare = compareBaseLine(rect, target);
-            if (compare == 0) {
-                if (rect.left < target.left) {
-                    target = rect;
-                }
-            } else if (compare < 0) {
-                target = rect;
-            }
-        }
         return new PointF(target.left, target.bottom);
     }
 
     static public PointF getEndBottom(List<RectF> list) {
-        RectF target = list.get(0);
-        for (RectF rect : list) {
-            int compare = compareBaseLine(rect, target);
-            if (compare == 0) {
-                if (rect.right > target.right) {
-                    target = rect;
-                }
-            } else if (compare > 0) {
-                target = rect;
-            }
-        }
+        RectF target = list.get(list.size() - 1);
         return new PointF(target.right, target.bottom);
     }
 
