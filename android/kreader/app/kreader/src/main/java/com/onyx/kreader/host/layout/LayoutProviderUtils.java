@@ -169,8 +169,12 @@ public class LayoutProviderUtils {
     }
 
     static public void addPage(final ReaderLayoutManager layoutManager, final String location) {
-        RectF size = layoutManager.getReaderDocument().getPageOriginSize(location);
-        PageInfo pageInfo = new PageInfo(location, size.width(), size.height());
+        PageInfo pageInfo = layoutManager.getPageManager().getPageInfo(location);
+        if (pageInfo == null) {
+            RectF size = layoutManager.getReaderDocument().getPageOriginSize(location);
+            pageInfo = new PageInfo(location, size.width(), size.height());
+            pageInfo.setIsTextPage(layoutManager.getReaderDocument().isTextPage(location));
+        }
         layoutManager.getPageManager().add(pageInfo);
     }
 
