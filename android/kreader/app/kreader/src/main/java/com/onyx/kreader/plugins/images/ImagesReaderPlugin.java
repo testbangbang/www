@@ -98,7 +98,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean isTextPage(int page) {
+    public boolean isTextPage(String position) {
         return false;
     }
 
