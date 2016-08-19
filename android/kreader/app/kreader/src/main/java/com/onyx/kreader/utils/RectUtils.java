@@ -121,7 +121,7 @@ public class RectUtils {
                 }
             }
             if (!foundBaseLine) {
-                baseList.add(rect);
+                baseList.add(new RectF(rect));
             }
         }
         return baseList;
