@@ -142,6 +142,10 @@ public class ReaderDeviceManager {
         refreshCount = gcInterval;
     }
 
+    public static int getGcInterval() {
+        return gcInterval;
+    }
+
     public static void setGcInterval(int interval) {
         gcInterval = interval - 1;
         refreshCount = 0;

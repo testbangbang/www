@@ -100,17 +100,6 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void updateReaderMenuState(final ReaderDataHolder readerDataHolder, final ReaderLayerMenuState state) {
-        state.setTtsState(getTtsState(readerDataHolder));
-    }
-
-    private static ReaderLayerMenuState.TtsState getTtsState(final ReaderDataHolder readerreaderDataHolderctivity) {
-        if (readerreaderDataHolderctivity.getTtsManager().isSpeaking()) {
-            return ReaderLayerMenuState.TtsState.Speaking;
-        } else if (readerreaderDataHolderctivity.getTtsManager().isPaused()) {
-            return ReaderLayerMenuState.TtsState.Paused;
-        } else {
-            return ReaderLayerMenuState.TtsState.Stopped;
-        }
     }
 
     private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderDataHolder readerDataHolder) {

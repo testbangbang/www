@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.view.View;
 import android.widget.CheckBox;
@@ -14,7 +15,10 @@ import android.widget.SeekBar;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
+import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.handler.HandlerManager;
 
@@ -30,8 +34,8 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
     @Bind(R.id.tts_play)
     ImageButton ttsPlay;
-    @Bind(R.id.tts_pause)
-    ImageButton ttsPause;
+    @Bind(R.id.tts_stop)
+    ImageButton ttsStop;
     @Bind(R.id.tts_voice)
     ImageButton ttsVoice;
     @Bind(R.id.tts_speed)
@@ -66,6 +70,8 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     private ReaderDataHolder readerDataHolder;
     private int[] speedCheckBoxIds = {R.id.fast_speed,R.id.more_fast_speed,R.id.normal_speed,R.id.more_slow_speed,R.id.slow_speed};
 
+    private int gcInterval = 0;
+
     public DialogTts(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), R.style.dialog_transparent_no_title);
         this.readerDataHolder = readerDataHolder;
@@ -73,6 +79,19 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         ButterKnife.bind(this);
         initView();
         initData();
+
+        // force to be false, or else it will be turned on for unknown reason
+        setCanceledOnTouchOutside(false);
+    }
+
+    public void show() {
+        readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ttsPlay(readerDataHolder);
+            }
+        });
+        super.show();
     }
 
     private void initView() {
@@ -83,7 +102,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         ttsSpeed.setOnClickListener(this);
         ttsClose.setOnClickListener(this);
         ttsPlay.setOnClickListener(this);
-        ttsPause.setOnClickListener(this);
+        ttsStop.setOnClickListener(this);
 
         minusVoice.setOnClickListener(this);
         plusVoice.setOnClickListener(this);
@@ -128,6 +147,14 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
             }
         });
 
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                ReaderDeviceManager.setGcInterval(gcInterval);
+                ttsStop(readerDataHolder);
+            }
+        });
+
     }
 
     private void initData(){
@@ -136,6 +163,21 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         int curVolume = audioMgr.getStreamVolume(AudioManager.STREAM_MUSIC);
         seekBarTts.setMax(maxVolume);
         seekBarTts.setProgress(curVolume);
+
+        readerDataHolder.initTtsManager(new ReaderTtsManager.Callback() {
+            @Override
+            public void onStateChanged() {
+                if (readerDataHolder.getTtsManager().isSpeaking()) {
+                    ttsPlay.setImageResource(R.drawable.ic_dialog_tts_suspend);
+                } else {
+                    ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
+                }
+            }
+        });
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
+
+        gcInterval = ReaderDeviceManager.getGcInterval();
+        ReaderDeviceManager.setGcInterval(Integer.MAX_VALUE);
     }
 
     @Override
@@ -148,11 +190,15 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
             voiceSpeedLayout.setVisibility(voiceSpeedLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
         } else if (v.equals(ttsClose)) {
             ttsStop(readerDataHolder);
-            hide();
+            dismiss();
         }else if (v.equals(ttsPlay)){
-            ttsPlay(readerDataHolder);
-        }else if (v.equals(ttsPause)){
-            ttsPause(readerDataHolder);
+            if (readerDataHolder.getTtsManager().isSpeaking()) {
+                ttsPause(readerDataHolder);
+            } else {
+                ttsPlay(readerDataHolder);
+            }
+        }else if (v.equals(ttsStop)){
+            ttsStop(readerDataHolder);
         }else if (v.equals(minusVoice)){
             setSeekBarValue(false);
         }else if (v.equals(plusVoice)){
@@ -189,13 +235,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     }
 
     private void ttsPlay(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
-        readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.getTtsManager().play();
-            }
-        });
+        readerDataHolder.getTtsManager().play();
     }
 
     private void ttsPause(final ReaderDataHolder readerDataHolder) {
@@ -205,6 +245,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     private void ttsStop(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getTtsManager().stop();
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
+        readerDataHolder.submitRenderRequest(new RenderRequest());
     }
 
     //调节音量
