@@ -17,6 +17,8 @@ public class PageInfo {
     private float originWidth;
     private float originHeight;
 
+    private boolean isTextPage;
+
     private RectF autoCropContentRegion;    // content region with page origin size
 
     private RectF positionRect = new RectF(); // page position rect in document coordinates system with actual scale.
@@ -47,6 +49,14 @@ public class PageInfo {
 
     public final float getOriginHeight() {
         return originHeight;
+    }
+
+    public boolean isTextPage() {
+        return isTextPage;
+    }
+
+    public void setIsTextPage(boolean value) {
+        isTextPage = value;
     }
 
     public final RectF getAutoCropContentRegion() {

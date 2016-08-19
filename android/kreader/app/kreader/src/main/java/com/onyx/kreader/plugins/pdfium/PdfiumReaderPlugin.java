@@ -107,6 +107,11 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean isTextPage(String position) {
+        return getPluginImpl().isTextPage(Integer.parseInt(position));
+    }
+
+    @Override
     public String getPageText(String position) {
         return getPluginImpl().getPageText(PagePositionUtils.getPageNumber(position));
     }
