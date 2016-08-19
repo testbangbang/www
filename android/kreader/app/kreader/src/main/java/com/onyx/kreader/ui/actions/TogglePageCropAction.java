@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.request.ScaleToPageCropRequest;
+import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthContentRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -18,8 +19,8 @@ public class TogglePageCropAction extends BaseAction {
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {
-        BaseReaderRequest request = new ScaleToPageCropRequest(pageName);
-        if (readerDataHolder.getReaderViewInfo().scale == PageConstants.SCALE_TO_PAGE_CONTENT) {
+        BaseReaderRequest request = new ScaleToPageRequest(pageName);
+        if (readerDataHolder.getReaderViewInfo().scale == PageConstants.SCALE_TO_PAGE) {
             request = new ScaleToWidthContentRequest(pageName);
         }
         readerDataHolder.submitRenderRequest(request);

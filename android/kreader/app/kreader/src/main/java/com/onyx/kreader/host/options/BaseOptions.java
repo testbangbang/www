@@ -223,7 +223,7 @@ public class BaseOptions {
 
 
     static public int getDefaultSpecialScale() {
-        return PageConstants.SCALE_TO_PAGE_CONTENT;
+        return PageConstants.SCALE_TO_PAGE;
     }
 
     static public double getScaleDelta() {
