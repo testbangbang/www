@@ -34,7 +34,7 @@
         android:maxLines="3"
         android:gravity="center_vertical"
         android:ellipsize="end"
-        android:textSize="18sp"
+        android:textSize="@dimen/dialog_table_of_content_item_text_size"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/text_view_page"
         android:layout_above="@+id/layout_bottom"
