@@ -1,20 +1,25 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
-import com.alibaba.fastjson.JSON;
+
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.dataprovider.Annotation;
 import com.onyx.kreader.dataprovider.AnnotationProvider;
 import com.onyx.kreader.dataprovider.Bookmark;
 import com.onyx.kreader.dataprovider.BookmarkProvider;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.dataprovider.SearchHistory;
 import com.onyx.kreader.dataprovider.SearchHistoryProvider;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 6/7/16.
@@ -34,7 +39,6 @@ public class ReaderUserDataInfo {
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
 
     public void setDocumentPath(final String path) {
-        Debug.d("setDocumentPath: " + path);
         documentPath = path;
     }
 
@@ -68,7 +72,6 @@ public class ReaderUserDataInfo {
     }
 
     public void saveHighlightResult(ReaderSelection selection) {
-        Debug.d("saveHighlightResult: " + JSON.toJSONString(selection));
         selectionMap.put(HIGHLIGHT_TAG, Arrays.asList(new ReaderSelection[] { selection }));
     }
 

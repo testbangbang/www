@@ -141,22 +141,34 @@
       ]
     },
     {
-      "id": "TTS",
+      "id": "More",
       "type": "Group",
-      "title": "TTS",
-      "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_black",
+      "title": "MORE",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_more",
       "children": [
         {
-          "id": "TTSStop",
+          "id": "TTS",
           "type": "Item",
-          "title": "TTS Stop",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_stop_black"
+          "title": "TTS",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts"
         },
         {
-          "id": "TTSPlay",
+          "id": "FrontLight",
           "type": "Item",
-          "title": "TTS Play",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts_play_black"
+          "title": "Front Light",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_frontlight"
+        },
+        {
+          "id": "Refresh",
+          "type": "Item",
+          "title": "Refresh",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_refresh_black"
+        },
+        {
+          "id": "Setting",
+          "type": "Item",
+          "title": "Setting",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_setting"
         }
       ]
     }

@@ -12,14 +12,12 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.PageAnnotation;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
@@ -96,7 +94,6 @@ public class ReaderPainter {
     }
 
     private void drawReaderSelection(Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection) {
-        Debug.d("highlight selection result: " + JSON.toJSON(selection));
         PageInfo pageInfo = viewInfo.getPageInfo(selection.getPagePosition());
         if (pageInfo != null) {
             drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
@@ -113,17 +110,13 @@ public class ReaderPainter {
     }
 
     private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
-        Debug.d("drawHighlightRectangles: " + JSON.toJSON(rectangles));
         if (rectangles == null) {
             return;
         }
         paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-//        paint.setXfermode(xorMode);
         paint.setStrokeWidth(3);
-        int paddingBottom = 2;
         for (int i = 0; i < rectangles.size(); ++i) {
-            canvas.drawLine(rectangles.get(i).left,rectangles.get(i).bottom + paddingBottom,rectangles.get(i).right,rectangles.get(i).bottom + paddingBottom,paint);
+            canvas.drawLine(rectangles.get(i).left,rectangles.get(i).bottom,rectangles.get(i).right,rectangles.get(i).bottom,paint);
         }
     }
 

@@ -1,11 +1,12 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
@@ -16,6 +17,7 @@ import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
 import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.utils.HistoryManager;
+import com.onyx.kreader.utils.ObjectHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -115,6 +117,8 @@ public class ReaderLayoutManager {
         }
 
         if (currentProvider.equals(layoutName)) {
+            // even it's same layout provider, user may want to change to a different navigation args
+            getCurrentLayoutProvider().setNavigationArgs(navigationArgs);
             return true;
         }
 
@@ -287,18 +291,17 @@ public class ReaderLayoutManager {
         return false;
     }
 
-    public boolean drawVisiblePages(final Reader reader, ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
+    public boolean drawVisiblePages(final Reader reader, ObjectHolder<ReaderBitmapImpl> bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
         ReaderDrawContext context = new ReaderDrawContext();
         context.asyncDraw = false;
         return drawVisiblePages(reader, context, bitmap, viewInfo);
     }
 
-    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderBitmapImpl bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
+    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ObjectHolder<ReaderBitmapImpl> bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
         if (!getCurrentLayoutProvider().drawVisiblePages(reader, drawContext, bitmap, viewInfo)) {
             return false;
         }
-        reader.getReaderHelper().applyPostBitmapProcess(bitmap);
-        reader.getReaderHelper().setRenderBitmapDirty(true);
+        reader.getReaderHelper().applyPostBitmapProcess(bitmap.getObject());
         return true;
     }
 

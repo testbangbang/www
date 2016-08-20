@@ -25,6 +25,7 @@ public class ChangeViewConfigRequest extends BaseReaderRequest {
         } else {
             reader.getReaderLayoutManager().getCurrentLayoutProvider().scaleToWidthContent(position);
         }
+        drawVisiblePages(reader);
     }
 
     private boolean isPortrait() {

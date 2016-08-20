@@ -22,16 +22,20 @@ public class TriangleShape extends BaseShape {
     }
 
     public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
-        float sx = getDownPoint().getX();
-        float sy = getDownPoint().getY();
-        float ex = getCurrentPoint().getX();
-        float ey = getCurrentPoint().getY();
-        float cx = Math.abs(2 * sx - ex);
-        float cy = ey;
+        float points[] = new float[6];
+        points[0] = getDownPoint().getX();
+        points[1] = getDownPoint().getY();
+        points[2] = getCurrentPoint().getX();
+        points[3] = getCurrentPoint().getY();
+        points[4] = Math.abs(2 * points[0] - points[2]);
+        points[5] = points[3];
         applyStrokeStyle(paint);
-        canvas.drawLine(sx, sy, ex, ey, paint);
-        canvas.drawLine(sx, sy, cx, cy, paint);
-        canvas.drawLine(cx, cy, ex, ey, paint);
+        if (matrix != null) {
+            matrix.mapPoints(points);
+        }
+        canvas.drawLine(points[0], points[1], points[2], points[3], paint);
+        canvas.drawLine(points[0], points[1], points[4], points[5], paint);
+        canvas.drawLine(points[4], points[5], points[2], points[3], paint);
     }
 
 }

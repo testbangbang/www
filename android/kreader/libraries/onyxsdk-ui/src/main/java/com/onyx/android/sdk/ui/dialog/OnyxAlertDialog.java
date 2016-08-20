@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * New Dialog For Onyx Apps
@@ -122,6 +123,9 @@ public class OnyxAlertDialog extends DialogFragment {
 
         if (params.enableNegativeButton) {
             negativeButton.setVisibility(View.VISIBLE);
+            if (StringUtils.isNotBlank(params.negativeButtonText)) {
+                negativeButton.setText(params.negativeButtonText);
+            }
             if (params.negativeAction != null) {
                 negativeButton.setOnClickListener(params.negativeAction);
             }
@@ -131,6 +135,9 @@ public class OnyxAlertDialog extends DialogFragment {
 
         if (params.enablePositiveButton) {
             positiveButton.setVisibility(View.VISIBLE);
+            if (StringUtils.isNotBlank(params.positiveButtonText)) {
+                positiveButton.setText(params.positiveButtonText);
+            }
             if (params.positiveAction != null) {
                 positiveButton.setOnClickListener(params.positiveAction);
             }
@@ -233,6 +240,8 @@ public class OnyxAlertDialog extends DialogFragment {
         int customContentLayoutResID = -1;
         int customLayoutResID = -1;
         String neutralButtonText = "";
+        String positiveButtonText = "";
+        String negativeButtonText = "";
         final int defaultLayoutResID = R.layout.onyx_custom_alert_dialog;
 
         int customLayoutHeight = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -423,6 +432,24 @@ public class OnyxAlertDialog extends DialogFragment {
 
         public Params setCustomLayoutResID(int customLayoutResID) {
             this.customLayoutResID = customLayoutResID;
+            return this;
+        }
+
+        public String getPositiveButtonText() {
+            return positiveButtonText;
+        }
+
+        public Params setPositiveButtonText(String positiveButtonText) {
+            this.positiveButtonText = positiveButtonText;
+            return this;
+        }
+
+        public String getNegativeButtonText() {
+            return negativeButtonText;
+        }
+
+        public Params setNegativeButtonText(String negativeButtonText) {
+            this.negativeButtonText = negativeButtonText;
             return this;
         }
 

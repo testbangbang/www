@@ -3,13 +3,15 @@ package com.onyx.android.sdk.scribble.request.shape;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.Log;
+
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
+
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,26 +19,36 @@ import java.util.List;
  */
 public class SpannableRequest extends BaseNoteRequest {
 
-    private List<Shape> shapeList;
+    private static List<List<Shape>> historyShapeList = new ArrayList<>();
     private volatile SpannableStringBuilder spannableStringBuilder;
 
     public SpannableRequest(final List<Shape> list) {
-        shapeList = list;
+        historyShapeList.add(list);
         setPauseInputProcessor(true);
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
-        if (CollectionUtils.isEmpty(shapeList)) {
+        if (CollectionUtils.isEmpty(historyShapeList)) {
             return;
         }
         StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < historyShapeList.size(); ++i) {
+            builder.append("A");
+        }
         builder.append(" ");
         spannableStringBuilder = new SpannableStringBuilder(builder.toString());
-        spannableStringBuilder.setSpan(new ShapeSpan(shapeList), 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        for (int i = 0; i < historyShapeList.size(); i++) {
+            ShapeSpan span = new ShapeSpan(historyShapeList.get(i));
+            spannableStringBuilder.setSpan(span, i, i + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }
     }
 
     public SpannableStringBuilder getSpannableStringBuilder() {
         return spannableStringBuilder;
+    }
+
+    public static void cleanHistoryShapeList(){
+        historyShapeList = new ArrayList<>();
     }
 }

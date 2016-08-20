@@ -71,21 +71,6 @@ public class DialogReaderMenu extends Dialog {
             }
         });
 
-        findViewById(R.id.button_front_light).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DialogBrightness(getContext()).show();
-            }
-        });
-
-        findViewById(R.id.button_screen_refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                readerMenuCallback.onHideMenu();
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/SetScreenRefreshRate"));
-            }
-        });
-
         findViewById(R.id.button_toc).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,14 +92,6 @@ public class DialogReaderMenu extends Dialog {
             public void onClick(View v) {
                 readerMenuCallback.onHideMenu();
                 readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/Search"));
-//                activity.onSearchRequested();
-            }
-        });
-
-        findViewById(R.id.button_settings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                readerMenuCallback.onHideMenu();
             }
         });
 
@@ -122,6 +99,20 @@ public class DialogReaderMenu extends Dialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/GotoPage"));
+            }
+        });
+
+        findViewById(R.id.pre_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/NavigationBackward"));
+            }
+        });
+
+        findViewById(R.id.next_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/NavigationForward"));
             }
         });
 

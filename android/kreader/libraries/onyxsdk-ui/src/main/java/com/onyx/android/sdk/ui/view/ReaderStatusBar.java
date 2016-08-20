@@ -86,10 +86,9 @@ public class ReaderStatusBar extends LinearLayout {
 
     public boolean updateStatusBarNavigator(Rect pageRect,Rect viewportRect){
         try{
-        mStatusBarNavigatorView.setNavigatorContent(pageRect,viewportRect);
-        return true;
-        }
-        catch (Exception e){
+            mStatusBarNavigatorView.setNavigatorContent(pageRect,viewportRect);
+            return true;
+        } catch (Exception e){
             e.printStackTrace();
             return false;
         }

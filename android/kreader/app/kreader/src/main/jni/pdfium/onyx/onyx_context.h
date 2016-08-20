@@ -13,8 +13,7 @@
 #include <list>
 #include <map>
 #include <unordered_map>
-
-
+#include <queue>
 
 #ifdef NDK_PROFILER
 #include "prof.h"
@@ -70,7 +69,7 @@ class OnyxPdfiumContext {
 private:
     FPDF_DOCUMENT document;
     FPDF_BITMAP bitmap;
-    std::unordered_map<int, OnyxPdfiumPage *> pageMap;
+    std::list<std::pair<int, OnyxPdfiumPage *>> pageQueue; // use std::queue to simulate FIFO queue
     std::unordered_map<void *, FPDF_BITMAP> bitmapMap;
 
 public:
@@ -107,11 +106,19 @@ public:
     }
 
     OnyxPdfiumPage * getPdfiumPage(int pageIndex) {
-        std::unordered_map<int, OnyxPdfiumPage *>::iterator iterator = pageMap.find(pageIndex);
+        auto iterator = pageQueue.begin();
+        while (iterator != pageQueue.end() && iterator->first != pageIndex) {
+            ++iterator;
+        }
         OnyxPdfiumPage * page = NULL;
-        if (iterator == pageMap.end()) {
+        if (iterator == pageQueue.end()) {
             page = new OnyxPdfiumPage(getDocument(), pageIndex);
-            pageMap[pageIndex] = page;
+            pageQueue.push_back(std::pair<int, OnyxPdfiumPage*>(pageIndex, page));
+            const int MAX_QUEUE_SIZE = 3;
+            if (pageQueue.size() > MAX_QUEUE_SIZE) {
+                delete pageQueue.front().second;
+                pageQueue.pop_front();
+            }
         } else {
             page = iterator->second;
         }
@@ -130,10 +137,10 @@ public:
 
 private:
     void clearPages() {
-        for(std::unordered_map<int, OnyxPdfiumPage *>::iterator iterator = pageMap.begin(); iterator != pageMap.end(); ++iterator) {
+        for(auto iterator = pageQueue.begin(); iterator != pageQueue.end(); ++iterator) {
             delete iterator->second;
         }
-        pageMap.clear();
+        pageQueue.clear();
     }
 
     void clearBitmaps() {

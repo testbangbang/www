@@ -3,11 +3,18 @@ package com.onyx.kreader.host.wrapper;
 import android.content.Context;
 import android.os.Handler;
 import com.onyx.android.sdk.api.ReaderBitmap;
-import com.onyx.kreader.api.*;
-import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.kreader.api.ReaderDocument;
+import com.onyx.kreader.api.ReaderNavigator;
+import com.onyx.kreader.api.ReaderPlugin;
+import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.api.ReaderRendererFeatures;
+import com.onyx.kreader.api.ReaderSearchManager;
+import com.onyx.kreader.api.ReaderView;
+import com.onyx.kreader.cache.BitmapSoftLruCache;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -48,7 +55,9 @@ public class Reader {
             public void run() {
                 try {
                     request.beforeExecute(Reader.this);
-                    request.execute(Reader.this);
+                    if (!request.isAbort()) {
+                        request.execute(Reader.this);
+                    }
                 } catch (Throwable tr) {
                     request.setException(tr);
                 } finally {
@@ -126,24 +135,16 @@ public class Reader {
         return getReaderHelper().getReaderLayoutManager();
     }
 
-    public BitmapLruCache getBitmapLruCache() {
-        return getReaderHelper().getBitmapLruCache();
-    }
-
-    public ReaderBitmap getRenderBitmap() {
-        return getReaderHelper().getRenderBitmap();
-    }
-
-    public boolean isRenderBitmapDirty() {
-        return getReaderHelper().isRenderBitmapDirty();
+    public BitmapSoftLruCache getBitmapCache() {
+        return getReaderHelper().getBitmapCache();
     }
 
     public ReaderBitmap getViewportBitmap() {
         return getReaderHelper().getViewportBitmap();
     }
 
-    public ReaderHelper.BitmapCopyCoordinator getBitmapCopyCoordinator() {
-        return getReaderHelper().getBitmapCopyCoordinator();
+    public ReaderHelper.BitmapTransferCoordinator getBitmapTransferCoordinator() {
+        return getReaderHelper().getBitmapTransferCoordinator();
     }
 
     public ImageReflowManager getImageReflowManager() {

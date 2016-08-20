@@ -97,6 +97,14 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
 
 /*
  * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
+ * Method:    nativeIsTextPage
+ * Signature: (II)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeIsTextPage
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
  * Method:    nativeGetPageText
  * Signature: (II)[B
  */

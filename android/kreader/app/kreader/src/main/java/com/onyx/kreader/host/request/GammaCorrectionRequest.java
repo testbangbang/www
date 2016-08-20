@@ -2,6 +2,7 @@ package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -10,16 +11,15 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class GammaCorrectionRequest extends BaseReaderRequest {
 
-    private int gamma = PageConstants.DEFAULT_GAMMA;
+    private int gamma = BaseOptions.DEFAULT_GAMMA;
     public GammaCorrectionRequest(int value) {
         gamma = value;
     }
 
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
-        useRenderBitmap(reader);
         reader.getDocumentOptions().setGamma(gamma);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+        drawVisiblePages(reader);
     }
 
 }

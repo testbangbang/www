@@ -37,6 +37,20 @@ public class NoteDataProvider {
      * @return
      */
     public static List<NoteModel> loadNoteList(final Context context, final String parentUniqueId) {
+        return loadNoteList(context, parentUniqueId, SortBy.CREATED_AT, AscDescOrder.DESC);
+    }
+
+    /**
+     * Returns note document and library.
+     *
+     * @param context
+     * @param parentUniqueId
+     * @param sortBy
+     * @param ascOrder
+     * @return
+     */
+    public static List<NoteModel> loadNoteList(final Context context, final String parentUniqueId,
+                                               @SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascOrder) {
         Select select = new Select();
         Condition condition;
         if (StringUtils.isNullOrEmpty(parentUniqueId)) {
@@ -44,9 +58,24 @@ public class NoteDataProvider {
         } else {
             condition = NoteModel_Table.parentUniqueId.eq(parentUniqueId);
         }
-        Where where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.createdAt, false);
-        List<NoteModel> list = where.queryList();
-        return list;
+        Where<NoteModel> where;
+        boolean ascending = (ascOrder == AscDescOrder.ASC);
+        switch (sortBy) {
+            case SortBy.UPDATED_AT:
+                where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.updatedAt, ascending);
+                break;
+            case SortBy.TITLE:
+                where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.title, ascending);
+                break;
+            case SortBy.TYPE:
+                where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.type, ascending);
+                break;
+            case SortBy.CREATED_AT:
+            default:
+                where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.createdAt, ascending);
+                break;
+        }
+        return where.queryList();
     }
 
     /**
@@ -200,9 +229,15 @@ public class NoteDataProvider {
         return path;
     }
 
-    public static boolean checkNoteNameLegality(final String targetName) {
+    public static boolean checkNoteNameLegality(final String targetName ,final  String parentID ,boolean checkThisLevelOnly) {
         Select select = new Select();
-        Where where = select.from(NoteModel.class).where(NoteModel_Table.title.eq(targetName));
+        Where where;
+        if (checkThisLevelOnly && StringUtils.isNotBlank(parentID)) {
+            where = select.from(NoteModel.class).
+                    where(NoteModel_Table.title.eq(targetName)).and(NoteModel_Table.parentUniqueId.eq(parentID));
+        } else {
+            where = select.from(NoteModel.class).where(NoteModel_Table.title.eq(targetName));
+        }
         return where.queryList().size() == 0;
     }
 

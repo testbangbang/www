@@ -56,24 +56,44 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     private TouchPoint erasePoint = null;
     protected String activityAction;
     protected String noteTitle;
+    protected String parentID;
     protected Button pageIndicator;
+
+    private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY};
+    private ActivityState activityState;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setActivityState(ActivityState.CREATE);
         super.onCreate(savedInstanceState);
         registerDeviceReceiver();
     }
 
     @Override
     protected void onResume() {
+        setActivityState(ActivityState.RESUME);
         super.onResume();
         initSurfaceView();
     }
 
     @Override
     protected void onPause() {
+        setActivityState(ActivityState.PAUSE);
         super.onPause();
         syncWithCallback(true, false, null);
+    }
+
+    public ActivityState getActivityState() {
+        return activityState;
+    }
+
+    public void setActivityState(ActivityState activityState) {
+        this.activityState = activityState;
+    }
+
+    public boolean isActivityRunning() {
+        return getActivityState() == ActivityState.CREATE ||
+                getActivityState() == ActivityState.RESUME;
     }
 
     @Override
@@ -91,6 +111,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     @Override
     protected void onDestroy() {
+        setActivityState(ActivityState.DESTROY);
         cleanUpAllPopMenu();
         syncWithCallback(false, false, new BaseCallback() {
             @Override
@@ -158,7 +179,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected void syncWithCallback(boolean render,
                                     boolean resume,
                                     final BaseCallback callback) {
-        final List<Shape> stash = getNoteViewHelper().deatchStash();
+        final List<Shape> stash = getNoteViewHelper().detachStash();
         final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(stash,
                 render,
                 resume,
@@ -191,11 +212,15 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onSystemUIOpened() {
-        syncWithCallback(true, false, null);
+        if (isActivityRunning()) {
+            syncWithCallback(true, false, null);
+        }
     }
 
     protected void onSystemUIClosed() {
-        syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+        if (isActivityRunning()) {
+            syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+        }
     }
 
     protected void initSurfaceView() {
@@ -234,12 +259,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         }
         activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
         noteTitle = intent.getStringExtra(TAG_NOTE_TITLE);
+        parentID = intent.getStringExtra(Utils.PARENT_LIBRARY_ID);
         if (Utils.ACTION_CREATE.equals(activityAction)) {
             handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
-                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
+                    parentID);
         } else if (Utils.ACTION_EDIT.equals(activityAction)) {
             handleDocumentEdit(intent.getStringExtra(Utils.DOCUMENT_ID),
-                    intent.getStringExtra(Utils.PARENT_LIBRARY_ID));
+                    parentID);
         }
     }
 
@@ -280,29 +306,36 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                 onFinishErasing(pointList);
             }
 
+            @Override
             public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
-                drawPage();
-            }
-
-            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
-                if (last) {
+                if (!shape.supportDFB()) {
                     drawPage();
                 }
             }
 
+            @Override
+            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
+                if (last && !shape.supportDFB()) {
+                    drawPage();
+                }
+            }
+
+            @Override
             public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-                drawPage();
+                if (!shape.supportDFB()) {
+                    drawPage();
+                }
             }
 
         };
     }
 
-    private void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+    protected void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
         //final AddShapeInBackgroundAction<ScribbleActivity> action = new AddShapeInBackgroundAction<>(shape);
         //action.execute(this, null);
     }
 
-    private void onBeginErasing() {
+    protected void onBeginErasing() {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -311,7 +344,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         });
     }
 
-    private void onErasing(final MotionEvent touchPoint) {
+    protected void onErasing(final MotionEvent touchPoint) {
         if (erasePoint == null) {
             return;
         }
@@ -320,7 +353,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         drawPage();
     }
 
-    private void onFinishErasing(TouchPointList pointList) {
+    protected void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
         drawPage();
         RemoveByPointListAction<BaseScribbleActivity> removeByPointListAction = new

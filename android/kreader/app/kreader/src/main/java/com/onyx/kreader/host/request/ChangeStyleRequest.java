@@ -16,8 +16,7 @@ public class ChangeStyleRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        useRenderBitmap(reader);
         reader.getReaderLayoutManager().setStyle(readerStyle);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+        drawVisiblePages(reader);
     }
 }

@@ -1,5 +1,6 @@
 package com.onyx.android.note.activity.mx;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,9 @@ import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.android.note.activity.BaseManagerActivity;
+import com.onyx.android.note.activity.onyx.SpanScribbleActivity;
+import com.onyx.android.note.data.ScribbleMode;
+import com.onyx.android.note.dialog.DialogChooseScribbleMode;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
@@ -38,7 +42,6 @@ public class ManagerActivity extends BaseManagerActivity {
     private LinearLayout controlPanel;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class ManagerActivity extends BaseManagerActivity {
     private void initView() {
         initSupportActionBarWithCustomBackFunction();
         getSupportActionBar().setTitle(ManagerActivity.class.getSimpleName());
+        scribbleItemLayoutID = R.layout.mx_scribble_item;
         chooseModeButton = (CheckedTextView) findViewById(R.id.selectMode);
         addFolderButton = (TextView) findViewById(R.id.add_folder);
         toolBarIcon = (ImageView) findViewById(R.id.imageView_main_title);
@@ -94,7 +98,7 @@ public class ManagerActivity extends BaseManagerActivity {
                 dlgCreateFolder.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
                     @Override
                     public boolean onCreated(final String title) {
-                        final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(title);
+                        final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(title, currentLibraryId, true);
                         action.execute(ManagerActivity.this, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
@@ -150,7 +154,7 @@ public class ManagerActivity extends BaseManagerActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(input);
+                final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(input, currentLibraryId, true);
                 action.execute(ManagerActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -186,6 +190,25 @@ public class ManagerActivity extends BaseManagerActivity {
         }
     }
 
+    @Override
+    protected void createDocument(final GObject object) {
+//        super.createDocument(object);
+        DialogChooseScribbleMode dlgMode = new DialogChooseScribbleMode();
+        dlgMode.setCallBack(new DialogChooseScribbleMode.Callback() {
+            @Override
+            public void onModeChosen(@ScribbleMode.ScribbleModeDef int mode) {
+                switch(mode){
+                    case ScribbleMode.MODE_NORMAL_SCRIBBLE:
+                        startScribbleActivity(object,getCurrentLibraryId(),Utils.ACTION_CREATE);
+                        break;
+                    case ScribbleMode.MODE_SPAN_SCRIBBLE:
+                        startActivity(new Intent(ManagerActivity.this, SpanScribbleActivity.class));
+                        break;
+                }
+            }
+        });
+        dlgMode.show(getFragmentManager());
+    }
 
     @Override
     protected void updateButtonsStatusByMode() {
@@ -213,7 +236,7 @@ public class ManagerActivity extends BaseManagerActivity {
 
     @Override
     public void updateUIWithNewNoteList(List<NoteModel> curLibSubContList) {
-        contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
+        contentView.setSubLayoutParameter(scribbleItemLayoutID, getItemViewDataMap(currentSelectMode));
         adapter = Utils.adapterFromNoteModelList(curLibSubContList, R.drawable.ic_student_note_folder_gray,
                 R.drawable.ic_student_note_pic_gray);
         adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));
@@ -223,4 +246,24 @@ public class ManagerActivity extends BaseManagerActivity {
         updateActivityTitleAndIcon();
     }
 
+    @Override
+    protected void updateActivityTitleAndIcon() {
+        int iconRes = 0;
+        String titleResString;
+        if (currentLibraryId != null) {
+            iconRes = R.drawable.title_back;
+            titleResString = currentLibraryName;
+            backFunctionLayout.setEnabled(true);
+            backFunctionLayout.setClickable(true);
+            backFunctionLayout.setFocusable(true);
+        } else {
+            iconRes = R.drawable.ic_business_write_pen_gray_34dp;
+            titleResString = getString(R.string.app_name);
+            backFunctionLayout.setEnabled(false);
+            backFunctionLayout.setClickable(false);
+            backFunctionLayout.setFocusable(false);
+        }
+        toolBarIcon.setImageResource(iconRes);
+        toolBarTitle.setText(titleResString);
+    }
 }

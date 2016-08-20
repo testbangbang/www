@@ -80,8 +80,12 @@ public class PageManager {
     }
 
     public void add(final PageInfo pageInfo) {
-        pageInfoMap.put(pageInfo.getName(), pageInfo);
-        pageInfoList.add(pageInfo);
+        PageInfo page = pageInfoMap.get(pageInfo.getName());
+        if (page == null) {
+            pageInfoMap.put(pageInfo.getName(), pageInfo);
+            page = pageInfo;
+        }
+        pageInfoList.add(page);
     }
 
     /**

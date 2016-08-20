@@ -5,15 +5,22 @@ import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
-import com.jakewharton.disklrucache.DiskLruCache;
 import com.onyx.android.sdk.api.ReaderBitmap;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.api.*;
-import com.onyx.kreader.cache.BitmapLruCache;
+import com.onyx.kreader.api.ReaderDocument;
+import com.onyx.kreader.api.ReaderDocumentMetadata;
+import com.onyx.kreader.api.ReaderHitTestManager;
+import com.onyx.kreader.api.ReaderNavigator;
+import com.onyx.kreader.api.ReaderPlugin;
+import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.api.ReaderRendererFeatures;
+import com.onyx.kreader.api.ReaderSearchManager;
+import com.onyx.kreader.api.ReaderView;
+import com.onyx.kreader.cache.BitmapSoftLruCache;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
-import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
@@ -24,11 +31,11 @@ import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
 import com.onyx.kreader.reflow.ImageReflowManager;
-import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.utils.ImageUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -39,29 +46,27 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ReaderHelper {
     private static final String TAG = ReaderHelper.class.getSimpleName();
 
-    public class BitmapCopyCoordinator {
+    public class BitmapTransferCoordinator {
         private ReentrantLock lock = new ReentrantLock();
-        Condition condition = lock.newCondition();
-        private boolean renderBitmapDirty = false;
+        private Condition condition = lock.newCondition();
+        private boolean finished = false;
 
-        public void copyRenderBitmapToViewport() {
+        public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
             try {
                 lock.lock();
-                if (!renderBitmapDirty) {
-                    return;
-                }
-                ReaderHelper.this.copyRenderBitmapToViewportImpl();
-                renderBitmapDirty = false;
+                bitmapCache.put(viewportBitmap.getKey(), new SoftReference<>(viewportBitmap.getBitmap()));
+                viewportBitmap.attachWith(renderBitmap.getKey(), renderBitmap.getBitmap());
+                finished = true;
                 condition.signal();
             } finally {
                 lock.unlock();
             }
         }
 
-        public void waitCopy() {
+        public void waitTransfer() {
             try {
                 lock.lock();
-                while (renderBitmapDirty) {
+                while (!finished) {
                     condition.await();
                 }
             } catch (InterruptedException e) {
@@ -85,14 +90,13 @@ public class ReaderHelper {
     private ReaderRenderer renderer;
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
-    private ReaderBitmapImpl renderBitmap;
-    // copy of renderBitmap, to be used by UI thread
+    // to be used by UI thread
     private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
-    private BitmapCopyCoordinator bitmapCopyCoordinator = new BitmapCopyCoordinator();
+    private BitmapTransferCoordinator bitmapTransferCoordinator = new BitmapTransferCoordinator();
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
     private ImageReflowManager imageReflowManager;
-    private BitmapLruCache bitmapLruCache;
+    private BitmapSoftLruCache bitmapCache;
 
     public ReaderHelper() {
     }
@@ -170,14 +174,13 @@ public class ReaderHelper {
         navigator = null;
         searchManager = null;
         hitTestManager = null;
-        if (bitmapLruCache != null) {
-            FileUtils.closeQuietly(bitmapLruCache);
-        }
+
+        clearBitmapCache();
+        clearImageReflowManager();
     }
 
     public void updateViewportSize(int newWidth, int newHeight) {
         getViewOptions().setSize(newWidth, newHeight);
-        updateRenderBitmap(newWidth, newHeight);
         onViewSizeChanged();
     }
 
@@ -195,34 +198,12 @@ public class ReaderHelper {
     public void afterDraw(ReaderBitmapImpl bitmap) {
     }
 
-    public void updateRenderBitmap(int width, int height) {
-        Bitmap.Config bitmapConfig = Bitmap.Config.ARGB_8888;
-        if (renderBitmap == null) {
-            renderBitmap = ReaderBitmapImpl.create(width, height, bitmapConfig);
-        } else {
-            renderBitmap.update(width, height, bitmapConfig);
-        }
-    }
-
-    public final ReaderBitmapImpl getRenderBitmap() {
-        updateRenderBitmap(viewOptions.getViewWidth(), viewOptions.getViewHeight());
-        return renderBitmap;
-    }
-
-    public boolean isRenderBitmapDirty() {
-        return bitmapCopyCoordinator.renderBitmapDirty;
-    }
-
-    public void setRenderBitmapDirty(boolean dirty) {
-        bitmapCopyCoordinator.renderBitmapDirty = dirty;
-    }
-
     public final ReaderBitmapImpl getViewportBitmap() {
         return viewportBitmap;
     }
 
-    public BitmapCopyCoordinator getBitmapCopyCoordinator() {
-        return bitmapCopyCoordinator;
+    public BitmapTransferCoordinator getBitmapTransferCoordinator() {
+        return bitmapTransferCoordinator;
     }
 
     public ReaderPlugin getPlugin() {
@@ -260,14 +241,14 @@ public class ReaderHelper {
         return imageReflowManager;
     }
 
-    public BitmapLruCache getBitmapLruCache() {
-        return bitmapLruCache;
+    public BitmapSoftLruCache getBitmapCache() {
+        return bitmapCache;
     }
 
     public void initData(Context context) {
         initImageReflowManager(context);
-        initBitmapLruCache(context);
-        //initChineseAnalyzer(context);
+        initBitmapCache();
+//        initChineseAnalyzer(context);
     }
 
     private void initChineseAnalyzer(Context context) {
@@ -286,16 +267,22 @@ public class ReaderHelper {
         }
     }
 
-    private void initBitmapLruCache(Context context) {
-        if (bitmapLruCache == null) {
-            File cacheLocation = new File(context.getCacheDir(), DiskLruCache.class.getCanonicalName());
-            if (!cacheLocation.exists()) {
-                cacheLocation.mkdirs();
-            }
-            BitmapLruCache.Builder builder = new BitmapLruCache.Builder();
-            builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
-            builder.setDiskCacheEnabled(false).setDiskCacheLocation(cacheLocation);
-            bitmapLruCache = builder.build();
+    private void clearImageReflowManager() {
+        if (imageReflowManager != null) {
+            imageReflowManager.clearAllCacheFiles();
+        }
+    }
+
+    private void initBitmapCache() {
+        if (bitmapCache == null) {
+            bitmapCache = new BitmapSoftLruCache(5);
+        }
+    }
+
+    private void clearBitmapCache() {
+        if (bitmapCache != null) {
+            bitmapCache.clear();
+            bitmapCache = null;
         }
     }
 
@@ -343,13 +330,6 @@ public class ReaderHelper {
             ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel());
         }
     }
-
-    private void copyRenderBitmapToViewportImpl() {
-        if (renderBitmap != null && renderBitmap.getBitmap() != null &&
-                !renderBitmap.getBitmap().isRecycled()) {
-            viewportBitmap.copyFrom(renderBitmap.getBitmap());
-        }
-   }
 
     public final String getDocumentPath() {
         return documentPath;

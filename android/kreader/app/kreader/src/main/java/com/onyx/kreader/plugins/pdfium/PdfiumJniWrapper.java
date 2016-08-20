@@ -59,6 +59,8 @@ public class PdfiumJniWrapper {
 
     private native int nativeSearchInPage(int id, int page, int x, int y, int width, int height, int rotation, final byte [] buffer, boolean caseSensitive, boolean matchWholeWord, int contextLength, final List<ReaderSelection> list);
 
+    private native boolean nativeIsTextPage(int id, int page);
+
     private native byte [] nativeGetPageText(int id, int page);
 
     private native ReaderSentence nativeGetSentence(int id, int page, int sentenceStartIndex, final ReaderTextSplitter splitter);
@@ -116,7 +118,7 @@ public class PdfiumJniWrapper {
     }
 
     public int hitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final PdfiumSelection selection) {
-        return nativeHitTest(id, page, x, y, width, height, rotation, startX, startY, endX, endY, ReaderTextSplitterImpl.sharedInstance(), selection);
+        return nativeHitTest(id, page, x, y, width, height, rotation, startX, startY, endX, endY, null, selection);
     }
 
     public int selection(int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final PdfiumSelection selection) {
@@ -127,6 +129,10 @@ public class PdfiumJniWrapper {
         Debug.d(TAG, "searching in page: " + page + ", " + text);
         nativeSearchInPage(id, page, x, y, width, height, rotation, StringUtils.utf16leBuffer(text), caseSensitive, matchWholeWord, contextLength, list);
         Debug.d(TAG, "searched results: " + list.size());
+    }
+
+    public boolean isTextPage(int page) {
+        return nativeIsTextPage(id, page);
     }
 
     public String getPageText(int page) {

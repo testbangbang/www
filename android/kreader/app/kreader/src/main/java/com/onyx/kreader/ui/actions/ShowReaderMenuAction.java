@@ -10,8 +10,6 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderMenu;
@@ -19,6 +17,7 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
+import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -36,6 +35,7 @@ import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
+import com.onyx.kreader.ui.dialog.DialogTts;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.utils.RawResourceUtil;
 
@@ -100,17 +100,6 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void updateReaderMenuState(final ReaderDataHolder readerDataHolder, final ReaderLayerMenuState state) {
-        state.setTtsState(getTtsState(readerDataHolder));
-    }
-
-    private static ReaderLayerMenuState.TtsState getTtsState(final ReaderDataHolder readerreaderDataHolderctivity) {
-        if (readerreaderDataHolderctivity.getTtsManager().isSpeaking()) {
-            return ReaderLayerMenuState.TtsState.Speaking;
-        } else if (readerreaderDataHolderctivity.getTtsManager().isPaused()) {
-            return ReaderLayerMenuState.TtsState.Paused;
-        } else {
-            return ReaderLayerMenuState.TtsState.Stopped;
-        }
     }
 
     private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderDataHolder readerDataHolder) {
@@ -204,14 +193,8 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case "/Directory/Export":
                         break;
-                    case "/TTS/Play":
-                        ttsPlay(readerDataHolder);
-                        break;
-                    case "/TTS/Pause":
-                        ttsPause(readerDataHolder);
-                        break;
-                    case "/TTS/Stop":
-                        ttsStop(readerDataHolder);
+                    case "/More/TTS":
+                        showTtsDialog(readerDataHolder);
                         break;
                     case "/More/shape":
                         startShapeDrawing(readerDataHolder);
@@ -219,8 +202,17 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/GotoPage":
                         gotoPage(readerDataHolder);
                         break;
-                    case "/SetScreenRefreshRate":
+                    case "/NavigationBackward":
+                        backward(readerDataHolder);
+                        break;
+                    case "/NavigationForward":
+                        forward(readerDataHolder);
+                        break;
+                    case "/More/Refresh":
                         showScreenRefreshDialog(readerDataHolder);
+                        break;
+                    case "/More/FrontLight":
+                        showBrightnessDialog(readerDataHolder);
                         break;
                     case "/StartDictApp":
                         startDictionaryApp(readerDataHolder);
@@ -337,25 +329,6 @@ public class ShowReaderMenuAction extends BaseAction {
         action.execute(readerDataHolder);
     }
 
-    private void ttsPlay(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
-        readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.getTtsManager().play();
-            }
-        });
-    }
-
-    private void ttsPause(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getTtsManager().pause();
-    }
-
-    private void ttsStop(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getTtsManager().stop();
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.BASE_PROVIDER);
-    }
-
     private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {
         // get current page and start rendering.
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
@@ -367,7 +340,16 @@ public class ShowReaderMenuAction extends BaseAction {
         new ShowQuickPreviewAction().execute(readerDataHolder);
     }
 
+    private void backward(final ReaderDataHolder readerDataHolder) {
+        new BackwardAction().execute(readerDataHolder);
+    }
+
+    private void forward(final ReaderDataHolder readerDataHolder) {
+        new ForwardAction().execute(readerDataHolder);
+    }
+
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         DialogScreenRefresh dlg = new DialogScreenRefresh();
         dlg.setListener(new DialogScreenRefresh.onScreenRefreshChangedListener() {
             @Override
@@ -377,6 +359,10 @@ public class ShowReaderMenuAction extends BaseAction {
             }
         });
         dlg.show(readerActivity.getFragmentManager());
+    }
+
+    private void showBrightnessDialog(ReaderDataHolder readerDataHolder){
+        new DialogBrightness(readerDataHolder.getContext()).show();
     }
 
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
@@ -398,5 +384,11 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
         DialogSearch dialogSearch = new DialogSearch(readerDataHolder);
         dialogSearch.show();
+    }
+
+    private void showTtsDialog(final ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
+        DialogTts dialogTts = new DialogTts(readerDataHolder);
+        dialogTts.show();
     }
 }

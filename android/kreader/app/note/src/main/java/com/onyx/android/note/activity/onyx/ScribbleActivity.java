@@ -1,6 +1,5 @@
 package com.onyx.android.note.activity.onyx;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -32,15 +31,12 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
-import java.util.List;
 
 
 /**
@@ -329,7 +325,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ScribbleActivity> action = new CheckNoteNameLegalityAction<ScribbleActivity>(input);
+                final CheckNoteNameLegalityAction<ScribbleActivity> action = new CheckNoteNameLegalityAction<ScribbleActivity>(input, parentID, false);
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -414,24 +410,29 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void testSpan() {
-        final List<Shape> stash = getNoteViewHelper().deatchStash();
-        final SpannableRequest spannableRequest = new SpannableRequest(stash);
-        getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                final Dialog dlg = new Dialog(ScribbleActivity.this);
-                dlg.setContentView(R.layout.span_text_view);
-                dlg.setTitle("Message");
-                TextView textView = (TextView)dlg.findViewById(R.id.text_view);
-                textView.setText(spannableRequest.getSpannableStringBuilder());
-                syncWithCallback(true, false, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        dlg.show();
-                    }
-                });
-
-            }
-        });
+//        final List<Shape> stash = getNoteViewHelper().detachStash();
+//        final SpannableRequest spannableRequest = new SpannableRequest(stash);
+//        getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
+//            @Override
+//            public void done(BaseRequest request, Throwable e) {
+//                final OnyxAlertDialog dlg = new OnyxAlertDialog();
+//                dlg.setParams(new OnyxAlertDialog.Params().setCustomContentLayoutResID(R.layout.span_text_view)
+//                        .setTittleString("Message")
+//                        .setCustomViewAction(new OnyxAlertDialog.CustomViewAction() {
+//                    @Override
+//                    public void onCreateCustomView(View customView, TextView pageIndicator) {
+//                        TextView textView = (TextView)customView.findViewById(R.id.text_view);
+//                        textView.setText(spannableRequest.getSpannableStringBuilder());
+//                    }
+//                }));
+//                syncWithCallback(true, false, new BaseCallback() {
+//                    @Override
+//                    public void done(BaseRequest request, Throwable e) {
+//                        dlg.show(getFragmentManager(),"span dlg");
+//                    }
+//                });
+//
+//            }
+//        });
     }
 }

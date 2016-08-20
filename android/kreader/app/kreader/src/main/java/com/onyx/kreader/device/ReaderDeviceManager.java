@@ -113,6 +113,14 @@ public class ReaderDeviceManager {
         EpdController.setViewDefaultUpdateMode(view, UpdateMode.GC);
     }
 
+    public static void applyRegalUpdate(View view) {
+        EpdController.setViewDefaultUpdateMode(view, UpdateMode.REGAL);
+    }
+
+    public static void applyRegalClearUpdate(View view) {
+        EpdController.setViewDefaultUpdateMode(view, UpdateMode.REGAL_D);
+    }
+
     public static void enterAnimationUpdate(boolean clear) {
         EpdController.applyApplicationFastMode(APP, true, clear);
     }
@@ -134,12 +142,33 @@ public class ReaderDeviceManager {
         refreshCount = gcInterval;
     }
 
+    public static int getGcInterval() {
+        return gcInterval;
+    }
+
     public static void setGcInterval(int interval) {
         gcInterval = interval - 1;
         refreshCount = 0;
     }
 
     public static void applyWithGCInterval(View view) {
+        if (EpdController.supportRegal()) {
+            applyWithGCIntervalWitRegal(view);
+        } else {
+            applyWithGCIntervalWithoutRegal(view);
+        }
+    }
+
+    public static void applyWithGCIntervalWitRegal(View view) {
+        if (refreshCount++ >= gcInterval) {
+            refreshCount = 0;
+            applyRegalUpdate(view);
+        } else {
+            applyRegalUpdate(view);
+        }
+    }
+
+    public static void applyWithGCIntervalWithoutRegal(View view) {
         if (refreshCount++ >= gcInterval) {
             refreshCount = 0;
             applyGCUpdate(view);

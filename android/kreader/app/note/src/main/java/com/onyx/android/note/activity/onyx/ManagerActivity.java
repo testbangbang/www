@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,18 +16,23 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
+import com.onyx.android.note.actions.manager.LoadNoteListAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.android.note.activity.BaseManagerActivity;
 import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
+import com.onyx.android.note.dialog.DialogSortBy;
+import com.onyx.android.note.utils.NotePreference;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.CheckableImageView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.SortBy;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -40,14 +46,22 @@ public class ManagerActivity extends BaseManagerActivity {
     private CheckableImageView chooseModeButton;
     private ImageView addFolderButton, moveButton, deleteButton;
     private LinearLayout controlPanel;
+    private @SortBy.SortByDef int currentSortBy = SortBy.CREATED_AT;
+    private @AscDescOrder.AscDescOrderDef int ascOrder= AscDescOrder.DESC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NoteApplication.initWithAppConfig(this);
         setContentView(R.layout.onyx_activity_manager);
+        loadSortByAndAsc();
         initView();
         initNoteViewHelper();
+    }
+
+    private void loadSortByAndAsc() {
+        currentSortBy = SortBy.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_SORT_BY, SortBy.CREATED_AT));
+        ascOrder = AscDescOrder.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_ASC_ORDER, AscDescOrder.DESC));
     }
 
     private void initNoteViewHelper() {
@@ -106,7 +120,7 @@ public class ManagerActivity extends BaseManagerActivity {
                 dlgCreateFolder.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
                     @Override
                     public boolean onCreated(final String title) {
-                        final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(title);
+                        final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(title, currentLibraryId, false);
                         action.execute(ManagerActivity.this, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
@@ -168,7 +182,7 @@ public class ManagerActivity extends BaseManagerActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(input);
+                final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(input, currentLibraryId, false);
                 action.execute(ManagerActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -256,10 +270,42 @@ public class ManagerActivity extends BaseManagerActivity {
             case R.id.rename:
                 renameNoteOrLibrary(chosenItemsList.get(0));
                 break;
+            case R.id.sort:
+                onSortBy();
+                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onSortBy() {
+        DialogSortBy dialogSortBy = new DialogSortBy();
+        Bundle bundle = new Bundle();
+        bundle.putInt(DialogSortBy.ARGS_SORT_BY,currentSortBy);
+        bundle.putInt(DialogSortBy.ARGS_ASC,ascOrder);
+        dialogSortBy.setArguments(bundle);
+        dialogSortBy.setCallBack(new DialogSortBy.Callback() {
+            @Override
+            public void onSortBy(@SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascOrder) {
+                currentSortBy = sortBy;
+                ManagerActivity.this.ascOrder = ascOrder;
+                loadNoteList();
+                saveSortByAscArgs();
+            }
+        });
+        dialogSortBy.show(getFragmentManager());
+    }
+
+    private void saveSortByAscArgs() {
+        NotePreference.setIntValue(NotePreference.KEY_NOTE_SORT_BY, currentSortBy);
+        NotePreference.setIntValue(NotePreference.KEY_NOTE_ASC_ORDER, ascOrder);
+    }
+
+    @Override
+    public void loadNoteList() {
+        final LoadNoteListAction<BaseManagerActivity> action = new LoadNoteListAction<>(getCurrentLibraryId(), currentSortBy, ascOrder);
+        action.execute(this);
     }
 
     @Override
@@ -295,7 +341,7 @@ public class ManagerActivity extends BaseManagerActivity {
 
     @Override
     public void updateUIWithNewNoteList(List<NoteModel> curLibSubContList) {
-        contentView.setSubLayoutParameter(R.layout.scribble_item, getItemViewDataMap(currentSelectMode));
+        contentView.setSubLayoutParameter(scribbleItemLayoutID, getItemViewDataMap(currentSelectMode));
         adapter = Utils.adapterFromNoteModelList(curLibSubContList, R.drawable.ic_student_note_folder_gray,
                 R.drawable.ic_student_note_pic_gray);
         adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));
@@ -305,4 +351,43 @@ public class ManagerActivity extends BaseManagerActivity {
         updateActivityTitleAndIcon();
     }
 
+    @Override
+    protected void updateActivityTitleAndIcon() {
+        int iconRes = 0;
+        String titleResString;
+        ViewGroup.LayoutParams params = toolBarIcon.getLayoutParams();
+        if (currentLibraryId != null) {
+            iconRes = R.drawable.title_back;
+            titleResString = currentLibraryName;
+            params.height = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_image_height);
+            params.width = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_image_width);
+        } else {
+            iconRes = R.drawable.ic_business_write_pen_gray_34dp;
+            params.height = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_category_image_height);
+            params.width = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_category_image_width);
+            titleResString = getString(R.string.app_name);
+        }
+        toolBarIcon.setLayoutParams(params);
+        toolBarIcon.setImageResource(iconRes);
+        toolBarTitle.setText(titleResString);
+    }
+
+    @Override
+    protected void beforeSetupItemData(ContentItemView view, GObject object) {
+        if (object.isDummyObject()) {
+            return;
+        }
+        switch (Utils.getItemType(object)) {
+            case DataItemType.TYPE_DOCUMENT:
+                view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_XY);
+                view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, R.drawable.shadow);
+                break;
+            //TODO:temp to use no shadow bg for create item.need update new add icon.
+            case DataItemType.TYPE_CREATE:
+            case DataItemType.TYPE_LIBRARY:
+                view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_CENTER);
+                view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, 0);
+                break;
+        }
+    }
 }

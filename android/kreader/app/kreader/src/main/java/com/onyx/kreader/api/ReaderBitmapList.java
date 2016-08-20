@@ -1,6 +1,7 @@
 package com.onyx.kreader.api;
 
 import android.graphics.Bitmap;
+import com.onyx.kreader.cache.BitmapHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,13 +96,14 @@ public class ReaderBitmapList {
         current = 0;
         count = 0;
         if (bitmapList != null) {
+            // TODO why not recycle bitmaps in the list?
             bitmapList.clear();
         }
     }
 
     public void addBitmap(Bitmap bitmap) {
         if (bitmapList == null) {
-            bitmapList = new ArrayList<Bitmap>();
+            bitmapList = new ArrayList<>();
         }
         count++;
         if (keepMemoryCache) {

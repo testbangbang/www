@@ -78,7 +78,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:gravity="center_horizontal"
                 android:id="@+id/total_page"
                 android:text="@string/total_page"
@@ -98,7 +98,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
+                <ImageButton
+                    android:padding="5dp"
+                    android:background="@drawable/imagebtn_bg"
                     android:id="@+id/pre_icon"
                     android:scaleType="fitXY"
                     android:layout_centerVertical="true"
@@ -116,7 +118,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-                <ImageView
+                <ImageButton
+                    android:padding="5dp"
+                    android:background="@drawable/imagebtn_bg"
                     android:id="@+id/next_icon"
                     android:scaleType="fitXY"
                     android:layout_centerVertical="true"
@@ -145,6 +149,7 @@
             </android.support.v7.widget.RecyclerView>
 
             <TextView
+                android:visibility="gone"
                 android:layout_below="@+id/search_history_list"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/delete_history"
@@ -163,6 +168,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </RelativeLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:background="@drawable/dialog_border"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/loading_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:gravity="center"
+                style="?android:attr/progressBarStyleInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:id="@+id/progressBar" />
+
+            <TextView
+                android:text="@string/searching"
+                android:id="@+id/textview_message"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:textSize="@dimen/dialog_loading_text_size" />
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

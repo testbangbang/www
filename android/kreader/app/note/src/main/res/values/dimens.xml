@@ -2,8 +2,10 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">0dp</dimen>
     <dimen name="activity_vertical_margin">0dp</dimen>
-    <dimen name="scribble_bg_item_height">160dp</dimen>
-    <dimen name="scribble_bg_item_width">107dp</dimen>
+    <dimen name="mx_scribble_bg_item_height">160dp</dimen>
+    <dimen name="mx_scribble_bg_item_width">107dp</dimen>
+    <dimen name="onyx_scribble_bg_item_height">160dp</dimen>
+    <dimen name="onyx_scribble_bg_item_width">107dp</dimen>
     <dimen name="mx_note_menu_height">110dp</dimen>
     <dimen name="mx_note_style_width">480dp</dimen>
     <dimen name="pen_width_popup_height">80dp</dimen>
@@ -17,4 +19,5 @@
     <dimen name="onyx_sub_note_menu_height">72dp</dimen>
     <dimen name="onyx_note_style_width">340dp</dimen>
     <dimen name="onyx_note_page_count_control_x_axis_margin">15dp</dimen>
+    <dimen name="page_indicator_area_bottom_margin">10dp</dimen>
 </resources>

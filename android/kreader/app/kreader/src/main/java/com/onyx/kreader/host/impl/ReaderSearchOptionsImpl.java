@@ -11,6 +11,7 @@ public class ReaderSearchOptionsImpl implements ReaderSearchOptions {
     private boolean caseSensitive;
     private boolean matchWholeWord;
     private String pageName;
+    private int contextLength = 100;
 
     public ReaderSearchOptionsImpl(final String page, final String text, boolean cs, boolean wholeWord) {
         pageName = page;
@@ -37,6 +38,10 @@ public class ReaderSearchOptionsImpl implements ReaderSearchOptions {
 
     @Override
     public int contextLength() {
-        return 100;
+        return contextLength;
+    }
+
+    public void setContextLength(int contextLength) {
+        this.contextLength = contextLength;
     }
 }

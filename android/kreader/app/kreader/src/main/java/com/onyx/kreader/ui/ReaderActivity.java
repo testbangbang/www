@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -23,7 +22,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
@@ -34,16 +32,13 @@ import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.ForwardAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.OpenDocumentAction;
-import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
@@ -278,7 +273,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
-        ReaderDeviceManager.applyWithGCInterval(surfaceView);
+        if (event.isApplyGCIntervalUpdate()) {
+            ReaderDeviceManager.applyWithGCInterval(surfaceView);
+        }
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         updateStatusBar();
         renderShapeDataInBackground();
@@ -365,7 +362,6 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void drawPage(final Bitmap pageBitmap) {
-        // lock dirty region instead of whole surface view, which will cause strange duplicated GC update issue
         Canvas canvas = holder.lockCanvas(new Rect(surfaceView.getLeft(), surfaceView.getTop(),
                 surfaceView.getRight(), surfaceView.getBottom()));
         if (canvas == null) {
@@ -463,8 +459,6 @@ public class ReaderActivity extends ActionBarActivity {
         Rect displayRect = new Rect();
         pageInfo.getPositionRect().round(pageRect);
         translateDisplayRectToViewportRect(pageInfo.getDisplayRect()).round(displayRect);
-        Debug.d("pageRect: " + JSON.toJSON(pageRect));
-        Debug.d("displayRect: " + JSON.toJSON(displayRect));
         int current = getReaderDataHolder().getCurrentPage() + 1;
         int total = getReaderDataHolder().getPageCount();
         String title = getReaderDataHolder().getBookName();

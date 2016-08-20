@@ -62,6 +62,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
     protected ArrayList<String> targetMoveIDList = new ArrayList<>();
     protected GAdapter adapter;
     protected int currentPage;
+    protected int scribbleItemLayoutID = R.layout.onyx_scribble_item;
 
     public void setLookupTable(Map<String, Integer> lookupTable) {
         this.lookupTable = lookupTable;
@@ -162,19 +163,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
         progressBtn.setText((contentView.getCurrentPage() + 1) + File.separator + contentView.getTotalPageCount());
     }
 
-    protected void updateActivityTitleAndIcon() {
-        int iconRes = 0;
-        String titleResString;
-        if (currentLibraryId != null) {
-            iconRes = R.drawable.title_back;
-            titleResString = currentLibraryName;
-        } else {
-            iconRes = R.drawable.ic_business_write_pen_gray_34dp;
-            titleResString = getString(R.string.app_name);
-        }
-        toolBarIcon.setImageResource(iconRes);
-        toolBarTitle.setText(titleResString);
-    }
+    protected abstract void updateActivityTitleAndIcon();
 
     protected List<String> getPreloadIDList(int targetPage, boolean forceUpdate) {
         lookupTable.clear();
@@ -225,20 +214,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
 
             @Override
             public void beforeSetupData(ContentItemView view, GObject object) {
-                if (object.isDummyObject()) {
-                    return;
-                }
-                switch (Utils.getItemType(object)) {
-                    case DataItemType.TYPE_DOCUMENT:
-                        view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_XY);
-                        view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, R.drawable.shadow);
-                        break;
-                    case DataItemType.TYPE_CREATE:
-                    case DataItemType.TYPE_LIBRARY:
-                        view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_CENTER);
-                        view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, 0);
-                        break;
-                }
+               beforeSetupItemData(view, object);
             }
 
             @Override
@@ -327,7 +303,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
         chosenItemsList.clear();
         currentPage = contentView.getCurrentPage();
         currentSelectMode = selectionMode;
-        contentView.setSubLayoutParameter(R.layout.scribble_item,
+        contentView.setSubLayoutParameter(scribbleItemLayoutID,
                 getItemViewDataMap(selectionMode));
         if (selectionMode == SelectionMode.MULTISELECT_MODE) {
             contentView.unCheckOtherViews(0, false);
@@ -440,5 +416,22 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
         excludeList.addAll(targetMoveIDList);
         NoteLoadMovableLibraryAction<BaseManagerActivity> action = new NoteLoadMovableLibraryAction<>(getCurrentLibraryId(), excludeList);
         action.execute(BaseManagerActivity.this);
+    }
+
+    protected void beforeSetupItemData(ContentItemView view, GObject object){
+        if (object.isDummyObject()) {
+            return;
+        }
+        switch (Utils.getItemType(object)) {
+            case DataItemType.TYPE_DOCUMENT:
+                view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_XY);
+                view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, R.drawable.shadow);
+                break;
+            case DataItemType.TYPE_CREATE:
+            case DataItemType.TYPE_LIBRARY:
+                view.setThumbnailScaleType(GAdapterUtil.TAG_THUMBNAIL, ImageView.ScaleType.FIT_CENTER);
+                view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, 0);
+                break;
+        }
     }
 }

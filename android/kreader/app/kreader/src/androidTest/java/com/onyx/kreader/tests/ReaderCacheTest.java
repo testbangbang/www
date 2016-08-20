@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.onyx.kreader.cache.BitmapHolder;
 import com.onyx.kreader.cache.BitmapLruCache;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.PageInfo;
@@ -46,7 +47,7 @@ public class ReaderCacheTest extends ActivityInstrumentationTestCase2<ReaderTest
         List<PageInfo> list = randPageList();
         final String key = PositionSnapshot.cacheKey(list);
         ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(100, 100, Bitmap.Config.ARGB_8888);
-        assertNotNull(cache.put(key, bitmap.getBitmap()));
+        assertNotNull(cache.put(key, BitmapHolder.create(bitmap.getBitmap())));
         assertNotNull(cache.get(key));
     }
 

@@ -3,10 +3,10 @@ package com.onyx.kreader.reflow;
 import android.graphics.Bitmap;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.onyx.kreader.api.ReaderBitmapList;
-import com.onyx.kreader.cache.BitmapLruCache;
-import com.onyx.kreader.common.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.kreader.api.ReaderBitmapList;
+import com.onyx.kreader.cache.BitmapDiskLruCache;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.utils.ImageUtils;
 
 import java.io.File;
@@ -78,7 +78,9 @@ public class ImageReflowManager {
                 }
             }
             synchronized (lockMap.get(pageName)) {
-                if (getCurrentBitmap(pageName) != null) {
+                Bitmap reflowedBitmap = getCurrentBitmap(pageName);
+                if (reflowedBitmap != null) {
+                    reflowedBitmap.recycle();
                     return;
                 }
 
@@ -119,7 +121,7 @@ public class ImageReflowManager {
 
     private Map<String, ReaderBitmapList> pageMap;
     private File cacheRoot;
-    private BitmapLruCache bitmapCache;
+    private BitmapDiskLruCache bitmapCache;
     private ImageReflowSettings settings;
     private ReflowImpl impl;
 
@@ -131,12 +133,7 @@ public class ImageReflowManager {
         settings.dev_height = dh;
         impl = new ReflowImpl(this);
 
-        BitmapLruCache.Builder builder = new BitmapLruCache.Builder();
-        builder.setMemoryCacheEnabled(false)
-                .setDiskCacheEnabled(true)
-                .setDiskCacheLocation(root)
-                .setDiskCacheMaxSize(MAX_DISK_CACHE_SIZE);
-        bitmapCache = builder.build();
+        bitmapCache = BitmapDiskLruCache.create(root, MAX_DISK_CACHE_SIZE);
     }
 
     public ImageReflowSettings getSettings() {
@@ -208,6 +205,10 @@ public class ImageReflowManager {
         return list;
     }
 
+    public String getSubPageKey(final String pageName, int subPage) {
+        return getKeyOfSubPage(settings, pageName, subPage);
+    }
+
     public Bitmap getSubPageBitmap(final String pageName, int subPage) {
         return getBitmap(getKeyOfSubPage(settings, pageName, subPage));
     }
@@ -232,7 +233,6 @@ public class ImageReflowManager {
         ReaderBitmapList list = getSubPageList(pageName);
         list.addBitmap(bitmap);
         putBitmap(getKeyOfSubPage(settings, pageName, subPage), bitmap);
-        bitmap.recycle();
     }
 
     public void clearAllCacheFiles() {
@@ -244,9 +244,9 @@ public class ImageReflowManager {
                     entry.clearAllBitmap();
                 }
             }
+            pageMap.clear();
+            savePageMap();
         }
-        pageMap.clear();
-        savePageMap();
     }
 
 }

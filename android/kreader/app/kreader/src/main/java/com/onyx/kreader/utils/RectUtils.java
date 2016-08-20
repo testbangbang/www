@@ -3,8 +3,6 @@ package com.onyx.kreader.utils;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import com.alibaba.fastjson.JSON;
-import com.onyx.kreader.common.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,48 +34,16 @@ public class RectUtils {
 
     static public PointF getBeginTop(List<RectF> list) {
         RectF target = list.get(0);
-        for (RectF rect : list) {
-            int compare = compareBaseLine(rect, target);
-            if (compare == 0) {
-                if (rect.left < target.left) {
-                    target = rect;
-                }
-            } else if (compare < 0) {
-                target = rect;
-            }
-        }
-        Debug.d("getBeginTop, target: " + JSON.toJSONString(target) + ", " + JSON.toJSONString(list));
         return new PointF(target.left, target.top);
     }
 
     static public PointF getBeginBottom(List<RectF> list) {
         RectF target = list.get(0);
-        for (RectF rect : list) {
-            int compare = compareBaseLine(rect, target);
-            if (compare == 0) {
-                if (rect.left < target.left) {
-                    target = rect;
-                }
-            } else if (compare < 0) {
-                target = rect;
-            }
-        }
-        Debug.d("getBeginBottom, target: " + JSON.toJSONString(target) + ", " + JSON.toJSONString(list));
         return new PointF(target.left, target.bottom);
     }
 
     static public PointF getEndBottom(List<RectF> list) {
-        RectF target = list.get(0);
-        for (RectF rect : list) {
-            int compare = compareBaseLine(rect, target);
-            if (compare == 0) {
-                if (rect.right > target.right) {
-                    target = rect;
-                }
-            } else if (compare > 0) {
-                target = rect;
-            }
-        }
+        RectF target = list.get(list.size() - 1);
         return new PointF(target.right, target.bottom);
     }
 
@@ -98,9 +64,14 @@ public class RectUtils {
         if (Math.abs(compare) < tolerance) {
             return 0;
         }
-        if ((rect1.top < rect2.top && rect1.bottom > rect2.bottom) ||
-                (rect2.top < rect1.top && rect2.bottom > rect1.bottom)) {
+        if ((rect1.top <= rect2.top && rect1.bottom >= rect2.bottom) ||
+                (rect2.top <= rect1.top && rect2.bottom >= rect1.bottom)) {
             // if one rectangle is in the vertical range of another, we treat they as if they are on the same baseline
+            return 0;
+        }
+        float overlay = Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top);
+        if (overlay > rect1.height() / 2 || overlay > rect2.height() / 2) {
+            // if overlay is big enough, we think they are on the same baseline
             return 0;
         }
         return compare;
@@ -120,7 +91,7 @@ public class RectUtils {
                 }
             }
             if (!foundBaseLine) {
-                baseList.add(rect);
+                baseList.add(new RectF(rect));
             }
         }
         return baseList;

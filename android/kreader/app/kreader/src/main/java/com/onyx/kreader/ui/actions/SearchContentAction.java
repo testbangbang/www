@@ -18,13 +18,16 @@ public class SearchContentAction extends BaseAction {
     private String query;
     private OnSearchContentCallBack onSearchContentCallBack;
     private boolean stopSearch = false;
+    private int contentLength;
 
     public interface OnSearchContentCallBack{
         void OnNext(List<ReaderSelection> results);
+        void OnFinishedSearch();
     }
 
-    public SearchContentAction(final String query) {
+    public SearchContentAction(final String query, int contentLength) {
         this.query = query;
+        this.contentLength = contentLength;
     }
 
     @Override
@@ -40,10 +43,12 @@ public class SearchContentAction extends BaseAction {
 
     private void requestSearchBySequence(final ReaderDataHolder readerDataHolder, final int page, final String query){
         if (page >= readerDataHolder.getPageCount() || stopSearch){
+            onSearchContentCallBack.OnFinishedSearch();
             return;
         }
-        SearchRequest request = new SearchRequest(PagePositionUtils.fromPageNumber(page), query, false, false,readerDataHolder);
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), request, new BaseCallback() {
+        SearchRequest request = new SearchRequest(PagePositionUtils.fromPageNumber(page), query, false, false, contentLength, readerDataHolder);
+        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), request,
+                new BaseCallback() {
             @Override
             public void done(final BaseRequest request, Throwable e) {
                 List<ReaderSelection> selections = readerDataHolder.getReaderUserDataInfo().getSearchResults();

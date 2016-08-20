@@ -85,7 +85,7 @@ public class NoteViewHelper {
     private Rect limitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
-    private List<Shape> dirtyStash = new ArrayList<Shape>();
+    private List<Shape> dirtyStash = new ArrayList<>();
     private InputCallback callback;
     private TouchPointList erasePoints;
     private DeviceConfig deviceConfig;
@@ -502,9 +502,10 @@ public class NoteViewHelper {
         return dirtyStash;
     }
 
-    public List<Shape> deatchStash() {
-        final List<Shape> temp = dirtyStash;
-        dirtyStash = new ArrayList<Shape>();
+    public List<Shape> detachStash() {
+        final List<Shape> temp = new ArrayList<>();
+        temp.addAll(dirtyStash);
+        dirtyStash = new ArrayList<>();
         return temp;
     }
 
@@ -566,8 +567,19 @@ public class NoteViewHelper {
         return deviceConfig.isSingleTouch();
     }
 
+    private boolean isEnableFingerErasing() {
+        if (deviceConfig == null) {
+            return false;
+        }
+        return deviceConfig.isEnableFingerErasing();
+    }
+
     public boolean useDFBForCurrentState() {
         return ShapeFactory.isDFBShape(getCurrentShapeType()) && !inUserErasing();
+    }
+
+    private boolean isFingerTouch(int toolType) {
+        return toolType == MotionEvent.TOOL_TYPE_FINGER || toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
     }
 
     private boolean processTouchEvent(final MotionEvent motionEvent) {
@@ -575,11 +587,17 @@ public class NoteViewHelper {
             return true;
         }
         int toolType = motionEvent.getToolType(0);
-        if (toolType == MotionEvent.TOOL_TYPE_FINGER && !isSingleTouch()) {
+        if (isFingerTouch(toolType) && !isSingleTouch()) {
             return true;
         }
 
         if (toolType == MotionEvent.TOOL_TYPE_ERASER || inErasing()) {
+            if (isFingerTouch(toolType)) {
+                if (isEnableFingerErasing()) {
+                    return forwardErasing(motionEvent);
+                }
+                return true;
+            }
             return forwardErasing(motionEvent);
         }
         if (!(useRawInput() && renderByFramework())) {
@@ -625,7 +643,7 @@ public class NoteViewHelper {
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
         currentShape.onDown(normalized, screen);
-        if (callback != null && !currentShape.supportDFB()) {
+        if (callback != null) {
             callback.onDrawingTouchDown(motionEvent, currentShape);
         }
     }
@@ -639,14 +657,14 @@ public class NoteViewHelper {
             final TouchPoint normalized = fromHistorical(motionEvent, i);
             final TouchPoint screen = touchPointFromNormalized(normalized);;
             currentShape.onMove(normalized, screen);
-            if (callback != null && !currentShape.supportDFB()) {
+            if (callback != null) {
                 callback.onDrawingTouchMove(motionEvent, currentShape, false);
             }
         }
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);;
         currentShape.onMove(normalized, screen);
-        if (callback != null && !currentShape.supportDFB()) {
+        if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape, true);
         }
     }
@@ -658,7 +676,7 @@ public class NoteViewHelper {
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
         currentShape.onUp(normalized, screen);
-        if (callback != null && !currentShape.supportDFB()) {
+        if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);
         }
     }

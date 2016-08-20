@@ -1,12 +1,15 @@
 package com.onyx.kreader.common;
 
 import android.util.Log;
+import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
+import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.ObjectHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
@@ -45,8 +48,17 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return renderBitmap;
     }
 
-    public void useRenderBitmap(final Reader reader) {
-        renderBitmap = reader.getReaderHelper().getRenderBitmap();
+    public void drawVisiblePages(final Reader reader) throws ReaderException {
+        ReaderDrawContext context = new ReaderDrawContext();
+        context.asyncDraw = false;
+        drawVisiblePages(reader, context);
+    }
+
+    public void drawVisiblePages(final Reader reader, ReaderDrawContext context) throws ReaderException {
+        ObjectHolder<ReaderBitmapImpl> bitmap = new ObjectHolder<>();
+        if (reader.getReaderLayoutManager().drawVisiblePages(reader, context, bitmap, createReaderViewInfo())) {
+            renderBitmap = bitmap.getObject();
+        }
     }
 
     public void beforeExecute(final Reader reader) {
@@ -84,7 +96,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         } catch (Throwable tr) {
             Log.w(TAG, tr);
         } finally {
-            copyBitmapToViewport(reader);
+            transferBitmapToViewport(reader);
         }
     }
 
@@ -92,7 +104,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
         dumpException();
         benchmarkEnd();
         reader.getReaderHelper().clearAbortFlag();
-        saveReaderOptions(reader);
         loadUserData(reader);
     }
 
@@ -102,12 +113,12 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
     }
 
-    private void copyBitmapToViewport(final Reader reader) {
+    private void transferBitmapToViewport(final Reader reader) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (isTransferBitmap()) {
-                    reader.getBitmapCopyCoordinator().copyRenderBitmapToViewport();
+                if (isTransferBitmap() && getRenderBitmap() != null) {
+                    reader.getBitmapTransferCoordinator().transferRenderBitmapToViewport(getRenderBitmap());
                 }
                 BaseCallback.invoke(getCallback(), BaseReaderRequest.this, getException());
                 reader.releaseWakeLock();
@@ -118,7 +129,9 @@ public abstract class BaseReaderRequest extends BaseRequest {
         } else {
             runnable.run();
         }
-        reader.getBitmapCopyCoordinator().waitCopy();
+        if (isTransferBitmap() && getRenderBitmap() != null) {
+            reader.getBitmapTransferCoordinator().waitTransfer();
+        }
     }
 
     public final ReaderViewInfo getReaderViewInfo() {
@@ -138,10 +151,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     public void saveReaderOptions(final Reader reader) {
-        if (hasException() || !isSaveOptions()) {
-            return;
-        }
-
         reader.saveOptions();
         DocumentOptionsProvider.saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),

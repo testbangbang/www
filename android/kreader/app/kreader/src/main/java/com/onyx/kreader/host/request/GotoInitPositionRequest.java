@@ -18,7 +18,6 @@ public class GotoInitPositionRequest extends BaseReaderRequest {
         if (!reader.getReaderHelper().getReaderLayoutManager().gotoPosition(documentPosition)) {
             throw ReaderException.outOfRange();
         }
-        useRenderBitmap(reader);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+        drawVisiblePages(reader);
     }
 }

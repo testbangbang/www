@@ -2,7 +2,6 @@ package com.onyx.kreader.host.request;
 
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -30,10 +29,9 @@ public class ScaleRequest extends BaseReaderRequest {
         scale = Math.max(scale, toPageScale);
 
         setSaveOptions(true);
-        useRenderBitmap(reader);
         reader.getReaderLayoutManager().setSavePosition(true);
         reader.getReaderLayoutManager().setCurrentLayout(PageConstants.SINGLE_PAGE, new NavigationArgs());
         reader.getReaderLayoutManager().setScale(pageName, scale, x, y);
-        reader.getReaderLayoutManager().drawVisiblePages(reader, getRenderBitmap(), createReaderViewInfo());
+        drawVisiblePages(reader);
     }
 }

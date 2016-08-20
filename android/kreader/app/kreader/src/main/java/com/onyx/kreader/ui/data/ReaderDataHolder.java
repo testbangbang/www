@@ -17,6 +17,7 @@ import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.request.CloseRequest;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
+import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.tts.ReaderTtsManager;
@@ -53,6 +54,8 @@ public class ReaderDataHolder {
     private NoteViewHelper noteViewHelper;
     private EventBus eventBus = new EventBus();
 
+    private int optionsSkippedTimes = 0;
+
     public ReaderDataHolder(Context context){
         this.context = context;
     }
@@ -66,7 +69,6 @@ public class ReaderDataHolder {
     }
 
     public void saveReaderViewInfo(final BaseReaderRequest request) {
-        Debug.d(TAG, "saveReaderViewInfo: " + JSON.toJSONString(request.getReaderViewInfo().getFirstVisiblePage()));
         readerViewInfo = request.getReaderViewInfo();
     }
 
@@ -171,18 +173,20 @@ public class ReaderDataHolder {
         return selectionManager;
     }
 
-    public ReaderTtsManager getTtsManager() {
+    public void initTtsManager(ReaderTtsManager.Callback callback) {
         if (ttsManager == null) {
-            ttsManager = new ReaderTtsManager(this, new ReaderTtsManager.Callback() {
-                @Override
-                public void onStateChanged() {
-                    if (ShowReaderMenuAction.isReaderMenuShown()) {
-                        new ShowReaderMenuAction().execute(ReaderDataHolder.this);
-                    }
-                }
-            });
+            ttsManager = new ReaderTtsManager(this, callback);
         }
+    }
+
+    public ReaderTtsManager getTtsManager() {
         return ttsManager;
+    }
+
+    private void updateReaderMenuState() {
+        if (ShowReaderMenuAction.isReaderMenuShown()) {
+            new ShowReaderMenuAction().execute(ReaderDataHolder.this);
+        }
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -197,7 +201,6 @@ public class ReaderDataHolder {
     }
 
     public String getBookName() {
-        Debug.d("getBookName: " + getDocumentPath());
         return FileUtils.getFileName(getDocumentPath());
     }
 
@@ -230,17 +233,31 @@ public class ReaderDataHolder {
             public void done(BaseRequest request, Throwable e) {
                 onRenderRequestFinished(renderRequest, e);
                 callback.invoke(callback, request, e);
+                onPageDrawFinished(renderRequest, e);
 
-                if (e != null || request.isAbort()) {
-                    return;
-                }
-                preRenderNext();
+                updateReaderMenuState();
             }
         });
     }
 
     private void beforeSubmitRequest() {
         resetShapeData();
+    }
+
+    private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
+        if (e != null || request.isAbort()) {
+            return;
+        }
+        if (request.isSaveOptions()) {
+            final int MAX_SKIP_TIMES = 5;
+            if (optionsSkippedTimes < MAX_SKIP_TIMES) {
+                optionsSkippedTimes++;
+            } else {
+                submitNonRenderRequest(new SaveDocumentOptionsRequest());
+                optionsSkippedTimes = 0;
+            }
+        }
+        preRenderNext();
     }
 
     public void preRenderNext() {
@@ -252,14 +269,19 @@ public class ReaderDataHolder {
     }
 
     public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
-        Debug.d(TAG, "onRenderRequestFinished: " + request + ", " + e);
+        onRenderRequestFinished(request, e, true);
+    }
+
+
+    public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e, boolean applyGCIntervalUpdate) {
         if (e != null || request.isAbort()) {
             return;
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        eventBus.post(RequestFinishEvent.fromRequest(request, e));
+        eventBus.post(RequestFinishEvent.fromRequest(request, e, applyGCIntervalUpdate));
     }
+
 
     public void redrawPage() {
         if (getReader() != null) {

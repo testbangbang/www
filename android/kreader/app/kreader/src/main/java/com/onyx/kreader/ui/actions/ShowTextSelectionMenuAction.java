@@ -41,10 +41,12 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        if (selectionType.equals(PopupSelectionMenu.SelectionType.MultiWordsType)){
-            getTextSelectionPopupMenu(readerDataHolder).move(x, y);
-        }else {
-            getTextSelectionPopupMenu(readerDataHolder).show();
+        getTextSelectionPopupMenu(readerDataHolder).show(selectionType);
+    }
+
+    public static void hideTextSelectionPopupMenu(){
+        if (popupSelectionMenu != null) {
+            popupSelectionMenu.hide();
         }
     }
 

@@ -2,23 +2,25 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.api.ReaderBitmap;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderRenderer;
-import com.onyx.kreader.cache.BitmapLruCache;
+import com.onyx.kreader.cache.BitmapSoftLruCache;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.kreader.utils.ObjectHolder;
 
+import java.lang.ref.SoftReference;
 import java.util.List;
 
 /**
@@ -27,31 +29,35 @@ import java.util.List;
 public class LayoutProviderUtils {
 
     private static final String TAG = LayoutProviderUtils.class.getSimpleName();
-    static boolean enableCache = true;
+    static boolean ENABLE_CACHE = true;
 
     /**
      * draw all visible pages. For each page:render the visible part of page. in screen coordinates system.
      * Before draw, make sure all visible pages have been calculated correctly.
      * @param layoutManager
-     * @param bitmap
+     * @param renderedBitmap
      */
     static public void drawVisiblePages(final Reader reader,
                                         final ReaderLayoutManager layoutManager,
                                         final ReaderDrawContext drawContext,
-                                        final ReaderBitmapImpl bitmap,
+                                        final ObjectHolder<ReaderBitmapImpl> renderedBitmap,
                                         final ReaderViewInfo readerViewInfo) throws ReaderException {
         // step1: prepare.
+        final ReaderBitmapImpl bitmap = new ReaderBitmapImpl();
+        renderedBitmap.setObject(bitmap);
+
         final ReaderRenderer renderer = reader.getRenderer();
-        final BitmapLruCache cache = reader.getBitmapLruCache();
+        final BitmapSoftLruCache cache = reader.getBitmapCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
 
         // step2: check cache.
         final String key = PositionSnapshot.cacheKey(visiblePages);
         boolean hitCache = false;
-        if (enableCache && checkCache(cache, key, bitmap)) {
+        if (ENABLE_CACHE && checkCache(cache, key, bitmap)) {
             hitCache = true;
         }
         if (!hitCache) {
+            bitmap.attachWith(key, cache.getFreeBitmap(reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight(), Bitmap.Config.ARGB_8888));
             bitmap.clear();
         }
 
@@ -59,7 +65,7 @@ public class LayoutProviderUtils {
         drawVisiblePagesImpl(renderer, layoutManager, bitmap, visiblePages, hitCache);
 
         // step4: update cache
-        if (!hitCache && enableCache && StringUtils.isNotBlank(key)) {
+        if (!hitCache && ENABLE_CACHE && StringUtils.isNotBlank(key)) {
             addToCache(cache, key, bitmap);
         }
 
@@ -85,7 +91,7 @@ public class LayoutProviderUtils {
             visibleRect.intersect(layoutManager.getPageManager().getViewportRect());
             PageUtils.translateCoordinates(visibleRect, positionRect);
             if (!hitCache) {
-                Debug.d(TAG, "page: " + documentPosition + ", scale: " + pageInfo.getActualScale() +
+                Debug.d(TAG, "draw visible page: " + documentPosition + ", scale: " + pageInfo.getActualScale() +
                         ", bitmap: " + bitmap.getBitmap().getWidth() + ", " + bitmap.getBitmap().getHeight() +
                         ", display rect: " + displayRect +
                         ", position rect: " + positionRect +
@@ -142,25 +148,20 @@ public class LayoutProviderUtils {
                 visibleRect);
     }
 
-    static public boolean addToCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        Bitmap copy = bitmap.getBitmap().copy(bitmap.getBitmap().getConfig(), true);
-        if (copy != null) {
-            cache.put(key, copy);
-        }
+    static public boolean addToCache(final BitmapSoftLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
+        cache.put(key, new SoftReference<>(bitmap.getBitmap()));
         return true;
     }
 
-    static public boolean checkCache(final BitmapLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        Bitmap result = cache.get(key);
+    static public boolean checkCache(final BitmapSoftLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
+        SoftReference<Bitmap> result = cache.get(key);
         if (result == null) {
             return false;
         }
 
-        if (!bitmap.copyFrom(result)) {
-            result = cache.remove(key);
-            bitmap.attach(result);
-        }
-        return true;
+        boolean succ = bitmap.attachWith(key, result.get());
+        cache.put(key, null);
+        return succ;
     }
 
     static public void clear(final ReaderLayoutManager layoutManager) {
@@ -168,8 +169,12 @@ public class LayoutProviderUtils {
     }
 
     static public void addPage(final ReaderLayoutManager layoutManager, final String location) {
-        RectF size = layoutManager.getReaderDocument().getPageOriginSize(location);
-        PageInfo pageInfo = new PageInfo(location, size.width(), size.height());
+        PageInfo pageInfo = layoutManager.getPageManager().getPageInfo(location);
+        if (pageInfo == null) {
+            RectF size = layoutManager.getReaderDocument().getPageOriginSize(location);
+            pageInfo = new PageInfo(location, size.width(), size.height());
+            pageInfo.setIsTextPage(layoutManager.getReaderDocument().isTextPage(location));
+        }
         layoutManager.getPageManager().add(pageInfo);
     }
 
