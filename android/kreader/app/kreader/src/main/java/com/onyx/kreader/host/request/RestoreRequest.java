@@ -76,11 +76,18 @@ public class RestoreRequest extends BaseReaderRequest {
             reader.getReaderLayoutManager().scaleToPageContent(position);
         } else if (PageConstants.isWidthCrop(baseOptions.getSpecialScale())) {
             reader.getReaderLayoutManager().scaleToWidthContent(position);
+        } else {
+            reader.getReaderLayoutManager().scaleToPage(position);
         }
     }
 
     private void setActualScale(final Reader reader, final BaseOptions baseOptions, final String position) throws Exception {
-        reader.getReaderLayoutManager().setScale(position, baseOptions.getActualScale(), 0, 0);
+        float scale = baseOptions.getActualScale();
+        if (scale > PageConstants.SCALE_INVALID && baseOptions.getActualScale() < PageConstants.MAX_SCALE) {
+            reader.getReaderLayoutManager().setScale(position, baseOptions.getActualScale(), 0, 0);
+        } else {
+            reader.getReaderLayoutManager().scaleToPage(position);
+        }
     }
 
 

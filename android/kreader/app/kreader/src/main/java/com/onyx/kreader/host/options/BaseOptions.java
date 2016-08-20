@@ -202,7 +202,10 @@ public class BaseOptions {
     }
 
     public float getActualScale() {
-        return backend.getFloat(ACTUAL_SCALE_TAG);
+        if (backend.hasKey(ACTUAL_SCALE_TAG)) {
+            return backend.getFloat(ACTUAL_SCALE_TAG);
+        }
+        return 0f;
     }
 
     public void setActualScale(final float value) {
