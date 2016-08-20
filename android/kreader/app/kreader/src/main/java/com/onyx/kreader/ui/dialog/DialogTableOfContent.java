@@ -110,7 +110,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             textViewDescription.setText(description);
             Date date = new Date(time);
             textViewTime.setText(DateTimeUtil.formatDate(date,DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
-            String format = String.format(readerDataHolder.getContext().getString(R.string.page),page);
+            String format = String.format(readerDataHolder.getContext().getString(R.string.page),Integer.valueOf(page) + 1);
             textViewPage.setText(format);
             this.page = page;
             this.position = position;
