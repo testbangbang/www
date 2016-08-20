@@ -1,8 +1,15 @@
 package com.onyx.cloud.service;
 
+import com.onyx.cloud.Constant;
+import com.onyx.cloud.model.Captcha;
+import com.onyx.cloud.model.Device;
 import com.onyx.cloud.model.OnyxAccount;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 /**
@@ -11,6 +18,14 @@ import retrofit2.http.POST;
 public interface OnyxAccountService {
 
     @POST("account/signup")
-    Call<OnyxAccount> signup(@Body final OnyxAccount account);
+    Call<ResponseBody> signup(@Body final OnyxAccount account);
 
+    @POST("account/signin")
+    Call<ResponseBody> signin(@Body final OnyxAccount account);
+
+    @POST("account/devices")
+    Call<Device> addDevice(@Body final Device device, @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
+
+    @GET("captcha")
+    Call<Captcha> getCaptcha();
 }
