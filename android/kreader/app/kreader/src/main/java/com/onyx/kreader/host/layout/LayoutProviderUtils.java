@@ -155,7 +155,9 @@ public class LayoutProviderUtils {
 
     static public boolean checkCache(final BitmapSoftLruCache cache, final String key, final ReaderDrawContext context) {
         ReaderBitmapImpl result = cache.get(key);
-        if (result == null || Float.compare(context.targetGammaCorrection, result.gammaCorrection()) != 0 ) {
+        if (result == null || (Float.compare(context.targetGammaCorrection, result.gammaCorrection()) != 0 &&
+                Float.compare(context.targetGammaCorrection, 1.0f) != 0)) {
+            // 1.0 means not gamma correction yet, so we can reuse the bitmap
             return false;
         }
 
