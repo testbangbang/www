@@ -120,15 +120,15 @@ public class ShapeUtils {
     }
 
     public static boolean hitTestLine(final float sx, final float sy, final float ex, final float ey, final float cx, final float cy, final float radius) {
-            float dx = ex - sx;
-            float dy = ey - sy;
-            float a = dx * dx + dy * dy;
-            float b = 2 * (dx * (sx - cx) + dy * (sy - cy));
-            float c = cx * cx + cy * cy;
-            c += sx * sx + sy * sy;
-            c -= 2 * (cx * sx + cy * sy);
-            c -= radius * radius;
-            float bb4ac = b * b - 4 * a * c;
-            return bb4ac >= 0;
-        }
+        float dx = ex - sx;
+        float dy = ey - sy;
+        float a = dx * dx + dy * dy;
+        float b = 2 * (dx * (sx - cx) + dy * (sy - cy));
+        float c = cx * cx + cy * cy;
+        c += sx * sx + sy * sy;
+        c -= 2 * (cx * sx + cy * sy);
+        c -= radius * radius;
+        float bb4ac = b * b - 4 * a * c;
+        return bb4ac >= 0;
+    }
 }
