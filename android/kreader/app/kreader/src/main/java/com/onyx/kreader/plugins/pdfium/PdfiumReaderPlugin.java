@@ -2,11 +2,11 @@ package com.onyx.kreader.plugins.pdfium;
 
 import android.content.Context;
 import android.graphics.RectF;
-import android.util.Log;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
@@ -213,7 +213,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
                 (int)displayRect.width(),
                 (int)displayRect.height(),
                 rotation, bitmap.getBitmap());
-        Log.e(TAG, "rendering takes: " + benchmark.duration());
+        Debug.d(TAG, "rendering takes: " + benchmark.duration());
         return ret;
     }
 
