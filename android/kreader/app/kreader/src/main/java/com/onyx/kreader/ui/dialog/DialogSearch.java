@@ -335,7 +335,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
             style.setSpan(new ForegroundColorSpan(Color.WHITE),start, start + length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             contentTextView.setText(style);
             int pagePosition = Integer.valueOf(readerSelection.getPagePosition());
-            String page = String.format(getContext().getString(R.string.page), pagePosition + 1 + "");
+            String page = String.format(getContext().getString(R.string.page), pagePosition + 1);
             contentPage.setText(page);
         }
     }

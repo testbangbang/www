@@ -107,6 +107,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
         public void bindView(String title,String description,String page,long time,int position,DirectoryTab tab){
             textViewTitle.setText(title);
+            description = deleteNewlineSymbol(description);
             textViewDescription.setText(description);
             Date date = new Date(time);
             textViewTime.setText(DateTimeUtil.formatDate(date,DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
@@ -124,8 +125,12 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         @Override
         public void onClick(View v) {
             if (v.equals(itemView)){
-                DialogTableOfContent.this.hide();
-                new GotoPageAction(page).execute(readerDataHolder);
+                new GotoPageAction(page).execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        DialogTableOfContent.this.hide();
+                    }
+                });
             }else if (v.equals(textViewDelete) || v.equals(imageViewDelete)){
                 if (currentTab == DirectoryTab.Bookmark){
                     deleteBookmark(readerDataHolder,position);
@@ -549,5 +554,12 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     @Override
     public void onNextPage(int nextPosition, int itemCount,int pageSize) {
         updatePageIndicator(nextPosition,pageSize, itemCount);
+    }
+
+    private String deleteNewlineSymbol(String content){
+        while (content.contains("\n")){
+            content = content.replace("\n"," ");
+        }
+        return content;
     }
 }

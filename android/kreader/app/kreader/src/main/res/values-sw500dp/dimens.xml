@@ -32,4 +32,5 @@
     <dimen name="dialog_search_title_height">40dp</dimen>
     <dimen name="popup_selection_menu_width">400dp</dimen>
     <dimen name="dialog_table_of_content_item_text_size">14sp</dimen>
+    <dimen name="dialog_table_of_content_item_text_title_size">18sp</dimen>
 </resources>
