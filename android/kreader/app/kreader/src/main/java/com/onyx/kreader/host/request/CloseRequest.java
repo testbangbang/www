@@ -13,6 +13,7 @@ public class CloseRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        saveReaderOptions(reader);
         reader.getDocument().close();
         reader.getReaderHelper().onDocumentClosed();
     }
