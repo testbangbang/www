@@ -248,16 +248,21 @@ public class ReaderDataHolder {
         if (e != null || request.isAbort()) {
             return;
         }
-        if (request.isSaveOptions()) {
-            final int MAX_SKIP_TIMES = 5;
-            if (optionsSkippedTimes < MAX_SKIP_TIMES) {
-                optionsSkippedTimes++;
-            } else {
-                submitNonRenderRequest(new SaveDocumentOptionsRequest());
-                optionsSkippedTimes = 0;
-            }
-        }
+        saveDocumentOptions(request);
         preRenderNext();
+    }
+
+    private void saveDocumentOptions(final BaseReaderRequest request) {
+        if (!request.isSaveOptions()) {
+            return;
+        }
+        final int MAX_SKIP_TIMES = 5;
+        if (optionsSkippedTimes < MAX_SKIP_TIMES) {
+            optionsSkippedTimes++;
+        } else {
+            submitNonRenderRequest(new SaveDocumentOptionsRequest());
+            optionsSkippedTimes = 0;
+        }
     }
 
     public void preRenderNext() {
