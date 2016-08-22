@@ -117,7 +117,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
             @Override
             public void run() {
                 if (isTransferBitmap() && getRenderBitmap() != null) {
-                    reader.getBitmapTransferCoordinator().transferRenderBitmapToViewport(getRenderBitmap());
+                    reader.transferRenderBitmapToViewport(getRenderBitmap());
                 }
                 BaseCallback.invoke(getCallback(), BaseReaderRequest.this, getException());
                 reader.releaseWakeLock();
@@ -128,12 +128,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
         } else {
             runnable.run();
         }
-        if (getRenderBitmap() != null){
-            if (isTransferBitmap()) {
-                reader.getBitmapTransferCoordinator().waitTransfer();
-            } else {
-                reader.returnBitmapToCache(getRenderBitmap());
-            }
+        if (getRenderBitmap() != null && !isTransferBitmap()){
+            reader.returnBitmapToCache(getRenderBitmap());
         }
     }
 

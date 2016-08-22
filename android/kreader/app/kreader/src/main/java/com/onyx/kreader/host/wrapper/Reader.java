@@ -136,6 +136,10 @@ public class Reader {
         return getReaderHelper().getReaderLayoutManager();
     }
 
+    public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
+        getReaderHelper().transferRenderBitmapToViewport(renderBitmap);
+    }
+
     public void returnBitmapToCache(ReaderBitmapImpl bitmap) {
         getReaderHelper().returnBitmapToCache(bitmap);
     }

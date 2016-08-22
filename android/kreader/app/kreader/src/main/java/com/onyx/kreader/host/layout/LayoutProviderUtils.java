@@ -18,9 +18,7 @@ import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.utils.ObjectHolder;
 
-import java.lang.ref.SoftReference;
 import java.util.List;
 
 /**
