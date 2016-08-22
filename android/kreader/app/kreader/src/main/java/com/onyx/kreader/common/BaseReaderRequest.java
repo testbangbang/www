@@ -55,9 +55,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     public void drawVisiblePages(final Reader reader, ReaderDrawContext context) throws ReaderException {
-        ObjectHolder<ReaderBitmapImpl> bitmap = new ObjectHolder<>();
-        if (reader.getReaderLayoutManager().drawVisiblePages(reader, context, bitmap, createReaderViewInfo())) {
-            renderBitmap = bitmap.getObject();
+        if (reader.getReaderLayoutManager().drawVisiblePages(reader, context, createReaderViewInfo())) {
+            renderBitmap = context.renderingBitmap;
         }
     }
 
@@ -118,7 +117,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
             @Override
             public void run() {
                 if (isTransferBitmap() && getRenderBitmap() != null) {
-                    reader.getBitmapTransferCoordinator().transferRenderBitmapToViewport(getRenderBitmap());
+                    reader.transferRenderBitmapToViewport(getRenderBitmap());
                 }
                 BaseCallback.invoke(getCallback(), BaseReaderRequest.this, getException());
                 reader.releaseWakeLock();
@@ -129,8 +128,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
         } else {
             runnable.run();
         }
-        if (isTransferBitmap() && getRenderBitmap() != null) {
-            reader.getBitmapTransferCoordinator().waitTransfer();
+        if (getRenderBitmap() != null && !isTransferBitmap()){
+            reader.returnBitmapToCache(getRenderBitmap());
         }
     }
 

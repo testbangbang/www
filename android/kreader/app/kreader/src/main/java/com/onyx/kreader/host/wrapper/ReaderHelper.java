@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
-import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocument;
@@ -35,9 +34,6 @@ import com.onyx.kreader.utils.ImageUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.io.File;
-import java.lang.ref.SoftReference;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -45,37 +41,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ReaderHelper {
     private static final String TAG = ReaderHelper.class.getSimpleName();
-
-    public class BitmapTransferCoordinator {
-        private ReentrantLock lock = new ReentrantLock();
-        private Condition condition = lock.newCondition();
-        private boolean finished = false;
-
-        public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
-            try {
-                lock.lock();
-                bitmapCache.put(viewportBitmap.getKey(), new SoftReference<>(viewportBitmap.getBitmap()));
-                viewportBitmap.attachWith(renderBitmap.getKey(), renderBitmap.getBitmap());
-                finished = true;
-                condition.signal();
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        public void waitTransfer() {
-            try {
-                lock.lock();
-                while (!finished) {
-                    condition.await();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                lock.unlock();
-            }
-        }
-    }
 
     private String documentPath;
     private String documentMd5;
@@ -91,8 +56,7 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
     // to be used by UI thread
-    private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
-    private BitmapTransferCoordinator bitmapTransferCoordinator = new BitmapTransferCoordinator();
+    private ReaderBitmapImpl viewportBitmap;
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
     private ImageReflowManager imageReflowManager;
@@ -202,10 +166,6 @@ public class ReaderHelper {
         return viewportBitmap;
     }
 
-    public BitmapTransferCoordinator getBitmapTransferCoordinator() {
-        return bitmapTransferCoordinator;
-    }
-
     public ReaderPlugin getPlugin() {
         return plugin;
     }
@@ -239,6 +199,19 @@ public class ReaderHelper {
 
     public ImageReflowManager getImageReflowManager() {
         return imageReflowManager;
+    }
+
+    public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
+        if (viewportBitmap != null) {
+            returnBitmapToCache(viewportBitmap);
+        }
+        viewportBitmap = renderBitmap;
+    }
+
+    public void returnBitmapToCache(ReaderBitmapImpl bitmap) {
+        if (bitmapCache != null) {
+            bitmapCache.put(bitmap.getKey(), bitmap);
+        }
     }
 
     public BitmapSoftLruCache getBitmapCache() {
@@ -322,9 +295,12 @@ public class ReaderHelper {
         return searchManager;
     }
 
-    public void applyPostBitmapProcess(ReaderBitmap bitmap) {
-        if (getDocumentOptions().isGamaCorrectionEnabled()) {
-            ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel());
+    public void applyPostBitmapProcess(ReaderBitmapImpl bitmap) {
+        if (getDocumentOptions().isGamaCorrectionEnabled() &&
+                Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
+            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel())) {
+                bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
+            }
         }
         if (getDocumentOptions().isEmboldenLevelEnabled()) {
             ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel());

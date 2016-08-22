@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
  */
 public interface ReaderBitmap {
 
-    public Bitmap getBitmap();
+    Bitmap getBitmap();
+
+    float gammaCorrection();
 
 }

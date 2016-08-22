@@ -6,7 +6,6 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.cache.BitmapHolder;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
@@ -84,18 +83,18 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
-    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ObjectHolder<ReaderBitmapImpl> bitmap, final ReaderViewInfo readerViewInfo) throws ReaderException {
-        bitmap.setObject(new ReaderBitmapImpl());
+    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
+        drawContext.renderingBitmap = new ReaderBitmapImpl();
 
         String key = getCurrentSubPageKey();
         Bitmap bmp = getCurrentSubPageBitmap();
         if (bmp != null) {
-            bitmap.getObject().attachWith(key, bmp);
+            drawContext.renderingBitmap.attachWith(key, bmp);
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
             return true;
         }
 
-        reflowFirstVisiblePage(reader, drawContext, bitmap, readerViewInfo, drawContext.asyncDraw);
+        reflowFirstVisiblePage(reader, drawContext, readerViewInfo, drawContext.asyncDraw);
         if (drawContext.asyncDraw) {
             return false;
         }
@@ -107,17 +106,16 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (bmp == null) {
             return false;
         }
-        bitmap.getObject().attachWith(key, bmp);
+        drawContext.renderingBitmap.attachWith(key, bmp);
         return true;
     }
 
     private void reflowFirstVisiblePage(final Reader reader,
                                         final ReaderDrawContext drawContext,
-                                        final ObjectHolder<ReaderBitmapImpl> bitmap,
                                         final ReaderViewInfo readerViewInfo,
                                         boolean async) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, bitmap, readerViewInfo);
-        reader.getImageReflowManager().reflowBitmap(bitmap.getObject().getBitmap(),
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
+        reader.getImageReflowManager().reflowBitmap(drawContext.renderingBitmap.getBitmap(),
                 reader.getViewOptions().getViewWidth(),
                 reader.getViewOptions().getViewHeight(),
                 getCurrentPageName(),

@@ -14,6 +14,7 @@ import com.onyx.kreader.api.ReaderRendererFeatures;
 import com.onyx.kreader.api.ReaderSearchManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.cache.BitmapSoftLruCache;
+import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
@@ -133,6 +134,14 @@ public class Reader {
 
     public ReaderLayoutManager getReaderLayoutManager() {
         return getReaderHelper().getReaderLayoutManager();
+    }
+
+    public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
+        getReaderHelper().transferRenderBitmapToViewport(renderBitmap);
+    }
+
+    public void returnBitmapToCache(ReaderBitmapImpl bitmap) {
+        getReaderHelper().returnBitmapToCache(bitmap);
     }
 
     public BitmapSoftLruCache getBitmapCache() {

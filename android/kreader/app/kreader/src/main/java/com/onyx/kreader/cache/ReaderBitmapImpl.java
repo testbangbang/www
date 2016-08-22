@@ -5,9 +5,6 @@ import android.graphics.Color;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.BitmapUtils;
 
-import java.io.Closeable;
-import java.lang.ref.WeakReference;
-
 /**
  * Created by joy on 8/9/16.
  */
@@ -15,6 +12,7 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     private String key;
     private Bitmap bitmap;
+    private float gammaCorrection;
 
     public static ReaderBitmapImpl create(int width, int height, Bitmap.Config config) {
         ReaderBitmapImpl readerBitmap = new ReaderBitmapImpl(width, height, config);
@@ -49,6 +47,14 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     public Bitmap getBitmap() {
         return bitmap;
+    }
+
+    public void setGammaCorrection(float correction) {
+        this.gammaCorrection = correction;
+    }
+
+    public float gammaCorrection() {
+        return gammaCorrection;
     }
 
     public boolean attachWith(String key, final Bitmap src) {
