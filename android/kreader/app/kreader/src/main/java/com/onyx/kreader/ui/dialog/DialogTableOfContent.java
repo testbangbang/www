@@ -21,6 +21,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
@@ -107,6 +108,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
         public void bindView(String title,String description,String page,long time,int position,DirectoryTab tab){
             textViewTitle.setText(title);
+            description = StringUtils.deleteNewlineSymbol(description);
             textViewDescription.setText(description);
             Date date = new Date(time);
             textViewTime.setText(DateTimeUtil.formatDate(date,DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
@@ -124,8 +126,12 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         @Override
         public void onClick(View v) {
             if (v.equals(itemView)){
-                DialogTableOfContent.this.hide();
-                new GotoPageAction(page).execute(readerDataHolder);
+                new GotoPageAction(page).execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        DialogTableOfContent.this.dismiss();
+                    }
+                });
             }else if (v.equals(textViewDelete) || v.equals(imageViewDelete)){
                 if (currentTab == DirectoryTab.Bookmark){
                     deleteBookmark(readerDataHolder,position);

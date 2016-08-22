@@ -322,8 +322,8 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
 
         public void bindView(ReaderSelection selection,String search){
             readerSelection = selection;
-            String leftText = deleteNewlineSymbol(selection.getLeftText().trim());
-            String rightText = deleteNewlineSymbol(selection.getRightText().trim());
+            String leftText = StringUtils.deleteNewlineSymbol(selection.getLeftText().trim());
+            String rightText = StringUtils.deleteNewlineSymbol(selection.getRightText().trim());
             String content = leftText + search + rightText;
             SpannableStringBuilder style = new SpannableStringBuilder(content);
             int start = leftText.length();
@@ -335,7 +335,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
             style.setSpan(new ForegroundColorSpan(Color.WHITE),start, start + length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             contentTextView.setText(style);
             int pagePosition = Integer.valueOf(readerSelection.getPagePosition());
-            String page = String.format(getContext().getString(R.string.page), pagePosition + 1 + "");
+            String page = String.format(getContext().getString(R.string.page), pagePosition + 1);
             contentPage.setText(page);
         }
     }
@@ -376,13 +376,6 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private void hideSearchDialog(){
         hide();
         stopSearch();
-    }
-
-    private String deleteNewlineSymbol(String content){
-        while (content.contains("\n")){
-            content = content.replace("\n"," ");
-        }
-        return content;
     }
 
     private void showLoadingLayout(){
