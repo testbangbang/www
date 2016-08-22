@@ -1,7 +1,6 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
-import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
@@ -291,17 +290,12 @@ public class ReaderLayoutManager {
         return false;
     }
 
-    public boolean drawVisiblePages(final Reader reader, ObjectHolder<ReaderBitmapImpl> bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
-        ReaderDrawContext context = new ReaderDrawContext();
-        context.asyncDraw = false;
-        return drawVisiblePages(reader, context, bitmap, viewInfo);
-    }
-
-    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ObjectHolder<ReaderBitmapImpl> bitmap, final ReaderViewInfo viewInfo) throws ReaderException {
-        if (!getCurrentLayoutProvider().drawVisiblePages(reader, drawContext, bitmap, viewInfo)) {
+    public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo viewInfo) throws ReaderException {
+        drawContext.targetGammaCorrection = reader.getDocumentOptions().getGammaLevel();
+        if (!getCurrentLayoutProvider().drawVisiblePages(reader, drawContext, viewInfo)) {
             return false;
         }
-        reader.getReaderHelper().applyPostBitmapProcess(bitmap.getObject());
+        reader.getReaderHelper().applyPostBitmapProcess(drawContext.renderingBitmap);
         return true;
     }
 

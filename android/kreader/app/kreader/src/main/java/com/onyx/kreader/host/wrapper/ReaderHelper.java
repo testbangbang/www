@@ -54,8 +54,10 @@ public class ReaderHelper {
         public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
             try {
                 lock.lock();
-                bitmapCache.put(viewportBitmap.getKey(), new SoftReference<>(viewportBitmap.getBitmap()));
-                viewportBitmap.attachWith(renderBitmap.getKey(), renderBitmap.getBitmap());
+                if (viewportBitmap != null) {
+                    returnBitmapToCache(viewportBitmap);
+                }
+                viewportBitmap = renderBitmap;
                 finished = true;
                 condition.signal();
             } finally {
@@ -91,7 +93,7 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderSearchManager searchManager;
     // to be used by UI thread
-    private ReaderBitmapImpl viewportBitmap = new ReaderBitmapImpl();
+    private ReaderBitmapImpl viewportBitmap;
     private BitmapTransferCoordinator bitmapTransferCoordinator = new BitmapTransferCoordinator();
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
@@ -241,6 +243,12 @@ public class ReaderHelper {
         return imageReflowManager;
     }
 
+    public void returnBitmapToCache(ReaderBitmapImpl bitmap) {
+        if (bitmapCache != null) {
+            bitmapCache.put(bitmap.getKey(), bitmap);
+        }
+    }
+
     public BitmapSoftLruCache getBitmapCache() {
         return bitmapCache;
     }
@@ -322,9 +330,12 @@ public class ReaderHelper {
         return searchManager;
     }
 
-    public void applyPostBitmapProcess(ReaderBitmap bitmap) {
-        if (getDocumentOptions().isGamaCorrectionEnabled()) {
-            ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel());
+    public void applyPostBitmapProcess(ReaderBitmapImpl bitmap) {
+        if (getDocumentOptions().isGamaCorrectionEnabled() &&
+                Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
+            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel())) {
+                bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
+            }
         }
         if (getDocumentOptions().isEmboldenLevelEnabled()) {
             ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel());

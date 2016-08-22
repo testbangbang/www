@@ -34,18 +34,16 @@ public class LayoutProviderUtils {
     /**
      * draw all visible pages. For each page:render the visible part of page. in screen coordinates system.
      * Before draw, make sure all visible pages have been calculated correctly.
+     * @param reader
      * @param layoutManager
-     * @param renderedBitmap
+     * @param drawContext
+     * @param readerViewInfo
      */
     static public void drawVisiblePages(final Reader reader,
                                         final ReaderLayoutManager layoutManager,
                                         final ReaderDrawContext drawContext,
-                                        final ObjectHolder<ReaderBitmapImpl> renderedBitmap,
                                         final ReaderViewInfo readerViewInfo) throws ReaderException {
         // step1: prepare.
-        final ReaderBitmapImpl bitmap = new ReaderBitmapImpl();
-        renderedBitmap.setObject(bitmap);
-
         final ReaderRenderer renderer = reader.getRenderer();
         final BitmapSoftLruCache cache = reader.getBitmapCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
@@ -53,20 +51,22 @@ public class LayoutProviderUtils {
         // step2: check cache.
         final String key = PositionSnapshot.cacheKey(visiblePages);
         boolean hitCache = false;
-        if (ENABLE_CACHE && checkCache(cache, key, bitmap)) {
+        if (ENABLE_CACHE && checkCache(cache, key, drawContext)) {
             hitCache = true;
         }
         if (!hitCache) {
-            bitmap.attachWith(key, cache.getFreeBitmap(reader.getViewOptions().getViewWidth(), reader.getViewOptions().getViewHeight(), Bitmap.Config.ARGB_8888));
-            bitmap.clear();
+            drawContext.renderingBitmap = new ReaderBitmapImpl();
+            drawContext.renderingBitmap.attachWith(key, cache.getFreeBitmap(reader.getViewOptions().getViewWidth(),
+                    reader.getViewOptions().getViewHeight(), Bitmap.Config.ARGB_8888).getBitmap());
+            drawContext.renderingBitmap.clear();
         }
 
         // step3: render
-        drawVisiblePagesImpl(renderer, layoutManager, bitmap, visiblePages, hitCache);
+        drawVisiblePagesImpl(renderer, layoutManager, drawContext.renderingBitmap, visiblePages, hitCache);
 
         // step4: update cache
         if (!hitCache && ENABLE_CACHE && StringUtils.isNotBlank(key)) {
-            addToCache(cache, key, bitmap);
+            addToCache(cache, key, drawContext.renderingBitmap);
         }
 
         // final step: update view info.
@@ -149,19 +149,19 @@ public class LayoutProviderUtils {
     }
 
     static public boolean addToCache(final BitmapSoftLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        cache.put(key, new SoftReference<>(bitmap.getBitmap()));
+        cache.put(key, bitmap);
         return true;
     }
 
-    static public boolean checkCache(final BitmapSoftLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        SoftReference<Bitmap> result = cache.get(key);
-        if (result == null) {
+    static public boolean checkCache(final BitmapSoftLruCache cache, final String key, final ReaderDrawContext context) {
+        ReaderBitmapImpl result = cache.get(key);
+        if (result == null || Float.compare(context.targetGammaCorrection, result.gammaCorrection()) != 0 ) {
             return false;
         }
 
-        boolean succ = bitmap.attachWith(key, result.get());
-        cache.put(key, null);
-        return succ;
+        cache.remove(key, false);
+        context.renderingBitmap = result;
+        return true;
     }
 
     static public void clear(final ReaderLayoutManager layoutManager) {
