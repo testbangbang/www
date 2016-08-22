@@ -152,10 +152,6 @@ public class Reader {
         return getReaderHelper().getViewportBitmap();
     }
 
-    public ReaderHelper.BitmapTransferCoordinator getBitmapTransferCoordinator() {
-        return getReaderHelper().getBitmapTransferCoordinator();
-    }
-
     public ImageReflowManager getImageReflowManager() {
         return getReaderHelper().getImageReflowManager();
     }
