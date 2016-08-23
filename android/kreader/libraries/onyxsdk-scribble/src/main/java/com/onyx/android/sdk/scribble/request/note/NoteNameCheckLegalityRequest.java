@@ -10,27 +10,33 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
 public class NoteNameCheckLegalityRequest extends BaseNoteRequest {
     private String targetName, parentID;
-    boolean checkThisLevelOnly = true;
+    private boolean checkThisLevelOnly = true;
+    private boolean distinguishFileType = true;
+    private int currentType;
     private boolean isLegal;
 
     public boolean isLegal() {
         return isLegal;
     }
 
-    public NoteNameCheckLegalityRequest(String name, String parentID) {
-        this(name, parentID, true);
+    public NoteNameCheckLegalityRequest(String name, String parentID, int curType) {
+        this(name, parentID, curType, true, true);
     }
 
-    public NoteNameCheckLegalityRequest(String name, String parentID, boolean checkThisLevelOnly) {
+    public NoteNameCheckLegalityRequest(String name, String parentID, int curType,
+                                        boolean checkThisLevelOnly, boolean distinguishFileType) {
         this.targetName = name;
         this.checkThisLevelOnly = checkThisLevelOnly;
         this.parentID = parentID;
+        this.distinguishFileType = distinguishFileType;
+        this.currentType = curType;
         setPauseInputProcessor(true);
         setResumeInputProcessor(false);
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
-        isLegal = NoteDataProvider.checkNoteNameLegality(targetName, parentID, checkThisLevelOnly);
+        isLegal = NoteDataProvider.checkNoteNameLegality(targetName, parentID,
+                currentType, checkThisLevelOnly, distinguishFileType);
     }
 
 }
