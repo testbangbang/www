@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.data;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import com.alibaba.fastjson.JSON;
@@ -175,7 +176,7 @@ public class ReaderDataHolder {
 
     public void initTtsManager(ReaderTtsManager.Callback callback) {
         if (ttsManager == null) {
-            ttsManager = new ReaderTtsManager(this, callback);
+            ttsManager = new ReaderTtsManager(context, callback);
         }
     }
 
