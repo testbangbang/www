@@ -120,7 +120,8 @@ public class ManagerActivity extends BaseManagerActivity {
                 dlgCreateFolder.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
                     @Override
                     public boolean onCreated(final String title) {
-                        final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(title, currentLibraryId, false);
+                        final CheckNoteNameLegalityAction<ManagerActivity> action =
+                                new CheckNoteNameLegalityAction<>(title, currentLibraryId, NoteModel.TYPE_LIBRARY, false, false);
                         action.execute(ManagerActivity.this, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
@@ -182,7 +183,10 @@ public class ManagerActivity extends BaseManagerActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(input, currentLibraryId, false);
+                //TODO:we trust upper method would only pass doc or lib to here.
+                int itemType = Utils.isDocument(object) ? NoteModel.TYPE_DOCUMENT : NoteModel.TYPE_LIBRARY;
+                final CheckNoteNameLegalityAction<ManagerActivity> action =
+                        new CheckNoteNameLegalityAction<>(input, currentLibraryId, itemType, false, false);
                 action.execute(ManagerActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
