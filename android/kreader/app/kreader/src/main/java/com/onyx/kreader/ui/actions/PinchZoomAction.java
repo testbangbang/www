@@ -9,9 +9,12 @@ import android.graphics.RectF;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 
+import android.widget.Toast;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.R;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.math.PageUtils;
+import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -111,6 +114,17 @@ public class PinchZoomAction extends BaseAction {
 //        handlerManager.setEnable(false);
 
         ReaderDeviceManager.exitAnimationUpdate(false);
+        if (deltaScale < 1.0f && !readerDataHolder.canCurrentPageScaleDown()) {
+            Toast.makeText(readerDataHolder.getContext(),
+                    R.string.min_scroll_toast, Toast.LENGTH_SHORT).show();
+            readerDataHolder.submitRenderRequest(new RenderRequest());
+            return;
+        } else if (deltaScale > 1.0f && !readerDataHolder.canCurrentPageScaleUp()) {
+            Toast.makeText(readerDataHolder.getContext(),
+                    R.string.max_scroll_toast, Toast.LENGTH_SHORT).show();
+            readerDataHolder.submitRenderRequest(new RenderRequest());
+            return;
+        }
         float newScale = pageInfo.getActualScale() * deltaScale;
         final ScaleRequest scaleRequest = new ScaleRequest(pageInfo.getName(), newScale, left, top);
         readerDataHolder.submitRenderRequest(scaleRequest);

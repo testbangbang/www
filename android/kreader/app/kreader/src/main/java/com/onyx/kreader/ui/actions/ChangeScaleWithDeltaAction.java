@@ -3,9 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.graphics.RectF;
 import android.widget.Toast;
 
-import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -21,11 +19,11 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {
-        if (scaleDelta < 0 && !canScaleDown(readerDataHolder)) {
+        if (scaleDelta < 0 && !readerDataHolder.canCurrentPageScaleDown()) {
             Toast.makeText(readerDataHolder.getContext(),
                     R.string.min_scroll_toast, Toast.LENGTH_SHORT).show();
             return;
-        } else if (scaleDelta > 0 && !canScaleUp(readerDataHolder)) {
+        } else if (scaleDelta > 0 && !readerDataHolder.canCurrentPageScaleUp()) {
             Toast.makeText(readerDataHolder.getContext(),
                     R.string.max_scroll_toast, Toast.LENGTH_SHORT).show();
             return;
@@ -39,15 +37,6 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
                 viewport.right - offset,
                 viewport.bottom - offset);
         scaleByRect(readerDataHolder, pos);
-    }
-
-    private boolean canScaleDown(final ReaderDataHolder readerDataHolder) {
-        final float toPageScale = PageUtils.scaleToPage(readerDataHolder.getFirstPageInfo().getOriginWidth(), readerDataHolder.getFirstPageInfo().getOriginHeight(), readerDataHolder.getReader().getViewOptions().getViewWidth(), readerDataHolder.getReader().getViewOptions().getViewHeight());
-        return readerDataHolder.getReaderViewInfo().getFirstVisiblePage().getActualScale() > toPageScale;
-    }
-
-    private boolean canScaleUp(final ReaderDataHolder readerDataHolder) {
-        return readerDataHolder.getReaderViewInfo().getFirstVisiblePage().getActualScale() < PageConstants.MAX_SCALE;
     }
 
     private void scaleByRect(final ReaderDataHolder readerDataHolder, final RectF rect) {

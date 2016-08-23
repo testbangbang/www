@@ -1,20 +1,19 @@
 package com.onyx.kreader.ui.data;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.CloseRequest;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;
@@ -158,6 +157,18 @@ public class ReaderDataHolder {
     public void setDisplaySize(int width, int height) {
         displayWidth = width;
         displayHeight = height;
+    }
+
+    public boolean canCurrentPageScaleDown() {
+        final float toPageScale = PageUtils.scaleToPage(getFirstPageInfo().getOriginWidth(),
+                getFirstPageInfo().getOriginHeight(),
+                getReader().getViewOptions().getViewWidth(),
+                getReader().getViewOptions().getViewHeight());
+        return getReaderViewInfo().getFirstVisiblePage().getActualScale() > toPageScale;
+    }
+
+    public boolean canCurrentPageScaleUp() {
+        return getReaderViewInfo().getFirstVisiblePage().getActualScale() < PageConstants.MAX_SCALE;
     }
 
     public final HandlerManager getHandlerManager() {
