@@ -90,4 +90,5 @@
     <string name="delete_history">Delete History</string>
     <string name="enter_hint">Please enter your search word</string>
     <string name="searching">Searching</string>
+    <string name="search_end">Have finished searching</string>
 </resources>
