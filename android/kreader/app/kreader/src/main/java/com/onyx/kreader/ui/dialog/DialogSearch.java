@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * Created by ming on 16/7/21.
  */
-public class DialogSearch extends Dialog implements View.OnClickListener, TextView.OnEditorActionListener {
+public class DialogSearch extends Dialog{
 
     private static final String TAG = DialogSearch.class.getSimpleName();
     private static int SEARCH_CONTENT_ROW = 8;
@@ -63,9 +63,11 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private TextView backText;
     private TextView totalPage;
     private TextView pageIndicator;
+    private TextView searchingText;
     private OnyxCustomEditText searchEditText;
     private ImageButton preIcon;
     private ImageButton nextIcon;
+    private ImageButton closeSearch;
     private LinearLayout searchContent;
     private LinearLayout loadingLayout;
     private RelativeLayout searchHistory;
@@ -92,6 +94,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         backText = (TextView) findViewById(R.id.text_view_back);
         totalPage = (TextView)findViewById(R.id.total_page);
         pageIndicator = (TextView)findViewById(R.id.page_indicator);
+        searchingText = (TextView)findViewById(R.id.textview_message);
         searchEditText = (OnyxCustomEditText)findViewById(R.id.edit_view_search);
         searchContent = (LinearLayout) findViewById(R.id.search_content);
         loadingLayout = (LinearLayout) findViewById(R.id.loading_layout);
@@ -99,6 +102,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         searchEditLayout = (RelativeLayout) findViewById(R.id.search_edit_layout);
         preIcon = (ImageButton) findViewById(R.id.pre_icon);
         nextIcon = (ImageButton) findViewById(R.id.next_icon);
+        closeSearch = (ImageButton) findViewById(R.id.close_search);
         historyRecyclerView = (RecyclerView) findViewById(R.id.search_history_list);
         deleteHistory = (TextView) findViewById(R.id.delete_history);
         closeHistory = (TextView) findViewById(R.id.close_history);
@@ -106,21 +110,93 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         deleteHistory.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         closeHistory.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 
-        backView.setOnClickListener(this);
-        backText.setOnClickListener(this);
-        preIcon.setOnClickListener(this);
-        nextIcon.setOnClickListener(this);
-        deleteHistory.setOnClickListener(this);
-        closeHistory.setOnClickListener(this);
-        searchEditText.setOnClickListener(this);
-        searchEditText.setOnEditorActionListener(this);
-
         searchEditLayout.post(new Runnable() {
             @Override
             public void run() {
                 showSearchHistoryView();
             }
         });
+
+        setViewListener();
+        initPageRecyclerView();
+    }
+
+    private void setViewListener(){
+        closeSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopSearch();
+                hideLoadingLayout();
+            }
+        });
+
+        backView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSearchDialog();
+            }
+        });
+
+        backText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSearchDialog();
+            }
+        });
+
+        preIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pageRecyclerView.prevPage();
+            }
+        });
+
+        nextIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pageRecyclerView.getPaginator().canNextPage()){
+                    pageRecyclerView.nextPage();
+                }else {
+                    nextSearch();
+                }
+            }
+        });
+
+        closeHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchHistory.setVisibility(View.GONE);
+                hideSoftInputWindow();
+            }
+        });
+
+        deleteHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ToggleSearchHistoryAction("", false).execute(readerDataHolder);
+                searchHistory.setVisibility(View.GONE);
+            }
+        });
+
+        searchEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopSearch();
+                loadSearchHistoryData();
+            }
+        });
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                    hideSoftInputWindow();
+                    loadSearchData();
+                }
+                return true;
+            }
+        });
+
         searchEditText.setOnKeyPreImeListener(new OnyxCustomEditText.onKeyPreImeListener() {
             @Override
             public void onKeyPreIme(int keyCode, KeyEvent event) {
@@ -129,8 +205,6 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
                 }
             }
         });
-
-        initPageRecyclerView();
     }
 
     private void showSearchHistoryView(){
@@ -239,7 +313,8 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
                 searchContentAction = new SearchContentAction(searchText,SEARCH_CONTENT_LENGTH, startPage, SEARCH_PAGE_ONE_TIME * SEARCH_CONTENT_ROW);
                 searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
                     @Override
-                    public void OnNext(final List<ReaderSelection> results) {
+                    public void OnNext(final List<ReaderSelection> results,int page) {
+                        updateSearchingText(page);
                         if (results == null || results.size() < 1){
                             return;
                         }
@@ -283,39 +358,6 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
                 showSearchList.add(searchList.get(i));
             }
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.equals(backView) || v.equals(backText)){
-            hideSearchDialog();
-        }else if (v.equals(nextIcon)){
-            if (pageRecyclerView.getPaginator().canNextPage()){
-                pageRecyclerView.nextPage();
-            }else {
-                nextSearch();
-            }
-        }else if (v.equals(preIcon)){
-            pageRecyclerView.prevPage();
-        }else if (v.equals(closeHistory)){
-            searchHistory.setVisibility(View.GONE);
-            hideSoftInputWindow();
-        }else if (v.equals(deleteHistory)){
-            new ToggleSearchHistoryAction("", false).execute(readerDataHolder);
-            searchHistory.setVisibility(View.GONE);
-        }else if (v.equals(searchEditText)){
-            stopSearch();
-            loadSearchHistoryData();
-        }
-    }
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == EditorInfo.IME_ACTION_DONE){
-            hideSoftInputWindow();
-            loadSearchData();
-        }
-        return true;
     }
 
     private void stopSearch(){
@@ -401,9 +443,14 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         int page = itemCount / SEARCH_CONTENT_ROW;
         int currentPage = page > 0 ? position / SEARCH_CONTENT_ROW + 1 : 0;
         String indicator = String.format("%d/%d",currentPage,page);
-        String total = String.format(readerDataHolder.getContext().getString(R.string.total_page),showSearchList.size());
+        String total = String.format(getContext().getString(R.string.total_page),showSearchList.size());
         pageIndicator.setText(indicator);
         totalPage.setText(total);
+    }
+
+    private void updateSearchingText(int page){
+        String str = String.format(getContext().getString(R.string.searching),page,readerDataHolder.getPageCount());
+        searchingText.setText(str);
     }
 
     private void hideSearchDialog(){

@@ -24,7 +24,7 @@ public class SearchContentAction extends BaseAction {
     private int currentCount;
 
     public interface OnSearchContentCallBack{
-        void OnNext(List<ReaderSelection> results);
+        void OnNext(List<ReaderSelection> results,int page);
         void OnFinishedSearch(int endPage);
     }
 
@@ -58,7 +58,7 @@ public class SearchContentAction extends BaseAction {
             public void done(final BaseRequest request, Throwable e) {
                 List<ReaderSelection> selections = readerDataHolder.getReaderUserDataInfo().getSearchResults();
                 if (onSearchContentCallBack != null){
-                    onSearchContentCallBack.OnNext(selections);
+                    onSearchContentCallBack.OnNext(selections,page);
                 }
                 if (selections != null){
                     currentCount += selections.size();
