@@ -249,7 +249,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
                         mergeSearchList();
                         updatePageIndicator(currentPagePosition,pageRecyclerView.getAdapter().getItemCount());
                         pageRecyclerView.getAdapter().notifyDataSetChanged();
-                        if (nextPageAction && pageRecyclerView.getPaginator().hasNextPage()){
+                        if (nextPageAction && pageRecyclerView.getPaginator().canNextPage()){
                             nextPageAction = false;
                             pageRecyclerView.nextPage();
                         }
@@ -279,10 +279,8 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private void mergeSearchList(){
         int maxCount = nextRequestPage  * SEARCH_CONTENT_ROW;
         if (showSearchList.size() < searchList.size()){
-            for (int i = showSearchList.size(); i < maxCount; i++) {
-                if (i < searchList.size()){
-                    showSearchList.add(searchList.get(i));
-                }
+            for (int i = showSearchList.size(); i < maxCount && i < searchList.size(); i++) {
+                showSearchList.add(searchList.get(i));
             }
         }
     }
@@ -292,7 +290,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         if (v.equals(backView) || v.equals(backText)){
             hideSearchDialog();
         }else if (v.equals(nextIcon)){
-            if (pageRecyclerView.getPaginator().hasNextPage()){
+            if (pageRecyclerView.getPaginator().canNextPage()){
                 pageRecyclerView.nextPage();
             }else {
                 nextSearch();

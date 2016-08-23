@@ -108,7 +108,7 @@ public class GPaginator {
         return page;
     }
 
-    public boolean hasNextPage(){
+    public boolean canNextPage(){
         return currentPage + 1 < pages();
     }
 
