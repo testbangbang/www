@@ -122,6 +122,10 @@ public class PageRecyclerView extends RecyclerView {
         }
     }
 
+    public GPaginator getPaginator() {
+        return paginator;
+    }
+
     private void init() {
         setItemAnimator(null);
         setClipToPadding(true);
