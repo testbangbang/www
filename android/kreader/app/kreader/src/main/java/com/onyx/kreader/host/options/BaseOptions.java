@@ -203,7 +203,10 @@ public class BaseOptions {
 
     public float getActualScale() {
         if (backend.hasKey(ACTUAL_SCALE_TAG)) {
-            return backend.getFloat(ACTUAL_SCALE_TAG);
+            try {
+                return backend.getFloat(ACTUAL_SCALE_TAG);
+            } catch (Throwable tr) {
+            }
         }
         return 0f;
     }
