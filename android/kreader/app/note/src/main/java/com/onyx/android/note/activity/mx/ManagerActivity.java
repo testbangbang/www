@@ -251,6 +251,13 @@ public class ManagerActivity extends BaseManagerActivity {
     }
 
     @Override
+    protected void onResume() {
+        // TODO:as mx request,we throw all state after leave this activity,and force to normal mode when we came back.
+         currentSelectMode = SelectionMode.NORMAL_MODE;
+        super.onResume();
+    }
+
+    @Override
     protected void updateActivityTitleAndIcon() {
         int iconRes = 0;
         String titleResString;
