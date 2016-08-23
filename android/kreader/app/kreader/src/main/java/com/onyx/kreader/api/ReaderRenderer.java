@@ -1,7 +1,7 @@
 package com.onyx.kreader.api;
 
+import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.onyx.android.sdk.api.ReaderBitmap;
 
 /**
  * Created by zhuzeng on 10/3/15.
@@ -41,6 +41,6 @@ public interface ReaderRenderer {
      *
      * @return
      */
-    public boolean draw(final String page, final float scale, final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect);
+    public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect);
 
 }
