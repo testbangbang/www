@@ -151,8 +151,8 @@ public class ReaderDeviceManager {
         refreshCount = 0;
     }
 
-    public static void applyWithGCInterval(View view) {
-        if (EpdController.supportRegal()) {
+    public static void applyWithGCInterval(View view, boolean isTextPage) {
+        if (isTextPage && EpdController.supportRegal()) {
             applyWithGCIntervalWitRegal(view);
         } else {
             applyWithGCIntervalWithoutRegal(view);
