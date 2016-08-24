@@ -37,4 +37,5 @@
     <dimen name="global_activities_back_btn_image_width">24dp</dimen>
     <dimen name="global_activities_back_btn_category_image_height">36dp</dimen>
     <dimen name="global_activities_back_btn_category_image_width">36dp</dimen>
+    <dimen name="dialog_reader_menu_top_bar_function_icon_margin">2dp</dimen>
 </resources>

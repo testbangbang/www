@@ -41,7 +41,7 @@
 
             <ImageView
                 android:id="@+id/search_image"
-                android:src="@drawable/ic_search"
+                android:src="@drawable/ic_dialog_reader_search_search"
                 android:layout_width="30dp"
                 android:layout_height="30dp"/>
 

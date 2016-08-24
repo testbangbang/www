@@ -218,6 +218,8 @@ public class DialogQuickPreview extends Dialog {
     private RecyclerView gridRecyclerView;
     private TextView textViewProgress;
     private SeekBar seekBarProgress;
+    private ImageView fourImageGrid;
+    private ImageView nineImageGrid;
 
     private Grid grid = new Grid();
     private GPaginator paginator;
@@ -260,6 +262,8 @@ public class DialogQuickPreview extends Dialog {
 
         textViewProgress = (TextView)findViewById(R.id.text_view_progress);
         seekBarProgress = (SeekBar)findViewById(R.id.seek_bar_page);
+        fourImageGrid = (ImageView) findViewById(R.id.image_view_four_grids);
+        nineImageGrid = (ImageView)findViewById(R.id.image_view_nine_grids);
 
         findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,7 +290,7 @@ public class DialogQuickPreview extends Dialog {
             }
         });
 
-        findViewById(R.id.image_view_four_grids).setOnClickListener(new View.OnClickListener() {
+        fourImageGrid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 grid.setGridType(GridType.Four);
@@ -295,10 +299,11 @@ public class DialogQuickPreview extends Dialog {
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
                 adapter.setGridType(grid);
                 onPageDataChanged();
+                onPressedImageView(true);
             }
         });
 
-        findViewById(R.id.image_view_nine_grids).setOnClickListener(new View.OnClickListener() {
+        nineImageGrid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 grid.setGridType(GridType.Nine);
@@ -307,6 +312,7 @@ public class DialogQuickPreview extends Dialog {
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
                 adapter.setGridType(grid);
                 onPageDataChanged();
+                onPressedImageView(false);
             }
         });
 
@@ -318,6 +324,13 @@ public class DialogQuickPreview extends Dialog {
                 }
             }
         });
+    }
+
+    private void onPressedImageView(boolean pressedFourImage){
+        nineImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_nine_black_focused
+                : R.drawable.ic_dialog_reader_page_nine_white_focused);
+        fourImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_four_white_focused
+                : R.drawable.ic_dialog_reader_page_four_black_focused);
     }
 
     private void setupContent(int pageCount, int currentPage) {
