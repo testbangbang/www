@@ -1,8 +1,8 @@
 package com.onyx.kreader.tests;
 
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.data.PageInfo;
@@ -43,7 +43,7 @@ public class FakeReader implements ReaderDocument,
         return false;
     }
 
-    public boolean readCover(final ReaderBitmap bitmap) {
+    public boolean readCover(final Bitmap bitmap) {
         return false;
     }
 

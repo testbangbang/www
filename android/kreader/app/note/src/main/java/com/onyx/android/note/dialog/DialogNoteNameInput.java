@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.note.R;
 import com.onyx.android.note.utils.NoteAppConfig;
@@ -60,6 +61,11 @@ public class DialogNoteNameInput extends OnyxAlertDialog {
                     @Override
                     public void onClick(View v) {
                         if (mCallBack != null) {
+                            if (mInputEditText.getText().toString().trim().length() == 0 &&
+                                    (mInputEditText.getHint() == null || mInputEditText.getHint().toString().trim().length() == 0)) {
+                                Toast.makeText(getActivity(), R.string.name_can_not_empty, Toast.LENGTH_LONG).show();
+                                return;
+                            }
                             String inputString = mInputEditText.getText().toString().trim().length() == 0 ?
                                     mInputEditText.getHint().toString() : mInputEditText.getText().toString().trim();
                             if (mCallBack.onConfirmAction(inputString)) {

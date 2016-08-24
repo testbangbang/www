@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -11,24 +12,29 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.api.ReaderSentence;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.host.request.GetSentenceRequest;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.tts.ReaderTtsManager;
+import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.handler.HandlerManager;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
  * Created by ming on 16/8/12.
  */
 public class DialogTts extends Dialog implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+    private static final String TAG = DialogTts.class.getSimpleName();
 
     public static final int VOLUME_SPAN = 2;
 
@@ -68,6 +74,8 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     private int maxVolume;
     private AudioManager audioMgr;
     private ReaderDataHolder readerDataHolder;
+    private ReaderSentence currentSentence;
+
     private int[] speedCheckBoxIds = {R.id.fast_speed,R.id.more_fast_speed,R.id.normal_speed,R.id.more_slow_speed,R.id.slow_speed};
 
     private int gcInterval = 0;
@@ -165,6 +173,12 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         seekBarTts.setProgress(curVolume);
 
         readerDataHolder.initTtsManager(new ReaderTtsManager.Callback() {
+
+            @Override
+            public void requestSentence() {
+                requestSentenceForTts();
+            }
+
             @Override
             public void onStateChanged() {
                 if (readerDataHolder.getTtsManager().isSpeaking()) {
@@ -172,6 +186,12 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
                 } else {
                     ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
                 }
+            }
+
+            @Override
+            public void onError() {
+                ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
+                readerDataHolder.submitRenderRequest(new RenderRequest());
             }
         });
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
@@ -243,6 +263,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     }
 
     private void ttsStop(final ReaderDataHolder readerDataHolder) {
+        currentSentence = null;
         readerDataHolder.getTtsManager().stop();
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
         readerDataHolder.submitRenderRequest(new RenderRequest());
@@ -257,5 +278,63 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     //调节声音速度(1-5档)
     private void controlSpeedOfSound(int speed){
 
+    }
+
+    private boolean requestSentenceForTts() {
+        if (currentSentence != null) {
+            if (currentSentence.isEndOfDocument()) {
+                Debug.d(TAG, "end of document");
+                readerDataHolder.getTtsManager().stop();
+                return false;
+            }
+            if (currentSentence.isEndOfScreen()) {
+                Debug.d(TAG, "end of page");
+                currentSentence = null;
+                String next = PagePositionUtils.fromPageNumber(readerDataHolder.getCurrentPage() + 1);
+                new GotoPageAction(next).execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e != null) {
+                            Log.w(TAG, e);
+                            return;
+                        }
+                        requestSentenceForTts();
+                    }
+                });
+                return true;
+            }
+        }
+
+        String startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
+        final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerDataHolder.getCurrentPage(), startPosition);
+        readerDataHolder.submitRenderRequest(sentenceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    Log.w(TAG, e);
+                    return;
+                }
+                currentSentence = sentenceRequest.getSentenceResult();
+                if (currentSentence == null) {
+                    Log.w(TAG, "get sentence failed");
+                    return;
+                }
+                dumpCurrentSentence();
+                if (StringUtils.isNullOrEmpty(currentSentence.getReaderSelection().getText())) {
+                    requestSentenceForTts();
+                    return;
+                }
+                readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
+                readerDataHolder.getTtsManager().play();
+            }
+        });
+        return true;
+    }
+
+    private void dumpCurrentSentence() {
+        Debug.d("current sentence: " +
+                StringUtils.deleteNewlineSymbol(currentSentence.getReaderSelection().getText()) +
+                ", " + currentSentence.isEndOfScreen() +
+                ", " + currentSentence.isEndOfDocument());
     }
 }

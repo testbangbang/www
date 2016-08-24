@@ -1,9 +1,9 @@
 package com.onyx.kreader.plugins.comic;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 
-import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.plugins.images.ImagesWrapper;
@@ -60,7 +60,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * @param bitmap
      */
     @Override
-    public boolean readCover(ReaderBitmap bitmap) {
+    public boolean readCover(Bitmap bitmap) {
         return false;
     }
 
@@ -417,9 +417,9 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * @return
      */
     @Override
-    public boolean draw(String page, float scale, int rotation, ReaderBitmap bitmap, RectF displayRect, RectF pageRect, RectF visibleRect) {
+    public boolean draw(String page, float scale, int rotation, Bitmap bitmap, RectF displayRect, RectF pageRect, RectF visibleRect) {
         final int pn = PagePositionUtils.getPageNumber(page);
-        return getPluginImpl().drawPage(pn, scale, rotation, displayRect, pageRect, visibleRect, bitmap.getBitmap());
+        return getPluginImpl().drawPage(pn, scale, rotation, displayRect, pageRect, visibleRect, bitmap);
     }
 
     /**

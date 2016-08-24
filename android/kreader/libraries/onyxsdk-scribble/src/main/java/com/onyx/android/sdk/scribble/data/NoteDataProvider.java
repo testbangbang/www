@@ -229,7 +229,8 @@ public class NoteDataProvider {
         return path;
     }
 
-    public static boolean checkNoteNameLegality(final String targetName ,final  String parentID ,boolean checkThisLevelOnly) {
+    public static boolean checkNoteNameLegality(final String targetName, final String parentID,final int currentType,
+                                                boolean checkThisLevelOnly, boolean distinguishFileType) {
         Select select = new Select();
         Where where;
         if (checkThisLevelOnly && StringUtils.isNotBlank(parentID)) {
@@ -237,6 +238,9 @@ public class NoteDataProvider {
                     where(NoteModel_Table.title.eq(targetName)).and(NoteModel_Table.parentUniqueId.eq(parentID));
         } else {
             where = select.from(NoteModel.class).where(NoteModel_Table.title.eq(targetName));
+        }
+        if (distinguishFileType) {
+            where.and(NoteModel_Table.type.eq(currentType));
         }
         return where.queryList().size() == 0;
     }

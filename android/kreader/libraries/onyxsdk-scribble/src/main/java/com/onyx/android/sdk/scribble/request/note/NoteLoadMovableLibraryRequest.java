@@ -4,6 +4,7 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,12 @@ public class NoteLoadMovableLibraryRequest extends BaseNoteRequest {
         }
         for (NoteModel model : noteList) {
             model.setExtraAttributes(NoteDataProvider.getNoteAbsolutePath(getContext(), model.getUniqueId(), "\\"));
+        }
+        if (StringUtils.isNotBlank(currentLibID)) {
+            NoteModel topLevelFakeModel = new NoteModel();
+            topLevelFakeModel.setUniqueId(null);
+            topLevelFakeModel.setExtraAttributes("\\");
+            noteList.add(0,topLevelFakeModel);
         }
     }
 

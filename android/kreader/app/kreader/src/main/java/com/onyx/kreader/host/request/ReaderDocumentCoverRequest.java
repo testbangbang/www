@@ -16,6 +16,6 @@ public class ReaderDocumentCoverRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        reader.getDocument().readCover(cover);
+        reader.getDocument().readCover(cover.getBitmap());
     }
 }
