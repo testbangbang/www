@@ -43,7 +43,6 @@
         android:layout_height="wrap_content"/>
 
     <RelativeLayout
-        android:layout_marginBottom="4dp"
         android:id="@+id/layout_bottom"
         android:layout_above="@+id/split_line"
         android:layout_width="match_parent"
@@ -57,7 +56,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageView
+        <ImageButton
+            android:padding="5dp"
+            android:background="@drawable/imagebtn_bg"
             android:layout_centerVertical="true"
             android:id="@+id/image_view_edit"
             android:layout_marginRight="5dp"
@@ -75,7 +76,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageView
+        <ImageButton
+            android:padding="5dp"
+            android:background="@drawable/imagebtn_bg"
             android:layout_centerVertical="true"
             android:id="@+id/image_view_delete"
             android:layout_marginRight="5dp"

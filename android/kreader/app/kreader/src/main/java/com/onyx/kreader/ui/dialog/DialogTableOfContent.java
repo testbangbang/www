@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -12,12 +13,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
@@ -77,9 +80,9 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         private TextView textViewPage;
         private TextView textViewTime;
         private TextView textViewDelete;
-        private ImageView imageViewDelete;
+        private ImageButton imageViewDelete;
         private TextView textViewEdit;
-        private ImageView imageViewEdit;
+        private ImageButton imageViewEdit;
         private View splitLine;
         private String page;
         private int position;
@@ -93,9 +96,9 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             textViewPage = (TextView)itemView.findViewById(R.id.text_view_page);
             textViewTime = (TextView)itemView.findViewById(R.id.text_view_time);
             textViewDelete = (TextView)itemView.findViewById(R.id.text_view_delete);
-            imageViewDelete = (ImageView) itemView.findViewById(R.id.image_view_delete);
+            imageViewDelete = (ImageButton) itemView.findViewById(R.id.image_view_delete);
             textViewEdit = (TextView)itemView.findViewById(R.id.text_view_edit);
-            imageViewEdit = (ImageView) itemView.findViewById(R.id.image_view_edit);
+            imageViewEdit = (ImageButton) itemView.findViewById(R.id.image_view_edit);
             splitLine = itemView.findViewById(R.id.split_line);
 
             imageViewDelete.setOnClickListener(this);
@@ -133,11 +136,16 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
                     }
                 });
             }else if (v.equals(textViewDelete) || v.equals(imageViewDelete)){
-                if (currentTab == DirectoryTab.Bookmark){
-                    deleteBookmark(readerDataHolder,position);
-                }else {
-                    deleteAnnotation(readerDataHolder,position);
-                }
+                DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (currentTab == DirectoryTab.Bookmark){
+                            deleteBookmark(readerDataHolder,position);
+                        }else {
+                            deleteAnnotation(readerDataHolder,position);
+                        }
+                    }
+                }).show();
             }else if (v.equals(imageViewEdit) || v.equals(textViewEdit)){
                 showAnnotationEditDialog(position);
             }
