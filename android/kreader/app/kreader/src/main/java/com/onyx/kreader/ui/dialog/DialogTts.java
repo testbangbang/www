@@ -194,7 +194,6 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
                 readerDataHolder.submitRenderRequest(new RenderRequest());
             }
         });
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
 
         gcInterval = ReaderDeviceManager.getGcInterval();
         ReaderDeviceManager.setGcInterval(Integer.MAX_VALUE);
