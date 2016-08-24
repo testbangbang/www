@@ -185,13 +185,10 @@ public class ReaderDataHolder {
         return selectionManager;
     }
 
-    public void initTtsManager(ReaderTtsManager.Callback callback) {
-        if (ttsManager == null) {
-            ttsManager = new ReaderTtsManager(context, callback);
-        }
-    }
-
     public ReaderTtsManager getTtsManager() {
+        if (ttsManager == null) {
+            ttsManager = new ReaderTtsManager(context);
+        }
         return ttsManager;
     }
 

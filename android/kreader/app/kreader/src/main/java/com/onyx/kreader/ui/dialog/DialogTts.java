@@ -75,6 +75,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     private AudioManager audioMgr;
     private ReaderDataHolder readerDataHolder;
     private ReaderSentence currentSentence;
+    private boolean stopped;
 
     private int[] speedCheckBoxIds = {R.id.fast_speed,R.id.more_fast_speed,R.id.normal_speed,R.id.more_slow_speed,R.id.slow_speed};
 
@@ -160,6 +161,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
             public void onDismiss(DialogInterface dialog) {
                 ReaderDeviceManager.setGcInterval(gcInterval);
                 ttsStop(readerDataHolder);
+                readerDataHolder.getTtsManager().registerCallback(null);
             }
         });
 
@@ -172,7 +174,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         seekBarTts.setMax(maxVolume);
         seekBarTts.setProgress(curVolume);
 
-        readerDataHolder.initTtsManager(new ReaderTtsManager.Callback() {
+        readerDataHolder.getTtsManager().registerCallback(new ReaderTtsManager.Callback() {
 
             @Override
             public void requestSentence() {
@@ -254,6 +256,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     }
 
     private void ttsPlay(final ReaderDataHolder readerDataHolder) {
+        stopped = false;
         readerDataHolder.getTtsManager().play();
     }
 
@@ -263,6 +266,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
     private void ttsStop(final ReaderDataHolder readerDataHolder) {
         currentSentence = null;
+        stopped = true;
         readerDataHolder.getTtsManager().stop();
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
         readerDataHolder.submitRenderRequest(new RenderRequest());
@@ -313,6 +317,9 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
                     Log.w(TAG, e);
                     return;
                 }
+                if (stopped) {
+                    return;
+                }
                 currentSentence = sentenceRequest.getSentenceResult();
                 if (currentSentence == null) {
                     Log.w(TAG, "get sentence failed");
@@ -331,9 +338,11 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     }
 
     private void dumpCurrentSentence() {
-        Debug.d("current sentence: " +
-                StringUtils.deleteNewlineSymbol(currentSentence.getReaderSelection().getText()) +
-                ", " + currentSentence.isEndOfScreen() +
-                ", " + currentSentence.isEndOfDocument());
+        Debug.d(TAG, "current sentence: %s, [%s, %s], %b, %b",
+                StringUtils.deleteNewlineSymbol(currentSentence.getReaderSelection().getText()),
+                currentSentence.getReaderSelection().getStartPosition(),
+                currentSentence.getReaderSelection().getEndPosition(),
+                currentSentence.isEndOfScreen(),
+                currentSentence.isEndOfDocument());
     }
 }
