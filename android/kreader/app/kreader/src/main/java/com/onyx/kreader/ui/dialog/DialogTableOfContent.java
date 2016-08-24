@@ -165,7 +165,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private void deleteBookmark(ReaderDataHolder readerDataHolder, final int position){
         final DeleteBookmarkRequest DbRequest = new DeleteBookmarkRequest(bookmarkList.get(position));
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),DbRequest, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(DbRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 bookmarkList.remove(position);
@@ -177,7 +177,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private void deleteAnnotation(ReaderDataHolder readerDataHolder, final int position){
         final DeleteAnnotationRequest DaRequest = new DeleteAnnotationRequest(annotationList.get(position));
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),DaRequest, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(DaRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 annotationList.remove(position);
