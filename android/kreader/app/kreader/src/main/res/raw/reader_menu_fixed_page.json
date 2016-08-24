@@ -4,43 +4,43 @@
       "id": "Zoom",
       "type": "Group",
       "title": "Zoom",
-      "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_black",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale",
       "children": [
         {
           "id": "FontReflow",
           "type": "Item",
           "title": "Font Reflow",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_reset_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_reset"
         },
         {
           "id": "ZoomIn",
           "type": "Item",
           "title": "Zoom In",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_magnify_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_magnify"
         },
         {
           "id": "ZoomOut",
           "type": "Item",
           "title": "Zoom Out",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_shrink_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_shrink"
         },
         {
           "id": "ToPage",
           "type": "Item",
           "title": "To Page",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_fit_page_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_fit_page"
         },
         {
           "id": "ToWidth",
           "type": "Item",
           "title": "To Width",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_fit_width_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_fit_width"
         },
         {
           "id": "ByRect",
           "type": "Item",
           "title": "By Rect",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_choose_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_choose"
         }
       ]
     },
@@ -48,31 +48,31 @@
       "id": "Navigation",
       "type": "Group",
       "title": "Navigation",
-      "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_black",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse",
       "children": [
         {
           "id": "ComicMode",
           "type": "Item",
           "title": "Comic Mode",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_cartoon_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_cartoon"
         },
         {
           "id": "ArticleMode",
           "type": "Item",
           "title": "Article Mode",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_thesis_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_thesis"
         },
         {
           "id": "Reset",
           "type": "Item",
           "title": "Reset",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_reset_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_reset"
         },
         {
           "id": "MoreSetting",
           "type": "Item",
           "title": "More Setting",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_more_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_more"
         }
       ]
     },
@@ -83,28 +83,16 @@
       "iconResourceId": "R.drawable.ic_dialog_reader_menu_note_black",
       "children": [
         {
-          "id": "TOC",
+          "id": "Write",
           "type": "Item",
-          "title": "TOC",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_list_black"
-        },
-        {
-          "id": "Bookmark",
-          "type": "Item",
-          "title": "Bookmark",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_bookmark_black"
-        },
-        {
-          "id": "Note",
-          "type": "Item",
-          "title": "Note",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_label_black"
+          "title": "Write",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_write"
         },
         {
           "id": "Export",
           "type": "Item",
           "title": "Export",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_export_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_export"
         }
       ]
     },
@@ -112,31 +100,31 @@
       "id": "Rotation",
       "type": "Group",
       "title": "Rotation",
-      "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_black",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve",
       "children": [
         {
           "id": "Rotation90",
           "type": "Item",
           "title": "Rotation 90",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_left_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_left"
         },
         {
           "id": "Rotation0",
           "type": "Item",
           "title": "Rotation 0",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_up_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_up"
         },
         {
           "id": "Rotation270",
           "type": "Item",
           "title": "Rotation 270",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_right_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_right"
         },
         {
           "id": "Rotation180",
           "type": "Item",
           "title": "Rotation 180",
-          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_down_black"
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_down"
         }
       ]
     },

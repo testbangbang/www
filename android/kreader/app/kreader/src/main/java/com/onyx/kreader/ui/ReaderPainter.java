@@ -125,7 +125,7 @@ public class ReaderPainter {
             return;
         }
         RectF end = rectangles.get(rectangles.size() - 1);
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_label_sign);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_dialog_reader_choose_label_sign);
         canvas.drawBitmap(bitmap, end.right, end.top - bitmap.getHeight(), null);
     }
 

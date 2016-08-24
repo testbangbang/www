@@ -24,6 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.OnyxCustomEditText;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -133,14 +135,14 @@ public class DialogSearch extends Dialog{
         backView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideSearchDialog();
+                dismiss();
             }
         });
 
         backText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideSearchDialog();
+                dismiss();
             }
         });
 
@@ -387,8 +389,12 @@ public class DialogSearch extends Dialog{
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    hideSearchDialog();
-                    new GotoPageAction(readerSelection.getPagePosition()).execute(readerDataHolder);
+                    new GotoPageAction(readerSelection.getPagePosition()).execute(readerDataHolder, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            dismiss();
+                        }
+                    });
                 }
             });
             contentTextView = (TextView)itemView.findViewById(R.id.search_content);
@@ -453,8 +459,9 @@ public class DialogSearch extends Dialog{
         searchingText.setText(str);
     }
 
-    private void hideSearchDialog(){
-        hide();
+    @Override
+    public void dismiss() {
+        super.dismiss();
         stopSearch();
     }
 
