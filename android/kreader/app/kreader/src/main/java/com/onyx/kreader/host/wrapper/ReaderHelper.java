@@ -2,6 +2,7 @@ package com.onyx.kreader.host.wrapper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -112,6 +113,7 @@ public class ReaderHelper {
         window.getDefaultDisplay().getMetrics(display);
         Bitmap bitmap = Bitmap.createBitmap(display.widthPixels, display.heightPixels,
                 Bitmap.Config.ARGB_8888);
+        bitmap.eraseColor(Color.WHITE);
         if (getDocument().readCover(bitmap)) {
             LegacySdkDataUtils.saveThumbnail(context, path, bitmap);
         }

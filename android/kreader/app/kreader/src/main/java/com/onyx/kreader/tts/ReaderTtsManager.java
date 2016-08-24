@@ -24,9 +24,7 @@ public class ReaderTtsManager {
     private ReaderTtsService ttsService;
     private String text;
 
-    public ReaderTtsManager(final Context context, final Callback callback) {
-        this.callback = callback;
-
+    public ReaderTtsManager(final Context context) {
         ttsService = new ReaderTtsService((Activity)context, new ReaderTtsService.Callback() {
             @Override
             public void onStart() {
@@ -57,6 +55,10 @@ public class ReaderTtsManager {
                 }
             }
         });
+    }
+
+    public void registerCallback(Callback callback) {
+        this.callback = callback;
     }
 
     public boolean isSpeaking() {

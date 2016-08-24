@@ -1,5 +1,6 @@
 package com.onyx.kreader.host.request;
 
+import android.graphics.Color;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -16,6 +17,7 @@ public class ReaderDocumentCoverRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        cover.getBitmap().eraseColor(Color.WHITE);
         reader.getDocument().readCover(cover.getBitmap());
     }
 }
