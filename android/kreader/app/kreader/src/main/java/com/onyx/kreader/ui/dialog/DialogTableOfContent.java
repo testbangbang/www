@@ -7,6 +7,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -635,5 +636,18 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     @Override
     public void onNextPage(int nextPosition, int itemCount,int pageSize) {
         updatePageIndicator(nextPosition,pageSize, itemCount);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode){
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                viewList.get(getTabIndex(currentTab)).nextPage();
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                viewList.get(getTabIndex(currentTab)).prevPage();
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
