@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
+import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
@@ -60,7 +61,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     private RadioButton btnToc;
     private RadioButton btnBookmark;
     private RadioButton btnAnt;
-    private ViewPager viewPager;
+    private OnyxCustomViewPager viewPager;
     private TextView emptyText;
     private TextView totalText;
 
@@ -237,10 +238,11 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         btnToc = (RadioButton) findViewById(R.id.btn_directory);
         btnBookmark = (RadioButton) findViewById(R.id.btn_bookmark);
         btnAnt = (RadioButton) findViewById(R.id.btn_annotation);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (OnyxCustomViewPager) findViewById(R.id.viewpager);
         totalText = (TextView) findViewById(R.id.total);
         emptyText = (TextView) findViewById(R.id.empty_text);
         emptyText.setVisibility(View.GONE);
+        viewPager.setPagingEnabled(false);
         preIcon.setOnClickListener(this);
         nextIcon.setOnClickListener(this);
         backIcon.setOnClickListener(this);
