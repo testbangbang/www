@@ -17,13 +17,13 @@
                 android:id="@+id/image_view_four_grids"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_dialog_reader_page_four_white_focused"/>
+                android:src="@drawable/ic_dialog_reader_page_four_black_focused"/>
 
         <ImageView
                 android:id="@+id/image_view_nine_grids"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_dialog_reader_page_nine_black_focused"/>
+                android:src="@drawable/ic_dialog_reader_page_nine_white_focused"/>
 
     </LinearLayout>
 

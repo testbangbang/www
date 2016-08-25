@@ -327,10 +327,10 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void onPressedImageView(boolean pressedFourImage){
-        nineImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_nine_black_focused
-                : R.drawable.ic_dialog_reader_page_nine_white_focused);
-        fourImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_four_white_focused
-                : R.drawable.ic_dialog_reader_page_four_black_focused);
+        nineImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_nine_white_focused
+                : R.drawable.ic_dialog_reader_page_nine_black_focused);
+        fourImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_four_black_focused
+                : R.drawable.ic_dialog_reader_page_four_white_focused);
     }
 
     private void setupContent(int pageCount, int currentPage) {
