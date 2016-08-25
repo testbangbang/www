@@ -28,16 +28,20 @@
     </LinearLayout>
 
     <TextView
+            android:textSize="18sp"
+            android:layout_above="@id/layout_grid_indicator"
+            android:layout_toRightOf="@+id/seek_bar_page"
             android:layout_marginBottom="@dimen/dialog_quick_preview_page_margin_bottom"
             android:id="@+id/text_view_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_above="@id/layout_grid_indicator"
             android:textColor="@android:color/primary_text_light"
             android:text="1/1"/>
 
     <SeekBar
+            android:layout_marginBottom="@dimen/dialog_quick_preview_page_margin_bottom"
+            android:layout_above="@id/layout_grid_indicator"
             android:thumb="@drawable/seekbar_thumb"
             android:id="@+id/seek_bar_page"
             android:layout_width="fill_parent"
@@ -45,7 +49,6 @@
             android:layout_marginTop="@dimen/dialog_quick_preview_seek_bar_margin_top"
             android:layout_alignLeft="@+id/grid_view_preview"
             android:layout_alignRight="@id/grid_view_preview"
-            android:layout_above="@id/text_view_progress"
             android:focusable="true"
             android:progressDrawable="@drawable/seekbar_progress"
             android:max="20"/>
