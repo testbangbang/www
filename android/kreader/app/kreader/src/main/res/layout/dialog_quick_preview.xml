@@ -63,7 +63,8 @@
             android:layout_above="@id/view_divider"
             android:layout_alignParentLeft="true" >
 
-        <ImageView
+        <ImageButton
+                android:background="@drawable/imagebtn_bg"
                 android:id="@+id/image_view_prev_page"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,7 +80,8 @@
             android:layout_above="@id/view_divider"
             android:layout_alignParentRight="true">
 
-        <ImageView
+        <ImageButton
+                android:background="@drawable/imagebtn_bg"
                 android:layout_margin="10dp"
                 android:id="@+id/image_view_close"
                 android:layout_width="wrap_content"
@@ -87,7 +89,8 @@
                 android:layout_alignParentTop="true"
                 android:src="@drawable/ic_dialog_reader_page_closed"/>
 
-        <ImageView
+        <ImageButton
+                android:background="@drawable/imagebtn_bg"
                 android:id="@+id/image_view_next_page"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
