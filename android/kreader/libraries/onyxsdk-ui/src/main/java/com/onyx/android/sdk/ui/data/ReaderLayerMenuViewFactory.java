@@ -43,7 +43,7 @@ public class ReaderLayerMenuViewFactory {
 
         public void setMenuItem(ReaderLayerMenuItem item) {
             ((ImageView)view.findViewById(R.id.imageview_icon)).setImageResource(item.getDrawableResourceId());
-            ((TextView)view.findViewById(R.id.textview_title)).setText(item.getTitle());
+            ((TextView)view.findViewById(R.id.textview_title)).setText(item.getTitleResourceId());
             view.setTag(item);
         }
     }
@@ -199,6 +199,6 @@ public class ReaderLayerMenuViewFactory {
     }
 
     private static ReaderMenuItem createVirtualMenuItem(String uri) {
-        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, URI.create(uri), null, null, -1);
+        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, URI.create(uri), null, -1, null, -1);
     }
 }

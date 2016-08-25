@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
+import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -125,6 +126,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/Rotation/Rotation270":
                         rotateScreen(readerDataHolder, 270);
                         break;
+                    case "/Zoom/FontReflow":
+                        imageReflow(readerDataHolder);
+                        break;
                     case "/Zoom/ZoomIn":
                         scaleUp(readerDataHolder);
                         break;
@@ -177,9 +181,6 @@ public class ShowReaderMenuAction extends BaseAction {
                     case "/Font/Embolden":
                         adjustEmbolden(readerDataHolder);
                         break;
-                    case "/Font/FontReflow":
-                        imageReflow(readerDataHolder);
-                        break;
                     case "/Directory/TOC":
                         showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.TOC);
                         break;
@@ -193,10 +194,16 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case "/Directory/Export":
                         break;
-                    case "/More/TTS":
+                    case "/TTS":
                         showTtsDialog(readerDataHolder);
                         break;
-                    case "/More/shape":
+                    case "/Refresh":
+                        showScreenRefreshDialog(readerDataHolder);
+                        break;
+                    case "/FrontLight":
+                        showBrightnessDialog(readerDataHolder);
+                        break;
+                    case "/shape":
                         startShapeDrawing(readerDataHolder);
                         break;
                     case "/GotoPage":
@@ -207,12 +214,6 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case "/NavigationForward":
                         forward(readerDataHolder);
-                        break;
-                    case "/More/Refresh":
-                        showScreenRefreshDialog(readerDataHolder);
-                        break;
-                    case "/More/FrontLight":
-                        showBrightnessDialog(readerDataHolder);
                         break;
                     case "/StartDictApp":
                         startDictionaryApp(readerDataHolder);
@@ -234,9 +235,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(readerDataHolder.getContext(), R.raw.reader_menu_fixed_page));
-        JSONArray array = json.getJSONArray("menu_list");
-        return ReaderLayerMenuItem.createFromJSON(readerDataHolder.getContext(), array);
+        return ReaderLayerMenuItem.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems);
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {

@@ -14,13 +14,30 @@ import java.util.List;
  * Created by joy on 6/28/16.
  */
 public class ReaderLayerMenuItem extends ReaderMenuItem {
+    private int titleResourceId;
     private String title;
     private int drawableResourceId;
 
-    public ReaderLayerMenuItem(ItemType itemType, URI uri, ReaderLayerMenuItem parent, String title, int drawableResourceId) {
+    public ReaderLayerMenuItem(ItemType itemType, URI uri, ReaderLayerMenuItem parent, int titleResourceId, String title, int drawableResourceId) {
         super(itemType, uri, parent);
+        this.titleResourceId = titleResourceId;
         this.title = title;
         this.drawableResourceId = drawableResourceId;
+    }
+
+    public static List<ReaderLayerMenuItem> createFromArray(ReaderLayerMenuItem[] flattenArray) {
+        ArrayList<ReaderLayerMenuItem> menuGroupList = new ArrayList<>();
+        ReaderLayerMenuItem currentGroup = null;
+        for (ReaderLayerMenuItem item : flattenArray) {
+            if (item.getItemType() == ItemType.Group) {
+                menuGroupList.add(item);
+                currentGroup = item;
+            } else {
+                ((List<ReaderLayerMenuItem>)currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
+                        item.getURI(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId()));
+            }
+        }
+        return menuGroupList;
     }
 
     public static List<ReaderLayerMenuItem> createFromJSON(Context context, JSONArray array) {
@@ -58,7 +75,7 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
         int resId = iconResourceId == null ? -1 : context.getResources().getIdentifier(getNameOfResource(iconResourceId), "drawable", context.getPackageName());
 
         ItemType itemType = Enum.valueOf(ItemType.class, type);
-        ReaderLayerMenuItem item = new ReaderLayerMenuItem(itemType, uri, parent, title, resId);
+        ReaderLayerMenuItem item = new ReaderLayerMenuItem(itemType, uri, parent, -1, title, resId);
         if (itemType == ItemType.Group) {
             JSONArray array = json.getJSONArray("children");
             if (array != null) {
@@ -76,6 +93,10 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
     private static String getNameOfResource(String resourceId) {
         int idx = resourceId.lastIndexOf('.');
         return resourceId.substring(idx + 1);
+    }
+
+    public int getTitleResourceId() {
+        return titleResourceId;
     }
 
     public String getTitle() {

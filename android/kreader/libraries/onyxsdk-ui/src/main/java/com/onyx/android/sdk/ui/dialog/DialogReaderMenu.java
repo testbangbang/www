@@ -119,7 +119,7 @@ public class DialogReaderMenu extends Dialog {
     }
 
     private ReaderMenuItem createVirtualMenuItem(String uri) {
-        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, URI.create(uri), null, null, -1);
+        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, URI.create(uri), null, -1, null, -1);
     }
 
     public void show(ReaderLayerMenuState state) {
