@@ -30,76 +30,76 @@ public class CloudConf {
     }
 
     public final String getProductBaseUrl() {
-        return getApiBase() + "/book";
+        return getApiBase() + "book";
     }
 
     public final String getProductListUrl() {
-        return getApiBase() + "/book/list";
+        return getApiBase() + "book/list";
     }
 
     public final String getSearchUrl() {
-        return getApiBase() + "/book/search";
+        return getApiBase() + "book/search";
     }
 
     public final String getRecommendedUrl() {
-        return getApiBase() + "/book/list/recommeded";
+        return getApiBase() + "book/list/recommeded";
     }
 
     public final String getRecentUrl() {
-        return getApiBase() + "/book/list/recent";
+        return getApiBase() + "book/list/recent";
     }
 
     public final String getCategoryUrl() {
-        return getApiBase() + "/category";
+        return getApiBase() + "category";
     }
 
     public final String getDictionaryList() {
-        return getApiBase() + "/dictionary/list";
+        return getApiBase() + "dictionary/list";
     }
 
     public final String getAccountSignInUrl() {
-        return getApiBase() + "/account/signin";
+        return getApiBase() + "account/signin";
     }
-    
+
     public final String getAccountSignUpUrl() {
-        return getApiBase() + "/account/signup";
+        return getApiBase() + "account/signup";
     }
 
     public final String getAddDeviceUrl() {
-        return getApiBase() + "/account/devices";
+        return getApiBase() + "account/devices";
     }
 
     public final String getCaptchaUrl() {
-        return getApiBase() + "/captcha";
+        return getApiBase() + "captcha";
     }
 
     public final String getAnnotationUrl() {
-        return getApiBase() + "/annotation";
+        return getApiBase() + "annotation";
     }
 
     public final String getBookmarkUrl() {
-        return getApiBase() + "/bookmark";
+        return getApiBase() + "bookmark";
     }
 
     public final String getScribbleUrl() {
-        return getApiBase() + "/scribble";
+        return getApiBase() + "scribble";
     }
 
     public final String getFwUpdateUrl() {
-        return getApiBase() + "/firmware/update";
+        return getApiBase() + "firmware/update";
     }
 
     public final String getReadingUrl() {
-        return getApiBase() + "/rank/reading";
+        return getApiBase() + "rank/reading";
     }
 
     public final String getHardwareVerifyUrl() {
-        return getApiBase() + "/bl";
+        return getApiBase() + "bl";
     }
     
     public final String getLocalSignUpUrl()
     {
-    	return Constant.TEST_API_BASE + "/account/signup";
+    	return Constant.TEST_API_BASE + "account/signup";
     }
 
 }

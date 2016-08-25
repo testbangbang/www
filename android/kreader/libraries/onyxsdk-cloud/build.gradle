@@ -16,7 +16,12 @@ android {
         sourceSets.main {
             aidl.srcDirs = ['src/main/java']
         }
+    }
 
+    sourceSets {
+        androidTest {
+            assets.srcDirs = ['src/androidTest/assets/']
+        }
     }
 
     buildTypes {
@@ -50,7 +55,6 @@ android {
     }
 }
 
-
 dependencies {
     apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.0.1'
     compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
@@ -62,5 +66,5 @@ dependencies {
     compile 'org.apache.commons:commons-collections4:4.0'
     compile 'com.alibaba:fastjson:1.1.34.android'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
-
+    compile 'com.liulishuo.filedownloader:library:0.3.4'
 }
