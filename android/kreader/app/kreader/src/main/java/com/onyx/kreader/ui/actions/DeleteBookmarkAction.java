@@ -1,6 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
-import com.onyx.kreader.dataprovider.Bookmark;
+import com.onyx.android.sdk.dataprovider.Bookmark;
 import com.onyx.kreader.host.request.DeleteBookmarkRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 

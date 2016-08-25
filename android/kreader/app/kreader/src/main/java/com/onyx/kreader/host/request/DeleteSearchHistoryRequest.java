@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
+import com.onyx.android.sdk.dataprovider.SearchHistoryProvider;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.dataprovider.SearchHistoryProvider;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 

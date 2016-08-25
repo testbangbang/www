@@ -1,8 +1,8 @@
 package com.onyx.kreader.host.request;
 
+import com.onyx.android.sdk.dataprovider.Annotation;
+import com.onyx.android.sdk.dataprovider.AnnotationProvider;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.dataprovider.Annotation;
-import com.onyx.kreader.dataprovider.AnnotationProvider;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 

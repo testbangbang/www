@@ -1,7 +1,7 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
+
 
 
 apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
@@ -80,13 +80,10 @@ android {
 
 
 dependencies {
-    apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.0.1'
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
-    compile "com.github.Raizlabs.DBFlow:dbflow:3.0.1"
 
     compile project(':libraries:onyxsdk-base')
+    compile project(':libraries:onyxsdk-data')
     compile project(':libraries:onyxsdk-ui')
-
     compile project(':libraries:cropimage')
     compile (project(':libraries:onyxsdk-scribble')) {
         ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {

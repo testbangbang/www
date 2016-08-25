@@ -3,14 +3,9 @@ package com.onyx.kreader.common;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.dataprovider.*;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.dataprovider.Annotation;
-import com.onyx.kreader.dataprovider.AnnotationProvider;
-import com.onyx.kreader.dataprovider.Bookmark;
-import com.onyx.kreader.dataprovider.BookmarkProvider;
-import com.onyx.kreader.dataprovider.SearchHistory;
-import com.onyx.kreader.dataprovider.SearchHistoryProvider;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 

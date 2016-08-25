@@ -3,23 +3,18 @@ package com.onyx.kreader.ui.actions;
 import android.app.Activity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.dataprovider.AsyncDataProvider;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.dataprovider.DataProvider;
-import com.onyx.kreader.dataprovider.request.LoadDocumentOptionsRequest;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.host.request.CreateViewRequest;
-import com.onyx.kreader.host.request.OpenRequest;
-import com.onyx.kreader.host.request.RestoreRequest;
-import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
+import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
-import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 
 /**
@@ -34,12 +29,12 @@ public class OpenDocumentAction extends BaseAction {
     private Activity activity;
     private String documentPath;
     private DialogLoading dialogLoading;
-    private DataProvider dataProvider;
+    private AsyncDataProvider asyncDataProvider;
 
     public OpenDocumentAction(final Activity activity, final String path) {
         this.activity = activity;
         documentPath = path;
-        dataProvider = new DataProvider();
+        asyncDataProvider = new AsyncDataProvider();
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {
@@ -47,7 +42,7 @@ public class OpenDocumentAction extends BaseAction {
         showLoadingDialog(readerDataHolder);
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
                 readerDataHolder.getReader().getDocumentMd5());
-        dataProvider.submit(readerDataHolder.getContext(), loadDocumentOptionsRequest, new BaseCallback() {
+        asyncDataProvider.submit(readerDataHolder.getContext(), loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
