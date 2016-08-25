@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -268,18 +269,14 @@ public class DialogQuickPreview extends Dialog {
         findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (paginator.prevPage()) {
-                    onPageDataChanged();
-                }
+                prevPage();
             }
         });
 
         findViewById(R.id.image_view_next_page).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (paginator.nextPage()) {
-                    onPageDataChanged();
-                }
+                nextPage();
             }
         });
 
@@ -327,10 +324,10 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void onPressedImageView(boolean pressedFourImage){
-        nineImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_nine_black_focused
-                : R.drawable.ic_dialog_reader_page_nine_white_focused);
-        fourImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_four_white_focused
-                : R.drawable.ic_dialog_reader_page_four_black_focused);
+        nineImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_nine_white_focused
+                : R.drawable.ic_dialog_reader_page_nine_black_focused);
+        fourImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_four_black_focused
+                : R.drawable.ic_dialog_reader_page_four_white_focused);
     }
 
     private void setupContent(int pageCount, int currentPage) {
@@ -398,4 +395,30 @@ public class DialogQuickPreview extends Dialog {
         textViewProgress.setText((paginator.getCurrentPage() + 1) + "/" + paginator.pages());
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode){
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                nextPage();
+                return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                prevPage();
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void nextPage(){
+        if (paginator.nextPage()) {
+            onPageDataChanged();
+        }
+    }
+
+    private void prevPage(){
+        if (paginator.prevPage()) {
+            onPageDataChanged();
+        }
+    }
 }

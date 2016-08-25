@@ -20,8 +20,8 @@
 
             <ImageView
                     android:id="@+id/imageView_back"
-                    android:layout_width="24dp"
-                    android:layout_height="36dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
@@ -150,6 +150,9 @@
                 android:orientation="horizontal">
 
             <TextView
+                    android:padding="3dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/imagebtn_bg"
                     android:id="@+id/text_view_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -160,6 +163,9 @@
                     android:text="1/1"/>
 
             <TextView
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
                     android:id="@+id/text_view_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
