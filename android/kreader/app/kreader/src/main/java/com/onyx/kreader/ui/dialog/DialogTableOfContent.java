@@ -641,9 +641,11 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode){
+            case KeyEvent.KEYCODE_PAGE_DOWN:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 viewList.get(getTabIndex(currentTab)).nextPage();
                 return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
             case KeyEvent.KEYCODE_VOLUME_UP:
                 viewList.get(getTabIndex(currentTab)).prevPage();
                 return true;

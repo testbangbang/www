@@ -398,9 +398,11 @@ public class DialogQuickPreview extends Dialog {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode){
+            case KeyEvent.KEYCODE_PAGE_DOWN:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 nextPage();
                 return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
             case KeyEvent.KEYCODE_VOLUME_UP:
                 prevPage();
                 return true;
