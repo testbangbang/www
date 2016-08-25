@@ -6,6 +6,8 @@ import com.onyx.cloud.CloudManager;
 
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Log;
 
 import com.onyx.cloud.BuildConfig;
@@ -116,49 +118,32 @@ public abstract class BaseCloudRequest extends BaseRequest {
         }
     }
 
+    protected boolean writeFileToDisk(CloudManager parent, ResponseBody body, File localFile, BaseCallback callback) throws java.io.IOException {
+        try (InputStream inputStream = body.byteStream();
+             OutputStream outputStream = new FileOutputStream(localFile)) {
 
+            byte[] fileReader = new byte[4096];
+            long fileSize = body.contentLength();
+            long fileSizeDownloaded = 0;
 
-    protected boolean writeFileToDisk(CloudManager parent, ResponseBody body, File localFile, BaseCallback callback) {
-        try {
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-            try {
-                byte[] fileReader = new byte[4096];
-                long fileSize = body.contentLength();
-                long fileSizeDownloaded = 0;
-
-                inputStream = body.byteStream();
-                outputStream = new FileOutputStream(localFile);
-                BaseCallback.ProgressInfo progressInfo = new BaseCallback.ProgressInfo();
-                while (true) {
-                    int read = inputStream.read(fileReader);
-                    if (read == -1) {
-                        break;
+            BaseCallback.ProgressInfo progressInfo = new BaseCallback.ProgressInfo();
+            while (true) {
+                int read = inputStream.read(fileReader);
+                if (read == -1) {
+                    break;
+                }
+                outputStream.write(fileReader, 0, read);
+                fileSizeDownloaded += read;
+                if (callback != null) {
+                    if (fileSize > 0) {
+                        progressInfo.progress = fileSizeDownloaded * 1.0 / fileSize * 100;
+                        invokeCallBackProgress(parent, progressInfo);
                     }
-                    outputStream.write(fileReader, 0, read);
-                    fileSizeDownloaded += read;
-                    if (callback != null) {
-                        if (fileSize > 0) {
-                            progressInfo.progress = fileSizeDownloaded * 1.0 / fileSize * 100;
-                            invokeCallBackProgress(parent, progressInfo);
-                        }
-                    }
-                    dumpMessage(TAG, "file download: " + (fileSizeDownloaded * 1.0 / fileSize * 100) + "%");
                 }
-                outputStream.flush();
-                return true;
-            } catch (IOException e) {
-                return false;
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
+                dumpMessage(TAG, "file download: " + (fileSizeDownloaded * 1.0 / fileSize * 100) + "%");
             }
-        } catch (IOException e) {
-            return false;
+            outputStream.flush();
+            return true;
         }
     }
 

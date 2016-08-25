@@ -43,7 +43,7 @@ public class SearchRequest extends BaseCloudRequest {
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         String param = JSON.toJSONString(searchCriteria);
-        Call<ProductResult<Product>> call = ServiceFactory.getSpecService(OnyxBookStoreService.class, parent.getCloudConf().getApiBase() + "/")
+        Call<ProductResult<Product>> call = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
                 .bookSearch(param);
         Response<ProductResult<Product>> response = call.execute();
         if (response.isSuccessful()) {

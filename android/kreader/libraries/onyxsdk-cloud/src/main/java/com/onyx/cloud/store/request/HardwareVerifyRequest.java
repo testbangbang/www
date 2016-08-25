@@ -20,7 +20,7 @@ public class HardwareVerifyRequest extends BaseCloudRequest {
 
     @Override
     public void execute(final CloudManager parent) throws Exception {
-        Call call = ServiceFactory.getSpecService(OnyxHardwareService.class, parent.getCloudConf().getApiBase() + "/")
+        Call call = ServiceFactory.getHardwareService(parent.getCloudConf().getApiBase())
                 .hardwareVerify(JSON.toJSONString(prohibit));
         Response response = call.execute();
         if (response.isSuccessful()) {

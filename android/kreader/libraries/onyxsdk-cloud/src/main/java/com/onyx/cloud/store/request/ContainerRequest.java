@@ -43,7 +43,7 @@ public class ContainerRequest extends BaseCloudRequest {
     }
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
-        OnyxBookStoreService service = ServiceFactory.getSpecService(OnyxBookStoreService.class, parent.getCloudConf().getApiBase() + "/");
+        OnyxBookStoreService service = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase());
         Response<ProductResult<ProductContainer>> response = service.bookContainer(JSON.toJSONString(productQuery)).execute();
         if (response.isSuccessful()) {
             productResult = response.body();

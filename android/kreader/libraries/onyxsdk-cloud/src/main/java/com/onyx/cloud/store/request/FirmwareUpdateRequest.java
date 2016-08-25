@@ -26,7 +26,7 @@ public class FirmwareUpdateRequest extends BaseCloudRequest {
 
     @Override
     public void execute(final CloudManager parent) throws Exception {
-        Call<Firmware> call = ServiceFactory.getSpecService(OnyxOTAService.class, parent.getCloudConf().getApiBase() + "/")
+        Call<Firmware> call = ServiceFactory.getOTAService(parent.getCloudConf().getApiBase())
                 .firmwareUpdate(JSON.toJSONString(fw));
         Response<Firmware> response = call.execute();
         if (response.isSuccessful()) {

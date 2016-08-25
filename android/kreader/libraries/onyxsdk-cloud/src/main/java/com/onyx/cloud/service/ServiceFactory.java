@@ -1,16 +1,13 @@
 package com.onyx.cloud.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.concurrent.ConcurrentHashMap;
 import retrofit2.Retrofit;
-
 
 /**
  * Created by zhuzeng on 8/10/16.
  */
 public class ServiceFactory {
-    private static Map<String, Retrofit> retrofitMap = new HashMap<>();
+    private static ConcurrentHashMap<String, Retrofit> retrofitMap = new ConcurrentHashMap<>();
 
     private static Retrofit getRetrofit(String baseUrl) {
         if (!retrofitMap.containsKey(baseUrl)) {
@@ -25,23 +22,31 @@ public class ServiceFactory {
 
     public static final String API_V1_BASE = "http://store.onyx-international.cn:9000/api/1/";
 
-    public static final OnyxAccountService getAccountService() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API_V1_BASE)
-                .addConverterFactory(FastJsonConverterFactory.create())
-                .build();
-        return retrofit.create(OnyxAccountService.class);
+    public static final OnyxAccountService getAccountService(final String baseUrl) {
+        return getSpecifyService(OnyxAccountService.class, baseUrl);
     }
 
-    public static final OnyxBookStoreService getBookStoreService() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API_V1_BASE)
-                .addConverterFactory(FastJsonConverterFactory.create())
-                .build();
-        return retrofit.create(OnyxBookStoreService.class);
+    public static final OnyxBookStoreService getBookStoreService(final String baseUrl) {
+        return getSpecifyService(OnyxBookStoreService.class, baseUrl);
     }
 
-    public static final <T> T getSpecService(final Class<T> service, final String baseUrl) {
+    public static final OnyxDictionaryService getDictionaryService(final String baseUrl) {
+        return getSpecifyService(OnyxDictionaryService.class, baseUrl);
+    }
+
+    public static final OnyxHardwareService getHardwareService(final String baseUrl) {
+        return getSpecifyService(OnyxHardwareService.class, baseUrl);
+    }
+
+    public static final OnyxOTAService getOTAService(final String baseUrl) {
+        return getSpecifyService(OnyxOTAService.class, baseUrl);
+    }
+
+    public static final OnyxFileDownloadService getFileDownloadService(final String baseUrl) {
+        return getSpecifyService(OnyxFileDownloadService.class, baseUrl);
+    }
+
+    public static final <T> T getSpecifyService(final Class<T> service, final String baseUrl) {
         return getRetrofit(baseUrl).create(service);
     }
 }

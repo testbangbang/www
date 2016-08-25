@@ -41,7 +41,7 @@ public class DownloadTest extends ApplicationTestCase<Application> {
     }
 
     public void testDownloadService() throws Exception {
-        OnyxFileDownloadService service = ServiceFactory.getSpecService(OnyxFileDownloadService.class, Constant.CN_API_BASE + "/");
+        OnyxFileDownloadService service = ServiceFactory.getFileDownloadService(Constant.CN_API_BASE);
         Call<ResponseBody> call = service.fileDownload(TEST_URL);
         Response<ResponseBody> response = call.execute();
         assertNotNull(response);

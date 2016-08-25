@@ -24,7 +24,7 @@ public class AddDeviceRequest extends BaseCloudRequest {
     }
 
     public void execute(final CloudManager parent) throws Exception {
-        Call<Device > call = ServiceFactory.getSpecService(OnyxAccountService.class, parent.getCloudConf().getApiBase() + "/")
+        Call<Device > call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
                 .addDevice(device, sessionToken);
         Response<Device > response = call.execute();
         if (response.isSuccessful()) {

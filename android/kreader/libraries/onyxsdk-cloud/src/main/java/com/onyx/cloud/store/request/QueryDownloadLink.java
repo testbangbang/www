@@ -30,7 +30,7 @@ public class QueryDownloadLink extends BaseCloudRequest {
     }
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
-        Call<List<DownloadLink>> call = ServiceFactory.getSpecService(OnyxBookStoreService.class, parent.getCloudConf().getApiBase() + "/")
+        Call<List<DownloadLink>> call = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
                 .bookDownloadLink(objectId);
         Response<List<DownloadLink>> response = call.execute();
         if (response.isSuccessful()) {

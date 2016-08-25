@@ -31,7 +31,7 @@ public class JSONObjectParseUtils {
         public static final String date = "date";
     }
 
-    public static OnyxAccount patchOnyxAccount(String jsonString) {
+    public static OnyxAccount parseOnyxAccount(String jsonString) {
         OnyxAccount onyxAccount = null;
         try {
             onyxAccount = JSON.parseObject(jsonString, OnyxAccount.class);

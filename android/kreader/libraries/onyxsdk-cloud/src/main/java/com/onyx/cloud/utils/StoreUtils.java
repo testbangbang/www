@@ -16,7 +16,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
-
 import java.util.List;
 
 /**
@@ -62,30 +61,39 @@ public class StoreUtils {
 
     static public <T extends BaseObject> void saveToLocal(final ProductResult<T> productResult, final Class<T> clazz,
                                                           boolean clearBeforeSave) {
-        if (CloudUtils.isEmpty(productResult)) {
-            return;
+        if (clearTable(productResult, clazz, clearBeforeSave)) {
+            processOnAsync(productResult, PROCESS_SAVE, null);
         }
-        try {
-            if (clearBeforeSave) {
-                SQLite.delete(clazz).execute();
-            }
-        } catch (Exception e) {
-        }
-        processOnAsync(productResult, PROCESS_SAVE, null);
     }
 
-    static public <T extends BaseObject> void saveToLocalFastly(final ProductResult<T> productResult, final Class<T> clazz,
-                                                                boolean clearBeforeSave) {
+    static public <T extends BaseObject> void saveToLocalFast(final ProductResult<T> productResult, final Class<T> clazz,
+                                                              boolean clearBeforeSave) {
+        if (clearTable(productResult, clazz, clearBeforeSave)) {
+            saveToLocalFast(productResult.list, clazz);
+        }
+    }
+
+    static public <T extends BaseObject> void saveToLocalFast(List<T> list, final Class<T> clazz) {
+        executeFastBuilder(FastStoreModelTransaction.saveBuilder(FlowManager.getModelAdapter(clazz)), list);
+    }
+
+    static public <T extends BaseObject> void updateToLocalFast(List<T> list, final Class<T> clazz) {
+        executeFastBuilder(FastStoreModelTransaction.updateBuilder(FlowManager.getModelAdapter(clazz)), list);
+    }
+
+    static private <T extends BaseObject> void executeFastBuilder(FastStoreModelTransaction.Builder<T> builder, List<T> list) {
+        builder.addAll(list).build().execute(FlowManager.getWritableDatabase(OnyxCloudDatabase.class));
+    }
+
+    static public <T extends BaseObject> boolean clearTable(final ProductResult<T> productResult, final Class<T> clazz,
+                                                            boolean clearBeforeSave) {
         if (CloudUtils.isEmpty(productResult)) {
-            return;
+            return false;
         }
-        try {
-            if (clearBeforeSave) {
-                SQLite.delete(clazz).execute();
-            }
-        } catch (Exception e) {
+        if (clearBeforeSave) {
+            clearTable(clazz);
         }
-        FastStoreModelTransaction.saveBuilder(FlowManager.getModelAdapter(clazz)).addAll(productResult.list).build();
+        return true;
     }
 
     static public <T extends BaseModel> void clearTable(final Class<T> clazz) {

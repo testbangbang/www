@@ -19,7 +19,7 @@ import java.util.UUID;
  */
 public class AccountTest extends ApplicationTestCase<Application> {
 
-    static OnyxAccountService service = ServiceFactory.getAccountService();
+    static OnyxAccountService service = ServiceFactory.getAccountService(ServiceFactory.API_V1_BASE);
 
     public AccountTest() {
         super(Application.class);
@@ -42,7 +42,7 @@ public class AccountTest extends ApplicationTestCase<Application> {
         assertNotNull(response);
         if (response.isSuccessful()) {
             assertNotNull(response.body());
-            final OnyxAccount resultAccount = JSONObjectParseUtils.patchOnyxAccount(response.body().string());
+            final OnyxAccount resultAccount = JSONObjectParseUtils.parseOnyxAccount(response.body().string());
             assertNotNull(resultAccount);
         } else {
             assertNotNull(response.errorBody());

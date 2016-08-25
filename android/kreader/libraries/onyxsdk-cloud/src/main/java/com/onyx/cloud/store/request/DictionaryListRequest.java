@@ -56,7 +56,7 @@ public class DictionaryListRequest extends BaseCloudRequest {
     }
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
-        Call<ProductResult<Dictionary>> call = ServiceFactory.getSpecService(OnyxDictionaryService.class, parent.getCloudConf().getApiBase() + "/")
+        Call<ProductResult<Dictionary>> call = ServiceFactory.getDictionaryService(parent.getCloudConf().getApiBase())
                 .dictionaryList(JSON.toJSONString(dictionaryQuery));
         Response<ProductResult<Dictionary>> response = call.execute();
         if (response.isSuccessful()) {

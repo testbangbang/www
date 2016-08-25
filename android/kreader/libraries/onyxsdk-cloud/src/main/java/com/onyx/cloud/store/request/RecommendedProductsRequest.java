@@ -33,7 +33,7 @@ public class RecommendedProductsRequest extends BaseCloudRequest {
     }
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
-        OnyxBookStoreService service = ServiceFactory.getSpecService(OnyxBookStoreService.class, parent.getCloudConf().getApiBase() + "/");
+        OnyxBookStoreService service = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase());
         Response<ProductResult<Product>> response = service.bookRecommendedList().execute();
         if (response.isSuccessful()) {
             productResult = response.body();

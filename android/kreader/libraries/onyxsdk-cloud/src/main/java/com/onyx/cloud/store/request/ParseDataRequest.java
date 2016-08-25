@@ -25,7 +25,7 @@ public class ParseDataRequest extends BaseCloudRequest {
         if (StringUtils.isNotBlank(targetMd5)) {
             return md5Calculated.equalsIgnoreCase(targetMd5);
         }
-        return true;
+        return false;
     }
 
     @Override

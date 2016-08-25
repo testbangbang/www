@@ -11,6 +11,7 @@ import com.onyx.cloud.model.ProductResult;
 import com.onyx.cloud.model.ProductSearch;
 import com.onyx.cloud.service.OnyxBookStoreService;
 import com.onyx.cloud.service.ServiceFactory;
+
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -21,7 +22,7 @@ import java.util.List;
  */
 public class BookStoreTest extends ApplicationTestCase<Application> {
 
-    static OnyxBookStoreService service = ServiceFactory.getBookStoreService();
+    static OnyxBookStoreService service = ServiceFactory.getBookStoreService(ServiceFactory.API_V1_BASE);
     static List<Product> productList;
 
     public BookStoreTest() {
@@ -76,10 +77,5 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
         assertTrue(response.body().count > 0);
         List<ProductContainer> list = response.body().list;
         assertNotNull(list);
-    }
-
-    public void testFileDownLoad(){
-        OnyxDownloadManager.getInstance(getApplication().getApplicationContext());
-
     }
 }
