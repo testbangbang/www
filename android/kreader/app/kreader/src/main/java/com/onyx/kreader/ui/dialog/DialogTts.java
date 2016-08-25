@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -101,6 +102,46 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
             }
         });
         super.show();
+
+        requestFocus();
+    }
+
+    private void requestFocus() {
+        ttsPlay.setFocusableInTouchMode(true);
+        ttsPlay.requestFocusFromTouch();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        final int page = readerDataHolder.getCurrentPage();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_PAGE_UP:
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (page > 0) {
+                    ttsStop(readerDataHolder);
+                    gotoPage(readerDataHolder, page -1);
+                }
+                return true;
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (page < readerDataHolder.getPageCount() - 1) {
+                    ttsStop(readerDataHolder);
+                    gotoPage(readerDataHolder, page + 1);
+                }
+                return true;
+            default:
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {
+        new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ttsPlay(readerDataHolder);
+            }
+        });
     }
 
     private void initView() {
