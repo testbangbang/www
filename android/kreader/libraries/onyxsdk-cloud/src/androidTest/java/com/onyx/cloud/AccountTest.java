@@ -2,7 +2,9 @@ package com.onyx.cloud;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
+
 import com.onyx.cloud.model.Captcha;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.cloud.model.OnyxAccount;
 import com.onyx.cloud.service.OnyxAccountService;
 import com.onyx.cloud.service.ServiceFactory;
@@ -25,18 +27,9 @@ public class AccountTest extends ApplicationTestCase<Application> {
         super(Application.class);
     }
 
-    public static String randomEmail() {
-        String email = UUID.randomUUID().toString().replace("-", "") + "@" + "onyx-international.com";
-        while (Character.isDigit(email.charAt(0))) {
-            email = email.substring(1);
-        }
-        return email;
-    }
-
     public void testSignUp() throws Exception {
         final OnyxAccount account = new OnyxAccount(UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(),
-                randomEmail());
+                UUID.randomUUID().toString(), TestUtils.randomEmail());
         Call<ResponseBody> object = service.signup(account);
         Response<ResponseBody> response = object.execute();
         assertNotNull(response);

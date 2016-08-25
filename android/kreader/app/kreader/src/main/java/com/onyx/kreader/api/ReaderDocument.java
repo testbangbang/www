@@ -1,7 +1,7 @@
 package com.onyx.kreader.api;
 
+import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.onyx.android.sdk.api.ReaderBitmap;
 
 /**
  * Created by zhuzeng on 10/2/15.
@@ -17,8 +17,9 @@ public interface ReaderDocument {
 
     /**
      * Retrieve cover image.
+     * @param bitmap
      */
-    public boolean readCover(final ReaderBitmap bitmap);
+    public boolean readCover(final Bitmap bitmap);
 
     /**
      * Retrieve the page natural size.

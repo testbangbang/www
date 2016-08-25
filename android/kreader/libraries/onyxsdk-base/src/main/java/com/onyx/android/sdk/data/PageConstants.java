@@ -27,6 +27,11 @@ public class PageConstants {
     public static final int ZOOM_TO_REFLOW = -7;
     public static final int ZOOM_TO_COMICE = -8;
     public static final int ZOOM_TO_PAPER = -9;
+    public static final float MAX_SCALE = 16;
+
+    public static double DEFAULT_AUTO_CROP_VALUE = 0.01;
+    public static int DEFAULT_PARAGRAPH_INDENT = 2;
+    public static int DEFAULT_LINE_SPACING = 110;
 
     public static boolean isSpecialScale(int scale) {
         if (scale < SCALE_INVALID && scale >= SCALE_TO_WIDTH_CONTENT) {
@@ -57,12 +62,6 @@ public class PageConstants {
 
 
 
-
-    static public double DEFAULT_AUTO_CROP_VALUE = 0.01;
-
-    static public int DEFAULT_PARAGRAPH_INDENT = 2;
-
-    static public int DEFAULT_LINE_SPACING = 110;
 
 
 

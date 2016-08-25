@@ -26,6 +26,16 @@ public class ReaderDeviceManager {
     private static int gcInterval;
     private static int refreshCount;
 
+    private final static EpdDevice epdDevice;
+
+    static {
+        if (isRkDevice()) {
+            epdDevice = new EpdRk3026();
+        } else {
+            epdDevice = new EpdImx6();
+        }
+    }
+
     public static int getScreenOrientation(final Activity activity) {
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         DisplayMetrics dm = new DisplayMetrics();
@@ -109,18 +119,6 @@ public class ReaderDeviceManager {
         activity.sendBroadcast(intent);
     }
 
-    public static void applyGCUpdate(View view) {
-        EpdController.setViewDefaultUpdateMode(view, UpdateMode.GC);
-    }
-
-    public static void applyRegalUpdate(View view) {
-        EpdController.setViewDefaultUpdateMode(view, UpdateMode.REGAL);
-    }
-
-    public static void applyRegalClearUpdate(View view) {
-        EpdController.setViewDefaultUpdateMode(view, UpdateMode.REGAL_D);
-    }
-
     public static void enterAnimationUpdate(boolean clear) {
         EpdController.applyApplicationFastMode(APP, true, clear);
     }
@@ -151,8 +149,8 @@ public class ReaderDeviceManager {
         refreshCount = 0;
     }
 
-    public static void applyWithGCInterval(View view) {
-        if (EpdController.supportRegal()) {
+    public static void applyWithGCInterval(View view, boolean isTextPage) {
+        if (isTextPage && EpdController.supportRegal()) {
             applyWithGCIntervalWitRegal(view);
         } else {
             applyWithGCIntervalWithoutRegal(view);
@@ -162,23 +160,23 @@ public class ReaderDeviceManager {
     public static void applyWithGCIntervalWitRegal(View view) {
         if (refreshCount++ >= gcInterval) {
             refreshCount = 0;
-            applyRegalUpdate(view);
+            epdDevice.applyRegalUpdate(view);
         } else {
-            applyRegalUpdate(view);
+            epdDevice.applyRegalUpdate(view);
         }
     }
 
     public static void applyWithGCIntervalWithoutRegal(View view) {
         if (refreshCount++ >= gcInterval) {
             refreshCount = 0;
-            applyGCUpdate(view);
+            epdDevice.applyGCUpdate(view);
         } else {
-            resetUpdate(view);
+            epdDevice.resetUpdate(view);
         }
     }
 
-    public static void resetUpdate(View view) {
-        EpdController.resetUpdateMode(view);
+    static public boolean isRkDevice() {
+        return Build.HARDWARE.startsWith("rk");
     }
 
 }

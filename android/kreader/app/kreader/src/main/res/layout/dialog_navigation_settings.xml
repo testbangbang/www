@@ -101,7 +101,7 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/title"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_reader_browse_subfield" />
+                    android:src="@drawable/ic_dialog_navigation_settings_subscreen_2_2" />
 
                 <TextView
                     android:layout_centerHorizontal="true"

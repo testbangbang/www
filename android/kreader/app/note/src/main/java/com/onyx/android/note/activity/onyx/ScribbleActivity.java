@@ -30,6 +30,7 @@ import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -325,7 +326,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ScribbleActivity> action = new CheckNoteNameLegalityAction<ScribbleActivity>(input, parentID, false);
+                final CheckNoteNameLegalityAction<ScribbleActivity> action =
+                        new CheckNoteNameLegalityAction<>(input, parentID, NoteModel.TYPE_DOCUMENT, false, false);
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

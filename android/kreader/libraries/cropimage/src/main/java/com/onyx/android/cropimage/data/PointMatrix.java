@@ -72,6 +72,9 @@ public class PointMatrix {
     }
 
     public int cols() {
+        if (rows() <= 0) {
+            return 0;
+        }
         return data.get(0).size();
     }
 

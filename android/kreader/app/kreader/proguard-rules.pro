@@ -29,6 +29,8 @@
 
 -keepnames class org.apache.lucene.analysis.** { *; }
 
+-keepnames class com.onyx.android.cropimage.data.** { *; }
+
 -keepnames class com.onyx.android.sdk.data.PageInfo { *; }
 -keepnames class com.onyx.android.sdk.utils.StringUtils { *; }
 
@@ -44,3 +46,5 @@
 
 -keepnames class com.onyx.kreader.host.navigation.NavigationArgs { *; }
 -keepnames class com.onyx.kreader.host.navigation.NavigationList { *; }
+
+-keepnames class com.onyx.kreader.api.ReaderSentence { *; }

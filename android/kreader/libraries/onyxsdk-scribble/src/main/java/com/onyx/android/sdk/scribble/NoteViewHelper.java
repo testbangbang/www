@@ -579,7 +579,7 @@ public class NoteViewHelper {
     }
 
     private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER || toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
+        return toolType == MotionEvent.TOOL_TYPE_FINGER;
     }
 
     private boolean processTouchEvent(final MotionEvent motionEvent) {

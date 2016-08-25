@@ -1,9 +1,9 @@
 package com.onyx.kreader.plugins.djvu;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 
-import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.kreader.host.options.ReaderStyle;
@@ -51,7 +51,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean readCover(ReaderBitmap bitmap) {
+    public boolean readCover(Bitmap bitmap) {
         return false;
     }
 
@@ -243,12 +243,12 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean draw(String page, float scale, int rotation, ReaderBitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(String page, float scale, int rotation, Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         benchmark.restart();
         try {
             final int pn = PagePositionUtils.getPageNumber(page);
-            return getPluginImpl().drawPage(pn, bitmap.getBitmap(),
-                    scale, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(),
+            return getPluginImpl().drawPage(pn, bitmap,
+                    scale, bitmap.getWidth(), bitmap.getHeight(),
                     -(int)displayRect.left, -(int)displayRect.top, (int)displayRect.width(), (int)displayRect.height());
         } finally {
             benchmark.report("djvu rendering finished");

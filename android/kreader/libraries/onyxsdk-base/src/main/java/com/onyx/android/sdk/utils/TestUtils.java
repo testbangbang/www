@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.PageInfo;
 
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by zhuzeng on 2/11/16.
@@ -53,6 +54,14 @@ public class TestUtils {
             stringBuilder.append(source.charAt(index));
         }
         return stringBuilder.toString();
+    }
+
+    public static String randomEmail() {
+        String email = UUID.randomUUID().toString().replace("-", "") + "@" + "onyx-international.com";
+        while (Character.isDigit(email.charAt(0))) {
+            email = email.substring(1);
+        }
+        return email;
     }
 
 

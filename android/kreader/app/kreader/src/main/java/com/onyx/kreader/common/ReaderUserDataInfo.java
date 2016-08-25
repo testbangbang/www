@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +34,8 @@ public class ReaderUserDataInfo {
     private String documentPath;
 
     private ReaderDocumentTableOfContent toc;
-    private Map<String, Bookmark> bookmarkMap = new HashMap<>();
-    private Map<String, List<Annotation>> annotationMap = new HashMap<>();
+    private Map<String, Bookmark> bookmarkMap = new LinkedHashMap<>();
+    private Map<String, List<Annotation>> annotationMap = new LinkedHashMap<>();
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
 

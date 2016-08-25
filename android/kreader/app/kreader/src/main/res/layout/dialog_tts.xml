@@ -4,6 +4,8 @@
                 android:layout_height="wrap_content">
 
     <LinearLayout
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/tts_button_layout"

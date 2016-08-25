@@ -274,7 +274,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
         if (event.isApplyGCIntervalUpdate()) {
-            ReaderDeviceManager.applyWithGCInterval(surfaceView);
+            ReaderDeviceManager.applyWithGCInterval(surfaceView, readerDataHolder.getReaderViewInfo().isTextPages());
         }
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         updateStatusBar();

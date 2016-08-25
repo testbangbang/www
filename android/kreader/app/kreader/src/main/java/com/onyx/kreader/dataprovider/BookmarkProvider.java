@@ -19,6 +19,7 @@ public class BookmarkProvider {
     public static final List<Bookmark> loadBookmarks(final String application, final String md5) {
         return new Select().from(Bookmark.class).where(Bookmark_Table.md5.eq(md5))
                 .and(Bookmark_Table.application.eq(application))
+                .orderBy(Bookmark_Table.pageNumber, true)
                 .queryList();
     }
 

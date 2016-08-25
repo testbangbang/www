@@ -11,6 +11,7 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 public class ReaderBitmapImpl implements ReaderBitmap {
 
     private Bitmap bitmap;
+    private float gammaCorrection;
 
     public static ReaderBitmapImpl create(int width, int height, Bitmap.Config config) {
         ReaderBitmapImpl readerBitmap = new ReaderBitmapImpl(width, height, config);
@@ -41,6 +42,14 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     public Bitmap getBitmap() {
         return bitmap;
+    }
+
+    public void setGammaCorrection(float correction) {
+        this.gammaCorrection = correction;
+    }
+
+    public float gammaCorrection() {
+        return gammaCorrection;
     }
 
     public void update(int width, int height, Bitmap.Config config) {

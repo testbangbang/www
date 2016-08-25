@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -12,15 +13,18 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
@@ -76,9 +80,9 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         private TextView textViewPage;
         private TextView textViewTime;
         private TextView textViewDelete;
-        private ImageView imageViewDelete;
+        private ImageButton imageViewDelete;
         private TextView textViewEdit;
-        private ImageView imageViewEdit;
+        private ImageButton imageViewEdit;
         private View splitLine;
         private String page;
         private int position;
@@ -92,9 +96,9 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             textViewPage = (TextView)itemView.findViewById(R.id.text_view_page);
             textViewTime = (TextView)itemView.findViewById(R.id.text_view_time);
             textViewDelete = (TextView)itemView.findViewById(R.id.text_view_delete);
-            imageViewDelete = (ImageView) itemView.findViewById(R.id.image_view_delete);
+            imageViewDelete = (ImageButton) itemView.findViewById(R.id.image_view_delete);
             textViewEdit = (TextView)itemView.findViewById(R.id.text_view_edit);
-            imageViewEdit = (ImageView) itemView.findViewById(R.id.image_view_edit);
+            imageViewEdit = (ImageButton) itemView.findViewById(R.id.image_view_edit);
             splitLine = itemView.findViewById(R.id.split_line);
 
             imageViewDelete.setOnClickListener(this);
@@ -107,10 +111,11 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
         public void bindView(String title,String description,String page,long time,int position,DirectoryTab tab){
             textViewTitle.setText(title);
+            description = StringUtils.deleteNewlineSymbol(description);
             textViewDescription.setText(description);
             Date date = new Date(time);
             textViewTime.setText(DateTimeUtil.formatDate(date,DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
-            String format = String.format(readerDataHolder.getContext().getString(R.string.page),page);
+            String format = String.format(readerDataHolder.getContext().getString(R.string.page),Integer.valueOf(page) + 1);
             textViewPage.setText(format);
             this.page = page;
             this.position = position;
@@ -124,14 +129,23 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         @Override
         public void onClick(View v) {
             if (v.equals(itemView)){
-                DialogTableOfContent.this.hide();
-                new GotoPageAction(page).execute(readerDataHolder);
+                new GotoPageAction(page).execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        DialogTableOfContent.this.dismiss();
+                    }
+                });
             }else if (v.equals(textViewDelete) || v.equals(imageViewDelete)){
-                if (currentTab == DirectoryTab.Bookmark){
-                    deleteBookmark(readerDataHolder,position);
-                }else {
-                    deleteAnnotation(readerDataHolder,position);
-                }
+                DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (currentTab == DirectoryTab.Bookmark){
+                            deleteBookmark(readerDataHolder,position);
+                        }else {
+                            deleteAnnotation(readerDataHolder,position);
+                        }
+                    }
+                }).show();
             }else if (v.equals(imageViewEdit) || v.equals(textViewEdit)){
                 showAnnotationEditDialog(position);
             }
@@ -159,7 +173,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private void deleteBookmark(ReaderDataHolder readerDataHolder, final int position){
         final DeleteBookmarkRequest DbRequest = new DeleteBookmarkRequest(bookmarkList.get(position));
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),DbRequest, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(DbRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 bookmarkList.remove(position);
@@ -171,7 +185,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private void deleteAnnotation(ReaderDataHolder readerDataHolder, final int position){
         final DeleteAnnotationRequest DaRequest = new DeleteAnnotationRequest(annotationList.get(position));
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),DaRequest, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(DaRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 annotationList.remove(position);

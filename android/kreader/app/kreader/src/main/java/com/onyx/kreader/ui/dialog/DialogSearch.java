@@ -10,23 +10,23 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.view.OnyxCustomEditText;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
@@ -44,16 +44,20 @@ import java.util.List;
 /**
  * Created by ming on 16/7/21.
  */
-public class DialogSearch extends Dialog implements View.OnClickListener, TextView.OnEditorActionListener {
+public class DialogSearch extends Dialog{
 
     private static final String TAG = DialogSearch.class.getSimpleName();
     private static int SEARCH_CONTENT_ROW = 8;
-    private static int SEARCH_HISTORY_COUNT = 5;
+    private static int SEARCH_HISTORY_COUNT = 10;
     public static final int SEARCH_CONTENT_LENGTH = 30;
+    public static final int SEARCH_PAGE_ONE_TIME = 20;
 
     private ReaderDataHolder readerDataHolder;
     private SearchContentAction searchContentAction;
     private int currentPagePosition = 0;
+    private int nextRequestPage = SEARCH_PAGE_ONE_TIME;
+    private int startPage = 0;
+    private boolean nextPageAction = false;
 
     private PageRecyclerView pageRecyclerView;
     private RecyclerView historyRecyclerView;
@@ -61,9 +65,11 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private TextView backText;
     private TextView totalPage;
     private TextView pageIndicator;
-    private EditText searchEditText;
+    private TextView searchingText;
+    private OnyxCustomEditText searchEditText;
     private ImageButton preIcon;
     private ImageButton nextIcon;
+    private ImageButton closeSearch;
     private LinearLayout searchContent;
     private LinearLayout loadingLayout;
     private RelativeLayout searchHistory;
@@ -72,25 +78,16 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
     private TextView closeHistory;
 
     private List<ReaderSelection> searchList = new ArrayList<>();
+    private List<ReaderSelection> showSearchList = new ArrayList<>();
     private List<SearchHistory> historyList = new ArrayList<>();
+    private String searchText;
 
     public DialogSearch(final ReaderDataHolder readerDataHolder) {
-        super(readerDataHolder.getContext(), R.style.dialog_transparent_no_title);
+        super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
 
         setContentView(R.layout.dialog_search);
-        fitDialogToWindow();
         this.readerDataHolder = readerDataHolder;
         init();
-    }
-
-    private void fitDialogToWindow() {
-        Window mWindow = getWindow();
-        WindowManager.LayoutParams mParams = mWindow.getAttributes();
-        mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        mParams.gravity = Gravity.BOTTOM;
-        mWindow.setAttributes(mParams);
-        //force use all space in the screen
-        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     private void init(){
@@ -99,28 +96,21 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         backText = (TextView) findViewById(R.id.text_view_back);
         totalPage = (TextView)findViewById(R.id.total_page);
         pageIndicator = (TextView)findViewById(R.id.page_indicator);
-        searchEditText = (EditText)findViewById(R.id.edit_view_search);
+        searchingText = (TextView)findViewById(R.id.textview_message);
+        searchEditText = (OnyxCustomEditText)findViewById(R.id.edit_view_search);
         searchContent = (LinearLayout) findViewById(R.id.search_content);
         loadingLayout = (LinearLayout) findViewById(R.id.loading_layout);
         searchHistory = (RelativeLayout) findViewById(R.id.search_history_layout);
         searchEditLayout = (RelativeLayout) findViewById(R.id.search_edit_layout);
         preIcon = (ImageButton) findViewById(R.id.pre_icon);
         nextIcon = (ImageButton) findViewById(R.id.next_icon);
+        closeSearch = (ImageButton) findViewById(R.id.close_search);
         historyRecyclerView = (RecyclerView) findViewById(R.id.search_history_list);
         deleteHistory = (TextView) findViewById(R.id.delete_history);
         closeHistory = (TextView) findViewById(R.id.close_history);
         searchContent.setVisibility(View.INVISIBLE);
         deleteHistory.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         closeHistory.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-
-        backView.setOnClickListener(this);
-        backText.setOnClickListener(this);
-        preIcon.setOnClickListener(this);
-        nextIcon.setOnClickListener(this);
-        deleteHistory.setOnClickListener(this);
-        closeHistory.setOnClickListener(this);
-        searchEditText.setOnClickListener(this);
-        searchEditText.setOnEditorActionListener(this);
 
         searchEditLayout.post(new Runnable() {
             @Override
@@ -129,7 +119,94 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
             }
         });
 
+        setViewListener();
         initPageRecyclerView();
+    }
+
+    private void setViewListener(){
+        closeSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopSearch();
+                hideLoadingLayout();
+            }
+        });
+
+        backView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        backText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        preIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pageRecyclerView.prevPage();
+            }
+        });
+
+        nextIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pageRecyclerView.getPaginator().canNextPage()){
+                    pageRecyclerView.nextPage();
+                }else {
+                    nextSearch();
+                }
+            }
+        });
+
+        closeHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchHistory.setVisibility(View.GONE);
+                hideSoftInputWindow();
+            }
+        });
+
+        deleteHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ToggleSearchHistoryAction("", false).execute(readerDataHolder);
+                searchHistory.setVisibility(View.GONE);
+            }
+        });
+
+        searchEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopSearch();
+                loadSearchHistoryData();
+            }
+        });
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                    hideSoftInputWindow();
+                    loadSearchData();
+                }
+                return true;
+            }
+        });
+
+        searchEditText.setOnKeyPreImeListener(new OnyxCustomEditText.onKeyPreImeListener() {
+            @Override
+            public void onKeyPreIme(int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK){
+                    searchHistory.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void showSearchHistoryView(){
@@ -155,7 +232,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
 
             @Override
             public int getDataCount() {
-                return searchList.size();
+                return showSearchList.size();
             }
 
             @Override
@@ -165,7 +242,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
 
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                ((SearchViewHolder)holder).bindView(searchList.get(position),searchEditText.getText().toString());
+                ((SearchViewHolder)holder).bindView(showSearchList.get(position),searchText);
             }
         });
         pageRecyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
@@ -224,69 +301,65 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         searchHistory.setVisibility(View.GONE);
         searchContent.setVisibility(View.VISIBLE);
         stopSearch();
-        final String query = searchEditText.getText().toString();
-        if (StringUtils.isNullOrEmpty(query)){
+        searchText = searchEditText.getText().toString();
+        if (StringUtils.isNullOrEmpty(searchText)){
             return;
         }
 
         showLoadingLayout();
-        new ToggleSearchHistoryAction(query, true).execute(readerDataHolder);
+        new ToggleSearchHistoryAction(searchText, true).execute(readerDataHolder);
         pageRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                searchList.clear();
-                updatePageIndicator(0,0);
-                pageRecyclerView.setCurrentPage(0);
-
-                searchContentAction = new SearchContentAction(query,SEARCH_CONTENT_LENGTH);
+                reset();
+                searchContentAction = new SearchContentAction(searchText,SEARCH_CONTENT_LENGTH, startPage, SEARCH_PAGE_ONE_TIME * SEARCH_CONTENT_ROW);
                 searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
                     @Override
-                    public void OnNext(final List<ReaderSelection> results) {
+                    public void OnNext(final List<ReaderSelection> results,int page) {
+                        updateSearchingText(page);
                         if (results == null || results.size() < 1){
                             return;
                         }
-                        hideLoadingLayout();
+
+                        nextIcon.setEnabled(true);
                         searchList.addAll(results);
+                        mergeSearchList();
                         updatePageIndicator(currentPagePosition,pageRecyclerView.getAdapter().getItemCount());
                         pageRecyclerView.getAdapter().notifyDataSetChanged();
+                        if (nextPageAction && pageRecyclerView.getPaginator().canNextPage()){
+                            nextPageAction = false;
+                            pageRecyclerView.nextPage();
+                        }
                     }
 
                     @Override
-                    public void OnFinishedSearch() {
+                    public void OnFinishedSearch(int endPage) {
+                        startPage = endPage;
+                        nextIcon.setEnabled(true);
                         hideLoadingLayout();
+                        finishSearchTips();
                     }
                 });
             }
         },500);
-
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.equals(backView) || v.equals(backText)){
-            hideSearchDialog();
-        }else if (v.equals(nextIcon)){
-            pageRecyclerView.nextPage();
-        }else if (v.equals(preIcon)){
-            pageRecyclerView.prevPage();
-        }else if (v.equals(closeHistory)){
-            searchHistory.setVisibility(View.GONE);
-            hideSoftInputWindow();
-        }else if (v.equals(deleteHistory)){
-            new ToggleSearchHistoryAction("", false).execute(readerDataHolder);
-            searchHistory.setVisibility(View.GONE);
-        }else if (v.equals(searchEditText)){
-            loadSearchHistoryData();
-        }
+    private void reset(){
+        searchList.clear();
+        showSearchList.clear();
+        nextRequestPage = SEARCH_PAGE_ONE_TIME;
+        updatePageIndicator(0,0);
+        pageRecyclerView.setCurrentPage(0);
+        startPage = 0;
     }
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == EditorInfo.IME_ACTION_DONE){
-            hideSoftInputWindow();
-            loadSearchData();
+    private void mergeSearchList(){
+        int maxCount = nextRequestPage  * SEARCH_CONTENT_ROW;
+        if (showSearchList.size() < searchList.size()){
+            for (int i = showSearchList.size(); i < maxCount && i < searchList.size(); i++) {
+                showSearchList.add(searchList.get(i));
+            }
         }
-        return true;
     }
 
     private void stopSearch(){
@@ -316,8 +389,12 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    hideSearchDialog();
-                    new GotoPageAction(readerSelection.getPagePosition()).execute(readerDataHolder);
+                    new GotoPageAction(readerSelection.getPagePosition()).execute(readerDataHolder, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            dismiss();
+                        }
+                    });
                 }
             });
             contentTextView = (TextView)itemView.findViewById(R.id.search_content);
@@ -326,8 +403,8 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
 
         public void bindView(ReaderSelection selection,String search){
             readerSelection = selection;
-            String leftText = deleteNewlineSymbol(selection.getLeftText().trim());
-            String rightText = deleteNewlineSymbol(selection.getRightText().trim());
+            String leftText = StringUtils.deleteNewlineSymbol(selection.getLeftText().trim());
+            String rightText = StringUtils.deleteNewlineSymbol(selection.getRightText().trim());
             String content = leftText + search + rightText;
             SpannableStringBuilder style = new SpannableStringBuilder(content);
             int start = leftText.length();
@@ -339,7 +416,7 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
             style.setSpan(new ForegroundColorSpan(Color.WHITE),start, start + length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             contentTextView.setText(style);
             int pagePosition = Integer.valueOf(readerSelection.getPagePosition());
-            String page = String.format(getContext().getString(R.string.page), pagePosition + 1 + "");
+            String page = String.format(getContext().getString(R.string.page), pagePosition + 1);
             contentPage.setText(page);
         }
     }
@@ -372,21 +449,20 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
         int page = itemCount / SEARCH_CONTENT_ROW;
         int currentPage = page > 0 ? position / SEARCH_CONTENT_ROW + 1 : 0;
         String indicator = String.format("%d/%d",currentPage,page);
-        String total = String.format(readerDataHolder.getContext().getString(R.string.total_page),searchList.size());
+        String total = String.format(getContext().getString(R.string.total_page),showSearchList.size());
         pageIndicator.setText(indicator);
         totalPage.setText(total);
     }
 
-    private void hideSearchDialog(){
-        hide();
-        stopSearch();
+    private void updateSearchingText(int page){
+        String str = String.format(getContext().getString(R.string.searching),page,readerDataHolder.getPageCount());
+        searchingText.setText(str);
     }
 
-    private String deleteNewlineSymbol(String content){
-        while (content.contains("\n")){
-            content = content.replace("\n"," ");
-        }
-        return content;
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        stopSearch();
     }
 
     private void showLoadingLayout(){
@@ -395,5 +471,23 @@ public class DialogSearch extends Dialog implements View.OnClickListener, TextVi
 
     private void hideLoadingLayout(){
         loadingLayout.setVisibility(View.GONE);
+    }
+
+    private void nextSearch(){
+        int currentPage = currentPagePosition / SEARCH_CONTENT_ROW + 1;
+        if (currentPage == nextRequestPage) {
+            nextIcon.setEnabled(false);
+            nextRequestPage = nextRequestPage + SEARCH_PAGE_ONE_TIME;
+            showLoadingLayout();
+            nextPageAction = true;
+            searchContentAction.proceedSearch(readerDataHolder, startPage);
+        }
+        finishSearchTips();
+    }
+
+    private void finishSearchTips(){
+        if (startPage >= readerDataHolder.getPageCount()){
+            Toast.makeText(getContext(), getContext().getString(R.string.search_end), Toast.LENGTH_SHORT).show();
+        }
     }
 }

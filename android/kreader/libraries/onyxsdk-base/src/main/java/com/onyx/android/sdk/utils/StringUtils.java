@@ -69,4 +69,11 @@ public class StringUtils {
         final String [] result = string.split(delimiter);
         return Arrays.asList(result);
     }
+
+    public static String deleteNewlineSymbol(String content){
+        if (!isNullOrEmpty(content)){
+            content = content.replaceAll("\r\n"," ").replaceAll("\n", " ");
+        }
+        return content;
+    }
 }

@@ -25,16 +25,16 @@
     <TextView
             android:ellipsize="end"
             android:maxLines="1"
-            android:textSize="25sp"
+            android:textSize="@dimen/dialog_table_of_content_item_text_title_size"
             android:id="@+id/text_view_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     <TextView
         android:maxLines="3"
-        android:gravity="center_vertical"
+        android:gravity="left"
         android:ellipsize="end"
-        android:textSize="18sp"
+        android:textSize="@dimen/dialog_table_of_content_item_text_size"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/text_view_page"
         android:layout_above="@+id/layout_bottom"
@@ -43,7 +43,6 @@
         android:layout_height="wrap_content"/>
 
     <RelativeLayout
-        android:layout_marginBottom="4dp"
         android:id="@+id/layout_bottom"
         android:layout_above="@+id/split_line"
         android:layout_width="match_parent"
@@ -57,7 +56,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageView
+        <ImageButton
+            android:padding="5dp"
+            android:background="@drawable/imagebtn_bg"
             android:layout_centerVertical="true"
             android:id="@+id/image_view_edit"
             android:layout_marginRight="5dp"
@@ -75,7 +76,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageView
+        <ImageButton
+            android:padding="5dp"
+            android:background="@drawable/imagebtn_bg"
             android:layout_centerVertical="true"
             android:id="@+id/image_view_delete"
             android:layout_marginRight="5dp"

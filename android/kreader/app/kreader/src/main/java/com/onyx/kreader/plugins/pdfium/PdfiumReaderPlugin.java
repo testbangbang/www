@@ -1,12 +1,34 @@
 package com.onyx.kreader.plugins.pdfium;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.RectF;
-import android.util.Log;
-import com.onyx.android.sdk.api.ReaderBitmap;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.api.*;
 import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.api.ReaderDRMCallback;
+import com.onyx.kreader.api.ReaderDocument;
+import com.onyx.kreader.api.ReaderDocumentMetadata;
+import com.onyx.kreader.api.ReaderDocumentOptions;
+import com.onyx.kreader.api.ReaderDocumentTableOfContent;
+import com.onyx.kreader.api.ReaderDrmManager;
+import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.api.ReaderHitTestArgs;
+import com.onyx.kreader.api.ReaderHitTestManager;
+import com.onyx.kreader.api.ReaderLink;
+import com.onyx.kreader.api.ReaderNavigator;
+import com.onyx.kreader.api.ReaderPlugin;
+import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.api.ReaderRendererFeatures;
+import com.onyx.kreader.api.ReaderSearchManager;
+import com.onyx.kreader.api.ReaderSearchOptions;
+import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.api.ReaderSentence;
+import com.onyx.kreader.api.ReaderTextSplitter;
+import com.onyx.kreader.api.ReaderTextStyleManager;
+import com.onyx.kreader.api.ReaderView;
+import com.onyx.kreader.api.ReaderViewOptions;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
@@ -95,9 +117,9 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return true;
     }
 
-    public boolean readCover(final ReaderBitmap bitmap) {
-        return getPluginImpl().drawPage(0, 0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight(),
-                0, bitmap.getBitmap());
+    public boolean readCover(final Bitmap bitmap) {
+        return getPluginImpl().drawPage(0, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
+                0, bitmap);
     }
 
     public RectF getPageOriginSize(final String position) {
@@ -205,15 +227,15 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String page, final float scale,  final int rotation, final ReaderBitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         benchmark.restart();
         boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page),
                 (int)displayRect.left,
                 (int)displayRect.top,
                 (int)displayRect.width(),
                 (int)displayRect.height(),
-                rotation, bitmap.getBitmap());
-        Log.e(TAG, "rendering takes: " + benchmark.duration());
+                rotation, bitmap);
+        Debug.d(TAG, "rendering takes: " + benchmark.duration());
         return ret;
     }
 
