@@ -2,6 +2,7 @@ package com.onyx.kreader.host.wrapper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -110,13 +111,13 @@ public class ReaderHelper {
         }
         DisplayMetrics display = new DisplayMetrics();
         window.getDefaultDisplay().getMetrics(display);
-        ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(display.widthPixels, display.heightPixels,
+        Bitmap bitmap = Bitmap.createBitmap(display.widthPixels, display.heightPixels,
                 Bitmap.Config.ARGB_8888);
-        bitmap.clear();
+        bitmap.eraseColor(Color.WHITE);
         if (getDocument().readCover(bitmap)) {
-            LegacySdkDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
+            LegacySdkDataUtils.saveThumbnail(context, path, bitmap);
         }
-        bitmap.recycleBitmap();
+        bitmap.recycle();
     }
 
     public void onViewSizeChanged() {

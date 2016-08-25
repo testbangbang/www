@@ -3,11 +3,22 @@ package com.onyx.cloud.store.request;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.cloud.CloudManager;
+
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Log;
 
 import com.onyx.cloud.BuildConfig;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import okhttp3.ResponseBody;
 
 /**
  * Created by zhuzeng on 11/21/15.
@@ -53,6 +64,9 @@ public abstract class BaseCloudRequest extends BaseRequest {
 
     public abstract void execute(final CloudManager parent) throws Exception;
 
+    public void doComplexWork() {
+    }
+
     /**
      * must not throw out exception from the method
      *
@@ -79,7 +93,8 @@ public abstract class BaseCloudRequest extends BaseRequest {
             public void run() {
                 BaseCallback.invoke(getCallback(), BaseCloudRequest.this, getException());
                 parent.releaseWakeLock();
-            }};
+            }
+        };
 
         if (isRunInBackground()) {
             parent.getLooperHandler().post(runnable);
@@ -88,6 +103,49 @@ public abstract class BaseCloudRequest extends BaseRequest {
         }
     }
 
+    private void invokeCallBackProgress(final CloudManager parent, final BaseCallback.ProgressInfo progressInfo) {
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                getCallback().progress(BaseCloudRequest.this, progressInfo);
+            }
+        };
+
+        if (isRunInBackground()) {
+            parent.getLooperHandler().post(runnable);
+        } else {
+            runnable.run();
+        }
+    }
+
+    protected boolean writeFileToDisk(CloudManager parent, ResponseBody body, File localFile, BaseCallback callback) throws java.io.IOException {
+        try (InputStream inputStream = body.byteStream();
+             OutputStream outputStream = new FileOutputStream(localFile)) {
+
+            byte[] fileReader = new byte[4096];
+            long fileSize = body.contentLength();
+            long fileSizeDownloaded = 0;
+
+            BaseCallback.ProgressInfo progressInfo = new BaseCallback.ProgressInfo();
+            while (true) {
+                int read = inputStream.read(fileReader);
+                if (read == -1) {
+                    break;
+                }
+                outputStream.write(fileReader, 0, read);
+                fileSizeDownloaded += read;
+                if (callback != null) {
+                    if (fileSize > 0) {
+                        progressInfo.progress = fileSizeDownloaded * 1.0 / fileSize * 100;
+                        invokeCallBackProgress(parent, progressInfo);
+                    }
+                }
+                dumpMessage(TAG, "file download: " + (fileSizeDownloaded * 1.0 / fileSize * 100) + "%");
+            }
+            outputStream.flush();
+            return true;
+        }
+    }
 
     private void dumpException() {
         if (hasException()) {

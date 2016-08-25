@@ -1,23 +1,22 @@
 package com.onyx.android.sdk.data;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Joy on 2016/4/19.
  */
-public abstract class ReaderMenuItem implements Comparable<ReaderMenuItem> {
+public abstract class ReaderMenuItem {
     public enum ItemType { Group, Item }
 
     private ItemType itemType;
-    private URI uri;
+    private ReaderMenuAction action;
     private ReaderMenuItem parent;
     private List<ReaderMenuItem> children = new ArrayList<>();
 
-    public ReaderMenuItem(ItemType itemType, URI uri, ReaderMenuItem parent) {
+    public ReaderMenuItem(ItemType itemType, ReaderMenuAction action, ReaderMenuItem parent) {
         this.itemType = itemType;
-        this.uri = uri;
+        this.action = action;
         this.parent = parent;
     }
 
@@ -25,8 +24,8 @@ public abstract class ReaderMenuItem implements Comparable<ReaderMenuItem> {
         return itemType;
     }
 
-    public URI getURI() {
-        return uri;
+    public ReaderMenuAction getAction() {
+        return action;
     }
 
     public ReaderMenuItem getParent() {
@@ -35,10 +34,5 @@ public abstract class ReaderMenuItem implements Comparable<ReaderMenuItem> {
 
     public List<? extends ReaderMenuItem> getChildren() {
         return children;
-    }
-
-    @Override
-    public int compareTo(ReaderMenuItem another) {
-        return uri.getRawPath().compareTo(another.getURI().getRawPath());
     }
 }

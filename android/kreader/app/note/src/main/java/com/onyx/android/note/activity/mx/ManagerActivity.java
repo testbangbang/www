@@ -98,7 +98,8 @@ public class ManagerActivity extends BaseManagerActivity {
                 dlgCreateFolder.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
                     @Override
                     public boolean onCreated(final String title) {
-                        final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(title, currentLibraryId, true);
+                        final CheckNoteNameLegalityAction<ManagerActivity> action = new
+                                CheckNoteNameLegalityAction<>(title, currentLibraryId, NoteModel.TYPE_LIBRARY, true, true);
                         action.execute(ManagerActivity.this, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
@@ -154,7 +155,10 @@ public class ManagerActivity extends BaseManagerActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<ManagerActivity> action = new CheckNoteNameLegalityAction<>(input, currentLibraryId, true);
+                //TODO:we trust upper method would only pass doc or lib to here.
+                int itemType = Utils.isDocument(object) ? NoteModel.TYPE_DOCUMENT : NoteModel.TYPE_LIBRARY;
+                final CheckNoteNameLegalityAction<ManagerActivity> action =
+                        new CheckNoteNameLegalityAction<>(input, currentLibraryId, itemType, true, true);
                 action.execute(ManagerActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -244,6 +248,13 @@ public class ManagerActivity extends BaseManagerActivity {
         contentView.updateCurrentPage();
         updateButtonsStatusByMode();
         updateActivityTitleAndIcon();
+    }
+
+    @Override
+    protected void onResume() {
+        // TODO:as mx request,we throw all state after leave this activity,and force to normal mode when we came back.
+         currentSelectMode = SelectionMode.NORMAL_MODE;
+        super.onResume();
     }
 
     @Override

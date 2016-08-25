@@ -22,4 +22,10 @@ public class NoteBackgroundType {
     public static final int EMPTY = 0;
     public static final int GRID = 1;
     public static final int LINE = 2;
+
+    public
+    @NoteBackgroundDef
+    static int translate(int val) {
+        return val;
+    }
 }

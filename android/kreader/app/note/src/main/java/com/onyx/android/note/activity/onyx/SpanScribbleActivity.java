@@ -31,10 +31,10 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
-import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -344,7 +344,8 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
             @Override
             public boolean onConfirmAction(final String input) {
-                final CheckNoteNameLegalityAction<SpanScribbleActivity> action = new CheckNoteNameLegalityAction<>(input, parentID, true);
+                final CheckNoteNameLegalityAction<SpanScribbleActivity> action = new
+                        CheckNoteNameLegalityAction<>(input, parentID, NoteModel.TYPE_DOCUMENT, true, true);
                 action.execute(SpanScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

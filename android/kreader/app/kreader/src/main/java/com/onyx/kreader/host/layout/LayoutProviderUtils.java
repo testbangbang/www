@@ -97,7 +97,7 @@ public class LayoutProviderUtils {
                         ", page rect: " + pageRect +
                         ", visible rect: " + visibleRect);
                 renderer.draw(documentPosition, pageInfo.getActualScale(),
-                        pageInfo.getPageDisplayOrientation(), bitmap, displayRect,
+                        pageInfo.getPageDisplayOrientation(), bitmap.getBitmap(), displayRect,
                         pageRect, visibleRect);
             }
         }
@@ -140,7 +140,7 @@ public class LayoutProviderUtils {
         readerRenderer.draw(pageInfo.getName(),
                 scale,
                 pageInfo.getPageDisplayOrientation(),
-                bitmap,
+                bitmap.getBitmap(),
                 visiblePage.getDisplayRect(),
                 visiblePage.getPositionRect(),
                 visibleRect);

@@ -72,9 +72,7 @@ public class StringUtils {
 
     public static String deleteNewlineSymbol(String content){
         if (!isNullOrEmpty(content)){
-            while (content.contains("\n")){
-                content = content.replace("\n"," ");
-            }
+            content = content.replaceAll("\r\n"," ").replaceAll("\n", " ");
         }
         return content;
     }

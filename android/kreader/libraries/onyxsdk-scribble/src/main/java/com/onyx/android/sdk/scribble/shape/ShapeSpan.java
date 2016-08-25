@@ -34,6 +34,9 @@ public class ShapeSpan extends ReplacementSpan {
         float height = fm.bottom - fm.top - 2 * margin;
         RectF rect = boundingRect();
         scale = height / rect.height();
+        if (scale > 1.0f) {
+            scale = Math.min(height / rect.width(), scale);
+        }
         width = (int)(rect.width() * scale) + 2 * margin;
         return width;
     }
@@ -57,6 +60,9 @@ public class ShapeSpan extends ReplacementSpan {
         RectF rect = new RectF();
         for (Shape shape : shapeList) {
             rect.union(shape.getBoundingRect());
+        }
+        if (rect.isEmpty() && shapeList.size() > 0) {
+            rect.set(shapeList.get(0).getBoundingRect());
         }
         return rect;
 

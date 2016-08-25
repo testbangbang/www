@@ -5,17 +5,21 @@ import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Suppress;
 import com.onyx.android.sdk.api.ReaderBitmap;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.kreader.api.*;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.TestUtils;
+import com.onyx.kreader.api.ReaderDocument;
+import com.onyx.kreader.api.ReaderNavigator;
+import com.onyx.kreader.api.ReaderPlugin;
+import com.onyx.kreader.api.ReaderRenderer;
+import com.onyx.kreader.api.ReaderSentence;
+import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
-import com.onyx.android.sdk.utils.BitmapUtils;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -41,7 +45,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
         assertNotNull(renderer);
         String initPosition = navigator.getInitPosition();
         assertNotNull(initPosition);
-        assertTrue(renderer.draw(initPosition, -1, 0, readerBitmap, new RectF(0, 0, readerBitmap.getBitmap().getWidth(), readerBitmap.getBitmap().getHeight()), null, null));
+        assertTrue(renderer.draw(initPosition, -1, 0, readerBitmap.getBitmap(), new RectF(0, 0, readerBitmap.getBitmap().getWidth(), readerBitmap.getBitmap().getHeight()), null, null));
         document.close();
     }
 
@@ -73,7 +77,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
         pageManager.scaleToPage(pageInfo.getName());
         PageInfo result = pageManager.getFirstVisiblePage();
         RectF displayRect = result.getDisplayRect();
-        assertTrue(renderer.draw(initPosition, result.getActualScale(), result.getPageDisplayOrientation(), readerBitmap, displayRect, null, null));
+        assertTrue(renderer.draw(initPosition, result.getActualScale(), result.getPageDisplayOrientation(), readerBitmap.getBitmap(), displayRect, null, null));
         BitmapUtils.saveBitmap(readerBitmap.getBitmap(), "/mnt/sdcard/1.png");
         document.close();
     }
@@ -107,9 +111,9 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/pdf_reference_1-7.pdf", null, null);
         assertNotNull(document);
 
-        ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(600, 800, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(600, 800, Bitmap.Config.ARGB_8888);
         assertTrue(document.readCover(bitmap));
-        assertTrue(BitmapUtils.saveBitmap(bitmap.getBitmap(), "/sdcard/cover.png"));
+        assertTrue(BitmapUtils.saveBitmap(bitmap, "/sdcard/cover.png"));
     }
 
 }

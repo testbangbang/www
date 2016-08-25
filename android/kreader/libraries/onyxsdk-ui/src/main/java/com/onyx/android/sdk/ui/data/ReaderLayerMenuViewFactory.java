@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
-import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 
 import java.net.URI;
@@ -43,7 +43,7 @@ public class ReaderLayerMenuViewFactory {
 
         public void setMenuItem(ReaderLayerMenuItem item) {
             ((ImageView)view.findViewById(R.id.imageview_icon)).setImageResource(item.getDrawableResourceId());
-            ((TextView)view.findViewById(R.id.textview_title)).setText(item.getTitle());
+            ((TextView)view.findViewById(R.id.textview_title)).setText(item.getTitleResourceId());
             view.setTag(item);
         }
     }
@@ -60,10 +60,8 @@ public class ReaderLayerMenuViewFactory {
     }
 
     public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        if (parent.getURI().getRawPath().compareTo("/Font") == 0) {
+        if (parent.getAction() == ReaderMenuAction.FONT) {
             return createFontStyleView(context, items, state, callback);
-        } else if (parent.getURI().getRawPath().compareTo("/TTS") == 0) {
-            return createTTSView(context, items, state, callback);
         }
         return createSimpleButtonContainerView(context, items, state, callback);
     }
@@ -93,49 +91,49 @@ public class ReaderLayerMenuViewFactory {
         return view;
     }
 
-    private static ReaderLayerMenuItem findItem(final List<ReaderLayerMenuItem> items, final String uri) {
+    private static ReaderLayerMenuItem findItem(final List<ReaderLayerMenuItem> items, final ReaderMenuAction action) {
         for (ReaderLayerMenuItem item : items) {
-            if (item.getURI().getRawPath().compareTo(uri) == 0) {
+            if (item.getAction() == action) {
                 return item;
             }
         }
         return null;
     }
 
-    private static final HashMap<Integer, String> fontSizeViewItemMap;
-    private static final HashMap<Integer, String> fontStyleViewItemMap;
+    private static final HashMap<Integer, ReaderMenuAction> fontSizeViewItemMap;
+    private static final HashMap<Integer, ReaderMenuAction> fontStyleViewItemMap;
     static {
         fontSizeViewItemMap = new HashMap<>();
-        fontSizeViewItemMap.put(R.id.text_view_font_size_0, "/Font/SetFontSize");
-        fontSizeViewItemMap.put(R.id.text_view_font_size_1, "/Font/SetFontSize");
-        fontSizeViewItemMap.put(R.id.text_view_font_size_2, "/Font/SetFontSize");
-        fontSizeViewItemMap.put(R.id.text_view_font_size_3, "/Font/SetFontSize");
-        fontSizeViewItemMap.put(R.id.text_view_font_size_4, "/Font/SetFontSize");
-        fontSizeViewItemMap.put(R.id.text_view_font_size_5, "/Font/SetFontSize");
-        fontSizeViewItemMap.put(R.id.text_view_font_size_6, "/Font/SetFontSize");
-        fontSizeViewItemMap.put(R.id.text_view_font_size_7, "/Font/SetFontSize");
+        fontSizeViewItemMap.put(R.id.text_view_font_size_0, ReaderMenuAction.FONT_SET_FONT_SIZE);
+        fontSizeViewItemMap.put(R.id.text_view_font_size_1, ReaderMenuAction.FONT_SET_FONT_SIZE);
+        fontSizeViewItemMap.put(R.id.text_view_font_size_2, ReaderMenuAction.FONT_SET_FONT_SIZE);
+        fontSizeViewItemMap.put(R.id.text_view_font_size_3, ReaderMenuAction.FONT_SET_FONT_SIZE);
+        fontSizeViewItemMap.put(R.id.text_view_font_size_4, ReaderMenuAction.FONT_SET_FONT_SIZE);
+        fontSizeViewItemMap.put(R.id.text_view_font_size_5, ReaderMenuAction.FONT_SET_FONT_SIZE);
+        fontSizeViewItemMap.put(R.id.text_view_font_size_6, ReaderMenuAction.FONT_SET_FONT_SIZE);
+        fontSizeViewItemMap.put(R.id.text_view_font_size_7, ReaderMenuAction.FONT_SET_FONT_SIZE);
 
         fontStyleViewItemMap = new HashMap<>();
         fontStyleViewItemMap.putAll(fontSizeViewItemMap);
-        fontStyleViewItemMap.put(R.id.image_view_decrease_font_size, "/Font/DecreaseFontSize");
-        fontStyleViewItemMap.put(R.id.image_view_increase_font_size, "/Font/IncreaseFontSize");
-        fontStyleViewItemMap.put(R.id.button_set_font_face, "/Font/SetFontFace");
-        fontStyleViewItemMap.put(R.id.image_view_indent, "/Font/SetIndent");
-        fontStyleViewItemMap.put(R.id.image_view_no_indent, "/Font/SetNoIndent");
-        fontStyleViewItemMap.put(R.id.image_view_small_line_spacing, "/Font/SetSmallLineSpacing");
-        fontStyleViewItemMap.put(R.id.image_view_middle_line_spacing, "/Font/SetMiddleLineSpacing");
-        fontStyleViewItemMap.put(R.id.image_view_large_line_spacing, "/Font/SetLargeLineSpacing");
-        fontStyleViewItemMap.put(R.id.image_view_decrease_line_spacing, "/Font/DecreaseLineSpacing");
-        fontStyleViewItemMap.put(R.id.image_view_increase_line_spacing, "/Font/IncreaseLineSpacing");
-        fontStyleViewItemMap.put(R.id.image_view_small_page_margins, "/Font/SetSmallPageMargins");
-        fontStyleViewItemMap.put(R.id.image_view_middle_page_margins, "/Font/SetMiddlePageMargins");
-        fontStyleViewItemMap.put(R.id.image_view_large_page_margins, "/Font/SetLargePageMargins");
-        fontStyleViewItemMap.put(R.id.image_view_decrease_page_margins, "/Font/DecreasePageMargins");
-        fontStyleViewItemMap.put(R.id.image_view_increase_page_margins, "/Font/IncreasePageMargins");
+        fontStyleViewItemMap.put(R.id.image_view_decrease_font_size, ReaderMenuAction.FONT_DECREASE_FONT_SIE);
+        fontStyleViewItemMap.put(R.id.image_view_increase_font_size, ReaderMenuAction.FONT_INCREASE_FONT_SIZE);
+        fontStyleViewItemMap.put(R.id.button_set_font_face, ReaderMenuAction.FONT_SET_FONT_FACE);
+        fontStyleViewItemMap.put(R.id.image_view_indent, ReaderMenuAction.FONT_SET_INTENT);
+        fontStyleViewItemMap.put(R.id.image_view_no_indent, ReaderMenuAction.FONT_SET_NO_INTENT);
+        fontStyleViewItemMap.put(R.id.image_view_small_line_spacing, ReaderMenuAction.FONT_SET_SMALL_LINE_SPACING);
+        fontStyleViewItemMap.put(R.id.image_view_middle_line_spacing, ReaderMenuAction.FONT_SET_MIDDLE_LINE_SPACING);
+        fontStyleViewItemMap.put(R.id.image_view_large_line_spacing, ReaderMenuAction.FONT_SET_LARGE_LINE_SPACING);
+        fontStyleViewItemMap.put(R.id.image_view_decrease_line_spacing, ReaderMenuAction.FONT_DECREASE_LINE_SPACING);
+        fontStyleViewItemMap.put(R.id.image_view_increase_line_spacing, ReaderMenuAction.FONT_INCREASE_LINE_SPACING);
+        fontStyleViewItemMap.put(R.id.image_view_small_page_margins, ReaderMenuAction.FONT_SET_SMALL_PAGE_MARGINS);
+        fontStyleViewItemMap.put(R.id.image_view_middle_page_margins, ReaderMenuAction.FONT_SET_MIDDLE_LINE_SPACING);
+        fontStyleViewItemMap.put(R.id.image_view_large_page_margins, ReaderMenuAction.FONT_SET_LARGE_LINE_SPACING);
+        fontStyleViewItemMap.put(R.id.image_view_decrease_page_margins, ReaderMenuAction.FONT_DECREASE_PAGE_MARGINS);
+        fontStyleViewItemMap.put(R.id.image_view_increase_page_margins, ReaderMenuAction.FONT_INCREASE_PAGE_MARGINS);
     }
 
     private static void mapFontStyleViewMenuItemFunction(final View fontStyleView, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        for (final HashMap.Entry<Integer, String> entry : fontStyleViewItemMap.entrySet()) {
+        for (final HashMap.Entry<Integer, ReaderMenuAction> entry : fontStyleViewItemMap.entrySet()) {
             final View view = fontStyleView.findViewById(entry.getKey());
             final ReaderLayerMenuItem item = findItem(items, entry.getValue());
             if (view == null || item == null) {
@@ -162,43 +160,4 @@ public class ReaderLayerMenuViewFactory {
         return view;
     }
 
-    private static void updateTTSViewState(final View view, final ReaderLayerMenuState state) {
-        ImageButton button = (ImageButton) view.findViewById(R.id.button_play);
-        if (state.getTtsState() == ReaderLayerMenuState.TtsState.Speaking) {
-            button.setImageResource(R.drawable.ic_dialog_reader_menu_tts_pause_black);
-        } else {
-            button.setImageResource(R.drawable.ic_dialog_reader_menu_tts_play_black);
-        }
-    }
-
-    private static void mapTtsViewMenuItemFunction(final View view, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        view.findViewById(R.id.button_stop).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.onMenuItemClicked(createVirtualMenuItem("/TTS/Stop"));
-            }
-        });
-        view.findViewById(R.id.button_play).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (state.getTtsState() == ReaderLayerMenuState.TtsState.Speaking) {
-                    callback.onMenuItemClicked(createVirtualMenuItem("/TTS/Pause"));
-                } else {
-                    callback.onMenuItemClicked(createVirtualMenuItem("/TTS/Play"));
-                }
-            }
-        });
-    }
-
-    private static View createTTSView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        View view = LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_tts_view, null);
-        view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,mainMenuContainerViewHeight > 0 ? mainMenuContainerViewHeight : ViewGroup.LayoutParams.WRAP_CONTENT));
-        updateTTSViewState(view, state);
-        mapTtsViewMenuItemFunction(view, state, callback);
-        return view;
-    }
-
-    private static ReaderMenuItem createVirtualMenuItem(String uri) {
-        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, URI.create(uri), null, null, -1);
-    }
 }

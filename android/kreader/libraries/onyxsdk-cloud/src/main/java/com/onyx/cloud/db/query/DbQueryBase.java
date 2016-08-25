@@ -9,8 +9,8 @@ import com.raizlabs.android.dbflow.sql.language.Where;
 public class DbQueryBase<T extends BaseObject>{
 	protected Where<T> where;
 	
-    DbQueryBase(Class<T> claszz){
-		where = SQLite.select().from(claszz).where();
+    DbQueryBase(Class<T> clazz){
+		where = SQLite.select().from(clazz).where();
 	}
     
     protected String likeTerm(String want){
