@@ -9,11 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.view.ViewPager
+        <com.onyx.android.sdk.ui.view.OnyxCustomViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        </android.support.v4.view.ViewPager>
+        </com.onyx.android.sdk.ui.view.OnyxCustomViewPager>
 
         <TextView
             android:text="无文档"
@@ -41,6 +41,7 @@
             android:layout_height="wrap_content"/>
 
         <ImageView
+            android:background="@drawable/imagebtn_bg"
             android:id="@+id/pre_icon"
             android:scaleType="fitXY"
             android:layout_centerVertical="true"
@@ -59,6 +60,7 @@
             android:layout_height="wrap_content"/>
 
         <ImageView
+            android:background="@drawable/imagebtn_bg"
             android:id="@+id/next_icon"
             android:scaleType="fitXY"
             android:layout_centerVertical="true"

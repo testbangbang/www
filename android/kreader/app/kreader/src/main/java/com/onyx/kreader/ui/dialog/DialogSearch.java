@@ -121,6 +121,7 @@ public class DialogSearch extends Dialog{
 
         setViewListener();
         initPageRecyclerView();
+        updateSearchingText(0);
     }
 
     private void setViewListener(){
@@ -128,7 +129,6 @@ public class DialogSearch extends Dialog{
             @Override
             public void onClick(View v) {
                 stopSearch();
-                hideLoadingLayout();
             }
         });
 
@@ -447,7 +447,8 @@ public class DialogSearch extends Dialog{
     private void updatePageIndicator(int position, int itemCount){
         currentPagePosition = position;
         int page = itemCount / SEARCH_CONTENT_ROW;
-        int currentPage = page > 0 ? position / SEARCH_CONTENT_ROW + 1 : 0;
+        int currentPage = page > 0 ? position / SEARCH_CONTENT_ROW + 1 : 1;
+        page = Math.max(page, 1);
         String indicator = String.format("%d/%d",currentPage,page);
         String total = String.format(getContext().getString(R.string.total_page),showSearchList.size());
         pageIndicator.setText(indicator);

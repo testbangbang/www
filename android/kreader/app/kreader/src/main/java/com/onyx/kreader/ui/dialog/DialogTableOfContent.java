@@ -7,6 +7,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.dataprovider.Annotation;
 import com.onyx.android.sdk.dataprovider.Bookmark;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
+import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
@@ -60,7 +62,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     private RadioButton btnToc;
     private RadioButton btnBookmark;
     private RadioButton btnAnt;
-    private ViewPager viewPager;
+    private OnyxCustomViewPager viewPager;
     private TextView emptyText;
     private TextView totalText;
 
@@ -157,14 +159,14 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             @Override
             public void onUpdateFinished(Annotation annotation) {
                 annotationList.set(position,annotation);
-                getPageAdapter(currentTab).notifyDataSetChanged();
+                notifyPageDataSetChanged(currentTab);
             }
 
             @Override
             public void onDeleteFinished() {
                 annotationList.remove(position);
-                getPageAdapter(currentTab).notifyDataSetChanged();
-                updatePageIndicator(position,getPageSize(DirectoryTab.Annotation),getPageAdapter(currentTab).getItemCount());
+                notifyPageDataSetChanged(currentTab);
+                updatePageIndicator(position,getPageSize(DirectoryTab.Annotation),getPageItemCount(currentTab));
             }
         });
         action.execute(readerDataHolder);
@@ -176,8 +178,8 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             @Override
             public void done(BaseRequest request, Throwable e) {
                 bookmarkList.remove(position);
-                getPageAdapter(currentTab).notifyDataSetChanged();
-                updatePageIndicator(position,getPageSize(DirectoryTab.Bookmark),getPageAdapter(currentTab).getItemCount());
+                notifyPageDataSetChanged(currentTab);
+                updatePageIndicator(position,getPageSize(DirectoryTab.Bookmark),getPageItemCount(currentTab));
             }
         });
     }
@@ -188,8 +190,8 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             @Override
             public void done(BaseRequest request, Throwable e) {
                 annotationList.remove(position);
-                getPageAdapter(currentTab).notifyDataSetChanged();
-                updatePageIndicator(position,getPageSize(DirectoryTab.Annotation),getPageAdapter(currentTab).getItemCount());
+                notifyPageDataSetChanged(currentTab);
+                updatePageIndicator(position,getPageSize(DirectoryTab.Annotation),getPageItemCount(currentTab));
             }
         });
     }
@@ -237,10 +239,11 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         btnToc = (RadioButton) findViewById(R.id.btn_directory);
         btnBookmark = (RadioButton) findViewById(R.id.btn_bookmark);
         btnAnt = (RadioButton) findViewById(R.id.btn_annotation);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (OnyxCustomViewPager) findViewById(R.id.viewpager);
         totalText = (TextView) findViewById(R.id.total);
         emptyText = (TextView) findViewById(R.id.empty_text);
         emptyText.setVisibility(View.GONE);
+        viewPager.setPagingEnabled(false);
         preIcon.setOnClickListener(this);
         nextIcon.setOnClickListener(this);
         backIcon.setOnClickListener(this);
@@ -286,6 +289,21 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         mWindow.setAttributes(mParams);
         //force use all space in the screen.
         mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    private void notifyPageDataSetChanged(DirectoryTab tab){
+        PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
+        if (pageAdapter != null){
+            pageAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private int getPageItemCount(DirectoryTab tab){
+        PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
+        if (pageAdapter != null){
+            return pageAdapter.getItemCount();
+        }
+        return 0;
     }
 
     private int getTabIndex(DirectoryTab tab){
@@ -430,7 +448,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             }
         });
         view.setOnPagingListener(this);
-        updatePageIndicator(0,row,view.getAdapter().getItemCount());
+        updatePageIndicator(0,row, view.getAdapter().getItemCount());
         return view;
     }
 
@@ -472,17 +490,34 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
             }
         });
         view.setOnPagingListener(this);
-        updatePageIndicator(0,row,view.getAdapter().getItemCount());
+        updatePageIndicator(0,row, view.getAdapter().getItemCount());
         return view;
     }
 
     private void updatePageIndicator(int position, int itemCountOfPage, int itemCount){
         int page = itemCount / itemCountOfPage;
-        int currentPage = page > 0 ? position / itemCountOfPage + 1 : 0;
+        int currentPage = page > 0 ? position / itemCountOfPage + 1 : 1;
+        page = Math.max(page, 1);
         String show = String.format("%d/%d",currentPage,page);
         pageIndicator.setText(show);
         recordPosition.put(currentTab,position);
-        totalText.setText(String.format(getContext().getString(R.string.total_page),itemCount));
+        updateTotalText(currentTab);
+    }
+
+    private void updateTotalText(DirectoryTab tab){
+        switch (tab){
+            case TOC:
+                totalText.setVisibility(View.GONE);
+                break;
+            case Bookmark:
+                totalText.setText(String.format(getContext().getString(R.string.total_page),bookmarkList.size()));
+                totalText.setVisibility(View.VISIBLE);
+                break;
+            case Annotation:
+                totalText.setText(String.format(getContext().getString(R.string.total_page),annotationList.size()));
+                totalText.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int page) {
@@ -601,5 +636,20 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     @Override
     public void onNextPage(int nextPosition, int itemCount,int pageSize) {
         updatePageIndicator(nextPosition,pageSize, itemCount);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode){
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                viewList.get(getTabIndex(currentTab)).nextPage();
+                return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                viewList.get(getTabIndex(currentTab)).prevPage();
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
