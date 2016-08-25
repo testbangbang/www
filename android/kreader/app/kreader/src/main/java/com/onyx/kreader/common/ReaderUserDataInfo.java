@@ -21,10 +21,8 @@ import java.util.Map;
  * Created by zhuzeng on 6/7/16.
  */
 public class ReaderUserDataInfo {
-
-    private final static String SEARCH_TAG = "search";
-    private final static String HIGHLIGHT_TAG = "highlight";
-    private Map<String, List<ReaderSelection>> selectionMap = new HashMap<>();
+    private List<ReaderSelection> searchResult = new ArrayList<>();
+    private ReaderSelection highlightResult = null;
 
     private String documentPath;
 
@@ -48,11 +46,11 @@ public class ReaderUserDataInfo {
     }
 
     public List<ReaderSelection> getSearchResults() {
-        return selectionMap.get(SEARCH_TAG);
+        return searchResult;
     }
 
     public void saveSearchResults(List<ReaderSelection> list) {
-        selectionMap.put(SEARCH_TAG, list);
+        searchResult = list;
     }
 
     public boolean hasHighlightResult() {
@@ -60,15 +58,11 @@ public class ReaderUserDataInfo {
     }
 
     public ReaderSelection getHighlightResult() {
-        List<ReaderSelection> list = selectionMap.get(HIGHLIGHT_TAG);
-        if (list == null || list.size() <= 0) {
-            return null;
-        }
-        return list.get(0);
+        return highlightResult;
     }
 
     public void saveHighlightResult(ReaderSelection selection) {
-        selectionMap.put(HIGHLIGHT_TAG, Arrays.asList(new ReaderSelection[] { selection }));
+        highlightResult = selection;
     }
 
     public void setTableOfContent(ReaderDocumentTableOfContent toc) {
