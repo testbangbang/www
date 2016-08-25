@@ -54,7 +54,7 @@ public class BackGroundTypePopupMenu extends PopupWindow {
                 GObject temp = view.getData();
                 int dataIndex = bgContentView.getCurrentAdapter().getGObjectIndex(temp);
                 temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
-                currentBackground = Integer.decode(GAdapterUtil.getUniqueId(temp));
+                currentBackground = NoteBackgroundType.translate(GAdapterUtil.getUniqueIdAsIntegerType(temp));
                 bgContentView.getCurrentAdapter().setObject(dataIndex, temp);
                 bgContentView.unCheckOtherViews(dataIndex, true);
                 bgContentView.updateCurrentPage();
