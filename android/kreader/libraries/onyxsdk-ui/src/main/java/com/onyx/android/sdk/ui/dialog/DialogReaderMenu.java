@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
@@ -67,7 +68,7 @@ public class DialogReaderMenu extends Dialog {
         findViewById(R.id.layout_back_area).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/Exit"));
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT));
             }
         });
 
@@ -75,7 +76,7 @@ public class DialogReaderMenu extends Dialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onHideMenu();
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/Directory/TOC"));
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC));
             }
         });
 
@@ -83,7 +84,7 @@ public class DialogReaderMenu extends Dialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onHideMenu();
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/StartDictApp"));
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DICT));
             }
         });
 
@@ -91,35 +92,31 @@ public class DialogReaderMenu extends Dialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onHideMenu();
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/Search"));
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.SEARCH));
             }
         });
 
         findViewById(R.id.text_view_progress).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/GotoPage"));
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.GOTO_PAGE));
             }
         });
 
         findViewById(R.id.pre_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/NavigationBackward"));
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.NAVIGATE_BACKWARD));
             }
         });
 
         findViewById(R.id.next_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readerMenuCallback.onMenuItemClicked(createVirtualMenuItem("/NavigationForward"));
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.NAVIGATE_FORWARD));
             }
         });
 
-    }
-
-    private ReaderMenuItem createVirtualMenuItem(String uri) {
-        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, URI.create(uri), null, null, -1);
     }
 
     public void show(ReaderLayerMenuState state) {

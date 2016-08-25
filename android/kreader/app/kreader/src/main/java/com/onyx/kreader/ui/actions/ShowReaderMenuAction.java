@@ -7,15 +7,13 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
+import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -35,9 +33,7 @@ import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
-import com.onyx.kreader.ui.dialog.DialogTts;
 import com.onyx.kreader.ui.handler.HandlerManager;
-import com.onyx.kreader.utils.RawResourceUtil;
 
 import java.util.List;
 
@@ -111,116 +107,95 @@ public class ShowReaderMenuAction extends BaseAction {
 
             @Override
             public void onMenuItemClicked(ReaderMenuItem menuItem) {
-                Log.d(TAG, "onMenuItemClicked: " + menuItem.getURI().getRawPath());
-                switch (menuItem.getURI().getRawPath()) {
-                    case "/Rotation/Rotation0":
+                Log.d(TAG, "onMenuItemClicked: " + menuItem.getAction());
+                switch (menuItem.getAction()) {
+                    case ROTATION_ROTATE_0:
                         rotateScreen(readerDataHolder, 0);
                         break;
-                    case "/Rotation/Rotation90":
+                    case ROTATION_ROTATE_90:
                         rotateScreen(readerDataHolder, 90);
                         break;
-                    case "/Rotation/Rotation180":
+                    case ROTATION_ROTATE_180:
                         rotateScreen(readerDataHolder, 180);
                         break;
-                    case "/Rotation/Rotation270":
+                    case ROTATION_ROTATE_270:
                         rotateScreen(readerDataHolder, 270);
                         break;
-                    case "/Zoom/ZoomIn":
-                        scaleUp(readerDataHolder);
-                        break;
-                    case "/Zoom/ZoomOut":
-                        scaleDown(readerDataHolder);
-                        break;
-                    case "/Zoom/ToPage":
-                        scaleToPage(readerDataHolder);
-                        break;
-                    case "/Zoom/ToWidth":
-                        scaleToWidth(readerDataHolder);
-                        break;
-                    case "/Zoom/ByRect":
-                        scaleByRect(readerDataHolder);
-                        break;
-                    case "/Zoom/Crop":
-                        scaleByAutoCrop(readerDataHolder);
-                        break;
-                    case "/Navigation/ArticleMode":
-                        switchNavigationToArticleMode(readerDataHolder);
-                        break;
-                    case "/Navigation/ComicMode":
-                        switchNavigationToComicMode(readerDataHolder);
-                        break;
-                    case "/Navigation/Reset":
-                        resetNavigationMode(readerDataHolder);
-                        break;
-                    case "/Navigation/MoreSetting":
-                        showNavigationSettingsDialog(readerDataHolder);
-                        break;
-                    case "/Spacing/DecreaseSpacing":
-                        break;
-                    case "/Spacing/EnlargeSpacing":
-                        break;
-                    case "/Spacing/NormalSpacing":
-                        break;
-                    case "/Spacing/SmallSpacing":
-                        break;
-                    case "/Spacing/LargeSpacing":
-                        break;
-                    case "/Spacing/Indent":
-                        break;
-                    case "/Font/DecreaseSpacing":
-                        break;
-                    case "/Font/IncreaseSpacing":
-                        break;
-                    case "/Font/Gamma":
-                        adjustContrast(readerDataHolder);
-                        break;
-                    case "/Font/Embolden":
-                        adjustEmbolden(readerDataHolder);
-                        break;
-                    case "/Font/FontReflow":
+                    case IMAGE_REFLOW:
                         imageReflow(readerDataHolder);
                         break;
-                    case "/Directory/TOC":
+                    case ZOOM_IN:
+                        scaleUp(readerDataHolder);
+                        break;
+                    case ZOOM_OUT:
+                        scaleDown(readerDataHolder);
+                        break;
+                    case ZOOM_TO_PAGE:
+                        scaleToPage(readerDataHolder);
+                        break;
+                    case ZOOM_TO_WIDTH:
+                        scaleToWidth(readerDataHolder);
+                        break;
+                    case ZOOM_BY_RECT:
+                        scaleByRect(readerDataHolder);
+                        break;
+                    case NAVIGATION_ARTICLE_MODE:
+                        switchNavigationToArticleMode(readerDataHolder);
+                        break;
+                    case NAVIGATION_COMIC_MODE:
+                        switchNavigationToComicMode(readerDataHolder);
+                        break;
+                    case NAVIGATION_RESET:
+                        resetNavigationMode(readerDataHolder);
+                        break;
+                    case NAVIGATION_MORE_SETTINGS:
+                        showNavigationSettingsDialog(readerDataHolder);
+                        break;
+                    case GAMMA_CORRECTION:
+                        adjustContrast(readerDataHolder);
+                        break;
+                    case GLYPH_EMBOLDEN:
+                        adjustEmbolden(readerDataHolder);
+                        break;
+                    case DIRECTORY_TOC:
                         showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.TOC);
                         break;
-                    case "/Directory/Bookmark":
+                    case DIRECTORY_BOOKMARK:
                         showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.Bookmark);
                         break;
-                    case "/Directory/Note":
+                    case DIRECTORY_NOTE:
                         showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.Annotation);
                         break;
-                    case "/Directory/ShapeModel":
-                        break;
-                    case "/Directory/Export":
-                        break;
-                    case "/More/TTS":
-                        showTtsDialog(readerDataHolder);
-                        break;
-                    case "/More/shape":
+                    case DIRECTORY_SCRIBBLE:
                         startShapeDrawing(readerDataHolder);
                         break;
-                    case "/GotoPage":
-                        gotoPage(readerDataHolder);
+                    case DIRECTORY_EXPORT:
                         break;
-                    case "/NavigationBackward":
-                        backward(readerDataHolder);
+                    case TTS:
+                        showTtsDialog(readerDataHolder);
                         break;
-                    case "/NavigationForward":
-                        forward(readerDataHolder);
-                        break;
-                    case "/More/Refresh":
+                    case REFRESH:
                         showScreenRefreshDialog(readerDataHolder);
                         break;
-                    case "/More/FrontLight":
+                    case FRONT_LIGHT:
                         showBrightnessDialog(readerDataHolder);
                         break;
-                    case "/StartDictApp":
+                    case GOTO_PAGE:
+                        gotoPage(readerDataHolder);
+                        break;
+                    case NAVIGATE_BACKWARD:
+                        backward(readerDataHolder);
+                        break;
+                    case NAVIGATE_FORWARD:
+                        forward(readerDataHolder);
+                        break;
+                    case DICT:
                         startDictionaryApp(readerDataHolder);
                         break;
-                    case "/Search":
+                    case SEARCH:
                         showSearchDialog(readerDataHolder);
                         break;
-                    case "/Exit":
+                    case EXIT:
                         readerActivity.onBackPressed();
                         break;
                 }
@@ -228,15 +203,13 @@ public class ShowReaderMenuAction extends BaseAction {
 
             @Override
             public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
-                Debug.d("onMenuItemValueChanged: " + menuItem.getURI().getRawPath() + ", " + oldValue + ", " + newValue);
+                Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
             }
         });
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        JSONObject json = JSON.parseObject(RawResourceUtil.contentOfRawResource(readerDataHolder.getContext(), R.raw.reader_menu_fixed_page));
-        JSONArray array = json.getJSONArray("menu_list");
-        return ReaderLayerMenuItem.createFromJSON(readerDataHolder.getContext(), array);
+        return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems);
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
