@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -12,12 +13,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
@@ -51,13 +54,15 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private ImageView preIcon;
     private ImageView nextIcon;
-    private ImageView backIcon;
+    private ImageButton backIcon;
     private TextView pageIndicator;
     private TextView backText;
     private RadioButton btnToc;
     private RadioButton btnBookmark;
     private RadioButton btnAnt;
     private ViewPager viewPager;
+    private TextView emptyText;
+    private TextView totalText;
 
     private ReaderDocumentTableOfContent toc;
     private DirectoryTab currentTab;
@@ -70,16 +75,14 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private class SimpleListViewItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-//        private ReaderDataHolder readerDataHolder;
-
         private TextView textViewDescription;
         private TextView textViewTitle;
         private TextView textViewPage;
         private TextView textViewTime;
         private TextView textViewDelete;
-        private ImageView imageViewDelete;
+        private ImageButton imageViewDelete;
         private TextView textViewEdit;
-        private ImageView imageViewEdit;
+        private ImageButton imageViewEdit;
         private View splitLine;
         private String page;
         private int position;
@@ -87,15 +90,14 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         public SimpleListViewItemViewHolder(final ReaderDataHolder readerDataHolder, final View itemView) {
             super(itemView);
 
-//            this.readerDataHolder = readerDataHolder;
             textViewTitle = (TextView)itemView.findViewById(R.id.text_view_title);
             textViewDescription = (TextView)itemView.findViewById(R.id.text_view_description);
             textViewPage = (TextView)itemView.findViewById(R.id.text_view_page);
             textViewTime = (TextView)itemView.findViewById(R.id.text_view_time);
             textViewDelete = (TextView)itemView.findViewById(R.id.text_view_delete);
-            imageViewDelete = (ImageView) itemView.findViewById(R.id.image_view_delete);
+            imageViewDelete = (ImageButton) itemView.findViewById(R.id.image_view_delete);
             textViewEdit = (TextView)itemView.findViewById(R.id.text_view_edit);
-            imageViewEdit = (ImageView) itemView.findViewById(R.id.image_view_edit);
+            imageViewEdit = (ImageButton) itemView.findViewById(R.id.image_view_edit);
             splitLine = itemView.findViewById(R.id.split_line);
 
             imageViewDelete.setOnClickListener(this);
@@ -133,11 +135,16 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
                     }
                 });
             }else if (v.equals(textViewDelete) || v.equals(imageViewDelete)){
-                if (currentTab == DirectoryTab.Bookmark){
-                    deleteBookmark(readerDataHolder,position);
-                }else {
-                    deleteAnnotation(readerDataHolder,position);
-                }
+                DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (currentTab == DirectoryTab.Bookmark){
+                            deleteBookmark(readerDataHolder,position);
+                        }else {
+                            deleteAnnotation(readerDataHolder,position);
+                        }
+                    }
+                }).show();
             }else if (v.equals(imageViewEdit) || v.equals(textViewEdit)){
                 showAnnotationEditDialog(position);
             }
@@ -165,7 +172,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private void deleteBookmark(ReaderDataHolder readerDataHolder, final int position){
         final DeleteBookmarkRequest DbRequest = new DeleteBookmarkRequest(bookmarkList.get(position));
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),DbRequest, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(DbRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 bookmarkList.remove(position);
@@ -177,7 +184,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private void deleteAnnotation(ReaderDataHolder readerDataHolder, final int position){
         final DeleteAnnotationRequest DaRequest = new DeleteAnnotationRequest(annotationList.get(position));
-        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),DaRequest, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(DaRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 annotationList.remove(position);
@@ -224,13 +231,16 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         fitDialogToWindow();
         preIcon = (ImageView) findViewById(R.id.pre_icon);
         nextIcon = (ImageView) findViewById(R.id.next_icon);
-        backIcon = (ImageView) findViewById(R.id.back_icon);
+        backIcon = (ImageButton) findViewById(R.id.back_icon);
         pageIndicator = (TextView) findViewById(R.id.page_size_indicator);
         backText = (TextView) findViewById(R.id.back_text);
         btnToc = (RadioButton) findViewById(R.id.btn_directory);
         btnBookmark = (RadioButton) findViewById(R.id.btn_bookmark);
         btnAnt = (RadioButton) findViewById(R.id.btn_annotation);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+        totalText = (TextView) findViewById(R.id.total);
+        emptyText = (TextView) findViewById(R.id.empty_text);
+        emptyText.setVisibility(View.GONE);
         preIcon.setOnClickListener(this);
         nextIcon.setOnClickListener(this);
         backIcon.setOnClickListener(this);
@@ -243,6 +253,28 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         viewList.add(initBookmarkView(readerDataHolder,bookmarks));
         viewList.add(initAnnotationsView(readerDataHolder,annotations));
         viewPager.setAdapter(new ViewPagerAdapter());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(currentTab);
+                boolean hasContents = pageAdapter != null && pageAdapter.getItemCount() > 0;
+                viewPager.setVisibility(hasContents ? View.VISIBLE : View.INVISIBLE);
+                emptyText.setVisibility(hasContents ? View.GONE : View.VISIBLE);
+                if (!hasContents){
+                    emptyText.setText(getEmptyTips(currentTab));
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         checkRadioButton(tab);
     }
 
@@ -293,6 +325,19 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
                 return res.getInteger(R.integer.annotation_row);
         }
         return 0;
+    }
+
+    private String getEmptyTips(DirectoryTab tab){
+        switch (tab){
+            case TOC:
+                return getContext().getString(R.string.no_directories);
+            case Bookmark:
+                return getContext().getString(R.string.no_bookmarks);
+            case Annotation:
+                return getContext().getString(R.string.no_annotation);
+            default:
+                return getContext().getString(R.string.no_directories);
+        }
     }
 
     private PageRecyclerView.PageAdapter getPageAdapter(DirectoryTab tab){
@@ -437,6 +482,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         String show = String.format("%d/%d",currentPage,page);
         pageIndicator.setText(show);
         recordPosition.put(currentTab,position);
+        totalText.setText(String.format(getContext().getString(R.string.total_page),itemCount));
     }
 
     private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int page) {

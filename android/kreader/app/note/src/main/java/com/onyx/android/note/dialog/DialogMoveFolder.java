@@ -33,6 +33,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
 
     List<NoteModel> dataList;
     DialogMoveFolderCallback callback;
+    String targetParentID = "-1";
 
     public interface DialogMoveFolderCallback {
         void onMove(String targetParentId);
@@ -52,12 +53,22 @@ public class DialogMoveFolder extends OnyxAlertDialog {
     public void onCreate(Bundle savedInstanceState) {
         Params params = new Params().setTittleString(getString(R.string.move))
                 .setCustomContentLayoutResID(R.layout.alert_dialog_content_move_folder)
-                .setEnableFunctionPanel(false)
                 .setCustomLayoutHeight((int) (5 * getResources().getDimension(R.dimen.button_minHeight)))
+                .setEnableNegativeButton(false)
+                .setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!targetParentID.equalsIgnoreCase("-1")){
+                            callback.onMove(targetParentID);
+                        }else {
+                            dismiss();
+                        }
+                    }
+                })
                 .setCustomViewAction(new CustomViewAction() {
                     @Override
                     public void onCreateCustomView(View customView, TextView pageIndicator) {
-                        ContentView targetLibraryContentView = (ContentView) customView.findViewById(R.id.contentView_move_folder);
+                        final ContentView targetLibraryContentView = (ContentView) customView.findViewById(R.id.contentView_move_folder);
                         targetLibraryContentView.setupGridLayout(5, 1);
                         GAdapter adapter = Utils.adapterFromNoteModelListWithFullPathTitle(dataList,
                                 R.drawable.ic_student_note_folder_gray,
@@ -65,6 +76,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
                         HashMap<String, Integer> mapping = new HashMap<String, Integer>();
                         mapping.put(GAdapterUtil.TAG_TITLE_STRING, R.id.textview_title);
                         mapping.put(GAdapterUtil.TAG_DIVIDER_VIEW, R.id.divider);
+                        mapping.put(GAdapterUtil.TAG_SELECTABLE,R.id.target_folder_checkbox);
                         targetLibraryContentView.setSubLayoutParameter(R.layout.dialog_move_folder_item, mapping);
                         targetLibraryContentView.setShowPageInfoArea(false);
                         targetLibraryContentView.setAdapter(adapter, 0);
@@ -72,7 +84,13 @@ public class DialogMoveFolder extends OnyxAlertDialog {
                             @Override
                             public void onItemClick(ContentItemView view) {
                                 GObject temp = view.getData();
-                                callback.onMove(GAdapterUtil.getUniqueId(temp));
+                                int dataIndex = targetLibraryContentView.getCurrentAdapter().getGObjectIndex(temp);
+                                temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
+                                targetParentID = GAdapterUtil.getUniqueId(temp);
+                                targetLibraryContentView.getCurrentAdapter().setObject(dataIndex, temp);
+                                targetLibraryContentView.unCheckOtherViews(dataIndex, true);
+                                targetLibraryContentView.updateCurrentPage();
+//                                callback.onMove(GAdapterUtil.getUniqueId(temp));
                             }
                         });
                     }

@@ -130,7 +130,7 @@
             <ImageView
                 style="@style/popup_selection_menu_image_view"
                 android:id="@+id/imageview_copy"
-                android:src="@drawable/ic_copy" />
+                android:src="@drawable/ic_dialog_reader_choose_copy" />
 
             <TextView
                 style="@style/popup_selection_menu_text_view"
@@ -152,7 +152,7 @@
             <ImageView
                 style="@style/popup_selection_menu_image_view"
                 android:id="@+id/imageview_highlight"
-                android:src="@drawable/ic_highlight" />
+                android:src="@drawable/ic_dialog_reader_choose_highlight" />
 
             <TextView
                 style="@style/popup_selection_menu_text_view"
@@ -172,7 +172,7 @@
             <ImageView
                 style="@style/popup_selection_menu_image_view"
                 android:id="@+id/imageview_annotation"
-                android:src="@drawable/ic_label" />
+                android:src="@drawable/ic_dialog_reader_choose_label" />
 
             <TextView
                 style="@style/popup_selection_menu_text_view"
@@ -193,7 +193,7 @@
                 style="@style/popup_selection_menu_image_view"
                 android:id="@+id/imageview_translate"
                 android:contentDescription="@drawable/ic_popup_selection_menu_translate_default"
-                android:src="@drawable/ic_hdictionary" />
+                android:src="@drawable/ic_dialog_reader_choose_dictionary" />
 
             <TextView
                 style="@style/popup_selection_menu_text_view"

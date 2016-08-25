@@ -59,4 +59,13 @@ public class ReaderViewInfo {
         return PageConstants.isSpecialScale(scale);
     }
 
+    public boolean isTextPages() {
+        for (PageInfo pageInfo : visiblePages) {
+            if (!pageInfo.isTextPage()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

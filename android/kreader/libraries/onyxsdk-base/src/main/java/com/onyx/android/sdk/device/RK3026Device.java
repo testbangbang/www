@@ -58,6 +58,7 @@ public class RK3026Device extends BaseDevice {
     private Context mContext = null;
 
     private EPDMode mCurrentMode = EPDMode.AUTO;
+    private UpdateMode mUpdateMode = UpdateMode.GU;
 
     @SuppressWarnings("rawtypes")
     private static Constructor sDeviceControllerConstructor = null;
@@ -272,13 +273,16 @@ public class RK3026Device extends BaseDevice {
 
     @Override
     public UpdateMode getViewDefaultUpdateMode(View view) {
-        // TODO Auto-generated method stub
-        return null;
+        return mUpdateMode;
     }
 
     @Override
     public boolean setViewDefaultUpdateMode(View view, UpdateMode mode) {
-        // TODO Auto-generated method stub
+        Object einkMode = getEinkModeFromUpdateMode(mode);
+        if (ReflectUtil.invokeMethodSafely(sMethodViewRequestEpdMode, view, einkMode) != null) {
+            mUpdateMode = mode;
+            return true;
+        }
         return false;
     }
 
