@@ -54,13 +54,15 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
 
     private ImageView preIcon;
     private ImageView nextIcon;
-    private ImageView backIcon;
+    private ImageButton backIcon;
     private TextView pageIndicator;
     private TextView backText;
     private RadioButton btnToc;
     private RadioButton btnBookmark;
     private RadioButton btnAnt;
     private ViewPager viewPager;
+    private TextView emptyText;
+    private TextView totalText;
 
     private ReaderDocumentTableOfContent toc;
     private DirectoryTab currentTab;
@@ -72,8 +74,6 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
     public enum DirectoryTab { TOC , Bookmark, Annotation }
 
     private class SimpleListViewItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-//        private ReaderDataHolder readerDataHolder;
 
         private TextView textViewDescription;
         private TextView textViewTitle;
@@ -90,7 +90,6 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         public SimpleListViewItemViewHolder(final ReaderDataHolder readerDataHolder, final View itemView) {
             super(itemView);
 
-//            this.readerDataHolder = readerDataHolder;
             textViewTitle = (TextView)itemView.findViewById(R.id.text_view_title);
             textViewDescription = (TextView)itemView.findViewById(R.id.text_view_description);
             textViewPage = (TextView)itemView.findViewById(R.id.text_view_page);
@@ -232,13 +231,16 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         fitDialogToWindow();
         preIcon = (ImageView) findViewById(R.id.pre_icon);
         nextIcon = (ImageView) findViewById(R.id.next_icon);
-        backIcon = (ImageView) findViewById(R.id.back_icon);
+        backIcon = (ImageButton) findViewById(R.id.back_icon);
         pageIndicator = (TextView) findViewById(R.id.page_size_indicator);
         backText = (TextView) findViewById(R.id.back_text);
         btnToc = (RadioButton) findViewById(R.id.btn_directory);
         btnBookmark = (RadioButton) findViewById(R.id.btn_bookmark);
         btnAnt = (RadioButton) findViewById(R.id.btn_annotation);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+        totalText = (TextView) findViewById(R.id.total);
+        emptyText = (TextView) findViewById(R.id.empty_text);
+        emptyText.setVisibility(View.GONE);
         preIcon.setOnClickListener(this);
         nextIcon.setOnClickListener(this);
         backIcon.setOnClickListener(this);
@@ -251,6 +253,28 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         viewList.add(initBookmarkView(readerDataHolder,bookmarks));
         viewList.add(initAnnotationsView(readerDataHolder,annotations));
         viewPager.setAdapter(new ViewPagerAdapter());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(currentTab);
+                boolean hasContents = pageAdapter != null && pageAdapter.getItemCount() > 0;
+                viewPager.setVisibility(hasContents ? View.VISIBLE : View.INVISIBLE);
+                emptyText.setVisibility(hasContents ? View.GONE : View.VISIBLE);
+                if (!hasContents){
+                    emptyText.setText(getEmptyTips(currentTab));
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         checkRadioButton(tab);
     }
 
@@ -301,6 +325,19 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
                 return res.getInteger(R.integer.annotation_row);
         }
         return 0;
+    }
+
+    private String getEmptyTips(DirectoryTab tab){
+        switch (tab){
+            case TOC:
+                return getContext().getString(R.string.no_directories);
+            case Bookmark:
+                return getContext().getString(R.string.no_bookmarks);
+            case Annotation:
+                return getContext().getString(R.string.no_annotation);
+            default:
+                return getContext().getString(R.string.no_directories);
+        }
     }
 
     private PageRecyclerView.PageAdapter getPageAdapter(DirectoryTab tab){
@@ -445,6 +482,7 @@ public class DialogTableOfContent extends Dialog implements View.OnClickListener
         String show = String.format("%d/%d",currentPage,page);
         pageIndicator.setText(show);
         recordPosition.put(currentTab,position);
+        totalText.setText(String.format(getContext().getString(R.string.total_page),itemCount));
     }
 
     private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int page) {
