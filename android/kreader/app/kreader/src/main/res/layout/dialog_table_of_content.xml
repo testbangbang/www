@@ -4,58 +4,41 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_above="@+id/layout_menu"
+    <FrameLayout
+        android:layout_above="@+id/layout_turn"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </android.support.v4.view.ViewPager>
-    <RadioGroup
-        android:id="@+id/layout_menu"
-        android:layout_above="@+id/layout_turn"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/directory_tab_height">
 
-        <RadioButton
-            android:gravity="center"
-            android:textSize="24sp"
-            android:id="@+id/btn_directory"
-            android:background="@drawable/radio_button_bg"
-            android:button="@null"
-            android:text="@string/toc"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"/>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v4.view.ViewPager>
 
-        <RadioButton
+        <TextView
+            android:text="无文档"
+            android:id="@+id/empty_text"
+            android:textSize="30sp"
             android:gravity="center"
-            android:textSize="24sp"
-            android:id="@+id/btn_bookmark"
-            android:background="@drawable/radio_button_bg"
-            android:button="@null"
-            android:text="@string/bookmark"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+    </FrameLayout>
 
-        <RadioButton
-            android:gravity="center"
-            android:textSize="24sp"
-            android:id="@+id/btn_annotation"
-            android:background="@drawable/radio_button_bg"
-            android:button="@null"
-            android:text="@string/annotation"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"/>
-    </RadioGroup>
 
     <RelativeLayout
+        android:layout_above="@+id/divider_line"
         android:id="@+id/layout_turn"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="@dimen/directory_page_indicator_height">
+
+        <TextView
+            android:textSize="20sp"
+            android:layout_marginLeft="30dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/total"
+            android:text="@string/total_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <ImageView
             android:id="@+id/pre_icon"
@@ -85,7 +68,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageView
+        <ImageButton
+            android:padding="5dp"
+            android:background="@drawable/imagebtn_bg"
             android:id="@+id/back_icon"
             android:scaleType="fitXY"
             android:layout_centerVertical="true"
@@ -107,4 +92,54 @@
             android:layout_height="wrap_content"/>
 
     </RelativeLayout>
+
+    <View
+        android:background="@color/normal_black"
+        android:layout_above="@+id/layout_menu"
+        android:id="@+id/divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp">
+    </View>
+
+    <RadioGroup
+        android:layout_alignParentBottom="true"
+        android:id="@+id/layout_menu"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/directory_tab_height">
+
+        <RadioButton
+            android:gravity="center"
+            android:textSize="24sp"
+            android:id="@+id/btn_directory"
+            android:background="@drawable/no_line_button_bg"
+            android:button="@null"
+            android:text="@string/toc"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+
+        <RadioButton
+            android:gravity="center"
+            android:textSize="24sp"
+            android:id="@+id/btn_bookmark"
+            android:background="@drawable/left_right_line_button_bg"
+            android:button="@null"
+            android:text="@string/bookmark"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+
+        <RadioButton
+            android:gravity="center"
+            android:textSize="24sp"
+            android:id="@+id/btn_annotation"
+            android:background="@drawable/no_line_button_bg"
+            android:button="@null"
+            android:text="@string/annotation"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+    </RadioGroup>
+
 </RelativeLayout>
