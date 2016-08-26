@@ -1,5 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.host.request.BackwardRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -14,7 +16,12 @@ public class BackwardAction extends BaseAction {
         }
 
         final BackwardRequest backwardRequest = new BackwardRequest();
-        readerDataHolder.submitRenderRequest(backwardRequest);
+        readerDataHolder.submitRenderRequest(backwardRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ShowReaderMenuAction.updateBackwardForwardBtnState(readerDataHolder);
+            }
+        });
     }
 
 

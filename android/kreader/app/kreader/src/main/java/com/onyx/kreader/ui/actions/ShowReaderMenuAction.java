@@ -75,6 +75,7 @@ public class ShowReaderMenuAction extends BaseAction {
         state.setPageCount(readerDataHolder.getPageCount());
         state.setPageIndex(readerDataHolder.getCurrentPage());
         getReaderMenu(readerDataHolder).show(state);
+        updateBackwardForwardBtnState(readerDataHolder);
     }
 
     private ReaderMenu getReaderMenu(final ReaderDataHolder readerDataHolder) {
@@ -362,5 +363,10 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         new StartTtsAction().execute(readerDataHolder);
+    }
+
+    public static void updateBackwardForwardBtnState(ReaderDataHolder readerDataHolder){
+        readerMenu.getDialog().setPrevButtonEnable(readerDataHolder.getReaderViewInfo().canGoBack);
+        readerMenu.getDialog().setNextButtonEnable(readerDataHolder.getReaderViewInfo().canGoForward);
     }
 }
