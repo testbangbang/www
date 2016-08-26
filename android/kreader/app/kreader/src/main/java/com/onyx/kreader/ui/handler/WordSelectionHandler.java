@@ -229,9 +229,6 @@ public class WordSelectionHandler extends BaseHandler{
             return;
         }
         PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getPageInfo(selection.getPagePosition());
-        if (hitTestPage(readerDataHolder,x, y) != pageInfo) {
-            return;
-        }
 
         PointF beginTop;
         PointF endBottom;
@@ -285,7 +282,7 @@ public class WordSelectionHandler extends BaseHandler{
         readerDataHolder.resetEpdUpdateMode();
         ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,true);
         getParent().resetToDefaultProvider();
-        readerDataHolder.redrawPage();
+        readerDataHolder.redrawPage(true);
         readerDataHolder.getSelectionManager().clear();
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }

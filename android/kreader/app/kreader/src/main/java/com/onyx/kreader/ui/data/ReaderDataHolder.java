@@ -308,9 +308,13 @@ public class ReaderDataHolder {
     }
 
 
-    public void redrawPage() {
+    public void redrawPage(boolean render) {
         if (getReader() != null) {
-            submitRenderRequest(new RenderRequest());
+            if (render){
+                submitRenderRequest(new RenderRequest());
+            }else {
+                submitNonRenderRequest(new RenderRequest());
+            }
         }
     }
 

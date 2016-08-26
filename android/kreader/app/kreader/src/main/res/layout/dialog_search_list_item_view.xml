@@ -8,6 +8,7 @@
                 android:layout_height="wrap_content">
 
     <TextView
+        android:textColor="@color/normal_black"
         android:paddingRight="25dp"
         android:gravity="left"
         android:maxLines="1"
@@ -18,6 +19,7 @@
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:textColor="@color/normal_black"
         android:gravity="right"
         android:id="@+id/search_page"
         android:layout_width="match_parent"

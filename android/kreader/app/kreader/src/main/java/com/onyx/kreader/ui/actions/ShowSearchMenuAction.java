@@ -58,7 +58,7 @@ public class ShowSearchMenuAction extends BaseAction {
                 public void disMissMenu() {
                     searchMenu.hide();
                     searchMenu = null;
-                    readerDataHolder.redrawPage();
+                    readerDataHolder.redrawPage(true);
                 }
 
                 @Override
