@@ -49,10 +49,10 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup();
                     return;
                 }
-                if (loadDocumentOptionsRequest.getDocumentOptions() != null &&
-                        loadDocumentOptionsRequest.getDocumentOptions().getOrientation() > 0) {
+                if (loadDocumentOptionsRequest.getDocument() != null &&
+                        loadDocumentOptionsRequest.getDocument().getOrientation() > 0) {
                     int current = ReaderDeviceManager.getScreenOrientation(activity);
-                    int target = loadDocumentOptionsRequest.getDocumentOptions().getOrientation();
+                    int target = loadDocumentOptionsRequest.getDocument().getOrientation();
                     Debug.d("current orientation: " + current + ", target orientation: " + target);
                     if (current != target) {
                         readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
@@ -60,7 +60,7 @@ public class OpenDocumentAction extends BaseAction {
                         return;
                     }
                 }
-                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
+                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocument());
             }
         });
     }

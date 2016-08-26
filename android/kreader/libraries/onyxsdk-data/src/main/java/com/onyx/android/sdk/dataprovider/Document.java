@@ -9,8 +9,8 @@ import java.util.List;
 /**
  * Created by zhuzeng on 6/2/16.
  */
-@Table(database = ReaderDatabase.class)
-public class DocumentOptions extends BaseData {
+@Table(database = ContentDatabase.class)
+public class Document extends BaseData {
 
     @Column
     String name = null;
@@ -67,7 +67,7 @@ public class DocumentOptions extends BaseData {
     String type = null;
 
     @Column
-    String cloudReference;
+    String cloudId;
 
     public String getName() {
         return name;
@@ -217,12 +217,12 @@ public class DocumentOptions extends BaseData {
         type = t;
     }
 
-    public String getCloudReference() {
-        return cloudReference;
+    public String getCloudId() {
+        return cloudId;
     }
 
-    public void setCloudReference(final String c) {
-        cloudReference = c;
+    public void setCloudId(final String c) {
+        cloudId = c;
     }
 
 

@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.dataprovider;
 
+
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.List;
@@ -11,14 +12,14 @@ public class AnnotationProvider {
 
 
     public static final List<Annotation> loadAnnotations(final String application, final String md5, final String position) {
-        return new Select().from(Annotation.class).where(Annotation_Table.md5.eq(md5))
+        return new Select().from(Annotation.class).where(Annotation_Table.uniqueId.eq(md5))
                 .and(Annotation_Table.application.eq(application))
                 .and(Annotation_Table.position.eq(position))
                 .queryList();
     }
 
     public static final List<Annotation> loadAnnotations(final String application, final String md5) {
-        return new Select().from(Annotation.class).where(Annotation_Table.md5.eq(md5))
+        return new Select().from(Annotation.class).where(Annotation_Table.uniqueId.eq(md5))
                 .and(Annotation_Table.application.eq(application))
                 .orderBy(Annotation_Table.pageNumber, true)
                 .queryList();

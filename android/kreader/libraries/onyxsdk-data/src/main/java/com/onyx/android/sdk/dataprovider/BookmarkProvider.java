@@ -11,14 +11,14 @@ import java.util.List;
 public class BookmarkProvider {
 
     public static final Bookmark loadBookmark(final String application, final String md5, final String position) {
-        return new Select().from(Bookmark.class).where(Bookmark_Table.md5.eq(md5))
+        return new Select().from(Bookmark.class).where(Bookmark_Table.uniqueId.eq(md5))
                 .and(Bookmark_Table.application.eq(application))
                 .and(Bookmark_Table.position.eq(position))
                 .querySingle();
     }
 
     public static final List<Bookmark> loadBookmarks(final String application, final String md5) {
-        return new Select().from(Bookmark.class).where(Bookmark_Table.md5.eq(md5))
+        return new Select().from(Bookmark.class).where(Bookmark_Table.uniqueId.eq(md5))
                 .and(Bookmark_Table.application.eq(application))
                 .orderBy(Bookmark_Table.pageNumber, true)
                 .queryList();

@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.android.sdk.dataprovider.DocumentOptions;
-import com.onyx.android.sdk.dataprovider.DocumentOptionsProvider;
+import com.onyx.android.sdk.dataprovider.Document;
+import com.onyx.android.sdk.dataprovider.DocumentProvider;
 import com.onyx.android.sdk.dataprovider.request.BaseDataProviderRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -16,7 +16,7 @@ public class LoadDocumentOptionsRequest extends BaseDataProviderRequest {
 
     private String documentPath;
     private volatile String md5;
-    private DocumentOptions documentOptions;
+    private Document document;
 
     public LoadDocumentOptionsRequest(final String path, final String md5Value) {
         documentPath = path;
@@ -27,13 +27,13 @@ public class LoadDocumentOptionsRequest extends BaseDataProviderRequest {
         if (StringUtils.isNullOrEmpty(md5)) {
             md5 = FileUtils.computeMD5(new File(documentPath));
         }
-        documentOptions = DocumentOptionsProvider.loadDocumentOptions(getContext(), documentPath, md5);
-        documentOptions.setMd5(md5);
+        document = DocumentProvider.loadDocument(getContext(), documentPath, md5);
+        document.setUniqueId(md5);
     }
 
 
-    public final BaseOptions getDocumentOptions() {
-        final BaseOptions baseOptions = BaseOptions.optionsFromJSONString(documentOptions.getExtraAttributes());
+    public final BaseOptions getDocument() {
+        final BaseOptions baseOptions = BaseOptions.optionsFromJSONString(document.getExtraAttributes());
         baseOptions.setMd5(md5);
         return baseOptions;
     }

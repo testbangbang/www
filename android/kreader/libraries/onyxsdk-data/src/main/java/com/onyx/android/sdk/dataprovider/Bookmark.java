@@ -1,13 +1,12 @@
 package com.onyx.android.sdk.dataprovider;
 
-import com.onyx.android.sdk.dataprovider.ReaderDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 /**
  * Created by zhuzeng on 6/3/16.
  */
-@Table(database = ReaderDatabase.class)
+@Table(database = ContentDatabase.class)
 public class Bookmark extends BaseData {
 
     @Column

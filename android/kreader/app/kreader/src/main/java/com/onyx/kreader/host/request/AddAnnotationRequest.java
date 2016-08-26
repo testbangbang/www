@@ -7,7 +7,6 @@ import com.onyx.android.sdk.dataprovider.AnnotationProvider;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.List;
@@ -41,7 +40,7 @@ public class AddAnnotationRequest extends BaseReaderRequest {
 
     private Annotation createAnnotation(final Reader reader) {
         Annotation annotation = new Annotation();
-        annotation.setMd5(reader.getDocumentMd5());
+        annotation.setUniqueId(reader.getDocumentMd5());
         annotation.setApplication(reader.getPlugin().displayName());
         annotation.setPosition(pageInfo.getName());
         annotation.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));

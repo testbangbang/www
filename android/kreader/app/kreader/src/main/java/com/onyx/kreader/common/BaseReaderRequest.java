@@ -3,7 +3,7 @@ package com.onyx.kreader.common;
 import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.dataprovider.DocumentOptionsProvider;
+import com.onyx.android.sdk.dataprovider.DocumentProvider;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
@@ -154,7 +154,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     private void saveToDocumentOptionsProvider(final Reader reader) {
-        DocumentOptionsProvider.saveDocumentOptions(getContext(),
+        DocumentProvider.saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions().toJSONString());

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by zhuzeng on 6/3/16.
  */
-@Table(database = ReaderDatabase.class)
+@Table(database = ContentDatabase.class)
 public class Annotation extends BaseData {
 
     @Column
