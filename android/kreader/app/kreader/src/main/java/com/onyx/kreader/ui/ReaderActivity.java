@@ -87,7 +87,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getReaderDataHolder().redrawPage();
+        getReaderDataHolder().redrawPage(false);
     }
 
     @Override

@@ -281,7 +281,7 @@ public class WordSelectionHandler extends BaseHandler{
     public void quitWordSelection(ReaderDataHolder readerDataHolder) {
         ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,true);
         getParent().resetToDefaultProvider();
-        readerDataHolder.redrawPage();
+        readerDataHolder.redrawPage(true);
         readerDataHolder.getSelectionManager().clear();
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }
