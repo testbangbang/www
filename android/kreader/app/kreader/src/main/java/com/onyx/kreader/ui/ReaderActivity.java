@@ -46,10 +46,12 @@ import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
+import com.onyx.kreader.ui.events.ChangeEpdUpdateMode;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
+import com.onyx.kreader.ui.events.ResetEpdUpdateMode;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -270,6 +272,16 @@ public class ReaderActivity extends ActionBarActivity {
 //        getNoteViewHelper().setView(this, surfaceView, null);
         // when page changed, choose to flush
         //noteViewHelper.flushPendingShapes();
+    }
+
+    @Subscribe
+    public void onChangeEpdUpdateMode(final ChangeEpdUpdateMode event) {
+        ReaderDeviceManager.setUpdateMode(surfaceView, event.getTargetMode());
+    }
+
+    @Subscribe
+    public void onResetEpdUpdateMode(final ResetEpdUpdateMode event) {
+        ReaderDeviceManager.resetUpdateMode(surfaceView);
     }
 
     @Subscribe

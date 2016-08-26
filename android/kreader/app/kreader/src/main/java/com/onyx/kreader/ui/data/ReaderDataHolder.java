@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.data;
 
 import android.content.Context;
 import android.graphics.Rect;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
@@ -22,8 +23,10 @@ import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.events.ChangeEpdUpdateMode;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
+import com.onyx.kreader.ui.events.ResetEpdUpdateMode;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -286,6 +289,13 @@ public class ReaderDataHolder {
         onRenderRequestFinished(request, e, true);
     }
 
+    public void changeEpdUpdateMode(final UpdateMode mode) {
+        eventBus.post(new ChangeEpdUpdateMode(mode));
+    }
+
+    public void resetEpdUpdateMode() {
+        eventBus.post(new ResetEpdUpdateMode());
+    }
 
     public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e, boolean applyGCIntervalUpdate) {
         if (e != null || request.isAbort()) {

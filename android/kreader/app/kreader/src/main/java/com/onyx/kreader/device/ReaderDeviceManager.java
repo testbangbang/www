@@ -175,6 +175,14 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void setUpdateMode(final View view, UpdateMode mode) {
+        epdDevice.setUpdateMode(view, mode);
+    }
+
+    public static void resetUpdateMode(final View view) {
+        epdDevice.resetUpdate(view);
+    }
+
     static public boolean isRkDevice() {
         return Build.HARDWARE.startsWith("rk");
     }
