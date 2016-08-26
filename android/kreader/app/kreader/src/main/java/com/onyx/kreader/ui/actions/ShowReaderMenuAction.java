@@ -195,6 +195,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case SEARCH:
                         showSearchDialog(readerDataHolder);
                         break;
+                    case SETTINGS:
+                        showReaderSettings(readerDataHolder);
+                        break;
                     case EXIT:
                         readerActivity.onBackPressed();
                         break;
@@ -362,5 +365,10 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         new StartTtsAction().execute(readerDataHolder);
+    }
+
+    private void showReaderSettings(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        new ShowReaderSettingsAction().execute(readerDataHolder);
     }
 }

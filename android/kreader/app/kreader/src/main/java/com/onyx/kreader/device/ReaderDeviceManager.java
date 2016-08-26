@@ -1,7 +1,6 @@
 package com.onyx.kreader.device;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -11,6 +10,7 @@ import android.view.Surface;
 import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.kreader.utils.DeviceUtils;
 
 /**
  * Created by Joy on 2016/5/6.
@@ -29,7 +29,7 @@ public class ReaderDeviceManager {
     private final static EpdDevice epdDevice;
 
     static {
-        if (isRkDevice()) {
+        if (DeviceUtils.isRkDevice()) {
             epdDevice = new EpdRk3026();
         } else {
             epdDevice = new EpdImx6();
@@ -181,10 +181,6 @@ public class ReaderDeviceManager {
 
     public static void resetUpdateMode(final View view) {
         epdDevice.resetUpdate(view);
-    }
-
-    static public boolean isRkDevice() {
-        return Build.HARDWARE.startsWith("rk");
     }
 
 }

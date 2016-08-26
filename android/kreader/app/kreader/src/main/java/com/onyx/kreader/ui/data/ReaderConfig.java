@@ -3,12 +3,12 @@ package com.onyx.kreader.ui.data;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.dataprovider.SharedPreferenceProvider;
+import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.utils.GObject;
-import com.onyx.kreader.utils.RawResourceUtil;
 
 import java.util.Map;
 
@@ -47,6 +47,10 @@ public class ReaderConfig {
     static public final String ROTATION_OFFSET = "rotation_offset";
     static public final String CLEAR_BEFORE_ANIMATION = "clear_befor_animation";
     static public final String SUPPORT_ZIP_COMPRESSED_BOOKS = "support_zip_compressed_books";
+    static public final String DISABLE_DICTIONARY_FUNC = "disable_dictionary_func";
+    static public final String DISABLE_FONT_FUNC = "disable_font_func";
+    static public final String DISABLE_NOTE_FUNC = "disable_note_func";
+    static public final String DISABLE_ROTATION_FUNC = "disable_rotation_func";
 
     static public final String DEFAULT_FONT_SIZE = "default_font_size";
     static public final String USE_BIG_PEN = "use_big_pen";
@@ -63,7 +67,10 @@ public class ReaderConfig {
     static public final String SELECTION_MOVE_DISTANCE_THRESHOLD = "selection_move_distance_threshold";
     static public final String HIDE_SELECTION_MODE_UI_OPTION = "hide_selection_mode_ui_option";
 
+
     static public final String GC_INTERVAL = "gc_interval";
+
+    static public final String HIDE_CONTROL_SETTINGS = "hide_control_settings";
 
     static public final boolean useDebugConfig = false;
 
@@ -159,7 +166,7 @@ public class ReaderConfig {
     }
 
     public boolean getClearBeforeAnimation() {
-      return backend.hasKey(CLEAR_BEFORE_ANIMATION) && backend.getBoolean(CLEAR_BEFORE_ANIMATION);
+        return backend.hasKey(CLEAR_BEFORE_ANIMATION) && backend.getBoolean(CLEAR_BEFORE_ANIMATION);
     }
 
     public boolean getSupportZipCompressedBooks() {
@@ -203,12 +210,12 @@ public class ReaderConfig {
         return backend.hasKey(DEFAULT_SHOW_DOC_TITLE_IN_STATUS_BAR) && backend.getBoolean(DEFAULT_SHOW_DOC_TITLE_IN_STATUS_BAR, false);
     }
 
-    public SharedPreferenceProvider.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {
-        SharedPreferenceProvider.AnnotationHighlightStyle style = SharedPreferenceProvider.AnnotationHighlightStyle.Underline;
+    public SingletonSharedPreference.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {
+        SingletonSharedPreference.AnnotationHighlightStyle style = SingletonSharedPreference.AnnotationHighlightStyle.Underline;
         if (backend.hasKey(DEFAULT_ANNOTATION_HIGHLIGHT_STYLE)) {
             String value = backend.getString(DEFAULT_ANNOTATION_HIGHLIGHT_STYLE);
             try {
-                style = Enum.valueOf(SharedPreferenceProvider.AnnotationHighlightStyle.class, value);
+                style = Enum.valueOf(SingletonSharedPreference.AnnotationHighlightStyle.class, value);
             } catch (Exception e) {
             }
         }
@@ -227,8 +234,13 @@ public class ReaderConfig {
         return backend.getInt(SELECTION_OFFSET_X, 15);
     }
 
+    /**
+     * disableNavigation,determine show navigation menu or not.
+     * @return default value is false;
+     */
+
     public boolean disableNavigation() {
-        return backend.hasKey(DISABLE_NAVIGATION) && backend.getBoolean(DISABLE_NAVIGATION);
+        return backend.hasKey(DISABLE_NAVIGATION) && backend.getBoolean(DISABLE_NAVIGATION,false);
     }
 
     public boolean hideSelectionModeUiOption() {
@@ -244,5 +256,41 @@ public class ReaderConfig {
             return backend.getInt(GC_INTERVAL);
         }
         return fallback;
+    }
+
+    public boolean hideControlSettings() {
+        return backend.hasKey(HIDE_CONTROL_SETTINGS) && backend.getBoolean(HIDE_CONTROL_SETTINGS);
+    }
+
+    /**
+     * supportDictionaryFunc,determine show dict menu on action bar or not.
+     * @return default value is true;
+     */
+    public boolean supportDictionaryFunc() {
+        return !backend.hasKey(DISABLE_DICTIONARY_FUNC) || !backend.getBoolean(DISABLE_DICTIONARY_FUNC, false);
+    }
+
+    /**
+     * supportFontFunc,determine show font menu or not.
+     * @return default value is true;
+     */
+    public boolean supportFontFunc() {
+        return !backend.hasKey(DISABLE_FONT_FUNC) || !backend.getBoolean(DISABLE_FONT_FUNC, false);
+    }
+
+    /**
+     * supportNoteFunc,determine show note menu or not.
+     * @return default value is true;
+     */
+    public boolean supportNoteFunc() {
+        return !backend.hasKey(DISABLE_NOTE_FUNC) || !backend.getBoolean(DISABLE_NOTE_FUNC, false);
+    }
+
+    /**
+     * supportRotation,determine show font menu or not.
+     * @return default value is true;
+     */
+    public boolean supportRotation() {
+        return !backend.hasKey(DISABLE_ROTATION_FUNC) || !backend.getBoolean(DISABLE_ROTATION_FUNC, false);
     }
 }

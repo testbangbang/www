@@ -27,6 +27,7 @@ import com.onyx.kreader.ui.events.ChangeEpdUpdateMode;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ResetEpdUpdateMode;
+import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -311,6 +312,10 @@ public class ReaderDataHolder {
         if (getReader() != null) {
             submitRenderRequest(new RenderRequest());
         }
+    }
+
+    public void showReaderSettings() {
+        eventBus.post(new ShowReaderSettingsEvent());
     }
 
     public void destroy() {

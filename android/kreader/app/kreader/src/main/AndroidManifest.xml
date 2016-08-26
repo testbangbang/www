@@ -73,6 +73,14 @@
 
         <activity android:name="com.onyx.android.cropimage.CropImageActivity" />
 
+        <activity android:name=".ui.settings.MainSettingsActivity"/>
+        <activity android:name=".ui.settings.SystemSettingsActivity"/>
+        <activity android:name=".ui.settings.ScreenSettingsActivity"/>
+        <activity android:name=".ui.settings.ConfigSettingsActivity"/>
+        <activity android:name=".ui.settings.ScribbleBarSettingsActivity"/>
+        <activity android:name=".ui.settings.ControlSettingsActivity"/>
+        <activity android:name=".ui.settings.StatusBarSettingsActivity"/>
+
         <service android:name="com.onyx.kreader.ui.ReaderMetadataService"
                  android:process=":metadataservice"
                  android:enabled="true" android:exported="true">

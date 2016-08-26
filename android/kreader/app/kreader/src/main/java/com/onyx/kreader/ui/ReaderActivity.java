@@ -52,9 +52,11 @@ import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ResetEpdUpdateMode;
+import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.TreeObserverUtils;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -292,6 +294,11 @@ public class ReaderActivity extends ActionBarActivity {
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         updateStatusBar();
         renderShapeDataInBackground();
+    }
+
+    @Subscribe
+    public void onShowReaderSettings(final ShowReaderSettingsEvent event) {
+        startActivity(new Intent(this, MainSettingsActivity.class));
     }
 
     private void clearCanvas(SurfaceHolder holder) {
