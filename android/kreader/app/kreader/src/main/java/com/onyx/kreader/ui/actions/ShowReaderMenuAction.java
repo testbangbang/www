@@ -20,7 +20,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
+import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;

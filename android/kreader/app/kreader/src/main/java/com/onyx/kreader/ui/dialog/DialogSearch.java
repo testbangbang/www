@@ -26,12 +26,12 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.dataprovider.SearchHistory;
 import com.onyx.android.sdk.ui.view.OnyxCustomEditText;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.dataprovider.SearchHistory;
 import com.onyx.kreader.ui.actions.GetSearchHistoryAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;

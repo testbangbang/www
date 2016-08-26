@@ -2,7 +2,7 @@ package com.onyx.kreader.common;
 
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.dataprovider.Annotation;
+import com.onyx.android.sdk.dataprovider.Annotation;
 import com.onyx.kreader.host.math.PageUtils;
 
 import java.util.ArrayList;

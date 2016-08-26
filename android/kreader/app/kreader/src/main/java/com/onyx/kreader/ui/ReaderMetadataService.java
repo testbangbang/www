@@ -15,7 +15,7 @@ import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.RefValue;
 import com.onyx.android.sdk.reader.IMetadataService;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
+import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.CreateViewRequest;
 import com.onyx.kreader.host.request.OpenRequest;

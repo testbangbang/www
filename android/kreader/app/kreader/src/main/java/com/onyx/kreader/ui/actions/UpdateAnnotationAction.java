@@ -1,7 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.dataprovider.Annotation;
+import com.onyx.android.sdk.dataprovider.Annotation;
 import com.onyx.kreader.host.request.UpdateAnnotationRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 

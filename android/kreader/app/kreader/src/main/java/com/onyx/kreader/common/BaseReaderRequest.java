@@ -1,15 +1,13 @@
 package com.onyx.kreader.common;
 
 import android.util.Log;
-import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.dataprovider.DocumentOptionsProvider;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
-import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
-import com.onyx.kreader.dataprovider.compatability.LegacySdkDataUtils;
+import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.utils.ObjectHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
@@ -151,11 +149,18 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     public void saveReaderOptions(final Reader reader) {
         reader.saveOptions();
+        saveToDocumentOptionsProvider(reader);
+        saveToLegacyDataProvider(reader);
+    }
+
+    private void saveToDocumentOptionsProvider(final Reader reader) {
         DocumentOptionsProvider.saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),
                 reader.getDocumentMd5(),
-                reader.getDocumentOptions());
+                reader.getDocumentOptions().toJSONString());
+    }
 
+    private void saveToLegacyDataProvider(final Reader reader) {
         try {
             if (reader.getNavigator() != null) {
                 int currentPage = PagePositionUtils.getPageNumber(reader.getReaderLayoutManager().getCurrentPageInfo() != null ?
