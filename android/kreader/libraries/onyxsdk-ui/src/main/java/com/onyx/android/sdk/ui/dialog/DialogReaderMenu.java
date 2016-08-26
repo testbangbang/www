@@ -7,18 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
-import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout;
-
-import java.net.URI;
 
 /**
  * Created by joy on 6/28/16.
@@ -28,6 +26,8 @@ public class DialogReaderMenu extends Dialog {
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;
     private ReaderLayerMenuLayout menuLayout;
+    private ImageButton prevButton;
+    private ImageButton nextButton;
 
     public DialogReaderMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
@@ -64,6 +64,8 @@ public class DialogReaderMenu extends Dialog {
         });
 
         menuLayout = (ReaderLayerMenuLayout)findViewById(R.id.layout_reader_menu);
+        prevButton = (ImageButton) findViewById(R.id.pre_button);
+        nextButton = (ImageButton)findViewById(R.id.next_button);
 
         findViewById(R.id.layout_back_area).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,14 +105,14 @@ public class DialogReaderMenu extends Dialog {
             }
         });
 
-        findViewById(R.id.pre_button).setOnClickListener(new View.OnClickListener() {
+        prevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.NAVIGATE_BACKWARD));
             }
         });
 
-        findViewById(R.id.next_button).setOnClickListener(new View.OnClickListener() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.NAVIGATE_FORWARD));
@@ -131,5 +133,13 @@ public class DialogReaderMenu extends Dialog {
 
     private String formatPageProgress(ReaderMenuState state) {
         return String.valueOf(state.getPageIndex() + 1) + "/" + String.valueOf(state.getPageCount());
+    }
+
+    public void setNextButtonEnable(boolean enable) {
+        nextButton.setEnabled(enable);
+    }
+
+    public void setPrevButtonEnable(boolean enable) {
+        prevButton.setEnabled(enable);
     }
 }
