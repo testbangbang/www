@@ -45,6 +45,7 @@ import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateMode;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
@@ -90,6 +91,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onResume() {
+        checkForNewConfiguration();
         super.onResume();
         getReaderDataHolder().redrawPage();
     }
@@ -199,6 +201,24 @@ public class ReaderActivity extends ActionBarActivity {
                 new ShowQuickPreviewAction().execute(readerDataHolder);
             }
         });
+        reconfigStatusBar();
+    }
+
+    private void reconfigStatusBar() {
+        statusBar.reConfigure(SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_percentage_show_key, false),
+                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_key, false),
+                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_format_key, false),
+                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_graphic_show_key, false));
+
+        if (!SingletonSharedPreference.isReaderStatusBarEnabled(this)){
+            statusBar.setVisibility(View.GONE);
+        } else {
+            statusBar.setVisibility(View.VISIBLE);
+        }
+        statusBar.reConfigure(SingletonSharedPreference.isStatusBarShowBatteryPercentage(this),
+                SingletonSharedPreference.isStatusBarTimeShow(this),
+                SingletonSharedPreference.isStatusBarTime24HourFormat(this),
+                SingletonSharedPreference.isStatusBarShowBatteryGraphical(this));
     }
 
     private void initSurfaceView() {
@@ -274,6 +294,31 @@ public class ReaderActivity extends ActionBarActivity {
 //        getNoteViewHelper().setView(this, surfaceView, null);
         // when page changed, choose to flush
         //noteViewHelper.flushPendingShapes();
+    }
+
+    private void checkForNewConfiguration() {
+        reconfigStatusBar();
+        checkSurfaceViewSize();
+    }
+
+    private void checkSurfaceViewSize() {
+        if (!readerDataHolder.isDocumentOpened()) {
+            return;
+        }
+
+        surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
+                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+                    new ChangeViewConfigAction().execute(readerDataHolder);
+                } else {
+                    readerDataHolder.redrawPage();
+                }
+            }
+        });
     }
 
     @Subscribe
