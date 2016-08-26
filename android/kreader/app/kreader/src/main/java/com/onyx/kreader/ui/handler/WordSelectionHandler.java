@@ -226,9 +226,6 @@ public class WordSelectionHandler extends BaseHandler{
             return;
         }
         PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getPageInfo(selection.getPagePosition());
-        if (hitTestPage(readerDataHolder,x, y) != pageInfo) {
-            return;
-        }
 
         PointF beginTop;
         PointF endBottom;
