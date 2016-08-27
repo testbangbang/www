@@ -76,6 +76,7 @@ public class PopupSelectionMenu extends LinearLayout {
 
         RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
+        p.addRule(RelativeLayout.CENTER_HORIZONTAL);
         layout.addView(this, p);
 
         mDictTitle = (TextView) findViewById(R.id.dict_title);
@@ -211,32 +212,33 @@ public class PopupSelectionMenu extends LinearLayout {
         HighlightCursor endHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.END_CURSOR_INDEX);
         RectF endCursorRectF = endHighlightCursor.getDisplayRect();
 
-        float dividerWidth = readerDataHolder.getContext().getResources().getDimension(R.dimen.popup_selection_menu_divider_width);
         float dividerHeight = readerDataHolder.getContext().getResources().getDimension(R.dimen.popup_selection_menu_divider_height);
 
         int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
         int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
         this.measure(w, h);
         int measuredHeight = this.getMeasuredHeight();
-        int measuredWidth = this.getMeasuredWidth();
 
         RectF start = beginCursorRectF;
         RectF end = endCursorRectF;
         final float screenHeight = ((View) this.getParent()).getHeight();
-        final float screenWidth = ((View) this.getParent()).getWidth();
         final float diffTop = start.top;
         final float diffBottom = screenHeight - end.bottom;
+
         if (diffTop > diffBottom){
-            float x = start.left;
-            setX(Math.min(x,screenWidth - measuredWidth - dividerWidth));
             float y = start.top - dividerHeight - measuredHeight;
-            setY(Math.max(y,0));
+            y = isShowTranslation() ? dividerHeight : Math.max(y,0);
+            setY(y);
         }else {
-            float x = start.left;
-            setX(Math.min(x,screenWidth - measuredWidth - dividerWidth));
             float y = end.bottom + dividerHeight;
-            setY(Math.min(y,screenHeight - measuredHeight));
+            y = isShowTranslation() ? screenHeight - measuredHeight - dividerHeight : Math.min(y,screenHeight - measuredHeight);
+            setY(y);
         }
+
+    }
+
+    public boolean isShowTranslation(){
+        return this.webViewDividerLine.getVisibility() == VISIBLE;
     }
 
     public boolean isShow() {
