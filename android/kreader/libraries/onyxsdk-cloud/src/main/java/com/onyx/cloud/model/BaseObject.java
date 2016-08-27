@@ -20,6 +20,7 @@ public class BaseObject extends BaseModel {
 
     @Column
     @Unique
+    @Index
     public String idString;
 
 	@Column

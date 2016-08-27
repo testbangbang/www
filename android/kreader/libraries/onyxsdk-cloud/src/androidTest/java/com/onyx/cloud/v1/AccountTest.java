@@ -1,13 +1,16 @@
-package com.onyx.cloud;
+package com.onyx.cloud.v1;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
+import com.alibaba.fastjson.JSON;
+import com.onyx.cloud.CloudManager;
 import com.onyx.cloud.model.Captcha;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.onyx.cloud.model.JsonResponse;
 import com.onyx.cloud.model.OnyxAccount;
-import com.onyx.cloud.service.OnyxAccountService;
-import com.onyx.cloud.service.ServiceFactory;
+import com.onyx.cloud.service.v1.OnyxAccountService;
+import com.onyx.cloud.service.v1.ServiceFactory;
 import com.onyx.cloud.utils.JSONObjectParseUtils;
 
 import okhttp3.ResponseBody;
@@ -21,16 +24,24 @@ import java.util.UUID;
  */
 public class AccountTest extends ApplicationTestCase<Application> {
 
-    static OnyxAccountService service = ServiceFactory.getAccountService(ServiceFactory.API_V1_BASE);
+    private static OnyxAccountService service;
 
     public AccountTest() {
         super(Application.class);
     }
 
+    private final OnyxAccountService getService() {
+        if (service == null) {
+            CloudManager cloudManager = new CloudManager();
+            service = ServiceFactory.getAccountService(cloudManager.getCloudConf().getApiBase());
+        }
+        return service;
+    }
+
     public void testSignUp() throws Exception {
         final OnyxAccount account = new OnyxAccount(UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(), TestUtils.randomEmail());
-        Call<ResponseBody> object = service.signup(account);
+                TestUtils.randString(), TestUtils.randomEmail());
+        Call<ResponseBody> object = getService().signup(account);
         Response<ResponseBody> response = object.execute();
         assertNotNull(response);
         if (response.isSuccessful()) {
@@ -38,12 +49,14 @@ public class AccountTest extends ApplicationTestCase<Application> {
             final OnyxAccount resultAccount = JSONObjectParseUtils.parseOnyxAccount(response.body().string());
             assertNotNull(resultAccount);
         } else {
-            assertNotNull(response.errorBody());
+            JsonResponse jsonResponse = JSON.parseObject(response.errorBody().string(), JsonResponse.class);
+            assertNotNull(jsonResponse);
+
         }
     }
 
     public void testCaptcha() throws Exception {
-        Call<Captcha> call = service.getCaptcha();
+        Call<Captcha> call = getService().getCaptcha();
         Response<Captcha> response = call.execute();
         assertNotNull(response);
         assertNotNull(response.body());

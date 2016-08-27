@@ -1,16 +1,17 @@
-package com.onyx.cloud;
+package com.onyx.cloud.v1;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
 import com.alibaba.fastjson.JSON;
+import com.onyx.cloud.CloudManager;
 import com.onyx.cloud.model.Product;
 import com.onyx.cloud.model.ProductContainer;
 import com.onyx.cloud.model.ProductQuery;
 import com.onyx.cloud.model.ProductResult;
 import com.onyx.cloud.model.ProductSearch;
-import com.onyx.cloud.service.OnyxBookStoreService;
-import com.onyx.cloud.service.ServiceFactory;
+import com.onyx.cloud.service.v1.OnyxBookStoreService;
+import com.onyx.cloud.service.v1.ServiceFactory;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -22,15 +23,23 @@ import java.util.List;
  */
 public class BookStoreTest extends ApplicationTestCase<Application> {
 
-    static OnyxBookStoreService service = ServiceFactory.getBookStoreService(ServiceFactory.API_V1_BASE);
+    static OnyxBookStoreService service;
     static List<Product> productList;
 
     public BookStoreTest() {
         super(Application.class);
     }
 
+    private final OnyxBookStoreService getService() {
+        if (service == null) {
+            CloudManager cloudManager = new CloudManager();
+            service = ServiceFactory.getBookStoreService(cloudManager.getCloudConf().getApiBase());
+        }
+        return service;
+    }
+
     public void testBookList() throws Exception {
-        Call<ProductResult<Product>> object = service.bookList(JSON.toJSONString(new ProductQuery()));
+        Call<ProductResult<Product>> object = getService().bookList(JSON.toJSONString(new ProductQuery()));
         Response<ProductResult<Product>> response = object.execute();
         assertNotNull(response.body());
         assertTrue(response.body().count > 0);
@@ -40,7 +49,7 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
 
     public void testSingleBook() throws Exception {
         final String uniqueId = productList.get(0).getIdString();
-        Call<Product> object = service.book(uniqueId);
+        Call<Product> object = getService().book(uniqueId);
         Response<Product> response = object.execute();
         assertTrue(response.body().getIdString().equals(uniqueId));
     }
@@ -49,7 +58,7 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
         ProductQuery productQuery = new ProductQuery();
         productQuery.count = 2;
         productQuery.useCategory("100");
-        Call<ProductResult<Product>> object = service.bookList(JSON.toJSONString(productQuery));
+        Call<ProductResult<Product>> object = getService().bookList(JSON.toJSONString(productQuery));
         Response<ProductResult<Product>> response = object.execute();
         assertNotNull(response.body());
         assertTrue(response.body().count > 0);
@@ -61,7 +70,7 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
         ProductSearch productSearch = new ProductSearch();
         productSearch.limit = 5;
         productSearch.pattern = "三";
-        Call<ProductResult<Product>> object = service.bookSearch(JSON.toJSONString(productSearch));
+        Call<ProductResult<Product>> object = getService().bookSearch(JSON.toJSONString(productSearch));
         Response<ProductResult<Product>> response = object.execute();
         assertNotNull(response.body());
         assertTrue(response.body().count > 0);
@@ -71,7 +80,7 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
 
     public void testContainer() throws Exception {
         ProductQuery productQuery = new ProductQuery();
-        Call<ProductResult<ProductContainer>> object = service.bookContainer(JSON.toJSONString(productQuery));
+        Call<ProductResult<ProductContainer>> object = getService().bookContainer(JSON.toJSONString(productQuery));
         Response<ProductResult<ProductContainer>> response = object.execute();
         assertNotNull(response.body());
         assertTrue(response.body().count > 0);

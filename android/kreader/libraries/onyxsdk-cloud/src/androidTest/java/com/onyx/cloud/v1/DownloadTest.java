@@ -1,4 +1,4 @@
-package com.onyx.cloud;
+package com.onyx.cloud.v1;
 
 import android.app.Application;
 import android.content.Context;
@@ -6,8 +6,11 @@ import android.graphics.Bitmap;
 import android.test.ApplicationTestCase;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.cloud.service.OnyxFileDownloadService;
-import com.onyx.cloud.service.ServiceFactory;
+import com.onyx.cloud.CloudManager;
+import com.onyx.cloud.Constant;
+import com.onyx.cloud.OnyxDownloadManager;
+import com.onyx.cloud.service.v1.OnyxFileDownloadService;
+import com.onyx.cloud.service.v1.ServiceFactory;
 import com.onyx.cloud.store.request.CloudFileRequest;
 import com.onyx.cloud.store.request.ParseCoverRequest;
 

@@ -2,8 +2,7 @@ package com.onyx.cloud.store.request;
 
 import com.onyx.cloud.CloudManager;
 import com.onyx.cloud.model.DownloadLink;
-import com.onyx.cloud.service.OnyxBookStoreService;
-import com.onyx.cloud.service.ServiceFactory;
+import com.onyx.cloud.service.v1.ServiceFactory;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;

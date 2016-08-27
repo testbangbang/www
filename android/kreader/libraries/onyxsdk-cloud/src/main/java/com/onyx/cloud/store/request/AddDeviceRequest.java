@@ -2,8 +2,7 @@ package com.onyx.cloud.store.request;
 
 import com.onyx.cloud.CloudManager;
 import com.onyx.cloud.model.Device;
-import com.onyx.cloud.service.OnyxAccountService;
-import com.onyx.cloud.service.ServiceFactory;
+import com.onyx.cloud.service.v1.ServiceFactory;
 
 import retrofit2.Call;
 import retrofit2.Response;
