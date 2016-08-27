@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.android.sdk.dataprovider.Document;
-import com.onyx.android.sdk.dataprovider.DocumentProvider;
+import com.onyx.android.sdk.dataprovider.Metadata;
+import com.onyx.android.sdk.dataprovider.DataProviderManager;
 import com.onyx.android.sdk.dataprovider.request.BaseDataProviderRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -16,7 +16,7 @@ public class LoadDocumentOptionsRequest extends BaseDataProviderRequest {
 
     private String documentPath;
     private volatile String md5;
-    private Document document;
+    private Metadata document;
 
     public LoadDocumentOptionsRequest(final String path, final String md5Value) {
         documentPath = path;
@@ -27,7 +27,7 @@ public class LoadDocumentOptionsRequest extends BaseDataProviderRequest {
         if (StringUtils.isNullOrEmpty(md5)) {
             md5 = FileUtils.computeMD5(new File(documentPath));
         }
-        document = DocumentProvider.loadDocument(getContext(), documentPath, md5);
+        document = DataProviderManager.getDataProvider().loadMetadata(getContext(), documentPath, md5);
         document.setUniqueId(md5);
     }
 

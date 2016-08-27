@@ -2,7 +2,7 @@ package com.onyx.kreader.host.request;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.dataprovider.Bookmark;
-import com.onyx.android.sdk.dataprovider.BookmarkProvider;
+import com.onyx.android.sdk.dataprovider.DataProviderManager;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -20,7 +20,7 @@ public class AddBookmarkRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        BookmarkProvider.addBookmark(createBookmark(reader));
+        DataProviderManager.getDataProvider().addBookmark(createBookmark(reader));
         LayoutProviderUtils.updateReaderViewInfo(createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 

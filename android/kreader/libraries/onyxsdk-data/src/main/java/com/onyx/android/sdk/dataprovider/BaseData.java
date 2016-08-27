@@ -8,6 +8,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/1/16.
@@ -82,5 +83,9 @@ public class BaseData extends BaseModel {
     public void save(DatabaseWrapper databaseWrapper) {
         beforeSave();
         super.save(databaseWrapper);
+    }
+
+    public static final String generateUniqueId() {
+        return UUID.randomUUID().toString();
     }
 }

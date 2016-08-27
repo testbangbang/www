@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.android.sdk.dataprovider.Bookmark;
-import com.onyx.android.sdk.dataprovider.BookmarkProvider;
+import com.onyx.android.sdk.dataprovider.DataProviderManager;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -19,7 +19,7 @@ public class DeleteBookmarkRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         if (bookmark != null) {
-            BookmarkProvider.deleteBookmark(bookmark);
+            DataProviderManager.getDataProvider().deleteBookmark(bookmark);
         }
         LayoutProviderUtils.updateReaderViewInfo(createReaderViewInfo(), reader.getReaderLayoutManager());
     }

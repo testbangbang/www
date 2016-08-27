@@ -88,7 +88,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentAnnotations(final Context context, final Reader reader) {
-        final List<Annotation> annotations = AnnotationProvider.loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5());
+        final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5());
         if (annotations != null && annotations.size() > 0) {
             for (Annotation annotation : annotations) {
                 if (annotationMap.get(annotation.getPosition()) == null) {
@@ -111,7 +111,7 @@ public class ReaderUserDataInfo {
 
     public boolean loadPageAnnotations(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            final List<Annotation> annotations = AnnotationProvider.loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
+            final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
             if (annotations != null && annotations.size() > 0) {
                 List<PageAnnotation> list = new ArrayList<>();
                 for (Annotation annotation : annotations) {
@@ -139,7 +139,7 @@ public class ReaderUserDataInfo {
 
     public boolean loadBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            final Bookmark bookmark = BookmarkProvider.loadBookmark(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
+            final Bookmark bookmark = DataProviderManager.getDataProvider().loadBookmark(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
             if (bookmark != null) {
                 bookmarkMap.put(pageInfo.getName(), bookmark);
             }
@@ -148,7 +148,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentBookmarks(final Context context, final Reader reader) {
-        List<Bookmark> bookmarks = BookmarkProvider.loadBookmarks(reader.getPlugin().displayName(), reader.getDocumentMd5());
+        List<Bookmark> bookmarks = DataProviderManager.getDataProvider().loadBookmarks(reader.getPlugin().displayName(), reader.getDocumentMd5());
         if (bookmarks != null) {
             for (Bookmark bookmark : bookmarks) {
                 bookmarkMap.put(bookmark.getPosition(), bookmark);

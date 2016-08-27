@@ -1,16 +1,22 @@
 package com.onyx.android.sdk.dataprovider;
 
+import android.util.Log;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by zhuzeng on 6/2/16.
  */
 @Table(database = ContentDatabase.class)
-public class Document extends BaseData {
+public class Metadata extends BaseData {
 
     @Column
     String name = null;
@@ -44,6 +50,12 @@ public class Document extends BaseData {
 
     @Column
     String encoding = null;
+
+    @Column
+    Date lastAccess = null;
+
+    @Column
+    Date lastModified = null;
 
     @Column
     String progress = null;
@@ -161,6 +173,22 @@ public class Document extends BaseData {
         encoding = e;
     }
 
+    public Date getLastAccess() {
+        return lastAccess;
+    }
+
+    public void setLastAccess(Date lastAccess) {
+        this.lastAccess = lastAccess;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
     public String getProgress() {
         return progress;
     }
@@ -189,12 +217,20 @@ public class Document extends BaseData {
         return tags;
     }
 
+    public List<String> getTagList() {
+        return StringUtils.split(getTags(), DELIMITER);
+    }
+
     public void setTags(final String t) {
         tags = t;
     }
 
     public String getSeries() {
         return series;
+    }
+
+    public List<String> getSerieList() {
+        return StringUtils.split(getSeries(), DELIMITER);
     }
 
     public void setSeries(final String s) {
@@ -223,6 +259,39 @@ public class Document extends BaseData {
 
     public void setCloudId(final String c) {
         cloudId = c;
+    }
+
+    public static Metadata createFromFile(String path)
+    {
+        return createFromFile(new File(path));
+    }
+
+    public static Metadata createFromFile(File file) {
+        return createFromFile(file, true);
+    }
+
+    public static Metadata createFromFile(File file, boolean computeMd5) {
+        try {
+            final Metadata data = new Metadata();
+            if (computeMd5) {
+                String md5 = FileUtils.computeMD5(file);
+                data.setUniqueId(md5);
+            }
+            getBasicMetadataFromFile(data, file);
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void getBasicMetadataFromFile(final Metadata data, File file){
+        data.setName(file.getName());
+        data.setLocation(file.getAbsolutePath());
+        data.setNativeAbsolutePath(file.getAbsolutePath());
+        data.setSize(file.length());
+        data.setLastModified(new Date(FileUtils.getLastChangeTime(file)));
+        data.setType(FileUtils.getFileExtension(file.getName()));
     }
 
 
