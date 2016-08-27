@@ -12,12 +12,8 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.cloud.BuildConfig;
 import com.onyx.cloud.Constant;
 import com.onyx.cloud.R;
-import com.onyx.cloud.model.BaseObject;
-import com.onyx.cloud.model.Dictionary;
-import com.onyx.cloud.model.Link;
-import com.onyx.cloud.model.Product;
-import com.onyx.cloud.model.ProductContainer;
-import com.onyx.cloud.model.ProductResult;
+import com.onyx.cloud.model.*;
+import com.onyx.cloud.model.Category;
 
 import java.io.File;
 import java.util.Map;
@@ -189,7 +185,7 @@ public class CloudUtils {
         return object;
     }
 
-    static public GObject objectFromContainer(final ProductContainer container) {
+    static public GObject objectFromContainer(final Category container) {
         if (container == null) {
             return null;
         }
@@ -204,12 +200,12 @@ public class CloudUtils {
         return object;
     }
 
-    static public GAdapter adapterFromContainerResult(final ProductResult<ProductContainer> result) {
+    static public GAdapter adapterFromContainerResult(final ProductResult<Category> result) {
         GAdapter adapter = new GAdapter();
         if (result == null || result.list == null) {
             return adapter;
         }
-        for (ProductContainer container : result.list) {
+        for (Category container : result.list) {
             adapter.addObject(objectFromContainer(container));
         }
         return adapter;

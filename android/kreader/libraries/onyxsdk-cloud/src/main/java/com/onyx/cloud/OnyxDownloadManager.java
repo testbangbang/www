@@ -8,7 +8,7 @@ import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.cloud.db.query.DownloadTaskDbQuery;
 import com.onyx.cloud.model.DownloadTask;
-import com.onyx.cloud.store.request.CloudFileRequest;
+import com.onyx.cloud.store.request.CloudFileDownloadRequest;
 import com.onyx.cloud.utils.DownloadListener;
 import com.onyx.cloud.utils.NotificationItem;
 import com.onyx.cloud.utils.NotificationListener;
@@ -22,9 +22,9 @@ import java.util.List;
  * Created by suicheng on 2016/8/15.
  */
 public class OnyxDownloadManager {
-    private static OnyxDownloadManager fileDownloadManager;
+
+    private static OnyxDownloadManager instance;
     private FileDownloadNotificationHelper<NotificationItem> helper = new FileDownloadNotificationHelper<>();
-    private ArrayList<DownloadStatusUpdater> updaterList = new ArrayList<>();
     private List<DownloadTask> taskList = new ArrayList<>();
 
     private OnyxDownloadManager(Context context) {
@@ -34,42 +34,22 @@ public class OnyxDownloadManager {
         getTaskList();
     }
 
-    public static OnyxDownloadManager getInstance(Context context) {
-        if (fileDownloadManager == null) {
-            synchronized (OnyxDownloadManager.class) {
-                if (fileDownloadManager == null) {
-                    fileDownloadManager = new OnyxDownloadManager(context);
-                }
-            }
+    public static synchronized OnyxDownloadManager getInstance(Context context) {
+        if (instance == null) {
+            instance = new OnyxDownloadManager(context);
         }
-        return fileDownloadManager;
+        return instance;
     }
 
     public int download(final String url, final String path, final String tag, final BaseCallback baseCallback) {
-        CloudFileRequest request = new CloudFileRequest(url, path, tag);
+        CloudFileDownloadRequest request = new CloudFileDownloadRequest(url, path, tag);
         return download(request, baseCallback);
     }
 
-    public int download(final String url, final String path, final String tag, final BaseCallback baseCallback, final DownloadStatusUpdater updater) {
-        CloudFileRequest request = new CloudFileRequest(url, path, tag);
-        return download(request, baseCallback, updater);
-    }
-
-    public int download(final CloudFileRequest request, final BaseCallback baseCallback) {
-        BaseDownloadTask task = FileDownloader.getImpl().create(request.url).setPath(request.path).setTag(request.tag);
+    public int download(final CloudFileDownloadRequest request, final BaseCallback baseCallback) {
+        BaseDownloadTask task = FileDownloader.getImpl().create(request.getUrl()).setPath(request.getPath()).setTag(request.getTag());
         DownloadListener listener = new DownloadListener(request, baseCallback);
         task.setListener(listener);
-        return startDownload(task);
-    }
-
-    public int download(final CloudFileRequest request, final BaseCallback baseCallback, DownloadStatusUpdater updater) {
-        BaseDownloadTask task = FileDownloader.getImpl().create(request.url).setPath(request.path).setTag(request.tag);
-        DownloadListener listener = new DownloadListener(request, baseCallback);
-        task.setListener(listener);
-        if (updater != null) {
-            listener.setDownloadStatusUpdater(updater);
-            addUpdater(updater);
-        }
         return startDownload(task);
     }
 
@@ -143,18 +123,4 @@ public class OnyxDownloadManager {
         return downloadTask;
     }
 
-    public void addUpdater(DownloadStatusUpdater updater) {
-        if (!updaterList.contains(updater)) {
-            updaterList.add(updater);
-        }
-    }
-
-    // must been called in onDestroy/taskCompleted, prevent memory leak
-    public boolean removeUpdater(DownloadStatusUpdater updater) {
-        return updaterList.remove(updater);
-    }
-
-    public interface DownloadStatusUpdater {
-        void update(BaseDownloadTask task);
-    }
 }

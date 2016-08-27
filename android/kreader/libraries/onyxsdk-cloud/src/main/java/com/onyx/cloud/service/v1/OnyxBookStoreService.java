@@ -1,14 +1,13 @@
 package com.onyx.cloud.service.v1;
 
 import com.onyx.cloud.Constant;
+import com.onyx.cloud.model.Category;
 import com.onyx.cloud.model.DownloadLink;
 import com.onyx.cloud.model.Product;
-import com.onyx.cloud.model.ProductContainer;
 import com.onyx.cloud.model.ProductResult;
 
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -38,5 +37,5 @@ public interface OnyxBookStoreService {
     Call<ProductResult<Product>> bookSearch(@Query(Constant.WHERE_TAG) final String param);
 
     @GET("category")
-    Call<ProductResult<ProductContainer>> bookContainer(@Query(Constant.WHERE_TAG) final String param);
+    Call<ProductResult<Category>> bookContainer(@Query(Constant.WHERE_TAG) final String param);
 }

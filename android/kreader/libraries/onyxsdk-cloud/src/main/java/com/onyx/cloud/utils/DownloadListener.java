@@ -3,20 +3,18 @@ package com.onyx.cloud.utils;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.cloud.OnyxDownloadManager.DownloadStatusUpdater;
-import com.onyx.cloud.store.request.BaseCloudRequest;
+import com.onyx.cloud.store.request.CloudFileDownloadRequest;
 
 /**
  * Created by suicheng on 2016/8/17.
  */
 public class DownloadListener extends FileDownloadListener {
     BaseCallback.ProgressInfo progressInfo;
-    private BaseCloudRequest baseCloudRequest;
+    private CloudFileDownloadRequest downloadRequest;
     private BaseCallback baseCallback;
-    private DownloadStatusUpdater statusUpdater;
 
-    public DownloadListener(BaseCloudRequest baseCloudRequest, BaseCallback baseCallback) {
-        this.baseCloudRequest = baseCloudRequest;
+    public DownloadListener(CloudFileDownloadRequest downloadRequest, BaseCallback baseCallback) {
+        this.downloadRequest = downloadRequest;
         this.baseCallback = baseCallback;
         this.progressInfo = new BaseCallback.ProgressInfo();
     }
@@ -35,7 +33,7 @@ public class DownloadListener extends FileDownloadListener {
     protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
         if (baseCallback != null) {
             progressInfo.progress = soFarBytes * 1.0f / totalBytes * 100;
-            baseCallback.progress(baseCloudRequest, progressInfo);
+            baseCallback.progress(downloadRequest, progressInfo);
         }
         update(task);
     }
@@ -48,7 +46,7 @@ public class DownloadListener extends FileDownloadListener {
     @Override
     protected void completed(final BaseDownloadTask task) {
         if (baseCallback != null) {
-            baseCallback.done(baseCloudRequest, null);
+            baseCallback.done(downloadRequest, null);
         }
         update(task);
     }
@@ -61,7 +59,7 @@ public class DownloadListener extends FileDownloadListener {
     @Override
     protected void error(BaseDownloadTask task, Throwable e) {
         if (baseCallback != null) {
-            baseCallback.done(baseCloudRequest, e);
+            baseCallback.done(downloadRequest, e);
         }
         update(task);
     }
@@ -72,12 +70,7 @@ public class DownloadListener extends FileDownloadListener {
     }
 
     private void update(BaseDownloadTask task) {
-        if (statusUpdater != null) {
-            statusUpdater.update(task);
-        }
+        baseCallback.invokeProgress(baseCallback, downloadRequest, progressInfo);
     }
 
-    public void setDownloadStatusUpdater(DownloadStatusUpdater updater) {
-        this.statusUpdater = updater;
-    }
 }

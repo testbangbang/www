@@ -3,7 +3,7 @@ package com.onyx.cloud.store.request;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.cloud.CloudManager;
-import com.onyx.cloud.model.ProductContainer;
+import com.onyx.cloud.model.Category;
 import com.onyx.cloud.model.ProductQuery;
 import com.onyx.cloud.model.ProductResult;
 import com.onyx.cloud.service.v1.OnyxBookStoreService;
@@ -18,14 +18,14 @@ import retrofit2.Response;
  */
 public class ContainerRequest extends BaseCloudRequest {
     private ProductQuery productQuery;
-    private ProductResult<ProductContainer> productResult;
+    private ProductResult<Category> productResult;
     private GAdapter adapter;
 
     public ContainerRequest(final ProductQuery query) {
         productQuery = query;
     }
 
-    public final ProductResult<ProductContainer> getProductResult() {
+    public final ProductResult<Category> getProductResult() {
         return productResult;
     }
 
@@ -44,7 +44,7 @@ public class ContainerRequest extends BaseCloudRequest {
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         OnyxBookStoreService service = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase());
-        Response<ProductResult<ProductContainer>> response = service.bookContainer(JSON.toJSONString(productQuery)).execute();
+        Response<ProductResult<Category>> response = service.bookContainer(JSON.toJSONString(productQuery)).execute();
         if (response.isSuccessful()) {
             productResult = response.body();
             if (isSaveToLocal()) {
@@ -55,11 +55,11 @@ public class ContainerRequest extends BaseCloudRequest {
 
     public void fetchFromLocalCache(final CloudManager parent) throws Exception {
         productResult = new ProductResult<>();
-        productResult.list = SQLite.select().from(ProductContainer.class).queryList();
+        productResult.list = SQLite.select().from(Category.class).queryList();
         productResult.count = productResult.list.size();
     }
 
-    private void saveToLocal(final ProductResult<ProductContainer> result) {
-        StoreUtils.saveToLocal(result, ProductContainer.class, true);
+    private void saveToLocal(final ProductResult<Category> result) {
+        StoreUtils.saveToLocal(result, Category.class, true);
     }
 }

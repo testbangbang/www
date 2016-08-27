@@ -18,6 +18,13 @@ public abstract class BaseCallback {
 
     public abstract void done(final BaseRequest request, final Throwable e);
 
+    public static void invokeProgress(final BaseCallback callback, final BaseRequest request, final ProgressInfo progressInfo) {
+        if (callback != null) {
+            callback.progress(request, progressInfo);
+        }
+    }
+
+
     public static void invoke(final BaseCallback callback, final BaseRequest request, final Throwable e) {
         if (callback != null) {
             callback.done(request, e);

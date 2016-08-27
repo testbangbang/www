@@ -5,11 +5,8 @@ import android.test.ApplicationTestCase;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.cloud.CloudManager;
-import com.onyx.cloud.model.Product;
-import com.onyx.cloud.model.ProductContainer;
-import com.onyx.cloud.model.ProductQuery;
-import com.onyx.cloud.model.ProductResult;
-import com.onyx.cloud.model.ProductSearch;
+import com.onyx.cloud.model.*;
+import com.onyx.cloud.model.Category;
 import com.onyx.cloud.service.v1.OnyxBookStoreService;
 import com.onyx.cloud.service.v1.ServiceFactory;
 
@@ -80,11 +77,11 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
 
     public void testContainer() throws Exception {
         ProductQuery productQuery = new ProductQuery();
-        Call<ProductResult<ProductContainer>> object = getService().bookContainer(JSON.toJSONString(productQuery));
-        Response<ProductResult<ProductContainer>> response = object.execute();
+        Call<ProductResult<Category>> object = getService().bookContainer(JSON.toJSONString(productQuery));
+        Response<ProductResult<Category>> response = object.execute();
         assertNotNull(response.body());
         assertTrue(response.body().count > 0);
-        List<ProductContainer> list = response.body().list;
+        List<Category> list = response.body().list;
         assertNotNull(list);
     }
 }
