@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="reader_setting">
+    <Preference
+        android:key="@string/settings_key_binding_prev_page_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_prev_page_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_next_page_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_next_page_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_prev_view_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_prev_view_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_next_view_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_next_view_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_move_up_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_move_up_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_move_down_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_move_down_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_move_left_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_move_left_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_move_right_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_move_right_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_increase_font_size_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_increase_font_size_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_decrease_font_size_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_config_key_function"
+        android:title="@string/settings_key_binding_decrease_font_size_tittle" />
+    <Preference
+        android:key="@string/settings_key_binding_reset_default_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:title="@string/settings_key_binding_reset_default" />
+</PreferenceScreen>

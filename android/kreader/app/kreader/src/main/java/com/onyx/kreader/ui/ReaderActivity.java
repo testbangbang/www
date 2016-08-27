@@ -45,14 +45,19 @@ import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
+import com.onyx.kreader.ui.events.ChangeEpdUpdateMode;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
+import com.onyx.kreader.ui.events.ResetEpdUpdateMode;
+import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.TreeObserverUtils;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -86,6 +91,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onResume() {
+        checkForNewConfiguration();
         super.onResume();
         getReaderDataHolder().redrawPage(false);
     }
@@ -195,6 +201,24 @@ public class ReaderActivity extends ActionBarActivity {
                 new ShowQuickPreviewAction().execute(readerDataHolder);
             }
         });
+        reconfigStatusBar();
+    }
+
+    private void reconfigStatusBar() {
+        statusBar.reConfigure(SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_percentage_show_key, false),
+                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_key, false),
+                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_format_key, false),
+                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_graphic_show_key, false));
+
+        if (!SingletonSharedPreference.isReaderStatusBarEnabled(this)){
+            statusBar.setVisibility(View.GONE);
+        } else {
+            statusBar.setVisibility(View.VISIBLE);
+        }
+        statusBar.reConfigure(SingletonSharedPreference.isStatusBarShowBatteryPercentage(this),
+                SingletonSharedPreference.isStatusBarTimeShow(this),
+                SingletonSharedPreference.isStatusBarTime24HourFormat(this),
+                SingletonSharedPreference.isStatusBarShowBatteryGraphical(this));
     }
 
     private void initSurfaceView() {
@@ -272,6 +296,41 @@ public class ReaderActivity extends ActionBarActivity {
         //noteViewHelper.flushPendingShapes();
     }
 
+    private void checkForNewConfiguration() {
+        reconfigStatusBar();
+        checkSurfaceViewSize();
+    }
+
+    private void checkSurfaceViewSize() {
+        if (!readerDataHolder.isDocumentOpened()) {
+            return;
+        }
+
+        surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
+                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+                    new ChangeViewConfigAction().execute(readerDataHolder);
+                } else {
+                    readerDataHolder.redrawPage(true);
+                }
+            }
+        });
+    }
+
+    @Subscribe
+    public void onChangeEpdUpdateMode(final ChangeEpdUpdateMode event) {
+        ReaderDeviceManager.setUpdateMode(surfaceView, event.getTargetMode());
+    }
+
+    @Subscribe
+    public void onResetEpdUpdateMode(final ResetEpdUpdateMode event) {
+        ReaderDeviceManager.resetUpdateMode(surfaceView);
+    }
+
     @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
         if (event.isApplyGCIntervalUpdate()) {
@@ -280,6 +339,11 @@ public class ReaderActivity extends ActionBarActivity {
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         updateStatusBar();
         renderShapeDataInBackground();
+    }
+
+    @Subscribe
+    public void onShowReaderSettings(final ShowReaderSettingsEvent event) {
+        startActivity(new Intent(this, MainSettingsActivity.class));
     }
 
     private void clearCanvas(SurfaceHolder holder) {

@@ -3,6 +3,7 @@ package com.onyx.kreader.ui;
 import android.app.Application;
 import com.onyx.android.sdk.dataprovider.AsyncDataProvider;
 import com.onyx.android.sdk.dataprovider.SharedPreferenceProvider;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 
@@ -19,6 +20,7 @@ public class KReaderApp extends Application {
         super.onCreate();
         AsyncDataProvider.init(this, databaseHolderList());
         SharedPreferenceProvider.init(this);
+        SingletonSharedPreference.init(this);
     }
 
     private List<Class<? extends DatabaseHolder>> databaseHolderList() {

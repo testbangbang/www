@@ -196,6 +196,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case SEARCH:
                         showSearchDialog(readerDataHolder);
                         break;
+                    case SETTINGS:
+                        showReaderSettings(readerDataHolder);
+                        break;
                     case EXIT:
                         readerActivity.onBackPressed();
                         break;
@@ -365,6 +368,11 @@ public class ShowReaderMenuAction extends BaseAction {
         new StartTtsAction().execute(readerDataHolder);
     }
 
+    private void showReaderSettings(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        new ShowReaderSettingsAction().execute(readerDataHolder);
+    }
+    
     public static void updateBackwardForwardBtnState(ReaderDataHolder readerDataHolder){
         readerMenu.getDialog().setPrevButtonEnable(readerDataHolder.getReaderViewInfo().canGoBack);
         readerMenu.getDialog().setNextButtonEnable(readerDataHolder.getReaderViewInfo().canGoForward);

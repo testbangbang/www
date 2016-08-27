@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/dialog_tittleBar"
+        style="@style/global_dialog_tittle_bar"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/imageView_title"
+            style="@style/global_dialog_tittle_bar_imageView" />
+
+        <TextView
+            android:id="@+id/textView_title"
+            style="@style/global_dialog_tittle_bar_textView"
+            android:layout_toRightOf="@id/imageView_title"
+            android:text="@string/dialog_bind_hot_key_tittle" />
+
+        <View
+            style="@style/single_line_X_axis_View"
+            android:layout_height="1dp"
+            android:layout_below="@id/imageView_title" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/current_function_item_layout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/dialog_tittleBar">
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_bind_hot_key_current_bind_function" />
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_bind_hot_key_none"
+            android:id="@+id/textView_to_bind_function" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/current_hot_key_item_layout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/current_function_item_layout">
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_bind_hot_key_current_bind_key" />
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_bind_hot_key_none"
+            android:id="@+id/textView_current_bind_key" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/hint_text"
+        android:textColor="@android:color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textStyle="bold"
+        android:text="@string/dialog_bind_hot_key_press_key_to_bind_function"
+        android:gravity="center"
+        android:layout_above="@+id/button_cancel"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/current_hot_key_item_layout"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@android:string/cancel"
+        android:minHeight="@dimen/button_minHeight"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/button_cancel" />
+</RelativeLayout>

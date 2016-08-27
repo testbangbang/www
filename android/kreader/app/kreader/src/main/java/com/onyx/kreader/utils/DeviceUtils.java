@@ -1,8 +1,7 @@
 package com.onyx.kreader.utils;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -14,6 +13,10 @@ import java.util.UUID;
  * Created by zhuzeng on 10/16/15.
  */
 public class DeviceUtils {
+
+    public static boolean isRkDevice() {
+        return Build.HARDWARE.startsWith("rk");
+    }
 
     public static String getDeviceSerial(Context context) {
         UUID uuid = null;
@@ -43,4 +46,14 @@ public class DeviceUtils {
         return displayMetrics.density * 160;
     }
 
+    public static String getApplicationFingerprint(Context context) {
+        try {
+            String name = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+            name = name + " (" + context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode + ")";
+            return name;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
