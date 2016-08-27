@@ -6,7 +6,6 @@ import com.onyx.android.sdk.dataprovider.*;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.io.File;
 import java.util.*;
@@ -87,13 +86,13 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         return list.get(index);
     }
 
-    public static List<String> randomAuthors() {
+    public static List<String> randomStringList() {
         int value = TestUtils.randInt(1, 5);
-        List<String> authors = new ArrayList<>();
+        List<String> list = new ArrayList<>();
         for(int i = 0; i < value; ++i) {
-            authors.add(UUID.randomUUID().toString());
+            list.add(UUID.randomUUID().toString());
         }
-        return authors;
+        return list;
     }
 
     public static Metadata randomReadingMetadata(final String parent, boolean hasExtension) {
@@ -142,17 +141,167 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         return "/mnt/media_rw/test";
     }
 
-    public void test() {
+    public void testMetadataSave() {
         init();
-        List<String> authors = randomAuthors();
-        Metadata metadata = randomMetadata(testFolder(), true);
-        metadata.setAuthors(StringUtils.join(authors, Metadata.DELIMITER));
-        metadata.save();
-        StringBuilder target = new StringBuilder();
-        target.append(authors.get(0));
-        List<Metadata> list = new Select().from(Metadata.class).where(Metadata_Table.authors.like("%" + target.toString() + "%")).or(Metadata_Table.authors.like("%" + UUID.randomUUID().toString() + "%")).queryList();
+        LocalDataProvider dataProvider = new LocalDataProvider();
+        dataProvider.clearMetadata();
+
+        List<String> authors = randomStringList();
+        Metadata origin = randomMetadata(testFolder(), true);
+        origin.setAuthors(StringUtils.join(authors, Metadata.DELIMITER));
+        dataProvider.saveMetadata(getContext(), origin);
+
+        final Metadata result = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getUniqueId());
+        assertNotNull(result);
+        assertEquals(result.getUniqueId(), origin.getUniqueId());
+
+        dataProvider.removeMetadata(getContext(), origin);
+        final Metadata anotherResult = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getUniqueId());
+        assertNull(anotherResult);
+    }
+
+    public void testMetadataSaveWithJson() {
+        init();
+        LocalDataProvider dataProvider = new LocalDataProvider();
+        dataProvider.clearMetadata();
+
+        final String json = UUID.randomUUID().toString();
+        Metadata origin = randomMetadata(testFolder(), true);
+        dataProvider.saveDocumentOptions(getContext(), origin.getNativeAbsolutePath(), origin.getUniqueId(), json);
+
+        final Metadata result = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getUniqueId());
+        assertNotNull(result);
+        assertEquals(result.getUniqueId(), origin.getUniqueId());
+        assertEquals(result.getExtraAttributes(), json);
+    }
+
+
+    public void testQueryCriterialAuthor() {
+        init();
+
+        LocalDataProvider dataProvider = new LocalDataProvider();
+        dataProvider.clearMetadata();
+
+        List<String> authors = randomStringList();
+        Metadata origin = randomMetadata(testFolder(), true);
+        origin.setAuthors(StringUtils.join(authors, Metadata.DELIMITER));
+        dataProvider.saveMetadata(getContext(), origin);
+
+        int limit = TestUtils.randInt(10, 100);
+        for(int i = 0; i < limit; ++i) {
+            Metadata metadata = randomMetadata(testFolder(), true);
+            dataProvider.saveMetadata(getContext(), metadata);
+        }
+
+        final QueryCriteria queryCriteria = new QueryCriteria();
+        queryCriteria.author.addAll(authors);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        assertNotNull(result);
+        assertTrue(result.size() == 1);
+
+        final Metadata target = result.get(0);
+        assertEquals(target.getUniqueId(), origin.getUniqueId());
+
+        final QueryCriteria dummyQueryCriteria = new QueryCriteria();
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
         assertNotNull(list);
-        assertTrue(list.size() > 0);
+        assertTrue(list.size() == 0);
+    }
+
+    public void testQueryCriterialTitle() {
+        init();
+
+        LocalDataProvider dataProvider = new LocalDataProvider();
+        dataProvider.clearMetadata();
+
+        List<String> title = randomStringList();
+        Metadata origin = randomMetadata(testFolder(), true);
+        origin.setTitle(StringUtils.join(title, Metadata.DELIMITER));
+        dataProvider.saveMetadata(getContext(), origin);
+
+        int limit = TestUtils.randInt(10, 100);
+        for(int i = 0; i < limit; ++i) {
+            Metadata metadata = randomMetadata(testFolder(), true);
+            dataProvider.saveMetadata(getContext(), metadata);
+        }
+
+        final QueryCriteria queryCriteria = new QueryCriteria();
+        queryCriteria.title.addAll(title);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        assertNotNull(result);
+        assertTrue(result.size() == 1);
+
+        final Metadata target = result.get(0);
+        assertEquals(target.getUniqueId(), origin.getUniqueId());
+
+        final QueryCriteria dummyQueryCriteria = new QueryCriteria();
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        assertNotNull(list);
+        assertTrue(list.size() == 0);
+    }
+
+    public void testQueryCriterialSeries() {
+        init();
+
+        LocalDataProvider dataProvider = new LocalDataProvider();
+        dataProvider.clearMetadata();
+
+        List<String> series = randomStringList();
+        Metadata origin = randomMetadata(testFolder(), true);
+        origin.setSeries(StringUtils.join(series, Metadata.DELIMITER));
+        dataProvider.saveMetadata(getContext(), origin);
+
+        int limit = TestUtils.randInt(10, 100);
+        for(int i = 0; i < limit; ++i) {
+            Metadata metadata = randomMetadata(testFolder(), true);
+            dataProvider.saveMetadata(getContext(), metadata);
+        }
+
+        final QueryCriteria queryCriteria = new QueryCriteria();
+        queryCriteria.series.addAll(series);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        assertNotNull(result);
+        assertTrue(result.size() == 1);
+
+        final Metadata target = result.get(0);
+        assertEquals(target.getUniqueId(), origin.getUniqueId());
+
+        final QueryCriteria dummyQueryCriteria = new QueryCriteria();
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        assertNotNull(list);
+        assertTrue(list.size() == 0);
+    }
+
+    public void testQueryCriterialTags() {
+        init();
+
+        LocalDataProvider dataProvider = new LocalDataProvider();
+        dataProvider.clearMetadata();
+
+        List<String> tags = randomStringList();
+        Metadata origin = randomMetadata(testFolder(), true);
+        origin.setTags(StringUtils.join(tags, Metadata.DELIMITER));
+        dataProvider.saveMetadata(getContext(), origin);
+
+        int limit = TestUtils.randInt(10, 100);
+        for(int i = 0; i < limit; ++i) {
+            Metadata metadata = randomMetadata(testFolder(), true);
+            dataProvider.saveMetadata(getContext(), metadata);
+        }
+
+        final QueryCriteria queryCriteria = new QueryCriteria();
+        queryCriteria.tags.addAll(tags);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        assertNotNull(result);
+        assertTrue(result.size() == 1);
+
+        final Metadata target = result.get(0);
+        assertEquals(target.getUniqueId(), origin.getUniqueId());
+
+        final QueryCriteria dummyQueryCriteria = new QueryCriteria();
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        assertNotNull(list);
+        assertTrue(list.size() == 0);
     }
 }
 

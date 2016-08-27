@@ -10,9 +10,18 @@ import java.util.List;
  */
 public interface DataProviderBase {
 
+
+    void clearMetadata();
+
+    void saveMetadata(final Context context, final Metadata metadata);
+
     Metadata findMetadata(final Context context, final String path, String md5);
 
     Metadata loadMetadata(final Context context, final String path, String md5);
+
+    List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria);
+
+    void removeMetadata(final Context context, final Metadata metadata);
 
     boolean saveDocumentOptions(final Context context, final String path, String md5, final String json);
 
