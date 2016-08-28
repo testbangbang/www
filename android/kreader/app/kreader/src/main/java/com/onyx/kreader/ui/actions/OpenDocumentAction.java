@@ -129,6 +129,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void postQuitEvent(final ReaderDataHolder holder) {
+        cleanup();
         holder.getEventBus().post(new QuitEvent());
     }
 
@@ -156,6 +157,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void processOpenException(final ReaderDataHolder holder, final BaseOptions options, final Throwable e) {
         if (!(e instanceof ReaderException)) {
+            postQuitEvent(holder);
             return;
         }
         final ReaderException readerException = (ReaderException)e;
