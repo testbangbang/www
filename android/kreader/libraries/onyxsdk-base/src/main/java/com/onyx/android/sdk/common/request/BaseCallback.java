@@ -6,7 +6,8 @@ package com.onyx.android.sdk.common.request;
 public abstract class BaseCallback {
 
     public static class ProgressInfo {
-
+        public long soFarBytes;
+        public long totalBytes;
         public double progress;
     }
 

@@ -34,6 +34,8 @@ public class DownloadListener extends FileDownloadListener {
 
     @Override
     protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+        progressInfo.soFarBytes = soFarBytes;
+        progressInfo.totalBytes = totalBytes;
         progressInfo.progress = soFarBytes * 1.0f * 100 / (float)totalBytes;
         update(task);
     }
