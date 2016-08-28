@@ -1,5 +1,6 @@
 package com.onyx.cloud.utils;
 
+import android.os.Handler;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -12,11 +13,13 @@ public class DownloadListener extends FileDownloadListener {
     BaseCallback.ProgressInfo progressInfo;
     private CloudFileDownloadRequest downloadRequest;
     private BaseCallback baseCallback;
+    private Handler handler;
 
-    public DownloadListener(CloudFileDownloadRequest downloadRequest, BaseCallback baseCallback) {
+    public DownloadListener(final CloudFileDownloadRequest downloadRequest, final BaseCallback baseCallback, final Handler h) {
         this.downloadRequest = downloadRequest;
         this.baseCallback = baseCallback;
         this.progressInfo = new BaseCallback.ProgressInfo();
+        this.handler = h;
     }
 
     @Override
@@ -31,24 +34,22 @@ public class DownloadListener extends FileDownloadListener {
 
     @Override
     protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-        if (baseCallback != null) {
-            progressInfo.progress = soFarBytes * 1.0f / totalBytes * 100;
-            baseCallback.progress(downloadRequest, progressInfo);
-        }
+        progressInfo.progress = soFarBytes * 1.0f * 100 / (float)totalBytes;
         update(task);
     }
 
     @Override
     protected void blockComplete(BaseDownloadTask task) {
-        update(task);
     }
 
     @Override
     protected void completed(final BaseDownloadTask task) {
-        if (baseCallback != null) {
-            baseCallback.done(downloadRequest, null);
-        }
-        update(task);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                baseCallback.done(downloadRequest, null);
+            }
+        });
     }
 
     @Override
@@ -57,11 +58,13 @@ public class DownloadListener extends FileDownloadListener {
     }
 
     @Override
-    protected void error(BaseDownloadTask task, Throwable e) {
-        if (baseCallback != null) {
-            baseCallback.done(downloadRequest, e);
-        }
-        update(task);
+    protected void error(BaseDownloadTask task, final Throwable e) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                baseCallback.done(downloadRequest, e);
+            }
+        });
     }
 
     @Override
@@ -69,8 +72,13 @@ public class DownloadListener extends FileDownloadListener {
         update(task);
     }
 
-    private void update(BaseDownloadTask task) {
-        baseCallback.invokeProgress(baseCallback, downloadRequest, progressInfo);
+    private void update(final BaseDownloadTask task) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                baseCallback.invokeProgress(baseCallback, downloadRequest, progressInfo);
+            }
+        });
     }
 
 }

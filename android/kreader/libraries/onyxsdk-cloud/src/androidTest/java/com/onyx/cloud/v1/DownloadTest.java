@@ -64,6 +64,9 @@ public class DownloadTest extends ApplicationTestCase<Application> {
     private static String getTestFilePath() {
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File file = new File(dir, "testFileDownloader.jpg");
+        if (file.exists()) {
+            file.delete();
+        }
         return file.getAbsolutePath();
     }
 

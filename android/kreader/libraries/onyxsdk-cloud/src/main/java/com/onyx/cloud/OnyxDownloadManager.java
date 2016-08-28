@@ -1,6 +1,8 @@
 package com.onyx.cloud;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.notification.FileDownloadNotificationHelper;
@@ -26,6 +28,7 @@ public class OnyxDownloadManager {
     private static OnyxDownloadManager instance;
     private FileDownloadNotificationHelper<NotificationItem> helper = new FileDownloadNotificationHelper<>();
     private List<DownloadTask> taskList = new ArrayList<>();
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     private OnyxDownloadManager(Context context) {
         FileDownloader.init(context);
@@ -48,7 +51,7 @@ public class OnyxDownloadManager {
 
     public int download(final CloudFileDownloadRequest request, final BaseCallback baseCallback) {
         BaseDownloadTask task = FileDownloader.getImpl().create(request.getUrl()).setPath(request.getPath()).setTag(request.getTag());
-        DownloadListener listener = new DownloadListener(request, baseCallback);
+        DownloadListener listener = new DownloadListener(request, baseCallback, handler);
         task.setListener(listener);
         return startDownload(task);
     }
