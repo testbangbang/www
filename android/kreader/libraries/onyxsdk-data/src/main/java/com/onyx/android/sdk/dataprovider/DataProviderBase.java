@@ -1,7 +1,10 @@
 package com.onyx.android.sdk.dataprovider;
 
 import android.content.Context;
-import com.raizlabs.android.dbflow.sql.language.Select;
+import com.onyx.android.sdk.dataprovider.model.Annotation;
+import com.onyx.android.sdk.dataprovider.model.Bookmark;
+import com.onyx.android.sdk.dataprovider.model.Metadata;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.List;
 
@@ -19,7 +22,7 @@ public interface DataProviderBase {
 
     Metadata loadMetadata(final Context context, final String path, String md5);
 
-    List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria);
+    List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria, final OrderBy orderBy);
 
     void removeMetadata(final Context context, final Metadata metadata);
 

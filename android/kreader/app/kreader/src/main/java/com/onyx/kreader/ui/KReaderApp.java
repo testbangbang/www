@@ -6,6 +6,7 @@ import com.onyx.android.sdk.dataprovider.SharedPreferenceProvider;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class KReaderApp extends Application {
         AsyncDataProvider.init(this, databaseHolderList());
         SharedPreferenceProvider.init(this);
         SingletonSharedPreference.init(this);
+        LeakCanary.install(this);
     }
 
     private List<Class<? extends DatabaseHolder>> databaseHolderList() {

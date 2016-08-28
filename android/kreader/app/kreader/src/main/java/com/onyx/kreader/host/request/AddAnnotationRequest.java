@@ -2,7 +2,7 @@ package com.onyx.kreader.host.request;
 
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.dataprovider.Annotation;
+import com.onyx.android.sdk.dataprovider.model.Annotation;
 import com.onyx.android.sdk.dataprovider.DataProviderManager;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;

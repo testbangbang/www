@@ -1,5 +1,6 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.dataprovider.model;
 
+import com.onyx.android.sdk.dataprovider.ContentDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Index;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;

@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.dataprovider.Bookmark;
+import com.onyx.android.sdk.dataprovider.model.Bookmark;
 import com.onyx.android.sdk.dataprovider.DataProviderManager;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;

@@ -1,11 +1,14 @@
 package com.onyx.android.sdk;
 
 import android.app.Application;
+import android.os.Environment;
 import android.test.ApplicationTestCase;
 import com.onyx.android.sdk.dataprovider.*;
+import com.onyx.android.sdk.dataprovider.model.Metadata;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.io.File;
 import java.util.*;
@@ -138,7 +141,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     public static String testFolder() {
-        return "/mnt/media_rw/test";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
     }
 
     public void testMetadataSave() {
@@ -195,7 +198,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryCriteria queryCriteria = new QueryCriteria();
         queryCriteria.author.addAll(authors);
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria, OrderBy.fromProperty(Metadata_Table.name));
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -203,7 +206,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getUniqueId(), origin.getUniqueId());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria, OrderBy.fromProperty(Metadata_Table.authors));
         assertNotNull(list);
         assertTrue(list.size() == 0);
     }
@@ -227,7 +230,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryCriteria queryCriteria = new QueryCriteria();
         queryCriteria.title.addAll(title);
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria, OrderBy.fromProperty(Metadata_Table.name));
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -235,7 +238,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getUniqueId(), origin.getUniqueId());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria, OrderBy.fromProperty(Metadata_Table.name));
         assertNotNull(list);
         assertTrue(list.size() == 0);
     }
@@ -259,7 +262,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryCriteria queryCriteria = new QueryCriteria();
         queryCriteria.series.addAll(series);
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria, OrderBy.fromProperty(Metadata_Table.name));
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -267,7 +270,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getUniqueId(), origin.getUniqueId());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria, OrderBy.fromProperty(Metadata_Table.name));
         assertNotNull(list);
         assertTrue(list.size() == 0);
     }
@@ -291,7 +294,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryCriteria queryCriteria = new QueryCriteria();
         queryCriteria.tags.addAll(tags);
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria, OrderBy.fromProperty(Metadata_Table.name));
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -299,7 +302,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getUniqueId(), origin.getUniqueId());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria, OrderBy.fromProperty(Metadata_Table.name));
         assertNotNull(list);
         assertTrue(list.size() == 0);
     }

@@ -1,13 +1,11 @@
 package com.onyx.android.sdk.dataprovider;
 
 import android.content.Context;
-import android.util.Log;
+import com.onyx.android.sdk.dataprovider.model.*;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.QueryBuilder;
 import com.raizlabs.android.dbflow.sql.language.*;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,10 +42,10 @@ public class LocalDataProvider implements DataProviderBase {
         return metadata;
     }
 
-    public List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria) {
+    public List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria, final OrderBy orderBy) {
         final ConditionGroup conditionGroup = queryCriteriaCondition(queryCriteria);
         if (conditionGroup.size() > 0) {
-            return new Select().from(Metadata.class).where(conditionGroup).queryList();
+            return new Select().from(Metadata.class).where(conditionGroup).orderBy(orderBy).queryList();
         }
         return new ArrayList<>();
     }

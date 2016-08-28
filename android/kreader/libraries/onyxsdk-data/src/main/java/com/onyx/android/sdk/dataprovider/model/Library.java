@@ -1,13 +1,10 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.dataprovider.model;
 
-import com.alibaba.fastjson.JSON;
-import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.dataprovider.ContentDatabase;
+import com.onyx.android.sdk.dataprovider.model.BaseData;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Index;
 import com.raizlabs.android.dbflow.annotation.Table;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by zhuzeng on 8/26/16.

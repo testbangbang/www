@@ -10,8 +10,8 @@ import java.io.File;
 
 /**
  * Created by zhuzeng on 5/27/16.
- * serves as proxy between request and function provider. it may forward request to real impl provider like
- * onyx android sdk or new sdk.
+ * serves as proxy between request and provider. it may forward request to real impl provider like
+ * onyx android sdk or new sdk, local data provider or remote data provider.
  */
 public class DataProviderManager {
 

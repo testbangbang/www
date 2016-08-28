@@ -5,6 +5,7 @@ import com.raizlabs.android.dbflow.annotation.Index;
 
 /**
  * Created by zhuzeng on 8/27/16.
+ * product and category mapping.
  */
 public class ProductCollection extends BaseObject {
 

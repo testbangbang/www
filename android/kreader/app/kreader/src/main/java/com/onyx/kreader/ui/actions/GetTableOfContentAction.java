@@ -3,8 +3,8 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.dataprovider.Annotation;
-import com.onyx.android.sdk.dataprovider.Bookmark;
+import com.onyx.android.sdk.dataprovider.model.Annotation;
+import com.onyx.android.sdk.dataprovider.model.Bookmark;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.host.request.GetTableOfContentRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;

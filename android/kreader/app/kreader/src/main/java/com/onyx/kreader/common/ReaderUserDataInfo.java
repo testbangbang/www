@@ -4,13 +4,16 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.dataprovider.*;
+import com.onyx.android.sdk.dataprovider.model.Annotation;
+import com.onyx.android.sdk.dataprovider.model.Bookmark;
+import com.onyx.android.sdk.dataprovider.model.SearchHistory;
+import com.onyx.android.sdk.dataprovider.SearchHistoryProvider;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -158,7 +161,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadSearchHistory(final Context context, final Reader reader, int count){
-        searchHistoryList = SearchHistoryProvider.getLatestSearchHistory(reader.getDocumentMd5(),count);
+        searchHistoryList = SearchHistoryProvider.getLatestSearchHistory(reader.getDocumentMd5(), count);
         return true;
     }
 

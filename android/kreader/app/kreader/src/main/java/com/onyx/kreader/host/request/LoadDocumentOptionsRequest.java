@@ -1,6 +1,6 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.android.sdk.dataprovider.Metadata;
+import com.onyx.android.sdk.dataprovider.model.Metadata;
 import com.onyx.android.sdk.dataprovider.DataProviderManager;
 import com.onyx.android.sdk.dataprovider.request.BaseDataProviderRequest;
 import com.onyx.android.sdk.utils.FileUtils;

@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.dataprovider.request;
 
 
-import com.onyx.android.sdk.dataprovider.Bookmark;
+import com.onyx.android.sdk.dataprovider.model.Bookmark;
 
 import java.util.List;
 
