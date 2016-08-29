@@ -217,6 +217,13 @@ public class ReaderDataHolder {
         return FileUtils.getFileName(getDocumentPath());
     }
 
+    public String getBookTitle() {
+        if (getReaderUserDataInfo().getDocumentMetadata() == null) {
+            return null;
+        }
+        return getReaderUserDataInfo().getDocumentMetadata().getTitle();
+    }
+
     public boolean hasBookmark() {
         return getReaderUserDataInfo().hasBookmark(getFirstPageInfo());
     }

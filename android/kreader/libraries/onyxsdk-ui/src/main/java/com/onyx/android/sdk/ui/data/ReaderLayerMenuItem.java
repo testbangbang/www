@@ -18,6 +18,13 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
         this.drawableResourceId = drawableResourceId;
     }
 
+    public ReaderLayerMenuItem(final ReaderLayerMenuItem menu) {
+        super(menu.getItemType(), menu.getAction(), menu.getParent());
+        titleResourceId = menu.getTitleResourceId();
+        title = menu.getTitle();
+        drawableResourceId = menu.getDrawableResourceId();
+    }
+
     public static ReaderMenuItem createSimpleMenuItem(ReaderMenuAction action) {
         return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, action, null, -1, null, -1);
     }

@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="reader_setting" >
-    <ListPreference
-        android:key="@string/settings_search_menu_position_key"
-        android:layout="@layout/settings_custom_preference_item"
-        android:summary="@string/settings_search_menu_position_tittle"
-        android:title="@string/settings_search_menu_position_tittle"/>
     <CheckBoxPreference
             android:key="@string/settings_animation_key"
             android:layout="@layout/settings_custom_preference_item"
@@ -45,12 +40,5 @@
             android:summaryOff="@string/settings_disable"
             android:defaultValue="false"
             android:title="@string/settings_dithering_tittle"/>
-    <CheckBoxPreference
-            android:key="@string/settings_show_doc_title_key"
-            android:layout="@layout/settings_custom_preference_item"
-            android:summaryOn="@string/settings_enable"
-            android:summaryOff="@string/settings_disable"
-            android:defaultValue="false"
-            android:title="@string/settings_show_doc_title"/>
 
 </PreferenceScreen>
