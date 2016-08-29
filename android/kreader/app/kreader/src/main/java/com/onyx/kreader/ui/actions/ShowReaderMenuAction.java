@@ -70,7 +70,9 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showReaderMenu(final ReaderDataHolder readerDataHolder) {
-        state = new ReaderLayerMenuState();
+        if (state == null){
+            state = new ReaderLayerMenuState();
+        }
         state.setTitle(FileUtils.getFileName(readerDataHolder.getReader().getDocumentPath()));
         state.setPageCount(readerDataHolder.getPageCount());
         state.setPageIndex(readerDataHolder.getCurrentPage());

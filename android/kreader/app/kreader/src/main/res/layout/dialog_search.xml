@@ -19,6 +19,7 @@
             android:src="@drawable/ic_dialog_reader_menu_arrow_black"/>
 
         <TextView
+            android:background="@drawable/imagebtn_bg"
             android:id="@+id/text_view_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
