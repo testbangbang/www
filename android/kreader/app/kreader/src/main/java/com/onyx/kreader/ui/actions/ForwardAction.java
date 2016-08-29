@@ -19,7 +19,7 @@ public class ForwardAction extends BaseAction {
         readerDataHolder.submitRenderRequest(forwardRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                ShowReaderMenuAction.updateBackwardForwardBtnState(readerDataHolder);
+                ShowReaderMenuAction.updateBackwardForwardState(readerDataHolder);
             }
         });
     }

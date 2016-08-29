@@ -103,8 +103,7 @@ public class FileUtils {
         return result;
     }
 
-    public static long getLastChangeTime(File file)
-    {
+    public static long getLastChangeTime(File file) {
         return file.lastModified();
     }
 

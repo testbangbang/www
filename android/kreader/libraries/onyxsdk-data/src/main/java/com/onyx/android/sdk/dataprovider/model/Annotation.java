@@ -1,6 +1,7 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.dataprovider.model;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.dataprovider.ContentDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Created by zhuzeng on 6/3/16.
  */
-@Table(database = ReaderDatabase.class)
+@Table(database = ContentDatabase.class)
 public class Annotation extends BaseData {
 
     @Column

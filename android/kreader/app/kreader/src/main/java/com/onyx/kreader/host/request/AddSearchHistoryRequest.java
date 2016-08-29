@@ -1,6 +1,6 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.android.sdk.dataprovider.SearchHistory;
+import com.onyx.android.sdk.dataprovider.model.SearchHistory;
 import com.onyx.android.sdk.dataprovider.SearchHistoryProvider;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
@@ -28,7 +28,7 @@ public class AddSearchHistoryRequest extends BaseReaderRequest {
             return dbHistory;
         }
         SearchHistory searchHistory = new SearchHistory();
-        searchHistory.setMd5(reader.getDocumentMd5());
+        searchHistory.setUniqueId(reader.getDocumentMd5());
         searchHistory.setContent(content);
         return searchHistory;
     }

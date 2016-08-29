@@ -47,6 +47,7 @@ public class Product extends BaseObject {
     public Set<People> publishers = new HashSet<People>();
 
     public Set<People> authors = new HashSet<People>();
+
     @Column
     public String authorString;
 

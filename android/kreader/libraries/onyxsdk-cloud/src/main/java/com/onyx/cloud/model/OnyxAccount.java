@@ -57,6 +57,7 @@ public class OnyxAccount extends BaseObject {
     public String userName;
     public String password;
     public String email;
+    public String mobile;
 
     public String sessionToken;
 

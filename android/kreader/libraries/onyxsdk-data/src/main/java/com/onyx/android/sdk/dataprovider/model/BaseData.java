@@ -1,5 +1,6 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.dataprovider.model;
 
+import com.onyx.android.sdk.dataprovider.ContentDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Index;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -8,23 +9,24 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by zhuzeng on 6/1/16.
  */
-@Table(database = ReaderDatabase.class)
+@Table(database = ContentDatabase.class)
 public class BaseData extends BaseModel {
 
     public static final int INVALID_ID = -1;
     public static final String DELIMITER = ",";
 
     @Column
-    @PrimaryKey(autoincrement = true)
-    @Index
+    @PrimaryKey(autoincrement = true)   @Index
     long id = INVALID_ID;
 
     @Column
-    String md5 = null;
+    @Index
+    String uniqueId = null;
 
     @Column
     private Date createdAt = null;
@@ -40,12 +42,12 @@ public class BaseData extends BaseModel {
         id = value;
     }
 
-    public final String getMd5() {
-        return md5;
+    public final String getUniqueId() {
+        return uniqueId;
     }
 
-    public void setMd5(final String value) {
-        md5 = value;
+    public void setUniqueId(final String value) {
+        uniqueId = value;
     }
 
     public void setCreatedAt(final Date d) {
@@ -82,5 +84,9 @@ public class BaseData extends BaseModel {
     public void save(DatabaseWrapper databaseWrapper) {
         beforeSave();
         super.save(databaseWrapper);
+    }
+
+    public static final String generateUniqueId() {
+        return UUID.randomUUID().toString();
     }
 }

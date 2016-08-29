@@ -5,12 +5,12 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.actions.SelectWordAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
@@ -282,7 +282,7 @@ public class WordSelectionHandler extends BaseHandler{
         readerDataHolder.resetEpdUpdateMode();
         ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,true);
         getParent().resetToDefaultProvider();
-        readerDataHolder.redrawPage(true);
+        readerDataHolder.redrawPage();
         readerDataHolder.getSelectionManager().clear();
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }

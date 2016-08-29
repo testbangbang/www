@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Created by zhuzeng on 5/31/16.
+ * fetch from local memory cache or data provider(local data provider or remote data provider)
  */
 public class AsyncDataProvider {
 

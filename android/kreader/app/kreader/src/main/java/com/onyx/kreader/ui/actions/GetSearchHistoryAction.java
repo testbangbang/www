@@ -2,7 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.dataprovider.SearchHistory;
+import com.onyx.android.sdk.dataprovider.model.SearchHistory;
 import com.onyx.kreader.host.request.GetSearchHistoryRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 

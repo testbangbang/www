@@ -1,4 +1,4 @@
-package com.onyx.cloud.service;
+package com.onyx.cloud.service.v1;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

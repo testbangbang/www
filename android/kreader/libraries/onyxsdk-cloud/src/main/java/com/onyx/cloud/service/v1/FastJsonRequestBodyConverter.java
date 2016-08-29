@@ -1,4 +1,4 @@
-package com.onyx.cloud.service;
+package com.onyx.cloud.service.v1;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;

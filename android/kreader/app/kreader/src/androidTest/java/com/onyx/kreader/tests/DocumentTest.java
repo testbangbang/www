@@ -10,9 +10,9 @@ import java.util.UUID;
 /**
  * Created by zhuzeng on 6/3/16.
  */
-public class DocumentOptionsTest  extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class DocumentTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
 
-    public DocumentOptionsTest() {
+    public DocumentTest() {
         super(ReaderTestActivity.class);
     }
 

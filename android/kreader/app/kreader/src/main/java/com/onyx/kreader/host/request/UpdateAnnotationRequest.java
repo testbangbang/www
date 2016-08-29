@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.android.sdk.dataprovider.Annotation;
-import com.onyx.android.sdk.dataprovider.AnnotationProvider;
+import com.onyx.android.sdk.dataprovider.model.Annotation;
+import com.onyx.android.sdk.dataprovider.DataProviderManager;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -18,7 +18,7 @@ public class UpdateAnnotationRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        AnnotationProvider.updateAnnotation(annotation);
+        DataProviderManager.getDataProvider().updateAnnotation(annotation);
         LayoutProviderUtils.updateReaderViewInfo(createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 }

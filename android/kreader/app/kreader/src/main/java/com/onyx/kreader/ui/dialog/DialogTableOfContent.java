@@ -21,8 +21,8 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.dataprovider.Annotation;
-import com.onyx.android.sdk.dataprovider.Bookmark;
+import com.onyx.android.sdk.dataprovider.model.Annotation;
+import com.onyx.android.sdk.dataprovider.model.Bookmark;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;

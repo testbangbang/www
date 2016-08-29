@@ -19,8 +19,8 @@ public class ProductResult<T extends BaseObject> {
         return result;
     }
 
-    static public ProductResult<ProductContainer> parseCategory(final String string) {
-        ProductResult<ProductContainer> result = JSON.parseObject(string, new TypeReference<ProductResult<ProductContainer>>(){});
+    static public ProductResult<Category> parseCategory(final String string) {
+        ProductResult<Category> result = JSON.parseObject(string, new TypeReference<ProductResult<Category>>(){});
         return result;
     }
 

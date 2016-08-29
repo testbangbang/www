@@ -8,7 +8,7 @@ import com.onyx.cloud.model.BaseObject;
 import com.onyx.cloud.model.Dictionary;
 import com.onyx.cloud.model.DownloadLink;
 import com.onyx.cloud.model.Product;
-import com.onyx.cloud.model.ProductContainer;
+import com.onyx.cloud.model.Category;
 import com.onyx.cloud.model.ProductResult;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -103,7 +103,7 @@ public class StoreUtils {
     static public <T extends BaseModel> void clearAllTable() {
         clearTable(Product.class);
         clearTable(Dictionary.class);
-        clearTable(ProductContainer.class);
+        clearTable(Category.class);
         clearTable(DownloadLink.class);
     }
 

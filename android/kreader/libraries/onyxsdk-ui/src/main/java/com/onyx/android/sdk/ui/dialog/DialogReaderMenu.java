@@ -126,20 +126,14 @@ public class DialogReaderMenu extends Dialog {
         show();
     }
 
-    private void updateReaderState(ReaderLayerMenuState state) {
+    public void updateReaderState(ReaderLayerMenuState state) {
         ((TextView)findViewById(R.id.text_view_title)).setText(state.getTitle());
         ((TextView)findViewById(R.id.text_view_progress)).setText(formatPageProgress(state));
+        nextButton.setEnabled(state.canGoForward());
+        prevButton.setEnabled(state.canGoBack());
     }
 
     private String formatPageProgress(ReaderMenuState state) {
         return String.valueOf(state.getPageIndex() + 1) + "/" + String.valueOf(state.getPageCount());
-    }
-
-    public void setNextButtonEnable(boolean enable) {
-        nextButton.setEnabled(enable);
-    }
-
-    public void setPrevButtonEnable(boolean enable) {
-        prevButton.setEnabled(enable);
     }
 }

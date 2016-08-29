@@ -3,9 +3,7 @@ package com.onyx.cloud.store.request;
 import com.alibaba.fastjson.JSON;
 import com.onyx.cloud.CloudManager;
 import com.onyx.cloud.model.Firmware;
-import com.onyx.cloud.service.OnyxOTAService;
-import com.onyx.cloud.service.ServiceFactory;
-import org.json.JSONObject;
+import com.onyx.cloud.service.v1.ServiceFactory;
 import retrofit2.Call;
 import retrofit2.Response;
 

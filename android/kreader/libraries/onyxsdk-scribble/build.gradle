@@ -48,16 +48,12 @@ apt {
 }
 
 dependencies {
-
-    apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.0.1'
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
-    compile "com.github.Raizlabs.DBFlow:dbflow:3.0.1"
-
     compile project(':libraries:onyxsdk-base')
-
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'org.apache.commons:commons-collections4:4.0'
     compile 'de.ruedigermoeller:fst:2.47'
     compile 'com.alibaba:fastjson:1.1.34.android'
-
+    apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.0.1'
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
+    compile "com.github.Raizlabs.DBFlow:dbflow:3.0.1"
 }

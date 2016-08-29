@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
  * Created by zhuzeng on 11/20/15.
  */
 @Table(database = OnyxCloudDatabase.class)
-public class ProductContainer extends BaseObject {
+public class Category extends BaseObject {
 
     static public final String NAME_TAG = "name";
     static public final String VALUE_TAG = "value";
@@ -22,7 +22,7 @@ public class ProductContainer extends BaseObject {
     @Column
     public long parentId;
 
-    public ProductContainer() {
+    public Category() {
 
     }
 

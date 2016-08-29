@@ -2,12 +2,11 @@ package com.onyx.kreader.host.request;
 
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.dataprovider.Annotation;
-import com.onyx.android.sdk.dataprovider.AnnotationProvider;
+import com.onyx.android.sdk.dataprovider.model.Annotation;
+import com.onyx.android.sdk.dataprovider.DataProviderManager;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.List;
@@ -35,13 +34,13 @@ public class AddAnnotationRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        AnnotationProvider.addAnnotation(createAnnotation(reader));
+        DataProviderManager.getDataProvider().addAnnotation(createAnnotation(reader));
         LayoutProviderUtils.updateReaderViewInfo(createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 
     private Annotation createAnnotation(final Reader reader) {
         Annotation annotation = new Annotation();
-        annotation.setMd5(reader.getDocumentMd5());
+        annotation.setUniqueId(reader.getDocumentMd5());
         annotation.setApplication(reader.getPlugin().displayName());
         annotation.setPosition(pageInfo.getName());
         annotation.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));

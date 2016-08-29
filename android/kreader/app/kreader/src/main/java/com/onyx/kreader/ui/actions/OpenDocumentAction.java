@@ -8,6 +8,7 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -49,10 +50,10 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup();
                     return;
                 }
-                if (loadDocumentOptionsRequest.getDocumentOptions() != null &&
-                        loadDocumentOptionsRequest.getDocumentOptions().getOrientation() > 0) {
+                if (loadDocumentOptionsRequest.getDocument() != null &&
+                        loadDocumentOptionsRequest.getDocument().getOrientation() > 0) {
                     int current = DeviceUtils.getScreenOrientation(activity);
-                    int target = loadDocumentOptionsRequest.getDocumentOptions().getOrientation();
+                    int target = loadDocumentOptionsRequest.getDocument().getOrientation();
                     Debug.d("current orientation: " + current + ", target orientation: " + target);
                     if (current != target) {
                         readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
@@ -60,7 +61,7 @@ public class OpenDocumentAction extends BaseAction {
                         return;
                     }
                 }
-                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
+                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocument());
             }
         });
     }
@@ -129,6 +130,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void postQuitEvent(final ReaderDataHolder holder) {
+        cleanup();
         holder.getEventBus().post(new QuitEvent());
     }
 
@@ -156,6 +158,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void processOpenException(final ReaderDataHolder holder, final BaseOptions options, final Throwable e) {
         if (!(e instanceof ReaderException)) {
+            postQuitEvent(holder);
             return;
         }
         final ReaderException readerException = (ReaderException)e;

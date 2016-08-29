@@ -6,8 +6,7 @@ import com.onyx.cloud.CloudManager;
 import com.onyx.cloud.model.Product;
 import com.onyx.cloud.model.ProductQuery;
 import com.onyx.cloud.model.ProductResult;
-import com.onyx.cloud.service.OnyxBookStoreService;
-import com.onyx.cloud.service.ServiceFactory;
+import com.onyx.cloud.service.v1.ServiceFactory;
 import com.onyx.cloud.utils.CloudUtils;
 import com.onyx.cloud.utils.StoreUtils;
 

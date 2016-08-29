@@ -1,4 +1,4 @@
-package com.onyx.cloud.service;
+package com.onyx.cloud.service.v1;
 
 import com.onyx.cloud.Constant;
 import com.onyx.cloud.model.Dictionary;
