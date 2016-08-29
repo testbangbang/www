@@ -32,7 +32,6 @@ import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.actions.BackwardAction;
@@ -85,7 +84,6 @@ public class ReaderActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
-        setFullScreen(true);
         setContentView(R.layout.activity_reader);
         initComponents();
     }
@@ -298,6 +296,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void checkForNewConfiguration() {
+        setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
         reconfigStatusBar();
         checkSurfaceViewSize();
     }
