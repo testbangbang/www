@@ -47,6 +47,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderLayerMenu readerMenu;
+    private static ReaderLayerMenuState state;
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
@@ -69,13 +70,14 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showReaderMenu(final ReaderDataHolder readerDataHolder) {
-        ReaderLayerMenuState state = new ReaderLayerMenuState();
-        updateReaderMenuState(readerDataHolder, state);
+        if (state == null){
+            state = new ReaderLayerMenuState();
+        }
         state.setTitle(FileUtils.getFileName(readerDataHolder.getReader().getDocumentPath()));
         state.setPageCount(readerDataHolder.getPageCount());
         state.setPageIndex(readerDataHolder.getCurrentPage());
         getReaderMenu(readerDataHolder).show(state);
-        updateBackwardForwardBtnState(readerDataHolder);
+        updateBackwardForwardState(readerDataHolder);
     }
 
     private ReaderMenu getReaderMenu(final ReaderDataHolder readerDataHolder) {
@@ -97,6 +99,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void updateReaderMenuState(final ReaderDataHolder readerDataHolder, final ReaderLayerMenuState state) {
+        readerMenu.updateReaderMenuState(state);
     }
 
     private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderDataHolder readerDataHolder) {
@@ -373,8 +376,9 @@ public class ShowReaderMenuAction extends BaseAction {
         new ShowReaderSettingsAction().execute(readerDataHolder);
     }
     
-    public static void updateBackwardForwardBtnState(ReaderDataHolder readerDataHolder){
-        readerMenu.getDialog().setPrevButtonEnable(readerDataHolder.getReaderViewInfo().canGoBack);
-        readerMenu.getDialog().setNextButtonEnable(readerDataHolder.getReaderViewInfo().canGoForward);
+    public static void updateBackwardForwardState(ReaderDataHolder readerDataHolder){
+        state.setCanGoBack(readerDataHolder.getReaderViewInfo().canGoBack);
+        state.setCanGoForward(readerDataHolder.getReaderViewInfo().canGoForward);
+        updateReaderMenuState(readerDataHolder, state);
     }
 }

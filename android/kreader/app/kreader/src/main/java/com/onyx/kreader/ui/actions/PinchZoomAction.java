@@ -16,6 +16,7 @@ import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
+import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -117,7 +118,7 @@ public class PinchZoomAction extends BaseAction {
         if (deltaScale < 1.0f && !readerDataHolder.canCurrentPageScaleDown()) {
             Toast.makeText(readerDataHolder.getContext(),
                     R.string.min_scroll_toast, Toast.LENGTH_SHORT).show();
-            readerDataHolder.submitRenderRequest(new RenderRequest());
+            readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()));
             return;
         } else if (deltaScale > 1.0f && !readerDataHolder.canCurrentPageScaleUp()) {
             Toast.makeText(readerDataHolder.getContext(),

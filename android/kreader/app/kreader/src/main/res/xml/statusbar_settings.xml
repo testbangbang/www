@@ -2,6 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="reader_setting">
     <CheckBoxPreference
+            android:key="@string/settings_show_doc_title_key"
+            android:layout="@layout/settings_custom_preference_item"
+            android:summaryOn="@string/settings_enable"
+            android:summaryOff="@string/settings_disable"
+            android:defaultValue="false"
+            android:title="@string/settings_show_doc_title"/>
+    <CheckBoxPreference
         android:key="@string/settings_battery_percentage_show_key"
         android:layout="@layout/settings_custom_preference_item"
         android:summaryOn="@string/settings_show"

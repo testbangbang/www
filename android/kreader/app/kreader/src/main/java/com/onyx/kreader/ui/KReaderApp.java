@@ -16,6 +16,8 @@ import java.util.List;
  * Created by Joy on 2016/4/15.
  */
 public class KReaderApp extends Application {
+    private static KReaderApp instance;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -23,6 +25,11 @@ public class KReaderApp extends Application {
         SharedPreferenceProvider.init(this);
         SingletonSharedPreference.init(this);
         LeakCanary.install(this);
+        instance = this;
+    }
+
+    public static KReaderApp instance() {
+        return instance;
     }
 
     private List<Class<? extends DatabaseHolder>> databaseHolderList() {

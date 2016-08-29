@@ -83,6 +83,7 @@
             android:layout_height="wrap_content"/>
 
         <TextView
+            android:background="@drawable/imagebtn_bg"
             android:id="@+id/back_text"
             android:layout_marginRight="30dp"
             android:layout_alignParentEnd="true"

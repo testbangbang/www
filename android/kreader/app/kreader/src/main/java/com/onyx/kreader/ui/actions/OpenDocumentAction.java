@@ -16,6 +16,7 @@ import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
+import com.onyx.kreader.utils.DeviceUtils;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -51,7 +52,7 @@ public class OpenDocumentAction extends BaseAction {
                 }
                 if (loadDocumentOptionsRequest.getDocument() != null &&
                         loadDocumentOptionsRequest.getDocument().getOrientation() > 0) {
-                    int current = ReaderDeviceManager.getScreenOrientation(activity);
+                    int current = DeviceUtils.getScreenOrientation(activity);
                     int target = loadDocumentOptionsRequest.getDocument().getOrientation();
                     Debug.d("current orientation: " + current + ", target orientation: " + target);
                     if (current != target) {

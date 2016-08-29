@@ -3,6 +3,7 @@ package com.onyx.kreader.host.impl;
 import com.alibaba.fastjson.JSON;
 import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.ui.KReaderApp;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.util.ArrayList;
@@ -95,6 +96,9 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
     public static ReaderTextSplitterImpl sharedInstance() {
         if (instance == null) {
             instance = new ReaderTextSplitterImpl();
+            Debug.d(instance, "init chinese analyzer...");
+            AnalyzerAndroidWrapper.init(KReaderApp.instance());
+            Debug.d(instance, "init chinese analyzer finished");
         }
         return instance;
     }

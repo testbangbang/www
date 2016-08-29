@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -32,7 +31,6 @@ import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.actions.BackwardAction;
@@ -58,6 +56,7 @@ import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
+import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -84,7 +83,6 @@ public class ReaderActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
-        setFullScreen(true);
         setContentView(R.layout.activity_reader);
         initComponents();
     }
@@ -93,7 +91,6 @@ public class ReaderActivity extends ActionBarActivity {
     protected void onResume() {
         checkForNewConfiguration();
         super.onResume();
-        getReaderDataHolder().redrawPage(false);
     }
 
     @Override
@@ -226,19 +223,19 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceHolderCallback = new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
-                clearCanvas(holder);
             }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                 clearCanvas(holder);
+                if (readerDataHolder.isDocumentOpened()) {
+                    readerDataHolder.redrawPage();
+                }
             }
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                holder.removeCallback(surfaceHolderCallback);
-                Log.i(TAG, "surface destroyed");
             }
         };
 
@@ -297,6 +294,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void checkForNewConfiguration() {
+        setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
         reconfigStatusBar();
         checkSurfaceViewSize();
     }
@@ -314,8 +312,6 @@ public class ReaderActivity extends ActionBarActivity {
                         surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
                     getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                     new ChangeViewConfigAction().execute(readerDataHolder);
-                } else {
-                    readerDataHolder.redrawPage(true);
                 }
             }
         });
@@ -527,6 +523,11 @@ public class ReaderActivity extends ActionBarActivity {
         int current = getReaderDataHolder().getCurrentPage() + 1;
         int total = getReaderDataHolder().getPageCount();
         String title = getReaderDataHolder().getBookName();
+        if (SingletonSharedPreference.isShowDocTitleInStatusBar(this)) {
+            if (StringUtils.isNotBlank(getReaderDataHolder().getBookTitle())) {
+                title = getReaderDataHolder().getBookTitle();
+            }
+        }
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
                 current, total, 0, title));
     }
@@ -539,7 +540,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        ReaderDeviceManager.setFullScreen(this, fullScreen);
+        DeviceUtils.setFullScreen(this, fullScreen);
     }
 
     public SurfaceView getSurfaceView() {

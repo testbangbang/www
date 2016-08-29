@@ -63,13 +63,18 @@ public class ReaderLayerMenu extends ReaderMenu {
     }
 
     @Override
+    public void updateReaderMenuState(ReaderMenuState state) {
+        getDialog().updateReaderState((ReaderLayerMenuState)state);
+    }
+
+    @Override
     public void fillItems(List<? extends ReaderMenuItem> items) {
         menuItems = (List<ReaderLayerMenuItem>)items;
         assert (items.get(0).getItemType() == ReaderMenuItem.ItemType.Group);
         currentParentMenuItem = (ReaderLayerMenuItem)items.get(0);
     }
 
-    public DialogReaderMenu getDialog() {
+    private DialogReaderMenu getDialog() {
         if (dialog == null) {
             dialog = new DialogReaderMenu(context, readerMenuCallback);
         }

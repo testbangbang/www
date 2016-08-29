@@ -17,6 +17,7 @@ public abstract class ReaderMenu {
     public abstract boolean isShown();
     public abstract void show(ReaderMenuState state);
     public abstract void hide();
+    public abstract void updateReaderMenuState(ReaderMenuState state);
 
     public abstract void fillItems(List<? extends ReaderMenuItem> items);
 

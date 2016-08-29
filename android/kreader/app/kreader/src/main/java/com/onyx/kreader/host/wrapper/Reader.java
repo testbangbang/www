@@ -6,6 +6,7 @@ import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.kreader.api.ReaderDocument;
+import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.api.ReaderPlugin;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -130,6 +131,10 @@ public class Reader {
 
     public String getDocumentMd5() {
         return getReaderHelper().getDocumentMd5();
+    }
+
+    public ReaderDocumentMetadata getDocumentMetadata() {
+        return getReaderHelper().getDocumentMetadata();
     }
 
     public ReaderLayoutManager getReaderLayoutManager() {

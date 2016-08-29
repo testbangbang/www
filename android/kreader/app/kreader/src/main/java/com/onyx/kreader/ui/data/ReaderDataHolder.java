@@ -217,6 +217,13 @@ public class ReaderDataHolder {
         return FileUtils.getFileName(getDocumentPath());
     }
 
+    public String getBookTitle() {
+        if (getReaderUserDataInfo().getDocumentMetadata() == null) {
+            return null;
+        }
+        return getReaderUserDataInfo().getDocumentMetadata().getTitle();
+    }
+
     public boolean hasBookmark() {
         return getReaderUserDataInfo().hasBookmark(getFirstPageInfo());
     }
@@ -308,13 +315,9 @@ public class ReaderDataHolder {
     }
 
 
-    public void redrawPage(boolean render) {
+    public void redrawPage() {
         if (getReader() != null) {
-            if (render){
-                submitRenderRequest(new RenderRequest());
-            }else {
-                submitNonRenderRequest(new RenderRequest());
-            }
+            submitRenderRequest(new RenderRequest());
         }
     }
 
