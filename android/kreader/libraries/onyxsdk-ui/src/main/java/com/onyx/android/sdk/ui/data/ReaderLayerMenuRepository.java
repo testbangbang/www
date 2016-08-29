@@ -47,8 +47,9 @@ public class ReaderLayerMenuRepository {
         ReaderLayerMenuItem currentGroup = null;
         for (ReaderLayerMenuItem item : flattenArray) {
             if (item.getItemType() == ReaderMenuItem.ItemType.Group) {
-                menuGroupList.add(item);
-                currentGroup = item;
+                ReaderLayerMenuItem group = new ReaderLayerMenuItem(item);
+                menuGroupList.add(group);
+                currentGroup = group;
             } else {
                 ((List<ReaderLayerMenuItem>)currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
                         item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId()));
