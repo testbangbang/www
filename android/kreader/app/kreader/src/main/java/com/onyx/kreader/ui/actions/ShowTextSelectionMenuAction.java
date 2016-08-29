@@ -120,7 +120,7 @@ public class ShowTextSelectionMenuAction extends BaseAction {
                 @Override
                 public void closeMenu() {
                     ShowTextSelectionMenuAction.this.hideTextSelectionPopupWindow(readerDataHolder, true);
-                    readerDataHolder.redrawPage(true);
+                    readerDataHolder.redrawPage();
                 }
             });
         }
