@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.onyx.cloud.model.BaseObject;
 import com.onyx.cloud.model.DownloadLink;
-import com.onyx.cloud.model.DownloadLink_Table;
 import com.raizlabs.android.dbflow.sql.language.From;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Where;
