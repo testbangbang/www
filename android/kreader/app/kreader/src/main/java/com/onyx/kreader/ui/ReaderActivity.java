@@ -526,6 +526,11 @@ public class ReaderActivity extends ActionBarActivity {
         int current = getReaderDataHolder().getCurrentPage() + 1;
         int total = getReaderDataHolder().getPageCount();
         String title = getReaderDataHolder().getBookName();
+        if (SingletonSharedPreference.isShowDocTitleInStatusBar(this)) {
+            if (StringUtils.isNotBlank(getReaderDataHolder().getBookTitle())) {
+                title = getReaderDataHolder().getBookTitle();
+            }
+        }
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
                 current, total, 0, title));
     }

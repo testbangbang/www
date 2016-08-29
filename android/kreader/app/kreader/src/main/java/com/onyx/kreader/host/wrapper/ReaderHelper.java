@@ -45,6 +45,7 @@ public class ReaderHelper {
 
     private String documentPath;
     private String documentMd5;
+    private ReaderDocumentMetadata documentMetadata;
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPluginOptionsImpl pluginOptions;
     private BaseOptions documentOptions = new BaseOptions();
@@ -99,6 +100,7 @@ public class ReaderHelper {
     private void saveMetadata(final Context context, final String path) {
         ReaderDocumentMetadata metadata = new ReaderDocumentMetadataImpl();
         if (getDocument().readMetadata(metadata)) {
+            documentMetadata = metadata;
             LegacySdkDataUtils.saveMetadata(context, path, metadata);
         }
     }
@@ -314,6 +316,10 @@ public class ReaderHelper {
 
     public final String getDocumentMd5() {
         return documentMd5;
+    }
+
+    public ReaderDocumentMetadata getDocumentMetadata() {
+        return documentMetadata;
     }
 
     /**

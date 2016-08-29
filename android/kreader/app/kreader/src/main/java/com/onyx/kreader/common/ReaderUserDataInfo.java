@@ -8,6 +8,7 @@ import com.onyx.android.sdk.dataprovider.model.Annotation;
 import com.onyx.android.sdk.dataprovider.model.Bookmark;
 import com.onyx.android.sdk.dataprovider.model.SearchHistory;
 import com.onyx.android.sdk.dataprovider.SearchHistoryProvider;
+import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageUtils;
@@ -28,6 +29,7 @@ public class ReaderUserDataInfo {
     private ReaderSelection highlightResult = null;
 
     private String documentPath;
+    private ReaderDocumentMetadata documentMetadata;
 
     private ReaderDocumentTableOfContent toc;
     private Map<String, Bookmark> bookmarkMap = new LinkedHashMap<>();
@@ -41,6 +43,14 @@ public class ReaderUserDataInfo {
 
     public String getDocumentPath() {
         return documentPath;
+    }
+
+    public void setDocumentMetadata(ReaderDocumentMetadata documentMetadata) {
+        this.documentMetadata = documentMetadata;
+    }
+
+    public ReaderDocumentMetadata getDocumentMetadata() {
+        return documentMetadata;
     }
 
     public boolean hasSearchResults() {
