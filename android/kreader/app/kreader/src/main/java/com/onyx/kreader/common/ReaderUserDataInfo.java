@@ -4,14 +4,14 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.dataprovider.*;
-import com.onyx.android.sdk.dataprovider.model.Annotation;
-import com.onyx.android.sdk.dataprovider.model.Bookmark;
-import com.onyx.android.sdk.dataprovider.model.SearchHistory;
+import com.onyx.android.sdk.dataprovider.model.*;
 import com.onyx.android.sdk.dataprovider.SearchHistoryProvider;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.raizlabs.android.dbflow.sql.language.NameAlias;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -91,7 +91,10 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentAnnotations(final Context context, final Reader reader) {
-        final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5());
+        final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(
+                reader.getPlugin().displayName(),
+                reader.getDocumentMd5(),
+                OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
         if (annotations != null && annotations.size() > 0) {
             for (Annotation annotation : annotations) {
                 if (annotationMap.get(annotation.getPosition()) == null) {
@@ -114,7 +117,11 @@ public class ReaderUserDataInfo {
 
     public boolean loadPageAnnotations(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
+            final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(
+                    reader.getPlugin().displayName(),
+                    reader.getDocumentMd5(),
+                    pageInfo.getName(),
+                    OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
             if (annotations != null && annotations.size() > 0) {
                 List<PageAnnotation> list = new ArrayList<>();
                 for (Annotation annotation : annotations) {
@@ -151,7 +158,10 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentBookmarks(final Context context, final Reader reader) {
-        List<Bookmark> bookmarks = DataProviderManager.getDataProvider().loadBookmarks(reader.getPlugin().displayName(), reader.getDocumentMd5());
+        List<Bookmark> bookmarks = DataProviderManager.getDataProvider().loadBookmarks(
+                reader.getPlugin().displayName(),
+                reader.getDocumentMd5(),
+                OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
         if (bookmarks != null) {
             for (Bookmark bookmark : bookmarks) {
                 bookmarkMap.put(bookmark.getPosition(), bookmark);

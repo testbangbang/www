@@ -109,17 +109,18 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
 
-    public final List<Annotation> loadAnnotations(final String application, final String md5, final String position) {
+    public final List<Annotation> loadAnnotations(final String application, final String md5, final String position, final OrderBy orderBy) {
         return new Select().from(Annotation.class).where(Annotation_Table.uniqueId.eq(md5))
                 .and(Annotation_Table.application.eq(application))
                 .and(Annotation_Table.position.eq(position))
+                .orderBy(orderBy)
                 .queryList();
     }
 
-    public final List<Annotation> loadAnnotations(final String application, final String md5) {
+    public final List<Annotation> loadAnnotations(final String application, final String md5, final OrderBy orderBy) {
         return new Select().from(Annotation.class).where(Annotation_Table.uniqueId.eq(md5))
                 .and(Annotation_Table.application.eq(application))
-                .orderBy(Annotation_Table.pageNumber, true)
+                .orderBy(orderBy)
                 .queryList();
     }
 
@@ -142,10 +143,10 @@ public class LocalDataProvider implements DataProviderBase {
                 .querySingle();
     }
 
-    public final List<Bookmark> loadBookmarks(final String application, final String md5) {
+    public final List<Bookmark> loadBookmarks(final String application, final String md5, final OrderBy orderBy) {
         return new Select().from(Bookmark.class).where(Bookmark_Table.uniqueId.eq(md5))
                 .and(Bookmark_Table.application.eq(application))
-                .orderBy(Bookmark_Table.pageNumber, true)
+                .orderBy(orderBy)
                 .queryList();
     }
 
