@@ -8,7 +8,6 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -16,6 +15,7 @@ import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
+import com.onyx.kreader.utils.DeviceUtils;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -51,7 +51,7 @@ public class OpenDocumentAction extends BaseAction {
                 }
                 if (loadDocumentOptionsRequest.getDocumentOptions() != null &&
                         loadDocumentOptionsRequest.getDocumentOptions().getOrientation() > 0) {
-                    int current = ReaderDeviceManager.getScreenOrientation(activity);
+                    int current = DeviceUtils.getScreenOrientation(activity);
                     int target = loadDocumentOptionsRequest.getDocumentOptions().getOrientation();
                     Debug.d("current orientation: " + current + ", target orientation: " + target);
                     if (current != target) {

@@ -58,6 +58,7 @@ import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
+import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -539,7 +540,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        ReaderDeviceManager.setFullScreen(this, fullScreen);
+        DeviceUtils.setFullScreen(this, fullScreen);
     }
 
     public SurfaceView getSurfaceView() {
