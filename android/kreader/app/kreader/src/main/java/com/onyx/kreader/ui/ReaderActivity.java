@@ -312,8 +312,6 @@ public class ReaderActivity extends ActionBarActivity {
                         surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
                     getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                     new ChangeViewConfigAction().execute(readerDataHolder);
-                } else {
-                    readerDataHolder.redrawPage();
                 }
             }
         });
