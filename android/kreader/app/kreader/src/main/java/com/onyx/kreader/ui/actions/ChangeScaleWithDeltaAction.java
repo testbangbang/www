@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.request.ScaleByRectRequest;
+import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
@@ -22,6 +23,7 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
         if (scaleDelta < 0 && !readerDataHolder.canCurrentPageScaleDown()) {
             Toast.makeText(readerDataHolder.getContext(),
                     R.string.min_scroll_toast, Toast.LENGTH_SHORT).show();
+            readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()));
             return;
         } else if (scaleDelta > 0 && !readerDataHolder.canCurrentPageScaleUp()) {
             Toast.makeText(readerDataHolder.getContext(),
