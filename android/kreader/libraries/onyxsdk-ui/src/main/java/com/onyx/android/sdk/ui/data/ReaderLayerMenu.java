@@ -74,7 +74,7 @@ public class ReaderLayerMenu extends ReaderMenu {
         currentParentMenuItem = (ReaderLayerMenuItem)items.get(0);
     }
 
-    public DialogReaderMenu getDialog() {
+    private DialogReaderMenu getDialog() {
         if (dialog == null) {
             dialog = new DialogReaderMenu(context, readerMenuCallback);
         }
