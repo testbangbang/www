@@ -93,7 +93,6 @@ public class ReaderActivity extends ActionBarActivity {
     protected void onResume() {
         checkForNewConfiguration();
         super.onResume();
-        getReaderDataHolder().redrawPage(false);
     }
 
     @Override
@@ -315,7 +314,7 @@ public class ReaderActivity extends ActionBarActivity {
                     getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                     new ChangeViewConfigAction().execute(readerDataHolder);
                 } else {
-                    readerDataHolder.redrawPage(true);
+                    readerDataHolder.redrawPage();
                 }
             }
         });
