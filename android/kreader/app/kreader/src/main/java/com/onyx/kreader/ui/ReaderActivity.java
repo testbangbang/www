@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -224,19 +223,19 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceHolderCallback = new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
-                clearCanvas(holder);
             }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                 clearCanvas(holder);
+                if (readerDataHolder.isDocumentOpened()) {
+                    readerDataHolder.redrawPage();
+                }
             }
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                holder.removeCallback(surfaceHolderCallback);
-                Log.i(TAG, "surface destroyed");
             }
         };
 
