@@ -22,6 +22,7 @@ import com.onyx.kreader.common.PageAnnotation;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.RectUtils;
 
@@ -43,8 +44,12 @@ public class ReaderPainter {
         drawBitmap(canvas, paint, bitmap);
         drawSearchResults(canvas, paint, userDataInfo, viewInfo);
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager);
-        drawAnnotations(context, canvas, paint, userDataInfo, viewInfo);
-        drawBookmark(context, canvas, userDataInfo, viewInfo);
+        if (SingletonSharedPreference.isShowAnnotation(context)) {
+            drawAnnotations(context, canvas, paint, userDataInfo, viewInfo);
+        }
+        if (SingletonSharedPreference.isShowBookmark(context)) {
+            drawBookmark(context, canvas, userDataInfo, viewInfo);
+        }
         drawShapes(canvas, paint, noteViewHelper, shapeDataInfo);
     }
 
