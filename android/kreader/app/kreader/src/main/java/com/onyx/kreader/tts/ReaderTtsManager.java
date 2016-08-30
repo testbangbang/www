@@ -65,6 +65,10 @@ public class ReaderTtsManager {
         return ttsService.isSpeaking();
     }
 
+    public void setSpeechRate(float rate) {
+        ttsService.setSpeechRate(rate);
+    }
+
     public void supplyText(final String text) {
         this.text = text;
     }
