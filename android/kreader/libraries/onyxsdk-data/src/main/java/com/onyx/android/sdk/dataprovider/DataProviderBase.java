@@ -29,9 +29,9 @@ public interface DataProviderBase {
     boolean saveDocumentOptions(final Context context, final String path, String md5, final String json);
 
 
-    List<Annotation> loadAnnotations(final String application, final String md5, final String position);
+    List<Annotation> loadAnnotations(final String application, final String md5, final String position, final OrderBy orderBy);
 
-    List<Annotation> loadAnnotations(final String application, final String md5);
+    List<Annotation> loadAnnotations(final String application, final String md5, final OrderBy orderBy);
 
     void addAnnotation(final Annotation annotation);
 
@@ -42,7 +42,7 @@ public interface DataProviderBase {
 
     Bookmark loadBookmark(final String application, final String md5, final String position);
 
-    List<Bookmark> loadBookmarks(final String application, final String md5);
+    List<Bookmark> loadBookmarks(final String application, final String md5, final OrderBy orderBy);
 
     void addBookmark(final Bookmark bookmark);
 

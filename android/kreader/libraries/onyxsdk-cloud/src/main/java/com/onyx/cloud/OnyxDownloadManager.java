@@ -8,13 +8,13 @@ import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.notification.FileDownloadNotificationHelper;
 import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.cloud.db.query.DownloadTaskDbQuery;
 import com.onyx.cloud.model.DownloadTask;
 import com.onyx.cloud.store.request.CloudFileDownloadRequest;
 import com.onyx.cloud.utils.DownloadListener;
 import com.onyx.cloud.utils.NotificationItem;
 import com.onyx.cloud.utils.NotificationListener;
 import com.onyx.cloud.utils.StoreUtils;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,8 +70,7 @@ public class OnyxDownloadManager {
 
     private List<DownloadTask> getTaskList() {
         if (taskList.size() <= 0) {
-            DownloadTaskDbQuery query = new DownloadTaskDbQuery();
-            taskList = query.andNullFinishedAt().startQueryList();
+            taskList = new Select().from(DownloadTask.class).queryList();
         }
         return taskList;
     }
