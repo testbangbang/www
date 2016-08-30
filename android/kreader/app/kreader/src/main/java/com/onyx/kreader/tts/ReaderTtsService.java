@@ -117,6 +117,12 @@ public class ReaderTtsService {
         ttsService.setLanguage(locale);
     }
 
+    public void setSpeechRate(float rate) {
+        if (ttsService != null) {
+            ttsService.setSpeechRate(rate);
+        }
+    }
+
     public boolean isSpeaking() {
         return ttsState == TtsState.SynthesizeTtsStart || ttsState == TtsState.MediaPlayStart;
     }

@@ -215,6 +215,10 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         seekBarTts.setMax(maxVolume);
         seekBarTts.setProgress(curVolume);
 
+        // reset to default normal speed
+        readerDataHolder.getTtsManager().setSpeechRate(1.0f);
+        updateSpeedCheckBoxCheckedStatus(3);
+
         readerDataHolder.getTtsManager().registerCallback(new ReaderTtsManager.Callback() {
 
             @Override
@@ -285,14 +289,25 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         if(!buttonView.isPressed()){
             return;
         }
-        boolean checked = false;
         int length = speedCheckBoxIds.length;
         for (int i = 0; i < length; i++) {
             if (buttonView.getId() == speedCheckBoxIds[i]){
-                controlSpeedOfSound(length - i);
-                checked = true;
+                final int speed = length - i;
+                controlSpeedOfSound(speed);
+                updateSpeedCheckBoxCheckedStatus(speed);
+                break;
             }
-            ((CompoundButton)findViewById(speedCheckBoxIds[i])).setChecked(checked);
+        }
+    }
+
+    private void updateSpeedCheckBoxCheckedStatus(int targetSpeed) {
+        for (int i = 0; i < speedCheckBoxIds.length; i++) {
+            final int id = speedCheckBoxIds.length - i;
+            if (id <= targetSpeed) {
+                ((CompoundButton)findViewById(speedCheckBoxIds[i])).setChecked(true);
+            } else {
+                ((CompoundButton) findViewById(speedCheckBoxIds[i])).setChecked(false);
+            }
         }
     }
 
@@ -321,7 +336,30 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
     //调节声音速度(1-5档)
     private void controlSpeedOfSound(int speed){
-
+        float rate = 1.0f;
+        switch (speed) {
+            case 1:
+                rate = 0.5f;
+                break;
+            case 2:
+                rate = 0.75f;
+                break;
+            case 3:
+                rate = 1.0f;
+                break;
+            case 4:
+                rate = 1.5f;
+                break;
+            case 5:
+                rate = 2.0f;
+                break;
+            default:
+                break;
+        }
+        readerDataHolder.getTtsManager().stop();
+        readerDataHolder.getTtsManager().setSpeechRate(rate);
+        readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
+        readerDataHolder.getTtsManager().play();
     }
 
     private boolean requestSentenceForTts() {
