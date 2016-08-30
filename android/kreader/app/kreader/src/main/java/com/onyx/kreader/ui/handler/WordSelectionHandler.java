@@ -156,10 +156,6 @@ public class WordSelectionHandler extends BaseHandler{
                 break;
             case MotionEvent.ACTION_MOVE:
                 touchMoveTime = System.currentTimeMillis();
-                boolean cursorNotSelected = cursorSelected < 0;
-                if (cursorNotSelected) {
-                    return true;
-                }
                 if (touchMoveTime - touchDownTime < TOUCH_DOWN_TO_MOVE_THRESHOLD) {
                     return true;
                 }
