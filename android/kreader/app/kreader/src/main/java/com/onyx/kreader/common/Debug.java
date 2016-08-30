@@ -14,6 +14,10 @@ public class Debug {
         d(TAG, msg, args);
     }
 
+    public static void d(final Object tagObject, final String msg, final Object... args) {
+        d(tagObject.getClass().getSimpleName(), msg, args);
+    }
+
     public static void d(final String tag, final String msg, final Object... args) {
         if (BuildConfig.DEBUG && debug) {
             Log.d(tag, formatString(msg, args));
