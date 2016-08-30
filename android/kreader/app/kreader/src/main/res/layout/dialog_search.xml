@@ -10,24 +10,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/image_view_back"
-            android:layout_width="24dp"
-            android:layout_height="36dp"
+        <LinearLayout
+            android:gravity="center"
+            android:id="@+id/back_layout"
+            android:orientation="horizontal"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_dialog_reader_menu_arrow_black"/>
-
-        <TextView
-            android:background="@drawable/imagebtn_bg"
-            android:id="@+id/text_view_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:textColor="@android:color/black"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/image_view_back"
-            android:text="@string/dialog_reader_menu_back"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_reader_menu_arrow"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:textColor="@android:color/black"
+                android:text="@string/dialog_reader_menu_back"/>
+        </LinearLayout>
+
 
         <RelativeLayout
             android:id="@+id/search_edit_layout"
@@ -36,7 +40,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:padding="5dp"
-            android:layout_toRightOf="@+id/text_view_back"
+            android:layout_toRightOf="@+id/back_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
