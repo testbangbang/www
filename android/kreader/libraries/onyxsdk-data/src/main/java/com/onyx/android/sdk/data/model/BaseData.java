@@ -25,7 +25,7 @@ public class BaseData extends BaseModel {
 
     @Column
     @Index
-    String uniqueId = null;
+    String idString = null;
 
     @Column
     private Date createdAt = null;
@@ -41,12 +41,12 @@ public class BaseData extends BaseModel {
         id = value;
     }
 
-    public final String getUniqueId() {
-        return uniqueId;
+    public final String getIdString() {
+        return idString;
     }
 
-    public void setUniqueId(final String value) {
-        uniqueId = value;
+    public void setIdString(final String value) {
+        idString = value;
     }
 
     public void setCreatedAt(final Date d) {

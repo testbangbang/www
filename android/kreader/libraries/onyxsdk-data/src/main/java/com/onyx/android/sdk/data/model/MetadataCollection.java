@@ -2,12 +2,11 @@ package com.onyx.android.sdk.data.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Index;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
  * Created by zhuzeng on 8/26/16.
  */
-public class MetadataCollection extends BaseModel {
+public class MetadataCollection extends BaseData {
 
     @Column
     @Index

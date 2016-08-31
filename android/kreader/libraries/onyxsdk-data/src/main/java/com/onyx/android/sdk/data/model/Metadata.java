@@ -272,7 +272,7 @@ public class Metadata extends BaseData {
             final Metadata data = new Metadata();
             if (computeMd5) {
                 String md5 = FileUtils.computeMD5(file);
-                data.setUniqueId(md5);
+                data.setIdString(md5);
             }
             getBasicMetadataFromFile(data, file);
             return data;

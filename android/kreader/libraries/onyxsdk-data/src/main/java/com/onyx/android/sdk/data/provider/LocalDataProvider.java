@@ -31,7 +31,7 @@ public class LocalDataProvider implements DataProviderBase {
             if (StringUtils.isNullOrEmpty(md5)) {
                 md5 = FileUtils.computeMD5(new File(path));
             }
-            metadata = new Select().from(Metadata.class).where(Metadata_Table.uniqueId.eq(md5)).querySingle();
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.idString.eq(md5)).querySingle();
             return metadata;
         } catch (Exception e) {
         }
@@ -95,7 +95,7 @@ public class LocalDataProvider implements DataProviderBase {
             final Metadata options = findMetadata(context, path, md5);
             if (options == null) {
                 document = new Metadata();
-                document.setUniqueId(md5);
+                document.setIdString(md5);
             } else {
                 document = options;
             }
@@ -114,7 +114,7 @@ public class LocalDataProvider implements DataProviderBase {
 
 
     public final List<Annotation> loadAnnotations(final String application, final String md5, final String position, final OrderBy orderBy) {
-        return new Select().from(Annotation.class).where(Annotation_Table.uniqueId.eq(md5))
+        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(md5))
                 .and(Annotation_Table.application.eq(application))
                 .and(Annotation_Table.position.eq(position))
                 .orderBy(orderBy)
@@ -122,7 +122,7 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     public final List<Annotation> loadAnnotations(final String application, final String md5, final OrderBy orderBy) {
-        return new Select().from(Annotation.class).where(Annotation_Table.uniqueId.eq(md5))
+        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(md5))
                 .and(Annotation_Table.application.eq(application))
                 .orderBy(orderBy)
                 .queryList();
@@ -141,14 +141,14 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     public final Bookmark loadBookmark(final String application, final String md5, final String position) {
-        return new Select().from(Bookmark.class).where(Bookmark_Table.uniqueId.eq(md5))
+        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(md5))
                 .and(Bookmark_Table.application.eq(application))
                 .and(Bookmark_Table.position.eq(position))
                 .querySingle();
     }
 
     public final List<Bookmark> loadBookmarks(final String application, final String md5, final OrderBy orderBy) {
-        return new Select().from(Bookmark.class).where(Bookmark_Table.uniqueId.eq(md5))
+        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(md5))
                 .and(Bookmark_Table.application.eq(application))
                 .orderBy(orderBy)
                 .queryList();

@@ -28,7 +28,7 @@ public class AddSearchHistoryRequest extends BaseReaderRequest {
             return dbHistory;
         }
         SearchHistory searchHistory = new SearchHistory();
-        searchHistory.setUniqueId(reader.getDocumentMd5());
+        searchHistory.setIdString(reader.getDocumentMd5());
         searchHistory.setContent(content);
         return searchHistory;
     }

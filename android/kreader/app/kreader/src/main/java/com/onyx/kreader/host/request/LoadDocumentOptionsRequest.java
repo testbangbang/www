@@ -28,7 +28,7 @@ public class LoadDocumentOptionsRequest extends BaseDataProviderRequest {
             md5 = FileUtils.computeMD5(new File(documentPath));
         }
         document = DataProviderManager.getDataProvider().loadMetadata(getContext(), documentPath, md5);
-        document.setUniqueId(md5);
+        document.setIdString(md5);
     }
 
 
