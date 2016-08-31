@@ -14,8 +14,8 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.v1.OnyxFileDownloadService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
-import com.onyx.android.sdk.data.request.CloudFileDownloadRequest;
-import com.onyx.android.sdk.data.request.ParseCoverRequest;
+import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
+import com.onyx.android.sdk.data.request.cloud.ParseCoverRequest;
 
 import java.io.File;
 import java.util.UUID;

@@ -9,7 +9,7 @@ import com.liulishuo.filedownloader.notification.FileDownloadNotificationHelper;
 import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.model.DownloadTask;
-import com.onyx.android.sdk.data.request.CloudFileDownloadRequest;
+import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.utils.DownloadListener;
 import com.onyx.android.sdk.data.utils.NotificationItem;
 import com.onyx.android.sdk.data.utils.NotificationListener;

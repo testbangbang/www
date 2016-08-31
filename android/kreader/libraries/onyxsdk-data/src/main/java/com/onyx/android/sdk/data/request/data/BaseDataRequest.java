@@ -1,17 +1,17 @@
-package com.onyx.android.sdk.data.request;
+package com.onyx.android.sdk.data.request.data;
 
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.data.DataManager;
 
 /**
  * Created by zhuzeng on 5/31/16.
  */
-public class BaseDataProviderRequest extends BaseRequest {
+public class BaseDataRequest extends BaseRequest {
 
-    public void execute() throws Exception {
+    public void execute(final DataManager dataManager) throws Exception {
     }
 
-    public void afterExecute(final RequestManager requestManager) {
+    public void afterExecute(final DataManager dataManager) {
         if (getException() != null) {
             getException().printStackTrace();
         }
@@ -21,13 +21,13 @@ public class BaseDataProviderRequest extends BaseRequest {
             @Override
             public void run() {
                 if (getCallback() != null) {
-                    getCallback().done(BaseDataProviderRequest.this, getException());
+                    getCallback().done(BaseDataRequest.this, getException());
                 }
-                requestManager.releaseWakeLock();
+                dataManager.getRequestManager().releaseWakeLock();
             }};
 
         if (isRunInBackground()) {
-            requestManager.getLooperHandler().post(runnable);
+            dataManager.getRequestManager().getLooperHandler().post(runnable);
         } else {
             runnable.run();
         }

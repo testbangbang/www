@@ -8,7 +8,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.dataprovider.BuildConfig;
 import com.onyx.android.sdk.utils.LocaleUtils;
-import com.onyx.android.sdk.data.request.BaseCloudRequest;
+import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;

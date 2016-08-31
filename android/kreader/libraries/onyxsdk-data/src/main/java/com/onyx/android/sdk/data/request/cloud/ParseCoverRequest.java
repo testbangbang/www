@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data.request;
+package com.onyx.android.sdk.data.request.cloud;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

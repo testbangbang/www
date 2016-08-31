@@ -4,7 +4,7 @@ import android.os.Handler;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.data.request.CloudFileDownloadRequest;
+import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 
 /**
  * Created by suicheng on 2016/8/17.

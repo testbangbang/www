@@ -1,36 +1,35 @@
-package com.onyx.android.sdk.data.request;
+package com.onyx.android.sdk.data.request.cloud;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.GAdapter;
-import com.onyx.android.sdk.data.model.Dictionary;
-import com.onyx.android.sdk.data.model.DictionaryQuery;
+import com.onyx.android.sdk.data.model.Product;
+import com.onyx.android.sdk.data.model.ProductQuery;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
+
 import com.onyx.android.sdk.data.v1.ServiceFactory;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
-import retrofit2.Call;
 import retrofit2.Response;
 
 /**
- * Created by zhuzeng on 12/14/15.
+ * Created by suicheng on 2016/8/12.
  */
-public class DictionaryListRequest extends BaseCloudRequest {
-    static private final String TAG = DictionaryListRequest.class.getSimpleName();
-    private DictionaryQuery dictionaryQuery;
-    private ProductResult<Dictionary> productResult;
+public class ProductListRequest extends BaseCloudRequest {
+    static private final String TAG = ProductListRequest.class.getSimpleName();
+    private ProductQuery productQuery;
+    private ProductResult<Product> productResult;
     private GAdapter adapter;
     private volatile boolean clearCache;
     private volatile boolean cloudOnly;
 
-    public DictionaryListRequest(final DictionaryQuery query, boolean clear, boolean cloud) {
-        dictionaryQuery = query;
+    public ProductListRequest(final ProductQuery query, boolean clear, boolean cloud) {
+        productQuery = query;
         clearCache = clear;
         cloudOnly = cloud;
     }
 
-    public final ProductResult<Dictionary> getProductResult() {
+    public final ProductResult<Product> getProductResult() {
         return productResult;
     }
 
@@ -45,25 +44,29 @@ public class DictionaryListRequest extends BaseCloudRequest {
         } else if (!cloudOnly) {
             fetchFromLocalCache(parent);
         }
-        adapter = CloudUtils.adapterFromDictionaryResult(getContext(), productResult, Integer.MAX_VALUE, parent.getCloudConf());
+        adapter = CloudUtils.adapterFromProductResult(getContext(), productResult, productQuery.coverLimit, parent.getCloudConf());
     }
 
     public void fetchFromLocalCache(final CloudManager parent) throws Exception {
         productResult = new ProductResult<>();
-        productResult.list = SQLite.select().from(Dictionary.class).queryList();
+        productResult.list = StoreUtils.queryDataList(Product.class);
         productResult.count = productResult.list.size();
     }
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
-        Call<ProductResult<Dictionary>> call = ServiceFactory.getDictionaryService(parent.getCloudConf().getApiBase())
-                .dictionaryList(JSON.toJSONString(dictionaryQuery));
-        Response<ProductResult<Dictionary>> response = call.execute();
+        String param = JSON.toJSONString(productQuery);
+        Response<ProductResult<Product>> response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
+                .bookList(param).execute();
+        CloudUtils.dumpResponseMessage(TAG, response, true);
         if (response.isSuccessful()) {
             productResult = response.body();
             if (isSaveToLocal()) {
-                StoreUtils.saveToLocal(productResult, Dictionary.class, clearCache);
+                saveToLocal(productResult);
             }
         }
     }
 
+    private void saveToLocal(final ProductResult<Product> result) {
+        StoreUtils.saveToLocal(result, Product.class, clearCache);
+    }
 }

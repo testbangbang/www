@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data.request;
+package com.onyx.android.sdk.data.request.cloud;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -60,9 +60,6 @@ public abstract class BaseCloudRequest extends BaseRequest {
     }
 
     public abstract void execute(final CloudManager parent) throws Exception;
-
-    public void doComplexWork() {
-    }
 
     /**
      * must not throw out exception from the method

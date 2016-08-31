@@ -2,7 +2,7 @@ package com.onyx.kreader.host.request;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
-import com.onyx.android.sdk.data.request.BaseDataProviderRequest;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -12,7 +12,7 @@ import java.io.File;
 /**
  * Created by zhuzeng on 5/31/16.
  */
-public class LoadDocumentOptionsRequest extends BaseDataProviderRequest {
+public class LoadDocumentOptionsRequest extends BaseDataRequest {
 
     private String documentPath;
     private volatile String md5;
