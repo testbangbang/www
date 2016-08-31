@@ -109,37 +109,6 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
             }
         });
         super.show();
-
-        requestFocus();
-    }
-
-    private void requestFocus() {
-        ttsPlay.setFocusableInTouchMode(true);
-        ttsPlay.requestFocusFromTouch();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        final int page = readerDataHolder.getCurrentPage();
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_PAGE_UP:
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (page > 0) {
-                    ttsStop(readerDataHolder);
-                    gotoPage(readerDataHolder, page -1);
-                }
-                return true;
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (page < readerDataHolder.getPageCount() - 1) {
-                    ttsStop(readerDataHolder);
-                    gotoPage(readerDataHolder, page + 1);
-                }
-                return true;
-            default:
-                break;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {
@@ -210,6 +179,34 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
                 ReaderDeviceManager.setGcInterval(gcInterval);
                 ttsStop(readerDataHolder);
                 readerDataHolder.getTtsManager().registerCallback(null);
+            }
+        });
+
+        setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    final int page = readerDataHolder.getCurrentPage();
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_PAGE_UP:
+                        case KeyEvent.KEYCODE_DPAD_LEFT:
+                            if (page > 0) {
+                                ttsStop(readerDataHolder);
+                                gotoPage(readerDataHolder, page -1);
+                            }
+                            return true;
+                        case KeyEvent.KEYCODE_PAGE_DOWN:
+                        case KeyEvent.KEYCODE_DPAD_RIGHT:
+                            if (page < readerDataHolder.getPageCount() - 1) {
+                                ttsStop(readerDataHolder);
+                                gotoPage(readerDataHolder, page + 1);
+                            }
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
             }
         });
 
