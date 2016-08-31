@@ -297,23 +297,29 @@ public class ReaderTtsService {
     }
 
     private void startMediaPlayer() {
-        mediaPlayer.start();
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
     }
 
     private void pauseMediaPlayer() {
-        if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
         }
     }
 
     private void closeMediaPlayer() {
         try {
+            if (mediaPlayer == null) {
+                return;
+            }
             mediaPlayer.setOnCompletionListener(null);
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
             }
             mediaPlayer.reset();
             mediaPlayer.release();
+            mediaPlayer = null;
         } catch (Throwable tr) {
             Log.w(TAG, tr);
         }
