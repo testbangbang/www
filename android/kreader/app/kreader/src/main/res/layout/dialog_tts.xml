@@ -4,8 +4,10 @@
                 android:layout_height="wrap_content">
 
     <LinearLayout
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="@dimen/dialog_tts_padding"
+        android:paddingRight="@dimen/dialog_tts_padding"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/tts_button_layout"
@@ -74,7 +76,7 @@
         <SeekBar
             android:thumb="@drawable/tts_voice_seekbar_thumb"
             android:id="@+id/seek_bar_tts"
-            android:layout_width="150dp"
+            android:layout_width="@dimen/dialog_tts_voice_height"
             android:layout_height="wrap_content"
             android:minHeight="6dp"
             android:maxHeight="6dp"

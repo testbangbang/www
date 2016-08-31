@@ -46,7 +46,6 @@ import java.util.List;
 public class DialogSearch extends Dialog{
 
     private static final String TAG = DialogSearch.class.getSimpleName();
-    private static int SEARCH_CONTENT_ROW = 8;
     private static int SEARCH_HISTORY_COUNT = 10;
     public static final int SEARCH_CONTENT_LENGTH = 30;
     public static final int SEARCH_PAGE_ONE_TIME = 20;
@@ -79,12 +78,14 @@ public class DialogSearch extends Dialog{
     private List<ReaderSelection> showSearchList = new ArrayList<>();
     private List<SearchHistory> historyList = new ArrayList<>();
     private String searchText;
+    private int searchRows = 0;
 
     public DialogSearch(final ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
 
         setContentView(R.layout.dialog_search);
         this.readerDataHolder = readerDataHolder;
+        searchRows = getContext().getResources().getInteger(R.integer.search_row);
         init();
     }
 
@@ -212,7 +213,7 @@ public class DialogSearch extends Dialog{
         pageRecyclerView.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
-                return SEARCH_CONTENT_ROW;
+                return searchRows;
             }
 
             @Override
@@ -302,7 +303,7 @@ public class DialogSearch extends Dialog{
             @Override
             public void run() {
                 reset();
-                searchContentAction = new SearchContentAction(searchText,SEARCH_CONTENT_LENGTH, startPage, SEARCH_PAGE_ONE_TIME * SEARCH_CONTENT_ROW);
+                searchContentAction = new SearchContentAction(searchText,SEARCH_CONTENT_LENGTH, startPage, SEARCH_PAGE_ONE_TIME * searchRows);
                 searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
                     @Override
                     public void OnNext(final List<ReaderSelection> results,int page) {
@@ -344,7 +345,7 @@ public class DialogSearch extends Dialog{
     }
 
     private void mergeSearchList(){
-        int maxCount = nextRequestPage  * SEARCH_CONTENT_ROW;
+        int maxCount = nextRequestPage  * searchRows;
         if (showSearchList.size() < searchList.size()){
             for (int i = showSearchList.size(); i < maxCount && i < searchList.size(); i++) {
                 showSearchList.add(searchList.get(i));
@@ -436,8 +437,8 @@ public class DialogSearch extends Dialog{
 
     private void updatePageIndicator(int position, int itemCount){
         currentPagePosition = position;
-        int page = itemCount / SEARCH_CONTENT_ROW;
-        int currentPage = page > 0 ? position / SEARCH_CONTENT_ROW + 1 : 1;
+        int page = itemCount / searchRows;
+        int currentPage = page > 0 ? position / searchRows + 1 : 1;
         page = Math.max(page, 1);
         String indicator = String.format("%d/%d",currentPage,page);
         String total = String.format(getContext().getString(R.string.total_page),showSearchList.size());
@@ -465,7 +466,7 @@ public class DialogSearch extends Dialog{
     }
 
     private void nextSearch(){
-        int currentPage = currentPagePosition / SEARCH_CONTENT_ROW + 1;
+        int currentPage = currentPagePosition / searchRows + 1;
         if (currentPage == nextRequestPage) {
             nextIcon.setEnabled(false);
             nextRequestPage = nextRequestPage + SEARCH_PAGE_ONE_TIME;
