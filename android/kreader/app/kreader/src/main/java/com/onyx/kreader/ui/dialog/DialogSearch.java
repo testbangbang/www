@@ -18,7 +18,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -61,11 +60,10 @@ public class DialogSearch extends Dialog{
 
     private PageRecyclerView pageRecyclerView;
     private RecyclerView historyRecyclerView;
-    private ImageView backView;
-    private TextView backText;
     private TextView totalPage;
     private TextView pageIndicator;
     private TextView searchingText;
+    private LinearLayout backLayout;
     private OnyxCustomEditText searchEditText;
     private ImageButton preIcon;
     private ImageButton nextIcon;
@@ -92,8 +90,7 @@ public class DialogSearch extends Dialog{
 
     private void init(){
         pageRecyclerView = (PageRecyclerView)findViewById(R.id.search_recycler_view);
-        backView = (ImageView) findViewById(R.id.image_view_back);
-        backText = (TextView) findViewById(R.id.text_view_back);
+        backLayout = (LinearLayout) findViewById(R.id.back_layout);
         totalPage = (TextView)findViewById(R.id.total_page);
         pageIndicator = (TextView)findViewById(R.id.page_indicator);
         searchingText = (TextView)findViewById(R.id.textview_message);
@@ -132,14 +129,7 @@ public class DialogSearch extends Dialog{
             }
         });
 
-        backView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-
-        backText.setOnClickListener(new View.OnClickListener() {
+        backLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
