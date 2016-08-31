@@ -4,7 +4,6 @@ import android.app.Activity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.provider.AsyncDataProvider;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -30,12 +29,12 @@ public class OpenDocumentAction extends BaseAction {
     private Activity activity;
     private String documentPath;
     private DialogLoading dialogLoading;
-    private DataManager asyncDataProvider;
+    private DataManager dataProvider;
 
     public OpenDocumentAction(final Activity activity, final String path) {
         this.activity = activity;
         documentPath = path;
-        asyncDataProvider = new DataManager();
+        dataProvider = new DataManager();
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {
@@ -43,7 +42,7 @@ public class OpenDocumentAction extends BaseAction {
         showLoadingDialog(readerDataHolder);
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
                 readerDataHolder.getReader().getDocumentMd5());
-        asyncDataProvider.submit(readerDataHolder.getContext(), loadDocumentOptionsRequest, new BaseCallback() {
+        dataProvider.submit(readerDataHolder.getContext(), loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
