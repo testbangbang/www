@@ -46,10 +46,10 @@ public class LocalDataProvider implements DataProviderBase {
         return metadata;
     }
 
-    public List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria, final OrderBy orderBy) {
+    public List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria) {
         final ConditionGroup conditionGroup = queryCriteriaCondition(queryCriteria);
         if (conditionGroup.size() > 0) {
-            return new Select().from(Metadata.class).where(conditionGroup).orderBy(orderBy).queryList();
+            return new Select().from(Metadata.class).where(conditionGroup).orderBy(queryCriteria.orderBy).offset(queryCriteria.offest).limit(queryCriteria.limit).queryList();
         }
         return new ArrayList<>();
     }
