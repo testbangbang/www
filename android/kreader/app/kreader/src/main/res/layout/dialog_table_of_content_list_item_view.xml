@@ -56,46 +56,52 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageButton
+        <LinearLayout
+            android:id="@+id/edit_layout"
             android:padding="5dp"
+            android:gravity="center"
+            android:layout_marginRight="30dp"
+            android:layout_toLeftOf="@+id/delete_layout"
             android:background="@drawable/imagebtn_bg"
-            android:layout_centerVertical="true"
-            android:id="@+id/image_view_edit"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/text_view_edit"
-            android:src="@drawable/ic_dialog_reader_edit_black"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:background="@drawable/imagebtn_bg"
-            android:layout_toLeftOf="@+id/image_view_delete"
-            android:layout_marginRight="45dp"
-            android:layout_centerVertical="true"
-            android:id="@+id/text_view_edit"
-            android:text="@string/edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <ImageView
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_dialog_reader_edit_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <ImageButton
+            <TextView
+                android:text="@string/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:padding="5dp"
-            android:background="@drawable/imagebtn_bg"
-            android:layout_centerVertical="true"
-            android:id="@+id/image_view_delete"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/text_view_delete"
-            android:src="@drawable/ic_dialog_reader_delet_black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:background="@drawable/imagebtn_bg"
-            android:layout_centerVertical="true"
-            android:id="@+id/text_view_delete"
+            android:gravity="center"
+            android:id="@+id/delete_layout"
             android:layout_alignParentRight="true"
-            android:text="@string/delete"
+            android:background="@drawable/imagebtn_bg"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_dialog_reader_delet_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="@string/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+
     </RelativeLayout>
 
     <View

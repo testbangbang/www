@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -55,15 +56,15 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     SeekBar seekBarTts;
     @Bind(R.id.voice_size_layout)
     LinearLayout voiceSizeLayout;
-    @Bind(R.id.fast_speed)
+    @Bind(R.id.fastest_speed)
     CheckBox fastSpeed;
-    @Bind(R.id.more_fast_speed)
+    @Bind(R.id.faster_speed)
     CheckBox moreFastSpeed;
     @Bind(R.id.normal_speed)
     CheckBox normalSpeed;
-    @Bind(R.id.more_slow_speed)
+    @Bind(R.id.slower_speed)
     CheckBox moreSlowSpeed;
-    @Bind(R.id.slow_speed)
+    @Bind(R.id.slowest_speed)
     CheckBox slowSpeed;
     @Bind(R.id.voice_speed_layout)
     RadioGroup voiceSpeedLayout;
@@ -78,7 +79,13 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     private ReaderSentence currentSentence;
     private boolean stopped;
 
-    private int[] speedCheckBoxIds = {R.id.fast_speed,R.id.more_fast_speed,R.id.normal_speed,R.id.more_slow_speed,R.id.slow_speed};
+    private Pair<Integer, Pair<Integer, Float>>[] speedCheckBoxCollection = new Pair[] {
+        new Pair(R.id.slowest_speed, new Pair<>(1, 0.5f)),
+            new Pair(R.id.slower_speed, new Pair<>(2, 0.75f)),
+            new Pair(R.id.normal_speed, new Pair<>(3, 1.0f)),
+            new Pair(R.id.faster_speed, new Pair<>(4, 1.5f)),
+            new Pair(R.id.fastest_speed, new Pair<>(5, 2.0f)),
+    };
 
     private int gcInterval = 0;
 
@@ -215,6 +222,10 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         seekBarTts.setMax(maxVolume);
         seekBarTts.setProgress(curVolume);
 
+        // reset to default normal speed
+        readerDataHolder.getTtsManager().setSpeechRate(1.0f);
+        updateSpeedCheckBoxCheckedStatus(3);
+
         readerDataHolder.getTtsManager().registerCallback(new ReaderTtsManager.Callback() {
 
             @Override
@@ -285,14 +296,36 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         if(!buttonView.isPressed()){
             return;
         }
-        boolean checked = false;
-        int length = speedCheckBoxIds.length;
-        for (int i = 0; i < length; i++) {
-            if (buttonView.getId() == speedCheckBoxIds[i]){
-                controlSpeedOfSound(length - i);
-                checked = true;
+        for (int i = 0; i < speedCheckBoxCollection.length; i++) {
+            if (buttonView.getId() == getCheckBoxId(i)) {
+                final int speed = getCheckBoxSpeed(i);
+                controlSpeedOfSound(getCheckBoxRate(i));
+                updateSpeedCheckBoxCheckedStatus(speed);
+                break;
             }
-            ((CompoundButton)findViewById(speedCheckBoxIds[i])).setChecked(checked);
+        }
+    }
+
+    private int getCheckBoxId(int index) {
+        return speedCheckBoxCollection[index].first;
+    }
+
+    private int getCheckBoxSpeed(int index) {
+        return speedCheckBoxCollection[index].second.first;
+    }
+
+    private float getCheckBoxRate(int index) {
+        return speedCheckBoxCollection[index].second.second;
+    }
+
+    private void updateSpeedCheckBoxCheckedStatus(int targetSpeed) {
+        for (int i = 0; i < speedCheckBoxCollection.length; i++) {
+            final int speed = getCheckBoxSpeed(i);
+            if (speed <= targetSpeed) {
+                ((CompoundButton)findViewById(getCheckBoxId(i))).setChecked(true);
+            } else {
+                ((CompoundButton) findViewById(getCheckBoxId(i))).setChecked(false);
+            }
         }
     }
 
@@ -320,8 +353,11 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     }
 
     //调节声音速度(1-5档)
-    private void controlSpeedOfSound(int speed){
-
+    private void controlSpeedOfSound(final float rate){
+        readerDataHolder.getTtsManager().stop();
+        readerDataHolder.getTtsManager().setSpeechRate(rate);
+        readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
+        readerDataHolder.getTtsManager().play();
     }
 
     private boolean requestSentenceForTts() {

@@ -227,9 +227,16 @@ public class ReaderActivity extends ActionBarActivity {
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                 clearCanvas(holder);
-                if (readerDataHolder.isDocumentOpened()) {
+                if (!readerDataHolder.isDocumentOpened()) {
+                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+                    return;
+                }
+                if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
+                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+                    new ChangeViewConfigAction().execute(readerDataHolder);
+                } else {
                     readerDataHolder.redrawPage();
                 }
             }
