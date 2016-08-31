@@ -1,7 +1,7 @@
 package com.onyx.kreader.ui;
 
 import android.app.Application;
-import com.onyx.android.sdk.data.provider.AsyncDataProvider;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.provider.SharedPreferenceProvider;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
@@ -21,7 +21,7 @@ public class KReaderApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AsyncDataProvider.init(this, databaseHolderList());
+        DataManager.init(this, databaseHolderList());
         SharedPreferenceProvider.init(this);
         SingletonSharedPreference.init(this);
         LeakCanary.install(this);
