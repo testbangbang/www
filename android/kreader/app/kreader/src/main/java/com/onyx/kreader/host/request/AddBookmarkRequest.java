@@ -1,8 +1,8 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.dataprovider.model.Bookmark;
-import com.onyx.android.sdk.dataprovider.DataProviderManager;
+import com.onyx.android.sdk.data.model.Bookmark;
+import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -26,7 +26,7 @@ public class AddBookmarkRequest extends BaseReaderRequest {
 
     private Bookmark createBookmark(final Reader reader) {
         Bookmark bookmark = new Bookmark();
-        bookmark.setUniqueId(reader.getDocumentMd5());
+        bookmark.setIdString(reader.getDocumentMd5());
         bookmark.setApplication(reader.getPlugin().displayName());
         bookmark.setPosition(pageInfo.getName());
         bookmark.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));

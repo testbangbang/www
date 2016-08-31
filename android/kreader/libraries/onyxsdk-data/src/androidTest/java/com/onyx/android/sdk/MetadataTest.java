@@ -3,8 +3,12 @@ package com.onyx.android.sdk;
 import android.app.Application;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
-import com.onyx.android.sdk.dataprovider.*;
-import com.onyx.android.sdk.dataprovider.model.Metadata;
+import com.onyx.android.sdk.data.provider.AsyncDataProvider;
+import com.onyx.android.sdk.data.provider.LocalDataProvider;
+import com.onyx.android.sdk.data.QueryCriteria;
+import com.onyx.android.sdk.data.model.ReadingProgress;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.dataprovider.model.Metadata_Table;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -104,7 +108,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             File file = generateRandomFile(parent, hasExtension);
             metadata = new Metadata();
             String md5 = FileUtils.computeMD5(file);
-            metadata.setUniqueId(md5);
+            metadata.setIdString(md5);
             metadata.setName(file.getName());
             metadata.setLocation(file.getAbsolutePath());
             metadata.setNativeAbsolutePath(file.getAbsolutePath());
@@ -127,7 +131,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             File file = generateRandomFile(parent, ext);
             metadata = new Metadata();
             String md5 = FileUtils.computeMD5(file);
-            metadata.setUniqueId(md5);
+            metadata.setIdString(md5);
             metadata.setName(file.getName());
             metadata.setLocation(file.getAbsolutePath());
             metadata.setNativeAbsolutePath(file.getAbsolutePath());
@@ -154,12 +158,12 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         origin.setAuthors(StringUtils.join(authors, Metadata.DELIMITER));
         dataProvider.saveMetadata(getContext(), origin);
 
-        final Metadata result = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getUniqueId());
+        final Metadata result = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getIdString());
         assertNotNull(result);
-        assertEquals(result.getUniqueId(), origin.getUniqueId());
+        assertEquals(result.getIdString(), origin.getIdString());
 
         dataProvider.removeMetadata(getContext(), origin);
-        final Metadata anotherResult = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getUniqueId());
+        final Metadata anotherResult = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getIdString());
         assertNull(anotherResult);
     }
 
@@ -170,11 +174,11 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final String json = UUID.randomUUID().toString();
         Metadata origin = randomMetadata(testFolder(), true);
-        dataProvider.saveDocumentOptions(getContext(), origin.getNativeAbsolutePath(), origin.getUniqueId(), json);
+        dataProvider.saveDocumentOptions(getContext(), origin.getNativeAbsolutePath(), origin.getIdString(), json);
 
-        final Metadata result = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getUniqueId());
+        final Metadata result = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getIdString());
         assertNotNull(result);
-        assertEquals(result.getUniqueId(), origin.getUniqueId());
+        assertEquals(result.getIdString(), origin.getIdString());
         assertEquals(result.getExtraAttributes(), json);
     }
 
@@ -203,7 +207,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertTrue(result.size() == 1);
 
         final Metadata target = result.get(0);
-        assertEquals(target.getUniqueId(), origin.getUniqueId());
+        assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
         final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria, OrderBy.fromProperty(Metadata_Table.authors));
@@ -235,7 +239,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertTrue(result.size() == 1);
 
         final Metadata target = result.get(0);
-        assertEquals(target.getUniqueId(), origin.getUniqueId());
+        assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
         final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria, OrderBy.fromProperty(Metadata_Table.name));
@@ -267,7 +271,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertTrue(result.size() == 1);
 
         final Metadata target = result.get(0);
-        assertEquals(target.getUniqueId(), origin.getUniqueId());
+        assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
         final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria, OrderBy.fromProperty(Metadata_Table.name));
@@ -299,7 +303,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertTrue(result.size() == 1);
 
         final Metadata target = result.get(0);
-        assertEquals(target.getUniqueId(), origin.getUniqueId());
+        assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
         final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria, OrderBy.fromProperty(Metadata_Table.name));

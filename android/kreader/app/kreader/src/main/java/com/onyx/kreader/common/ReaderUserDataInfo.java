@@ -2,16 +2,15 @@ package com.onyx.kreader.common;
 
 import android.content.Context;
 
+import com.onyx.android.sdk.data.model.*;
+import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.dataprovider.*;
-import com.onyx.android.sdk.dataprovider.model.*;
-import com.onyx.android.sdk.dataprovider.SearchHistoryProvider;
+import com.onyx.android.sdk.data.provider.SearchHistoryProvider;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.raizlabs.android.dbflow.sql.language.NameAlias;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.ArrayList;

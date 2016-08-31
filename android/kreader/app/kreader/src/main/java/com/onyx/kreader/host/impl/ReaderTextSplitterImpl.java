@@ -96,9 +96,7 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
     public static ReaderTextSplitterImpl sharedInstance() {
         if (instance == null) {
             instance = new ReaderTextSplitterImpl();
-            Debug.d(instance, "init chinese analyzer...");
             AnalyzerAndroidWrapper.init(KReaderApp.instance());
-            Debug.d(instance, "init chinese analyzer finished");
         }
         return instance;
     }

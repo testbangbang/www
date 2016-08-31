@@ -3,12 +3,12 @@ package com.onyx.kreader.ui.actions;
 import android.app.Activity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.dataprovider.AsyncDataProvider;
+import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.provider.AsyncDataProvider;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -30,12 +30,12 @@ public class OpenDocumentAction extends BaseAction {
     private Activity activity;
     private String documentPath;
     private DialogLoading dialogLoading;
-    private AsyncDataProvider asyncDataProvider;
+    private DataManager asyncDataProvider;
 
     public OpenDocumentAction(final Activity activity, final String path) {
         this.activity = activity;
         documentPath = path;
-        asyncDataProvider = new AsyncDataProvider();
+        asyncDataProvider = new DataManager();
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {

@@ -102,11 +102,11 @@
         android:layout_height="wrap_content">
 
         <CheckBox
-            android:id="@+id/fast_speed"
+            android:id="@+id/fastest_speed"
             style="@style/tts_speed_checkbox"
             android:text="快 "/>
         <CheckBox
-            android:id="@+id/more_fast_speed"
+            android:id="@+id/faster_speed"
             style="@style/tts_speed_checkbox"
             android:text="较快"/>
         <CheckBox
@@ -114,11 +114,11 @@
             style="@style/tts_speed_checkbox"
             android:text="正常"/>
         <CheckBox
-            android:id="@+id/more_slow_speed"
+            android:id="@+id/slower_speed"
             style="@style/tts_speed_checkbox"
             android:text="较慢"/>
         <CheckBox
-            android:id="@+id/slow_speed"
+            android:id="@+id/slowest_speed"
             style="@style/tts_speed_checkbox"
             android:text="慢 "/>
     </RadioGroup>
