@@ -115,7 +115,9 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                ttsPlay(readerDataHolder);
+                if (!stopped) {
+                    ttsPlay(readerDataHolder);
+                }
             }
         });
     }
