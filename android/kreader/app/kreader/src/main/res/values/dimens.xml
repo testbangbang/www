@@ -25,7 +25,7 @@
     <dimen name="dialog_quick_preview_list_item_margin">5dp</dimen>
     <dimen name="dialog_quick_preview_seek_bar_height">25dp</dimen>
     <dimen name="dialog_quick_preview_seek_bar_margin_top">10dp</dimen>
-    <dimen name="dialog_quick_preview_page_margin_bottom">10dp</dimen>
+    <dimen name="dialog_quick_preview_page_margin_bottom">5dp</dimen>
     <dimen name="dialog_quick_preview_list_item_shadow_height">4dp</dimen>
     <dimen name="dialog_navigation_setting_item_margin">20dp</dimen>
     <dimen name="dialog_navigation_setting_left_item_width">80dp</dimen>
