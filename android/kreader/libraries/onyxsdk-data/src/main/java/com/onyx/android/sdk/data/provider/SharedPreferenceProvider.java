@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
 import android.content.SharedPreferences;

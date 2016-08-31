@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.dataprovider.SharedPreferenceProvider;
+import com.onyx.android.sdk.data.provider.SharedPreferenceProvider;
 import com.onyx.android.sdk.scribble.ScribbleHandler;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.ui.data.CustomBindKeyBean;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.onyx.android.sdk.dataprovider.compatability;
+package com.onyx.android.sdk.data.compatability;
 
 import android.content.Context;
 import android.database.Cursor;

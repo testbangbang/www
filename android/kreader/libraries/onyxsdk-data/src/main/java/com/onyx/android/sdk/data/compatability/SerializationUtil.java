@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.dataprovider.compatability;
+package com.onyx.android.sdk.data.compatability;
 
 import android.graphics.Rect;
 import android.text.TextUtils;

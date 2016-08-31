@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.data;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.CollectionUtils;

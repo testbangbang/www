@@ -1,12 +1,4 @@
-package com.onyx.android.sdk.dataprovider;
-
-import android.content.Context;
-import android.util.Log;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
-import java.io.File;
+package com.onyx.android.sdk.data.provider;
 
 /**
  * Created by zhuzeng on 5/27/16.

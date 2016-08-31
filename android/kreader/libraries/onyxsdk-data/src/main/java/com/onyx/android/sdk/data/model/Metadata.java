@@ -1,6 +1,5 @@
-package com.onyx.android.sdk.dataprovider.model;
+package com.onyx.android.sdk.data.model;
 
-import com.onyx.android.sdk.dataprovider.ContentDatabase;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;

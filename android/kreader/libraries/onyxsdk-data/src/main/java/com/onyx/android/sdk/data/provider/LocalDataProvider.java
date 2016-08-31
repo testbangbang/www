@@ -1,10 +1,14 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
-import com.onyx.android.sdk.dataprovider.model.*;
+import com.onyx.android.sdk.data.QueryCriteria;
+import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.language.*;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;

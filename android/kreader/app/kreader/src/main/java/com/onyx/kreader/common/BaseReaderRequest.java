@@ -3,7 +3,7 @@ package com.onyx.kreader.common;
 import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.dataprovider.DataProviderManager;
+import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;

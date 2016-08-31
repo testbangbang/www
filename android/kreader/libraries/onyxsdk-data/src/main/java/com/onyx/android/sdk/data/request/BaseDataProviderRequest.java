@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.dataprovider.request;
+package com.onyx.android.sdk.data.request;
 
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;

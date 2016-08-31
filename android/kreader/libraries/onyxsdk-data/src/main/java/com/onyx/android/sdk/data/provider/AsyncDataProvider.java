@@ -1,10 +1,10 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
 import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
-import com.onyx.android.sdk.dataprovider.request.BaseDataProviderRequest;
+import com.onyx.android.sdk.data.request.BaseDataProviderRequest;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;

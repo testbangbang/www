@@ -1,9 +1,10 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
-import com.onyx.android.sdk.dataprovider.model.Annotation;
-import com.onyx.android.sdk.dataprovider.model.Bookmark;
-import com.onyx.android.sdk.dataprovider.model.Metadata;
+import com.onyx.android.sdk.data.QueryCriteria;
+import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.data.model.Bookmark;
+import com.onyx.android.sdk.data.model.Metadata;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.data.model;
 
 /**
  * Created by zhuzeng on 6/1/16.

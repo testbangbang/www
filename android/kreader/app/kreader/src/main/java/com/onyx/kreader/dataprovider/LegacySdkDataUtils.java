@@ -4,10 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
-import com.onyx.android.sdk.dataprovider.compatability.OnyxBookProgress;
-import com.onyx.android.sdk.dataprovider.compatability.OnyxCmsCenter;
-import com.onyx.android.sdk.dataprovider.compatability.OnyxMetadata;
-import com.onyx.android.sdk.dataprovider.compatability.OnyxSysCenter;
+import com.onyx.android.sdk.data.compatability.OnyxBookProgress;
+import com.onyx.android.sdk.data.compatability.OnyxCmsCenter;
+import com.onyx.android.sdk.data.compatability.OnyxMetadata;
+import com.onyx.android.sdk.data.compatability.OnyxSysCenter;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
 
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
 package com.onyx.kreader.ui;
 
 import android.app.Application;
-import com.onyx.android.sdk.dataprovider.AsyncDataProvider;
-import com.onyx.android.sdk.dataprovider.SharedPreferenceProvider;
+import com.onyx.android.sdk.data.provider.AsyncDataProvider;
+import com.onyx.android.sdk.data.provider.SharedPreferenceProvider;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;

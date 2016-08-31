@@ -1,7 +1,7 @@
-package com.onyx.android.sdk.dataprovider;
+package com.onyx.android.sdk.data.provider;
 
-import com.onyx.android.sdk.dataprovider.model.SearchHistory;
-import com.onyx.android.sdk.dataprovider.model.SearchHistory_Table;
+import com.onyx.android.sdk.data.model.SearchHistory;
+import com.onyx.android.sdk.data.model.SearchHistory_Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 

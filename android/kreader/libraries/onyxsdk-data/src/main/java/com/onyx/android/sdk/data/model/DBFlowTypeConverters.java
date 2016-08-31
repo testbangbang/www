@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.dataprovider.model;
+package com.onyx.android.sdk.data.model;
 
 import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
