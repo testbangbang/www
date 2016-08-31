@@ -1,8 +1,16 @@
 package com.onyx.kreader.ui.handler;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.R;
+import com.onyx.kreader.api.ReaderSentence;
+import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.host.request.GetSentenceRequest;
+import com.onyx.kreader.host.request.RenderRequest;
+import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -12,42 +20,166 @@ import com.onyx.kreader.utils.PagePositionUtils;
  */
 public class TtsHandler extends BaseHandler {
 
+    private static final String TAG = TtsHandler.class.getSimpleName();
+
+    public static abstract class Callback {
+        public abstract void onStateChanged();
+    }
+
+    private ReaderDataHolder readerDataHolder;
+    private ReaderSentence currentSentence;
+    private boolean stopped;
+    private Callback callback;
+
     public TtsHandler(HandlerManager parent) {
         super(parent);
+
+        readerDataHolder = getParent().getReaderDataHolder();
+        readerDataHolder.getTtsManager().registerCallback(new ReaderTtsManager.Callback() {
+
+            @Override
+            public void requestSentence() {
+                requestSentenceForTts();
+            }
+
+            @Override
+            public void onStateChanged() {
+                if (callback != null) {
+                    callback.onStateChanged();
+                }
+            }
+
+            @Override
+            public void onError() {
+                if (callback != null) {
+                    callback.onStateChanged();
+                }
+                readerDataHolder.submitRenderRequest(new RenderRequest());
+            }
+        });
     }
 
     @Override
-    public boolean onKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
+    public boolean onKeyUp(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
         final int page = readerDataHolder.getCurrentPage();
         switch (keyCode) {
             case KeyEvent.KEYCODE_PAGE_UP:
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 if (page > 0) {
-                    getParent().getReaderDataHolder().getTtsManager().stop();
+                    ttsStop();
                     gotoPage(readerDataHolder, page -1);
                 }
                 return true;
             case KeyEvent.KEYCODE_PAGE_DOWN:
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 if (page < readerDataHolder.getPageCount() - 1) {
-                    getParent().getReaderDataHolder().getTtsManager().stop();
+                    ttsStop();
                     gotoPage(readerDataHolder, page + 1);
                 }
                 return true;
-            case KeyEvent.KEYCODE_BACK:
-                getParent().getReaderDataHolder().getTtsManager().stop();
-                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
-                return true;
+            default:
+                break;
         }
-        return super.onKeyDown(readerDataHolder, keyCode, event);
+        return false;
+    }
+
+    public void registerCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    public void ttsPlay() {
+        stopped = false;
+        readerDataHolder.getTtsManager().play();
+    }
+
+    public void ttsPause() {
+        readerDataHolder.getTtsManager().pause();
+    }
+
+    public void ttsStop() {
+        currentSentence = null;
+        stopped = true;
+        readerDataHolder.getTtsManager().stop();
+        readerDataHolder.submitRenderRequest(new RenderRequest());
+    }
+
+    public void setSpeechRate(float rate) {
+        readerDataHolder.getTtsManager().stop();
+        readerDataHolder.getTtsManager().setSpeechRate(rate);
+        readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
+        readerDataHolder.getTtsManager().play();
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {
         new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                getParent().getReaderDataHolder().getTtsManager().play();
+                ttsPlay();
             }
         });
     }
+
+    private boolean requestSentenceForTts() {
+        if (currentSentence != null) {
+            if (currentSentence.isEndOfDocument()) {
+                Debug.d(TAG, "end of document");
+                readerDataHolder.getTtsManager().stop();
+                return false;
+            }
+            if (currentSentence.isEndOfScreen()) {
+                Debug.d(TAG, "end of page");
+                currentSentence = null;
+                String next = PagePositionUtils.fromPageNumber(readerDataHolder.getCurrentPage() + 1);
+                new GotoPageAction(next).execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e != null) {
+                            Log.w(TAG, e);
+                            return;
+                        }
+                        requestSentenceForTts();
+                    }
+                });
+                return true;
+            }
+        }
+
+        String startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
+        final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerDataHolder.getCurrentPage(), startPosition);
+        readerDataHolder.submitRenderRequest(sentenceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    Log.w(TAG, e);
+                    return;
+                }
+                if (stopped) {
+                    return;
+                }
+                currentSentence = sentenceRequest.getSentenceResult();
+                if (currentSentence == null) {
+                    Log.w(TAG, "get sentence failed");
+                    return;
+                }
+                dumpCurrentSentence();
+                if (StringUtils.isNullOrEmpty(currentSentence.getReaderSelection().getText())) {
+                    requestSentenceForTts();
+                    return;
+                }
+                readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
+                readerDataHolder.getTtsManager().play();
+            }
+        });
+        return true;
+    }
+
+    private void dumpCurrentSentence() {
+        Debug.d(TAG, "current sentence: %s, [%s, %s], %b, %b",
+                StringUtils.deleteNewlineSymbol(currentSentence.getReaderSelection().getText()),
+                currentSentence.getReaderSelection().getStartPosition(),
+                currentSentence.getReaderSelection().getEndPosition(),
+                currentSentence.isEndOfScreen(),
+                currentSentence.isEndOfDocument());
+    }
+
 }
