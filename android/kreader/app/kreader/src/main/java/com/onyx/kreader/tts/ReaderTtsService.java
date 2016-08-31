@@ -89,7 +89,12 @@ public class ReaderTtsService {
             @Override
             public void onError(final String utteranceId) {
                 Debug.d(TAG, "UtteranceProgressListener: onError");
-                handleState(TtsState.Error);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleState(TtsState.Error);
+                    }
+                });
             }
         });
 
