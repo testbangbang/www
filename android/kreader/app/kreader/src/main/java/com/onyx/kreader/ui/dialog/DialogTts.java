@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
-import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,26 +17,17 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSentence;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.request.GetSentenceRequest;
-import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
-import com.onyx.kreader.tts.ReaderTtsManager;
-import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.handler.HandlerManager;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.kreader.ui.handler.TtsHandler;
 
 /**
  * Created by ming on 16/8/12.
  */
 public class DialogTts extends Dialog implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-    private static final String TAG = DialogTts.class.getSimpleName();
-
     public static final int VOLUME_SPAN = 2;
 
     @Bind(R.id.tts_play)
@@ -76,8 +66,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     private int maxVolume;
     private AudioManager audioMgr;
     private ReaderDataHolder readerDataHolder;
-    private ReaderSentence currentSentence;
-    private boolean stopped;
+    private TtsHandler ttsHandler;
 
     private Pair<Integer, Pair<Integer, Float>>[] speedCheckBoxCollection = new Pair[] {
         new Pair(R.id.slowest_speed, new Pair<>(1, 0.5f)),
@@ -91,8 +80,11 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
     public DialogTts(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), R.style.dialog_transparent_no_title);
-        this.readerDataHolder = readerDataHolder;
         setContentView(R.layout.dialog_tts);
+
+        this.readerDataHolder = readerDataHolder;
+        ttsHandler = (TtsHandler)readerDataHolder.getHandlerManager().getActiveProvider();
+
         ButterKnife.bind(this);
         initView();
         initData();
@@ -105,50 +97,10 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                ttsPlay(readerDataHolder);
+                ttsHandler.ttsPlay();
             }
         });
         super.show();
-
-        requestFocus();
-    }
-
-    private void requestFocus() {
-        ttsPlay.setFocusableInTouchMode(true);
-        ttsPlay.requestFocusFromTouch();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        final int page = readerDataHolder.getCurrentPage();
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_PAGE_UP:
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (page > 0) {
-                    ttsStop(readerDataHolder);
-                    gotoPage(readerDataHolder, page -1);
-                }
-                return true;
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (page < readerDataHolder.getPageCount() - 1) {
-                    ttsStop(readerDataHolder);
-                    gotoPage(readerDataHolder, page + 1);
-                }
-                return true;
-            default:
-                break;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {
-        new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                ttsPlay(readerDataHolder);
-            }
-        });
     }
 
     private void initView() {
@@ -208,8 +160,18 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
             @Override
             public void onDismiss(DialogInterface dialog) {
                 ReaderDeviceManager.setGcInterval(gcInterval);
-                ttsStop(readerDataHolder);
-                readerDataHolder.getTtsManager().registerCallback(null);
+                ttsHandler.ttsStop();
+                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
+            }
+        });
+
+        setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    ttsHandler.onKeyUp(readerDataHolder, keyCode, event);
+                }
+                return false;
             }
         });
 
@@ -226,13 +188,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         readerDataHolder.getTtsManager().setSpeechRate(1.0f);
         updateSpeedCheckBoxCheckedStatus(3);
 
-        readerDataHolder.getTtsManager().registerCallback(new ReaderTtsManager.Callback() {
-
-            @Override
-            public void requestSentence() {
-                requestSentenceForTts();
-            }
-
+        ttsHandler.registerCallback(new TtsHandler.Callback() {
             @Override
             public void onStateChanged() {
                 if (readerDataHolder.getTtsManager().isSpeaking()) {
@@ -240,12 +196,6 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
                 } else {
                     ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
                 }
-            }
-
-            @Override
-            public void onError() {
-                ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
-                readerDataHolder.submitRenderRequest(new RenderRequest());
             }
         });
 
@@ -262,16 +212,16 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
             voiceSizeLayout.setVisibility(View.GONE);
             voiceSpeedLayout.setVisibility(voiceSpeedLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
         } else if (v.equals(ttsClose)) {
-            ttsStop(readerDataHolder);
+            ttsHandler.ttsStop();
             dismiss();
         }else if (v.equals(ttsPlay)){
             if (readerDataHolder.getTtsManager().isSpeaking()) {
-                ttsPause(readerDataHolder);
+                ttsHandler.ttsPause();
             } else {
-                ttsPlay(readerDataHolder);
+                ttsHandler.ttsPlay();
             }
         }else if (v.equals(ttsStop)){
-            ttsStop(readerDataHolder);
+            ttsHandler.ttsStop();
         }else if (v.equals(minusVoice)){
             setSeekBarValue(false);
         }else if (v.equals(plusVoice)){
@@ -329,23 +279,6 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         }
     }
 
-    private void ttsPlay(final ReaderDataHolder readerDataHolder) {
-        stopped = false;
-        readerDataHolder.getTtsManager().play();
-    }
-
-    private void ttsPause(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getTtsManager().pause();
-    }
-
-    private void ttsStop(final ReaderDataHolder readerDataHolder) {
-        currentSentence = null;
-        stopped = true;
-        readerDataHolder.getTtsManager().stop();
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
-        readerDataHolder.submitRenderRequest(new RenderRequest());
-    }
-
     //调节音量
     private void controlVolume(int volume){
         audioMgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume,
@@ -354,72 +287,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
     //调节声音速度(1-5档)
     private void controlSpeedOfSound(final float rate){
-        readerDataHolder.getTtsManager().stop();
-        readerDataHolder.getTtsManager().setSpeechRate(rate);
-        readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
-        readerDataHolder.getTtsManager().play();
+        ttsHandler.setSpeechRate(rate);
     }
 
-    private boolean requestSentenceForTts() {
-        if (currentSentence != null) {
-            if (currentSentence.isEndOfDocument()) {
-                Debug.d(TAG, "end of document");
-                readerDataHolder.getTtsManager().stop();
-                return false;
-            }
-            if (currentSentence.isEndOfScreen()) {
-                Debug.d(TAG, "end of page");
-                currentSentence = null;
-                String next = PagePositionUtils.fromPageNumber(readerDataHolder.getCurrentPage() + 1);
-                new GotoPageAction(next).execute(readerDataHolder, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        if (e != null) {
-                            Log.w(TAG, e);
-                            return;
-                        }
-                        requestSentenceForTts();
-                    }
-                });
-                return true;
-            }
-        }
-
-        String startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
-        final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerDataHolder.getCurrentPage(), startPosition);
-        readerDataHolder.submitRenderRequest(sentenceRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    Log.w(TAG, e);
-                    return;
-                }
-                if (stopped) {
-                    return;
-                }
-                currentSentence = sentenceRequest.getSentenceResult();
-                if (currentSentence == null) {
-                    Log.w(TAG, "get sentence failed");
-                    return;
-                }
-                dumpCurrentSentence();
-                if (StringUtils.isNullOrEmpty(currentSentence.getReaderSelection().getText())) {
-                    requestSentenceForTts();
-                    return;
-                }
-                readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
-                readerDataHolder.getTtsManager().play();
-            }
-        });
-        return true;
-    }
-
-    private void dumpCurrentSentence() {
-        Debug.d(TAG, "current sentence: %s, [%s, %s], %b, %b",
-                StringUtils.deleteNewlineSymbol(currentSentence.getReaderSelection().getText()),
-                currentSentence.getReaderSelection().getStartPosition(),
-                currentSentence.getReaderSelection().getEndPosition(),
-                currentSentence.isEndOfScreen(),
-                currentSentence.isEndOfDocument());
-    }
 }
