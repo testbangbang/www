@@ -10,7 +10,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import com.hanvon.core.HWColorPaint;
+import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
@@ -204,7 +204,7 @@ public class BaseNoteRequest extends BaseRequest {
         }
         renderingBuffer = new int[bitmap.getWidth() * bitmap.getHeight()];
         bitmap.getPixels(renderingBuffer, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-        HWColorPaint.initializeEx(bitmap.getWidth(), bitmap.getHeight(), renderingBuffer);
+        Algorithm.initializeEx(bitmap.getWidth(), bitmap.getHeight(), renderingBuffer);
     }
 
     private void flushRenderingBuffer(final Bitmap bitmap) {

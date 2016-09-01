@@ -2,12 +2,12 @@ package com.hanvon.core;
 
 import android.graphics.Bitmap;
 
-public class HWColorPaint {
+//javah -classpath ./build/intermediates/classes/debug/:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/hanvon/core -jni com.hanvon.core.Algorithm
+public class Algorithm {
 
     static {
         try {
-            System.loadLibrary( "hw_colorpen" );
-            //LibPath.load("com.hanvon.test", "jni_hwcolorpen");
+            System.loadLibrary("onyx_algorithm");
         } catch ( UnsatisfiedLinkError e ) {
             e.printStackTrace( );
         } catch ( Exception e ) {
@@ -29,9 +29,6 @@ public class HWColorPaint {
      */
     public native static boolean initializeEx(int nWidth, int nHeight, int[] pDrawMemory );
     
-    public native static boolean initializeExByte(int nWidth, int nHeight, byte[] pDrawMemory );
-    
-    public native static boolean initializeBitmap(Bitmap pDrawMemory);
 
     /**
      * 汉王画笔属性设置函数；

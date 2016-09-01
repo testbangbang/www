@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import com.hanvon.core.HWColorPaint;
+import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
@@ -47,15 +47,15 @@ public class NormalPencilShape extends EPDShape {
     }
 
     private void renderByHWColorPaint() {
-        HWColorPaint.setPen(0, 3, 6, 3, 12);
-        HWColorPaint.setSimulatePressure(true);
+        Algorithm.setPen(0, 3, 6, 3, 12);
+        Algorithm.setSimulatePressure(true);
 
         float[] points = new float[2048];
         int[] rect = new int[4];
         for(TouchPoint touchPoint : getNormalizedPoints().getPoints()) {
-            HWColorPaint.drawLineEx((int)touchPoint.x, (int)touchPoint.y, touchPoint.pressure / 1024f, rect, points);
+            Algorithm.drawLineEx((int) touchPoint.x, (int) touchPoint.y, touchPoint.pressure / 1024f, rect, points);
         }
-        HWColorPaint.drawLineEx(-1, -1, 0, rect, points);
+        Algorithm.drawLineEx(-1, -1, 0, rect, points);
     }
 
 }
