@@ -39,4 +39,6 @@
     <dimen name="tts_layout_bg_radius">40dp</dimen>
     <dimen name="tts_speed_checkbox_height">60dp</dimen>
     <dimen name="tts_speed_checkbox_width">15dp</dimen>
+    <dimen name="seebar_thumb_height">35dp</dimen>
+    <dimen name="dialog_quick_preview_padding">10dp</dimen>
 </resources>

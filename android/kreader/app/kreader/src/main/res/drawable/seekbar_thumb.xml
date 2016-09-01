@@ -3,7 +3,7 @@
     <item>
         <shape>
             <solid android:color="@android:color/black" />
-            <size android:width="10dp" android:height="35dp"/>
+            <size android:width="10dp" android:height="@dimen/seebar_thumb_height"/>
         </shape>
     </item>
 </selector>
