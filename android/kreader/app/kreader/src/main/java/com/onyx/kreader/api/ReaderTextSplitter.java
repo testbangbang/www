@@ -27,4 +27,12 @@ public interface ReaderTextSplitter {
     int getTextRightBoundary(final String character, final String left, final String right);
 
     int getTextSentenceBreakPoint(final String text);
+
+    /**
+     * check if the given text is a single word
+     *
+     * @param text
+     * @return
+     */
+    boolean isWord(String text);
 }
