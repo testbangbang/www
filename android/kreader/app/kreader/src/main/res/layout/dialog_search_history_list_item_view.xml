@@ -8,7 +8,7 @@
         android:textColor="@color/normal_black"
         android:layout_centerVertical="true"
         android:ellipsize="end"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:id="@+id/search_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
