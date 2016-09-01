@@ -1,5 +1,6 @@
 package com.onyx.kreader.host.request;
 
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
@@ -23,7 +24,7 @@ public class LoadDocumentOptionsRequest extends BaseDataRequest {
         md5 = md5Value;
     }
 
-    public void execute() throws Exception {
+    public void execute(final DataManager dataManager) throws Exception {
         if (StringUtils.isNullOrEmpty(md5)) {
             md5 = FileUtils.computeMD5(new File(documentPath));
         }
