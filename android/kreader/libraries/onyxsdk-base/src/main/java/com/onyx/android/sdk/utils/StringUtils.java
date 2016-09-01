@@ -24,6 +24,10 @@ public class StringUtils {
         return (string != null && string.trim().length() > 0);
     }
 
+    static public boolean isBlank(final String string) {
+        return !isNotBlank(string);
+    }
+
     static public String utf16le(final byte [] data) {
         String string = "";
         try {
