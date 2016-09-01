@@ -32,7 +32,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.ui.actions.GetSearchHistoryAction;
-import com.onyx.kreader.ui.actions.GotoPageAction;
+import com.onyx.kreader.ui.actions.GotoSearchPageAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.actions.ToggleSearchHistoryAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -342,6 +342,7 @@ public class DialogSearch extends Dialog{
         updatePageIndicator(0,0);
         pageRecyclerView.setCurrentPage(0);
         startPage = 0;
+        readerDataHolder.getReaderUserDataInfo().saveSearchResults(null);
     }
 
     private void mergeSearchList(){
@@ -380,12 +381,20 @@ public class DialogSearch extends Dialog{
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new GotoPageAction(readerSelection.getPagePosition()).execute(readerDataHolder, new BaseCallback() {
+                    List<ReaderSelection> readerSelections = new ArrayList<>();
+                    readerSelections.add(readerSelection);
+                    GotoSearchPageAction.execute(readerDataHolder, readerSelection.getPagePosition(), readerSelections, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             dismiss();
                         }
                     });
+//                    new GotoPageAction(readerSelection.getPagePosition()).execute(readerDataHolder, new BaseCallback() {
+//                        @Override
+//                        public void done(BaseRequest request, Throwable e) {
+//                            dismiss();
+//                        }
+//                    });
                 }
             });
             contentTextView = (TextView)itemView.findViewById(R.id.search_content);
