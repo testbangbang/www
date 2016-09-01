@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +17,10 @@ public class QueryCriteria {
     public Set<String> title = new HashSet<>();
     public Set<String> tags = new HashSet<>();
     public Set<String> series = new HashSet<>();
+
+    public int offest = 0;
+    public int limit = Integer.MAX_VALUE;
+    public OrderBy orderBy;
 
     public QueryCriteria() {
 

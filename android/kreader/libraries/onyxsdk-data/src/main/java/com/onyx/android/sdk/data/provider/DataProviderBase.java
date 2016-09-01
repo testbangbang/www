@@ -23,7 +23,7 @@ public interface DataProviderBase {
 
     Metadata loadMetadata(final Context context, final String path, String md5);
 
-    List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria, final OrderBy orderBy);
+    List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria);
 
     void removeMetadata(final Context context, final Metadata metadata);
 
