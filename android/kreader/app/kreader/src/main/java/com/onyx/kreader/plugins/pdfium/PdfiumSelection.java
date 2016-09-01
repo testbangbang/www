@@ -3,6 +3,7 @@ package com.onyx.kreader.plugins.pdfium;
 import android.graphics.RectF;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -72,6 +73,11 @@ public class PdfiumSelection implements ReaderSelection {
 
     public String getRightText() {
         return rightText;
+    }
+
+    @Override
+    public boolean isSelectedOnWord() {
+        return ReaderTextSplitterImpl.sharedInstance().isWord(getText());
     }
 
     @SuppressWarnings("unused")
