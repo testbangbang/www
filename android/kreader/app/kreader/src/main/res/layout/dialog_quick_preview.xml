@@ -4,8 +4,8 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <LinearLayout
-            android:padding="5dp"
+    <RelativeLayout
+            android:padding="10dp"
             android:id="@+id/layout_grid_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,6 +22,7 @@
                 android:src="@drawable/ic_dialog_reader_page_four_black_focused"/>
 
         <ImageView
+                android:layout_toRightOf="@+id/image_view_four_grids"
                 android:background="@drawable/square_bg"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/image_view_nine_grids"
@@ -30,8 +31,8 @@
                 android:src="@drawable/ic_dialog_reader_page_nine_white_focused"/>
 
         <LinearLayout
+            android:layout_toRightOf="@+id/image_view_nine_grids"
             android:layout_marginLeft="5dp"
-            android:layout_weight="1"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -42,7 +43,6 @@
                 android:id="@+id/seek_bar_page"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/dialog_quick_preview_seek_bar_height"
-                android:layout_marginTop="@dimen/dialog_quick_preview_seek_bar_margin_top"
                 android:focusable="true"
                 android:progressDrawable="@drawable/seekbar_progress"
                 android:max="20"/>
@@ -50,14 +50,13 @@
             <TextView
                 android:layout_gravity="center_horizontal"
                 android:textSize="18sp"
-                android:layout_marginBottom="@dimen/dialog_quick_preview_page_margin_bottom"
                 android:id="@+id/text_view_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/primary_text_light"
                 android:text="1/1"/>
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
             android:id="@+id/view_divider"
@@ -91,7 +90,8 @@
 
         <ImageButton
                 android:background="@drawable/imagebtn_bg"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
+                android:padding="5dp"
                 android:id="@+id/image_view_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

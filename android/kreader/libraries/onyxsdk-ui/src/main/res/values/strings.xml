@@ -18,7 +18,7 @@
     <string name="reader_layer_menu_navigation_article_mode">Article Mode</string>
     <string name="reader_layer_menu_navigation_reset">Reset</string>
     <string name="reader_layer_menu_navigation_more_settings">More Settings</string>
-    <string name="reader_layer_menu_directory">Directory</string>
+    <string name="reader_layer_menu_notes">Notes</string>
     <string name="reader_layer_menu_directory_toc">TOC</string>
     <string name="reader_layer_menu_directory_bookmark">Bookmark</string>
     <string name="reader_layer_menu_directory_note">Note</string>

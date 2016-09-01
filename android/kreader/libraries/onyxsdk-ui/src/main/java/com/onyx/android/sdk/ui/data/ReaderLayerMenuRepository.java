@@ -25,7 +25,7 @@ public class ReaderLayerMenuRepository {
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_ARTICLE_MODE, null, R.string.reader_layer_menu_navigation_article_mode, "", R.drawable.ic_dialog_reader_menu_browse_thesis),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_RESET, null, R.string.reader_layer_menu_navigation_reset, "", R.drawable.ic_dialog_reader_menu_browse_reset),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_MORE_SETTINGS, null, R.string.reader_layer_menu_navigation_more_settings, "", R.drawable.ic_dialog_reader_menu_browse_more),
-        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.DIRECTORY, null, R.string.reader_layer_menu_directory, "", R.drawable.ic_dialog_reader_menu_note),
+        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.DIRECTORY, null, R.string.reader_layer_menu_notes, "", R.drawable.ic_dialog_reader_menu_note),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.DIRECTORY_EXPORT, null, R.string.reader_layer_menu_directory_export, "", R.drawable.ic_dialog_reader_menu_browse_export),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.ROTATION, null, R.string.reader_layer_menu_rotation, "", R.drawable.ic_dialog_reader_menu_revolve),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ROTATION_ROTATE_90, null, R.string.reader_layer_menu_rotation_rotate90, "", R.drawable.ic_dialog_reader_menu_revolve_left),

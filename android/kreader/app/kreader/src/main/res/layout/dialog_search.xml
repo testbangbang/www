@@ -5,7 +5,7 @@
                 android:orientation="vertical">
 
     <RelativeLayout
-        android:padding="7dp"
+        android:padding="@dimen/dialog_search_edit_padding"
         android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -25,6 +25,7 @@
                 android:src="@drawable/ic_dialog_reader_menu_arrow"/>
 
             <TextView
+                android:textSize="@dimen/menu_back_text_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -47,8 +48,8 @@
             <ImageView
                 android:id="@+id/search_image"
                 android:src="@drawable/ic_dialog_reader_search_search"
-                android:layout_width="30dp"
-                android:layout_height="30dp"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <com.onyx.android.sdk.ui.view.OnyxCustomEditText
                 android:layout_marginLeft="5dp"
@@ -59,7 +60,7 @@
                 android:imeOptions="actionDone"
                 android:id="@+id/edit_view_search"
                 android:layout_centerVertical="true"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </RelativeLayout>
