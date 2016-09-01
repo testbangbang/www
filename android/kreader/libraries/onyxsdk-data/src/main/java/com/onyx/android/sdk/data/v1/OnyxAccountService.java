@@ -17,8 +17,11 @@ public interface OnyxAccountService {
     @POST("account/signup")
     Call<ResponseBody> signup(@Body final OnyxAccount account);
 
-    @POST("account/signin")
+    @PUT("account/signin")
     Call<ResponseBody> signin(@Body final OnyxAccount account);
+
+    @PUT("account/signout")
+    Call<ResponseBody> signout(@Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
 
     @POST("account/devices")
     Call<Device> addDevice(@Body final Device device, @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);

@@ -57,7 +57,7 @@ public class TestUtils {
     }
 
     public static String randomEmail() {
-        String email = UUID.randomUUID().toString().replace("-", "") + "@" + "onyx-international.com";
+        String email = UUID.randomUUID().toString().substring(5).replace("-", "") + "@" + "onyx-international.com";
         while (Character.isDigit(email.charAt(0))) {
             email = email.substring(1);
         }
