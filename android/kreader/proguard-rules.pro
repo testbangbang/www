@@ -29,6 +29,8 @@
 -dontwarn org.nustaq.**
 -dontnote org.objenesis.**
 -dontwarn org.objenesis.**
+-dontwarn okio.**
+-dontwarn retrofit2.**
 
 -keepnames class org.greenrobot.eventbus.** { *; }
 
