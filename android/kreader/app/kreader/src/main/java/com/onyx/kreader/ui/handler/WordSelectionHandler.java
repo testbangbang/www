@@ -37,6 +37,7 @@ public class WordSelectionHandler extends BaseHandler{
     private Point lastMovedPoint = null;
     private int cursorSelected = -1;
     private boolean moveAfterLongPress = false;
+    private boolean singleTapUp = false;
 
     private long touchDownTime = -1;
     private long touchMoveTime = -1;
@@ -74,11 +75,15 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        singleTapUp = true;
         return true;
     }
 
     public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
-        select(readerDataHolder,startX, startY, endX, endY, true);
+        if (!singleTapUp){
+            select(readerDataHolder,startX, startY, endX, endY, true);
+        }
+        singleTapUp = false;
         return true;
     }
 
