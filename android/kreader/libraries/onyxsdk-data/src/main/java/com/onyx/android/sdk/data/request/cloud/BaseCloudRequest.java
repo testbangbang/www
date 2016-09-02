@@ -24,7 +24,7 @@ public abstract class BaseCloudRequest extends BaseRequest {
 
     private static final String TAG = BaseCloudRequest.class.getSimpleName();
     public static final String RESPONSE_KEY_ERROR = "error";
-    private boolean saveToLocal = true;
+    private volatile boolean saveToLocal = true;
 
     public BaseCloudRequest() {
         super();

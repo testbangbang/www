@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.onyx.android.sdk.data.db.OnyxCloudDatabase;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;

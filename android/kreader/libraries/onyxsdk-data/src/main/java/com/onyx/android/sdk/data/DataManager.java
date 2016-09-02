@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -18,6 +19,7 @@ public class DataManager {
 
     private static final String TAG = DataManager.class.getSimpleName();
     private RequestManager requestManager;
+    private DataProviderManager dataProviderManager = new DataProviderManager();
 
     public DataManager() {
         requestManager = new RequestManager();
@@ -61,6 +63,10 @@ public class DataManager {
 
     public final RequestManager getRequestManager() {
         return requestManager;
+    }
+
+    public final DataProviderManager getDataProviderManager() {
+        return dataProviderManager;
     }
 
 }

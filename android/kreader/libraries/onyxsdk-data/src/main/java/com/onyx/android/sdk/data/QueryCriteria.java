@@ -18,7 +18,7 @@ public class QueryCriteria {
     public Set<String> tags = new HashSet<>();
     public Set<String> series = new HashSet<>();
 
-    public int offest = 0;
+    public int offset = 0;
     public int limit = Integer.MAX_VALUE;
     public OrderBy orderBy;
 

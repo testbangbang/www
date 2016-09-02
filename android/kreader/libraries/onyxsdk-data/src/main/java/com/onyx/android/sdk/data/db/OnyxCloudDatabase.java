@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data.model;
+package com.onyx.android.sdk.data.db;
 
 import com.raizlabs.android.dbflow.annotation.Database;
 

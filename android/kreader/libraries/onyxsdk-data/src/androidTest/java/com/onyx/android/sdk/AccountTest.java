@@ -6,6 +6,8 @@ import android.test.ApplicationTestCase;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.Captcha;
+import com.onyx.android.sdk.data.request.cloud.SignInRequest;
+import com.onyx.android.sdk.data.request.cloud.SignUpRequest;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.data.model.JsonResponse;
 import com.onyx.android.sdk.data.model.OnyxAccount;
@@ -77,10 +79,22 @@ public class AccountTest extends ApplicationTestCase<Application> {
     }
 
     public void testCaptcha() throws Exception {
-        Call<Captcha> call = getService().getCaptcha();
+        Call<Captcha> call = getService().generateCaptcha();
         Response<Captcha> response = call.execute();
         assertNotNull(response);
         assertNotNull(response.body());
         assertNotNull(response.body().url);
     }
+
+    public void testSignUpRequest() throws Exception {
+        OnyxAccount account = getCurrentAccount();
+        final CloudManager cloudManager = new CloudManager();
+        SignUpRequest signUpRequest = new SignUpRequest(account);
+        signUpRequest.execute(cloudManager);
+        final OnyxAccount result = signUpRequest.getAccountSignUp();
+        assertNotNull(result);
+        assertNotNull(result.sessionToken);
+    }
+
+
 }

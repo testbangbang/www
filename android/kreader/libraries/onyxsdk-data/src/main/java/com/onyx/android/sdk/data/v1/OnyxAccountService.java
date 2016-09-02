@@ -26,6 +26,6 @@ public interface OnyxAccountService {
     @POST("account/devices")
     Call<Device> addDevice(@Body final Device device, @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
 
-    @GET("captcha")
-    Call<Captcha> getCaptcha();
+    @POST("captcha")
+    Call<Captcha> generateCaptcha();
 }
