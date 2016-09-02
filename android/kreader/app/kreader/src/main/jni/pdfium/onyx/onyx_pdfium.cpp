@@ -330,7 +330,6 @@ static void selectByWord(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int 
     const int extend = 50;
     const int left = std::max(start - extend, 0);
     const int right = std::min(end + extend, count - 1);
-    LOGE("selectByWord: start %d, end %d, left %d, right %d", start, end, left, right);
     
     std::shared_ptr<_jstring> word = getJStringText(env, page, start, end);
     std::shared_ptr<_jstring> leftStr = getJStringText(env, page, left, start - 1);
@@ -344,7 +343,6 @@ static void selectByWord(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int 
     if (rightBoundary > 0) {
         *newEnd = end + rightBoundary;
     }
-    LOGE("result left %d, right %d", *newStart, *newEnd);
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
@@ -383,11 +381,11 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
             LOGE("selectByWord finished");
         } else {
             if (isAlphaOrDigit(env, textPage, splitter, start)) {
-                int ignoreEnd;
+                int ignoreEnd = end;
                 selectByWord(env, textPage, splitter, start, start, &newStart, &ignoreEnd);
             }
             if (isAlphaOrDigit(env, textPage, splitter, end)) {
-                int ignoreStart;
+                int ignoreStart = start;
                 selectByWord(env, textPage, splitter, end, end, &ignoreStart, &newEnd);
             }
         }
