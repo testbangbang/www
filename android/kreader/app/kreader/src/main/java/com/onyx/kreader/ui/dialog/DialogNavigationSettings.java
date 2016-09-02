@@ -79,7 +79,7 @@ public class DialogNavigationSettings extends DialogBase {
         currentUsingNavigationMode = ReaderCropArgs.NavigationMode.ROWS_LEFT_TO_RIGHT_MODE;
 
         mCropContentView = (ContentView) findViewById(R.id.crop_contentView);
-        setupContentView(mCropContentView, new ObjectSelectedCallback() {
+        setupContentView(mCropContentView, R.layout.dialog_navigation_settings_mode_icon_view, new ObjectSelectedCallback() {
             @Override
             public void onObjectSelected(GObject object) {
                 currentChoosingCropMode = getCropPageMode(object);
@@ -101,7 +101,7 @@ public class DialogNavigationSettings extends DialogBase {
                 mSubScreenContentView.getLayoutParams().height *= heightRatio;
             }
         }
-        setupContentView(mSubScreenContentView, subScreenRows, subScreenColumns, new ObjectSelectedCallback() {
+        setupContentView(mSubScreenContentView, subScreenRows, subScreenColumns, R.layout.dialog_navigation_settings_mode_icon_no_text_view, new ObjectSelectedCallback() {
             @Override
             public void onObjectSelected(GObject object) {
                 currentChoosingSubScreenMode = getSubScreenMode(object);
@@ -112,7 +112,7 @@ public class DialogNavigationSettings extends DialogBase {
         });
 
         mNavigationContentView = (ContentView) findViewById(R.id.navigation_contentView);
-        setupContentView(mNavigationContentView, new ObjectSelectedCallback() {
+        setupContentView(mNavigationContentView, R.layout.dialog_navigation_settings_mode_icon_no_text_view, new ObjectSelectedCallback() {
             @Override
             public void onObjectSelected(GObject object) {
                 currentChoosingNavigationMode = getNavigationMode(object);
@@ -144,8 +144,8 @@ public class DialogNavigationSettings extends DialogBase {
         mNavigationContentView.setAdapter(mNavigationAdapter, 0);
     }
 
-    private void setupContentView(final ContentView view, int rows, int columns, final ObjectSelectedCallback callback) {
-        view.setSubLayoutParameter(R.layout.dialog_navigation_settings_mode_icon_view, getDefaultMap());
+    private void setupContentView(final ContentView view, int rows, int columns, int layoutId, final ObjectSelectedCallback callback) {
+        view.setSubLayoutParameter(layoutId, getDefaultMap());
         view.setShowPageInfoArea(false);
         view.setupGridLayout(rows, columns);
         view.setCallback(new ContentView.ContentViewCallback() {
@@ -164,8 +164,8 @@ public class DialogNavigationSettings extends DialogBase {
         });
     }
 
-    private void setupContentView(final ContentView view, final ObjectSelectedCallback callback) {
-        setupContentView(view, 1, 6, callback);
+    private void setupContentView(final ContentView view, int layoutId, final ObjectSelectedCallback callback) {
+        setupContentView(view, 1, 6, layoutId, callback);
     }
 
     private HashMap<String, Integer> getDefaultMap() {
@@ -177,7 +177,7 @@ public class DialogNavigationSettings extends DialogBase {
     }
 
     private GObject createNavigationModeItem(int iconResource, ReaderCropArgs.NavigationMode mode) {
-        GObject object = GAdapterUtil.createTableItem(0, 0, iconResource, 0, null);
+        GObject object = GAdapterUtil.createTableItem("", "", iconResource, 0, null);
         setNavigationMode(object, mode);
         if (mode == currentChoosingNavigationMode) {
             setSelected(object, true);
@@ -199,7 +199,7 @@ public class DialogNavigationSettings extends DialogBase {
     }
 
     private GObject createSubScreenModeItem(int iconResource, SubScreenMode mode) {
-        GObject object = GAdapterUtil.createTableItem(0, 0, iconResource, 0, null);
+        GObject object = GAdapterUtil.createTableItem("", "", iconResource, 0, null);
         setSubScreenMode(object, mode);
         if (mode == currentChoosingSubScreenMode) {
             setSelected(object, true);

@@ -6,6 +6,7 @@ import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderHitTestManager;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.host.impl.ReaderHitTestOptionsImpl;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -30,7 +31,7 @@ public class AnnotationRequest extends BaseReaderRequest {
         PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pageName);
         ReaderHitTestArgs startArgs = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs endArgs = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, end);
-        selection = hitTestManager.select(startArgs, endArgs);
+        selection = hitTestManager.select(startArgs, endArgs, ReaderHitTestOptionsImpl.create(false));
     }
 
     public final ReaderSelection getSelection() {

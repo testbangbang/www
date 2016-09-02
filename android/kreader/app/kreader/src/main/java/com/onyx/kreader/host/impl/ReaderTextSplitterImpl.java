@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.KReaderApp;
@@ -132,6 +133,15 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         }
         Debug.d("getTextSentenceBreakPoint, find nothing!");
         return text.length() - 1;
+    }
+
+    @Override
+    public boolean isWord(String text) {
+        if (StringUtils.isBlank(text)) {
+            return false;
+        }
+        ArrayList<String> result = AnalyzerAndroidWrapper.analyze(normalizeString(text));
+        return result.size() == 1;
     }
 
     boolean hasSpace(final String string) {

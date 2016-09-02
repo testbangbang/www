@@ -53,7 +53,7 @@ public class PdfiumJniWrapper {
 
     private native boolean nativeRenderPage(int id, int page, int x, int y, int width, int height, int rotation, final Bitmap bitmap);
 
-    private native int nativeHitTest(int id, int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final ReaderTextSplitter splitter, final PdfiumSelection selection);
+    private native int nativeHitTest(int id, int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final ReaderTextSplitter splitter, final boolean selectingWord, final PdfiumSelection selection);
 
     private native int nativeSelection(int id, int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final PdfiumSelection selection);
 
@@ -117,8 +117,8 @@ public class PdfiumJniWrapper {
         return nativeRenderPage(id, page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap,  rotation, bitmap);
     }
 
-    public int hitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final PdfiumSelection selection) {
-        return nativeHitTest(id, page, x, y, width, height, rotation, startX, startY, endX, endY, ReaderTextSplitterImpl.sharedInstance(), selection);
+    public int hitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final boolean selectingWord, final PdfiumSelection selection) {
+        return nativeHitTest(id, page, x, y, width, height, rotation, startX, startY, endX, endY, ReaderTextSplitterImpl.sharedInstance(), selectingWord, selection);
     }
 
     public int selection(int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final PdfiumSelection selection) {
