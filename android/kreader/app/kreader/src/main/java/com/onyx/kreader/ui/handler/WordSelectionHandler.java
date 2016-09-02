@@ -81,7 +81,8 @@ public class WordSelectionHandler extends BaseHandler{
 
     public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
         if (!singleTapUp){
-            select(readerDataHolder,startX, startY, endX, endY, true);
+            // TODO comment as it not works as expected
+            //select(readerDataHolder,startX, startY, endX, endY, true);
         }
         singleTapUp = false;
         return true;
