@@ -189,7 +189,6 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
             return false;
         }
         boolean res = isAlpha(ch.charAt(0)) || Character.isDigit(ch.charAt(0));
-        Debug.e(getClass(), "isAlpha: %s, %b", ch, res);
         return res;
     }
 
@@ -197,11 +196,9 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
     public int getTextSentenceBreakPoint(String text) {
         for (int i = 0; i < text.length(); i++) {
             if (Splitters.contains(text.charAt(i))) {
-                Debug.d("getTextSentenceBreakPoint, find: " + text.charAt(i));
                 return i;
             }
         }
-        Debug.d("getTextSentenceBreakPoint, find nothing!");
         return text.length() - 1;
     }
 
