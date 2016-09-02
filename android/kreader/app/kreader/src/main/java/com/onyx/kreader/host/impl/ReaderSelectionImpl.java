@@ -59,6 +59,11 @@ public class ReaderSelectionImpl implements ReaderSelection {
         return "";
     }
 
+    @Override
+    public boolean isSelectedOnWord() {
+        return ReaderTextSplitterImpl.sharedInstance().isWord(getText());
+    }
+
     public boolean hasText() {
         return false;
     }

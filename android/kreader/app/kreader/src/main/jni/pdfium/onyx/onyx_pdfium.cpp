@@ -332,7 +332,7 @@ static void selectByWord(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int 
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
-  (JNIEnv *env, jobject thiz, jint id, jint pageIndex,  jint x, jint y, jint width, jint height, jint rotation, jint sx, jint sy, jint ex, jint ey, jobject splitter, jobject selection) {
+  (JNIEnv *env, jobject thiz, jint id, jint pageIndex,  jint x, jint y, jint width, jint height, jint rotation, jint sx, jint sy, jint ex, jint ey, jobject splitter, jboolean selectingWord, jobject selection) {
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
     if (page == NULL || textPage == NULL) {

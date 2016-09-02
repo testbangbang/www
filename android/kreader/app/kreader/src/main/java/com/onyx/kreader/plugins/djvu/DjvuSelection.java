@@ -4,6 +4,7 @@ import android.graphics.RectF;
 import android.util.Log;
 
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,11 @@ public class DjvuSelection implements ReaderSelection {
     @Override
     public String getRightText() {
         return "";
+    }
+
+    @Override
+    public boolean isSelectedOnWord() {
+        return ReaderTextSplitterImpl.sharedInstance().isWord(getText());
     }
 
     /**
