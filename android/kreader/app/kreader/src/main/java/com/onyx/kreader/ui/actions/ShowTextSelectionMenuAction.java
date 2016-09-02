@@ -17,32 +17,9 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 /**
  * Created by joy on 7/11/16.
  */
-public class ShowTextSelectionMenuAction extends BaseAction {
+public class ShowTextSelectionMenuAction{
 
     private static PopupSelectionMenu popupSelectionMenu = null;
-    private PopupSelectionMenu.SelectionType selectionType;
-    private int x, y;
-    private ReaderActivity readerActivity;
-
-    public ShowTextSelectionMenuAction(final ReaderDataHolder readerDataHolder, final int x, final int y, final PopupSelectionMenu.SelectionType type) {
-        readerActivity = (ReaderActivity)readerDataHolder.getContext();
-        selectionType = type;
-        switch (type){
-            case SingleWordType:
-                getTextSelectionPopupMenu(readerDataHolder).showTranslation();
-                break;
-            case MultiWordsType:
-                getTextSelectionPopupMenu(readerDataHolder).hideTranslation();
-                break;
-        }
-        this.x = x;
-        this.y = y;
-    }
-
-    @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
-        getTextSelectionPopupMenu(readerDataHolder).show(selectionType);
-    }
 
     public static void hideTextSelectionPopupMenu(){
         if (popupSelectionMenu != null) {
@@ -50,12 +27,20 @@ public class ShowTextSelectionMenuAction extends BaseAction {
         }
     }
 
+    public static void showTextSelectionPopupMenu(ReaderDataHolder readerDataHolder){
+        popupSelectionMenu =  getTextSelectionPopupMenu(readerDataHolder);
+        if (popupSelectionMenu != null) {
+            popupSelectionMenu.show();
+        }
+    }
+
     public static void resetSelectionMenu() {
         popupSelectionMenu = null;
     }
 
-    private PopupSelectionMenu getTextSelectionPopupMenu(final ReaderDataHolder readerDataHolder) {
+    private static PopupSelectionMenu getTextSelectionPopupMenu(final ReaderDataHolder readerDataHolder) {
         if (popupSelectionMenu == null) {
+            final ReaderActivity readerActivity = (ReaderActivity)readerDataHolder.getContext();
             popupSelectionMenu = new PopupSelectionMenu(readerDataHolder, (RelativeLayout) readerActivity.findViewById(R.id.main_view), new PopupSelectionMenu.MenuCallback() {
                 @Override
                 public void resetSelection() {
@@ -76,7 +61,7 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
                 @Override
                 public void highLight() {
-                    ShowTextSelectionMenuAction.this.addAnnotation(readerDataHolder, "");
+                    ShowTextSelectionMenuAction.addAnnotation(readerDataHolder, "");
                     closeMenu();
                 }
 
@@ -85,7 +70,7 @@ public class ShowTextSelectionMenuAction extends BaseAction {
                     DialogAnnotation dialogAnnotation = new DialogAnnotation(readerActivity, DialogAnnotation.AnnotationAction.add, new DialogAnnotation.Callback() {
                         @Override
                         public void onAddAnnotation(String annotation) {
-                            ShowTextSelectionMenuAction.this.addAnnotation(readerDataHolder, annotation);
+                            ShowTextSelectionMenuAction.addAnnotation(readerDataHolder, annotation);
                             closeMenu();
                         }
 
@@ -119,7 +104,7 @@ public class ShowTextSelectionMenuAction extends BaseAction {
 
                 @Override
                 public void closeMenu() {
-                    ShowTextSelectionMenuAction.this.hideTextSelectionPopupWindow(readerDataHolder, true);
+                    hideTextSelectionPopupWindow(readerDataHolder, true);
                     readerDataHolder.redrawPage();
                 }
             });
@@ -142,21 +127,21 @@ public class ShowTextSelectionMenuAction extends BaseAction {
         }
     }
 
-    private void copyText(final Context context, final String text) {
+    private static void copyText(final Context context, final String text) {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
         if (clipboard != null) {
             clipboard.setText(text);
         }
     }
 
-    private void addAnnotation(final ReaderDataHolder readerDataHolder, final String note) {
+    private static void addAnnotation(final ReaderDataHolder readerDataHolder, final String note) {
         ReaderSelection selection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
         PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getPageInfo(selection.getPagePosition());
         new AddAnnotationAction(pageInfo, selection.getStartPosition(), selection.getEndPosition(),
                 selection.getRectangles(), selection.getText(), note).execute(readerDataHolder);
     }
 
-    private void lookupInDictionary(final ReaderActivity activity, final String text) {
+    private static void lookupInDictionary(final ReaderActivity activity, final String text) {
         OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
         Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
         intent.putExtra(info.dataKey, text);
