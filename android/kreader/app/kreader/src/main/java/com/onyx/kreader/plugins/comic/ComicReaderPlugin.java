@@ -188,10 +188,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
      *
      * @param start The start view point.
      * @param end
+     * @param selectingWord
      * @return the selection.
      */
     @Override
-    public ReaderSelection select(ReaderHitTestArgs start, ReaderHitTestArgs end) {
+    public ReaderSelection select(ReaderHitTestArgs start, ReaderHitTestArgs end, boolean selectingWord) {
         return null;
     }
 

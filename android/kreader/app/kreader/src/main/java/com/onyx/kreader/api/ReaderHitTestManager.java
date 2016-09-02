@@ -1,8 +1,5 @@
 package com.onyx.kreader.api;
 
-import android.graphics.PointF;
-import android.graphics.RectF;
-
 /**
  * Created by zhuzeng on 10/3/15.
  */
@@ -26,10 +23,10 @@ public interface ReaderHitTestManager {
     /**
      * Select text between start point and end point.
      * @param start The start view point.
-     * @param start The end view point.
+     * @param selectingWord
      * @return the selection.
      */
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end);
+    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, final boolean selectingWord);
 
 
 }

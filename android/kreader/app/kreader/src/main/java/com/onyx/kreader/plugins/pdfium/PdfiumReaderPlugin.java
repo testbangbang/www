@@ -403,7 +403,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end) {
+    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, boolean selectingWord) {
         PdfiumSelection selection = new PdfiumSelection(start.pageName);
         getPluginImpl().hitTest(PagePositionUtils.getPageNumber(start.pageName),
                 (int) start.pageDisplayRect.left,
@@ -415,6 +415,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
                 (int) start.point.y,
                 (int) end.point.x,
                 (int) end.point.y,
+                selectingWord,
                 selection);
         return selection;
     }

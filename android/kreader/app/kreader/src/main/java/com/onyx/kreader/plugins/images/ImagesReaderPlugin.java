@@ -345,7 +345,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end) {
+    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, boolean selectingWord) {
         return null;
     }
 

@@ -137,7 +137,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public ReaderSelection select(ReaderHitTestArgs start, ReaderHitTestArgs end) {
+    public ReaderSelection select(ReaderHitTestArgs start, ReaderHitTestArgs end, boolean selectingWord) {
         return null;
     }
 

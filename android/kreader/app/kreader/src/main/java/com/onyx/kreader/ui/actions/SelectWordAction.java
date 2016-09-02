@@ -13,7 +13,11 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class SelectWordAction{
 
     public static void selectWord(final ReaderDataHolder readerDataHolder, final String pageName, final PointF startPoint, final PointF endPoint, final BaseCallback baseCallback){
-        final SelectWordRequest selectWordRequest = new SelectWordRequest(pageName, startPoint, endPoint);
+        selectWord(readerDataHolder, pageName, startPoint, endPoint, false, baseCallback);
+    }
+
+    public static void selectWord(final ReaderDataHolder readerDataHolder, final String pageName, final PointF startPoint, final PointF endPoint, final boolean selectingWord, final BaseCallback baseCallback){
+        final SelectWordRequest selectWordRequest = new SelectWordRequest(pageName, startPoint, endPoint, selectingWord);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), selectWordRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
