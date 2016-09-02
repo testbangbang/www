@@ -35,6 +35,8 @@ public class ReaderPainter {
 
     private static final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
 
+    private enum DrawHighlightPaintStyle {UnderLine, Fill}
+
     public ReaderPainter() {
     }
 
@@ -42,10 +44,10 @@ public class ReaderPainter {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
-        drawSearchResults(canvas, paint, userDataInfo, viewInfo);
-        drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager);
+        drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+        drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.UnderLine);
         if (SingletonSharedPreference.isShowAnnotation(context)) {
-            drawAnnotations(context, canvas, paint, userDataInfo, viewInfo);
+            drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.UnderLine);
         }
         if (SingletonSharedPreference.isShowBookmark(context)) {
             drawBookmark(context, canvas, userDataInfo, viewInfo);
@@ -66,23 +68,23 @@ public class ReaderPainter {
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
-    private void drawSearchResults(Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
-        drawReaderSelections(canvas, paint, viewInfo, userDataInfo.getSearchResults());
+    private void drawSearchResults(Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, DrawHighlightPaintStyle paintStyle) {
+        drawReaderSelections(canvas, paint, viewInfo, userDataInfo.getSearchResults(), paintStyle);
     }
 
-    private void drawHighlightResult(Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, ReaderSelectionManager selectionManager) {
+    private void drawHighlightResult(Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, ReaderSelectionManager selectionManager, DrawHighlightPaintStyle paintStyle) {
         if (userDataInfo.hasHighlightResult()) {
-            drawReaderSelection(canvas, paint, viewInfo, userDataInfo.getHighlightResult());
+            drawReaderSelection(canvas, paint, viewInfo, userDataInfo.getHighlightResult(), paintStyle);
             drawSelectionCursor(canvas, paint, xorMode, selectionManager);
         }
     }
 
-    private void drawAnnotations(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+    private void drawAnnotations(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, DrawHighlightPaintStyle paintStyle) {
         for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
             if (userDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = userDataInfo.getPageAnnotations(pageInfo);
                 for (PageAnnotation annotation : annotations) {
-                    drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
+                    drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()), paintStyle);
                     String note = annotation.getAnnotation().getNote();
                     if (!StringUtils.isNullOrEmpty(note)){
                         drawHighLightSign(context, canvas, paint, annotation.getRectangles());
@@ -98,30 +100,50 @@ public class ReaderPainter {
         canvas.drawBitmap(bitmap, point.x, point.y, null);
     }
 
-    private void drawReaderSelection(Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection) {
+    private void drawReaderSelection(Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection, DrawHighlightPaintStyle paintStyle) {
         PageInfo pageInfo = viewInfo.getPageInfo(selection.getPagePosition());
         if (pageInfo != null) {
-            drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+            drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()), paintStyle);
         }
     }
 
-    private void drawReaderSelections(Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, List<ReaderSelection> list) {
+    private void drawReaderSelections(Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, List<ReaderSelection> list, DrawHighlightPaintStyle paintStyle) {
         if (list == null || list.size() <= 0) {
             return;
         }
         for (ReaderSelection sel : list) {
-            drawReaderSelection(canvas, paint, viewInfo, sel);
+            drawReaderSelection(canvas, paint, viewInfo, sel, paintStyle);
         }
     }
 
-    private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
+    private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles, DrawHighlightPaintStyle paintStyle) {
         if (rectangles == null) {
             return;
         }
+        switch (paintStyle){
+            case UnderLine:
+                drawUnderLineHighlightRectangles(canvas, paint, rectangles);
+                break;
+            case Fill:
+                drawFillHighlightRectangles(canvas, paint, rectangles);
+                break;
+        }
+    }
+
+    private void drawUnderLineHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles){
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(3);
         for (int i = 0; i < rectangles.size(); ++i) {
             canvas.drawLine(rectangles.get(i).left,rectangles.get(i).bottom,rectangles.get(i).right,rectangles.get(i).bottom,paint);
+        }
+    }
+
+    private void drawFillHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles){
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setXfermode(xorMode);
+        for (int i = 0; i < rectangles.size(); ++i) {
+            canvas.drawRect(rectangles.get(i), paint);
         }
     }
 

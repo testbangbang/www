@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public interface DataProviderBase {
     Metadata loadMetadata(final Context context, final String path, String md5);
 
     List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria);
+
+    List<Metadata> findMetadata(final Context context, final ConditionGroup conditions, final OrderBy orderBy, final int offset, final int limit);
 
     void removeMetadata(final Context context, final Metadata metadata);
 

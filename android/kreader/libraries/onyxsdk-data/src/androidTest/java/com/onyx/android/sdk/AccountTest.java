@@ -6,6 +6,8 @@ import android.test.ApplicationTestCase;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.Captcha;
+import com.onyx.android.sdk.data.request.cloud.SignInRequest;
+import com.onyx.android.sdk.data.request.cloud.SignUpRequest;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.data.model.JsonResponse;
 import com.onyx.android.sdk.data.model.OnyxAccount;
@@ -25,6 +27,7 @@ import java.util.UUID;
 public class AccountTest extends ApplicationTestCase<Application> {
 
     private static OnyxAccountService service;
+    private static volatile OnyxAccount currentAccount;
 
     public AccountTest() {
         super(Application.class);
@@ -38,28 +41,58 @@ public class AccountTest extends ApplicationTestCase<Application> {
         return service;
     }
 
-    public void testSignUp() throws Exception {
-        final OnyxAccount account = new OnyxAccount(UUID.randomUUID().toString(),
-                TestUtils.randString(), TestUtils.randomEmail());
+    private OnyxAccount getCurrentAccount() {
+        if (currentAccount == null) {
+            currentAccount = new OnyxAccount(UUID.randomUUID().toString().substring(5),
+                    TestUtils.randString(), TestUtils.randomEmail());
+        }
+        return currentAccount;
+    }
+
+    public void testSignUpAndSignIn() throws Exception {
+        OnyxAccount account = getCurrentAccount();
         Call<ResponseBody> object = getService().signup(account);
         Response<ResponseBody> response = object.execute();
         assertNotNull(response);
-        if (response.isSuccessful()) {
-            assertNotNull(response.body());
-            final OnyxAccount resultAccount = JSONObjectParseUtils.parseOnyxAccount(response.body().string());
-            assertNotNull(resultAccount);
-        } else {
-            JsonResponse jsonResponse = JSON.parseObject(response.errorBody().string(), JsonResponse.class);
-            assertNotNull(jsonResponse);
+        assertTrue(response.isSuccessful());
+        assertNotNull(response.body());
+        OnyxAccount resultAccount = JSONObjectParseUtils.parseOnyxAccount(response.body().string());
+        assertNotNull(resultAccount);
+        assertNotNull(resultAccount.sessionToken);
 
-        }
+        object = getService().signout(account.sessionToken);
+        response = object.execute();
+        assertNotNull(response);
+        assertTrue(response.isSuccessful());
+
+        account = getCurrentAccount();
+        object = getService().signin(account);
+        response = object.execute();
+        assertNotNull(response);
+        assertTrue(response.isSuccessful());
+        assertNotNull(response.body());
+        resultAccount = JSONObjectParseUtils.parseOnyxAccount(response.body().string());
+        assertNotNull(resultAccount);
+        assertNotNull(resultAccount.sessionToken);
     }
 
     public void testCaptcha() throws Exception {
-        Call<Captcha> call = getService().getCaptcha();
+        Call<Captcha> call = getService().generateCaptcha();
         Response<Captcha> response = call.execute();
         assertNotNull(response);
         assertNotNull(response.body());
         assertNotNull(response.body().url);
     }
+
+    public void testSignUpRequest() throws Exception {
+        OnyxAccount account = getCurrentAccount();
+        final CloudManager cloudManager = new CloudManager();
+        SignUpRequest signUpRequest = new SignUpRequest(account);
+        signUpRequest.execute(cloudManager);
+        final OnyxAccount result = signUpRequest.getAccountSignUp();
+        assertNotNull(result);
+        assertNotNull(result.sessionToken);
+    }
+
+
 }

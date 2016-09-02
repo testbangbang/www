@@ -184,16 +184,18 @@ public class PopupSelectionMenu extends LinearLayout {
         return true;
     }
 
-    public void show(SelectionType type) {
-        requestLayoutView();
-        if (type == SelectionType.SingleWordType){
-            mActivity.runOnUiThread(new Runnable() {
-                public void run() {
-                    PopupSelectionMenu.this.updateTranslation(mMenuCallback.getSelectionText());
-                }
-            });
+    public void show() {
+        if (isSelectedOnWord(readerDataHolder)){
+            showTranslation();
+            PopupSelectionMenu.this.updateTranslation(mMenuCallback.getSelectionText());
+        }else {
+            hideTranslation();
         }
+        requestLayoutView();
+    }
 
+    private boolean isSelectedOnWord(ReaderDataHolder readerDataHolder){
+        return readerDataHolder.getReaderUserDataInfo().getHighlightResult().isSelectedOnWord();
     }
 
     public void hide() {
@@ -208,8 +210,11 @@ public class PopupSelectionMenu extends LinearLayout {
         setVisibility(VISIBLE);
 
         HighlightCursor beginHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX);
-        RectF beginCursorRectF = beginHighlightCursor.getDisplayRect();
         HighlightCursor endHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.END_CURSOR_INDEX);
+        if (beginHighlightCursor == null || endHighlightCursor == null){
+            return;
+        }
+        RectF beginCursorRectF = beginHighlightCursor.getDisplayRect();
         RectF endCursorRectF = endHighlightCursor.getDisplayRect();
 
         float dividerHeight = readerDataHolder.getContext().getResources().getDimension(R.dimen.popup_selection_menu_divider_height);
@@ -234,7 +239,6 @@ public class PopupSelectionMenu extends LinearLayout {
             y = isShowTranslation() ? screenHeight - measuredHeight - dividerHeight : Math.min(y,screenHeight - measuredHeight);
             setY(y);
         }
-
     }
 
     public boolean isShowTranslation(){

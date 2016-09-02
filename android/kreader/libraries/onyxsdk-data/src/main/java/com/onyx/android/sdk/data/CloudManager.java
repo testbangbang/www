@@ -20,7 +20,7 @@ public class CloudManager {
     private CloudConf cloudConf;
     private RequestManager requestManager;
     private CloudConf chinaCloudConf;
-    private CloudConf foreignCloudConf;
+    private CloudConf globalCloudConf;
 
     public CloudManager() {
         requestManager = new RequestManager(Thread.NORM_PRIORITY);
@@ -29,14 +29,14 @@ public class CloudManager {
 
     private void initCloudConf() {
         chinaCloudConf = new CloudConf(Constant.CN_HOST_BASE, Constant.CN_API_BASE, Constant.DEFAULT_CLOUD_STORAGE);
-        foreignCloudConf = new CloudConf(Constant.DEFAULT_HOST_BASE, Constant.DEFAULT_API_BASE, Constant.DEFAULT_CLOUD_STORAGE);
+        globalCloudConf = new CloudConf(Constant.CN_HOST_BASE, Constant.CN_API_BASE, Constant.DEFAULT_CLOUD_STORAGE);
     }
 
     private CloudConf useCloudConf() {
         if (LocaleUtils.isChinese()) {
             cloudConf = chinaCloudConf;
         } else {
-            cloudConf = foreignCloudConf;
+            cloudConf = globalCloudConf;
         }
         return cloudConf;
     }

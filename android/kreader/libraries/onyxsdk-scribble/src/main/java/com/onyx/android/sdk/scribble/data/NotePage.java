@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import com.hanvon.core.HWColorPaint;
 import com.onyx.android.sdk.scribble.shape.*;
 
 import java.util.ArrayList;

@@ -49,7 +49,7 @@ public class LocalDataProvider implements DataProviderBase {
     public List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria) {
         final ConditionGroup conditionGroup = queryCriteriaCondition(queryCriteria);
         if (conditionGroup.size() > 0) {
-            return new Select().from(Metadata.class).where(conditionGroup).orderBy(queryCriteria.orderBy).offset(queryCriteria.offest).limit(queryCriteria.limit).queryList();
+            return new Select().from(Metadata.class).where(conditionGroup).orderBy(queryCriteria.orderBy).offset(queryCriteria.offset).limit(queryCriteria.limit).queryList();
         }
         return new ArrayList<>();
     }
@@ -79,6 +79,13 @@ public class LocalDataProvider implements DataProviderBase {
             conditionGroup.or(property.like("%" + string + "%"));
         }
         return conditionGroup;
+    }
+
+    public List<Metadata> findMetadata(final Context context, final ConditionGroup conditionGroup, final OrderBy orderBy, final int offset, final int limit) {
+        if (conditionGroup != null && conditionGroup.size() > 0) {
+            return new Select().from(Metadata.class).where(conditionGroup).orderBy(orderBy).offset(offset).limit(limit).queryList();
+        }
+        return new ArrayList<>();
     }
 
     public void saveMetadata(final Context context, final Metadata metadata) {

@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.data.model;
 
+import com.onyx.android.sdk.data.db.OnyxCloudDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 

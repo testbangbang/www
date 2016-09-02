@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.data.utils;
 
+import com.onyx.android.sdk.data.db.OnyxCloudDatabase;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.transaction.ProcessDeleteModel;
 import com.onyx.android.sdk.data.transaction.ProcessSaveModel;

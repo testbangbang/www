@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.model;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
