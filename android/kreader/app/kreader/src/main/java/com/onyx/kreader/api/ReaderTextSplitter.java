@@ -26,6 +26,8 @@ public interface ReaderTextSplitter {
     @SuppressWarnings("unused")
     int getTextRightBoundary(final String character, final String left, final String right);
 
+    boolean isAlphaOrDigit(final String ch);
+
     int getTextSentenceBreakPoint(final String text);
 
     /**

@@ -124,6 +124,16 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
     }
 
     @Override
+    public boolean isAlphaOrDigit(String ch) {
+        if (StringUtils.isBlank(ch)) {
+            return false;
+        }
+        boolean res = isAlpha(ch.charAt(0)) || Character.isDigit(ch.charAt(0));
+        Debug.e(getClass(), "isAlpha: %s, %b", ch, res);
+        return res;
+    }
+
+    @Override
     public int getTextSentenceBreakPoint(String text) {
         for (int i = 0; i < text.length(); i++) {
             if (Splitters.contains(text.charAt(i))) {

@@ -304,13 +304,29 @@ static std::shared_ptr<_jstring> getJStringText(JNIEnv *env, FPDF_TEXTPAGE page,
     return StringUtils::newLocalString(env, (jchar *)arrayWrapper.getBuffer(), count);
 }
 
+static bool isAlphaOrDigit(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int charIndex) {
+    const int count = 1;
+    int textSize = (count + 1) * sizeof(unsigned short);
+    JNIByteArray arrayWrapper(env, textSize);
+    FPDFText_GetText(page, charIndex, count, (unsigned short *)(arrayWrapper.getBuffer()));
+
+    std::shared_ptr<_jstring> jstr = StringUtils::newLocalString(env, (jchar *)arrayWrapper.getBuffer(), count);
+    JNILocalRef<jclass> clz = JNILocalRef<jclass>(env, env->GetObjectClass(splitter));
+    jmethodID method = env->GetMethodID(clz.getValue(), "isAlphaOrDigit", "(Ljava/lang/String;)Z");
+    if (!method) {
+        LOGE("find method getTextLeftBoundary failed!");
+        return -1;
+    }
+    return env->CallBooleanMethod(splitter, method, jstr.get());
+}
+
 static void selectByWord(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int start, int end, int *newStart, int *newEnd) {
     const int count = FPDFText_CountChars(page);
     if (count <= 0) {
         LOGE("selectByWord, FPDFText_CountChars failed.");
         return;
     }
-    
+
     const int extend = 50;
     const int left = std::max(start - extend, 0);
     const int right = std::min(end + extend, count - 1);
@@ -362,8 +378,19 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     int newStart = start;
     int newEnd = end;
     if (splitter != NULL) {
-        selectByWord(env, textPage, splitter, start, end, &newStart, &newEnd);
-        LOGE("selectByWord finished");
+        if (selectingWord) {
+            selectByWord(env, textPage, splitter, start, end, &newStart, &newEnd);
+            LOGE("selectByWord finished");
+        } else {
+            if (isAlphaOrDigit(env, textPage, splitter, start)) {
+                int ignoreEnd;
+                selectByWord(env, textPage, splitter, start, start, &newStart, &ignoreEnd);
+            }
+            if (isAlphaOrDigit(env, textPage, splitter, end)) {
+                int ignoreStart;
+                selectByWord(env, textPage, splitter, end, end, &ignoreStart, &newEnd);
+            }
+        }
     }
 
     return reportSelection(env, page, textPage, x, y, width, height, rotation, newStart, newEnd, selection);
