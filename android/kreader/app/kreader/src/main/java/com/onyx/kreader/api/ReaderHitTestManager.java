@@ -23,10 +23,10 @@ public interface ReaderHitTestManager {
     /**
      * Select text between start point and end point.
      * @param start The start view point.
-     * @param selectingWord
+     * @param hitTestOptions
      * @return the selection.
      */
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, final boolean selectingWord);
+    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, final ReaderHitTestOptions hitTestOptions);
 
 
 }

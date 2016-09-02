@@ -14,6 +14,7 @@ import com.onyx.kreader.api.ReaderDrmManager;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderHitTestArgs;
 import com.onyx.kreader.api.ReaderHitTestManager;
+import com.onyx.kreader.api.ReaderHitTestOptions;
 import com.onyx.kreader.api.ReaderLink;
 import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.api.ReaderPlugin;
@@ -403,7 +404,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, boolean selectingWord) {
+    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
         PdfiumSelection selection = new PdfiumSelection(start.pageName);
         getPluginImpl().hitTest(PagePositionUtils.getPageNumber(start.pageName),
                 (int) start.pageDisplayRect.left,
@@ -415,7 +416,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
                 (int) start.point.y,
                 (int) end.point.x,
                 (int) end.point.y,
-                selectingWord,
+                hitTestOptions.isSelectingWord(),
                 selection);
         return selection;
     }

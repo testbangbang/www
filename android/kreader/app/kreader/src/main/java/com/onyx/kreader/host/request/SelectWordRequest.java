@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.api.ReaderHitTestArgs;
 import com.onyx.kreader.api.ReaderHitTestManager;
+import com.onyx.kreader.api.ReaderHitTestOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
@@ -20,13 +21,13 @@ public class SelectWordRequest extends BaseReaderRequest {
     private PointF end = new PointF();
     private ReaderSelection selection;
     private String pageName;
-    private boolean selectingWord;
+    private ReaderHitTestOptions hitTestOptions;
 
-    public SelectWordRequest(final String name, final PointF startPoint, final PointF endPoint, final boolean selectingWord) {
+    public SelectWordRequest(final String name, final PointF startPoint, final PointF endPoint, final ReaderHitTestOptions hitTestOptions) {
         start.set(startPoint.x, startPoint.y);
         end.set(endPoint.x, endPoint.y);
         pageName = name;
-        this.selectingWord = selectingWord;
+        this.hitTestOptions = hitTestOptions;
     }
 
     public PointF getstart() {
@@ -45,7 +46,7 @@ public class SelectWordRequest extends BaseReaderRequest {
         PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pageName);
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, end);
-        selection = hitTestManager.select(argsStart, argsEnd, selectingWord);
+        selection = hitTestManager.select(argsStart, argsEnd, hitTestOptions);
         LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));

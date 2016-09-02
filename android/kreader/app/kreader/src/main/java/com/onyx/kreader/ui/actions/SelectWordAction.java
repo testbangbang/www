@@ -4,6 +4,8 @@ import android.graphics.PointF;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.kreader.api.ReaderHitTestOptions;
+import com.onyx.kreader.host.impl.ReaderHitTestOptionsImpl;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -13,11 +15,11 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class SelectWordAction{
 
     public static void selectWord(final ReaderDataHolder readerDataHolder, final String pageName, final PointF startPoint, final PointF endPoint, final BaseCallback baseCallback){
-        selectWord(readerDataHolder, pageName, startPoint, endPoint, false, baseCallback);
+        selectWord(readerDataHolder, pageName, startPoint, endPoint, ReaderHitTestOptionsImpl.create(false), baseCallback);
     }
 
-    public static void selectWord(final ReaderDataHolder readerDataHolder, final String pageName, final PointF startPoint, final PointF endPoint, final boolean selectingWord, final BaseCallback baseCallback){
-        final SelectWordRequest selectWordRequest = new SelectWordRequest(pageName, startPoint, endPoint, selectingWord);
+    public static void selectWord(final ReaderDataHolder readerDataHolder, final String pageName, final PointF startPoint, final PointF endPoint, final ReaderHitTestOptions hitTestOptions, final BaseCallback baseCallback){
+        final SelectWordRequest selectWordRequest = new SelectWordRequest(pageName, startPoint, endPoint, hitTestOptions);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), selectWordRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
