@@ -157,6 +157,11 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         final String w = normalizeString(word);
         final String l = normalizeString(left);
         final String r = normalizeString(right);
+
+        if (word.length() > 0 && isAlphaOrDigit(String.valueOf(word.charAt(0)))) {
+            return searchSpaceBoundaryForLatinFromRight(word, left);
+        }
+
         if (analyzeResult == null || !analyzeResult.isSameSentence(w, l, r)) {
             analyzeResult = SentenceAnalyzeResult.analyze(w, l, r);
         }
@@ -167,6 +172,11 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         final String w = normalizeString(word);
         final String l = normalizeString(left);
         final String r = normalizeString(right);
+
+        if (word.length() > 0 && isAlphaOrDigit(String.valueOf(word.charAt(word.length() - 1)))) {
+            return searchSpaceBoundaryForLatinFromLeft(word, right);
+        }
+
         if (analyzeResult == null || !analyzeResult.isSameSentence(w, l, r)) {
             analyzeResult = SentenceAnalyzeResult.analyze(w, l, r);
         }
@@ -232,7 +242,7 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         if (index == 0 || index >= string.length()) {
             return 0;
         }
-        final int lastNonSpace = index - 1;
+        final int lastNonSpace = index;
         return lastNonSpace;
     }
 
@@ -254,7 +264,7 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
             return 0;
         }
         final int lastNonSpace = index + 1;
-        return string.length() - 1 - lastNonSpace;
+        return string.length() - lastNonSpace;
     }
 
     int nextSentence(final String text, int start) {
