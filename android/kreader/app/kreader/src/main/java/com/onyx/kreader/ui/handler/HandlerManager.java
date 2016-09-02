@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.provider.SharedPreferenceProvider;
 import com.onyx.android.sdk.scribble.ScribbleHandler;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.data.CustomBindKeyBean;
 import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -379,7 +380,7 @@ public class HandlerManager {
         } else if (action.equals(ReaderConfig.TOGGLE_BOOKMARK)) {
             //activity.toggleBookmark();
         } else if (action.equals(ReaderConfig.SHOW_MENU)) {
-//            activity.showReaderMenu();
+            new ShowReaderMenuAction().execute(readerDataHolder);
         } else if (action.equals(ReaderConfig.CHANGE_TO_ERASE_MODE)) {
 
 
