@@ -16,7 +16,6 @@ import com.onyx.kreader.ui.actions.SelectWordAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.dialog.PopupSelectionMenu;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.utils.MathUtils;
 import com.onyx.kreader.utils.RectUtils;
@@ -38,6 +37,7 @@ public class WordSelectionHandler extends BaseHandler{
     private Point lastMovedPoint = null;
     private int cursorSelected = -1;
     private boolean moveAfterLongPress = false;
+    private boolean singleTapUp = false;
 
     private long touchDownTime = -1;
     private long touchMoveTime = -1;
@@ -75,16 +75,15 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        singleTapUp = true;
         return true;
     }
 
     public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
-        if (moveAfterLongPress){
-            onActionUpAfterTouchMoved(readerDataHolder,startX, startY, endX, endY);
-        }else if (hasSelectionWord(readerDataHolder) && isLongPress()){
-            selectWord(readerDataHolder,startX, startY, endX, endY, true);
+        if (!singleTapUp){
+            select(readerDataHolder,startX, startY, endX, endY, true);
         }
-        setLongPress(false);
+        singleTapUp = false;
         return true;
     }
 
@@ -182,7 +181,7 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void highlightAlongTouchMoved(ReaderDataHolder readerDataHolder, float x, float y, int cursorSelected) {
-        handleTouchMovingUpAction(readerDataHolder,x,y,true);
+        handleTouchMovingAction(readerDataHolder,x,y,true);
     }
 
     private PageInfo hitTestPage(ReaderDataHolder readerDataHolder, float x, float y) {
@@ -205,7 +204,21 @@ public class WordSelectionHandler extends BaseHandler{
         SelectWordAction.selectWord(readerDataHolder, page.getName(), new PointF(x1, y1), new PointF(x2, y2), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                onSelectWordFinished(readerDataHolder, (SelectWordRequest) request, e, show, PopupSelectionMenu.SelectionType.SingleWordType);
+                onSelectWordFinished(readerDataHolder, (SelectWordRequest) request, e, show);
+                cursorSelected = getCursorSelected(readerDataHolder,(int)x1, (int)y1);
+            }
+        });
+    }
+
+    public void select(final ReaderDataHolder readerDataHolder, final float x1, final float y1, float x2, float y2, final boolean show) {
+        PageInfo page = hitTestPage(readerDataHolder,x1, y1);
+        if (page == null) {
+            return;
+        }
+        SelectWordAction.select(readerDataHolder, page.getName(), new PointF(x1, y1), new PointF(x2, y2), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                onSelectWordFinished(readerDataHolder, (SelectWordRequest) request, e, show);
                 cursorSelected = getCursorSelected(readerDataHolder,(int)x1, (int)y1);
             }
         });
@@ -215,11 +228,7 @@ public class WordSelectionHandler extends BaseHandler{
         ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder, false);
     }
 
-    public void onActionUpAfterTouchMoved(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
-        handleTouchMovingUpAction(readerDataHolder,x2,y2,false);
-    }
-
-    private void handleTouchMovingUpAction(final ReaderDataHolder readerDataHolder, final float x, final float y, final boolean touchMoving){
+    private void handleTouchMovingAction(final ReaderDataHolder readerDataHolder, final float x, final float y, final boolean touchMoving){
         final ReaderSelection selection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
         if (selection == null){
             return;
@@ -236,10 +245,10 @@ public class WordSelectionHandler extends BaseHandler{
             endBottom = new PointF(x, y);
         }
 
-        SelectWordAction.selectWord(readerDataHolder, pageInfo.getName(), beginTop, endBottom, new BaseCallback() {
+        SelectWordAction.select(readerDataHolder, pageInfo.getName(), beginTop, endBottom, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                onSelectWordFinished(readerDataHolder, (SelectWordRequest)request, e, !touchMoving, PopupSelectionMenu.SelectionType.MultiWordsType);
+                onSelectWordFinished(readerDataHolder, (SelectWordRequest)request, e, false);
                 final ReaderSelection updatedSelection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
                 if (updatedSelection == null) {
                     return;
@@ -283,7 +292,7 @@ public class WordSelectionHandler extends BaseHandler{
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }
 
-    public void onSelectWordFinished(ReaderDataHolder readerDataHolder, SelectWordRequest request, Throwable e, boolean show, PopupSelectionMenu.SelectionType selectionType) {
+    public void onSelectWordFinished(ReaderDataHolder readerDataHolder, SelectWordRequest request, Throwable e, boolean show) {
         if (e != null) {
             return;
         }
@@ -297,7 +306,7 @@ public class WordSelectionHandler extends BaseHandler{
         }
 
         if (show){
-            new ShowTextSelectionMenuAction(readerDataHolder, (int)request.getEnd().x, (int)request.getEnd().y, selectionType).execute(readerDataHolder);
+            ShowTextSelectionMenuAction.showTextSelectionPopupMenu(readerDataHolder);
         }else {
             ShowTextSelectionMenuAction.hideTextSelectionPopupMenu();
         }
