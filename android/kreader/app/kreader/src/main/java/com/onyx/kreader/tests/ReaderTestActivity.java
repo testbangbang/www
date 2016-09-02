@@ -626,7 +626,7 @@ public class ReaderTestActivity extends Activity {
 
     private void drawHitTest(final Canvas canvas) {
         PdfiumSelection selection = new PdfiumSelection();
-        int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, (int) startX, (int) startY, (int) endX, (int) endY, selection);
+        int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, (int) startX, (int) startY, (int) endX, (int) endY, false, selection);
         if (size <= 0) {
             return;
         }

@@ -43,6 +43,13 @@ public interface ReaderSelection {
     public String getRightText();
 
     /**
+     * return true if selected text is a single word
+     *
+     * @return
+     */
+    public boolean isSelectedOnWord();
+
+    /**
      * Retrieve selected rectangle list in page coordinates system.
      * @return
      */
