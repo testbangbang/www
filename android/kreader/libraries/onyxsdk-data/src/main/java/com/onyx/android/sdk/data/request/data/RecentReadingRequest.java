@@ -24,7 +24,8 @@ public class RecentReadingRequest extends BaseDataRequest {
 
     public void execute(final DataManager dataManager) throws Exception {
         list.addAll(dataManager.getDataProviderManager().getDataProvider().findMetadata(getContext(),
-                ConditionGroup.clause().and(Metadata_Table.progress.isNotNull()),
+                ConditionGroup.clause().and(Metadata_Table.progress.isNotNull())
+                .and(Metadata_Table.lastAccess.isNotNull()),
                 OrderBy.fromProperty(Metadata_Table.updatedAt).descending(),
                 0,
                 limit));
