@@ -31,18 +31,18 @@ public class QueryArgs {
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(int offset, int limit,
-                                    final ConditionGroup conditionGroup,
-                                    final OrderBy orderBy) {
+    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+                                    final OrderBy orderBy,
+                                    int offset, int limit) {
         QueryArgs queryArgs = queryBy(conditionGroup, orderBy);
         queryArgs.offset = offset;
         queryArgs.limit = limit;
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(int offset, int limit,
-                                    final ConditionGroup conditionGroup,
-                                    final List<OrderBy> orderByList) {
+    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+                                    final List<OrderBy> orderByList,
+                                    int offset, int limit) {
         QueryArgs queryArgs = queryBy(conditionGroup, orderByList);
         queryArgs.offset = offset;
         queryArgs.limit = limit;
@@ -57,6 +57,16 @@ public class QueryArgs {
 
     public QueryArgs appendOrderBy(final OrderBy orderBy) {
         orderByList.add(orderBy);
+        return this;
+    }
+
+    public QueryArgs andWith(ConditionGroup otherGroup) {
+        conditionGroup.and(otherGroup);
+        return this;
+    }
+
+    public QueryArgs orWith(ConditionGroup otherGroup) {
+        conditionGroup.or(otherGroup);
         return this;
     }
 }

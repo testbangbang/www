@@ -1,12 +1,14 @@
 package com.onyx.android.sdk.data.utils;
 
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLCondition;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
+import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +22,10 @@ public class MetadataQueryArgsBuilder {
 
     public static QueryArgs bookListQuery(Set<String> fileTypes, OrderBy orderBy) {
         return QueryArgs.queryBy(orTypeCondition(fileTypes), orderBy);
+    }
+
+    public static QueryArgs bookListQuery(QueryCriteria queryCriteria, OrderBy orderBy) {
+        return QueryArgs.queryBy(queryCriteriaCondition(queryCriteria), orderBy);
     }
 
     public static QueryArgs bookListQuery(ConditionGroup conditionGroup, OrderBy orderBy) {
@@ -115,5 +121,43 @@ public class MetadataQueryArgsBuilder {
 
     public static OrderBy getOrderBy(IProperty property) {
         return OrderBy.fromProperty(property);
+    }
+
+    public static ConditionGroup queryCriteriaCondition(final QueryCriteria queryCriteria) {
+        ConditionGroup group = ConditionGroup.clause();
+        andWith(group, matchLikeSet(Metadata_Table.authors, queryCriteria.author));
+        andWith(group, matchLikeSet(Metadata_Table.tags, queryCriteria.tags));
+        andWith(group, matchLikeSet(Metadata_Table.series, queryCriteria.series));
+        andWith(group, matchLikeSet(Metadata_Table.title, queryCriteria.title));
+        andWith(group, matchLikeSet(Metadata_Table.type, queryCriteria.fileType));
+        return group;
+    }
+
+    public static void andWith(final ConditionGroup parent, final ConditionGroup child) {
+        if (parent != null && child != null) {
+            parent.and(child);
+        }
+    }
+
+    public static ConditionGroup matchLikeSet(final Property<String> property, final Set<String> set) {
+        if (set == null || set.size() <= 0) {
+            return null;
+        }
+        final ConditionGroup conditionGroup = ConditionGroup.clause();
+        for (String string : set) {
+            conditionGroup.or(property.like("%" + string + "%"));
+        }
+        return conditionGroup;
+    }
+
+    public static ConditionGroup matchEqualSet(final Property<String> property, final Set<String> set) {
+        if (set == null || set.size() <= 0) {
+            return null;
+        }
+        final ConditionGroup conditionGroup = ConditionGroup.clause();
+        for (String string : set) {
+            conditionGroup.or(property.eq(string));
+        }
+        return conditionGroup;
     }
 }

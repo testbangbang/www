@@ -5,6 +5,7 @@ import android.content.Context;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.*;
+import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
@@ -50,38 +51,11 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     public List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria) {
-        final ConditionGroup conditionGroup = queryCriteriaCondition(queryCriteria);
+        final ConditionGroup conditionGroup = MetadataQueryArgsBuilder.queryCriteriaCondition(queryCriteria);
         if (conditionGroup.size() > 0) {
             return new Select().from(Metadata.class).where(conditionGroup).orderBy(queryCriteria.orderBy).offset(queryCriteria.offset).limit(queryCriteria.limit).queryList();
         }
         return new ArrayList<>();
-    }
-
-    private static ConditionGroup queryCriteriaCondition(final QueryCriteria queryCriteria) {
-        ConditionGroup group = ConditionGroup.clause();
-        andWith(group, matchSet(Metadata_Table.authors, queryCriteria.author));
-        andWith(group, matchSet(Metadata_Table.tags, queryCriteria.tags));
-        andWith(group, matchSet(Metadata_Table.series, queryCriteria.series));
-        andWith(group, matchSet(Metadata_Table.title, queryCriteria.title));
-        andWith(group, matchSet(Metadata_Table.type, queryCriteria.fileType));
-        return group;
-    }
-
-    private static void andWith(final ConditionGroup parent, final ConditionGroup child) {
-        if (parent != null && child != null) {
-            parent.and(child);
-        }
-    }
-
-    private static ConditionGroup matchSet(final Property<String> property, final Set<String> set) {
-        if (set == null || set.size() <= 0) {
-            return null;
-        }
-        final ConditionGroup conditionGroup = ConditionGroup.clause();
-        for (String string : set) {
-            conditionGroup.or(property.like("%" + string + "%"));
-        }
-        return conditionGroup;
     }
 
     public List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs) {

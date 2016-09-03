@@ -7,7 +7,6 @@ import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.List;
