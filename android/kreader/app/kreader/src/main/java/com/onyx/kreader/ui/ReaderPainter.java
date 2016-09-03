@@ -45,9 +45,9 @@ public class ReaderPainter {
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
         drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
-        drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.UnderLine);
+        drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
         if (SingletonSharedPreference.isShowAnnotation(context)) {
-            drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.UnderLine);
+            drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         }
         if (SingletonSharedPreference.isShowBookmark(context)) {
             drawBookmark(context, canvas, userDataInfo, viewInfo);

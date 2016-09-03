@@ -30,7 +30,7 @@ public class ShowTextSelectionMenuAction{
     public static void showTextSelectionPopupMenu(ReaderDataHolder readerDataHolder){
         popupSelectionMenu =  getTextSelectionPopupMenu(readerDataHolder);
         if (popupSelectionMenu != null) {
-            popupSelectionMenu.show();
+            popupSelectionMenu.show(readerDataHolder);
         }
     }
 
