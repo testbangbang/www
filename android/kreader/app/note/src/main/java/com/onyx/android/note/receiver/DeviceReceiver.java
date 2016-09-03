@@ -14,6 +14,9 @@ public class DeviceReceiver extends BroadcastReceiver {
 
     public static final String SYSTEM_UI_DIALOG_OPEN_ACTION = "com.android.systemui.SYSTEM_UI_DIALOG_OPEN_ACTION";
     public static final String SYSTEM_UI_DIALOG_CLOSE_ACTION = "com.android.systemui.SYSTEM_UI_DIALOG_CLOSE_ACTION";
+    public static final String STATUS_BAR_ICON_REFRESH_START_ACTION = "com.android.systemui.STATUS_BAR_ICON_REFRESH_START_ACTION";
+    public static final String STATUS_BAR_ICON_REFRESH_FINISH_ACTION = "com.android.systemui.STATUS_BAR_ICON_REFRESH_FINISH_ACTION";
+
     public static final String SYSTEM_WAKE_UP = "com.android.system.WAKE_UP";
     public static final String SYSTEM_HOME = "com.android.systemui.HOME_BUTTON_CLICK";
 
@@ -44,6 +47,8 @@ public class DeviceReceiver extends BroadcastReceiver {
         filter.addAction(SYSTEM_UI_DIALOG_CLOSE_ACTION);
         filter.addAction(SYSTEM_WAKE_UP);
         filter.addAction(SYSTEM_HOME);
+        filter.addAction(STATUS_BAR_ICON_REFRESH_START_ACTION);
+        filter.addAction(STATUS_BAR_ICON_REFRESH_FINISH_ACTION);
         return filter;
     }
 
@@ -57,6 +62,10 @@ public class DeviceReceiver extends BroadcastReceiver {
             notifySystemUIChange(intent, false);
         } else if (SYSTEM_HOME.equalsIgnoreCase(action)) {
             notifyHomeClicked(intent);
+        } else if (STATUS_BAR_ICON_REFRESH_START_ACTION.equalsIgnoreCase(action)) {
+            notifySystemUIChange(intent, true);
+        } else if (STATUS_BAR_ICON_REFRESH_FINISH_ACTION.equalsIgnoreCase(action)) {
+            notifySystemUIChange(intent, false);
         }
     }
 

@@ -1,14 +1,13 @@
 package com.onyx.kreader.host.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderTextSplitter;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.KReaderApp;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -18,7 +17,29 @@ import java.util.Locale;
 
 public class ReaderTextSplitterImpl implements ReaderTextSplitter {
 
+    public static final Class<?> TAG = ReaderTextSplitterImpl.class;
+
     private static class SentenceAnalyzeResult {
+        private static class WordMatchLocation {
+            int matchIndex;
+            int offsetInMatchedWord;
+
+            WordMatchLocation(int index, int offset) {
+                matchIndex = index;
+                offsetInMatchedWord = offset;
+            }
+        }
+
+        private static class WordMatchResult {
+            WordMatchLocation leftLocation;
+            WordMatchLocation rightLocation;
+
+            WordMatchResult(WordMatchLocation left, WordMatchLocation right) {
+                leftLocation = left;
+                rightLocation = right;
+            }
+        }
+
         private String word, left, right;
         private int leftBoundaryOfWord, rightBoundaryOfWord;
 
@@ -31,31 +52,60 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
             this.rightBoundaryOfWord = rightBoundary;
         }
 
+        private static WordMatchResult locateWordInAnalyzeResult(List<String> analyzeResult, String word, String left, String right) {
+            // analyzed result will not contain white spaces, so we can use the trick of string matching
+            // to directly locate word in analyzed result
+            String condensedLeft = getMergedAnalyzeResultText(left);
+            int leftIndex = condensedLeft.length();
+            WordMatchLocation leftLocation = locateIndexInAnalyzeResult(analyzeResult, leftIndex);
+            assert leftLocation != null;
+
+            String condensedWord = getMergedAnalyzeResultText(word);
+            int rightIndex = leftIndex + condensedWord.length() - 1;
+            WordMatchLocation rightLocation = locateIndexInAnalyzeResult(analyzeResult, rightIndex);
+            assert rightLocation != null;
+
+            return new WordMatchResult(leftLocation, rightLocation);
+        }
+
+        private static String getMergedAnalyzeResultText(String text) {
+            return mergeStringList(AnalyzerAndroidWrapper.analyze(text));
+        }
+
+        private static String mergeStringList(List<String> list) {
+            StringBuilder merged = new StringBuilder();
+            for (String s : list) {
+                merged.append(s);
+            }
+            return merged.toString();
+        }
+
+        private static WordMatchLocation locateIndexInAnalyzeResult(List<String> result, int index) {
+            int length = 0;
+            for (int i = 0; i < result.size(); i++) {
+                String str = result.get(i);
+                length += str.length();
+                if (length > index) {
+                    return new WordMatchLocation(i, index - (length - str.length()));
+                }
+            }
+            return null;
+        }
+
         public static SentenceAnalyzeResult analyze(String word, String left, String right) {
-            String sentence = (left + word + right).toLowerCase(Locale.getDefault());
-            ArrayList<String> result = AnalyzerAndroidWrapper.analyze(sentence);
-            Debug.d("analyze result: " + JSON.toJSONString(result));
-            if (result.size() <= 0) {
+            word = word.toLowerCase(Locale.getDefault());
+            left = left.toLowerCase(Locale.getDefault());
+            right = right.toLowerCase(Locale.getDefault());
+            String sentence = left + word + right;
+            ArrayList<String> analyzeResult = AnalyzerAndroidWrapper.analyze(sentence);
+            if (analyzeResult.size() <= 0) {
                 return new SentenceAnalyzeResult(word, left, right, 0, 0);
             }
 
-            String target = "";
-            int leftIndex = 0;
-            for (String w : result) {
-                int i = sentence.indexOf(w, leftIndex);
-                if (i >= left.length()) {
-                    if (target.indexOf(word) < 0) {
-                        leftIndex = left.length();
-                        target = w;
-                    }
-                    break;
-                }
-                leftIndex = i;
-                target = w;
-            }
-            int rightIndex = leftIndex + target.length();
-            int leftBoundary = Math.max(0, left.length() - leftIndex);
-            int rightBoundary = rightIndex - left.length() - word.length();
+            WordMatchResult matchResult = locateWordInAnalyzeResult(analyzeResult, word, left, right);
+            int leftBoundary = Math.max(0, matchResult.leftLocation.offsetInMatchedWord);
+            int rightIndexOfResult = matchResult.rightLocation.matchIndex;
+            int rightBoundary = analyzeResult.get(rightIndexOfResult).length() - matchResult.rightLocation.offsetInMatchedWord - 1;
             return new SentenceAnalyzeResult(word, left, right, leftBoundary, rightBoundary);
         }
 
@@ -107,6 +157,11 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         final String w = normalizeString(word);
         final String l = normalizeString(left);
         final String r = normalizeString(right);
+
+        if (word.length() > 0 && isAlphaOrDigit(String.valueOf(word.charAt(0)))) {
+            return searchSpaceBoundaryForLatinFromRight(word, left);
+        }
+
         if (analyzeResult == null || !analyzeResult.isSameSentence(w, l, r)) {
             analyzeResult = SentenceAnalyzeResult.analyze(w, l, r);
         }
@@ -117,6 +172,11 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         final String w = normalizeString(word);
         final String l = normalizeString(left);
         final String r = normalizeString(right);
+
+        if (word.length() > 0 && isAlphaOrDigit(String.valueOf(word.charAt(word.length() - 1)))) {
+            return searchSpaceBoundaryForLatinFromLeft(word, right);
+        }
+
         if (analyzeResult == null || !analyzeResult.isSameSentence(w, l, r)) {
             analyzeResult = SentenceAnalyzeResult.analyze(w, l, r);
         }
@@ -124,14 +184,21 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
     }
 
     @Override
+    public boolean isAlphaOrDigit(String ch) {
+        if (StringUtils.isBlank(ch)) {
+            return false;
+        }
+        boolean res = isAlpha(ch.charAt(0)) || Character.isDigit(ch.charAt(0));
+        return res;
+    }
+
+    @Override
     public int getTextSentenceBreakPoint(String text) {
         for (int i = 0; i < text.length(); i++) {
             if (Splitters.contains(text.charAt(i))) {
-                Debug.d("getTextSentenceBreakPoint, find: " + text.charAt(i));
                 return i;
             }
         }
-        Debug.d("getTextSentenceBreakPoint, find nothing!");
         return text.length() - 1;
     }
 
@@ -172,7 +239,7 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         if (index == 0 || index >= string.length()) {
             return 0;
         }
-        final int lastNonSpace = index - 1;
+        final int lastNonSpace = index;
         return lastNonSpace;
     }
 
@@ -194,7 +261,7 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
             return 0;
         }
         final int lastNonSpace = index + 1;
-        return string.length() - 1 - lastNonSpace;
+        return string.length() - lastNonSpace;
     }
 
     int nextSentence(final String text, int start) {
