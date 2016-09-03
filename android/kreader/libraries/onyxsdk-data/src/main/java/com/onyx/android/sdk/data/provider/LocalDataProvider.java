@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
+
+import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -9,6 +11,7 @@ import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
@@ -81,9 +84,15 @@ public class LocalDataProvider implements DataProviderBase {
         return conditionGroup;
     }
 
-    public List<Metadata> findMetadata(final Context context, final ConditionGroup conditionGroup, final OrderBy orderBy, final int offset, final int limit) {
-        if (conditionGroup != null && conditionGroup.size() > 0) {
-            return new Select().from(Metadata.class).where(conditionGroup).orderBy(orderBy).offset(offset).limit(limit).queryList();
+    public List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs) {
+        if (queryArgs.conditionGroup != null && queryArgs.conditionGroup.size() > 0) {
+            Where<Metadata> where = new Select().from(Metadata.class).where(queryArgs.conditionGroup);
+            if (queryArgs.orderByList != null && queryArgs.orderByList.size() > 0) {
+                for (OrderBy orderBy : queryArgs.orderByList) {
+                    where.orderBy(orderBy);
+                }
+            }
+            return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
         }
         return new ArrayList<>();
     }
@@ -135,11 +144,11 @@ public class LocalDataProvider implements DataProviderBase {
                 .queryList();
     }
 
-    public void addAnnotation(final Annotation annotation){
+    public void addAnnotation(final Annotation annotation) {
         annotation.save();
     }
 
-    public void updateAnnotation(final Annotation annotation){
+    public void updateAnnotation(final Annotation annotation) {
         annotation.save();
     }
 

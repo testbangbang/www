@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
+
+import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
@@ -26,7 +28,7 @@ public interface DataProviderBase {
 
     List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria);
 
-    List<Metadata> findMetadata(final Context context, final ConditionGroup conditions, final OrderBy orderBy, final int offset, final int limit);
+    List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs);
 
     void removeMetadata(final Context context, final Metadata metadata);
 

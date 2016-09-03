@@ -1,10 +1,8 @@
 package com.onyx.android.sdk.data.model;
 
-import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Index;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
@@ -14,7 +12,6 @@ import java.util.UUID;
 /**
  * Created by zhuzeng on 6/1/16.
  */
-@Table(database = ContentDatabase.class)
 public class BaseData extends BaseModel {
 
     public static final int INVALID_ID = -1;
