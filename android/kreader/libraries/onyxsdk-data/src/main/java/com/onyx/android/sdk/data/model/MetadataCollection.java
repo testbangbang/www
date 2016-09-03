@@ -1,11 +1,14 @@
 package com.onyx.android.sdk.data.model;
 
+import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Index;
+import com.raizlabs.android.dbflow.annotation.Table;
 
 /**
  * Created by zhuzeng on 8/26/16.
  */
+@Table(database = ContentDatabase.class)
 public class MetadataCollection extends BaseData {
 
     @Column
