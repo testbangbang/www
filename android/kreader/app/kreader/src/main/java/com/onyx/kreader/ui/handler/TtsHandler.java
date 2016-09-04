@@ -2,10 +2,10 @@ package com.onyx.kreader.ui.handler;
 
 import android.util.Log;
 import android.view.KeyEvent;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSentence;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.request.GetSentenceRequest;
@@ -13,6 +13,7 @@ import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
@@ -104,10 +105,15 @@ public class TtsHandler extends BaseHandler {
     }
 
     public void setSpeechRate(float rate) {
+        SingletonSharedPreference.setTtsSpeechRate(readerDataHolder.getContext(),rate);
         readerDataHolder.getTtsManager().stop();
         readerDataHolder.getTtsManager().setSpeechRate(rate);
         readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
         readerDataHolder.getTtsManager().play();
+    }
+
+    public float getSpeechRate(){
+        return SingletonSharedPreference.getTtsSpeechRate(readerDataHolder.getContext());
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {

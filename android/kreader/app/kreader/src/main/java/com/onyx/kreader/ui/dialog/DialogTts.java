@@ -13,8 +13,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
@@ -23,6 +22,9 @@ import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.handler.TtsHandler;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by ming on 16/8/12.
@@ -184,9 +186,8 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         seekBarTts.setMax(maxVolume);
         seekBarTts.setProgress(curVolume);
 
-        // reset to default normal speed
-        readerDataHolder.getTtsManager().setSpeechRate(1.0f);
-        updateSpeedCheckBoxCheckedStatus(3);
+        readerDataHolder.getTtsManager().setSpeechRate(ttsHandler.getSpeechRate());
+        updateSpeedCheckBoxCheckedStatus(getCheckBoxSpeedByRate(ttsHandler.getSpeechRate()));
 
         ttsHandler.registerCallback(new TtsHandler.Callback() {
             @Override
@@ -266,6 +267,15 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
     private float getCheckBoxRate(int index) {
         return speedCheckBoxCollection[index].second.second;
+    }
+
+    private int getCheckBoxSpeedByRate(final float rate){
+        for (int i = 0; i < speedCheckBoxCollection.length; i++) {
+            if (getCheckBoxRate(i) == rate){
+                return getCheckBoxSpeed(i);
+            }
+        }
+        return 3;
     }
 
     private void updateSpeedCheckBoxCheckedStatus(int targetSpeed) {
