@@ -43,7 +43,7 @@ public class AccountTest extends ApplicationTestCase<Application> {
 
     private OnyxAccount getCurrentAccount() {
         if (currentAccount == null) {
-            currentAccount = new OnyxAccount(UUID.randomUUID().toString().substring(5),
+            currentAccount = new OnyxAccount(UUID.randomUUID().toString(),
                     TestUtils.randString(), TestUtils.randomEmail());
         }
         return currentAccount;
@@ -59,6 +59,7 @@ public class AccountTest extends ApplicationTestCase<Application> {
         OnyxAccount resultAccount = JSONObjectParseUtils.parseOnyxAccount(response.body().string());
         assertNotNull(resultAccount);
         assertNotNull(resultAccount.sessionToken);
+        account = resultAccount;
 
         object = getService().signout(account.sessionToken);
         response = object.execute();
