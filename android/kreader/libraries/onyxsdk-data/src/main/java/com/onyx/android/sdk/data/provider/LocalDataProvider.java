@@ -1,11 +1,14 @@
 package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
+import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
@@ -185,5 +188,49 @@ public class LocalDataProvider implements DataProviderBase {
     @Override
     public void clearLibrary() {
         Delete.table(Library.class);
+    }
+
+    @Override
+    public void clearThumbnail() {
+        Delete.table(Thumbnail.class);
+    }
+
+    @Override
+    public List<Thumbnail> addThumbnail(Context context, String sourceMD5, Bitmap saveBitmap) {
+        List<Thumbnail> list = new ArrayList<>();
+        for (ThumbnailKind tk : ThumbnailKind.values()) {
+            Thumbnail thumbnail = new Thumbnail();
+            thumbnail.setSourceMD5(sourceMD5);
+            thumbnail.setThumbnailKind(tk);
+            ThumbnailUtils.saveThumbnailBitmap(context, thumbnail, saveBitmap);
+            list.add(thumbnail);
+        }
+        return list;
+    }
+
+    @Override
+    public void updateThumbnail(Thumbnail thumbnail) {
+        thumbnail.update();
+    }
+
+    @Override
+    public void deleteThumbnail(Thumbnail thumbnail) {
+        thumbnail.delete();
+    }
+
+    @Override
+    public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
+        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+                .queryList();
+    }
+
+    @Override
+    public Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind) {
+        return ThumbnailUtils.getThumbnailBitmap(context, sourceMd5, kind.toString());
+    }
+
+    @Override
+    public Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
+        return ThumbnailUtils.getThumbnailBitmap(context, thumbnail);
     }
 }

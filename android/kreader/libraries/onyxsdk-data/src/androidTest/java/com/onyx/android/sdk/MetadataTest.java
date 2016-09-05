@@ -2,6 +2,8 @@ package com.onyx.android.sdk;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
 
@@ -9,9 +11,11 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Library_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
@@ -23,7 +27,6 @@ import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
@@ -551,6 +554,62 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         libraryList = providerBase.loadAllLibrary(librarySet[0].getParentUniqueId());
         assertNotNull(libraryList);
         assertTrue(libraryList.size() == 1);
+    }
+
+    public static Bitmap getSquareBitmap() {
+        Bitmap bitmap = Bitmap.createBitmap(707, 707, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(0xFFAA00AA);
+        return bitmap;
+    }
+
+    public List<Thumbnail> testSaveThumbnail() {
+        DataProviderBase providerBase = getProviderBase();
+        providerBase.clearThumbnail();
+
+        String md5 = generateRandomUUID().substring(0, 12);
+        providerBase.addThumbnail(getContext(), md5, getSquareBitmap());
+
+        List<Thumbnail> list = providerBase.loadThumbnail(getContext(), md5);
+        assertNotNull(list);
+        assertTrue(list.size() > 0);
+        assertTrue(list.get(0).getSourceMD5().equals(md5));
+        Bitmap tmp = getSquareBitmap();
+        for (Thumbnail thumbnail : list) {
+            Bitmap bitmap = providerBase.loadThumbnailBitmap(getContext(), thumbnail.getSourceMD5(), thumbnail.getThumbnailKind());
+            assertNotNull(bitmap);
+            assertTrue(tmp.getByteCount() >= bitmap.getByteCount());
+            tmp = bitmap;
+        }
+        return list;
+    }
+
+    public void testUpdateThumbnail() {
+        DataProviderBase providerBase = getProviderBase();
+        providerBase.clearThumbnail();
+
+        Thumbnail thumbnail = testSaveThumbnail().get(0);
+        thumbnail.setSourceMD5(getRandomFormatTag());
+        providerBase.updateThumbnail(thumbnail);
+        List<Thumbnail> list = providerBase.loadThumbnail(getContext(), thumbnail.getSourceMD5());
+        assertNotNull(list);
+        assertTrue(list.size() == 1);
+        assertTrue(list.get(0).getSourceMD5().equals(thumbnail.getSourceMD5()));
+    }
+
+    public void testDeleteThumbnail() {
+        DataProviderBase providerBase = getProviderBase();
+        providerBase.clearThumbnail();
+
+        List<Thumbnail> list = testSaveThumbnail();
+        providerBase.deleteThumbnail(list.get(0));
+        list = providerBase.loadThumbnail(getContext(), list.get(0).getSourceMD5());
+        assertNotNull(list);
+        assertTrue(list.size() == OnyxThumbnail.ThumbnailKind.values().length - 1);
+        providerBase.clearThumbnail();
+        list = providerBase.loadThumbnail(getContext(), list.get(0).getSourceMD5());
+        assertNotNull(list);
+        assertTrue(list.size() == 0);
     }
 }
 

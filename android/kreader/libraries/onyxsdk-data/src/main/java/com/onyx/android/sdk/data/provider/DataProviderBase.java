@@ -1,13 +1,16 @@
 package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
+import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.Thumbnail;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.List;
@@ -16,7 +19,6 @@ import java.util.List;
  * Created by zhuzeng on 8/27/16.
  */
 public interface DataProviderBase {
-
 
     void clearMetadata();
 
@@ -65,4 +67,18 @@ public interface DataProviderBase {
     void deleteLibrary(Library library);
 
     void clearLibrary();
+
+    void clearThumbnail();
+
+    List<Thumbnail> addThumbnail(Context context, String sourceMD5, Bitmap saveBitmap);
+
+    void updateThumbnail(Thumbnail thumbnail);
+
+    void deleteThumbnail(Thumbnail thumbnail);
+
+    List<Thumbnail> loadThumbnail(Context context, String sourceMd5);
+
+    Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind);
+
+    Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail);
 }
