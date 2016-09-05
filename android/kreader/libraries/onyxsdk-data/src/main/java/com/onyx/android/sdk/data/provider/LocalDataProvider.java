@@ -1,20 +1,24 @@
 package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
+
+import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.*;
+import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by zhuzeng on 8/27/16.
@@ -47,43 +51,22 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     public List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria) {
-        final ConditionGroup conditionGroup = queryCriteriaCondition(queryCriteria);
+        final ConditionGroup conditionGroup = MetadataQueryArgsBuilder.queryCriteriaCondition(queryCriteria);
         if (conditionGroup.size() > 0) {
             return new Select().from(Metadata.class).where(conditionGroup).orderBy(queryCriteria.orderBy).offset(queryCriteria.offset).limit(queryCriteria.limit).queryList();
         }
         return new ArrayList<>();
     }
 
-    private static ConditionGroup queryCriteriaCondition(final QueryCriteria queryCriteria) {
-        ConditionGroup group = ConditionGroup.clause();
-        andWith(group, matchSet(Metadata_Table.authors, queryCriteria.author));
-        andWith(group, matchSet(Metadata_Table.tags, queryCriteria.tags));
-        andWith(group, matchSet(Metadata_Table.series, queryCriteria.series));
-        andWith(group, matchSet(Metadata_Table.title, queryCriteria.title));
-        andWith(group, matchSet(Metadata_Table.type, queryCriteria.fileType));
-        return group;
-    }
-
-    private static void andWith(final ConditionGroup parent, final ConditionGroup child) {
-        if (parent != null && child != null) {
-            parent.and(child);
-        }
-    }
-
-    private static ConditionGroup matchSet(final Property<String> property, final Set<String> set) {
-        if (set == null || set.size() <= 0) {
-            return null;
-        }
-        final ConditionGroup conditionGroup = ConditionGroup.clause();
-        for (String string : set) {
-            conditionGroup.or(property.like("%" + string + "%"));
-        }
-        return conditionGroup;
-    }
-
-    public List<Metadata> findMetadata(final Context context, final ConditionGroup conditionGroup, final OrderBy orderBy, final int offset, final int limit) {
-        if (conditionGroup != null && conditionGroup.size() > 0) {
-            return new Select().from(Metadata.class).where(conditionGroup).orderBy(orderBy).offset(offset).limit(limit).queryList();
+    public List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs) {
+        if (queryArgs.conditionGroup != null && queryArgs.conditionGroup.size() > 0) {
+            Where<Metadata> where = new Select().from(Metadata.class).where(queryArgs.conditionGroup);
+            if (queryArgs.orderByList != null && queryArgs.orderByList.size() > 0) {
+                for (OrderBy orderBy : queryArgs.orderByList) {
+                    where.orderBy(orderBy);
+                }
+            }
+            return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
         }
         return new ArrayList<>();
     }
@@ -135,11 +118,11 @@ public class LocalDataProvider implements DataProviderBase {
                 .queryList();
     }
 
-    public void addAnnotation(final Annotation annotation){
+    public void addAnnotation(final Annotation annotation) {
         annotation.save();
     }
 
-    public void updateAnnotation(final Annotation annotation){
+    public void updateAnnotation(final Annotation annotation) {
         annotation.save();
     }
 
@@ -169,4 +152,38 @@ public class LocalDataProvider implements DataProviderBase {
         bookmark.delete();
     }
 
+    private Condition getNullOrEqualCondition(Property<String> property, String compare) {
+        return compare == null ? property.isNull() : property.eq(compare);
+    }
+
+    @Override
+    public Library loadLibrary(String uniqueId) {
+        return new Select().from(Library.class).where(Library_Table.idString.eq(uniqueId)).querySingle();
+    }
+
+    @Override
+    public List<Library> loadAllLibrary(String parentId) {
+        Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
+        return new Select().from(Library.class).where(condition).queryList();
+    }
+
+    @Override
+    public void addLibrary(Library library) {
+        library.save();
+    }
+
+    @Override
+    public void updateLibrary(Library library) {
+        library.update();
+    }
+
+    @Override
+    public void deleteLibrary(Library library) {
+        library.delete();
+    }
+
+    @Override
+    public void clearLibrary() {
+        Delete.table(Library.class);
+    }
 }
