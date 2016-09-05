@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
@@ -18,7 +19,6 @@ import com.raizlabs.android.dbflow.sql.language.property.Property;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by zhuzeng on 8/27/16.
@@ -152,4 +152,38 @@ public class LocalDataProvider implements DataProviderBase {
         bookmark.delete();
     }
 
+    private Condition getNullOrEqualCondition(Property<String> property, String compare) {
+        return compare == null ? property.isNull() : property.eq(compare);
+    }
+
+    @Override
+    public Library loadLibrary(String uniqueId) {
+        return new Select().from(Library.class).where(Library_Table.idString.eq(uniqueId)).querySingle();
+    }
+
+    @Override
+    public List<Library> loadAllLibrary(String parentId) {
+        Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
+        return new Select().from(Library.class).where(condition).queryList();
+    }
+
+    @Override
+    public void addLibrary(Library library) {
+        library.save();
+    }
+
+    @Override
+    public void updateLibrary(Library library) {
+        library.update();
+    }
+
+    @Override
+    public void deleteLibrary(Library library) {
+        library.delete();
+    }
+
+    @Override
+    public void clearLibrary() {
+        Delete.table(Library.class);
+    }
 }

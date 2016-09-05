@@ -4,13 +4,13 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
-import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.Library_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
@@ -23,7 +23,9 @@ import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.io.File;
 import java.util.*;
@@ -458,6 +460,97 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String generateRandomUUID() {
+        return UUID.randomUUID().toString();
+    }
+
+    public DataProviderBase getProviderBase() {
+        init();
+        return DataProviderManager.getDataProvider();
+    }
+
+    public static Library getRandomLibrary() {
+        Library library = new Library();
+        library.setIdString(generateRandomUUID());
+        library.setName(generateRandomUUID());
+        library.setDescription(generateRandomUUID());
+        return library;
+    }
+
+    public void testAddLibrary() {
+        final DataProviderBase providerBase = getProviderBase();
+        providerBase.clearLibrary();
+
+        Library library = getRandomLibrary();
+        providerBase.addLibrary(library);
+        Library testLibrary = providerBase.loadLibrary(library.getIdString());
+        assertNotNull(testLibrary);
+        assertTrue(testLibrary.getIdString().equals(library.getIdString()));
+    }
+
+    public void testUpdateLibrary() {
+        final DataProviderBase providerBase = getProviderBase();
+        providerBase.clearLibrary();
+
+        Library library = getRandomLibrary();
+        providerBase.addLibrary(library);
+        library.setDescription(generateRandomUUID());
+        providerBase.updateLibrary(library);
+        Library testLibrary = providerBase.loadLibrary(library.getIdString());
+        assertNotNull(testLibrary);
+        assertTrue(testLibrary.getIdString().equals(library.getIdString()));
+        assertTrue(testLibrary.getDescription().equals(library.getDescription()));
+    }
+
+    public void testDeleteLibrary() {
+        final DataProviderBase providerBase = getProviderBase();
+        providerBase.clearLibrary();
+
+        Library library = getRandomLibrary();
+        providerBase.addLibrary(library);
+        assertTrue(library.getId() > 0);
+        providerBase.deleteLibrary(library);
+        Library testLibrary = providerBase.loadLibrary(library.getIdString());
+        assertNull(testLibrary);
+    }
+
+    public void testQueryLibrary() {
+        final DataProviderBase providerBase = getProviderBase();
+        providerBase.clearLibrary();
+
+        Library library = getRandomLibrary();
+        providerBase.addLibrary(library);
+
+        Library testLibrary = providerBase.loadLibrary(library.getIdString());
+        assertNotNull(testLibrary);
+        assertTrue(testLibrary.getIdString().equals(library.getIdString()));
+
+        //测试查询
+        String like = "%" + testLibrary.getDescription().substring(0, 8) + "%";
+        List<Library> libraryList = new Select().from(Library.class)
+                .where(Library_Table.description.like(like))
+                .queryList();
+        assertNotNull(libraryList);
+        assertTrue(libraryList.size() > 0);
+
+        providerBase.clearLibrary();
+        final int count = 5;
+        final Library[] librarySet = new Library[count];
+        for (int i = 0; i < count; i++) {
+            librarySet[i] = getRandomLibrary();
+            providerBase.addLibrary(librarySet[i]);
+        }
+        libraryList = providerBase.loadAllLibrary(null);
+        assertNotNull(libraryList);
+        assertTrue(libraryList.size() >= count);
+
+        librarySet[0].setParentUniqueId(generateRandomUUID());
+        providerBase.updateLibrary(librarySet[0]);
+        libraryList = providerBase.loadAllLibrary(librarySet[0].getParentUniqueId());
+        assertNotNull(libraryList);
+        assertTrue(libraryList.size() == 1);
     }
 }
 
