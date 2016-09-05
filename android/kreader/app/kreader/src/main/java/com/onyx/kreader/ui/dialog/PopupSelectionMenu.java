@@ -45,7 +45,6 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     private final Activity mActivity;
-    private ReaderDataHolder readerDataHolder;
     private TextView mDictTitle;
     private HTMLReaderWebView mWebView;
     private TextView mPageIndicator;
@@ -65,7 +64,6 @@ public class PopupSelectionMenu extends LinearLayout {
 
     public PopupSelectionMenu(ReaderDataHolder readerDataHolder, RelativeLayout layout, MenuCallback menuCallback) {
         super(readerDataHolder.getContext());
-        this.readerDataHolder = readerDataHolder;
         mActivity = (Activity)readerDataHolder.getContext();
 
         setFocusable(false);
@@ -184,14 +182,17 @@ public class PopupSelectionMenu extends LinearLayout {
         return true;
     }
 
-    public void show() {
+    public void show(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.getReaderUserDataInfo().getHighlightResult() == null){
+            return;
+        }
         if (isSelectedOnWord(readerDataHolder)){
             showTranslation();
             PopupSelectionMenu.this.updateTranslation(mMenuCallback.getSelectionText());
         }else {
             hideTranslation();
         }
-        requestLayoutView();
+        requestLayoutView(readerDataHolder);
     }
 
     private boolean isSelectedOnWord(ReaderDataHolder readerDataHolder){
@@ -206,7 +207,7 @@ public class PopupSelectionMenu extends LinearLayout {
         });
     }
 
-    private void requestLayoutView(){
+    private void requestLayoutView(ReaderDataHolder readerDataHolder){
         setVisibility(VISIBLE);
 
         HighlightCursor beginHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX);

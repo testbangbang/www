@@ -34,6 +34,12 @@ public class SingletonSharedPreference {
         sDefaultEditor.apply();
     }
 
+    public static void setFloatValue(String key, float value) {
+        sDefaultEditor = sPreferences.edit();
+        sDefaultEditor.putFloat(key, value);
+        sDefaultEditor.apply();
+    }
+
     public static void setStringValue(String key, String value) {
         sDefaultEditor = sPreferences.edit();
         sDefaultEditor.putString(key, value);
@@ -64,12 +70,20 @@ public class SingletonSharedPreference {
         setIntValue(context.getResources().getString(ResID), value);
     }
 
+    public static void setFloatValue(Context context, int ResID, float value) {
+        setFloatValue(context.getResources().getString(ResID), value);
+    }
+
     public static boolean getBooleanByStringID(Context context, int ResID, boolean defaultValue) {
         return sPreferences.getBoolean(context.getString(ResID), defaultValue);
     }
 
     public static int getIntByStringID(Context context, int ResID, int defaultValue) {
         return sPreferences.getInt(context.getString(ResID), defaultValue);
+    }
+
+    public static float getFloatByStringID(Context context, int ResID, float defaultValue) {
+        return sPreferences.getFloat(context.getString(ResID), defaultValue);
     }
 
     public static boolean getBooleanByStringResource(String keyString, boolean defaultValue) {
@@ -177,6 +191,14 @@ public class SingletonSharedPreference {
 
     public static boolean isAcquireLockInScribble(Context context) {
         return getBooleanByStringID(context, R.string.settings_acquire_scribble_lock_key, true);
+    }
+
+    public static void setTtsSpeechRate(Context context, float value){
+        setFloatValue(context, R.string.tts_speech_rate_key, value);
+    }
+
+    public static float getTtsSpeechRate(Context context){
+        return getFloatByStringID(context, R.string.tts_speech_rate_key, 1.0f);
     }
 
     public static float getBaseLineWidth(Context context) {

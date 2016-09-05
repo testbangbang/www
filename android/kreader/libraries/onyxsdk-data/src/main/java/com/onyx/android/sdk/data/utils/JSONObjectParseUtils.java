@@ -35,13 +35,7 @@ public class JSONObjectParseUtils {
         OnyxAccount onyxAccount = null;
         try {
             onyxAccount = JSON.parseObject(jsonString, OnyxAccount.class);
-            JSONObject jsonObject = new JSONObject(jsonString);
-            JSONObject mainObject = (JSONObject) jsonObject.get(TAG_MAIN);
-            onyxAccount.email = mainObject.getString(TAG_EMAIL);
-            if (jsonObject.getJSONArray(TAG_DEVICE_IDS).length() > 0) {
-                onyxAccount.isInstallationId = true;
-            }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return onyxAccount;
