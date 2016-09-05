@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
+import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
@@ -52,4 +53,16 @@ public interface DataProviderBase {
     void addBookmark(final Bookmark bookmark);
 
     void deleteBookmark(final Bookmark bookmark);
+
+    Library loadLibrary(String uniqueId);
+
+    List<Library> loadAllLibrary(String parentId);
+
+    void addLibrary(Library library);
+
+    void updateLibrary(Library library);
+
+    void deleteLibrary(Library library);
+
+    void clearLibrary();
 }
