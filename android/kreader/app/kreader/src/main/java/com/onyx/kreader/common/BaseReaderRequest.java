@@ -47,8 +47,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     public void drawVisiblePages(final Reader reader) throws ReaderException {
-        ReaderDrawContext context = new ReaderDrawContext();
-        context.asyncDraw = false;
+        ReaderDrawContext context = ReaderDrawContext.create(false);
         drawVisiblePages(reader, context);
     }
 

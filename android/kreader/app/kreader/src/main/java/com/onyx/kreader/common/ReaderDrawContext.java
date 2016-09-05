@@ -11,8 +11,14 @@ public class ReaderDrawContext {
     public ReaderBitmapImpl renderingBitmap;
     public float targetGammaCorrection;
 
-    public ReaderDrawContext() {
+    private ReaderDrawContext() {
         asyncDraw = true;
+    }
+
+    public static ReaderDrawContext create(boolean asyncDraw) {
+        ReaderDrawContext context = new ReaderDrawContext();
+        context.asyncDraw = asyncDraw;
+        return context;
     }
 
     public static ReaderDrawContext copy(ReaderDrawContext context) {
