@@ -1,6 +1,7 @@
 package com.onyx.kreader.common;
 
 import android.content.Context;
+import android.graphics.PointF;
 
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
@@ -26,6 +27,7 @@ import java.util.Map;
 public class ReaderUserDataInfo {
     private List<ReaderSelection> searchResult = new ArrayList<>();
     private ReaderSelection highlightResult = null;
+    private PointF touchPoint;
 
     private String documentPath;
     private ReaderDocumentMetadata documentMetadata;
@@ -198,4 +200,11 @@ public class ReaderUserDataInfo {
         return annotation;
     }
 
+    public PointF getTouchPoint() {
+        return touchPoint;
+    }
+
+    public void setTouchPoint(PointF touchPoint) {
+        this.touchPoint = touchPoint;
+    }
 }

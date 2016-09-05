@@ -389,12 +389,6 @@ public class DialogSearch extends Dialog{
                             dismiss();
                         }
                     });
-//                    new GotoPageAction(readerSelection.getPagePosition()).execute(readerDataHolder, new BaseCallback() {
-//                        @Override
-//                        public void done(BaseRequest request, Throwable e) {
-//                            dismiss();
-//                        }
-//                    });
                 }
             });
             contentTextView = (TextView)itemView.findViewById(R.id.search_content);

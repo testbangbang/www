@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelXorXfermode;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
@@ -34,6 +35,7 @@ import java.util.List;
 public class ReaderPainter {
 
     private static final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
+    public static boolean showTestTouchPointCircle = false;
 
     private enum DrawHighlightPaintStyle {UnderLine, Fill}
 
@@ -53,6 +55,7 @@ public class ReaderPainter {
             drawBookmark(context, canvas, userDataInfo, viewInfo);
         }
         drawShapes(canvas, paint, noteViewHelper, shapeDataInfo);
+        drawTestTouchPointCircle(canvas, paint, userDataInfo);
     }
 
     private void drawBackground(Canvas canvas, Paint paint) {
@@ -190,5 +193,12 @@ public class ReaderPainter {
             return false;
         }
         return true;
+    }
+
+    private void drawTestTouchPointCircle(Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo){
+        PointF touchPoint = userDataInfo.getTouchPoint();
+        if (showTestTouchPointCircle && touchPoint != null){
+            canvas.drawCircle(touchPoint.x, touchPoint.y, 30, paint);
+        }
     }
 }
