@@ -79,6 +79,9 @@ public class Metadata extends BaseData {
     @Column
     String cloudId;
 
+    @Column
+    String parentId;
+
     public String getName() {
         return name;
     }
