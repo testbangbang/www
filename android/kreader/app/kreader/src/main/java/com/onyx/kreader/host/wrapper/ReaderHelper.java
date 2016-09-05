@@ -91,6 +91,8 @@ public class ReaderHelper {
         } else {
             documentMd5 = FileUtils.computeMD5(new File(documentPath));
         }
+        initLayoutManager();
+
         getDocumentOptions().setZipPassword(options.getZipPassword());
         getDocumentOptions().setPassword(options.getPassword());
         saveMetadata(context, documentPath);
@@ -123,15 +125,18 @@ public class ReaderHelper {
     }
 
     public void onViewSizeChanged() {
+        updateView();
+        getReaderLayoutManager().updateViewportSize();
+        getImageReflowManager().updateViewportSize(viewOptions.getViewWidth(), viewOptions.getViewHeight());
+    }
+
+    private void updateView() {
         view = document.getView(viewOptions);
         renderer = view.getRenderer();
         navigator = view.getNavigator();
         rendererFeatures = renderer.getRendererFeatures();
         hitTestManager = view.getReaderHitTestManager();
         searchManager = view.getSearchManager();
-        getReaderLayoutManager().init();
-        getReaderLayoutManager().updateViewportSize();
-        getImageReflowManager().updateViewportSize(viewOptions.getViewWidth(), viewOptions.getViewHeight());
     }
 
     public void onDocumentClosed() {
@@ -226,6 +231,11 @@ public class ReaderHelper {
         initImageReflowManager(context);
         initBitmapCache();
 //        initChineseAnalyzer(context);
+    }
+
+    private void initLayoutManager() {
+        updateView();
+        getReaderLayoutManager().init();
     }
 
     private void initChineseAnalyzer(Context context) {
