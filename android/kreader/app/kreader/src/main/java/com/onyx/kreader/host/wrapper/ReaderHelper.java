@@ -10,6 +10,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
+import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderHitTestManager;
 import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.api.ReaderPlugin;
@@ -124,7 +125,7 @@ public class ReaderHelper {
         bitmap.recycle();
     }
 
-    public void onViewSizeChanged() {
+    public void onViewSizeChanged() throws ReaderException {
         updateView();
         getReaderLayoutManager().updateViewportSize();
         getImageReflowManager().updateViewportSize(viewOptions.getViewWidth(), viewOptions.getViewHeight());
@@ -152,7 +153,7 @@ public class ReaderHelper {
         clearImageReflowManager();
     }
 
-    public void updateViewportSize(int newWidth, int newHeight) {
+    public void updateViewportSize(int newWidth, int newHeight) throws ReaderException {
         getViewOptions().setSize(newWidth, newHeight);
         onViewSizeChanged();
     }
