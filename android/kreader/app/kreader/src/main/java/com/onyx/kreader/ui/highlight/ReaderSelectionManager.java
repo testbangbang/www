@@ -113,4 +113,19 @@ public class ReaderSelectionManager {
             cursor.updateDisplayPosition();
         }
     }
+
+    public void setEnable(boolean enable){
+        for(HighlightCursor cursor : cursors) {
+            cursor.setEnable(enable);
+        }
+    }
+
+    public boolean isEnable(){
+        for(HighlightCursor cursor : cursors) {
+            if (cursor != null){
+                return cursor.isEnable();
+            }
+        }
+        return false;
+    }
 }

@@ -36,7 +36,7 @@ public class HighlightCursor {
     private float fontHeight = 0;
     static private boolean debugHitTest = false;
     static private boolean debugHotRect = false;
-
+    private boolean enable = false;
 
     public HighlightCursor(final Context context, int startResId, int endResId, Type t) {
         super();
@@ -62,16 +62,15 @@ public class HighlightCursor {
     }
 
     public void setOriginPosition(final float x, final float y) {
-        float left = x - startCursorBitmap.getWidth();
         if (cursorType == Type.BEGIN_CURSOR) {
             float width = startCursorBitmap.getWidth();
             float height = startCursorBitmap.getHeight();
-            originRect.set(left, y - height - fontHeight /2, left + width, y  - fontHeight /2);
-            hitTestRect.set(originRect.left - width * HIT_TEST_SCALE_VALUE, originRect.top - height * HIT_TEST_SCALE_VALUE, originRect.right + width * HIT_TEST_SCALE_VALUE, originRect.bottom + height);
+            originRect.set(x - width, y - fontHeight /2, x, y + height - fontHeight /2);
+            hitTestRect.set(originRect.left - width * HIT_TEST_SCALE_VALUE, originRect.top, originRect.right + width * HIT_TEST_SCALE_VALUE, originRect.bottom + height * HIT_TEST_SCALE_VALUE);
         } else {
             float width = endCursorBitmap.getWidth();
             float height = endCursorBitmap.getHeight();
-            originRect.set(left + width, y - fontHeight /2, left + width*2, y + height - fontHeight / 2);
+            originRect.set(x, y - fontHeight /2, x + width, y + height - fontHeight / 2);
             hitTestRect.set(originRect.left - width * HIT_TEST_SCALE_VALUE, originRect.top, originRect.right + width * HIT_TEST_SCALE_VALUE, originRect.bottom + height * HIT_TEST_SCALE_VALUE);
         }
     }
@@ -118,6 +117,9 @@ public class HighlightCursor {
     }
 
     public void draw(Canvas canvas, Paint paint, PixelXorXfermode xor) {
+        if (!enable){
+            return;
+        }
         if (!displayRect.isEmpty()) {
             if (cursorType == Type.BEGIN_CURSOR) {
                 canvas.drawBitmap(startCursorBitmap, displayRect.left, displayRect.top, null);
@@ -138,4 +140,20 @@ public class HighlightCursor {
         hitTestRect.setEmpty();
         displayRect.setEmpty();
     }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+//    public RectF getCursorTopPoint(){
+//        if (cursorType == Type.BEGIN_CURSOR) {
+//            return new RectF(originRect.right, originRect.top);
+//        }else {
+//
+//        }
+//    }
 }

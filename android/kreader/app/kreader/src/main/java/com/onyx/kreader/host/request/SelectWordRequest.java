@@ -19,13 +19,15 @@ public class SelectWordRequest extends BaseReaderRequest {
 
     private PointF start = new PointF();
     private PointF end = new PointF();
+    private PointF touchPoint = new PointF();
     private ReaderSelection selection;
     private String pageName;
     private ReaderHitTestOptions hitTestOptions;
 
-    public SelectWordRequest(final String name, final PointF startPoint, final PointF endPoint, final ReaderHitTestOptions hitTestOptions) {
+    public SelectWordRequest(final String name, final PointF startPoint, final PointF endPoint, final PointF touchPoint,final ReaderHitTestOptions hitTestOptions) {
         start.set(startPoint.x, startPoint.y);
         end.set(endPoint.x, endPoint.y);
+        this.touchPoint.set(touchPoint.x, touchPoint.y);
         pageName = name;
         this.hitTestOptions = hitTestOptions;
     }
@@ -50,6 +52,7 @@ public class SelectWordRequest extends BaseReaderRequest {
         LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
+            getReaderUserDataInfo().setTouchPoint(touchPoint);
         }
     }
 
