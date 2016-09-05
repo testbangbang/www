@@ -179,7 +179,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean supportPreRender() throws ReaderException {
-        return false;
+        return true;
     }
 
     public boolean supportSubScreenNavigation() {
