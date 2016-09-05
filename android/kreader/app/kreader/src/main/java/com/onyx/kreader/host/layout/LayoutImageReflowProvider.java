@@ -24,6 +24,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     private static final String TAG = LayoutImageReflowProvider.class.getSimpleName();
 
     private boolean reverseOrder;
+    private boolean isNewPage;
 
     public LayoutImageReflowProvider(final ReaderLayoutManager lm) {
         super(lm);
@@ -70,6 +71,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     public boolean nextPage() throws ReaderException {
         if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
             moveToFirstSubPage();
+            isNewPage = true;
             return true;
         }
         return false;
@@ -91,6 +93,10 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (bmp != null) {
             drawContext.renderingBitmap.attachWith(key, bmp);
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
+            if (isNewPage) {
+                reflowNextPageForCache(reader, drawContext, readerViewInfo);
+                isNewPage = false;
+            }
             return true;
         }
 
@@ -98,6 +104,8 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (drawContext.asyncDraw) {
             return false;
         }
+
+        reflowNextPageForCache(reader, drawContext, readerViewInfo);
         if (reverseOrder) {
             moveToLastSubPage();
             reverseOrder = false;
@@ -119,6 +127,30 @@ public class LayoutImageReflowProvider extends LayoutProvider {
                 reader.getViewOptions().getViewWidth(),
                 reader.getViewOptions().getViewHeight(),
                 getCurrentPageName(),
+                async);
+    }
+
+    private void reflowNextPageForCache(final Reader reader,
+                                final ReaderDrawContext drawContext,
+                                final ReaderViewInfo readerViewInfo) throws ReaderException {
+        if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
+            ReaderDrawContext reflowContext = ReaderDrawContext.copy(drawContext);
+            reflowContext.renderingBitmap = new ReaderBitmapImpl();
+            reflowFirstVisiblePage(reader, reflowContext, readerViewInfo, true);
+            gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
+        }
+    }
+
+    private void reflowPage(final Reader reader,
+                                        final String pageName,
+                                        final ReaderDrawContext drawContext,
+                                        final ReaderViewInfo readerViewInfo,
+                                        boolean async) throws ReaderException {
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
+        reader.getImageReflowManager().reflowBitmap(drawContext.renderingBitmap.getBitmap(),
+                reader.getViewOptions().getViewWidth(),
+                reader.getViewOptions().getViewHeight(),
+                pageName,
                 async);
     }
 

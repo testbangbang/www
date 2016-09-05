@@ -15,4 +15,12 @@ public class ReaderDrawContext {
         asyncDraw = true;
     }
 
+    public static ReaderDrawContext copy(ReaderDrawContext context) {
+        ReaderDrawContext copy = new ReaderDrawContext();
+        copy.asyncDraw = context.asyncDraw;
+        copy.renderingBitmap = context.renderingBitmap;
+        copy.targetGammaCorrection = context.targetGammaCorrection;
+        return copy;
+    }
+
 }
