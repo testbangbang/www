@@ -131,6 +131,7 @@ public class ReaderHelper {
         searchManager = view.getSearchManager();
         getReaderLayoutManager().init();
         getReaderLayoutManager().updateViewportSize();
+        getImageReflowManager().updateViewportSize(viewOptions.getViewWidth(), viewOptions.getViewHeight());
     }
 
     public void onDocumentClosed() {
