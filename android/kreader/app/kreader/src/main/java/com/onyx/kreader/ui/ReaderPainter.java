@@ -35,7 +35,8 @@ import java.util.List;
 public class ReaderPainter {
 
     private static final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
-    public static boolean showTestTouchPointCircle = false;
+    private static boolean debugTestTouchPointCircle = false;
+    private static boolean debugTestOffsetTouchPointCircle = false;
 
     private enum DrawHighlightPaintStyle {UnderLine, Fill}
 
@@ -55,7 +56,7 @@ public class ReaderPainter {
             drawBookmark(context, canvas, userDataInfo, viewInfo);
         }
         drawShapes(canvas, paint, noteViewHelper, shapeDataInfo);
-        drawTestTouchPointCircle(canvas, paint, userDataInfo);
+        drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
     }
 
     private void drawBackground(Canvas canvas, Paint paint) {
@@ -195,10 +196,14 @@ public class ReaderPainter {
         return true;
     }
 
-    private void drawTestTouchPointCircle(Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo){
+    private void drawTestTouchPointCircle(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo){
         PointF touchPoint = userDataInfo.getTouchPoint();
-        if (showTestTouchPointCircle && touchPoint != null){
-            canvas.drawCircle(touchPoint.x, touchPoint.y, 30, paint);
+        if (debugTestTouchPointCircle && touchPoint != null){
+            canvas.drawCircle(touchPoint.x, touchPoint.y, 20, paint);
+            if (debugTestOffsetTouchPointCircle){
+                float offset = context.getResources().getDimension(R.dimen.move_point_offset_height);
+                canvas.drawCircle(touchPoint.x, touchPoint.y - offset, 20, paint);
+            }
         }
     }
 }

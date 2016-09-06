@@ -46,9 +46,9 @@ import java.util.List;
 public class DialogSearch extends Dialog{
 
     private static final String TAG = DialogSearch.class.getSimpleName();
-    private static int SEARCH_HISTORY_COUNT = 10;
-    public static final int SEARCH_CONTENT_LENGTH = 30;
-    public static final int SEARCH_PAGE_ONE_TIME = 20;
+    private static final int SEARCH_HISTORY_COUNT = 10;
+    private static final int SEARCH_CONTENT_LENGTH = 40;
+    private static final int SEARCH_PAGE_ONE_TIME = 20;
 
     private ReaderDataHolder readerDataHolder;
     private SearchContentAction searchContentAction;
