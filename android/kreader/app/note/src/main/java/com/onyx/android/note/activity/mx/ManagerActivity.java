@@ -189,7 +189,7 @@ public class ManagerActivity extends BaseManagerActivity {
     @Override
     protected void startScribbleActivity(GObject object, final String parentId, final String action) {
         if (!isAlreadyToNewActivity) {
-            startActivity(buildScribbleIntent(object, parentId, action, true));
+            startActivity(buildScribbleIntent(object, parentId, action, false));
             isAlreadyToNewActivity = true;
         }
     }
