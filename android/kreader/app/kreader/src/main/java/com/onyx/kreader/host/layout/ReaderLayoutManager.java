@@ -96,8 +96,8 @@ public class ReaderLayoutManager {
         getCurrentLayoutProvider().activate();
     }
 
-    public void updateViewportSize() {
-        getPageManager().setViewportRect(new RectF(0, 0, getReaderViewOptions().getViewWidth() - 1, getReaderViewOptions().getViewHeight() - 1));
+    public void updateViewportSize() throws ReaderException {
+        getCurrentLayoutProvider().updateViewportRect(new RectF(0, 0, getReaderViewOptions().getViewWidth() - 1, getReaderViewOptions().getViewHeight() - 1));
     }
 
     public LayoutProvider getCurrentLayoutProvider() {

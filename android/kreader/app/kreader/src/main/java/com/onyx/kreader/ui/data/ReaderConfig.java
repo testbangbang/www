@@ -199,7 +199,7 @@ public class ReaderConfig {
      * @return
      */
     public boolean defaultUseReaderStatusBar() {
-        return backend.hasKey(DEFAULT_USE_READER_STATUS_BAR) && backend.getBoolean(DEFAULT_USE_READER_STATUS_BAR, false);
+        return !backend.hasKey(DEFAULT_USE_READER_STATUS_BAR) || backend.getBoolean(DEFAULT_USE_READER_STATUS_BAR, true);
     }
 
     /**
