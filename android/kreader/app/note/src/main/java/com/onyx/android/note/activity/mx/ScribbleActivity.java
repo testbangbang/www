@@ -13,6 +13,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
+import com.onyx.android.note.actions.scribble.DocumentEditAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
@@ -410,7 +411,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, false, null);
     }
 
-
     @Override
     protected void updateDataInfo(final BaseNoteRequest request) {
         super.updateDataInfo(request);
@@ -478,5 +478,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
         penColorBtn.setImageResource(targetColorIconRes);
     }
 
-
+    @Override
+    protected void handleDocumentEdit(String uniqueId, String parentId) {
+        final DocumentEditAction<BaseScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
+        //TODO:force edit mode resume with pencil as mx request.
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                onPencilClicked();
+            }
+        });
+    }
 }
