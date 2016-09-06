@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderMenu;
@@ -26,7 +25,7 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
-import com.onyx.kreader.host.request.ScaleToWidthRequest;
+import com.onyx.kreader.host.request.ScaleToWidthContentRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
@@ -245,7 +244,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void scaleToWidth(final ReaderDataHolder readerDataHolder) {
-        final ScaleToWidthRequest request = new ScaleToWidthRequest(readerDataHolder.getCurrentPageName());
+        final ScaleToWidthContentRequest request = new ScaleToWidthContentRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
     }
 

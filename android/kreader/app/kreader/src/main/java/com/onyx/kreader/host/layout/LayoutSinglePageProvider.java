@@ -180,6 +180,22 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         return getPageManager().getViewportRect();
     }
 
+    @Override
+    public void updateViewportRect(RectF rect) throws ReaderException {
+        getPageManager().setViewportRect(rect);
+        if (getPageManager().getVisiblePages().size() > 0) {
+            if (isPortrait(rect)) {
+                scaleToPage(getCurrentPageName());
+            } else {
+                scaleToWidthContent(getCurrentPageName());
+            }
+        }
+    }
+
+    private boolean isPortrait(RectF rect) {
+        return rect.width() < rect.height();
+    }
+
     public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
         LayoutProviderUtils.addSinglePage(getLayoutManager(), pageName);
         getPageManager().scaleToViewport(pageName, child);

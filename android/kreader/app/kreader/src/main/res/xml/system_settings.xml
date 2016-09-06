@@ -35,7 +35,7 @@
         android:layout="@layout/settings_custom_preference_item"
         android:summaryOn="@string/settings_enable"
         android:summaryOff="@string/settings_disable"
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:title="@string/setting_enable_reader_status_bar_tittle"/>
     <!--<CheckBoxPreference-->
             <!--android:key="@string/setting_crop_to_width_in_landscape_key"-->

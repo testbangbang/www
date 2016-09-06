@@ -10,6 +10,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
+import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderHitTestManager;
 import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.api.ReaderPlugin;
@@ -91,6 +92,8 @@ public class ReaderHelper {
         } else {
             documentMd5 = FileUtils.computeMD5(new File(documentPath));
         }
+        initLayoutManager();
+
         getDocumentOptions().setZipPassword(options.getZipPassword());
         getDocumentOptions().setPassword(options.getPassword());
         saveMetadata(context, documentPath);
@@ -122,15 +125,19 @@ public class ReaderHelper {
         bitmap.recycle();
     }
 
-    public void onViewSizeChanged() {
+    public void onViewSizeChanged() throws ReaderException {
+        updateView();
+        getReaderLayoutManager().updateViewportSize();
+        getImageReflowManager().updateViewportSize(viewOptions.getViewWidth(), viewOptions.getViewHeight());
+    }
+
+    private void updateView() {
         view = document.getView(viewOptions);
         renderer = view.getRenderer();
         navigator = view.getNavigator();
         rendererFeatures = renderer.getRendererFeatures();
         hitTestManager = view.getReaderHitTestManager();
         searchManager = view.getSearchManager();
-        getReaderLayoutManager().init();
-        getReaderLayoutManager().updateViewportSize();
     }
 
     public void onDocumentClosed() {
@@ -146,7 +153,7 @@ public class ReaderHelper {
         clearImageReflowManager();
     }
 
-    public void updateViewportSize(int newWidth, int newHeight) {
+    public void updateViewportSize(int newWidth, int newHeight) throws ReaderException {
         getViewOptions().setSize(newWidth, newHeight);
         onViewSizeChanged();
     }
@@ -225,6 +232,11 @@ public class ReaderHelper {
         initImageReflowManager(context);
         initBitmapCache();
 //        initChineseAnalyzer(context);
+    }
+
+    private void initLayoutManager() {
+        updateView();
+        getReaderLayoutManager().init();
     }
 
     private void initChineseAnalyzer(Context context) {
