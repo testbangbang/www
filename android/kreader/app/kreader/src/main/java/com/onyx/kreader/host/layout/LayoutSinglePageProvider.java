@@ -182,16 +182,12 @@ public class LayoutSinglePageProvider extends LayoutProvider {
 
     @Override
     public void updateViewportRect(RectF rect) throws ReaderException {
-        RectF oldViewport = new RectF(getPageManager().getViewportRect());
         getPageManager().setViewportRect(rect);
-        if (getPageManager().getVisiblePages().size() <= 0 ||
-                !isOrientationChanged(oldViewport, rect)) {
+        if (getPageManager().getVisiblePages().size() <= 0) {
             return;
         }
-        if (isPortrait(rect)) {
-            scaleToPage(getCurrentPageName());
-        } else {
-            scaleToWidthContent(getCurrentPageName());
+        if (getPageManager().isSpecialScale()) {
+            getPageManager().setSpecialScale(getCurrentPageName(), getPageManager().getSpecialScale());
         }
     }
 
