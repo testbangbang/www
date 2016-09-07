@@ -12,9 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
+import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by suicheng on 2016/6/27.
@@ -25,12 +30,12 @@ public class PageRecyclerView extends RecyclerView {
     private GPaginator paginator;
     public enum TouchDirection {Horizontal, Vertical}
     private int currentFocusedPosition;
-    private boolean focusMode = false;
     private OnPagingListener onPagingListener;
     private int rows = 0;
     private int columns = 1;
     private float lastX, lastY;
     private OnChangeFocusListener onChangeFocusListener;
+    private List<CustomBindKeyBean> keyBeans = new ArrayList<>();
 
     public interface OnPagingListener {
         void onPrevPage(int prevPosition,int itemCount,int pageSize);
@@ -117,14 +122,6 @@ public class PageRecyclerView extends RecyclerView {
         init();
     }
 
-    public void setFocusMode(boolean focusMode) {
-        this.focusMode = focusMode;
-    }
-
-    public boolean isFocusMode() {
-        return focusMode;
-    }
-
     public void setCurrentFocusedPosition(int currentFocusedPosition) {
         int lastFocusedPosition = this.currentFocusedPosition;
         this.currentFocusedPosition = currentFocusedPosition;
@@ -136,29 +133,51 @@ public class PageRecyclerView extends RecyclerView {
         return currentFocusedPosition;
     }
 
-    public void nextFocus(){
-        int focusedPosition = currentFocusedPosition + 1;
-        if (focusedPosition < getPageAdapter().getDataCount()){
-            if ((focusedPosition % (columns * rows)) == 0){
-                nextPage();
-            }
-            setCurrentFocusedPosition(focusedPosition);
-            if (onChangeFocusListener != null){
-                onChangeFocusListener.onNextFocus(focusedPosition);
-            }
+    private void nextFocus(int focusedPosition){
+        if (!paginator.isItemInCurrentPage(focusedPosition)){
+            nextPage();
+        }
+        setCurrentFocusedPosition(focusedPosition);
+        if (onChangeFocusListener != null){
+            onChangeFocusListener.onNextFocus(focusedPosition);
         }
     }
 
-    public void prevFocus(){
-        int focusedPosition = currentFocusedPosition - 1;
+    private void prevFocus(int focusedPosition){
+        if (!paginator.isItemInCurrentPage(focusedPosition)){
+            prevPage();
+        }
+        setCurrentFocusedPosition(focusedPosition);
+        if (onChangeFocusListener != null){
+            onChangeFocusListener.onPrevFocus(focusedPosition);
+        }
+    }
+
+    public void nextColumn(){
+        int focusedPosition = paginator.nextColumn(currentFocusedPosition);
+        if (focusedPosition < paginator.getSize()){
+            nextFocus(focusedPosition);
+        }
+    }
+
+    public void prevColumn(){
+        int focusedPosition = paginator.prevColumn(currentFocusedPosition);
         if (focusedPosition >= 0){
-            if (currentFocusedPosition % (columns * rows) == 0){
-                prevPage();
-            }
-            setCurrentFocusedPosition(focusedPosition);
-            if (onChangeFocusListener != null){
-                onChangeFocusListener.onPrevFocus(focusedPosition);
-            }
+            prevFocus(focusedPosition);
+        }
+    }
+
+    public void nextRow(){
+        int focusedPosition = paginator.nextRow(currentFocusedPosition);
+        if (focusedPosition < paginator.getSize()){
+            nextFocus(focusedPosition);
+        }
+    }
+
+    public void prevRow(){
+        int focusedPosition = paginator.prevRow(currentFocusedPosition);
+        if (focusedPosition >= 0){
+            prevFocus(focusedPosition);
         }
     }
 
@@ -206,8 +225,8 @@ public class PageRecyclerView extends RecyclerView {
         setItemAnimator(null);
         setClipToPadding(true);
         setClipChildren(true);
-        invalidateItemDecorations();
         setLayoutManager(new DisableScrollLinearManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        setDefaultMoveKeyBinding();
     }
 
     private TouchDirection touchDirection = TouchDirection.Vertical;
@@ -247,10 +266,10 @@ public class PageRecyclerView extends RecyclerView {
                 break;
             case MotionEvent.ACTION_UP:
                 int direction = detectDirection(ev);
-                if (direction == PageTurningDirection.NEXT && !isFocusMode()) {
+                if (direction == PageTurningDirection.NEXT) {
                     prevPage();
                     return true;
-                } else if (direction == PageTurningDirection.PREV && !isFocusMode()) {
+                } else if (direction == PageTurningDirection.PREV) {
                     nextPage();
                     return true;
                 }
@@ -263,24 +282,63 @@ public class PageRecyclerView extends RecyclerView {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (isFocusMode()){
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_PAGE_DOWN:
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    prevFocus();
-                    return true;
-                case KeyEvent.KEYCODE_PAGE_UP:
-                case KeyEvent.KEYCODE_VOLUME_UP:
-                    nextFocus();
-                    return true;
-            }
-        }
-        return super.onKeyDown(keyCode, event);
+        return processKeyAction(KeyEvent.keyCodeToString(keyCode));
     }
 
-    @Override
-    protected void onMeasure(int widthSpec, int heightSpec) {
-        super.onMeasure(widthSpec, heightSpec);
+    private boolean processKeyAction(final String keyCode){
+        final String args = getKeyArgs(keyCode);
+        switch (args){
+            case KeyAction.NEXT_PAGE:
+                nextPage();
+                break;
+            case KeyAction.PREV_PAGE:
+                prevPage();
+                break;
+            case KeyAction.MOVE_LEFT:
+                prevColumn();
+                break;
+            case KeyAction.MOVE_RIGHT:
+                nextColumn();
+                break;
+            case KeyAction.MOVE_DOWN:
+                prevRow();
+                break;
+            case KeyAction.MOVE_UP:
+                nextRow();
+                break;
+            default:
+                nextPage();
+        }
+        return true;
+    }
+
+    public void setKeyBinding(List<CustomBindKeyBean> keyBeans){
+        this.keyBeans = keyBeans;
+    }
+
+    public void setDefaultPageKeyBinding(){
+        keyBeans.clear();
+        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.PREV_PAGE, KeyEvent.KEYCODE_PAGE_DOWN));
+        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.PREV_PAGE, KeyEvent.KEYCODE_VOLUME_DOWN));
+        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.NEXT_PAGE, KeyEvent.KEYCODE_PAGE_UP));
+        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.NEXT_PAGE, KeyEvent.KEYCODE_VOLUME_UP));
+    }
+
+    public void setDefaultMoveKeyBinding(){
+        keyBeans.clear();
+        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.MOVE_LEFT, KeyEvent.KEYCODE_PAGE_DOWN));
+        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.MOVE_LEFT, KeyEvent.KEYCODE_VOLUME_DOWN));
+        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.MOVE_RIGHT, KeyEvent.KEYCODE_PAGE_UP));
+        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.MOVE_RIGHT, KeyEvent.KEYCODE_VOLUME_UP));
+    }
+
+    private String getKeyArgs(final String keycode) {
+        for (CustomBindKeyBean  keyBean: keyBeans) {
+            if (keyBean.getAction().equals(keycode)){
+                return keyBean.getArgs();
+            }
+        }
+        return KeyAction.NO_ACTION;
     }
 
     public void setOnPagingListener(OnPagingListener listener) {
@@ -290,6 +348,9 @@ public class PageRecyclerView extends RecyclerView {
     public void prevPage() {
         if (paginator.prevPage()){
             int position =  paginator.getCurrentPageBegin();
+            if (!paginator.isItemInCurrentPage(currentFocusedPosition)){
+                setCurrentFocusedPosition(position);
+            }
             managerScrollToPosition(position);
             if (onPagingListener != null){
                 onPagingListener.onPrevPage(position,getAdapter().getItemCount(), rows * columns);
@@ -300,6 +361,9 @@ public class PageRecyclerView extends RecyclerView {
     public void nextPage() {
         if (paginator.nextPage()){
             int position =  paginator.getCurrentPageBegin() ;
+            if (!paginator.isItemInCurrentPage(currentFocusedPosition)){
+                setCurrentFocusedPosition(position);
+            }
             managerScrollToPosition(position);
             if (onPagingListener != null){
                 onPagingListener.onNextPage(position,getAdapter().getItemCount(), rows * columns);
@@ -333,31 +397,13 @@ public class PageRecyclerView extends RecyclerView {
 
     public static abstract class PageAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>{
 
-        public interface OnLongPressListener<VH extends RecyclerView.ViewHolder>{
-            void onItemLongPress(VH holder, int position);
-        }
-
-        public interface OnClickListener<VH extends RecyclerView.ViewHolder>{
-            void onItemClick(VH holder, int position);
-        }
-
         protected ViewGroup mParent;
-        private OnLongPressListener onLongPressListener;
-        private OnClickListener onClickListener;
 
         public abstract int getRowCount();
         public abstract int getColumnCount();
         public abstract int getDataCount();
         public abstract VH onPageCreateViewHolder(ViewGroup parent, int viewType);
         public abstract void onPageBindViewHolder(VH holder, int position);
-
-        public void setOnLongPressListener(OnLongPressListener onLongPressListener) {
-            this.onLongPressListener = onLongPressListener;
-        }
-
-        public void setOnClickListener(OnClickListener onClickListener) {
-            this.onClickListener = onClickListener;
-        }
 
         @Override
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -373,8 +419,7 @@ public class PageRecyclerView extends RecyclerView {
                 if (position < getDataCount()){
                     view.setVisibility(VISIBLE);
                     onPageBindViewHolder(holder,adapterPosition);
-                    setItemViewListener(view, holder, adapterPosition);
-                    setFocusState(view,adapterPosition);
+                    updateFocusView(view,adapterPosition);
                 }else {
                     view.setVisibility(INVISIBLE);
                 }
@@ -408,43 +453,23 @@ public class PageRecyclerView extends RecyclerView {
             return (PageRecyclerView)mParent;
         }
 
-        private void setItemViewListener(View view, final VH holder, final int position){
-            if (onClickListener != null){
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onClickListener.onItemClick(holder, position);
-                    }
-                });
-            }
-            if (onLongPressListener != null){
-                view.setOnLongClickListener(new OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        onLongPressListener.onItemLongPress(holder, position);
-                        return true;
-                    }
-                });
-            }
-        }
-
-        private void setFocusState(final View view, final int position){
+        private void updateFocusView(final View view, final int position){
             final PageRecyclerView pageRecyclerView = getPageRecyclerView();
-            if (pageRecyclerView.isFocusMode()){
-                if (position == pageRecyclerView.getCurrentFocusedPosition()){
-                    view.setActivated(true);
-                }else {
-                    view.setActivated(false);
-                }
-
-                view.setOnTouchListener(new OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        pageRecyclerView.setCurrentFocusedPosition(position);
-                        return false;
-                    }
-                });
+            if (position == pageRecyclerView.getCurrentFocusedPosition()){
+                view.setActivated(true);
+            }else {
+                view.setActivated(false);
             }
+
+            view.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN){
+                        pageRecyclerView.setCurrentFocusedPosition(position);
+                    }
+                    return false;
+                }
+            });
         }
     }
 }

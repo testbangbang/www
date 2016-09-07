@@ -28,12 +28,7 @@
         <activity android:name=".ui.chooseexercise.ChooseStudyingStageActivity"/>
         <activity android:name=".ui.findexercise.FindExerciseActivity"/>
         <activity android:name=".ui.exercisepractise.ExercisePractiseActivity"/>
-        <activity android:name=".RecyclerViewTestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+        <activity android:name=".RecyclerViewTestActivity"/>
     </application>
 
 </manifest>

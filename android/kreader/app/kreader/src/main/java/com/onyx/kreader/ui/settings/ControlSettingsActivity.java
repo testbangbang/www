@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.onyx.kreader.R;
-import com.onyx.kreader.ui.data.CustomBindKeyBean;
+import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 public class ControlSettingsActivity extends PreferenceActivity {
@@ -60,9 +60,7 @@ public class ControlSettingsActivity extends PreferenceActivity {
         dlg.setOnFilterListener(new DialogBindHotKey.OnUserSetKeyListener() {
             @Override
             public void onSet(String keyCodeString, String function, String args) {
-                CustomBindKeyBean bean = new CustomBindKeyBean();
-                bean.setAction(function);
-                bean.setArgs(args);
+                CustomBindKeyBean bean = new CustomBindKeyBean(args, function);
                 SingletonSharedPreference.setStringValue(keyCodeString, JSON.toJSONString(bean));
                 SingletonSharedPreference.setIntValue(function, KeyEvent.keyCodeFromString(keyCodeString));
             }

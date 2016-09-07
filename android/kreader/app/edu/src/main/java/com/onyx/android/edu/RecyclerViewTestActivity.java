@@ -30,7 +30,6 @@ public class RecyclerViewTestActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        pageRecyclerView.setFocusMode(true);
         pageRecyclerView.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(this));
         PageRecyclerView.PageAdapter adapter = new PageRecyclerView.PageAdapter() {
             @Override
@@ -64,18 +63,6 @@ public class RecyclerViewTestActivity extends BaseActivity {
                 }
             }
         };
-        adapter.setOnClickListener(new PageRecyclerView.PageAdapter.OnClickListener() {
-            @Override
-            public void onItemClick(RecyclerView.ViewHolder holder, int position) {
-                Log.d(TAG, "onItemClick: ");
-            }
-        });
-        adapter.setOnLongPressListener(new PageRecyclerView.PageAdapter.OnLongPressListener() {
-            @Override
-            public void onItemLongPress(RecyclerView.ViewHolder holder, int position) {
-                Log.d(TAG, "onItemLongPress: ");
-            }
-        });
         pageRecyclerView.setOnChangeFocusListener(new PageRecyclerView.OnChangeFocusListener() {
             @Override
             public void onNextFocus(int position) {

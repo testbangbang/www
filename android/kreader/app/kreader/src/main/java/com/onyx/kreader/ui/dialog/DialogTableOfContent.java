@@ -7,7 +7,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -388,6 +387,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         final int row = getPageSize(DirectoryTab.TOC);
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = buildTreeNodesFromToc(toc);
         TreeRecyclerView treeRecyclerView = new TreeRecyclerView(viewPager.getContext());
+        treeRecyclerView.setDefaultPageKeyBinding();
         treeRecyclerView.bindTree(rootNodes, new TreeRecyclerView.Callback() {
             @Override
             public void onTreeNodeClicked(TreeRecyclerView.TreeNode node) {
@@ -426,6 +426,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         recordPosition.put(DirectoryTab.Bookmark,0);
         final int row = getPageSize(DirectoryTab.Bookmark);
         PageRecyclerView view = new PageRecyclerView(viewPager.getContext());
+        view.setDefaultPageKeyBinding();
         view.setAdapter(new PageRecyclerView.PageAdapter() {
 
             @Override
@@ -474,6 +475,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         recordPosition.put(DirectoryTab.Annotation,0);
         final int row = getPageSize(DirectoryTab.Annotation);
         PageRecyclerView view = new PageRecyclerView(viewPager.getContext());
+        view.setDefaultPageKeyBinding();
         view.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
@@ -642,20 +644,5 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     @Override
     public void onNextPage(int nextPosition, int itemCount,int pageSize) {
         updatePageIndicator(nextPosition,pageSize, itemCount);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode){
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                viewList.get(getTabIndex(currentTab)).nextPage();
-                return true;
-            case KeyEvent.KEYCODE_PAGE_UP:
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                viewList.get(getTabIndex(currentTab)).prevPage();
-                return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 }
