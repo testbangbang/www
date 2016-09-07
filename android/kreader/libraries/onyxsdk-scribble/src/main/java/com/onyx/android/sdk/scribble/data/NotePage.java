@@ -59,10 +59,12 @@ public class NotePage {
     }
 
     public void clear() {
+        if (shapeList.size() > 0) {
+            removedShapeList.addAll(shapeList);
+            undoRedoManager.addToHistory(ShapeActions.removeShapeListAction(shapeList), false);
+        }
         shapeList.clear();
         newAddedShapeList.clear();
-        removedShapeList.clear();
-        undoRedoManager.clear();
     }
 
     public void addShapeFromModel(final Shape shape) {
@@ -76,11 +78,24 @@ public class NotePage {
         if (addToHistory) {
             undoRedoManager.addToHistory(ShapeActions.addShapeAction(shape), false);
         }
+        if (removedShapeList.contains(shape)){
+            removedShapeList.remove(shape);
+        }
     }
 
     public void addShapeList(final List<Shape> shapes) {
-        for(Shape shape : shapes) {
-            addShape(shape, true);
+        addShapeList(shapes,true);
+    }
+
+    public void addShapeList(final List<Shape> shapes, boolean addToHistory) {
+        for (Shape shape : shapes) {
+            addShape(shape, addToHistory);
+        }
+    }
+
+    public void removeShapeList(final List<Shape> shapes, boolean addToHistory) {
+        for (Shape shape : shapes) {
+            removeShape(shape, addToHistory);
         }
     }
 
