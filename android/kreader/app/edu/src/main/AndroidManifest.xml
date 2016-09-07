@@ -15,10 +15,6 @@
         </activity>
         <activity
             android:name=".ui.chooseexercise.ChooseExerciseActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:name=".ui.chapter.ChapterTypeActivity"></activity>
         <activity
@@ -32,6 +28,7 @@
         <activity android:name=".ui.chooseexercise.ChooseStudyingStageActivity"/>
         <activity android:name=".ui.findexercise.FindExerciseActivity"/>
         <activity android:name=".ui.exercisepractise.ExercisePractiseActivity"/>
+        <activity android:name=".RecyclerViewTestActivity"/>
     </application>
 
 </manifest>

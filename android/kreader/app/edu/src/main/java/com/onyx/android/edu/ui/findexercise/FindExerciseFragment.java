@@ -84,7 +84,7 @@ public class FindExerciseFragment extends BaseFragment implements FindExerciseCo
     }
 
     private void initExerciseView(){
-        exerciseGrid.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(getActivity(),4));
+        exerciseGrid.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(getActivity()));
         exerciseGrid.setAdapter(new ExercisePageAdapter());
     }
 }
