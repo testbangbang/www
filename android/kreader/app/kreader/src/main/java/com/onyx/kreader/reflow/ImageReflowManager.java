@@ -79,14 +79,14 @@ public class ImageReflowManager {
         loadPageMap();
     }
 
-    public void reflowBitmap(final Bitmap bitmap, final String pageName, final boolean precache) {
+    public void reflowBitmap(final Bitmap bitmap, final String pageName, final boolean background) {
         synchronized (mapLock) {
             if (!mapLock.containsKey(pageName)) {
                 mapLock.put(pageName, new Object());
             }
         }
 
-        if (!precache) {
+        if (!background) {
             synchronized (mapLock.get(pageName)) {
                 if (!isReflowed(pageName)) {
                     reflow(bitmap, pageName);
