@@ -191,10 +191,6 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         }
     }
 
-    private boolean isOrientationChanged(RectF oldRect, RectF newRect) {
-        return isPortrait(oldRect) != isPortrait(newRect);
-    }
-
     private boolean isPortrait(RectF rect) {
         return rect.width() < rect.height();
     }
