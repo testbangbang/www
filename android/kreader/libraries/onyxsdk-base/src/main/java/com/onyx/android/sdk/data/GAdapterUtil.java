@@ -30,6 +30,7 @@ public final class GAdapterUtil {
     public static final String TAG_CALLBACK_MAPPING = "callback_mapping";
     public static final String TAG_THUMBNAIL = "thumbnail";
     public static final String TAG_TYPEFACE = "typeface";
+    public static final String TAG_EXTRA_ATTRIBUTE = "extra_attribute";
 
     public static final String TAG_IN_SELECTION = "in_selection";
     public static final String TAG_SELECTED = "selected";
@@ -42,6 +43,20 @@ public final class GAdapterUtil {
     public static final String TAG_SELECTABLE = "selectable";
     public static final String TAG_DIVIDER_VIEW = "divider_view";
     public static final String TAG_MENU_CLOSE_AFTER_CLICK = "menu_close_after_click";
+
+    public static final String TAG_IMAGE_BACKGROUND = "image_background";
+    public static final String TAG_AUTHOR_STRING = "author";
+    public static final String TAG_READING_PROGRESS = "reading_progress";
+    public static final String TAG_LAST_ACCESS_TIME = "last_access_time";
+    public static final String TAG_LAST_MODIFY_TIME = "last_modify_time";
+    public static final String TAG_CLOUD_REFERENCE = "cloud_ref";
+    public static final String TAG_PARENT_REFERENCE = "parent_ref";
+    public static final String TAG_DOCUMENT_TYPE = "document_type";
+    public static final String TAG_DOCUMENT_STORAGE_POSITION = "document_storage_position";
+    public static final String TAG_DOCUMENT_SIZE = "document_size";
+    public static final String TAG_SINGLE_METADATA = "metadata";
+    public static final String TAG_DECORATION_VIEW = "decoration_view";
+
 
     public static GObject createThumbnailItem(int titleResource, int subTitleResource, int imageResource, int layoutResource,
                                               Map<String, Integer> layoutMapping) {
