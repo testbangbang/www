@@ -35,4 +35,12 @@ public class Debug {
     private static String formatString(final String str, final Object... args) {
         return String.format(null, str, args);
     }
+
+    public static void w(final Class<?> cls, final Throwable throwable) {
+        Log.w(cls.getSimpleName(), throwable);
+    }
+
+    public static void w(final String tag, final Throwable throwable) {
+        Log.w(tag, throwable);
+    }
 }

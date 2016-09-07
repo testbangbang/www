@@ -124,8 +124,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
                                         boolean async) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
         reader.getImageReflowManager().reflowBitmap(drawContext.renderingBitmap.getBitmap(),
-                reader.getViewOptions().getViewWidth(),
-                reader.getViewOptions().getViewHeight(),
                 getCurrentPageName(),
                 async);
     }
@@ -139,19 +137,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
             reflowFirstVisiblePage(reader, reflowContext, readerViewInfo, true);
             gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
         }
-    }
-
-    private void reflowPage(final Reader reader,
-                                        final String pageName,
-                                        final ReaderDrawContext drawContext,
-                                        final ReaderViewInfo readerViewInfo,
-                                        boolean async) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
-        reader.getImageReflowManager().reflowBitmap(drawContext.renderingBitmap.getBitmap(),
-                reader.getViewOptions().getViewWidth(),
-                reader.getViewOptions().getViewHeight(),
-                pageName,
-                async);
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
