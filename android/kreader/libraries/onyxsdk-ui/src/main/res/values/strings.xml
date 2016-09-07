@@ -12,6 +12,8 @@
     <string name="reader_layer_menu_zoom_out">Zoom Out</string>
     <string name="reader_layer_menu_zoom_to_page">To Page</string>
     <string name="reader_layer_menu_zoom_to_width">To Width</string>
+    <string name="reader_layer_menu_zoom_by_crop_page">Crop Page</string>
+    <string name="reader_layer_menu_zoom_by_crop_width">Crop Width</string>
     <string name="reader_layer_menu_zoom_by_rect">By Rect</string>
     <string name="reader_layer_menu_navigation">Navigation</string>
     <string name="reader_layer_menu_navigation_comic_mode">Comic Mode</string>
