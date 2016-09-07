@@ -5,15 +5,36 @@ import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by suicheng on 2016/9/2.
  */
 public class QueryArgs {
+
+    public enum BookFilter {
+        ALL, NEW_BOOKS, READING, READED, TAG, SEARCH, EXTRA_ATTRIBUTES
+    }
+
+    public enum BookSortBy {
+        None, Name, FileType, Size, CreationTime, BookTitle, Author, Publisher, RecentlyRead, Total, StartTime, LastOpenTime, InstallTime
+    }
+
+    public enum AscDescOrder {
+        Asc, Desc,
+    }
+
     public int limit = Integer.MAX_VALUE;
     public int offset = 0;
     public ConditionGroup conditionGroup = ConditionGroup.clause();
     public List<OrderBy> orderByList = new ArrayList<>();
+    public String parentId = null;
+    public BookFilter filter = BookFilter.ALL;
+    public BookSortBy sortBy = BookSortBy.Name;
+    public AscDescOrder order = AscDescOrder.Desc;
+    public Set<String> contentType;
+    public Set<String> tags;
+    public String query;
 
     public static QueryArgs queryBy(final ConditionGroup conditionGroup,
                                     final OrderBy orderBy) {
@@ -67,6 +88,11 @@ public class QueryArgs {
 
     public QueryArgs orWith(ConditionGroup otherGroup) {
         conditionGroup.or(otherGroup);
+        return this;
+    }
+
+    public QueryArgs appendFilter(BookFilter filter) {
+        this.filter = filter;
         return this;
     }
 }
