@@ -54,7 +54,9 @@ public class HighlightCursor {
     }
 
     public void setFontHeight(float fontHeight) {
-        this.fontHeight = fontHeight;
+        if (fontHeight > this.fontHeight){
+            this.fontHeight = fontHeight;
+        }
     }
 
     public Type getCursorType() {
