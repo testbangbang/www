@@ -12,14 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
-import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Created by suicheng on 2016/6/27.
@@ -35,7 +34,7 @@ public class PageRecyclerView extends RecyclerView {
     private int columns = 1;
     private float lastX, lastY;
     private OnChangeFocusListener onChangeFocusListener;
-    private List<CustomBindKeyBean> keyBeans = new ArrayList<>();
+    private Map<Integer, String> keyBindingMap = new Hashtable<>();
 
     public interface OnPagingListener {
         void onPrevPage(int prevPosition,int itemCount,int pageSize);
@@ -282,11 +281,11 @@ public class PageRecyclerView extends RecyclerView {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return processKeyAction(KeyEvent.keyCodeToString(keyCode));
+        return processKeyAction(keyCode);
     }
 
-    private boolean processKeyAction(final String keyCode){
-        final String args = getKeyArgs(keyCode);
+    private boolean processKeyAction(final int keyCode){
+        final String args = keyBindingMap.get(keyCode);
         switch (args){
             case KeyAction.NEXT_PAGE:
                 nextPage();
@@ -312,33 +311,22 @@ public class PageRecyclerView extends RecyclerView {
         return true;
     }
 
-    public void setKeyBinding(List<CustomBindKeyBean> keyBeans){
-        this.keyBeans = keyBeans;
+    public void setKeyBinding(Map<Integer, String> keyBindingMap){
+        this.keyBindingMap = keyBindingMap;
     }
 
     public void setDefaultPageKeyBinding(){
-        keyBeans.clear();
-        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.PREV_PAGE, KeyEvent.KEYCODE_PAGE_DOWN));
-        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.PREV_PAGE, KeyEvent.KEYCODE_VOLUME_DOWN));
-        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.NEXT_PAGE, KeyEvent.KEYCODE_PAGE_UP));
-        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.NEXT_PAGE, KeyEvent.KEYCODE_VOLUME_UP));
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_DOWN, KeyAction.PREV_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_DOWN, KeyAction.PREV_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_UP, KeyAction.NEXT_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_UP, KeyAction.NEXT_PAGE);
     }
 
     public void setDefaultMoveKeyBinding(){
-        keyBeans.clear();
-        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.MOVE_LEFT, KeyEvent.KEYCODE_PAGE_DOWN));
-        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.MOVE_LEFT, KeyEvent.KEYCODE_VOLUME_DOWN));
-        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.MOVE_RIGHT, KeyEvent.KEYCODE_PAGE_UP));
-        keyBeans.add(CustomBindKeyBean.createKeyBean(KeyAction.MOVE_RIGHT, KeyEvent.KEYCODE_VOLUME_UP));
-    }
-
-    private String getKeyArgs(final String keycode) {
-        for (CustomBindKeyBean  keyBean: keyBeans) {
-            if (keyBean.getAction().equals(keycode)){
-                return keyBean.getArgs();
-            }
-        }
-        return KeyAction.NO_ACTION;
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_DOWN, KeyAction.MOVE_LEFT);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_DOWN, KeyAction.MOVE_LEFT);
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_UP, KeyAction.MOVE_RIGHT);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_UP, KeyAction.MOVE_RIGHT);
     }
 
     public void setOnPagingListener(OnPagingListener listener) {
@@ -444,7 +432,7 @@ public class PageRecyclerView extends RecyclerView {
             }
             PageRecyclerView pageRecyclerView = getPageRecyclerView();
             if (pageRecyclerView != null){
-                pageRecyclerView.resize(getRowCount(),getColumnCount(),size);
+                pageRecyclerView.resize(getRowCount(),getColumnCount(),getDataCount());
             }
             return size;
         }
