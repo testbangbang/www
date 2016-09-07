@@ -25,7 +25,7 @@ public class PreRenderRequest extends BaseReaderRequest {
 
         // do not save position in history list.
         reader.getReaderLayoutManager().setSavePosition(false);
-        final ReaderDrawContext drawContext = new ReaderDrawContext();
+        final ReaderDrawContext drawContext = ReaderDrawContext.create(true);
         final PositionSnapshot snapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
         if (forward && reader.getReaderLayoutManager().nextScreen()) {
             drawVisiblePages(reader, drawContext);

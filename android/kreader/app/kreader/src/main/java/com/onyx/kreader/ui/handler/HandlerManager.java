@@ -7,13 +7,13 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.data.provider.SharedPreferenceProvider;
 import com.onyx.android.sdk.scribble.ScribbleHandler;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.data.CustomBindKeyBean;
 import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,8 +80,8 @@ public class HandlerManager {
     }
 
     private final CustomBindKeyBean getKeyBean(final String keycode) {
-        if (SharedPreferenceProvider.getPrefs() != null) {
-            CustomBindKeyBean bean = JSONObject.parseObject(SharedPreferenceProvider.getPrefs().
+        if (SingletonSharedPreference.getPrefs() != null) {
+            CustomBindKeyBean bean = JSONObject.parseObject(SingletonSharedPreference.getPrefs().
                     getString(keycode, null), CustomBindKeyBean.class);
             return bean;
         }

@@ -46,9 +46,9 @@ import java.util.List;
 public class DialogSearch extends Dialog{
 
     private static final String TAG = DialogSearch.class.getSimpleName();
-    private static int SEARCH_HISTORY_COUNT = 10;
-    public static final int SEARCH_CONTENT_LENGTH = 30;
-    public static final int SEARCH_PAGE_ONE_TIME = 20;
+    private static final int SEARCH_HISTORY_COUNT = 10;
+    private static final int SEARCH_CONTENT_LENGTH = 40;
+    private static final int SEARCH_PAGE_ONE_TIME = 20;
 
     private ReaderDataHolder readerDataHolder;
     private SearchContentAction searchContentAction;
@@ -81,7 +81,7 @@ public class DialogSearch extends Dialog{
     private int searchRows = 0;
 
     public DialogSearch(final ReaderDataHolder readerDataHolder) {
-        super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar);
 
         setContentView(R.layout.dialog_search);
         this.readerDataHolder = readerDataHolder;
@@ -389,12 +389,6 @@ public class DialogSearch extends Dialog{
                             dismiss();
                         }
                     });
-//                    new GotoPageAction(readerSelection.getPagePosition()).execute(readerDataHolder, new BaseCallback() {
-//                        @Override
-//                        public void done(BaseRequest request, Throwable e) {
-//                            dismiss();
-//                        }
-//                    });
                 }
             });
             contentTextView = (TextView)itemView.findViewById(R.id.search_content);

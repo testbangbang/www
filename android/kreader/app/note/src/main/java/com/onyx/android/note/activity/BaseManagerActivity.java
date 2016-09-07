@@ -335,17 +335,19 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
     }
 
     protected Intent buildScribbleIntent(GObject object, final String parentId, final String action) {
-        return buildScribbleIntent(object, parentId, action, false);
+        return buildScribbleIntent(object, parentId, action, true);
     }
 
-    protected Intent buildScribbleIntent(GObject object, final String parentId, final String action, boolean setPresetTitleForNewDocument) {
+    protected Intent buildScribbleIntent(GObject object, final String parentId, final String action, boolean useDateAsNewDocumentTitle) {
         final Intent intent = NoteAppConfig.sharedInstance(this).getScribbleIntent(this);
         intent.putExtra(Utils.ACTION_TYPE, action);
         intent.putExtra(Utils.PARENT_LIBRARY_ID, parentId);
         String noteTitle = "";
         String uniqueID = "";
         if (action.equals(Utils.ACTION_CREATE)) {
-            if (setPresetTitleForNewDocument) {
+            if (useDateAsNewDocumentTitle) {
+                noteTitle = Utils.getDateFormat(getResources().getConfiguration().locale).format(new Date());
+            }else {
                 noteTitle = getString(R.string.new_document);
             }
             uniqueID = ShapeUtils.generateUniqueId();

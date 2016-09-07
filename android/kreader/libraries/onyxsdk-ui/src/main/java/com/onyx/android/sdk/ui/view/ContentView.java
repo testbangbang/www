@@ -167,7 +167,7 @@ public class ContentView extends RelativeLayout {
     private int itemViewResourceId;
     private HashMap<String, Integer> dataToViewMapping;
     private ArrayList<Integer> styleLayoutList;
-    private static GObject dummyObject;
+    private GObject dummyObject;
     private TextView infoTextView;
     private LinearLayout functionLayout;
     private Button button_cut, button_delete, button_copy, button_paste, button_cancel, pageProgress;
@@ -1207,7 +1207,7 @@ public class ContentView extends RelativeLayout {
         }
     }
 
-    private static GObject getDummyObject() {
+    private GObject getDummyObject() {
         if (dummyObject == null) {
             dummyObject = new GObject().setDummyObject();
         }

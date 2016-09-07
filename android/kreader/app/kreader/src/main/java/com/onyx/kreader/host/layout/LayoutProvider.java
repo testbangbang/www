@@ -44,7 +44,7 @@ public class LayoutProvider {
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         return false;
     }
-    
+
     public boolean prevScreen() throws ReaderException {
         return false;
     }
@@ -110,6 +110,10 @@ public class LayoutProvider {
 
     public RectF getViewportRect() throws ReaderException {
         return getPageManager().getViewportRect();
+    }
+
+    public void updateViewportRect(RectF rect) throws ReaderException {
+        getPageManager().setViewportRect(rect);
     }
 
     public RectF getPageRectOnViewport(final String position) throws ReaderException {

@@ -7,6 +7,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.cache.BitmapDiskLruCache;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.utils.ImageUtils;
 
 import java.io.File;
@@ -138,6 +139,11 @@ public class ImageReflowManager {
 
     public ImageReflowSettings getSettings() {
         return settings;
+    }
+
+    public void updateViewportSize(int dw, int dh) {
+        settings.dev_width = dw;
+        settings.dev_height = dh;
     }
 
     static public File cacheFilePath(final File root, final ImageReflowSettings settings, final String fileName) {

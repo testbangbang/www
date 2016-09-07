@@ -55,7 +55,7 @@ public class BitmapDiskLruCache {
     }
 
     public void clear() {
-        if (diskCache != null) {
+        if (diskCache != null && !diskCache.isClosed()) {
             try {
                 diskCache.delete();
             } catch (IOException e) {
@@ -65,7 +65,7 @@ public class BitmapDiskLruCache {
     }
 
     public Bitmap getFromDiskCache(final String key, final BitmapFactory.Options options) {
-        if (diskCache == null) {
+        if (diskCache == null || diskCache.isClosed()) {
             return null;
         }
 
@@ -102,7 +102,7 @@ public class BitmapDiskLruCache {
     private void putDiskCache(final String key, final Bitmap bitmap,
                               final Bitmap.CompressFormat compressFormat,
                               final int compressQuality) {
-        if (diskCache == null) {
+        if (diskCache == null || diskCache.isClosed()) {
             return;
         }
 
