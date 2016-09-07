@@ -6,6 +6,9 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.common.PageAnnotation;
 import com.onyx.kreader.ui.actions.NextScreenAction;
@@ -79,8 +82,12 @@ public class ReadingHandler extends BaseHandler{
     }
 
     public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
-        PinchZoomAction.scaleEnd(readerDataHolder);
-        setScaling(false);
+        PinchZoomAction.scaleEnd(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                setScaling(false);
+            }
+        });
         return true;
     }
 
