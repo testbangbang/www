@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -23,25 +24,6 @@ public class ReaderConfig {
     static private ReaderConfig globalInstance;
     static private String TAG = ReaderConfig.class.getSimpleName();
     private GObject backend;
-
-    static public final String KEY_BINDING = "key_binding";
-    static public final String KEY_ACTION_TAG = "action";
-    static public final String KEY_ARGS_TAG = "args";
-
-    public static final String NEXT_SCREEN = "nextScreen";
-    public static final String NEXT_PAGE = "nextPage";
-    public static final String PREV_SCREEN = "prevScreen";
-    public static final String PREV_PAGE = "prevPage";
-    public static final String MOVE_LEFT = "moveLeft";
-    public static final String MOVE_RIGHT = "moveRight";
-    public static final String MOVE_UP = "moveUp";
-    public static final String MOVE_DOWN = "moveDown";
-    public static final String SHOW_MENU = "showMenu";
-    public static final String INCREASE_FONT_SIZE = "increaseFontSize";
-    public static final String DECREASE_FONT_SIZE = "decreaseFontSize";
-    public static final String TOGGLE_BOOKMARK = "toggleBookmark";
-    public static final String CHANGE_TO_ERASE_MODE = "changeToEraseMode";
-    public static final String CHANGE_TO_SCRIBBLE_MODE = "changeToScribbleMode";
 
     static public final String DELETE_ACSM_AFTER_FULFILLMENT = "delete_acsm_after_fulfillment";
     static public final String ROTATION_OFFSET = "rotation_offset";
@@ -82,8 +64,8 @@ public class ReaderConfig {
     }
 
     public Map<String, Map<String, JSONObject>> getKeyBinding() {
-        if (backend.hasKey(KEY_BINDING)) {
-            return (Map<String, Map<String, JSONObject>> )(backend.getObject(KEY_BINDING));
+        if (backend.hasKey(KeyAction.KEY_BINDING)) {
+            return (Map<String, Map<String, JSONObject>> )(backend.getObject(KeyAction.KEY_BINDING));
         }
         return null;
     }
