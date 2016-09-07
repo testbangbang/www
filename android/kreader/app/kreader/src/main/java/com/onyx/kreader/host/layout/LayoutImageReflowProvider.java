@@ -124,8 +124,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
                                         boolean async) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
         reader.getImageReflowManager().reflowBitmap(drawContext.renderingBitmap.getBitmap(),
-                reader.getViewOptions().getViewWidth(),
-                reader.getViewOptions().getViewHeight(),
                 getCurrentPageName(),
                 async);
     }
