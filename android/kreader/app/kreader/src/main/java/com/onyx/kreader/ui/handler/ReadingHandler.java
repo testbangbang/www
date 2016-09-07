@@ -18,7 +18,6 @@ import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
-import com.onyx.kreader.ui.actions.TogglePageCropAction;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
@@ -36,11 +35,11 @@ import java.util.List;
  */
 public class ReadingHandler extends BaseHandler{
 
+    @SuppressWarnings("unused")
     private static final String TAG = ReadingHandler.class.getSimpleName();
 
     private boolean scaling = false;
     private boolean scrolling = false;
-    private boolean singleTapAccepted = false;
 
     public ReadingHandler(HandlerManager p) {
         super(p);
@@ -48,36 +47,23 @@ public class ReadingHandler extends BaseHandler{
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (tryHitTest(readerDataHolder,e.getX(), e.getY())) {
-            singleTapAccepted = true;
+            // ignored
         } else if (e.getX() > readerDataHolder.getDisplayWidth() * 2 / 3) {
             nextScreen(readerDataHolder);
-            singleTapAccepted = true;
         } else if (e.getX() < readerDataHolder.getDisplayWidth() / 3) {
             prevScreen(readerDataHolder);
-            singleTapAccepted = true;
-        }
-        return true;
-    }
-
-    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (singleTapAccepted) {
-            singleTapAccepted = false;
-            return true;
-        }
-        if (readerDataHolder.getDisplayWidth() / 3 <= e.getX() &&
-                e.getX() <= readerDataHolder.getDisplayWidth() * 2 / 3) {
+        } else {
             showReaderMenu(readerDataHolder);
         }
         return true;
     }
 
+    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        return true;
+    }
+
     @Override
     public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (singleTapAccepted) {
-            singleTapAccepted = false;
-            return true;
-        }
-        new TogglePageCropAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
         return true;
     }
 
