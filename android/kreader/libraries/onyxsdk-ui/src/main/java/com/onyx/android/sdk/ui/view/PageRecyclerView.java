@@ -286,29 +286,32 @@ public class PageRecyclerView extends RecyclerView {
 
     private boolean processKeyAction(final int keyCode){
         final String args = keyBindingMap.get(keyCode);
-        switch (args){
-            case KeyAction.NEXT_PAGE:
-                nextPage();
-                break;
-            case KeyAction.PREV_PAGE:
-                prevPage();
-                break;
-            case KeyAction.MOVE_LEFT:
-                prevColumn();
-                break;
-            case KeyAction.MOVE_RIGHT:
-                nextColumn();
-                break;
-            case KeyAction.MOVE_DOWN:
-                prevRow();
-                break;
-            case KeyAction.MOVE_UP:
-                nextRow();
-                break;
-            default:
-                nextPage();
+        if (args != null){
+            switch (args){
+                case KeyAction.NEXT_PAGE:
+                    nextPage();
+                    break;
+                case KeyAction.PREV_PAGE:
+                    prevPage();
+                    break;
+                case KeyAction.MOVE_LEFT:
+                    prevColumn();
+                    break;
+                case KeyAction.MOVE_RIGHT:
+                    nextColumn();
+                    break;
+                case KeyAction.MOVE_DOWN:
+                    prevRow();
+                    break;
+                case KeyAction.MOVE_UP:
+                    nextRow();
+                    break;
+                default:
+                    nextPage();
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void setKeyBinding(Map<Integer, String> keyBindingMap){
