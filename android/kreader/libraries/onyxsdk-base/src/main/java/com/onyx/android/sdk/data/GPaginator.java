@@ -111,6 +111,9 @@ public class GPaginator {
     public boolean canNextPage(){
         return currentPage + 1 < pages();
     }
+    public boolean canPrevPage(){
+        return currentPage > 0;
+    }
 
     public boolean nextPage() {
         if (currentPage + 1 < pages()) {

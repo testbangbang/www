@@ -90,7 +90,7 @@ public class ReadingHandler extends BaseHandler{
 
     public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
         if (isLongPress()) {
-        } else if (isScrolling()) {
+        } else if (isScrolling() && !isScaling()) {
             panFinished(readerDataHolder,(int) (getStartPoint().x - endX), (int) (getStartPoint().y - endY));
         }
         resetState();

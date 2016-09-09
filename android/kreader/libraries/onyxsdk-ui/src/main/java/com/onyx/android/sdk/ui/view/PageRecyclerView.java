@@ -286,6 +286,9 @@ public class PageRecyclerView extends RecyclerView {
 
     private boolean processKeyAction(final int keyCode){
         final String args = keyBindingMap.get(keyCode);
+        if (args == null){
+            return false;
+        }
         switch (args){
             case KeyAction.NEXT_PAGE:
                 nextPage();
@@ -316,17 +319,17 @@ public class PageRecyclerView extends RecyclerView {
     }
 
     public void setDefaultPageKeyBinding(){
-        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_DOWN, KeyAction.PREV_PAGE);
-        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_DOWN, KeyAction.PREV_PAGE);
-        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_UP, KeyAction.NEXT_PAGE);
-        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_UP, KeyAction.NEXT_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_DOWN, KeyAction.NEXT_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_DOWN, KeyAction.NEXT_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_UP, KeyAction.PREV_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_UP, KeyAction.PREV_PAGE);
     }
 
     public void setDefaultMoveKeyBinding(){
-        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_DOWN, KeyAction.MOVE_LEFT);
-        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_DOWN, KeyAction.MOVE_LEFT);
-        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_UP, KeyAction.MOVE_RIGHT);
-        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_UP, KeyAction.MOVE_RIGHT);
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_DOWN, KeyAction.MOVE_RIGHT);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_DOWN, KeyAction.MOVE_RIGHT);
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_UP, KeyAction.MOVE_LEFT);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_UP, KeyAction.MOVE_LEFT);
     }
 
     public void setOnPagingListener(OnPagingListener listener) {
