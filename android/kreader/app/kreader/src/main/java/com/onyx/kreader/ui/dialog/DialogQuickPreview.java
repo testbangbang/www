@@ -395,7 +395,7 @@ public class DialogQuickPreview extends Dialog {
         for (int i = 0; i < size; i++) {
             if (page < tocChapterNodeList.get(i)){
                 if (back){
-                    int position = tocChapterNodeList.get(Math.max(0, i - 2));
+                    int position = tocChapterNodeList.get(Math.max(0, i - 1));
                     if (paginator.isItemInCurrentPage(position)){
                         return getChapterPositionByPage(page - 1, back);
                     }else {
