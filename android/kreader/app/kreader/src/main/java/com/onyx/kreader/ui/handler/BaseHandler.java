@@ -23,6 +23,16 @@ public abstract class BaseHandler {
     private Point startPoint = new Point();
     private HandlerManager parent;
     private boolean longPress;
+    private boolean singleTapUp = false;
+    private boolean actionUp = false;
+
+    public boolean isSingleTapUp() {
+        return singleTapUp;
+    }
+
+    public boolean isActionUp() {
+        return actionUp;
+    }
 
     public BaseHandler(HandlerManager parent){
         this.parent = parent;
@@ -34,6 +44,8 @@ public abstract class BaseHandler {
 
     public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
         startPoint = new Point((int)e.getX(), (int)e.getY());
+        actionUp = false;
+        singleTapUp = false;
         return true;
     }
 
@@ -90,7 +102,8 @@ public abstract class BaseHandler {
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
+        singleTapUp = true;
+        return true;
     }
 
     public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
@@ -110,7 +123,9 @@ public abstract class BaseHandler {
     }
 
     public boolean onActionUp(ReaderDataHolder readerDataHolder,final float startX, final float startY, final float endX, final float endY)  {
-        return false;
+        singleTapUp = false;
+        actionUp = true;
+        return true;
     }
 
     public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -122,6 +137,7 @@ public abstract class BaseHandler {
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+        actionUp = false;
         setLongPress(true);
     }
 

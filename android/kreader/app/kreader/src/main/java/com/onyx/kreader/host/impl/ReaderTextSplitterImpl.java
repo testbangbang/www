@@ -282,7 +282,7 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
 //        return 0;
 //    }
 
-    private static boolean isAlpha(char ch) {
+    public static boolean isAlpha(char ch) {
         /**
          * The following defines which characters are included in these sets. The values are Unicode code points.
          * - ALPHA

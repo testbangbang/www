@@ -31,6 +31,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.ui.actions.GetSearchHistoryAction;
 import com.onyx.kreader.ui.actions.GotoSearchPageAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;
@@ -47,7 +48,8 @@ public class DialogSearch extends Dialog{
 
     private static final String TAG = DialogSearch.class.getSimpleName();
     private static final int SEARCH_HISTORY_COUNT = 10;
-    private static final int SEARCH_CONTENT_LENGTH = 40;
+    private static final int SEARCH_CHINESE_CONTENT_LENGTH = 35;
+    private static final int SEARCH_ALPHA_CONTENT_LENGTH = 60;
     private static final int SEARCH_PAGE_ONE_TIME = 20;
 
     private ReaderDataHolder readerDataHolder;
@@ -303,7 +305,8 @@ public class DialogSearch extends Dialog{
             @Override
             public void run() {
                 reset();
-                searchContentAction = new SearchContentAction(searchText,SEARCH_CONTENT_LENGTH, startPage, SEARCH_PAGE_ONE_TIME * searchRows);
+                int contentLength = ReaderTextSplitterImpl.isAlpha(searchText.charAt(0)) ? SEARCH_ALPHA_CONTENT_LENGTH : SEARCH_CHINESE_CONTENT_LENGTH;
+                searchContentAction = new SearchContentAction(searchText, contentLength, startPage, SEARCH_PAGE_ONE_TIME * searchRows);
                 searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
                     @Override
                     public void OnNext(final List<ReaderSelection> results,int page) {
