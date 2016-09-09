@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -59,6 +58,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected String noteTitle;
     protected String parentID;
     protected Button pageIndicator;
+    boolean isSurfaceViewFirstCreated = false;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY};
     private ActivityState activityState;
@@ -68,6 +68,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         setActivityState(ActivityState.CREATE);
         super.onCreate(savedInstanceState);
         registerDeviceReceiver();
+        isSurfaceViewFirstCreated = true;
     }
 
     @Override
@@ -237,20 +238,18 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             surfaceCallback = new SurfaceHolder.Callback() {
                 @Override
                 public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                    Log.e("TAG", "surfaceCreated: ");
                     clearSurfaceView();
                     getNoteViewHelper().setView(BaseScribbleActivity.this, surfaceView, inputCallback());
                     handleActivityIntent(getIntent());
+                    isSurfaceViewFirstCreated = false;
                 }
 
                 @Override
                 public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-                    Log.e("TAG", "surfaceChanged: ");
                 }
 
                 @Override
                 public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                    Log.e("TAG", "surfaceDestroyed: ");
                     surfaceHolder.removeCallback(surfaceCallback);
                     surfaceCallback = null;
                 }
@@ -260,6 +259,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void handleActivityIntent(final Intent intent) {
+        if (!isSurfaceViewFirstCreated) {
+            return;
+        }
         if (!intent.hasExtra(Utils.ACTION_TYPE)) {
             handleDocumentCreate(ShapeUtils.generateUniqueId(), null);
             return;
