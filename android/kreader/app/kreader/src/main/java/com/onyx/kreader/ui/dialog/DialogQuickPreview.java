@@ -373,29 +373,16 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void gotoChapterIndex(boolean back){
-        int chapterListIndex;
-        int page;
+        int chapterPosition;
         if (back){
             int pageBegin = paginator.getCurrentPageBegin();
-            chapterListIndex = getChapterListIndexByPage(pageBegin);
-            if (chapterListIndex == -1){
-                chapterListIndex = tocChapterNodeList.size() - 2;
-            }else {
-                chapterListIndex = chapterListIndex - 2;
-            }
-            chapterListIndex = Math.max(chapterListIndex, 0);
-            page = tocChapterNodeList.get(chapterListIndex);
+            chapterPosition = getChapterPositionByPage(pageBegin, back);
         }else {
             int pageEnd = paginator.getCurrentPageEnd();
-            chapterListIndex = getChapterListIndexByPage(pageEnd);
-            if (chapterListIndex == -1){
-                page = paginator.getSize() - 1;
-            }else {
-                page = tocChapterNodeList.get(chapterListIndex);
-            }
+            chapterPosition = getChapterPositionByPage(pageEnd, back);
         }
 
-        paginator.gotoPage(getGridPage(page));
+        paginator.gotoPage(getGridPage(chapterPosition));
         onPageDataChanged();
     }
     private void updateChapterButtonState(){
@@ -403,14 +390,34 @@ public class DialogQuickPreview extends Dialog {
         chapterForward.setEnabled(paginator.canNextPage() && tocChapterNodeList.size() > 0);
     }
 
-    private int getChapterListIndexByPage(int page){
+    private int getChapterPositionByPage(int page, boolean back){
         int size = tocChapterNodeList.size();
         for (int i = 0; i < size; i++) {
             if (page < tocChapterNodeList.get(i)){
-                return i;
+                if (back){
+                    int position = tocChapterNodeList.get(Math.max(0, i - 2));
+                    if (paginator.isItemInCurrentPage(position)){
+                        return getChapterPositionByPage(page - 1, back);
+                    }else {
+                        return position;
+                    }
+                }else {
+                    int position = tocChapterNodeList.get(i);
+                    if (paginator.isItemInCurrentPage(position)){
+                        return getChapterPositionByPage(page + 1, back);
+                    }else {
+                        return position;
+                    }
+                }
             }
         }
-        return -1;
+
+        if (back){
+            return page - 1;
+        }else {
+            return page + 1;
+        }
+
     }
 
     private void buildChapterNodeList(ReaderDocumentTableOfContent toc){
@@ -425,7 +432,10 @@ public class DialogQuickPreview extends Dialog {
             if (entry.getChildren() != null){
                 buildChapterNode(entry.getChildren());
             }else {
-                tocChapterNodeList.add(Integer.valueOf(entry.getPosition()));
+                int position = Integer.valueOf(entry.getPosition());
+                if (!tocChapterNodeList.contains(position)){
+                    tocChapterNodeList.add(Integer.valueOf(entry.getPosition()));
+                }
             }
         }
     }
