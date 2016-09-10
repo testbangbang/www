@@ -23,9 +23,9 @@ public class NotePage {
     private String pageUniqueId;
     private String subPageName;
 
-    private List<Shape> shapeList = new ArrayList<Shape>();
-    private List<Shape> newAddedShapeList = new ArrayList<Shape>();
-    private List<Shape> removedShapeList = new ArrayList<Shape>();
+    private List<Shape> shapeList = new ArrayList<>();
+    private List<Shape> newAddedShapeList = new ArrayList<>();
+    private List<Shape> removedShapeList = new ArrayList<>();
 
     private int currentShapeType;
     private Shape currentShape;

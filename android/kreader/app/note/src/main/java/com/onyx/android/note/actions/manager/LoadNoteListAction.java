@@ -26,7 +26,7 @@ public class LoadNoteListAction<T extends BaseManagerActivity> extends BaseNoteA
     int ascOrder;
 
     public LoadNoteListAction(final String id) {
-        this(id, SortBy.CREATED_AT, AscDescOrder.DESC);
+        this(id, SortBy.UPDATED_AT, AscDescOrder.DESC);
     }
 
     public LoadNoteListAction(final String id, @SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascOrder) {

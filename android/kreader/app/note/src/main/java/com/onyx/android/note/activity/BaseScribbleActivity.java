@@ -58,6 +58,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected String noteTitle;
     protected String parentID;
     protected Button pageIndicator;
+    boolean isSurfaceViewFirstCreated = false;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY};
     private ActivityState activityState;
@@ -67,6 +68,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         setActivityState(ActivityState.CREATE);
         super.onCreate(savedInstanceState);
         registerDeviceReceiver();
+        isSurfaceViewFirstCreated = true;
     }
 
     @Override
@@ -74,12 +76,15 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         setActivityState(ActivityState.RESUME);
         super.onResume();
         initSurfaceView();
+        //TODO:resume status when activity Resume;
+        syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
     }
 
     @Override
     protected void onPause() {
         setActivityState(ActivityState.PAUSE);
         super.onPause();
+        //TODO:pause drawing when activity Pause;
         syncWithCallback(true, false, null);
     }
 
@@ -236,6 +241,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     clearSurfaceView();
                     getNoteViewHelper().setView(BaseScribbleActivity.this, surfaceView, inputCallback());
                     handleActivityIntent(getIntent());
+                    isSurfaceViewFirstCreated = false;
                 }
 
                 @Override
@@ -253,6 +259,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void handleActivityIntent(final Intent intent) {
+        if (!isSurfaceViewFirstCreated) {
+            return;
+        }
         if (!intent.hasExtra(Utils.ACTION_TYPE)) {
             handleDocumentCreate(ShapeUtils.generateUniqueId(), null);
             return;
