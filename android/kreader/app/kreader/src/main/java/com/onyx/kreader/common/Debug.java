@@ -1,6 +1,7 @@
 package com.onyx.kreader.common;
 
 import android.util.Log;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 
 /**
@@ -20,20 +21,8 @@ public class Debug {
 
     public static void d(final String tag, final String msg, final Object... args) {
         if (BuildConfig.DEBUG && debug) {
-            Log.d(tag, formatString(msg, args));
+            Log.d(verifyTag(tag), formatString(msg, args));
         }
-    }
-
-    public static void e(final Class<?> cls, final String msg, final Object... args) {
-        e(cls.getSimpleName(), msg, args);
-    }
-
-    public static void e(final String tag, final String msg, final Object... args) {
-        Log.e(tag, formatString(msg, args));
-    }
-
-    private static String formatString(final String str, final Object... args) {
-        return String.format(null, str, args);
     }
 
     public static void w(final Class<?> cls, final Throwable throwable) {
@@ -41,6 +30,22 @@ public class Debug {
     }
 
     public static void w(final String tag, final Throwable throwable) {
-        Log.w(tag, throwable);
+        Log.w(verifyTag(tag), throwable);
+    }
+
+    public static void e(final Class<?> cls, final String msg, final Object... args) {
+        e(cls.getSimpleName(), msg, args);
+    }
+
+    public static void e(final String tag, final String msg, final Object... args) {
+        Log.e(verifyTag(tag), formatString(msg, args));
+    }
+
+    private static String formatString(final String str, final Object... args) {
+        return String.format(null, str, args);
+    }
+
+    private static String verifyTag(final String tag) {
+        return StringUtils.isBlank(tag) ? TAG : tag;
     }
 }
