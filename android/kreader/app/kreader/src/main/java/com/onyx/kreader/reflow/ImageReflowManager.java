@@ -87,22 +87,22 @@ public class ImageReflowManager {
         }
 
         if (!background) {
-            synchronized (mapLock.get(pageName)) {
-                if (!isReflowed(pageName)) {
-                    reflow(bitmap, pageName);
-                }
+            reflowBitmapImpl(bitmap, pageName);
+            return;
+        }
+        reflowExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                reflowBitmapImpl(bitmap, pageName);
             }
-        } else {
-            reflowExecutor.submit(new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (mapLock.get(pageName)) {
-                        if (!isReflowed(pageName)) {
-                            reflow(bitmap, pageName);
-                        }
-                    }
-                }
-            });
+        });
+    }
+
+    private void reflowBitmapImpl(final Bitmap bitmap, final String pageName) {
+        synchronized (mapLock.get(pageName)) {
+            if (!isReflowed(pageName)) {
+                reflow(bitmap, pageName);
+            }
         }
     }
 
