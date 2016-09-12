@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
@@ -28,7 +29,7 @@ public interface DataProviderBase {
 
     Metadata loadMetadata(final Context context, final String path, String md5);
 
-    List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria);
+    List<Metadata> findMetadata(final Context context, final String parentId, final QueryCriteria queryCriteria);
 
     List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs);
 
@@ -78,7 +79,21 @@ public interface DataProviderBase {
 
     List<Thumbnail> loadThumbnail(Context context, String sourceMd5);
 
+    Thumbnail loadThumbnail(Context context, String sourceMd5, ThumbnailKind kind);
+
     Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind);
 
     Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail);
+
+    void clearMetadataCollection();
+
+    void addMetadataCollection(Context context, MetadataCollection collection);
+
+    void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
+
+    void updateMetadataCollection(MetadataCollection collection);
+
+    MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
+
+    List<MetadataCollection> loadMetadataCollection(Context context, String libraryUniqueId);
 }
