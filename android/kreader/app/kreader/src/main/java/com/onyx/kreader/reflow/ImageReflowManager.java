@@ -7,7 +7,6 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.cache.BitmapDiskLruCache;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.utils.ImageUtils;
 
 import java.io.File;
@@ -32,87 +31,6 @@ public class ImageReflowManager {
 
     public static final String TAG = ImageReflowManager.class.getSimpleName();
 
-    /**
-     * use standalone class to control synchronize of reflow process
-     */
-    private static class ReflowImpl {
-
-        private ConcurrentHashMap<String, Object> lockMap = new ConcurrentHashMap<>();
-        private ImageReflowManager manager;
-
-        private ExecutorService reflowExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r);
-                t.setPriority(Thread.MIN_PRIORITY);
-                return t;
-            }
-        });
-
-        public ReflowImpl(ImageReflowManager manager) {
-            this.manager = manager;
-        }
-
-        public Bitmap getCurrentBitmap(final String pageName) {
-            synchronized (lockMap) {
-                if (!lockMap.containsKey(pageName)) {
-                    lockMap.put(pageName, new Object());
-                }
-            }
-            synchronized (lockMap.get(pageName)) {
-                ReaderBitmapList list = manager.getSubPageList(pageName);
-                if (list != null && list.getCurrentBitmap() != null) {
-                    return list.getCurrentBitmap();
-                }
-                if (list.isEmpty()) {
-                    return null;
-                }
-                int index = list.getCurrent();
-                return manager.getBitmap(getKeyOfSubPage(manager.getSettings(), pageName, index));
-            }
-        }
-
-        public void reflowBitmap(final Bitmap bitmap, final int pageWidth, final int pageHeight, final String pageName, final boolean precache) {
-            synchronized (lockMap) {
-                if (!lockMap.containsKey(pageName)) {
-                    lockMap.put(pageName, new Object());
-                }
-            }
-            synchronized (lockMap.get(pageName)) {
-                Bitmap reflowedBitmap = getCurrentBitmap(pageName);
-                if (reflowedBitmap != null) {
-                    reflowedBitmap.recycle();
-                    return;
-                }
-
-                manager.settings.page_width = pageWidth;
-                manager.settings.page_height = pageHeight;
-
-                manager.clear(pageName);
-                if (!precache) {
-                    reflow(bitmap, pageName);
-                } else {
-                    reflowExecutor.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            synchronized (lockMap.get(pageName)) {
-                                reflow(bitmap, pageName);
-                            }
-                        }
-                    });
-                }
-            }
-        }
-
-        private void reflow(Bitmap bitmap, final String pageName) {
-            Debug.d("reflow settings", JSON.toJSONString(manager.settings));
-            if (ImageUtils.reflowScannedPage(bitmap, pageName, manager)) {
-                manager.savePageMap();
-            }
-        }
-
-    }
-
     static private final String INDEX_FILE_NAME = "reflow-index.json";
 
     /**
@@ -121,10 +39,19 @@ public class ImageReflowManager {
     private static final int MAX_DISK_CACHE_SIZE = 20 * 1024 * 1024;
 
     private Map<String, ReaderBitmapList> pageMap;
+    private ConcurrentHashMap<String, Object> mapLock = new ConcurrentHashMap<>();
     private File cacheRoot;
     private BitmapDiskLruCache bitmapCache;
     private ImageReflowSettings settings;
-    private ReflowImpl impl;
+
+    private ExecutorService reflowExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r);
+            t.setPriority(Thread.MIN_PRIORITY);
+            return t;
+        }
+    });
 
     public ImageReflowManager(final File root, int dw, int dh) {
         super();
@@ -132,7 +59,6 @@ public class ImageReflowManager {
         settings = ImageReflowSettings.createSettings();
         settings.dev_width = dw;
         settings.dev_height = dh;
-        impl = new ReflowImpl(this);
 
         bitmapCache = BitmapDiskLruCache.create(root, MAX_DISK_CACHE_SIZE);
     }
@@ -142,73 +68,75 @@ public class ImageReflowManager {
     }
 
     public void updateViewportSize(int dw, int dh) {
-        settings.dev_width = dw;
-        settings.dev_height = dh;
-    }
-
-    static public File cacheFilePath(final File root, final ImageReflowSettings settings, final String fileName) {
-        if (settings == null || root == null) {
-            return null;
-        }
-        File file = new File(root, settings.md5() + "-" + fileName);
-        return file;
+        ImageReflowSettings copy = ImageReflowSettings.copy(settings);
+        copy.dev_width = dw;
+        copy.dev_height = dh;
+        updateSettings(copy);
     }
 
     public void updateSettings(final ImageReflowSettings s) {
         settings.update(s);
-        pageMap = null;
         loadPageMap();
     }
 
-    public void reflowBitmap(Bitmap bitmap, int pageWidth, int pageHeight, final String pageName, boolean precache) {
-        impl.reflowBitmap(bitmap, pageWidth, pageHeight, pageName, precache);
+    public void reflowBitmap(final Bitmap bitmap, final String pageName, final boolean background) {
+        synchronized (mapLock) {
+            if (!mapLock.containsKey(pageName)) {
+                mapLock.put(pageName, new Object());
+            }
+        }
+
+        if (!background) {
+            reflowBitmapImpl(bitmap, pageName);
+            return;
+        }
+        reflowExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                reflowBitmapImpl(bitmap, pageName);
+            }
+        });
+    }
+
+    private void reflowBitmapImpl(final Bitmap bitmap, final String pageName) {
+        synchronized (mapLock.get(pageName)) {
+            if (!isReflowed(pageName)) {
+                reflow(bitmap, pageName);
+            }
+        }
     }
 
     public void loadPageMap() {
-        if (pageMap != null) {
-            return;
-        }
-
-        try {
-            File file = cacheFilePath(cacheRoot, settings, INDEX_FILE_NAME);
-            if (file != null && FileUtils.fileExist(file.getAbsolutePath())) {
-                String json = FileUtils.readContentOfFile(file);
-                pageMap = JSON.parseObject(json, new TypeReference<Map<String, ReaderBitmapList>>(){});
+        synchronized (mapLock) {
+            if (pageMap != null) {
+                pageMap.clear();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            try {
+                File file = cacheFilePath(cacheRoot, settings, INDEX_FILE_NAME);
+                if (file != null && FileUtils.fileExist(file.getAbsolutePath())) {
+                    String json = FileUtils.readContentOfFile(file);
+                    pageMap = JSON.parseObject(json, new TypeReference<Map<String, ReaderBitmapList>>() {
+                    });
+                }
+            } catch (Exception e) {
+                Debug.w(TAG, e);
+            }
+
+            if (pageMap == null) {
+                pageMap = new HashMap<>();
+            }
         }
-
-        if (pageMap == null) {
-            pageMap = new HashMap<>();
-        }
-    }
-
-    private void savePageMap() {
-        try {
-            File file = cacheFilePath(cacheRoot, settings, INDEX_FILE_NAME);
-            String json = JSON.toJSONString(pageMap);
-            FileUtils.saveContentToFile(json, file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void putBitmap(final String key, Bitmap bitmap) {
-        bitmapCache.put(key, bitmap);
-    }
-
-    private Bitmap getBitmap(final String key) {
-        return bitmapCache.get(key);
     }
 
     public ReaderBitmapList getSubPageList(final String pageName) {
-        ReaderBitmapList list = pageMap.get(pageName);
-        if (list == null) {
-            list = new ReaderBitmapList();
-            pageMap.put(pageName, list);
+        synchronized (mapLock) {
+            ReaderBitmapList list = pageMap.get(pageName);
+            if (list == null) {
+                list = new ReaderBitmapList();
+                pageMap.put(pageName, list);
+            }
+            return list;
         }
-        return list;
     }
 
     public String getSubPageKey(final String pageName, int subPage) {
@@ -216,14 +144,14 @@ public class ImageReflowManager {
     }
 
     public Bitmap getSubPageBitmap(final String pageName, int subPage) {
-        return getBitmap(getKeyOfSubPage(settings, pageName, subPage));
+        return getBitmapCache(getKeyOfSubPage(settings, pageName, subPage));
     }
 
     public void clear(final String pageName) {
         getSubPageList(pageName).clear();
     }
 
-    static public final String getKeyOfSubPage(final ImageReflowSettings settings, final String pageName, int index) {
+    private static final String getKeyOfSubPage(final ImageReflowSettings settings, final String pageName, int index) {
         return String.format("%s-%s-%d", settings.md5(), pageName, index);
     }
 
@@ -238,21 +166,72 @@ public class ImageReflowManager {
     public void addBitmap(final String pageName, int subPage, Bitmap bitmap) {
         ReaderBitmapList list = getSubPageList(pageName);
         list.addBitmap(bitmap);
-        putBitmap(getKeyOfSubPage(settings, pageName, subPage), bitmap);
+        putBitmapCache(getKeyOfSubPage(settings, pageName, subPage), bitmap);
     }
 
     public void clearAllCacheFiles() {
-        bitmapCache.clear();
+        clearBitmapCache();
+        clearPageMap();
+    }
 
-        if (pageMap != null) {
-            for(ReaderBitmapList entry : pageMap.values()) {
-                if (entry != null) {
-                    entry.clearAllBitmap();
-                }
+    private void savePageMap() {
+        synchronized (mapLock) {
+            try {
+                File file = cacheFilePath(cacheRoot, settings, INDEX_FILE_NAME);
+                String json = JSON.toJSONString(pageMap);
+                FileUtils.saveContentToFile(json, file);
+            } catch (Exception e) {
+                Debug.w(TAG, e);
+            }
+        }
+    }
+
+    private void clearPageMap() {
+        synchronized (mapLock) {
+            if (pageMap == null) {
+                return;
             }
             pageMap.clear();
             savePageMap();
         }
     }
 
+    private boolean isReflowed(final String pageName) {
+        ReaderBitmapList list = getSubPageList(pageName);
+        if (list == null || list.isEmpty()) {
+            return false;
+        }
+        Bitmap bitmap = getSubPageBitmap(pageName, list.getCurrent());
+        if (bitmap == null) {
+            return false;
+        }
+        bitmap.recycle();
+        return true;
+    }
+
+    private void reflow(Bitmap bitmap, final String pageName) {
+        if (ImageUtils.reflowScannedPage(bitmap, pageName, this)) {
+            savePageMap();
+        }
+    }
+
+    private void putBitmapCache(final String key, Bitmap bitmap) {
+        bitmapCache.put(key, bitmap);
+    }
+
+    private Bitmap getBitmapCache(final String key) {
+        return bitmapCache.get(key);
+    }
+
+    private void clearBitmapCache() {
+        bitmapCache.clear();
+    }
+
+    private static File cacheFilePath(final File root, final ImageReflowSettings settings, final String fileName) {
+        if (settings == null || root == null) {
+            return null;
+        }
+        File file = new File(root, settings.md5() + "-" + fileName);
+        return file;
+    }
 }

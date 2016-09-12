@@ -342,6 +342,7 @@ public class ReaderDataHolder {
     private void closeTts() {
         if (ttsManager != null) {
             ttsManager.shutdown();
+            ttsManager = null;
         }
     }
 }

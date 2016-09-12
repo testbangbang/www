@@ -83,7 +83,7 @@ public class DialogSearch extends Dialog{
     private int searchRows = 0;
 
     public DialogSearch(final ReaderDataHolder readerDataHolder) {
-        super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar);
 
         setContentView(R.layout.dialog_search);
         this.readerDataHolder = readerDataHolder;

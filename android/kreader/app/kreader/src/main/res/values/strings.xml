@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">KReader</string>
+    <string name="app_name">Neo Reader v2.0</string>
     <string name="title">title</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
@@ -216,6 +216,7 @@
 
     <string name="tts_speech_rate_key" translatable="false">tts_speech_rate_key</string>
     <string name="quick_view_grid_type" translatable="false">quick_view_grid_type</string>
+    <string name="tts_play_failed" translatable="false">TTS failed!</string>
 
     <string name="settings_highlight_style_highlight">Highlight</string>
     <string name="settings_highlight_style_underline">Underline</string>

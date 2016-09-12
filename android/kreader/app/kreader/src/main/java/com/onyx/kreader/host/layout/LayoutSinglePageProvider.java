@@ -183,12 +183,11 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     @Override
     public void updateViewportRect(RectF rect) throws ReaderException {
         getPageManager().setViewportRect(rect);
-        if (getPageManager().getVisiblePages().size() > 0) {
-            if (isPortrait(rect)) {
-                scaleToPage(getCurrentPageName());
-            } else {
-                scaleToWidthContent(getCurrentPageName());
-            }
+        if (getPageManager().getVisiblePages().size() <= 0) {
+            return;
+        }
+        if (getPageManager().isSpecialScale()) {
+            getPageManager().setSpecialScale(getCurrentPageName(), getPageManager().getSpecialScale());
         }
     }
 

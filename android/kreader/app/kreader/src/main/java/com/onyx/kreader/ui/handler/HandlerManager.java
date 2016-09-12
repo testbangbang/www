@@ -8,7 +8,6 @@ import android.view.ScaleGestureDetector;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.KeyAction;
-import com.onyx.android.sdk.scribble.ScribbleHandler;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.android.sdk.data.CustomBindKeyBean;

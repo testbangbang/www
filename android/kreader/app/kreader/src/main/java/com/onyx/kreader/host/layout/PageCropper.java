@@ -17,9 +17,6 @@ import com.onyx.kreader.utils.ImageUtils;
  */
 public class PageCropper extends PageManager.PageCropProvider {
 
-    // when calculate crop region, use specified display size instead of view size
-    // to reduce rendering time. cropDisplay should be smaller than view size.
-    private static RectF cropDisplay;
     private ReaderRenderer readerRenderer;
     private boolean debugCrop = false;
 
@@ -66,7 +63,20 @@ public class PageCropper extends PageManager.PageCropProvider {
     }
 
     public static RectF getCropDisplay(final float pw, final float ph) {
-        cropDisplay = new RectF(0, 0, pw / 2, ph / 2);
+        // when calculate crop region, use specified display size instead of view size
+        // to reduce rendering time. cropDisplay should be smaller than view size.
+        final RectF cropDisplay;
+
+        // if crop display is too small, we may get incorrect result, so we limit the size of scaled page
+        final int TARGET_CROP_PAGE_WIDTH = 300;
+        final int TARGET_CROP_PAGE_HEIGHT = 400;
+
+        if (pw <= TARGET_CROP_PAGE_WIDTH && ph <= TARGET_CROP_PAGE_HEIGHT) {
+            cropDisplay = new RectF(0, 0, pw, ph);
+        } else {
+            float scale = Math.min(pw / TARGET_CROP_PAGE_WIDTH, ph / TARGET_CROP_PAGE_HEIGHT);
+            cropDisplay = new RectF(0, 0, pw / scale, ph / scale);
+        }
         return cropDisplay;
     }
 

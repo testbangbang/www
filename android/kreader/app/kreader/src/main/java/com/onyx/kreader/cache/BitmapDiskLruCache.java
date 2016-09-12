@@ -58,6 +58,7 @@ public class BitmapDiskLruCache {
         if (diskCache != null && !diskCache.isClosed()) {
             try {
                 diskCache.delete();
+                diskCache = null;
             } catch (IOException e) {
                 e.printStackTrace();
             }

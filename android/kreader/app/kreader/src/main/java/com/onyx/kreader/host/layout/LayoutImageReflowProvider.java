@@ -13,7 +13,6 @@ import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.utils.ObjectHolder;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -94,7 +93,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
             drawContext.renderingBitmap.attachWith(key, bmp);
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
             if (isNewPage) {
-                reflowNextPageForCache(reader, drawContext, readerViewInfo);
+                reflowNextPageInBackground(reader, drawContext, readerViewInfo);
                 isNewPage = false;
             }
             return true;
@@ -105,7 +104,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
             return false;
         }
 
-        reflowNextPageForCache(reader, drawContext, readerViewInfo);
+        reflowNextPageInBackground(reader, drawContext, readerViewInfo);
         if (reverseOrder) {
             moveToLastSubPage();
             reverseOrder = false;
@@ -121,37 +120,22 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     private void reflowFirstVisiblePage(final Reader reader,
                                         final ReaderDrawContext drawContext,
                                         final ReaderViewInfo readerViewInfo,
-                                        boolean async) throws ReaderException {
+                                        boolean background) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
         reader.getImageReflowManager().reflowBitmap(drawContext.renderingBitmap.getBitmap(),
-                reader.getViewOptions().getViewWidth(),
-                reader.getViewOptions().getViewHeight(),
                 getCurrentPageName(),
-                async);
+                background);
     }
 
-    private void reflowNextPageForCache(final Reader reader,
-                                final ReaderDrawContext drawContext,
-                                final ReaderViewInfo readerViewInfo) throws ReaderException {
+    private void reflowNextPageInBackground(final Reader reader,
+                                            final ReaderDrawContext drawContext,
+                                            final ReaderViewInfo readerViewInfo) throws ReaderException {
         if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
             ReaderDrawContext reflowContext = ReaderDrawContext.copy(drawContext);
             reflowContext.renderingBitmap = new ReaderBitmapImpl();
             reflowFirstVisiblePage(reader, reflowContext, readerViewInfo, true);
             gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
         }
-    }
-
-    private void reflowPage(final Reader reader,
-                                        final String pageName,
-                                        final ReaderDrawContext drawContext,
-                                        final ReaderViewInfo readerViewInfo,
-                                        boolean async) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
-        reader.getImageReflowManager().reflowBitmap(drawContext.renderingBitmap.getBitmap(),
-                reader.getViewOptions().getViewWidth(),
-                reader.getViewOptions().getViewHeight(),
-                pageName,
-                async);
     }
 
     public boolean setScale(float scale, float left, float top) throws ReaderException {
