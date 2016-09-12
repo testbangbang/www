@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.data.utils;
 
+import com.onyx.android.sdk.data.AscDescOrder;
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.QueryArgs.*;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
@@ -31,7 +31,6 @@ public class QueryArgsUtils {
                 args.conditionGroup = MetadataQueryArgsBuilder.orSearchCondition(args.query);
                 break;
         }
-        MetadataQueryArgsBuilder.andMetadataParentId(args, args.parentId);
         generateQueryArgsSortBy(args);
     }
 

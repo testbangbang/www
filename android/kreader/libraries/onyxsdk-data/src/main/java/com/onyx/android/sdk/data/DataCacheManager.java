@@ -41,15 +41,15 @@ public class DataCacheManager {
         return list;
     }
 
-    private void addToLibraryList(Metadata metadata) {
-        List<Metadata> list = getLibraryMapList(metadata.getParentId());
+    private void addToLibraryList(String parentId, Metadata metadata) {
+        List<Metadata> list = getLibraryMapList(parentId);
         if (list.contains(metadata)) {
             list.remove(metadata);
         }
         list.add(metadata);
     }
 
-    public void add(final Metadata metadata) {
+    public void add(final String parentId, final Metadata metadata) {
         if (metadata == null) {
             return;
         }
@@ -57,33 +57,44 @@ public class DataCacheManager {
         if (StringUtils.isNotBlank(metadata.getIdString())) {
             md5HashMap.put(metadata.getIdString(), metadata);
         }
-        addToLibraryList(metadata);
+        addToLibraryList(parentId, metadata);
     }
 
-    public void addAll(List<Metadata> list) {
+    public void addAll(final String parentId, List<Metadata> list) {
         if (CollectionUtils.isNullOrEmpty(list)) {
             return;
         }
         for (Metadata metadata : list) {
-            add(metadata);
+            add(parentId, metadata);
         }
+    }
+
+    private void removeFromHashMap(Metadata metadata) {
+        pathHashMap.remove(metadata.getNativeAbsolutePath());
+        md5HashMap.remove(metadata.getIdString());
     }
 
     //only remove metadata belonged to libraryListMap
-    private void removeFromLibraryList(Metadata metadata) {
-        List<Metadata> list = getLibraryMapList(metadata.getParentId());
+    private void removeFromLibraryList(String parentId, Metadata metadata) {
+        List<Metadata> list = getLibraryMapList(parentId);
         list.remove(metadata);
     }
 
-    public boolean remove(final String path) {
+    public boolean remove(final String parentId, final String path) {
         Metadata metadata = pathHashMap.get(path);
         if (metadata != null) {
-            pathHashMap.remove(path);
-            md5HashMap.remove(metadata.getIdString());
-            removeFromLibraryList(metadata);
+            removeFromHashMap(metadata);
+            removeFromLibraryList(parentId, metadata);
             return true;
         }
         return false;
+    }
+
+    public boolean removeAll(final String parentId, final List<Metadata> list) {
+        for (Metadata metadata : list) {
+            remove(parentId, metadata.getNativeAbsolutePath());
+        }
+        return true;
     }
 
     public void clear() {
@@ -123,6 +134,17 @@ public class DataCacheManager {
 
     public List<Metadata> getMetadataList(final String parentId) {
         return getLibraryMapList(parentId);
+    }
+
+    public List<Metadata> getMetadataList(final String parentId, QueryCriteria criteria) {
+        List<Metadata> list = getMetadataList(parentId);
+        List<Metadata> containList = new ArrayList<>();
+        for (Metadata metadata : list) {
+            if (MetaDataUtils.criteriaContains(metadata, criteria)) {
+                containList.add(metadata);
+            }
+        }
+        return containList;
     }
 
     public List<Metadata> getMetadataList(final QueryArgs args) {

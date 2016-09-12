@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.data.utils;
 
+import com.onyx.android.sdk.data.DataFilter;
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.QueryArgs.BookFilter;
 import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -28,7 +28,7 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs bookListQuery(QueryCriteria queryCriteria, OrderBy orderBy) {
-        return QueryArgs.queryBy(queryCriteriaCondition(queryCriteria), orderBy).appendFilter(BookFilter.EXTRA_ATTRIBUTES);
+        return QueryArgs.queryBy(queryCriteriaCondition(queryCriteria), orderBy).appendFilter(DataFilter.EXTRA_ATTRIBUTES);
     }
 
     public static QueryArgs bookListQuery(ConditionGroup conditionGroup, OrderBy orderBy) {
@@ -40,15 +40,15 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs newBookListQuery() {
-        return QueryArgs.queryBy(newBookListCondition(), getOrderByCreateAt().descending()).appendFilter(BookFilter.NEW_BOOKS);
+        return QueryArgs.queryBy(newBookListCondition(), getOrderByCreateAt().descending()).appendFilter(DataFilter.NEW_BOOKS);
     }
 
     public static QueryArgs finishReadQuery() {
-        return QueryArgs.queryBy(finishReadCondition(), getOrderByUpdateAt().descending()).appendFilter(BookFilter.READED);
+        return QueryArgs.queryBy(finishReadCondition(), getOrderByUpdateAt().descending()).appendFilter(DataFilter.READED);
     }
 
     public static QueryArgs recentReadingQuery() {
-        return QueryArgs.queryBy(recentReadingCondition(), getOrderByUpdateAt().descending()).appendFilter(BookFilter.READING);
+        return QueryArgs.queryBy(recentReadingCondition(), getOrderByUpdateAt().descending()).appendFilter(DataFilter.READING);
     }
 
     public static QueryArgs recentAddQuery() {
@@ -56,11 +56,11 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs tagsFilterQuery(Set<String> tags, OrderBy orderBy) {
-        return QueryArgs.queryBy(orTagsCondition(tags), getOrderByName()).appendOrderBy(orderBy).appendFilter(BookFilter.TAG);
+        return QueryArgs.queryBy(orTagsCondition(tags), getOrderByName()).appendOrderBy(orderBy).appendFilter(DataFilter.TAG);
     }
 
     public static QueryArgs searchQuery(String search, OrderBy orderBy) {
-        return QueryArgs.queryBy(orSearchCondition(search), orderBy).appendFilter(BookFilter.SEARCH);
+        return QueryArgs.queryBy(orSearchCondition(search), orderBy).appendFilter(DataFilter.SEARCH);
     }
 
     public static ConditionGroup newBookListCondition() {
@@ -75,7 +75,8 @@ public class MetadataQueryArgsBuilder {
 
     public static ConditionGroup recentReadingCondition() {
         return ConditionGroup.clause().and(Metadata_Table.progress.isNotNull())
-                .and(Metadata_Table.lastAccess.isNotNull());
+                .and(Metadata_Table.lastAccess.isNotNull())
+                .and(Metadata_Table.lastAccess.notEq(new Date(0)));
     }
 
     public static ConditionGroup recentAddCondition() {
@@ -175,7 +176,11 @@ public class MetadataQueryArgsBuilder {
         }
         final ConditionGroup conditionGroup = ConditionGroup.clause();
         for (String string : set) {
-            conditionGroup.or(matchLike(property, string));
+            Condition condition = matchLike(property, string);
+            if (condition == null) {
+                continue;
+            }
+            conditionGroup.or(condition);
         }
         return conditionGroup;
     }

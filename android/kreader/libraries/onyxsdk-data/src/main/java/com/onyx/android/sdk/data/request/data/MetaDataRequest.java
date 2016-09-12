@@ -9,11 +9,11 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/2.
  */
-public class MetaDataRequest extends BaseDataRequest {
+public class MetadataRequest extends BaseDataRequest {
     private List<Metadata> list = new ArrayList<>();
     private QueryArgs queryArgs;
 
-    public MetaDataRequest(QueryArgs queryArgs) {
+    public MetadataRequest(QueryArgs queryArgs) {
         this.queryArgs = queryArgs;
     }
 

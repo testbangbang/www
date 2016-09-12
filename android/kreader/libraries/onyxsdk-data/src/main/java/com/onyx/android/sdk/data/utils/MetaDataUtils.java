@@ -1,11 +1,19 @@
 package com.onyx.android.sdk.data.utils;
 
+import com.onyx.android.sdk.data.AscDescOrder;
+import com.onyx.android.sdk.data.DataFilter;
+import com.onyx.android.sdk.data.DataSortBy;
 import com.onyx.android.sdk.data.QueryArgs.*;
+import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -428,7 +436,7 @@ public class MetaDataUtils {
     }
 
     // sort by: None, Name, FileType, Size, CreationTime, BookTitle, Author, Publisher, RecentlyRead, Total, StartTime, LastOpenTime, InstallTime
-    static public void sort(final List<Metadata> list, BookSortBy sortBy, AscDescOrder order) {
+    static public void sort(final List<Metadata> list, DataSortBy sortBy, AscDescOrder order) {
         switch (sortBy) {
             case None:
                 if (order == AscDescOrder.Asc) {
@@ -556,5 +564,62 @@ public class MetaDataUtils {
             return true;
         }
         return false;
+    }
+
+    static public boolean containsIfNotNull(final Set<String> source, final Collection<String> target) {
+        if (source == null || source.size() == 0) {
+            return true;
+        }
+        if (target == null) {
+            return false;
+        }
+
+        for (String string : target) {
+            if (source.contains(string)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static public Set<String> getStringSplitSet(String originString, String delimiter) {
+        String[] authors = originString.split(delimiter);
+        Set<String> set = new HashSet<>();
+        for (String author : authors) {
+            set.add(author);
+        }
+        return set;
+    }
+
+    static public boolean criteriaContains(final Metadata metadata, final QueryCriteria criteria) {
+        if (!CollectionUtils.contains(criteria.fileType, metadata.getType().toLowerCase())) {
+            return false;
+        }
+        if (!containsIfNotNull(criteria.author, getStringSplitSet(metadata.getAuthors(), Metadata.DELIMITER))) {
+            return false;
+        }
+        if (!containsIfNotNull(criteria.tags, getStringSplitSet(metadata.getTags(), Metadata.DELIMITER))) {
+            return false;
+        }
+        if (!CollectionUtils.contains(criteria.title, metadata.getTitle())) {
+            return false;
+        }
+        if (!containsIfNotNull(criteria.series, getStringSplitSet(metadata.getSeries(), Metadata.DELIMITER))) {
+            return false;
+        }
+        return true;
+    }
+
+    static public List<Metadata> verifyReadedStatus(List<Metadata> list, DataFilter filter) {
+        if (filter != DataFilter.READED) {
+            return list;
+        }
+        List<Metadata> readList = new ArrayList<>();
+        for (Metadata metadata : list) {
+            if (metadata.isReaded()) {
+                readList.add(metadata);
+            }
+        }
+        return readList;
     }
 }
