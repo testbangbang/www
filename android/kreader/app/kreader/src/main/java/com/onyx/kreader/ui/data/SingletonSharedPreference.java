@@ -201,6 +201,14 @@ public class SingletonSharedPreference {
         return getFloatByStringID(context, R.string.tts_speech_rate_key, 1.0f);
     }
 
+    public static void setQuickViewGridType(Context context, int value){
+        setIntValue(context, R.string.quick_view_grid_type, value);
+    }
+
+    public static int getQuickViewGridType(Context context, int defaultValue){
+        return getIntByStringID(context, R.string.quick_view_grid_type, defaultValue);
+    }
+
     public static float getBaseLineWidth(Context context) {
         float defaultValue = 1.0f;
         String value = sPreferences.getString(context.getString( R.string.settings_scribble_base_width_key), String.valueOf(defaultValue));
