@@ -80,6 +80,10 @@ public class ImageReflowSettings {
         return settings;
     }
 
+    static public ImageReflowSettings copy(final ImageReflowSettings settings) {
+        return new ImageReflowSettings(settings);
+    }
+
     static public ImageReflowSettings fromJsonString(final String settings) {
         ImageReflowSettings object = JSON.parseObject(settings, ImageReflowSettings.class);
         return object;
@@ -94,11 +98,11 @@ public class ImageReflowSettings {
         return HashUtils.md5(jsonString());
     }
 
-    public ImageReflowSettings() {
+    private ImageReflowSettings() {
         super();
     }
 
-    public ImageReflowSettings(ImageReflowSettings settings) {
+    private ImageReflowSettings(ImageReflowSettings settings) {
         super();
         update(settings);
     }

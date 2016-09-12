@@ -7,10 +7,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.scribble.ScribbleHandler;
+import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.data.CustomBindKeyBean;
+import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -96,7 +96,7 @@ public class HandlerManager {
 
         JSONObject object = getKeyBinding(state, keycode);
         if (object != null) {
-            return object.getString(ReaderConfig.KEY_ACTION_TAG);
+            return object.getString(KeyAction.KEY_ACTION_TAG);
         }
         return null;
     }
@@ -109,7 +109,7 @@ public class HandlerManager {
 
         JSONObject object = getKeyBinding(state, keycode);
         if (object != null) {
-            return object.getString(ReaderConfig.KEY_ARGS_TAG);
+            return object.getString(KeyAction.KEY_ARGS_TAG);
         }
         return null;
     }
@@ -361,30 +361,30 @@ public class HandlerManager {
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }
-        if (action.equals(ReaderConfig.NEXT_SCREEN)) {
+        if (action.equals(KeyAction.NEXT_SCREEN)) {
             getActiveProvider().nextScreen(readerDataHolder);
-        } else if (action.equals(ReaderConfig.NEXT_PAGE)) {
+        } else if (action.equals(KeyAction.NEXT_PAGE)) {
             getActiveProvider().nextPage(readerDataHolder);
-        } else if (action.equals(ReaderConfig.PREV_SCREEN)) {
+        } else if (action.equals(KeyAction.PREV_SCREEN)) {
             getActiveProvider().prevScreen(readerDataHolder);
-        } else if (action.equals(ReaderConfig.PREV_PAGE)) {
+        } else if (action.equals(KeyAction.PREV_PAGE)) {
             getActiveProvider().prevPage(readerDataHolder);
-        } else if (action.equals(ReaderConfig.MOVE_LEFT)) {
+        } else if (action.equals(KeyAction.MOVE_LEFT)) {
             //activity.moveLeft();
-        } else if (action.equals(ReaderConfig.MOVE_RIGHT)) {
+        } else if (action.equals(KeyAction.MOVE_RIGHT)) {
             //activity.moveRight();
-        } else if (action.equals(ReaderConfig.MOVE_UP)) {
+        } else if (action.equals(KeyAction.MOVE_UP)) {
             //activity.moveUp();
-        } else if (action.equals(ReaderConfig.MOVE_DOWN)) {
+        } else if (action.equals(KeyAction.MOVE_DOWN)) {
             //activity.moveDown();
-        } else if (action.equals(ReaderConfig.TOGGLE_BOOKMARK)) {
+        } else if (action.equals(KeyAction.TOGGLE_BOOKMARK)) {
             //activity.toggleBookmark();
-        } else if (action.equals(ReaderConfig.SHOW_MENU)) {
+        } else if (action.equals(KeyAction.SHOW_MENU)) {
             new ShowReaderMenuAction().execute(readerDataHolder);
-        } else if (action.equals(ReaderConfig.CHANGE_TO_ERASE_MODE)) {
+        } else if (action.equals(KeyAction.CHANGE_TO_ERASE_MODE)) {
 
 
-        } else if (action.equals(ReaderConfig.CHANGE_TO_SCRIBBLE_MODE)) {
+        } else if (action.equals(KeyAction.CHANGE_TO_SCRIBBLE_MODE)) {
 
         } else {
             return false;

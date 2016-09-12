@@ -3,9 +3,11 @@ package com.onyx.kreader.ui.handler;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSentence;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.request.GetSentenceRequest;
@@ -52,9 +54,11 @@ public class TtsHandler extends BaseHandler {
 
             @Override
             public void onError() {
+                stopped = true;
                 if (callback != null) {
                     callback.onStateChanged();
                 }
+                Toast.makeText(readerDataHolder.getContext(), R.string.tts_play_failed, Toast.LENGTH_LONG);
                 readerDataHolder.submitRenderRequest(new RenderRequest());
             }
         });

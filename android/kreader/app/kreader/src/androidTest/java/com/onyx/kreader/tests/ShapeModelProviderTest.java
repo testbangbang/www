@@ -2,8 +2,8 @@ package com.onyx.kreader.tests;
 
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.kreader.dataprovider.DataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -53,7 +53,7 @@ public class ShapeModelProviderTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testSave() {
-        DataProvider.cleanUp();
+        DataManager.cleanUp();
         List<ShapeModel> list = new ArrayList<ShapeModel>();
         final String md5 = UUID.randomUUID().toString();
         final String pageName = UUID.randomUUID().toString();
@@ -77,7 +77,7 @@ public class ShapeModelProviderTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testSaveAndRemove() {
-        DataProvider.cleanUp();
+        DataManager.cleanUp();
         List<ShapeModel> list = new ArrayList<ShapeModel>();
         final String md5 = UUID.randomUUID().toString();
         final String pageName = UUID.randomUUID().toString();

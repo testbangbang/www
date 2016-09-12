@@ -15,15 +15,22 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.kreader.R;
+import com.onyx.kreader.api.ReaderDocumentTableOfContent;
+import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
+import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.ui.actions.GetTableOfContentAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -208,6 +215,7 @@ public class DialogQuickPreview extends Dialog {
 
             holder.setPage(paginator.indexByPageOffset(position));
             holder.bindPreview(bmp,grid,parent);
+            holder.container.setActivated(readerDataHolder.getCurrentPage() == paginator.indexByPageOffset(position));
         }
 
         @Override
@@ -221,6 +229,8 @@ public class DialogQuickPreview extends Dialog {
     private SeekBar seekBarProgress;
     private ImageView fourImageGrid;
     private ImageView nineImageGrid;
+    private ImageButton chapterBack;
+    private ImageButton chapterForward;
 
     private Grid grid = new Grid();
     private GPaginator paginator;
@@ -230,6 +240,7 @@ public class DialogQuickPreview extends Dialog {
     private int pageCount;
     private int currentPage;
     private Callback callback;
+    private List<Integer> tocChapterNodeList = new ArrayList<>();
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, final int pageCount, final int currentPage,
                               Callback callback) {
@@ -265,6 +276,8 @@ public class DialogQuickPreview extends Dialog {
         seekBarProgress = (SeekBar)findViewById(R.id.seek_bar_page);
         fourImageGrid = (ImageView) findViewById(R.id.image_view_four_grids);
         nineImageGrid = (ImageView)findViewById(R.id.image_view_nine_grids);
+        chapterBack = (ImageButton) findViewById(R.id.chapter_back);
+        chapterForward = (ImageButton)findViewById(R.id.chapter_forward);
 
         findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -321,6 +334,110 @@ public class DialogQuickPreview extends Dialog {
                 }
             }
         });
+
+        chapterBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoChapterIndex(true);
+            }
+        });
+
+        chapterForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoChapterIndex(false);
+            }
+        });
+    }
+
+    private int getGridPage(int page){
+        if (grid.getGridType() == GridType.Four){
+            return page / 4;
+        }else {
+            return page / 9;
+        }
+    }
+
+    private void loadDocumentTableOfContent(){
+        GetTableOfContentAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                BaseReaderRequest readerRequest = (BaseReaderRequest)request;
+                ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
+                chapterBack.setEnabled(toc != null && toc.getRootEntry() != null);
+                chapterForward.setEnabled(toc != null && toc.getRootEntry() != null);
+                buildChapterNodeList(toc);
+                updateChapterButtonState();
+            }
+        });
+    }
+
+    private void gotoChapterIndex(boolean back){
+        int chapterPosition;
+        if (back){
+            int pageBegin = paginator.getCurrentPageBegin();
+            chapterPosition = getChapterPositionByPage(pageBegin, back);
+        }else {
+            int pageEnd = paginator.getCurrentPageEnd();
+            chapterPosition = getChapterPositionByPage(pageEnd, back);
+        }
+
+        paginator.gotoPage(getGridPage(chapterPosition));
+        onPageDataChanged();
+    }
+    private void updateChapterButtonState(){
+        chapterBack.setEnabled(paginator.canPrevPage() && tocChapterNodeList.size() > 0);
+        chapterForward.setEnabled(paginator.canNextPage() && tocChapterNodeList.size() > 0);
+    }
+
+    private int getChapterPositionByPage(int page, boolean back){
+        int size = tocChapterNodeList.size();
+        for (int i = 0; i < size; i++) {
+            if (page < tocChapterNodeList.get(i)){
+                if (back){
+                    int position = tocChapterNodeList.get(Math.max(0, i - 1));
+                    if (paginator.isItemInCurrentPage(position)){
+                        return getChapterPositionByPage(page - 1, back);
+                    }else {
+                        return position;
+                    }
+                }else {
+                    int position = tocChapterNodeList.get(i);
+                    if (paginator.isItemInCurrentPage(position)){
+                        return getChapterPositionByPage(page + 1, back);
+                    }else {
+                        return position;
+                    }
+                }
+            }
+        }
+
+        if (back){
+            return page - 1;
+        }else {
+            return page + 1;
+        }
+
+    }
+
+    private void buildChapterNodeList(ReaderDocumentTableOfContent toc){
+        ReaderDocumentTableOfContentEntry rootEntry = toc.getRootEntry();
+        if (rootEntry.getChildren() != null){
+            buildChapterNode(rootEntry.getChildren());
+        }
+    }
+
+    private void buildChapterNode(List<ReaderDocumentTableOfContentEntry> entries){
+        for (ReaderDocumentTableOfContentEntry entry : entries) {
+            if (entry.getChildren() != null){
+                buildChapterNode(entry.getChildren());
+            }else {
+                int position = Integer.valueOf(entry.getPosition());
+                if (!tocChapterNodeList.contains(position)){
+                    tocChapterNodeList.add(Integer.valueOf(entry.getPosition()));
+                }
+            }
+        }
     }
 
     private void onPressedImageView(boolean pressedFourImage){
@@ -339,6 +456,7 @@ public class DialogQuickPreview extends Dialog {
             adapter.requestMissingBitmaps();
         }
         initPageProgress();
+        loadDocumentTableOfContent();
     }
 
     /**
@@ -361,6 +479,7 @@ public class DialogQuickPreview extends Dialog {
         adapter.resetListSize(paginator.itemsInCurrentPage());
         adapter.requestMissingBitmaps();
         updatePageProgress();
+        updateChapterButtonState();
     }
 
     private void initPageProgress() {

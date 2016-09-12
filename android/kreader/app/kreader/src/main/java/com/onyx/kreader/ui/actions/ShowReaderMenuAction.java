@@ -24,8 +24,10 @@ import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
+import com.onyx.kreader.host.request.ScaleToPageCropRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthContentRequest;
+import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
@@ -139,6 +141,12 @@ public class ShowReaderMenuAction extends BaseAction {
                     case ZOOM_TO_WIDTH:
                         scaleToWidth(readerDataHolder);
                         break;
+                    case ZOOM_BY_CROP_PAGE:
+                        cropPage(readerDataHolder);
+                        break;
+                    case ZOOM_BY_CROP_WIDTH:
+                        cropWidth(readerDataHolder);
+                        break;
                     case ZOOM_BY_RECT:
                         scaleByRect(readerDataHolder);
                         break;
@@ -244,6 +252,16 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void scaleToWidth(final ReaderDataHolder readerDataHolder) {
+        final ScaleToWidthRequest request = new ScaleToWidthRequest(readerDataHolder.getCurrentPageName());
+        readerDataHolder.submitRenderRequest(request);
+    }
+
+    private void cropPage(final ReaderDataHolder readerDataHolder) {
+        final ScaleToPageCropRequest request = new ScaleToPageCropRequest(readerDataHolder.getCurrentPageName());
+        readerDataHolder.submitRenderRequest(request);
+    }
+
+    private void cropWidth(final ReaderDataHolder readerDataHolder) {
         final ScaleToWidthContentRequest request = new ScaleToWidthContentRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
     }
@@ -304,7 +322,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showTocDialog(final ReaderDataHolder readerDataHolder, DialogTableOfContent.DirectoryTab tab) {
-        final GetTableOfContentAction action = new GetTableOfContentAction(tab);
+        final GetDocumentInfoAction action = new GetDocumentInfoAction(tab);
         action.execute(readerDataHolder);
     }
 

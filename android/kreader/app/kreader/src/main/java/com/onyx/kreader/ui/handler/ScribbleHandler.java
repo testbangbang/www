@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.scribble;
+package com.onyx.kreader.ui.handler;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -10,10 +10,7 @@ import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.handler.BaseHandler;
-import com.onyx.kreader.ui.handler.HandlerManager;
 
 
 /**

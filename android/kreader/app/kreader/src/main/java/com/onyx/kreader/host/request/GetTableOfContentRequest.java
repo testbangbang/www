@@ -1,6 +1,5 @@
 package com.onyx.kreader.host.request;
 
-import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -15,7 +14,5 @@ public class GetTableOfContentRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         createReaderViewInfo();
         getReaderUserDataInfo().loadDocumentTableOfContent(getContext(), reader);
-        getReaderUserDataInfo().loadDocumentAnnotations(getContext(), reader);
-        getReaderUserDataInfo().loadDocumentBookmarks(getContext(), reader);
     }
 }

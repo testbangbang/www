@@ -9,7 +9,6 @@ import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
-
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -59,13 +58,15 @@ public class ReaderTtsService {
 
             @Override
             public void onInit(int status) {
-                initTtsService();
+                Debug.d(getClass(), "onInit: " + status);
+                if (status == TextToSpeech.SUCCESS) {
+                    initTtsService();
+                }
             }
         });
     }
 
     private void initTtsService() {
-        Debug.d(TAG, "initTtsService");
         ttsService.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(final String utteranceId) {
@@ -172,7 +173,6 @@ public class ReaderTtsService {
     public void shutdown() {
         stop();
         ttsService.shutdown();
-        ttsService = null;
     }
 
     private void handleState(TtsState state) {

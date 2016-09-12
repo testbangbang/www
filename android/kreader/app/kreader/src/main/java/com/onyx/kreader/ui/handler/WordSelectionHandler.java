@@ -38,8 +38,7 @@ public class WordSelectionHandler extends BaseHandler{
     private float movePointOffsetHeight;
     private Point lastMovedPoint = null;
     private int cursorSelected = -1;
-    private boolean singleTapUp = false;
-    private boolean actionUpAfterLongPressed = true;
+    private boolean showSelectionCursor = true;
     private Point longPressPoint = new Point();
     private SelectWordRequest selectWordRequest;
 
@@ -50,12 +49,13 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
-        actionUpAfterLongPressed = false;
         longPressPoint.set((int) x2, (int)y2);
+        cursorSelected = getCursorSelected(readerDataHolder,(int)x2, (int)y2);
         if (!hasSelectionWord(readerDataHolder)) {
+            showSelectionCursor = false;
             super.onLongPress(readerDataHolder, x1, y1, x2, y2);
             selectWord(readerDataHolder,x1, y1, x2, y2);
-        } else {
+        } else if (cursorSelected < 0){
             quitWordSelection(readerDataHolder);
         }
         readerDataHolder.changeEpdUpdateMode(UpdateMode.DU);
@@ -72,23 +72,22 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        quitWordSelection(readerDataHolder);
+        if (cursorSelected < 0){
+            quitWordSelection(readerDataHolder);
+        }
         return true;
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        singleTapUp = true;
-        return true;
+        return super.onSingleTapUp(readerDataHolder, e);
     }
 
     public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
-        if (!singleTapUp){
+        if (!isSingleTapUp()){
             ShowTextSelectionMenuAction.showTextSelectionPopupMenu(readerDataHolder);
             enableSelectionCursor(readerDataHolder, selectWordRequest);
         }
-        singleTapUp = false;
-        actionUpAfterLongPressed = true;
-        return true;
+        return super.onActionUp(readerDataHolder, startX, startY, endX, endY);
     }
 
     public boolean onScrollAfterLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
@@ -156,7 +155,7 @@ public class WordSelectionHandler extends BaseHandler{
             case MotionEvent.ACTION_DOWN:
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (cursorSelected < 0 && actionUpAfterLongPressed){
+                if (cursorSelected < 0 && showSelectionCursor){
                     return true;
                 }
                 highlightAlongTouchMoved(readerDataHolder,x, y, cursorSelected);
@@ -281,12 +280,12 @@ public class WordSelectionHandler extends BaseHandler{
             return;
         }
 
-        if (request.getReaderUserDataInfo().hasHighlightResult()) {
+        if (request.getReaderUserDataInfo().hasHighlightResult() && !isActionUp()) {
             ReaderSelection selection = request.getReaderUserDataInfo().getHighlightResult();
             readerDataHolder.getSelectionManager().setCurrentSelection(selection);
             readerDataHolder.getSelectionManager().update(readerDataHolder.getContext());
             readerDataHolder.getSelectionManager().updateDisplayPosition();
-            readerDataHolder.getSelectionManager().setEnable(actionUpAfterLongPressed);
+            readerDataHolder.getSelectionManager().setEnable(showSelectionCursor);
             selectWordRequest = request;
             readerDataHolder.onRenderRequestFinished(request, e, false);
         }
@@ -298,5 +297,6 @@ public class WordSelectionHandler extends BaseHandler{
         }
         readerDataHolder.getSelectionManager().setEnable(true);
         readerDataHolder.onRenderRequestFinished(request, null, false);
+        showSelectionCursor = true;
     }
 }
