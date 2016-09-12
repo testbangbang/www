@@ -1,6 +1,6 @@
 package com.onyx.android.sdk.data.utils;
 
-import com.onyx.android.sdk.data.AscDescOrder;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
@@ -45,7 +45,7 @@ public class QueryArgsUtils {
 
     public static void generateQueryArgsSortBy(QueryArgs args) {
         args.orderByList.clear();
-        boolean asc = args.order == AscDescOrder.Asc;
+        boolean asc = args.order == SortOrder.Asc;
         args.orderByList.add(ascDescOrder(OrderBy.fromProperty(Metadata_Table.name), true));
         switch (args.sortBy) {
             case None:

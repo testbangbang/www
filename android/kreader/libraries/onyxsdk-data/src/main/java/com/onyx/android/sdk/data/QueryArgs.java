@@ -17,9 +17,9 @@ public class QueryArgs {
     public ConditionGroup conditionGroup = ConditionGroup.clause();
     public List<OrderBy> orderByList = new ArrayList<>();
     public String parentId = null;
-    public DataFilter filter = DataFilter.ALL;
-    public DataSortBy sortBy = DataSortBy.Name;
-    public AscDescOrder order = AscDescOrder.Desc;
+    public BookFilter filter = BookFilter.ALL;
+    public SortBy sortBy = SortBy.Name;
+    public SortOrder order = SortOrder.Desc;
     public Set<String> contentType;
     public Set<String> tags;
     public String query;
@@ -79,7 +79,7 @@ public class QueryArgs {
         return this;
     }
 
-    public QueryArgs appendFilter(DataFilter filter) {
+    public QueryArgs appendFilter(BookFilter filter) {
         this.filter = filter;
         return this;
     }

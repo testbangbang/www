@@ -1,6 +1,6 @@
 package com.onyx.android.sdk.data.request.data;
 
-import com.onyx.android.sdk.data.DataFilter;
+import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Library;
@@ -37,7 +37,7 @@ public class LibraryRequest extends BaseDataRequest {
         List<Metadata> cacheList = dataManager.getDataCacheManager().getMetadataList(queryArgs);
         if (CollectionUtils.isNullOrEmpty(cacheList)) {
             List<Metadata> list = getMetadataFromDb(dataManager);
-            if (queryArgs.filter == DataFilter.ALL) {
+            if (queryArgs.filter == BookFilter.ALL) {
                 cacheList.addAll(list);
                 return cacheList;
             }

@@ -1,9 +1,8 @@
 package com.onyx.android.sdk.data.utils;
 
-import com.onyx.android.sdk.data.AscDescOrder;
-import com.onyx.android.sdk.data.DataFilter;
-import com.onyx.android.sdk.data.DataSortBy;
-import com.onyx.android.sdk.data.QueryArgs.*;
+import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.BookFilter;
+import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -436,94 +435,94 @@ public class MetaDataUtils {
     }
 
     // sort by: None, Name, FileType, Size, CreationTime, BookTitle, Author, Publisher, RecentlyRead, Total, StartTime, LastOpenTime, InstallTime
-    static public void sort(final List<Metadata> list, DataSortBy sortBy, AscDescOrder order) {
+    static public void sort(final List<Metadata> list, SortBy sortBy, SortOrder order) {
         switch (sortBy) {
             case None:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByNameAsc(list);
                 } else {
                     sortByNameDesc(list);
                 }
                 break;
             case Name:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByNameAsc(list);
                 } else {
                     sortByNameDesc(list);
                 }
                 break;
             case FileType:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByFileTypeAsc(list);
                 } else {
                     sortByFileTypeDesc(list);
                 }
                 break;
             case Size:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortBySizeAsc(list);
                 } else {
                     sortBySizeDesc(list);
                 }
                 break;
             case CreationTime:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByCreatedAtDateAsc(list);
                 } else {
                     sortByCreatedAtDateDesc(list);
                 }
                 break;
             case BookTitle:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByTitleAsc(list);
                 } else {
                     sortByTitleDesc(list);
                 }
                 break;
             case Author:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByAuthorAsc(list);
                 } else {
                     sortByAuthorDesc(list);
                 }
                 break;
             case Publisher:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByPublisherAsc(list);
                 } else {
                     sortByPublisherDesc(list);
                 }
                 break;
             case RecentlyRead:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByRecentlyReadAsc(list);
                 } else {
                     sortByRecentlyReadDesc(list);
                 }
                 break;
             case Total:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByLastOpenTimeAsc(list);
                 } else {
                     sortByLastOpenTimeDesc(list);
                 }
                 break;
             case StartTime:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByLastOpenTimeAsc(list);
                 } else {
                     sortByLastOpenTimeDesc(list);
                 }
                 break;
             case LastOpenTime:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByLastOpenTimeAsc(list);
                 } else {
                     sortByLastOpenTimeDesc(list);
                 }
                 break;
             case InstallTime:
-                if (order == AscDescOrder.Asc) {
+                if (order == SortOrder.Asc) {
                     sortByLastOpenTimeAsc(list);
                 } else {
                     sortByLastOpenTimeDesc(list);
@@ -610,8 +609,8 @@ public class MetaDataUtils {
         return true;
     }
 
-    static public List<Metadata> verifyReadedStatus(List<Metadata> list, DataFilter filter) {
-        if (filter != DataFilter.READED) {
+    static public List<Metadata> verifyReadedStatus(List<Metadata> list, BookFilter filter) {
+        if (filter != BookFilter.READED) {
             return list;
         }
         List<Metadata> readList = new ArrayList<>();

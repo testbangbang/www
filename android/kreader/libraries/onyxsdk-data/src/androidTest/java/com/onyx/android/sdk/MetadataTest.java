@@ -9,11 +9,11 @@ import android.test.ApplicationTestCase;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.AscDescOrder;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.DataCacheManager;
-import com.onyx.android.sdk.data.DataFilter;
+import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.DataSortBy;
+import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Library;
@@ -738,8 +738,8 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         int index = random.nextInt(keys.length);
         QueryArgs args = new QueryArgs();
-        args.order = AscDescOrder.Desc;
-        args.sortBy = DataSortBy.BookTitle;
+        args.order = SortOrder.Desc;
+        args.sortBy = SortBy.BookTitle;
         args.parentId = keys[index];
 
         //test sortBy title desc
@@ -752,7 +752,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
 
         //test sortBy size desc
-        args.sortBy = DataSortBy.Size;
+        args.sortBy = SortBy.Size;
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() > 0);
         Metadata tmp = list.get(0);
@@ -762,7 +762,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
 
         //test sortBy createdAt desc
-        args.sortBy = DataSortBy.CreationTime;
+        args.sortBy = SortBy.CreationTime;
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() > 0);
         tmp = list.get(0);
@@ -772,7 +772,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
 
         //test sortBy size desc
-        args.sortBy = DataSortBy.LastOpenTime;
+        args.sortBy = SortBy.LastOpenTime;
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() > 0);
         tmp = list.get(0);
@@ -782,7 +782,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
 
         //test sortBy publisher desc
-        args.sortBy = DataSortBy.Publisher;
+        args.sortBy = SortBy.Publisher;
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() > 0);
         tmp = list.get(0);
@@ -794,30 +794,30 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
 
         //test filter new books
-        args.filter = DataFilter.NEW_BOOKS;
+        args.filter = BookFilter.NEW_BOOKS;
         list = cacheManager.getMetadataList(args);
         for (Metadata metadata : list) {
             assertTrue(StringUtils.isNullOrEmpty(metadata.getProgress()));
         }
 
         //test filter reading
-        args.filter = DataFilter.READING;
+        args.filter = BookFilter.READING;
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() == 2);
 
         //test filter readed
-        args.filter = DataFilter.READED;
+        args.filter = BookFilter.READED;
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() == 1);
 
         //test filter search
-        args.filter = DataFilter.SEARCH;
+        args.filter = BookFilter.SEARCH;
         args.query = "will";
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() == 3);
 
         //test filter tags
-        args.filter = DataFilter.TAG;
+        args.filter = BookFilter.TAG;
         args.tags = getFormatTagSet();
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() == 3);
@@ -826,25 +826,25 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         Set<String> set = new HashSet<>();
         set.add("apk");//make sure that it is not contained in defaultContentTypes
         args.contentType = set;
-        args.filter = DataFilter.values()[random.nextInt(DataFilter.values().length)];
+        args.filter = BookFilter.values()[random.nextInt(BookFilter.values().length)];
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() == 0);
 
         args.limit = 2;
         args.contentType = null;
-        args.filter = DataFilter.ALL;
+        args.filter = BookFilter.ALL;
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() == args.limit);
 
         //test offset
         args.limit = Integer.MAX_VALUE;
         args.offset = 1;
-        args.filter = DataFilter.READED;//(based on above,only 1 count :READED,:READING)
+        args.filter = BookFilter.READED;//(based on above,only 1 count :READED,:READING)
         list = cacheManager.getMetadataList(args);
         assertTrue(list.size() == 0);
 
         args.offset = 3;
-        args.filter = DataFilter.ALL;
+        args.filter = BookFilter.ALL;
         list = cacheManager.getMetadataList(args);
         int size = hashMap.get(keys[index]).size();
         assertTrue(list.size() == size - args.offset);

@@ -1,6 +1,6 @@
 package com.onyx.android.sdk.data.utils;
 
-import com.onyx.android.sdk.data.DataFilter;
+import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Metadata_Table;
@@ -28,7 +28,7 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs bookListQuery(QueryCriteria queryCriteria, OrderBy orderBy) {
-        return QueryArgs.queryBy(queryCriteriaCondition(queryCriteria), orderBy).appendFilter(DataFilter.EXTRA_ATTRIBUTES);
+        return QueryArgs.queryBy(queryCriteriaCondition(queryCriteria), orderBy).appendFilter(BookFilter.EXTRA_ATTRIBUTES);
     }
 
     public static QueryArgs bookListQuery(ConditionGroup conditionGroup, OrderBy orderBy) {
@@ -40,15 +40,15 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs newBookListQuery() {
-        return QueryArgs.queryBy(newBookListCondition(), getOrderByCreateAt().descending()).appendFilter(DataFilter.NEW_BOOKS);
+        return QueryArgs.queryBy(newBookListCondition(), getOrderByCreateAt().descending()).appendFilter(BookFilter.NEW_BOOKS);
     }
 
     public static QueryArgs finishReadQuery() {
-        return QueryArgs.queryBy(finishReadCondition(), getOrderByUpdateAt().descending()).appendFilter(DataFilter.READED);
+        return QueryArgs.queryBy(finishReadCondition(), getOrderByUpdateAt().descending()).appendFilter(BookFilter.READED);
     }
 
     public static QueryArgs recentReadingQuery() {
-        return QueryArgs.queryBy(recentReadingCondition(), getOrderByUpdateAt().descending()).appendFilter(DataFilter.READING);
+        return QueryArgs.queryBy(recentReadingCondition(), getOrderByUpdateAt().descending()).appendFilter(BookFilter.READING);
     }
 
     public static QueryArgs recentAddQuery() {
@@ -56,11 +56,11 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs tagsFilterQuery(Set<String> tags, OrderBy orderBy) {
-        return QueryArgs.queryBy(orTagsCondition(tags), getOrderByName()).appendOrderBy(orderBy).appendFilter(DataFilter.TAG);
+        return QueryArgs.queryBy(orTagsCondition(tags), getOrderByName()).appendOrderBy(orderBy).appendFilter(BookFilter.TAG);
     }
 
     public static QueryArgs searchQuery(String search, OrderBy orderBy) {
-        return QueryArgs.queryBy(orSearchCondition(search), orderBy).appendFilter(DataFilter.SEARCH);
+        return QueryArgs.queryBy(orSearchCondition(search), orderBy).appendFilter(BookFilter.SEARCH);
     }
 
     public static ConditionGroup newBookListCondition() {
