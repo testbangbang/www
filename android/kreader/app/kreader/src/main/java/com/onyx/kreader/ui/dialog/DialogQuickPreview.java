@@ -33,6 +33,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.actions.GetTableOfContentAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -49,16 +50,19 @@ public class DialogQuickPreview extends Dialog {
         public abstract void requestPreview(final List<Integer> pages, final Size desiredSize);
     }
 
-    private enum GridType { Four, Nine }
+    static class GridType{
+        final static int Four = 4;
+        final static int Nine = 9;
+    }
 
     private static class Grid {
-        private GridType grid = GridType.Four;
+        private int grid = GridType.Four;
 
-        public void setGridType(GridType grid) {
+        public void setGridType(int grid) {
             this.grid = grid;
         }
 
-        public GridType getGridType() {
+        public int getGridType() {
             return grid;
         }
 
@@ -253,6 +257,7 @@ public class DialogQuickPreview extends Dialog {
         this.callback = callback;
 
         fitDialogToWindow();
+        grid.setGridType(SingletonSharedPreference.getQuickViewGridType(getContext(), GridType.Four));
         setupLayout();
         setupContent(pageCount, currentPage);
     }
@@ -304,6 +309,7 @@ public class DialogQuickPreview extends Dialog {
             @Override
             public void onClick(View v) {
                 grid.setGridType(GridType.Four);
+                SingletonSharedPreference.setQuickViewGridType(getContext(), GridType.Four);
                 paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
                 paginator.gotoPageByIndex(currentPage);
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
@@ -317,6 +323,7 @@ public class DialogQuickPreview extends Dialog {
             @Override
             public void onClick(View v) {
                 grid.setGridType(GridType.Nine);
+                SingletonSharedPreference.setQuickViewGridType(getContext(), GridType.Nine);
                 paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
                 paginator.gotoPageByIndex(currentPage);
                 gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
@@ -351,11 +358,7 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private int getGridPage(int page){
-        if (grid.getGridType() == GridType.Four){
-            return page / 4;
-        }else {
-            return page / 9;
-        }
+        return page / grid.getGridType();
     }
 
     private void loadDocumentTableOfContent(){
@@ -455,6 +458,7 @@ public class DialogQuickPreview extends Dialog {
         if (callback != null) {
             adapter.requestMissingBitmaps();
         }
+        onPressedImageView(grid.getGridType() == GridType.Four);
         initPageProgress();
         loadDocumentTableOfContent();
     }
