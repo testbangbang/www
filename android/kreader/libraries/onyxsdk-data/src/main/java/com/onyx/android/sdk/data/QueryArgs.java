@@ -12,25 +12,13 @@ import java.util.Set;
  */
 public class QueryArgs {
 
-    public enum BookFilter {
-        ALL, NEW_BOOKS, READING, READED, TAG, SEARCH, EXTRA_ATTRIBUTES
-    }
-
-    public enum BookSortBy {
-        None, Name, FileType, Size, CreationTime, BookTitle, Author, Publisher, RecentlyRead, Total, StartTime, LastOpenTime, InstallTime
-    }
-
-    public enum AscDescOrder {
-        Asc, Desc,
-    }
-
     public int limit = Integer.MAX_VALUE;
     public int offset = 0;
     public ConditionGroup conditionGroup = ConditionGroup.clause();
     public List<OrderBy> orderByList = new ArrayList<>();
     public String parentId = null;
-    public BookFilter filter = BookFilter.ALL;
-    public BookSortBy sortBy = BookSortBy.Name;
+    public DataFilter filter = DataFilter.ALL;
+    public DataSortBy sortBy = DataSortBy.Name;
     public AscDescOrder order = AscDescOrder.Desc;
     public Set<String> contentType;
     public Set<String> tags;
@@ -91,7 +79,7 @@ public class QueryArgs {
         return this;
     }
 
-    public QueryArgs appendFilter(BookFilter filter) {
+    public QueryArgs appendFilter(DataFilter filter) {
         this.filter = filter;
         return this;
     }
