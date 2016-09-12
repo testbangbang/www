@@ -48,4 +48,5 @@
     <string name="never">Never</string>
     <string name="ok">Sure</string>
     <string name="cancel">Cancel</string>
+    <string name="gamma_correction">Contrast</string>
 </resources>

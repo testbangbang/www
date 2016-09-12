@@ -22,6 +22,7 @@ public class ReaderLayerMenuRepository {
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ZOOM_BY_RECT, null, R.string.reader_layer_menu_zoom_by_rect, "", R.drawable.ic_dialog_reader_menu_scale_choose),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.NAVIGATION, null, R.string.reader_layer_menu_navigation, "", R.drawable.ic_dialog_reader_menu_browse),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.IMAGE_REFLOW, null, R.string.reader_layer_menu_font_reflow, "", R.drawable.ic_dialog_reader_menu_scale_reset),
+        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.GAMMA_CORRECTION, null, R.string.gamma_correction, "", R.drawable.ic_dialog_reader_menu_browse_gamma),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_COMIC_MODE, null, R.string.reader_layer_menu_navigation_comic_mode, "", R.drawable.ic_dialog_reader_menu_browse_cartoon),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_ARTICLE_MODE, null, R.string.reader_layer_menu_navigation_article_mode, "", R.drawable.ic_dialog_reader_menu_browse_thesis),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_RESET, null, R.string.reader_layer_menu_navigation_reset, "", R.drawable.ic_dialog_reader_menu_browse_reset),
