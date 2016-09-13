@@ -163,13 +163,6 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             this.textSize = textSize;
         }
 
-//        public int getItemCount(){
-//            if (getButtonTexts() == null){
-//                return 0;
-//            }
-//            return getButtonTexts().size();
-//        }
-
 
         public void setButtonTexts(List<String> buttonTexts) {
             this.buttonTexts = buttonTexts;
