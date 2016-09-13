@@ -7,12 +7,12 @@ apply plugin: 'com.android.application'
 apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -96,19 +96,19 @@ dependencies {
     }
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.0.+'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support:support-v4:23.0.+'
-    compile 'com.alibaba:fastjson:1.1.34.android'
-    compile 'net.lingala.zip4j:zip4j:1.3.2'
-    compile 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
-    compile 'com.jakewharton:disklrucache:2.0.2'
-    compile 'org.apache.lucene:lucene-core:2.9.4'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.jakewharton:butterknife:7.0.1'
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.supportLibraryVersion"
+    compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
+    compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
+    compile "net.lingala.zip4j:zip4j:$rootProject.zip4jVersion"
+    compile "com.googlecode.juniversalchardet:juniversalchardet:$rootProject.juniversalchardetVersion"
+    compile "com.jakewharton:disklrucache:$rootProject.disklrucacheVersion"
+    compile "org.apache.lucene:lucene-core:$rootProject.lucenecoreVersion"
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
+    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
 }
 
