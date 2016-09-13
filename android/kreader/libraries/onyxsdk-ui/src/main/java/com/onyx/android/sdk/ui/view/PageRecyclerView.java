@@ -42,8 +42,7 @@ public class PageRecyclerView extends RecyclerView {
     }
 
     public interface OnChangeFocusListener {
-        void onNextFocus(int position);
-        void onPrevFocus(int position);
+        void onFocusChange(int prev, int current);
     }
 
     public static class DisableScrollLinearManager extends LinearLayoutManager {
@@ -126,6 +125,9 @@ public class PageRecyclerView extends RecyclerView {
         this.currentFocusedPosition = currentFocusedPosition;
         getAdapter().notifyItemChanged(lastFocusedPosition);
         getAdapter().notifyItemChanged(currentFocusedPosition);
+        if (onChangeFocusListener != null){
+            onChangeFocusListener.onFocusChange(lastFocusedPosition, currentFocusedPosition);
+        }
     }
 
     public int getCurrentFocusedPosition() {
@@ -137,9 +139,6 @@ public class PageRecyclerView extends RecyclerView {
             nextPage();
         }
         setCurrentFocusedPosition(focusedPosition);
-        if (onChangeFocusListener != null){
-            onChangeFocusListener.onNextFocus(focusedPosition);
-        }
     }
 
     private void prevFocus(int focusedPosition){
@@ -147,9 +146,6 @@ public class PageRecyclerView extends RecyclerView {
             prevPage();
         }
         setCurrentFocusedPosition(focusedPosition);
-        if (onChangeFocusListener != null){
-            onChangeFocusListener.onPrevFocus(focusedPosition);
-        }
     }
 
     public void nextColumn(){
@@ -418,7 +414,9 @@ public class PageRecyclerView extends RecyclerView {
                 int paddingBottom = mParent.getPaddingBottom();
                 int paddingTop = mParent.getPaddingTop();
                 double itemHeight = ((double)mParent.getMeasuredHeight() - paddingBottom - paddingTop) / getRowCount();
-                view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int) Math.ceil(itemHeight)));
+                if (itemHeight > 0){
+                    view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int) Math.ceil(itemHeight)));
+                }
             }
         }
 

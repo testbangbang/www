@@ -29,6 +29,9 @@ public class ChooseMultiAdapter extends DynamicMultiRadioGroupView.MultiAdapter{
 
         setPadding(0,10,0,10);
         setMargin(10,20,20,10);
+        setMultiCheck(false);
+        setBackgroundResId(backgroundResId);
+        setButtonTexts(buttonTexts);
     }
 
     @Override
@@ -42,22 +45,12 @@ public class ChooseMultiAdapter extends DynamicMultiRadioGroupView.MultiAdapter{
     }
 
     @Override
-    public int getBackgroundResId() {
-        return backgroundResId;
-    }
-
-    @Override
-    public boolean isRadioButton() {
-        return true;
-    }
-
-    @Override
     public void bindView(CompoundButton button, int position) {
 
     }
 
     @Override
-    public List<String> getButtonTexts() {
-        return buttonTexts;
+    public int getItemCount() {
+        return buttonTexts.size();
     }
 }

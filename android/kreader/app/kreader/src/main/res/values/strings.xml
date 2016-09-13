@@ -4,6 +4,7 @@
     <string name="title">title</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="reset">Reset</string>
     <string name="outOfRangRerror">Out Of Range.</string>
     <string name="illegalInput">Illegal Input.</string>
     <string name="dialog_reflow_settings_contrast">Contrast</string>
@@ -14,6 +15,9 @@
     <string name="menu_item_option_left">Option 1</string>
     <string name="menu_item_option_right">Option 2</string>
     <string name="dialog_reflow_settings_defect_size">Defect Size</string>
+    <string name="dialog_reflow_settings_font_size">Font Size</string>
+    <string name="dialog_reflow_settings_align">Align</string>
+    <string name="dialog_reflow_settings_format">Format</string>
     <string name="dialog_reflow_settings_page_margins">Page margins</string>
     <string name="dialog_reflow_settings_line_spacing">Line Spacing</string>
     <string name="dialog_reflow_settings_word_spacing">Word Spacing</string>
