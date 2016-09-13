@@ -239,7 +239,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryCriteria queryCriteria = new QueryCriteria();
         queryCriteria.author.addAll(authors);
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), null, queryCriteria);
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -247,7 +247,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), null, dummyQueryCriteria);
         assertNotNull(list);
         assertTrue(list.size() == 0);
     }
@@ -271,7 +271,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryCriteria queryCriteria = new QueryCriteria();
         queryCriteria.title.addAll(title);
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), null, queryCriteria);
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -279,7 +279,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), null, dummyQueryCriteria);
         assertNotNull(list);
         assertTrue(list.size() == 0);
     }
@@ -303,7 +303,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryCriteria queryCriteria = new QueryCriteria();
         queryCriteria.series.addAll(series);
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), null, queryCriteria);
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -311,7 +311,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), null, dummyQueryCriteria);
         assertNotNull(list);
         assertTrue(list.size() == 0);
     }
@@ -335,7 +335,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryCriteria queryCriteria = new QueryCriteria();
         queryCriteria.tags.addAll(tags);
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadata(getContext(), null, queryCriteria);
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -343,7 +343,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryCriteria dummyQueryCriteria = new QueryCriteria();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadata(getContext(), null, dummyQueryCriteria);
         assertNotNull(list);
         assertTrue(list.size() == 0);
     }
