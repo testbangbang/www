@@ -1,5 +1,6 @@
 package com.onyx.kreader.common;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageConstants;
@@ -22,6 +23,7 @@ public class ReaderViewInfo {
     public int scale;
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();
+    public PointF lastViewportOverlayPosition = null;
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;
@@ -54,6 +56,19 @@ public class ReaderViewInfo {
             return false;
         }
         return pagesBoundingRect.width() > viewportInDoc.width() || pagesBoundingRect.height() > viewportInDoc.height();
+    }
+
+    /**
+     * return null if there is no valid anchor point
+     *
+     * @return
+     */
+    public PointF getLastViewportOverlayPosition() {
+        return lastViewportOverlayPosition;
+    }
+
+    public void setLastViewportOverlayPosition(PointF position) {
+        lastViewportOverlayPosition = position;
     }
 
     public boolean isSpecialScale() {

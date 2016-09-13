@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.PathEffect;
 import android.graphics.PixelXorXfermode;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -47,6 +49,7 @@ public class ReaderPainter {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
+        drawViewportOverlayIndicator(canvas, paint, viewInfo);
         drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
         if (SingletonSharedPreference.isShowAnnotation(context)) {
@@ -70,6 +73,20 @@ public class ReaderPainter {
             return;
         }
         canvas.drawBitmap(bitmap, 0, 0, paint);
+    }
+
+    private void drawViewportOverlayIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
+        if (viewInfo.getLastViewportOverlayPosition() != null) {
+            paint.setColor(Color.GRAY);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(3);
+            PathEffect effect = new DashPathEffect(new float[]{5,5,5,5},1);
+            paint.setPathEffect(effect);
+            canvas.drawLine(0, viewInfo.getLastViewportOverlayPosition().y,
+                    viewInfo.viewportInDoc.width(), viewInfo.getLastViewportOverlayPosition().y,
+                    paint);
+            paint.setPathEffect(null);
+        }
     }
 
     private void drawSearchResults(Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, DrawHighlightPaintStyle paintStyle) {
