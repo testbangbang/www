@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.host.math.PageOverlayMarker;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -14,7 +15,10 @@ public class NextScreenRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
         reader.getReaderLayoutManager().setSavePosition(true);
+        PageOverlayMarker.saveCurrentPageAndViewport(reader);
         reader.getReaderLayoutManager().nextScreen();
         drawVisiblePages(reader);
+        PageOverlayMarker.markLastViewportOverlayPointWhenNecessary(reader, getReaderViewInfo());
     }
+
 }
