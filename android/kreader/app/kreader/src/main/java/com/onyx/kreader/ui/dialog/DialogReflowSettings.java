@@ -1,24 +1,59 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kreader.R;
 import com.onyx.kreader.reflow.ImageReflowSettings;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
- * Created with IntelliJ IDEA.
- * User: zhuzeng
- * Date: 5/13/14
- * Time: 9:18 PM
- * To change this template use File | Settings | File Templates.
+ * Created by ming on 16/9/12.
  */
 public class DialogReflowSettings extends DialogBase {
+
+    @Bind(R.id.format_text)
+    TextView formatText;
+    @Bind(R.id.font_size_text)
+    TextView fontSizeText;
+    @Bind(R.id.font_size_layout)
+    DynamicMultiRadioGroupView fontSizeLayout;
+    @Bind(R.id.format_recycler)
+    PageRecyclerView formatRecycler;
+    @Bind(R.id.align_text)
+    TextView alignText;
+    @Bind(R.id.align_recycler)
+    PageRecyclerView alignRecycler;
+    @Bind(R.id.upgrade_text)
+    TextView upgradeText;
+    @Bind(R.id.upgrade_layout)
+    DynamicMultiRadioGroupView upgradeLayout;
+    @Bind(R.id.textview_title)
+    TextView textviewTitle;
+    @Bind(R.id.reset_button)
+    Button resetButton;
+    @Bind(R.id.confirm_button)
+    Button confirmButton;
+    @Bind(R.id.cancel_button)
+    Button cancelButton;
+    @Bind(R.id.layout_menu)
+    LinearLayout layoutMenu;
 
     static public abstract class ReflowCallback {
         abstract public void onFinished(boolean confirm, final ImageReflowSettings settings);
@@ -26,471 +61,303 @@ public class DialogReflowSettings extends DialogBase {
 
     private ImageReflowSettings settings;
     private ReflowCallback callback;
-    private int currentTab = 0;
-    private DialogReflowControlItem[] dialogReflowControlItems=new DialogReflowControlItem[5];
-    private String[] leftTabItemName=new String[5];
-    private String[] rightTabItemName=new String[5];
-    private ArrayList<String[]> leftContentArray = new ArrayList<String[]>();
-    private ArrayList<String[]> rightContentArray = new ArrayList<String[]>();
-    private int[] leftTabCurrentChoice=new int[5];
-    private int[] rightTabCurrentChoice=new int[5];
+    private double[] fontSizeValues = {1.0, 8.0, 15.0};
+    private int[] autoStraightenValues = {0, 5, 10};
+    private int[] justificationValues = {0, 1, 2};
+    private double[][] formatValues = {{0.05, 1.0, 0.05}, {0.15, 1.2, 0.10}, {0.375, 1.4, 0.15}};
 
-    public DialogReflowSettings(Context context, ImageReflowSettings s, final ReflowCallback c) {
-        super(context);
+    private final String[] fontSizes = {"1", "2", "3"};
+    private final String[] upgradeSizes = {"0", "5", "10",};
+
+    private int fontSizeDefaultIndex = 0;
+    private int autoStraightenDefaultIndex = 0;
+    private int justificationDefaultIndex = 1;
+    private int formatDefaultIndex = 0;
+
+    public DialogReflowSettings(ReaderDataHolder readerDataHolder, ImageReflowSettings settings, ReflowCallback callback) {
+        super(readerDataHolder.getContext());
+
+        this.settings = settings;
+        this.callback = callback;
         setContentView(R.layout.dialog_reflow_settings);
-        setCanceledOnTouchOutside(true);
-        initReflowControlItem();
-        initStringSource(context);
-        settings = s;
-        callback = c;
-        updateDensity(context, settings);
-        initTabChoiceBySettng(settings);
-        resetReflowControlItemCotent(leftTabItemName,leftContentArray,leftTabCurrentChoice);
+        ButterKnife.bind(this);
+        initView();
+    }
+
+    private void initView() {
+        ReflowMultiAdapter fontSizeAdapter = new ReflowMultiAdapter(getContext(), fontSizes, 1, fontSizes.length, R.drawable.reflow_big_select, R.drawable.reflow_big_select_no_label, true);
+        fontSizeLayout.setMultiAdapter(fontSizeAdapter);
+
+        ReflowMultiAdapter upgradeAdapter = new ReflowMultiAdapter(getContext(), upgradeSizes, 1, upgradeSizes.length, R.drawable.reflow_big_select, R.drawable.reflow_big_select_no_label, true);
+        upgradeLayout.setMultiAdapter(upgradeAdapter);
+
+        int[] formatResIds = {R.drawable.ic_dialog_reader_reset_format_small, R.drawable.ic_dialog_reader_reset_format_mid, R.drawable.ic_dialog_reader_reset_format_big};
+        formatRecycler.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(getContext()));
+        ReflowPageAdapter formatAdapter = new ReflowPageAdapter(1, 3, formatResIds);
+        formatRecycler.setAdapter(formatAdapter);
+
+        int[] alignResIds = {R.drawable.ic_dialog_reader_reset_align_left, R.drawable.ic_dialog_reader_reset_align_mid, R.drawable.ic_dialog_reader_reset_align_right};
+        alignRecycler.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(getContext()));
+        ReflowPageAdapter alignAdapter = new ReflowPageAdapter(1, 3, alignResIds);
+        alignRecycler.setAdapter(alignAdapter);
+
         setupListeners();
-    }
-
-    private void initReflowControlItem() {
-        dialogReflowControlItems[0] = (DialogReflowControlItem) findViewById(R.id.item0);
-        dialogReflowControlItems[1] = (DialogReflowControlItem) findViewById(R.id.item1);
-        dialogReflowControlItems[2] = (DialogReflowControlItem) findViewById(R.id.item2);
-        dialogReflowControlItems[3] = (DialogReflowControlItem) findViewById(R.id.item3);
-        dialogReflowControlItems[4] = (DialogReflowControlItem) findViewById(R.id.item4);
-    }
-
-    private void initStringSource(Context context) {
-        leftTabItemName[0] = context.getString(R.string.dialog_reflow_settings_defect_size);
-        leftTabItemName[1] = context.getString(R.string.dialog_reflow_settings_page_margins);
-        leftTabItemName[2] = context.getString(R.string.dialog_reflow_settings_line_spacing);
-        leftTabItemName[3] = context.getString(R.string.dialog_reflow_settings_word_spacing);
-        leftTabItemName[4] = context.getString(R.string.dialog_reflow_settings_render_size);
-        rightTabItemName[0] = context.getString(R.string.dialog_reflow_settings_auto_straighten);
-        rightTabItemName[1] = context.getString(R.string.dialog_reflow_settings_justification);
-        rightTabItemName[2] = context.getString(R.string.dialog_reflow_settings_columns);
-        rightTabItemName[3] = context.getString(R.string.dialog_reflow_settings_contrast);
-        rightTabItemName[4] = context.getString(R.string.dialog_reflow_settings_rotation);
-        leftContentArray.add(new String[]{context.getString(R.string.dialog_reflow_settings_small),
-                context.getString(R.string.dialog_reflow_settings_medium),
-                context.getString(R.string.dialog_reflow_settings_large)});
-        leftContentArray.add(new String[]{context.getString(R.string.dialog_reflow_settings_page_margins_small),
-                context.getString(R.string.dialog_reflow_settings_page_margins_medium),
-                context.getString(R.string.dialog_reflow_settings_page_margins_large)});
-        leftContentArray.add(new String[]{context.getString(R.string.dialog_reflow_settings_small),
-                context.getString(R.string.dialog_reflow_settings_medium),
-                context.getString(R.string.dialog_reflow_settings_large)});
-        leftContentArray.add(new String[]{context.getString(R.string.dialog_reflow_settings_small),
-                context.getString(R.string.dialog_reflow_settings_medium),
-                context.getString(R.string.dialog_reflow_settings_large)});
-        leftContentArray.add(new String[]{context.getString(R.string.dialog_reflow_settings_render_small),
-                context.getString(R.string.dialog_reflow_settings_render_medium),
-                context.getString(R.string.dialog_reflow_settings_render_large),
-                context.getString(R.string.dialog_reflow_settings_render_largest)});
-        rightContentArray.add(new String[]{"0","5","10"});
-        rightContentArray.add(new String[]{context.getString(R.string.dialog_reflow_settings_justification_auto),
-                context.getString(R.string.dialog_reflow_settings_justification_left),
-                context.getString(R.string.dialog_reflow_settings_justification_center),
-                context.getString(R.string.dialog_reflow_settings_justification_right),
-                context.getString(R.string.dialog_reflow_settings_justification_full)});
-        rightContentArray.add(new String[]{"1","2","3","4"});
-        rightContentArray.add(new String[]{context.getString(R.string.dialog_reflow_settings_contrast_lightest),
-                context.getString(R.string.dialog_reflow_settings_contrast_lighter),
-                context.getString(R.string.dialog_reflow_settings_contrast_default),
-                context.getString(R.string.dialog_reflow_settings_contrast_darker),
-                context.getString(R.string.dialog_reflow_settings_contrast_darkest)});
-        rightContentArray.add(new String[]{"0","90","180","270"});
-    }
-
-    private void initTabChoiceBySettng(ImageReflowSettings settings) {
-        updateDefectSize(settings);
-        updatePageMargins(settings);
-        updateLineSpacing(settings);
-        updateWordSpacing(settings);
-        updateRenderSize(settings);
+        updateFontSize(settings);
         updateAutoStraighten(settings);
         updateJustification(settings);
-        updateColumns(settings);
-        updateConstrast(settings);
-        updateRotation(settings);
+        updateFormat(settings);
     }
 
-    private void syncTabChoice(ImageReflowSettings settings) {
-        if (settings == null) {
-            return;
-        }
-        switch (currentTab) {
-            case 0:
-                syncLeftTab(settings);
+    private void updateFontSize(ImageReflowSettings s) {
+        int index = fontSizeDefaultIndex;
+        for (int i = 0; i < fontSizeValues.length; i++) {
+            if (fontSizeValues[i] == s.defect_size){
+                index = i;
                 break;
-            case 1:
-                syncRightTab(settings);
-                break;
+            }
         }
-    }
-
-    private void syncLeftTab(ImageReflowSettings s) {
-        syncDefectSize(s);
-        syncPageMargins(s);
-        syncLineSpacing(s);
-        syncWordSpacing(s);
-        syncRenderSize(s);
-    }
-
-    private void syncRightTab(ImageReflowSettings s) {
-        syncAutoStraighten(s);
-        syncJustification(s);
-        syncColumns(s);
-        syncConstrast(s);
-        syncRotation(s);
-    }
-
-    private void resetReflowControlItemCotent(String[] tabItemName, ArrayList<String[]> contentArray, int[] currentChoice) {
-        for (int i = 0; i <= 4; i++) {
-            dialogReflowControlItems[i].setItemName(tabItemName[i]);
-            dialogReflowControlItems[i].setAllChoice(contentArray.get(i));
-            dialogReflowControlItems[i].setCurrentChoice(currentChoice[i]);
-        }
-    }
-
-    private void updateDensity(Context context, ImageReflowSettings settings) {
-        if (settings == null) {
-            return;
-        }
-        settings.dev_dpi = (int) DeviceUtils.getDensity(context);
-    }
-
-    private void updateDefectSize(ImageReflowSettings s) {
-        if (s.defect_size <= 1.0) {
-            leftTabCurrentChoice[0]=0;
-        } else if (s.defect_size <= 8.0) {
-            leftTabCurrentChoice[0]=1;
-        } else if (s.defect_size >= 15) {
-            leftTabCurrentChoice[0]=2;
-        }
-    }
-
-    private void updatePageMargins(ImageReflowSettings s) {
-        if (Double.compare(s.margin, 0.05) == 0) {
-            leftTabCurrentChoice[1]=0;
-        } else if (Double.compare(s.margin ,0.1) == 0) {
-            leftTabCurrentChoice[1]=1;
-        } else {
-            leftTabCurrentChoice[1]=2;
-        }
-    }
-
-    private void updateLineSpacing(ImageReflowSettings s) {
-        if (s.line_spacing <= 1.0) {
-            leftTabCurrentChoice[2]=0;
-        } else if (s.line_spacing <= 1.2) {
-            leftTabCurrentChoice[2]=1;
-        } else {
-            leftTabCurrentChoice[2]=2;
-        }
-    }
-
-    private void updateWordSpacing(ImageReflowSettings s) {
-        if (s.word_spacing <= 0.05) {
-            leftTabCurrentChoice[3]=0;
-        } else if (s.word_spacing <= 0.15) {
-            leftTabCurrentChoice[3]=1;
-        } else {
-            leftTabCurrentChoice[3]=2;
-        }
-    }
-
-    private void updateRenderSize(ImageReflowSettings s) {
-        if (s.quality <= 0.3) {
-            leftTabCurrentChoice[4]=3;
-        } else if (s.quality <= 0.45) {
-            leftTabCurrentChoice[4]=2;
-        } else if (s.quality <= 0.6) {
-            leftTabCurrentChoice[4]=1;
-        } else {
-            leftTabCurrentChoice[4]=0;
-        }
+        fontSizeLayout.getMultiAdapter().setItemChecked(true, index);
     }
 
     private void updateAutoStraighten(ImageReflowSettings s) {
-        if (s.straighten <= 0) {
-            rightTabCurrentChoice[0]=0;
-        } else if (s.straighten <= 5) {
-            rightTabCurrentChoice[0]=1;
-        } else {
-            rightTabCurrentChoice[0]=2;
+        int index = autoStraightenDefaultIndex;
+        for (int i = 0; i < autoStraightenValues.length; i++) {
+            if (autoStraightenValues[i] == s.straighten){
+                index = i;
+                break;
+            }
+        }
+        upgradeLayout.getMultiAdapter().setItemChecked(true, index);
+    }
+
+    private void updateJustification(ImageReflowSettings s){
+        int index = justificationDefaultIndex;
+        for (int i = 0; i < justificationValues.length; i++) {
+            if (justificationValues[i] == s.justification){
+                index = i;
+                break;
+            }
+        }
+        alignRecycler.setCurrentFocusedPosition(index);
+    }
+
+    private void updateFormat(ImageReflowSettings s){
+        int index = formatDefaultIndex;
+        for (int i = 0; i < formatValues.length; i++) {
+            if (formatValues[i][0] == s.word_spacing
+                    && formatValues[i][1] == s.line_spacing
+                    && formatValues[i][2] == s.margin){
+                index = i;
+                break;
+            }
+        }
+        formatRecycler.setCurrentFocusedPosition(index);
+    }
+
+    private void syncAutoStraighten(ImageReflowSettings s, int checkIndex) {
+        if (checkIndex < autoStraightenValues.length){
+            s.straighten = autoStraightenValues[checkIndex];
         }
     }
 
-    private void updateJustification(ImageReflowSettings s) {
-        switch (s.justification) {
-            case -1:
-                rightTabCurrentChoice[1]=0;
-                break;
-            case 0:
-                rightTabCurrentChoice[1]=1;
-                break;
-            case 1:
-                rightTabCurrentChoice[1]=2;
-                break;
-            case 2:
-                rightTabCurrentChoice[1]=3;
-                break;
-            case 3:
-                rightTabCurrentChoice[1]=4;
-                break;
-            default:
-                break;
+    private void syncFontSize(ImageReflowSettings s, int checkIndex) {
+        if (checkIndex < fontSizeValues.length){
+            s.defect_size = fontSizeValues[checkIndex];
         }
     }
 
-    private void updateColumns(ImageReflowSettings s) {
-        switch (s.columns) {
-            case 1:
-                rightTabCurrentChoice[2]=0;
-                break;
-            case 2:
-                rightTabCurrentChoice[2]=1;
-                break;
-            case 3:
-                rightTabCurrentChoice[2]=2;
-                break;
-            case 4:
-                rightTabCurrentChoice[2]=3;
-                break;
+    private void syncJustification(ImageReflowSettings s, int focusPosition){
+        if (focusPosition < justificationValues.length){
+            s.justification = justificationValues[focusPosition];
         }
     }
 
-    private void updateConstrast(ImageReflowSettings s) {
-        if (s.contrast >= 2.0) {
-            rightTabCurrentChoice[3]=0;
-        } else if (s.contrast >= 1.5) {
-            rightTabCurrentChoice[3]=1;
-        } else if (s.contrast >= 1.0) {
-            rightTabCurrentChoice[3]=2;
-        } else if (s.contrast >= 0.5) {
-            rightTabCurrentChoice[3]=3;
-        } else if (s.contrast >= 0.2) {
-            rightTabCurrentChoice[3]=4;
+    private void syncFormat(ImageReflowSettings s, int focusPosition){
+        if (focusPosition < formatValues.length){
+            s.word_spacing = formatValues[focusPosition][0];
+            s.line_spacing = formatValues[focusPosition][1];
+            s.margin = formatValues[focusPosition][2];
         }
     }
 
-    private void updateRotation(ImageReflowSettings s) {
-        switch (s.rotate) {
-            case 0:
-                rightTabCurrentChoice[4]=0;
-                break;
-            case 90:
-                rightTabCurrentChoice[4]=1;
-                break;
-            case 180:
-                rightTabCurrentChoice[4]=2;
-                break;
-            case 270:
-                rightTabCurrentChoice[4]=3;
-                break;
-        }
-    }
-    private void syncDefectSize(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[0].getCurrentChoice()){
-            case 0:
-                s.defect_size = 1.0;
-                break;
-            case 1:
-                s.defect_size = 8.0;
-                break;
-            case 2:
-                s.defect_size = 15;
-                break;
-        }
+    private void syncSettings(ImageReflowSettings settings){
+        syncAutoStraighten(settings, getCheckedButtonIndex(upgradeLayout.getCompoundButtonList()));
+        syncFontSize(settings, getCheckedButtonIndex(fontSizeLayout.getCompoundButtonList()));
+        syncJustification(settings, alignRecycler.getCurrentFocusedPosition());
+        syncFormat(settings, formatRecycler.getCurrentFocusedPosition());
     }
 
-    private void syncPageMargins(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[1].getCurrentChoice()){
-            case 0:
-                s.margin = 0.05;
-                break;
-            case 1:
-                s.margin = 0.1;
-                break;
-            case 2:
-                s.margin = 0.15;
-                break;
-        }
+    private void resetSettings(ImageReflowSettings settings){
+        upgradeLayout.getMultiAdapter().setItemChecked(false,autoStraightenDefaultIndex + 1);
+        fontSizeLayout.getMultiAdapter().setItemChecked(false,fontSizeDefaultIndex + 1);
+        alignRecycler.setCurrentFocusedPosition(justificationDefaultIndex);
+        formatRecycler.setCurrentFocusedPosition(formatDefaultIndex);
     }
 
-    private void syncLineSpacing(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[2].getCurrentChoice()){
-            case 0:
-                s.line_spacing = 1.0;
-                break;
-            case 1:
-                s.line_spacing = 1.2;
-                break;
-            case 2:
-                s.line_spacing = 1.4;
-                break;
+    private int getCheckedButtonIndex(List<CompoundButton> compoundButtons){
+        int index = -1;
+        for (CompoundButton button : compoundButtons) {
+            if (button.isChecked()){
+                index ++;
+            }
         }
+        return Math.max(index, 0);
     }
-
-    private void syncWordSpacing(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[3].getCurrentChoice()){
-            case 0:
-                s.word_spacing = 0.05;
-                break;
-            case 1:
-                s.word_spacing = 0.15;
-                break;
-            case 2:
-                s.word_spacing = 0.375;
-                break;
-        }
-    }
-
-    private void syncRenderSize(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[4].getCurrentChoice()){
-            case 0:
-                s.quality = 0.75;
-                break;
-            case 1:
-                s.quality = 0.6;
-                break;
-            case 2:
-                s.quality = 0.45;
-                break;
-            case 3:
-                s.quality = 0.3;
-                break;
-        }
-    }
-
-    private void syncAutoStraighten(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[0].getCurrentChoice()){
-            case 0:
-                s.straighten = 0;
-                break;
-            case 1:
-                s.straighten = 5;
-                break;
-            case 2:
-                s.straighten = 10;
-                break;
-        }
-    }
-
-    private void syncJustification(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[1].getCurrentChoice()){
-            case 0:
-                s.justification = -1;
-                break;
-            case 1:
-                s.justification = 0;
-                break;
-            case 2:
-                s.justification = 1;
-                break;
-            case 3:
-                s.justification = 2;
-                break;
-            case 4:
-                s.justification = 3;
-                break;
-        }
-    }
-
-    private void syncColumns(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[2].getCurrentChoice()){
-            case 0:
-                s.columns = 1;
-                break;
-            case 1:
-                s.columns = 2;
-                break;
-            case 2:
-                s.columns = 3;
-                break;
-            case 3:
-                s.columns = 4;
-                break;
-        }
-    }
-
-    private void syncConstrast(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[3].getCurrentChoice()){
-            case 0:
-                s.contrast = 2.0;
-                break;
-            case 1:
-                s.contrast = 1.5;
-                break;
-            case 2:
-                s.contrast = 1.0;
-                break;
-            case 3:
-                s.contrast = 0.5;
-                break;
-            case 4:
-                s.contrast = 0.2;
-                break;
-        }
-    }
-
-    private void syncRotation(ImageReflowSettings s) {
-        switch (dialogReflowControlItems[4].getCurrentChoice()){
-            case 0:
-                s.rotate = 0;
-                break;
-            case 1:
-                s.rotate = 90;
-                break;
-            case 2:
-                s.rotate = 180;
-                break;
-            case 3:
-                s.rotate = 270;
-                break;
-        }
-    }
-
 
     private void setupListeners() {
-        TextView leftTab = (TextView) findViewById(R.id.left_tab);
-        TextView rightTab = (TextView) findViewById(R.id.right_tab);
-        leftTab.setOnClickListener(new View.OnClickListener() {
+        resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncTabChoice(settings);
-                initTabChoiceBySettng(settings);
-                resetReflowControlItemCotent(leftTabItemName, leftContentArray, leftTabCurrentChoice);
-                currentTab = 0;
+                resetSettings(settings);
             }
         });
-        rightTab.setOnClickListener(new View.OnClickListener() {
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncTabChoice(settings);
-                initTabChoiceBySettng(settings);
-                resetReflowControlItemCotent(rightTabItemName, rightContentArray, rightTabCurrentChoice);
-                currentTab = 1;
-            }
-        });
-        Button cancel = (Button) findViewById(R.id.button_cancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (callback != null) {
-                    callback.onFinished(false, null);
-                }
                 dismiss();
             }
         });
-        Button confirm = (Button) findViewById(R.id.button_confirm);
-        confirm.setOnClickListener(new View.OnClickListener() {
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (callback != null) {
-                    syncTabChoice(settings);
+            public void onClick(View v) {
+                if (callback != null){
+                    syncSettings(settings);
                     callback.onFinished(true, settings);
                 }
-                dismiss();
             }
         });
+
+        fontSizeLayout.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
+                if (isChecked) {
+                    fontSizeLayout.getMultiAdapter().setItemChecked(true, position - 1);
+                } else {
+                    if (position == 0){
+                        fontSizeLayout.getMultiAdapter().setItemChecked(true, position);
+                    }
+                    fontSizeLayout.getMultiAdapter().setItemRangeChecked(false, position + 1, fontSizes.length - position - 1);
+                }
+            }
+        });
+
+        upgradeLayout.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
+                if (isChecked) {
+                    upgradeLayout.getMultiAdapter().setItemChecked(true, position - 1);
+                } else {
+                    if (position == 0){
+                        upgradeLayout.getMultiAdapter().setItemChecked(true, 0);
+                    }
+                    upgradeLayout.getMultiAdapter().setItemRangeChecked(false, position + 1, upgradeSizes.length - position - 1);
+                }
+            }
+        });
+
+    }
+
+    static class ReflowMultiAdapter extends DynamicMultiRadioGroupView.MultiAdapter {
+
+        private List<String> textList = new ArrayList<>();
+        private int rows;
+        private int columns;
+        private int endBackgroundResId;
+        private Context context;
+
+        public ReflowMultiAdapter(Context contexts, String[] texts, int rows, int columns, int backgroundResId, int endBackgroundResId, boolean multiCheck) {
+            for (String text : texts) {
+                textList.add(text);
+            }
+            this.context = contexts;
+            this.rows = rows;
+            this.columns = columns;
+            this.endBackgroundResId = endBackgroundResId;
+
+            setMultiCheck(multiCheck);
+            setBackgroundResId(backgroundResId);
+            setButtonTexts(textList);
+        }
+
+        @Override
+        public int getRows() {
+            return rows;
+        }
+
+        @Override
+        public int getColumns() {
+            return columns;
+        }
+
+        @Override
+        public void bindView(CompoundButton button, int position) {
+            if (position == textList.size() - 1){
+                button.setBackgroundResource(endBackgroundResId);
+            }
+            button.setPadding(0, (int) context.getResources().getDimension(R.dimen.reflow_checkbox_height), 0, 0);
+        }
+
+        @Override
+        public int getItemCount() {
+            return textList.size();
+        }
+    }
+
+    static class ReflowPageAdapter extends PageRecyclerView.PageAdapter {
+
+        private int rows;
+        private int columns;
+        private int[] resIds;
+
+        public ReflowPageAdapter(int rows, int columns, int[] resIds) {
+            this.rows = rows;
+            this.columns = columns;
+            this.resIds = resIds;
+        }
+
+        @Override
+        public int getRowCount() {
+            return rows;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columns;
+        }
+
+        @Override
+        public int getDataCount() {
+            return resIds.length;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ReflowViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.reflow_setting_item_view, parent, false));
+        }
+
+        @Override
+        public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            ReflowViewHolder viewHolder = (ReflowViewHolder) holder;
+            viewHolder.imageView.setImageResource(resIds[position]);
+
+            if (position == getPageRecyclerView().getCurrentFocusedPosition()) {
+                viewHolder.imageView.setActivated(true);
+            } else {
+                viewHolder.imageView.setActivated(false);
+            }
+        }
+    }
+
+    static class ReflowViewHolder extends RecyclerView.ViewHolder {
+
+        @Bind(R.id.image_view)
+        ImageView imageView;
+
+        public ReflowViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 }

@@ -54,17 +54,16 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
         compoundButtonList = new ArrayList<>();
     }
 
-    private void clearButtonCheckState(CompoundButton checkedButton){
+    public void clearAllButtonCheckState(){
         for (CompoundButton button : compoundButtonList) {
-            if (!button.equals(checkedButton)){
-                button.setChecked(false);
-            }
+            button.setChecked(false);
         }
     }
 
     private void initLayout(){
         initMultiLineGroup();
         addNewLineButton();
+        clearAllButtonCheckState();
     }
 
     private void initMultiLineGroup(){
@@ -94,8 +93,12 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && multiAdapter.isRadioButton()){
-                    clearButtonCheckState(buttonView);
+                if (isChecked && !multiAdapter.isMultiCheck()){
+                    for (CompoundButton button : compoundButtonList) {
+                        if (!button.equals(buttonView)){
+                            button.setChecked(false);
+                        }
+                    }
                 }
                 if (onCheckedChangeListener != null){
                     onCheckedChangeListener.onCheckedChanged(buttonView, isChecked, position);
@@ -118,18 +121,29 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
         initLayout();
     }
 
+    public MultiAdapter getMultiAdapter() {
+        return multiAdapter;
+    }
+
+    public List<CompoundButton> getCompoundButtonList() {
+        return compoundButtonList;
+    }
+
     public static abstract class MultiAdapter {
 
         private int paddingLeft, paddingTop, paddingRight, paddingBottom;
         private int marginLeft, marginTop, marginRight, marginBottom;
-        private int textSize = 20;
+        private int textSize = -1;
+        private int[] buttonDrawableResIds;
+        private ViewGroup parent;
+        private boolean multiCheck = false;
+        private int backgroundResId = -1;
+        private List<String> buttonTexts;
 
         public abstract int getRows();
         public abstract int getColumns();
-        public abstract int getBackgroundResId();
-        public abstract boolean isRadioButton();
+        public abstract int getItemCount();
         public abstract void bindView(CompoundButton button, int position);
-        public abstract List<String> getButtonTexts();
 
         public void setPadding(int left, int top, int right, int bottom){
             paddingLeft = left;
@@ -149,19 +163,45 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             this.textSize = textSize;
         }
 
-        public int getItemCount(){
-            if (getButtonTexts() == null){
-                return 0;
-            }
-            return getButtonTexts().size();
+//        public int getItemCount(){
+//            if (getButtonTexts() == null){
+//                return 0;
+//            }
+//            return getButtonTexts().size();
+//        }
+
+
+        public void setButtonTexts(List<String> buttonTexts) {
+            this.buttonTexts = buttonTexts;
+        }
+
+        public void setButtonDrawableResIds(int[] buttonDrawableResIds) {
+            this.buttonDrawableResIds = buttonDrawableResIds;
+        }
+
+        public void setMultiCheck(boolean multiCheck) {
+            this.multiCheck = multiCheck;
+        }
+
+        public boolean isMultiCheck() {
+            return multiCheck;
+        }
+
+        public void setBackgroundResId(int backgroundResId) {
+            this.backgroundResId = backgroundResId;
+        }
+
+        public int getBackgroundResId() {
+            return backgroundResId;
         }
 
         public final CompoundButton createCompoundButton(ViewGroup parent, int position) {
+            this.parent = parent;
             CompoundButton button;
-            if (isRadioButton()){
-                button = new RadioButton(parent.getContext());
-            }else {
+            if (isMultiCheck()){
                 button = new CheckBox(parent.getContext());
+            }else {
+                button = new RadioButton(parent.getContext());
             }
             initButton(button,position);
             if (position < getItemCount()){
@@ -173,19 +213,52 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
         }
 
         private CompoundButton initButton(CompoundButton button, int position) {
-            String text = position < getItemCount() ? getButtonTexts().get(position) : "";
-            button.setText(text);
-            button.setButtonDrawable(R.color.transparent);
-            button.setBackgroundResource(getBackgroundResId());
+            if (buttonTexts != null && buttonTexts.size() > position){
+                String text = buttonTexts.get(position);
+                button.setText(text);
+            }else {
+                button.setText("");
+            }
+
+            if (backgroundResId > 0){
+                button.setBackgroundResource(getBackgroundResId());
+            }
+            if (buttonDrawableResIds != null){
+                button.setButtonDrawable(buttonDrawableResIds[position]);
+            }else {
+                button.setButtonDrawable(R.color.transparent);
+            }
             button.setGravity(Gravity.CENTER);
-            button.setTextSize(textSize);
+            if (textSize > 0){
+                button.setTextSize(textSize);
+            }
             button.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
 
-            LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT);
+            LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
             layoutParams.weight = 1;
             layoutParams.setMargins(marginLeft,marginTop,marginRight,marginBottom);
             button.setLayoutParams(layoutParams);
             return button;
         }
+
+        private DynamicMultiRadioGroupView getParent(){
+            return (DynamicMultiRadioGroupView)parent;
+        }
+
+
+        public void setItemRangeChecked(boolean checked, int positionStart, int itemCount){
+            for (int i = positionStart; i < itemCount + positionStart; i++) {
+                setItemChecked(checked, i);
+            }
+        }
+
+        public void setItemChecked(boolean checked, int position){
+            List<CompoundButton> compoundButtons = getParent().getCompoundButtonList();
+            if (compoundButtons == null || position >= compoundButtons.size() || position < 0){
+                return;
+            }
+            compoundButtons.get(position).setChecked(checked);
+        }
+
     }
 }
