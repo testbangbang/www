@@ -15,6 +15,7 @@ import java.util.List;
  */
 @Table(database = ContentDatabase.class)
 public class Metadata extends BaseData {
+    public static final String PROGRESS_DIVIDER = "/";
 
     @Column
     String name = null;
@@ -262,6 +263,14 @@ public class Metadata extends BaseData {
         cloudId = c;
     }
 
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(final String id) {
+        this.parentId = id;
+    }
+
     public static Metadata createFromFile(String path)
     {
         return createFromFile(new File(path));
@@ -295,5 +304,24 @@ public class Metadata extends BaseData {
         data.setType(FileUtils.getFileExtension(file.getName()));
     }
 
+    public boolean internalProgressEqual(String progress) {
+        String[] progressSplit = progress.split(PROGRESS_DIVIDER);
+        if (progressSplit.length != 2) {
+            return false;
+        }
+        return progressSplit[0].equals(progressSplit[1]);
+    }
+
+    public boolean isReaded() {
+        return (progress != null && internalProgressEqual(progress));
+    }
+
+    public boolean isReading() {
+        return (progress != null);
+    }
+
+    public boolean isNew() {
+        return (progress == null);
+    }
 
 }

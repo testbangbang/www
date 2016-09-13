@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
@@ -12,6 +13,8 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.util.List;
 
+import retrofit2.Response;
+
 /**
  * Created by zhuzeng on 8/31/16.
  */
@@ -20,6 +23,7 @@ public class DataManager {
     private static final String TAG = DataManager.class.getSimpleName();
     private RequestManager requestManager;
     private DataProviderManager dataProviderManager = new DataProviderManager();
+    private DataCacheManager dataCacheManager = new DataCacheManager();
 
     public DataManager() {
         requestManager = new RequestManager();
@@ -67,6 +71,10 @@ public class DataManager {
 
     public final DataProviderManager getDataProviderManager() {
         return dataProviderManager;
+    }
+
+    public final DataCacheManager getDataCacheManager() {
+        return dataCacheManager;
     }
 
 }

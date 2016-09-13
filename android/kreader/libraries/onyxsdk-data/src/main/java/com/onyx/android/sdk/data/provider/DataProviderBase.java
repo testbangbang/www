@@ -1,13 +1,17 @@
 package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
+import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.model.Thumbnail;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.List;
@@ -17,7 +21,6 @@ import java.util.List;
  */
 public interface DataProviderBase {
 
-
     void clearMetadata();
 
     void saveMetadata(final Context context, final Metadata metadata);
@@ -26,7 +29,7 @@ public interface DataProviderBase {
 
     Metadata loadMetadata(final Context context, final String path, String md5);
 
-    List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria);
+    List<Metadata> findMetadata(final Context context, final String parentId, final QueryCriteria queryCriteria);
 
     List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs);
 
@@ -65,4 +68,32 @@ public interface DataProviderBase {
     void deleteLibrary(Library library);
 
     void clearLibrary();
+
+    void clearThumbnail();
+
+    List<Thumbnail> addThumbnail(Context context, String sourceMD5, Bitmap saveBitmap);
+
+    void updateThumbnail(Thumbnail thumbnail);
+
+    void deleteThumbnail(Thumbnail thumbnail);
+
+    List<Thumbnail> loadThumbnail(Context context, String sourceMd5);
+
+    Thumbnail loadThumbnail(Context context, String sourceMd5, ThumbnailKind kind);
+
+    Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind);
+
+    Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail);
+
+    void clearMetadataCollection();
+
+    void addMetadataCollection(Context context, MetadataCollection collection);
+
+    void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
+
+    void updateMetadataCollection(MetadataCollection collection);
+
+    MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
+
+    List<MetadataCollection> loadMetadataCollection(Context context, String libraryUniqueId);
 }

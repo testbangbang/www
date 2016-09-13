@@ -1,9 +1,12 @@
 package com.onyx.android.sdk.data.utils;
 
+import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLCondition;
@@ -25,7 +28,7 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs bookListQuery(QueryCriteria queryCriteria, OrderBy orderBy) {
-        return QueryArgs.queryBy(queryCriteriaCondition(queryCriteria), orderBy);
+        return QueryArgs.queryBy(queryCriteriaCondition(queryCriteria), orderBy).appendFilter(BookFilter.EXTRA_ATTRIBUTES);
     }
 
     public static QueryArgs bookListQuery(ConditionGroup conditionGroup, OrderBy orderBy) {
@@ -37,15 +40,15 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs newBookListQuery() {
-        return QueryArgs.queryBy(newBookListCondition(), getOrderByCreateAt().descending());
+        return QueryArgs.queryBy(newBookListCondition(), getOrderByCreateAt().descending()).appendFilter(BookFilter.NEW_BOOKS);
     }
 
     public static QueryArgs finishReadQuery() {
-        return QueryArgs.queryBy(finishReadCondition(), getOrderByUpdateAt().descending());
+        return QueryArgs.queryBy(finishReadCondition(), getOrderByUpdateAt().descending()).appendFilter(BookFilter.READED);
     }
 
     public static QueryArgs recentReadingQuery() {
-        return QueryArgs.queryBy(recentReadingCondition(), getOrderByUpdateAt().descending());
+        return QueryArgs.queryBy(recentReadingCondition(), getOrderByUpdateAt().descending()).appendFilter(BookFilter.READING);
     }
 
     public static QueryArgs recentAddQuery() {
@@ -53,7 +56,11 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs tagsFilterQuery(Set<String> tags, OrderBy orderBy) {
-        return QueryArgs.queryBy(orTagsCondition(tags), getOrderByName()).appendOrderBy(orderBy);
+        return QueryArgs.queryBy(orTagsCondition(tags), getOrderByName()).appendOrderBy(orderBy).appendFilter(BookFilter.TAG);
+    }
+
+    public static QueryArgs searchQuery(String search, OrderBy orderBy) {
+        return QueryArgs.queryBy(orSearchCondition(search), orderBy).appendFilter(BookFilter.SEARCH);
     }
 
     public static ConditionGroup newBookListCondition() {
@@ -68,7 +75,8 @@ public class MetadataQueryArgsBuilder {
 
     public static ConditionGroup recentReadingCondition() {
         return ConditionGroup.clause().and(Metadata_Table.progress.isNotNull())
-                .and(Metadata_Table.lastAccess.isNotNull());
+                .and(Metadata_Table.lastAccess.isNotNull())
+                .and(Metadata_Table.lastAccess.notEq(new Date(0)));
     }
 
     public static ConditionGroup recentAddCondition() {
@@ -96,6 +104,22 @@ public class MetadataQueryArgsBuilder {
             sqlConditions.add(Metadata_Table.tags.like(tag));
         }
         return ConditionGroup.clause().orAll(sqlConditions);
+    }
+
+    public static ConditionGroup orSearchCondition(String search) {
+        if (StringUtils.isNullOrEmpty(search)) {
+            return ConditionGroup.clause();
+        }
+        return ConditionGroup.clause().or(matchLike(Metadata_Table.title, search))
+                .or(matchLike(Metadata_Table.name, search));
+    }
+
+    public static void andMetadataParentId(QueryArgs queryArgs, String parentId) {
+        if (StringUtils.isNullOrEmpty(parentId)) {
+            queryArgs.conditionGroup.and(Metadata_Table.parentId.isNull());
+        } else {
+            queryArgs.conditionGroup.and(Metadata_Table.parentId.eq(parentId));
+        }
     }
 
     /**
@@ -139,13 +163,24 @@ public class MetadataQueryArgsBuilder {
         }
     }
 
+    public static Condition matchLike(final Property<String> property, String match) {
+        if (StringUtils.isNullOrEmpty(match)) {
+            return null;
+        }
+        return property.like("%" + match + "%");
+    }
+
     public static ConditionGroup matchLikeSet(final Property<String> property, final Set<String> set) {
         if (set == null || set.size() <= 0) {
             return null;
         }
         final ConditionGroup conditionGroup = ConditionGroup.clause();
         for (String string : set) {
-            conditionGroup.or(property.like("%" + string + "%"));
+            Condition condition = matchLike(property, string);
+            if (condition == null) {
+                continue;
+            }
+            conditionGroup.or(condition);
         }
         return conditionGroup;
     }

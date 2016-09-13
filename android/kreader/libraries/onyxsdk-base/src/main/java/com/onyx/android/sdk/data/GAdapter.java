@@ -154,4 +154,16 @@ public class GAdapter {
         return true;
     }
 
+    public boolean append(int index, final GAdapter another) {
+        if (another == null || another.list == null) {
+            return false;
+        }
+        if (list == null) {
+            list = another.getList();
+            return true;
+        }
+        list.addAll(index, another.getList());
+        return true;
+    }
+
 }
