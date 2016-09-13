@@ -3,7 +3,6 @@ package com.onyx.android.sdk.ui.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -135,7 +134,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
         private int marginLeft, marginTop, marginRight, marginBottom;
         private int textSize = -1;
         private int[] buttonDrawableResIds;
-        private ViewGroup parent;
+        private DynamicMultiRadioGroupView parent;
         private boolean multiCheck = false;
         private int backgroundResId = -1;
         private List<String> buttonTexts;
@@ -188,7 +187,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             return backgroundResId;
         }
 
-        public final CompoundButton createCompoundButton(ViewGroup parent, int position) {
+        public final CompoundButton createCompoundButton(DynamicMultiRadioGroupView parent, int position) {
             this.parent = parent;
             CompoundButton button;
             if (isMultiCheck()){
@@ -235,9 +234,8 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
         }
 
         private DynamicMultiRadioGroupView getParent(){
-            return (DynamicMultiRadioGroupView)parent;
+            return parent;
         }
-
 
         public void setItemRangeChecked(boolean checked, int positionStart, int itemCount){
             for (int i = positionStart; i < itemCount + positionStart; i++) {
