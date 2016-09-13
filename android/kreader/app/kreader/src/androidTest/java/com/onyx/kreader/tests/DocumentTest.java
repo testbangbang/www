@@ -1,8 +1,9 @@
 package com.onyx.kreader.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
-import com.onyx.kreader.dataprovider.DocumentOptions;
-import com.onyx.kreader.dataprovider.DocumentOptionsProvider;
+import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.kreader.host.options.BaseOptions;
 
 import java.util.UUID;
@@ -20,11 +21,13 @@ public class DocumentTest extends ActivityInstrumentationTestCase2<ReaderTestAct
         final String md5 = UUID.randomUUID().toString();
         BaseOptions origin = new BaseOptions();
         origin.setPassword(UUID.randomUUID().toString());
-        assertTrue(DocumentOptionsProvider.saveDocumentOptions(getActivity(), "", md5, origin));
+        LocalDataProvider localDataProvider = new LocalDataProvider();
+        assertTrue(localDataProvider.saveDocumentOptions(getActivity(), "", md5, JSON.toJSONString(origin)));
 
-        final DocumentOptions result = DocumentOptionsProvider.loadDocumentOptions(getActivity(), "", md5);
+        final Metadata result = localDataProvider.loadMetadata(getActivity(), "", md5);
         assertNotNull(result);
-        assertEquals(origin.getPassword(), result.getBaseOptions().getPassword());
+        final BaseOptions resultOptions = JSON.parseObject(result.getExtraAttributes(), BaseOptions.class);
+        assertEquals(origin.getPassword(), resultOptions.getPassword());
     }
 
 
@@ -32,12 +35,14 @@ public class DocumentTest extends ActivityInstrumentationTestCase2<ReaderTestAct
         final String md5 = UUID.randomUUID().toString();
         BaseOptions origin = new BaseOptions();
         origin.setPassword(UUID.randomUUID().toString());
-        assertTrue(DocumentOptionsProvider.saveDocumentOptions(getActivity(), "", md5, origin));
+        LocalDataProvider localDataProvider = new LocalDataProvider();
+        assertTrue(localDataProvider.saveDocumentOptions(getActivity(), "", md5, JSON.toJSONString(origin)));
 
         final String wrongMd5 = UUID.randomUUID().toString();
-        final DocumentOptions result = DocumentOptionsProvider.loadDocumentOptions(getActivity(), "", wrongMd5);
+        final Metadata result = localDataProvider.loadMetadata(getActivity(), "", wrongMd5);
         assertNotNull(result);
-        assertNotNull(origin.getPassword(), result.getBaseOptions().getPassword());
+        final BaseOptions resultOptions = JSON.parseObject(result.getExtraAttributes(), BaseOptions.class);
+        assertNotNull(origin.getPassword(), resultOptions.getPassword());
     }
 
 
