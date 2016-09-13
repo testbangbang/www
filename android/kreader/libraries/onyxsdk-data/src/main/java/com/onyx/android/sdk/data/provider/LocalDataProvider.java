@@ -1,19 +1,24 @@
 package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryCriteria;
+import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
@@ -50,23 +55,75 @@ public class LocalDataProvider implements DataProviderBase {
         return metadata;
     }
 
-    public List<Metadata> findMetadata(final Context context, final QueryCriteria queryCriteria) {
-        final ConditionGroup conditionGroup = MetadataQueryArgsBuilder.queryCriteriaCondition(queryCriteria);
-        if (conditionGroup.size() > 0) {
-            return new Select().from(Metadata.class).where(conditionGroup).orderBy(queryCriteria.orderBy).offset(queryCriteria.offset).limit(queryCriteria.limit).queryList();
+    public List<Metadata> findMetadata(final Context context, final String parentId, final QueryCriteria queryCriteria) {
+        if (queryCriteria.isAllContentEmpty()) {
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
+        final ConditionGroup conditionGroup = MetadataQueryArgsBuilder.queryCriteriaCondition(queryCriteria);
+        QueryArgs args = new QueryArgs();
+        args.conditionGroup = conditionGroup;
+        args.parentId = parentId;
+        args.limit = queryCriteria.limit;
+        args.offset = queryCriteria.offset;
+        if (queryCriteria.orderBy != null) {
+            args.appendOrderBy(queryCriteria.orderBy);
+        }
+        return findMetadata(context, args);
+    }
+
+    // for join query
+    private IProperty[] getALLPropertyWithTable(IProperty[] properties) {
+        IProperty[] newProperties = new IProperty[properties.length];
+        for (int i = 0; i < properties.length; i++) {
+            newProperties[i] = properties[i].withTable();
+        }
+        return newProperties;
+    }
+
+    // this method require MetadataCollection also add when Metadata save
+    private List<Metadata> joinQuery(final Context context, final QueryArgs queryArgs) {
+        Condition parentIdCondition = getNullOrEqualCondition(MetadataCollection_Table.libraryUniqueId.withTable(),
+                queryArgs.parentId);
+        Condition eqDocumentUniqueId = MetadataCollection_Table.documentUniqueId.withTable().eq(Metadata_Table.idString.withTable());
+        ConditionGroup joinConditionGroup = ConditionGroup.clause()
+                .and(parentIdCondition)
+                .and(eqDocumentUniqueId);
+
+        Where<Metadata> where = new Select(getALLPropertyWithTable(Metadata_Table.getAllColumnProperties()))
+                .from(Metadata.class).innerJoin(MetadataCollection.class)
+                .on(joinConditionGroup)
+                .where(queryArgs.conditionGroup);
+
+        if (queryArgs.orderByList != null && queryArgs.orderByList.size() > 0) {
+            for (OrderBy orderBy : queryArgs.orderByList) {
+                where = where.orderBy(orderBy);
+            }
+        }
+        return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
+    }
+
+    private Condition.In inCondition(Property property, Where in, boolean isIn) {
+        return isIn ? property.in(in) : property.notIn(in);
+    }
+
+    private List<Metadata> inQuery(final Context context, final QueryArgs queryArgs) {
+        Where<MetadataCollection> whereCollection = new Select(MetadataCollection_Table.documentUniqueId.withTable())
+                .from(MetadataCollection.class)
+                .where(getNotNullOrEqualCondition(MetadataCollection_Table.libraryUniqueId, queryArgs.parentId));
+        Where<Metadata> whereMetadata = new Select().from(Metadata.class)
+                .where(inCondition(Metadata_Table.idString, whereCollection, StringUtils.isNotBlank(queryArgs.parentId)))
+                .and(queryArgs.conditionGroup);
+        if (queryArgs.orderByList != null && queryArgs.orderByList.size() > 0) {
+            for (OrderBy orderBy : queryArgs.orderByList) {
+                whereMetadata = whereMetadata.orderBy(orderBy);
+            }
+        }
+        return whereMetadata.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
     }
 
     public List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs) {
-        if (queryArgs.conditionGroup != null && queryArgs.conditionGroup.size() > 0) {
-            Where<Metadata> where = new Select().from(Metadata.class).where(queryArgs.conditionGroup);
-            if (queryArgs.orderByList != null && queryArgs.orderByList.size() > 0) {
-                for (OrderBy orderBy : queryArgs.orderByList) {
-                    where.orderBy(orderBy);
-                }
-            }
-            return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
+        if (queryArgs.conditionGroup != null) {
+            return inQuery(context, queryArgs);
         }
         return new ArrayList<>();
     }
@@ -156,6 +213,10 @@ public class LocalDataProvider implements DataProviderBase {
         return compare == null ? property.isNull() : property.eq(compare);
     }
 
+    private Condition getNotNullOrEqualCondition(Property<String> property, String compare) {
+        return compare == null ? property.isNotNull() : property.eq(compare);
+    }
+
     @Override
     public Library loadLibrary(String uniqueId) {
         return new Select().from(Library.class).where(Library_Table.idString.eq(uniqueId)).querySingle();
@@ -186,4 +247,93 @@ public class LocalDataProvider implements DataProviderBase {
     public void clearLibrary() {
         Delete.table(Library.class);
     }
+
+    @Override
+    public void clearThumbnail() {
+        Delete.table(Thumbnail.class);
+    }
+
+    @Override
+    public List<Thumbnail> addThumbnail(Context context, String sourceMD5, Bitmap saveBitmap) {
+        List<Thumbnail> list = new ArrayList<>();
+        for (ThumbnailKind tk : ThumbnailKind.values()) {
+            Thumbnail thumbnail = new Thumbnail();
+            thumbnail.setSourceMD5(sourceMD5);
+            thumbnail.setThumbnailKind(tk);
+            ThumbnailUtils.saveThumbnailBitmap(context, thumbnail, saveBitmap);
+            list.add(thumbnail);
+        }
+        return list;
+    }
+
+    @Override
+    public void updateThumbnail(Thumbnail thumbnail) {
+        thumbnail.update();
+    }
+
+    @Override
+    public void deleteThumbnail(Thumbnail thumbnail) {
+        thumbnail.delete();
+    }
+
+    @Override
+    public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
+        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+                .queryList();
+    }
+
+    @Override
+    public Thumbnail loadThumbnail(Context context, String sourceMd5, ThumbnailKind kind) {
+        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind)).querySingle();
+    }
+
+    @Override
+    public Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind) {
+        return ThumbnailUtils.getThumbnailBitmap(context, sourceMd5, kind.toString());
+    }
+
+    @Override
+    public Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
+        return ThumbnailUtils.getThumbnailBitmap(context, thumbnail);
+    }
+
+    @Override
+    public void clearMetadataCollection() {
+        Delete.table(MetadataCollection.class);
+    }
+
+    @Override
+    public void addMetadataCollection(Context context, MetadataCollection collection) {
+        collection.save();
+    }
+
+    @Override
+    public void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+        Where<MetadataCollection> where = SQLite.delete(MetadataCollection.class)
+                .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId));
+        if (StringUtils.isNotBlank(metadataMD5)) {
+            where.and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+        }
+        where.execute();
+    }
+
+    @Override
+    public void updateMetadataCollection(MetadataCollection collection) {
+        collection.update();
+    }
+
+    @Override
+    public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+        return new Select().from(MetadataCollection.class)
+                .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId))
+                .and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5)).querySingle();
+    }
+
+    @Override
+    public List<MetadataCollection> loadMetadataCollection(Context context, String libraryUniqueId) {
+        return new Select().from(MetadataCollection.class)
+                .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId)).queryList();
+    }
+
 }

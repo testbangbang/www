@@ -1,0 +1,34 @@
+package com.onyx.android.sdk.data.request.data;
+
+import com.onyx.android.sdk.data.DataCacheManager;
+import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.utils.DataProviderUtils;
+
+import java.util.List;
+
+/**
+ * Created by suicheng on 2016/9/8.
+ */
+public class RemoveFromLibraryRequest extends BaseDataRequest {
+
+    private Library library;
+    private List<Metadata> removeList;
+
+    public RemoveFromLibraryRequest(Library library, List<Metadata> list) {
+        this.library = library;
+        this.removeList = list;
+    }
+
+    @Override
+    public void execute(DataManager dataManager) throws Exception {
+        DataProviderUtils.removeCollections(getContext(), getDataProviderBase(dataManager), library, removeList);
+        updateDataCache(dataManager.getDataCacheManager());
+    }
+
+    private void updateDataCache(DataCacheManager cacheManager) {
+        cacheManager.removeAll(library.getIdString(), removeList);
+        cacheManager.addAll(library.getParentUniqueId(), removeList);
+    }
+}

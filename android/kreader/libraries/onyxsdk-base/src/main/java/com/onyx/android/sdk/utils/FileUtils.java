@@ -3,6 +3,9 @@ package com.onyx.android.sdk.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
+
+import com.onyx.android.sdk.device.EnvironmentUtil;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -15,6 +18,7 @@ import java.util.Set;
  * Created by zhuzeng on 10/16/15.
  */
 public class FileUtils {
+    private static final String TAG = FileUtils.class.getSimpleName();
 
     public static boolean fileExist(final String path) {
         File file = new File(path);
@@ -44,6 +48,10 @@ public class FileUtils {
         }
 
         return "";
+    }
+
+    public static String getFileExtension(File file) {
+        return getFileExtension(file.getName());
     }
 
     public static void collectFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final List<String> fileList) {
@@ -250,6 +258,62 @@ public class FileUtils {
             return true;
         }
         return false;
+    }
+
+    public static boolean ensureFileExists(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            return true;
+        } else {
+            // we will not attempt to create the first directory in the path
+            // (for example, do not create /sdcard if the SD card is not mounted)
+            int secondSlash = path.indexOf('/', 1);
+            if (secondSlash < 1) return false;
+            String directoryPath = path.substring(0, secondSlash);
+            File directory = new File(directoryPath);
+            if (!directory.exists()) {
+                return false;
+            }
+
+            File parent_folder = file.getParentFile();
+            if (!parent_folder.exists() && !parent_folder.mkdirs()) {
+                Log.e(TAG, "create folder failed: " + parent_folder.getAbsolutePath());
+                return false;
+            }
+            try {
+                return file.createNewFile();
+            } catch (IOException ioe) {
+                Log.e(TAG, "File creation failed", ioe);
+            }
+            return false;
+        }
+    }
+
+    public static void findFileByKey(List<File> fileList, String searchKey) {
+        findFileByKey(fileList, EnvironmentUtil.getExternalStorageDirectory(), searchKey);
+        findFileByKey(fileList, EnvironmentUtil.getRemovableSDCardDirectory(), searchKey);
+    }
+
+    public static void findFileByKey(List<File> fileList, File targetDir, String searchKey) {
+        if (!targetDir.canRead()) {
+            return;
+        }
+        for (File temp : targetDir.listFiles()) {
+            if (temp.isHidden()) {
+                continue;
+            }
+            if (temp.isDirectory()) {
+                if (temp.getName().contains(searchKey)) {
+                    fileList.add(temp);
+                }
+                findFileByKey(fileList, temp, searchKey);
+            }
+            if (temp.isFile()) {
+                if (temp.getName().contains(searchKey)) {
+                    fileList.add(temp);
+                }
+            }
+        }
     }
 
 }
