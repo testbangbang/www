@@ -227,14 +227,7 @@ public class PageRecyclerView extends RecyclerView {
     private TouchDirection touchDirection = TouchDirection.Vertical;
 
     private int detectDirection(MotionEvent currentEvent) {
-        switch (touchDirection) {
-            case Horizontal:
-                return PageTurningDetector.detectHorizontalTuring(getContext(), (int) (currentEvent.getX() - lastX));
-            case Vertical:
-                return PageTurningDetector.detectVerticalTuring(getContext(), (int) (currentEvent.getY() - lastY));
-            default:
-                return PageTurningDetector.detectVerticalTuring(getContext(), (int) (currentEvent.getX() - lastX));
-        }
+        return PageTurningDetector.detectBothAxisTuring(getContext(), (int) (currentEvent.getX() - lastX), (int) (currentEvent.getY() - lastY));
     }
 
     @Override
@@ -262,10 +255,10 @@ public class PageRecyclerView extends RecyclerView {
             case MotionEvent.ACTION_UP:
                 int direction = detectDirection(ev);
                 if (direction == PageTurningDirection.NEXT) {
-                    prevPage();
+                    nextPage();
                     return true;
                 } else if (direction == PageTurningDirection.PREV) {
-                    nextPage();
+                    prevPage();
                     return true;
                 }
                 break;
