@@ -233,4 +233,9 @@
     <string name="dialog_bind_hot_key_none">None</string>
     <string name="dialog_bind_hot_key_next_page_button">Next Page Button</string>
     <string name="dialog_bind_hot_key_prev_page_button">Prev Page Button</string>
+
+    <string name="dialog_quick_view_enter_page_number">Please enter the jump page number</string>
+    <string name="dialog_quick_view_enter_page_number_out_of_range_error">The jump page number out of range</string>
+    <string name="dialog_quick_view_enter_page_number_empty_error">The jump page number can not be empty</string>
+
 </resources>

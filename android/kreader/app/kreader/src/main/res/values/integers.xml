@@ -4,4 +4,5 @@
     <integer name="bookmark_row">4</integer>
     <integer name="annotation_row">4</integer>
     <integer name="search_row">8</integer>
+    <integer name="quick_view_default_grid_type">1</integer>
 </resources>
