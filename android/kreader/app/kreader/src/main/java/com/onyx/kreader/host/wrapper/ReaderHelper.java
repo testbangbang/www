@@ -349,6 +349,7 @@ public class ReaderHelper {
             getDocumentOptions().setTotalPage(getNavigator().getTotalPage());
             getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
             getDocumentOptions().setNavigationArgs(getReaderLayoutManager().getCurrentLayoutProvider().getNavigationArgs());
+            getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
         } catch (Exception e) {
 
         }
