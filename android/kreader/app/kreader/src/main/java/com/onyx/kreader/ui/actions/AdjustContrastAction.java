@@ -23,6 +23,7 @@ public class AdjustContrastAction extends BaseAction {
                 @Override
                 public void valueChange(int newValue) {
                     final GammaCorrectionRequest request = new GammaCorrectionRequest(newValue);
+                    request.setAbortPendingTasks(true);
                     readerDataHolder.submitRenderRequest(request);
                 }
 
