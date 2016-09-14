@@ -7,6 +7,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.cache.BitmapDiskLruCache;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.utils.HashUtils;
 import com.onyx.kreader.utils.ImageUtils;
 
 import java.io.File;
@@ -38,6 +39,7 @@ public class ImageReflowManager {
      */
     private static final int MAX_DISK_CACHE_SIZE = 20 * 1024 * 1024;
 
+    private String documentMd5;
     private Map<String, ReaderBitmapList> pageMap;
     private ConcurrentHashMap<String, Object> mapLock = new ConcurrentHashMap<>();
     private File cacheRoot;
@@ -53,8 +55,9 @@ public class ImageReflowManager {
         }
     });
 
-    public ImageReflowManager(final File root, int dw, int dh) {
+    public ImageReflowManager(final String documentMd5, final File root, int dw, int dh) {
         super();
+        this.documentMd5 = documentMd5;
         cacheRoot = root;
         settings = ImageReflowSettings.createSettings();
         settings.dev_width = dw;
@@ -82,6 +85,7 @@ public class ImageReflowManager {
     public void reflowBitmap(final Bitmap bitmap, final String pageName, final boolean background) {
         synchronized (mapLock) {
             if (!mapLock.containsKey(pageName)) {
+                clear(pageName);
                 mapLock.put(pageName, new Object());
             }
         }
@@ -101,6 +105,7 @@ public class ImageReflowManager {
     private void reflowBitmapImpl(final Bitmap bitmap, final String pageName) {
         synchronized (mapLock.get(pageName)) {
             if (!isReflowed(pageName)) {
+
                 reflow(bitmap, pageName);
             }
         }
@@ -112,7 +117,7 @@ public class ImageReflowManager {
                 pageMap.clear();
             }
             try {
-                File file = cacheFilePath(cacheRoot, settings, INDEX_FILE_NAME);
+                File file = cacheFilePath(cacheRoot, documentMd5, settings, INDEX_FILE_NAME);
                 if (file != null && FileUtils.fileExist(file.getAbsolutePath())) {
                     String json = FileUtils.readContentOfFile(file);
                     pageMap = JSON.parseObject(json, new TypeReference<Map<String, ReaderBitmapList>>() {
@@ -140,19 +145,23 @@ public class ImageReflowManager {
     }
 
     public String getSubPageKey(final String pageName, int subPage) {
-        return getKeyOfSubPage(settings, pageName, subPage);
+        return getKeyOfSubPage(documentMd5, settings, pageName, subPage);
     }
 
     public Bitmap getSubPageBitmap(final String pageName, int subPage) {
-        return getBitmapCache(getKeyOfSubPage(settings, pageName, subPage));
+        return getBitmapCache(getKeyOfSubPage(documentMd5, settings, pageName, subPage));
     }
 
     public void clear(final String pageName) {
         getSubPageList(pageName).clear();
     }
 
-    private static final String getKeyOfSubPage(final ImageReflowSettings settings, final String pageName, int index) {
-        return String.format("%s-%s-%d", settings.md5(), pageName, index);
+    private static final String getKeyOfSubPage(final String documentMd5, final ImageReflowSettings settings, final String pageName, int index) {
+        return String.format("%s-%s-%d", md5OfDocumentWithSettings(documentMd5, settings), pageName, index);
+    }
+
+    private static final String md5OfDocumentWithSettings(final String documentMd5, final ImageReflowSettings settings) {
+        return HashUtils.md5(documentMd5 + "-" + settings.md5());
     }
 
     /**
@@ -166,18 +175,19 @@ public class ImageReflowManager {
     public void addBitmap(final String pageName, int subPage, Bitmap bitmap) {
         ReaderBitmapList list = getSubPageList(pageName);
         list.addBitmap(bitmap);
-        putBitmapCache(getKeyOfSubPage(settings, pageName, subPage), bitmap);
+        putBitmapCache(getKeyOfSubPage(documentMd5, settings, pageName, subPage), bitmap);
     }
 
     public void clearAllCacheFiles() {
-        clearBitmapCache();
-        clearPageMap();
+        documentMd5 = null;
+//        clearBitmapCache();
+//        clearPageMap();
     }
 
     private void savePageMap() {
         synchronized (mapLock) {
             try {
-                File file = cacheFilePath(cacheRoot, settings, INDEX_FILE_NAME);
+                File file = cacheFilePath(cacheRoot, documentMd5, settings, INDEX_FILE_NAME);
                 String json = JSON.toJSONString(pageMap);
                 FileUtils.saveContentToFile(json, file);
             } catch (Exception e) {
@@ -227,11 +237,11 @@ public class ImageReflowManager {
         bitmapCache.clear();
     }
 
-    private static File cacheFilePath(final File root, final ImageReflowSettings settings, final String fileName) {
+    private static File cacheFilePath(final File root, final String documentMd5, final ImageReflowSettings settings, final String fileName) {
         if (settings == null || root == null) {
             return null;
         }
-        File file = new File(root, settings.md5() + "-" + fileName);
+        File file = new File(root, md5OfDocumentWithSettings(documentMd5, settings) + "-" + fileName);
         return file;
     }
 }

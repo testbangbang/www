@@ -249,7 +249,8 @@ public class ReaderHelper {
             if (!cacheLocation.exists()) {
                 cacheLocation.mkdirs();
             }
-            imageReflowManager = new ImageReflowManager(cacheLocation,
+            imageReflowManager = new ImageReflowManager(documentMd5,
+                    cacheLocation,
                     getViewOptions().getViewWidth(),
                     getViewOptions().getViewHeight());
         }
