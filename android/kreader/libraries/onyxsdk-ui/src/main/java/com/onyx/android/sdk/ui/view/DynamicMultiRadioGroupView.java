@@ -132,7 +132,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
 
         private int paddingLeft, paddingTop, paddingRight, paddingBottom;
         private int marginLeft, marginTop, marginRight, marginBottom;
-        private int textSize = -1;
+        private float textSize = -1;
         private int[] buttonDrawableResIds;
         private DynamicMultiRadioGroupView parent;
         private boolean multiCheck = false;
@@ -158,7 +158,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             marginBottom = bottom;
         }
 
-        public void setTextSize(int textSize) {
+        public void setTextSize(float textSize) {
             this.textSize = textSize;
         }
 

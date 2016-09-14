@@ -45,66 +45,6 @@ public class PageRecyclerView extends RecyclerView {
         void onFocusChange(int prev, int current);
     }
 
-    public static class DisableScrollLinearManager extends LinearLayoutManager {
-        private boolean canScroll = false;
-
-        public DisableScrollLinearManager(Context context) {
-            super(context);
-        }
-
-        public DisableScrollLinearManager(Context context, int orientation, boolean reverseLayout) {
-            super(context, orientation, reverseLayout);
-        }
-
-        public DisableScrollLinearManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-            super(context, attrs, defStyleAttr, defStyleRes);
-        }
-
-        public void setScrollEnable(boolean enable) {
-            this.canScroll = enable;
-        }
-
-        @Override
-        public boolean canScrollVertically() {
-            return canScroll;
-        }
-
-        @Override
-        public boolean canScrollHorizontally() {
-            return canScroll;
-        }
-    }
-
-    public static class DisableScrollGridManager extends GridLayoutManager{
-        private boolean canScroll = false;
-
-        public DisableScrollGridManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-            super(context, attrs, defStyleAttr, defStyleRes);
-        }
-
-        public DisableScrollGridManager(Context context) {
-            super(context, 1);
-        }
-
-        public DisableScrollGridManager(Context context, int orientation, boolean reverseLayout) {
-            super(context, 1, orientation, reverseLayout);
-        }
-
-        public void setScrollEnable(boolean enable) {
-            this.canScroll = enable;
-        }
-
-        @Override
-        public boolean canScrollVertically() {
-            return canScroll;
-        }
-
-        @Override
-        public boolean canScrollHorizontally() {
-            return canScroll;
-        }
-    }
-
     public PageRecyclerView(Context context) {
         super(context);
         init();

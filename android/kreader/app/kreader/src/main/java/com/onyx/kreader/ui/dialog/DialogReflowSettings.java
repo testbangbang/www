@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kreader.R;
@@ -61,12 +62,12 @@ public class DialogReflowSettings extends DialogBase {
 
     private ImageReflowSettings settings;
     private ReflowCallback callback;
-    private double[] fontSizeValues = {1.0, 8.0, 15.0};
+    private double[] fontSizeValues = {0.7, 0.6, 0.5, 0.4};
     private int[] autoStraightenValues = {0, 5, 10};
-    private int[] justificationValues = {0, 1, 2};
+    private int[] justificationValues = {0, 3, 2};
     private double[][] formatValues = {{0.05, 1.0, 0.05}, {0.15, 1.2, 0.10}, {0.375, 1.4, 0.15}};
 
-    private final String[] fontSizes = {"1", "2", "3"};
+    private final String[] fontSizes = {"1", "2", "3", "4"};
     private final String[] upgradeSizes = {"0", "5", "10",};
 
     private int fontSizeDefaultIndex = 0;
@@ -85,19 +86,19 @@ public class DialogReflowSettings extends DialogBase {
     }
 
     private void initView() {
-        ReflowMultiAdapter fontSizeAdapter = new ReflowMultiAdapter(getContext(), fontSizes, 1, fontSizes.length, R.drawable.reflow_big_select, R.drawable.reflow_big_select_no_label, true);
+        ReflowMultiAdapter fontSizeAdapter = new ReflowMultiAdapter(getContext(), fontSizes, 1, fontSizes.length, R.drawable.reflow_small_select, R.drawable.reflow_small_select_no_label, true);
         fontSizeLayout.setMultiAdapter(fontSizeAdapter);
 
         ReflowMultiAdapter upgradeAdapter = new ReflowMultiAdapter(getContext(), upgradeSizes, 1, upgradeSizes.length, R.drawable.reflow_big_select, R.drawable.reflow_big_select_no_label, true);
         upgradeLayout.setMultiAdapter(upgradeAdapter);
 
         int[] formatResIds = {R.drawable.ic_dialog_reader_reset_format_small, R.drawable.ic_dialog_reader_reset_format_mid, R.drawable.ic_dialog_reader_reset_format_big};
-        formatRecycler.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(getContext()));
+        formatRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         ReflowPageAdapter formatAdapter = new ReflowPageAdapter(1, 3, formatResIds);
         formatRecycler.setAdapter(formatAdapter);
 
         int[] alignResIds = {R.drawable.ic_dialog_reader_reset_align_left, R.drawable.ic_dialog_reader_reset_align_mid, R.drawable.ic_dialog_reader_reset_align_right};
-        alignRecycler.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(getContext()));
+        alignRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         ReflowPageAdapter alignAdapter = new ReflowPageAdapter(1, 3, alignResIds);
         alignRecycler.setAdapter(alignAdapter);
 
@@ -111,7 +112,7 @@ public class DialogReflowSettings extends DialogBase {
     private void updateFontSize(ImageReflowSettings s) {
         int index = fontSizeDefaultIndex;
         for (int i = 0; i < fontSizeValues.length; i++) {
-            if (fontSizeValues[i] == s.defect_size){
+            if (fontSizeValues[i] == s.quality){
                 index = i;
                 break;
             }
@@ -162,7 +163,7 @@ public class DialogReflowSettings extends DialogBase {
 
     private void syncFontSize(ImageReflowSettings s, int checkIndex) {
         if (checkIndex < fontSizeValues.length){
-            s.defect_size = fontSizeValues[checkIndex];
+            s.quality = fontSizeValues[checkIndex];
         }
     }
 
@@ -279,6 +280,7 @@ public class DialogReflowSettings extends DialogBase {
             setMultiCheck(multiCheck);
             setBackgroundResId(backgroundResId);
             setButtonTexts(textList);
+            setTextSize(contexts.getResources().getDimension(R.dimen.reflow_checkbox_text_size));
         }
 
         @Override
@@ -296,7 +298,7 @@ public class DialogReflowSettings extends DialogBase {
             if (position == textList.size() - 1){
                 button.setBackgroundResource(endBackgroundResId);
             }
-            button.setPadding(0, (int) context.getResources().getDimension(R.dimen.reflow_checkbox_height), 0, 0);
+            button.setPadding(0, (int) context.getResources().getDimension(R.dimen.reflow_checkbox_text_padding_top), 0, 0);
         }
 
         @Override
