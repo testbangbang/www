@@ -14,7 +14,7 @@ public abstract class BaseAction {
     public void execute(final ReaderDataHolder readerDataHolder, BaseCallback baseCallback){
     }
 
-    private DialogLoading showLoadingDialog(final ReaderDataHolder holder, String title) {
+    public DialogLoading showLoadingDialog(final ReaderDataHolder holder, String title) {
         if (dialogLoading == null) {
             dialogLoading = new DialogLoading(holder.getContext(),
                     title,
