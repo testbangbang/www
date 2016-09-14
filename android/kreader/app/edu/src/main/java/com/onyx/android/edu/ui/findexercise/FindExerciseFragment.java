@@ -13,6 +13,7 @@ import com.onyx.android.edu.adapter.ChooseMultiAdapter;
 import com.onyx.android.edu.adapter.ExercisePageAdapter;
 import com.onyx.android.edu.base.BaseFragment;
 import com.onyx.android.edu.base.Config;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -84,7 +85,7 @@ public class FindExerciseFragment extends BaseFragment implements FindExerciseCo
     }
 
     private void initExerciseView(){
-        exerciseGrid.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(getActivity()));
+        exerciseGrid.setLayoutManager(new DisableScrollGridManager(getActivity()));
         exerciseGrid.setAdapter(new ExercisePageAdapter());
     }
 }
