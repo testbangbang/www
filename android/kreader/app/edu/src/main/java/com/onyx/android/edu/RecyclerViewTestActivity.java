@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.onyx.android.edu.base.BaseActivity;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import butterknife.Bind;
@@ -29,7 +30,7 @@ public class RecyclerViewTestActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        pageRecyclerView.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(this));
+        pageRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
         PageRecyclerView.PageAdapter adapter = new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
