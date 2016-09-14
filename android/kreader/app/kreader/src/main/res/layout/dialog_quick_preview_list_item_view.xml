@@ -30,17 +30,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <Button
+        <TextView
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:id="@+id/btn_page"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:textSize="15sp"
             android:textColor="@android:color/white"
-            android:text="5"
+            android:text="1"
             android:gravity="center"
             android:background="@android:color/black"
-            android:layout_width="40dp"
-            android:layout_height="20dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
 
     <ImageView

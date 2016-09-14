@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kreader.R;
@@ -92,12 +93,12 @@ public class DialogReflowSettings extends DialogBase {
         upgradeLayout.setMultiAdapter(upgradeAdapter);
 
         int[] formatResIds = {R.drawable.ic_dialog_reader_reset_format_small, R.drawable.ic_dialog_reader_reset_format_mid, R.drawable.ic_dialog_reader_reset_format_big};
-        formatRecycler.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(getContext()));
+        formatRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         ReflowPageAdapter formatAdapter = new ReflowPageAdapter(1, 3, formatResIds);
         formatRecycler.setAdapter(formatAdapter);
 
         int[] alignResIds = {R.drawable.ic_dialog_reader_reset_align_left, R.drawable.ic_dialog_reader_reset_align_mid, R.drawable.ic_dialog_reader_reset_align_right};
-        alignRecycler.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(getContext()));
+        alignRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         ReflowPageAdapter alignAdapter = new ReflowPageAdapter(1, 3, alignResIds);
         alignRecycler.setAdapter(alignAdapter);
 

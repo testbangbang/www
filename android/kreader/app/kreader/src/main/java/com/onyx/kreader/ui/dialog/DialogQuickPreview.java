@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,6 +29,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
@@ -108,14 +108,14 @@ public class DialogQuickPreview extends Dialog {
         private int page;
         private ImageView imageView;
         private TextView pageTextView;
-        private Button btnPage;
+        private TextView pageText;
         private RelativeLayout container;
 
         public PreviewViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.image_view);
             pageTextView = (TextView) itemView.findViewById(R.id.text_view_page);
-            btnPage = (Button) itemView.findViewById(R.id.btn_page);
+            pageText = (TextView) itemView.findViewById(R.id.btn_page);
             container = (RelativeLayout) itemView.findViewById(R.id.item_container);
 
             container.setOnClickListener(new View.OnClickListener() {
@@ -131,13 +131,13 @@ public class DialogQuickPreview extends Dialog {
             imageView.setImageBitmap(bitmap);
             if (grid.getGridType() == GridType.Four){
                 pageTextView.setVisibility(View.VISIBLE);
-                btnPage.setVisibility(View.GONE);
+                pageText.setVisibility(View.GONE);
                 String str = String.format(parent.getContext().getString(R.string.page),page + 1);
                 pageTextView.setText(str);
             }else if (grid.getGridType() == GridType.One || grid.getGridType() == GridType.Nine){
                 pageTextView.setVisibility(View.GONE);
-                btnPage.setVisibility(View.VISIBLE);
-                btnPage.setText(String.valueOf(page + 1));
+                pageText.setVisibility(View.VISIBLE);
+                pageText.setText(String.valueOf(page + 1));
             }
         }
 
@@ -274,7 +274,7 @@ public class DialogQuickPreview extends Dialog {
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, final int pageCount, final int currentPage,
                               Callback callback) {
-        super(readerDataHolder.getContext(), R.style.dialog_no_title);
+        super(readerDataHolder.getContext(), R.style.dialog_no_title_no_overlay);
         setContentView(R.layout.dialog_quick_preview);
 
         this.readerDataHolder = readerDataHolder;
@@ -300,7 +300,7 @@ public class DialogQuickPreview extends Dialog {
 
     private void setupLayout() {
         gridRecyclerView = (RecyclerView)findViewById(R.id.grid_view_preview);
-        gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
+        gridRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext(), grid.getColumns()));
         gridRecyclerView.setAdapter(adapter);
 
         textViewProgress = (TextView)findViewById(R.id.text_view_progress);
@@ -382,6 +382,7 @@ public class DialogQuickPreview extends Dialog {
             public void onClick(View v) {
                 final EditText editText = new EditText(getContext());
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                editText.setHint("1-" + readerDataHolder.getPageCount());
                 DialogHelp.getInputDialog(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number), editText, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
