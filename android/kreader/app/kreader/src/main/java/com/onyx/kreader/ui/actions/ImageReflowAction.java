@@ -23,23 +23,23 @@ public class ImageReflowAction extends BaseAction {
             ImageReflowSettings settings = readerDataHolder.getReader().getImageReflowSettings();
             settings.dev_width = readerDataHolder.getDisplayWidth();
             settings.dev_height = readerDataHolder.getDisplayHeight();
-            reflowSettingsDialog = new DialogReflowSettings(readerDataHolder.getContext(), settings, new DialogReflowSettings.ReflowCallback() {
+            reflowSettingsDialog = new DialogReflowSettings(readerDataHolder, settings, new DialogReflowSettings.ReflowCallback() {
                 @Override
                 public void onFinished(boolean confirm, ImageReflowSettings settings) {
                     if (confirm && settings != null) {
                         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
                         readerDataHolder.submitRenderRequest(request);
+                        hideReflowSettingsDialog();
                     }
-                    hideReflowSettingsDialog();
                 }
             });
+            reflowSettingsDialog.show();
         }
-        reflowSettingsDialog.show();
     }
 
     private void hideReflowSettingsDialog() {
         if (reflowSettingsDialog != null) {
-            reflowSettingsDialog.hide();
+            reflowSettingsDialog.dismiss();
             reflowSettingsDialog = null;
         }
     }

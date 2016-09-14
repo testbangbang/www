@@ -1,7 +1,6 @@
 package com.onyx.android.edu;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,7 @@ public class RecyclerViewTestActivity extends BaseActivity {
         PageRecyclerView.PageAdapter adapter = new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
-                return 4;
+                return 1;
             }
 
             @Override
@@ -44,7 +43,7 @@ public class RecyclerViewTestActivity extends BaseActivity {
 
             @Override
             public int getDataCount() {
-                return 100;
+                return 4;
             }
 
             @Override
@@ -63,17 +62,6 @@ public class RecyclerViewTestActivity extends BaseActivity {
                 }
             }
         };
-        pageRecyclerView.setOnChangeFocusListener(new PageRecyclerView.OnChangeFocusListener() {
-            @Override
-            public void onNextFocus(int position) {
-                Log.d(TAG, "onNextFocus: ");
-            }
-
-            @Override
-            public void onPrevFocus(int position) {
-                Log.d(TAG, "onPrevFocus: ");
-            }
-        });
         pageRecyclerView.setAdapter(adapter);
 
     }
