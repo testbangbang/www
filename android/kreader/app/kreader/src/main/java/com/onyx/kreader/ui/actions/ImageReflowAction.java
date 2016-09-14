@@ -45,7 +45,6 @@ public class ImageReflowAction extends BaseAction {
                 }
             });
             reflowSettingsDialog.show();
-            ShowReaderMenuAction.hideReaderMenu();
         }
     }
 
