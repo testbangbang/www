@@ -18,13 +18,11 @@ public class ResultMultiAdapter extends DynamicMultiRadioGroupView.MultiAdapter{
     private List<Integer> rights;
     private int rows;
     private int columns;
-    private int backgroundResId;
 
     public ResultMultiAdapter(String[] texts, List<Integer> rights, int rows, int columns, int backgroundResId) {
         this.buttonTexts = new ArrayList<>();
         this.rows = rows;
         this.columns = columns;
-        this.backgroundResId = backgroundResId;
         this.rights = rights;
 
         for (int i = 0; i < texts.length; i++) {
@@ -33,6 +31,9 @@ public class ResultMultiAdapter extends DynamicMultiRadioGroupView.MultiAdapter{
 
 //        setPadding(20,20,20,20);
         setMargin(10,20,20,10);
+        setMultiCheck(false);
+        setBackgroundResId(backgroundResId);
+        setButtonTexts(buttonTexts);
     }
 
     @Override
@@ -43,16 +44,6 @@ public class ResultMultiAdapter extends DynamicMultiRadioGroupView.MultiAdapter{
     @Override
     public int getColumns() {
         return columns;
-    }
-
-    @Override
-    public int getBackgroundResId() {
-        return backgroundResId;
-    }
-
-    @Override
-    public boolean isRadioButton() {
-        return true;
     }
 
     @Override
@@ -68,7 +59,7 @@ public class ResultMultiAdapter extends DynamicMultiRadioGroupView.MultiAdapter{
     }
 
     @Override
-    public List<String> getButtonTexts() {
-        return buttonTexts;
+    public int getItemCount() {
+        return buttonTexts.size();
     }
 }

@@ -103,7 +103,7 @@ public class PageUtils {
                 changed = true;
             }
         } else {
-            child.offsetTo((parent.width() - child.width()) / 2.0f, child.top);
+            child.offsetTo(parent.left + (parent.width() - child.width()) / 2.0f, child.top);
             changed = true;
         }
         if (child.height() < parent.height()) {
@@ -116,7 +116,7 @@ public class PageUtils {
                 changed = true;
             }
         } else {
-            child.offsetTo(child.left, (parent.height() - child.height()) / 2.0f);
+            child.offsetTo(child.left, parent.top + (parent.height() - child.height()) / 2.0f);
             changed = true;
         }
         return changed;

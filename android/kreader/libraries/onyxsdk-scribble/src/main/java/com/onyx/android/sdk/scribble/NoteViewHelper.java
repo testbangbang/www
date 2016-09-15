@@ -39,13 +39,6 @@ public class NoteViewHelper {
 
     private static final String TAG = NoteViewHelper.class.getSimpleName();
 
-    public enum PenState {
-        PEN_NULL,                   // not initialized yet.
-        PEN_SCREEN_DRAWING,         // in direct screen drawing state, the input could be raw input or touch panel.
-        PEN_CANVAS_DRAWING,         // in canvas drawing state
-        PEN_USER_ERASING,           // in user erasing state
-    }
-
     private static final int PEN_STOP = 0;
     private static final int PEN_START = 1;
     private static final int PEN_DRAWING = 2;
@@ -270,7 +263,7 @@ public class NoteViewHelper {
     }
 
     public void resumeDrawing() {
-        setPenState(PenState.PEN_SCREEN_DRAWING);
+        setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
         if (!useRawInput()) {
             return;
         }
@@ -509,11 +502,11 @@ public class NoteViewHelper {
         return temp;
     }
 
-    public PenState getPenState() {
+    public NoteDrawingArgs.PenState getPenState() {
         return getNoteDocument().getPenState();
     }
 
-    public void setPenState(PenState penState) {
+    public void setPenState(NoteDrawingArgs.PenState penState) {
         getNoteDocument().setPenState(penState);
     }
 
@@ -524,20 +517,20 @@ public class NoteViewHelper {
     public void updatePenStateByCurrentShapeType() {
         int type = getCurrentShapeType();
         if (ShapeFactory.isDFBShape(type)) {
-            setPenState(PenState.PEN_SCREEN_DRAWING);
+            setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
         } else if (type == ShapeFactory.SHAPE_ERASER) {
-            setPenState(PenState.PEN_USER_ERASING);
+            setPenState(NoteDrawingArgs.PenState.PEN_USER_ERASING);
         } else {
-            setPenState(PenState.PEN_CANVAS_DRAWING);
+            setPenState(NoteDrawingArgs.PenState.PEN_CANVAS_DRAWING);
         }
     }
 
     public boolean inErasing() {
-        return (shortcutErasing || getPenState() == PenState.PEN_USER_ERASING);
+        return (shortcutErasing || getPenState() == NoteDrawingArgs.PenState.PEN_USER_ERASING);
     }
 
     public boolean inUserErasing() {
-        return getPenState() == PenState.PEN_USER_ERASING;
+        return getPenState() == NoteDrawingArgs.PenState.PEN_USER_ERASING;
     }
 
     public int getCurrentShapeType() {

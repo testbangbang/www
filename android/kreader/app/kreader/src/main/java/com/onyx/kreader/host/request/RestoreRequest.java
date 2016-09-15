@@ -5,6 +5,7 @@ import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.reflow.ImageReflowSettings;
 
 /**
  * Created by zhuzeng on 2/15/16.
@@ -24,6 +25,7 @@ public class RestoreRequest extends BaseReaderRequest {
         restoreScale(reader);
         restoreOrientation(reader);
         restoreViewport(reader);
+        restoreReflowSettings(reader);
         restoreOthers(reader);
         drawVisiblePages(reader);
     }
@@ -57,6 +59,12 @@ public class RestoreRequest extends BaseReaderRequest {
     private void restoreViewport(final Reader reader) throws Exception {
         if (baseOptions.getViewport() != null) {
             reader.getReaderLayoutManager().getPageManager().setViewportRect(baseOptions.getViewport());
+        }
+    }
+
+    private void restoreReflowSettings(final Reader reader) {
+        if (StringUtils.isNotBlank(baseOptions.getReflowSettings())) {
+            reader.getImageReflowManager().updateSettings(ImageReflowSettings.fromJsonString(baseOptions.getReflowSettings()));
         }
     }
 

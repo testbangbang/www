@@ -1,13 +1,13 @@
 package com.onyx.android.edu;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.onyx.android.edu.base.BaseActivity;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import butterknife.Bind;
@@ -30,11 +30,11 @@ public class RecyclerViewTestActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        pageRecyclerView.setLayoutManager(new PageRecyclerView.DisableScrollGridManager(this));
+        pageRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
         PageRecyclerView.PageAdapter adapter = new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
-                return 4;
+                return 1;
             }
 
             @Override
@@ -44,7 +44,7 @@ public class RecyclerViewTestActivity extends BaseActivity {
 
             @Override
             public int getDataCount() {
-                return 100;
+                return 4;
             }
 
             @Override
@@ -63,17 +63,6 @@ public class RecyclerViewTestActivity extends BaseActivity {
                 }
             }
         };
-        pageRecyclerView.setOnChangeFocusListener(new PageRecyclerView.OnChangeFocusListener() {
-            @Override
-            public void onNextFocus(int position) {
-                Log.d(TAG, "onNextFocus: ");
-            }
-
-            @Override
-            public void onPrevFocus(int position) {
-                Log.d(TAG, "onPrevFocus: ");
-            }
-        });
         pageRecyclerView.setAdapter(adapter);
 
     }

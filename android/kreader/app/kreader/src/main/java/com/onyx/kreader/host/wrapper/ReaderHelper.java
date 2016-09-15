@@ -249,7 +249,8 @@ public class ReaderHelper {
             if (!cacheLocation.exists()) {
                 cacheLocation.mkdirs();
             }
-            imageReflowManager = new ImageReflowManager(cacheLocation,
+            imageReflowManager = new ImageReflowManager(documentMd5,
+                    cacheLocation,
                     getViewOptions().getViewWidth(),
                     getViewOptions().getViewHeight());
         }
@@ -349,6 +350,7 @@ public class ReaderHelper {
             getDocumentOptions().setTotalPage(getNavigator().getTotalPage());
             getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
             getDocumentOptions().setNavigationArgs(getReaderLayoutManager().getCurrentLayoutProvider().getNavigationArgs());
+            getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
         } catch (Exception e) {
 
         }

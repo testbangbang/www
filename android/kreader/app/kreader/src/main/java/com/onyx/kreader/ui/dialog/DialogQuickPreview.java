@@ -4,9 +4,11 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -14,17 +16,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.Size;
+import com.onyx.android.sdk.ui.utils.DialogHelp;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
@@ -51,6 +57,7 @@ public class DialogQuickPreview extends Dialog {
     }
 
     static class GridType{
+        final static int One = 1;
         final static int Four = 4;
         final static int Nine = 9;
     }
@@ -67,11 +74,29 @@ public class DialogQuickPreview extends Dialog {
         }
 
         public int getRows() {
-            return grid == GridType.Four ? 2 : 3;
+            switch (grid){
+                case GridType.One:
+                    return 1;
+                case GridType.Four:
+                    return 2;
+                case GridType.Nine:
+                    return 3;
+                default:
+                    return 1;
+            }
         }
 
         public int getColumns() {
-            return grid == GridType.Four ? 2 : 3;
+            switch (grid){
+                case GridType.One:
+                    return 1;
+                case GridType.Four:
+                    return 2;
+                case GridType.Nine:
+                    return 3;
+                default:
+                    return 1;
+            }
         }
 
         public int getGridSize() {
@@ -83,14 +108,14 @@ public class DialogQuickPreview extends Dialog {
         private int page;
         private ImageView imageView;
         private TextView pageTextView;
-        private Button btnPage;
+        private TextView pageText;
         private RelativeLayout container;
 
         public PreviewViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.image_view);
             pageTextView = (TextView) itemView.findViewById(R.id.text_view_page);
-            btnPage = (Button) itemView.findViewById(R.id.btn_page);
+            pageText = (TextView) itemView.findViewById(R.id.btn_page);
             container = (RelativeLayout) itemView.findViewById(R.id.item_container);
 
             container.setOnClickListener(new View.OnClickListener() {
@@ -106,13 +131,13 @@ public class DialogQuickPreview extends Dialog {
             imageView.setImageBitmap(bitmap);
             if (grid.getGridType() == GridType.Four){
                 pageTextView.setVisibility(View.VISIBLE);
-                btnPage.setVisibility(View.GONE);
+                pageText.setVisibility(View.GONE);
                 String str = String.format(parent.getContext().getString(R.string.page),page + 1);
                 pageTextView.setText(str);
-            }else if (grid.getGridType() == GridType.Nine){
+            }else if (grid.getGridType() == GridType.One || grid.getGridType() == GridType.Nine){
                 pageTextView.setVisibility(View.GONE);
-                btnPage.setVisibility(View.VISIBLE);
-                btnPage.setText(String.valueOf(page + 1));
+                pageText.setVisibility(View.VISIBLE);
+                pageText.setText(String.valueOf(page + 1));
             }
         }
 
@@ -231,6 +256,7 @@ public class DialogQuickPreview extends Dialog {
     private RecyclerView gridRecyclerView;
     private TextView textViewProgress;
     private SeekBar seekBarProgress;
+    private ImageView oneImageGrid;
     private ImageView fourImageGrid;
     private ImageView nineImageGrid;
     private ImageButton chapterBack;
@@ -248,7 +274,7 @@ public class DialogQuickPreview extends Dialog {
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, final int pageCount, final int currentPage,
                               Callback callback) {
-        super(readerDataHolder.getContext(), R.style.dialog_no_title);
+        super(readerDataHolder.getContext(), R.style.dialog_no_title_no_overlay);
         setContentView(R.layout.dialog_quick_preview);
 
         this.readerDataHolder = readerDataHolder;
@@ -257,7 +283,7 @@ public class DialogQuickPreview extends Dialog {
         this.callback = callback;
 
         fitDialogToWindow();
-        grid.setGridType(SingletonSharedPreference.getQuickViewGridType(getContext(), GridType.Four));
+        initGridType();
         setupLayout();
         setupContent(pageCount, currentPage);
     }
@@ -274,15 +300,17 @@ public class DialogQuickPreview extends Dialog {
 
     private void setupLayout() {
         gridRecyclerView = (RecyclerView)findViewById(R.id.grid_view_preview);
-        gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
+        gridRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext(), grid.getColumns()));
         gridRecyclerView.setAdapter(adapter);
 
         textViewProgress = (TextView)findViewById(R.id.text_view_progress);
         seekBarProgress = (SeekBar)findViewById(R.id.seek_bar_page);
+        oneImageGrid = (ImageView) findViewById(R.id.image_view_one_grids);
         fourImageGrid = (ImageView) findViewById(R.id.image_view_four_grids);
         nineImageGrid = (ImageView)findViewById(R.id.image_view_nine_grids);
         chapterBack = (ImageButton) findViewById(R.id.chapter_back);
         chapterForward = (ImageButton)findViewById(R.id.chapter_forward);
+        textViewProgress.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 
         findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,28 +336,21 @@ public class DialogQuickPreview extends Dialog {
         fourImageGrid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                grid.setGridType(GridType.Four);
-                SingletonSharedPreference.setQuickViewGridType(getContext(), GridType.Four);
-                paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
-                paginator.gotoPageByIndex(currentPage);
-                gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
-                adapter.setGridType(grid);
-                onPageDataChanged();
-                onPressedImageView(true);
+                onGridTypeChange(GridType.Four);
             }
         });
 
         nineImageGrid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                grid.setGridType(GridType.Nine);
-                SingletonSharedPreference.setQuickViewGridType(getContext(), GridType.Nine);
-                paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
-                paginator.gotoPageByIndex(currentPage);
-                gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
-                adapter.setGridType(grid);
-                onPageDataChanged();
-                onPressedImageView(false);
+                onGridTypeChange(GridType.Nine);
+            }
+        });
+
+        oneImageGrid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGridTypeChange(GridType.One);
             }
         });
 
@@ -355,6 +376,49 @@ public class DialogQuickPreview extends Dialog {
                 gotoChapterIndex(false);
             }
         });
+
+        textViewProgress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText editText = new EditText(getContext());
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                editText.setHint("1-" + readerDataHolder.getPageCount());
+                DialogHelp.getInputDialog(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number), editText, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String page = editText.getText().toString();
+                        if (!StringUtils.isNullOrEmpty(page)){
+                            int pageNumber = PagePositionUtils.getPageNumber(page);
+                            pageNumber--;
+                            if (pageNumber >= 0 && pageNumber < readerDataHolder.getPageCount()){
+                                DialogQuickPreview.this.dismiss();
+                                new GotoPageAction(PagePositionUtils.fromPageNumber(pageNumber), true).execute(readerDataHolder);
+                            }else {
+                                Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error), Toast.LENGTH_SHORT).show();
+                            }
+                        }else {
+                            Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).show();
+            }
+        });
+    }
+
+    private void initGridType(){
+        int defaultGridType = getContext().getResources().getInteger(R.integer.quick_view_default_grid_type);
+        grid.setGridType(SingletonSharedPreference.getQuickViewGridType(getContext(), defaultGridType));
+    }
+
+    private void onGridTypeChange(int gridType){
+        grid.setGridType(gridType);
+        SingletonSharedPreference.setQuickViewGridType(getContext(), gridType);
+        paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
+        paginator.gotoPageByIndex(currentPage);
+        gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
+        adapter.setGridType(grid);
+        onPageDataChanged();
+        onPressedImageView(gridType);
     }
 
     private int getGridPage(int page){
@@ -443,11 +507,13 @@ public class DialogQuickPreview extends Dialog {
         }
     }
 
-    private void onPressedImageView(boolean pressedFourImage){
-        nineImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_nine_white_focused
-                : R.drawable.ic_dialog_reader_page_nine_black_focused);
-        fourImageGrid.setImageResource(pressedFourImage ? R.drawable.ic_dialog_reader_page_four_black_focused
+    private void onPressedImageView(int gridType){
+        nineImageGrid.setImageResource(gridType == GridType.Nine ? R.drawable.ic_dialog_reader_page_nine_black_focused
+                : R.drawable.ic_dialog_reader_page_nine_white_focused);
+        fourImageGrid.setImageResource(gridType == GridType.Four ? R.drawable.ic_dialog_reader_page_four_black_focused
                 : R.drawable.ic_dialog_reader_page_four_white_focused);
+        oneImageGrid.setImageResource(gridType == GridType.One ? R.drawable.ic_dialog_reader_page_one_black_focused
+                : R.drawable.ic_dialog_reader_page_one_white_focused);
     }
 
     private void setupContent(int pageCount, int currentPage) {
@@ -458,7 +524,7 @@ public class DialogQuickPreview extends Dialog {
         if (callback != null) {
             adapter.requestMissingBitmaps();
         }
-        onPressedImageView(grid.getGridType() == GridType.Four);
+        onPressedImageView(grid.getGridType());
         initPageProgress();
         loadDocumentTableOfContent();
     }

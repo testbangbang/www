@@ -317,6 +317,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void imageReflow(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         final ImageReflowAction action = new ImageReflowAction();
         action.execute(readerDataHolder);
     }

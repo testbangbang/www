@@ -32,6 +32,7 @@ public class PageManager {
     private ArrayList<RectF> manualBoundingRegionList = new ArrayList<>();
 
     private RectF pagesBoundingRect = new RectF();
+    private RectF pageCropRegion = new RectF();
     private RectF viewportRect = new RectF();   // screen viewport rectangle in document coordinates system.
 
     private List<PageInfo> visible = new ArrayList<PageInfo>();
@@ -254,7 +255,8 @@ public class PageManager {
         float scale = PageUtils.scaleByRect(region, viewportRect);
         setScaleImpl(pageName, scale);
 
-        adjustCropRegionInViewport(region);
+        pageCropRegion = region;
+        adjustCropRegionInViewport(pageCropRegion);
         return true;
     }
 
@@ -269,7 +271,8 @@ public class PageManager {
         setScaleImpl(pageName, scale);
 
         region.set(region.left * scale, region.top * scale, region.right * scale, region.bottom * scale);
-        adjustCropRegionInViewport(region);
+        pageCropRegion = region;
+        adjustCropRegionInViewport(pageCropRegion);
         return true;
     }
 
@@ -294,6 +297,20 @@ public class PageManager {
     private void adjustCropRegionInViewport(RectF region) {
         float delta = (viewportRect.width() - region.width()) / 2;
         panViewportPosition(region.left - delta, region.top);
+    }
+
+    private void reboundViewportInPageCropRegion() {
+        if (isScaleToPageContent() || isWidthCrop()) {
+            PageUtils.rebound(viewportRect, pageCropRegion);
+        }
+    }
+
+    private RectF getActualBoundingRect() {
+        RectF boundingRect = pagesBoundingRect;
+        if (isScaleToPageContent() || isWidthCrop()) {
+            boundingRect = pageCropRegion;
+        }
+        return boundingRect;
     }
 
     /**
@@ -424,23 +441,28 @@ public class PageManager {
     public void moveViewportToEndOfPage() {
         PageUtils.alignToBottom(viewportRect, pagesBoundingRect);
         onViewportChanged();
+        reboundViewportInPageCropRegion();
     }
 
     public boolean nextViewport() {
-        if ((int)viewportRect.bottom >= (int)pagesBoundingRect.bottom) {
+        RectF boundingRect = getActualBoundingRect();
+        if ((int)viewportRect.bottom >= (int)boundingRect.bottom) {
             return false;
         }
         viewportRect.offset(0, viewportRect.height() - pageRepeat);
         onViewportChanged();
+        reboundViewportInPageCropRegion();
         return true;
     }
 
     public boolean prevViewport() {
-        if ((int)viewportRect.top <= (int)pagesBoundingRect.top) {
+        RectF boundingRect = getActualBoundingRect();
+        if ((int)viewportRect.top <= (int)boundingRect.top) {
             return false;
         }
         viewportRect.offset(0, -viewportRect.height() + pageRepeat);
         onViewportChanged();
+        reboundViewportInPageCropRegion();
         return true;
     }
 

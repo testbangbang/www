@@ -141,11 +141,11 @@ public class NoteDocument {
         noteDrawingArgs.eraserRadius = r;
     }
 
-    public NoteViewHelper.PenState getPenState() {
+    public NoteDrawingArgs.PenState getPenState() {
         return noteDrawingArgs.penState;
     }
 
-    public void setPenState(final NoteViewHelper.PenState penState) {
+    public void setPenState(final NoteDrawingArgs.PenState penState) {
         noteDrawingArgs.penState = penState;
     }
 
@@ -174,7 +174,7 @@ public class NoteDocument {
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
         noteDrawingArgs.background = NoteModel.getDefaultBackground();
         noteDrawingArgs.strokeColor = NoteModel.getDefaultStrokeColor();
-        noteDrawingArgs.penState = NoteViewHelper.PenState.PEN_SCREEN_DRAWING;
+        noteDrawingArgs.penState = NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING;
     }
 
     // load args from model.

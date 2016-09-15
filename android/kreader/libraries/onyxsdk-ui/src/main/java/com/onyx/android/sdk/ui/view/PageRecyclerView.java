@@ -42,68 +42,7 @@ public class PageRecyclerView extends RecyclerView {
     }
 
     public interface OnChangeFocusListener {
-        void onNextFocus(int position);
-        void onPrevFocus(int position);
-    }
-
-    public static class DisableScrollLinearManager extends LinearLayoutManager {
-        private boolean canScroll = false;
-
-        public DisableScrollLinearManager(Context context) {
-            super(context);
-        }
-
-        public DisableScrollLinearManager(Context context, int orientation, boolean reverseLayout) {
-            super(context, orientation, reverseLayout);
-        }
-
-        public DisableScrollLinearManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-            super(context, attrs, defStyleAttr, defStyleRes);
-        }
-
-        public void setScrollEnable(boolean enable) {
-            this.canScroll = enable;
-        }
-
-        @Override
-        public boolean canScrollVertically() {
-            return canScroll;
-        }
-
-        @Override
-        public boolean canScrollHorizontally() {
-            return canScroll;
-        }
-    }
-
-    public static class DisableScrollGridManager extends GridLayoutManager{
-        private boolean canScroll = false;
-
-        public DisableScrollGridManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-            super(context, attrs, defStyleAttr, defStyleRes);
-        }
-
-        public DisableScrollGridManager(Context context) {
-            super(context, 1);
-        }
-
-        public DisableScrollGridManager(Context context, int orientation, boolean reverseLayout) {
-            super(context, 1, orientation, reverseLayout);
-        }
-
-        public void setScrollEnable(boolean enable) {
-            this.canScroll = enable;
-        }
-
-        @Override
-        public boolean canScrollVertically() {
-            return canScroll;
-        }
-
-        @Override
-        public boolean canScrollHorizontally() {
-            return canScroll;
-        }
+        void onFocusChange(int prev, int current);
     }
 
     public PageRecyclerView(Context context) {
@@ -126,6 +65,9 @@ public class PageRecyclerView extends RecyclerView {
         this.currentFocusedPosition = currentFocusedPosition;
         getAdapter().notifyItemChanged(lastFocusedPosition);
         getAdapter().notifyItemChanged(currentFocusedPosition);
+        if (onChangeFocusListener != null){
+            onChangeFocusListener.onFocusChange(lastFocusedPosition, currentFocusedPosition);
+        }
     }
 
     public int getCurrentFocusedPosition() {
@@ -137,9 +79,6 @@ public class PageRecyclerView extends RecyclerView {
             nextPage();
         }
         setCurrentFocusedPosition(focusedPosition);
-        if (onChangeFocusListener != null){
-            onChangeFocusListener.onNextFocus(focusedPosition);
-        }
     }
 
     private void prevFocus(int focusedPosition){
@@ -147,9 +86,6 @@ public class PageRecyclerView extends RecyclerView {
             prevPage();
         }
         setCurrentFocusedPosition(focusedPosition);
-        if (onChangeFocusListener != null){
-            onChangeFocusListener.onPrevFocus(focusedPosition);
-        }
     }
 
     public void nextColumn(){
@@ -231,14 +167,7 @@ public class PageRecyclerView extends RecyclerView {
     private TouchDirection touchDirection = TouchDirection.Vertical;
 
     private int detectDirection(MotionEvent currentEvent) {
-        switch (touchDirection) {
-            case Horizontal:
-                return PageTurningDetector.detectHorizontalTuring(getContext(), (int) (currentEvent.getX() - lastX));
-            case Vertical:
-                return PageTurningDetector.detectVerticalTuring(getContext(), (int) (currentEvent.getY() - lastY));
-            default:
-                return PageTurningDetector.detectVerticalTuring(getContext(), (int) (currentEvent.getX() - lastX));
-        }
+        return PageTurningDetector.detectBothAxisTuring(getContext(), (int) (currentEvent.getX() - lastX), (int) (currentEvent.getY() - lastY));
     }
 
     @Override
@@ -266,10 +195,10 @@ public class PageRecyclerView extends RecyclerView {
             case MotionEvent.ACTION_UP:
                 int direction = detectDirection(ev);
                 if (direction == PageTurningDirection.NEXT) {
-                    prevPage();
+                    nextPage();
                     return true;
                 } else if (direction == PageTurningDirection.PREV) {
-                    nextPage();
+                    prevPage();
                     return true;
                 }
                 break;
@@ -418,7 +347,9 @@ public class PageRecyclerView extends RecyclerView {
                 int paddingBottom = mParent.getPaddingBottom();
                 int paddingTop = mParent.getPaddingTop();
                 double itemHeight = ((double)mParent.getMeasuredHeight() - paddingBottom - paddingTop) / getRowCount();
-                view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int) Math.ceil(itemHeight)));
+                if (itemHeight > 0){
+                    view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int) Math.ceil(itemHeight)));
+                }
             }
         }
 
