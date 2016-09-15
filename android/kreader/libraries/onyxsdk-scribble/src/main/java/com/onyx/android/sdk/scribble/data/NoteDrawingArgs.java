@@ -9,13 +9,20 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
  */
 public class NoteDrawingArgs {
 
+    public enum PenState {
+        PEN_NULL,                   // not initialized yet.
+        PEN_SCREEN_DRAWING,         // in direct screen drawing state, the input could be raw input or touch panel.
+        PEN_CANVAS_DRAWING,         // in canvas drawing state
+        PEN_USER_ERASING, PenState,           // in user erasing state
+    }
+
     public volatile float strokeWidth = NoteModel.getDefaultStrokeWidth();
     public volatile int strokeColor = Color.BLACK;
     public volatile int style;
     public volatile int currentShapeType = ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
     public volatile float eraserRadius = 15.0f;
     public volatile int background;
-    public volatile NoteViewHelper.PenState penState;
+    public volatile PenState penState;
 
     public void syncFrom(final NoteDrawingArgs other) {
         strokeWidth = other.strokeWidth;
