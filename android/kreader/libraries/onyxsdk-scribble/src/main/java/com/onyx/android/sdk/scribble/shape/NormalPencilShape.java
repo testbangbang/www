@@ -28,22 +28,22 @@ public class NormalPencilShape extends EPDShape {
         super.onUp(normalizedPoint, screenPoint);
     }
 
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
+    public void render(final RenderContext renderContext) {
         if (useHwColorPaint) {
             renderByHWColorPaint();
         } else {
-            renderByDefault(canvas, paint, matrix);
+            renderByDefault(renderContext);
         }
     }
 
-    private void renderByDefault(final Canvas canvas, final Paint paint, final Matrix matrix) {
-        applyStrokeStyle(paint);
+    private void renderByDefault(final RenderContext renderContext) {
+        applyStrokeStyle(renderContext.paint);
         Path path = getOriginDisplayPath();
         if (path == null) {
-            path = ShapeUtils.renderShape(canvas, paint, matrix, getNormalizedPoints());
+            path = ShapeUtils.renderShape(renderContext, getNormalizedPoints());
             setOriginDisplayPath(path);
         }
-        canvas.drawPath(path, paint);
+        renderContext.canvas.drawPath(path, renderContext.paint);
     }
 
     private void renderByHWColorPaint() {

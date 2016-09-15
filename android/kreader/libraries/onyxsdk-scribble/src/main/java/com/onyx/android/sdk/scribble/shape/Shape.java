@@ -82,7 +82,7 @@ public interface Shape {
 
     boolean supportDFB();
 
-    void render(final Canvas canvas, final Paint paint, final Matrix matrix);
+    void render(final RenderContext renderContext);
 
     boolean hitTest(final float x, final float y, final float radius);
 

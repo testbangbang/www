@@ -160,7 +160,7 @@ public class BaseShape implements Shape {
         return normalizedPoints;
     }
 
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
+    public void render(final RenderContext renderContext) {
     }
 
     public boolean fastHitTest(final float x, final float y, final float radius) {

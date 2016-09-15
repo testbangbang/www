@@ -258,7 +258,7 @@ public class NoteDocument {
         if (notePage == null) {
             return false;
         }
-        notePage.clear();
+        notePage.clear(true);
         return true;
     }
 

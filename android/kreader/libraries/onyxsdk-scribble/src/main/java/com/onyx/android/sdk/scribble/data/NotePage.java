@@ -58,8 +58,8 @@ public class NotePage {
         return subPageName;
     }
 
-    public void clear() {
-        if (shapeList.size() > 0) {
+    public void clear(boolean addToHistory) {
+        if (shapeList.size() > 0 && addToHistory) {
             removedShapeList.addAll(shapeList);
             undoRedoManager.addToHistory(ShapeActions.removeShapeListAction(shapeList), false);
         }
@@ -166,12 +166,12 @@ public class NotePage {
         return list;
     }
 
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix, final RenderCallback callback) {
+    public void render(final RenderContext renderContext, final RenderCallback callback) {
         if (shapeList == null) {
             return;
         }
         for(Shape shape : shapeList) {
-            shape.render(canvas, paint, matrix);
+            shape.render(renderContext);
             if (callback != null && callback.isRenderAbort()) {
                 break;
             }
@@ -184,24 +184,7 @@ public class NotePage {
 
     // create a new shape if not exist and make it as current shape.
     public final Shape getShapeFromPool() {
-        switch (currentShapeType) {
-            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
-                currentShape = new NormalPencilShape();
-                break;
-            case ShapeFactory.SHAPE_CIRCLE:
-                currentShape = new CircleShape();
-                break;
-            case ShapeFactory.SHAPE_RECTANGLE:
-                currentShape = new RectangleShape();
-                break;
-            case ShapeFactory.SHAPE_TEXT:
-                currentShape = new TexShape();
-                break;
-            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
-                currentShape = new BrushScribbleShape();
-                break;
-        }
-        return currentShape;
+        return currentShape = ShapeFactory.createShape(currentShapeType);
     }
 
     public final Shape getCurrentShape() {

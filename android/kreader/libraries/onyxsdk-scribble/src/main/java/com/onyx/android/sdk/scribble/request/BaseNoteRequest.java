@@ -19,6 +19,7 @@ import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -180,9 +181,10 @@ public class BaseNoteRequest extends BaseRequest {
             prepareRenderingBuffer(bitmap);
 
             final Matrix renderMatrix = new Matrix();
+            final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
             for (PageInfo page : getVisiblePages()) {
                 final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-                notePage.render(canvas, paint, renderMatrix, null);
+                notePage.render(renderContext, null);
             }
             flushRenderingBuffer(bitmap);
             drawRandomTestPath(canvas, paint);

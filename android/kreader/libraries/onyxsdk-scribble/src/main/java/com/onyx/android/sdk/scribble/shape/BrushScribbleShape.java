@@ -29,14 +29,14 @@ public class BrushScribbleShape extends EPDShape  {
     }
 
     // render path with width list and generate path list.
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
-        applyStrokeStyle(paint);
+    public void render(final RenderContext renderContext) {
+        applyStrokeStyle(renderContext.paint);
         Path path = getOriginDisplayPath();
         if (path == null) {
-            path = ShapeUtils.renderShape(canvas, paint, matrix, getNormalizedPoints());
+            path = ShapeUtils.renderShape(renderContext, getNormalizedPoints());
             setOriginDisplayPath(path);
         }
-        canvas.drawPath(path, paint);
+        renderContext.canvas.drawPath(path, renderContext.paint);
     }
 
 }

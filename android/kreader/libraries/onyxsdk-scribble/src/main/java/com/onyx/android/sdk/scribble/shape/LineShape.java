@@ -24,17 +24,17 @@ public class LineShape extends BaseShape {
         return ShapeUtils.hitTestLine(getDownPoint().x, getDownPoint().y, getCurrentPoint().x, getCurrentPoint().y, x, y, radius);
     }
 
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
+    public void render(final RenderContext renderContext) {
         float points[] = new float[4];
         points[0] = getDownPoint().getX();
         points[1] = getDownPoint().getY();
         points[2] = getCurrentPoint().getX();
         points[3] = getCurrentPoint().getY();
-        if (matrix != null) {
-            matrix.mapPoints(points);
+        if (renderContext.matrix != null) {
+            renderContext.matrix.mapPoints(points);
         }
-        applyStrokeStyle(paint);
-        canvas.drawLine(points[0], points[1], points[2], points[3], paint);
+        applyStrokeStyle(renderContext.paint);
+        renderContext.canvas.drawLine(points[0], points[1], points[2], points[3], renderContext.paint);
     }
 
 }
