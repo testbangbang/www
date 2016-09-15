@@ -136,41 +136,46 @@ public class DataCacheManager {
         return getLibraryMapList(parentId);
     }
 
-    public List<Metadata> getMetadataList(final String parentId, QueryCriteria criteria) {
-        List<Metadata> list = getMetadataList(parentId);
-        List<Metadata> containList = new ArrayList<>();
-        for (Metadata metadata : list) {
-            if (MetaDataUtils.criteriaContains(metadata, criteria)) {
-                containList.add(metadata);
-            }
-        }
-        return containList;
-    }
-
     public List<Metadata> getMetadataList(final QueryArgs args) {
-        if (args == null || args.filter == null) {
-            return getAll(args);
-        }
+        List<Metadata> list;
         switch (args.filter) {
             case ALL:
-                return getAll(args);
+                list = getAll(args);
+                break;
             case READED:
-                return getReaded(args);
+                list = getReaded(args);
+                break;
             case READING:
-                return getReading(args);
+                list = getReading(args);
+                break;
             case NEW_BOOKS:
-                return getNewBookList(args);
+                list = getNewBookList(args);
+                break;
             case TAG:
-                return getByTag(args);
+                list = getByTag(args);
+                break;
             case SEARCH:
-                return getBySearch(args);
+                list = getBySearch(args);
+                break;
             default:
-                return getAll(args);
+                list = getAll(args);
+                break;
         }
+        if (args.isAllSetContentEmpty()) {
+            return sortMetadataList(list, args);
+        }
+
+        List<Metadata> resultList = new ArrayList<>();
+        for (Metadata metadata : list) {
+            if (MetaDataUtils.criteriaContains(metadata, args)) {
+                resultList.add(metadata);
+            }
+        }
+        return sortMetadataList(resultList, args);
     }
 
     public boolean containType(Metadata metadata, QueryArgs args) {
-        if (args.contentType != null && !args.contentType.contains(metadata.getType())) {
+        if (args.fileType != null && args.fileType.size() > 0 && !args.fileType.contains(metadata.getType())) {
             return false;
         }
         return true;
@@ -212,7 +217,7 @@ public class DataCacheManager {
 
     public List<Metadata> getAll(final QueryArgs args) {
         List<Metadata> list = getListByContentTypes(args);
-        return sortMetadataList(list, args);
+        return list;
     }
 
     public List<Metadata> getReaded(final QueryArgs args) {
@@ -224,7 +229,7 @@ public class DataCacheManager {
             }
             addMetadataToList(readList, metadata, metadata.isReaded());
         }
-        return sortMetadataList(readList, args);
+        return readList;
     }
 
     public List<Metadata> getReading(final QueryArgs args) {
@@ -237,7 +242,7 @@ public class DataCacheManager {
             }
             addMetadataToList(readingList, metadata, metadata.isReading());
         }
-        return sortMetadataList(readingList, args);
+        return readingList;
     }
 
     public List<Metadata> getNewBookList(final QueryArgs args) {
@@ -250,20 +255,19 @@ public class DataCacheManager {
             }
             addMetadataToList(newBookList, metadata, metadata.isNew());
         }
-        return sortMetadataList(newBookList, args);
+        return newBookList;
     }
 
     public List<Metadata> getByTag(final QueryArgs args) {
         List<Metadata> list = getLibraryMapList(args.parentId);
         List<Metadata> tagList = new ArrayList<>();
-
         for (Metadata metadata : list) {
             if (!containType(metadata, args)) {
                 continue;
             }
             addMetadataToList(tagList, metadata, MetaDataUtils.safelyContains(args.tags, metadata.getTags()));
         }
-        return sortMetadataList(tagList, args);
+        return tagList;
     }
 
     public List<Metadata> getBySearch(final QueryArgs args) {
@@ -276,6 +280,6 @@ public class DataCacheManager {
             }
             addMetadataToList(searchList, metadata, MetaDataUtils.safelyContains(metadata, args.query));
         }
-        return sortMetadataList(searchList, args);
+        return searchList;
     }
 }

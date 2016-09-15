@@ -24,7 +24,7 @@ public class CollectionUtils {
     }
 
     static public boolean contains(final Set<String> set, final String value) {
-        if (set != null) {
+        if (set != null && set.size() > 0) {
             return set.contains(value);
         }
         return true;

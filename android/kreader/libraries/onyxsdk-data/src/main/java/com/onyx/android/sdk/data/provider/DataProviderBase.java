@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
@@ -28,8 +27,6 @@ public interface DataProviderBase {
     Metadata findMetadata(final Context context, final String path, String md5);
 
     Metadata loadMetadata(final Context context, final String path, String md5);
-
-    List<Metadata> findMetadata(final Context context, final String parentId, final QueryCriteria queryCriteria);
 
     List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs);
 

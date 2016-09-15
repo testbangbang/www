@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.request.data;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Metadata;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class MetadataRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        list.addAll(getDataProviderBase(dataManager).findMetadata(getContext(), queryArgs));
+        list.addAll(dataManager.getMetadataListWithQueryArgs(getContext(), queryArgs));
     }
 
     public final List<Metadata> getList() {

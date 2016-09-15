@@ -4,21 +4,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
-import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
-import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
@@ -55,75 +51,13 @@ public class LocalDataProvider implements DataProviderBase {
         return metadata;
     }
 
-    public List<Metadata> findMetadata(final Context context, final String parentId, final QueryCriteria queryCriteria) {
-        if (queryCriteria.isAllContentEmpty()) {
-            return new ArrayList<>();
-        }
-        final ConditionGroup conditionGroup = MetadataQueryArgsBuilder.queryCriteriaCondition(queryCriteria);
-        QueryArgs args = new QueryArgs();
-        args.conditionGroup = conditionGroup;
-        args.parentId = parentId;
-        args.limit = queryCriteria.limit;
-        args.offset = queryCriteria.offset;
-        if (queryCriteria.orderBy != null) {
-            args.appendOrderBy(queryCriteria.orderBy);
-        }
-        return findMetadata(context, args);
-    }
-
-    // for join query
-    private IProperty[] getALLPropertyWithTable(IProperty[] properties) {
-        IProperty[] newProperties = new IProperty[properties.length];
-        for (int i = 0; i < properties.length; i++) {
-            newProperties[i] = properties[i].withTable();
-        }
-        return newProperties;
-    }
-
-    // this method require MetadataCollection also add when Metadata save
-    private List<Metadata> joinQuery(final Context context, final QueryArgs queryArgs) {
-        Condition parentIdCondition = getNullOrEqualCondition(MetadataCollection_Table.libraryUniqueId.withTable(),
-                queryArgs.parentId);
-        Condition eqDocumentUniqueId = MetadataCollection_Table.documentUniqueId.withTable().eq(Metadata_Table.idString.withTable());
-        ConditionGroup joinConditionGroup = ConditionGroup.clause()
-                .and(parentIdCondition)
-                .and(eqDocumentUniqueId);
-
-        Where<Metadata> where = new Select(getALLPropertyWithTable(Metadata_Table.getAllColumnProperties()))
-                .from(Metadata.class).innerJoin(MetadataCollection.class)
-                .on(joinConditionGroup)
-                .where(queryArgs.conditionGroup);
-
-        if (queryArgs.orderByList != null && queryArgs.orderByList.size() > 0) {
-            for (OrderBy orderBy : queryArgs.orderByList) {
-                where = where.orderBy(orderBy);
-            }
-        }
-        return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
-    }
-
-    private Condition.In inCondition(Property property, Where in, boolean isIn) {
-        return isIn ? property.in(in) : property.notIn(in);
-    }
-
-    private List<Metadata> inQuery(final Context context, final QueryArgs queryArgs) {
-        Where<MetadataCollection> whereCollection = new Select(MetadataCollection_Table.documentUniqueId.withTable())
-                .from(MetadataCollection.class)
-                .where(getNotNullOrEqualCondition(MetadataCollection_Table.libraryUniqueId, queryArgs.parentId));
-        Where<Metadata> whereMetadata = new Select().from(Metadata.class)
-                .where(inCondition(Metadata_Table.idString, whereCollection, StringUtils.isNotBlank(queryArgs.parentId)))
-                .and(queryArgs.conditionGroup);
-        if (queryArgs.orderByList != null && queryArgs.orderByList.size() > 0) {
-            for (OrderBy orderBy : queryArgs.orderByList) {
-                whereMetadata = whereMetadata.orderBy(orderBy);
-            }
-        }
-        return whereMetadata.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
-    }
-
     public List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs) {
         if (queryArgs.conditionGroup != null) {
-            return inQuery(context, queryArgs);
+            Where<Metadata> where = new Select().from(Metadata.class).where(queryArgs.conditionGroup);
+            for (OrderBy orderBy : queryArgs.orderByList) {
+                where.orderBy(orderBy);
+            }
+            return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
         }
         return new ArrayList<>();
     }
