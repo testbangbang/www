@@ -37,7 +37,6 @@ import org.greenrobot.eventbus.EventBus;
  * Created by ming on 16/7/27.
  */
 public class ReaderDataHolder {
-    private static final String TAG = ReaderDataHolder.class.getSimpleName();
 
     private Context context;
     private String documentPath;
@@ -124,6 +123,10 @@ public class ReaderDataHolder {
     public void onDocumentOpened() {
         documentOpened = true;
         getEventBus().post(new DocumentOpenEvent(documentPath));
+    }
+
+    public void onDocumentInitRendered() {
+
     }
 
     public boolean isDocumentOpened() {

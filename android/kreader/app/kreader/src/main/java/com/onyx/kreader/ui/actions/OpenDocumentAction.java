@@ -5,6 +5,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.kreader.R;
+import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
@@ -49,20 +50,26 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup();
                     return;
                 }
-                if (loadDocumentOptionsRequest.getDocument() != null &&
-                        loadDocumentOptionsRequest.getDocument().getOrientation() > 0) {
-                    int current = DeviceUtils.getScreenOrientation(activity);
-                    int target = loadDocumentOptionsRequest.getDocument().getOrientation();
-                    Debug.d("current orientation: " + current + ", target orientation: " + target);
-                    if (current != target) {
-                        readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
-                        hideLoadingDialog();
-                        return;
-                    }
+                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocument())) {
+                    return;
                 }
                 openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocument());
             }
         });
+    }
+
+    private boolean processOrientation(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
+        if (options != null && options.getOrientation() > 0) {
+            int current = DeviceUtils.getScreenOrientation(activity);
+            int target = options.getOrientation();
+            Debug.d("current orientation: " + current + ", target orientation: " + target);
+            if (current != target) {
+                readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
+                hideLoadingDialog();
+                return false;
+            }
+        }
+        return true;
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
@@ -151,6 +158,7 @@ public class OpenDocumentAction extends BaseAction {
             public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog();
                 readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
+                readerDataHolder.onDocumentInitRendered();
             }
         });
     }
