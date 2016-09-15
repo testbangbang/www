@@ -2,7 +2,6 @@ package com.onyx.android.sdk.data.request.data;
 
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.provider.DataProviderBase;
 
 /**
  * Created by zhuzeng on 5/31/16.
@@ -33,9 +32,4 @@ public class BaseDataRequest extends BaseRequest {
             runnable.run();
         }
     }
-
-    protected DataProviderBase getDataProviderBase(final DataManager dataManager){
-        return dataManager.getDataProviderManager().getDataProvider();
-    }
-
 }

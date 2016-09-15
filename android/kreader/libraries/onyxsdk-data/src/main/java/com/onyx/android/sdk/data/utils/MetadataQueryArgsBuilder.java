@@ -2,7 +2,10 @@ package com.onyx.android.sdk.data.utils;
 
 import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.QueryCriteria;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -10,6 +13,8 @@ import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLCondition;
+import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
@@ -23,44 +28,105 @@ import java.util.Set;
  */
 public class MetadataQueryArgsBuilder {
 
-    public static QueryArgs bookListQuery(Set<String> fileTypes, OrderBy orderBy) {
+    public static QueryArgs libraryAllBookQuery(String parentId, SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = allBooksQuery(sortBy, sortOrder);
+        args.parentId = parentId;
+        return generateMetadataInQueryArgs(args);
+    }
+
+    public static QueryArgs libraryAllBookQuery(String parentId, Set<String> fileTypes, SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = allBooksQuery(fileTypes, sortBy, sortOrder);
+        args.parentId = parentId;
+        return generateMetadataInQueryArgs(args);
+    }
+
+    public static QueryArgs libraryAllBookQuery(String parentId, Set<String> fileTypes, OrderBy orderBy) {
+        QueryArgs args = QueryArgs.queryBy(orTypeCondition(fileTypes), orderBy);
+        args.parentId = parentId;
+        return generateMetadataInQueryArgs(args);
+    }
+
+    public static QueryArgs libraryNewBookListQuery(String parentId, SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = newBookListQuery(sortBy, sortOrder);
+        args.parentId = parentId;
+        return generateMetadataInQueryArgs(args);
+    }
+
+    public static QueryArgs libraryFinishReadQuery(String parentId, SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = finishReadQuery(sortBy, sortOrder);
+        args.parentId = parentId;
+        return generateMetadataInQueryArgs(args);
+    }
+
+    public static QueryArgs libraryRecentReadingQuery(String parentId, SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = recentReadingQuery(sortBy, sortOrder);
+        args.parentId = parentId;
+        return generateMetadataInQueryArgs(args);
+    }
+
+    public static QueryArgs libraryRecentAddQuery(String parentId, SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = new QueryArgs(sortBy, sortOrder);
+        args.parentId = parentId;
+        args.conditionGroup = recentAddCondition();
+        return generateMetadataInQueryArgs(args);
+    }
+
+    public static QueryArgs libraryTagsFilterQuery(String parentId, Set<String> tags, SortBy sortBy, SortOrder order) {
+        QueryArgs args = tagsFilterQuery(tags, sortBy, order);
+        args.parentId = parentId;
+        return generateMetadataInQueryArgs(args);
+    }
+
+    public static QueryArgs librarySearchQuery(String parentId, String search, SortBy sortBy, SortOrder order) {
+        QueryArgs args = searchQuery(search, sortBy, order);
+        args.parentId = parentId;
+        return generateMetadataInQueryArgs(args);
+    }
+
+    public static QueryArgs allBooksQuery(SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.ALL);
+        return generateQueryArgs(args);
+    }
+
+    public static QueryArgs allBooksQuery(Set<String> fileTypes, SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.ALL);
+        args.fileType = fileTypes;
+        return generateQueryArgs(args);
+    }
+
+    public static QueryArgs allBooksQuery(Set<String> fileTypes, OrderBy orderBy) {
         return QueryArgs.queryBy(orTypeCondition(fileTypes), orderBy);
     }
 
-    public static QueryArgs bookListQuery(QueryCriteria queryCriteria, OrderBy orderBy) {
-        return QueryArgs.queryBy(queryCriteriaCondition(queryCriteria), orderBy).appendFilter(BookFilter.EXTRA_ATTRIBUTES);
+    public static QueryArgs newBookListQuery(SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.NEW_BOOKS);
+        return generateQueryArgs(args);
     }
 
-    public static QueryArgs bookListQuery(ConditionGroup conditionGroup, OrderBy orderBy) {
-        return QueryArgs.queryBy(conditionGroup, orderBy);
+    public static QueryArgs finishReadQuery(SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.READED);
+        return generateQueryArgs(args);
     }
 
-    public static QueryArgs bookListQuery(ConditionGroup conditionGroup, List<OrderBy> orderByList) {
-        return QueryArgs.queryBy(conditionGroup, orderByList);
+    public static QueryArgs recentReadingQuery(SortBy sortBy, SortOrder sortOrder) {
+        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.READING);
+        return generateQueryArgs(args);
     }
 
-    public static QueryArgs newBookListQuery() {
-        return QueryArgs.queryBy(newBookListCondition(), getOrderByCreateAt().descending()).appendFilter(BookFilter.NEW_BOOKS);
+    public static QueryArgs tagsFilterQuery(Set<String> tags, SortBy sortBy, SortOrder order) {
+        QueryArgs args = new QueryArgs(sortBy, order).appendFilter(BookFilter.TAG);
+        args.tags = tags;
+        return generateQueryArgs(args);
     }
 
-    public static QueryArgs finishReadQuery() {
-        return QueryArgs.queryBy(finishReadCondition(), getOrderByUpdateAt().descending()).appendFilter(BookFilter.READED);
-    }
-
-    public static QueryArgs recentReadingQuery() {
-        return QueryArgs.queryBy(recentReadingCondition(), getOrderByUpdateAt().descending()).appendFilter(BookFilter.READING);
+    public static QueryArgs searchQuery(String search, SortBy sortBy, SortOrder order) {
+        QueryArgs args = new QueryArgs(sortBy, order).appendFilter(BookFilter.SEARCH);
+        args.query = search;
+        return generateQueryArgs(args);
     }
 
     public static QueryArgs recentAddQuery() {
         return QueryArgs.queryBy(recentAddCondition(), getOrderByUpdateAt().descending());
-    }
-
-    public static QueryArgs tagsFilterQuery(Set<String> tags, OrderBy orderBy) {
-        return QueryArgs.queryBy(orTagsCondition(tags), getOrderByName()).appendOrderBy(orderBy).appendFilter(BookFilter.TAG);
-    }
-
-    public static QueryArgs searchQuery(String search, OrderBy orderBy) {
-        return QueryArgs.queryBy(orSearchCondition(search), orderBy).appendFilter(BookFilter.SEARCH);
     }
 
     public static ConditionGroup newBookListCondition() {
@@ -88,11 +154,12 @@ public class MetadataQueryArgsBuilder {
         if (CollectionUtils.isNullOrEmpty(fileTypes)) {
             return ConditionGroup.clause();
         }
+        ConditionGroup group = ConditionGroup.clause();
         List<SQLCondition> sqlConditions = new ArrayList<>();
         for (String type : fileTypes) {
             sqlConditions.add(Metadata_Table.type.eq(type));
         }
-        return ConditionGroup.clause().orAll(sqlConditions);
+        return group.orAll(sqlConditions);
     }
 
     public static ConditionGroup orTagsCondition(Set<String> tags) {
@@ -111,7 +178,7 @@ public class MetadataQueryArgsBuilder {
             return ConditionGroup.clause();
         }
         return ConditionGroup.clause().or(matchLike(Metadata_Table.title, search))
-                .or(matchLike(Metadata_Table.name, search));
+                .or(matchLike(Metadata_Table.name, search)).or(matchLike(Metadata_Table.authors, search));
     }
 
     public static void andMetadataParentId(QueryArgs queryArgs, String parentId) {
@@ -145,16 +212,6 @@ public class MetadataQueryArgsBuilder {
 
     public static OrderBy getOrderBy(IProperty property) {
         return OrderBy.fromProperty(property);
-    }
-
-    public static ConditionGroup queryCriteriaCondition(final QueryCriteria queryCriteria) {
-        ConditionGroup group = ConditionGroup.clause();
-        andWith(group, matchLikeSet(Metadata_Table.authors, queryCriteria.author));
-        andWith(group, matchLikeSet(Metadata_Table.tags, queryCriteria.tags));
-        andWith(group, matchLikeSet(Metadata_Table.series, queryCriteria.series));
-        andWith(group, matchLikeSet(Metadata_Table.title, queryCriteria.title));
-        andWith(group, matchLikeSet(Metadata_Table.type, queryCriteria.fileType));
-        return group;
     }
 
     public static void andWith(final ConditionGroup parent, final ConditionGroup child) {
@@ -194,5 +251,119 @@ public class MetadataQueryArgsBuilder {
             conditionGroup.or(property.eq(string));
         }
         return conditionGroup;
+    }
+
+    private static Condition getNullOrEqualCondition(Property<String> property, String compare) {
+        return compare == null ? property.isNull() : property.eq(compare);
+    }
+
+    private static Condition getNotNullOrEqualCondition(Property<String> property, String compare) {
+        return compare == null ? property.isNotNull() : property.eq(compare);
+    }
+
+    private static Condition.In inCondition(Property property, Where in, boolean isIn) {
+        return isIn ? property.in(in) : property.notIn(in);
+    }
+
+    public static QueryArgs generateQueryArgs(QueryArgs args) {
+        switch (args.filter) {
+            case ALL:
+                args.conditionGroup = orTypeCondition(args.fileType);
+                break;
+            case NEW_BOOKS:
+                args.conditionGroup = newBookListCondition();
+                break;
+            case READING:
+                args.conditionGroup = recentReadingCondition();
+                break;
+            case READED:
+                args.conditionGroup = finishReadCondition();
+                break;
+            case TAG:
+                args.conditionGroup = orTagsCondition(args.tags);
+                break;
+            case SEARCH:
+                args.conditionGroup = orSearchCondition(args.query);
+                break;
+        }
+        generateQueryArgsSortBy(args);
+        generateCriteriaCondition(args);
+        return args;
+    }
+
+    private static OrderBy ascDescOrder(OrderBy orderBy, boolean asc) {
+        if (asc) {
+            orderBy.ascending();
+        } else {
+            orderBy.descending();
+        }
+        return orderBy;
+    }
+
+    public static OrderBy generateOrderBy(SortBy sortBy, SortOrder order) {
+        boolean asc = order == SortOrder.Asc;
+        OrderBy orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.name), true);
+        switch (sortBy) {
+            case None:
+            case Name:
+                break;
+            case FileType:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.type), asc);
+                break;
+            case Size:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.size), asc);
+                break;
+            case CreationTime:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastModified), asc);
+                break;
+            case BookTitle:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.title), asc);
+                break;
+            case Author:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.authors), asc);
+                break;
+            case Publisher:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.publisher), asc);
+                break;
+            case LastOpenTime:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                break;
+            case RecentlyRead:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                break;
+            case Total:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                break;
+            case StartTime:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                break;
+            case InstallTime:
+                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                break;
+        }
+        return orderBy;
+    }
+
+    public static void generateQueryArgsSortBy(QueryArgs args) {
+        args.orderByList.clear();
+        args.orderByList.add(generateOrderBy(args.sortBy, args.order));
+    }
+
+    public static void generateCriteriaCondition(final QueryArgs args) {
+        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.authors, args.author));
+        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.tags, args.tags));
+        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.series, args.series));
+        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.title, args.title));
+        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.type, args.fileType));
+    }
+
+    public static QueryArgs generateMetadataInQueryArgs(final QueryArgs queryArgs) {
+        Where<MetadataCollection> whereCollection = new Select(MetadataCollection_Table.documentUniqueId.withTable())
+                .from(MetadataCollection.class)
+                .where(getNotNullOrEqualCondition(MetadataCollection_Table.libraryUniqueId.withTable(), queryArgs.parentId));
+        Condition.In inCondition = inCondition(Metadata_Table.idString.withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.parentId));
+        ConditionGroup group = ConditionGroup.clause();
+        queryArgs.conditionGroup = group.and(inCondition).and(queryArgs.conditionGroup);
+        return queryArgs;
     }
 }

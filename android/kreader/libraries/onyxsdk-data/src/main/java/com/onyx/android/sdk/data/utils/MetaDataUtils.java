@@ -1,9 +1,9 @@
 package com.onyx.android.sdk.data.utils;
 
+import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.QueryCriteria;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -534,7 +534,10 @@ public class MetaDataUtils {
     }
 
     static public boolean safelyContains(final Set<String> set, final String string) {
-        return set != null && set.contains(string);
+        if (set != null && set.size() > 0 && !set.contains(string)) {
+            return false;
+        }
+        return true;
     }
 
     static public boolean safelyContains(final Set<String> set, final List<String> list) {
@@ -582,15 +585,18 @@ public class MetaDataUtils {
     }
 
     static public Set<String> getStringSplitSet(String originString, String delimiter) {
-        String[] authors = originString.split(delimiter);
         Set<String> set = new HashSet<>();
+        if (originString == null) {
+            return set;
+        }
+        String[] authors = originString.split(delimiter);
         for (String author : authors) {
             set.add(author);
         }
         return set;
     }
 
-    static public boolean criteriaContains(final Metadata metadata, final QueryCriteria criteria) {
+    static public boolean criteriaContains(final Metadata metadata, final QueryArgs criteria) {
         if (!CollectionUtils.contains(criteria.fileType, metadata.getType().toLowerCase())) {
             return false;
         }

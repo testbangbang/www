@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Thumbnail;
@@ -99,7 +100,11 @@ public class ThumbnailUtils {
     }
 
     public static Bitmap getThumbnailBitmap(Context context, Thumbnail thumbnail) {
-        return getThumbnailBitmap(context, thumbnail.getSourceMD5(), thumbnail.getThumbnailKind().toString());
+        Bitmap bitmap = getThumbnailBitmap(context, thumbnail.getSourceMD5(), thumbnail.getThumbnailKind().toString());
+        if (bitmap == null) {
+            bitmap = ThumbnailUtils.loadDefaultThumbnailFromExtension(context, FileUtils.getFileExtension(thumbnail.getPath()));
+        }
+        return bitmap;
     }
 
     public static boolean saveThumbnailBitmap(Context context, Thumbnail thumbnail, Bitmap saveBitmap) {

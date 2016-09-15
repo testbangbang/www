@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.data.request.data;
 
 import android.graphics.Bitmap;
-
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Thumbnail;
@@ -11,28 +10,32 @@ import com.onyx.android.sdk.data.model.Thumbnail;
  */
 public class ThumbnailRequest extends BaseDataRequest {
     private ThumbnailKind thumbnailKind = ThumbnailKind.Middle;
+    private String path;
     private String sourceMD5;
+    private Thumbnail thumbnail;
     private Bitmap resultBitmap;
 
-    public ThumbnailRequest(String md5) {
+    public ThumbnailRequest(String md5, String path) {
         this.sourceMD5 = md5;
+        this.path = path;
     }
 
-    public ThumbnailRequest(String md5, ThumbnailKind kind) {
-        this.sourceMD5 = md5;
+    public ThumbnailRequest(String md5, String path, ThumbnailKind kind) {
+        this(md5, path);
         this.thumbnailKind = kind;
     }
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        Thumbnail thumbnail = getDataProviderBase(dataManager).loadThumbnail(getContext(), sourceMD5, this.thumbnailKind);
-        if (thumbnail == null) {
-            return;
-        }
-        resultBitmap = getDataProviderBase(dataManager).loadThumbnailBitmap(getContext(), thumbnail);
+        thumbnail = dataManager.loadThumbnail(getContext(), path, sourceMD5, thumbnailKind);
+        resultBitmap = dataManager.loadThumbnailBitmap(getContext(), thumbnail);
     }
 
     public Bitmap getResultBitmap() {
         return resultBitmap;
+    }
+
+    public Thumbnail getThumbnail() {
+        return thumbnail;
     }
 }
