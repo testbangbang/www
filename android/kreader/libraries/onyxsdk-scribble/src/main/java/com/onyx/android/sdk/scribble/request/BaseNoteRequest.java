@@ -204,16 +204,10 @@ public class BaseNoteRequest extends BaseRequest {
         if (!useExternal) {
             return;
         }
-        renderingBuffer = new int[bitmap.getWidth() * bitmap.getHeight()];
-        bitmap.getPixels(renderingBuffer, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-        Algorithm.initializeEx(bitmap.getWidth(), bitmap.getHeight(), renderingBuffer);
+        Algorithm.initializeEx(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
     private void flushRenderingBuffer(final Bitmap bitmap) {
-        if (!useExternal) {
-            return;
-        }
-        bitmap.setPixels(renderingBuffer, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
 
     private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {

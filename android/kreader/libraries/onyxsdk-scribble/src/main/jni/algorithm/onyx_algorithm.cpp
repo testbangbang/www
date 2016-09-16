@@ -7,6 +7,8 @@
 #include <math.h>
 #include <list>
 #include <map>
+
+
 #include "JNIUtils.h"
 
 #include "log.h"
@@ -14,9 +16,29 @@
 #include "com_hanvon_core_Algorithm.h"
 
 JNIEXPORT jboolean JNICALL Java_com_hanvon_core_Algorithm_initializeEx
-  (JNIEnv *env, jclass thiz, jint width, jint height, jintArray array) {
-    JNIIntReadArray jniArray(env, array);
-    return initializeEx(width, height, jniArray.getBuffer());
+  (JNIEnv *env, jclass thiz, jint width, jint height, jobject bitmap) {
+    AndroidBitmapInfo info;
+	void *pixels;
+	int ret;
+
+	if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+		return false;
+	}
+
+	if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+		LOGE("Bitmap format is not RGBA_8888 !");
+		return false;
+	}
+
+	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
+		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+		return false;
+	}
+
+    bool value = initializeEx(width, height, (int *)pixels);
+    AndroidBitmap_unlockPixels(env, bitmap);
+    return value;
 }
 
 JNIEXPORT void JNICALL Java_com_hanvon_core_Algorithm_setPen

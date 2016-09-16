@@ -27,7 +27,7 @@ public class Algorithm {
      *            图片原始像素
      * @return 操作是否成功
      */
-    public native static boolean initializeEx(int nWidth, int nHeight, int[] pDrawMemory );
+    public native static boolean initializeEx(int nWidth, int nHeight, Bitmap bitmap);
     
 
     /**
