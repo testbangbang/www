@@ -32,6 +32,10 @@ public interface Shape {
 
     String getPageUniqueId();
 
+    void setSubPageUniqueId(final String id);
+
+    String getSubPageUniqueId();
+
     void setShapeUniqueId(final String uniqueId);
 
     String getShapeUniqueId();

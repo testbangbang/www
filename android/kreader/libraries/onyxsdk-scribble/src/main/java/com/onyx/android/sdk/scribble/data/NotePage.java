@@ -118,6 +118,7 @@ public class NotePage {
     private void updateShape(final Shape shape) {
         shape.setDocumentUniqueId(getDocumentUniqueId());
         shape.setPageUniqueId(getPageUniqueId());
+        shape.setSubPageUniqueId(getSubPageName());
         shape.ensureShapeUniqueId();
         shape.updateBoundingRect();
     }
