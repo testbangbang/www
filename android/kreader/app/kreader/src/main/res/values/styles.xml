@@ -4,9 +4,6 @@
     <style name="dialog_no_title" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowNoTitle">true</item>
     </style>
-    <style name="dialog_no_title_no_overlay" parent="dialog_no_title">
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
     <style name="single_line_X_axis_View">
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@android:color/black</item>

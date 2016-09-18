@@ -58,7 +58,6 @@ public class ShowQuickPreviewAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dialogQuickPreview.updatePreview(current, bitmap.getBitmap());
-                bitmap.recycleBitmap();
                 requestPreviewBySequence(readerDataHolder, desiredSize);
             }
         });

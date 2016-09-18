@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -274,7 +275,7 @@ public class DialogQuickPreview extends Dialog {
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, final int pageCount, final int currentPage,
                               Callback callback) {
-        super(readerDataHolder.getContext(), R.style.dialog_no_title_no_overlay);
+        super(readerDataHolder.getContext(), android.R.style.Theme_NoTitleBar);
         setContentView(R.layout.dialog_quick_preview);
 
         this.readerDataHolder = readerDataHolder;
@@ -296,6 +297,12 @@ public class DialogQuickPreview extends Dialog {
         mWindow.setAttributes(mParams);
         //force use all space in the screen.
         mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
     }
 
     private void setupLayout() {
@@ -536,7 +543,7 @@ public class DialogQuickPreview extends Dialog {
      */
     public void updatePreview(int page, Bitmap bitmap) {
         if (paginator.isItemInCurrentPage(page)) {
-            adapter.setBitmap(paginator.offsetInCurrentPage(page), getScaledPreview(bitmap));
+            adapter.setBitmap(paginator.offsetInCurrentPage(page), bitmap);
         }
     }
 
