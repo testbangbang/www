@@ -130,16 +130,9 @@ public class DialogQuickPreview extends Dialog {
 
         public void bindPreview(Bitmap bitmap,Grid grid, ViewGroup parent) {
             imageView.setImageBitmap(bitmap);
-            if (grid.getGridType() == GridType.Four){
-                pageTextView.setVisibility(View.VISIBLE);
-                pageText.setVisibility(View.GONE);
-                String str = String.format(parent.getContext().getString(R.string.page),page + 1);
-                pageTextView.setText(str);
-            }else if (grid.getGridType() == GridType.One || grid.getGridType() == GridType.Nine){
-                pageTextView.setVisibility(View.GONE);
-                pageText.setVisibility(View.VISIBLE);
-                pageText.setText(String.valueOf(page + 1));
-            }
+            pageTextView.setVisibility(View.GONE);
+            pageText.setVisibility(View.VISIBLE);
+            pageText.setText(String.valueOf(page + 1));
         }
 
         public int getPage() {
