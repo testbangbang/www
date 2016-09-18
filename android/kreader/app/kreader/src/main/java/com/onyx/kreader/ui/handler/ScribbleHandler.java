@@ -1,7 +1,5 @@
 package com.onyx.kreader.ui.handler;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -208,7 +206,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     public final NotePage getShapePage(ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.getShapeDataInfo() != null) {
+        if (readerDataHolder.getNoteDataInfo() != null) {
             return null;
         }
         return null;

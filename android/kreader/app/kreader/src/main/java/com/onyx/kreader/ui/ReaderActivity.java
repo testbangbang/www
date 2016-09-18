@@ -25,7 +25,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -33,6 +32,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.ForwardAction;
@@ -295,7 +295,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initShapeViewDelegate() {
-//        getNoteViewHelper().setView(this, surfaceView, null);
+//        getNoteManager().setView(this, surfaceView, null);
         // when page changed, choose to flush
         //noteViewHelper.flushPendingShapes();
     }
@@ -336,12 +336,14 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
-        if (event.isApplyGCIntervalUpdate()) {
+        if (event != null && event.isApplyGCIntervalUpdate()) {
             ReaderDeviceManager.applyWithGCInterval(surfaceView, readerDataHolder.getReaderViewInfo().isTextPages());
         }
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         updateStatusBar();
-        renderShapeDataInBackground();
+        if (event != null) {
+            renderShapeDataInBackground();
+        }
     }
 
     @Subscribe
@@ -441,8 +443,8 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().getReaderUserDataInfo(),
                 getReaderDataHolder().getReaderViewInfo(),
                 getReaderDataHolder().getSelectionManager(),
-                getReaderDataHolder().getNoteViewHelper(),
-                getReaderDataHolder().getShapeDataInfo());
+                getReaderDataHolder().getNoteManager(),
+                getReaderDataHolder().getNoteDataInfo());
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -452,7 +454,7 @@ public class ReaderActivity extends ActionBarActivity {
 //            return false;
 //        }
 
-        final Bitmap bitmap = getReaderDataHolder().getNoteViewHelper().getViewBitmap();
+        final Bitmap bitmap = getReaderDataHolder().getNoteManager().getViewBitmap();
         if (bitmap == null) {
             return false;
         }
@@ -460,20 +462,17 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void renderShapeDataInBackground() {
-        if (true || getReaderDataHolder().hasShapes()) {
-            return;
-        }
-        final PageListRenderRequest loadRequest = new PageListRenderRequest(
+        final ReaderNoteRenderRequest renderRequest = new ReaderNoteRenderRequest(
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 getReaderDataHolder().getReaderViewInfo().getVisiblePages(),
                 getReaderDataHolder().getDisplayRect());
-        getReaderDataHolder().getNoteViewHelper().submit(this, loadRequest, new BaseCallback() {
+        getReaderDataHolder().getNoteManager().submit(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || request.isAbort()) {
                     return;
                 }
-                getReaderDataHolder().saveShapeDataInfo(loadRequest);
+                getReaderDataHolder().saveShapeDataInfo(renderRequest);
                 onRequestFinished(null);
             }
         });

@@ -166,6 +166,7 @@
     <string name="settings_search_menu_position_key" translatable="false">settings_search_menu_position</string>
     <string name="settings_search_menu_position_tittle">Set Search Menu Position</string>
     <string name="settings_bookmark_key" translatable="false">show_bookmark</string>
+    <string name="settings_note_key" translatable="false">show_note</string>
     <string name="settings_bookmark_tittle">Show bookmark</string>
     <string name="settings_hyperlink_key" translatable="false">show_hyperlink</string>
     <string name="settings_hyperlink_tittle">Show hyperlink</string>

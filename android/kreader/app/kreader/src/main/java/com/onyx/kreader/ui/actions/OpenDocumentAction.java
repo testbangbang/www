@@ -21,7 +21,7 @@ import com.onyx.kreader.utils.DeviceUtils;
 /**
  * Created by zhuzeng on 5/17/16.
  * steps:
- * 1. load document options.
+ * 1. loadDocument document options.
  * 2. open with options.
  * 3. create view
  * 4. restoreWithOptions.

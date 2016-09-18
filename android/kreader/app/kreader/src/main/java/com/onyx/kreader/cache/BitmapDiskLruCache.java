@@ -88,7 +88,7 @@ public class BitmapDiskLruCache {
                     return bitmap;
                 } finally {
                     FileUtils.closeQuietly(is);
-                    benchmark.report("load disk cache");
+                    benchmark.report("loadDocument disk cache");
                 }
             } finally {
                 snapshot.close();

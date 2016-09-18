@@ -7,9 +7,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.ReaderUserDataInfo;
@@ -21,6 +18,9 @@ import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.note.NoteManager;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
+import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.events.*;
@@ -39,20 +39,20 @@ public class ReaderDataHolder {
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
-    private ShapeDataInfo shapeDataInfo;
+    private ReaderNoteDataInfo noteDataInfo;
+
+    private HandlerManager handlerManager;
+    private ReaderSelectionManager selectionManager;
+    private ReaderTtsManager ttsManager;
+    private NoteManager noteManager;
+    private EventBus eventBus = new EventBus();
+
     private boolean preRender = true;
     private boolean preRenderNext = true;
     private boolean documentOpened = false;
 
     private int displayWidth;
     private int displayHeight;
-
-    private HandlerManager handlerManager;
-    private ReaderSelectionManager selectionManager;
-    private ReaderTtsManager ttsManager;
-    private NoteViewHelper noteViewHelper;
-    private EventBus eventBus = new EventBus();
-
     private int optionsSkippedTimes = 0;
 
     public ReaderDataHolder(Context context){
@@ -75,19 +75,16 @@ public class ReaderDataHolder {
         readerUserDataInfo = request.getReaderUserDataInfo();
     }
 
-    public void saveShapeDataInfo(final BaseNoteRequest request) {
-        shapeDataInfo = request.getShapeDataInfo();
+    public void saveShapeDataInfo(final ReaderBaseNoteRequest request) {
+        noteDataInfo = request.getShapeDataInfo();
     }
 
     public boolean hasShapes() {
-        if (shapeDataInfo == null) {
-            return false;
-        }
-        return shapeDataInfo.hasShapes();
+        return noteDataInfo != null;
     }
 
     public void resetShapeData() {
-        shapeDataInfo = null;
+        noteDataInfo = null;
     }
 
     public final ReaderViewInfo getReaderViewInfo() {
@@ -98,8 +95,8 @@ public class ReaderDataHolder {
         return readerUserDataInfo;
     }
 
-    public final ShapeDataInfo getShapeDataInfo() {
-        return shapeDataInfo;
+    public final ReaderNoteDataInfo getNoteDataInfo() {
+        return noteDataInfo;
     }
 
     public void setPreRenderNext(boolean preRenderNext) {
@@ -201,11 +198,11 @@ public class ReaderDataHolder {
         }
     }
 
-    public NoteViewHelper getNoteViewHelper() {
-        if (noteViewHelper == null) {
-            noteViewHelper = new NoteViewHelper();
+    public NoteManager getNoteManager() {
+        if (noteManager == null) {
+            noteManager = new NoteManager();
         }
-        return noteViewHelper;
+        return noteManager;
     }
 
     public String getDocumentPath() {
