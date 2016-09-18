@@ -536,7 +536,7 @@ public class DialogQuickPreview extends Dialog {
      */
     public void updatePreview(int page, Bitmap bitmap) {
         if (paginator.isItemInCurrentPage(page)) {
-            adapter.setBitmap(paginator.offsetInCurrentPage(page), getScaledPreview(bitmap));
+            adapter.setBitmap(paginator.offsetInCurrentPage(page), bitmap);
         }
     }
 
