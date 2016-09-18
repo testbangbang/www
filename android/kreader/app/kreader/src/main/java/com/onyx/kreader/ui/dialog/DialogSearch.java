@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -88,6 +89,7 @@ public class DialogSearch extends Dialog{
         setContentView(R.layout.dialog_search);
         this.readerDataHolder = readerDataHolder;
         searchRows = getContext().getResources().getInteger(R.integer.search_row);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         init();
     }
 
