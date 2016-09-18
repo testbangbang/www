@@ -34,7 +34,7 @@ public class HandlerManager {
     public static final String SELECTION_ZOOM = "sz";
     public static final String TTS_PROVIDER = "tts";
 
-    private String activeProvider;
+    private String activeProviderName;
     private Map<String, BaseHandler> providerMap = new HashMap<String, BaseHandler>();
     private PointF touchStartPosition;
     private boolean enable;
@@ -57,7 +57,7 @@ public class HandlerManager {
         providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, readerDataHolder.getContext()));
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
-        activeProvider = READING_PROVIDER;
+        activeProviderName = READING_PROVIDER;
         enable = true;
         enableTouch = true;
         readerConfig = ReaderConfig.sharedInstance(context);
@@ -145,11 +145,11 @@ public class HandlerManager {
     }
 
     public void resetToDefaultProvider() {
-        activeProvider = READING_PROVIDER;
+        activeProviderName = READING_PROVIDER;
     }
 
     public void setActiveProvider(final String providerName) {
-        activeProvider = providerName;
+        activeProviderName = providerName;
         if (providerName.equals(ERASER_PROVIDER)) {
             setPenStart(false);
             setPenErasing(true);
@@ -159,7 +159,11 @@ public class HandlerManager {
     }
 
     public BaseHandler getActiveProvider() {
-        return providerMap.get(activeProvider);
+        return providerMap.get(activeProviderName);
+    }
+
+    public String getActiveProviderName() {
+        return activeProviderName;
     }
 
     public boolean isLongPress() {
@@ -289,7 +293,7 @@ public class HandlerManager {
         if (!isEnableTouch()) {
             return;
         }
-        if (getActiveProvider() instanceof ReadingHandler){
+        if (getActiveProviderName().equals(READING_PROVIDER)){
             setActiveProvider(HandlerManager.WORD_SELECTION_PROVIDER);
         }
         getActiveProvider().onLongPress(readerDataHolder, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
@@ -382,10 +386,7 @@ public class HandlerManager {
         } else if (action.equals(KeyAction.SHOW_MENU)) {
             new ShowReaderMenuAction().execute(readerDataHolder);
         } else if (action.equals(KeyAction.CHANGE_TO_ERASE_MODE)) {
-
-
         } else if (action.equals(KeyAction.CHANGE_TO_SCRIBBLE_MODE)) {
-
         } else {
             return false;
         }
