@@ -122,8 +122,12 @@ public class DialogQuickPreview extends Dialog {
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogQuickPreview.this.dismiss();
-                    new GotoPageAction(PagePositionUtils.fromPageNumber(page), true).execute(readerDataHolder);
+                    new GotoPageAction(PagePositionUtils.fromPageNumber(page), true).execute(readerDataHolder, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            DialogQuickPreview.this.dismiss();
+                        }
+                    });
                 }
             });
         }
@@ -391,8 +395,12 @@ public class DialogQuickPreview extends Dialog {
                             int pageNumber = PagePositionUtils.getPageNumber(page);
                             pageNumber--;
                             if (pageNumber >= 0 && pageNumber < readerDataHolder.getPageCount()){
-                                DialogQuickPreview.this.dismiss();
-                                new GotoPageAction(PagePositionUtils.fromPageNumber(pageNumber), true).execute(readerDataHolder);
+                                new GotoPageAction(PagePositionUtils.fromPageNumber(pageNumber), true).execute(readerDataHolder, new BaseCallback() {
+                                    @Override
+                                    public void done(BaseRequest request, Throwable e) {
+                                        DialogQuickPreview.this.dismiss();
+                                    }
+                                });
                             }else {
                                 Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error), Toast.LENGTH_SHORT).show();
                             }
