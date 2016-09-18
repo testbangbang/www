@@ -122,24 +122,21 @@ public class DialogQuickPreview extends Dialog {
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogQuickPreview.this.dismiss();
-                    new GotoPageAction(PagePositionUtils.fromPageNumber(page), true).execute(readerDataHolder);
+                    new GotoPageAction(PagePositionUtils.fromPageNumber(page), true).execute(readerDataHolder, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            DialogQuickPreview.this.dismiss();
+                        }
+                    });
                 }
             });
         }
 
         public void bindPreview(Bitmap bitmap,Grid grid, ViewGroup parent) {
             imageView.setImageBitmap(bitmap);
-            if (grid.getGridType() == GridType.Four){
-                pageTextView.setVisibility(View.VISIBLE);
-                pageText.setVisibility(View.GONE);
-                String str = String.format(parent.getContext().getString(R.string.page),page + 1);
-                pageTextView.setText(str);
-            }else if (grid.getGridType() == GridType.One || grid.getGridType() == GridType.Nine){
-                pageTextView.setVisibility(View.GONE);
-                pageText.setVisibility(View.VISIBLE);
-                pageText.setText(String.valueOf(page + 1));
-            }
+            pageTextView.setVisibility(View.GONE);
+            pageText.setVisibility(View.VISIBLE);
+            pageText.setText(String.valueOf(page + 1));
         }
 
         public int getPage() {
@@ -398,8 +395,12 @@ public class DialogQuickPreview extends Dialog {
                             int pageNumber = PagePositionUtils.getPageNumber(page);
                             pageNumber--;
                             if (pageNumber >= 0 && pageNumber < readerDataHolder.getPageCount()){
-                                DialogQuickPreview.this.dismiss();
-                                new GotoPageAction(PagePositionUtils.fromPageNumber(pageNumber), true).execute(readerDataHolder);
+                                new GotoPageAction(PagePositionUtils.fromPageNumber(pageNumber), true).execute(readerDataHolder, new BaseCallback() {
+                                    @Override
+                                    public void done(BaseRequest request, Throwable e) {
+                                        DialogQuickPreview.this.dismiss();
+                                    }
+                                });
                             }else {
                                 Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error), Toast.LENGTH_SHORT).show();
                             }
