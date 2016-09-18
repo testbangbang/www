@@ -8,9 +8,12 @@ import android.view.ScaleGestureDetector;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.KeyAction;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.ui.actions.PanAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
+import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
 import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -370,15 +373,15 @@ public class HandlerManager {
         } else if (action.equals(KeyAction.PREV_PAGE)) {
             getActiveProvider().prevPage(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_LEFT)) {
-            //activity.moveLeft();
+            panLeft();
         } else if (action.equals(KeyAction.MOVE_RIGHT)) {
-            //activity.moveRight();
+            panRight();
         } else if (action.equals(KeyAction.MOVE_UP)) {
-            //activity.moveUp();
+            panUp();
         } else if (action.equals(KeyAction.MOVE_DOWN)) {
-            //activity.moveDown();
+            panDown();
         } else if (action.equals(KeyAction.TOGGLE_BOOKMARK)) {
-            //activity.toggleBookmark();
+            toggleBookmark(readerDataHolder);
         } else if (action.equals(KeyAction.SHOW_MENU)) {
             new ShowReaderMenuAction().execute(readerDataHolder);
         } else if (action.equals(KeyAction.CHANGE_TO_ERASE_MODE)) {
@@ -390,6 +393,51 @@ public class HandlerManager {
             return false;
         }
         return true;
+    }
+
+    public void toggleBookmark(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.hasBookmark()) {
+            removeBookmark(readerDataHolder);
+        } else {
+            addBookmark(readerDataHolder);
+        }
+    }
+
+    private void removeBookmark(ReaderDataHolder readerDataHolder) {
+        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder);
+    }
+
+    private void addBookmark(ReaderDataHolder readerDataHolder) {
+        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder);
+    }
+
+    private PageInfo getFirstPageInfo(ReaderDataHolder readerDataHolder) {
+        return readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
+    }
+
+    private int panOffset() {
+        return 150;
+    }
+
+    private void panLeft() {
+        pan(-panOffset(), 0);
+    }
+
+    private void panRight() {
+        pan(panOffset(), 0);
+    }
+
+    private void panUp() {
+        pan(0, -panOffset());
+    }
+
+    private void panDown() {
+        pan(0, panOffset());
+    }
+
+    private void pan(int x, int y) {
+        final PanAction panAction = new PanAction(x, y);
+        panAction.execute(readerDataHolder);
     }
 
 }
