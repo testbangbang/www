@@ -7,6 +7,7 @@ import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.note.model.ReaderNoteDataProvider;
 import com.onyx.kreader.note.model.ReaderNoteDocumentModel;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -197,6 +198,26 @@ public class ReaderNoteDocument {
         String pageUniqueId = ShapeUtils.generateUniqueId();
         createIndexEntry(pageName, subPageIndex, pageUniqueId);
         return createDataEntry(pageName, pageUniqueId);
+    }
+
+    public boolean removePage(final Context context, final String pageName, int subPageIndex) {
+        final List<String> list = getPageIndex().getPageList(pageName, false);
+        if (CollectionUtils.isEmpty(list)) {
+            return false;
+        }
+        if (subPageIndex < 0 || subPageIndex >= list.size()) {
+            return false;
+        }
+        final String subPageUniqueId = list.get(subPageIndex);
+        list.remove(subPageIndex);
+        ReaderNoteDataProvider.removePage(context, pageName, subPageUniqueId);
+        final ReaderNotePage notePage = getPageMap().remove(subPageUniqueId);
+        if (notePage == null) {
+            return false;
+        }
+        notePage.clear(false);
+        notePage.savePage(context);
+        return true;
     }
 
     private void createIndexEntry(final String pageName, int index, final String pageUniqueId) {

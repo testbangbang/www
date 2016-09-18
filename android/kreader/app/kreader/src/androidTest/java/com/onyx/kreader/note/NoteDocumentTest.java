@@ -132,4 +132,76 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
             }
         }
     }
+
+
+    public void testMultiSubPagesWithRemove() {
+        ReaderNoteDataProvider.clear(getActivity());
+
+        final String docId = ShapeUtils.generateUniqueId();
+        final ReaderNoteDocument src = new ReaderNoteDocument();
+        src.open(getActivity(), docId, null);
+
+        HashMap<String, LinkedHashMap<String, ReaderNotePage>> origin = new HashMap<>();
+
+        int pageCount = TestUtils.randInt(5, 10);
+        for(int i = 0; i < pageCount; ++i) {
+            String pageName = String.valueOf(i);
+            LinkedHashMap<String, ReaderNotePage> subPageMap = new LinkedHashMap<>();
+            int subPageCount = TestUtils.randInt(2, 5);
+            for(int k = 0; k < subPageCount; ++k) {
+                final ReaderNotePage page = src.createPage(pageName, k);
+                assertTrue(page.getShapeList().size() == 0);
+                int shapeCount = TestUtils.randInt(10, 20);
+                for (int j = 0; j < shapeCount; ++j) {
+                    final Shape shape = randomShape(docId, page.getPageUniqueId(), 10, 50);
+                    page.addShape(shape, false);
+                }
+                subPageMap.put(page.getSubPageUniqueId(), page);
+            }
+            origin.put(pageName, subPageMap);
+        }
+        src.save(getActivity(), "test");
+        src.close(getActivity());
+
+
+        // re-open for verify
+        final ReaderNoteDocument temp = new ReaderNoteDocument();
+        temp.open(getActivity(), docId, null);
+
+        for(int i = 0; i < pageCount; ++i) {
+            String pageName = String.valueOf(i);
+            int subPageCount = temp.getSubPageCount(pageName);
+            int subPageIndex = TestUtils.randInt(0, subPageCount);
+            temp.removePage(getActivity(), pageName, subPageIndex);
+        }
+        temp.save(getActivity(), "some title");
+
+
+        // open again
+        final ReaderNoteDocument verify = new ReaderNoteDocument();
+        verify.open(getActivity(), docId, null);
+        for(int i = 0; i < pageCount; ++i) {
+            String pageName = String.valueOf(i);
+            int subPageCount = verify.getSubPageCount(pageName);
+            LinkedHashMap<String, ReaderNotePage> originSubPageList = origin.get(pageName);
+            assertTrue(subPageCount + 1 == originSubPageList.size());
+
+            for(int j = 0; j < subPageCount; ++j) {
+                final ReaderNotePage resultPage = verify.loadPage(getActivity(), pageName, j);
+                final LinkedHashMap<String, ReaderNotePage> map = origin.get(pageName);
+                final ReaderNotePage originPage = map.get(resultPage.getSubPageUniqueId());
+
+                // compare with origin page
+                assertNotNull(resultPage);
+                assertNotNull(resultPage.getShapeList());
+                assertEquals(originPage.getPageUniqueId(), resultPage.getPageUniqueId());
+                assertEquals(originPage.getSubPageUniqueId(), resultPage.getSubPageUniqueId());
+                assertEquals(originPage.getDocumentUniqueId(), resultPage.getDocumentUniqueId());
+                assertTrue(resultPage.getShapeList().size() == originPage.getShapeList().size());
+                for(int k = 0; k < originPage.getShapeList().size(); ++k) {
+                    assertEquals(resultPage.getShapeList().get(k).getShapeUniqueId(), originPage.getShapeList().get(k).getShapeUniqueId());
+                }
+            }
+        }
+    }
 }

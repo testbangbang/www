@@ -128,9 +128,13 @@ public class ReaderNoteDataProvider {
         transaction.execute();
     }
 
-    public static boolean removePage(final Context context, final String pageUniqueId) {
+    public static boolean removePage(final Context context, final String pageName, final String subPageUniqueId) {
         Delete delete = new Delete();
-        delete.from(ReaderNoteShapeModel.class).where(ReaderNoteShapeModel_Table.pageUniqueId.eq(pageUniqueId)).query();
+        Where where = delete.from(ReaderNoteShapeModel.class).where(ReaderNoteShapeModel_Table.pageUniqueId.eq(pageName));
+        if (StringUtils.isNotBlank(subPageUniqueId)) {
+            where = where.and(ReaderNoteShapeModel_Table.subPageUniqueId.eq(subPageUniqueId));
+        }
+        where.query();
         return true;
     }
 
