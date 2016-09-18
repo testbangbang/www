@@ -80,4 +80,27 @@ public class StringUtils {
         }
         return content;
     }
+
+    public static String leftTrim(String content) {
+        int start = 0, last = content.length() - 1;
+        while ((start <= last) && (content.charAt(start) <= ' ')) {
+            start++;
+        }
+        if (start == 0) {
+            return content;
+        }
+        return content.substring(start, last);
+    }
+
+    public static String rightTrim(String content) {
+        int start = 0, last = content.length() - 1;
+        int end = last;
+        while ((end >= start) && (content.charAt(end) <= ' ')) {
+            end--;
+        }
+        if (end == last) {
+            return content;
+        }
+        return content.substring(start, end);
+    }
 }
