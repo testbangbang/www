@@ -91,6 +91,7 @@ public class MetadataQueryArgsBuilder {
     public static QueryArgs allBooksQuery(Set<String> fileTypes, SortBy sortBy, SortOrder sortOrder) {
         QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.ALL);
         args.fileType = fileTypes;
+        args.parentId = BookFilter.ALL.toString();
         return generateQueryArgs(args);
     }
 
@@ -100,33 +101,40 @@ public class MetadataQueryArgsBuilder {
 
     public static QueryArgs newBookListQuery(SortBy sortBy, SortOrder sortOrder) {
         QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.NEW_BOOKS);
+        args.parentId = BookFilter.NEW_BOOKS.toString();
         return generateQueryArgs(args);
     }
 
     public static QueryArgs finishReadQuery(SortBy sortBy, SortOrder sortOrder) {
         QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.READED);
+        args.parentId = BookFilter.READED.toString();
         return generateQueryArgs(args);
     }
 
     public static QueryArgs recentReadingQuery(SortBy sortBy, SortOrder sortOrder) {
         QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.READING);
+        args.parentId = BookFilter.READING.toString();
         return generateQueryArgs(args);
     }
 
     public static QueryArgs tagsFilterQuery(Set<String> tags, SortBy sortBy, SortOrder order) {
         QueryArgs args = new QueryArgs(sortBy, order).appendFilter(BookFilter.TAG);
         args.tags = tags;
+        args.parentId = BookFilter.TAG.toString();
         return generateQueryArgs(args);
     }
 
     public static QueryArgs searchQuery(String search, SortBy sortBy, SortOrder order) {
         QueryArgs args = new QueryArgs(sortBy, order).appendFilter(BookFilter.SEARCH);
         args.query = search;
+        args.parentId = BookFilter.SEARCH.toString();
         return generateQueryArgs(args);
     }
 
     public static QueryArgs recentAddQuery() {
-        return QueryArgs.queryBy(recentAddCondition(), getOrderByUpdateAt().descending());
+        QueryArgs args = QueryArgs.queryBy(recentAddCondition(), getOrderByUpdateAt().descending());
+        args.parentId = BookFilter.RECENT_ADD.toString();
+        return args;
     }
 
     public static ConditionGroup newBookListCondition() {
@@ -362,8 +370,12 @@ public class MetadataQueryArgsBuilder {
                 .from(MetadataCollection.class)
                 .where(getNotNullOrEqualCondition(MetadataCollection_Table.libraryUniqueId.withTable(), queryArgs.parentId));
         Condition.In inCondition = inCondition(Metadata_Table.idString.withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.parentId));
-        ConditionGroup group = ConditionGroup.clause();
-        queryArgs.conditionGroup = group.and(inCondition).and(queryArgs.conditionGroup);
+        ConditionGroup group = ConditionGroup.clause().and(inCondition);
+        if (queryArgs.conditionGroup.size() > 0) {
+            queryArgs.conditionGroup = group.and(queryArgs.conditionGroup);
+        } else {
+            queryArgs.conditionGroup = group;
+        }
         return queryArgs;
     }
 }

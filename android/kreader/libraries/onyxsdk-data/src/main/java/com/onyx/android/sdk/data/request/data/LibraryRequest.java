@@ -30,7 +30,7 @@ public class LibraryRequest extends BaseDataRequest {
     public void execute(DataManager dataManager) throws Exception {
         dataManager.loadAllLibrary(libraryList, queryArgs.parentId);
         if (loadMetadata) {
-            bookList = dataManager.getMetadataListWithQueryArgs(getContext(), queryArgs);
+            bookList = dataManager.getLibraryMetadataList(getContext(), queryArgs);
         }
     }
 
