@@ -32,6 +32,10 @@ public interface Shape {
 
     String getPageUniqueId();
 
+    void setSubPageUniqueId(final String id);
+
+    String getSubPageUniqueId();
+
     void setShapeUniqueId(final String uniqueId);
 
     String getShapeUniqueId();
@@ -82,7 +86,7 @@ public interface Shape {
 
     boolean supportDFB();
 
-    void render(final Canvas canvas, final Paint paint, final Matrix matrix);
+    void render(final RenderContext renderContext);
 
     boolean hitTest(final float x, final float y, final float radius);
 

@@ -19,6 +19,7 @@ public class BaseShape implements Shape {
     private String uniqueId;
     private String documentUniqueId;
     private String pageUniqueId;
+    private String subPageUniqueId;
     private int color = Color.BLACK;
     private float strokeWidth;
     private Path originDisplayPath;
@@ -48,6 +49,14 @@ public class BaseShape implements Shape {
 
     public String getPageUniqueId() {
         return pageUniqueId;
+    }
+
+    public String getSubPageUniqueId() {
+        return subPageUniqueId;
+    }
+
+    public void setSubPageUniqueId(String subPageUniqueId) {
+        this.subPageUniqueId = subPageUniqueId;
     }
 
     public void setShapeUniqueId(final String id) {
@@ -160,7 +169,7 @@ public class BaseShape implements Shape {
         return normalizedPoints;
     }
 
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
+    public void render(final RenderContext renderContext) {
     }
 
     public boolean fastHitTest(final float x, final float y, final float radius) {

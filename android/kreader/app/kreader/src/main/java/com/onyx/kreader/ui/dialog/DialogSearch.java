@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -48,8 +49,6 @@ public class DialogSearch extends Dialog{
 
     private static final String TAG = DialogSearch.class.getSimpleName();
     private static final int SEARCH_HISTORY_COUNT = 10;
-    private static final int SEARCH_CHINESE_CONTENT_LENGTH = 35;
-    private static final int SEARCH_ALPHA_CONTENT_LENGTH = 60;
     private static final int SEARCH_PAGE_ONE_TIME = 20;
 
     private ReaderDataHolder readerDataHolder;
@@ -81,6 +80,8 @@ public class DialogSearch extends Dialog{
     private List<SearchHistory> historyList = new ArrayList<>();
     private String searchText;
     private int searchRows = 0;
+    private int searchChineseContentLength = 0;
+    private int searchAlphaContentLength = 0;
 
     public DialogSearch(final ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar);
@@ -88,6 +89,9 @@ public class DialogSearch extends Dialog{
         setContentView(R.layout.dialog_search);
         this.readerDataHolder = readerDataHolder;
         searchRows = getContext().getResources().getInteger(R.integer.search_row);
+        searchChineseContentLength = getContext().getResources().getInteger(R.integer.search_chinese_content_length);
+        searchAlphaContentLength = getContext().getResources().getInteger(R.integer.search_alpha_content_length);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         init();
     }
 
@@ -305,7 +309,7 @@ public class DialogSearch extends Dialog{
             @Override
             public void run() {
                 reset();
-                int contentLength = ReaderTextSplitterImpl.isAlpha(searchText.charAt(0)) ? SEARCH_ALPHA_CONTENT_LENGTH : SEARCH_CHINESE_CONTENT_LENGTH;
+                int contentLength = ReaderTextSplitterImpl.isAlpha(searchText.charAt(0)) ? searchAlphaContentLength : searchChineseContentLength;
                 searchContentAction = new SearchContentAction(searchText, contentLength, startPage, SEARCH_PAGE_ONE_TIME * searchRows);
                 searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
                     @Override
@@ -400,8 +404,10 @@ public class DialogSearch extends Dialog{
 
         public void bindView(ReaderSelection selection,String search){
             readerSelection = selection;
-            String leftText = StringUtils.deleteNewlineSymbol(selection.getLeftText().trim());
-            String rightText = StringUtils.deleteNewlineSymbol(selection.getRightText().trim());
+            String leftText = StringUtils.deleteNewlineSymbol(StringUtils.leftTrim(selection.getLeftText()));
+            String rightText = StringUtils.deleteNewlineSymbol(StringUtils.rightTrim(selection.getRightText()));
+            leftText = removeUselessLetters(search, leftText, true);
+            rightText = removeUselessLetters(search, rightText, false);
             String content = leftText + search + rightText;
             SpannableStringBuilder style = new SpannableStringBuilder(content);
             int start = leftText.length();
@@ -487,5 +493,27 @@ public class DialogSearch extends Dialog{
         if (startPage >= readerDataHolder.getPageCount()){
             Toast.makeText(getContext(), getContext().getString(R.string.search_end), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String removeUselessLetters(String search, String content, boolean first){
+        if (!ReaderTextSplitterImpl.isAlpha(search.charAt(0))){
+            return content;
+        }
+
+        if (first){
+            content = StringUtils.leftTrim(content);
+            int firstSpaceIndex = content.indexOf(' ');
+            if (firstSpaceIndex >= 0){
+                content = content.substring(firstSpaceIndex);
+            }
+        }else {
+            content = StringUtils.rightTrim(content);
+            int endSpaceIndex = content.lastIndexOf(' ');
+            if (endSpaceIndex >= 0){
+                content = content.substring(0,endSpaceIndex);
+            }
+        }
+
+        return content;
     }
 }

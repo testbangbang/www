@@ -15,8 +15,9 @@
         android:layout_height="match_parent">
 
         <ImageView
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
             android:id="@+id/image_view"
-            android:scaleType="center"
             android:layout_above="@+id/text_view_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

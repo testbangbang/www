@@ -19,6 +19,6 @@ LOCAL_SRC_FILES := \
     onyx_algorithm.cpp
 
 
-LOCAL_LDLIBS := -llog -lz
+LOCAL_LDLIBS := -llog -lz -ljnigraphics
 LOCAL_SHARED_LIBRARIES := hw_colorpen
 include $(BUILD_SHARED_LIBRARY)

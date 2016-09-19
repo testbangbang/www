@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.app.Activity;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -10,9 +11,12 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.host.request.*;
+import com.onyx.kreader.host.request.CreateViewRequest;
+import com.onyx.kreader.host.request.LoadDocumentOptionsRequest;
+import com.onyx.kreader.host.request.OpenRequest;
+import com.onyx.kreader.host.request.RestoreRequest;
+import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
@@ -29,7 +33,6 @@ import com.onyx.kreader.utils.DeviceUtils;
 public class OpenDocumentAction extends BaseAction {
     private Activity activity;
     private String documentPath;
-    private DialogLoading dialogLoading;
     private DataManager dataProvider;
 
     public OpenDocumentAction(final Activity activity, final String path) {
@@ -40,7 +43,7 @@ public class OpenDocumentAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.initReaderFromPath(documentPath);
-        showLoadingDialog(readerDataHolder);
+        showLoadingDialog(readerDataHolder, R.string.loading_document);
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
                 readerDataHolder.getReader().getDocumentMd5());
         dataProvider.submit(readerDataHolder.getContext(), loadDocumentOptionsRequest, new BaseCallback() {
@@ -120,31 +123,9 @@ public class OpenDocumentAction extends BaseAction {
         dlg.show();
     }
 
-    private DialogLoading showLoadingDialog(final ReaderDataHolder holder) {
-        if (dialogLoading == null) {
-            dialogLoading = new DialogLoading(holder.getContext(),
-                    holder.getContext().getResources().getString(R.string.loading_document),
-                    true, new DialogLoading.Callback() {
-                @Override
-                public void onCanceled() {
-                    postQuitEvent(holder);
-                }
-            });
-        }
-        dialogLoading.show();
-        return dialogLoading;
-    }
-
     private void postQuitEvent(final ReaderDataHolder holder) {
         cleanup();
         holder.getEventBus().post(new QuitEvent());
-    }
-
-    private void hideLoadingDialog() {
-        if (dialogLoading != null) {
-            dialogLoading.dismiss();
-            dialogLoading = null;
-        }
     }
 
     private void cleanup() {

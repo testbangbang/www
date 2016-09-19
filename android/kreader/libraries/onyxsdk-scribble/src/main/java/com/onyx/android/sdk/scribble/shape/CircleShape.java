@@ -24,17 +24,17 @@ public class CircleShape extends BaseShape {
         return false;
     }
 
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
+    public void render(final RenderContext renderContext) {
         float sx = getDownPoint().getX();
         float sy = getDownPoint().getY();
         float ex = getCurrentPoint().getX();
         float ey = getCurrentPoint().getY();
         RectF rect = new RectF(sx, sy, ex, ey);
-        if (matrix != null) {
-            matrix.mapRect(rect);
+        if (renderContext.matrix != null) {
+            renderContext.matrix.mapRect(rect);
         }
-        applyStrokeStyle(paint);
-        canvas.drawOval(rect, paint);
+        applyStrokeStyle(renderContext.paint);
+        renderContext.canvas.drawOval(rect, renderContext.paint);
     }
 
 

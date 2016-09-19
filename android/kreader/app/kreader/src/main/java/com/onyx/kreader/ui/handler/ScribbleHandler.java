@@ -142,11 +142,6 @@ public class ScribbleHandler extends BaseHandler {
         shape.onMove(normalized(pageInfo, e), screenPoint(pageInfo, e));
     }
 
-    private void renderShape(final Canvas canvas, final Paint paint, final Shape shape) {
-        if (!shape.supportDFB()) {
-            shape.render(canvas, paint, null);
-        }
-    }
 
     @Override
     public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {

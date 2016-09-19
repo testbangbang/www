@@ -35,6 +35,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
@@ -378,9 +379,10 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     private void drawStashShape(final Canvas canvas, final Paint paint) {
+        final RenderContext renderContext = RenderContext.create(canvas, paint, null);;
         final List<Shape> stash = getNoteViewHelper().getDirtyStash();
         for (Shape shape : stash) {
-            shape.render(canvas, paint, null);
+            shape.render(renderContext);
         }
     }
 

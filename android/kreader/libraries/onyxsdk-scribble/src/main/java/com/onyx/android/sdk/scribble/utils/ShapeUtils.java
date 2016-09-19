@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 
 import java.util.Iterator;
 import java.util.UUID;
@@ -56,7 +57,7 @@ public class ShapeUtils {
         return UUID.randomUUID().toString();
     }
 
-    public static Path renderShape(final Canvas canvas, final Paint paint, final Matrix matrix, final TouchPointList pointList) {
+    public static Path renderShape(final RenderContext renderContext, final TouchPointList pointList) {
         if (pointList == null || pointList.size() <= 0) {
             return null;
         }
@@ -73,7 +74,7 @@ public class ShapeUtils {
             lastDst[0] = touchPoint.getX();
             lastDst[1] = touchPoint.getY();
         }
-        path.transform(matrix);
+        path.transform(renderContext.matrix);
         return path;
     }
 

@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (II[I)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_hanvon_core_Algorithm_initializeEx
-  (JNIEnv *, jclass, jint, jint, jintArray);
+  (JNIEnv *, jclass, jint, jint, jobject);
 
 /*
  * Class:     com_hanvon_core_Algorithm

@@ -18,12 +18,12 @@ public class TexShape extends BaseShape  {
         return ShapeFactory.SHAPE_TEXT;
     }
 
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
+    public void render(final RenderContext renderContext) {
         float left = Math.min(getDownPoint().x, getCurrentPoint().x);
         float height = Math.abs(getDownPoint().y - getCurrentPoint().y);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setTextSize(height / 2);
-        canvas.drawText("Sample text", left, getCurrentPoint().y, paint);
+        renderContext.paint.setStyle(Paint.Style.STROKE);
+        renderContext.paint.setTextSize(height / 2);
+        renderContext.canvas.drawText("Sample text", left, getCurrentPoint().y, renderContext.paint);
     }
 
 }

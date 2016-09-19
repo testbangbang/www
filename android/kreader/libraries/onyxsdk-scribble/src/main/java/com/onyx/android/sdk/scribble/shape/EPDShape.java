@@ -44,7 +44,7 @@ public class EPDShape extends BaseShape {
         EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
     }
 
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
+    public void render(final RenderContext renderContext) {
     }
 
 }

@@ -185,7 +185,7 @@ public class ReadingHandler extends BaseHandler{
         boolean hit = (x >= point.x - margin && x < point.x + bitmap.getWidth() + margin &&
                 y >= point.y - margin && y < point.y + bitmap.getHeight() + margin);
         if (hit) {
-            toggleBookmark(readerDataHolder);
+            getParent().toggleBookmark(readerDataHolder);
         }
         return hit;
     }
@@ -213,26 +213,6 @@ public class ReadingHandler extends BaseHandler{
         Point point = new Point();
         point.set(readerDataHolder.getDisplayWidth() - bitmap.getWidth(), 10);
         return point;
-    }
-
-    public final PageInfo getFirstPageInfo(ReaderDataHolder readerDataHolder) {
-        return readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
-    }
-
-    private void toggleBookmark(ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.hasBookmark()) {
-            removeBookmark(readerDataHolder);
-        } else {
-            addBookmark(readerDataHolder);
-        }
-    }
-
-    private void removeBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder);
-    }
-
-    private void addBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder);
     }
 
     public void beforePageChangeByUser() {

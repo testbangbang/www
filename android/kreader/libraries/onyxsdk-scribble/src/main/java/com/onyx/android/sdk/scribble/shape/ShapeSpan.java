@@ -51,8 +51,9 @@ public class ShapeSpan extends ReplacementSpan {
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1.0f * scale);
+        RenderContext renderContext = RenderContext.create(canvas, paint, matrix);
         for (Shape shape : shapeList) {
-            shape.render(canvas, paint, matrix);
+            shape.render(renderContext);
         }
     }
 

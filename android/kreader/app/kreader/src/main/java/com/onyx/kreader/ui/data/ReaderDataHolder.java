@@ -23,11 +23,7 @@ import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.events.ChangeEpdUpdateMode;
-import com.onyx.kreader.ui.events.DocumentOpenEvent;
-import com.onyx.kreader.ui.events.RequestFinishEvent;
-import com.onyx.kreader.ui.events.ResetEpdUpdateMode;
-import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
+import com.onyx.kreader.ui.events.*;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -126,7 +122,7 @@ public class ReaderDataHolder {
     }
 
     public void onDocumentInitRendered() {
-
+        getEventBus().post(new DocumentInitRendered());
     }
 
     public boolean isDocumentOpened() {

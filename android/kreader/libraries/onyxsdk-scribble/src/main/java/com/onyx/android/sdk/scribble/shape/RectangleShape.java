@@ -19,16 +19,16 @@ public class RectangleShape extends BaseShape {
         return false;
     }
 
-    public void render(final Canvas canvas, final Paint paint, final Matrix matrix) {
+    public void render(final RenderContext renderContext) {
         RectF rect = new RectF(getDownPoint().x,
                 getDownPoint().y,
                 getCurrentPoint().x,
                 getCurrentPoint().y);
-        applyStrokeStyle(paint);
-        if (matrix != null) {
-            matrix.mapRect(rect);
+        applyStrokeStyle(renderContext.paint);
+        if (renderContext.matrix != null) {
+            renderContext.matrix.mapRect(rect);
         }
-        canvas.drawRect(rect, paint);
+        renderContext.canvas.drawRect(rect, renderContext.paint);
     }
 
 
