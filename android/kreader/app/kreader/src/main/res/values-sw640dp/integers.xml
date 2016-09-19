@@ -5,6 +5,6 @@
     <integer name="annotation_row">4</integer>
     <integer name="search_row">8</integer>
     <integer name="quick_view_default_grid_type">1</integer>
-    <integer name="search_chinese_content_length">35</integer>
-    <integer name="search_alpha_content_length">65</integer>
+    <integer name="search_chinese_content_length">45</integer>
+    <integer name="search_alpha_content_length">80</integer>
 </resources>
