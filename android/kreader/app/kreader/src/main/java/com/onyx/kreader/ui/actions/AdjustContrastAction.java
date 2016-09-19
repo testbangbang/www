@@ -33,7 +33,7 @@ public class AdjustContrastAction extends BaseAction {
                         GammaCorrectionRequest request = new GammaCorrectionRequest(oldValue);
                         readerDataHolder.submitRenderRequest(request);
                     }
-                    hideContrastDialog();
+                    hideContrastDialog(readerDataHolder);
                 }
             };
             float current = readerDataHolder.getReader().getDocumentOptions().getGammaLevel();
@@ -45,16 +45,14 @@ public class AdjustContrastAction extends BaseAction {
 
         }
         contrastDialog.show();
+        readerDataHolder.addActiveDialog(contrastDialog);
         return contrastDialog;
     }
 
-    public DialogSetValue getContrastDialog() {
-        return contrastDialog;
-    }
-
-    private void hideContrastDialog() {
+    private void hideContrastDialog(final ReaderDataHolder readerDataHolder) {
         if (contrastDialog != null) {
             contrastDialog.dismiss();
+            readerDataHolder.removeActiveDialog(contrastDialog);
             contrastDialog = null;
         }
     }

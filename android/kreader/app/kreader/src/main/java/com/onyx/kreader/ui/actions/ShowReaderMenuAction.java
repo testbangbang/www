@@ -52,9 +52,6 @@ public class ShowReaderMenuAction extends BaseAction {
     private static ReaderLayerMenu readerMenu;
     private static ReaderLayerMenuState state;
 
-    private static Dialog currentDialog;
-    private static OnyxAlertDialog alertDialog;
-
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
         readerActivity = (ReaderActivity)readerDataHolder.getContext();
@@ -62,14 +59,6 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     public static void resetReaderMenu(final ReaderDataHolder readerDataHolder) {
-        if (currentDialog != null && currentDialog.isShowing()) {
-            currentDialog.dismiss();
-            currentDialog = null;
-        }
-        if (alertDialog != null) {
-            alertDialog.dismiss();
-            alertDialog = null;
-        }
         if (readerMenu != null) {
             readerMenu.hide();
             readerMenu = null;
@@ -318,33 +307,30 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void showNavigationSettingsDialog(ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        currentDialog = new DialogNavigationSettings(readerDataHolder);
-        currentDialog.show();
+        Dialog dlg = new DialogNavigationSettings(readerDataHolder);
+        dlg.show();
+        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void adjustContrast(final ReaderDataHolder readerDataHolder) {
         final AdjustContrastAction action = new AdjustContrastAction();
         action.execute(readerDataHolder);
-        currentDialog = action.getContrastDialog();
     }
 
     private void adjustEmbolden(final ReaderDataHolder readerDataHolder) {
         final EmboldenAction action = new EmboldenAction();
         action.execute(readerDataHolder);
-        currentDialog = action.getEmboldenDialog();
     }
 
     private void imageReflow(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         final ImageReflowAction action = new ImageReflowAction();
         action.execute(readerDataHolder);
-        currentDialog = action.getDialog();
     }
 
     private void showTocDialog(final ReaderDataHolder readerDataHolder, DialogTableOfContent.DirectoryTab tab) {
         final GetDocumentInfoAction action = new GetDocumentInfoAction(tab);
         action.execute(readerDataHolder);
-        currentDialog = action.getDialog();
     }
 
     private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {
@@ -377,12 +363,13 @@ public class ShowReaderMenuAction extends BaseAction {
             }
         });
         dlg.show(readerActivity.getFragmentManager());
-        alertDialog = dlg;
+        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void showBrightnessDialog(ReaderDataHolder readerDataHolder){
-        currentDialog = new DialogBrightness(readerDataHolder.getContext());
-        currentDialog.show();
+        Dialog dlg = new DialogBrightness(readerDataHolder.getContext());
+        dlg.show();
+        readerDataHolder.addActiveDialog(dlg);
     }
 
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
@@ -402,15 +389,15 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
-        currentDialog = new DialogSearch(readerDataHolder);
-        currentDialog.show();
+        Dialog dlg = new DialogSearch(readerDataHolder);
+        dlg.show();
+        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         StartTtsAction action = new StartTtsAction();
         action.execute(readerDataHolder);
-        currentDialog = action.getDialog();
     }
 
     private void showReaderSettings(final ReaderDataHolder readerDataHolder) {

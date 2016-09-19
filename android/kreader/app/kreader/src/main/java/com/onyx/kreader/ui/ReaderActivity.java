@@ -147,7 +147,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void resetMenus() {
-        ShowReaderMenuAction.hideReaderMenu();
+        hideAllPopupMenu();
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         ShowSearchMenuAction.resetSearchMenu();
         ShowTextSelectionMenuAction.resetSelectionMenu();
@@ -398,9 +398,21 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
+        if (isFileAlreadyOpened(path)) {
+            return;
+        }
+        
+        resetMenus();
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder());
         releaseStartupWakeLock();
+    }
+
+    private boolean isFileAlreadyOpened(final String path) {
+        if (getReaderDataHolder() == null || StringUtils.isBlank(getReaderDataHolder().getDocumentPath())) {
+            return false;
+        }
+        return path.equals(getReaderDataHolder().getDocumentPath());
     }
 
     private void gotoPage(int page) {
@@ -497,6 +509,8 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void hideAllPopupMenu() {
         ShowReaderMenuAction.hideReaderMenu();
+        ShowTextSelectionMenuAction.hideTextSelectionPopupMenu();
+        getReaderDataHolder().closeActiveDialogs();
     }
 
     protected boolean askForClose() {

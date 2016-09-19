@@ -14,7 +14,6 @@ import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import java.util.List;
 
 public class GetDocumentInfoAction extends BaseAction {
-    private Dialog dialog;
     private DialogTableOfContent.DirectoryTab tab;
 
     public GetDocumentInfoAction(DialogTableOfContent.DirectoryTab tab) {
@@ -34,16 +33,13 @@ public class GetDocumentInfoAction extends BaseAction {
         });
     }
 
-    public Dialog getDialog() {
-        return dialog;
-    }
-
     private void showTableOfContentDialog(final ReaderDataHolder readerDataHolder,
                                           final ReaderDocumentTableOfContent tableOfContent,
                                           final List<Bookmark> bookmarks,
                                           final List<Annotation> annotations) {
-        dialog = new DialogTableOfContent(readerDataHolder, tab, tableOfContent, bookmarks, annotations);
+        Dialog dialog = new DialogTableOfContent(readerDataHolder, tab, tableOfContent, bookmarks, annotations);
         dialog.show();
+        readerDataHolder.addActiveDialog(dialog);
     }
 
 }
