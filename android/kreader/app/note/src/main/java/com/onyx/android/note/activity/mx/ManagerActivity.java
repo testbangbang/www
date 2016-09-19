@@ -21,6 +21,8 @@ import com.onyx.android.note.dialog.DialogChooseScribbleMode;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapterUtil;
@@ -257,7 +259,8 @@ public class ManagerActivity extends BaseManagerActivity {
     @Override
     protected void onResume() {
         // TODO:as mx request,we throw all state after leave this activity,and force to normal mode when we came back.
-         currentSelectMode = SelectionMode.NORMAL_MODE;
+        currentSelectMode = SelectionMode.NORMAL_MODE;
+        EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
         super.onResume();
     }
 
