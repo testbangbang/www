@@ -39,6 +39,7 @@ public class ShowQuickPreviewAction extends BaseAction {
             }
         });
         dialogQuickPreview.show();
+        readerDataHolder.addActiveDialog(dialogQuickPreview);
     }
 
     private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final Size desiredSize) {

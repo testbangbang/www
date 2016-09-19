@@ -30,7 +30,7 @@ public class GotoPageDialogAction extends BaseAction {
                         final GotoPageAction action = new GotoPageAction(String.valueOf(oldValue - 1));
                         action.execute(readerDataHolder);
                     }
-                    hideGotoDialog();
+                    dismissGotoDialog();
                 }
             };
             gotoPageDialog = new DialogSetValue(readerDataHolder.getContext(), readerDataHolder.getCurrentPage() + 1, 1,
@@ -42,9 +42,9 @@ public class GotoPageDialogAction extends BaseAction {
         return gotoPageDialog;
     }
 
-    private void hideGotoDialog() {
+    private void dismissGotoDialog() {
         if (gotoPageDialog != null) {
-            gotoPageDialog.hide();
+            gotoPageDialog.dismiss();
             gotoPageDialog = null;
         }
     }

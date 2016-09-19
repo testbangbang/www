@@ -35,7 +35,10 @@ public class ShowTextSelectionMenuAction{
     }
 
     public static void resetSelectionMenu() {
-        popupSelectionMenu = null;
+        if (popupSelectionMenu != null) {
+            popupSelectionMenu.hide();
+            popupSelectionMenu = null;
+        }
     }
 
     private static PopupSelectionMenu getTextSelectionPopupMenu(final ReaderDataHolder readerDataHolder) {

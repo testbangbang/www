@@ -31,7 +31,7 @@ public class EmboldenAction extends BaseAction {
                         EmboldenGlyphRequest request = new EmboldenGlyphRequest(oldValue);
                         readerDataHolder.submitRenderRequest(request);
                     }
-                    hideEmboldenDialog();
+                    hideEmboldenDialog(readerDataHolder);
                 }
             };
             int current = readerDataHolder.getReader().getDocumentOptions().getEmboldenLevel();
@@ -43,12 +43,14 @@ public class EmboldenAction extends BaseAction {
                     readerDataHolder.getContext().getString(R.string.embolden_level), callback);
         }
         emboldenDialog.show();
+        readerDataHolder.addActiveDialog(emboldenDialog);
         return emboldenDialog;
     }
 
-    private void hideEmboldenDialog() {
+    private void hideEmboldenDialog(final ReaderDataHolder readerDataHolder) {
         if (emboldenDialog != null) {
-            emboldenDialog.hide();
+            emboldenDialog.dismiss();
+            readerDataHolder.removeActiveDialog(emboldenDialog);
             emboldenDialog = null;
         }
     }

@@ -1,5 +1,7 @@
 package com.onyx.kreader.ui.data;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Rect;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -29,6 +31,9 @@ import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by ming on 16/7/27.
  */
@@ -54,6 +59,11 @@ public class ReaderDataHolder {
     private EventBus eventBus = new EventBus();
 
     private int optionsSkippedTimes = 0;
+
+    /**
+     * can be either Dialog or DialogFragment, so we store it as basic Object
+     */
+    private Set<Object> activeDialogs = new HashSet<>();
 
     public ReaderDataHolder(Context context){
         this.context = context;
@@ -324,9 +334,38 @@ public class ReaderDataHolder {
         eventBus.post(new ShowReaderSettingsEvent());
     }
 
+    public void addActiveDialog(Dialog dialog) {
+        activeDialogs.add(dialog);
+    }
+
+    public void addActiveDialog(DialogFragment dialog) {
+        activeDialogs.add(dialog);
+    }
+
+    public void removeActiveDialog(Dialog dialog) {
+        activeDialogs.remove(dialog);
+    }
+
+    public void removeActiveDialog(DialogFragment dialog) {
+        activeDialogs.remove(dialog);
+    }
+
+    public void closeActiveDialogs() {
+        for (Object dialog : activeDialogs) {
+            if (dialog instanceof Dialog) {
+                ((Dialog) dialog).dismiss();
+            }
+            if (dialog instanceof DialogFragment) {
+                ((DialogFragment) dialog).dismiss();
+            }
+        }
+        activeDialogs.clear();
+    }
+
     public void destroy() {
         closeDocument();
         closeTts();
+        closeActiveDialogs();
     }
 
     private void closeDocument() {

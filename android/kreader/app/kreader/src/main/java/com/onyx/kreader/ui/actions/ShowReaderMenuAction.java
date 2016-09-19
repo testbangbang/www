@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -57,7 +59,10 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     public static void resetReaderMenu(final ReaderDataHolder readerDataHolder) {
-        readerMenu = null;
+        if (readerMenu != null) {
+            readerMenu.hide();
+            readerMenu = null;
+        }
     }
 
     public static boolean isReaderMenuShown() {
@@ -302,8 +307,9 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void showNavigationSettingsDialog(ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        DialogNavigationSettings dlg = new DialogNavigationSettings(readerDataHolder);
+        Dialog dlg = new DialogNavigationSettings(readerDataHolder);
         dlg.show();
+        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void adjustContrast(final ReaderDataHolder readerDataHolder) {
@@ -357,10 +363,13 @@ public class ShowReaderMenuAction extends BaseAction {
             }
         });
         dlg.show(readerActivity.getFragmentManager());
+        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void showBrightnessDialog(ReaderDataHolder readerDataHolder){
-        new DialogBrightness(readerDataHolder.getContext()).show();
+        Dialog dlg = new DialogBrightness(readerDataHolder.getContext());
+        dlg.show();
+        readerDataHolder.addActiveDialog(dlg);
     }
 
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
@@ -380,13 +389,15 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
-        DialogSearch dialogSearch = new DialogSearch(readerDataHolder);
-        dialogSearch.show();
+        Dialog dlg = new DialogSearch(readerDataHolder);
+        dlg.show();
+        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
-        new StartTtsAction().execute(readerDataHolder);
+        StartTtsAction action = new StartTtsAction();
+        action.execute(readerDataHolder);
     }
 
     private void showReaderSettings(final ReaderDataHolder readerDataHolder) {

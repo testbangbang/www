@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.dialog;
 
+import android.content.DialogInterface;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
@@ -142,6 +143,13 @@ public class DialogNavigationSettings extends DialogBase {
         mCropContentView.setAdapter(mCropAdapter, 0);
         mSubScreenContentView.setAdapter(mSubScreenAdapter, 0);
         mNavigationContentView.setAdapter(mNavigationAdapter, 0);
+
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                readerDataHolder.removeActiveDialog(DialogNavigationSettings.this);
+            }
+        });
     }
 
     private void setupContentView(final ContentView view, int rows, int columns, int layoutId, final ObjectSelectedCallback callback) {
