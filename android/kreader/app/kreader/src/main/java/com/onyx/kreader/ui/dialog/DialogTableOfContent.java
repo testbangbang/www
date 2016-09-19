@@ -396,7 +396,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                     return;
                 }
                 if (PagePositionUtils.isValidPosition(entry.getPosition())) {
-                    DialogTableOfContent.this.hide();
+                    DialogTableOfContent.this.dismiss();
                     new GotoPageAction(entry.getPosition()).execute(readerDataHolder);
                 }
             }

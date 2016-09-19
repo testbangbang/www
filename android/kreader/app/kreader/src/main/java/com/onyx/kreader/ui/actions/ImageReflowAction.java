@@ -46,6 +46,10 @@ public class ImageReflowAction extends BaseAction {
         }
     }
 
+    public DialogReflowSettings getDialog() {
+        return reflowSettingsDialog;
+    }
+
     private void hideReflowSettingsDialog() {
         if (reflowSettingsDialog != null) {
             reflowSettingsDialog.dismiss();

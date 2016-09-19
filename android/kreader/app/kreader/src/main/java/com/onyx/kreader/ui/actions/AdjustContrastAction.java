@@ -48,9 +48,13 @@ public class AdjustContrastAction extends BaseAction {
         return contrastDialog;
     }
 
+    public DialogSetValue getContrastDialog() {
+        return contrastDialog;
+    }
+
     private void hideContrastDialog() {
         if (contrastDialog != null) {
-            contrastDialog.hide();
+            contrastDialog.dismiss();
             contrastDialog = null;
         }
     }

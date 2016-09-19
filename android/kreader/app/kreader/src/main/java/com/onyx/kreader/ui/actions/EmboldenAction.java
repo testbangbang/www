@@ -46,9 +46,13 @@ public class EmboldenAction extends BaseAction {
         return emboldenDialog;
     }
 
+    public DialogSetValue getEmboldenDialog() {
+        return emboldenDialog;
+    }
+
     private void hideEmboldenDialog() {
         if (emboldenDialog != null) {
-            emboldenDialog.hide();
+            emboldenDialog.dismiss();
             emboldenDialog = null;
         }
     }

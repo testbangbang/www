@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 
+import android.app.Dialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Annotation;
@@ -13,7 +14,7 @@ import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import java.util.List;
 
 public class GetDocumentInfoAction extends BaseAction {
-
+    private Dialog dialog;
     private DialogTableOfContent.DirectoryTab tab;
 
     public GetDocumentInfoAction(DialogTableOfContent.DirectoryTab tab) {
@@ -33,12 +34,16 @@ public class GetDocumentInfoAction extends BaseAction {
         });
     }
 
+    public Dialog getDialog() {
+        return dialog;
+    }
+
     private void showTableOfContentDialog(final ReaderDataHolder readerDataHolder,
                                           final ReaderDocumentTableOfContent tableOfContent,
                                           final List<Bookmark> bookmarks,
                                           final List<Annotation> annotations) {
-        DialogTableOfContent dlg = new DialogTableOfContent(readerDataHolder, tab, tableOfContent, bookmarks, annotations);
-        dlg.show();
+        dialog = new DialogTableOfContent(readerDataHolder, tab, tableOfContent, bookmarks, annotations);
+        dialog.show();
     }
 
 }
