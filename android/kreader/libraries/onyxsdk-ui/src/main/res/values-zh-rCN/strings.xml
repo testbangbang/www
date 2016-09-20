@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="outOfRangRerror">Out of Range</string>
+    <string name="illegalInput">Illegal Input</string>
+</resources>
