@@ -47,6 +47,14 @@ public class TouchPoint implements Serializable {
         timestamp = motionEvent.getEventTime();
     }
 
+    public TouchPoint(final TouchPoint source) {
+        x = source.getX();
+        y = source.getY();
+        pressure = source.getPressure();
+        size = source.getSize();
+        timestamp = source.getTimestamp();
+    }
+
     public void set(final TouchPoint point) {
         x = point.x;
         y = point.y;
