@@ -3,7 +3,6 @@ package com.onyx.android.sdk.scribble.data;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -295,7 +294,7 @@ public class NoteDocument {
         return gotoPage(currentPageIndex - 1);
     }
 
-    private boolean gotoPage(final int index) {
+    public boolean gotoPage(final int index) {
         if (index >= 0 && index < pageDataMap.size()) {
             currentPageIndex = index;
             return true;

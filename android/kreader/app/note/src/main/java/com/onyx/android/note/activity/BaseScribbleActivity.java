@@ -60,6 +60,8 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected String parentID;
     protected Button pageIndicator;
     boolean isSurfaceViewFirstCreated = false;
+    protected int currentVisualPageIndex;
+    protected int totalPageCount;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY};
     private ActivityState activityState;
@@ -152,10 +154,10 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     protected void updateDataInfo(final BaseNoteRequest request) {
         shapeDataInfo = request.getShapeDataInfo();
-        int currentPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
-        int pageCount = shapeDataInfo.getPageCount();
+        currentVisualPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
+        totalPageCount = shapeDataInfo.getPageCount();
         if (pageIndicator != null) {
-            pageIndicator.setText(currentPageIndex + File.separator + pageCount);
+            pageIndicator.setText(currentVisualPageIndex + File.separator + totalPageCount);
         }
     }
 

@@ -1,296 +1,262 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
-import android.content.Context;
+import android.app.FragmentManager;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.utils.InputMethodUtils;
 
 
 /**
- * Created by Solskjaer49 on 2014/4/15.
+ * Created by Solskjaer49 on 2016/9/2.
  */
-public class DialogSetValue extends Dialog {
-    public DialogSetValue(Context context) {
-        super(context);
+public class DialogSetValue extends OnyxAlertDialog {
+    static final public String ARGS_DIALOG_TITLE = "args_dialog_title";
+    static final public String ARGS_VALUE_TITLE = "args_value_title";
+    static final public String ARGS_CHANGE_LAYOUT_IN_LOW_DPI = "args_change_layout_in_low_dpi";
+    static final public String ARGS_MIN_VALUE = "args_min_value";
+    static final public String ARGS_MAX_VALUE = "args_max_value";
+    static final public String ARGS_CURRENT_VALUE = "args_current_value";
+    static final public String ARGS_STEP_SIZE = "args_step_size";
+    static final public String ARGS_INSTANT_UPDATE = "args_instant_update";
+
+    private enum ButtonDirection {ADD, MINUS}
+
+    public interface DialogCallback {
+        void valueChange(int newValue);
+
+        void done(boolean isValueChange, int newValue);
     }
-//
-//    private enum ButtonDirection {ADD, MINUS}
-//
-//
-//    public static abstract class DialogCallback {
-//
-//        public abstract void valueChange(int newValue);
-//
-//        public abstract void done(boolean isValueChange, int newValue);
-//    }
-//
-//    private static final String TAG = DialogSetValue.class.getSimpleName();
-//    private DialogCallback mCallback;
-//    private SeekBar mValueControlSeekBar;
-//    private EditText mValueControlEditText;
-//    private ImageView addButton;
-//    private ImageView minusButton;
-//    private TextView mTittleTextView;
-//    private TextView mDialogTittleTextView;
-//    private TextView mTotalPageTextView;
-//    private Button mCancelButton;
-//    private Button mConfirmButton;
-//
-//    private int mSeekBarMinValue = 0;
-//    private int mSeekBarMaxValue;
-//    private int mSeekBarRange = 0;
-//    private int previousValue;
-//    private int stepSize = 1;
-//    private String outOfRangeErrorString;
-//    private String illegalErrorString;
-//    private InputMethodManager im;
-//
-//    public DialogSetValue(Context context, int currentProgress, int minValue, int maxValue,
-//                          boolean isNeedInstantUpdate, boolean isCustomizedArea, int dialogTittleResID,
-//                          int valueTittleResID, final DialogCallback callback) {
-//        this(context, com.onyx.android.sdk.R.layout.dialog_set_value, currentProgress, minValue, maxValue, isNeedInstantUpdate, isCustomizedArea,
-//                context.getResources().getString(dialogTittleResID),
-//                context.getResources().getString(valueTittleResID), callback);
-//    }
-//
-//    public DialogSetValue(Context context, int currentProgress, int minValue, int maxValue,
-//                          boolean isNeedInstantUpdate, boolean isCustomizedArea, String dialogTittle,
-//                          String valueTittle, final DialogCallback callback) {
-//        this(context, com.onyx.android.sdk.R.layout.dialog_set_value, currentProgress, minValue, maxValue, isNeedInstantUpdate, isCustomizedArea,
-//                dialogTittle,
-//                valueTittle, callback);
-//    }
-//
-//    public DialogSetValue(Context context, int layoutID, int currentProgress, int minValue, int maxValue,
-//                          boolean isNeedInstantUpdate, boolean isCustomizedArea, int dialogTittleResID,
-//                          int valueTittleResID, final DialogCallback callback) {
-//        this(context, layoutID, currentProgress, minValue, maxValue, isNeedInstantUpdate, isCustomizedArea,
-//                context.getResources().getString(dialogTittleResID),
-//                context.getResources().getString(valueTittleResID), callback);
-//    }
-//
-//    public DialogSetValue(Context context, int layoutID, int currentProgress, int minValue, int maxValue,
-//                          boolean isNeedInstantUpdate, boolean isCustomizedArea, String dialogTittle,
-//                          String valueTittle, final DialogCallback callback) {
-//        super(context);
-//        setCanceledOnTouchOutside(false);
-//        this.setContentView(layoutID);
-//        mCallback = callback;
-//        previousValue = currentProgress;
-//        mSeekBarMaxValue = maxValue;
-//        mSeekBarMinValue = minValue;
-//        mSeekBarRange = mSeekBarMaxValue - mSeekBarMinValue;
-//        outOfRangeErrorString = context.getString(com.onyx.android.sdk.R.string.outOfRangRerror);
-//        illegalErrorString = context.getString(com.onyx.android.sdk.R.string.illegalInput);
-//        im = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-//        initViews(isCustomizedArea);
-//        initData(dialogTittle, valueTittle, currentProgress, maxValue);
-//        if (isNeedInstantUpdate) {
-//            updateStatus(currentProgress, maxValue);
-//        }
-//        bindListener();
-//    }
-//
-//    private void initData(String dialogTittle, String valueTittle, int currentProgress, int size) {
-//        if (valueTittle != null && mTittleTextView != null) {
-//            mTittleTextView.setText(valueTittle);
-//        }
-//        if (dialogTittle != null && mDialogTittleTextView != null) {
-//            mDialogTittleTextView.setText(dialogTittle);
-//        }
-//        if (mTotalPageTextView != null) {
-//            mTotalPageTextView.setText(Integer.toString(size));
-//        }
-//        mValueControlSeekBar.setProgress(currentProgress - mSeekBarMinValue);
-//        mValueControlEditText.setText(Integer.toString(mValueControlSeekBar.getProgress() + mSeekBarMinValue));
-//    }
-//
-//
-//    private void initViews(boolean isCustomizedArea) {
-//        mValueControlSeekBar = (SeekBar) findViewById(com.onyx.android.sdk.R.id.seekBar_valueControl);
-//        mValueControlEditText = (EditText) findViewById(com.onyx.android.sdk.R.id.editText_ValueInput);
-//        mDialogTittleTextView = (TextView) findViewById(com.onyx.android.sdk.R.id.textView_dialog_Tittle);
-//        mTittleTextView = (TextView) findViewById(com.onyx.android.sdk.R.id.textView_tittle);
-//        mTotalPageTextView = (TextView) findViewById(com.onyx.android.sdk.R.id.textView_page_count);
-//        addButton = (ImageView) findViewById(com.onyx.android.sdk.R.id.imageView_AddButton);
-//        minusButton = (ImageView) findViewById(com.onyx.android.sdk.R.id.imageView_MinusButton);
-//        mCancelButton = (Button) findViewById(com.onyx.android.sdk.R.id.button_Cancel);
-//        mConfirmButton = (Button) findViewById(com.onyx.android.sdk.R.id.button_Confirm);
-//        if (isCustomizedArea) {
-//            LinearLayout mCustomizedLayout = (LinearLayout) findViewById(com.onyx.android.sdk.R.id.customize_Area);
-//            mCustomizedLayout.setVisibility(View.VISIBLE);
-//        }
-//        mValueControlSeekBar.setMax(mSeekBarRange);
-//    }
-//
-//    private void bindListener() {
-//        mValueControlSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                setEditTextValue(progress);
-//                mValueControlEditText.setError(null);
-//                mCallback.valueChange(progress + mSeekBarMinValue);
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//                mValueControlEditText.setError(null);
-//                mValueControlEditText.clearFocus();
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//                if (im.isActive()) {
-//                    im.hideSoftInputFromWindow(mValueControlEditText.getWindowToken(),
-//                            InputMethodManager.HIDE_NOT_ALWAYS);
-//                }
-//            }
-//        });
-//        mValueControlEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                    try {
-//                        int newProgressValue = Integer.parseInt(v.getText().toString());
-//                        setSeekBarValue(newProgressValue);
-//                    } catch (Exception e) {
-//                        mValueControlEditText.setError(illegalErrorString);
-//                    }
-//                }
-//                return false;
-//            }
-//        });
-//
-//        addButton.setOnClickListener(new ValueChangeButtonOnClickListener(ButtonDirection.ADD));
-//        minusButton.setOnClickListener(new ValueChangeButtonOnClickListener(ButtonDirection.MINUS));
-//        mCancelButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mCallback.done(false, 0);
-//                dismiss();
-//            }
-//        });
-//        mConfirmButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    int editTextValue = Integer.parseInt(mValueControlEditText.getText().toString());
-//                    if (mValueControlSeekBar.getProgress() + mSeekBarMinValue ==
-//                            editTextValue) {
-//                        mCallback.done(true, mValueControlSeekBar.getProgress());
-//                        dismiss();
-//                    } else {
-//                        setSeekBarValue(editTextValue);
-//                    }
-//                } catch (Exception e) {
-//                    mValueControlEditText.setError(illegalErrorString);
-//                }
-//            }
-//        });
-//    }
-//
-//    private boolean setSeekBarValue(int newValue) {
-//        boolean succeedFlag = false;
-//        if (newValue <= mSeekBarMaxValue && newValue >= mSeekBarMinValue) {
-//            mValueControlSeekBar.setProgress(newValue - mSeekBarMinValue);
-//            setEditTextValue(newValue - mSeekBarMinValue);
-//            succeedFlag = true;
-//        } else {
-//            mValueControlEditText.setError(outOfRangeErrorString);
-//        }
-//        return succeedFlag;
-//    }
-//
-//    private boolean setEditTextValue(int graphicalValue) {
-//        boolean succeedFlag = false;
-//        if (graphicalValue <= mSeekBarRange && graphicalValue >= 0) {
-//            mValueControlEditText.setText(Integer.toString(graphicalValue + mSeekBarMinValue));
-//            succeedFlag = true;
-//        } else {
-//            mValueControlEditText.setError(outOfRangeErrorString);
-//        }
-//        return succeedFlag;
-//    }
-//
-//    public void setStepSize(int newStepSize) {
-//        this.stepSize = newStepSize;
-//    }
-//
-//    public int getCurrentStepSize() {
-//        return this.stepSize;
-//    }
-//
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            mCallback.done(false, 0);
-//            dismiss();
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
-//
-//    public void updateStatus(int curValue, int seekBarMaxValue) {
-//        this.mSeekBarMaxValue = seekBarMaxValue;
-//        if (mValueControlSeekBar != null) {
-//            mSeekBarRange = mSeekBarMaxValue - mSeekBarMinValue;
-//            mValueControlSeekBar.setMax(mSeekBarRange);
-//        }
-//        switch (curValue) {
-//            case -1:
-//                setSeekBarValue(mSeekBarMinValue);
-//                previousValue = mSeekBarMinValue;
-//                break;
-//            default:
-//                if (setSeekBarValue(curValue)) {
-//                    previousValue = curValue;
-//                }
-//                break;
-//        }
-//
-//    }
-//
-//    public void show(int windowsHeight, int windowWidth, int positionX, int positionY) {
-//        WindowManager.LayoutParams lp = this.getWindow().getAttributes();
-//        if (positionX != -1) {
-//            lp.x = positionX;
-//        }
-//        if (positionY != -1) {
-//            lp.y = positionY;
-//        }
-//        if (windowWidth >= 0) {
-//            lp.width = windowWidth;
-//        }
-//        if (windowsHeight >= 0) {
-//            lp.height = windowsHeight;
-//        }
-//        this.getWindow().setAttributes(lp);
-//        super.show();
-//    }
-//
-//    class ValueChangeButtonOnClickListener implements View.OnClickListener {
-//        ButtonDirection mDirection;
-//
-//        ValueChangeButtonOnClickListener(ButtonDirection direction) {
-//            this.mDirection = direction;
-//        }
-//
-//        @Override
-//        public void onClick(View v) {
-//            mValueControlEditText.clearFocus();
-//            if (im.isActive()) {
-//                im.hideSoftInputFromWindow(mValueControlEditText.getWindowToken(),
-//                        InputMethodManager.HIDE_NOT_ALWAYS);
-//            }
-//            switch (mDirection) {
-//                case ADD:
-//                    setSeekBarValue(mValueControlSeekBar.getProgress() + stepSize + mSeekBarMinValue);
-//                    break;
-//                case MINUS:
-//                    setSeekBarValue(mValueControlSeekBar.getProgress() - stepSize + mSeekBarMinValue);
-//                    break;
-//                default:
-//                    break;
-//            }
-//
-//        }
-//    }
+
+    private static final String TAG = DialogSetValue.class.getSimpleName();
+    private SeekBar mValueControlSeekBar;
+    private EditText mValueControlEditText;
+    private ImageView addButton;
+    private ImageView minusButton;
+    private TextView mTittleTextView;
+
+    private int seekBarMinValue = 0;
+    private int seekBarMaxValue;
+    private int seekBarRange = 0;
+    private int stepSize = 1;
+    private int currentProgress;
+    private String outOfRangeErrorString;
+    private String illegalErrorString;
+
+    public DialogSetValue setCallback(DialogCallback callback) {
+        this.callback = callback;
+        return this;
+    }
+
+    private DialogCallback callback;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK){
+                    callback.done(false,0);
+                }
+                return false;
+            }
+        });
+        return view;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        final String dialogTitle = getArguments().getString(ARGS_DIALOG_TITLE);
+        final String valueTitle = getArguments().getString(ARGS_VALUE_TITLE);
+//        final boolean changeLayoutInLowDPI = getArguments().getBoolean(ARGS_CHANGE_LAYOUT_IN_LOW_DPI);
+        final boolean isNeedInstantUpdate = getArguments().getBoolean(ARGS_INSTANT_UPDATE, true);
+        currentProgress = getArguments().getInt(ARGS_CURRENT_VALUE, 0);
+        seekBarMinValue = getArguments().getInt(ARGS_MIN_VALUE, 0);
+        seekBarMaxValue = getArguments().getInt(ARGS_MAX_VALUE, Integer.MAX_VALUE);
+        stepSize = getArguments().getInt(ARGS_STEP_SIZE, 1);
+        outOfRangeErrorString = getActivity().getString(R.string.outOfRangRerror);
+        illegalErrorString = getActivity().getString(R.string.illegalInput);
+        setParams(new Params().setTittleString(dialogTitle)
+                .setCanceledOnTouchOutside(false)
+                .setCustomContentLayoutResID(R.layout.alert_dialog_set_value)
+                .setCustomViewAction(new CustomViewAction() {
+                    @Override
+                    public void onCreateCustomView(View customView, TextView pageIndicator) {
+                        initViews(customView);
+                        mTittleTextView.setText(valueTitle);
+                        if (isNeedInstantUpdate) {
+                            updateStatus(currentProgress, seekBarMaxValue);
+                        }
+                        bindListener();
+                    }
+                }).setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            int editTextValue = Integer.parseInt(mValueControlEditText.getText().toString());
+                            if (mValueControlSeekBar.getProgress() + seekBarMinValue ==
+                                    editTextValue) {
+                                callback.done(true, mValueControlSeekBar.getProgress());
+                                dismiss();
+                            } else {
+                                setSeekBarValue(editTextValue);
+                            }
+                        } catch (Exception e) {
+                            mValueControlEditText.setError(illegalErrorString);
+                        }
+                    }
+                }).setNegativeAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        callback.done(false, 0);
+                        dismiss();
+                    }
+                }));
+        super.onCreate(savedInstanceState);
+    }
+
+    private void initViews(View parentView) {
+        mValueControlSeekBar = (SeekBar) parentView.findViewById(R.id.seekBar_valueControl);
+        mValueControlEditText = (EditText) parentView.findViewById(R.id.editText_ValueInput);
+        mTittleTextView = (TextView) parentView.findViewById(R.id.textView_tittle);
+        addButton = (ImageView) parentView.findViewById(R.id.imageView_AddButton);
+        minusButton = (ImageView) parentView.findViewById(R.id.imageView_MinusButton);
+        mValueControlSeekBar.setMax(seekBarRange);
+        mValueControlSeekBar.setProgress(currentProgress - seekBarMinValue);
+        mValueControlEditText.setText(String.format(getActivity().getResources().getConfiguration().locale,
+                "%d", mValueControlSeekBar.getProgress() + seekBarMinValue));
+    }
+
+    private void bindListener() {
+        mValueControlSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                setEditTextValue(progress);
+                mValueControlEditText.setError(null);
+                callback.valueChange(progress + seekBarMinValue);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                mValueControlEditText.setError(null);
+                mValueControlEditText.clearFocus();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                InputMethodUtils.hideInputKeyboard(getActivity());
+            }
+        });
+        mValueControlEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    try {
+                        int newProgressValue = Integer.parseInt(v.getText().toString());
+                        setSeekBarValue(newProgressValue);
+                    } catch (Exception e) {
+                        mValueControlEditText.setError(illegalErrorString);
+                    }
+                }
+                return false;
+            }
+        });
+
+        addButton.setOnClickListener(new ValueChangeButtonOnClickListener(ButtonDirection.ADD));
+        minusButton.setOnClickListener(new ValueChangeButtonOnClickListener(ButtonDirection.MINUS));
+    }
+
+    private boolean setSeekBarValue(int newValue) {
+        boolean succeedFlag = false;
+        if (newValue <= seekBarMaxValue && newValue >= seekBarMinValue) {
+            mValueControlSeekBar.setProgress(newValue - seekBarMinValue);
+            setEditTextValue(newValue - seekBarMinValue);
+            succeedFlag = true;
+        } else {
+            mValueControlEditText.setError(outOfRangeErrorString);
+        }
+        return succeedFlag;
+    }
+
+    private boolean setEditTextValue(int graphicalValue) {
+        boolean succeedFlag = false;
+        if (graphicalValue <= seekBarRange && graphicalValue >= 0) {
+            mValueControlEditText.setText(String.format(getActivity().getResources().getConfiguration().locale,
+                    "%d", graphicalValue + seekBarMinValue));
+            succeedFlag = true;
+        } else {
+            mValueControlEditText.setError(outOfRangeErrorString);
+        }
+        return succeedFlag;
+    }
+
+    public void setStepSize(int newStepSize) {
+        this.stepSize = newStepSize;
+    }
+
+    public int getCurrentStepSize() {
+        return this.stepSize;
+    }
+
+    public void updateStatus(int curValue, int seekBarMaxValue) {
+        this.seekBarMaxValue = seekBarMaxValue;
+        if (mValueControlSeekBar != null) {
+            seekBarRange = this.seekBarMaxValue - seekBarMinValue;
+            mValueControlSeekBar.setMax(seekBarRange);
+        }
+        switch (curValue) {
+            case -1:
+                setSeekBarValue(seekBarMinValue);
+                break;
+            default:
+                setSeekBarValue(curValue);
+                break;
+        }
+
+    }
+
+    private class ValueChangeButtonOnClickListener implements View.OnClickListener {
+        ButtonDirection mDirection;
+
+        ValueChangeButtonOnClickListener(ButtonDirection direction) {
+            this.mDirection = direction;
+        }
+
+        @Override
+        public void onClick(View v) {
+            mValueControlEditText.clearFocus();
+            InputMethodUtils.hideInputKeyboard(getActivity());
+            switch (mDirection) {
+                case ADD:
+                    setSeekBarValue(mValueControlSeekBar.getProgress() + stepSize + seekBarMinValue);
+                    break;
+                case MINUS:
+                    setSeekBarValue(mValueControlSeekBar.getProgress() - stepSize + seekBarMinValue);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialogInterface) {
+        super.onDismiss(dialogInterface);
+    }
+
+    public void show(FragmentManager manager) {
+        super.show(manager, TAG);
+    }
 }

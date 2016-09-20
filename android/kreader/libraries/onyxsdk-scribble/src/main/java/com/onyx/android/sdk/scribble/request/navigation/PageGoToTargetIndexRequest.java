@@ -6,15 +6,17 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 /**
  * Created by zhuzeng on 6/23/16.
  */
-public class PgaeGotoFirstRequest extends BaseNoteRequest {
+public class PageGoToTargetIndexRequest extends BaseNoteRequest {
+    private int targetIndex;
 
-    public PgaeGotoFirstRequest() {
+    public PageGoToTargetIndexRequest(int index) {
+        targetIndex = index;
         setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
-        helper.getNoteDocument().gotoFirst();
+        setResumeInputProcessor(helper.useDFBForCurrentState());
+        helper.getNoteDocument().gotoPage(targetIndex);
         renderCurrentPage(helper);
         updateShapeDataInfo(helper);
     }

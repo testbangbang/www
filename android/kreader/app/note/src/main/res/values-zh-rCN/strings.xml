@@ -35,4 +35,6 @@
     <string name="type">类型</string>
     <string name="normal_scribble">一般手写</string>
     <string name="span_scribble">矢量手写(测试)</string>
+    <string name="go_to_page">页面跳转</string>
+    <string name="current_page">当前页面</string>
 </resources>

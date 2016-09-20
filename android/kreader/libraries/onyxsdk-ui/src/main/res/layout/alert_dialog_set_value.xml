@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/alert_dialog_content_set_value"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:id="@+id/textView_tittle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/editText_ValueInput"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Current Value:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:id="@+id/editText_ValueInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/textView_tittle"
+        android:ems="3"
+        android:focusable="true"
+        android:inputType="numberDecimal"
+        android:text=""
+        android:textColor="@android:color/black" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/textView_tittle"
+        android:layout_below="@id/editText_ValueInput">
+
+        <ImageView
+            android:id="@+id/imageView_MinusButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/imagebtn_bg"
+            android:focusable="true"
+            android:src="@drawable/ic_minus_black_24dp" />
+
+        <ImageView
+            android:id="@+id/imageView_AddButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/imagebtn_bg"
+            android:focusable="true"
+            android:src="@drawable/ic_add_black_24dp" />
+
+        <SeekBar
+            android:id="@+id/seekBar_valueControl"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/imageView_AddButton"
+            android:layout_toRightOf="@id/imageView_MinusButton"
+            android:focusable="true"
+            android:max="20"/>
+    </RelativeLayout>
+</RelativeLayout>
