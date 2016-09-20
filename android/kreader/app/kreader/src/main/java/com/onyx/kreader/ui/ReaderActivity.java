@@ -24,11 +24,11 @@ import android.view.ViewTreeObserver;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
@@ -364,9 +364,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void acquireStartupWakeLock() {
         if (startupWakeLock == null) {
-            startupWakeLock = Device.currentDevice().newWakeLock(this, "ReaderActivity");
+        //    startupWakeLock = Device.currentDevice().newWakeLock(this, "ReaderActivity");
         }
-        startupWakeLock.acquire();
+        //startupWakeLock.acquire();
     }
 
     private void releaseStartupWakeLock() {
@@ -414,6 +414,7 @@ public class ReaderActivity extends ActionBarActivity {
     public void onDocumentOpened(final DocumentOpenEvent event) {
         ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this,
                 DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
+        getReaderDataHolder().getNoteManager().updateSurfaceView(surfaceView);
     }
 
     @Subscribe
@@ -488,6 +489,13 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void openBuiltInDoc() {
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
+        final String path = "/mnt/sdcard/Books/a.pdf";
+        final OpenDocumentAction action = new OpenDocumentAction(this, path);
+        action.execute(getReaderDataHolder());
+        releaseStartupWakeLock();
     }
 
     private boolean hasPopupWindow() {

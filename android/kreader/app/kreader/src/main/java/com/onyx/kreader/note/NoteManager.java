@@ -17,6 +17,7 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.data.ReaderNoteDocument;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
@@ -31,7 +32,7 @@ import java.util.List;
 public class NoteManager {
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
-    private RawInputProcessor rawInputProcessor = new RawInputProcessor();
+    private NoteEventProcessorManager noteEventProcessorManager;
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
@@ -43,8 +44,7 @@ public class NoteManager {
     private DeviceConfig deviceConfig;
     private Shape currentShape = null;
     private boolean shortcutErasing = false;
-    private OnyxMatrix viewToEpdMatrix = null;
-    private int viewPosition[] = {0, 0};
+
 
     public final RequestManager getRequestManager() {
         return requestManager;
@@ -52,6 +52,21 @@ public class NoteManager {
 
     public final ReaderNoteDocument getNoteDocument() {
         return noteDocument;
+    }
+
+    public void updateSurfaceView(final SurfaceView sv) {
+        surfaceView = sv;
+        OnyxMatrix onyxMatrix = new OnyxMatrix();
+        onyxMatrix.postRotate(270);
+        onyxMatrix.postTranslate(0, 825);
+        getNoteEventProcessorManager().update(surfaceView, onyxMatrix, null);
+    }
+
+    public final NoteEventProcessorManager getNoteEventProcessorManager() {
+        if (noteEventProcessorManager == null) {
+            noteEventProcessorManager = new NoteEventProcessorManager();
+        }
+        return noteEventProcessorManager;
     }
 
     public void updateShapeDataInfo(final Context context, final ReaderNoteDataInfo shapeDataInfo) {

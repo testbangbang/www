@@ -26,7 +26,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private String parentLibraryId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
-    private boolean debugPathBenchmark = true;
+    private boolean debugPathBenchmark = false;
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = false;
     private volatile boolean render = true;

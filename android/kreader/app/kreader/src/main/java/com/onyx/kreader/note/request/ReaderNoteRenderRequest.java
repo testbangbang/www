@@ -21,9 +21,8 @@ public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
         loadShapeData(noteManager);
-        boolean contentRendered = renderVisiblePages(noteManager);
+        getShapeDataInfo().setContentRendered(renderVisiblePages(noteManager));
         updateShapeDataInfo(noteManager);
-        getShapeDataInfo().setContentRendered(contentRendered);
     }
 
     public void loadShapeData(final NoteManager parent) {
