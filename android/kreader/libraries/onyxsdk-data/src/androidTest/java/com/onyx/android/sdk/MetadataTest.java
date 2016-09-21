@@ -6,9 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
-import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.SortOrder;
@@ -17,6 +15,7 @@ import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.cache.LibraryCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Library_Table;
@@ -734,7 +733,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         // test new book
         args = MetadataQueryArgsBuilder.libraryNewBookListQuery(collectionLibraryUid, SortBy.Name, SortOrder.Desc);
-        args.parentId = collectionLibraryUid;
+        args.libraryUniqueId = collectionLibraryUid;
         list = providerBase.findMetadata(getContext(), args);
         assertTrue(list.size() == 2);
 
@@ -748,8 +747,8 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             tmp = list.get(i);
         }
 
-        //test recent reading and has parentId
-        args.parentId = collectionLibraryUid;
+        //test recent reading and has libraryUniqueId
+        args.libraryUniqueId = collectionLibraryUid;
         list = providerBase.findMetadata(getContext(), args);
         assertTrue(list.size() == 1);
 
@@ -758,7 +757,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         list = providerBase.findMetadata(getContext(), args);
         assertTrue(list.size() == 6);
 
-        //test recentAdd and has parentId
+        //test recentAdd and has libraryUniqueId
         args = MetadataQueryArgsBuilder.libraryRecentAddQuery(collectionLibraryUid, SortBy.RecentlyRead, SortOrder.Desc);
         list = providerBase.findMetadata(getContext(), args);
         assertTrue(list.size() == 2);
@@ -769,13 +768,13 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         list = MetaDataUtils.verifyReadedStatus(list, BookFilter.READED);
         assertTrue(list.size() == 1);
 
-        //test finish read with parentId
+        //test finish read with libraryUniqueId
         args = MetadataQueryArgsBuilder.libraryFinishReadQuery(collectionLibraryUid, SortBy.RecentlyRead, SortOrder.Desc);
         list = providerBase.findMetadata(getContext(), args);
         list = MetaDataUtils.verifyReadedStatus(list, BookFilter.READED);
         assertTrue(list.size() == 0);
 
-        // test search with parentId
+        // test search with libraryUniqueId
         args = MetadataQueryArgsBuilder.librarySearchQuery(collectionLibraryUid, testSearch, SortBy.Name, SortOrder.Desc);
         args.query = testSearch;
         list = providerBase.findMetadata(getContext(), args);
@@ -822,6 +821,103 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             int size = providerBase.loadMetadataCollection(getContext(), libraryList[i].getIdString()).size();
             assertTrue(size == 0);
         }
+    }
+
+    public void testLibraryMetadataCache() {
+        init();
+        DataManager dataManager = new DataManager();
+        DataCacheManager cacheManager = dataManager.getDataCacheManager();
+        DataProviderBase providerBase = dataManager.getDataProviderBase();
+        providerBase.clearMetadata();
+        providerBase.clearLibrary();
+        providerBase.clearMetadataCollection();
+
+        int count = TestUtils.randInt(10, 20);
+        String[] ascString = getAscString(count);
+        String libraryUniqueId = generateRandomUUID();
+        Metadata[] metadataList = getRandomMetadata(count);
+        for (int i = 0; i < count; i++) {
+            metadataList[i].setName(ascString[i]);
+            if (i == 0) {
+                metadataList[i].setProgress("12/12");
+                metadataList[i].setLastAccess(new Date());
+            }
+
+            if (i == 1) {
+                metadataList[i].setProgress("12/33");
+                metadataList[i].setLastAccess(new Date());
+            }
+
+            if (i > 1 && i < 5) { //3
+                MetadataCollection collection = new MetadataCollection();
+                collection.setLibraryUniqueId(libraryUniqueId);
+                collection.setDocumentUniqueId(metadataList[i].getIdString());
+                collection.save();
+                if (i == 2) {
+                    metadataList[i].setLastAccess(new Date());
+                }
+                if (i == 4) {
+                    metadataList[i].setTags(getRandomFormatTag());
+                }
+            }
+
+            metadataList[i].save();
+        }
+
+        //test all and desc by Name
+        QueryArgs args = MetadataQueryArgsBuilder.libraryAllBookQuery(null, SortBy.Name, SortOrder.Desc);
+        List<Metadata> list = dataManager.getLibraryMetadataList(getContext(), args);
+        assertNotNull(list);
+        assertTrue(list.size() >= metadataList.length - 3);
+        Metadata tmp = list.get(0);
+        for (int i = list.size() - 1, j = 0; i >= 0; i--, j++) {
+            Metadata metadata = list.get(j);
+            int result = MetaDataUtils.compareStringAsc(tmp.getName(), metadata.getName());
+            assertTrue(result >= 0);
+            tmp = metadata;
+        }
+
+        // test cache
+        LibraryCache libraryCache = cacheManager.getLibraryCache(null);
+        assertEquals(libraryCache.getIdList().size(), list.size());
+        for (Metadata metadata : list) {
+            assertTrue(libraryCache.getIdList().contains(metadata.getIdString()));
+            assertEquals(cacheManager.get(metadata.getIdString()), metadata);
+        }
+
+        //test reading and desc by Name
+        args = MetadataQueryArgsBuilder.libraryRecentReadingQuery(null, SortBy.Name, SortOrder.Desc);
+        list = dataManager.getLibraryMetadataList(getContext(), args);
+        assertNotNull(list);
+        assertTrue(list.size() == 2);
+
+        //test finish read and desc by Name
+        args = MetadataQueryArgsBuilder.libraryFinishReadQuery(null, SortBy.Name, SortOrder.Desc);
+        list = dataManager.getLibraryMetadataList(getContext(), args);
+        assertNotNull(list);
+        assertTrue(list.size() == 1);
+
+        //test all has libraryUniqueId
+        args = MetadataQueryArgsBuilder.libraryAllBookQuery(libraryUniqueId, SortBy.Name, SortOrder.Desc);
+        list = dataManager.getLibraryMetadataList(getContext(), args);
+        assertNotNull(list);
+        assertTrue(list.size() == 3);
+        assertTrue(cacheManager.getLibraryCache(libraryUniqueId).getIdList().size() == 3);
+
+        //test newBook has libraryUniqueId
+        args = MetadataQueryArgsBuilder.libraryNewBookListQuery(libraryUniqueId, SortBy.Name, SortOrder.Desc);
+        list = dataManager.getLibraryMetadataList(getContext(), args);
+        assertNotNull(list);
+        assertTrue(list.size() == 2);
+
+        //test tag has libraryUniqueId
+        args = MetadataQueryArgsBuilder.libraryTagsFilterQuery(libraryUniqueId, getFormatTagSet(), SortBy.Name, SortOrder.Desc);
+        list = dataManager.getLibraryMetadataList(getContext(), args);
+        assertNotNull(list);
+        assertTrue(list.size() == 1);
+        List<String> md5List = cacheManager.getLibraryCache(libraryUniqueId).getIdList();
+        assertTrue(md5List.contains(list.get(0).getIdString()));
+        assertNotNull(cacheManager.get(md5List.get(0)));
     }
 }
 

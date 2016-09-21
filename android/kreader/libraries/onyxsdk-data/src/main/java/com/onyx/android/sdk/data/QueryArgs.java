@@ -22,7 +22,7 @@ public class QueryArgs {
     public ConditionGroup conditionGroup = ConditionGroup.clause();
     @JSONField(serialize = false, deserialize = false)
     public List<OrderBy> orderByList = new ArrayList<>();
-    public String parentId = null;
+    public String libraryUniqueId = null;
     public BookFilter filter = BookFilter.ALL;
     public SortBy sortBy = SortBy.Name;
     public SortOrder order = SortOrder.Desc;

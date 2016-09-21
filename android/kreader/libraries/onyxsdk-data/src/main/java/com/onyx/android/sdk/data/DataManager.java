@@ -137,11 +137,11 @@ public class DataManager {
 
     public List<Metadata> getLibraryMetadataListOfAll(Context context, final QueryArgs args) {
         List<Metadata> list = new ArrayList<>();
-        LibraryCache cache = dataCacheManager.getLibraryCache(args.parentId);
+        LibraryCache cache = dataCacheManager.getLibraryCache(args.libraryUniqueId);
         if (CollectionUtils.isNullOrEmpty(cache.getIdList())) {
-            QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryAllBookQuery(args.parentId, args.sortBy, args.order);
+            QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryAllBookQuery(args.libraryUniqueId, args.sortBy, args.order);
             list = cache.getList(context, queryArgs);
-            dataCacheManager.addAll(args.parentId, list);
+            dataCacheManager.addAll(args.libraryUniqueId, list);
             return list;
         }
 
@@ -174,10 +174,10 @@ public class DataManager {
         }
 
         List<Metadata> list = new ArrayList<>();
-        LibraryCache cache = dataCacheManager.getLibraryCache(queryArgs.parentId);
+        LibraryCache cache = dataCacheManager.getLibraryCache(queryArgs.libraryUniqueId);
         if (CollectionUtils.isNullOrEmpty(cache.getIdList())) {
             list = cache.getList(context, queryArgs);
-            dataCacheManager.addAll(queryArgs.parentId, list);
+            dataCacheManager.addAll(queryArgs.libraryUniqueId, list);
             return list;
         }
 
@@ -218,7 +218,7 @@ public class DataManager {
         }
 
         if (!isCriteriaContentEmpty) {
-            args.parentId = library.getParentUniqueId();
+            args.libraryUniqueId = library.getParentUniqueId();
             bookList = getLibraryMetadataList(context, args);
             addCollections(context, library, bookList);
         }
@@ -292,7 +292,7 @@ public class DataManager {
                 removeCollections(context, library, list);
             }
             QueryArgs criteria = QueryArgs.fromQueryString(library.getQueryString());
-            criteria.parentId = library.getParentUniqueId();
+            criteria.libraryUniqueId = library.getParentUniqueId();
             MetadataQueryArgsBuilder.generateQueryArgs(criteria);
             MetadataQueryArgsBuilder.generateMetadataInQueryArgs(criteria);
             list = providerBase.findMetadata(context, criteria);

@@ -10,18 +10,10 @@ import java.util.Map;
  */
 public class MemoryCache {
     private Map<String, LibraryCache> memoryCacheMap = new LinkedHashMap<>();
-    private static MemoryCache instance;
     private DataProviderBase dataProvider;
 
-    private MemoryCache(DataProviderBase dataProvider) {
+    public MemoryCache(DataProviderBase dataProvider) {
         this.dataProvider = dataProvider;
-    }
-
-    public static synchronized MemoryCache getInstance(DataProviderBase dataProvider) {
-        if (instance == null) {
-            instance = new MemoryCache(dataProvider);
-        }
-        return instance;
     }
 
     public void clearDataCache(String id) {
@@ -40,6 +32,7 @@ public class MemoryCache {
         LibraryCache cache = memoryCacheMap.get(id);
         if (cache == null) {
             cache = new LibraryCache(dataProvider);
+            memoryCacheMap.put(id, cache);
         }
         return cache;
     }
