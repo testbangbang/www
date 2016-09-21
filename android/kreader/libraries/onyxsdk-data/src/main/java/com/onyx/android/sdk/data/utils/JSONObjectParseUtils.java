@@ -14,6 +14,7 @@ public class JSONObjectParseUtils {
     public static final String TAG_EMAIL = "email";
     public static final String TAG_DEVICE_IDS = "deviceIds";
     public static final String TAG_CODE = "code";
+    public static final String TAG_MESSAGE = "message";
 
     public static final int STATUS_CODE_SUCCESS_RESPONSE = 200;
     public static final int STATUS_CODE_ERROR_SERVER_NO_ACTION = 0;
@@ -42,17 +43,7 @@ public class JSONObjectParseUtils {
     }
 
     public static String httpStatus(int statusCode, JSONObject errorResponse) throws JSONException {
-        String errorCode = String.valueOf(ACCOUNT_ERROR_INCORRECT_PASSWORD);
-        switch (statusCode) {
-            case STATUS_CODE_ERROR_SERVER_NO_ACTION:
-                errorCode = String.valueOf(statusCode);
-                break;
-            case STATUS_CODE_ERROR_BAD_REQUEST:
-            case STATUS_CODE_ERROR_UNAUTHORIZED:
-                errorCode = String.valueOf(errorResponse.getInt(TAG_CODE));
-                break;
-        }
-        return errorCode;
+        return errorResponse.getInt(TAG_CODE) + "," + errorResponse.getInt(TAG_MESSAGE);
     }
 
 }
