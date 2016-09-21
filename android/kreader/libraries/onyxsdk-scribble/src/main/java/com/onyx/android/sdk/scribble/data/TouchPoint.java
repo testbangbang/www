@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.Matrix;
 import android.view.MotionEvent;
+import com.onyx.android.sdk.data.PageInfo;
 import org.nustaq.serialization.annotations.Flat;
 
 import java.io.Serializable;
@@ -88,4 +89,8 @@ public class TouchPoint implements Serializable {
         return timestamp;
     }
 
+    public void normalize(final PageInfo pageInfo) {
+        x = (x - pageInfo.getDisplayRect().left) / pageInfo.getActualScale();
+        y = (y - pageInfo.getDisplayRect().top) / pageInfo.getActualScale();
+    }
 }
