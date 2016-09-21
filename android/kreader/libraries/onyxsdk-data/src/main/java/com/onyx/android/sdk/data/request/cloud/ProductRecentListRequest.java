@@ -11,14 +11,13 @@ import com.onyx.android.sdk.data.v1.ServiceFactory;
 import retrofit2.Response;
 
 /**
- * Created by zhuzeng on 11/21/15.
- * Return the recommended products.
+ * Created by zhuzeng on 12/3/15.
  */
-public class RecommendedProductsRequest extends BaseCloudRequest {
+public class ProductRecentListRequest extends BaseCloudRequest {
 
     private ProductResult<Product> productResult;
 
-    public RecommendedProductsRequest() {
+    public ProductRecentListRequest() {
     }
 
     public final ProductResult<Product> getProductResult() {
@@ -35,7 +34,7 @@ public class RecommendedProductsRequest extends BaseCloudRequest {
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         OnyxBookStoreService service = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase());
-        Response<ProductResult<Product>> response = service.bookRecommendedList().execute();
+        Response<ProductResult<Product>> response = service.bookRecentList().execute();
         if (response.isSuccessful()) {
             productResult = response.body();
         }
@@ -50,4 +49,5 @@ public class RecommendedProductsRequest extends BaseCloudRequest {
     private void saveToLocal(final ProductResult<Product> result) {
         StoreUtils.saveToLocal(result, Product.class, true);
     }
+
 }

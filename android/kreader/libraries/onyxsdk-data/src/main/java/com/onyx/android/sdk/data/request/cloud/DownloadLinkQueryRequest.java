@@ -11,12 +11,12 @@ import retrofit2.Response;
 /**
  * Created by zhuzeng on 11/27/15.
  */
-public class QueryDownloadLink extends BaseCloudRequest {
+public class DownloadLinkQueryRequest extends BaseCloudRequest {
 
     private List<DownloadLink> downloadLinkList;
     private String objectId;
 
-    public QueryDownloadLink(final String id) {
+    public DownloadLinkQueryRequest(final String id) {
         objectId = id;
     }
 

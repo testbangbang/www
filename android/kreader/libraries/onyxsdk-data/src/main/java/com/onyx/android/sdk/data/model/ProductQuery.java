@@ -12,6 +12,7 @@ public class ProductQuery {
 
     public int offset;
     public int count = 30;
+    public int consumer = 0;
     public List<Integer> domains;
     public List<String> category;
     public String sortBy = QueryUtils.defaultSortBy();

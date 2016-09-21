@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.v1;
 
 import java.util.concurrent.ConcurrentHashMap;
+
 import retrofit2.Retrofit;
 
 /**
@@ -42,6 +43,14 @@ public class ServiceFactory {
 
     public static final OnyxFileDownloadService getFileDownloadService(final String baseUrl) {
         return getSpecifyService(OnyxFileDownloadService.class, baseUrl);
+    }
+
+    public static final OnyxConsumerService getConsumerService(final String baseUrl) {
+        return getSpecifyService(OnyxConsumerService.class, baseUrl);
+    }
+
+    public static final OnyxGroupService getGroupService(final String baseUrl) {
+        return getSpecifyService(OnyxGroupService.class, baseUrl);
     }
 
     public static final <T> T getSpecifyService(final Class<T> service, final String baseUrl) {
