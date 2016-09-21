@@ -40,14 +40,14 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     }
 
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        final Shape shape = getNoteManager().createNewShape();
-        getNoteManager().beforeDownMessage(shape);
         final TouchPoint touchPoint = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(touchPoint);
         if (hitTest(touchPoint.x, touchPoint.y) == null) {
             return;
         }
         touchPoint.normalize(getLastPageInfo());
+        final Shape shape = getNoteManager().createNewShape(getLastPageInfo());
+        getNoteManager().onDownMessage(shape);
         shape.onDown(touchPoint, screen);
         if (getCallback() != null) {
             getCallback().onDrawingTouchDown(motionEvent, shape);

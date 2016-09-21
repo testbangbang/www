@@ -11,7 +11,7 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
@@ -21,7 +21,7 @@ import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.data.ReaderNoteDocument;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
-import com.onyx.kreader.note.request.AddShapeListRequest;
+import com.onyx.kreader.note.request.FlushShapeListRequest;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 
 import java.util.ArrayList;
@@ -42,6 +42,7 @@ public class NoteManager {
 
     private volatile Shape currentShape = null;
     private volatile NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
+    private RenderContext renderContext = new RenderContext();
 
     private List<Shape> dirtyStash = new ArrayList<>();
     private DeviceConfig noteConfig;
@@ -61,6 +62,7 @@ public class NoteManager {
     }
 
     public void close() {
+        flushStash();
         getNoteEventProcessorManager().quit();
     }
 
@@ -212,9 +214,9 @@ public class NoteManager {
         if (dirtyStash.size() <= 0) {
             return;
         }
-        AddShapeListRequest listRequest = new AddShapeListRequest(dirtyStash, "0", 0);
+        final FlushShapeListRequest flushRequest = new FlushShapeListRequest(dirtyStash, 0, false, true);
         dirtyStash = new ArrayList<>();
-        submit(context, listRequest, null);
+        submit(context, flushRequest, null);
         Debug.d("submit flush request");
     }
 
@@ -222,10 +224,12 @@ public class NoteManager {
         return noteDrawingArgs;
     }
 
-    public Shape createNewShape() {
+    public Shape createNewShape(final PageInfo pageInfo) {
         Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().currentShapeType);
         shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
         shape.setColor(getNoteDrawingArgs().strokeColor);
+        shape.setPageUniqueId(pageInfo.getName());
+        shape.ensureShapeUniqueId();
         currentShape = shape;
         return shape;
     }
@@ -238,7 +242,7 @@ public class NoteManager {
         currentShape = null;
     }
 
-    public void beforeDownMessage(final Shape currentShape) {
+    public void onDownMessage(final Shape currentShape) {
         if (ReaderShapeFactory.isDFBShape(currentShape.getType())) {
             enableScreenPost(false);
         } else {
@@ -260,4 +264,7 @@ public class NoteManager {
         return null;
     }
 
+    public final RenderContext getRenderContext() {
+        return renderContext;
+    }
 }

@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -293,8 +292,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             return;
         }
         touchPoint.normalize(getLastPageInfo());
-        final Shape shape = getNoteManager().createNewShape();
-        getNoteManager().beforeDownMessage(shape);
+        final Shape shape = getNoteManager().createNewShape(getLastPageInfo());
+        getNoteManager().onDownMessage(shape);
         shape.onDown(touchPoint, screen);
     }
 

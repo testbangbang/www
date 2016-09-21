@@ -1,6 +1,7 @@
 package com.onyx.kreader.note.data;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -29,6 +30,7 @@ public class ReaderNotePage {
     private int currentShapeType;
     private Shape currentShape;
     private boolean loaded = false;
+    public Matrix lastMatrix;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
 
@@ -83,7 +85,7 @@ public class ReaderNotePage {
     }
 
     public void addShapeList(final List<Shape> shapes) {
-        addShapeList(shapes,true);
+        addShapeList(shapes, true);
     }
 
     public void addShapeList(final List<Shape> shapes, boolean addToHistory) {
@@ -170,12 +172,22 @@ public class ReaderNotePage {
         if (shapeList == null) {
             return;
         }
+        checkContextMatrix(renderContext);
         for(Shape shape : shapeList) {
             shape.render(renderContext);
             if (callback != null && callback.isRenderAbort()) {
                 break;
             }
         }
+    }
+
+    private void checkContextMatrix(final RenderContext renderContext) {
+        if (lastMatrix == null) {
+            lastMatrix = new Matrix(renderContext.matrix);
+            renderContext.force = true;
+            return;
+        }
+        renderContext.force = !lastMatrix.equals(renderContext.matrix);
     }
 
     public void prepareShapePool(int shapeType) {

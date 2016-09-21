@@ -20,6 +20,7 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.PageAnnotation;
@@ -42,6 +43,7 @@ public class ReaderPainter {
     private static final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
     private static boolean debugTestTouchPointCircle = false;
     private static boolean debugTestOffsetTouchPointCircle = false;
+    private static boolean debugPageInfo = false;
 
     private enum DrawHighlightPaintStyle {UnderLine, Fill}
 
@@ -83,6 +85,9 @@ public class ReaderPainter {
     }
 
     private void drawPageInfo(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
+        if (!(debugPageInfo && BuildConfig.DEBUG)) {
+            return;
+        }
         paint.setStrokeWidth(3.0f);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);

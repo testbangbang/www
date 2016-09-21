@@ -157,11 +157,12 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
             drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
             final Matrix renderMatrix = new Matrix();
-            RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
+            final RenderContext renderContext = parent.getRenderContext();
             renderContext.prepareRenderingBuffer(bitmap);
 
             for (PageInfo page : getVisiblePages()) {
                 updateMatrix(renderMatrix, page);
+                renderContext.update(bitmap, canvas, paint, renderMatrix);
                 final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getName(), 0);
                 if (notePage != null) {
                     notePage.render(renderContext, null);
@@ -176,8 +177,8 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     private void updateMatrix(final Matrix matrix, final PageInfo pageInfo) {
         matrix.reset();
-        matrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
         matrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
+        matrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
     }
 
     private Paint preparePaint(final NoteManager parent) {
