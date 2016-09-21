@@ -18,6 +18,7 @@ import com.onyx.kreader.host.request.RestoreRequest;
 import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogPassword;
+import com.onyx.kreader.ui.events.BeforeDocumentOpen;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.utils.DeviceUtils;
@@ -25,7 +26,7 @@ import com.onyx.kreader.utils.DeviceUtils;
 /**
  * Created by zhuzeng on 5/17/16.
  * steps:
- * 1. load document options.
+ * 1. loadDocument document options.
  * 2. open with options.
  * 3. create view
  * 4. restoreWithOptions.
@@ -43,6 +44,7 @@ public class OpenDocumentAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.initReaderFromPath(documentPath);
+        readerDataHolder.getEventBus().post(new BeforeDocumentOpen(documentPath));
         showLoadingDialog(readerDataHolder, R.string.loading_document);
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
                 readerDataHolder.getReader().getDocumentMd5());
