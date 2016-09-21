@@ -271,8 +271,7 @@ public class Metadata extends BaseData {
         this.parentId = id;
     }
 
-    public static Metadata createFromFile(String path)
-    {
+    public static Metadata createFromFile(String path) {
         return createFromFile(new File(path));
     }
 
@@ -295,7 +294,7 @@ public class Metadata extends BaseData {
         return null;
     }
 
-    public static void getBasicMetadataFromFile(final Metadata data, File file){
+    public static void getBasicMetadataFromFile(final Metadata data, File file) {
         data.setName(file.getName());
         data.setLocation(file.getAbsolutePath());
         data.setNativeAbsolutePath(file.getAbsolutePath());
@@ -313,15 +312,15 @@ public class Metadata extends BaseData {
     }
 
     public boolean isReaded() {
-        return (progress != null && internalProgressEqual(progress));
+        return (lastAccess != null && progress != null && internalProgressEqual(progress));
     }
 
     public boolean isReading() {
-        return (progress != null);
+        return (lastAccess != null && lastAccess.getTime() > 0 && progress != null);
     }
 
     public boolean isNew() {
-        return (progress == null);
+        return (lastAccess == null || lastAccess.getTime() <= 0) && (progress == null);
     }
 
 }

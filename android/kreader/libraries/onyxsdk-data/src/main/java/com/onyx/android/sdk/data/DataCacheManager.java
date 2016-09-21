@@ -22,7 +22,7 @@ public class DataCacheManager {
     private boolean isLibraryCacheReady = false;
 
     public DataCacheManager(DataProviderBase dataProvider) {
-        memoryCache = MemoryCache.getInstance(dataProvider);
+        memoryCache = new MemoryCache(dataProvider);
     }
 
     public LibraryCache getLibraryCache(String id) {
