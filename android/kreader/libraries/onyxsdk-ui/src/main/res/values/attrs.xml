@@ -10,4 +10,7 @@
         <attr name="textSize" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="OnyxToolbar">
+        <attr name="weight" format="float"/>
+    </declare-styleable>
 </resources>
