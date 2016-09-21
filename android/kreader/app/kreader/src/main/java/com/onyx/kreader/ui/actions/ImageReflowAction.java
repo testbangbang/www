@@ -31,7 +31,7 @@ public class ImageReflowAction extends BaseAction {
                 public void onFinished(boolean confirm, ImageReflowSettings settings) {
                     if (confirm && settings != null) {
                         showLoadingDialog(readerDataHolder,R.string.reflowing);
-                        hideReflowSettingsDialog();
+                        hideReflowSettingsDialog(readerDataHolder);
                         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
                         readerDataHolder.submitRenderRequest(request, new BaseCallback() {
                             @Override
@@ -42,13 +42,15 @@ public class ImageReflowAction extends BaseAction {
                     }
                 }
             });
+            readerDataHolder.addActiveDialog(reflowSettingsDialog);
             reflowSettingsDialog.show();
         }
     }
 
-    private void hideReflowSettingsDialog() {
+    private void hideReflowSettingsDialog(final ReaderDataHolder readerDataHolder) {
         if (reflowSettingsDialog != null) {
             reflowSettingsDialog.dismiss();
+            readerDataHolder.removeActiveDialog(reflowSettingsDialog);
             reflowSettingsDialog = null;
         }
     }

@@ -86,6 +86,7 @@ public class WordSelectionHandler extends BaseHandler{
         if (!isSingleTapUp()){
             ShowTextSelectionMenuAction.showTextSelectionPopupMenu(readerDataHolder);
             enableSelectionCursor(readerDataHolder, selectWordRequest);
+            selectWordRequest = null;
         }
         return super.onActionUp(readerDataHolder, startX, startY, endX, endY);
     }

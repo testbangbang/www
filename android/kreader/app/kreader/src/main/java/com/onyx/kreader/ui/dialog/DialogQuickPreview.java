@@ -364,6 +364,7 @@ public class DialogQuickPreview extends Dialog {
                 if (callback != null) {
                     callback.abort();
                 }
+                readerDataHolder.removeActiveDialog(DialogQuickPreview.this);
             }
         });
 
@@ -387,7 +388,7 @@ public class DialogQuickPreview extends Dialog {
                 final EditText editText = new EditText(getContext());
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editText.setHint("1-" + readerDataHolder.getPageCount());
-                DialogHelp.getInputDialog(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number), editText, new OnClickListener() {
+                final Dialog dlg = DialogHelp.getInputDialog(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number), editText, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String page = editText.getText().toString();
@@ -409,6 +410,13 @@ public class DialogQuickPreview extends Dialog {
                         }
                     }
                 }).show();
+                dlg.setOnDismissListener(new OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        readerDataHolder.removeActiveDialog(dlg);
+                    }
+                });
+                readerDataHolder.addActiveDialog(dlg);
             }
         });
     }

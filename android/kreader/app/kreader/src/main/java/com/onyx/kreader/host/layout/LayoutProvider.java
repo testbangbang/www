@@ -29,6 +29,10 @@ public class LayoutProvider {
     public void activate() {
     }
 
+    public boolean canHitTest() {
+        return true;
+    }
+
     public ReaderLayoutManager getLayoutManager() {
         return layoutManager;
     }

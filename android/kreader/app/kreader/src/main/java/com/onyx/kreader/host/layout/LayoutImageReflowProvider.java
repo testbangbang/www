@@ -35,7 +35,13 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public void activate() {
         getPageManager().setPageRepeat(0);
+        getPageManager().scaleToPage(getCurrentPageName());
         getLayoutManager().getImageReflowManager().loadPageMap();
+    }
+
+    @Override
+    public boolean canHitTest() {
+        return false;
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {

@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;

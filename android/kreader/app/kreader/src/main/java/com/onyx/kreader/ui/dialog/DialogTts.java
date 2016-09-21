@@ -164,6 +164,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
                 ReaderDeviceManager.setGcInterval(gcInterval);
                 ttsHandler.ttsStop();
                 readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
+                readerDataHolder.removeActiveDialog(DialogTts.this);
             }
         });
 

@@ -44,6 +44,9 @@ public class SelectWordRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         setTransferBitmap(false);
         createReaderViewInfo();
+        if (!reader.getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
+            return;
+        }
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
         PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pageName);
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, start);
