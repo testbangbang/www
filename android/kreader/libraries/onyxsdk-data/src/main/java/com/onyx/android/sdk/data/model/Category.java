@@ -4,6 +4,8 @@ import com.onyx.android.sdk.data.db.OnyxCloudDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
+import java.util.List;
+
 /**
  * Created by zhuzeng on 11/20/15.
  */
@@ -18,12 +20,13 @@ public class Category extends BaseData {
     @Column
     public String value;
     @Column
-    public long count; // / the product count.
+    public long count; // the product count.
     @Column
-    public long parentId;
+    public String parentId;
+
+    public List<Category> children;
 
     public Category() {
-
     }
 
 }
