@@ -15,6 +15,7 @@ public class RenderContext {
     public Canvas canvas;
     public Paint paint;
     public Matrix matrix;
+    public boolean force = false;
     public boolean useExternal = false;
 
     public void prepareRenderingBuffer(final Bitmap bitmap) {
@@ -28,6 +29,9 @@ public class RenderContext {
         if (!useExternal) {
             return;
         }
+    }
+
+    public RenderContext() {
     }
 
     public RenderContext(final Canvas c, final Paint p, final Matrix m) {
@@ -49,6 +53,13 @@ public class RenderContext {
 
     public static RenderContext create(final Bitmap b, final Canvas c, final Paint p, final Matrix m) {
         return new RenderContext(b, c, p, m);
+    }
+
+    public void update(final Bitmap b, final Canvas c, final Paint p, final Matrix m) {
+        bitmap = b;
+        canvas = c;
+        paint = p;
+        matrix = m;
     }
 
 }
