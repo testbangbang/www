@@ -7,32 +7,31 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import org.json.JSONObject;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
 /**
  * Created by zhuzeng on 11/21/15.
  */
-public class SignUpRequest extends BaseCloudRequest {
-    private static final String TAG = SignUpRequest.class.getSimpleName();
+public class AccountSignInRequest extends BaseCloudRequest {
+    private static final String TAG = AccountSignInRequest.class.getSimpleName();
     private OnyxAccount account;
-    private OnyxAccount accountSignUp;
+    private OnyxAccount accountSignIn;
 
-    public SignUpRequest(final OnyxAccount value) {
+    public AccountSignInRequest(final OnyxAccount value) {
         account = value;
     }
 
-    public final OnyxAccount getAccountSignUp() {
-        return accountSignUp;
+    public final OnyxAccount getAccountSignIn() {
+        return accountSignIn;
     }
 
     public void execute(final CloudManager parent) throws Exception {
-        Call<ResponseBody> call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
-                .signup(account);
-        Response<ResponseBody> response = call.execute();
+        Call<OnyxAccount> call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
+                .signin(account);
+        Response<OnyxAccount> response = call.execute();
         if (response.isSuccessful()) {
-            accountSignUp = JSONObjectParseUtils.parseOnyxAccount(response.body().string());
+            accountSignIn = response.body();
         } else {
             String errorCode = JSONObjectParseUtils.httpStatus(response.code(), new JSONObject(response.errorBody().string()));
             throw new Exception(errorCode);

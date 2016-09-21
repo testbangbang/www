@@ -15,13 +15,13 @@ import retrofit2.Response;
 /**
  * Created by zhuzeng on 11/30/15.
  */
-public class SearchRequest extends BaseCloudRequest {
+public class ProductSearchRequest extends BaseCloudRequest {
 
     private ProductSearch searchCriteria;
     private ProductResult<Product> searchResult;
     private GAdapter adapter;
 
-    public SearchRequest(final ProductSearch criteria) {
+    public ProductSearchRequest(final ProductSearch criteria) {
         searchCriteria = criteria;
     }
 

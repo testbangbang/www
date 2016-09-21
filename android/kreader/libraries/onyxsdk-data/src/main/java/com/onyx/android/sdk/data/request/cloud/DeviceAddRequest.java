@@ -7,13 +7,13 @@ import com.onyx.android.sdk.data.v1.ServiceFactory;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class AddDeviceRequest extends BaseCloudRequest {
-    private static final String TAG = AddDeviceRequest.class.getSimpleName();
+public class DeviceAddRequest extends BaseCloudRequest {
+    private static final String TAG = DeviceAddRequest.class.getSimpleName();
     private Device device;
     private Device bindDevice;
     private String sessionToken;
 
-    public AddDeviceRequest(final Device value, final String sessionToken) {
+    public DeviceAddRequest(final Device value, final String sessionToken) {
         this.device = value;
         this.sessionToken = sessionToken;
     }
