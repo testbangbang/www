@@ -2,20 +2,11 @@ package com.onyx.kreader.note.bridge;
 
 import android.graphics.Matrix;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
-import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.kreader.note.data.ReaderShapeFactory;
-import net.lingala.zip4j.util.Raw;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.kreader.note.NoteManager;
 
 /**
  * Created by zhuzeng on 9/18/16.
@@ -23,52 +14,88 @@ import java.util.List;
  */
 public class NoteEventProcessorManager {
 
-    private Shape currentShape = null;
     private volatile View view;
-    private List<Shape> dirtyStash = new ArrayList<>();
-    private volatile NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
-    private NoteEventProcessorBase.InputCallback callback;
     private TouchEventProcessor touchEventProcessor;
     private RawEventProcessor rawEventProcessor;
+    private NoteManager noteManager;
 
-    public NoteDrawingArgs getNoteDrawingArgs() {
-        return noteDrawingArgs;
-    }
-
-    public void setNoteDrawingArgs(NoteDrawingArgs noteDrawingArgs) {
-        this.noteDrawingArgs = noteDrawingArgs;
-    }
-
-    public NoteEventProcessorBase.InputCallback getCallback() {
-        return callback;
-    }
-
-    public void setCallback(NoteEventProcessorBase.InputCallback callback) {
-        this.callback = callback;
+    public NoteEventProcessorManager(final NoteManager p) {
+        noteManager = p;
     }
 
     public View getView() {
         return view;
     }
 
-    public void update(final View targetView, final OnyxMatrix matrix, final Matrix digitizer) {
+    public void quit() {
+        if (rawEventProcessor != null) {
+            rawEventProcessor.quit();
+        }
+    }
+
+    public void update(final View targetView, final DeviceConfig noteConfig) {
         view = targetView;
-        getTouchEventProcessor().update(targetView, matrix);
-        getRawEventProcessor().update(digitizer, null);
+        OnyxMatrix viewMatrix = new OnyxMatrix();
+        viewMatrix.postRotate(noteConfig.getViewPostOrientation());
+        viewMatrix.postTranslate(noteConfig.getViewPostTx(), noteConfig.getViewPostTy());
+        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(noteConfig));
+        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig), getScreenToViewMatrix(noteConfig));
+    }
+
+    private OnyxMatrix getViewToEpdMatrix(final DeviceConfig noteConfig) {
+        OnyxMatrix viewMatrix = new OnyxMatrix();
+        viewMatrix.postRotate(noteConfig.getViewPostOrientation());
+        viewMatrix.postTranslate(noteConfig.getViewPostTx(), noteConfig.getViewPostTy());
+        return viewMatrix;
+    }
+
+    private Matrix getTouchToScreenMatrix(final DeviceConfig noteConfig) {
+        final Matrix screenMatrix = new Matrix();
+        screenMatrix.preScale(noteConfig.getEpdWidth() / getTouchWidth(noteConfig),
+                noteConfig.getEpdHeight() / getTouchHeight(noteConfig));
+        return screenMatrix;
+    }
+
+    private Matrix getScreenToViewMatrix(final DeviceConfig noteConfig) {
+        if (!noteConfig.useRawInput()) {
+            return null;
+        }
+
+        int viewPosition[] = {0, 0};
+        view.getLocationOnScreen(viewPosition);
+        final Matrix viewMatrix = new Matrix();
+        viewMatrix.postRotate(noteConfig.getEpdPostOrientation());
+        viewMatrix.postTranslate(noteConfig.getEpdPostTx() - viewPosition[0], noteConfig.getEpdPostTy() - viewPosition[1]);
+        return viewMatrix;
+    }
+
+    private float getTouchWidth(final DeviceConfig noteConfig) {
+        float value = Device.currentDevice().getTouchWidth();
+        if (value <= 0) {
+            return noteConfig.getTouchWidth();
+        }
+        return value;
+    }
+
+    private float getTouchHeight(final DeviceConfig noteConfig) {
+        float value = Device.currentDevice().getTouchHeight();
+        if (value <= 0) {
+            return noteConfig.getTouchHeight();
+        }
+        return value;
     }
 
     private TouchEventProcessor getTouchEventProcessor() {
         if (touchEventProcessor == null) {
-            touchEventProcessor = new TouchEventProcessor(this);
+            touchEventProcessor = new TouchEventProcessor(noteManager);
         }
         return touchEventProcessor;
     }
 
     private RawEventProcessor getRawEventProcessor() {
         if (rawEventProcessor == null) {
-            rawEventProcessor = new RawEventProcessor(this);
+            rawEventProcessor = new RawEventProcessor(noteManager);
             rawEventProcessor.start();
-            rawEventProcessor.pause();
         }
         return rawEventProcessor;
     }
@@ -83,36 +110,6 @@ public class NoteEventProcessorManager {
 
     public boolean onTouchEventErasing(final MotionEvent motionEvent) {
         return getTouchEventProcessor().onTouchEventErasing(motionEvent);
-    }
-
-    public void beforeDownMessage(final Shape currentShape) {
-        if (ReaderShapeFactory.isDFBShape(currentShape.getType())) {
-            enableScreenPost(false);
-        } else {
-            enableScreenPost(true);
-        }
-    }
-
-    public void enableScreenPost(boolean enable) {
-        if (view != null) {
-            EpdController.enablePost(view, enable ? 1 : 0);
-        }
-    }
-
-    public Shape createNewShape() {
-        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().currentShapeType);
-        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
-        shape.setColor(getNoteDrawingArgs().strokeColor);
-        currentShape = shape;
-        return shape;
-    }
-
-    public Shape getCurrentShape() {
-        return currentShape;
-    }
-
-    public void addToStash(final Shape shape) {
-        dirtyStash.add(shape);
     }
 
 }

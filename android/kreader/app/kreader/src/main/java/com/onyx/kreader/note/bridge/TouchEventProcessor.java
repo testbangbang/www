@@ -5,27 +5,23 @@ import android.view.View;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.kreader.note.NoteManager;
 
 /**
  * Created by zhuzeng on 9/19/16.
  */
 public class TouchEventProcessor extends NoteEventProcessorBase {
-    private NoteEventProcessorManager parent;
     private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
 
 
-    public TouchEventProcessor(final NoteEventProcessorManager p) {
-        parent = p;
+    public TouchEventProcessor(final NoteManager p) {
+        super(p);
     }
 
     public void update(final View view, final OnyxMatrix matrix) {
         view.getLocationOnScreen(viewPosition);
         viewToEpdMatrix = matrix;
-    }
-
-    public final NoteEventProcessorManager getParent() {
-        return parent;
     }
 
     public boolean onTouchEventDrawing(final MotionEvent motionEvent) {
@@ -43,54 +39,65 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
         return true;
     }
 
-    public boolean onRawInputEvent(final TouchPoint touchPoint) {
-        return false;
-    }
-
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        final Shape shape = getParent().createNewShape();
-        getParent().beforeDownMessage(shape);
-        getParent().addToStash(shape);
-        final TouchPoint normalized = new TouchPoint(motionEvent);
-        final TouchPoint screen = touchPointFromNormalized(normalized);
-        shape.onDown(normalized, screen);
-        if (parent.getCallback() != null) {
-            parent.getCallback().onDrawingTouchDown(motionEvent, shape);
+        final Shape shape = getNoteManager().createNewShape();
+        getNoteManager().beforeDownMessage(shape);
+        final TouchPoint touchPoint = new TouchPoint(motionEvent);
+        final TouchPoint screen = touchPointFromNormalized(touchPoint);
+        if (hitTest(touchPoint.x, touchPoint.y) == null) {
+            return;
+        }
+        touchPoint.normalize(getLastPageInfo());
+        shape.onDown(touchPoint, screen);
+        if (getCallback() != null) {
+            getCallback().onDrawingTouchDown(motionEvent, shape);
         }
     }
 
     private void onDrawingTouchMove(final MotionEvent motionEvent) {
-        final Shape shape = getParent().getCurrentShape();
+        final Shape shape = getNoteManager().getCurrentShape();
         if (shape == null) {
             return;
         }
         int n = motionEvent.getHistorySize();
         for(int i = 0; i < n; ++i) {
-            final TouchPoint normalized = fromHistorical(motionEvent, i);
-            final TouchPoint screen = touchPointFromNormalized(normalized);;
-            shape.onMove(normalized, screen);
-            if (getParent().getCallback() != null) {
-                getParent().getCallback().onDrawingTouchMove(motionEvent, shape, false);
+            final TouchPoint touchPoint = fromHistorical(motionEvent, i);
+            final TouchPoint screen = touchPointFromNormalized(touchPoint);
+            if (!inLastPage(touchPoint.x, touchPoint.y)) {
+                continue;
+            }
+            touchPoint.normalize(getLastPageInfo());
+            shape.onMove(touchPoint, screen);
+            if (getCallback() != null) {
+                getCallback().onDrawingTouchMove(motionEvent, shape, false);
             }
         }
-        final TouchPoint normalized = new TouchPoint(motionEvent);
-        final TouchPoint screen = touchPointFromNormalized(normalized);;
-        shape.onMove(normalized, screen);
-        if (getParent().getCallback() != null) {
-            getParent().getCallback().onDrawingTouchMove(motionEvent, shape, true);
+        final TouchPoint touchPoint = new TouchPoint(motionEvent);
+        final TouchPoint screen = touchPointFromNormalized(touchPoint);
+        if (!inLastPage(touchPoint.x, touchPoint.y)) {
+            return;
+        }
+        touchPoint.normalize(getLastPageInfo());
+        shape.onMove(touchPoint, screen);
+        if (getCallback() != null) {
+            getCallback().onDrawingTouchMove(motionEvent, shape, true);
         }
     }
 
     private void onDrawingTouchUp(final MotionEvent motionEvent) {
-        final Shape shape = getParent().getCurrentShape();
+        final Shape shape = getNoteManager().getCurrentShape();
         if (shape == null) {
             return;
         }
-        final TouchPoint normalized = new TouchPoint(motionEvent);
-        final TouchPoint screen = touchPointFromNormalized(normalized);
-        shape.onUp(normalized, screen);
-        if (getParent().getCallback() != null) {
-            getParent().getCallback().onDrawingTouchUp(motionEvent, shape);
+        final TouchPoint touchPoint = new TouchPoint(motionEvent);
+        final TouchPoint screen = touchPointFromNormalized(touchPoint);
+        if (!inLastPage(touchPoint.x, touchPoint.y)) {
+            return;
+        }
+        touchPoint.normalize(getLastPageInfo());
+        shape.onUp(touchPoint, screen);
+        if (getCallback() != null) {
+            getCallback().onDrawingTouchUp(motionEvent, shape);
         }
     }
 

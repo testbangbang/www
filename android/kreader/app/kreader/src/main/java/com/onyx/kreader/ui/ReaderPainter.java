@@ -66,6 +66,7 @@ public class ReaderPainter {
         drawBookmark(context, canvas, userDataInfo, viewInfo);
         drawShapes(context, canvas, paint, noteManager, shapeDataInfo);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
+        drawPageInfo(canvas, paint, viewInfo);
     }
 
     private void drawBackground(Canvas canvas, Paint paint) {
@@ -79,6 +80,15 @@ public class ReaderPainter {
             return;
         }
         canvas.drawBitmap(bitmap, 0, 0, paint);
+    }
+
+    private void drawPageInfo(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
+        paint.setStrokeWidth(3.0f);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.BLACK);
+        for(PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            canvas.drawRect(pageInfo.getDisplayRect(), paint);
+        }
     }
 
     private void drawViewportOverlayIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {

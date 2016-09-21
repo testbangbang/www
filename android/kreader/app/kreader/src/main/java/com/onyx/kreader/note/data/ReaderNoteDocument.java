@@ -197,7 +197,7 @@ public class ReaderNoteDocument {
     public ReaderNotePage createPage(final String pageName, int subPageIndex) {
         String pageUniqueId = ShapeUtils.generateUniqueId();
         createIndexEntry(pageName, subPageIndex, pageUniqueId);
-        return createDataEntry(pageName, pageUniqueId);
+        return ensureDataEntry(pageName, pageUniqueId);
     }
 
     public boolean removePage(final Context context, final String pageName, int subPageIndex) {
@@ -224,7 +224,7 @@ public class ReaderNoteDocument {
         getPageIndex().add(pageName, index, pageUniqueId);
     }
 
-    private ReaderNotePage createDataEntry(final String pageName, final String pageUniqueId) {
+    private ReaderNotePage ensureDataEntry(final String pageName, final String pageUniqueId) {
         if (!getPageMap().containsKey(pageUniqueId)) {
             final ReaderNotePage notePage = new ReaderNotePage(getDocumentUniqueId(), pageName, pageUniqueId);
             getPageMap().put(pageUniqueId, notePage);
@@ -256,12 +256,22 @@ public class ReaderNoteDocument {
         if (StringUtils.isNullOrEmpty(pageUniqueId)) {
             return null;
         }
-        notePage = createDataEntry(pageName, pageUniqueId);
+        notePage = ensureDataEntry(pageName, pageUniqueId);
         if (notePage != null && notePage.isLoaded()) {
             return notePage;
         }
         notePage.loadPage(context);
         return notePage;
     }
+
+    public ReaderNotePage ensurePage(final Context context, final String pageName, int subPageIndex) {
+        final ReaderNotePage readerNotePage = loadPage(context, pageName, subPageIndex);
+        if (readerNotePage != null) {
+            return readerNotePage;
+        }
+        return createPage(pageName, subPageIndex);
+    }
+
+
 
 }

@@ -5,12 +5,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-import com.onyx.android.sdk.scribble.EPDRenderer;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.EPDShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.kreader.note.NoteManager;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -49,37 +49,27 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean stop = false;
     private volatile boolean reportData = false;
     private String systemPath = "/dev/input/event1";
-    private volatile Matrix screenMatrix;
-    private volatile Matrix viewMatrix;
+    private volatile Matrix inputToScreenMatrix;
+    private volatile Matrix screenToViewMatrix;
     private volatile float[] srcPoint = new float[2];
     private volatile float[] dstPoint = new float[2];
     private volatile TouchPointList touchPointList;
-    private InputCallback rawInputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
     private ExecutorService singleThreadPool = null;
     private volatile RectF limitRect = new RectF();
-    private NoteEventProcessorManager parent;
 
-    public RawEventProcessor(final NoteEventProcessorManager p) {
-        parent = p;
+    public RawEventProcessor(final NoteManager p) {
+        super(p);
     }
 
     public void update(final Matrix screenMatrix, final Matrix viewMatrix) {
-        this.screenMatrix = screenMatrix;
-        this.viewMatrix = viewMatrix;
-    }
-
-    private NoteEventProcessorManager getParent() {
-        return parent;
-    }
-
-    public void setRawInputCallback(final InputCallback callback) {
-        rawInputCallback = callback;
+        this.inputToScreenMatrix = screenMatrix;
+        this.screenToViewMatrix = viewMatrix;
     }
 
     public void start() {
         stop = false;
-        reportData = false;
+        reportData = true;
         clearInternalState();
         submitJob();
     }
@@ -203,10 +193,10 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private TouchPoint mapInputToScreenPoint(final TouchPoint touchPoint) {
         dstPoint[0] = touchPoint.x;
         dstPoint[1] = touchPoint.y;
-        if (screenMatrix != null) {
+        if (inputToScreenMatrix != null) {
             srcPoint[0] = touchPoint.x;
             srcPoint[1] = touchPoint.y;
-            screenMatrix.mapPoints(dstPoint, srcPoint);
+            inputToScreenMatrix.mapPoints(dstPoint, srcPoint);
         }
         touchPoint.x = dstPoint[0];
         touchPoint.y = dstPoint[1];
@@ -218,13 +208,13 @@ public class RawEventProcessor extends NoteEventProcessorBase {
      * @param touchPoint
      * @return
      */
-    private TouchPoint mapScreenPointToPage(final TouchPoint touchPoint) {
+    private TouchPoint mapScreenPointToView(final TouchPoint touchPoint) {
         dstPoint[0] = touchPoint.x;
         dstPoint[1] = touchPoint.y;
-        if (viewMatrix != null) {
+        if (screenToViewMatrix != null) {
             srcPoint[0] = touchPoint.x;
             srcPoint[1] = touchPoint.y;
-            viewMatrix.mapPoints(dstPoint, srcPoint);
+            screenToViewMatrix.mapPoints(dstPoint, srcPoint);
         }
         touchPoint.x = dstPoint[0];
         touchPoint.y = dstPoint[1];
@@ -254,71 +244,98 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        final Shape shape = getParent().createNewShape();
-        getParent().beforeDownMessage(shape);
-        getParent().addToStash(shape);
-        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
-        mapScreenPointToPage(touchPoint);
-        shape.onDown(touchPoint, screen);
+        if (!isReportData()) {
+            return;
+        }
+        if (erasing) {
+            erasingPressReceived(x, y, pressure, size, ts);
+        } else {
+            drawingPressReceived(x, y, pressure, size, ts);
+        }
     }
 
     private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        final Shape shape = getParent().getCurrentShape();
-        if (shape == null) {
+        if (!isReportData()) {
             return;
         }
-        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
-        mapScreenPointToPage(touchPoint);
-        shape.onMove(touchPoint, screen);
+        if (erasing) {
+            erasingMoveReceived(x, y, pressure, size, ts);
+        } else {
+            drawingMoveReceived(x, y, pressure, size, ts);
+        }
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        final Shape shape = getParent().getCurrentShape();
+        if (!isReportData()) {
+            return;
+        }
+        if (erasing) {
+            erasingReleaseReceived(x, y, pressure, size, ts);
+        } else {
+            drawingReleaseReceived(x, y, pressure, size, ts);
+        }
+    }
+
+    private void erasingPressReceived(int x, int y, int pressure, int size, long ts) {
+    }
+
+    private void erasingMoveReceived(int x, int y, int pressure, int size, long ts) {
+    }
+
+    private void erasingReleaseReceived(int x, int y, int pressure, int size, long ts) {
+    }
+
+    private void drawingPressReceived(int x, int y, int pressure, int size, long ts) {
+        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+        final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
+        mapScreenPointToView(touchPoint);
+        if (hitTest(touchPoint.x, touchPoint.y) == null) {
+            return;
+        }
+        touchPoint.normalize(getLastPageInfo());
+        final Shape shape = getNoteManager().createNewShape();
+        getNoteManager().beforeDownMessage(shape);
+        shape.onDown(touchPoint, screen);
+    }
+
+    private void drawingMoveReceived(int x, int y, int pressure, int size, long ts) {
+        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+        final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
+        mapScreenPointToView(touchPoint);
+        if (!inLastPage(touchPoint.x, touchPoint.y)) {
+            return;
+        }
+        final Shape shape = getNoteManager().getCurrentShape();
         if (shape == null) {
             return;
         }
+        touchPoint.normalize(getLastPageInfo());
+        shape.onMove(touchPoint, screen);
+    }
+
+    private void drawingReleaseReceived(int x, int y, int pressure, int size, long ts) {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
-        mapScreenPointToPage(touchPoint);
+        mapScreenPointToView(touchPoint);
+        if (!inLastPage(touchPoint.x, touchPoint.y)) {
+            return;
+        }
+        final Shape shape = getNoteManager().getCurrentShape();
+        if (shape == null) {
+            return;
+        }
+        touchPoint.normalize(getLastPageInfo());
         shape.onUp(touchPoint, screen);
+        getNoteManager().resetCurrentShape();
+        resetLastPageInfo();
+        invokeDFBShapeFinished(shape);
     }
 
-    private void resetPointList() {
-        touchPointList = null;
-    }
-
-    private void invokeTouchPointListBegin(final boolean erasing) {
-        if (rawInputCallback == null || (!isReportData() && !erasing)) {
-            return;
-        }
-
+    private void invokeDFBShapeFinished(final Shape shape) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if (erasing) {
-                    rawInputCallback.onBeginErasing();
-                } else {
-                    rawInputCallback.onBeginRawData();
-                }
-            }
-        });
-    }
-
-    private void invokeTouchPointListFinished(final TouchPointList touchPointList, final boolean erasing) {
-        if (rawInputCallback == null || touchPointList == null || (!isReportData() && !erasing)) {
-            return;
-        }
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (erasing) {
-                    rawInputCallback.onEraseTouchPointListReceived(touchPointList);
-                } else {
-                    rawInputCallback.onRawTouchPointListReceived(null, touchPointList);
-                }
+                getCallback().onDFBShapeFinished(shape);
             }
         });
     }

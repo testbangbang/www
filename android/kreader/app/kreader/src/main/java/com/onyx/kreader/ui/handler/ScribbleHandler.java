@@ -69,8 +69,8 @@ public class ScribbleHandler extends BaseHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
-
-        return getNoteEventProcessorManager().onTouchEvent(e);
+        return false;
+//        return getNoteEventProcessorManager().onTouchEvent(e);
     }
 
     @Override

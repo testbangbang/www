@@ -19,8 +19,10 @@ public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
+        updateEventProcessor(noteManager);
         ensureDocumentOpened(noteManager);
         loadShapeData(noteManager);
+        updateEventProcessor(noteManager);
         getShapeDataInfo().setContentRendered(renderVisiblePages(noteManager));
         updateShapeDataInfo(noteManager);
     }
@@ -31,5 +33,9 @@ public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateEventProcessor(final NoteManager noteManager) {
+        noteManager.setVisiblePages(getVisiblePages());
     }
 }

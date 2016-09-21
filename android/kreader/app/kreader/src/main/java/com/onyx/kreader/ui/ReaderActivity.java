@@ -21,9 +21,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -45,13 +47,7 @@ import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
-import com.onyx.kreader.ui.events.ChangeEpdUpdateMode;
-import com.onyx.kreader.ui.events.ChangeOrientationEvent;
-import com.onyx.kreader.ui.events.DocumentOpenEvent;
-import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.ui.events.RequestFinishEvent;
-import com.onyx.kreader.ui.events.ResetEpdUpdateMode;
-import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
+import com.onyx.kreader.ui.events.*;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -101,7 +97,7 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 removeGlobalOnLayoutListener(this);
-                getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+                onSurfaceViewChanged();
                 if (getReaderDataHolder().isDocumentOpened()) {
                     new ChangeViewConfigAction().execute(getReaderDataHolder());
                 } else {
@@ -142,6 +138,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void closeDataHolder() {
+        // use action later.
         getReaderDataHolder().getEventBus().unregister(this);
         getReaderDataHolder().destroy();
     }
@@ -187,7 +184,6 @@ public class ReaderActivity extends ActionBarActivity {
         initStatusBar();
         initReaderDataHolder();
         initSurfaceView();
-        initShapeViewDelegate();
     }
 
     private void initStatusBar() {
@@ -229,12 +225,12 @@ public class ReaderActivity extends ActionBarActivity {
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 clearCanvas(holder);
                 if (!readerDataHolder.isDocumentOpened()) {
-                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+                    onSurfaceViewChanged();
                     return;
                 }
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
-                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
-                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+                    surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                    onSurfaceViewChanged();
                     new ChangeViewConfigAction().execute(readerDataHolder);
                 } else {
                     readerDataHolder.redrawPage();
@@ -292,12 +288,6 @@ public class ReaderActivity extends ActionBarActivity {
         readerDataHolder = new ReaderDataHolder(this);
         readerDataHolder.getEventBus().register(this);
         getHandlerManager().setEnable(false);
-    }
-
-    private void initShapeViewDelegate() {
-//        getNoteManager().setView(this, surfaceView, null);
-        // when page changed, choose to flush
-        //noteViewHelper.flushPendingShapes();
     }
 
     private void checkForNewConfiguration() {
@@ -364,9 +354,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void acquireStartupWakeLock() {
         if (startupWakeLock == null) {
-        //    startupWakeLock = Device.currentDevice().newWakeLock(this, "ReaderActivity");
+            startupWakeLock = Device.currentDevice().newWakeLock(this, ReaderActivity.class.getSimpleName());
         }
-        //startupWakeLock.acquire();
+        startupWakeLock.acquire();
     }
 
     private void releaseStartupWakeLock() {
@@ -410,11 +400,21 @@ public class ReaderActivity extends ActionBarActivity {
         action.execute(getReaderDataHolder());
     }
 
+    private void onSurfaceViewChanged() {
+        getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+        getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView);
+    }
+
+    @Subscribe
+    public void onBeforeDocumentOpen(final BeforeDocumentOpen event) {
+        EpdController.enablePost(surfaceView, 1);
+    }
+
     @Subscribe
     public void onDocumentOpened(final DocumentOpenEvent event) {
         ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this,
                 DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
-        getReaderDataHolder().getNoteManager().updateSurfaceView(surfaceView);
+        onSurfaceViewChanged();
     }
 
     @Subscribe

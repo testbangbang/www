@@ -200,7 +200,7 @@ public class ReaderDataHolder {
 
     public NoteManager getNoteManager() {
         if (noteManager == null) {
-            noteManager = new NoteManager();
+            noteManager = new NoteManager(context);
         }
         return noteManager;
     }
@@ -322,6 +322,7 @@ public class ReaderDataHolder {
     }
 
     public void destroy() {
+        closeNoteManager();
         closeDocument();
         closeTts();
     }
@@ -340,5 +341,12 @@ public class ReaderDataHolder {
             ttsManager.shutdown();
             ttsManager = null;
         }
+    }
+
+    private void closeNoteManager() {
+        if (noteManager == null) {
+            return;
+        }
+        getNoteManager().close();
     }
 }

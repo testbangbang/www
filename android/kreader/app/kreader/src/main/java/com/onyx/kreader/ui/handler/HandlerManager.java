@@ -57,7 +57,7 @@ public class HandlerManager {
         providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, readerDataHolder.getContext()));
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
-        activeProviderName = SCRIBBLE_PROVIDER;
+        activeProviderName = READING_PROVIDER;
         enable = true;
         enableTouch = true;
         readerConfig = ReaderConfig.sharedInstance(context);
