@@ -134,6 +134,10 @@ public class SingletonSharedPreference {
         return Integer.parseInt(sPreferences.getString(context.getString(R.string.settings_search_menu_position_key), "1"));
     }
 
+    public static boolean isShowNote(Context context) {
+        return getBooleanByStringID(context, R.string.settings_note_key, true);
+    }
+
     public static boolean isShowBookmark(Context context) {
         return getBooleanByStringID(context, R.string.settings_bookmark_key, true);
     }

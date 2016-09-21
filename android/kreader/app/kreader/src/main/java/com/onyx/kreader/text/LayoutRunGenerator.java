@@ -32,7 +32,7 @@ public class LayoutRunGenerator {
     }
 
     /**
-     * has any other run to load.
+     * has any other run to loadDocument.
      * @return
      */
     public boolean hasNext() {
