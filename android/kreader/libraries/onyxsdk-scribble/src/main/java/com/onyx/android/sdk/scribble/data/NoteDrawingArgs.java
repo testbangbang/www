@@ -13,7 +13,7 @@ public class NoteDrawingArgs {
         PEN_NULL,                   // not initialized yet.
         PEN_SCREEN_DRAWING,         // in direct screen drawing state, the input could be raw input or touch panel.
         PEN_CANVAS_DRAWING,         // in canvas drawing state
-        PEN_USER_ERASING, PenState,           // in user erasing state
+        PEN_USER_ERASING,           // in user erasing state
     }
 
     public volatile float strokeWidth = NoteModel.getDefaultStrokeWidth();
