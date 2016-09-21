@@ -3,22 +3,22 @@ package com.onyx.android.sdk;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.Captcha;
-import com.onyx.android.sdk.data.request.cloud.SignInRequest;
-import com.onyx.android.sdk.data.request.cloud.SignUpRequest;
-import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.android.sdk.data.model.JsonResponse;
+import com.onyx.android.sdk.data.request.cloud.AccountSignUpRequest;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.data.model.OnyxAccount;
 import com.onyx.android.sdk.data.v1.OnyxAccountService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 
-import okhttp3.ResponseBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import java.io.File;
 import java.util.UUID;
 
 /**
@@ -41,15 +41,31 @@ public class AccountTest extends ApplicationTestCase<Application> {
         return service;
     }
 
+    private static String[] telFirst = "134,135,136,137,138,139,150,151,152,157,158,159,130,131,132,155,156,133,153".split(",");
 
-    public void testSignUpAndSignIn() throws Exception {
+    public static int getNum(int start, int end) {
+        return (int) (Math.random() * (end - start + 1) + start);
+    }
+
+    public static String getRandomTel() {
+        int index = getNum(0, telFirst.length - 1);
+        String first = telFirst[index];
+        String second = String.valueOf(getNum(1, 888) + 10000).substring(1);
+        String third = String.valueOf(getNum(1, 9100) + 10000).substring(1);
+        return first + second + third;
+    }
+
+    public OnyxAccount testSignUpAndSignIn() throws Exception {
         OnyxAccount account = AccountUtils.getCurrentAccount();
-        Call<ResponseBody> object = getService().signup(account);
-        Response<ResponseBody> response = object.execute();
+        account.nickName = UUID.randomUUID().toString().substring(0, 5);
+        account.mobile = getRandomTel();
+
+        Call<OnyxAccount> object = getService().signup(account);
+        Response<OnyxAccount> response = object.execute();
         assertNotNull(response);
         assertTrue(response.isSuccessful());
         assertNotNull(response.body());
-        OnyxAccount resultAccount = JSONObjectParseUtils.parseOnyxAccount(response.body().string());
+        OnyxAccount resultAccount = response.body();
         assertNotNull(resultAccount);
         assertNotNull(resultAccount.sessionToken);
         account.sessionToken = resultAccount.sessionToken;
@@ -65,9 +81,55 @@ public class AccountTest extends ApplicationTestCase<Application> {
         assertNotNull(response);
         assertTrue(response.isSuccessful());
         assertNotNull(response.body());
-        resultAccount = JSONObjectParseUtils.parseOnyxAccount(response.body().string());
+        resultAccount = response.body();
         assertNotNull(resultAccount);
         assertNotNull(resultAccount.sessionToken);
+        return resultAccount;
+    }
+
+    public void testGetAndUpdate() throws Exception {
+        OnyxAccount resultAccount = testSignUpAndSignIn();
+        Response<OnyxAccount> response;
+
+        //test get accountInfo
+        OnyxAccount accountInfo;
+        response = getService().getAccountInfo(resultAccount.sessionToken).execute();
+        assertNotNull(response);
+        assertTrue(response.isSuccessful());
+        assertNotNull(response.body());
+        accountInfo = response.body();
+        assertNotNull(accountInfo);
+        assertEquals(accountInfo.nickName, resultAccount.nickName);
+        assertEquals(accountInfo.mobile, resultAccount.mobile);
+
+        // test update Account
+        OnyxAccount updateAccount;
+        accountInfo.sessionToken = resultAccount.sessionToken;
+        accountInfo.firstName = UUID.randomUUID().toString().substring(0, 5);
+        accountInfo.mobile = null;
+        response = getService().updateAccountInfo(accountInfo, accountInfo.sessionToken).execute();
+        assertNotNull(response);
+        assertTrue(response.isSuccessful());
+        assertNotNull(response.body());
+        updateAccount = response.body();
+        assertNotNull(updateAccount);
+        assertEquals(updateAccount.firstName, accountInfo.firstName);
+
+        // test upload avatar
+        if (StringUtils.isNullOrEmpty(updateAccount.avatarUrl)) {
+            File avatarFile = AccountUtils.getAvatarFile();
+            assertTrue(avatarFile.exists());
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), avatarFile);
+            MultipartBody.Part partBody = MultipartBody.Part.createFormData(Constant.AVATAR_TAG, avatarFile.getName(), requestFile);
+            OnyxAccount uploadAvatarAccount;
+            response = service.uploadAvatar(partBody, resultAccount.sessionToken).execute();
+            assertNotNull(response);
+            assertTrue(response.isSuccessful());
+            assertNotNull(response.body());
+            uploadAvatarAccount = response.body();
+            assertNotNull(uploadAvatarAccount);
+            assertNotNull(uploadAvatarAccount.avatarUrl);
+        }
     }
 
     public void testCaptcha() throws Exception {
@@ -81,13 +143,12 @@ public class AccountTest extends ApplicationTestCase<Application> {
     public void testSignUpRequest() throws Exception {
         OnyxAccount account = AccountUtils.generateRandomAccount();
         final CloudManager cloudManager = new CloudManager();
-        SignUpRequest signUpRequest = new SignUpRequest(account);
-        signUpRequest.execute(cloudManager);
-        final OnyxAccount result = signUpRequest.getAccountSignUp();
+        AccountSignUpRequest accountSignUpRequest = new AccountSignUpRequest(account);
+        accountSignUpRequest.execute(cloudManager);
+        final OnyxAccount result = accountSignUpRequest.getAccountSignUp();
         assertNotNull(result);
         assertNotNull(result.sessionToken);
         account.sessionToken = result.sessionToken;
     }
-
 
 }
