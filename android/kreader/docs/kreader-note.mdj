@@ -1091,12 +1091,12 @@
 							"showShadow": true,
 							"containerChangeable": false,
 							"containerExtending": false,
-							"left": 56,
+							"left": 48,
 							"top": 680,
-							"width": 401,
-							"height": 121,
+							"width": 609,
+							"height": 217,
 							"autoResize": false,
-							"text": "rendering trigger: when page rendering finished\n\nhandler manager: detect key event, switch to scribble handler automatically \n\nevent receiver, from raw or normal touch input reader, multi input reader, touchEvent --> Renderer ?\nrawInputReader --> render directly?",
+							"text": "rendering trigger: when page rendering finished\n\nhandler manager: detect key event, switch to scribble handler automatically \n\nevent receiver, from raw or normal touch input reader, multi input reader, touchEvent --> Renderer ?\nrawInputReader --> render directly?\n\nstate: erasing and non-direct shape, use touch event\nfor dfb shape, use raw event processor\n\n* page renderer, send request with pageInfoList\n* page flush",
 							"wordWrap": true
 						},
 						{
