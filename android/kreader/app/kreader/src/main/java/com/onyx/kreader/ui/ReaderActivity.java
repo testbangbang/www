@@ -35,15 +35,7 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
-import com.onyx.kreader.ui.actions.BackwardAction;
-import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
-import com.onyx.kreader.ui.actions.ForwardAction;
-import com.onyx.kreader.ui.actions.GotoPageAction;
-import com.onyx.kreader.ui.actions.OpenDocumentAction;
-import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
-import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
-import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
+import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
@@ -60,7 +52,6 @@ import org.greenrobot.eventbus.Subscribe;
  * Created by Joy on 2016/4/14.
  */
 public class ReaderActivity extends ActionBarActivity {
-    private final static String TAG = ReaderActivity.class.getSimpleName();
     private static final String DOCUMENT_PATH_TAG = "document";
 
     private PowerManager.WakeLock startupWakeLock;
@@ -97,10 +88,8 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 removeGlobalOnLayoutListener(this);
-                onSurfaceViewChanged();
-                if (getReaderDataHolder().isDocumentOpened()) {
-                    new ChangeViewConfigAction().execute(getReaderDataHolder());
-                } else {
+                onSurfaceViewSizeChanged();
+                if (!getReaderDataHolder().isDocumentOpened()) {
                     handleActivityIntent();
                 }
             }
@@ -131,16 +120,14 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        resetMenus();
-        closeDataHolder();
-        releaseStartupWakeLock();
-        super.onDestroy();
-    }
-
-    private void closeDataHolder() {
-        // use action later.
-        getReaderDataHolder().getEventBus().unregister(this);
-        getReaderDataHolder().destroy();
+        final CloseAction closeAction = new CloseAction();
+        closeAction.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                releaseStartupWakeLock();
+                ReaderActivity.super.onDestroy();
+            }
+        });
     }
 
     private void resetMenus() {
@@ -225,13 +212,11 @@ public class ReaderActivity extends ActionBarActivity {
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 clearCanvas(holder);
                 if (!readerDataHolder.isDocumentOpened()) {
-                    onSurfaceViewChanged();
                     return;
                 }
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
                     surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
-                    onSurfaceViewChanged();
-                    new ChangeViewConfigAction().execute(readerDataHolder);
+                    onSurfaceViewSizeChanged();
                 } else {
                     readerDataHolder.redrawPage();
                 }
@@ -271,6 +256,7 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 removeGlobalOnLayoutListener(this);
+                onSurfaceViewSizeChanged();
                 handleActivityIntent();
             }
         });
@@ -306,9 +292,8 @@ public class ReaderActivity extends ActionBarActivity {
             public void onGlobalLayout() {
                 surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
-                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
-                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
-                    new ChangeViewConfigAction().execute(readerDataHolder);
+                    surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                    onSurfaceViewSizeChanged();
                 }
             }
         });
@@ -393,8 +378,7 @@ public class ReaderActivity extends ActionBarActivity {
         if (isFileAlreadyOpened(path)) {
             return;
         }
-        
-        resetMenus();
+
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder());
         releaseStartupWakeLock();
@@ -412,21 +396,30 @@ public class ReaderActivity extends ActionBarActivity {
         action.execute(getReaderDataHolder());
     }
 
-    private void onSurfaceViewChanged() {
+    private void onSurfaceViewSizeChanged() {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView);
+        if (getReaderDataHolder().isDocumentOpened()) {
+            new ChangeViewConfigAction().execute(getReaderDataHolder());
+        }
     }
 
     @Subscribe
     public void onBeforeDocumentOpen(final BeforeDocumentOpen event) {
         EpdController.enablePost(surfaceView, 1);
+        resetMenus();
+    }
+
+    @Subscribe
+    public void onBeforeDocumentClose(final BeforeDocumentClose event) {
+        EpdController.enablePost(surfaceView, 1);
+        resetMenus();
     }
 
     @Subscribe
     public void onDocumentOpened(final DocumentOpenEvent event) {
         ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this,
                 DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
-        onSurfaceViewChanged();
     }
 
     @Subscribe

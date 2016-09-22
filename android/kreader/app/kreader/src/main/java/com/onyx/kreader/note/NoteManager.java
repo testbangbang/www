@@ -62,8 +62,8 @@ public class NoteManager {
     }
 
     public void close() {
-        flushStash();
         getNoteEventProcessorManager().quit();
+        flushStash();
     }
 
     public void updateSurfaceView(final Context context, final SurfaceView sv) {

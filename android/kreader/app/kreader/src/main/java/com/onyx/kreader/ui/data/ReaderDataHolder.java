@@ -360,10 +360,10 @@ public class ReaderDataHolder {
     }
 
     public void destroy() {
-        closeNoteManager();
-        closeDocument();
-        closeTts();
         closeActiveDialogs();
+        closeNoteManager();
+        closeTts();
+        closeDocument();
     }
 
     private void closeDocument() {
