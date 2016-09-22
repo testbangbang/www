@@ -1,6 +1,6 @@
 {
     "key_binding": {
-        "BaseHandler": {
+        "HandlerManager": {
             "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
             "KEYCODE_PAGE_UP":  {"action": "prevScreen", "args": ""},
             "KEYCODE_VOLUME_DOWN":  {"action": "nextScreen", "args": ""},

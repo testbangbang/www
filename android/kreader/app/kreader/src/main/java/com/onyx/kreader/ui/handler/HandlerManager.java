@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.handler;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -30,6 +31,7 @@ import java.util.Map;
  */
 public class HandlerManager {
 
+    public static final String TAG = HandlerManager.class.getSimpleName();
     public static final String READING_PROVIDER = "rp";
     public static final String WORD_SELECTION_PROVIDER = "wp";
     public static final String SCRIBBLE_PROVIDER = "scribble";
@@ -60,7 +62,7 @@ public class HandlerManager {
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
         providerMap.put(ERASER_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
-        activeProviderName = SCRIBBLE_PROVIDER;
+        activeProviderName = READING_PROVIDER;
         enable = true;
         enableTouch = true;
         readerConfig = ReaderConfig.sharedInstance(context);
@@ -148,7 +150,7 @@ public class HandlerManager {
     }
 
     public void resetToDefaultProvider() {
-        activeProviderName = READING_PROVIDER;
+        setActiveProvider(READING_PROVIDER);
     }
 
     public void setActiveProvider(final String providerName) {
@@ -169,7 +171,7 @@ public class HandlerManager {
         if (!isEnable()) {
             return false;
         }
-        return getActiveProvider().onKeyDown(readerDataHolder, keyCode, event);
+        return processKeyDownEvent(readerDataHolder, keyCode, event);
     }
 
     public boolean onKeyUp(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
@@ -356,11 +358,22 @@ public class HandlerManager {
         lastToolType = MotionEvent.TOOL_TYPE_FINGER;
     }
 
+    public boolean processKeyDownEvent(final ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
+        final String key = KeyEvent.keyCodeToString(keyCode);
+        final String action = getKeyAction(TAG, key);
+        final String args = getKeyArgs(TAG, key);
+        if (StringUtils.isNullOrEmpty(action)) {
+            Log.w(TAG, "No action found for key: " + key);
+        }
+        return processKeyDown(readerDataHolder, action, args);
+    }
+
     public boolean processKeyDown(ReaderDataHolder readerDataHolder, final String action, final String args) {
+        getActiveProvider().beforeProcessKeyDown(readerDataHolder);
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }
-        getActiveProvider().beforeProcessKeyDown(readerDataHolder);
+
         if (action.equals(KeyAction.NEXT_SCREEN)) {
             nextScreen(readerDataHolder);
         } else if (action.equals(KeyAction.NEXT_PAGE)) {

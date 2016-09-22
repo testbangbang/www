@@ -27,7 +27,11 @@ public class NoteEventProcessorManager {
         return view;
     }
 
-    public void quit() {
+    public void start() {
+        getRawEventProcessor().start();
+    }
+
+    public void stop() {
         if (rawEventProcessor != null) {
             rawEventProcessor.quit();
         }
@@ -103,16 +107,8 @@ public class NoteEventProcessorManager {
         return rawEventProcessor;
     }
 
-    public void switchEventProcess() {
-        if (getNoteManager().isDFBForCurrentShape()) {
-            getRawEventProcessor().start();
-        } else {
-            getRawEventProcessor().pause();
-        }
-    }
-
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        if (getNoteManager().isDFBForCurrentShape()) {
+        if (!getNoteManager().isDFBForCurrentShape()) {
             return onTouchEventDrawing(motionEvent);
         }
         return false;

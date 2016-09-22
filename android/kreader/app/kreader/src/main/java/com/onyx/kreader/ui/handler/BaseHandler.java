@@ -17,7 +17,6 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  * Created by ming on 16/7/27.
  */
 public abstract class BaseHandler {
-    private static final String TAG = BaseHandler.class.getSimpleName();
 
     public static  final int KEYCDOE_SCRIBE = 213;
     public static  final int KEYCDOE_ERASE = 214;
@@ -57,21 +56,8 @@ public abstract class BaseHandler {
         return true;
     }
 
-    public boolean preKeyDown(ReaderDataHolder readerDataHolder,int keyCode, KeyEvent event) {
-        return false;
-    }
-
     public boolean onKeyDown(ReaderDataHolder readerDataHolder,int keyCode, KeyEvent event) {
-        preKeyDown(readerDataHolder, keyCode, event);
-
-        final String key = KeyEvent.keyCodeToString(keyCode);
-        final String action = getParent().getKeyAction(TAG, key);
-        final String args = getParent().getKeyArgs(TAG, key);
-        if (StringUtils.isNullOrEmpty(action)) {
-            Log.w(TAG, "No action found for key: " + key);
-        }
-
-        return parent.processKeyDown(readerDataHolder, action, args);
+        return false;
     }
 
     public boolean onKeyUp(ReaderDataHolder readerDataHolder,int keyCode, KeyEvent event) {

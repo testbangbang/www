@@ -21,20 +21,17 @@ public class ScribbleHandler extends BaseHandler {
         super(p);
     }
 
-    public boolean preKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
-        return true;
-    }
-
     private boolean isEnableBigPen() {
         return true;
     }
 
-
     public void onActivate(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getNoteManager().startEventProcessor();
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getNoteManager().enableScreenPost(true);
+        readerDataHolder.getNoteManager().stopEventProcessor();
     }
 
     @Override

@@ -21,7 +21,6 @@ import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.data.ReaderNoteDocument;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
-import com.onyx.kreader.note.request.FlushShapeListRequest;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.NewShapeEvent;
@@ -62,8 +61,12 @@ public class NoteManager {
         return noteDocument;
     }
 
+    public void startEventProcessor() {
+        getNoteEventProcessorManager().start();
+    }
+
     public void stopEventProcessor() {
-        getNoteEventProcessorManager().quit();
+        getNoteEventProcessorManager().stop();
     }
 
     public void updateSurfaceView(final Context context, final SurfaceView sv) {
@@ -133,10 +136,6 @@ public class NoteManager {
 
     public Bitmap updateRenderBitmap(final Rect viewportSize) {
         renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
-        return renderBitmapWrapper.getBitmap();
-    }
-
-    public Bitmap getRenderBitmap() {
         return renderBitmapWrapper.getBitmap();
     }
 

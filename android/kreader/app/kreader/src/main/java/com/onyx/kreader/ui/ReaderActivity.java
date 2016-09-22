@@ -34,6 +34,7 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -507,6 +508,17 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private boolean processKeyDown(int keyCode, KeyEvent event) {
+        if (preProcessKeyDown(keyCode, event)) {
+            return true;
+        }
+        return getHandlerManager().onKeyDown(getReaderDataHolder(), keyCode, event) || super.onKeyDown(keyCode, event);
+    }
+
+    private boolean processKeyUp(int keyCode, KeyEvent event) {
+        return getHandlerManager().onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
+    }
+
+    private boolean preProcessKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!hasPopupWindow()){
                 if (askForClose()) {
@@ -517,11 +529,7 @@ public class ReaderActivity extends ActionBarActivity {
                 return true;
             }
         }
-        return getHandlerManager().onKeyDown(getReaderDataHolder(), keyCode, event) || super.onKeyDown(keyCode, event);
-    }
-
-    private boolean processKeyUp(int keyCode, KeyEvent event) {
-        return getHandlerManager().onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
+        return false;
     }
 
     private void updateStatusBar() {

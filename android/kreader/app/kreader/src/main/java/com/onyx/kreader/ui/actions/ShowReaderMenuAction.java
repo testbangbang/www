@@ -16,7 +16,6 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
-import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -30,6 +29,7 @@ import com.onyx.kreader.host.request.ScaleToPageCropRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthContentRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
+import com.onyx.kreader.note.actions.StartNoteAction;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
@@ -186,6 +186,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         startShapeDrawing(readerDataHolder);
                         break;
                     case DIRECTORY_EXPORT:
+                        startNoteWriting(readerDataHolder);
                         break;
                     case TTS:
                         showTtsDialog(readerDataHolder);
@@ -213,6 +214,9 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case SETTINGS:
                         showReaderSettings(readerDataHolder);
+                        break;
+                    case NOTE_WRITING:
+                        startNoteWriting(readerDataHolder);
                         break;
                     case EXIT:
                         readerActivity.onBackPressed();
@@ -409,5 +413,11 @@ public class ShowReaderMenuAction extends BaseAction {
         state.setCanGoBack(readerDataHolder.getReaderViewInfo().canGoBack);
         state.setCanGoForward(readerDataHolder.getReaderViewInfo().canGoForward);
         updateReaderMenuState(readerDataHolder, state);
+    }
+
+    private void startNoteWriting(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        final StartNoteAction startNoteAction = new StartNoteAction();
+        startNoteAction.execute(readerDataHolder);
     }
 }
