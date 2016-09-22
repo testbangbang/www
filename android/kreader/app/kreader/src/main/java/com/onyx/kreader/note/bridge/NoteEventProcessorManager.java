@@ -33,6 +33,10 @@ public class NoteEventProcessorManager {
         }
     }
 
+    public final NoteManager getNoteManager() {
+        return noteManager;
+    }
+
     public void update(final View targetView, final DeviceConfig noteConfig) {
         view = targetView;
         OnyxMatrix viewMatrix = new OnyxMatrix();
@@ -95,13 +99,23 @@ public class NoteEventProcessorManager {
     private RawEventProcessor getRawEventProcessor() {
         if (rawEventProcessor == null) {
             rawEventProcessor = new RawEventProcessor(noteManager);
-            rawEventProcessor.start();
         }
         return rawEventProcessor;
     }
 
+    public void switchEventProcess() {
+        if (getNoteManager().isDFBForCurrentShape()) {
+            getRawEventProcessor().start();
+        } else {
+            getRawEventProcessor().pause();
+        }
+    }
+
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        return onTouchEventDrawing(motionEvent);
+        if (getNoteManager().isDFBForCurrentShape()) {
+            return onTouchEventDrawing(motionEvent);
+        }
+        return false;
     }
 
     public boolean onTouchEventDrawing(final MotionEvent motionEvent) {

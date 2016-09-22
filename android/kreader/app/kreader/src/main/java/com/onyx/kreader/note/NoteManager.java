@@ -229,6 +229,10 @@ public class NoteManager {
         return currentShape;
     }
 
+    public boolean isDFBForCurrentShape() {
+        return ShapeFactory.isDFBShape(getNoteDrawingArgs().currentShapeType);
+    }
+
     public void resetCurrentShape() {
         currentShape = null;
     }

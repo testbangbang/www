@@ -144,26 +144,6 @@ public class ReadingHandler extends BaseHandler{
         panAction.execute(readerDataHolder);
     }
 
-    public void nextPage(ReaderDataHolder readerDataHolder) {
-        nextScreen(readerDataHolder);
-    }
-
-    public void prevPage(ReaderDataHolder readerDataHolder) {
-        prevScreen(readerDataHolder);
-    }
-
-    public void nextScreen(ReaderDataHolder readerDataHolder) {
-        readerDataHolder.setPreRenderNext(true);
-        final NextScreenAction action = new NextScreenAction();
-        action.execute(readerDataHolder);
-    }
-
-    public void prevScreen(ReaderDataHolder readerDataHolder) {
-        readerDataHolder.setPreRenderNext(false);
-        final PreviousScreenAction action = new PreviousScreenAction();
-        action.execute(readerDataHolder);
-    }
-
     public boolean tryHitTest(ReaderDataHolder readerDataHolder,float x, float y) {
         if (ShowReaderMenuAction.isReaderMenuShown()) {
             ShowReaderMenuAction.hideReaderMenu();

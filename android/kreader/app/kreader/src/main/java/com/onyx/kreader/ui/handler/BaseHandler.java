@@ -1,12 +1,16 @@
 package com.onyx.kreader.ui.handler;
 
 import android.graphics.Point;
+import android.os.Debug;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.ui.actions.NextScreenAction;
+import com.onyx.kreader.ui.actions.PanAction;
+import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
@@ -41,6 +45,10 @@ public abstract class BaseHandler {
     public HandlerManager getParent() {
         return parent;
     }
+
+    public void onActivate(final ReaderDataHolder readerDataHolder) {}
+
+    public void onDeactivate(final ReaderDataHolder readerDataHolder) {}
 
     public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
         startPoint = new Point((int)e.getX(), (int)e.getY());
@@ -145,11 +153,54 @@ public abstract class BaseHandler {
         return false;
     }
 
-    public void nextPage(ReaderDataHolder readerDataHolder) {}
+    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder) {}
 
-    public void prevPage(ReaderDataHolder readerDataHolder) {}
+    public void beforeChangePosition(final ReaderDataHolder readerDataHolder) {}
 
-    public void nextScreen(ReaderDataHolder readerDataHolder) {}
+    public void afterChangePosition(final ReaderDataHolder readerDataHolder) {}
 
-    public void prevScreen(ReaderDataHolder readerDataHolder) {}
+    public void nextPage(ReaderDataHolder readerDataHolder) {
+        nextScreen(readerDataHolder);
+    }
+
+    public void prevPage(ReaderDataHolder readerDataHolder) {
+        prevScreen(readerDataHolder);
+    }
+
+    public void nextScreen(ReaderDataHolder readerDataHolder) {
+        readerDataHolder.setPreRenderNext(true);
+        final NextScreenAction action = new NextScreenAction();
+        action.execute(readerDataHolder);
+    }
+
+    public void prevScreen(ReaderDataHolder readerDataHolder) {
+        readerDataHolder.setPreRenderNext(false);
+        final PreviousScreenAction action = new PreviousScreenAction();
+        action.execute(readerDataHolder);
+    }
+
+    public int panOffset() {
+        return 150;
+    }
+
+    public void panLeft(final ReaderDataHolder readerDataHolder) {
+        pan(readerDataHolder, -panOffset(), 0);
+    }
+
+    public void panRight(final ReaderDataHolder readerDataHolder) {
+        pan(readerDataHolder, panOffset(), 0);
+    }
+
+    public void panUp(final ReaderDataHolder readerDataHolder) {
+        pan(readerDataHolder, 0, -panOffset());
+    }
+
+    public void panDown(final ReaderDataHolder readerDataHolder) {
+        pan(readerDataHolder, 0, panOffset());
+    }
+
+    public void pan(final ReaderDataHolder readerDataHolder, int x, int y) {
+        final PanAction panAction = new PanAction(x, y);
+        panAction.execute(readerDataHolder);
+    }
 }

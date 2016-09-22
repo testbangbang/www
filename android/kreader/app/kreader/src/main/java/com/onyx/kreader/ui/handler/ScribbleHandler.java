@@ -30,6 +30,13 @@ public class ScribbleHandler extends BaseHandler {
     }
 
 
+    public void onActivate(final ReaderDataHolder readerDataHolder) {
+    }
+
+    public void onDeactivate(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getNoteManager().enableScreenPost(true);
+    }
+
     @Override
     public boolean onKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
         switch (keyCode) {
@@ -66,71 +73,11 @@ public class ScribbleHandler extends BaseHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
-        return false;
+        return readerDataHolder.getNoteManager().getNoteEventProcessorManager().onTouchEvent(e);
     }
 
-    @Override
-    public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(ReaderDataHolder readerDataHolder, MotionEvent e) {
-    }
-
-    @Override
-    public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScaleEnd(ReaderDataHolder ReaderDataHolder, ScaleGestureDetector detector) {
-        return false;
-    }
-
-    @Override
-    public boolean onScaleBegin(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
-        return false;
-    }
-
-    @Override
-    public boolean onScale(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY)  {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public boolean onScrollAfterLongPress(ReaderDataHolder readerDataHolder, float x1, float y1, float x2, float y2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
-
-    }
-
-    @Override
-    public boolean onFling(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
+    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getNoteManager().enableScreenPost(true);
     }
 
 }

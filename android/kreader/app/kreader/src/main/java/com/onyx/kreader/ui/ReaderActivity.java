@@ -55,7 +55,6 @@ public class ReaderActivity extends ActionBarActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
     private PowerManager.WakeLock startupWakeLock;
-
     private SurfaceView surfaceView;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
@@ -347,7 +346,9 @@ public class ReaderActivity extends ActionBarActivity {
         if (startupWakeLock == null) {
             startupWakeLock = Device.currentDevice().newWakeLock(this, ReaderActivity.class.getSimpleName());
         }
-        startupWakeLock.acquire();
+        if (startupWakeLock != null) {
+            startupWakeLock.acquire();
+        }
     }
 
     private void releaseStartupWakeLock() {
@@ -395,11 +396,6 @@ public class ReaderActivity extends ActionBarActivity {
             return false;
         }
         return path.equals(getReaderDataHolder().getDocumentPath());
-    }
-
-    private void gotoPage(int page) {
-        final GotoPageAction action = new GotoPageAction(String.valueOf(page));
-        action.execute(getReaderDataHolder());
     }
 
     private void onSurfaceViewSizeChanged() {
@@ -458,19 +454,6 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().getNoteManager(),
                 getReaderDataHolder().getNoteDataInfo());
         holder.unlockCanvasAndPost(canvas);
-    }
-
-    private boolean isShapeBitmapReady() {
-        // TODO
-//        if (!hasShapes()) {
-//            return false;
-//        }
-
-        final Bitmap bitmap = getReaderDataHolder().getNoteManager().getViewBitmap();
-        if (bitmap == null) {
-            return false;
-        }
-        return true;
     }
 
     private void renderShapeDataInBackground() {
