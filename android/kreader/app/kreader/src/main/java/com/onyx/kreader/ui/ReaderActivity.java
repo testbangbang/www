@@ -311,7 +311,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onNewShape(final NewShapeEvent event) {
-        final FlushNoteAction flushNoteAction = new FlushNoteAction(true, false);
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(false, false);
         flushNoteAction.execute(getReaderDataHolder());
     }
 
