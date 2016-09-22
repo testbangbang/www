@@ -292,7 +292,7 @@ public class ReaderActivity extends ActionBarActivity {
             public void onGlobalLayout() {
                 surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
-                    surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 }
             }
@@ -300,13 +300,19 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
-    public void onChangeEpdUpdateMode(final ChangeEpdUpdateMode event) {
+    public void onChangeEpdUpdateMode(final ChangeEpdUpdateModeEvent event) {
         ReaderDeviceManager.setUpdateMode(surfaceView, event.getTargetMode());
     }
 
     @Subscribe
-    public void onResetEpdUpdateMode(final ResetEpdUpdateMode event) {
+    public void onResetEpdUpdateMode(final ResetEpdUpdateModeEvent event) {
         ReaderDeviceManager.resetUpdateMode(surfaceView);
+    }
+
+    @Subscribe
+    public void onNewShape(final NewShapeEvent event) {
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(true, false);
+        flushNoteAction.execute(getReaderDataHolder());
     }
 
     @Subscribe
@@ -405,13 +411,13 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
-    public void onBeforeDocumentOpen(final BeforeDocumentOpen event) {
+    public void onBeforeDocumentOpen(final BeforeDocumentOpenEvent event) {
         EpdController.enablePost(surfaceView, 1);
         resetMenus();
     }
 
     @Subscribe
-    public void onBeforeDocumentClose(final BeforeDocumentClose event) {
+    public void onBeforeDocumentClose(final BeforeDocumentCloseEvent event) {
         EpdController.enablePost(surfaceView, 1);
         resetMenus();
     }

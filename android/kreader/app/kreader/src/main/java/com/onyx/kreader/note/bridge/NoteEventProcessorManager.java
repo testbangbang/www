@@ -95,6 +95,7 @@ public class NoteEventProcessorManager {
     private RawEventProcessor getRawEventProcessor() {
         if (rawEventProcessor == null) {
             rawEventProcessor = new RawEventProcessor(noteManager);
+            rawEventProcessor.start();
         }
         return rawEventProcessor;
     }

@@ -22,6 +22,7 @@ import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
+import com.onyx.kreader.note.request.FlushShapeListRequest;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
@@ -31,6 +32,7 @@ import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,7 +67,7 @@ public class ReaderDataHolder {
      */
     private Set<Object> activeDialogs = new HashSet<>();
 
-    public ReaderDataHolder(Context context){
+    public ReaderDataHolder(Context context) {
         this.context = context;
     }
 
@@ -129,7 +131,7 @@ public class ReaderDataHolder {
     }
 
     public void onDocumentInitRendered() {
-        getEventBus().post(new DocumentInitRendered());
+        getEventBus().post(new DocumentInitRenderedEvent());
     }
 
     public boolean isDocumentOpened() {
@@ -210,7 +212,7 @@ public class ReaderDataHolder {
 
     public NoteManager getNoteManager() {
         if (noteManager == null) {
-            noteManager = new NoteManager(context);
+            noteManager = new NoteManager(this);
         }
         return noteManager;
     }
@@ -304,11 +306,11 @@ public class ReaderDataHolder {
     }
 
     public void changeEpdUpdateMode(final UpdateMode mode) {
-        eventBus.post(new ChangeEpdUpdateMode(mode));
+        eventBus.post(new ChangeEpdUpdateModeEvent(mode));
     }
 
     public void resetEpdUpdateMode() {
-        eventBus.post(new ResetEpdUpdateMode());
+        eventBus.post(new ResetEpdUpdateModeEvent());
     }
 
     public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e, boolean applyGCIntervalUpdate) {
@@ -386,6 +388,7 @@ public class ReaderDataHolder {
         if (noteManager == null) {
             return;
         }
-        getNoteManager().close();
+        getNoteManager().stopEventProcessor();
     }
 }
+

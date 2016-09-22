@@ -29,9 +29,6 @@ public class ScribbleHandler extends BaseHandler {
         return true;
     }
 
-    private NoteEventProcessorManager getNoteEventProcessorManager() {
-        return getParent().getReaderDataHolder().getNoteManager().getNoteEventProcessorManager();
-    }
 
     @Override
     public boolean onKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
@@ -70,7 +67,6 @@ public class ScribbleHandler extends BaseHandler {
             return false;
         }
         return false;
-//        return getNoteEventProcessorManager().onTouchEvent(e);
     }
 
     @Override

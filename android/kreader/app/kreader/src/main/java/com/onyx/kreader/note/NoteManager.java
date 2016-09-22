@@ -23,6 +23,8 @@ import com.onyx.kreader.note.data.ReaderNoteDocument;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.FlushShapeListRequest;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.NewShapeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,6 @@ import java.util.List;
  */
 public class NoteManager {
 
-    private Context context;
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private NoteEventProcessorManager noteEventProcessorManager;
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
@@ -44,13 +45,13 @@ public class NoteManager {
     private volatile NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
     private RenderContext renderContext = new RenderContext();
 
-    private List<Shape> dirtyStash = new ArrayList<>();
+    private List<Shape> shapeStash = new ArrayList<>();
     private DeviceConfig noteConfig;
     private List<PageInfo> visiblePages = new ArrayList<>();
-    private volatile PageInfo lastPageInfo;
+    private ReaderDataHolder parent;
 
-    public NoteManager(final Context c) {
-        context = c;
+    public NoteManager(final ReaderDataHolder p) {
+        parent = p;
     }
 
     public final RequestManager getRequestManager() {
@@ -61,9 +62,8 @@ public class NoteManager {
         return noteDocument;
     }
 
-    public void close() {
+    public void stopEventProcessor() {
         getNoteEventProcessorManager().quit();
-        flushStash();
     }
 
     public void updateSurfaceView(final Context context, final SurfaceView sv) {
@@ -101,7 +101,7 @@ public class NoteManager {
 
             @Override
             public void onDrawingTouchUp(MotionEvent motionEvent, Shape shape) {
-                addToStash(shape);
+                onNewStash(shape);
             }
 
             public void onErasingTouchDown(final MotionEvent motionEvent, final Shape shape) {
@@ -117,7 +117,7 @@ public class NoteManager {
             }
 
             public void onDFBShapeFinished(final Shape shape) {
-                addToStash(shape);
+                onNewStash(shape);
             }
 
 
@@ -206,18 +206,9 @@ public class NoteManager {
         return null;
     }
 
-    private void addToStash(final Shape shape) {
-        dirtyStash.add(shape);
-    }
-
-    private void flushStash() {
-        if (dirtyStash.size() <= 0) {
-            return;
-        }
-        final FlushShapeListRequest flushRequest = new FlushShapeListRequest(dirtyStash, 0, false, true);
-        dirtyStash = new ArrayList<>();
-        submit(context, flushRequest, null);
-        Debug.d("submit flush request");
+    private void onNewStash(final Shape shape) {
+        shapeStash.add(shape);
+        parent.getEventBus().post(new NewShapeEvent(shape));
     }
 
     public final NoteDrawingArgs getNoteDrawingArgs() {
@@ -266,5 +257,11 @@ public class NoteManager {
 
     public final RenderContext getRenderContext() {
         return renderContext;
+    }
+
+    public final List<Shape> detachShapeStash() {
+        final List<Shape> list = shapeStash;
+        shapeStash = new ArrayList<>();
+        return list;
     }
 }

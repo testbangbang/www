@@ -3,11 +3,11 @@ package com.onyx.kreader.ui.events;
 /**
  * Created by zhuzeng on 9/20/16.
  */
-public class BeforeDocumentOpen {
+public class BeforeDocumentOpenEvent {
 
     private String path;
 
-    public BeforeDocumentOpen(final String p) {
+    public BeforeDocumentOpenEvent(final String p) {
         path = p;
     }
 
