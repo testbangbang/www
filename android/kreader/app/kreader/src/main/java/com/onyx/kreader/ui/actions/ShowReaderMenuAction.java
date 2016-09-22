@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderMenu;
@@ -16,7 +17,6 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
-import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -334,9 +334,17 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         // get current page and start rendering.
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         ReaderDeviceManager.startScreenHandWriting(readerActivity.getSurfaceView());
+        ShowScribbleMenuAction.showScribbleMenu(readerDataHolder, readerActivity.getMainView(), new ShowScribbleMenuAction.CallBack() {
+            @Override
+            public void onDismiss() {
+                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
+                ReaderDeviceManager.stopScreenHandWriting(readerActivity.getSurfaceView());
+            }
+        });
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
