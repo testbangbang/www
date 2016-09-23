@@ -20,10 +20,12 @@ import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
 import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.data.ReaderNoteDocument;
+import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.NewShapeEvent;
+import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +71,14 @@ public class NoteManager {
         getNoteEventProcessorManager().stop();
     }
 
+    public void pauseEventProcessor() {
+        getNoteEventProcessorManager().pause();
+    }
+
+    public void resumeEventProcessor() {
+        getNoteEventProcessorManager().resume();
+    }
+
     public void updateSurfaceView(final Context context, final SurfaceView sv) {
         surfaceView = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
@@ -89,22 +99,33 @@ public class NoteManager {
         shapeDataInfo.setDocumentUniqueId(getNoteDocument().getDocumentUniqueId());
     }
 
+    public ReaderDataHolder getParent() {
+        return parent;
+    }
+
     public final NoteEventProcessorBase.InputCallback getInputCallback() {
         NoteEventProcessorBase.InputCallback inputCallback = new NoteEventProcessorBase.InputCallback() {
 
             @Override
             public void onDrawingTouchDown(MotionEvent motionEvent, Shape shape) {
-
+                if (!shape.supportDFB()) {
+                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+                }
             }
 
             @Override
             public void onDrawingTouchMove(MotionEvent motionEvent, Shape shape, boolean last) {
-
+                if (!shape.supportDFB() && last) {
+                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+                }
             }
 
             @Override
             public void onDrawingTouchUp(MotionEvent motionEvent, Shape shape) {
                 onNewStash(shape);
+                if (!shape.supportDFB()) {
+                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+                }
             }
 
             public void onErasingTouchDown(final MotionEvent motionEvent, final Shape shape) {
@@ -213,6 +234,14 @@ public class NoteManager {
         return noteDrawingArgs;
     }
 
+    public void setCurrentShapeType(int type) {
+        getNoteDrawingArgs().currentShapeType = type;
+    }
+
+    public void setCurrentStrokeWidth(float w) {
+        getNoteDrawingArgs().strokeWidth = w;
+    }
+
     public Shape createNewShape(final PageInfo pageInfo) {
         Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().currentShapeType);
         shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
@@ -266,4 +295,21 @@ public class NoteManager {
         shapeStash = new ArrayList<>();
         return list;
     }
+
+    public void undo(final Context context, final String pageName) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+        if (readerNotePage != null) {
+            readerNotePage.undo();
+        }
+    }
+
+    public void redo(final Context context, final String pageName) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+        if (readerNotePage != null) {
+            readerNotePage.redo();
+        }
+    }
+
+
+
 }

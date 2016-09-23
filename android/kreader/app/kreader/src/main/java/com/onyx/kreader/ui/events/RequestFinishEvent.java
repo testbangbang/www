@@ -16,6 +16,12 @@ public class RequestFinishEvent {
         return requestFinishEvent;
     }
 
+    public static RequestFinishEvent requestWithoutGCIntervalApply() {
+        RequestFinishEvent requestFinishEvent = new RequestFinishEvent();
+        requestFinishEvent.setApplyGCIntervalUpdate(false);
+        return requestFinishEvent;
+    }
+
     public void setApplyGCIntervalUpdate(boolean apply) {
         applyGCIntervalUpdate = apply;
     }

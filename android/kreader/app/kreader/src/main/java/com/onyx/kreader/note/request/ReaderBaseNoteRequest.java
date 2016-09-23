@@ -29,8 +29,8 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private boolean debugPathBenchmark = false;
-    private boolean pauseInputProcessor = true;
-    private boolean resumeInputProcessor = false;
+    private boolean pauseRawInputProcessor = true;
+    private boolean resumeRawInputProcessor = false;
     private volatile boolean render = true;
 
     public ReaderBaseNoteRequest() {
@@ -69,9 +69,30 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         return viewportSize;
     }
 
+    public boolean isPauseRawInputProcessor() {
+        return pauseRawInputProcessor;
+    }
+
+    public void setPauseRawInputProcessor(boolean pauseRawInputProcessor) {
+        this.pauseRawInputProcessor = pauseRawInputProcessor;
+    }
+
+    public boolean isResumeRawInputProcessor() {
+        return resumeRawInputProcessor;
+    }
+
+    public void setResumeRawInputProcessor(boolean resumeRawInputProcessor) {
+        this.resumeRawInputProcessor = resumeRawInputProcessor;
+    }
+
     public void setVisiblePages(final List<PageInfo> pages) {
         visiblePages.clear();
         visiblePages.addAll(pages);
+    }
+
+    public void setVisiblePage(final PageInfo pageInfo) {
+        visiblePages.clear();
+        visiblePages.add(pageInfo);
     }
 
     public final List<PageInfo> getVisiblePages() {
@@ -80,6 +101,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public void beforeExecute(final NoteManager noteManager) {
         noteManager.getRequestManager().acquireWakeLock(getContext());
+        if (isPauseRawInputProcessor()) {
+            noteManager.pauseEventProcessor();
+        }
         benchmarkStart();
         invokeStartCallback(noteManager.getRequestManager());
     }
@@ -129,6 +153,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     }
                     parent.enableScreenPost(true);
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
+                    if (isResumeRawInputProcessor()) {
+                        parent.resumeEventProcessor();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

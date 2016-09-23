@@ -37,6 +37,14 @@ public class NoteEventProcessorManager {
         }
     }
 
+    public void pause() {
+        getRawEventProcessor().pause();
+    }
+
+    public void resume() {
+        getRawEventProcessor().resume();
+    }
+
     public final NoteManager getNoteManager() {
         return noteManager;
     }
