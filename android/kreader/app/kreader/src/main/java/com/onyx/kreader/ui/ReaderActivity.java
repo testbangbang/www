@@ -120,14 +120,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        final CloseAction closeAction = new CloseAction();
-        closeAction.execute(getReaderDataHolder(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                releaseStartupWakeLock();
-                ReaderActivity.super.onDestroy();
-            }
-        });
+        ReaderActivity.super.onDestroy();
     }
 
     private void resetMenus() {
@@ -178,7 +171,7 @@ public class ReaderActivity extends ActionBarActivity {
         statusBar.setCallback(new ReaderStatusBar.Callback() {
             @Override
             public void onGotoPage() {
-                new ShowQuickPreviewAction().execute(readerDataHolder);
+                new ShowQuickPreviewAction().execute(readerDataHolder, null);
             }
         });
         reconfigStatusBar();
@@ -312,7 +305,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onNewShape(final NewShapeEvent event) {
         final FlushNoteAction flushNoteAction = new FlushNoteAction(false, false);
-        flushNoteAction.execute(getReaderDataHolder());
+        flushNoteAction.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe
@@ -388,7 +381,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
-        action.execute(getReaderDataHolder());
+        action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
     }
 
@@ -403,7 +396,7 @@ public class ReaderActivity extends ActionBarActivity {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView);
         if (getReaderDataHolder().isDocumentOpened()) {
-            new ChangeViewConfigAction().execute(getReaderDataHolder());
+            new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
         }
     }
 
@@ -432,12 +425,12 @@ public class ReaderActivity extends ActionBarActivity {
 
     public void backward() {
         final BackwardAction backwardAction = new BackwardAction();
-        backwardAction.execute(getReaderDataHolder());
+        backwardAction.execute(getReaderDataHolder(), null);
     }
 
     public void forward() {
         final ForwardAction forwardAction = new ForwardAction();
-        forwardAction.execute(getReaderDataHolder());
+        forwardAction.execute(getReaderDataHolder(), null);
     }
 
     private void drawPage(final Bitmap pageBitmap) {
@@ -480,7 +473,15 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
-        finish();
+        final CloseActionChain closeAction = new CloseActionChain();
+        closeAction.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.getEventBus().unregister(this);
+                releaseStartupWakeLock();
+                finish();
+            }
+        });
     }
 
     private void openBuiltInDoc() {
@@ -489,7 +490,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
         final String path = "/mnt/sdcard/Books/a.pdf";
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
-        action.execute(getReaderDataHolder());
+        action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
     }
 
@@ -523,6 +524,8 @@ public class ReaderActivity extends ActionBarActivity {
             if (!hasPopupWindow()){
                 if (askForClose()) {
                     return true;
+                } else {
+                    quitApplication(null);
                 }
             } else {
                 hideAllPopupMenu();

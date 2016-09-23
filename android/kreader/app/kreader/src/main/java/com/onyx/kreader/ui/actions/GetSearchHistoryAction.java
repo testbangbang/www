@@ -26,7 +26,7 @@ public class GetSearchHistoryAction extends BaseAction {
     }
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final GetSearchHistoryRequest searchRequest = new GetSearchHistoryRequest(count);
         readerDataHolder.submitNonRenderRequest(searchRequest, new BaseCallback() {
             @Override
@@ -37,6 +37,7 @@ public class GetSearchHistoryAction extends BaseAction {
                 if (callBack != null){
                     callBack.loadFinished(searchRequest.getReaderUserDataInfo().getSearchHistoryList());
                 }
+                BaseCallback.invoke(callback, request, e);
             }
         });
     }

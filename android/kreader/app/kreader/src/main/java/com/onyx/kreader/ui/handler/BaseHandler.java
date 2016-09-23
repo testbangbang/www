@@ -156,13 +156,13 @@ public abstract class BaseHandler {
     public void nextScreen(ReaderDataHolder readerDataHolder) {
         readerDataHolder.setPreRenderNext(true);
         final NextScreenAction action = new NextScreenAction();
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     public void prevScreen(ReaderDataHolder readerDataHolder) {
         readerDataHolder.setPreRenderNext(false);
         final PreviousScreenAction action = new PreviousScreenAction();
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     public int panOffset() {
@@ -187,6 +187,6 @@ public abstract class BaseHandler {
 
     public void pan(final ReaderDataHolder readerDataHolder, int x, int y) {
         final PanAction panAction = new PanAction(x, y);
-        panAction.execute(readerDataHolder);
+        panAction.execute(readerDataHolder, null);
     }
 }

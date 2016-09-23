@@ -393,7 +393,7 @@ public class HandlerManager {
         } else if (action.equals(KeyAction.TOGGLE_BOOKMARK)) {
             toggleBookmark(readerDataHolder);
         } else if (action.equals(KeyAction.SHOW_MENU)) {
-            new ShowReaderMenuAction().execute(readerDataHolder);
+            new ShowReaderMenuAction().execute(readerDataHolder, null);
         } else if (action.equals(KeyAction.CHANGE_TO_ERASE_MODE)) {
         } else if (action.equals(KeyAction.CHANGE_TO_SCRIBBLE_MODE)) {
         } else {
@@ -459,11 +459,11 @@ public class HandlerManager {
     }
 
     private void removeBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder);
+        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder, null);
     }
 
     private void addBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder);
+        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder, null);
     }
 
     private PageInfo getFirstPageInfo(ReaderDataHolder readerDataHolder) {

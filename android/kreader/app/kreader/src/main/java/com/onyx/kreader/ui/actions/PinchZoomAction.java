@@ -43,8 +43,9 @@ public class PinchZoomAction extends BaseAction {
         detector = d;
     }
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         scaling(readerDataHolder, detector);
+        BaseCallback.invoke(callback, null, null);
     }
 
     static public void scaleBegin(final ReaderDataHolder readerDataHolder, final ScaleGestureDetector detector) {

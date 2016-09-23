@@ -172,7 +172,7 @@ public class DialogSearch extends Dialog{
         deleteHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ToggleSearchHistoryAction("", false).execute(readerDataHolder);
+                new ToggleSearchHistoryAction("", false).execute(readerDataHolder, null);
                 searchHistory.setVisibility(View.GONE);
             }
         });
@@ -291,7 +291,7 @@ public class DialogSearch extends Dialog{
                 }
 
             }
-        }).execute(readerDataHolder);
+        }).execute(readerDataHolder, null);
     }
 
     private void loadSearchData(){
@@ -304,7 +304,7 @@ public class DialogSearch extends Dialog{
         }
 
         showLoadingLayout();
-        new ToggleSearchHistoryAction(searchText, true).execute(readerDataHolder);
+        new ToggleSearchHistoryAction(searchText, true).execute(readerDataHolder, null);
         pageRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {

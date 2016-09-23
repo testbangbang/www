@@ -13,11 +13,16 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class ChangeViewConfigAction extends BaseAction {
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
         BaseReaderRequest config = new ChangeViewConfigRequest(readerDataHolder.getDisplayWidth(),
                 readerDataHolder.getDisplayHeight(),
                 pageInfo != null ? pageInfo.getName() : null);
-        readerDataHolder.submitRenderRequest(config);
+        readerDataHolder.submitRenderRequest(config, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
     }
 }

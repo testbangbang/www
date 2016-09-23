@@ -20,11 +20,12 @@ public class FlushNoteAction extends BaseAction {
         save = s;
     }
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
-        execute(readerDataHolder, null);
-    }
-
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        if (!readerDataHolder.isDocumentOpened()) {
+            BaseCallback.invoke(callback, null, null);
+            return;
+        }
+
         final NoteManager noteManager = readerDataHolder.getNoteManager();
         final FlushShapeListRequest flushRequest = new FlushShapeListRequest(noteManager.detachShapeStash(), 0, render, save);
         noteManager.submit(readerDataHolder.getContext(), flushRequest, new BaseCallback() {

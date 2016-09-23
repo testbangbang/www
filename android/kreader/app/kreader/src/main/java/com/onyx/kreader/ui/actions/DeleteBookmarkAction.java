@@ -1,5 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.kreader.host.request.DeleteBookmarkRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -16,7 +18,12 @@ public class DeleteBookmarkAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
-        readerDataHolder.submitRenderRequest(new DeleteBookmarkRequest(mBookmark));
+    public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        readerDataHolder.submitRenderRequest(new DeleteBookmarkRequest(mBookmark), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
     }
 }

@@ -41,7 +41,7 @@ public class OpenDocumentAction extends BaseAction {
         dataProvider = new DataManager();
     }
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.initReaderFromPath(documentPath);
         readerDataHolder.getEventBus().post(new BeforeDocumentOpenEvent(documentPath));
         showLoadingDialog(readerDataHolder, R.string.loading_document);

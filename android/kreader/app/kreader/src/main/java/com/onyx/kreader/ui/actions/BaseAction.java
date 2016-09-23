@@ -9,10 +9,7 @@ public abstract class BaseAction {
 
     private DialogLoading dialogLoading;
 
-    public abstract void execute(final ReaderDataHolder readerDataHolder);
-
-    public void execute(final ReaderDataHolder readerDataHolder, BaseCallback baseCallback){
-    }
+    public abstract void execute(final ReaderDataHolder readerDataHolder, BaseCallback baseCallback);
 
     public DialogLoading showLoadingDialog(final ReaderDataHolder holder, String title) {
         if (dialogLoading == null) {

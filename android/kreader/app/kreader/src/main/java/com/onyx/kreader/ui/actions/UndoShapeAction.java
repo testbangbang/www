@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
@@ -7,7 +8,7 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class UndoShapeAction extends BaseAction {
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
 
     }
 }

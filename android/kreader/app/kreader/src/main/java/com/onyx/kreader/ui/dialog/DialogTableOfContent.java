@@ -165,7 +165,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 updatePageIndicator(position,getPageSize(DirectoryTab.Annotation),getPageItemCount(currentTab));
             }
         });
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void deleteBookmark(ReaderDataHolder readerDataHolder, final int position){

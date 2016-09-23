@@ -25,8 +25,9 @@ public class ShowAnnotationEditDialogAction extends BaseAction {
     private OnEditListener mOnEditListener;
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         editAnnotationWithDialog(readerDataHolder, annotation);
+        BaseCallback.invoke(callback, null, null);
     }
 
     private void editAnnotationWithDialog(final ReaderDataHolder readerDataHolder, final Annotation annotation) {

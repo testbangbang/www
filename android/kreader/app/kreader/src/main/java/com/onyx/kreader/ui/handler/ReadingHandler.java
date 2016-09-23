@@ -141,7 +141,7 @@ public class ReadingHandler extends BaseHandler{
         }
 
         final PanAction panAction = new PanAction(offsetX, offsetY);
-        panAction.execute(readerDataHolder);
+        panAction.execute(readerDataHolder, null);
     }
 
     public boolean tryHitTest(ReaderDataHolder readerDataHolder,float x, float y) {
@@ -180,7 +180,7 @@ public class ReadingHandler extends BaseHandler{
             for (PageAnnotation annotation : annotations) {
                 for (RectF rect : annotation.getRectangles()) {
                     if (rect.contains(x, y)) {
-                        new ShowAnnotationEditDialogAction(annotation.getAnnotation()).execute(readerDataHolder);
+                        new ShowAnnotationEditDialogAction(annotation.getAnnotation()).execute(readerDataHolder, null);
                         return true;
                     }
                 }
@@ -199,7 +199,7 @@ public class ReadingHandler extends BaseHandler{
     }
 
     public void showReaderMenu(ReaderDataHolder readerDataHolder) {
-        new ShowReaderMenuAction().execute(readerDataHolder);
+        new ShowReaderMenuAction().execute(readerDataHolder, null);
     }
 
     public boolean isScrolling() {

@@ -206,7 +206,7 @@ public class ReaderDataHolder {
 
     private void updateReaderMenuState() {
         if (ShowReaderMenuAction.isReaderMenuShown()) {
-            new ShowReaderMenuAction().execute(ReaderDataHolder.this);
+            new ShowReaderMenuAction().execute(ReaderDataHolder.this, null);
         }
     }
 
@@ -361,20 +361,27 @@ public class ReaderDataHolder {
         activeDialogs.clear();
     }
 
-    public void destroy() {
+    public void destroy(final BaseCallback callback) {
         closeActiveDialogs();
-        closeNoteManager();
         closeTts();
-        closeDocument();
+        closeDocument(callback);
     }
 
-    private void closeDocument() {
+    private void closeDocument(final BaseCallback callback) {
         documentOpened = false;
-        if (reader != null && reader.getDocument() != null) {
-            CloseRequest closeRequest = new CloseRequest();
-            submitNonRenderRequest(closeRequest);
+        if (reader == null || reader.getDocument() == null) {
+            BaseCallback.invoke(callback, null, null);
+            return;
         }
-        ReaderManager.releaseReader(documentPath);
+
+        final CloseRequest closeRequest = new CloseRequest();
+        submitNonRenderRequest(closeRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ReaderManager.releaseReader(documentPath);
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
     }
 
     private void closeTts() {
@@ -384,10 +391,11 @@ public class ReaderDataHolder {
         }
     }
 
-    private void closeNoteManager() {
+    private void closeNoteManager(final BaseCallback callback) {
         if (noteManager == null) {
             return;
         }
+
         getNoteManager().stopEventProcessor();
     }
 }
