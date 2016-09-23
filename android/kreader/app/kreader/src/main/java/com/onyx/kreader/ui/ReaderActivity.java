@@ -21,6 +21,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
+
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -57,6 +59,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     private PowerManager.WakeLock startupWakeLock;
     private SurfaceView surfaceView;
+    private RelativeLayout mainView;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
     private ReaderStatusBar statusBar;
@@ -71,6 +74,7 @@ public class ReaderActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
         setContentView(R.layout.activity_reader);
+        mainView = (RelativeLayout) findViewById(R.id.main_view);
         initComponents();
     }
 
@@ -568,4 +572,11 @@ public class ReaderActivity extends ActionBarActivity {
         return surfaceView;
     }
 
+    public RelativeLayout getMainView() {
+        return mainView;
+    }
+
+    public ReaderStatusBar getStatusBar() {
+        return statusBar;
+    }
 }
