@@ -177,7 +177,7 @@ public class ReaderTtsService {
         stop();
         ttsService.shutdown();
         ttsService = null;
-        activity = null;
+        context = null;
         callback = null;
         mediaPlayer = null;
     }

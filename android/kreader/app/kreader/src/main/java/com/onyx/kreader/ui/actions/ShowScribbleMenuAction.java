@@ -15,7 +15,9 @@ import com.onyx.android.sdk.ui.view.viewholder.SimpleSelectViewHolder;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
 
@@ -49,6 +51,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     public void execute(ReaderDataHolder readerDataHolder,  BaseCallback callback) {
         this.callback = callback;
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+        readerDataHolder.getEventBus().register(this);
         show(readerDataHolder);
     }
 
@@ -276,7 +279,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 break;
             case CLOSE:
                 if (callback != null) {
-                    removeToolbar();
+                    removeToolbar(null);
                     callback.done(null, null);
                 }
                 break;
@@ -288,7 +291,8 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         }
     }
 
-    private void removeToolbar() {
+    @Subscribe
+    public void removeToolbar(CloseScribbleMenuEvent event) {
         parent.removeView(topToolbar);
         parent.removeView(bottomToolbar);
         parent.removeView(fullToolbar);

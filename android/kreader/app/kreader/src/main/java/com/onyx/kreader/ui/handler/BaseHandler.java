@@ -11,7 +11,10 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
 import com.onyx.kreader.ui.actions.PreviousScreenAction;
+import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.ClosePopupEvent;
+import com.onyx.kreader.ui.events.QuitEvent;
 
 /**
  * Created by ming on 16/7/27.
@@ -188,5 +191,13 @@ public abstract class BaseHandler {
     public void pan(final ReaderDataHolder readerDataHolder, int x, int y) {
         final PanAction panAction = new PanAction(x, y);
         panAction.execute(readerDataHolder, null);
+    }
+
+    public void close(final ReaderDataHolder readerDataHolder) {
+        if (ShowReaderMenuAction.isReaderMenuShown()) {
+            readerDataHolder.getEventBus().post(new ClosePopupEvent());
+            return;
+        }
+        readerDataHolder.getEventBus().post(new QuitEvent());
     }
 }
