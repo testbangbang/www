@@ -307,12 +307,6 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
-    public void onNewShape(final NewShapeEvent event) {
-        final FlushNoteAction flushNoteAction = new FlushNoteAction(false, false);
-        flushNoteAction.execute(getReaderDataHolder(), null);
-    }
-
-    @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
         if (event != null && event.isApplyGCIntervalUpdate()) {
             ReaderDeviceManager.applyWithGCInterval(surfaceView, readerDataHolder.getReaderViewInfo().isTextPages());

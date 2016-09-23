@@ -364,6 +364,7 @@ public class ReaderDataHolder {
     public void destroy(final BaseCallback callback) {
         closeActiveDialogs();
         closeTts();
+        closeNoteManager();
         closeDocument(callback);
     }
 
@@ -391,7 +392,7 @@ public class ReaderDataHolder {
         }
     }
 
-    private void closeNoteManager(final BaseCallback callback) {
+    private void closeNoteManager() {
         if (noteManager == null) {
             return;
         }

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.ScribbleMenuAction;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
 import com.onyx.android.sdk.ui.view.viewholder.BaseViewHolder;
@@ -14,18 +15,19 @@ import com.onyx.android.sdk.ui.view.viewholder.SimpleSelectViewHolder;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.handler.HandlerManager;
 
 import java.util.HashMap;
 
 /**
  * Created by ming on 16/9/22.
  */
-public class ShowScribbleMenuAction implements View.OnClickListener {
+public class ShowScribbleMenuAction extends BaseAction implements View.OnClickListener {
 
     private static final String TAG = ShowScribbleMenuAction.class.getSimpleName();
 
-    public interface CallBack {
-        void onDismiss();
+    public static abstract class ActionCallback {
+        public abstract void onClicked(final ScribbleMenuAction action);
     }
 
     private ViewGroup parent;
@@ -33,19 +35,21 @@ public class ShowScribbleMenuAction implements View.OnClickListener {
     private OnyxToolbar topToolbar;
     private View fullToolbar;
     private HashMap<ScribbleMenuAction, BaseViewHolder> scribbleViewHolderMap = new HashMap<>();
-    private CallBack callback;
+    private BaseCallback callback;
     private ScribbleMenuAction selectWidthAction = ScribbleMenuAction.WIDTH1;
     private ScribbleMenuAction selectShapeAction = ScribbleMenuAction.PENCIL;
     private ScribbleMenuAction selectEraserAction = ScribbleMenuAction.ERASER_PART;
+    private ActionCallback actionCallback;
 
-    public ShowScribbleMenuAction(ViewGroup parent, CallBack callback) {
+    public ShowScribbleMenuAction(ViewGroup parent, final ActionCallback actionCallback) {
         this.parent = parent;
-        this.callback = callback;
+        this.actionCallback = actionCallback;
     }
 
-    public static void showScribbleMenu(ReaderDataHolder readerDataHolder, ViewGroup parent, CallBack callback) {
-        ShowScribbleMenuAction showScribbleMenuAction = new ShowScribbleMenuAction(parent, callback);
-        showScribbleMenuAction.show(readerDataHolder);
+    public void execute(ReaderDataHolder readerDataHolder,  BaseCallback callback) {
+        this.callback = callback;
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+        show(readerDataHolder);
     }
 
     public void show(ReaderDataHolder readerDataHolder) {
@@ -264,6 +268,7 @@ public class ShowScribbleMenuAction implements View.OnClickListener {
             return;
         }
 
+        actionCallback.onClicked(action);
         switch (action) {
             case WIDTH:
                 break;
@@ -272,7 +277,7 @@ public class ShowScribbleMenuAction implements View.OnClickListener {
             case CLOSE:
                 if (callback != null) {
                     removeToolbar();
-                    callback.onDismiss();
+                    callback.done(null, null);
                 }
                 break;
             case PACK_UP:

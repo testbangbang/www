@@ -207,7 +207,6 @@ public class NoteManager {
 
     private void onNewStash(final Shape shape) {
         shapeStash.add(shape);
-        parent.getEventBus().post(new NewShapeEvent(shape));
     }
 
     public final NoteDrawingArgs getNoteDrawingArgs() {
