@@ -20,7 +20,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +40,7 @@ import com.onyx.kreader.ui.actions.GetTableOfContentAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.view.PreviewViewHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -102,49 +102,6 @@ public class DialogQuickPreview extends Dialog {
 
         public int getGridSize() {
             return getRows() * getColumns();
-        }
-    }
-
-    private class PreviewViewHolder extends RecyclerView.ViewHolder {
-        private int page;
-        private ImageView imageView;
-        private TextView pageTextView;
-        private TextView pageText;
-        private RelativeLayout container;
-
-        public PreviewViewHolder(View itemView) {
-            super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.image_view);
-            pageTextView = (TextView) itemView.findViewById(R.id.text_view_page);
-            pageText = (TextView) itemView.findViewById(R.id.btn_page);
-            container = (RelativeLayout) itemView.findViewById(R.id.item_container);
-
-            container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new GotoPageAction(PagePositionUtils.fromPageNumber(page), true).execute(readerDataHolder, new BaseCallback() {
-                        @Override
-                        public void done(BaseRequest request, Throwable e) {
-                            DialogQuickPreview.this.dismiss();
-                        }
-                    });
-                }
-            });
-        }
-
-        public void bindPreview(Bitmap bitmap,Grid grid, ViewGroup parent) {
-            imageView.setImageBitmap(bitmap);
-            pageTextView.setVisibility(View.GONE);
-            pageText.setVisibility(View.VISIBLE);
-            pageText.setText(String.valueOf(page + 1));
-        }
-
-        public int getPage() {
-            return page;
-        }
-
-        public void setPage(int page) {
-            this.page = page;
         }
     }
 
@@ -211,7 +168,19 @@ public class DialogQuickPreview extends Dialog {
         @Override
         public PreviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             this.parent = parent;
-            return new PreviewViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_quick_preview_list_item_view, parent, false));
+            final PreviewViewHolder previewViewHolder = new PreviewViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.preview_list_item_view, parent, false));
+            previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new GotoPageAction(PagePositionUtils.fromPageNumber(previewViewHolder.getPage()), true).execute(readerDataHolder, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            DialogQuickPreview.this.dismiss();
+                        }
+                    });
+                }
+            });
+            return previewViewHolder;
         }
 
         @Override
@@ -240,9 +209,8 @@ public class DialogQuickPreview extends Dialog {
                 bmp = BlankBitmap;
             }
 
-            holder.setPage(paginator.indexByPageOffset(position));
-            holder.bindPreview(bmp,grid,parent);
-            holder.container.setActivated(readerDataHolder.getCurrentPage() == paginator.indexByPageOffset(position));
+            holder.bindPreview(bmp,paginator.indexByPageOffset(position));
+            holder.getContainer().setActivated(readerDataHolder.getCurrentPage() == paginator.indexByPageOffset(position));
         }
 
         @Override
