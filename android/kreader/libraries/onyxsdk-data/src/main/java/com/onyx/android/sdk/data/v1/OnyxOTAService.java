@@ -12,5 +12,8 @@ import retrofit2.http.Query;
 public interface OnyxOTAService {
 
     @GET("firmware/update")
-    Call<Firmware> firmwareUpdate(@Query(Constant.WHERE_TAG) final String param);
+    Call<Firmware> ReleaseFirmwareUpdate(@Query(Constant.WHERE_TAG) final String param);
+
+    @GET("firmware/updateTest")
+    Call<Firmware> testFirmwareUpdate(@Query(Constant.WHERE_TAG) final String param);
 }
