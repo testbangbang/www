@@ -200,9 +200,21 @@ public class ReaderDataHolder {
 
     public ReaderTtsManager getTtsManager() {
         if (ttsManager == null) {
-            ttsManager = new ReaderTtsManager(context);
+            ttsManager = new ReaderTtsManager(this);
         }
         return ttsManager;
+    }
+
+    public void notifyTtsStateChanged() {
+        eventBus.post(new TtsStateChangedEvent());
+    }
+
+    public void notifyTtsRequestSentence() {
+        eventBus.post(new TtsRequestSentenceEvent());
+    }
+
+    public void notifyTtsError() {
+        eventBus.post(new TtsErrorEvent());
     }
 
     private void updateReaderMenuState() {

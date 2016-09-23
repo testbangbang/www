@@ -16,7 +16,11 @@ import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.events.ChangeOrientationEvent;
+import com.onyx.kreader.ui.events.TtsErrorEvent;
+import com.onyx.kreader.ui.events.TtsRequestSentenceEvent;
 import com.onyx.kreader.utils.PagePositionUtils;
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by joy on 7/29/16.
@@ -25,43 +29,15 @@ public class TtsHandler extends BaseHandler {
 
     private static final String TAG = TtsHandler.class.getSimpleName();
 
-    public static abstract class Callback {
-        public abstract void onStateChanged();
-    }
-
     private ReaderDataHolder readerDataHolder;
     private ReaderSentence currentSentence;
     private boolean stopped;
-    private Callback callback;
 
     public TtsHandler(HandlerManager parent) {
         super(parent);
 
         readerDataHolder = getParent().getReaderDataHolder();
-        readerDataHolder.getTtsManager().registerCallback(new ReaderTtsManager.Callback() {
-
-            @Override
-            public void requestSentence() {
-                requestSentenceForTts();
-            }
-
-            @Override
-            public void onStateChanged() {
-                if (callback != null) {
-                    callback.onStateChanged();
-                }
-            }
-
-            @Override
-            public void onError() {
-                stopped = true;
-                if (callback != null) {
-                    callback.onStateChanged();
-                }
-                Toast.makeText(readerDataHolder.getContext(), R.string.tts_play_failed, Toast.LENGTH_LONG);
-                readerDataHolder.submitRenderRequest(new RenderRequest());
-            }
-        });
+        readerDataHolder.getEventBus().register(this);
     }
 
     @Override
@@ -86,10 +62,6 @@ public class TtsHandler extends BaseHandler {
                 break;
         }
         return false;
-    }
-
-    public void registerCallback(Callback callback) {
-        this.callback = callback;
     }
 
     public void ttsPlay() {
@@ -118,6 +90,21 @@ public class TtsHandler extends BaseHandler {
 
     public float getSpeechRate(){
         return SingletonSharedPreference.getTtsSpeechRate(readerDataHolder.getContext());
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onTtsRequestSentence(final TtsRequestSentenceEvent event) {
+        requestSentenceForTts();
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onTtsError(final TtsErrorEvent event) {
+        stopped = true;
+        Toast.makeText(readerDataHolder.getContext(), R.string.tts_play_failed, Toast.LENGTH_LONG);
+        readerDataHolder.submitRenderRequest(new RenderRequest());
+        readerDataHolder.notifyTtsStateChanged();
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {

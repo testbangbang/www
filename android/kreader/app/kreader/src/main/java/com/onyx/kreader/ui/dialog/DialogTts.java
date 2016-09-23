@@ -20,11 +20,14 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.TtsErrorEvent;
+import com.onyx.kreader.ui.events.TtsStateChangedEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.handler.TtsHandler;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by ming on 16/8/12.
@@ -85,6 +88,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         setContentView(R.layout.dialog_tts);
 
         this.readerDataHolder = readerDataHolder;
+        readerDataHolder.getEventBus().register(this);
         ttsHandler = (TtsHandler)readerDataHolder.getHandlerManager().getActiveProvider();
 
         ButterKnife.bind(this);
@@ -190,19 +194,18 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         readerDataHolder.getTtsManager().setSpeechRate(ttsHandler.getSpeechRate());
         updateSpeedCheckBoxCheckedStatus(getCheckBoxSpeedByRate(ttsHandler.getSpeechRate()));
 
-        ttsHandler.registerCallback(new TtsHandler.Callback() {
-            @Override
-            public void onStateChanged() {
-                if (readerDataHolder.getTtsManager().isSpeaking()) {
-                    ttsPlay.setImageResource(R.drawable.ic_dialog_tts_suspend);
-                } else {
-                    ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
-                }
-            }
-        });
-
         gcInterval = ReaderDeviceManager.getGcInterval();
         ReaderDeviceManager.setGcInterval(Integer.MAX_VALUE);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onTtsStateChanged(final TtsStateChangedEvent event) {
+        if (readerDataHolder.getTtsManager().isSpeaking()) {
+            ttsPlay.setImageResource(R.drawable.ic_dialog_tts_suspend);
+        } else {
+            ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
+        }
     }
 
     @Override
