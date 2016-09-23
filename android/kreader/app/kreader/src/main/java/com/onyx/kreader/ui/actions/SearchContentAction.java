@@ -36,8 +36,9 @@ public class SearchContentAction extends BaseAction {
     }
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         execute(readerDataHolder,onSearchContentCallBack);
+        BaseCallback.invoke(callback, null, null);
     }
 
     public void execute(final ReaderDataHolder readerDataHolder, final OnSearchContentCallBack onSearchContentCallBack) {

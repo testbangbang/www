@@ -17,8 +17,9 @@ import com.onyx.kreader.ui.dialog.DialogReflowSettings;
 public class ImageReflowAction extends BaseAction {
     private DialogReflowSettings reflowSettingsDialog;
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         showReflowSettingsDialog(readerDataHolder);
+        BaseCallback.invoke(callback, null, null);
     }
 
     private void showReflowSettingsDialog(final ReaderDataHolder readerDataHolder) {

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderMenu;
@@ -31,6 +32,7 @@ import com.onyx.kreader.host.request.ScaleToPageCropRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthContentRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
+import com.onyx.kreader.note.actions.StartNoteAction;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
@@ -54,9 +56,10 @@ public class ShowReaderMenuAction extends BaseAction {
     private static ReaderLayerMenuState state;
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerActivity = (ReaderActivity)readerDataHolder.getContext();
         showReaderMenu(readerDataHolder);
+        BaseCallback.invoke(callback, null, null);
     }
 
     public static void resetReaderMenu(final ReaderDataHolder readerDataHolder) {
@@ -187,6 +190,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         startShapeDrawing(readerDataHolder);
                         break;
                     case DIRECTORY_EXPORT:
+                        startNoteDrawing(readerDataHolder);
                         break;
                     case TTS:
                         showTtsDialog(readerDataHolder);
@@ -215,6 +219,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case SETTINGS:
                         showReaderSettings(readerDataHolder);
                         break;
+                    case NOTE_WRITING:
+                        startNoteDrawing(readerDataHolder);
+                        break;
                     case EXIT:
                         readerActivity.onBackPressed();
                         break;
@@ -234,17 +241,17 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
         final ChangeOrientationAction action = new ChangeOrientationAction(readerActivity.getRequestedOrientation(), rotationOperation);
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void scaleUp(final ReaderDataHolder readerDataHolder) {
         final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(0.1f);
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void scaleDown(final ReaderDataHolder readerDataHolder) {
         final ChangeScaleWithDeltaAction action = new ChangeScaleWithDeltaAction(-0.1f);
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void scaleByValue(final ReaderDataHolder readerDataHolder, float scale) {
@@ -274,12 +281,12 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void scaleByRect(final ReaderDataHolder readerDataHolder) {
         final SelectionScaleAction action = new SelectionScaleAction();
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void scaleByAutoCrop(final ReaderDataHolder readerDataHolder) {
         final PageCropAction action = new PageCropAction(readerDataHolder.getCurrentPageName());
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void switchNavigationToArticleMode(final ReaderDataHolder readerDataHolder) {
@@ -315,23 +322,23 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void adjustContrast(final ReaderDataHolder readerDataHolder) {
         final AdjustContrastAction action = new AdjustContrastAction();
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void adjustEmbolden(final ReaderDataHolder readerDataHolder) {
         final EmboldenAction action = new EmboldenAction();
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void imageReflow(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         final ImageReflowAction action = new ImageReflowAction();
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void showTocDialog(final ReaderDataHolder readerDataHolder, DialogTableOfContent.DirectoryTab tab) {
         final GetDocumentInfoAction action = new GetDocumentInfoAction(tab);
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {
@@ -354,15 +361,15 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        new ShowQuickPreviewAction().execute(readerDataHolder);
+        new ShowQuickPreviewAction().execute(readerDataHolder, null);
     }
 
     private void backward(final ReaderDataHolder readerDataHolder) {
-        new BackwardAction().execute(readerDataHolder);
+        new BackwardAction().execute(readerDataHolder, null);
     }
 
     private void forward(final ReaderDataHolder readerDataHolder) {
-        new ForwardAction().execute(readerDataHolder);
+        new ForwardAction().execute(readerDataHolder, null);
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
@@ -410,17 +417,23 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         StartTtsAction action = new StartTtsAction();
-        action.execute(readerDataHolder);
+        action.execute(readerDataHolder, null);
     }
 
     private void showReaderSettings(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        new ShowReaderSettingsAction().execute(readerDataHolder);
+        new ShowReaderSettingsAction().execute(readerDataHolder, null);
     }
     
     public static void updateBackwardForwardState(ReaderDataHolder readerDataHolder){
         state.setCanGoBack(readerDataHolder.getReaderViewInfo().canGoBack);
         state.setCanGoForward(readerDataHolder.getReaderViewInfo().canGoForward);
         updateReaderMenuState(readerDataHolder, state);
+    }
+
+    private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        final StartNoteAction startNoteAction = new StartNoteAction();
+        startNoteAction.execute(readerDataHolder, null);
     }
 }

@@ -10,8 +10,9 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class ForwardAction extends BaseAction {
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         if (!readerDataHolder.getReaderViewInfo().canGoForward) {
+            BaseCallback.invoke(callback, null, null);
             return;
         }
 
@@ -20,6 +21,7 @@ public class ForwardAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 ShowReaderMenuAction.updateBackwardForwardState(readerDataHolder);
+                BaseCallback.invoke(callback, request, e);
             }
         });
     }

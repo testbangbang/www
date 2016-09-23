@@ -141,7 +141,7 @@ public class ShowTextSelectionMenuAction{
         ReaderSelection selection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
         PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getPageInfo(selection.getPagePosition());
         new AddAnnotationAction(pageInfo, selection.getStartPosition(), selection.getEndPosition(),
-                selection.getRectangles(), selection.getText(), note).execute(readerDataHolder);
+                selection.getRectangles(), selection.getText(), note).execute(readerDataHolder, null);
     }
 
     private static void lookupInDictionary(final ReaderActivity activity, final String text) {

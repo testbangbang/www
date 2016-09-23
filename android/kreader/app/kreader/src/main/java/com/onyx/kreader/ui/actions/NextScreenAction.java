@@ -11,12 +11,13 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class NextScreenAction extends BaseAction {
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final NextScreenRequest request = new NextScreenRequest();
         readerDataHolder.submitRenderRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog();
+                BaseCallback.invoke(callback, request, e);
             }
 
             @Override

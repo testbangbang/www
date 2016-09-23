@@ -36,6 +36,7 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -57,7 +58,6 @@ public class ReaderActivity extends ActionBarActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
     private PowerManager.WakeLock startupWakeLock;
-
     private SurfaceView surfaceView;
     private RelativeLayout mainView;
     private SurfaceHolder.Callback surfaceHolderCallback;
@@ -124,14 +124,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        final CloseAction closeAction = new CloseAction();
-        closeAction.execute(getReaderDataHolder(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                releaseStartupWakeLock();
-                ReaderActivity.super.onDestroy();
-            }
-        });
+        ReaderActivity.super.onDestroy();
     }
 
     private void resetMenus() {
@@ -182,7 +175,7 @@ public class ReaderActivity extends ActionBarActivity {
         statusBar.setCallback(new ReaderStatusBar.Callback() {
             @Override
             public void onGotoPage() {
-                new ShowQuickPreviewAction().execute(readerDataHolder);
+                new ShowQuickPreviewAction().execute(readerDataHolder, null);
             }
         });
         reconfigStatusBar();
@@ -296,7 +289,7 @@ public class ReaderActivity extends ActionBarActivity {
             public void onGlobalLayout() {
                 surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
-                    surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 }
             }
@@ -304,13 +297,19 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
-    public void onChangeEpdUpdateMode(final ChangeEpdUpdateMode event) {
+    public void onChangeEpdUpdateMode(final ChangeEpdUpdateModeEvent event) {
         ReaderDeviceManager.setUpdateMode(surfaceView, event.getTargetMode());
     }
 
     @Subscribe
-    public void onResetEpdUpdateMode(final ResetEpdUpdateMode event) {
+    public void onResetEpdUpdateMode(final ResetEpdUpdateModeEvent event) {
         ReaderDeviceManager.resetUpdateMode(surfaceView);
+    }
+
+    @Subscribe
+    public void onNewShape(final NewShapeEvent event) {
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(false, false);
+        flushNoteAction.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe
@@ -345,7 +344,9 @@ public class ReaderActivity extends ActionBarActivity {
         if (startupWakeLock == null) {
             startupWakeLock = Device.currentDevice().newWakeLock(this, ReaderActivity.class.getSimpleName());
         }
-        startupWakeLock.acquire();
+        if (startupWakeLock != null) {
+            startupWakeLock.acquire();
+        }
     }
 
     private void releaseStartupWakeLock() {
@@ -384,7 +385,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
-        action.execute(getReaderDataHolder());
+        action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
     }
 
@@ -395,27 +396,22 @@ public class ReaderActivity extends ActionBarActivity {
         return path.equals(getReaderDataHolder().getDocumentPath());
     }
 
-    private void gotoPage(int page) {
-        final GotoPageAction action = new GotoPageAction(String.valueOf(page));
-        action.execute(getReaderDataHolder());
-    }
-
     private void onSurfaceViewSizeChanged() {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView);
         if (getReaderDataHolder().isDocumentOpened()) {
-            new ChangeViewConfigAction().execute(getReaderDataHolder());
+            new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
         }
     }
 
     @Subscribe
-    public void onBeforeDocumentOpen(final BeforeDocumentOpen event) {
+    public void onBeforeDocumentOpen(final BeforeDocumentOpenEvent event) {
         EpdController.enablePost(surfaceView, 1);
         resetMenus();
     }
 
     @Subscribe
-    public void onBeforeDocumentClose(final BeforeDocumentClose event) {
+    public void onBeforeDocumentClose(final BeforeDocumentCloseEvent event) {
         EpdController.enablePost(surfaceView, 1);
         resetMenus();
     }
@@ -433,12 +429,12 @@ public class ReaderActivity extends ActionBarActivity {
 
     public void backward() {
         final BackwardAction backwardAction = new BackwardAction();
-        backwardAction.execute(getReaderDataHolder());
+        backwardAction.execute(getReaderDataHolder(), null);
     }
 
     public void forward() {
         final ForwardAction forwardAction = new ForwardAction();
-        forwardAction.execute(getReaderDataHolder());
+        forwardAction.execute(getReaderDataHolder(), null);
     }
 
     private void drawPage(final Bitmap pageBitmap) {
@@ -456,19 +452,6 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().getNoteManager(),
                 getReaderDataHolder().getNoteDataInfo());
         holder.unlockCanvasAndPost(canvas);
-    }
-
-    private boolean isShapeBitmapReady() {
-        // TODO
-//        if (!hasShapes()) {
-//            return false;
-//        }
-
-        final Bitmap bitmap = getReaderDataHolder().getNoteManager().getViewBitmap();
-        if (bitmap == null) {
-            return false;
-        }
-        return true;
     }
 
     private void renderShapeDataInBackground() {
@@ -494,7 +477,15 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
-        finish();
+        final CloseActionChain closeAction = new CloseActionChain();
+        closeAction.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.getEventBus().unregister(this);
+                releaseStartupWakeLock();
+                finish();
+            }
+        });
     }
 
     private void openBuiltInDoc() {
@@ -503,7 +494,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
         final String path = "/mnt/sdcard/Books/a.pdf";
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
-        action.execute(getReaderDataHolder());
+        action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
     }
 
@@ -522,21 +513,30 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private boolean processKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!hasPopupWindow()){
-                if (askForClose()) {
-                    return true;
-                }
-            } else {
-                hideAllPopupMenu();
-                return true;
-            }
+        if (preProcessKeyDown(keyCode, event)) {
+            return true;
         }
         return getHandlerManager().onKeyDown(getReaderDataHolder(), keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     private boolean processKeyUp(int keyCode, KeyEvent event) {
         return getHandlerManager().onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
+    }
+
+    private boolean preProcessKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!hasPopupWindow()){
+                if (askForClose()) {
+                    return true;
+                } else {
+                    quitApplication(null);
+                }
+            } else {
+                hideAllPopupMenu();
+                return true;
+            }
+        }
+        return false;
     }
 
     private void updateStatusBar() {

@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.handler;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -30,11 +31,11 @@ import java.util.Map;
  */
 public class HandlerManager {
 
+    public static final String TAG = HandlerManager.class.getSimpleName();
     public static final String READING_PROVIDER = "rp";
     public static final String WORD_SELECTION_PROVIDER = "wp";
     public static final String SCRIBBLE_PROVIDER = "scribble";
     public static final String ERASER_PROVIDER = "eraser";
-    public static final String SELECTION_ZOOM = "sz";
     public static final String TTS_PROVIDER = "tts";
 
     private String activeProviderName;
@@ -59,6 +60,7 @@ public class HandlerManager {
         providerMap.put(READING_PROVIDER, new ReadingHandler(this));
         providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, readerDataHolder.getContext()));
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
+        providerMap.put(ERASER_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         activeProviderName = READING_PROVIDER;
         enable = true;
@@ -148,17 +150,13 @@ public class HandlerManager {
     }
 
     public void resetToDefaultProvider() {
-        activeProviderName = READING_PROVIDER;
+        setActiveProvider(READING_PROVIDER);
     }
 
     public void setActiveProvider(final String providerName) {
+        getActiveProvider().onDeactivate(readerDataHolder);
         activeProviderName = providerName;
-        if (providerName.equals(ERASER_PROVIDER)) {
-            setPenStart(false);
-            setPenErasing(true);
-        } else if (providerName.equals(SCRIBBLE_PROVIDER)) {
-            setPenStart(true);
-        }
+        getActiveProvider().onActivate(readerDataHolder);
     }
 
     public BaseHandler getActiveProvider() {
@@ -169,15 +167,11 @@ public class HandlerManager {
         return activeProviderName;
     }
 
-    public boolean isLongPress() {
-        return getActiveProvider().isLongPress();
-    }
-
     public boolean onKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
         if (!isEnable()) {
             return false;
         }
-        return getActiveProvider().onKeyDown(readerDataHolder, keyCode, event);
+        return processKeyDownEvent(readerDataHolder, keyCode, event);
     }
 
     public boolean onKeyUp(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
@@ -364,36 +358,96 @@ public class HandlerManager {
         lastToolType = MotionEvent.TOOL_TYPE_FINGER;
     }
 
+    public boolean processKeyDownEvent(final ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
+        final String key = KeyEvent.keyCodeToString(keyCode);
+        final String action = getKeyAction(TAG, key);
+        final String args = getKeyArgs(TAG, key);
+        if (StringUtils.isNullOrEmpty(action)) {
+            Log.w(TAG, "No action found for key: " + key);
+        }
+        return processKeyDown(readerDataHolder, action, args);
+    }
+
     public boolean processKeyDown(ReaderDataHolder readerDataHolder, final String action, final String args) {
+        getActiveProvider().beforeProcessKeyDown(readerDataHolder);
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }
+
         if (action.equals(KeyAction.NEXT_SCREEN)) {
-            getActiveProvider().nextScreen(readerDataHolder);
+            nextScreen(readerDataHolder);
         } else if (action.equals(KeyAction.NEXT_PAGE)) {
-            getActiveProvider().nextPage(readerDataHolder);
+            nextPage(readerDataHolder);
         } else if (action.equals(KeyAction.PREV_SCREEN)) {
-            getActiveProvider().prevScreen(readerDataHolder);
+            prevScreen(readerDataHolder);
         } else if (action.equals(KeyAction.PREV_PAGE)) {
-            getActiveProvider().prevPage(readerDataHolder);
+            prevPage(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_LEFT)) {
-            panLeft();
+            panLeft(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_RIGHT)) {
-            panRight();
+            panRight(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_UP)) {
-            panUp();
+            panUp(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_DOWN)) {
-            panDown();
+            panDown(readerDataHolder);
         } else if (action.equals(KeyAction.TOGGLE_BOOKMARK)) {
             toggleBookmark(readerDataHolder);
         } else if (action.equals(KeyAction.SHOW_MENU)) {
-            new ShowReaderMenuAction().execute(readerDataHolder);
+            new ShowReaderMenuAction().execute(readerDataHolder, null);
         } else if (action.equals(KeyAction.CHANGE_TO_ERASE_MODE)) {
         } else if (action.equals(KeyAction.CHANGE_TO_SCRIBBLE_MODE)) {
         } else {
             return false;
         }
         return true;
+    }
+
+    private void nextScreen(final ReaderDataHolder readerDataHolder) {
+        getActiveProvider().beforeChangePosition(readerDataHolder);
+        getActiveProvider().nextScreen(readerDataHolder);
+        getActiveProvider().afterChangePosition(readerDataHolder);
+    }
+
+    private void nextPage(final ReaderDataHolder readerDataHolder) {
+        getActiveProvider().beforeChangePosition(readerDataHolder);
+        getActiveProvider().nextPage(readerDataHolder);
+        getActiveProvider().afterChangePosition(readerDataHolder);
+    }
+
+    private void prevScreen(final ReaderDataHolder readerDataHolder) {
+        getActiveProvider().beforeChangePosition(readerDataHolder);
+        getActiveProvider().prevScreen(readerDataHolder);
+        getActiveProvider().afterChangePosition(readerDataHolder);
+    }
+
+    private void prevPage(final ReaderDataHolder readerDataHolder) {
+        getActiveProvider().beforeChangePosition(readerDataHolder);
+        getActiveProvider().prevPage(readerDataHolder);
+        getActiveProvider().afterChangePosition(readerDataHolder);
+    }
+
+    private void panLeft(final ReaderDataHolder readerDataHolder) {
+        getActiveProvider().beforeChangePosition(readerDataHolder);
+        getActiveProvider().panLeft(readerDataHolder);
+        getActiveProvider().afterChangePosition(readerDataHolder);
+    }
+
+    private void panRight(final ReaderDataHolder readerDataHolder) {
+        getActiveProvider().beforeChangePosition(readerDataHolder);
+        getActiveProvider().panRight(readerDataHolder);
+        getActiveProvider().afterChangePosition(readerDataHolder);
+    }
+
+    private void panUp(final ReaderDataHolder readerDataHolder) {
+        getActiveProvider().beforeChangePosition(readerDataHolder);
+        getActiveProvider().panUp(readerDataHolder);
+        getActiveProvider().afterChangePosition(readerDataHolder);
+    }
+
+    private void panDown(final ReaderDataHolder readerDataHolder) {
+        getActiveProvider().beforeChangePosition(readerDataHolder);
+        getActiveProvider().panDown(readerDataHolder);
+        getActiveProvider().afterChangePosition(readerDataHolder);
     }
 
     public void toggleBookmark(ReaderDataHolder readerDataHolder) {
@@ -405,40 +459,15 @@ public class HandlerManager {
     }
 
     private void removeBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder);
+        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder, null);
     }
 
     private void addBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder);
+        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder, null);
     }
 
     private PageInfo getFirstPageInfo(ReaderDataHolder readerDataHolder) {
         return readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
-    }
-
-    private int panOffset() {
-        return 150;
-    }
-
-    private void panLeft() {
-        pan(-panOffset(), 0);
-    }
-
-    private void panRight() {
-        pan(panOffset(), 0);
-    }
-
-    private void panUp() {
-        pan(0, -panOffset());
-    }
-
-    private void panDown() {
-        pan(0, panOffset());
-    }
-
-    private void pan(int x, int y) {
-        final PanAction panAction = new PanAction(x, y);
-        panAction.execute(readerDataHolder);
     }
 
 }

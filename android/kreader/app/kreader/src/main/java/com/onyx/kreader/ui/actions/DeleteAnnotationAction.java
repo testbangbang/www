@@ -17,11 +17,6 @@ public class DeleteAnnotationAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
-        execute(readerDataHolder,null);
-    }
-
-    @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
         readerDataHolder.submitRenderRequest(new DeleteAnnotationRequest(annotation), baseCallback);
     }

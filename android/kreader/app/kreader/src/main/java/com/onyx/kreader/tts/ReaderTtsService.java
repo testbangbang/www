@@ -173,6 +173,10 @@ public class ReaderTtsService {
     public void shutdown() {
         stop();
         ttsService.shutdown();
+        ttsService = null;
+        activity = null;
+        callback = null;
+        mediaPlayer = null;
     }
 
     private void handleState(TtsState state) {

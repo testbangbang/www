@@ -127,7 +127,7 @@ public class DialogNavigationSettings extends DialogBase {
                 navigationArgs.setCropPageMode(currentChoosingCropMode);
                 navigationArgs.setRows(getRowNumber());
                 navigationArgs.setColumns(getColumnNumber());
-                new ChangeNavigationSettingsAction(navigationArgs).execute(readerDataHolder);
+                new ChangeNavigationSettingsAction(navigationArgs).execute(readerDataHolder, null);
                 DialogNavigationSettings.this.dismiss();
             }
         });

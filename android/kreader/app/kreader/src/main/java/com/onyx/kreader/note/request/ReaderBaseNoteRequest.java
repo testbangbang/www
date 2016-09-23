@@ -2,6 +2,7 @@ package com.onyx.kreader.note.request;
 
 import android.graphics.*;
 import com.hanvon.core.Algorithm;
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
@@ -127,11 +128,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                         }
                     }
                     parent.enableScreenPost(true);
-                    if (getCallback() != null) {
-                        getCallback().done(ReaderBaseNoteRequest.this, getException());
-                    }
+                    BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 } finally {
                     parent.getRequestManager().releaseWakeLock();
                 }

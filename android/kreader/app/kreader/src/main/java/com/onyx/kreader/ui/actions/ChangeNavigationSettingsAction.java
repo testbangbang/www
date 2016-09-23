@@ -35,8 +35,9 @@ public class ChangeNavigationSettingsAction extends BaseAction {
     }
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         setupNavigationSettings(readerDataHolder, readerDataHolder.getCurrentPage());
+        BaseCallback.invoke(callback, null, null);
     }
 
     private void setupNavigationSettings(final ReaderDataHolder readerDataHolder, final int page) {
@@ -91,7 +92,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
                 buildNavigationArgs(dataHolder, request, navigationArgs);
                 dataHolder.submitRenderRequest(new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
             }
-        }).execute(readerDataHolder);
+        }).execute(readerDataHolder, null);
     }
 
     private void buildNavigationArgs(final ReaderDataHolder readerDataHolder, final BaseReaderRequest request, final NavigationArgs navigationArgs) {

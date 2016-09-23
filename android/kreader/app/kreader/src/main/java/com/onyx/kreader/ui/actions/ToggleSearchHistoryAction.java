@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.host.request.AddSearchHistoryRequest;
 import com.onyx.kreader.host.request.DeleteSearchHistoryRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -18,11 +19,11 @@ public class ToggleSearchHistoryAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         if (add) {
-            readerDataHolder.submitNonRenderRequest(new AddSearchHistoryRequest(content));
+            readerDataHolder.submitNonRenderRequest(new AddSearchHistoryRequest(content), callback);
         } else {
-            readerDataHolder.submitNonRenderRequest(new DeleteSearchHistoryRequest());
+            readerDataHolder.submitNonRenderRequest(new DeleteSearchHistoryRequest(), callback);
         }
     }
 }

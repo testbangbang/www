@@ -20,7 +20,7 @@ public class GetDocumentInfoAction extends BaseAction {
         this.tab = tab;
     }
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final GetDocumentInfoRequest tocRequest = new GetDocumentInfoRequest();
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(),tocRequest, new BaseCallback() {
             @Override
@@ -29,6 +29,7 @@ public class GetDocumentInfoAction extends BaseAction {
                         tocRequest.getReaderUserDataInfo().getTableOfContent(),
                         tocRequest.getReaderUserDataInfo().getBookmarks(),
                         tocRequest.getReaderUserDataInfo().getAnnotations());
+                BaseCallback.invoke(callback, request, e);
             }
         });
     }

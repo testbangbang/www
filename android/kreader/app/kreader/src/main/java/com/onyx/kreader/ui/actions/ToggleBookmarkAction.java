@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.kreader.host.request.AddBookmarkRequest;
@@ -22,12 +23,12 @@ public class ToggleBookmarkAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         if (toggleSwitch == ToggleSwitch.On) {
-            readerDataHolder.submitRenderRequest(new AddBookmarkRequest(pageInfo));
+            readerDataHolder.submitRenderRequest(new AddBookmarkRequest(pageInfo), callback);
         } else if (toggleSwitch == ToggleSwitch.Off) {
             Bookmark bookmark = readerDataHolder.getReaderUserDataInfo().getBookmark(pageInfo);
-            readerDataHolder.submitRenderRequest(new DeleteBookmarkRequest(bookmark));
+            readerDataHolder.submitRenderRequest(new DeleteBookmarkRequest(bookmark), callback);
         }
     }
 }

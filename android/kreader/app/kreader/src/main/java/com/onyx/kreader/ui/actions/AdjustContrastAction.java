@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.GammaCorrectionRequest;
@@ -13,8 +14,9 @@ public class AdjustContrastAction extends BaseAction {
 
     private DialogSetValue contrastDialog;
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         showContrastDialog(readerDataHolder);
+        BaseCallback.invoke(callback, null, null);
     }
 
     public DialogSetValue showContrastDialog(final ReaderDataHolder readerDataHolder) {

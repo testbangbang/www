@@ -27,10 +27,18 @@ public class NoteEventProcessorManager {
         return view;
     }
 
-    public void quit() {
+    public void start() {
+        getRawEventProcessor().start();
+    }
+
+    public void stop() {
         if (rawEventProcessor != null) {
             rawEventProcessor.quit();
         }
+    }
+
+    public final NoteManager getNoteManager() {
+        return noteManager;
     }
 
     public void update(final View targetView, final DeviceConfig noteConfig) {
@@ -100,7 +108,10 @@ public class NoteEventProcessorManager {
     }
 
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        return onTouchEventDrawing(motionEvent);
+        if (!getNoteManager().isDFBForCurrentShape()) {
+            return onTouchEventDrawing(motionEvent);
+        }
+        return false;
     }
 
     public boolean onTouchEventDrawing(final MotionEvent motionEvent) {
