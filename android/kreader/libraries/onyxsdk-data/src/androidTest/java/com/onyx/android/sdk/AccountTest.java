@@ -140,7 +140,7 @@ public class AccountTest extends ApplicationTestCase<Application> {
         assertNotNull(response.body().url);
     }
 
-    public void testSignUpRequest() throws Exception {
+    public static OnyxAccount testSignUpRequest() throws Exception {
         OnyxAccount account = AccountUtils.generateRandomAccount();
         final CloudManager cloudManager = new CloudManager();
         AccountSignUpRequest accountSignUpRequest = new AccountSignUpRequest(account);
@@ -149,6 +149,6 @@ public class AccountTest extends ApplicationTestCase<Application> {
         assertNotNull(result);
         assertNotNull(result.sessionToken);
         account.sessionToken = result.sessionToken;
+        return account;
     }
-
 }
