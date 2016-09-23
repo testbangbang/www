@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
@@ -338,11 +339,15 @@ public class ShowReaderMenuAction extends BaseAction {
         // get current page and start rendering.
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         ReaderDeviceManager.startScreenHandWriting(readerActivity.getSurfaceView());
+
+        final int statusBarVisibility = readerActivity.getStatusBar().getVisibility();
+        readerActivity.getStatusBar().setVisibility(View.GONE);
         ShowScribbleMenuAction.showScribbleMenu(readerDataHolder, readerActivity.getMainView(), new ShowScribbleMenuAction.CallBack() {
             @Override
             public void onDismiss() {
                 readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
                 ReaderDeviceManager.stopScreenHandWriting(readerActivity.getSurfaceView());
+                readerActivity.getStatusBar().setVisibility(statusBarVisibility);
             }
         });
     }

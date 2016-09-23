@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.viewholder.BaseViewHolder;
@@ -40,6 +39,7 @@ public class OnyxToolbar extends ViewGroup {
     private OnMenuClickListener onMenuClickListener;
     private Direction direction = Direction.Bottom;
     private FillStyle fillStyle = FillStyle.WrapContent;
+    private boolean clickedDismissToolbar = false;
 
     private int paddingLeft;
     private int paddingRight;
@@ -139,16 +139,23 @@ public class OnyxToolbar extends ViewGroup {
             @Override
             public void onClick(View v) {
                 if (onMenuClickListener != null) {
-                    OnyxToolbar toolbar = onMenuClickListener.OnClickListener(v);
                     dismissExpandedToolbar();
+
+                    OnyxToolbar toolbar = onMenuClickListener.OnClickListener(v);
+                    if (clickedDismissToolbar){
+                        OnyxToolbar parent = (OnyxToolbar)getParent();
+                        parent.dismissExpandedToolbar();
+                        parent.clearState();
+                        return;
+                    }
+
                     if (currentExpandedView != v && toolbar != null) {
                         currentExpandedToolbar = toolbar;
                         currentExpandedToolbar.setDirection(direction);
                         addView(currentExpandedToolbar);
                         currentExpandedView = v;
                     } else {
-                        currentExpandedView = null;
-                        currentExpandedToolbar = null;
+                        clearState();
                     }
                 }
             }
@@ -160,6 +167,15 @@ public class OnyxToolbar extends ViewGroup {
             removeView(currentExpandedToolbar);
             currentExpandedToolbar = null;
         }
+    }
+
+    private void clearState(){
+        currentExpandedView = null;
+        currentExpandedToolbar = null;
+    }
+
+    public void setClickedDismissToolbar(boolean clickedDismissToolbar) {
+        this.clickedDismissToolbar = clickedDismissToolbar;
     }
 
     private View generateDefaultDividerView() {
@@ -407,12 +423,6 @@ public class OnyxToolbar extends ViewGroup {
             image.setImageResource(resId);
             setDefaultLayoutParams(content, image);
             return image;
-        }
-
-        public static TextView createTextView(Context context) {
-            TextView textView = new TextView(context);
-            setDefaultLayoutParams(context, textView);
-            return textView;
         }
 
         public static SpaceView createSpaceView(Context context, float weight) {

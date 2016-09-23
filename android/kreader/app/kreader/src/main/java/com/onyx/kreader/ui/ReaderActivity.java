@@ -576,4 +576,7 @@ public class ReaderActivity extends ActionBarActivity {
         return mainView;
     }
 
+    public ReaderStatusBar getStatusBar() {
+        return statusBar;
+    }
 }

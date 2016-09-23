@@ -9,7 +9,7 @@ public enum ScribbleMenuAction {
     TEXT,
     ERASER,ERASER_PART,ERASER_ALL,
     DRAG,
-    PACK_UP,
+    PACK_UP,RESTORE,
     LEFT_PAGE,
     RIGHT_PAGE,
     UNDO,SAVE,REDO,CLOSE
