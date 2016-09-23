@@ -26,8 +26,8 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.request.*;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper;
-import com.onyx.kreader.plugins.pdfium.PdfiumSelection;
+import com.onyx.kreader.plugins.neopdf.NeoPdfJniWrapper;
+import com.onyx.kreader.plugins.neopdf.NeoPdfSelection;
 import com.onyx.kreader.text.*;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.kreader.R;
@@ -64,7 +64,7 @@ public class ReaderTestActivity extends Activity {
     private String TAG = ReaderTestActivity.class.getSimpleName();
     private Bitmap bitmap;
     private int currentPage = 0;
-    private PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+    private NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
     private float xScale, yScale;
     private float startX, startY, endX, endY;
     private ReaderViewInfo readerViewInfo;
@@ -164,7 +164,7 @@ public class ReaderTestActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                testPdfiumWrapper();
+                testNeoPdfWrapper();
                 testHyphen();
             }
         });
@@ -614,9 +614,9 @@ public class ReaderTestActivity extends Activity {
         }
     }
 
-    private void testPdfiumWrapper() {
+    private void testNeoPdfWrapper() {
         wrapper.nativeInitLibrary();
-        if (wrapper.openDocument("/mnt/sdcard/Books/text.pdf", "") != PdfiumJniWrapper.NO_ERROR) {
+        if (wrapper.openDocument("/mnt/sdcard/Books/text.pdf", "") != NeoPdfJniWrapper.NO_ERROR) {
             return;
         }
         bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
@@ -625,7 +625,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     private void drawHitTest(final Canvas canvas) {
-        PdfiumSelection selection = new PdfiumSelection();
+        NeoPdfSelection selection = new NeoPdfSelection();
         int size = wrapper.hitTest(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, (int) startX, (int) startY, (int) endX, (int) endY, false, selection);
         if (size <= 0) {
             return;
@@ -667,7 +667,7 @@ public class ReaderTestActivity extends Activity {
         int end = -1;
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();
         while ((end = text.indexOf("\n", start)) > 0) {
-            PdfiumSelection selection = new PdfiumSelection();
+            NeoPdfSelection selection = new NeoPdfSelection();
             wrapper.selection(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, start, end, selection);
             list.add(selection);
             start = end + 1;

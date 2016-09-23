@@ -1,3 +1,4 @@
+#include "com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper.h"
 
 #include <vector>
 
@@ -11,7 +12,7 @@
 
 #include <memory>
 
-static const char * selectionClassName = "com/onyx/kreader/plugins/pdfium/PdfiumSelection";
+static const char * selectionClassName = "com/onyx/kreader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/kreader/api/ReaderTextSplitter";
 static const char * sentenceClassName = "com/onyx/kreader/api/ReaderSentence";
 
@@ -35,11 +36,11 @@ void OnyxPdfiumManager::releaseContext(JNIEnv *env, jint id) {
 
 static int libraryReference = 0;
 /*
- * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
+ * Class:     com_onyx_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeInitLibrary
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeInitLibrary
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeInitLibrary
   (JNIEnv *, jobject thiz) {
     if (libraryReference++ <= 0) {
         FPDF_InitLibrary();
@@ -47,7 +48,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
     return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeDestroyLibrary
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeDestroyLibrary
   (JNIEnv *env, jobject thiz) {
     if (--libraryReference <= 0) {
         FPDF_DestroyLibrary();
@@ -57,11 +58,11 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
 }
 
 /*
- * Class:     com_onyx_reader_plugins_pdfium_PdfiumJniWrapper
+ * Class:     com_onyx_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeOpenDocument
  * Signature: (Ljava/lang/String;Ljava/lang/String;)J
  */
-JNIEXPORT jlong JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeOpenDocument
+JNIEXPORT jlong JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeOpenDocument
   (JNIEnv *env, jobject thiz, jint id, jstring jfilename, jstring jpassword) {
     const char *filename = NULL;
   	const char *password = NULL;
@@ -84,7 +85,7 @@ JNIEXPORT jlong JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_na
     return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeCloseDocument
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeCloseDocument
   (JNIEnv *env, jobject thiz, jint id) {
     FPDF_DOCUMENT document = OnyxPdfiumManager::getDocument(env, id);
     if (document == NULL) {
@@ -97,7 +98,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
     return true;
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeMetadata
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeMetadata
   (JNIEnv *env, jobject thiz, jint id, jstring jtag, jbyteArray array) {
     FPDF_DOCUMENT document = OnyxPdfiumManager::getDocument(env, id);
     if (document == NULL) {
@@ -112,7 +113,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     return size;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativePageSize
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativePageSize
   (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jfloatArray array) {
     FPDF_DOCUMENT document = OnyxPdfiumManager::getDocument(env, id);
     if (document == NULL) {
@@ -127,7 +128,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
     return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeClearBitmap
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeClearBitmap
   (JNIEnv *env, jobject thiz, jint id, jobject bitmap) {
 
     AndroidBitmapInfo info;
@@ -153,7 +154,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
     return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeRenderPage
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeRenderPage
   (JNIEnv * env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jobject bitmap) {
 
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
@@ -190,7 +191,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
     return true;
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativePageCount
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativePageCount
   (JNIEnv * env, jobject thiz, jint id) {
     FPDF_DOCUMENT document = OnyxPdfiumManager::getDocument(env, id);
     if (document == NULL) {
@@ -345,7 +346,7 @@ static void selectByWord(JNIEnv *env, FPDF_TEXTPAGE page, jobject splitter, int 
     }
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeHitTest
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeHitTest
   (JNIEnv *env, jobject thiz, jint id, jint pageIndex,  jint x, jint y, jint width, jint height, jint rotation, jint sx, jint sy, jint ex, jint ey, jobject splitter, jboolean selectingWord, jobject selection) {
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
@@ -394,7 +395,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     return reportSelection(env, page, textPage, x, y, width, height, rotation, newStart, newEnd, selection);
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSelection
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeSelection
   (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jint startIndex, jint endIndex, jobject selection) {
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
@@ -404,7 +405,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     return reportSelection(env, page, textPage, x, y, width, height, rotation, startIndex, endIndex, selection);
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeSearchInPage
+JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeSearchInPage
   (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, int rotation, jbyteArray array, jboolean caseSensitive, jboolean matchWholeWord, jint contextLength, jobject objectList) {
 
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
@@ -469,7 +470,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nat
     return count;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeIsTextPage
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeIsTextPage
   (JNIEnv *env, jobject thiz, jint id, jint pageIndex) {
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     if (page == NULL) {
@@ -492,7 +493,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper
     return true;
 }
 
-JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetPageText
+JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageText
   (JNIEnv *env, jobject thiz, jint id, jint pageIndex) {
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
     if (textPage == NULL) {
@@ -513,7 +514,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapp
     return array;
 }
 
-JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetSentence
+JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeGetSentence
   (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jint sentenceStartIndex, jobject splitter) {
     FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
     if (textPage == NULL) {
@@ -591,7 +592,7 @@ static bool buildTableOfContentTree(JNIEnv *env, jclass entryClazz, jmethodID ad
     return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper_nativeGetTableOfContent
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeGetTableOfContent
   (JNIEnv *env, jobject thiz, jint id, jobject rootEntry) {
     FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
     if (doc == NULL) {

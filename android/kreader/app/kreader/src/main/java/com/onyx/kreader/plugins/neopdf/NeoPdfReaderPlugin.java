@@ -1,4 +1,4 @@
-package com.onyx.kreader.plugins.pdfium;
+package com.onyx.kreader.plugins.neopdf;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Created by zhuzeng on 10/5/15.
  */
-public class PdfiumReaderPlugin implements ReaderPlugin,
+public class NeoPdfReaderPlugin implements ReaderPlugin,
         ReaderDocument,
         ReaderView,
         ReaderRenderer,
@@ -50,29 +50,29 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
-    private static final String TAG = PdfiumReaderPlugin.class.getSimpleName();
+    private static final String TAG = NeoPdfReaderPlugin.class.getSimpleName();
     private Benchmark benchmark = new Benchmark();
 
-    private PdfiumJniWrapper impl;
+    private NeoPdfJniWrapper impl;
     private String documentPath;
 
     List<ReaderSelection> searchResults = new ArrayList<>();
 
     private ReaderViewOptions readerViewOptions;
 
-    public PdfiumReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
+    public NeoPdfReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
     }
 
-    public PdfiumJniWrapper getPluginImpl() {
+    public NeoPdfJniWrapper getPluginImpl() {
         if (impl == null) {
-            impl = new PdfiumJniWrapper();
+            impl = new NeoPdfJniWrapper();
             impl.nativeInitLibrary();
         }
         return impl;
     }
 
     public String displayName() {
-        return PdfiumReaderPlugin.class.getSimpleName();
+        return NeoPdfReaderPlugin.class.getSimpleName();
     }
 
     static public boolean accept(final String path) {
@@ -93,12 +93,12 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
             archivePassword = documentOptions.getDocumentPassword();
         }
         long ret = getPluginImpl().openDocument(path, docPassword);
-        if (ret  == PdfiumJniWrapper.NO_ERROR) {
+        if (ret  == NeoPdfJniWrapper.NO_ERROR) {
             return this;
         }
-        if (ret == PdfiumJniWrapper.ERROR_PASSWORD_INVALID) {
+        if (ret == NeoPdfJniWrapper.ERROR_PASSWORD_INVALID) {
             throw ReaderException.passwordRequired();
-        } else if (ret == PdfiumJniWrapper.ERROR_UNKNOWN) {
+        } else if (ret == NeoPdfJniWrapper.ERROR_UNKNOWN) {
             throw ReaderException.cannotOpen();
         }
         return null;
@@ -405,7 +405,7 @@ public class PdfiumReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
-        PdfiumSelection selection = new PdfiumSelection(start.pageName);
+        NeoPdfSelection selection = new NeoPdfSelection(start.pageName);
         getPluginImpl().hitTest(PagePositionUtils.getPageNumber(start.pageName),
                 (int) start.pageDisplayRect.left,
                 (int) start.pageDisplayRect.top,

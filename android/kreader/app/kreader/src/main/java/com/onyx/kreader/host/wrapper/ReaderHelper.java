@@ -30,7 +30,7 @@ import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
-import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
+import com.onyx.kreader.plugins.neopdf.NeoPdfReaderPlugin;
 import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.utils.ImageUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
@@ -69,8 +69,8 @@ public class ReaderHelper {
     }
 
     public boolean selectPlugin(final Context context, final String path, final ReaderPluginOptions pluginOptions) {
-        if (PdfiumReaderPlugin.accept(path)) {
-            plugin = new PdfiumReaderPlugin(context, pluginOptions);
+        if (NeoPdfReaderPlugin.accept(path)) {
+            plugin = new NeoPdfReaderPlugin(context, pluginOptions);
         } else if (ImagesReaderPlugin.accept(path)) {
             plugin = new ImagesReaderPlugin(context, pluginOptions);
         } else if (DjvuReaderPlugin.accept(path)) {

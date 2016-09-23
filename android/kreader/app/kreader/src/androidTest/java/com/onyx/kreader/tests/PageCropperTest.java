@@ -6,7 +6,7 @@ import com.onyx.kreader.api.*;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.PageCropper;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
+import com.onyx.kreader.plugins.neopdf.NeoPdfReaderPlugin;
 
 /**
  * Created by zhuzeng on 5/29/16.
@@ -18,7 +18,7 @@ public class PageCropperTest extends ActivityInstrumentationTestCase2<ReaderTest
     }
 
     public void testCrop() throws Exception {
-        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/normal.pdf", null, null);
         assertNotNull(document);
         ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl(1024, 768);
