@@ -11,54 +11,41 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class ReaderTtsManager {
 
+    @SuppressWarnings("unused")
     private static final String TAG = ReaderTtsManager.class.getSimpleName();
 
-    public static abstract class Callback {
-        public abstract void requestSentence();
-        public abstract void onStateChanged();
-        public abstract void onError();
-    }
-
-    private Callback callback;
-
+    private ReaderDataHolder readerDataHolder;
     private ReaderTtsService ttsService;
     private String text;
 
-    public ReaderTtsManager(final Context context) {
-        ttsService = new ReaderTtsService((Activity)context, new ReaderTtsService.Callback() {
+    public ReaderTtsManager(final ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
+        ttsService = new ReaderTtsService(readerDataHolder.getContext(), new ReaderTtsService.Callback() {
             @Override
             public void onStart() {
-                callback.onStateChanged();
+                readerDataHolder.notifyTtsStateChanged();
             }
 
             @Override
             public void onPaused() {
-                callback.onStateChanged();
+                readerDataHolder.notifyTtsStateChanged();
             }
 
             @Override
             public void onDone() {
-                if (callback != null) {
-                    callback.requestSentence();
-                }
+                readerDataHolder.notifyTtsRequestSentence();
             }
 
             @Override
             public void onStopped() {
-                callback.onStateChanged();
+                readerDataHolder.notifyTtsStateChanged();
             }
 
             @Override
             public void onError() {
-                if (callback != null) {
-                    callback.onError();
-                }
+                readerDataHolder.notifyTtsError();
             }
         });
-    }
-
-    public void registerCallback(Callback callback) {
-        this.callback = callback;
     }
 
     public boolean isSpeaking() {
@@ -84,9 +71,7 @@ public class ReaderTtsManager {
             ttsService.startTts(text);
             text = null;
         } else {
-            if (callback != null) {
-                callback.requestSentence();
-            }
+            readerDataHolder.notifyTtsRequestSentence();
         }
     }
 
