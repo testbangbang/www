@@ -37,7 +37,6 @@ public class TtsHandler extends BaseHandler {
         super(parent);
 
         readerDataHolder = getParent().getReaderDataHolder();
-        readerDataHolder.getEventBus().register(this);
     }
 
     @Override
@@ -62,6 +61,11 @@ public class TtsHandler extends BaseHandler {
                 break;
         }
         return false;
+    }
+
+    public void onError() {
+        stopped = true;
+        readerDataHolder.submitRenderRequest(new RenderRequest());
     }
 
     public void ttsPlay() {
@@ -92,21 +96,6 @@ public class TtsHandler extends BaseHandler {
         return SingletonSharedPreference.getTtsSpeechRate(readerDataHolder.getContext());
     }
 
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onTtsRequestSentence(final TtsRequestSentenceEvent event) {
-        requestSentenceForTts();
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onTtsError(final TtsErrorEvent event) {
-        stopped = true;
-        Toast.makeText(readerDataHolder.getContext(), R.string.tts_play_failed, Toast.LENGTH_LONG);
-        readerDataHolder.submitRenderRequest(new RenderRequest());
-        readerDataHolder.notifyTtsStateChanged();
-    }
-
     private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {
         new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder, new BaseCallback() {
             @Override
@@ -116,7 +105,7 @@ public class TtsHandler extends BaseHandler {
         });
     }
 
-    private boolean requestSentenceForTts() {
+    public boolean requestSentenceForTts() {
         if (currentSentence != null) {
             if (currentSentence.isEndOfDocument()) {
                 Debug.d(TAG, "end of document");

@@ -13,7 +13,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-
+import android.widget.Toast;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
@@ -21,12 +23,10 @@ import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.TtsErrorEvent;
+import com.onyx.kreader.ui.events.TtsRequestSentenceEvent;
 import com.onyx.kreader.ui.events.TtsStateChangedEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.handler.TtsHandler;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import org.greenrobot.eventbus.Subscribe;
 
 /**
@@ -89,6 +89,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
         this.readerDataHolder = readerDataHolder;
         readerDataHolder.getEventBus().register(this);
+
         ttsHandler = (TtsHandler)readerDataHolder.getHandlerManager().getActiveProvider();
 
         ButterKnife.bind(this);
@@ -169,6 +170,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
                 ttsHandler.ttsStop();
                 readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
                 readerDataHolder.removeActiveDialog(DialogTts.this);
+                readerDataHolder.getEventBus().unregister(DialogTts.this);
             }
         });
 
@@ -201,11 +203,21 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     @SuppressWarnings("unused")
     @Subscribe
     public void onTtsStateChanged(final TtsStateChangedEvent event) {
-        if (readerDataHolder.getTtsManager().isSpeaking()) {
-            ttsPlay.setImageResource(R.drawable.ic_dialog_tts_suspend);
-        } else {
-            ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
-        }
+        onTtsStateChanged();
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onTtsRequestSentence(final TtsRequestSentenceEvent event) {
+        ttsHandler.requestSentenceForTts();
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onTtsError(final TtsErrorEvent event) {
+        ttsHandler.onError();
+        onTtsStateChanged();
+        Toast.makeText(readerDataHolder.getContext(), R.string.tts_play_failed, Toast.LENGTH_LONG);
     }
 
     @Override
@@ -258,6 +270,14 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
                 updateSpeedCheckBoxCheckedStatus(speed);
                 break;
             }
+        }
+    }
+
+    public void onTtsStateChanged() {
+        if (readerDataHolder.getTtsManager().isSpeaking()) {
+            ttsPlay.setImageResource(R.drawable.ic_dialog_tts_suspend);
+        } else {
+            ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
         }
     }
 
