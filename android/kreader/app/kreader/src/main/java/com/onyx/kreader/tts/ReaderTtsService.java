@@ -3,8 +3,9 @@
  */
 package com.onyx.kreader.tts;
 
-import android.app.Activity;
+import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -39,7 +40,7 @@ public class ReaderTtsService {
 
     private volatile PowerManager.WakeLock wakeLock;
 
-    private Activity activity = null;
+    private Context context = null;
     private Callback callback = null;
 
     private Locale currentLocale = null;
@@ -50,11 +51,13 @@ public class ReaderTtsService {
     private String text = null;
     private TtsState ttsState = TtsState.Ready;
 
-    public ReaderTtsService(final Activity activity, Callback callback) {
-        this.activity = activity;
+    Handler handler = new Handler();
+
+    public ReaderTtsService(final Context context, Callback callback) {
+        this.context = context;
         this.callback = callback;
 
-        ttsService = new TextToSpeech(activity, new TextToSpeech.OnInitListener() {
+        ttsService = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
 
             @Override
             public void onInit(int status) {
@@ -76,7 +79,7 @@ public class ReaderTtsService {
             @Override
             public void onDone(final String utteranceId) {
                 Debug.d(TAG, "UtteranceProgressListener: onDone");
-                activity.runOnUiThread(new Runnable() {
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (!UTTERANCE_ID.equals(utteranceId)) {
@@ -90,7 +93,7 @@ public class ReaderTtsService {
             @Override
             public void onError(final String utteranceId) {
                 Debug.d(TAG, "UtteranceProgressListener: onError");
-                activity.runOnUiThread(new Runnable() {
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
                         handleState(TtsState.Error);
@@ -104,7 +107,7 @@ public class ReaderTtsService {
 
     private void initTtsLanguage() {
         Locale locale = null;
-        final String languageCode = activity.getResources().getConfiguration().locale.getISO3Language();
+        final String languageCode = context.getResources().getConfiguration().locale.getISO3Language();
         Debug.d(TAG, "languageCode = " + languageCode);
         if (!languageCode.equals("other")) {
             try {
@@ -277,7 +280,7 @@ public class ReaderTtsService {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     Debug.d("media player onCompletion");
-                    activity.runOnUiThread(new Runnable() {
+                    handler.post(new Runnable() {
                         @Override
                         public void run() {
                             handleState(TtsState.MediaPlayDone);
@@ -328,7 +331,7 @@ public class ReaderTtsService {
     private File getTempWaveFile() {
         File cache_folder = new File("/mnt/ramdisk");
         if (!cache_folder.exists()) {
-            cache_folder = activity.getExternalCacheDir();
+            cache_folder = context.getExternalCacheDir();
         }
 
         return new File(cache_folder, "tts_temp.wav");
@@ -346,7 +349,7 @@ public class ReaderTtsService {
 
     private void acquireWakeLock() {
         if (wakeLock == null) {
-            wakeLock = Device.currentDevice().newWakeLock(activity, TAG);
+            wakeLock = Device.currentDevice().newWakeLock(context, TAG);
             wakeLock.acquire();
         }
     }
