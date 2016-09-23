@@ -6,14 +6,11 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.data.OnyxDictionaryInfo;
-import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.android.sdk.data.ReaderMenu;
-import com.onyx.android.sdk.data.ReaderMenuItem;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.*;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
@@ -32,14 +29,14 @@ import com.onyx.kreader.host.request.ScaleToPageCropRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthContentRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
-import com.onyx.kreader.note.actions.StartNoteAction;
+import com.onyx.kreader.note.actions.FlushNoteAction;
+import com.onyx.kreader.note.actions.StopNoteAction;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
-import com.onyx.kreader.ui.handler.HandlerManager;
 
 import java.util.List;
 
@@ -187,10 +184,9 @@ public class ShowReaderMenuAction extends BaseAction {
                         showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.Annotation);
                         break;
                     case DIRECTORY_SCRIBBLE:
-                        startShapeDrawing(readerDataHolder);
+                        startNoteDrawing(readerDataHolder);
                         break;
                     case DIRECTORY_EXPORT:
-                        startNoteDrawing(readerDataHolder);
                         break;
                     case TTS:
                         showTtsDialog(readerDataHolder);
@@ -341,24 +337,6 @@ public class ShowReaderMenuAction extends BaseAction {
         action.execute(readerDataHolder, null);
     }
 
-    private void startShapeDrawing(final ReaderDataHolder readerDataHolder) {
-        hideReaderMenu();
-        // get current page and start rendering.
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
-        ReaderDeviceManager.startScreenHandWriting(readerActivity.getSurfaceView());
-
-        final int statusBarVisibility = readerActivity.getStatusBar().getVisibility();
-        readerActivity.getStatusBar().setVisibility(View.GONE);
-        ShowScribbleMenuAction.showScribbleMenu(readerDataHolder, readerActivity.getMainView(), new ShowScribbleMenuAction.CallBack() {
-            @Override
-            public void onDismiss() {
-                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
-                ReaderDeviceManager.stopScreenHandWriting(readerActivity.getSurfaceView());
-                readerActivity.getStatusBar().setVisibility(statusBarVisibility);
-            }
-        });
-    }
-
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         new ShowQuickPreviewAction().execute(readerDataHolder, null);
@@ -433,7 +411,31 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        final StartNoteAction startNoteAction = new StartNoteAction();
-        startNoteAction.execute(readerDataHolder, null);
+        final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(), getScribbleActionCallback(readerDataHolder));
+        menuAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                StopNoteAction stopNoteAction = new StopNoteAction();
+                stopNoteAction.execute(readerDataHolder, null);
+            }
+        });
     }
+
+    private ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
+        final ShowScribbleMenuAction.ActionCallback callback = new ShowScribbleMenuAction.ActionCallback() {
+            @Override
+            public void onClicked(final ScribbleMenuAction action) {
+                FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false);
+                flushNoteAction.execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        readerActivity.onRequestFinished(null);
+                    }
+                });
+            }
+        };
+        return callback;
+    }
+
+
 }

@@ -16,7 +16,8 @@
             "KEYCODE_ALT_RIGHT":  {"action": "changeToScribbleMode", "args": ""},
             "KEYCODE_BUTTON_START":  {"action": "changeToScribbleMode", "args": ""},
             "KEYCODE_ERASER": {"action": "changeToEraseMode", "args": ""},
-            "KEYCODE_SCRIBBLER":  {"action": "changeToScribbleMode", "args": ""}
+            "KEYCODE_SCRIBBLER":  {"action": "changeToScribbleMode", "args": ""},
+            "KEYCODE_BACK": {"action": "close", "args": ""}
         }
     },
 }

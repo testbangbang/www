@@ -14,8 +14,9 @@ public class ActionChain {
 
     private List<BaseAction> actionList = new ArrayList<>();
 
-    public void addAction(final BaseAction action) {
+    public ActionChain addAction(final BaseAction action) {
         actionList.add(action);
+        return this;
     }
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {

@@ -374,7 +374,9 @@ public class HandlerManager {
             return false;
         }
 
-        if (action.equals(KeyAction.NEXT_SCREEN)) {
+        if (action.equals(KeyAction.CLOSE)) {
+            close(readerDataHolder);
+        } else if (action.equals(KeyAction.NEXT_SCREEN)) {
             nextScreen(readerDataHolder);
         } else if (action.equals(KeyAction.NEXT_PAGE)) {
             nextPage(readerDataHolder);
@@ -470,4 +472,7 @@ public class HandlerManager {
         return readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
     }
 
+    private void close(final ReaderDataHolder readerDataHolder) {
+        getActiveProvider().close(readerDataHolder);
+    }
 }

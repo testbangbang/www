@@ -3,13 +3,20 @@ package com.onyx.kreader.ui.handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.kreader.note.actions.FlushNoteAction;
+import com.onyx.kreader.note.actions.StopNoteAction;
 import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
+import com.onyx.kreader.ui.actions.ActionChain;
+import com.onyx.kreader.ui.actions.ShowScribbleMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.RequestFinishEvent;
 
 
 /**
@@ -75,6 +82,18 @@ public class ScribbleHandler extends BaseHandler {
 
     public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getNoteManager().enableScreenPost(true);
+    }
+
+    public void close(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        actionChain.addAction(new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false));
+        actionChain.addAction(new StopNoteAction());
+        actionChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.getEventBus().post(new RequestFinishEvent());
+            }
+        });
     }
 
 }

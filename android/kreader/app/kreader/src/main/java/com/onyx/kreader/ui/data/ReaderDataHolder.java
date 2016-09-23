@@ -199,9 +199,21 @@ public class ReaderDataHolder {
 
     public ReaderTtsManager getTtsManager() {
         if (ttsManager == null) {
-            ttsManager = new ReaderTtsManager(context);
+            ttsManager = new ReaderTtsManager(this);
         }
         return ttsManager;
+    }
+
+    public void notifyTtsStateChanged() {
+        eventBus.post(new TtsStateChangedEvent());
+    }
+
+    public void notifyTtsRequestSentence() {
+        eventBus.post(new TtsRequestSentenceEvent());
+    }
+
+    public void notifyTtsError() {
+        eventBus.post(new TtsErrorEvent());
     }
 
     private void updateReaderMenuState() {
@@ -364,6 +376,7 @@ public class ReaderDataHolder {
     public void destroy(final BaseCallback callback) {
         closeActiveDialogs();
         closeTts();
+        closeNoteManager();
         closeDocument(callback);
     }
 
@@ -391,7 +404,7 @@ public class ReaderDataHolder {
         }
     }
 
-    private void closeNoteManager(final BaseCallback callback) {
+    private void closeNoteManager() {
         if (noteManager == null) {
             return;
         }

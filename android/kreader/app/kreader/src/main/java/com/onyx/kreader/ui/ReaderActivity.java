@@ -128,7 +128,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void resetMenus() {
-        hideAllPopupMenu();
+        hideAllPopupMenu(null);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         ShowSearchMenuAction.resetSearchMenu();
         ShowTextSelectionMenuAction.resetSelectionMenu();
@@ -304,12 +304,6 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onResetEpdUpdateMode(final ResetEpdUpdateModeEvent event) {
         ReaderDeviceManager.resetUpdateMode(surfaceView);
-    }
-
-    @Subscribe
-    public void onNewShape(final NewShapeEvent event) {
-        final FlushNoteAction flushNoteAction = new FlushNoteAction(false, false);
-        flushNoteAction.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe
@@ -502,7 +496,8 @@ public class ReaderActivity extends ActionBarActivity {
         return ShowReaderMenuAction.isReaderMenuShown();
     }
 
-    private void hideAllPopupMenu() {
+    @Subscribe
+    private void hideAllPopupMenu(final ClosePopupEvent event) {
         ShowReaderMenuAction.hideReaderMenu();
         ShowTextSelectionMenuAction.hideTextSelectionPopupMenu();
         getReaderDataHolder().closeActiveDialogs();
@@ -513,30 +508,11 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private boolean processKeyDown(int keyCode, KeyEvent event) {
-        if (preProcessKeyDown(keyCode, event)) {
-            return true;
-        }
         return getHandlerManager().onKeyDown(getReaderDataHolder(), keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     private boolean processKeyUp(int keyCode, KeyEvent event) {
         return getHandlerManager().onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
-    }
-
-    private boolean preProcessKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!hasPopupWindow()){
-                if (askForClose()) {
-                    return true;
-                } else {
-                    quitApplication(null);
-                }
-            } else {
-                hideAllPopupMenu();
-                return true;
-            }
-        }
-        return false;
     }
 
     private void updateStatusBar() {
