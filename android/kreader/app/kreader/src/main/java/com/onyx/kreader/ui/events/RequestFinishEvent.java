@@ -9,6 +9,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 public class RequestFinishEvent {
 
     private boolean applyGCIntervalUpdate = true;
+    private boolean renderShapeData = true;
 
     public static RequestFinishEvent fromRequest(final BaseRequest request, final Throwable throwable, boolean applyGCInterval) {
         RequestFinishEvent requestFinishEvent = new RequestFinishEvent();
@@ -16,9 +17,10 @@ public class RequestFinishEvent {
         return requestFinishEvent;
     }
 
-    public static RequestFinishEvent requestWithoutGCIntervalApply() {
+    public static RequestFinishEvent createEvent(boolean applyGC, boolean renderShape) {
         RequestFinishEvent requestFinishEvent = new RequestFinishEvent();
-        requestFinishEvent.setApplyGCIntervalUpdate(false);
+        requestFinishEvent.setApplyGCIntervalUpdate(applyGC);
+        requestFinishEvent.setRenderShapeData(renderShape);
         return requestFinishEvent;
     }
 
@@ -30,4 +32,11 @@ public class RequestFinishEvent {
         return applyGCIntervalUpdate;
     }
 
+    public void setRenderShapeData(boolean renderShapeData) {
+        this.renderShapeData = renderShapeData;
+    }
+
+    public boolean isRenderShapeData() {
+        return renderShapeData;
+    }
 }

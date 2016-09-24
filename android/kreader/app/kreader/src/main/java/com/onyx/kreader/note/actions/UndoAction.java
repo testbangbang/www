@@ -17,7 +17,7 @@ public class UndoAction extends BaseAction {
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.getEventBus().post(RequestFinishEvent.requestWithoutGCIntervalApply());
+                readerDataHolder.getEventBus().post(RequestFinishEvent.createEvent(false, false));
                 BaseCallback.invoke(callback, request, e);
             }
         });

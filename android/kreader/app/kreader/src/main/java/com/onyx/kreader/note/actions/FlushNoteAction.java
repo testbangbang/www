@@ -51,7 +51,7 @@ public class FlushNoteAction extends BaseAction {
                 if (showDialog) {
                     hideLoadingDialog();
                 }
-                readerDataHolder.getEventBus().post(RequestFinishEvent.requestWithoutGCIntervalApply());
+                readerDataHolder.getEventBus().post(RequestFinishEvent.createEvent(false, false));
                 BaseCallback.invoke(callback, request, e);
             }
         });

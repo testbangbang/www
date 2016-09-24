@@ -314,7 +314,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         updateStatusBar();
-        if (event != null) {
+        if (event != null && event.isRenderShapeData()) {
             renderShapeDataInBackground();
         }
     }
