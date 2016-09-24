@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.dialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -36,14 +37,18 @@ import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.host.request.DeleteAnnotationRequest;
 import com.onyx.kreader.host.request.DeleteBookmarkRequest;
+import com.onyx.kreader.note.actions.GetNotePageListAction;
+import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.view.PreviewViewHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +79,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private DirectoryTab currentTab;
     private List<PageRecyclerView> viewList = new ArrayList<>();
     private Map<DirectoryTab,Integer> recordPosition = new Hashtable<>();
-    List<Bookmark> bookmarkList;
-    List<Annotation> annotationList;
+    private List<String> scribblePages = new ArrayList<>();
+    private List<Bookmark> bookmarkList = new ArrayList<>();
+    private List<Annotation> annotationList = new ArrayList<>();
+    private Map<String, Bitmap> scribbleBitmapCaches = new HashMap<>();
 
     public enum DirectoryTab { TOC , Bookmark, Annotation, Scribble}
 
@@ -228,7 +235,13 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                                 final List<Annotation> annotations) {
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
         this.readerDataHolder = readerDataHolder;
-        currentTab = tab;
+        int position = SingletonSharedPreference.getDialogTableOfContentTab(getContext(), 0);
+        if (position < DirectoryTab.values().length ){
+            currentTab = DirectoryTab.values()[position];
+        }else {
+            currentTab = DirectoryTab.TOC;
+        }
+
         this.toc = toc;
 
         setContentView(R.layout.dialog_table_of_content);
@@ -285,7 +298,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
             }
         });
-        checkRadioButton(tab);
+        checkRadioButton(currentTab);
         setViewListener();
     }
 
@@ -528,7 +541,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
     private PageRecyclerView initScribbleView(final ReaderDataHolder readerDataHolder){
         recordPosition.put(DirectoryTab.Scribble,0);
-        PageRecyclerView view = new PageRecyclerView(viewPager.getContext());
+        final PageRecyclerView view = new PageRecyclerView(viewPager.getContext());
         int padding = DimenUtils.dip2px(getContext(), 10);
         view.setPadding(padding, padding, padding, padding);
         view.setDefaultPageKeyBinding();
@@ -546,7 +559,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
             @Override
             public int getDataCount() {
-                return 20;
+                return scribblePages.size();
             }
 
             @Override
@@ -555,7 +568,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new GotoPageAction(PagePositionUtils.fromPageNumber(previewViewHolder.getPage())).execute(readerDataHolder, new BaseCallback() {
+                        new GotoPageAction(previewViewHolder.getPage()).execute(readerDataHolder, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
                                 DialogTableOfContent.this.dismiss();
@@ -568,10 +581,34 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                PreviewViewHolder previewViewHolder = (PreviewViewHolder)holder;
-                previewViewHolder.bindPreview(null,position);
+                final PreviewViewHolder previewViewHolder = (PreviewViewHolder)holder;
+                final String page = scribblePages.get(position);
+                Bitmap bitmap = scribbleBitmapCaches.get(page);
+                if (bitmap == null || bitmap.isRecycled()){
+                    final GetScribbleBitmapAction scribbleBitmapAction = new GetScribbleBitmapAction(page, 300, 400);
+                    scribbleBitmapAction.execute(readerDataHolder, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            Bitmap scribbleBitmap = scribbleBitmapAction.getPdfBitmapImpl().getBitmap();
+                            scribbleBitmapCaches.put(page, scribbleBitmap);
+                            previewViewHolder.bindPreview(scribbleBitmap,page);
+                        }
+                    });
+                }else {
+                    previewViewHolder.bindPreview(bitmap,page);
+                }
             }
         });
+
+        final GetNotePageListAction noteDataAction = new GetNotePageListAction();
+        noteDataAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                scribblePages = noteDataAction.getScribblePages();
+                view.getPageAdapter().notifyDataSetChanged();
+            }
+        });
+
         view.setOnPagingListener(this);
         updatePageIndicator(0,getPageSize(DirectoryTab.Scribble), view.getAdapter().getItemCount());
         return view;
@@ -682,6 +719,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
     private void switchViewPage(DirectoryTab tab){
         int position = getTabIndex(tab);
+        SingletonSharedPreference.setDialogTableOfContentTab(getContext(), position);
         currentTab = tab;
         viewPager.setCurrentItem(position,false);
         final int row = getPageSize(tab);

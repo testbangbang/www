@@ -124,7 +124,7 @@ public class LayoutProviderUtils {
      * @param bitmap
      * @param readerRenderer
      */
-    static public void drawPageWithScaleToPage(final PageInfo pageInfo, final ReaderBitmap bitmap, final ReaderRenderer readerRenderer) {
+    static public PageInfo drawPageWithScaleToPage(final PageInfo pageInfo, final ReaderBitmap bitmap, final ReaderRenderer readerRenderer) {
         final RectF viewport = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
         final float scale = PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewport.width(), viewport.height());
 
@@ -144,6 +144,12 @@ public class LayoutProviderUtils {
                 visiblePage.getDisplayRect(),
                 visiblePage.getPositionRect(),
                 visibleRect);
+
+        List<PageInfo> pageInfos = internalPageManager.collectVisiblePages();
+        if (pageInfos.size() > 0){
+            return pageInfos.get(0);
+        }
+        return null;
     }
 
     static public boolean addToCache(final BitmapSoftLruCache cache, final String key, final ReaderBitmapImpl bitmap) {

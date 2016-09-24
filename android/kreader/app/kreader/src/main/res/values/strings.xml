@@ -223,6 +223,7 @@
 
     <string name="tts_speech_rate_key" translatable="false">tts_speech_rate_key</string>
     <string name="quick_view_grid_type" translatable="false">quick_view_grid_type</string>
+    <string name="dialog_table_of_content_tab" translatable="false">dialog_table_of_content_tab</string>
     <string name="tts_play_failed" translatable="false">TTS failed!</string>
 
     <string name="settings_highlight_style_highlight">Highlight</string>
