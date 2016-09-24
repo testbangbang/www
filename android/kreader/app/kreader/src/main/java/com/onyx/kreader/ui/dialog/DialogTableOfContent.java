@@ -48,7 +48,6 @@ import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +81,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private List<String> scribblePages = new ArrayList<>();
     private List<Bookmark> bookmarkList = new ArrayList<>();
     private List<Annotation> annotationList = new ArrayList<>();
-    private Map<String, Bitmap> scribbleBitmapCaches = new HashMap<>();
 
     public enum DirectoryTab { TOC , Bookmark, Annotation, Scribble}
 
@@ -583,20 +581,15 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 final PreviewViewHolder previewViewHolder = (PreviewViewHolder)holder;
                 final String page = scribblePages.get(position);
-                Bitmap bitmap = scribbleBitmapCaches.get(page);
-                if (bitmap == null || bitmap.isRecycled()){
-                    final GetScribbleBitmapAction scribbleBitmapAction = new GetScribbleBitmapAction(page, 300, 400);
-                    scribbleBitmapAction.execute(readerDataHolder, new BaseCallback() {
-                        @Override
-                        public void done(BaseRequest request, Throwable e) {
-                            Bitmap scribbleBitmap = scribbleBitmapAction.getPdfBitmapImpl().getBitmap();
-                            scribbleBitmapCaches.put(page, scribbleBitmap);
-                            previewViewHolder.bindPreview(scribbleBitmap,page);
-                        }
-                    });
-                }else {
-                    previewViewHolder.bindPreview(bitmap,page);
-                }
+                final int pageNumber = Integer.valueOf(page) + 1;
+                final GetScribbleBitmapAction scribbleBitmapAction = new GetScribbleBitmapAction(page, 300, 400);
+                scribbleBitmapAction.execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        Bitmap scribbleBitmap = scribbleBitmapAction.getPdfBitmapImpl().getBitmap();
+                        previewViewHolder.bindPreview(scribbleBitmap,String.valueOf(pageNumber));
+                    }
+                });
             }
         });
 
