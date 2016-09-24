@@ -426,16 +426,23 @@ public class ShowReaderMenuAction extends BaseAction {
         final ShowScribbleMenuAction.ActionCallback callback = new ShowScribbleMenuAction.ActionCallback() {
             @Override
             public void onClicked(final ScribbleMenuAction action) {
-                FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false, false);
-                flushNoteAction.execute(readerDataHolder, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        processScribbleAction(readerDataHolder, action);
-                    }
-                });
+                if (processScribbleActionGroup(readerDataHolder, action)) {
+                    FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false, false);
+                    flushNoteAction.execute(readerDataHolder, null);
+                    return;
+                }
+                processScribbleAction(readerDataHolder, action);
             }
         };
         return callback;
+    }
+
+    private boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
+        return  (action == ScribbleMenuAction.ERASER ||
+                action == ScribbleMenuAction.WIDTH ||
+                action == ScribbleMenuAction.TEXT ||
+                action == ScribbleMenuAction.DRAG ||
+                action == ScribbleMenuAction.MINIMIZE);
     }
 
     private void processScribbleAction(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
@@ -474,13 +481,21 @@ public class ShowReaderMenuAction extends BaseAction {
                 useShape(readerDataHolder, ShapeFactory.SHAPE_RECTANGLE);
                 break;
             case TEXT:
+                break;
             case ERASER_PART:
+                break;
             case ERASER_ALL:
+                break;
             case DRAG:
+                break;
             case MINIMIZE:
+                break;
             case MAXIMIZE:
+                break;
             case PREV_PAGE:
+                break;
             case NEXT_PAGE:
+                break;
             case UNDO:
                 undo(readerDataHolder);
                 break;
