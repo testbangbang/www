@@ -151,8 +151,8 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                         synchronized (parent) {
                             parent.copyBitmap();
                         }
-                        BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
                     }
+                    BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
                     if (isResumeRawInputProcessor()) {
                         parent.resumeEventProcessor();
                     }

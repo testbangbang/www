@@ -436,7 +436,7 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onClicked(final ScribbleMenuAction action) {
                 if (processScribbleActionGroup(readerDataHolder, action)) {
-                    FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false, false);
+                    FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, false, false);
                     flushNoteAction.execute(readerDataHolder, null);
                     return;
                 }
@@ -450,6 +450,7 @@ public class ShowReaderMenuAction extends BaseAction {
         return  (action == ScribbleMenuAction.ERASER ||
                 action == ScribbleMenuAction.WIDTH ||
                 action == ScribbleMenuAction.TEXT ||
+                action == ScribbleMenuAction.SHAPE ||
                 action == ScribbleMenuAction.DRAG ||
                 action == ScribbleMenuAction.MINIMIZE);
     }

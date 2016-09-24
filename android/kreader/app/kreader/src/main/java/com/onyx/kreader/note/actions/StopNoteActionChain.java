@@ -14,7 +14,7 @@ public class StopNoteActionChain  {
         final ActionChain actionChain = new ActionChain();
         actionChain.addAction(new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false, false));
         actionChain.addAction(new CloseNoteMenuAction());
-        BaseCallback.invoke(callback, null, null);
+        actionChain.execute(readerDataHolder, callback);
     }
 
 }
