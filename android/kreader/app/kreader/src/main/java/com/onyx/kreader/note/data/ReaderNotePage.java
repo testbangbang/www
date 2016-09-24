@@ -27,8 +27,6 @@ public class ReaderNotePage {
     private List<Shape> newAddedShapeList = new ArrayList<>();
     private List<Shape> removedShapeList = new ArrayList<>();
 
-    private int currentShapeType;
-    private Shape currentShape;
     private boolean loaded = false;
     public Matrix lastMatrix;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
@@ -188,19 +186,7 @@ public class ReaderNotePage {
             return;
         }
         renderContext.force = !lastMatrix.equals(renderContext.matrix);
-    }
-
-    public void prepareShapePool(int shapeType) {
-        currentShapeType = shapeType;
-    }
-
-    // create a new shape if not exist and make it as current shape.
-    public final Shape getShapeFromPool() {
-        return currentShape = ShapeFactory.createShape(currentShapeType);
-    }
-
-    public final Shape getCurrentShape() {
-        return currentShape;
+        lastMatrix.set(renderContext.matrix);
     }
 
     /**
