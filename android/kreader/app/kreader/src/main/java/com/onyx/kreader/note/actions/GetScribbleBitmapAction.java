@@ -9,6 +9,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.kreader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
@@ -28,7 +29,7 @@ public class GetScribbleBitmapAction extends BaseAction{
     private int height;
 
     private Bitmap scribbleBitmap;
-    private ReaderBitmapImpl pdfBitmapImpl;
+    private ReaderBitmapImpl contentBitmap;
     private Rect size;
 
     public GetScribbleBitmapAction(String page, int width, int height) {
@@ -40,23 +41,26 @@ public class GetScribbleBitmapAction extends BaseAction{
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-
-        pdfBitmapImpl = new ReaderBitmapImpl(width, height, Bitmap.Config.ARGB_8888);
-        final RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(page, pdfBitmapImpl);
+        contentBitmap = ReaderBitmapImpl.create(width, height, Bitmap.Config.ARGB_8888);
+        final RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(page, contentBitmap);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
 
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final NoteManager noteManager = readerDataHolder.getNoteManager();
-                List<PageInfo> pageInfos = new ArrayList<>();
-                pageInfos.add(thumbnailRequest.getPageInfo());
-                final ReaderNoteRenderRequest noteRequest = new ReaderNoteRenderRequest(page, pageInfos, size);
+                List<PageInfo> pageInfoList = new ArrayList<>();
+                pageInfoList.add(thumbnailRequest.getPageInfo());
+                final ReaderNoteRenderRequest noteRequest = new ReaderNoteRenderRequest(
+                        readerDataHolder.getReader().getDocumentMd5(),
+                        pageInfoList,
+                        size,
+                        false);
 
                 noteManager.submit(readerDataHolder.getContext(), noteRequest, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         scribbleBitmap = noteManager.getViewBitmap();
-                        drawScribbleBitmap(pdfBitmapImpl.getBitmap());
+                        drawScribbleBitmap(contentBitmap.getBitmap());
                         callback.done(request, e);
                     }
                 });
@@ -70,7 +74,7 @@ public class GetScribbleBitmapAction extends BaseAction{
         canvas.drawBitmap(scribbleBitmap, 0, 0, myPainter);
     }
 
-    public ReaderBitmapImpl getPdfBitmapImpl() {
-        return pdfBitmapImpl;
+    public ReaderBitmapImpl getContentBitmap() {
+        return contentBitmap;
     }
 }

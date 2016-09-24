@@ -24,9 +24,9 @@ public class FlushNoteAction extends BaseAction {
     private boolean save;
     private boolean showDialog;
 
-    public FlushNoteAction(List<PageInfo> list, boolean r, boolean s, boolean show) {
-        render = r;
-        save = s;
+    public FlushNoteAction(List<PageInfo> list, boolean renderShapes, boolean saveToDatabase, boolean show) {
+        render = renderShapes;
+        save = saveToDatabase;
         if (list != null) {
             visiblePages.addAll(list);
         }

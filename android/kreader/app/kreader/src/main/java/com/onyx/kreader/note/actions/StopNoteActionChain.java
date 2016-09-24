@@ -11,7 +11,6 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 public class StopNoteActionChain  {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
         final ActionChain actionChain = new ActionChain();
         actionChain.addAction(new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false, false));
         actionChain.addAction(new CloseNoteMenuAction());

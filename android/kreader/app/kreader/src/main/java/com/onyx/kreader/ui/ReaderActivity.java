@@ -458,7 +458,8 @@ public class ReaderActivity extends ActionBarActivity {
         final ReaderNoteRenderRequest renderRequest = new ReaderNoteRenderRequest(
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 getReaderDataHolder().getReaderViewInfo().getVisiblePages(),
-                getReaderDataHolder().getDisplayRect());
+                getReaderDataHolder().getDisplayRect(),
+                true);
         getReaderDataHolder().getNoteManager().submit(this, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

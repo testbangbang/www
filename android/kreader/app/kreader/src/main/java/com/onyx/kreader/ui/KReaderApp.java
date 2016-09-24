@@ -3,11 +3,9 @@ package com.onyx.kreader.ui;
 import android.app.Application;
 
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.kreader.note.model.ReaderNoteDatabase;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.ReaderNoteGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 import com.squareup.leakcanary.LeakCanary;
 
 import java.util.ArrayList;

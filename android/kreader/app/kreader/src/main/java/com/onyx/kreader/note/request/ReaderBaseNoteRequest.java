@@ -146,13 +146,13 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             @Override
             public void run() {
                 try {
+                    parent.enableScreenPost(true);
                     if (isRender()) {
                         synchronized (parent) {
                             parent.copyBitmap();
                         }
+                        BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
                     }
-                    parent.enableScreenPost(true);
-                    BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
                     if (isResumeRawInputProcessor()) {
                         parent.resumeEventProcessor();
                     }

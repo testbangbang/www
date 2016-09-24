@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
 
-    public ReaderNoteRenderRequest(final String id, final List<PageInfo> pages, final Rect size) {
+    public ReaderNoteRenderRequest(final String id, final List<PageInfo> pages, final Rect size, boolean abortPending) {
         setDocUniqueId(id);
-        setAbortPendingTasks(true);
+        setAbortPendingTasks(abortPending);
         setViewportSize(size);
         setVisiblePages(pages);
     }

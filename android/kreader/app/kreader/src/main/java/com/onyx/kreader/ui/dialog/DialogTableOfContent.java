@@ -585,7 +585,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 scribbleBitmapAction.execute(readerDataHolder, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        Bitmap scribbleBitmap = scribbleBitmapAction.getPdfBitmapImpl().getBitmap();
+                        Bitmap scribbleBitmap = scribbleBitmapAction.getContentBitmap().getBitmap();
                         previewViewHolder.bindPreview(scribbleBitmap,Integer.valueOf(page));
                     }
                 });
