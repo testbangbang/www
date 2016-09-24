@@ -1,4 +1,4 @@
-package com.onyx.kreader.plugins.pdfium;
+package com.onyx.kreader.plugins.neopdf;
 
 import android.graphics.Bitmap;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -13,16 +13,16 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 2/3/16.
- * javah -classpath ./bin/classes:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/onyx/kreader/plugins/pdfium/ -jni com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper
+ * javah -classpath ./bin/classes:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/onyx/kreader/plugins/pdfium/ -jni com.onyx.kreader.plugins.pdfium.NeoPdfJniWrapper
  * http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
  * https://src.chromium.org/svn/trunk/src/pdf/pdfium/
  */
-public class PdfiumJniWrapper {
+public class NeoPdfJniWrapper {
 
-    public static final String TAG = PdfiumJniWrapper.class.getSimpleName();
+    public static final String TAG = NeoPdfJniWrapper.class.getSimpleName();
 
     static{
-        System.loadLibrary("onyx_pdfium");
+        System.loadLibrary("onyxneopdf");
     }
 
     static public long NO_ERROR = 0;
@@ -53,9 +53,9 @@ public class PdfiumJniWrapper {
 
     private native boolean nativeRenderPage(int id, int page, int x, int y, int width, int height, int rotation, final Bitmap bitmap);
 
-    private native int nativeHitTest(int id, int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final ReaderTextSplitter splitter, final boolean selectingWord, final PdfiumSelection selection);
+    private native int nativeHitTest(int id, int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final ReaderTextSplitter splitter, final boolean selectingWord, final NeoPdfSelection selection);
 
-    private native int nativeSelection(int id, int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final PdfiumSelection selection);
+    private native int nativeSelection(int id, int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final NeoPdfSelection selection);
 
     private native int nativeSearchInPage(int id, int page, int x, int y, int width, int height, int rotation, final byte [] buffer, boolean caseSensitive, boolean matchWholeWord, int contextLength, final List<ReaderSelection> list);
 
@@ -70,7 +70,7 @@ public class PdfiumJniWrapper {
     private int id;
     private String filePath = null;
 
-    public PdfiumJniWrapper() {
+    public NeoPdfJniWrapper() {
         id = nextId();
     }
 
@@ -117,11 +117,11 @@ public class PdfiumJniWrapper {
         return nativeRenderPage(id, page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap,  rotation, bitmap);
     }
 
-    public int hitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final boolean selectingWord, final PdfiumSelection selection) {
+    public int hitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final boolean selectingWord, final NeoPdfSelection selection) {
         return nativeHitTest(id, page, x, y, width, height, rotation, startX, startY, endX, endY, ReaderTextSplitterImpl.sharedInstance(), selectingWord, selection);
     }
 
-    public int selection(int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final PdfiumSelection selection) {
+    public int selection(int page, int x, int y, int width, int height, int rotation, int startCharIndex, int endCharIndex, final NeoPdfSelection selection) {
         return nativeSelection(id, page, x, y, width, height, rotation, startCharIndex, endCharIndex, selection);
     }
 

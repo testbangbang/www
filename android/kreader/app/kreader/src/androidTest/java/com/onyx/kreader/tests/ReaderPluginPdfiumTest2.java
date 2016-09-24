@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.kreader.plugins.pdfium.PdfiumJniWrapper;
+import com.onyx.kreader.plugins.neopdf.NeoPdfJniWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
     }
 
     public void testOpen() throws Exception {
-        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == NeoPdfJniWrapper.NO_ERROR);
         String title = wrapper.metadataString("Title");
         assertTrue(StringUtils.isNotBlank(title));
         assertTrue(wrapper.closeDocument());
@@ -43,29 +43,29 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
     }
 
     public void testOpenWithPassword() throws Exception {
-        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/password.pdf", null) == PdfiumJniWrapper.ERROR_PASSWORD_INVALID);
-        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/password.pdf", "12456") == PdfiumJniWrapper.ERROR_PASSWORD_INVALID);
-        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/password.pdf", "123456") == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/password.pdf", null) == NeoPdfJniWrapper.ERROR_PASSWORD_INVALID);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/password.pdf", "12456") == NeoPdfJniWrapper.ERROR_PASSWORD_INVALID);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/password.pdf", "123456") == NeoPdfJniWrapper.NO_ERROR);
         assertTrue(wrapper.closeDocument());
         assertFalse(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 
     public void testPageCount() {
-        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == NeoPdfJniWrapper.NO_ERROR);
         assertTrue(wrapper.pageCount() > 10);
         assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
 
     public void testPageRender() {
-        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == NeoPdfJniWrapper.NO_ERROR);
         int pageCount = wrapper.pageCount();
         assertTrue(pageCount > 0);
         int page = pageCount - 1;
@@ -81,9 +81,9 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
     }
 
     public void testPageTextSelection() {
-        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/normal.pdf", null) == NeoPdfJniWrapper.NO_ERROR);
         int pageCount = wrapper.pageCount();
         assertTrue(pageCount > 0);
         int page = pageCount - 1;
@@ -102,7 +102,7 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
         if (!performanceTest) {
             return;
         }
-        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
         String [] pathes = { "/mnt/sdcard/cityhunter/001.pdf",
                 "/mnt/sdcard/cityhunter/002.pdf",
                 "/mnt/sdcard/cityhunter/003.pdf",
@@ -112,7 +112,7 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
                 "/mnt/sdcard/cityhunter/007.pdf"};
         for(String path : pathes) {
             assertTrue(wrapper.nativeInitLibrary());
-            assertTrue(wrapper.openDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
+            assertTrue(wrapper.openDocument(path, null) == NeoPdfJniWrapper.NO_ERROR);
             int pageCount = wrapper.pageCount();
             assertTrue(pageCount > 0);
             ReaderBitmapImpl readerBitmap = null;
@@ -146,10 +146,10 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
     }
 
     public void testPageText() {
-        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
         String path = "/mnt/sdcard/Books/text.pdf";
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.openDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument(path, null) == NeoPdfJniWrapper.NO_ERROR);
         String text = wrapper.getPageText(0);
         assertTrue(text.contains("广州"));
         assertTrue(wrapper.closeDocument());
@@ -157,10 +157,10 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
     }
 
     public void testSearch() {
-        PdfiumJniWrapper wrapper = new PdfiumJniWrapper();
+        NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
         String path = "/mnt/sdcard/Books/西游记.pdf";
         assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.openDocument(path, null) == PdfiumJniWrapper.NO_ERROR);
+        assertTrue(wrapper.openDocument(path, null) == NeoPdfJniWrapper.NO_ERROR);
 //        String pattern = "上卷";
         String pattern = "邵康节";
         List<ReaderSelection> list = new ArrayList<ReaderSelection>();

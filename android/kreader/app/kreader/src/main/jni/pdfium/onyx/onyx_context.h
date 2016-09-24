@@ -22,7 +22,7 @@
 #include "plugin_context_holder.h"
 
 #include "log.h"
-#include "com_onyx_kreader_plugins_pdfium_PdfiumJniWrapper.h"
+#include "com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper.h"
 #include "fpdf_doc.h"
 #include "fpdfview.h"
 #include "fpdf_text.h"

@@ -19,7 +19,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.math.PageManager;
-import com.onyx.kreader.plugins.pdfium.PdfiumReaderPlugin;
+import com.onyx.kreader.plugins.neopdf.NeoPdfReaderPlugin;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -32,7 +32,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
 
     @Suppress
     public void testPluginUsage() throws Exception {
-        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/normal.pdf", null, null);
         assertNotNull(document);
         ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl(1024, 768);
@@ -51,7 +51,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
 
     @Suppress
     public void testPluginRendering() throws Exception {
-        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/normal.pdf", null, null);
         assertNotNull(document);
 
@@ -84,7 +84,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
 
     @Suppress
     public void testReaderSentence() throws Exception {
-        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/西游记.pdf", null, null);
         assertNotNull(document);
 
@@ -99,7 +99,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testMetadata() throws Exception {
-        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/pdf_reference_1-7.pdf", null, null);
         assertNotNull(document);
 
@@ -107,7 +107,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testCover() throws Exception {
-        ReaderPlugin plugin = new PdfiumReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/pdf_reference_1-7.pdf", null, null);
         assertNotNull(document);
 

@@ -1,4 +1,4 @@
-package com.onyx.kreader.plugins.pdfium;
+package com.onyx.kreader.plugins.neopdf;
 
 import android.graphics.RectF;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -11,9 +11,9 @@ import java.util.List;
 
 /**
  * Created by zhuzeng on 2/14/16.
- * javap -classpath ./bin/classes:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/onyx/kreader/plugins/pdfium/ -s com.onyx.kreader.plugins.pdfium.PdfiumSelection
+ * javap -classpath ./bin/classes:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/onyx/kreader/plugins/pdfium/ -s com.onyx.kreader.plugins.pdfium.NeoPdfSelection
  */
-public class PdfiumSelection implements ReaderSelection {
+public class NeoPdfSelection implements ReaderSelection {
 
     private String pagePosition;
     private int startCharIndex;
@@ -27,19 +27,19 @@ public class PdfiumSelection implements ReaderSelection {
      */
     private List<RectF> rectangles = new ArrayList<RectF>();
 
-    public PdfiumSelection() {
+    public NeoPdfSelection() {
 
     }
 
-    public PdfiumSelection(int pageNumber) {
+    public NeoPdfSelection(int pageNumber) {
         this.pagePosition = PagePositionUtils.fromPageNumber(pageNumber);
     }
 
-    public PdfiumSelection(String pagePosition) {
+    public NeoPdfSelection(String pagePosition) {
         this.pagePosition = pagePosition;
     }
 
-    public PdfiumSelection(int page, int [] data, byte [] string, int start, int end, String leftText, String rightText) {
+    public NeoPdfSelection(int page, int [] data, byte [] string, int start, int end, String leftText, String rightText) {
         pagePosition = PagePositionUtils.fromPosition(page);
         for(int i = 0; i < data.length / 4; ++i) {
             rectangles.add(new RectF(data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3]));
@@ -115,7 +115,7 @@ public class PdfiumSelection implements ReaderSelection {
 
     @SuppressWarnings("unused")
     public static void addToSelectionList(List<ReaderSelection> list, int page, int [] rectangles, final byte[] utf16le, int startIndex, int endIndex, String leftText, String rightText) {
-        list.add(new PdfiumSelection(page, rectangles, utf16le, startIndex, endIndex, leftText, rightText));
+        list.add(new NeoPdfSelection(page, rectangles, utf16le, startIndex, endIndex, leftText, rightText));
     }
 
 }
