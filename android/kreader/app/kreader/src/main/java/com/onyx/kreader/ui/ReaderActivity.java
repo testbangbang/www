@@ -28,6 +28,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -74,7 +75,6 @@ public class ReaderActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
         setContentView(R.layout.activity_reader);
-        mainView = (RelativeLayout) findViewById(R.id.main_view);
         initComponents();
     }
 
@@ -199,6 +199,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initSurfaceView() {
+        mainView = (RelativeLayout) findViewById(R.id.main_view);
         surfaceView = (SurfaceView) this.findViewById(R.id.surfaceView);
         surfaceHolderCallback = new SurfaceHolder.Callback() {
             @Override
@@ -316,6 +317,11 @@ public class ReaderActivity extends ActionBarActivity {
         if (event != null) {
             renderShapeDataInBackground();
         }
+    }
+
+    @Subscribe
+    public void onShapeDrawing(final ShapeDrawingEvent event) {
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 
     @Subscribe

@@ -76,12 +76,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_txt, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.TEXT);
         addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_eraser, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.ERASER);
         addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_drag, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.DRAG);
-        addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_pack_up, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.PACK_UP);
+        addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_pack_up, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.MINIMIZE);
 
         toolbar.addViewHolder(new BaseViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 
-        addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_left, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.LEFT_PAGE);
-        addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_right, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.RIGHT_PAGE);
+        addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_left, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.PREV_PAGE);
+        addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_right, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.NEXT_PAGE);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -193,12 +193,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private OnyxToolbar createShapeToolbar(ReaderDataHolder readerDataHolder) {
         final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
         toolbar.setClickedDismissToolbar(true);
-        final ScribbleMenuAction[] selectActions = {ScribbleMenuAction.PENCIL, ScribbleMenuAction.BRUSH, ScribbleMenuAction.LINE, ScribbleMenuAction.TRIGON, ScribbleMenuAction.CIRCLE, ScribbleMenuAction.SQUARE};
+        final ScribbleMenuAction[] selectActions = {ScribbleMenuAction.PENCIL, ScribbleMenuAction.BRUSH, ScribbleMenuAction.LINE, ScribbleMenuAction.TRIANGLE, ScribbleMenuAction.CIRCLE, ScribbleMenuAction.SQUARE};
 
         addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_pencil, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ScribbleMenuAction.PENCIL);
         addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_brush, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ScribbleMenuAction.BRUSH);
         addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_line, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ScribbleMenuAction.LINE);
-        addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_trigon, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ScribbleMenuAction.TRIGON);
+        addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_trigon, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ScribbleMenuAction.TRIANGLE);
         addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_circle, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ScribbleMenuAction.CIRCLE);
         addSelectViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_square, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ScribbleMenuAction.SQUARE);
         updateSelectTriangle(selectShapeAction, selectActions);
@@ -243,9 +243,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         ImageView leftPage = (ImageView) view.findViewById(R.id.left_page);
         ImageView rightPage = (ImageView) view.findViewById(R.id.right_page);
         ImageView restore = (ImageView) view.findViewById(R.id.restore);
-        leftPage.setTag(ScribbleMenuAction.LEFT_PAGE);
-        rightPage.setTag(ScribbleMenuAction.RIGHT_PAGE);
-        restore.setTag(ScribbleMenuAction.RESTORE);
+        leftPage.setTag(ScribbleMenuAction.PREV_PAGE);
+        rightPage.setTag(ScribbleMenuAction.NEXT_PAGE);
+        restore.setTag(ScribbleMenuAction.MAXIMIZE);
 
         leftPage.setOnClickListener(this);
         rightPage.setOnClickListener(this);
@@ -283,10 +283,10 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                     callback.done(null, null);
                 }
                 break;
-            case PACK_UP:
+            case MINIMIZE:
                 changeToolBarVisibility(true);
                 break;
-            case RESTORE:
+            case MAXIMIZE:
                 changeToolBarVisibility(false);
         }
     }

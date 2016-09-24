@@ -1,23 +1,12 @@
 package com.onyx.kreader.ui;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.PathEffect;
-import android.graphics.PixelXorXfermode;
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
+import android.graphics.*;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
@@ -67,6 +56,7 @@ public class ReaderPainter {
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
         drawShapes(context, canvas, paint, noteManager, shapeDataInfo);
+        drawStashShapes(context, canvas, paint, noteManager, viewInfo);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
@@ -224,6 +214,27 @@ public class ReaderPainter {
         myPainter.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
         canvas.drawBitmap(bitmap, 0, 0, myPainter);
     }
+
+    private void drawStashShapes(final Context context,
+                            final Canvas canvas,
+                            final Paint paint,
+                            final NoteManager noteManager,
+                            final ReaderViewInfo viewInfo) {
+        if (!SingletonSharedPreference.isShowNote(context)) {
+            return;
+        }
+        if (noteManager.isDFBForCurrentShape() || noteManager.getCurrentShape() == null) {
+            return;
+        }
+        final PageInfo pageInfo = viewInfo.getFirstVisiblePage();
+        final Matrix renderMatrix = new Matrix();
+        RenderContext renderContext = RenderContext.create(canvas, paint, renderMatrix);
+        renderMatrix.reset();
+        renderMatrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
+        renderMatrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
+        noteManager.getCurrentShape().render(renderContext);
+    }
+
 
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
         return userDataInfo.hasBookmark(viewInfo.getFirstVisiblePage());

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.*;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
@@ -29,8 +30,8 @@ import com.onyx.kreader.host.request.ScaleToPageCropRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.host.request.ScaleToWidthContentRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
-import com.onyx.kreader.note.actions.FlushNoteAction;
-import com.onyx.kreader.note.actions.StopNoteAction;
+import com.onyx.kreader.note.actions.*;
+import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
@@ -415,8 +416,8 @@ public class ShowReaderMenuAction extends BaseAction {
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                StopNoteAction stopNoteAction = new StopNoteAction();
-                stopNoteAction.execute(readerDataHolder, null);
+                StopNoteActionChain stopNoteActionChain = new StopNoteActionChain();
+                stopNoteActionChain.execute(readerDataHolder, null);
             }
         });
     }
@@ -425,11 +426,11 @@ public class ShowReaderMenuAction extends BaseAction {
         final ShowScribbleMenuAction.ActionCallback callback = new ShowScribbleMenuAction.ActionCallback() {
             @Override
             public void onClicked(final ScribbleMenuAction action) {
-                FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false);
+                FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false, false);
                 flushNoteAction.execute(readerDataHolder, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        readerActivity.onRequestFinished(null);
+                        processScribbleAction(readerDataHolder, action);
                     }
                 });
             }
@@ -437,5 +438,90 @@ public class ShowReaderMenuAction extends BaseAction {
         return callback;
     }
 
+    private void processScribbleAction(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
+        switch (action) {
+            case WIDTH1:
+                useStrokeWidth(readerDataHolder, 2.0f);
+                break;
+            case WIDTH2:
+                useStrokeWidth(readerDataHolder, 4.0f);
+                break;
+            case WIDTH3:
+                useStrokeWidth(readerDataHolder, 6.0f);
+                break;
+            case WIDTH4:
+                useStrokeWidth(readerDataHolder, 9.0f);
+                break;
+            case WIDTH5:
+                useStrokeWidth(readerDataHolder, 12.0f);
+                break;
+            case PENCIL:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
+                break;
+            case BRUSH:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_BRUSH_SCRIBBLE);
+                break;
+            case LINE:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_LINE);
+                break;
+            case TRIANGLE:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_TRIANGLE);
+                break;
+            case CIRCLE:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_CIRCLE);
+                break;
+            case SQUARE:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_RECTANGLE);
+                break;
+            case TEXT:
+            case ERASER_PART:
+            case ERASER_ALL:
+            case DRAG:
+            case MINIMIZE:
+            case MAXIMIZE:
+            case PREV_PAGE:
+            case NEXT_PAGE:
+            case UNDO:
+                undo(readerDataHolder);
+                break;
+            case SAVE:
+                save(readerDataHolder);
+                break;
+            case REDO:
+                redo(readerDataHolder);
+                break;
+        }
+    }
+
+    private void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
+        ChangeStrokeWidthAction action = new ChangeStrokeWidthAction(width);
+        action.execute(readerDataHolder, null);
+    }
+
+    private void useShape(final ReaderDataHolder readerDataHolder, int type) {
+        ChangeNoteShapeAction changeNoteShapeAction = new ChangeNoteShapeAction(type);
+        changeNoteShapeAction.execute(readerDataHolder, null);
+    }
+
+    private void undo(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, false, false));
+        actionChain.addAction(new UndoAction());
+        actionChain.execute(readerDataHolder, null);
+    }
+
+    private void redo(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, false, false));
+        actionChain.addAction(new RedoAction());
+        actionChain.execute(readerDataHolder, null);
+    }
+
+    private void save(final ReaderDataHolder readerDataHolder) {
+        FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, true, true);
+        flushNoteAction.execute(readerDataHolder, null);
+    }
 
 }

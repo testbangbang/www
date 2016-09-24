@@ -105,7 +105,7 @@ public class ReaderNotePage {
     }
 
     public void redo() {
-
+        ReaderNoteUndoRedoManager.redo(this, undoRedoManager);
     }
 
     public boolean canUndo() {
@@ -113,7 +113,7 @@ public class ReaderNotePage {
     }
 
     public void undo() {
-
+        ReaderNoteUndoRedoManager.undo(this, undoRedoManager);
     }
 
     private void updateShape(final Shape shape) {
