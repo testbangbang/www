@@ -566,7 +566,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new GotoPageAction(previewViewHolder.getPage()).execute(readerDataHolder, new BaseCallback() {
+                        new GotoPageAction(PagePositionUtils.fromPageNumber(previewViewHolder.getPage())).execute(readerDataHolder, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
                                 DialogTableOfContent.this.dismiss();
@@ -581,13 +581,12 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 final PreviewViewHolder previewViewHolder = (PreviewViewHolder)holder;
                 final String page = scribblePages.get(position);
-                final int pageNumber = Integer.valueOf(page) + 1;
                 final GetScribbleBitmapAction scribbleBitmapAction = new GetScribbleBitmapAction(page, 300, 400);
                 scribbleBitmapAction.execute(readerDataHolder, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         Bitmap scribbleBitmap = scribbleBitmapAction.getPdfBitmapImpl().getBitmap();
-                        previewViewHolder.bindPreview(scribbleBitmap,String.valueOf(pageNumber));
+                        previewViewHolder.bindPreview(scribbleBitmap,Integer.valueOf(page));
                     }
                 });
             }

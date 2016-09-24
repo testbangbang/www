@@ -13,7 +13,7 @@ import com.onyx.kreader.R;
  * Created by ming on 16/9/23.
  */
 public class PreviewViewHolder extends RecyclerView.ViewHolder {
-    private String page;
+    private int page;
     private ImageView imageView;
     private TextView pageTextView;
     private TextView pageText;
@@ -27,21 +27,21 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
         container = (RelativeLayout) itemView.findViewById(R.id.item_container);
     }
 
-    public void bindPreview(Bitmap bitmap, String page) {
+    public void bindPreview(Bitmap bitmap, int page) {
         this.page = page;
         if (bitmap != null){
             imageView.setImageBitmap(bitmap);
         }
         pageTextView.setVisibility(View.GONE);
         pageText.setVisibility(View.VISIBLE);
-        pageText.setText(page);
+        pageText.setText(String.valueOf(page + 1));
     }
 
     public RelativeLayout getContainer() {
         return container;
     }
 
-    public String getPage() {
+    public int getPage() {
         return page;
     }
 }

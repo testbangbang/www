@@ -172,7 +172,7 @@ public class DialogQuickPreview extends Dialog {
             previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new GotoPageAction(previewViewHolder.getPage(), true).execute(readerDataHolder, new BaseCallback() {
+                    new GotoPageAction(PagePositionUtils.fromPageNumber(previewViewHolder.getPage()), true).execute(readerDataHolder, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             DialogQuickPreview.this.dismiss();
@@ -209,7 +209,7 @@ public class DialogQuickPreview extends Dialog {
                 bmp = BlankBitmap;
             }
 
-            holder.bindPreview(bmp,String.valueOf(paginator.indexByPageOffset(position) + 1));
+            holder.bindPreview(bmp,paginator.indexByPageOffset(position));
             holder.getContainer().setActivated(readerDataHolder.getCurrentPage() == paginator.indexByPageOffset(position));
         }
 
