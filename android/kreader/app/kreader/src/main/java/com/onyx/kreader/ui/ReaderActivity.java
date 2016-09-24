@@ -467,7 +467,7 @@ public class ReaderActivity extends ActionBarActivity {
                     return;
                 }
                 getReaderDataHolder().saveShapeDataInfo(renderRequest);
-                onRequestFinished(null);
+                onRequestFinished(RequestFinishEvent.shapeReadyEvent());
             }
         });
     }

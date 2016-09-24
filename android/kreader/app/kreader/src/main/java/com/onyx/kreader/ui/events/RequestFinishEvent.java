@@ -17,6 +17,10 @@ public class RequestFinishEvent {
         return requestFinishEvent;
     }
 
+    public static RequestFinishEvent shapeReadyEvent() {
+        return createEvent(false, false);
+    }
+
     public static RequestFinishEvent createEvent(boolean applyGC, boolean renderShape) {
         RequestFinishEvent requestFinishEvent = new RequestFinishEvent();
         requestFinishEvent.setApplyGCIntervalUpdate(applyGC);

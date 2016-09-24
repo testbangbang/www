@@ -436,8 +436,6 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onClicked(final ScribbleMenuAction action) {
                 if (processScribbleActionGroup(readerDataHolder, action)) {
-                    FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, false, false);
-                    flushNoteAction.execute(readerDataHolder, null);
                     return;
                 }
                 processScribbleAction(readerDataHolder, action);
@@ -446,13 +444,22 @@ public class ShowReaderMenuAction extends BaseAction {
         return callback;
     }
 
-    private boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
-        return  (action == ScribbleMenuAction.ERASER ||
+    private boolean isGroupAction(final ScribbleMenuAction action) {
+        return (action == ScribbleMenuAction.ERASER ||
                 action == ScribbleMenuAction.WIDTH ||
                 action == ScribbleMenuAction.TEXT ||
                 action == ScribbleMenuAction.SHAPE ||
                 action == ScribbleMenuAction.DRAG ||
                 action == ScribbleMenuAction.MINIMIZE);
+    }
+
+    private boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
+        if (!isGroupAction(action)) {
+            return false;
+        }
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, false, false);
+        flushNoteAction.execute(readerDataHolder, null);
+        return true;
     }
 
     private void processScribbleAction(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
