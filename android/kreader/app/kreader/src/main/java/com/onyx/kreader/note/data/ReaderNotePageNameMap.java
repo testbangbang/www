@@ -79,4 +79,8 @@ public class ReaderNotePageNameMap {
         data.clear();
         data.putAll(map.getData());
     }
+
+    public List<String> nameList() {
+        return new ArrayList<>(data.keySet());
+    }
 }

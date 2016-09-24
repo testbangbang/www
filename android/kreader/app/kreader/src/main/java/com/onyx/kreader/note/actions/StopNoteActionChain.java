@@ -2,9 +2,7 @@ package com.onyx.kreader.note.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.ui.actions.ActionChain;
-import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 
 /**
@@ -13,6 +11,7 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 public class StopNoteActionChain  {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
         final ActionChain actionChain = new ActionChain();
         actionChain.addAction(new FlushNoteAction(readerDataHolder.getReaderViewInfo().getVisiblePages(), true, false, false));
         actionChain.addAction(new CloseNoteMenuAction());

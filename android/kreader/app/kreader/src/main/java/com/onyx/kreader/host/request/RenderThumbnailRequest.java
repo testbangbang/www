@@ -15,6 +15,7 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
 
     private String page;
     private ReaderBitmap bitmap;
+    private PageInfo pageInfo;
 
     public RenderThumbnailRequest(final String p, final ReaderBitmap bmp) {
         super();
@@ -25,6 +26,10 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         final RectF origin = reader.getDocument().getPageOriginSize(page);
         PageInfo pageInfo = new PageInfo(page, origin.width(), origin.height());
-        LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmap, reader.getRenderer());
+        this.pageInfo = LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmap, reader.getRenderer());
+    }
+
+    public PageInfo getPageInfo() {
+        return pageInfo;
     }
 }

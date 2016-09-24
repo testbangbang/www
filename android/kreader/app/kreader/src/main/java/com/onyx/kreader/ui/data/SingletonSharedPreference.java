@@ -213,6 +213,14 @@ public class SingletonSharedPreference {
         return getIntByStringID(context, R.string.quick_view_grid_type, defaultValue);
     }
 
+    public static void setDialogTableOfContentTab(Context context, int value){
+        setIntValue(context, R.string.dialog_table_of_content_tab, value);
+    }
+
+    public static int getDialogTableOfContentTab(Context context, int defaultValue){
+        return getIntByStringID(context, R.string.dialog_table_of_content_tab, defaultValue);
+    }
+
     public static float getBaseLineWidth(Context context) {
         float defaultValue = 1.0f;
         String value = sPreferences.getString(context.getString( R.string.settings_scribble_base_width_key), String.valueOf(defaultValue));

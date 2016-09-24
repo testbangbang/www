@@ -272,6 +272,9 @@ public class ReaderNoteDocument {
         return createPage(pageName, subPageIndex);
     }
 
+    public final List<String> getPageList() {
+        return pageIndex.nameList();
+    }
 
 
 }
