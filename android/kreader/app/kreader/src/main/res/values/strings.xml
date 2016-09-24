@@ -68,6 +68,7 @@
     <string name="toc">TOC</string>
     <string name="bookmark">Bookmark</string>
     <string name="annotation">Annotation</string>
+    <string name="scribble">Scribble</string>
     <string name="navigation_mode">Navigation Mode</string>
     <string name="action_return">Return</string>
     <string name="delete">Delete</string>
@@ -99,6 +100,7 @@
     <string name="no_directories">No directories</string>
     <string name="no_bookmarks">The current document no bookmarks</string>
     <string name="no_annotation">The current document no annotations</string>
+    <string name="no_scribble">The current document no scribbles</string>
 
     <!-- Strings related to Settings -->
     <string name="title_activity_settings">Settings</string>
@@ -221,6 +223,7 @@
 
     <string name="tts_speech_rate_key" translatable="false">tts_speech_rate_key</string>
     <string name="quick_view_grid_type" translatable="false">quick_view_grid_type</string>
+    <string name="dialog_table_of_content_tab" translatable="false">dialog_table_of_content_tab</string>
     <string name="tts_play_failed" translatable="false">TTS failed!</string>
 
     <string name="settings_highlight_style_highlight">Highlight</string>
