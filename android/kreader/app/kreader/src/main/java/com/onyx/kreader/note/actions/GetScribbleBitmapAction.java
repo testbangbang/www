@@ -9,11 +9,9 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.kreader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
-import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.ArrayList;
@@ -22,9 +20,13 @@ import java.util.List;
 /**
  * Created by ming on 16/9/23.
  */
-public class GetScribbleBitmapAction extends BaseAction{
+public class GetScribbleBitmapAction{
 
-    private String page;
+    public interface Callback{
+        void onNext(String page, Bitmap bitmap);
+    }
+
+    private List<String> requestPages;
     private int width;
     private int height;
 
@@ -32,17 +34,35 @@ public class GetScribbleBitmapAction extends BaseAction{
     private ReaderBitmapImpl contentBitmap;
     private Rect size;
 
-    public GetScribbleBitmapAction(String page, int width, int height) {
-        this.page = page;
+    public GetScribbleBitmapAction(List<String> page, int width, int height) {
+        this.requestPages = page;
         this.width = width;
         this.height = height;
         size = new Rect(0, 0, width, height);
     }
 
-    @Override
-    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+    public void execute(final ReaderDataHolder readerDataHolder, final Callback callback) {
+        requestPreviewBySequence(readerDataHolder,callback);
+    }
+
+    private void drawScribbleBitmap(Bitmap originBitmap){
+        Canvas canvas = new Canvas(originBitmap);
+        Paint myPainter = new Paint();
+        canvas.drawBitmap(scribbleBitmap, 0, 0, myPainter);
+    }
+
+    public ReaderBitmapImpl getContentBitmap() {
+        return contentBitmap;
+    }
+
+    private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final Callback callback) {
+        if (requestPages.size() <= 0){
+            return;
+        }
+
+        final String currentPage = requestPages.remove(0);
         contentBitmap = ReaderBitmapImpl.create(width, height, Bitmap.Config.ARGB_8888);
-        final RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(page, contentBitmap);
+        final RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(currentPage, contentBitmap);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
 
             @Override
@@ -61,20 +81,11 @@ public class GetScribbleBitmapAction extends BaseAction{
                     public void done(BaseRequest request, Throwable e) {
                         scribbleBitmap = noteManager.getViewBitmap();
                         drawScribbleBitmap(contentBitmap.getBitmap());
-                        callback.done(request, e);
+                        callback.onNext(currentPage, contentBitmap.getBitmap());
+                        requestPreviewBySequence(readerDataHolder, callback);
                     }
                 });
             }
         });
-    }
-
-    private void drawScribbleBitmap(Bitmap originBitmap){
-        Canvas canvas = new Canvas(originBitmap);
-        Paint myPainter = new Paint();
-        canvas.drawBitmap(scribbleBitmap, 0, 0, myPainter);
-    }
-
-    public ReaderBitmapImpl getContentBitmap() {
-        return contentBitmap;
     }
 }
