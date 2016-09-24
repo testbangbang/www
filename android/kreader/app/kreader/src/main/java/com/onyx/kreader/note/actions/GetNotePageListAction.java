@@ -7,7 +7,6 @@ import com.onyx.kreader.note.request.GetNotePageListRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ import java.util.List;
  */
 public class GetNotePageListAction extends BaseAction{
 
-    List<String> scribblePages = new ArrayList<>();
+    List<String> scribblePages;
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {

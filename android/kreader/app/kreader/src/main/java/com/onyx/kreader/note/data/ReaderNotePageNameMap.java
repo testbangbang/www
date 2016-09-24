@@ -81,10 +81,6 @@ public class ReaderNotePageNameMap {
     }
 
     public List<String> nameList() {
-        List<String> nameList = new ArrayList<>();
-        for (String key : data.keySet()) {
-            nameList.add(key);
-        }
-        return nameList;
+        return new ArrayList<>(data.keySet());
     }
 }

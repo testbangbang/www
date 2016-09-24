@@ -2,7 +2,6 @@ package com.onyx.kreader.note.request;
 
 import com.onyx.kreader.note.NoteManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +9,7 @@ import java.util.List;
  */
 public class GetNotePageListRequest extends ReaderBaseNoteRequest{
 
-    private List<String> pageList = new ArrayList<>();
+    private List<String> pageList;
 
     @Override
     public void execute(NoteManager noteManager) throws Exception {
