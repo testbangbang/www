@@ -1,5 +1,6 @@
 package com.onyx.kreader.note;
 
+import android.graphics.Matrix;
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -203,5 +204,37 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
                 }
             }
         }
+    }
+
+    public void testMatrixEqual() {
+        Matrix src = new Matrix();
+        int scaleX = TestUtils.randInt(10, 300);
+        int scaleY = TestUtils.randInt(10, 300);
+        int offsetX = TestUtils.randInt(10, 3000);
+        int offsetY = TestUtils.randInt(10, 3000);
+        src.postScale(scaleX, scaleY);
+        src.postTranslate(offsetX, offsetY);
+
+        Matrix dst = new Matrix();
+        dst.postScale(scaleX, scaleY);
+        dst.postTranslate(offsetX, offsetY);
+        assertTrue(src.equals(dst));
+
+        dst = new Matrix();
+        dst.postScale(scaleX + 1, scaleY);
+        dst.postTranslate(offsetX, offsetY);
+        assertFalse(src.equals(dst));
+
+        dst = new Matrix();
+        dst.postScale(scaleX, scaleY);
+        dst.postTranslate(offsetX + 1, offsetY);
+        assertFalse(src.equals(dst));
+
+        dst = new Matrix(src);
+        assertFalse(dst == src);
+        assertTrue(src.equals(dst));
+
+        dst.set(src);
+        assertTrue(src.equals(dst));
     }
 }
