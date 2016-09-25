@@ -11,6 +11,7 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -329,10 +330,24 @@ public class NoteManager {
         return noteDataInfo;
     }
 
-
     public void resetNoteDataInfo() {
         noteDataInfo = null;
     }
 
+    public Shape ensureNewShape(final TouchPoint normalizedPoint, final TouchPoint screen) {
+        final PageInfo pageInfo = hitTest(normalizedPoint.x, normalizedPoint.y);
+        if (pageInfo == null) {
+            return null;
+        }
+        Shape shape = getCurrentShape();
+        if (shape == null) {
+            shape = createNewShape(pageInfo);
+            onDownMessage(shape);
+            shape.onDown(normalizedPoint, screen);
+            return shape;
+        }
+        shape.onMove(normalizedPoint, screen);
+        return shape;
+    }
 
 }

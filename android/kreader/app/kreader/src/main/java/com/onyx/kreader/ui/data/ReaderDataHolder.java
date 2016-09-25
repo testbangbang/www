@@ -48,7 +48,6 @@ public class ReaderDataHolder {
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
 
-
     private HandlerManager handlerManager;
     private ReaderSelectionManager selectionManager;
     private ReaderTtsManager ttsManager;

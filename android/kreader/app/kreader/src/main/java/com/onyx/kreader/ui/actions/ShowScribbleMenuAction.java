@@ -16,6 +16,7 @@ import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
+import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -53,6 +54,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         readerDataHolder.getEventBus().register(this);
         show(readerDataHolder);
+        readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create());
     }
 
     public void show(ReaderDataHolder readerDataHolder) {

@@ -421,7 +421,8 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(), getScribbleActionCallback(readerDataHolder));
+        final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
+                getScribbleActionCallback(readerDataHolder));
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -510,8 +511,10 @@ public class ShowReaderMenuAction extends BaseAction {
             case MAXIMIZE:
                 break;
             case PREV_PAGE:
+                prevScreen(readerDataHolder);
                 break;
             case NEXT_PAGE:
+                nextScreen(readerDataHolder);
                 break;
             case UNDO:
                 undo(readerDataHolder);
@@ -556,4 +559,19 @@ public class ShowReaderMenuAction extends BaseAction {
         flushNoteAction.execute(readerDataHolder, null);
     }
 
+    private void nextScreen(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, false, false));
+        actionChain.addAction(new NextScreenAction());
+        actionChain.execute(readerDataHolder, null);
+    }
+
+    private void prevScreen(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, false, false));
+        actionChain.addAction(new PreviousScreenAction());
+        actionChain.execute(readerDataHolder, null);
+    }
 }

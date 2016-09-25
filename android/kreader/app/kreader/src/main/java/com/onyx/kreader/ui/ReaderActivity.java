@@ -405,6 +405,11 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
+    public void onScribbleMenuChanged(final ScribbleMenuChangedEvent event) {
+        getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView);
+    }
+
+    @Subscribe
     public void onBeforeDocumentOpen(final BeforeDocumentOpenEvent event) {
         EpdController.enablePost(surfaceView, 1);
         resetMenus();
