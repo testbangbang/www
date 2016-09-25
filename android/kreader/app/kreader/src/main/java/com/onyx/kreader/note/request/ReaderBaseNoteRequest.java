@@ -1,6 +1,8 @@
 package com.onyx.kreader.note.request;
 
 import android.graphics.*;
+import android.util.Log;
+
 import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -9,6 +11,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.note.NoteManager;
@@ -150,6 +153,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     if (isRender()) {
                         synchronized (parent) {
                             parent.copyBitmap();
+                            parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
                         }
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
@@ -175,7 +179,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public boolean renderVisiblePages(final NoteManager parent) {
         synchronized (parent) {
-            boolean contentRendered = false;
+            boolean rendered = false;
             Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
             bitmap.eraseColor(Color.TRANSPARENT);
             Canvas canvas = new Canvas(bitmap);
@@ -192,12 +196,13 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getName(), 0);
                 if (notePage != null) {
                     notePage.render(renderContext, null);
-                    contentRendered = true;
+                    rendered = true;
                 }
             }
+            Log.e("painter", "rendered: " + rendered);
             renderContext.flushRenderingBuffer(bitmap);
-            contentRendered |= drawRandomTestPath(canvas, paint);
-            return contentRendered;
+            BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/scribble.png");
+            return rendered;
         }
     }
 

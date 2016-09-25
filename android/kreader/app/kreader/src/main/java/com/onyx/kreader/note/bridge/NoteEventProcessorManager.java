@@ -1,12 +1,14 @@
 package com.onyx.kreader.note.bridge;
 
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.kreader.note.NoteManager;
+import com.onyx.kreader.utils.DeviceUtils;
 
 /**
  * Created by zhuzeng on 9/18/16.
@@ -18,6 +20,8 @@ public class NoteEventProcessorManager {
     private TouchEventProcessor touchEventProcessor;
     private RawEventProcessor rawEventProcessor;
     private NoteManager noteManager;
+    private boolean useRawInput = false;
+    private boolean singleTouch = false;
 
     public NoteEventProcessorManager(final NoteManager p) {
         noteManager = p;
@@ -50,12 +54,27 @@ public class NoteEventProcessorManager {
     }
 
     public void update(final View targetView, final DeviceConfig noteConfig) {
+        detectTouchType();
         view = targetView;
+        final Rect rect = new Rect();
+        view.getLocalVisibleRect(rect);
         OnyxMatrix viewMatrix = new OnyxMatrix();
         viewMatrix.postRotate(noteConfig.getViewPostOrientation());
         viewMatrix.postTranslate(noteConfig.getViewPostTx(), noteConfig.getViewPostTy());
-        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(noteConfig));
-        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig), getScreenToViewMatrix(noteConfig));
+        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(noteConfig), rect);
+        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig), getScreenToViewMatrix(noteConfig), rect);
+    }
+
+    private void detectTouchType() {
+        useRawInput = getNoteManager().getNoteConfig().useRawInput();
+        singleTouch = DeviceUtils.detectTouchDeviceCount() <= 1;
+    }
+
+    private boolean useNormalTouchEvent() {
+        if (useRawInput) {
+            return false;
+        }
+        return singleTouch;
     }
 
     private OnyxMatrix getViewToEpdMatrix(final DeviceConfig noteConfig) {
@@ -116,7 +135,7 @@ public class NoteEventProcessorManager {
     }
 
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        if (!getNoteManager().isDFBForCurrentShape()) {
+        if (!getNoteManager().isDFBForCurrentShape() || useNormalTouchEvent()) {
             return onTouchEventDrawing(motionEvent);
         }
         return false;

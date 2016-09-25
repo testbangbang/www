@@ -11,7 +11,7 @@ public class ReaderNoteDataInfo {
     private boolean canUndoShape;
     private boolean canRedoShape;
     private boolean inUserErasing;
-    private boolean contentRendered;
+    private volatile boolean contentRendered;
     private String documentUniqueId;
     private NoteDrawingArgs drawingArgs = new NoteDrawingArgs();
 

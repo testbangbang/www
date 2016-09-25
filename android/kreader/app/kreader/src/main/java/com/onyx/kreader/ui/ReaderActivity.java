@@ -449,8 +449,7 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().getReaderUserDataInfo(),
                 getReaderDataHolder().getReaderViewInfo(),
                 getReaderDataHolder().getSelectionManager(),
-                getReaderDataHolder().getNoteManager(),
-                getReaderDataHolder().getNoteDataInfo());
+                getReaderDataHolder().getNoteManager());
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -466,7 +465,6 @@ public class ReaderActivity extends ActionBarActivity {
                 if (e != null || request.isAbort()) {
                     return;
                 }
-                getReaderDataHolder().saveShapeDataInfo(renderRequest);
                 onRequestFinished(RequestFinishEvent.shapeReadyEvent());
             }
         });

@@ -4,6 +4,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.request.FlushShapeListRequest;
@@ -36,7 +37,7 @@ public class FlushNoteAction extends BaseAction {
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final NoteManager noteManager = readerDataHolder.getNoteManager();
         final List<Shape> stash = noteManager.detachShapeStash();
-        if (!readerDataHolder.isDocumentOpened() || stash.isEmpty()) {
+        if (!readerDataHolder.isDocumentOpened() || CollectionUtils.isNullOrEmpty(stash)) {
             BaseCallback.invoke(callback, null, null);
             return;
         }

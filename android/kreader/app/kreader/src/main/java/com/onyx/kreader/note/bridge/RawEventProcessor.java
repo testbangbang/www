@@ -2,7 +2,6 @@ package com.onyx.kreader.note.bridge;
 
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -10,6 +9,7 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.note.NoteManager;
+import com.onyx.kreader.utils.DeviceUtils;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -47,7 +47,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
     private volatile boolean reportData = false;
-    private String systemPath = "/dev/input/event1";
+    private String inputDevice = "/dev/input/event1";
     private volatile Matrix inputToScreenMatrix;
     private volatile Matrix screenToViewMatrix;
     private volatile float[] srcPoint = new float[2];
@@ -55,15 +55,15 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile TouchPointList touchPointList;
     private Handler handler = new Handler(Looper.getMainLooper());
     private ExecutorService singleThreadPool = null;
-    private volatile RectF limitRect = new RectF();
 
     public RawEventProcessor(final NoteManager p) {
         super(p);
     }
 
-    public void update(final Matrix screenMatrix, final Matrix viewMatrix) {
+    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect) {
         this.inputToScreenMatrix = screenMatrix;
         this.screenToViewMatrix = viewMatrix;
+        setLimitRect(rect);
     }
 
     public void start() {
@@ -86,10 +86,6 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         stop = true;
         clearInternalState();
         shutdown();
-    }
-
-    public void setLimitRect(final Rect rect) {
-        limitRect.set(rect);
     }
 
     private void clearInternalState() {
@@ -124,7 +120,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void readLoop() throws Exception {
-        DataInputStream in = new DataInputStream(new FileInputStream(systemPath));
+        DataInputStream in = new DataInputStream(new FileInputStream(inputDevice));
         byte[] data = new byte[16];
         while (!stop) {
             in.readFully(data);
@@ -134,15 +130,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void detectInputDevicePath() {
-        final int DEVICE_MAX = 3;
-        String last = systemPath;
-        for(int i = 1; i < DEVICE_MAX; ++i) {
-            String path = String.format("/dev/input/event%d", i);
-            if (FileUtils.fileExist(path)) {
-                last = path;
-            }
-        }
-        systemPath = last;
+        inputDevice = DeviceUtils.detectInputDevicePath();
     }
 
     private void processInputEvent(long ts, int type, int code, int value) {
@@ -228,7 +216,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             touchPointList = new TouchPointList(600);
         }
 
-        if (!limitRect.contains(touchPoint.x, touchPoint.y)) {
+        if (!inLimitRect(touchPoint.x, touchPoint.y)) {
             return false;
         }
 
@@ -288,7 +276,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
         mapScreenPointToView(touchPoint);
-        if (hitTest(touchPoint.x, touchPoint.y) == null) {
+        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y)) {
             return;
         }
         touchPoint.normalize(getLastPageInfo());
@@ -301,7 +289,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
         mapScreenPointToView(touchPoint);
-        if (!inLastPage(touchPoint.x, touchPoint.y)) {
+        if (!isInValidRegion(touchPoint.x, touchPoint.y)) {
             return;
         }
         final Shape shape = getNoteManager().getCurrentShape();
@@ -316,7 +304,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
         mapScreenPointToView(touchPoint);
-        if (!inLastPage(touchPoint.x, touchPoint.y)) {
+        if (!isInValidRegion(touchPoint.x, touchPoint.y)) {
             return;
         }
         final Shape shape = getNoteManager().getCurrentShape();

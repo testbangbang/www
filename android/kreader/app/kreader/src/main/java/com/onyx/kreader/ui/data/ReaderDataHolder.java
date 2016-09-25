@@ -47,7 +47,7 @@ public class ReaderDataHolder {
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
-    private ReaderNoteDataInfo noteDataInfo;
+
 
     private HandlerManager handlerManager;
     private ReaderSelectionManager selectionManager;
@@ -88,18 +88,6 @@ public class ReaderDataHolder {
         readerUserDataInfo = request.getReaderUserDataInfo();
     }
 
-    public void saveShapeDataInfo(final ReaderBaseNoteRequest request) {
-        noteDataInfo = request.getShapeDataInfo();
-    }
-
-    public boolean hasShapes() {
-        return noteDataInfo != null;
-    }
-
-    public void resetShapeData() {
-        noteDataInfo = null;
-    }
-
     public final ReaderViewInfo getReaderViewInfo() {
         return readerViewInfo;
     }
@@ -110,10 +98,6 @@ public class ReaderDataHolder {
 
     public final ReaderUserDataInfo getReaderUserDataInfo() {
         return readerUserDataInfo;
-    }
-
-    public final ReaderNoteDataInfo getNoteDataInfo() {
-        return noteDataInfo;
     }
 
     public void setPreRenderNext(boolean preRenderNext) {
@@ -286,7 +270,6 @@ public class ReaderDataHolder {
     }
 
     private void beforeSubmitRequest() {
-        resetShapeData();
     }
 
     private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {

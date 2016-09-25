@@ -1,5 +1,7 @@
 package com.onyx.kreader.note.bridge;
 
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -31,6 +33,7 @@ public class NoteEventProcessorBase {
 
     private NoteManager noteManager;
     private PageInfo lastPageInfo;
+    private volatile RectF limitRect = new RectF();
 
     public NoteEventProcessorBase(final NoteManager p) {
         noteManager = p;
@@ -62,5 +65,17 @@ public class NoteEventProcessorBase {
 
     public void resetLastPageInfo() {
         lastPageInfo = null;
+    }
+
+    public void setLimitRect(final Rect rect) {
+        limitRect.set(rect);
+    }
+
+    public boolean inLimitRect(final float x, final float y) {
+        return limitRect.contains(x, y);
+    }
+
+    public boolean isInValidRegion(final float x, final float y) {
+        return inLastPage(x, y) && inLimitRect(x, y);
     }
 }

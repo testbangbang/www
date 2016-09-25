@@ -24,7 +24,6 @@ import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.NewShapeEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 
 import java.util.ArrayList;
@@ -50,6 +49,7 @@ public class NoteManager {
     private DeviceConfig noteConfig;
     private List<PageInfo> visiblePages = new ArrayList<>();
     private ReaderDataHolder parent;
+    private ReaderNoteDataInfo noteDataInfo;
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -90,6 +90,10 @@ public class NoteManager {
             noteEventProcessorManager = new NoteEventProcessorManager(this);
         }
         return noteEventProcessorManager;
+    }
+
+    public final DeviceConfig getNoteConfig() {
+        return noteConfig;
     }
 
     public void updateShapeDataInfo(final Context context, final ReaderNoteDataInfo shapeDataInfo) {
@@ -197,6 +201,8 @@ public class NoteManager {
         if (rect != null) {
             request.setViewportSize(rect);
         }
+
+        resetNoteDataInfo();
     }
 
     private final Runnable generateRunnable(final ReaderBaseNoteRequest request) {
@@ -293,7 +299,12 @@ public class NoteManager {
     public final List<Shape> detachShapeStash() {
         final List<Shape> list = shapeStash;
         shapeStash = new ArrayList<>();
+        currentShape = null;
         return list;
+    }
+
+    public final List<Shape> getShapeStash() {
+        return shapeStash;
     }
 
     public void undo(final Context context, final String pageName) {
@@ -310,6 +321,21 @@ public class NoteManager {
         }
     }
 
+    public void saveNoteDataInfo(final ReaderBaseNoteRequest request) {
+        noteDataInfo = request.getShapeDataInfo();
+    }
+
+    public final ReaderNoteDataInfo getNoteDataInfo() {
+        return noteDataInfo;
+    }
+
+    public boolean hasShapes() {
+        return noteDataInfo != null;
+    }
+
+    public void resetNoteDataInfo() {
+        noteDataInfo = null;
+    }
 
 
 }

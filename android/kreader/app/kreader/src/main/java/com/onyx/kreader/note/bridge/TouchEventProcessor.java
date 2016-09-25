@@ -1,5 +1,6 @@
 package com.onyx.kreader.note.bridge;
 
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -14,14 +15,14 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
 
-
     public TouchEventProcessor(final NoteManager p) {
         super(p);
     }
 
-    public void update(final View view, final OnyxMatrix matrix) {
+    public void update(final View view, final OnyxMatrix matrix, final Rect rect) {
         view.getLocationOnScreen(viewPosition);
         viewToEpdMatrix = matrix;
+        setLimitRect(rect);
     }
 
     public boolean onTouchEventDrawing(final MotionEvent motionEvent) {

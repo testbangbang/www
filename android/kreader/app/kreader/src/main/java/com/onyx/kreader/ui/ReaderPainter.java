@@ -2,12 +2,15 @@ package com.onyx.kreader.ui;
 
 import android.content.Context;
 import android.graphics.*;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
@@ -30,6 +33,7 @@ import java.util.List;
 public class ReaderPainter {
 
     private static final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
+    private static final String TAG = ReaderPainter.class.getCanonicalName();
     private static boolean debugTestTouchPointCircle = false;
     private static boolean debugTestOffsetTouchPointCircle = false;
     private static boolean debugPageInfo = false;
@@ -45,8 +49,7 @@ public class ReaderPainter {
                          final ReaderUserDataInfo userDataInfo,
                          final ReaderViewInfo viewInfo,
                          ReaderSelectionManager selectionManager,
-                         NoteManager noteManager,
-                         ReaderNoteDataInfo shapeDataInfo) {
+                         NoteManager noteManager) {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
@@ -55,7 +58,7 @@ public class ReaderPainter {
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
-        drawShapes(context, canvas, paint, noteManager, shapeDataInfo);
+        drawShapes(context, canvas, paint, noteManager);
         drawStashShapes(context, canvas, paint, noteManager, viewInfo);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
@@ -201,12 +204,12 @@ public class ReaderPainter {
     private void drawShapes(final Context context,
                             final Canvas canvas,
                             final Paint paint,
-                            final NoteManager noteManager,
-                            final ReaderNoteDataInfo shapeDataInfo) {
+                            final NoteManager noteManager) {
         if (!SingletonSharedPreference.isShowNote(context)) {
             return;
         }
-        if (shapeDataInfo == null || !isShapeBitmapReady(noteManager, shapeDataInfo) || !shapeDataInfo.isContentRendered()) {
+        final ReaderNoteDataInfo noteDataInfo = noteManager.getNoteDataInfo();
+        if (noteDataInfo == null || !isShapeBitmapReady(noteManager, noteDataInfo)) {
             return;
         }
         final Bitmap bitmap = noteManager.getViewBitmap();
@@ -223,7 +226,7 @@ public class ReaderPainter {
         if (!SingletonSharedPreference.isShowNote(context)) {
             return;
         }
-        if (noteManager.isDFBForCurrentShape() || noteManager.getCurrentShape() == null) {
+        if (noteManager.isDFBForCurrentShape()) {
             return;
         }
         final PageInfo pageInfo = viewInfo.getFirstVisiblePage();
@@ -232,7 +235,14 @@ public class ReaderPainter {
         renderMatrix.reset();
         renderMatrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
         renderMatrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
-        noteManager.getCurrentShape().render(renderContext);
+        if (!CollectionUtils.isNullOrEmpty(noteManager.getShapeStash())) {
+            for (Shape shape : noteManager.getShapeStash()) {
+                shape.render(renderContext);
+            }
+        }
+        if (noteManager.getCurrentShape() != null) {
+            noteManager.getCurrentShape().render(renderContext);
+        }
     }
 
 
