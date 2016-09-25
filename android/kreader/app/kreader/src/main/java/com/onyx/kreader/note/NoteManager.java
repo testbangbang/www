@@ -329,9 +329,6 @@ public class NoteManager {
         return noteDataInfo;
     }
 
-    public boolean hasShapes() {
-        return noteDataInfo != null;
-    }
 
     public void resetNoteDataInfo() {
         noteDataInfo = null;

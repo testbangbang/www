@@ -199,9 +199,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     rendered = true;
                 }
             }
-            Log.e("painter", "rendered: " + rendered);
             renderContext.flushRenderingBuffer(bitmap);
-            BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/scribble.png");
             return rendered;
         }
     }

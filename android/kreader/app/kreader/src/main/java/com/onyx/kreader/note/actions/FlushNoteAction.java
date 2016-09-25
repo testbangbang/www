@@ -37,7 +37,7 @@ public class FlushNoteAction extends BaseAction {
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final NoteManager noteManager = readerDataHolder.getNoteManager();
         final List<Shape> stash = noteManager.detachShapeStash();
-        if (!readerDataHolder.isDocumentOpened() || CollectionUtils.isNullOrEmpty(stash)) {
+        if (!readerDataHolder.isDocumentOpened() || CollectionUtils.isNullOrEmpty(stash) && !save) {
             BaseCallback.invoke(callback, null, null);
             return;
         }

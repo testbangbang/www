@@ -270,6 +270,7 @@ public class ReaderDataHolder {
     }
 
     private void beforeSubmitRequest() {
+        getNoteManager().resetNoteDataInfo();
     }
 
     private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
