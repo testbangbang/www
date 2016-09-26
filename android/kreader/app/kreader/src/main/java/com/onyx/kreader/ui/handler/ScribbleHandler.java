@@ -24,6 +24,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     public void onActivate(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getNoteManager().setVisiblePages(readerDataHolder.getVisiblePages());
         readerDataHolder.getNoteManager().startEventProcessor();
     }
 
