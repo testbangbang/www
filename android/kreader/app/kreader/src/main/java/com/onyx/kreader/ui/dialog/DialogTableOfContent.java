@@ -80,6 +80,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private SparseArray<Bitmap> scribblePreviewMap = new SparseArray<>();
     private PageRecyclerView scribblePageView;
     private GetScribbleBitmapAction getScribbleBitmapAction;
+    List<String> requestPages;
 
     public enum DirectoryTab { TOC , Bookmark, Annotation, Scribble}
 
@@ -598,12 +599,12 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             return;
         }
 
-        List<String> requestPages = new ArrayList<>();
+        clearRequestPages();
+        requestPages = new ArrayList<>();
         for (int i = pageBegin; i <= pageEnd; i++) {
             requestPages.add(String.valueOf(scribblePreviewMap.keyAt(i)));
         }
 
-        abortAction();
         getScribbleBitmapAction  = new GetScribbleBitmapAction(requestPages, 300, 400);
         getScribbleBitmapAction.execute(readerDataHolder, new GetScribbleBitmapAction.Callback() {
             @Override
@@ -615,9 +616,9 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         });
     }
 
-    private void abortAction(){
-        if (getScribbleBitmapAction != null){
-            getScribbleBitmapAction.setAborted(true);
+    private void clearRequestPages(){
+        if (requestPages != null){
+            requestPages.clear();
         }
     }
 
@@ -726,7 +727,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
     @Override
     public void dismiss() {
-        abortAction();
+        clearRequestPages();
         super.dismiss();
     }
 

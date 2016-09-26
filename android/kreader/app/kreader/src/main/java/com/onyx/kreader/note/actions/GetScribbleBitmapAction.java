@@ -33,7 +33,6 @@ public class GetScribbleBitmapAction{
     private Bitmap scribbleBitmap;
     private ReaderBitmapImpl contentBitmap;
     private Rect size;
-    private boolean isAborted = false;
 
     public GetScribbleBitmapAction(List<String> page, int width, int height) {
         this.requestPages = page;
@@ -57,7 +56,7 @@ public class GetScribbleBitmapAction{
     }
 
     private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final Callback callback) {
-        if (isAborted || requestPages.size() <= 0){
+        if (requestPages.size() <= 0){
             return;
         }
 
@@ -88,9 +87,5 @@ public class GetScribbleBitmapAction{
                 });
             }
         });
-    }
-
-    public void setAborted(boolean aborted) {
-        isAborted = aborted;
     }
 }
