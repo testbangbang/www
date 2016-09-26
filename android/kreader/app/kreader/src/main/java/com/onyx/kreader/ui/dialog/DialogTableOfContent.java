@@ -38,7 +38,6 @@ import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.host.request.DeleteAnnotationRequest;
 import com.onyx.kreader.host.request.DeleteBookmarkRequest;
-import com.onyx.kreader.note.actions.GetNotePageListAction;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
@@ -49,9 +48,7 @@ import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by joy on 7/6/16.
@@ -78,7 +75,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private ReaderDocumentTableOfContent toc;
     private DirectoryTab currentTab;
     private List<PageRecyclerView> viewList = new ArrayList<>();
-    private Map<DirectoryTab,Integer> recordPosition = new Hashtable<>();
     private List<Bookmark> bookmarkList = new ArrayList<>();
     private List<Annotation> annotationList = new ArrayList<>();
     private SparseArray<Bitmap> scribblePreviewMap = new SparseArray<>();
@@ -232,7 +228,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     public DialogTableOfContent(final ReaderDataHolder readerDataHolder, DirectoryTab tab,
                                 final ReaderDocumentTableOfContent toc,
                                 final List<Bookmark> bookmarks,
-                                final List<Annotation> annotations) {
+                                final List<Annotation> annotations,
+                                final List<String> scribblePages) {
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
         this.readerDataHolder = readerDataHolder;
         int position = SingletonSharedPreference.getDialogTableOfContentTab(getContext(), 0);
@@ -274,7 +271,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         viewList.add(initTocView(readerDataHolder,toc));
         viewList.add(initBookmarkView(readerDataHolder,bookmarks));
         viewList.add(initAnnotationsView(readerDataHolder,annotations));
-        viewList.add(initScribbleView(readerDataHolder));
+        viewList.add(initScribbleView(readerDataHolder, scribblePages));
         viewPager.setAdapter(new ViewPagerAdapter());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -406,7 +403,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private PageRecyclerView initTocView(final ReaderDataHolder readerDataHolder, final ReaderDocumentTableOfContent toc){
-        recordPosition.put(DirectoryTab.TOC,0);
         final int row = getPageSize(DirectoryTab.TOC);
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = buildTreeNodesFromToc(toc);
         TreeRecyclerView treeRecyclerView = new TreeRecyclerView(viewPager.getContext());
@@ -449,7 +445,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
     private PageRecyclerView initBookmarkView(final ReaderDataHolder readerDataHolder, final List<Bookmark> bookmarks) {
         bookmarkList = bookmarks;
-        recordPosition.put(DirectoryTab.Bookmark,0);
         final int row = getPageSize(DirectoryTab.Bookmark);
         PageRecyclerView view = new PageRecyclerView(viewPager.getContext());
         view.setDefaultPageKeyBinding();
@@ -497,7 +492,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
     private PageRecyclerView initAnnotationsView(final ReaderDataHolder readerDataHolder, final List<Annotation> annotations) {
         annotationList = annotations;
-        recordPosition.put(DirectoryTab.Annotation,0);
         final int row = getPageSize(DirectoryTab.Annotation);
         PageRecyclerView view = new PageRecyclerView(viewPager.getContext());
         view.setDefaultPageKeyBinding();
@@ -537,8 +531,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         return view;
     }
 
-    private PageRecyclerView initScribbleView(final ReaderDataHolder readerDataHolder){
-        recordPosition.put(DirectoryTab.Scribble,0);
+    private PageRecyclerView initScribbleView(final ReaderDataHolder readerDataHolder, List<String> scribblePages){
+        for (String  page: scribblePages) {
+            scribblePreviewMap.put(Integer.valueOf(page), null);
+        }
         scribblePageView = new PageRecyclerView(viewPager.getContext());
         int padding = DimenUtils.dip2px(getContext(), 10);
         scribblePageView.setPadding(padding, padding, padding, padding);
@@ -586,19 +582,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             }
         });
 
-        final GetNotePageListAction noteDataAction = new GetNotePageListAction();
-        noteDataAction.execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                List<String> scribblePages = noteDataAction.getScribblePages();
-                for (String  page: scribblePages) {
-                    scribblePreviewMap.put(Integer.valueOf(page), null);
-                }
-                scribblePageView.setCurrentPage(0);
-                onPageChanged();
-            }
-        });
-
         scribblePageView.setOnPagingListener(this);
         return scribblePageView;
     }
@@ -609,6 +592,11 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         }
         int pageBegin = scribblePageView.getPaginator().getCurrentPageBegin();
         int pageEnd = scribblePageView.getPaginator().getCurrentPageEnd();
+
+        if (pageBegin < 0 || pageBegin > pageEnd){
+            return;
+        }
+
         List<String> requestPages = new ArrayList<>();
         for (int i = pageBegin; i <= pageEnd; i++) {
             requestPages.add(String.valueOf(scribblePreviewMap.keyAt(i)));
