@@ -5,6 +5,10 @@
 #include "onyx_context.h"
 #include "JNIUtils.h"
 
+#include "pdfwriter/onyx_pdf_writer.h"
+#include "pdfwriter/page_annotation.h"
+#include "pdfwriter/page_scribble.h"
+
 #include "fpdf_doc.h"
 
 #include "fpdfapi/fpdf_pageobj.h"
@@ -15,6 +19,7 @@
 static const char * selectionClassName = "com/onyx/kreader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/kreader/api/ReaderTextSplitter";
 static const char * sentenceClassName = "com/onyx/kreader/api/ReaderSentence";
+static const char * annotationClassName = "com/onyx/android/sdk/data/model/Annotation";
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
@@ -614,5 +619,134 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
         bookmark = FPDFBookmark_GetNextSibling(doc, bookmark);
     } while (bookmark != NULL);
 
+    return true;
+}
+
+bool convertToNativeRectF(JNIEnv *env, jobject rect, RectF *result) {
+    JNIUtils utils(env);
+    if (!utils.getObjectClass(rect)) {
+        return false;
+    }
+    jfieldID fid = env->GetFieldID(utils.getClazz(), "left", "F");
+    if (fid == NULL) {
+        return false;
+    }
+    float left = env->GetFloatField(rect, fid);
+    fid = env->GetFieldID(utils.getClazz(), "top", "F");
+    if (fid == NULL) {
+        return false;
+    }
+    float top = env->GetFloatField(rect, fid);
+    fid = env->GetFieldID(utils.getClazz(), "right", "F");
+    if (fid == NULL) {
+        return false;
+    }
+    float right = env->GetFloatField(rect, fid);
+    fid = env->GetFieldID(utils.getClazz(), "bottom", "F");
+    if (fid == NULL) {
+        return false;
+    }
+    float bottom = env->GetFloatField(rect, fid);
+    result->set(left, top, right, bottom);
+    return true;
+}
+
+bool convertToPageAnnotation(JNIEnv *env, jobject annotation, PageAnnotation *result) {
+    JNIUtils utils(env);
+    if (!utils.findMethod(annotationClassName, "getPageNumber", "()I")) {
+        return false;
+    }
+    result->page = env->CallIntMethod(annotation, utils.getMethodId());
+
+    if (!utils.findMethod(annotationClassName, "getNote", "()Ljava/lang/String;")) {
+        return false;
+    }
+    jstring jstr = static_cast<jstring>(env->CallObjectMethod(annotation, utils.getMethodId()));
+    if (!jstr) {
+        LOGE("get annotation note failed");
+        return false;
+    }
+    result->note = JNIString(env, jstr).getLocalString();
+
+    if (!utils.findMethod(annotationClassName, "getRectangles", "()Ljava/util/List;")) {
+        return false;
+    }
+    jobject rectList = env->CallObjectMethod(annotation, utils.getMethodId());
+    if (!rectList) {
+        LOGE("get rect list of annotation failed");
+        return false;
+    }
+    if (!utils.findMethod("java/util/List", "size", "()I")) {
+        return false;
+    }
+    int size = env->CallIntMethod(rectList, utils.getMethodId());
+    if (size <= 0) {
+        return true;
+    }
+    if (!utils.findMethod("java/util/List", "get", "(I)Ljava/lang/Object;")) {
+        return false;
+    }
+    for (int i = 0; i < size; i++) {
+        jobject rectObj = env->CallObjectMethod(rectList, utils.getMethodId(), i);
+        RectF rect;
+        if (!convertToNativeRectF(env, rectObj, &rect)) {
+            LOGE("convertToNativeRectF failed");
+            return false;
+        }
+        result->rects.push_back(rect);
+    }
+
+    return true;
+}
+
+bool convertToNativeAnnotations(JNIEnv *env, jobject annotationList, std::vector<PageAnnotation> *result) {
+    JNIUtils utils(env);
+    if (!utils.findMethod("java/util/List", "size", "()I")) {
+        return false;
+    }
+    int size = env->CallIntMethod(annotationList, utils.getMethodId());
+    if (size <= 0) {
+        return true;
+    }
+    if (!utils.findMethod("java/util/List", "get", "(I)Ljava/lang/Object;")) {
+        return false;
+    }
+
+    for (int i = 0; i < size; i++) {
+        jobject annot = env->CallObjectMethod(annotationList, utils.getMethodId(), i);
+        PageAnnotation pageAnnot;
+        if (!convertToPageAnnotation(env, annot, &pageAnnot)) {
+            LOGE("convertToPageAnnotation failed");
+            return false;
+        }
+        result->push_back(pageAnnot);
+    }
+
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeExportNotes
+  (JNIEnv *env, jobject thiz, jint id, jstring sourceDocPath, jstring targetDocPath, jobject annotationList, jobject scribbles) {
+    std::vector<PageAnnotation> pageAnnotations;
+    if (!convertToNativeAnnotations(env, annotationList, &pageAnnotations)) {
+        LOGE("convertToNativeAnnotations failed");
+        return false;
+    }
+    JNIString src(env, sourceDocPath);
+    JNIString dst(env, targetDocPath);
+    OnyxPdfWriter writer;
+    if (!writer.openPDF(src.getLocalString())) {
+        LOGE("open pdf for writing failed");
+        return false;
+    }
+    if (!writer.writeAnnotations(pageAnnotations)) {
+        LOGE("write annotations failed");
+        return false;
+    }
+    if (!writer.saveAs(dst.getLocalString())) {
+        LOGE("save exported document failed");
+        return false;
+    }
+    writer.close();
     return true;
 }
