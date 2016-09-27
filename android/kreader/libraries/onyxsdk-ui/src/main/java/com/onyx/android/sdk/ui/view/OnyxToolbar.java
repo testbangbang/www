@@ -29,6 +29,10 @@ public class OnyxToolbar extends ViewGroup {
         OnyxToolbar OnClickListener(View view);
     }
 
+    public interface OnSizeChangeListener{
+        void onSizeChanged(int w, int h, int oldw, int oldh);
+    }
+
     private OnyxToolbar currentExpandedToolbar;
     private View currentExpandedView;
     private View dividerView;
@@ -40,6 +44,7 @@ public class OnyxToolbar extends ViewGroup {
     private Direction direction = Direction.Bottom;
     private FillStyle fillStyle = FillStyle.WrapContent;
     private boolean clickedDismissToolbar = false;
+    private OnSizeChangeListener onSizeChangeListener;
 
     private int paddingLeft;
     private int paddingRight;
@@ -414,6 +419,18 @@ public class OnyxToolbar extends ViewGroup {
     @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        if (onSizeChangeListener != null){
+            onSizeChangeListener.onSizeChanged(w, h, oldw, oldh);
+        }
+    }
+
+    public void setOnSizeChangeListener(OnSizeChangeListener onSizeChangeListener) {
+        this.onSizeChangeListener = onSizeChangeListener;
     }
 
     public static class Builder {
