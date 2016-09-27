@@ -25,6 +25,7 @@ public:
 public:
     jint hashcode(const jobject object);
     bool findClass(const char * className);
+    bool getObjectClass(const jobject object);
     bool findMethod(const char * className, const char * method, const char *signature);
     bool findStaticMethod(const char * className, const char * method, const char *signature);
     
