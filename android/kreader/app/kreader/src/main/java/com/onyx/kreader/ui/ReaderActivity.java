@@ -412,7 +412,7 @@ public class ReaderActivity extends ActionBarActivity {
         if (getReaderDataHolder() == null || StringUtils.isBlank(getReaderDataHolder().getDocumentPath())) {
             return false;
         }
-        return path.equals(getReaderDataHolder().getDocumentPath());
+        return getReaderDataHolder().isDocumentOpened() && path.equals(getReaderDataHolder().getDocumentPath());
     }
 
     private void gotoPage(int page) {
