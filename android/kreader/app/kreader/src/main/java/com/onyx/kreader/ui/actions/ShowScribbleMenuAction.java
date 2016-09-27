@@ -339,6 +339,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private RectF getVisibleDrawRect(ReaderDataHolder readerDataHolder, OnyxToolbar bottomToolbar, OnyxToolbar topToolbar){
+        // TODO: 16/9/27  only process first page
         PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
         RectF displayRect = pageInfo.getDisplayRect();
         if (bottomToolbar.getVisibility() != View.VISIBLE && topToolbar.getVisibility() != View.VISIBLE){
