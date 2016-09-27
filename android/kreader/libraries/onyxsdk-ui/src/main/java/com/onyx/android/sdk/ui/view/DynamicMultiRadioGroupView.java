@@ -3,12 +3,11 @@ package com.onyx.android.sdk.ui.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-
-import com.onyx.android.sdk.ui.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,16 +127,19 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
         return compoundButtonList;
     }
 
+    public enum CompoundFillStyle {WrapContent, Average, WeightWrapContent}
+
     public static abstract class MultiAdapter {
 
-        private int paddingLeft, paddingTop, paddingRight, paddingBottom;
+        private int paddingLeft = -1, paddingTop = -1, paddingRight = -1, paddingBottom = -1;
         private int marginLeft, marginTop, marginRight, marginBottom;
         private float textSize = -1;
-        private int[] buttonDrawableResIds;
+        private int buttonDrawableResId = -1;
         private DynamicMultiRadioGroupView parent;
         private boolean multiCheck = false;
         private int backgroundResId = -1;
         private List<String> buttonTexts;
+        private CompoundFillStyle fillStyle = CompoundFillStyle.Average;
 
         public abstract int getRows();
         public abstract int getColumns();
@@ -162,13 +164,12 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             this.textSize = textSize;
         }
 
-
         public void setButtonTexts(List<String> buttonTexts) {
             this.buttonTexts = buttonTexts;
         }
 
-        public void setButtonDrawableResIds(int[] buttonDrawableResIds) {
-            this.buttonDrawableResIds = buttonDrawableResIds;
+        public void setButtonDrawableResId(int buttonDrawableResId) {
+            this.buttonDrawableResId = buttonDrawableResId;
         }
 
         public void setMultiCheck(boolean multiCheck) {
@@ -187,6 +188,10 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             return backgroundResId;
         }
 
+        public void setFillStyle(CompoundFillStyle fillStyle) {
+            this.fillStyle = fillStyle;
+        }
+
         public final CompoundButton createCompoundButton(DynamicMultiRadioGroupView parent, int position) {
             this.parent = parent;
             CompoundButton button;
@@ -195,7 +200,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             }else {
                 button = new RadioButton(parent.getContext());
             }
-            initButton(button,position);
+            setDefaultStyle(button,position);
             if (position < getItemCount()){
                 bindView(button,position);
             }else {
@@ -204,7 +209,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             return button;
         }
 
-        private CompoundButton initButton(CompoundButton button, int position) {
+        private CompoundButton setDefaultStyle(CompoundButton button, int position) {
             if (buttonTexts != null && buttonTexts.size() > position){
                 String text = buttonTexts.get(position);
                 button.setText(text);
@@ -215,19 +220,31 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             if (backgroundResId > 0){
                 button.setBackgroundResource(getBackgroundResId());
             }
-            if (buttonDrawableResIds != null){
-                button.setButtonDrawable(buttonDrawableResIds[position]);
-            }else {
-                button.setButtonDrawable(R.color.transparent);
+            if (backgroundResId > 0){
+                button.setButtonDrawable(backgroundResId);
             }
+
             button.setGravity(Gravity.CENTER);
             if (textSize > 0){
                 button.setTextSize(textSize);
             }
-            button.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+            //4.0 the default padding has value So to judge
+            button.setPadding(paddingLeft >= 0 ? paddingLeft : button.getPaddingLeft(),
+                    paddingTop >= 0 ? paddingTop : button.getPaddingTop(),
+                    paddingRight >= 0 ? paddingRight : button.getPaddingRight(),
+                    paddingBottom >= 0 ? paddingBottom : button.getPaddingBottom());
 
-            LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-            layoutParams.weight = 1;
+            LayoutParams layoutParams;
+            if (fillStyle == CompoundFillStyle.Average){
+                layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT);
+                layoutParams.weight = 1;
+            }else if (fillStyle == CompoundFillStyle.WrapContent){
+                layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+            }else{
+                layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                layoutParams.weight = 1;
+            }
+
             layoutParams.setMargins(marginLeft,marginTop,marginRight,marginBottom);
             button.setLayoutParams(layoutParams);
             return button;

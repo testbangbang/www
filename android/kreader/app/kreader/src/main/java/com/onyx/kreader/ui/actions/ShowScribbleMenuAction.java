@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.content.Context;
+import android.graphics.RectF;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ScribbleMenuAction;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
 import com.onyx.android.sdk.ui.view.viewholder.BaseViewHolder;
@@ -18,6 +20,7 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
+
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
@@ -43,6 +46,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private ScribbleMenuAction selectShapeAction = ScribbleMenuAction.PENCIL;
     private ScribbleMenuAction selectEraserAction = ScribbleMenuAction.ERASER_PART;
     private ActionCallback actionCallback;
+    private ReaderDataHolder readerDataHolder;
 
     public ShowScribbleMenuAction(ViewGroup parent, final ActionCallback actionCallback) {
         this.parent = parent;
@@ -57,7 +61,8 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create());
     }
 
-    public void show(ReaderDataHolder readerDataHolder) {
+    public void show(final ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
         topToolbar = createScribbleTopToolbar(readerDataHolder);
         parent.addView(topToolbar);
 
@@ -67,6 +72,20 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         fullToolbar = createFullScreenToolbar(readerDataHolder);
         parent.addView(fullToolbar);
         fullToolbar.setVisibility(View.GONE);
+
+        topToolbar.setOnSizeChangeListener(new OnyxToolbar.OnSizeChangeListener() {
+            @Override
+            public void onSizeChanged(int w, int h, int oldw, int oldh) {
+                updateVisibleDrawRect(readerDataHolder);
+            }
+        });
+
+        bottomToolbar.setOnSizeChangeListener(new OnyxToolbar.OnSizeChangeListener() {
+            @Override
+            public void onSizeChanged(int w, int h, int oldw, int oldh) {
+                updateVisibleDrawRect(readerDataHolder);
+            }
+        });
     }
 
     private OnyxToolbar createScribbleBottomToolbar(final ReaderDataHolder readerDataHolder) {
@@ -304,6 +323,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         topToolbar.setVisibility(packUp ? View.GONE : View.VISIBLE);
         bottomToolbar.setVisibility(packUp ? View.GONE : View.VISIBLE);
         fullToolbar.setVisibility(packUp ? View.VISIBLE : View.GONE);
+        updateVisibleDrawRect(readerDataHolder);
     }
 
     public void setSelectWidthAction(ScribbleMenuAction selectWidthAction) {
@@ -317,4 +337,23 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     public void setSelectEraserAction(ScribbleMenuAction selectEraserAction) {
         this.selectEraserAction = selectEraserAction;
     }
+
+    private RectF getVisibleDrawRect(ReaderDataHolder readerDataHolder, OnyxToolbar bottomToolbar, OnyxToolbar topToolbar){
+        // TODO: 16/9/27  only process first page
+        PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
+        RectF displayRect = pageInfo.getDisplayRect();
+        if (bottomToolbar.getVisibility() != View.VISIBLE && topToolbar.getVisibility() != View.VISIBLE){
+            return displayRect;
+        }
+
+        float top = Math.max(displayRect.top, topToolbar.getBottom());
+        float bottom = Math.min(displayRect.bottom, bottomToolbar.getTop());
+        RectF visibleRectF = new RectF(displayRect.left, top, displayRect.right, bottom);
+        return visibleRectF;
+    }
+
+    private void updateVisibleDrawRect(final ReaderDataHolder readerDataHolder){
+        readerDataHolder.getNoteManager().setVisibleDrawRectF(getVisibleDrawRect(readerDataHolder, bottomToolbar, topToolbar));
+    }
+
 }

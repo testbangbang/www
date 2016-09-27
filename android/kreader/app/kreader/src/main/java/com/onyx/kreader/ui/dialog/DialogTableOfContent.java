@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -71,6 +72,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private TextView emptyText;
     private TextView totalText;
     private LinearLayout backLayout;
+    private LinearLayout pageIndicatorLayout;
+    private LinearLayout exportLayout;
 
     private ReaderDocumentTableOfContent toc;
     private DirectoryTab currentTab;
@@ -256,6 +259,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         totalText = (TextView) findViewById(R.id.total);
         emptyText = (TextView) findViewById(R.id.empty_text);
         backLayout = (LinearLayout) findViewById(R.id.back_layout);
+        pageIndicatorLayout = (LinearLayout) findViewById(R.id.page_indicator_layout);
+        exportLayout = (LinearLayout) findViewById(R.id.export_layout);
         btnGroup = (RadioGroup) findViewById(R.id.layout_menu);
         emptyText.setVisibility(View.GONE);
         viewPager.setPagingEnabled(false);
@@ -328,6 +333,13 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             @Override
             public void onDismiss(DialogInterface dialog) {
                 readerDataHolder.removeActiveDialog(DialogTableOfContent.this);
+            }
+        });
+
+        exportLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
@@ -636,6 +648,21 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         if (currentTab == DirectoryTab.Scribble && scribblePageView != null){
             requestScribblePreview(scribblePageView);
         }
+        showExportLayout(currentTab);
+    }
+
+    private void showExportLayout(DirectoryTab tab){
+        boolean showExport = tab == DirectoryTab.Scribble || tab == DirectoryTab.Annotation;
+        exportLayout.setVisibility(showExport ? View.VISIBLE : View.GONE);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (showExport){
+            lp.addRule(RelativeLayout.RIGHT_OF, R.id.total);
+            lp.addRule(RelativeLayout.CENTER_VERTICAL);
+            lp.leftMargin = DimenUtils.dip2px(getContext(), 20);
+        }else {
+            lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+        }
+        pageIndicatorLayout.setLayoutParams(lp);
     }
 
     private void updateTotalText(DirectoryTab tab){
