@@ -7,9 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
-import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -24,28 +25,30 @@ import butterknife.ButterKnife;
  */
 public class DialogExport extends Dialog implements CompoundButton.OnCheckedChangeListener {
 
+
     @Bind(R.id.annotation_checkbox)
     CheckBox annotationCheckbox;
-    @Bind(R.id.highlight_checkbox)
-    CheckBox highlightCheckbox;
     @Bind(R.id.scribble_checkbox)
     CheckBox scribbleCheckbox;
-    @Bind(R.id.scribble_full_document_checkbox)
-    CheckBox scribbleFullDocumentCheckbox;
+    @Bind(R.id.merged_all)
+    RadioButton mergedAll;
+    @Bind(R.id.merged_part)
+    RadioButton mergedPart;
     @Bind(R.id.color_group)
     DynamicMultiRadioGroupView colorGroup;
     @Bind(R.id.btn_cancel)
     Button btnCancel;
     @Bind(R.id.btn_ok)
     Button btnOk;
+    @Bind(R.id.merged_layout)
+    RadioGroup mergedLayout;
 
-    private boolean annotationExport = true;
-    private boolean highlightExport = false;
-    private boolean scribbleExport = false;
-    private boolean scribbleFullDocumentExport = false;
+    private boolean annotationMerge = true;
+    private boolean scribbleMerge = true;
+    private boolean isMergedAll = true;
     private BrushColor brushColor = BrushColor.Original;
 
-    private enum BrushColor{Original, Red, Black, Green, White, Blue}
+    private enum BrushColor {Original, Red, Black, Green, White, Blue}
 
     public DialogExport(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
@@ -55,10 +58,9 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         initBrushStrokeColor();
         setupListener();
 
-        annotationCheckbox.setChecked(annotationExport);
-        highlightCheckbox.setChecked(highlightExport);
-        scribbleCheckbox.setChecked(scribbleExport);
-        scribbleFullDocumentCheckbox.setChecked(scribbleFullDocumentExport);
+        annotationCheckbox.setChecked(annotationMerge);
+        scribbleCheckbox.setChecked(scribbleMerge);
+        mergedLayout.check(isMergedAll ? R.id.merged_all : R.id.merged_part);
     }
 
     private void initBrushStrokeColor() {
@@ -68,16 +70,16 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         colorAdapter.setItemChecked(true, brushColor.ordinal());
     }
 
-    private void setupListener(){
+    private void setupListener() {
         annotationCheckbox.setOnCheckedChangeListener(this);
-        highlightCheckbox.setOnCheckedChangeListener(this);
         scribbleCheckbox.setOnCheckedChangeListener(this);
-        scribbleFullDocumentCheckbox.setOnCheckedChangeListener(this);
+        mergedAll.setOnCheckedChangeListener(this);
+        mergedPart.setOnCheckedChangeListener(this);
 
         colorGroup.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
-                if (isChecked){
+                if (isChecked) {
                     brushColor = BrushColor.values()[position];
                 }
             }
@@ -99,14 +101,12 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (buttonView.equals(annotationCheckbox)){
-            annotationExport = isChecked;
-        }else if (buttonView.equals(highlightCheckbox)){
-            highlightExport = isChecked;
-        }else if (buttonView.equals(scribbleCheckbox)){
-            scribbleExport = isChecked;
-        }else if (buttonView.equals(scribbleFullDocumentCheckbox)){
-            scribbleFullDocumentExport = isChecked;
+        if (buttonView.equals(annotationCheckbox)) {
+            annotationMerge = isChecked;
+        } else if (buttonView.equals(scribbleCheckbox)) {
+            scribbleMerge = isChecked;
+        } else if (buttonView.equals(mergedAll)) {
+            isMergedAll = isChecked;
         }
     }
 
@@ -123,8 +123,6 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
             }
             setButtonTexts(colorList);
             setMultiCheck(false);
-            int margin = DimenUtils.dip2px(context, 5);
-            setMargin(0, margin, 0, margin);
         }
 
         @Override

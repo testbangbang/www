@@ -7,7 +7,7 @@
     <TextView
         android:layout_margin="5dp"
         android:layout_gravity="center"
-        android:text="@string/export"
+        android:text="@string/merged_pdf"
         android:textSize="@dimen/dialog_title_text_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -27,54 +27,41 @@
 
     <CheckBox
         android:id="@+id/annotation_checkbox"
-        android:text="@string/annotation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:layout_marginLeft="30dp"
-        android:text="@string/export_annotation_explain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <CheckBox
-        android:id="@+id/highlight_checkbox"
-        android:text="@string/Highlight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:layout_marginLeft="30dp"
-        android:text="@string/export_highlight_explain"
+        android:text="@string/merged_annotation_highlight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <CheckBox
         android:id="@+id/scribble_checkbox"
-        android:text="@string/scribble"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:layout_marginLeft="30dp"
-        android:text="@string/export_scribble_explain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <CheckBox
-        android:id="@+id/scribble_full_document_checkbox"
-        android:text="@string/scribble_full_document"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:layout_marginLeft="30dp"
-        android:text="@string/export_scribble_full_document_explain"
+        android:text="@string/merged_scribble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <View
         android:layout_marginTop="10dp"
+        android:background="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <RadioGroup
+        android:id="@+id/merged_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/merged_all"
+            android:text="@string/merged_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RadioButton
+            android:id="@+id/merged_part"
+            android:text="@string/merged_part"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RadioGroup>
+
+    <View
         android:background="@android:color/black"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
@@ -126,10 +113,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
 
+        <View
+            android:background="@android:color/black"
+            android:layout_width="1dp"
+            android:layout_height="match_parent">
+        </View>
+
         <Button
             android:id="@+id/btn_ok"
             android:text="@string/ok"
-            android:background="@drawable/left_line_press_bg"
+            android:background="@drawable/no_line_press_bg"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>

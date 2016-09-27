@@ -131,7 +131,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
 
     public static abstract class MultiAdapter {
 
-        private int paddingLeft, paddingTop, paddingRight, paddingBottom;
+        private int paddingLeft = -1, paddingTop = -1, paddingRight = -1, paddingBottom = -1;
         private int marginLeft, marginTop, marginRight, marginBottom;
         private float textSize = -1;
         private int buttonDrawableResId = -1;
@@ -228,7 +228,11 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             if (textSize > 0){
                 button.setTextSize(textSize);
             }
-            button.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+            //4.0 the default padding has value So to judge
+            button.setPadding(paddingLeft >= 0 ? paddingLeft : button.getPaddingLeft(),
+                    paddingTop >= 0 ? paddingTop : button.getPaddingTop(),
+                    paddingRight >= 0 ? paddingRight : button.getPaddingRight(),
+                    paddingBottom >= 0 ? paddingBottom : button.getPaddingBottom());
 
             LayoutParams layoutParams;
             if (fillStyle == CompoundFillStyle.Average){
