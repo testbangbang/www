@@ -82,10 +82,10 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void updateSurfaceView(final Context context, final SurfaceView sv) {
+    public void updateSurfaceView(final Context context, final SurfaceView sv, Rect visibleDrawRect) {
         surfaceView = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
-        getNoteEventProcessorManager().update(surfaceView, noteConfig);
+        getNoteEventProcessorManager().update(surfaceView, noteConfig, visibleDrawRect);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {

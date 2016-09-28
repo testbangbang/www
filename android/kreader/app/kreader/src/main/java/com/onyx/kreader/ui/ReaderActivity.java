@@ -398,7 +398,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void onSurfaceViewSizeChanged() {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
-        getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView);
+        final Rect visibleDrawRect = new Rect();
+        surfaceView.getLocalVisibleRect(visibleDrawRect);
+        getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView, visibleDrawRect);
         if (getReaderDataHolder().isDocumentOpened()) {
             new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
         }
@@ -406,7 +408,19 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onScribbleMenuChanged(final ScribbleMenuChangedEvent event) {
-        getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView);
+        final Rect rect = new Rect();
+        surfaceView.getLocalVisibleRect(rect);
+        int bottomOfTopToolBar = event.getBottomOfTopToolBar();
+        int topOfBottomToolBar = event.getTopOfBottomToolBar();
+
+        if (bottomOfTopToolBar > 0){
+            rect.top = Math.max(rect.top, bottomOfTopToolBar);
+        }
+        if (topOfBottomToolBar > 0){
+            rect.bottom = Math.min(rect.bottom, topOfBottomToolBar);
+        }
+
+        getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView, rect);
     }
 
     @Subscribe

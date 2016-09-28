@@ -4,6 +4,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
+
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
@@ -53,16 +54,14 @@ public class NoteEventProcessorManager {
         return noteManager;
     }
 
-    public void update(final View targetView, final DeviceConfig noteConfig) {
+    public void update(final View targetView, final DeviceConfig noteConfig, final Rect visibleDrawRect) {
         detectTouchType();
         view = targetView;
-        final Rect rect = new Rect();
-        view.getLocalVisibleRect(rect);
         OnyxMatrix viewMatrix = new OnyxMatrix();
         viewMatrix.postRotate(noteConfig.getViewPostOrientation());
         viewMatrix.postTranslate(noteConfig.getViewPostTx(), noteConfig.getViewPostTy());
-        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(noteConfig), rect);
-        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig), getScreenToViewMatrix(noteConfig), rect);
+        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(noteConfig), visibleDrawRect);
+        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig), getScreenToViewMatrix(noteConfig), visibleDrawRect);
     }
 
     private void detectTouchType() {
