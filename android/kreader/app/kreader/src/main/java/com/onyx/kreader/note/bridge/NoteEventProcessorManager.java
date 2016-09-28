@@ -135,6 +135,9 @@ public class NoteEventProcessorManager {
 
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         if (!getNoteManager().isDFBForCurrentShape() || useNormalTouchEvent()) {
+            if (getNoteManager().isEraser()) {
+                return onTouchEventErasing(motionEvent);
+            }
             return onTouchEventDrawing(motionEvent);
         }
         return false;

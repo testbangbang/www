@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by ming on 16/9/23.
  */
-public class GetScribbleBitmapAction{
+public class GetScribbleBitmapAction {
 
     public interface Callback{
         void onNext(String page, Bitmap bitmap);

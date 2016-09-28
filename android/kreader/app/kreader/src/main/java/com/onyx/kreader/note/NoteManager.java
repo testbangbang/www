@@ -67,19 +67,19 @@ public class NoteManager {
         return noteDocument;
     }
 
-    public void startEventProcessor() {
+    public void startRawEventProcessor() {
         getNoteEventProcessorManager().start();
     }
 
-    public void stopEventProcessor() {
+    public void stopRawEventProcessor() {
         getNoteEventProcessorManager().stop();
     }
 
-    public void pauseEventProcessor() {
+    public void pauseRawEventProcessor() {
         getNoteEventProcessorManager().pause();
     }
 
-    public void resumeEventProcessor() {
+    public void resumeRawEventProcessor() {
         getNoteEventProcessorManager().resume();
     }
 
@@ -268,6 +268,10 @@ public class NoteManager {
 
     public boolean isDFBForCurrentShape() {
         return ShapeFactory.isDFBShape(getNoteDrawingArgs().currentShapeType);
+    }
+
+    public boolean isEraser() {
+        return getNoteDrawingArgs().currentShapeType == ShapeFactory.SHAPE_ERASER;
     }
 
     public void resetCurrentShape() {

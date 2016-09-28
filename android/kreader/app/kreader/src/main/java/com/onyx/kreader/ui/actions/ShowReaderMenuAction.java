@@ -40,6 +40,7 @@ import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.ClearPageAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RedoAction;
+import com.onyx.kreader.note.actions.StartErasingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
@@ -512,6 +513,7 @@ public class ShowReaderMenuAction extends BaseAction {
             case TEXT:
                 break;
             case ERASER_PART:
+                startErasing(readerDataHolder);
                 break;
             case ERASER_ALL:
                 eraseWholePage(readerDataHolder);
@@ -590,6 +592,12 @@ public class ShowReaderMenuAction extends BaseAction {
     private void eraseWholePage(final ReaderDataHolder readerDataHolder) {
         final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getFirstPageInfo());
         clearPageAction.execute(readerDataHolder, null);
+    }
+
+    private void startErasing(final ReaderDataHolder readerDataHolder) {
+        final StartErasingAction erasingAction = new StartErasingAction();
+        erasingAction.execute(readerDataHolder, null);
+
     }
 
 }

@@ -1,9 +1,7 @@
 package com.onyx.kreader.note.request;
 
 import android.graphics.*;
-import android.util.Log;
 
-import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
@@ -11,7 +9,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
-import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.note.NoteManager;
@@ -105,7 +103,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     public void beforeExecute(final NoteManager noteManager) {
         noteManager.getRequestManager().acquireWakeLock(getContext());
         if (isPauseRawInputProcessor()) {
-            noteManager.pauseEventProcessor();
+            noteManager.pauseRawEventProcessor();
         }
         benchmarkStart();
         invokeStartCallback(noteManager.getRequestManager());
@@ -136,6 +134,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
+        setResumeRawInputProcessor(parent.isDFBForCurrentShape());
         final Runnable runnable = postExecuteRunnable(parent);
         if (isRunInBackground()) {
             parent.getRequestManager().getLooperHandler().post(runnable);
@@ -158,7 +157,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
                     if (isResumeRawInputProcessor()) {
-                        parent.resumeEventProcessor();
+                        parent.resumeRawEventProcessor();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

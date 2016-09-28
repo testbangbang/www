@@ -13,12 +13,10 @@ public class ChangeStrokeWidthRequest extends ReaderBaseNoteRequest {
 
     public ChangeStrokeWidthRequest(float width) {
         setAbortPendingTasks(true);
-        setPauseRawInputProcessor(true);
         newWidth = width;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
         ensureDocumentOpened(noteManager);
         noteManager.setCurrentStrokeWidth(newWidth);
         updateShapeDataInfo(noteManager);
