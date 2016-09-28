@@ -65,9 +65,7 @@ public class ScribbleHandler extends BaseHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
-        if (!readerDataHolder.getNoteManager().inVisibleDrawRectF(e.getX(), e.getY())){
-            return false;
-        }
+
         return readerDataHolder.getNoteManager().getNoteEventProcessorManager().onTouchEvent(e);
     }
 
