@@ -7,6 +7,7 @@ import android.os.Environment;
 import com.onyx.android.cropimage.CropImage;
 import com.onyx.android.cropimage.CropImageResultReceiver;
 import com.onyx.android.cropimage.data.CropArgs;
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.ui.ReaderActivity;
@@ -43,8 +44,9 @@ public class SelectionScaleAction extends BaseAction {
         this.callback = callback;
     }
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         scaleByRect(readerDataHolder);
+        BaseCallback.invoke(callback, null, null);
     }
 
     private void scaleByRect(final ReaderDataHolder readerDataHolder) {

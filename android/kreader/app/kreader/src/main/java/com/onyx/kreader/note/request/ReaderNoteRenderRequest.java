@@ -2,7 +2,6 @@ package com.onyx.kreader.note.request;
 
 import android.graphics.Rect;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.kreader.note.NoteManager;
 
 import java.util.List;
@@ -12,25 +11,31 @@ import java.util.List;
  */
 public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
 
-    public ReaderNoteRenderRequest(final String id, final List<PageInfo> pages, final Rect size) {
+    public ReaderNoteRenderRequest(final String id, final List<PageInfo> pages, final Rect size, boolean abortPending) {
         setDocUniqueId(id);
-        setAbortPendingTasks(true);
+        setAbortPendingTasks(abortPending);
         setViewportSize(size);
         setVisiblePages(pages);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
+        updateEventProcessor(noteManager);
         ensureDocumentOpened(noteManager);
         loadShapeData(noteManager);
-        renderVisiblePages(noteManager);
+        updateEventProcessor(noteManager);
+        getShapeDataInfo().setContentRendered(renderVisiblePages(noteManager));
         updateShapeDataInfo(noteManager);
     }
 
     public void loadShapeData(final NoteManager parent) {
         try {
-            parent.getNoteDocument().loadShapePages(getContext(), getVisiblePages());
+            parent.getNoteDocument().loadPages(getContext(), getVisiblePages());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateEventProcessor(final NoteManager noteManager) {
+        noteManager.setVisiblePages(getVisiblePages());
     }
 }

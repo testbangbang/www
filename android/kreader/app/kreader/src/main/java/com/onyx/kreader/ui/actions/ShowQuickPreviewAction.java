@@ -22,7 +22,7 @@ public class ShowQuickPreviewAction extends BaseAction {
     private List<Integer> pagesToPreview;
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         dialogQuickPreview = new DialogQuickPreview(readerDataHolder, readerDataHolder.getPageCount(),
                 readerDataHolder.getCurrentPage(), new DialogQuickPreview.Callback() {
 
@@ -40,6 +40,7 @@ public class ShowQuickPreviewAction extends BaseAction {
         });
         dialogQuickPreview.show();
         readerDataHolder.addActiveDialog(dialogQuickPreview);
+        BaseCallback.invoke(callback, null, null);
     }
 
     private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final Size desiredSize) {

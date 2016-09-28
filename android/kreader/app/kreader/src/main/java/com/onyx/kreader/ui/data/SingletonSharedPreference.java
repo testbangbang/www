@@ -134,6 +134,10 @@ public class SingletonSharedPreference {
         return Integer.parseInt(sPreferences.getString(context.getString(R.string.settings_search_menu_position_key), "1"));
     }
 
+    public static boolean isShowNote(Context context) {
+        return getBooleanByStringID(context, R.string.settings_note_key, true);
+    }
+
     public static boolean isShowBookmark(Context context) {
         return getBooleanByStringID(context, R.string.settings_bookmark_key, true);
     }
@@ -207,6 +211,14 @@ public class SingletonSharedPreference {
 
     public static int getQuickViewGridType(Context context, int defaultValue){
         return getIntByStringID(context, R.string.quick_view_grid_type, defaultValue);
+    }
+
+    public static void setDialogTableOfContentTab(Context context, int value){
+        setIntValue(context, R.string.dialog_table_of_content_tab, value);
+    }
+
+    public static int getDialogTableOfContentTab(Context context, int defaultValue){
+        return getIntByStringID(context, R.string.dialog_table_of_content_tab, defaultValue);
     }
 
     public static float getBaseLineWidth(Context context) {

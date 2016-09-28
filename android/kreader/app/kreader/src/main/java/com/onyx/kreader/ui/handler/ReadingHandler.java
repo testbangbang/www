@@ -141,27 +141,7 @@ public class ReadingHandler extends BaseHandler{
         }
 
         final PanAction panAction = new PanAction(offsetX, offsetY);
-        panAction.execute(readerDataHolder);
-    }
-
-    public void nextPage(ReaderDataHolder readerDataHolder) {
-        nextScreen(readerDataHolder);
-    }
-
-    public void prevPage(ReaderDataHolder readerDataHolder) {
-        prevScreen(readerDataHolder);
-    }
-
-    public void nextScreen(ReaderDataHolder readerDataHolder) {
-        readerDataHolder.setPreRenderNext(true);
-        final NextScreenAction action = new NextScreenAction();
-        action.execute(readerDataHolder);
-    }
-
-    public void prevScreen(ReaderDataHolder readerDataHolder) {
-        readerDataHolder.setPreRenderNext(false);
-        final PreviousScreenAction action = new PreviousScreenAction();
-        action.execute(readerDataHolder);
+        panAction.execute(readerDataHolder, null);
     }
 
     public boolean tryHitTest(ReaderDataHolder readerDataHolder,float x, float y) {
@@ -200,7 +180,7 @@ public class ReadingHandler extends BaseHandler{
             for (PageAnnotation annotation : annotations) {
                 for (RectF rect : annotation.getRectangles()) {
                     if (rect.contains(x, y)) {
-                        new ShowAnnotationEditDialogAction(annotation.getAnnotation()).execute(readerDataHolder);
+                        new ShowAnnotationEditDialogAction(annotation.getAnnotation()).execute(readerDataHolder, null);
                         return true;
                     }
                 }
@@ -219,7 +199,7 @@ public class ReadingHandler extends BaseHandler{
     }
 
     public void showReaderMenu(ReaderDataHolder readerDataHolder) {
-        new ShowReaderMenuAction().execute(readerDataHolder);
+        new ShowReaderMenuAction().execute(readerDataHolder, null);
     }
 
     public boolean isScrolling() {

@@ -71,6 +71,18 @@ public class Product extends BaseData {
     @Column
     public String coversString;
 
+    @Column
+    public long consumer;
+
+    @Column
+    public long viewCount;
+
+    @Column
+    public long downloadCount;
+
+    @Column
+    public long commentsCount;
+
     public Product() {
 
     }

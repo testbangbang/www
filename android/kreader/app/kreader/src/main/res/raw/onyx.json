@@ -1,6 +1,6 @@
 {
     "key_binding": {
-        "BaseHandler": {
+        "HandlerManager": {
             "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
             "KEYCODE_PAGE_UP":  {"action": "prevScreen", "args": ""},
             "KEYCODE_VOLUME_DOWN":  {"action": "nextScreen", "args": ""},
@@ -16,7 +16,8 @@
             "KEYCODE_ALT_RIGHT":  {"action": "changeToScribbleMode", "args": ""},
             "KEYCODE_BUTTON_START":  {"action": "changeToScribbleMode", "args": ""},
             "KEYCODE_ERASER": {"action": "changeToEraseMode", "args": ""},
-            "KEYCODE_SCRIBBLER":  {"action": "changeToScribbleMode", "args": ""}
+            "KEYCODE_SCRIBBLER":  {"action": "changeToScribbleMode", "args": ""},
+            "KEYCODE_BACK": {"action": "close", "args": ""}
         }
     },
 }

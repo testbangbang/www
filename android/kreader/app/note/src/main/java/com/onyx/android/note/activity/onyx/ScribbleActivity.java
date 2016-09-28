@@ -14,6 +14,7 @@ import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.ClearPageAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
+import com.onyx.android.note.actions.scribble.GotoTargetPageAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.UndoAction;
@@ -33,6 +34,7 @@ import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.dialog.DialogSetValue;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -140,6 +142,55 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onExport();
             }
         });
+        pageIndicator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                syncWithCallback(true, false, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e == null) {
+                            showGotoPageDialog();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void showGotoPageDialog() {
+        final int originalVisualPageIndex = currentVisualPageIndex;
+        final DialogSetValue dlg = new DialogSetValue();
+        Bundle args = new Bundle();
+        args.putString(DialogSetValue.ARGS_DIALOG_TITLE, getString(R.string.go_to_page));
+        args.putString(DialogSetValue.ARGS_VALUE_TITLE, getString(R.string.current_page));
+        args.putInt(DialogSetValue.ARGS_CURRENT_VALUE, originalVisualPageIndex);
+        args.putInt(DialogSetValue.ARGS_MAX_VALUE, totalPageCount);
+        args.putInt(DialogSetValue.ARGS_MIN_VALUE, 1);
+        dlg.setArguments(args);
+        dlg.setCallback(new DialogSetValue.DialogCallback() {
+            @Override
+            public void valueChange(int newValue) {
+                int logicalIndex = newValue - 1;
+                GotoTargetPageAction<ScribbleActivity> action = new GotoTargetPageAction<>(logicalIndex);
+                action.execute(ScribbleActivity.this);
+            }
+
+            @Override
+            public void done(boolean isValueChange, int newValue) {
+                GotoTargetPageAction<ScribbleActivity> action =
+                        new GotoTargetPageAction<>(isValueChange ? newValue : originalVisualPageIndex -1);
+                action.execute(ScribbleActivity.this);
+                syncWithCallback(true, true, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e == null) {
+                            dlg.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+        dlg.show(getFragmentManager());
     }
 
     private void onExport() {

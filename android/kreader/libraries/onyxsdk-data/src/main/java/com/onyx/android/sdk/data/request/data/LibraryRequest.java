@@ -28,9 +28,9 @@ public class LibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.loadAllLibrary(libraryList, queryArgs.parentId);
+        dataManager.loadAllLibrary(libraryList, queryArgs.libraryUniqueId);
         if (loadMetadata) {
-            bookList = dataManager.getMetadataListWithQueryArgs(getContext(), queryArgs);
+            bookList = dataManager.getLibraryMetadataList(getContext(), queryArgs);
         }
     }
 

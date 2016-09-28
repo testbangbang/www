@@ -18,8 +18,13 @@ public class BaseData extends BaseModel {
     public static final String DELIMITER = ",";
 
     @Column
-    @PrimaryKey(autoincrement = true)   @Index
+    @PrimaryKey(autoincrement = true)
+    @Index
     long id = INVALID_ID;
+
+    @Column
+    @Index
+    String guid = null;
 
     @Column
     @Index
@@ -45,6 +50,14 @@ public class BaseData extends BaseModel {
 
     public void setIdString(final String value) {
         idString = value;
+    }
+
+    public final String getGlobalUniqueId() {
+        return guid;
+    }
+
+    public void setGlobalUniqueId(final String value) {
+        guid = value;
     }
 
     public void setCreatedAt(final Date d) {

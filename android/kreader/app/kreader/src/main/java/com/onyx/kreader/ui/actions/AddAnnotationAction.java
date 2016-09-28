@@ -2,6 +2,8 @@ package com.onyx.kreader.ui.actions;
 
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.request.AddAnnotationRequest;
@@ -32,8 +34,13 @@ public class AddAnnotationAction extends BaseAction {
     }
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.submitRenderRequest(new AddAnnotationRequest(pageInfo, locationBegin, locationEnd, rects, quote, note));
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        readerDataHolder.submitRenderRequest(new AddAnnotationRequest(pageInfo, locationBegin, locationEnd, rects, quote, note), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
     }
 
     private List<RectF> translateToDocument(List<RectF> rects) {

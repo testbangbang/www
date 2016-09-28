@@ -21,6 +21,8 @@ import com.onyx.android.note.dialog.DialogChooseScribbleMode;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapterUtil;
@@ -36,6 +38,7 @@ import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
 
 public class ManagerActivity extends BaseManagerActivity {
 
+    final static boolean ENABLE_BETA_SPANSCRIBBLE = false;
     private CheckedTextView chooseModeButton;
     private TextView addFolderButton, moveButton, deleteButton;
     private ImageView nextPageBtn, prevPageBtn;
@@ -196,22 +199,25 @@ public class ManagerActivity extends BaseManagerActivity {
 
     @Override
     protected void createDocument(final GObject object) {
-//        super.createDocument(object);
-        DialogChooseScribbleMode dlgMode = new DialogChooseScribbleMode();
-        dlgMode.setCallBack(new DialogChooseScribbleMode.Callback() {
-            @Override
-            public void onModeChosen(@ScribbleMode.ScribbleModeDef int mode) {
-                switch(mode){
-                    case ScribbleMode.MODE_NORMAL_SCRIBBLE:
-                        startScribbleActivity(object,getCurrentLibraryId(),Utils.ACTION_CREATE);
-                        break;
-                    case ScribbleMode.MODE_SPAN_SCRIBBLE:
-                        startActivity(new Intent(ManagerActivity.this, SpanScribbleActivity.class));
-                        break;
+        if (!ENABLE_BETA_SPANSCRIBBLE) {
+            super.createDocument(object);
+        } else {
+            DialogChooseScribbleMode dlgMode = new DialogChooseScribbleMode();
+            dlgMode.setCallBack(new DialogChooseScribbleMode.Callback() {
+                @Override
+                public void onModeChosen(@ScribbleMode.ScribbleModeDef int mode) {
+                    switch (mode) {
+                        case ScribbleMode.MODE_NORMAL_SCRIBBLE:
+                            startScribbleActivity(object, getCurrentLibraryId(), Utils.ACTION_CREATE);
+                            break;
+                        case ScribbleMode.MODE_SPAN_SCRIBBLE:
+                            startActivity(new Intent(ManagerActivity.this, SpanScribbleActivity.class));
+                            break;
+                    }
                 }
-            }
-        });
-        dlgMode.show(getFragmentManager());
+            });
+            dlgMode.show(getFragmentManager());
+        }
     }
 
     @Override
@@ -253,7 +259,8 @@ public class ManagerActivity extends BaseManagerActivity {
     @Override
     protected void onResume() {
         // TODO:as mx request,we throw all state after leave this activity,and force to normal mode when we came back.
-         currentSelectMode = SelectionMode.NORMAL_MODE;
+        currentSelectMode = SelectionMode.NORMAL_MODE;
+        EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
         super.onResume();
     }
 

@@ -47,7 +47,7 @@ public class TestUtils {
     }
 
     static public final String randString() {
-        int count = TestUtils.randInt(3, 30);
+        int count = TestUtils.randInt(8, 30);
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < count; ++i) {
             int index = TestUtils.randInt(0, source.length() - 1);

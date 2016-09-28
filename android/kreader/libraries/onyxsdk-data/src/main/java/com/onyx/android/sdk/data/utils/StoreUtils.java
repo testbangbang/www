@@ -11,6 +11,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
+
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class StoreUtils {
     }
 
     static public <T extends BaseData> void processOnAsync(final ProductResult<T> productResult, final int process,
-                                                             ProcessModelTransaction.OnModelProcessListener<T> processListener) {
+                                                           ProcessModelTransaction.OnModelProcessListener<T> processListener) {
         ProcessModelTransaction.ProcessModel<T> processModel = getProcessModel(process);
         ProcessModelTransaction<T> processModelTransaction = new ProcessModelTransaction
                 .Builder<>(processModel)
@@ -55,17 +56,28 @@ public class StoreUtils {
     }
 
     static public <T extends BaseData> void saveToLocal(final ProductResult<T> productResult, final Class<T> clazz,
-                                                          boolean clearBeforeSave) {
+                                                        boolean clearBeforeSave) {
         if (clearTable(productResult, clazz, clearBeforeSave)) {
             processOnAsync(productResult, PROCESS_SAVE, null);
         }
     }
 
     static public <T extends BaseData> void saveToLocalFast(final ProductResult<T> productResult, final Class<T> clazz,
-                                                              boolean clearBeforeSave) {
+                                                            boolean clearBeforeSave) {
         if (clearTable(productResult, clazz, clearBeforeSave)) {
             saveToLocalFast(productResult.list, clazz);
         }
+    }
+
+    static public <T extends BaseData> void saveToLocalFast(final List<T> productResult, final Class<T> clazz,
+                                                            boolean clearBeforeSave) {
+        if (clearBeforeSave) {
+            if (productResult.size() <= 0) {
+                return;
+            }
+            clearTable(clazz);
+        }
+        saveToLocalFast(productResult, clazz);
     }
 
     static public <T extends BaseData> void saveToLocalFast(List<T> list, final Class<T> clazz) {
@@ -81,7 +93,7 @@ public class StoreUtils {
     }
 
     static public <T extends BaseData> boolean clearTable(final ProductResult<T> productResult, final Class<T> clazz,
-                                                            boolean clearBeforeSave) {
+                                                          boolean clearBeforeSave) {
         if (CloudUtils.isEmpty(productResult)) {
             return false;
         }

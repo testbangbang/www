@@ -299,6 +299,7 @@ public class DialogReflowSettings extends DialogBase {
                 button.setBackgroundResource(endBackgroundResId);
             }
             button.setPadding(0, (int) context.getResources().getDimension(R.dimen.reflow_checkbox_text_padding_top), 0, 0);
+            button.setButtonDrawable(R.color.transparent);
         }
 
         @Override

@@ -13,7 +13,7 @@ import java.util.List;
 public class BaseShape implements Shape {
 
     private RectF boundingRect;
-    private TouchPointList normalizedPoints = new TouchPointList();
+    private TouchPointList normalizedPoints = new TouchPointList(400);
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();
     private String uniqueId;

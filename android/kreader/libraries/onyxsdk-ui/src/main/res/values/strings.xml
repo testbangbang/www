@@ -24,6 +24,7 @@
     <string name="reader_layer_menu_directory_toc">TOC</string>
     <string name="reader_layer_menu_directory_bookmark">Bookmark</string>
     <string name="reader_layer_menu_directory_note">Note</string>
+    <string name="reader_layer_menu_directory_scribble">Scribble</string>
     <string name="reader_layer_menu_directory_export">Export</string>
     <string name="reader_layer_menu_rotation">Rotation</string>
     <string name="reader_layer_menu_rotation_rotate90">Rotate 90</string>
@@ -49,4 +50,6 @@
     <string name="ok">Sure</string>
     <string name="cancel">Cancel</string>
     <string name="gamma_correction">Contrast</string>
+    <string name="outOfRangRerror">Out of Range</string>
+    <string name="illegalInput">Illegal Input</string>
 </resources>

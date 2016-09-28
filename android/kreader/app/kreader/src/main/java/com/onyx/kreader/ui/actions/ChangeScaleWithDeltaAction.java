@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.graphics.RectF;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
@@ -19,7 +20,7 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
         scaleDelta = delta;
     }
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         if (scaleDelta < 0 && !readerDataHolder.canCurrentPageScaleDown()) {
             Toast.makeText(readerDataHolder.getContext(),
                     R.string.min_scroll_toast, Toast.LENGTH_SHORT).show();
@@ -39,6 +40,7 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
                 viewport.right - offset,
                 viewport.bottom - offset);
         scaleByRect(readerDataHolder, pos);
+        BaseCallback.invoke(callback, null, null);
     }
 
     private void scaleByRect(final ReaderDataHolder readerDataHolder, final RectF rect) {

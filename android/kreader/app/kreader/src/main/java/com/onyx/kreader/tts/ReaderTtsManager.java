@@ -85,6 +85,7 @@ public class ReaderTtsManager {
 
     public void shutdown() {
         ttsService.shutdown();
+        ttsService = null;
     }
 
     private void reset() {

@@ -75,12 +75,11 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
     }
 
     public void testContainer() throws Exception {
-        ProductQuery productQuery = new ProductQuery();
-        Call<ProductResult<Category>> object = getService().bookContainer(JSON.toJSONString(productQuery));
-        Response<ProductResult<Category>> response = object.execute();
+        Call<List<Category>> object = getService().bookContainerList();
+        Response<List<Category>> response = object.execute();
         assertNotNull(response.body());
-        assertTrue(response.body().count > 0);
-        List<Category> list = response.body().list;
+        assertTrue(response.body().size() > 0);
+        List<Category> list = response.body();
         assertNotNull(list);
     }
 }

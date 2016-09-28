@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import android.widget.RelativeLayout;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.api.ReaderSearchOptions;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -26,10 +27,11 @@ public class ShowSearchMenuAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         getSearchMenu(readerDataHolder).setSearchOptions(searchOptions);
         getSearchMenu(readerDataHolder).show();
         getSearchMenu(readerDataHolder).searchDone(searchResult);
+        BaseCallback.invoke(callback, null, null);
     }
 
     public static void resetSearchMenu() {

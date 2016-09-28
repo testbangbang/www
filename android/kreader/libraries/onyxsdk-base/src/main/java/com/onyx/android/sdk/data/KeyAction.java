@@ -9,6 +9,7 @@ public class KeyAction {
     static public final String KEY_ARGS_TAG = "args";
 
     public static final String NO_ACTION = "noAction";
+    public static final String CLOSE = "close";
     public static final String NEXT_SCREEN = "nextScreen";
     public static final String NEXT_PAGE = "nextPage";
     public static final String PREV_SCREEN = "prevScreen";

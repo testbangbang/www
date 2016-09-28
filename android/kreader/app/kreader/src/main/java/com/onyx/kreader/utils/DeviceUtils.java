@@ -11,6 +11,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 
 import java.io.UnsupportedEncodingException;
@@ -25,6 +27,7 @@ public class DeviceUtils {
 
     private final static String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
+    private final static String DEFAULT_TOUCH_DEVICE_PATH = "/dev/input/event1";
 
     public static boolean isRkDevice() {
         return Build.HARDWARE.startsWith("rk");
@@ -154,5 +157,29 @@ public class DeviceUtils {
             intent = new Intent(SHOW_STATUS_BAR_ACTION);
         }
         activity.sendBroadcast(intent);
+    }
+
+    public static int detectTouchDeviceCount() {
+        int count = 0;
+        final int DEVICE_MAX = 3;
+        for(int i = 1; i < DEVICE_MAX; ++i) {
+            String path = String.format("/dev/input/event%d", i);
+            if (FileUtils.fileExist(path)) {
+                ++count;
+            }
+        }
+        return count;
+    }
+
+    public static String detectInputDevicePath() {
+        final int DEVICE_MAX = 3;
+        String last = DEFAULT_TOUCH_DEVICE_PATH;
+        for(int i = 1; i < DEVICE_MAX; ++i) {
+            String path = String.format("/dev/input/event%d", i);
+            if (FileUtils.fileExist(path)) {
+                last = path;
+            }
+        }
+        return last;
     }
 }

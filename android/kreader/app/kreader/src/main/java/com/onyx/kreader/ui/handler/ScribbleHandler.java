@@ -1,15 +1,9 @@
 package com.onyx.kreader.ui.handler;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.data.NotePage;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
-import com.onyx.android.sdk.scribble.shape.Shape;
+
+import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 
@@ -22,12 +16,18 @@ public class ScribbleHandler extends BaseHandler {
         super(p);
     }
 
-    public boolean preKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
+    private boolean isEnableBigPen() {
         return true;
     }
 
-    private boolean isEnableBigPen() {
-        return true;
+    public void onActivate(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getNoteManager().setVisiblePages(readerDataHolder.getVisiblePages());
+        readerDataHolder.getNoteManager().startEventProcessor();
+    }
+
+    public void onDeactivate(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getNoteManager().enableScreenPost(true);
+        readerDataHolder.getNoteManager().stopEventProcessor();
     }
 
     @Override
@@ -66,151 +66,16 @@ public class ScribbleHandler extends BaseHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
-        final NotePage notePage = getShapePage(readerDataHolder);
-        if (notePage == null) {
-            return false;
-        }
 
-        final PageInfo pageInfo = readerDataHolder.getFirstPageInfo();
-        final Shape shape = notePage.getShapeFromPool();
-        switch (e.getAction() & MotionEvent.ACTION_MASK) {
-            case (MotionEvent.ACTION_DOWN):
-                processDownEvent(shape, pageInfo, e);
-                return true;
-            case (MotionEvent.ACTION_CANCEL):
-            case (MotionEvent.ACTION_OUTSIDE):
-                break;
-            case MotionEvent.ACTION_UP:
-                processUpEvent(shape, pageInfo, e);
-                addShape(notePage, shape);
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                processMoveEvent(shape, pageInfo, e);
-                return true;
-            default:
-                break;
-        }
-        return true;
+        return readerDataHolder.getNoteManager().getNoteEventProcessorManager().onTouchEvent(e);
     }
 
-    private void addShape(final NotePage notePage, final Shape shape) {
-        notePage.addShape(shape, true);
+    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getNoteManager().enableScreenPost(true);
     }
 
-    private TouchPoint normalized(final PageInfo pageInfo, final MotionEvent e) {
-        return ShapeUtils.normalize(pageInfo.getActualScale(), pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top, e);
-    }
-
-    private TouchPoint normalizedHistoricalPoint(final PageInfo pageInfo, final MotionEvent e, int index) {
-        return ShapeUtils.normalize(pageInfo.getActualScale(), pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top,
-                e.getHistoricalX(index),
-                e.getHistoricalY(index),
-                e.getHistoricalPressure(index),
-                e.getHistoricalSize(index),
-                e.getHistoricalEventTime(index));
-    }
-
-    public TouchPoint screenPoint(final PageInfo pageInfo, final MotionEvent e) {
-        return new TouchPoint(e.getX() - pageInfo.getDisplayRect().left,
-                e.getY() - pageInfo.getDisplayRect().top,
-                e.getPressure(),
-                e.getSize(),
-                e.getEventTime());
-    }
-
-    public TouchPoint screenHistoricalPoint(final PageInfo pageInfo, final MotionEvent e, int index) {
-        return new TouchPoint(e.getHistoricalX(index) - pageInfo.getDisplayRect().left,
-                e.getHistoricalY(index) - pageInfo.getDisplayRect().top,
-                e.getHistoricalPressure(index),
-                e.getHistoricalSize(index),
-                e.getHistoricalEventTime(index));
-    }
-
-    private void processDownEvent(final Shape shape, final PageInfo pageInfo, final MotionEvent e) {
-        shape.onDown(normalized(pageInfo, e), screenPoint(pageInfo, e));
-    }
-
-    private void processUpEvent(final Shape shape, final PageInfo pageInfo, final MotionEvent e) {
-        shape.onUp(normalized(pageInfo, e), screenPoint(pageInfo, e));
-    }
-
-    private void processMoveEvent(final Shape shape, final PageInfo pageInfo, final MotionEvent e) {
-        int n = e.getHistorySize();
-        for (int i = 0; i < n; i++) {
-            shape.onMove(normalizedHistoricalPoint(pageInfo, e, i), screenHistoricalPoint(pageInfo, e, i));
-        }
-        shape.onMove(normalized(pageInfo, e), screenPoint(pageInfo, e));
-    }
-
-
-    @Override
-    public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(ReaderDataHolder readerDataHolder, MotionEvent e) {
-    }
-
-    @Override
-    public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScaleEnd(ReaderDataHolder ReaderDataHolder, ScaleGestureDetector detector) {
-        return false;
-    }
-
-    @Override
-    public boolean onScaleBegin(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
-        return false;
-    }
-
-    @Override
-    public boolean onScale(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY)  {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public boolean onScrollAfterLongPress(ReaderDataHolder readerDataHolder, float x1, float y1, float x2, float y2) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
-
-    }
-
-    @Override
-    public boolean onFling(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
-    }
-
-    public final NotePage getShapePage(ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.getShapeDataInfo() != null) {
-            return null;
-        }
-        return null;
+    public void close(final ReaderDataHolder readerDataHolder) {
+        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain();
+        stopNoteActionChain.execute(readerDataHolder, null);
     }
 }

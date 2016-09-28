@@ -3,22 +3,31 @@ package com.onyx.kreader.note;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.util.Log;
-import android.view.SurfaceView;
-import android.view.ViewTreeObserver;
+import android.graphics.RectF;
+import android.view.MotionEvent;
+import android.view.View;
+
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.scribble.data.NoteDocument;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.math.OnyxMatrix;
-import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
+import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
+import com.onyx.kreader.note.data.ReaderNoteDocument;
+import com.onyx.kreader.note.data.ReaderNotePage;
+import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,48 +38,153 @@ import java.util.List;
 public class NoteManager {
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
-    private RawInputProcessor rawInputProcessor = new RawInputProcessor();
-    private NoteDocument noteDocument = new NoteDocument();
+    private NoteEventProcessorManager noteEventProcessorManager;
+    private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
-    private Rect limitRect = null;
-    private volatile SurfaceView surfaceView;
-    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
-    private List<Shape> dirtyStash = new ArrayList<>();
-    private TouchPointList erasePoints;
-    private DeviceConfig deviceConfig;
-    private Shape currentShape = null;
-    private boolean shortcutErasing = false;
-    private OnyxMatrix viewToEpdMatrix = null;
-    private int viewPosition[] = {0, 0};
+    private volatile View view;
+
+    private volatile Shape currentShape = null;
+    private volatile NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
+    private RenderContext renderContext = new RenderContext();
+
+    private List<Shape> shapeStash = new ArrayList<>();
+    private DeviceConfig noteConfig;
+    private List<PageInfo> visiblePages = new ArrayList<>();
+    private ReaderDataHolder parent;
+    private ReaderNoteDataInfo noteDataInfo;
+    private RectF visibleDrawRectF;
+
+    public NoteManager(final ReaderDataHolder p) {
+        parent = p;
+    }
 
     public final RequestManager getRequestManager() {
         return requestManager;
     }
 
-    public final NoteDocument getNoteDocument() {
+    public final ReaderNoteDocument getNoteDocument() {
         return noteDocument;
     }
 
-    public void updateShapeDataInfo(final Context context, final ShapeDataInfo shapeDataInfo) {
-        shapeDataInfo.updateShapePageMap(
-                getNoteDocument().getPageNameList(),
-                getNoteDocument().getCurrentPageIndex());
+    public void startEventProcessor() {
+        getNoteEventProcessorManager().start();
+    }
+
+    public void stopEventProcessor() {
+        getNoteEventProcessorManager().stop();
+    }
+
+    public void pauseEventProcessor() {
+        getNoteEventProcessorManager().pause();
+    }
+
+    public void resumeEventProcessor() {
+        getNoteEventProcessorManager().resume();
+    }
+
+    public void updateHostView(final Context context, final View sv, Rect visibleDrawRect) {
+        view = sv;
+        noteConfig = DeviceConfig.sharedInstance(context, "note");
+        getNoteEventProcessorManager().update(view, noteConfig, visibleDrawRect);
+    }
+
+    public final NoteEventProcessorManager getNoteEventProcessorManager() {
+        if (noteEventProcessorManager == null) {
+            noteEventProcessorManager = new NoteEventProcessorManager(this);
+        }
+        return noteEventProcessorManager;
+    }
+
+    public final DeviceConfig getNoteConfig() {
+        return noteConfig;
+    }
+
+    public void updateShapeDataInfo(final Context context, final ReaderNoteDataInfo shapeDataInfo) {
         shapeDataInfo.updateDrawingArgs(getNoteDocument().getNoteDrawingArgs());
-        shapeDataInfo.setCanRedoShape(getNoteDocument().getCurrentPage(context).canRedo());
-        shapeDataInfo.setCanUndoShape(getNoteDocument().getCurrentPage(context).canUndo());
+//        shapeDataInfo.setCanRedoShape(getNoteDocument().getCurrentPage(context).canRedo());
+//        shapeDataInfo.setCanUndoShape(getNoteDocument().getCurrentPage(context).canUndo());
         shapeDataInfo.setDocumentUniqueId(getNoteDocument().getDocumentUniqueId());
     }
 
+    public ReaderDataHolder getParent() {
+        return parent;
+    }
+
+    public final NoteEventProcessorBase.InputCallback getInputCallback() {
+        NoteEventProcessorBase.InputCallback inputCallback = new NoteEventProcessorBase.InputCallback() {
+
+            @Override
+            public void onDrawingTouchDown(MotionEvent motionEvent, Shape shape) {
+                if (!shape.supportDFB()) {
+                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+                }
+            }
+
+            @Override
+            public void onDrawingTouchMove(MotionEvent motionEvent, Shape shape, boolean last) {
+                if (!shape.supportDFB() && last) {
+                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+                }
+            }
+
+            @Override
+            public void onDrawingTouchUp(MotionEvent motionEvent, Shape shape) {
+                onNewStash(shape);
+                if (!shape.supportDFB()) {
+                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+                }
+            }
+
+            public void onErasingTouchDown(final MotionEvent motionEvent, final Shape shape) {
+
+            }
+
+            public void onErasingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
+
+            }
+
+            public void onErasingTouchUp(final MotionEvent motionEvent, final Shape shape) {
+
+            }
+
+            public void onDFBShapeFinished(final Shape shape) {
+                onNewStash(shape);
+            }
+
+
+        };
+        return inputCallback;
+    }
+
     public void enableScreenPost(boolean enable) {
-        if (surfaceView != null) {
-            EpdController.enablePost(surfaceView, enable ? 1 : 0);
+        if (view != null) {
+            EpdController.enablePost(view, enable ? 1 : 0);
         }
     }
 
     public Bitmap updateRenderBitmap(final Rect viewportSize) {
         renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
         return renderBitmapWrapper.getBitmap();
+    }
+
+    // copy from render bitmap to view bitmap.
+    public void copyBitmap() {
+        if (renderBitmapWrapper == null) {
+            return;
+        }
+        final Bitmap bitmap = renderBitmapWrapper.getBitmap();
+        if (bitmap == null) {
+            return;
+        }
+        viewBitmapWrapper.copyFrom(bitmap);
+    }
+
+    public Bitmap getViewBitmap() {
+        if (viewBitmapWrapper == null) {
+            return null;
+        }
+        return viewBitmapWrapper.getBitmap();
     }
 
     public void submit(final Context context, final ReaderBaseNoteRequest request, final BaseCallback callback) {
@@ -91,6 +205,8 @@ public class NoteManager {
         if (rect != null) {
             request.setViewportSize(rect);
         }
+
+        resetNoteDataInfo();
     }
 
     private final Runnable generateRunnable(final ReaderBaseNoteRequest request) {
@@ -114,13 +230,134 @@ public class NoteManager {
     }
 
     private Rect getViewportSize() {
-        if (surfaceView != null) {
-            return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
+        if (view != null) {
+            return new Rect(0, 0, view.getWidth(), view.getHeight());
         }
         return null;
     }
 
+    private void onNewStash(final Shape shape) {
+        shapeStash.add(shape);
+    }
 
+    public final NoteDrawingArgs getNoteDrawingArgs() {
+        return noteDrawingArgs;
+    }
 
+    public void setCurrentShapeType(int type) {
+        getNoteDrawingArgs().currentShapeType = type;
+    }
 
+    public void setCurrentStrokeWidth(float w) {
+        getNoteDrawingArgs().strokeWidth = w;
+    }
+
+    public Shape createNewShape(final PageInfo pageInfo) {
+        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().currentShapeType);
+        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
+        shape.setColor(getNoteDrawingArgs().strokeColor);
+        shape.setPageUniqueId(pageInfo.getName());
+        shape.ensureShapeUniqueId();
+        currentShape = shape;
+        return shape;
+    }
+
+    public Shape getCurrentShape() {
+        return currentShape;
+    }
+
+    public boolean isDFBForCurrentShape() {
+        return ShapeFactory.isDFBShape(getNoteDrawingArgs().currentShapeType);
+    }
+
+    public void resetCurrentShape() {
+        currentShape = null;
+    }
+
+    public void onDownMessage(final Shape currentShape) {
+        if (ReaderShapeFactory.isDFBShape(currentShape.getType())) {
+            enableScreenPost(false);
+        } else {
+            enableScreenPost(true);
+        }
+    }
+
+    public void setVisiblePages(final List<PageInfo> list) {
+        visiblePages.clear();
+        visiblePages.addAll(list);
+    }
+
+    public final PageInfo hitTest(final float x, final float y) {
+        for(PageInfo pageInfo : visiblePages) {
+            if (pageInfo.getDisplayRect().contains(x, y)) {
+                return pageInfo;
+            }
+        }
+        return null;
+    }
+
+    public final RenderContext getRenderContext() {
+        return renderContext;
+    }
+
+    public final List<Shape> detachShapeStash() {
+        final List<Shape> list = shapeStash;
+        shapeStash = new ArrayList<>();
+        currentShape = null;
+        return list;
+    }
+
+    public final List<Shape> getShapeStash() {
+        return shapeStash;
+    }
+
+    public void undo(final Context context, final String pageName) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+        if (readerNotePage != null) {
+            readerNotePage.undo();
+        }
+    }
+
+    public void redo(final Context context, final String pageName) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+        if (readerNotePage != null) {
+            readerNotePage.redo();
+        }
+    }
+
+    public void saveNoteDataInfo(final ReaderBaseNoteRequest request) {
+        noteDataInfo = request.getShapeDataInfo();
+    }
+
+    public final ReaderNoteDataInfo getNoteDataInfo() {
+        return noteDataInfo;
+    }
+
+    public void resetNoteDataInfo() {
+        noteDataInfo = null;
+    }
+
+    public Shape ensureNewShape(final TouchPoint normalizedPoint, final TouchPoint screen) {
+        final PageInfo pageInfo = hitTest(normalizedPoint.x, normalizedPoint.y);
+        if (pageInfo == null) {
+            return null;
+        }
+        Shape shape = getCurrentShape();
+        if (shape == null) {
+            shape = createNewShape(pageInfo);
+            onDownMessage(shape);
+            shape.onDown(normalizedPoint, screen);
+            return shape;
+        }
+        shape.onMove(normalizedPoint, screen);
+        return shape;
+    }
+
+    public void setVisibleDrawRectF(RectF visibleDrawRectF) {
+        this.visibleDrawRectF = visibleDrawRectF;
+    }
+
+    public boolean inVisibleDrawRectF(float x, float y){
+        return visibleDrawRectF.contains(x, y);
+    }
 }

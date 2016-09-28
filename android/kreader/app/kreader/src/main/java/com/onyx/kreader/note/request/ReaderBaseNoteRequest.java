@@ -1,19 +1,22 @@
 package com.onyx.kreader.note.request;
 
 import android.graphics.*;
+import android.util.Log;
+
 import com.hanvon.core.Algorithm;
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.data.NotePage;
-import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.note.NoteManager;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
+import com.onyx.kreader.note.data.ReaderNotePage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +26,15 @@ import java.util.List;
  */
 public class ReaderBaseNoteRequest extends BaseRequest {
 
-    private volatile ShapeDataInfo shapeDataInfo;
+    private volatile ReaderNoteDataInfo shapeDataInfo;
     private String docUniqueId;
     private String parentLibraryId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private boolean debugPathBenchmark = false;
-    private boolean pauseInputProcessor = true;
-    private boolean resumeInputProcessor = false;
+    private boolean pauseRawInputProcessor = true;
+    private boolean resumeRawInputProcessor = false;
     private volatile boolean render = true;
-    private int [] renderingBuffer = null;
-    private boolean useExternal = false;
 
     public ReaderBaseNoteRequest() {
         setAbortPendingTasks(true);
@@ -71,9 +72,30 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         return viewportSize;
     }
 
+    public boolean isPauseRawInputProcessor() {
+        return pauseRawInputProcessor;
+    }
+
+    public void setPauseRawInputProcessor(boolean pauseRawInputProcessor) {
+        this.pauseRawInputProcessor = pauseRawInputProcessor;
+    }
+
+    public boolean isResumeRawInputProcessor() {
+        return resumeRawInputProcessor;
+    }
+
+    public void setResumeRawInputProcessor(boolean resumeRawInputProcessor) {
+        this.resumeRawInputProcessor = resumeRawInputProcessor;
+    }
+
     public void setVisiblePages(final List<PageInfo> pages) {
         visiblePages.clear();
         visiblePages.addAll(pages);
+    }
+
+    public void setVisiblePage(final PageInfo pageInfo) {
+        visiblePages.clear();
+        visiblePages.add(pageInfo);
     }
 
     public final List<PageInfo> getVisiblePages() {
@@ -82,6 +104,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public void beforeExecute(final NoteManager noteManager) {
         noteManager.getRequestManager().acquireWakeLock(getContext());
+        if (isPauseRawInputProcessor()) {
+            noteManager.pauseEventProcessor();
+        }
         benchmarkStart();
         invokeStartCallback(noteManager.getRequestManager());
     }
@@ -111,21 +136,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isRender()) {
-                    synchronized (parent) {
-
-                    }
-                }
-                parent.enableScreenPost(true);
-                if (getCallback() != null) {
-                    getCallback().done(ReaderBaseNoteRequest.this, getException());
-                }
-                parent.getRequestManager().releaseWakeLock();
-            }};
-
+        final Runnable runnable = postExecuteRunnable(parent);
         if (isRunInBackground()) {
             parent.getRequestManager().getLooperHandler().post(runnable);
         } else {
@@ -133,32 +144,70 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         }
     }
 
-    public final ShapeDataInfo getShapeDataInfo() {
+    private Runnable postExecuteRunnable(final NoteManager parent) {
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    parent.enableScreenPost(true);
+                    if (isRender()) {
+                        synchronized (parent) {
+                            parent.copyBitmap();
+                            parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
+                        }
+                    }
+                    BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
+                    if (isResumeRawInputProcessor()) {
+                        parent.resumeEventProcessor();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    parent.getRequestManager().releaseWakeLock();
+                }
+            }
+        };
+        return runnable;
+    }
+
+    public final ReaderNoteDataInfo getShapeDataInfo() {
         if (shapeDataInfo == null) {
-            shapeDataInfo = new ShapeDataInfo();
+            shapeDataInfo = new ReaderNoteDataInfo();
         }
         return shapeDataInfo;
     }
 
-    public void renderVisiblePages(final NoteManager parent) {
+    public boolean renderVisiblePages(final NoteManager parent) {
         synchronized (parent) {
+            boolean rendered = false;
             Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
-            bitmap.eraseColor(Color.WHITE);
+            bitmap.eraseColor(Color.TRANSPARENT);
             Canvas canvas = new Canvas(bitmap);
             Paint paint = preparePaint(parent);
 
             drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
-            prepareRenderingBuffer(bitmap);
-
             final Matrix renderMatrix = new Matrix();
-            RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);;
+            final RenderContext renderContext = parent.getRenderContext();
+            renderContext.prepareRenderingBuffer(bitmap);
+
             for (PageInfo page : getVisiblePages()) {
-                final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-                notePage.render(renderContext, null);
+                updateMatrix(renderMatrix, page);
+                renderContext.update(bitmap, canvas, paint, renderMatrix);
+                final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getName(), 0);
+                if (notePage != null) {
+                    notePage.render(renderContext, null);
+                    rendered = true;
+                }
             }
-            flushRenderingBuffer(bitmap);
-            drawRandomTestPath(canvas, paint);
+            renderContext.flushRenderingBuffer(bitmap);
+            return rendered;
         }
+    }
+
+    private void updateMatrix(final Matrix matrix, final PageInfo pageInfo) {
+        matrix.reset();
+        matrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
+        matrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
     }
 
     private Paint preparePaint(final NoteManager parent) {
@@ -168,19 +217,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         paint.setAntiAlias(true);
         paint.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
         return paint;
-    }
-
-    private void prepareRenderingBuffer(final Bitmap bitmap) {
-        if (!useExternal) {
-            return;
-        }
-        Algorithm.initializeEx(bitmap.getWidth(), bitmap.getHeight(), bitmap);
-    }
-
-    private void flushRenderingBuffer(final Bitmap bitmap) {
-        if (!useExternal) {
-            return;
-        }
     }
 
     private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {
@@ -196,7 +232,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 break;
         }
         drawBackgroundResource(canvas, paint, bgResID);
-
     }
 
     private void drawBackgroundResource(Canvas canvas, Paint paint, int resID) {
@@ -210,12 +245,12 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     private boolean isRenderRandomTestPath() {
-        return debugPathBenchmark;
+        return debugPathBenchmark && BuildConfig.DEBUG;
     }
 
-    private void drawRandomTestPath(final Canvas canvas, final Paint paint) {
+    private boolean drawRandomTestPath(final Canvas canvas, final Paint paint) {
         if (!isRenderRandomTestPath()) {
-            return;
+            return false;
         }
         Path path = new Path();
         int width = getViewportSize().width();
@@ -229,15 +264,16 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             float yy2 = TestUtils.randInt(0, height);
             path.quadTo((xx + xx2) / 2, (yy + yy2) / 2, xx2, yy2);
             if (isAbort()) {
-                return;
+                return false;
             }
         }
         long ts = System.currentTimeMillis();
         canvas.drawPath(path, paint);
+        return true;
     }
 
-    public void currentPageAsVisiblePage(final NoteManager helper) {
-        final NotePage notePage = helper.getNoteDocument().getCurrentPage(getContext());
+    public void currentPageAsVisiblePage(final NoteManager noteManager) {
+        final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), "", 0);
         getVisiblePages().clear();
         PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
         pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height()));
@@ -253,7 +289,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public void updateShapeDataInfo(final NoteManager parent) {
-        final ShapeDataInfo shapeDataInfo = getShapeDataInfo();
+        final ReaderNoteDataInfo shapeDataInfo = getShapeDataInfo();
         parent.updateShapeDataInfo(getContext(), shapeDataInfo);
     }
 

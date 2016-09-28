@@ -9,9 +9,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.ReaderUserDataInfo;
@@ -23,6 +20,10 @@ import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.kreader.note.NoteManager;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
+import com.onyx.kreader.note.request.FlushShapeListRequest;
+import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.events.*;
@@ -31,7 +32,9 @@ import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,20 +47,19 @@ public class ReaderDataHolder {
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
-    private ShapeDataInfo shapeDataInfo;
+
+    private HandlerManager handlerManager;
+    private ReaderSelectionManager selectionManager;
+    private ReaderTtsManager ttsManager;
+    private NoteManager noteManager;
+    private EventBus eventBus = new EventBus();
+
     private boolean preRender = true;
     private boolean preRenderNext = true;
     private boolean documentOpened = false;
 
     private int displayWidth;
     private int displayHeight;
-
-    private HandlerManager handlerManager;
-    private ReaderSelectionManager selectionManager;
-    private ReaderTtsManager ttsManager;
-    private NoteViewHelper noteViewHelper;
-    private EventBus eventBus = new EventBus();
-
     private int optionsSkippedTimes = 0;
 
     /**
@@ -65,7 +67,7 @@ public class ReaderDataHolder {
      */
     private Set<Object> activeDialogs = new HashSet<>();
 
-    public ReaderDataHolder(Context context){
+    public ReaderDataHolder(Context context) {
         this.context = context;
     }
 
@@ -85,31 +87,16 @@ public class ReaderDataHolder {
         readerUserDataInfo = request.getReaderUserDataInfo();
     }
 
-    public void saveShapeDataInfo(final BaseNoteRequest request) {
-        shapeDataInfo = request.getShapeDataInfo();
-    }
-
-    public boolean hasShapes() {
-        if (shapeDataInfo == null) {
-            return false;
-        }
-        return shapeDataInfo.hasShapes();
-    }
-
-    public void resetShapeData() {
-        shapeDataInfo = null;
-    }
-
     public final ReaderViewInfo getReaderViewInfo() {
         return readerViewInfo;
     }
 
-    public final ReaderUserDataInfo getReaderUserDataInfo() {
-        return readerUserDataInfo;
+    public final List<PageInfo> getVisiblePages() {
+        return getReaderViewInfo().getVisiblePages();
     }
 
-    public final ShapeDataInfo getShapeDataInfo() {
-        return shapeDataInfo;
+    public final ReaderUserDataInfo getReaderUserDataInfo() {
+        return readerUserDataInfo;
     }
 
     public void setPreRenderNext(boolean preRenderNext) {
@@ -132,7 +119,7 @@ public class ReaderDataHolder {
     }
 
     public void onDocumentInitRendered() {
-        getEventBus().post(new DocumentInitRendered());
+        getEventBus().post(new DocumentInitRenderedEvent());
     }
 
     public boolean isDocumentOpened() {
@@ -219,15 +206,15 @@ public class ReaderDataHolder {
 
     private void updateReaderMenuState() {
         if (ShowReaderMenuAction.isReaderMenuShown()) {
-            new ShowReaderMenuAction().execute(ReaderDataHolder.this);
+            new ShowReaderMenuAction().execute(ReaderDataHolder.this, null);
         }
     }
 
-    public NoteViewHelper getNoteViewHelper() {
-        if (noteViewHelper == null) {
-            noteViewHelper = new NoteViewHelper();
+    public NoteManager getNoteManager() {
+        if (noteManager == null) {
+            noteManager = new NoteManager(this);
         }
-        return noteViewHelper;
+        return noteManager;
     }
 
     public String getDocumentPath() {
@@ -282,7 +269,7 @@ public class ReaderDataHolder {
     }
 
     private void beforeSubmitRequest() {
-        resetShapeData();
+        getNoteManager().resetNoteDataInfo();
     }
 
     private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
@@ -319,11 +306,11 @@ public class ReaderDataHolder {
     }
 
     public void changeEpdUpdateMode(final UpdateMode mode) {
-        eventBus.post(new ChangeEpdUpdateMode(mode));
+        eventBus.post(new ChangeEpdUpdateModeEvent(mode));
     }
 
     public void resetEpdUpdateMode() {
-        eventBus.post(new ResetEpdUpdateMode());
+        eventBus.post(new ResetEpdUpdateModeEvent());
     }
 
     public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e, boolean applyGCIntervalUpdate) {
@@ -374,19 +361,28 @@ public class ReaderDataHolder {
         activeDialogs.clear();
     }
 
-    public void destroy() {
-        closeDocument();
-        closeTts();
+    public void destroy(final BaseCallback callback) {
         closeActiveDialogs();
+        closeTts();
+        closeNoteManager();
+        closeDocument(callback);
     }
 
-    private void closeDocument() {
+    private void closeDocument(final BaseCallback callback) {
         documentOpened = false;
-        if (reader != null && reader.getDocument() != null) {
-            CloseRequest closeRequest = new CloseRequest();
-            submitNonRenderRequest(closeRequest);
+        if (reader == null || reader.getDocument() == null) {
+            BaseCallback.invoke(callback, null, null);
+            return;
         }
-        ReaderManager.releaseReader(documentPath);
+
+        final CloseRequest closeRequest = new CloseRequest();
+        submitNonRenderRequest(closeRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ReaderManager.releaseReader(documentPath);
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
     }
 
     private void closeTts() {
@@ -395,4 +391,13 @@ public class ReaderDataHolder {
             ttsManager = null;
         }
     }
+
+    private void closeNoteManager() {
+        if (noteManager == null) {
+            return;
+        }
+
+        getNoteManager().stopEventProcessor();
+    }
 }
+

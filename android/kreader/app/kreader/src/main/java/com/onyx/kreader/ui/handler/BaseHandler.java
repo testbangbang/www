@@ -1,19 +1,25 @@
 package com.onyx.kreader.ui.handler;
 
 import android.graphics.Point;
+import android.os.Debug;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.ui.actions.NextScreenAction;
+import com.onyx.kreader.ui.actions.PanAction;
+import com.onyx.kreader.ui.actions.PreviousScreenAction;
+import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.ClosePopupEvent;
+import com.onyx.kreader.ui.events.QuitEvent;
 
 /**
  * Created by ming on 16/7/27.
  */
 public abstract class BaseHandler {
-    private static final String TAG = BaseHandler.class.getSimpleName();
 
     public static  final int KEYCDOE_SCRIBE = 213;
     public static  final int KEYCDOE_ERASE = 214;
@@ -42,6 +48,10 @@ public abstract class BaseHandler {
         return parent;
     }
 
+    public void onActivate(final ReaderDataHolder readerDataHolder) {}
+
+    public void onDeactivate(final ReaderDataHolder readerDataHolder) {}
+
     public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
         startPoint = new Point((int)e.getX(), (int)e.getY());
         actionUp = false;
@@ -49,21 +59,8 @@ public abstract class BaseHandler {
         return true;
     }
 
-    public boolean preKeyDown(ReaderDataHolder readerDataHolder,int keyCode, KeyEvent event) {
-        return false;
-    }
-
     public boolean onKeyDown(ReaderDataHolder readerDataHolder,int keyCode, KeyEvent event) {
-        preKeyDown(readerDataHolder, keyCode, event);
-
-        final String key = KeyEvent.keyCodeToString(keyCode);
-        final String action = getParent().getKeyAction(TAG, key);
-        final String args = getParent().getKeyArgs(TAG, key);
-        if (StringUtils.isNullOrEmpty(action)) {
-            Log.w(TAG, "No action found for key: " + key);
-        }
-
-        return parent.processKeyDown(readerDataHolder, action, args);
+        return false;
     }
 
     public boolean onKeyUp(ReaderDataHolder readerDataHolder,int keyCode, KeyEvent event) {
@@ -145,11 +142,62 @@ public abstract class BaseHandler {
         return false;
     }
 
-    public void nextPage(ReaderDataHolder readerDataHolder) {}
+    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder) {}
 
-    public void prevPage(ReaderDataHolder readerDataHolder) {}
+    public void beforeChangePosition(final ReaderDataHolder readerDataHolder) {}
 
-    public void nextScreen(ReaderDataHolder readerDataHolder) {}
+    public void afterChangePosition(final ReaderDataHolder readerDataHolder) {}
 
-    public void prevScreen(ReaderDataHolder readerDataHolder) {}
+    public void nextPage(ReaderDataHolder readerDataHolder) {
+        nextScreen(readerDataHolder);
+    }
+
+    public void prevPage(ReaderDataHolder readerDataHolder) {
+        prevScreen(readerDataHolder);
+    }
+
+    public void nextScreen(ReaderDataHolder readerDataHolder) {
+        readerDataHolder.setPreRenderNext(true);
+        final NextScreenAction action = new NextScreenAction();
+        action.execute(readerDataHolder, null);
+    }
+
+    public void prevScreen(ReaderDataHolder readerDataHolder) {
+        readerDataHolder.setPreRenderNext(false);
+        final PreviousScreenAction action = new PreviousScreenAction();
+        action.execute(readerDataHolder, null);
+    }
+
+    public int panOffset() {
+        return 150;
+    }
+
+    public void panLeft(final ReaderDataHolder readerDataHolder) {
+        pan(readerDataHolder, -panOffset(), 0);
+    }
+
+    public void panRight(final ReaderDataHolder readerDataHolder) {
+        pan(readerDataHolder, panOffset(), 0);
+    }
+
+    public void panUp(final ReaderDataHolder readerDataHolder) {
+        pan(readerDataHolder, 0, -panOffset());
+    }
+
+    public void panDown(final ReaderDataHolder readerDataHolder) {
+        pan(readerDataHolder, 0, panOffset());
+    }
+
+    public void pan(final ReaderDataHolder readerDataHolder, int x, int y) {
+        final PanAction panAction = new PanAction(x, y);
+        panAction.execute(readerDataHolder, null);
+    }
+
+    public void close(final ReaderDataHolder readerDataHolder) {
+        if (ShowReaderMenuAction.isReaderMenuShown()) {
+            readerDataHolder.getEventBus().post(new ClosePopupEvent());
+            return;
+        }
+        readerDataHolder.getEventBus().post(new QuitEvent());
+    }
 }

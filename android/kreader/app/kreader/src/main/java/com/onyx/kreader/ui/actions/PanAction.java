@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import android.graphics.*;
 import android.view.SurfaceHolder;
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.request.PanRequest;
@@ -21,11 +22,11 @@ public class PanAction extends BaseAction {
         offsetY = y;
     }
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         translateMatrix.reset();
         ReaderDeviceManager.exitAnimationUpdate(false);
         final BaseReaderRequest request = new PanRequest(offsetX, offsetY);
-        readerDataHolder.submitRenderRequest(request);
+        readerDataHolder.submitRenderRequest(request, callback);
     }
 
     public static void panning(final ReaderDataHolder readerDataHolder, int offsetX, int offsetY) {

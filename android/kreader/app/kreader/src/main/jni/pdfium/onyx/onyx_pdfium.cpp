@@ -483,7 +483,6 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
         return false;
     }
     int objCount = FPDFPage_CountObject(page);
-    LOGI("page %d, object count: %d", pageIndex, objCount);
     for (int i = 0; i < objCount; i++) {
         CPDF_PageObject *obj = static_cast<CPDF_PageObject *>(FPDFPage_GetObject(page, i));
         if (obj == NULL) {
@@ -491,7 +490,6 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
             return false;
         }
         if (obj->m_Type != FPDF_PAGEOBJ_FORM && obj->m_Type != FPDF_PAGEOBJ_TEXT) {
-            LOGE("non-text page object found: %d", obj->m_Type);
             return false;
         }
     }

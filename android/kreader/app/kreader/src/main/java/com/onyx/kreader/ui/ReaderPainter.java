@@ -1,29 +1,25 @@
 package com.onyx.kreader.ui;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.PathEffect;
-import android.graphics.PixelXorXfermode;
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
+import android.graphics.*;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.PageAnnotation;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.kreader.note.NoteManager;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
@@ -37,29 +33,35 @@ import java.util.List;
 public class ReaderPainter {
 
     private static final PixelXorXfermode xorMode = new PixelXorXfermode(Color.WHITE);
+    private static final String TAG = ReaderPainter.class.getCanonicalName();
     private static boolean debugTestTouchPointCircle = false;
     private static boolean debugTestOffsetTouchPointCircle = false;
+    private static boolean debugPageInfo = false;
 
     private enum DrawHighlightPaintStyle {UnderLine, Fill}
 
     public ReaderPainter() {
     }
 
-    public void drawPage(Context context, Canvas canvas, final Bitmap bitmap, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, ReaderSelectionManager selectionManager, NoteViewHelper noteViewHelper, ShapeDataInfo shapeDataInfo) {
+    public void drawPage(Context context,
+                         Canvas canvas,
+                         final Bitmap bitmap,
+                         final ReaderUserDataInfo userDataInfo,
+                         final ReaderViewInfo viewInfo,
+                         ReaderSelectionManager selectionManager,
+                         NoteManager noteManager) {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
         drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
-        if (SingletonSharedPreference.isShowAnnotation(context)) {
-            drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
-        }
-        if (SingletonSharedPreference.isShowBookmark(context)) {
-            drawBookmark(context, canvas, userDataInfo, viewInfo);
-        }
-        drawShapes(canvas, paint, noteViewHelper, shapeDataInfo);
+        drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+        drawBookmark(context, canvas, userDataInfo, viewInfo);
+        drawShapes(context, canvas, paint, noteManager);
+        drawStashShapes(context, canvas, paint, noteManager, viewInfo);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
+        drawPageInfo(canvas, paint, viewInfo);
     }
 
     private void drawBackground(Canvas canvas, Paint paint) {
@@ -73,6 +75,18 @@ public class ReaderPainter {
             return;
         }
         canvas.drawBitmap(bitmap, 0, 0, paint);
+    }
+
+    private void drawPageInfo(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
+        if (!(debugPageInfo && BuildConfig.DEBUG)) {
+            return;
+        }
+        paint.setStrokeWidth(3.0f);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.BLACK);
+        for(PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            canvas.drawRect(pageInfo.getDisplayRect(), paint);
+        }
     }
 
     private void drawViewportOverlayIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
@@ -101,6 +115,9 @@ public class ReaderPainter {
     }
 
     private void drawAnnotations(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, DrawHighlightPaintStyle paintStyle) {
+        if (!SingletonSharedPreference.isShowAnnotation(context)) {
+            return;
+        }
         for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
             if (userDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = userDataInfo.getPageAnnotations(pageInfo);
@@ -116,6 +133,9 @@ public class ReaderPainter {
     }
 
     private void drawBookmark(Context context, Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+        if (!SingletonSharedPreference.isShowBookmark(context)) {
+            return;
+        }
         Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(context, hasBookmark(userDataInfo, viewInfo));
         final Point point = BookmarkIconFactory.bookmarkPosition(canvas.getWidth(), bitmap);
         canvas.drawBitmap(bitmap, point.x, point.y, null);
@@ -155,7 +175,7 @@ public class ReaderPainter {
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(3);
         for (int i = 0; i < rectangles.size(); ++i) {
-            canvas.drawLine(rectangles.get(i).left,rectangles.get(i).bottom,rectangles.get(i).right,rectangles.get(i).bottom,paint);
+            canvas.drawLine(rectangles.get(i).left, rectangles.get(i).bottom, rectangles.get(i).right, rectangles.get(i).bottom, paint);
         }
     }
 
@@ -181,32 +201,64 @@ public class ReaderPainter {
         selectionManager.draw(canvas, paint, xor);
     }
 
-    private void drawShapes(final Canvas canvas, Paint paint, NoteViewHelper noteViewHelper, ShapeDataInfo shapeDataInfo) {
-        if (true || !isShapeBitmapReady(noteViewHelper, shapeDataInfo)) {
+    private void drawShapes(final Context context,
+                            final Canvas canvas,
+                            final Paint paint,
+                            final NoteManager noteManager) {
+        if (!SingletonSharedPreference.isShowNote(context)) {
             return;
         }
-        final Bitmap bitmap = noteViewHelper.getViewBitmap();
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
-        canvas.drawBitmap(bitmap, 0, 0, paint);
+        final ReaderNoteDataInfo noteDataInfo = noteManager.getNoteDataInfo();
+        if (noteDataInfo == null || !isShapeBitmapReady(noteManager, noteDataInfo)) {
+            return;
+        }
+        final Bitmap bitmap = noteManager.getViewBitmap();
+        Paint myPainter = new Paint();
+        myPainter.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
+        canvas.drawBitmap(bitmap, 0, 0, myPainter);
     }
+
+    private void drawStashShapes(final Context context,
+                            final Canvas canvas,
+                            final Paint paint,
+                            final NoteManager noteManager,
+                            final ReaderViewInfo viewInfo) {
+        if (!SingletonSharedPreference.isShowNote(context)) {
+            return;
+        }
+        if (noteManager.isDFBForCurrentShape()) {
+            return;
+        }
+        final PageInfo pageInfo = viewInfo.getFirstVisiblePage();
+        final Matrix renderMatrix = new Matrix();
+        RenderContext renderContext = RenderContext.create(canvas, paint, renderMatrix);
+        renderMatrix.reset();
+        renderMatrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
+        renderMatrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
+        if (!CollectionUtils.isNullOrEmpty(noteManager.getShapeStash())) {
+            for (Shape shape : noteManager.getShapeStash()) {
+                shape.render(renderContext);
+            }
+        }
+        if (noteManager.getCurrentShape() != null) {
+            noteManager.getCurrentShape().render(renderContext);
+        }
+    }
+
 
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
         return userDataInfo.hasBookmark(viewInfo.getFirstVisiblePage());
     }
 
-    private boolean hasShapes(ShapeDataInfo shapeDataInfo) {
+    private boolean hasShapes(ReaderNoteDataInfo shapeDataInfo) {
         if (shapeDataInfo == null) {
             return false;
         }
         return shapeDataInfo.hasShapes();
     }
 
-    private boolean isShapeBitmapReady(NoteViewHelper noteViewHelper, ShapeDataInfo shapeDataInfo) {
-        if (!hasShapes(shapeDataInfo)) {
-            return false;
-        }
-
-        final Bitmap bitmap = noteViewHelper.getViewBitmap();
+    private boolean isShapeBitmapReady(NoteManager noteManager, ReaderNoteDataInfo shapeDataInfo) {
+        final Bitmap bitmap = noteManager.getViewBitmap();
         if (bitmap == null) {
             return false;
         }
