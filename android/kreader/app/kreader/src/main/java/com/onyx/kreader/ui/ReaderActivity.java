@@ -86,12 +86,12 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        ViewTreeObserver observer = surfaceView.getViewTreeObserver();
+        final ViewTreeObserver observer = surfaceView.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
             @Override
             public void onGlobalLayout() {
-                removeGlobalOnLayoutListener(this);
+                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 onSurfaceViewSizeChanged();
                 if (!getReaderDataHolder().isDocumentOpened()) {
                     handleActivityIntent();
@@ -250,23 +250,17 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceView.requestFocusFromTouch();
 
         // make sure we openFileFromIntent the doc after surface view is layouted correctly.
-        surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        final ViewTreeObserver observer = surfaceView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                removeGlobalOnLayoutListener(this);
+                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 onSurfaceViewSizeChanged();
                 handleActivityIntent();
             }
         });
     }
 
-    private void removeGlobalOnLayoutListener(ViewTreeObserver.OnGlobalLayoutListener listener) {
-        if (Build.VERSION.SDK_INT < 16) {
-            TreeObserverUtils.removeLayoutListenerPre16(surfaceView.getViewTreeObserver(), listener);
-        } else {
-            TreeObserverUtils.removeLayoutListenerPost16(surfaceView.getViewTreeObserver(), listener);
-        }
-    }
 
     private void initReaderDataHolder() {
         readerDataHolder = new ReaderDataHolder(this);
@@ -288,7 +282,7 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
                         surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
