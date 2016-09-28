@@ -43,6 +43,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.dialog.DialogExport;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
@@ -197,6 +198,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         startNoteDrawing(readerDataHolder);
                         break;
                     case DIRECTORY_EXPORT:
+                        showExportDialog(readerDataHolder);
                         break;
                     case TTS:
                         showTtsDialog(readerDataHolder);
@@ -343,7 +345,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showTocDialog(final ReaderDataHolder readerDataHolder, DialogTableOfContent.DirectoryTab tab) {
-        final GetDocumentInfoAction action = new GetDocumentInfoAction(tab);
+        final GetDocumentInfoChain action = new GetDocumentInfoChain(tab);
         action.execute(readerDataHolder, null);
     }
 
@@ -378,6 +380,13 @@ public class ShowReaderMenuAction extends BaseAction {
         Dialog dlg = new DialogBrightness(readerDataHolder.getContext());
         dlg.show();
         readerDataHolder.addActiveDialog(dlg);
+    }
+
+    private void showExportDialog(ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
+        Dialog exportDialog = new DialogExport(readerDataHolder);
+        exportDialog.show();
+        readerDataHolder.addActiveDialog(exportDialog);
     }
 
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {

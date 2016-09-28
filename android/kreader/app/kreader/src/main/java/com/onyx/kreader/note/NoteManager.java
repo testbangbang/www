@@ -3,6 +3,7 @@ package com.onyx.kreader.note;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -52,6 +53,7 @@ public class NoteManager {
     private List<PageInfo> visiblePages = new ArrayList<>();
     private ReaderDataHolder parent;
     private ReaderNoteDataInfo noteDataInfo;
+    private RectF visibleDrawRectF;
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -81,10 +83,10 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void updateSurfaceView(final Context context, final View sv) {
+    public void updateHostView(final Context context, final View sv, Rect visibleDrawRect) {
         view = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
-        getNoteEventProcessorManager().update(view, noteConfig);
+        getNoteEventProcessorManager().update(view, noteConfig, visibleDrawRect);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {
@@ -351,4 +353,11 @@ public class NoteManager {
         return shape;
     }
 
+    public void setVisibleDrawRectF(RectF visibleDrawRectF) {
+        this.visibleDrawRectF = visibleDrawRectF;
+    }
+
+    public boolean inVisibleDrawRectF(float x, float y){
+        return visibleDrawRectF.contains(x, y);
+    }
 }

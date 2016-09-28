@@ -25,7 +25,7 @@ public class GetNotePageListAction extends BaseAction{
             @Override
             public void done(BaseRequest request, Throwable e) {
                 scribblePages = noteRequest.getPageList();
-                callback.done(request, e);
+                BaseCallback.invoke(callback, request, e);
             }
         });
     }

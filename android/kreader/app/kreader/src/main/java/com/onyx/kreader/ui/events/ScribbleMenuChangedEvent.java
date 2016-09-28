@@ -6,7 +6,23 @@ package com.onyx.kreader.ui.events;
 
 public class ScribbleMenuChangedEvent {
 
-    public static ScribbleMenuChangedEvent create() {
-        return new ScribbleMenuChangedEvent();
+    private int bottomOfTopToolBar;
+    private int topOfBottomToolBar;
+
+    public ScribbleMenuChangedEvent(int bottomOfTopToolBar, int topOfBottomToolBar) {
+        this.bottomOfTopToolBar = bottomOfTopToolBar;
+        this.topOfBottomToolBar = topOfBottomToolBar;
+    }
+
+    public static ScribbleMenuChangedEvent create(int bottomToolBarTop, int topToolBarBottom) {
+        return new ScribbleMenuChangedEvent(bottomToolBarTop, topToolBarBottom);
+    }
+
+    public int getBottomOfTopToolBar() {
+        return bottomOfTopToolBar;
+    }
+
+    public int getTopOfBottomToolBar() {
+        return topOfBottomToolBar;
     }
 }
