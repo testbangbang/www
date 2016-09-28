@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
+import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -486,6 +488,19 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
+        if (SingletonSharedPreference.isShowQuitDialog(ReaderActivity.this)){
+            DialogHelp.getConfirmDialog(ReaderActivity.this, getString(R.string.sure_exit), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    close();
+                }
+            }).show();
+        }else {
+            close();
+        }
+    }
+
+    private void close(){
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
