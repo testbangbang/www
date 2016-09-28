@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -18,6 +19,8 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.utils.TreeObserverUtils;
+
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
@@ -34,6 +37,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private ViewGroup parent;
+    private View hostView;
     private OnyxToolbar bottomToolbar;
     private OnyxToolbar topToolbar;
     private View fullToolbar;
@@ -44,8 +48,11 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private ScribbleMenuAction selectEraserAction = ScribbleMenuAction.ERASER_PART;
     private ActionCallback actionCallback;
 
-    public ShowScribbleMenuAction(ViewGroup parent, final ActionCallback actionCallback) {
+    public ShowScribbleMenuAction(ViewGroup parent,
+                                  final View hostView,
+                                  final ActionCallback actionCallback) {
         this.parent = parent;
+        this.hostView = hostView;
         this.actionCallback = actionCallback;
     }
 
@@ -57,7 +64,16 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create());
     }
 
-    public void show(ReaderDataHolder readerDataHolder) {
+    public void show(final ReaderDataHolder readerDataHolder) {
+        final ViewTreeObserver observer = hostView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                TreeObserverUtils.removeGlobalOnLayoutListener(observer, this);
+                readerDataHolder.getNoteManager().updateSurfaceView(readerDataHolder.getContext(), hostView);
+            }
+        });
+
         topToolbar = createScribbleTopToolbar(readerDataHolder);
         parent.addView(topToolbar);
 
@@ -67,6 +83,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         fullToolbar = createFullScreenToolbar(readerDataHolder);
         parent.addView(fullToolbar);
         fullToolbar.setVisibility(View.GONE);
+
     }
 
     private OnyxToolbar createScribbleBottomToolbar(final ReaderDataHolder readerDataHolder) {

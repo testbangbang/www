@@ -57,7 +57,7 @@ public class NoteEventProcessorManager {
         detectTouchType();
         view = targetView;
         final Rect rect = new Rect();
-        view.getLocalVisibleRect(rect);
+        view.getDrawingRect(rect);
         OnyxMatrix viewMatrix = new OnyxMatrix();
         viewMatrix.postRotate(noteConfig.getViewPostOrientation());
         viewMatrix.postTranslate(noteConfig.getViewPostTx(), noteConfig.getViewPostTy());

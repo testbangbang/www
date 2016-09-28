@@ -422,6 +422,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
+                readerActivity.getSurfaceView(),
                 getScribbleActionCallback(readerDataHolder));
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
