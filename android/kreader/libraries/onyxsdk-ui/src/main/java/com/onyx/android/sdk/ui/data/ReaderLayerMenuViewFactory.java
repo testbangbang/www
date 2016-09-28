@@ -6,17 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
-import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.R;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,7 +40,14 @@ public class ReaderLayerMenuViewFactory {
 
         public void setMenuItem(ReaderLayerMenuItem item) {
             ((ImageView)view.findViewById(R.id.imageview_icon)).setImageResource(item.getDrawableResourceId());
-            ((TextView)view.findViewById(R.id.textview_title)).setText(item.getTitleResourceId());
+            int titleResId = item.getTitleResourceId();
+            TextView titleView = ((TextView)view.findViewById(R.id.textview_title));
+            if (titleResId > 0){
+                titleView.setText(titleResId);
+            }else {
+                titleView.setVisibility(View.GONE);
+            }
+
             view.setTag(item);
         }
     }
@@ -63,7 +67,12 @@ public class ReaderLayerMenuViewFactory {
         if (parent.getAction() == ReaderMenuAction.FONT) {
             return createFontStyleView(context, items, state, callback);
         }
-        return createSimpleButtonContainerView(context, items, state, callback);
+
+        View subView = createSimpleButtonContainerView(context, items, state, callback);
+        if(mainMenuContainerViewHeight > 0){
+            subView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mainMenuContainerViewHeight));
+        }
+        return subView;
     }
 
     private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {

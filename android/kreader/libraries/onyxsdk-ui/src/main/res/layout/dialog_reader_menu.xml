@@ -146,12 +146,13 @@
                 android:layout_height="@dimen/dialog_reader_menu_top_divider_height"/>
 
         <RelativeLayout
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
             <TextView
-                    android:padding="3dp"
                     android:layout_centerVertical="true"
                     android:background="@drawable/imagebtn_bg"
                     android:id="@+id/text_view_progress"
