@@ -30,7 +30,7 @@ public class DialogHelp {
         return builder;
     }
 
-    public static Builder getInputDialog(Context context, String title, EditText editText, DialogInterface.OnClickListener onClickListener){
+    public static Builder getInputDialog(Context context, String title, EditText editText, DialogInterface.OnClickListener onClickListener) {
         Builder builder = getDialog(context);
 
         TextView titleView = new TextView(context);
@@ -48,7 +48,7 @@ public class DialogHelp {
         return builder;
     }
 
-    public static class Builder extends AlertDialog.Builder{
+    public static class Builder extends AlertDialog.Builder {
 
         public Builder(Context context) {
             super(context);
@@ -62,7 +62,6 @@ public class DialogHelp {
         public AlertDialog create() {
             AlertDialog dialog = super.create();
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.alert_bg);
-//            dialog.getWindow().setLayout((int)getContext().getResources().getDimension(R.dimen.alert_dialog_width), ViewGroup.LayoutParams.WRAP_CONTENT);
             return dialog;
         }
 

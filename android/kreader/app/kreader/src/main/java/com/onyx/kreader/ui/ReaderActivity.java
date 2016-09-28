@@ -49,6 +49,7 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
+
 import org.greenrobot.eventbus.Subscribe;
 
 /**
@@ -143,7 +144,7 @@ public class ReaderActivity extends ActionBarActivity {
         return processKeyUp(keyCode, event);
     }
 
-    private final ReaderDataHolder getReaderDataHolder(){
+    private final ReaderDataHolder getReaderDataHolder() {
         return readerDataHolder;
     }
 
@@ -170,7 +171,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initStatusBar() {
-        statusBar = (ReaderStatusBar)findViewById(R.id.status_bar);
+        statusBar = (ReaderStatusBar) findViewById(R.id.status_bar);
         statusBar.setCallback(new ReaderStatusBar.Callback() {
             @Override
             public void onGotoPage() {
@@ -186,7 +187,7 @@ public class ReaderActivity extends ActionBarActivity {
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_format_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_graphic_show_key, false));
 
-        if (!SingletonSharedPreference.isReaderStatusBarEnabled(this)){
+        if (!SingletonSharedPreference.isReaderStatusBarEnabled(this)) {
             statusBar.setVisibility(View.GONE);
         } else {
             statusBar.setVisibility(View.VISIBLE);
@@ -212,7 +213,7 @@ public class ReaderActivity extends ActionBarActivity {
                     return;
                 }
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
-                    surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 } else {
                     readerDataHolder.redrawPage();
@@ -406,10 +407,10 @@ public class ReaderActivity extends ActionBarActivity {
         int bottomOfTopToolBar = event.getBottomOfTopToolBar();
         int topOfBottomToolBar = event.getTopOfBottomToolBar();
 
-        if (bottomOfTopToolBar > 0){
+        if (bottomOfTopToolBar > 0) {
             rect.top = Math.max(rect.top, bottomOfTopToolBar);
         }
-        if (topOfBottomToolBar > 0){
+        if (topOfBottomToolBar > 0) {
             rect.bottom = Math.min(rect.bottom, topOfBottomToolBar);
         }
 
@@ -488,19 +489,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
-        if (SingletonSharedPreference.isShowQuitDialog(ReaderActivity.this)){
-            DialogHelp.getConfirmDialog(ReaderActivity.this, getString(R.string.sure_exit), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    close();
-                }
-            }).show();
-        }else {
-            close();
-        }
-    }
-
-    private void close(){
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override

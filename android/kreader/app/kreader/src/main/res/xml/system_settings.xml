@@ -8,14 +8,6 @@
         android:summaryOff="@string/settings_disable"
         android:defaultValue="false"
         android:title="@string/settings_close_dialog_tittle"/>
-
-    <!--<CheckBoxPreference-->
-        <!--android:key="@string/settings_reflow_cache_key"-->
-        <!--android:layout="@layout/settings_custom_preference_item"-->
-        <!--android:summaryOn="@string/settings_enable"-->
-        <!--android:summaryOff="@string/settings_disable"-->
-        <!--android:defaultValue="true"-->
-        <!--android:title="@string/settings_reflow_cache_tittle"/>-->
     <!--<CheckBoxPreference-->
         <!--android:key="@string/setting_save_reader_option_paginally_key"-->
         <!--android:layout="@layout/settings_custom_preference_item"-->

@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class ReaderLayerMenuViewFactory {
 
-    public static int mainMenuContainerViewHeight  = 0;
+    public static int mainMenuContainerViewHeight = 0;
 
     private static class MainMenuItemViewHolder extends RecyclerView.ViewHolder {
         private View view;
@@ -33,18 +33,18 @@ public class ReaderLayerMenuViewFactory {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callback.onMenuItemClicked((ReaderLayerMenuItem)v.getTag());
+                    callback.onMenuItemClicked((ReaderLayerMenuItem) v.getTag());
                 }
             });
         }
 
         public void setMenuItem(ReaderLayerMenuItem item) {
-            ((ImageView)view.findViewById(R.id.imageview_icon)).setImageResource(item.getDrawableResourceId());
+            ((ImageView) view.findViewById(R.id.imageview_icon)).setImageResource(item.getDrawableResourceId());
             int titleResId = item.getTitleResourceId();
-            TextView titleView = ((TextView)view.findViewById(R.id.textview_title));
-            if (titleResId > 0){
+            TextView titleView = ((TextView) view.findViewById(R.id.textview_title));
+            if (titleResId > 0) {
                 titleView.setText(titleResId);
-            }else {
+            } else {
                 titleView.setVisibility(View.GONE);
             }
 
@@ -53,7 +53,7 @@ public class ReaderLayerMenuViewFactory {
     }
 
     public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        final View view =  createSimpleButtonContainerView(context, items, state, callback);
+        final View view = createSimpleButtonContainerView(context, items, state, callback);
         view.post(new Runnable() {
             @Override
             public void run() {
@@ -69,15 +69,15 @@ public class ReaderLayerMenuViewFactory {
         }
 
         View subView = createSimpleButtonContainerView(context, items, state, callback);
-        if(mainMenuContainerViewHeight > 0){
+        if (mainMenuContainerViewHeight > 0) {
             subView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mainMenuContainerViewHeight));
         }
         return subView;
     }
 
     private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        final RecyclerView view = (RecyclerView)LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(context,1);
+        final RecyclerView view = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
         gridLayoutManager.setSpanCount(6);
         view.setLayoutManager(gridLayoutManager);
         final LayoutInflater inflater = LayoutInflater.from(context);
@@ -89,7 +89,7 @@ public class ReaderLayerMenuViewFactory {
 
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                ((MainMenuItemViewHolder)holder).setMenuItem(items.get(position));
+                ((MainMenuItemViewHolder) holder).setMenuItem(items.get(position));
             }
 
             @Override
@@ -111,6 +111,7 @@ public class ReaderLayerMenuViewFactory {
 
     private static final HashMap<Integer, ReaderMenuAction> fontSizeViewItemMap;
     private static final HashMap<Integer, ReaderMenuAction> fontStyleViewItemMap;
+
     static {
         fontSizeViewItemMap = new HashMap<>();
         fontSizeViewItemMap.put(R.id.text_view_font_size_0, ReaderMenuAction.FONT_SET_FONT_SIZE);
