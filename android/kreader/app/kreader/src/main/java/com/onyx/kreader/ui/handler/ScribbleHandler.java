@@ -2,11 +2,8 @@ package com.onyx.kreader.ui.handler;
 
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.note.actions.FlushNoteAction;
+
 import com.onyx.kreader.note.actions.StopNoteActionChain;
-import com.onyx.kreader.ui.actions.ActionChain;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 
@@ -24,6 +21,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     public void onActivate(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.getNoteManager().setVisiblePages(readerDataHolder.getVisiblePages());
         readerDataHolder.getNoteManager().startEventProcessor();
     }
 
@@ -68,6 +66,7 @@ public class ScribbleHandler extends BaseHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
+
         return readerDataHolder.getNoteManager().getNoteEventProcessorManager().onTouchEvent(e);
     }
 
@@ -79,5 +78,4 @@ public class ScribbleHandler extends BaseHandler {
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain();
         stopNoteActionChain.execute(readerDataHolder, null);
     }
-
 }

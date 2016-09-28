@@ -43,6 +43,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.dialog.DialogExport;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
@@ -197,6 +198,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         startNoteDrawing(readerDataHolder);
                         break;
                     case DIRECTORY_EXPORT:
+                        showExportDialog(readerDataHolder);
                         break;
                     case TTS:
                         showTtsDialog(readerDataHolder);
@@ -380,6 +382,13 @@ public class ShowReaderMenuAction extends BaseAction {
         readerDataHolder.addActiveDialog(dlg);
     }
 
+    private void showExportDialog(ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
+        Dialog exportDialog = new DialogExport(readerDataHolder);
+        exportDialog.show();
+        readerDataHolder.addActiveDialog(exportDialog);
+    }
+
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
         OnyxDictionaryInfo info = LegacySdkDataUtils.getDictionary(readerDataHolder.getContext());
         if (info == null) {
@@ -422,6 +431,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
+                readerActivity.getSurfaceView(),
                 getScribbleActionCallback(readerDataHolder));
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override

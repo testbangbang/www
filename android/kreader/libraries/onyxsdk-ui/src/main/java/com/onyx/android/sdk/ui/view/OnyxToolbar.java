@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.viewholder.BaseViewHolder;
-import com.onyx.android.sdk.ui.view.viewholder.SimpleSelectViewHolder;
+import com.onyx.android.sdk.ui.view.viewholder.SimpleMarkerViewHolder;
 import com.onyx.android.sdk.utils.DimenUtils;
 
 import java.util.List;
@@ -29,6 +29,10 @@ public class OnyxToolbar extends ViewGroup {
         OnyxToolbar OnClickListener(View view);
     }
 
+    public interface OnSizeChangeListener{
+        void onSizeChanged(int w, int h, int oldw, int oldh);
+    }
+
     private OnyxToolbar currentExpandedToolbar;
     private View currentExpandedView;
     private View dividerView;
@@ -40,6 +44,7 @@ public class OnyxToolbar extends ViewGroup {
     private Direction direction = Direction.Bottom;
     private FillStyle fillStyle = FillStyle.WrapContent;
     private boolean clickedDismissToolbar = false;
+    private OnSizeChangeListener onSizeChangeListener;
 
     private int paddingLeft;
     private int paddingRight;
@@ -416,6 +421,18 @@ public class OnyxToolbar extends ViewGroup {
         return p instanceof LayoutParams;
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        if (onSizeChangeListener != null){
+            onSizeChangeListener.onSizeChanged(w, h, oldw, oldh);
+        }
+    }
+
+    public void setOnSizeChangeListener(OnSizeChangeListener onSizeChangeListener) {
+        this.onSizeChangeListener = onSizeChangeListener;
+    }
+
     public static class Builder {
 
         public static ImageView createImageView(Context content, int resId) {
@@ -433,15 +450,15 @@ public class OnyxToolbar extends ViewGroup {
             return spaceView;
         }
 
-        public static SimpleSelectViewHolder createSelectImageView(Context context, int imageResId, int selectResId, int layoutId, final Object tag) {
+        public static SimpleMarkerViewHolder createMarkerViewHolder(Context context, int imageResId, int selectResId, int layoutId, final Object tag) {
             View view = LayoutInflater.from(context).inflate(layoutId, null, false);
             view.setTag(tag);
-            SimpleSelectViewHolder simpleSelectViewHolder = new SimpleSelectViewHolder(view);
-            simpleSelectViewHolder.imageView.setImageResource(imageResId);
-            simpleSelectViewHolder.selectView.setImageResource(selectResId);
+            SimpleMarkerViewHolder simpleMarkerViewHolder = new SimpleMarkerViewHolder(view, R.id.marker_view, R.id.content_view);
+            simpleMarkerViewHolder.contentView.setImageResource(imageResId);
+            simpleMarkerViewHolder.markerView.setImageResource(selectResId);
             OnyxToolbar.LayoutParams lp = new OnyxToolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(lp);
-            return simpleSelectViewHolder;
+            return simpleMarkerViewHolder;
         }
 
         public static void setDefaultLayoutParams(Context content, View view) {

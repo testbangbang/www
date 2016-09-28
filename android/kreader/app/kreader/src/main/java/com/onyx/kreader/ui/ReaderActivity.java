@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
@@ -28,7 +27,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -37,7 +35,6 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -86,12 +83,12 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        ViewTreeObserver observer = surfaceView.getViewTreeObserver();
+        final ViewTreeObserver observer = surfaceView.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
             @Override
             public void onGlobalLayout() {
-                removeGlobalOnLayoutListener(this);
+                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 onSurfaceViewSizeChanged();
                 if (!getReaderDataHolder().isDocumentOpened()) {
                     handleActivityIntent();
@@ -250,23 +247,17 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceView.requestFocusFromTouch();
 
         // make sure we openFileFromIntent the doc after surface view is layouted correctly.
-        surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        final ViewTreeObserver observer = surfaceView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                removeGlobalOnLayoutListener(this);
+                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 onSurfaceViewSizeChanged();
                 handleActivityIntent();
             }
         });
     }
 
-    private void removeGlobalOnLayoutListener(ViewTreeObserver.OnGlobalLayoutListener listener) {
-        if (Build.VERSION.SDK_INT < 16) {
-            TreeObserverUtils.removeLayoutListenerPre16(surfaceView.getViewTreeObserver(), listener);
-        } else {
-            TreeObserverUtils.removeLayoutListenerPost16(surfaceView.getViewTreeObserver(), listener);
-        }
-    }
 
     private void initReaderDataHolder() {
         readerDataHolder = new ReaderDataHolder(this);
@@ -288,7 +279,7 @@ public class ReaderActivity extends ActionBarActivity {
         surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
                         surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
@@ -398,15 +389,29 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void onSurfaceViewSizeChanged() {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
-        getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView);
+        final Rect visibleDrawRect = new Rect();
+        surfaceView.getLocalVisibleRect(visibleDrawRect);
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect);
         if (getReaderDataHolder().isDocumentOpened()) {
             new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
         }
     }
 
     @Subscribe
-    public void onScribbleMenuChanged(final ScribbleMenuChangedEvent event) {
-        getReaderDataHolder().getNoteManager().updateSurfaceView(this, surfaceView);
+    public void onScribbleMenuSizeChanged(final ScribbleMenuChangedEvent event) {
+        final Rect rect = new Rect();
+        surfaceView.getLocalVisibleRect(rect);
+        int bottomOfTopToolBar = event.getBottomOfTopToolBar();
+        int topOfBottomToolBar = event.getTopOfBottomToolBar();
+
+        if (bottomOfTopToolBar > 0){
+            rect.top = Math.max(rect.top, bottomOfTopToolBar);
+        }
+        if (topOfBottomToolBar > 0){
+            rect.bottom = Math.min(rect.bottom, topOfBottomToolBar);
+        }
+
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect);
     }
 
     @Subscribe

@@ -3,8 +3,10 @@ package com.onyx.kreader.note;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
+import android.view.View;
+
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
@@ -40,7 +42,7 @@ public class NoteManager {
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
-    private volatile SurfaceView surfaceView;
+    private volatile View view;
 
     private volatile Shape currentShape = null;
     private volatile NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
@@ -51,6 +53,7 @@ public class NoteManager {
     private List<PageInfo> visiblePages = new ArrayList<>();
     private ReaderDataHolder parent;
     private ReaderNoteDataInfo noteDataInfo;
+    private RectF visibleDrawRectF;
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -80,10 +83,10 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void updateSurfaceView(final Context context, final SurfaceView sv) {
-        surfaceView = sv;
+    public void updateHostView(final Context context, final View sv, Rect visibleDrawRect) {
+        view = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
-        getNoteEventProcessorManager().update(surfaceView, noteConfig);
+        getNoteEventProcessorManager().update(view, noteConfig, visibleDrawRect);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {
@@ -155,8 +158,8 @@ public class NoteManager {
     }
 
     public void enableScreenPost(boolean enable) {
-        if (surfaceView != null) {
-            EpdController.enablePost(surfaceView, enable ? 1 : 0);
+        if (view != null) {
+            EpdController.enablePost(view, enable ? 1 : 0);
         }
     }
 
@@ -227,8 +230,8 @@ public class NoteManager {
     }
 
     private Rect getViewportSize() {
-        if (surfaceView != null) {
-            return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
+        if (view != null) {
+            return new Rect(0, 0, view.getWidth(), view.getHeight());
         }
         return null;
     }
@@ -350,4 +353,11 @@ public class NoteManager {
         return shape;
     }
 
+    public void setVisibleDrawRectF(RectF visibleDrawRectF) {
+        this.visibleDrawRectF = visibleDrawRectF;
+    }
+
+    public boolean inVisibleDrawRectF(float x, float y){
+        return visibleDrawRectF.contains(x, y);
+    }
 }
