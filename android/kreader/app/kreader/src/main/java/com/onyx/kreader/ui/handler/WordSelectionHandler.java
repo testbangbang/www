@@ -169,6 +169,11 @@ public class WordSelectionHandler extends BaseHandler{
         return true;
     }
 
+    @Override
+    public void close(ReaderDataHolder readerDataHolder) {
+        quitWordSelection(readerDataHolder);
+    }
+
     public void highlightAlongTouchMoved(ReaderDataHolder readerDataHolder, float x, float y, int cursorSelected) {
         hideTextSelectionPopupWindow(readerDataHolder);
         select(readerDataHolder, longPressPoint.x, longPressPoint.y, x, y);
