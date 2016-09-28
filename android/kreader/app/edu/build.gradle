@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
+apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -11,8 +12,8 @@ android {
         applicationId "com.onyx.android.edu"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode gitVersionCode()
+        versionName gitBranch() + " (" + gitVersionCode().toString() + " - " + gitHash() + ")"
     }
     buildTypes {
         release {
