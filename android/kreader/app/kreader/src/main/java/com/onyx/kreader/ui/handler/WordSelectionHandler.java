@@ -288,7 +288,7 @@ public class WordSelectionHandler extends BaseHandler{
             readerDataHolder.getSelectionManager().updateDisplayPosition();
             readerDataHolder.getSelectionManager().setEnable(showSelectionCursor);
             selectWordRequest = request;
-            readerDataHolder.onRenderRequestFinished(request, e, false);
+            readerDataHolder.onRenderRequestFinished(request, e, false, false);
         }
     }
 
@@ -297,7 +297,7 @@ public class WordSelectionHandler extends BaseHandler{
             return;
         }
         readerDataHolder.getSelectionManager().setEnable(true);
-        readerDataHolder.onRenderRequestFinished(request, null, false);
+        readerDataHolder.onRenderRequestFinished(request, null, false, false);
         showSelectionCursor = true;
     }
 }
