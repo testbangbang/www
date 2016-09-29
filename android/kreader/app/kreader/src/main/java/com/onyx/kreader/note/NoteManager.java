@@ -28,6 +28,7 @@ import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
+import com.onyx.kreader.ui.events.ShapeErasingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,19 +68,19 @@ public class NoteManager {
         return noteDocument;
     }
 
-    public void startEventProcessor() {
+    public void startRawEventProcessor() {
         getNoteEventProcessorManager().start();
     }
 
-    public void stopEventProcessor() {
+    public void stopRawEventProcessor() {
         getNoteEventProcessorManager().stop();
     }
 
-    public void pauseEventProcessor() {
+    public void pauseRawEventProcessor() {
         getNoteEventProcessorManager().pause();
     }
 
-    public void resumeEventProcessor() {
+    public void resumeRawEventProcessor() {
         getNoteEventProcessorManager().resume();
     }
 
@@ -137,21 +138,22 @@ public class NoteManager {
             }
 
             public void onErasingTouchDown(final MotionEvent motionEvent, final Shape shape) {
-
+                getParent().getEventBus().post(new ShapeErasingEvent());
             }
 
             public void onErasingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
-
+                if (last) {
+                    getParent().getEventBus().post(new ShapeErasingEvent());
+                }
             }
 
             public void onErasingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-
+                getParent().getEventBus().post(new ShapeErasingEvent());
             }
 
             public void onDFBShapeFinished(final Shape shape) {
                 onNewStash(shape);
             }
-
 
         };
         return inputCallback;
@@ -268,6 +270,10 @@ public class NoteManager {
 
     public boolean isDFBForCurrentShape() {
         return ShapeFactory.isDFBShape(getNoteDrawingArgs().currentShapeType);
+    }
+
+    public boolean isEraser() {
+        return getNoteDrawingArgs().currentShapeType == ShapeFactory.SHAPE_ERASER;
     }
 
     public void resetCurrentShape() {

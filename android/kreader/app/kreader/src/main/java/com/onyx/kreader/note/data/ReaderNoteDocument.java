@@ -200,24 +200,22 @@ public class ReaderNoteDocument {
         return ensureDataEntry(pageName, pageUniqueId);
     }
 
-    public boolean removePage(final Context context, final String pageName, int subPageIndex) {
+    public String clearPage(final Context context, final String pageName, final int subPageIndex) {
         final List<String> list = getPageIndex().getPageList(pageName, false);
         if (CollectionUtils.isEmpty(list)) {
-            return false;
+            return null;
         }
         if (subPageIndex < 0 || subPageIndex >= list.size()) {
-            return false;
+            return null;
         }
         final String subPageUniqueId = list.get(subPageIndex);
-        list.remove(subPageIndex);
-        ReaderNoteDataProvider.removePage(context, pageName, subPageUniqueId);
-        final ReaderNotePage notePage = getPageMap().remove(subPageUniqueId);
+        final ReaderNotePage notePage = getPageMap().get(subPageUniqueId);
         if (notePage == null) {
-            return false;
+            return null;
         }
-        notePage.clear(false);
+        notePage.clear(true);
         notePage.savePage(context);
-        return true;
+        return subPageUniqueId;
     }
 
     private void createIndexEntry(final String pageName, int index, final String pageUniqueId) {

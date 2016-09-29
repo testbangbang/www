@@ -22,12 +22,12 @@ public class ScribbleHandler extends BaseHandler {
 
     public void onActivate(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getNoteManager().setVisiblePages(readerDataHolder.getVisiblePages());
-        readerDataHolder.getNoteManager().startEventProcessor();
+        readerDataHolder.getNoteManager().startRawEventProcessor();
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getNoteManager().enableScreenPost(true);
-        readerDataHolder.getNoteManager().stopEventProcessor();
+        readerDataHolder.getNoteManager().stopRawEventProcessor();
     }
 
     @Override
