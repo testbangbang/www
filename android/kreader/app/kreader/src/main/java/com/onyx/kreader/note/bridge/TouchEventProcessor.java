@@ -12,6 +12,8 @@ import com.onyx.kreader.note.NoteManager;
  * Created by zhuzeng on 9/19/16.
  */
 public class TouchEventProcessor extends NoteEventProcessorBase {
+
+    private TouchPoint eraserPoint;
     private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
 
@@ -37,6 +39,13 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     }
 
     public boolean onTouchEventErasing(final MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            onErasingTouchDown(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            onErasingTouchMove(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            onErasingTouchUp(motionEvent);
+        }
         return true;
     }
 
@@ -102,6 +111,35 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
         }
     }
 
+    private void onErasingTouchDown(final MotionEvent motionEvent) {
+        eraserPoint = new TouchPoint(motionEvent);
+        if (getCallback() != null) {
+            getCallback().onErasingTouchDown(motionEvent, null);
+        }
+    }
+
+    private void onErasingTouchMove(final MotionEvent motionEvent) {
+        int n = motionEvent.getHistorySize();
+        for(int i = 0; i < n; ++i) {
+            eraserPoint = fromHistorical(motionEvent, i);
+            if (getCallback() != null) {
+                getCallback().onErasingTouchMove(motionEvent, null, false);
+            }
+        }
+        eraserPoint = new TouchPoint(motionEvent);
+        if (getCallback() != null) {
+            getCallback().onErasingTouchMove(motionEvent, null, true);
+        }
+    }
+
+    private void onErasingTouchUp(final MotionEvent motionEvent) {
+        eraserPoint = new TouchPoint(motionEvent);
+        if (getCallback() != null) {
+            getCallback().onErasingTouchUp(motionEvent, null);
+        }
+        eraserPoint = null;
+    }
+
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {
         final TouchPoint screen = viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
         return screen;
@@ -116,5 +154,8 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
         return normalized;
     }
 
+    public final TouchPoint getEraserPoint() {
+        return eraserPoint;
+    }
 
 }

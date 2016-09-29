@@ -37,6 +37,7 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -315,6 +316,19 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShapeDrawing(final ShapeDrawingEvent event) {
+        final ReaderNoteDataInfo dataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
+        if (dataInfo != null) {
+            dataInfo.setContentRendered(true);
+        }
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+    }
+
+    @Subscribe
+    public void onShapeErasing(final ShapeErasingEvent event) {
+        final ReaderNoteDataInfo dataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
+        if (dataInfo != null) {
+            dataInfo.setContentRendered(true);
+        }
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 

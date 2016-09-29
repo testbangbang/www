@@ -21,9 +21,6 @@ import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.note.NoteManager;
-import com.onyx.kreader.note.data.ReaderNoteDataInfo;
-import com.onyx.kreader.note.request.FlushShapeListRequest;
-import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.events.*;
@@ -32,7 +29,6 @@ import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.PagePositionUtils;
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -397,7 +393,7 @@ public class ReaderDataHolder {
             return;
         }
 
-        getNoteManager().stopEventProcessor();
+        getNoteManager().stopRawEventProcessor();
     }
 }
 

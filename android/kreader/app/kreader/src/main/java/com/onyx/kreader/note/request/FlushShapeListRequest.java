@@ -25,8 +25,6 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         subPageIndex = spi;
         shapeList = list;
         saveDocument = save;
-        setPauseRawInputProcessor(true);
-        setResumeRawInputProcessor(false);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {

@@ -17,6 +17,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by zhuzeng on 9/19/16.
@@ -101,7 +102,14 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private ExecutorService getSingleThreadPool()   {
         if (singleThreadPool == null) {
-            singleThreadPool = Executors.newSingleThreadExecutor();
+            singleThreadPool = Executors.newSingleThreadExecutor(new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable runnable) {
+                    Thread thread = new Thread(runnable);
+                    thread.setPriority(Thread.MAX_PRIORITY);
+                    return thread;
+                }
+            });
         }
         return singleThreadPool;
     }
