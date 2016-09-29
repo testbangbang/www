@@ -12,7 +12,8 @@ struct RectF {
     float right;
     float bottom;
 
-    RectF() {
+    RectF()
+        : left(0), top(0), right(0), bottom(0) {
     }
 
     RectF(const PointF &leftTop, const PointF rightBottom)

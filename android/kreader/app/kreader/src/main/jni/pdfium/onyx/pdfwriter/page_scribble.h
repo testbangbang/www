@@ -13,12 +13,20 @@ public:
     struct Stroke {
         RectF rect;
         std::vector<PointF> points;
-        double thickness;
         uint32_t color;
+        double thickness;
+
+        Stroke()
+            : color(0), thickness(1.0) {
+        }
     };
 
     int page;
     std::vector<Stroke> strokes;
+
+    PageScribble()
+        : page(0) {
+    }
 };
 
 #endif // PDFSCRIBBLE_H
