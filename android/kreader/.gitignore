@@ -12,3 +12,5 @@ kreader-ndk.*
 *.creator*
 *.files
 *.includes
+*.hprof
+*.alloc

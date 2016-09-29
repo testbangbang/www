@@ -298,7 +298,7 @@ public class ReaderDataHolder {
     }
 
     public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
-        onRenderRequestFinished(request, e, true);
+        onRenderRequestFinished(request, e, true, true);
     }
 
     public void changeEpdUpdateMode(final UpdateMode mode) {
@@ -309,13 +309,13 @@ public class ReaderDataHolder {
         eventBus.post(new ResetEpdUpdateModeEvent());
     }
 
-    public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e, boolean applyGCIntervalUpdate) {
+    public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e, boolean applyGCIntervalUpdate, boolean renderShapeData) {
         if (e != null || request.isAbort()) {
             return;
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        eventBus.post(RequestFinishEvent.fromRequest(request, e, applyGCIntervalUpdate));
+        eventBus.post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData));
     }
 
 
