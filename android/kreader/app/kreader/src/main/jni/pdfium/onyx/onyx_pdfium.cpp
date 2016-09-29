@@ -827,9 +827,7 @@ int getScribblePageNumber(JNIEnv *env, jobject scribble) {
         return -1;
     }
     JNIString str(env, pageName);
-    LOGE("getScribblePageNumber: %s", str.getLocalString());
     int page = std::atoi(str.getLocalString());
-    LOGE("page number: %d", page);
     return page;
 }
 
