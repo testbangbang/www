@@ -84,6 +84,16 @@ public class FileUtils {
         return file.getName();
     }
 
+    public static String getBaseName(final String path) {
+        String fileName = getFileName(path);
+        int idx = fileName.lastIndexOf('.');
+        if (idx < 0) {
+            return fileName;
+        }
+
+        return fileName.substring(0, idx);
+    }
+
     public static void closeQuietly(Cursor cursor) {
         try {
             if (cursor != null)

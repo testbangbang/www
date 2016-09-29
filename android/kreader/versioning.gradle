@@ -1,0 +1,11 @@
+ext.gitBranch = { ->
+    return 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
+}
+
+ext.gitVersionCode = { ->
+    return 'git rev-list --count HEAD'.execute().text.trim().toInteger()
+}
+
+ext.gitHash = { ->
+    return 'git rev-parse --short HEAD'.execute().text.trim()
+}

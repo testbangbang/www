@@ -11,7 +11,7 @@ LOCAL_CXXFLAGS += -O3 -fstrict-aliasing -fprefetch-loop-arrays -fexceptions
 LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
 
 
-LOCAL_STATIC_LIBRARIES := libpdfium libpdfiumcore libutils
+LOCAL_STATIC_LIBRARIES := libpdfium libpdfiumcore libutils libpodofo
 
 # TODO: figure out why turning on exceptions requires manually linking libdl
 LOCAL_SHARED_LIBRARIES := libdl
@@ -19,7 +19,8 @@ LOCAL_SHARED_LIBRARIES := libdl
 LOCAL_LDLIBS := -llog -lz -ljnigraphics
 
 LOCAL_SRC_FILES := \
-    onyx_pdfium.cpp
+    onyx_pdfium.cpp \
+    pdfwriter/onyx_pdf_writer.cpp
 
 MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \
@@ -27,5 +28,7 @@ LOCAL_C_INCLUDES := \
     $(MY_SRC_ROOT)/public               \
     $(MY_SRC_ROOT)/core/include              \
     $(MY_SRC_ROOT)/../common/utils   \
+    $(MY_SRC_ROOT)/third_party/podofo \
+    $(MY_SRC_ROOT)/third_party/podofo/src
 
 include $(BUILD_SHARED_LIBRARY)

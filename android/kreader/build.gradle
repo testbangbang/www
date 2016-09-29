@@ -37,6 +37,7 @@ ext {
     // App dependencies
     apachecommonsVersion = '4.0'
     butterknifeVersion = '7.0.1'
+    commonsioVersion = '2.5'
     dbflowVersion = '3.0.1'
     disklrucacheVersion = '2.0.2'
     eventbusVersion = '3.0.0'

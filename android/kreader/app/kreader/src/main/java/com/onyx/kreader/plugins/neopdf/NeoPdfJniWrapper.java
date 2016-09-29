@@ -1,6 +1,8 @@
 package com.onyx.kreader.plugins.neopdf;
 
 import android.graphics.Bitmap;
+import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.api.ReaderSelection;
@@ -66,6 +68,8 @@ public class NeoPdfJniWrapper {
     private native ReaderSentence nativeGetSentence(int id, int page, int sentenceStartIndex, final ReaderTextSplitter splitter);
 
     private native boolean nativeGetTableOfContent(int id, ReaderDocumentTableOfContentEntry root);
+
+    private native boolean nativeExportNotes(int id, String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles);
 
     private int id;
     private String filePath = null;
@@ -149,6 +153,10 @@ public class NeoPdfJniWrapper {
 
     public boolean getTableOfContent(ReaderDocumentTableOfContentEntry root) {
         return nativeGetTableOfContent(id, root);
+    }
+
+    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
+        return nativeExportNotes(id, sourceDocPath, targetDocPath, annotations, scribbles);
     }
 
 }

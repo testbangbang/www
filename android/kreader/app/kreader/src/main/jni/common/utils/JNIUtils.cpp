@@ -22,7 +22,35 @@ bool JNIUtils::findClass(const char *className)
     return true;
 }
 
+bool JNIUtils::getObjectClass(const jobject object)
+{
+    clazz = myEnv->GetObjectClass(object);
+    if (clazz == 0) {
+        LOGE("Could not find class of object");
+        return false;
+    }
+    return true;
+}
+
+bool JNIUtils::findMethod(const char *method, const char *signature)
+{
+    if (clazz == 0) {
+        return false;
+    }
+
+    methodId = myEnv->GetMethodID(clazz, method, signature);
+    if (methodId == 0) {
+        LOGE("Find method %s failed", method);
+        return false;
+    }
+    return true;
+}
+
 bool JNIUtils::findMethod(const char * className, const char * method, const char *signature) {
+    if (clazz != 0) {
+        myEnv->DeleteLocalRef(clazz);
+    }
+
     clazz = myEnv->FindClass(className);
     if (clazz == 0) {
         LOGE("Could not find class: %s", className);

@@ -127,6 +127,14 @@ JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeGetTableOfContent
   (JNIEnv *, jobject, jint, jobject);
 
+/*
+ * Class:     com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeExportNotes
+ * Signature: (ILjava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeExportNotes
+  (JNIEnv *, jobject, jint, jstring, jstring, jobject, jobject);
+
 #ifdef __cplusplus
 }
 #endif
