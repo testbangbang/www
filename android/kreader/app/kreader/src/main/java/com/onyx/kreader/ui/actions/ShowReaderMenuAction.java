@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ScribbleMenuAction;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
@@ -460,7 +461,6 @@ public class ShowReaderMenuAction extends BaseAction {
     private boolean isGroupAction(final ScribbleMenuAction action) {
         return (action == ScribbleMenuAction.ERASER ||
                 action == ScribbleMenuAction.WIDTH ||
-                action == ScribbleMenuAction.TEXT ||
                 action == ScribbleMenuAction.SHAPE ||
                 action == ScribbleMenuAction.DRAG ||
                 action == ScribbleMenuAction.MINIMIZE);
@@ -511,6 +511,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 useShape(readerDataHolder, ShapeFactory.SHAPE_RECTANGLE);
                 break;
             case TEXT:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_ANNOTATION);
                 break;
             case ERASER_PART:
                 startErasing(readerDataHolder);
@@ -597,7 +598,6 @@ public class ShowReaderMenuAction extends BaseAction {
     private void startErasing(final ReaderDataHolder readerDataHolder) {
         final StartErasingAction erasingAction = new StartErasingAction();
         erasingAction.execute(readerDataHolder, null);
-
     }
 
 }

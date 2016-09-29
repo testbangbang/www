@@ -28,6 +28,7 @@ import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
+import com.onyx.kreader.ui.events.ShapeErasingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,21 +138,20 @@ public class NoteManager {
             }
 
             public void onErasingTouchDown(final MotionEvent motionEvent, final Shape shape) {
-
+                getParent().getEventBus().post(new ShapeErasingEvent());
             }
 
             public void onErasingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
-
+                getParent().getEventBus().post(new ShapeErasingEvent());
             }
 
             public void onErasingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-
+                getParent().getEventBus().post(new ShapeErasingEvent());
             }
 
             public void onDFBShapeFinished(final Shape shape) {
                 onNewStash(shape);
             }
-
 
         };
         return inputCallback;

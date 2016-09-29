@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -60,6 +61,7 @@ public class ReaderPainter {
         drawBookmark(context, canvas, userDataInfo, viewInfo);
         drawShapes(context, canvas, paint, noteManager);
         drawStashShapes(context, canvas, paint, noteManager, viewInfo);
+        drawShapeEraser(context, canvas, paint, noteManager);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
@@ -245,6 +247,18 @@ public class ReaderPainter {
         }
     }
 
+    private void drawShapeEraser(final Context context,
+                                 final Canvas canvas,
+                                 final Paint paint,
+                                 final NoteManager noteManager) {
+        final TouchPoint touchPoint = noteManager.getNoteEventProcessorManager().getEraserPoint();
+        if (touchPoint == null) {
+            return;
+        }
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawCircle(touchPoint.x, touchPoint.y, noteManager.getNoteDrawingArgs().eraserRadius, paint);
+    }
 
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
         return userDataInfo.hasBookmark(viewInfo.getFirstVisiblePage());

@@ -319,6 +319,11 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
+    public void onShapeErasing(final ShapeErasingEvent event) {
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+    }
+
+    @Subscribe
     public void onShowReaderSettings(final ShowReaderSettingsEvent event) {
         startActivity(new Intent(this, MainSettingsActivity.class));
     }
