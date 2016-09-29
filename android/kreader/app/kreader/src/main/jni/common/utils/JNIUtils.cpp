@@ -32,6 +32,20 @@ bool JNIUtils::getObjectClass(const jobject object)
     return true;
 }
 
+bool JNIUtils::findMethod(const char *method, const char *signature)
+{
+    if (clazz == 0) {
+        return false;
+    }
+
+    methodId = myEnv->GetMethodID(clazz, method, signature);
+    if (methodId == 0) {
+        LOGE("Find method %s failed", method);
+        return false;
+    }
+    return true;
+}
+
 bool JNIUtils::findMethod(const char * className, const char * method, const char *signature) {
     if (clazz != 0) {
         myEnv->DeleteLocalRef(clazz);
