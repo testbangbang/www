@@ -211,13 +211,11 @@ public class ReaderPainter {
             return;
         }
         final ReaderNoteDataInfo noteDataInfo = noteManager.getNoteDataInfo();
-        if (noteDataInfo == null || !isShapeBitmapReady(noteManager, noteDataInfo)) {
+        if (noteDataInfo == null || !isShapeBitmapReady(noteManager, noteDataInfo) || !noteDataInfo.isContentRendered()) {
             return;
         }
         final Bitmap bitmap = noteManager.getViewBitmap();
-        Paint myPainter = new Paint();
-        myPainter.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
-        canvas.drawBitmap(bitmap, 0, 0, myPainter);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
     private void drawStashShapes(final Context context,

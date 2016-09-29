@@ -142,7 +142,9 @@ public class NoteManager {
             }
 
             public void onErasingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
-                getParent().getEventBus().post(new ShapeErasingEvent());
+                if (last) {
+                    getParent().getEventBus().post(new ShapeErasingEvent());
+                }
             }
 
             public void onErasingTouchUp(final MotionEvent motionEvent, final Shape shape) {
