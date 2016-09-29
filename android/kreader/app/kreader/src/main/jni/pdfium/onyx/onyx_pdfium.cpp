@@ -748,6 +748,11 @@ bool convertToPageScribble(JNIEnv *env, jobject scribble, PageScribble *result) 
         return false;
     }
 
+    if (!utils.findMethod("getStrokeWidth", "()F")) {
+        return false;
+    }
+    float strokeWidth = env->CallFloatMethod(scribble, utils.getMethodId());
+
     if (!utils.findMethod("getBoundingRect", "()Landroid/graphics/RectF;")) {
         return false;
     }
@@ -807,8 +812,9 @@ bool convertToPageScribble(JNIEnv *env, jobject scribble, PageScribble *result) 
         }
         stroke.points.push_back(point);
     }
-    stroke.rect = rect;
 
+    stroke.thickness = strokeWidth;
+    stroke.rect = rect;
     result->strokes.push_back(stroke);
     return true;
 }
