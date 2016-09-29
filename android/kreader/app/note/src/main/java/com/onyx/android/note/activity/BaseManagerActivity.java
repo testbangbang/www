@@ -19,6 +19,7 @@ import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
@@ -370,9 +371,14 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
             @Override
             public void onMove(String targetParentId) {
                 NoteMoveAction<BaseManagerActivity> noteMoveAction = new NoteMoveAction<>(targetParentId, targetMoveIDList);
-                noteMoveAction.execute(BaseManagerActivity.this);
-                dialogMoveFolder.dismiss();
-                switchMode(SelectionMode.NORMAL_MODE);
+                noteMoveAction.execute(BaseManagerActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        loadNoteList();
+                        dialogMoveFolder.dismiss();
+                        switchMode(SelectionMode.NORMAL_MODE);
+                    }
+                });
             }
 
             @Override

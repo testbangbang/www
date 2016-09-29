@@ -16,6 +16,7 @@ import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,8 @@ public class DialogMoveFolder extends OnyxAlertDialog {
 
     List<NoteModel> dataList;
     DialogMoveFolderCallback callback;
-    String targetParentID = "-1";
+    //Use to string to avoid random id coincidentally same as this flag.
+    String targetParentID = Boolean.toString(Boolean.FALSE);
 
     public interface DialogMoveFolderCallback {
         void onMove(String targetParentId);
@@ -58,9 +60,11 @@ public class DialogMoveFolder extends OnyxAlertDialog {
                 .setPositiveAction(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!targetParentID.equalsIgnoreCase("-1")){
+                        if (StringUtils.isNullOrEmpty(targetParentID)) {
                             callback.onMove(targetParentID);
-                        }else {
+                        } else if (!targetParentID.equalsIgnoreCase(Boolean.toString(Boolean.FALSE))) {
+                            callback.onMove(targetParentID);
+                        } else {
                             dismiss();
                         }
                     }
@@ -90,7 +94,6 @@ public class DialogMoveFolder extends OnyxAlertDialog {
                                 targetLibraryContentView.getCurrentAdapter().setObject(dataIndex, temp);
                                 targetLibraryContentView.unCheckOtherViews(dataIndex, true);
                                 targetLibraryContentView.updateCurrentPage();
-//                                callback.onMove(GAdapterUtil.getUniqueId(temp));
                             }
                         });
                     }
