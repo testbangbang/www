@@ -17,9 +17,7 @@ public class ChangeShapeRequest extends ReaderBaseNoteRequest {
 
     public ChangeShapeRequest(int shape) {
         setAbortPendingTasks(true);
-        setPauseRawInputProcessor(true);
         newShape = shape;
-        setResumeRawInputProcessor(ShapeFactory.isDFBShape(newShape));
     }
 
     public void execute(final NoteManager noteManager) throws Exception {

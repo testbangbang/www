@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ScribbleMenuAction;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
@@ -37,8 +38,10 @@ import com.onyx.kreader.host.request.ScaleToWidthContentRequest;
 import com.onyx.kreader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
+import com.onyx.kreader.note.actions.ClearPageAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RedoAction;
+import com.onyx.kreader.note.actions.StartErasingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
@@ -458,7 +461,6 @@ public class ShowReaderMenuAction extends BaseAction {
     private boolean isGroupAction(final ScribbleMenuAction action) {
         return (action == ScribbleMenuAction.ERASER ||
                 action == ScribbleMenuAction.WIDTH ||
-                action == ScribbleMenuAction.TEXT ||
                 action == ScribbleMenuAction.SHAPE ||
                 action == ScribbleMenuAction.DRAG ||
                 action == ScribbleMenuAction.MINIMIZE);
@@ -509,10 +511,13 @@ public class ShowReaderMenuAction extends BaseAction {
                 useShape(readerDataHolder, ShapeFactory.SHAPE_RECTANGLE);
                 break;
             case TEXT:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_ANNOTATION);
                 break;
             case ERASER_PART:
+                startErasing(readerDataHolder);
                 break;
             case ERASER_ALL:
+                eraseWholePage(readerDataHolder);
                 break;
             case DRAG:
                 break;
@@ -584,4 +589,15 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.addAction(new PreviousScreenAction());
         actionChain.execute(readerDataHolder, null);
     }
+
+    private void eraseWholePage(final ReaderDataHolder readerDataHolder) {
+        final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getFirstPageInfo());
+        clearPageAction.execute(readerDataHolder, null);
+    }
+
+    private void startErasing(final ReaderDataHolder readerDataHolder) {
+        final StartErasingAction erasingAction = new StartErasingAction();
+        erasingAction.execute(readerDataHolder, null);
+    }
+
 }

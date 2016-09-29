@@ -19,6 +19,7 @@ public class ShapeFactory {
     static public final int SHAPE_TEXT = 6;
     static public final int SHAPE_LINE = 7;
     static public final int SHAPE_TRIANGLE = 8;
+    static public final int SHAPE_ANNOTATION = 9;
 
 
     public static final Shape createShape(int type) {
@@ -50,6 +51,9 @@ public class ShapeFactory {
                 break;
             case ShapeFactory.SHAPE_TRIANGLE:
                 shape = new TriangleShape();
+                break;
+            case ShapeFactory.SHAPE_ANNOTATION:
+                shape = new AnnotationShape();
                 break;
             default:
                 shape = new NormalPencilShape();

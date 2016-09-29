@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.kreader.note.NoteManager;
@@ -135,6 +136,9 @@ public class NoteEventProcessorManager {
 
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         if (!getNoteManager().isDFBForCurrentShape() || useNormalTouchEvent()) {
+            if (getNoteManager().isEraser()) {
+                return onTouchEventErasing(motionEvent);
+            }
             return onTouchEventDrawing(motionEvent);
         }
         return false;
@@ -146,6 +150,10 @@ public class NoteEventProcessorManager {
 
     public boolean onTouchEventErasing(final MotionEvent motionEvent) {
         return getTouchEventProcessor().onTouchEventErasing(motionEvent);
+    }
+
+    public final TouchPoint getEraserPoint() {
+        return getTouchEventProcessor().getEraserPoint();
     }
 
 }

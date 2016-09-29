@@ -2,8 +2,6 @@ package com.onyx.kreader.note.model;
 
 import android.content.Context;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
-import com.onyx.android.sdk.scribble.data.ShapeModel;
-import com.onyx.android.sdk.scribble.data.ShapeModel_Table;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.DatabaseDefinition;
 import com.raizlabs.android.dbflow.config.FlowManager;
