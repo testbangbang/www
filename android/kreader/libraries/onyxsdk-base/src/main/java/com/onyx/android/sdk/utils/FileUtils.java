@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.onyx.android.sdk.device.EnvironmentUtil;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -86,7 +85,13 @@ public class FileUtils {
     }
 
     public static String getBaseName(final String path) {
-        return FilenameUtils.getBaseName(path);
+        String fileName = getFileName(path);
+        int idx = fileName.lastIndexOf('.');
+        if (idx < 0) {
+            return fileName;
+        }
+
+        return fileName.substring(0, idx);
     }
 
     public static void closeQuietly(Cursor cursor) {
