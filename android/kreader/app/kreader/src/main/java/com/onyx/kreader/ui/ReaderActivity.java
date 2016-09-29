@@ -316,19 +316,13 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShapeDrawing(final ShapeDrawingEvent event) {
-        final ReaderNoteDataInfo dataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
-        if (dataInfo != null) {
-            dataInfo.setContentRendered(true);
-        }
+        getReaderDataHolder().getNoteManager().ensureContentRendered();
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 
     @Subscribe
     public void onShapeErasing(final ShapeErasingEvent event) {
-        final ReaderNoteDataInfo dataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
-        if (dataInfo != null) {
-            dataInfo.setContentRendered(true);
-        }
+        getReaderDataHolder().getNoteManager().ensureContentRendered();
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 

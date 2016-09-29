@@ -1,6 +1,7 @@
 package com.onyx.kreader.note.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.note.request.ChangeShapeRequest;
 import com.onyx.kreader.note.request.ChangeStrokeWidthRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
@@ -17,9 +18,15 @@ public class ChangeStrokeWidthAction extends BaseAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         final ChangeStrokeWidthRequest changeRequest = new ChangeStrokeWidthRequest(width);
-        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), changeRequest, baseCallback);
+        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), changeRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.getNoteManager().ensureContentRendered();
+                BaseCallback.invoke(baseCallback, request, e);
+            }
+        });
     }
 
 }

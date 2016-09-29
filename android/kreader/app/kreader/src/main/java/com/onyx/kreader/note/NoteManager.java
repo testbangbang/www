@@ -332,7 +332,7 @@ public class NoteManager {
     }
 
     public void saveNoteDataInfo(final ReaderBaseNoteRequest request) {
-        noteDataInfo = request.getShapeDataInfo();
+        noteDataInfo = request.getNoteDataInfo();
     }
 
     public final ReaderNoteDataInfo getNoteDataInfo() {
@@ -341,6 +341,12 @@ public class NoteManager {
 
     public void resetNoteDataInfo() {
         noteDataInfo = null;
+    }
+
+    public void ensureContentRendered() {
+        if (getNoteDataInfo() != null) {
+            getNoteDataInfo().setContentRendered(true);
+        }
     }
 
     public Shape ensureNewShape(final TouchPoint normalizedPoint, final TouchPoint screen) {

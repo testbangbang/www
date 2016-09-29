@@ -14,7 +14,7 @@ public class RedoRequest extends ReaderBaseNoteRequest {
 
     public void execute(final NoteManager noteManager) throws Exception {
         noteManager.redo(getContext(), getVisiblePages().get(0).getName());
-        getShapeDataInfo().setContentRendered(renderVisiblePages(noteManager));
+        getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         updateShapeDataInfo(noteManager);
     }
 

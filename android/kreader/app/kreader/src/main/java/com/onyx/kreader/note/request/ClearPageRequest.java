@@ -1,7 +1,6 @@
 package com.onyx.kreader.note.request;
 
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.kreader.note.NoteManager;
 
 /**
@@ -19,7 +18,7 @@ public class ClearPageRequest extends ReaderBaseNoteRequest {
     public void execute(final NoteManager noteManager) throws Exception {
         noteManager.getNoteDocument().clearPage(getContext(), pageInfo.getName(), 0);
         renderVisiblePages(noteManager);
-        getShapeDataInfo().setContentRendered(true);
+        getNoteDataInfo().setContentRendered(true);
         updateShapeDataInfo(noteManager);
     }
 }

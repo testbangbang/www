@@ -255,6 +255,7 @@ public class ReaderPainter {
         }
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
         canvas.drawCircle(touchPoint.x, touchPoint.y, noteManager.getNoteDrawingArgs().eraserRadius, paint);
     }
 

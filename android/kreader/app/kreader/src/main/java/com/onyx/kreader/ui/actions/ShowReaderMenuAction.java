@@ -544,13 +544,19 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
-        ChangeStrokeWidthAction action = new ChangeStrokeWidthAction(width);
-        action.execute(readerDataHolder, null);
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, false, false));
+        actionChain.addAction(new ChangeStrokeWidthAction(width));
+        actionChain.execute(readerDataHolder, null);
     }
 
     private void useShape(final ReaderDataHolder readerDataHolder, int type) {
-        ChangeNoteShapeAction changeNoteShapeAction = new ChangeNoteShapeAction(type);
-        changeNoteShapeAction.execute(readerDataHolder, null);
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, false, false));
+        actionChain.addAction(new ChangeNoteShapeAction(type));
+        actionChain.execute(readerDataHolder, null);
     }
 
     private void undo(final ReaderDataHolder readerDataHolder) {
@@ -596,8 +602,11 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void startErasing(final ReaderDataHolder readerDataHolder) {
-        final StartErasingAction erasingAction = new StartErasingAction();
-        erasingAction.execute(readerDataHolder, null);
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, false, false));
+        actionChain.addAction(new ChangeNoteShapeAction(ShapeFactory.SHAPE_ERASER));
+        actionChain.execute(readerDataHolder, null);
     }
 
 }

@@ -133,11 +133,10 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     }
 
     private void onErasingTouchUp(final MotionEvent motionEvent) {
-        eraserPoint = new TouchPoint(motionEvent);
+        eraserPoint = null;
         if (getCallback() != null) {
             getCallback().onErasingTouchUp(motionEvent, null);
         }
-        eraserPoint = null;
     }
 
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {
