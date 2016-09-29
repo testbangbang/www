@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
+import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -47,6 +49,7 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
+
 import org.greenrobot.eventbus.Subscribe;
 
 /**
@@ -141,7 +144,7 @@ public class ReaderActivity extends ActionBarActivity {
         return processKeyUp(keyCode, event);
     }
 
-    private final ReaderDataHolder getReaderDataHolder(){
+    private final ReaderDataHolder getReaderDataHolder() {
         return readerDataHolder;
     }
 
@@ -168,7 +171,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void initStatusBar() {
-        statusBar = (ReaderStatusBar)findViewById(R.id.status_bar);
+        statusBar = (ReaderStatusBar) findViewById(R.id.status_bar);
         statusBar.setCallback(new ReaderStatusBar.Callback() {
             @Override
             public void onGotoPage() {
@@ -184,7 +187,7 @@ public class ReaderActivity extends ActionBarActivity {
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_format_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_graphic_show_key, false));
 
-        if (!SingletonSharedPreference.isReaderStatusBarEnabled(this)){
+        if (!SingletonSharedPreference.isReaderStatusBarEnabled(this)) {
             statusBar.setVisibility(View.GONE);
         } else {
             statusBar.setVisibility(View.VISIBLE);
@@ -210,7 +213,7 @@ public class ReaderActivity extends ActionBarActivity {
                     return;
                 }
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
-                    surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 } else {
                     readerDataHolder.redrawPage();
@@ -404,10 +407,10 @@ public class ReaderActivity extends ActionBarActivity {
         int bottomOfTopToolBar = event.getBottomOfTopToolBar();
         int topOfBottomToolBar = event.getTopOfBottomToolBar();
 
-        if (bottomOfTopToolBar > 0){
+        if (bottomOfTopToolBar > 0) {
             rect.top = Math.max(rect.top, bottomOfTopToolBar);
         }
-        if (topOfBottomToolBar > 0){
+        if (topOfBottomToolBar > 0) {
             rect.bottom = Math.min(rect.bottom, topOfBottomToolBar);
         }
 

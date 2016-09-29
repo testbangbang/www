@@ -267,4 +267,6 @@
     <string name="Green">Green</string>
     <string name="White">White</string>
     <string name="Blue">Blue</string>
+
+    <string name="sure_exit">Are you sure want to exit</string>
 </resources>

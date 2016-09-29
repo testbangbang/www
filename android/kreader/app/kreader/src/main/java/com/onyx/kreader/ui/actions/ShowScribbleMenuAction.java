@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -19,7 +18,6 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
-import com.onyx.kreader.utils.TreeObserverUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
