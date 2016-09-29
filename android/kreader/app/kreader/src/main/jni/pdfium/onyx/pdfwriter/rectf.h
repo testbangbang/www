@@ -46,7 +46,7 @@ struct RectF {
         left = std::min(left, rect.left);
         top = std::min(top, rect.top);
         right = std::max(right, rect.right);
-        bottom = std::max(right, rect.right);
+        bottom = std::max(bottom, rect.bottom);
     }
 };
 

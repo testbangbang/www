@@ -71,7 +71,7 @@ bool createAnnotationPolyLine(PoDoFo::PdfDocument *document,
     const double thickness = stroke.thickness;
     const PdfColor color(colorFromRgb(stroke.color));
 
-    PdfRect pdfRect(rect.left, rect.top, rect.width(), rect.height());
+    PdfRect pdfRect(rect.left, rect.bottom, rect.width(), rect.height());
 
     PdfAnnotation *polyline = page->CreateAnnotation(ePdfAnnotation_PolyLine, pdfRect);
     polyline->SetColor(color.GetRed(), color.GetGreen(), color.GetBlue());
@@ -118,7 +118,7 @@ bool createAnnotationHightlight(PoDoFo::PdfDocument *document,
         boundRect.unite(RectF(PointF(r.left, r.top), PointF(r.right, r.bottom)));
     }
 
-    PdfRect pdfBoundingRect(boundRect.left, boundRect.top,
+    PdfRect pdfBoundingRect(boundRect.left, boundRect.bottom,
                      boundRect.width(), boundRect.height());
     PdfAnnotation *highlight = page->CreateAnnotation(ePdfAnnotation_Highlight, pdfBoundingRect);
     if (!highlight) {
@@ -236,7 +236,7 @@ public:
             const RectF pdf_rect(PointF(crop_box.GetLeft(), crop_box.GetBottom()),
                                  PointF(crop_box.GetLeft() + crop_box.GetWidth(),
                                         crop_box.GetBottom() + crop_box.GetHeight()));
-            if (!translateFromScreenToPage(pdf_rect, &pageScribbles[i])) {
+            if (!translateFromScreenToPage(pdf_rect, &(pageScribbles[i]))) {
                 continue;
             }
 

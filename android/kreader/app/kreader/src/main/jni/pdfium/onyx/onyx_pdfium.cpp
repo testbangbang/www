@@ -723,13 +723,168 @@ bool convertToNativeAnnotations(JNIEnv *env, jobject annotationList, std::vector
     return true;
 }
 
+bool convertToNativePointF(JNIEnv *env, jobject touchPoint, PointF *result) {
+    JNIUtils utils(env);
+    if (!utils.getObjectClass(touchPoint)) {
+        return false;
+    }
+    jfieldID fid = env->GetFieldID(utils.getClazz(), "x", "F");
+    if (fid == NULL) {
+        return false;
+    }
+    float x = env->GetFloatField(touchPoint, fid);
+    fid = env->GetFieldID(utils.getClazz(), "y", "F");
+    if (fid == NULL) {
+        return false;
+    }
+    float y = env->GetFloatField(touchPoint, fid);
+    result->set(x, y);
+    return true;
+}
+
+bool convertToPageScribble(JNIEnv *env, jobject scribble, PageScribble *result) {
+    JNIUtils utils(env);
+    if (!utils.getObjectClass(scribble)) {
+        return false;
+    }
+
+    if (!utils.findMethod("getBoundingRect", "()Landroid/graphics/RectF;")) {
+        return false;
+    }
+    jobject rectObj = env->CallObjectMethod(scribble, utils.getMethodId());
+    if (rectObj == NULL) {
+        LOGE("get bounding rect of scribble failed");
+        return false;
+    }
+    RectF rect;
+    if (!convertToNativeRectF(env, rectObj, &rect)) {
+        LOGE("convertToNativeRectF failed");
+        return false;
+    }
+
+    if (!utils.findMethod("getPoints", "()Lcom/onyx/android/sdk/scribble/data/TouchPointList;")) {
+        return false;
+    }
+
+    jobject touchPointList = env->CallObjectMethod(scribble, utils.getMethodId());
+    if (touchPointList == NULL) {
+        return false;
+    }
+
+    if (!utils.getObjectClass(touchPointList)) {
+        return false;
+    }
+    if (!utils.findMethod("getPoints", "()Ljava/util/List;")) {
+        return false;
+    }
+    jobject pointList = env->CallObjectMethod(touchPointList, utils.getMethodId());
+    if (pointList == NULL) {
+        // no points in the scribble, just skip this scribble
+        return true;
+    }
+
+    if (!utils.getObjectClass(pointList)) {
+        return false;
+    }
+    if (!utils.findMethod("size", "()I")) {
+        return false;
+    }
+    int size = env->CallIntMethod(pointList, utils.getMethodId());
+    if (size <= 0) {
+        return true;
+    }
+    if (!utils.findMethod("get", "(I)Ljava/lang/Object;")) {
+        return false;
+    }
+
+    PageScribble::Stroke stroke;
+    for (int i = 0; i < size; i++) {
+        jobject pointObj = env->CallObjectMethod(pointList, utils.getMethodId(), i);
+        PointF point;
+        if (!convertToNativePointF(env, pointObj, &point)) {
+            LOGE("convertToNativePointF failed");
+            return false;
+        }
+        stroke.points.push_back(point);
+    }
+    stroke.rect = rect;
+
+    result->strokes.push_back(stroke);
+    return true;
+}
+
+int getScribblePageNumber(JNIEnv *env, jobject scribble) {
+    JNIUtils utils(env);
+    if (!utils.getObjectClass(scribble)) {
+        return -1;
+    }
+
+    if (!utils.findMethod("getPageUniqueId", "()Ljava/lang/String;")) {
+        return -1;
+    }
+    jstring pageName = static_cast<jstring>(env->CallObjectMethod(scribble, utils.getMethodId()));
+    if (pageName == NULL) {
+        return -1;
+    }
+    JNIString str(env, pageName);
+    LOGE("getScribblePageNumber: %s", str.getLocalString());
+    int page = std::atoi(str.getLocalString());
+    LOGE("page number: %d", page);
+    return page;
+}
+
+bool convertToNativeScribbles(JNIEnv *env, jobject scribbleList, std::vector<PageScribble> *result) {
+    JNIUtils utils(env);
+    if (!utils.findMethod("java/util/List", "size", "()I")) {
+        return false;
+    }
+    int size = env->CallIntMethod(scribbleList, utils.getMethodId());
+    if (size <= 0) {
+        return true;
+    }
+    if (!utils.findMethod("java/util/List", "get", "(I)Ljava/lang/Object;")) {
+        return false;
+    }
+
+    std::map<int, std::shared_ptr<PageScribble>> pageScribbles;
+    for (int i = 0; i < size; i++) {
+        jobject scribble = env->CallObjectMethod(scribbleList, utils.getMethodId(), i);
+        int page = getScribblePageNumber(env, scribble);
+        if (page < 0) {
+            LOGE("get scribble page failed");
+            return false;
+        }
+        if (pageScribbles.find(page) == pageScribbles.end()) {
+            PageScribble *scribble = new PageScribble();
+            scribble->page = page;
+            pageScribbles[page] = std::shared_ptr<PageScribble>(scribble);
+        }
+        std::shared_ptr<PageScribble> pageScribble = pageScribbles[page];
+        if (!convertToPageScribble(env, scribble, pageScribble.get())) {
+            LOGE("convertToPageAnnotation failed");
+            return false;
+        }
+    }
+    for (auto pageScribble : pageScribbles) {
+        result->push_back(*pageScribble.second);
+    }
+
+    return true;
+}
+
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeExportNotes
-  (JNIEnv *env, jobject thiz, jint id, jstring sourceDocPath, jstring targetDocPath, jobject annotationList, jobject scribbles) {
+  (JNIEnv *env, jobject thiz, jint id, jstring sourceDocPath, jstring targetDocPath, jobject annotationList, jobject scribbleList) {
     std::vector<PageAnnotation> pageAnnotations;
     if (!convertToNativeAnnotations(env, annotationList, &pageAnnotations)) {
         LOGE("convertToNativeAnnotations failed");
         return false;
     }
+    std::vector<PageScribble> pageScribbles;
+    if (!convertToNativeScribbles(env, scribbleList, &pageScribbles)) {
+        LOGE("convertToNativeScribbles failed");
+        return false;
+    }
+
     JNIString src(env, sourceDocPath);
     JNIString dst(env, targetDocPath);
     OnyxPdfWriter writer;
@@ -739,6 +894,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
     }
     if (!writer.writeAnnotations(pageAnnotations)) {
         LOGE("write annotations failed");
+        return false;
+    }
+    if (!writer.writeScribbles(pageScribbles)) {
+        LOGE("write scribbles failed");
         return false;
     }
     if (!writer.saveAs(dst.getLocalString())) {

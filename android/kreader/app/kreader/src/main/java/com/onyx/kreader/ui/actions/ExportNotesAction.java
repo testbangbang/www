@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.host.request.ExportNotesRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -8,9 +9,9 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class ExportNotesAction extends BaseAction {
 
-    public void execute(final ReaderDataHolder readerDataHolder) {
-        final ExportNotesRequest request = new ExportNotesRequest();
-        readerDataHolder.submitNonRenderRequest(request);
+    @Override
+    public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
+        final ExportNotesRequest request = new ExportNotesRequest(readerDataHolder.getNoteManager());
+        readerDataHolder.submitNonRenderRequest(request, baseCallback);
     }
-
 }
