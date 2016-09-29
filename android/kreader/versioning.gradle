@@ -3,9 +3,23 @@ ext.gitBranch = { ->
 }
 
 ext.gitVersionCode = { ->
-    return 'git rev-list --count HEAD'.execute().text.trim().toInteger()
+    return 'git rev-list --count --all'.execute().text.trim().toInteger()
 }
 
 ext.gitHash = { ->
     return 'git rev-parse --short HEAD'.execute().text.trim()
+}
+
+ext.releaseChannel = { ->
+    if (rootProject.hasProperty("releaseChannel")) {
+        return rootProject.property("releaseChannel")
+    }
+    return "ONYX"
+}
+
+ext.releaseType = { ->
+    if (rootProject.hasProperty("releaseType")) {
+        return rootProject.property("releaseType")
+    }
+    return "RELEASE"
 }
