@@ -15,6 +15,7 @@
 #include "fpdf_edit.h"
 
 #include <memory>
+#include <cstdlib>
 
 static const char * selectionClassName = "com/onyx/kreader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/kreader/api/ReaderTextSplitter";
