@@ -263,13 +263,6 @@ public class ReaderPainter {
         return userDataInfo.hasBookmark(viewInfo.getFirstVisiblePage());
     }
 
-    private boolean hasShapes(ReaderNoteDataInfo shapeDataInfo) {
-        if (shapeDataInfo == null) {
-            return false;
-        }
-        return shapeDataInfo.hasShapes();
-    }
-
     private boolean isShapeBitmapReady(NoteManager noteManager, ReaderNoteDataInfo shapeDataInfo) {
         final Bitmap bitmap = noteManager.getViewBitmap();
         if (bitmap == null) {
@@ -278,7 +271,10 @@ public class ReaderPainter {
         return true;
     }
 
-    private void drawTestTouchPointCircle(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo){
+    private void drawTestTouchPointCircle(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo) {
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
         PointF touchPoint = userDataInfo.getTouchPoint();
         if (debugTestTouchPointCircle && touchPoint != null){
             canvas.drawCircle(touchPoint.x, touchPoint.y, 20, paint);

@@ -277,6 +277,10 @@ public class NoteManager {
         return getNoteDrawingArgs().currentShapeType == ShapeFactory.SHAPE_ERASER;
     }
 
+    public boolean isInSelection() {
+        return getNoteDrawingArgs().currentShapeType == ShapeFactory.SHAPE_SELECTOR;
+    }
+
     public void resetCurrentShape() {
         currentShape = null;
     }

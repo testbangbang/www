@@ -53,6 +53,10 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
         return true;
     }
 
+    public boolean onTouchEventSelecting(final MotionEvent motionEvent) {
+        return true;
+    }
+
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
         final TouchPoint touchPoint = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(touchPoint);
