@@ -18,8 +18,8 @@ public:
     bool saveAs(const std::string &path);
     void close();
 
-    bool writeScribbles(std::vector<PageScribble> &scribbles);
-    bool writeAnnotations(std::vector<PageAnnotation> &annotations);
+    bool writeScribbles(const std::vector<PageScribble> &scribbles);
+    bool writeAnnotations(const std::vector<PageAnnotation> &annotations);
 
 private:
     class Impl;
