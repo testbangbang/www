@@ -66,7 +66,7 @@ public class ReaderPainter {
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
-        drawShapes(context, canvas, paint, noteManager);
+        drawShapes(context, canvas, paint, userDataInfo, noteManager);
         drawStashShapes(context, canvas, paint, noteManager, viewInfo);
         drawShapeEraser(context, canvas, paint, noteManager);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
@@ -214,8 +214,9 @@ public class ReaderPainter {
     private void drawShapes(final Context context,
                             final Canvas canvas,
                             final Paint paint,
+                            final ReaderUserDataInfo userDataInfo,
                             final NoteManager noteManager) {
-        if (!SingletonSharedPreference.isShowNote(context)) {
+        if (!SingletonSharedPreference.isShowNote(context) || userDataInfo.hasHighlightResult()) {
             return;
         }
         final ReaderNoteDataInfo noteDataInfo = noteManager.getNoteDataInfo();
