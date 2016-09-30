@@ -1,12 +1,10 @@
 package com.onyx.kreader.note.request;
 
-import android.graphics.Rect;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNotePage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +32,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
             readerNotePage.addShape(shape, true);
         }
         if (isRender()) {
-            getShapeDataInfo().setContentRendered(renderVisiblePages(noteManager));
+            getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         }
         if (saveDocument) {
             noteManager.getNoteDocument().save(getContext(), "title");

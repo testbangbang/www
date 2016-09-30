@@ -78,6 +78,22 @@ public class ShapeUtils {
         return path;
     }
 
+    public static void renderSelectionHandlers(final RenderContext renderContext, final RectF boundingRect) {
+        final RectF rect = new RectF(boundingRect);
+        if (renderContext.matrix != null) {
+            renderContext.matrix.mapRect(rect);
+        }
+        renderContext.canvas.drawRect(rect, renderContext.paint);
+        renderRect(rect.left, rect.top, renderContext.handlerSize, renderContext.canvas, renderContext.paint);
+        renderRect(rect.left, rect.bottom, renderContext.handlerSize, renderContext.canvas, renderContext.paint);
+        renderRect(rect.right, rect.top, renderContext.handlerSize, renderContext.canvas, renderContext.paint);
+        renderRect(rect.right, rect.bottom, renderContext.handlerSize, renderContext.canvas, renderContext.paint);
+    }
+
+    public static void renderRect(final float x, final float y, final float size, final Canvas canvas, final Paint paint) {
+        canvas.drawRect(x - size, y - size, x + size, y + size, paint);
+    }
+
     public static boolean withinRange(int last, int current, int range) {
         return Math.abs(current - last) <= range;
     }

@@ -1,12 +1,7 @@
 package com.onyx.kreader.note.request;
 
-import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.kreader.note.NoteManager;
-import com.onyx.kreader.note.data.ReaderNotePage;
-
-import java.util.List;
 
 /**
  * Created by zhuzeng on 9/23/16.
@@ -23,6 +18,15 @@ public class ChangeShapeRequest extends ReaderBaseNoteRequest {
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
         noteManager.setCurrentShapeType(newShape);
+        onShapeChanged(noteManager, newShape);
         updateShapeDataInfo(noteManager);
+    }
+
+    private void onShapeChanged(final NoteManager noteManager, int shape) {
+        if (ShapeFactory.isDFBShape(shape)) {
+            noteManager.getNoteEventProcessorManager().resume();
+        } else {
+            noteManager.getNoteEventProcessorManager().pause();
+        }
     }
 }

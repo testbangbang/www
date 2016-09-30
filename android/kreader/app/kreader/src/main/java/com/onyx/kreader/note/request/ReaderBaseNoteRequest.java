@@ -9,7 +9,6 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.note.NoteManager;
@@ -24,7 +23,7 @@ import java.util.List;
  */
 public class ReaderBaseNoteRequest extends BaseRequest {
 
-    private volatile ReaderNoteDataInfo shapeDataInfo;
+    private volatile ReaderNoteDataInfo noteDataInfo;
     private String docUniqueId;
     private String parentLibraryId;
     private Rect viewportSize;
@@ -169,11 +168,11 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         return runnable;
     }
 
-    public final ReaderNoteDataInfo getShapeDataInfo() {
-        if (shapeDataInfo == null) {
-            shapeDataInfo = new ReaderNoteDataInfo();
+    public final ReaderNoteDataInfo getNoteDataInfo() {
+        if (noteDataInfo == null) {
+            noteDataInfo = new ReaderNoteDataInfo();
         }
-        return shapeDataInfo;
+        return noteDataInfo;
     }
 
     public boolean renderVisiblePages(final NoteManager parent) {
@@ -288,7 +287,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public void updateShapeDataInfo(final NoteManager parent) {
-        final ReaderNoteDataInfo shapeDataInfo = getShapeDataInfo();
+        final ReaderNoteDataInfo shapeDataInfo = getNoteDataInfo();
         parent.updateShapeDataInfo(getContext(), shapeDataInfo);
     }
 
@@ -301,11 +300,11 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public void syncDrawingArgs(final NoteDrawingArgs args) {
-        getShapeDataInfo().getDrawingArgs().syncFrom(args);
+        getNoteDataInfo().getDrawingArgs().syncFrom(args);
     }
 
     public final NoteDrawingArgs getDrawingArgs() {
-        return getShapeDataInfo().getDrawingArgs();
+        return getNoteDataInfo().getDrawingArgs();
     }
 
 

@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -29,7 +28,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
-import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -37,7 +35,7 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.note.data.ReaderNoteDataInfo;
+import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.*;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -316,20 +314,21 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShapeDrawing(final ShapeDrawingEvent event) {
-        final ReaderNoteDataInfo dataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
-        if (dataInfo != null) {
-            dataInfo.setContentRendered(true);
-        }
+        getReaderDataHolder().getNoteManager().ensureContentRendered();
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 
     @Subscribe
     public void onShapeErasing(final ShapeErasingEvent event) {
-        final ReaderNoteDataInfo dataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
-        if (dataInfo != null) {
-            dataInfo.setContentRendered(true);
+        if (!event.isFinished()) {
+            getReaderDataHolder().getNoteManager().ensureContentRendered();
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            return;
         }
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
+                getReaderDataHolder().getVisiblePages(),
+                event.getTouchPointList());
+        action.execute(readerDataHolder, null);
     }
 
     @Subscribe

@@ -160,12 +160,6 @@ public class ReaderNotePage {
         return shapeList;
     }
 
-    public final List<Shape> deatchShapeList() {
-        final List<Shape> list = shapeList;
-        shapeList = null;
-        return list;
-    }
-
     public void render(final RenderContext renderContext, final RenderCallback callback) {
         if (shapeList == null) {
             return;

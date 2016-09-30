@@ -17,6 +17,7 @@ public class RenderContext {
     public Matrix matrix;
     public boolean force = false;
     public boolean useExternal = false;
+    public float handlerSize = 5;
 
     public void prepareRenderingBuffer(final Bitmap bitmap) {
         if (!useExternal) {

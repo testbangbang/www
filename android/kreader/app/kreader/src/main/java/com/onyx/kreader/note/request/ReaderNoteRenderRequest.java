@@ -23,7 +23,7 @@ public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
         ensureDocumentOpened(noteManager);
         loadShapeData(noteManager);
         updateEventProcessor(noteManager);
-        getShapeDataInfo().setContentRendered(renderVisiblePages(noteManager));
+        getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         updateShapeDataInfo(noteManager);
     }
 

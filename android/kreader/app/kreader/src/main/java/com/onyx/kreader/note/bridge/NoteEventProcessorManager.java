@@ -135,10 +135,11 @@ public class NoteEventProcessorManager {
     }
 
     public boolean onTouchEvent(final MotionEvent motionEvent) {
-        if (!getNoteManager().isDFBForCurrentShape() || useNormalTouchEvent()) {
-            if (getNoteManager().isEraser()) {
-                return onTouchEventErasing(motionEvent);
-            }
+        if (getNoteManager().isInSelection()) {
+            return onTouchSelecting(motionEvent);
+        } else if (getNoteManager().isEraser()) {
+            return onTouchEventErasing(motionEvent);
+        } else if (!getNoteManager().isDFBForCurrentShape() || useNormalTouchEvent()) {
             return onTouchEventDrawing(motionEvent);
         }
         return false;
@@ -150,6 +151,10 @@ public class NoteEventProcessorManager {
 
     public boolean onTouchEventErasing(final MotionEvent motionEvent) {
         return getTouchEventProcessor().onTouchEventErasing(motionEvent);
+    }
+
+    public boolean onTouchSelecting(final MotionEvent motionEvent) {
+        return getTouchEventProcessor().onTouchEventSelecting(motionEvent);
     }
 
     public final TouchPoint getEraserPoint() {
