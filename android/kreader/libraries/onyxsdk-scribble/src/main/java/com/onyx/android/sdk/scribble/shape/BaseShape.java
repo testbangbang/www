@@ -23,7 +23,6 @@ public class BaseShape implements Shape {
     private int color = Color.BLACK;
     private float strokeWidth;
     private Path originDisplayPath;
-    private Path scaledDisplayPath;
     private int originWidth;
     private int originHeight;
 
@@ -256,14 +255,6 @@ public class BaseShape implements Shape {
 
     public void setOriginDisplayPath(final Path p) {
         originDisplayPath = p;
-    }
-
-    public Path getScaledDisplayPath() {
-        return scaledDisplayPath;
-    }
-
-    public void setScaledDisplayPath(Path scaledDisplayPath) {
-        this.scaledDisplayPath = scaledDisplayPath;
     }
 
     public void clear() {
