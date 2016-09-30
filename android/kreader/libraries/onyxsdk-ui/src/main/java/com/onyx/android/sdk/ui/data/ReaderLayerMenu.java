@@ -68,15 +68,6 @@ public class ReaderLayerMenu extends ReaderMenu {
     }
 
     @Override
-    public View findMenuView(ReaderMenuItem menuItem) {
-        if (menuItem.getItemType() == ReaderMenuItem.ItemType.Group) {
-            return mainMenuContainerView.findViewWithTag(menuItem);
-        }else {
-            return subMenuContainerView.findViewWithTag(menuItem);
-        }
-    }
-
-    @Override
     public void fillItems(List<? extends ReaderMenuItem> items) {
         menuItems = (List<ReaderLayerMenuItem>)items;
         assert (items.get(0).getItemType() == ReaderMenuItem.ItemType.Group);
@@ -121,5 +112,9 @@ public class ReaderLayerMenu extends ReaderMenu {
         }
         subMenuContainerView = createSubMenuContainerView(currentParentMenuItem, (List<ReaderLayerMenuItem>)currentParentMenuItem.getChildren(), state);
         getDialog().getReaderMenuLayout().updateMenuContent(mainMenuContainerView, subMenuContainerView);
+    }
+
+    public List<ReaderLayerMenuItem> getMenuItems() {
+        return menuItems;
     }
 }

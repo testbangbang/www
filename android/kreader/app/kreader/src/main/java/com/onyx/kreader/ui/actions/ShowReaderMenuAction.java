@@ -6,8 +6,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -108,6 +106,7 @@ public class ShowReaderMenuAction extends BaseAction {
         if (readerMenu == null) {
             initReaderMenu(readerDataHolder);
         }
+        initPageMenuItems(readerDataHolder, readerMenu.getMenuItems());
         return readerMenu;
     }
 
@@ -207,10 +206,10 @@ public class ShowReaderMenuAction extends BaseAction {
                         showExportDialog(readerDataHolder);
                         break;
                     case SHOW_ANNOTATION:
-                        showAnnotation(readerDataHolder, menuItem);
+                        showAnnotation(readerDataHolder);
                         break;
                     case SHOW_SCRIBBLE:
-                        showScribble(readerDataHolder, menuItem);
+                        showScribble(readerDataHolder);
                         break;
                     case TTS:
                         showTtsDialog(readerDataHolder);
@@ -256,20 +255,20 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        initPageMenuItems(readerDataHolder, ReaderLayerMenuRepository.fixedPageMenuItems);
         return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems);
     }
 
-    private void initPageMenuItems(ReaderDataHolder readerDataHolders, ReaderLayerMenuItem[] flattenArray) {
-        for (ReaderLayerMenuItem item : flattenArray) {
+    private void initPageMenuItems(ReaderDataHolder readerDataHolders, List<ReaderLayerMenuItem> menuItems) {
+        for (ReaderLayerMenuItem item : menuItems) {
             if (item.getAction() == ReaderMenuAction.SHOW_ANNOTATION) {
                 item.setDrawableResourceId(SingletonSharedPreference.isShowAnnotation(readerDataHolders.getContext())
                         ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
             }
             if (item.getAction() == ReaderMenuAction.SHOW_SCRIBBLE) {
-                item.setDrawableResourceId(SingletonSharedPreference.isShowScribble(readerDataHolders.getContext())
+                item.setDrawableResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
                         ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
             }
+            initPageMenuItems(readerDataHolders, (List<ReaderLayerMenuItem>)item.getChildren());
         }
     }
 
@@ -448,23 +447,17 @@ public class ShowReaderMenuAction extends BaseAction {
         new ShowReaderSettingsAction().execute(readerDataHolder, null);
     }
 
-    private void showAnnotation(ReaderDataHolder readerDataHolder, ReaderMenuItem menuItem) {
+    private void showAnnotation(ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        View view = readerMenu.findMenuView(menuItem);
         boolean isShowAnnotation = !SingletonSharedPreference.isShowAnnotation(readerDataHolder.getContext());
-        ImageView imageView = ((ImageView) view.findViewById(R.id.imageview_icon));
-        imageView.setImageResource(isShowAnnotation ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
         SingletonSharedPreference.setIsShowAnnotation(readerDataHolder.getContext(), isShowAnnotation);
         new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
     }
 
-    private void showScribble(ReaderDataHolder readerDataHolder, ReaderMenuItem menuItem) {
+    private void showScribble(ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        View view = readerMenu.findMenuView(menuItem);
-        boolean isShowScribble = !SingletonSharedPreference.isShowScribble(readerDataHolder.getContext());
-        ImageView imageView = ((ImageView) view.findViewById(R.id.imageview_icon));
-        imageView.setImageResource(isShowScribble ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
-        SingletonSharedPreference.setIsShowScribble(readerDataHolder.getContext(), isShowScribble);
+        boolean isShowScribble = !SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
+        SingletonSharedPreference.setIsShowNote(readerDataHolder.getContext(), isShowScribble);
         new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
     }
     

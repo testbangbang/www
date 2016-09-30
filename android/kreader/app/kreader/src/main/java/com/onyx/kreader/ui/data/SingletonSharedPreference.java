@@ -138,6 +138,10 @@ public class SingletonSharedPreference {
         return getBooleanByStringID(context, R.string.settings_note_key, true);
     }
 
+    public static void setIsShowNote(Context context, boolean value) {
+        setBooleanValue(context, R.string.settings_note_key, value);
+    }
+
     public static boolean isShowBookmark(Context context) {
         return getBooleanByStringID(context, R.string.settings_bookmark_key, true);
     }
@@ -223,14 +227,6 @@ public class SingletonSharedPreference {
 
     public static int getDialogTableOfContentTab(Context context, int defaultValue) {
         return getIntByStringID(context, R.string.dialog_table_of_content_tab, defaultValue);
-    }
-
-    public static void setIsShowScribble(Context context, boolean value) {
-        setBooleanValue(context, R.string.show_scribble, value);
-    }
-
-    public static boolean isShowScribble(Context context) {
-        return getBooleanByStringID(context, R.string.show_scribble, true);
     }
 
     public static float getBaseLineWidth(Context context) {
