@@ -173,7 +173,7 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
             String pageName = String.valueOf(i);
             int subPageCount = temp.getSubPageCount(pageName);
             int subPageIndex = TestUtils.randInt(0, subPageCount);
-            temp.removePage(getActivity(), pageName, subPageIndex);
+            temp.clearPage(getActivity(), pageName, subPageIndex);
         }
         temp.save(getActivity(), "some title");
 
