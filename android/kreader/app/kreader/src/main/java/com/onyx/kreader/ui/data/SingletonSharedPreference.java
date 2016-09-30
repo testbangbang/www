@@ -162,6 +162,10 @@ public class SingletonSharedPreference {
         return getBooleanByStringID(context, R.string.settings_show_annotation_key, true);
     }
 
+    public static void setIsShowAnnotation(Context context, boolean value) {
+        setBooleanValue(context, R.string.settings_show_annotation_key, value);
+    }
+
     public static AnnotationHighlightStyle getAnnotationHighlightStyle(Context context) {
         String value = sPreferences.getString(context.getString(R.string.settings_annotation_highlight_style_key), null);
         if (value != null) {
@@ -197,28 +201,36 @@ public class SingletonSharedPreference {
         return getBooleanByStringID(context, R.string.settings_acquire_scribble_lock_key, true);
     }
 
-    public static void setTtsSpeechRate(Context context, float value){
+    public static void setTtsSpeechRate(Context context, float value) {
         setFloatValue(context, R.string.tts_speech_rate_key, value);
     }
 
-    public static float getTtsSpeechRate(Context context){
+    public static float getTtsSpeechRate(Context context) {
         return getFloatByStringID(context, R.string.tts_speech_rate_key, 1.0f);
     }
 
-    public static void setQuickViewGridType(Context context, int value){
+    public static void setQuickViewGridType(Context context, int value) {
         setIntValue(context, R.string.quick_view_grid_type, value);
     }
 
-    public static int getQuickViewGridType(Context context, int defaultValue){
+    public static int getQuickViewGridType(Context context, int defaultValue) {
         return getIntByStringID(context, R.string.quick_view_grid_type, defaultValue);
     }
 
-    public static void setDialogTableOfContentTab(Context context, int value){
+    public static void setDialogTableOfContentTab(Context context, int value) {
         setIntValue(context, R.string.dialog_table_of_content_tab, value);
     }
 
-    public static int getDialogTableOfContentTab(Context context, int defaultValue){
+    public static int getDialogTableOfContentTab(Context context, int defaultValue) {
         return getIntByStringID(context, R.string.dialog_table_of_content_tab, defaultValue);
+    }
+
+    public static void setIsShowScribble(Context context, boolean value) {
+        setBooleanValue(context, R.string.show_scribble, value);
+    }
+
+    public static boolean isShowScribble(Context context) {
+        return getBooleanByStringID(context, R.string.show_scribble, true);
     }
 
     public static float getBaseLineWidth(Context context) {

@@ -6,6 +6,8 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -14,9 +16,9 @@ import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ScribbleMenuAction;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
@@ -46,6 +48,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogExport;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
@@ -203,6 +206,12 @@ public class ShowReaderMenuAction extends BaseAction {
                     case DIRECTORY_EXPORT:
                         showExportDialog(readerDataHolder);
                         break;
+                    case SHOW_ANNOTATION:
+                        showAnnotation(readerDataHolder, menuItem);
+                        break;
+                    case SHOW_SCRIBBLE:
+                        showScribble(readerDataHolder, menuItem);
+                        break;
                     case TTS:
                         showTtsDialog(readerDataHolder);
                         break;
@@ -247,7 +256,21 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
+        initPageMenuItems(readerDataHolder, ReaderLayerMenuRepository.fixedPageMenuItems);
         return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems);
+    }
+
+    private void initPageMenuItems(ReaderDataHolder readerDataHolders, ReaderLayerMenuItem[] flattenArray) {
+        for (ReaderLayerMenuItem item : flattenArray) {
+            if (item.getAction() == ReaderMenuAction.SHOW_ANNOTATION) {
+                item.setDrawableResourceId(SingletonSharedPreference.isShowAnnotation(readerDataHolders.getContext())
+                        ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
+            }
+            if (item.getAction() == ReaderMenuAction.SHOW_SCRIBBLE) {
+                item.setDrawableResourceId(SingletonSharedPreference.isShowScribble(readerDataHolders.getContext())
+                        ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
+            }
+        }
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
@@ -423,6 +446,26 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showReaderSettings(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         new ShowReaderSettingsAction().execute(readerDataHolder, null);
+    }
+
+    private void showAnnotation(ReaderDataHolder readerDataHolder, ReaderMenuItem menuItem) {
+        hideReaderMenu();
+        View view = readerMenu.findMenuView(menuItem);
+        boolean isShowAnnotation = !SingletonSharedPreference.isShowAnnotation(readerDataHolder.getContext());
+        ImageView imageView = ((ImageView) view.findViewById(R.id.imageview_icon));
+        imageView.setImageResource(isShowAnnotation ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
+        SingletonSharedPreference.setIsShowAnnotation(readerDataHolder.getContext(), isShowAnnotation);
+        new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
+    }
+
+    private void showScribble(ReaderDataHolder readerDataHolder, ReaderMenuItem menuItem) {
+        hideReaderMenu();
+        View view = readerMenu.findMenuView(menuItem);
+        boolean isShowScribble = !SingletonSharedPreference.isShowScribble(readerDataHolder.getContext());
+        ImageView imageView = ((ImageView) view.findViewById(R.id.imageview_icon));
+        imageView.setImageResource(isShowScribble ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
+        SingletonSharedPreference.setIsShowScribble(readerDataHolder.getContext(), isShowScribble);
+        new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
     }
     
     public static void updateBackwardForwardState(ReaderDataHolder readerDataHolder){

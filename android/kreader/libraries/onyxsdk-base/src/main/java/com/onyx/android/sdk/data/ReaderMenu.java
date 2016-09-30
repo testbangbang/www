@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data;
 
+import android.view.View;
+
 import java.util.List;
 
 /**
@@ -18,6 +20,7 @@ public abstract class ReaderMenu {
     public abstract void show(ReaderMenuState state);
     public abstract void hide();
     public abstract void updateReaderMenuState(ReaderMenuState state);
+    public abstract View findMenuView(ReaderMenuItem menuItem);
 
     public abstract void fillItems(List<? extends ReaderMenuItem> items);
 

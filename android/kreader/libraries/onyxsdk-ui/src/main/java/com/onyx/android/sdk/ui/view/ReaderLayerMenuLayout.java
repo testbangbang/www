@@ -13,6 +13,7 @@ import com.onyx.android.sdk.ui.R;
 public class ReaderLayerMenuLayout extends LinearLayout {
 
     private View menuDivider;
+    private View subMenu;
 
     public ReaderLayerMenuLayout(Context context) {
         super(context);
@@ -35,6 +36,6 @@ public class ReaderLayerMenuLayout extends LinearLayout {
         addView(subMenu);
         addView(menuDivider);
         addView(mainMenu);
+        this.subMenu = subMenu;
     }
-
 }

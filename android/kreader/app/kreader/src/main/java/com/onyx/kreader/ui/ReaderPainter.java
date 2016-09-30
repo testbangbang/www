@@ -1,16 +1,23 @@
 package com.onyx.kreader.ui;
 
 import android.content.Context;
-import android.graphics.*;
-import android.util.Log;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PathEffect;
+import android.graphics.PixelXorXfermode;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
@@ -57,9 +64,13 @@ public class ReaderPainter {
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
         drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
-        drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+        if (SingletonSharedPreference.isShowAnnotation(context)){
+            drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+        }
         drawBookmark(context, canvas, userDataInfo, viewInfo);
-        drawShapes(context, canvas, paint, noteManager);
+        if (SingletonSharedPreference.isShowScribble(context)){
+            drawShapes(context, canvas, paint, noteManager);
+        }
         drawStashShapes(context, canvas, paint, noteManager, viewInfo);
         drawShapeEraser(context, canvas, paint, noteManager);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
