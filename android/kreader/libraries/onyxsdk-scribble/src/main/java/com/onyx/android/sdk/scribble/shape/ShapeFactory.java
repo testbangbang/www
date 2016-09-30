@@ -7,6 +7,7 @@ import com.onyx.android.sdk.scribble.data.ShapeModel;
  */
 public class ShapeFactory {
 
+    static public final int SHAPE_SELECTOR = -3;
     static public final int SHAPE_ERASER = -2;
     static public final int SHAPE_INVALID = -1;
 
