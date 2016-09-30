@@ -14,9 +14,9 @@ import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ScribbleMenuAction;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
@@ -46,6 +46,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogExport;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
@@ -105,6 +106,7 @@ public class ShowReaderMenuAction extends BaseAction {
         if (readerMenu == null) {
             initReaderMenu(readerDataHolder);
         }
+        initPageMenuItems(readerDataHolder, readerMenu.getMenuItems());
         return readerMenu;
     }
 
@@ -203,6 +205,12 @@ public class ShowReaderMenuAction extends BaseAction {
                     case DIRECTORY_EXPORT:
                         showExportDialog(readerDataHolder);
                         break;
+                    case SHOW_ANNOTATION:
+                        showAnnotation(readerDataHolder);
+                        break;
+                    case SHOW_SCRIBBLE:
+                        showScribble(readerDataHolder);
+                        break;
                     case TTS:
                         showTtsDialog(readerDataHolder);
                         break;
@@ -248,6 +256,20 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
         return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems);
+    }
+
+    private void initPageMenuItems(ReaderDataHolder readerDataHolders, List<ReaderLayerMenuItem> menuItems) {
+        for (ReaderLayerMenuItem item : menuItems) {
+            if (item.getAction() == ReaderMenuAction.SHOW_ANNOTATION) {
+                item.setDrawableResourceId(SingletonSharedPreference.isShowAnnotation(readerDataHolders.getContext())
+                        ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
+            }
+            if (item.getAction() == ReaderMenuAction.SHOW_SCRIBBLE) {
+                item.setDrawableResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
+                        ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
+            }
+            initPageMenuItems(readerDataHolders, (List<ReaderLayerMenuItem>)item.getChildren());
+        }
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
@@ -423,6 +445,20 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showReaderSettings(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         new ShowReaderSettingsAction().execute(readerDataHolder, null);
+    }
+
+    private void showAnnotation(ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        boolean isShowAnnotation = !SingletonSharedPreference.isShowAnnotation(readerDataHolder.getContext());
+        SingletonSharedPreference.setIsShowAnnotation(readerDataHolder.getContext(), isShowAnnotation);
+        new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
+    }
+
+    private void showScribble(ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        boolean isShowScribble = !SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
+        SingletonSharedPreference.setIsShowNote(readerDataHolder.getContext(), isShowScribble);
+        new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
     }
     
     public static void updateBackwardForwardState(ReaderDataHolder readerDataHolder){
