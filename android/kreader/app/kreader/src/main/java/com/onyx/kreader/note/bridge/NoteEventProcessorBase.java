@@ -21,11 +21,11 @@ public class NoteEventProcessorBase {
 
         public abstract void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape);
 
-        public abstract void onErasingTouchDown(final MotionEvent motionEvent, final Shape shape);
+        public abstract void onErasingTouchDown(final MotionEvent motionEvent, final TouchPointList list);
 
-        public abstract void onErasingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last);
+        public abstract void onErasingTouchMove(final MotionEvent motionEvent, final TouchPointList list, boolean last);
 
-        public abstract void onErasingTouchUp(final MotionEvent motionEvent, final Shape shape);
+        public abstract void onErasingTouchUp(final MotionEvent motionEvent, final TouchPointList list);
 
         public abstract void onDFBShapeFinished(final Shape shape);
 

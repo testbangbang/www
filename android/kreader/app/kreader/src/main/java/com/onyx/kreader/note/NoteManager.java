@@ -14,6 +14,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -137,18 +138,18 @@ public class NoteManager {
                 }
             }
 
-            public void onErasingTouchDown(final MotionEvent motionEvent, final Shape shape) {
-                getParent().getEventBus().post(new ShapeErasingEvent());
+            public void onErasingTouchDown(final MotionEvent motionEvent, final TouchPointList list) {
+                getParent().getEventBus().post(new ShapeErasingEvent(false, list));
             }
 
-            public void onErasingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
+            public void onErasingTouchMove(final MotionEvent motionEvent, final TouchPointList list, boolean last) {
                 if (last) {
-                    getParent().getEventBus().post(new ShapeErasingEvent());
+                    getParent().getEventBus().post(new ShapeErasingEvent(false, list));
                 }
             }
 
-            public void onErasingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-                getParent().getEventBus().post(new ShapeErasingEvent());
+            public void onErasingTouchUp(final MotionEvent motionEvent, final TouchPointList list) {
+                getParent().getEventBus().post(new ShapeErasingEvent(true, list));
             }
 
             public void onDFBShapeFinished(final Shape shape) {

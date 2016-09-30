@@ -3,7 +3,10 @@ package com.onyx.kreader.note.bridge;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.note.NoteManager;
@@ -14,6 +17,7 @@ import com.onyx.kreader.note.NoteManager;
 public class TouchEventProcessor extends NoteEventProcessorBase {
 
     private TouchPoint eraserPoint;
+    private TouchPointList historyErasingPoints = new TouchPointList();
     private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
 
@@ -113,6 +117,7 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
 
     private void onErasingTouchDown(final MotionEvent motionEvent) {
         eraserPoint = new TouchPoint(motionEvent);
+        historyErasingPoints = new TouchPointList();
         if (getCallback() != null) {
             getCallback().onErasingTouchDown(motionEvent, null);
         }
@@ -126,16 +131,22 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
                 getCallback().onErasingTouchMove(motionEvent, null, false);
             }
         }
+        final PageInfo pageInfo = getNoteManager().hitTest(motionEvent.getX(), motionEvent.getY());
+        if (pageInfo == null) {
+            return;
+        }
         eraserPoint = new TouchPoint(motionEvent);
         if (getCallback() != null) {
-            getCallback().onErasingTouchMove(motionEvent, null, true);
+            getCallback().onErasingTouchMove(motionEvent, historyErasingPoints, true);
         }
+        eraserPoint.normalize(pageInfo);
+        historyErasingPoints.add(eraserPoint);
     }
 
     private void onErasingTouchUp(final MotionEvent motionEvent) {
         eraserPoint = null;
         if (getCallback() != null) {
-            getCallback().onErasingTouchUp(motionEvent, null);
+            getCallback().onErasingTouchUp(motionEvent, historyErasingPoints);
         }
     }
 
