@@ -3,6 +3,7 @@ package com.onyx.kreader.host.request;
 import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.note.NoteManager;
@@ -41,10 +42,13 @@ public class ExportNotesRequest extends BaseReaderRequest {
             }
         }
         getReaderUserDataInfo().loadDocumentAnnotations(getContext(), reader);
-        reader.getDocument().exportNotes(reader.getDocumentPath(),
+        if (!reader.getDocument().exportNotes(reader.getDocumentPath(),
                 getExportDocPath(reader.getDocumentPath()),
                 getReaderUserDataInfo().getAnnotations(),
-                shapeList);
+                shapeList)) {
+            throw ReaderException.exceptionFromCode(ReaderException.UNKNOWN_EXCEPTION,
+                    "export notes failed!");
+        }
     }
 
     private String getExportDocPath(String sourceDocPath) {
