@@ -231,7 +231,7 @@ public class ReaderHelper {
     public void initData(Context context) {
         initImageReflowManager(context);
         initBitmapCache();
-//        initChineseAnalyzer(context);
+        lazyInitChineseAnalyzer(context);
     }
 
     private void initLayoutManager() {
@@ -239,8 +239,8 @@ public class ReaderHelper {
         getReaderLayoutManager().init();
     }
 
-    private void initChineseAnalyzer(Context context) {
-        AnalyzerAndroidWrapper.init(context);
+    private void lazyInitChineseAnalyzer(Context context) {
+        AnalyzerAndroidWrapper.lazyInit(context);
     }
 
     private void initImageReflowManager(Context context) {

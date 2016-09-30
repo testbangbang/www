@@ -2,7 +2,6 @@ package com.onyx.kreader.host.impl;
 
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderTextSplitter;
-import com.onyx.kreader.ui.KReaderApp;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.util.ArrayList;
@@ -147,7 +146,6 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
     public static ReaderTextSplitterImpl sharedInstance() {
         if (instance == null) {
             instance = new ReaderTextSplitterImpl();
-            AnalyzerAndroidWrapper.init(KReaderApp.instance());
         }
         return instance;
     }
@@ -158,7 +156,8 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         final String l = normalizeString(left);
         final String r = normalizeString(right);
 
-        if (word.length() > 0 && isAlphaOrDigit(String.valueOf(word.charAt(0)))) {
+        if (word.length() > 0 && isAlphaOrDigit(String.valueOf(word.charAt(0))) ||
+                !AnalyzerAndroidWrapper.isInitialized()) {
             return searchSpaceBoundaryForLatinFromRight(word, left);
         }
 
@@ -173,7 +172,8 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         final String l = normalizeString(left);
         final String r = normalizeString(right);
 
-        if (word.length() > 0 && isAlphaOrDigit(String.valueOf(word.charAt(word.length() - 1)))) {
+        if (word.length() > 0 && isAlphaOrDigit(String.valueOf(word.charAt(word.length() - 1))) ||
+                !AnalyzerAndroidWrapper.isInitialized()) {
             return searchSpaceBoundaryForLatinFromLeft(word, right);
         }
 
