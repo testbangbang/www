@@ -58,7 +58,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     public void beforeExecute(final Reader reader) {
-        reader.acquireWakeLock(getContext());
+        reader.acquireWakeLock(getContext(), getClass().getSimpleName());
         benchmarkStart();
         if (isAbort()) {
             reader.getReaderHelper().setAbortFlag();

@@ -39,7 +39,7 @@ public abstract class BaseCloudRequest extends BaseRequest {
     }
 
     public void beforeExecute(final CloudManager parent) {
-        parent.acquireWakeLock(getContext());
+        parent.acquireWakeLock(getContext(), getClass().getSimpleName());
         benchmarkStart();
         if (isAbort()) {
         }

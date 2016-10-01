@@ -100,7 +100,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public void beforeExecute(final NoteManager noteManager) {
-        noteManager.getRequestManager().acquireWakeLock(getContext());
+        noteManager.getRequestManager().acquireWakeLock(getContext(), getClass().getSimpleName());
         if (isPauseRawInputProcessor()) {
             noteManager.pauseRawEventProcessor();
         }

@@ -41,8 +41,8 @@ public class CloudManager {
         return cloudConf;
     }
 
-    public void acquireWakeLock(Context context) {
-        requestManager.acquireWakeLock(context);
+    public void acquireWakeLock(final Context context, final String tag) {
+        requestManager.acquireWakeLock(context, tag);
     }
 
     public void releaseWakeLock() {
