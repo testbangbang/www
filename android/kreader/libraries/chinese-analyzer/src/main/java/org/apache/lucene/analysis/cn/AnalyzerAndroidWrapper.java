@@ -21,11 +21,35 @@ public class AnalyzerAndroidWrapper {
 
     private static Context context;
 
-    public static void init(Context context) {
-        AnalyzerAndroidWrapper.context = context;
+    private static Object lock = new Object();
+    private static boolean initializing;
+    private static boolean initialized;
 
-        WordDictionary.getInstance();
-        BigramDictionary.getInstance();
+    public static void lazyInit(final Context context) {
+        synchronized (lock) {
+            if (initialized || initializing) {
+                return;
+            }
+            initializing = true;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AnalyzerAndroidWrapper.context = context;
+                    WordDictionary.getInstance();
+                    BigramDictionary.getInstance();
+                    synchronized (lock) {
+                        initialized = true;
+                        initializing = false;
+                    }
+                }
+            }).start();
+        }
+    }
+
+    public static boolean isInitialized() {
+        synchronized (lock) {
+            return initialized;
+        }
     }
 
     public static InputStream openAssetFile(String fileName) throws IOException {
@@ -33,20 +57,25 @@ public class AnalyzerAndroidWrapper {
     }
 
     public static ArrayList<String> analyze(String sentence) {
-        ArrayList<String> list = new ArrayList<>();
-        try {
-            Token nt = new Token();
-            Analyzer ca = new SmartChineseAnalyzer(true);
-            TokenStream ts = ca.tokenStream("sentence", new StringReader(sentence));
-            nt = ts.next(nt);
-            while (nt != null) {
-                list.add(nt.term());
-                nt = ts.next(nt);
+        synchronized (lock) {
+            ArrayList<String> list = new ArrayList<>();
+            if (!initialized) {
+                return list;
             }
-            ts.close();
-        } catch (Throwable tr) {
-            Log.w(TAG, tr);
+            try {
+                Token nt = new Token();
+                Analyzer ca = new SmartChineseAnalyzer(true);
+                TokenStream ts = ca.tokenStream("sentence", new StringReader(sentence));
+                nt = ts.next(nt);
+                while (nt != null) {
+                    list.add(nt.term());
+                    nt = ts.next(nt);
+                }
+                ts.close();
+            } catch (Throwable tr) {
+                Log.w(TAG, tr);
+            }
+            return list;
         }
-        return list;
     }
 }
