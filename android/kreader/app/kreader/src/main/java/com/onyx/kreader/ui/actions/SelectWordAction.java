@@ -14,11 +14,21 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class SelectWordAction{
 
-    public static void selectWord(final ReaderDataHolder readerDataHolder, final String pageName, final PointF startPoint, final PointF endPoint, final PointF touchPoint, final BaseCallback baseCallback){
+    public static void selectWord(final ReaderDataHolder readerDataHolder,
+                                  final String pageName,
+                                  final PointF startPoint,
+                                  final PointF endPoint,
+                                  final PointF touchPoint,
+                                  final BaseCallback baseCallback) {
         execute(readerDataHolder, pageName, startPoint, endPoint, touchPoint, ReaderHitTestOptionsImpl.create(true), baseCallback);
     }
 
-    public static void select(final ReaderDataHolder readerDataHolder, final String pageName, final PointF startPoint, final PointF endPoint, final PointF touchPoint,final BaseCallback baseCallback){
+    public static void selectText(final ReaderDataHolder readerDataHolder,
+                                  final String pageName,
+                                  final PointF startPoint,
+                                  final PointF endPoint,
+                                  final PointF touchPoint,
+                                  final BaseCallback baseCallback){
         execute(readerDataHolder, pageName, startPoint, endPoint, touchPoint, ReaderHitTestOptionsImpl.create(false), baseCallback);
     }
 
