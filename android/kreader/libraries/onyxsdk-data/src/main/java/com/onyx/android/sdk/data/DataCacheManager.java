@@ -1,14 +1,13 @@
 package com.onyx.android.sdk.data;
 
 import com.onyx.android.sdk.data.cache.LibraryCache;
-import com.onyx.android.sdk.data.cache.MemoryCache;
+import com.onyx.android.sdk.data.cache.LibraryCacheManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.utils.MetaDataUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,29 +15,31 @@ import java.util.List;
  */
 public class DataCacheManager {
 
-    // global library cache.
-    private HashMap<String, Metadata> md5HashMap = new HashMap<>();
-    private MemoryCache memoryCache;
+    private MetadataCache metadataCache = new MetadataCache();
+    private LibraryCacheManager libraryCacheManager;
     private boolean isLibraryCacheReady = false;
 
     public DataCacheManager(DataProviderBase dataProvider) {
-        memoryCache = new MemoryCache(dataProvider);
+        libraryCacheManager = new LibraryCacheManager(dataProvider);
     }
 
-    public LibraryCache getLibraryCache(String id) {
-        return memoryCache.getDataCache(id);
+    public LibraryCache getLibraryCache(final String libraryUniqueId) {
+        return libraryCacheManager.getLibraryCache(libraryUniqueId);
     }
 
-    public final HashMap<String, Metadata> getMd5HashMap() {
-        return md5HashMap;
-    }
-
-    public void add(final String parentId, final Metadata metadata) {
+    public void add(final String parentLibraryId, final Metadata metadata) {
         if (metadata == null) {
             return;
         }
-        md5HashMap.put(metadata.getIdString(), metadata);
-        getLibraryCache(parentId).addId(metadata.getIdString());
+        metadataCache.add(metadata.getIdString(), metadata);
+        addToLibrary(parentLibraryId, metadata);
+    }
+
+    public void addToLibrary(final String parentLibraryId, final Metadata metadata) {
+        final LibraryCache libraryCache = getLibraryCache(parentLibraryId);
+        if (libraryCache != null) {
+            libraryCache.addId(metadata.getIdString());
+        }
     }
 
     public void addAll(final String parentId, List<Metadata> list) {
@@ -50,14 +51,14 @@ public class DataCacheManager {
         }
     }
 
-    private void removeFromHashMap(Metadata metadata) {
-        md5HashMap.remove(metadata.getIdString());
+    private void removeFromCache(Metadata metadata) {
+        metadataCache.remove(metadata);
     }
 
     public boolean remove(final String parentId, final String md5) {
-        Metadata metadata = md5HashMap.get(md5);
+        Metadata metadata = metadataCache.getById(md5);
         if (metadata != null) {
-            removeFromHashMap(metadata);
+            removeFromCache(metadata);
             getLibraryCache(parentId).removeId(md5);
             return true;
         }
@@ -72,8 +73,8 @@ public class DataCacheManager {
     }
 
     public void clear() {
-        md5HashMap.clear();
-        memoryCache.clearAllDataCache();
+        metadataCache.clear();
+        libraryCacheManager.clear();
         setLibraryCacheReady(false);
     }
 
@@ -86,34 +87,26 @@ public class DataCacheManager {
     }
 
     public boolean isEmpty() {
-        return md5HashMap.isEmpty();
+        return metadataCache.isEmpty();
     }
 
-    public Metadata get(final String md5) {
-        return md5HashMap.get(md5);
+    public Metadata getById(final String md5) {
+        return metadataCache.getById(md5);
     }
 
-    public Metadata getByMd5(final String md5) {
-        return md5HashMap.get(md5);
-    }
-
-    public boolean containMd5(final String md5) {
-        return md5HashMap.containsKey(md5);
+    public boolean containsId(final String md5) {
+        return metadataCache.containsId(md5);
     }
 
     public List<Metadata> getAllMetadataList() {
-        List<Metadata> allList = new ArrayList<>();
-        for (Metadata metadata : md5HashMap.values()) {
-            allList.add(metadata);
-        }
-        return allList;
+        return metadataCache.list();
     }
 
     public List<Metadata> getMetadataList(final String parentId) {
         LibraryCache cache = getLibraryCache(parentId);
         List<Metadata> list = new ArrayList<>();
         for (String id : cache.getIdList()) {
-            list.add(md5HashMap.get(id));
+            list.add(metadataCache.getById(id));
         }
         return list;
     }
@@ -125,7 +118,7 @@ public class DataCacheManager {
                 list = getAll(originList, args);
                 break;
             case READED:
-                list = getReaded(originList, args);
+                list = getRead(originList, args);
                 break;
             case READING:
                 list = getReading(originList, args);
@@ -196,7 +189,7 @@ public class DataCacheManager {
         return typeList;
     }
 
-    public List<Metadata> getReaded(final List<Metadata> originList, final QueryArgs args) {
+    public List<Metadata> getRead(final List<Metadata> originList, final QueryArgs args) {
         List<Metadata> readList = new ArrayList<>();
         for (Metadata metadata : originList) {
             if (!containType(metadata, args)) {

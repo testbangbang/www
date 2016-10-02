@@ -111,7 +111,7 @@ public class ReaderHelper {
     private void saveThumbnail(final Context context, final String path) {
         WindowManager window = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         if (window == null) {
-            Log.w(TAG, "get display metrics failed: " + documentPath);
+            Log.w(TAG, "getById display metrics failed: " + documentPath);
             return;
         }
         DisplayMetrics display = new DisplayMetrics();
