@@ -332,14 +332,24 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onShapeErasing(final ShapeErasingEvent event) {
         if (!event.isFinished()) {
-            getReaderDataHolder().getNoteManager().ensureContentRendered();
-            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            prepareForErasing();
             return;
         }
         final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
                 getReaderDataHolder().getVisiblePages(),
                 event.getTouchPointList());
         action.execute(readerDataHolder, null);
+    }
+
+    private void prepareForErasing() {
+        if (getReaderDataHolder().getNoteManager().hasShapeStash()) {
+            final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+            final FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
+            flushNoteAction.execute(getReaderDataHolder(), null);
+            return;
+        }
+        getReaderDataHolder().getNoteManager().ensureContentRendered();
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 
     @Subscribe

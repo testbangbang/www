@@ -323,6 +323,10 @@ public class NoteManager {
         return shapeStash;
     }
 
+    public boolean hasShapeStash() {
+        return shapeStash.size() > 0;
+    }
+
     public void undo(final Context context, final String pageName) {
         final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
         if (readerNotePage != null) {
