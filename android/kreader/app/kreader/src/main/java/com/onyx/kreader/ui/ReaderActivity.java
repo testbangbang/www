@@ -27,6 +27,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -35,6 +36,7 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.*;
@@ -50,6 +52,8 @@ import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
 
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 /**
  * Created by Joy on 2016/4/14.
@@ -316,6 +320,13 @@ public class ReaderActivity extends ActionBarActivity {
     public void onShapeDrawing(final ShapeDrawingEvent event) {
         getReaderDataHolder().getNoteManager().ensureContentRendered();
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+    }
+
+    @Subscribe
+    public void onDFBShapeFinished(final ShapeAddedEvent event) {
+        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+        FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, false, false, false);
+        flushNoteAction.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe

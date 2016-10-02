@@ -16,9 +16,10 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
     private volatile List<Shape> shapeList;
     private volatile boolean saveDocument;
 
-    public FlushShapeListRequest(final List<PageInfo> pages, final List<Shape> list, int spi, boolean r, boolean save) {
+    public FlushShapeListRequest(final List<PageInfo> pages, final List<Shape> list, int spi, boolean r, boolean t, boolean save) {
         setAbortPendingTasks(true);
         setRender(r);
+        setTransfer(t);
         setVisiblePages(pages);
         subPageIndex = spi;
         shapeList = list;

@@ -28,6 +28,7 @@ import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 

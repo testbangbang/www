@@ -24,14 +24,16 @@ public class FlushNoteAction extends BaseAction {
     private boolean render;
     private boolean save;
     private boolean showDialog;
+    private boolean transfer;
 
-    public FlushNoteAction(List<PageInfo> list, boolean renderShapes, boolean saveToDatabase, boolean show) {
+    public FlushNoteAction(List<PageInfo> list, boolean renderShapes, boolean transferBitmap, boolean saveToDatabase, boolean show) {
         render = renderShapes;
         save = saveToDatabase;
         if (list != null) {
             visiblePages.addAll(list);
         }
         showDialog = show;
+        transfer = transferBitmap;
     }
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -45,7 +47,7 @@ public class FlushNoteAction extends BaseAction {
             showLoadingDialog(readerDataHolder, R.string.saving);
         }
 
-        final FlushShapeListRequest flushRequest = new FlushShapeListRequest(visiblePages, stash, 0, render, save);
+        final FlushShapeListRequest flushRequest = new FlushShapeListRequest(visiblePages, stash, 0, render, transfer, save);
         noteManager.submit(readerDataHolder.getContext(), flushRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
