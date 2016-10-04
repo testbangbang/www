@@ -555,10 +555,6 @@ public class ReaderActivity extends ActionBarActivity {
         getReaderDataHolder().closeActiveDialogs();
     }
 
-    protected boolean askForClose() {
-        return false;
-    }
-
     private boolean processKeyDown(int keyCode, KeyEvent event) {
         return getHandlerManager().onKeyDown(getReaderDataHolder(), keyCode, event) || super.onKeyDown(keyCode, event);
     }
