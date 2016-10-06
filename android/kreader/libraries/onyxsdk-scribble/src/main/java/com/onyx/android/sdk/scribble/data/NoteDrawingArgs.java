@@ -19,7 +19,7 @@ public class NoteDrawingArgs {
     public volatile float strokeWidth = NoteModel.getDefaultStrokeWidth();
     public volatile int strokeColor = Color.BLACK;
     public volatile int style;
-    public volatile int currentShapeType = ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
+    public volatile int currentShapeType = defaultShape();
     public volatile float eraserRadius = 15.0f;
     public volatile int background;
     public volatile PenState penState;
@@ -32,6 +32,10 @@ public class NoteDrawingArgs {
         eraserRadius = other.eraserRadius;
         background = other.background;
         penState = other.penState;
+    }
+
+    public static int defaultShape() {
+        return ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
     }
 
 }
