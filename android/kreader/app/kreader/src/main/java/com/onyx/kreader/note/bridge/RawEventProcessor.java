@@ -4,10 +4,11 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+
+import com.onyx.android.sdk.common.request.SingleThreadExecutor;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.utils.DeviceUtils;
 
@@ -16,8 +17,6 @@ import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by zhuzeng on 9/19/16.
@@ -55,7 +54,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile float[] dstPoint = new float[2];
     private volatile TouchPointList touchPointList;
     private Handler handler = new Handler(Looper.getMainLooper());
-    private ExecutorService singleThreadPool = null;
+    private SingleThreadExecutor singleThreadExecutor;
 
     public RawEventProcessor(final NoteManager p) {
         super(p);
@@ -96,22 +95,17 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void shutdown() {
-        getSingleThreadPool().shutdown();
-        singleThreadPool = null;
+        if (singleThreadExecutor != null) {
+            singleThreadExecutor.shutdown();
+            singleThreadExecutor = null;
+        }
     }
 
     private ExecutorService getSingleThreadPool()   {
-        if (singleThreadPool == null) {
-            singleThreadPool = Executors.newSingleThreadExecutor(new ThreadFactory() {
-                @Override
-                public Thread newThread(Runnable runnable) {
-                    Thread thread = new Thread(runnable);
-                    thread.setPriority(Thread.MAX_PRIORITY);
-                    return thread;
-                }
-            });
+        if (singleThreadExecutor == null) {
+            singleThreadExecutor = new SingleThreadExecutor(Thread.MAX_PRIORITY);
         }
-        return singleThreadPool;
+        return singleThreadExecutor.get();
     }
 
     private void submitJob() {

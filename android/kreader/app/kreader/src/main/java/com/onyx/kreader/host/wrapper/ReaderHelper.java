@@ -240,7 +240,7 @@ public class ReaderHelper {
     }
 
     private void initWordAnalyzerInBackground(Context context) {
-        AnalyzerAndroidWrapper.initializeInBackground(context);
+        AnalyzerAndroidWrapper.initialize(context, true);
     }
 
     private void initImageReflowManager(Context context) {
