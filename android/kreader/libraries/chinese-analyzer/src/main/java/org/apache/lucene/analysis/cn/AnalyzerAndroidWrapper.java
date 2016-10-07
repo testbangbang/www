@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -22,26 +23,47 @@ public class AnalyzerAndroidWrapper {
 
     private static Context context;
     private static AtomicBoolean initialized = new AtomicBoolean(false);
+    private static AtomicBoolean initializing = new AtomicBoolean(false);
 
-    public static void initializeInBackground(final Context context) {
+    public static void initialize(final Context context, boolean background) {
         if (isInitialized()) {
             return;
         }
-        new Thread(new Runnable() {
+        if (isInitializing()) {
+            return;
+        }
+        initializing.set(true);
+        final Runnable runnable = initializeRunnable(context);
+        if (background) {
+            new Thread(runnable).start();
+        } else {
+            runnable.run();
+        }
+    }
+
+    private static Runnable initializeRunnable(final Context context) {
+        return new Runnable() {
             @Override
             public void run() {
-                Log.e(TAG, "start initialize data");
+                long start = System.currentTimeMillis();
                 AnalyzerAndroidWrapper.context = context;
                 WordDictionary.getInstance();
                 BigramDictionary.getInstance();
                 initialized.set(true);
-                Log.e(TAG, "initialize data finished");
+                long end = System.currentTimeMillis();
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, "Initialize data takes: " + (end - start) + " ms.");
+                }
             }
-        }).start();
+        };
     }
 
     public static boolean isInitialized() {
         return initialized.get();
+    }
+
+    private static boolean isInitializing() {
+        return initializing.get();
     }
 
     public static InputStream openAssetFile(String fileName) throws IOException {
@@ -49,10 +71,8 @@ public class AnalyzerAndroidWrapper {
     }
 
     public static ArrayList<String> analyze(String sentence) {
-        Log.e(TAG, "analyse begins");
         ArrayList<String> list = new ArrayList<>();
         if (!isInitialized()) {
-            Log.e(TAG, "analyse ends");
             return list;
         }
         try {
@@ -68,7 +88,6 @@ public class AnalyzerAndroidWrapper {
         } catch (Throwable tr) {
             Log.w(TAG, tr);
         }
-        Log.e(TAG, "analyse ends");
         return list;
     }
 }
