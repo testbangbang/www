@@ -248,7 +248,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         this.toc = toc;
 
         setContentView(R.layout.dialog_table_of_content);
-//        fitDialogToWindow();
+        fitDialogToWindow();
         preIcon = (ImageView) findViewById(R.id.pre_icon);
         nextIcon = (ImageView) findViewById(R.id.next_icon);
         pageIndicator = (TextView) findViewById(R.id.page_size_indicator);
