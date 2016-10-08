@@ -384,7 +384,6 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nat
     if (splitter != NULL) {
         if (selectingWord) {
             selectByWord(env, textPage, splitter, start, end, &newStart, &newEnd);
-            LOGE("selectByWord finished");
         } else {
             if (isAlphaOrDigit(env, textPage, splitter, start)) {
                 int ignoreEnd = end;

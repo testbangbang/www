@@ -33,6 +33,10 @@ public class QueryArgs {
     public Set<String> series = new HashSet<>();
     public String query;
 
+    public static final String DEVICE_LIBRARY = "deviceLibrary";
+    public static final String RECENT_READ = "recentRead";
+    public static final String RECENT_ADDED = "recentAdded";
+
     public QueryArgs() {
     }
 

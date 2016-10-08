@@ -105,7 +105,7 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void beforeExecute(final NoteViewHelper helper) {
-        helper.getRequestManager().acquireWakeLock(getContext());
+        helper.getRequestManager().acquireWakeLock(getContext(), getClass().getSimpleName());
         if (isPauseInputProcessor()) {
             helper.pauseDrawing();
         }

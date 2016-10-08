@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by joy on 6/23/16.
@@ -20,36 +22,48 @@ public class AnalyzerAndroidWrapper {
     public static final String TAG = AnalyzerAndroidWrapper.class.getSimpleName();
 
     private static Context context;
+    private static AtomicBoolean initialized = new AtomicBoolean(false);
+    private static AtomicBoolean initializing = new AtomicBoolean(false);
 
-    private static Object lock = new Object();
-    private static boolean initializing;
-    private static boolean initialized;
-
-    public static void lazyInit(final Context context) {
-        synchronized (lock) {
-            if (initialized || initializing) {
-                return;
-            }
-            initializing = true;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    AnalyzerAndroidWrapper.context = context;
-                    WordDictionary.getInstance();
-                    BigramDictionary.getInstance();
-                    synchronized (lock) {
-                        initialized = true;
-                        initializing = false;
-                    }
-                }
-            }).start();
+    public static void initialize(final Context context, boolean background) {
+        if (isInitialized()) {
+            return;
+        }
+        if (isInitializing()) {
+            return;
+        }
+        initializing.set(true);
+        final Runnable runnable = initializeRunnable(context);
+        if (background) {
+            new Thread(runnable).start();
+        } else {
+            runnable.run();
         }
     }
 
+    private static Runnable initializeRunnable(final Context context) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                AnalyzerAndroidWrapper.context = context;
+                WordDictionary.getInstance();
+                BigramDictionary.getInstance();
+                initialized.set(true);
+                long end = System.currentTimeMillis();
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, "Initialize data takes: " + (end - start) + " ms.");
+                }
+            }
+        };
+    }
+
     public static boolean isInitialized() {
-        synchronized (lock) {
-            return initialized;
-        }
+        return initialized.get();
+    }
+
+    private static boolean isInitializing() {
+        return initializing.get();
     }
 
     public static InputStream openAssetFile(String fileName) throws IOException {
@@ -57,25 +71,23 @@ public class AnalyzerAndroidWrapper {
     }
 
     public static ArrayList<String> analyze(String sentence) {
-        synchronized (lock) {
-            ArrayList<String> list = new ArrayList<>();
-            if (!initialized) {
-                return list;
-            }
-            try {
-                Token nt = new Token();
-                Analyzer ca = new SmartChineseAnalyzer(true);
-                TokenStream ts = ca.tokenStream("sentence", new StringReader(sentence));
-                nt = ts.next(nt);
-                while (nt != null) {
-                    list.add(nt.term());
-                    nt = ts.next(nt);
-                }
-                ts.close();
-            } catch (Throwable tr) {
-                Log.w(TAG, tr);
-            }
+        ArrayList<String> list = new ArrayList<>();
+        if (!isInitialized()) {
             return list;
         }
+        try {
+            Token nt = new Token();
+            Analyzer ca = new SmartChineseAnalyzer(true);
+            TokenStream ts = ca.tokenStream("sentence", new StringReader(sentence));
+            nt = ts.next(nt);
+            while (nt != null) {
+                list.add(nt.term());
+                nt = ts.next(nt);
+            }
+            ts.close();
+        } catch (Throwable tr) {
+            Log.w(TAG, tr);
+        }
+        return list;
     }
 }

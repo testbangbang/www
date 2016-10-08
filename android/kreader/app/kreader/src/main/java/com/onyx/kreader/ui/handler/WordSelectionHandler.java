@@ -176,7 +176,7 @@ public class WordSelectionHandler extends BaseHandler{
 
     public void highlightAlongTouchMoved(ReaderDataHolder readerDataHolder, float x, float y, int cursorSelected) {
         hideTextSelectionPopupWindow(readerDataHolder);
-        select(readerDataHolder, longPressPoint.x, longPressPoint.y, x, y);
+        selectText(readerDataHolder, longPressPoint.x, longPressPoint.y, x, y);
     }
 
     private PageInfo hitTestPage(ReaderDataHolder readerDataHolder, float x, float y) {
@@ -200,7 +200,7 @@ public class WordSelectionHandler extends BaseHandler{
         });
     }
 
-    public void select(final ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+    public void selectText(final ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
         PointF beginTop;
         PointF endBottom;
         PointF touchPoint = new PointF(x2, y2);
@@ -218,7 +218,7 @@ public class WordSelectionHandler extends BaseHandler{
             }
         }
 
-        SelectWordAction.select(readerDataHolder, readerDataHolder.getCurrentPageName(), beginTop, endBottom, touchPoint, new BaseCallback() {
+        SelectWordAction.selectText(readerDataHolder, readerDataHolder.getCurrentPageName(), beginTop, endBottom, touchPoint, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 onSelectWordFinished(readerDataHolder, (SelectWordRequest)request, e);

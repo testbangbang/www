@@ -94,7 +94,7 @@ public class AccountTest extends ApplicationTestCase<Application> {
         OnyxAccount resultAccount = testSignUpAndSignIn();
         Response<OnyxAccount> response;
 
-        //test get accountInfo
+        //test getById accountInfo
         OnyxAccount accountInfo;
         response = getService().getAccountInfo(resultAccount.sessionToken).execute();
         assertNotNull(response);

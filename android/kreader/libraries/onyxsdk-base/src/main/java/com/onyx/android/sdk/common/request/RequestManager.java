@@ -39,13 +39,15 @@ public class RequestManager {
         return executor;
     }
 
-    public void acquireWakeLock(Context context) {
+    public void acquireWakeLock(final Context context, final String tag) {
         try {
             if (wakeLock == null) {
-                wakeLock = Device.currentDevice().newWakeLock(context, "Reader: ");
+                wakeLock = Device.currentDevice().newWakeLock(context, tag);
             }
-            wakeLock.acquire();
-            ++wakeLockCounting;
+            if (wakeLock != null) {
+                wakeLock.acquire();
+                ++wakeLockCounting;
+            }
         } catch (java.lang.Exception e) {
             e.printStackTrace();
         }

@@ -32,6 +32,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private boolean pauseRawInputProcessor = true;
     private boolean resumeRawInputProcessor = false;
     private volatile boolean render = true;
+    private volatile boolean transfer = true;
 
     public ReaderBaseNoteRequest() {
         setAbortPendingTasks(true);
@@ -43,6 +44,14 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public void setRender(boolean render) {
         this.render = render;
+    }
+
+    public boolean isTransfer() {
+        return transfer;
+    }
+
+    public void setTransfer(boolean transfer) {
+        this.transfer = transfer;
     }
 
     public void setDocUniqueId(final String id) {
@@ -100,7 +109,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public void beforeExecute(final NoteManager noteManager) {
-        noteManager.getRequestManager().acquireWakeLock(getContext());
+        noteManager.getRequestManager().acquireWakeLock(getContext(), getClass().getSimpleName());
         if (isPauseRawInputProcessor()) {
             noteManager.pauseRawEventProcessor();
         }
@@ -148,7 +157,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             public void run() {
                 try {
                     parent.enableScreenPost(true);
-                    if (isRender()) {
+                    if (isRender() && isTransfer()) {
                         synchronized (parent) {
                             parent.copyBitmap();
                             parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
@@ -265,7 +274,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 return false;
             }
         }
-        long ts = System.currentTimeMillis();
         canvas.drawPath(path, paint);
         return true;
     }

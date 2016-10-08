@@ -146,7 +146,7 @@ public class DataManager {
         }
 
         for (String id : cache.getIdList()) {
-            Metadata metadata = dataCacheManager.get(id);
+            Metadata metadata = dataCacheManager.getById(id);
             if (metadata == null) {
                 continue;
             }
@@ -182,7 +182,7 @@ public class DataManager {
         }
 
         for (String id : cache.getIdList()) {
-            Metadata metadata = dataCacheManager.get(id);
+            Metadata metadata = dataCacheManager.getById(id);
             if (metadata == null) {
                 continue;
             }
@@ -236,8 +236,8 @@ public class DataManager {
         updateCollections(context, library.getParentUniqueId(), library.getIdString());
     }
 
-    public List<Library> loadAllLibrary(List<Library> list, String targetId) {
-        List<Library> tmpList = getDataProviderBase().loadAllLibrary(targetId);
+    public List<Library> loadAllLibrary(List<Library> list, String parentId) {
+        List<Library> tmpList = getDataProviderBase().loadAllLibrary(parentId);
         if (tmpList.size() > 0) {
             list.addAll(tmpList);
         }

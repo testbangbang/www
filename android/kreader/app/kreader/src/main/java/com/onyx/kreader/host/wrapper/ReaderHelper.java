@@ -111,7 +111,7 @@ public class ReaderHelper {
     private void saveThumbnail(final Context context, final String path) {
         WindowManager window = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         if (window == null) {
-            Log.w(TAG, "get display metrics failed: " + documentPath);
+            Log.w(TAG, "getById display metrics failed: " + documentPath);
             return;
         }
         DisplayMetrics display = new DisplayMetrics();
@@ -231,7 +231,7 @@ public class ReaderHelper {
     public void initData(Context context) {
         initImageReflowManager(context);
         initBitmapCache();
-        lazyInitChineseAnalyzer(context);
+        initWordAnalyzerInBackground(context);
     }
 
     private void initLayoutManager() {
@@ -239,8 +239,8 @@ public class ReaderHelper {
         getReaderLayoutManager().init();
     }
 
-    private void lazyInitChineseAnalyzer(Context context) {
-        AnalyzerAndroidWrapper.lazyInit(context);
+    private void initWordAnalyzerInBackground(Context context) {
+        AnalyzerAndroidWrapper.initialize(context, true);
     }
 
     private void initImageReflowManager(Context context) {

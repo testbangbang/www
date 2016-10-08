@@ -27,6 +27,7 @@ import java.util.Map;
 public class ReaderUserDataInfo {
     private List<ReaderSelection> searchResult = new ArrayList<>();
     private ReaderSelection highlightResult = null;
+    private boolean wordSelected = false;
     private PointF touchPoint;
 
     private String documentPath;
@@ -75,8 +76,9 @@ public class ReaderUserDataInfo {
         return highlightResult;
     }
 
-    public void saveHighlightResult(ReaderSelection selection) {
+    public void saveHighlightResult(ReaderSelection selection, boolean word) {
         highlightResult = selection;
+        setWordSelected(word);
     }
 
     public void setTableOfContent(ReaderDocumentTableOfContent toc) {
@@ -206,5 +208,13 @@ public class ReaderUserDataInfo {
 
     public void setTouchPoint(PointF touchPoint) {
         this.touchPoint = touchPoint;
+    }
+
+    public boolean isWordSelected() {
+        return wordSelected;
+    }
+
+    private void setWordSelected(boolean wordSelected) {
+        this.wordSelected = wordSelected;
     }
 }

@@ -30,7 +30,7 @@ public class GetSentenceRequest extends BaseReaderRequest {
         sentenceResult = reader.getDocument().getSentence(pageName, sentenceStartPosition);
         LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
         if (sentenceResult != null && sentenceResult.getReaderSelection().getRectangles().size() > 0) {
-            getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, sentenceResult.getReaderSelection()));
+            getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, sentenceResult.getReaderSelection()), false);
         }
     }
 

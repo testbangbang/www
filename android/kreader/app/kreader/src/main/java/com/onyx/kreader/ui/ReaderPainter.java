@@ -49,6 +49,7 @@ public class ReaderPainter {
     private enum DrawHighlightPaintStyle {UnderLine, Fill}
 
     public ReaderPainter() {
+        
     }
 
     public void drawPage(Context context,

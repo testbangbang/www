@@ -120,7 +120,7 @@ public class ReaderMetadataService extends Service {
     private void onFileOpenSucceed(final ReaderMetadataService service, final String documentPath, final RefValue<Boolean> result) {
         WindowManager window = (WindowManager)service.getSystemService(Context.WINDOW_SERVICE);
         if (window == null) {
-            Log.w(TAG, "get display metrics failed: " + documentPath);
+            Log.w(TAG, "getById display metrics failed: " + documentPath);
             return;
         }
         DisplayMetrics display = new DisplayMetrics();
