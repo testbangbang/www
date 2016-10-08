@@ -29,6 +29,7 @@ import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
+import com.onyx.android.sdk.ui.view.RadioButtonCenter;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
@@ -63,10 +64,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private ImageView preIcon;
     private ImageView nextIcon;
     private TextView pageIndicator;
-    private RadioButton btnToc;
-    private RadioButton btnBookmark;
-    private RadioButton btnAnt;
-    private RadioButton btnScribble;
+    private RadioButtonCenter btnToc;
+    private RadioButtonCenter btnBookmark;
+    private RadioButtonCenter btnAnt;
+    private RadioButtonCenter btnScribble;
     private RadioGroup btnGroup;
     private OnyxCustomViewPager viewPager;
     private TextView emptyText;
@@ -247,14 +248,14 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         this.toc = toc;
 
         setContentView(R.layout.dialog_table_of_content);
-        fitDialogToWindow();
+//        fitDialogToWindow();
         preIcon = (ImageView) findViewById(R.id.pre_icon);
         nextIcon = (ImageView) findViewById(R.id.next_icon);
         pageIndicator = (TextView) findViewById(R.id.page_size_indicator);
-        btnToc = (RadioButton) findViewById(R.id.btn_directory);
-        btnBookmark = (RadioButton) findViewById(R.id.btn_bookmark);
-        btnAnt = (RadioButton) findViewById(R.id.btn_annotation);
-        btnScribble = (RadioButton) findViewById(R.id.btn_scribble);
+        btnToc = (RadioButtonCenter) findViewById(R.id.btn_directory);
+        btnBookmark = (RadioButtonCenter) findViewById(R.id.btn_bookmark);
+        btnAnt = (RadioButtonCenter) findViewById(R.id.btn_annotation);
+        btnScribble = (RadioButtonCenter) findViewById(R.id.btn_scribble);
         viewPager = (OnyxCustomViewPager) findViewById(R.id.viewpager);
         totalText = (TextView) findViewById(R.id.total);
         emptyText = (TextView) findViewById(R.id.empty_text);
@@ -760,9 +761,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        int pressedColor = getContext().getResources().getColor(android.R.color.white);
-        int normalColor = getContext().getResources().getColor(android.R.color.black);
-        buttonView.setTextColor(isChecked ? pressedColor : normalColor);
         if (isChecked){
             switchViewPage((DirectoryTab)buttonView.getTag());
         }
