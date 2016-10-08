@@ -261,7 +261,7 @@
     <string name="export_data_page">Export Data Page</string>
     <string name="export_scribble_full_document_explain">(With scribble and all the original documents, exported as PDF format)</string>
     <string name="export_brush_stroke_color">Export Brush Stroke Color</string>
-    <string name="export_location_explain">Export location: the original documents to the same folder with the same directory</string>
+    <string name="export_location_explain">Export location: the original documents to the same folder \nwith the same directory</string>
 
     <string name="Original">Original</string>
     <string name="Red">Red</string>
