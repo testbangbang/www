@@ -10,9 +10,11 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.host.request.AnalyzeWordAction;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.actions.SelectWordAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
@@ -83,12 +85,30 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
-        if (!isSingleTapUp()){
-            ShowTextSelectionMenuAction.showTextSelectionPopupMenu(readerDataHolder);
-            enableSelectionCursor(readerDataHolder, selectWordRequest);
-            selectWordRequest = null;
+        if (readerDataHolder.getReaderUserDataInfo().hasHighlightResult() && !isSingleTapUp()) {
+            String text = readerDataHolder.getReaderUserDataInfo().getHighlightResult().getText();
+            if (!StringUtils.isNullOrEmpty(text)) {
+                analyzeWord(readerDataHolder, text);
+            }
         }
         return super.onActionUp(readerDataHolder, startX, startY, endX, endY);
+    }
+
+    private void analyzeWord(final ReaderDataHolder readerDataHolder, String text) {
+        final AnalyzeWordAction analyzeWordAction = new AnalyzeWordAction(text);
+        analyzeWordAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                boolean isWord = analyzeWordAction.isWord();
+                showSelectionMenu(readerDataHolder, isWord);
+            }
+        });
+    }
+
+    private void showSelectionMenu(ReaderDataHolder readerDataHolder, boolean isWord) {
+        ShowTextSelectionMenuAction.showTextSelectionPopupMenu(readerDataHolder, isWord);
+        enableSelectionCursor(readerDataHolder, selectWordRequest);
+        selectWordRequest = null;
     }
 
     public boolean onScrollAfterLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {

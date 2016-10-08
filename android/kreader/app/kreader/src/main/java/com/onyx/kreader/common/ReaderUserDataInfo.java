@@ -76,9 +76,8 @@ public class ReaderUserDataInfo {
         return highlightResult;
     }
 
-    public void saveHighlightResult(ReaderSelection selection, boolean word) {
+    public void saveHighlightResult(ReaderSelection selection) {
         highlightResult = selection;
-        setWordSelected(word);
     }
 
     public void setTableOfContent(ReaderDocumentTableOfContent toc) {
