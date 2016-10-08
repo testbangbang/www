@@ -53,6 +53,11 @@
                 <data android:mimeType="image/x-djvu"/>
                 <data android:mimeType="image/jpeg"/>
                 <data android:mimeType="image/png"/>
+                <data android:mimeType="image/bmp"/>
+                <data android:mimeType="image/x-ms-bmp"/>
+                <data android:mimeType="image/x-windows-bmp"/>
+                <data android:mimeType="image/tiff"/>
+                <data android:mimeType="image/x-tiff"/>
                 <data android:mimeType="application/djvu" />
             </intent-filter>
 
