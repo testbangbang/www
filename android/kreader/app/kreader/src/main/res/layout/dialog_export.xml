@@ -96,11 +96,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <View
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -108,21 +103,15 @@
         <Button
             android:id="@+id/btn_cancel"
             android:text="@string/cancel"
-            android:background="@drawable/no_line_press_bg"
+            android:background="@drawable/all_line_press_bg"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
 
-        <View
-            android:background="@android:color/black"
-            android:layout_width="1dp"
-            android:layout_height="match_parent">
-        </View>
-
         <Button
             android:id="@+id/btn_ok"
             android:text="@string/ok"
-            android:background="@drawable/no_line_press_bg"
+            android:background="@drawable/no_left_line_press_bg"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
