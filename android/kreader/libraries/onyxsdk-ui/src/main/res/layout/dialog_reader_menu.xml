@@ -1,182 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-    <RelativeLayout
-            android:id="@+id/reader_function_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@android:color/white">
-
-        <RelativeLayout
-                android:id="@+id/layout_back_area"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:clickable="true"
-                android:background="@drawable/imagebtn_bg">
-
-            <ImageView
-                    android:id="@+id/imageView_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_dialog_reader_menu_arrow"/>
-
-            <TextView
-                    android:textSize="@dimen/menu_back_text_size"
-                    android:id="@+id/textView_main_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:padding="4dp"
-                    android:textColor="@android:color/black"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/imageView_back"
-                    android:text="@string/dialog_reader_menu_back"/>
-        </RelativeLayout>
-
-        <LinearLayout
-                android:gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="12dp"
-                android:layout_alignParentRight="true"
-                android:visibility="visible">
-
-            <ImageButton
-                android:id="@+id/pre_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
-                android:background="@drawable/imagebtn_bg"
-                android:nextFocusLeft="@id/layout_back_area"
-                android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
-                android:scaleType="fitCenter"
-                android:src="@drawable/prebtn_bg"/>
-
-            <ImageButton
-                android:id="@+id/next_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
-                android:background="@drawable/imagebtn_bg"
-                android:nextFocusLeft="@id/layout_back_area"
-                android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
-                android:scaleType="fitCenter"
-                android:src="@drawable/nextbtn_bg"/>
-
-            <ImageButton
-                    android:id="@+id/button_dict"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
-                    android:background="@drawable/imagebtn_bg"
-                    android:nextFocusLeft="@id/layout_back_area"
-                    android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_reader_menu_dic"/>
-
-            <ImageButton
-                android:id="@+id/button_toc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
-                android:background="@drawable/imagebtn_bg"
-                android:nextFocusLeft="@id/layout_back_area"
-                android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_dialog_reader_menu_topic"/>
-
-            <ImageButton
-                    android:id="@+id/button_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
-                    android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
-                    android:background="@drawable/imagebtn_bg"
-                    android:nextFocusLeft="@id/layout_back_area"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_dialog_reader_menu_search"/>
-
-        </LinearLayout>
-    </RelativeLayout>
-
-    <View
-            android:id="@+id/reader_function_bar_divider"
-            style="@style/single_line_X_axis_View"
-            android:layout_height="2dp"
-            android:layout_below="@id/reader_function_bar"/>
-
-    <View
-            android:id="@+id/dismiss_zone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/menu_layout"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_below="@id/reader_function_bar_divider"
-            android:background="@android:color/transparent"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
     <LinearLayout
-            android:id="@+id/menu_layout"
-            android:layout_width="match_parent"
+        android:background="@android:color/white"
+        android:id="@+id/reader_function_bar"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:id="@+id/layout_back_area"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/white"
-            android:orientation="vertical">
+            android:clickable="true"
+            android:background="@drawable/imagebtn_bg">
+
+            <ImageView
+                android:id="@+id/imageView_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_dialog_reader_menu_arrow"/>
+
+            <TextView
+                android:textSize="@dimen/menu_back_text_size"
+                android:id="@+id/textView_main_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:padding="4dp"
+                android:textColor="@android:color/black"
+                android:text="@string/dialog_reader_menu_back"/>
+        </LinearLayout>
 
         <View
-                style="@style/single_line_X_axis_View"
-                android:layout_height="@dimen/dialog_reader_menu_top_divider_height"/>
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/pre_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
+            android:background="@drawable/imagebtn_bg"
+            android:nextFocusLeft="@id/layout_back_area"
+            android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
+            android:scaleType="fitCenter"
+            android:src="@drawable/prebtn_bg"/>
+
+        <ImageButton
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
+            android:background="@drawable/imagebtn_bg"
+            android:nextFocusLeft="@id/layout_back_area"
+            android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
+            android:scaleType="fitCenter"
+            android:src="@drawable/nextbtn_bg"/>
+
+        <ImageButton
+            android:id="@+id/button_dict"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
+            android:background="@drawable/imagebtn_bg"
+            android:nextFocusLeft="@id/layout_back_area"
+            android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_dialog_reader_menu_dic"/>
+
+        <ImageButton
+            android:id="@+id/button_toc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
+            android:background="@drawable/imagebtn_bg"
+            android:nextFocusLeft="@id/layout_back_area"
+            android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_dialog_reader_menu_topic"/>
+
+        <ImageButton
+            android:id="@+id/button_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
+            android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
+            android:background="@drawable/imagebtn_bg"
+            android:nextFocusLeft="@id/layout_back_area"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_dialog_reader_menu_search"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/reader_function_bar_divider"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="2dp"
+        android:layout_below="@id/reader_function_bar"/>
+
+    <View
+        android:layout_weight="1"
+        android:id="@+id/dismiss_zone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"/>
+
+    <LinearLayout
+        android:id="@+id/menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <View
+            style="@style/single_line_X_axis_View"
+            android:layout_height="@dimen/dialog_reader_menu_top_divider_height"/>
 
         <com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout
-                android:id="@+id/layout_reader_menu"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:id="@+id/layout_reader_menu"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         </com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout>
 
         <View
-                style="@style/single_line_X_axis_View"
-                android:layout_height="@dimen/dialog_reader_menu_top_divider_height"/>
+            style="@style/single_line_X_axis_View"
+            android:layout_height="@dimen/dialog_reader_menu_top_divider_height"/>
 
-        <RelativeLayout
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/text_view_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:textColor="@android:color/primary_text_light"
+                android:textSize="@dimen/dialog_reader_menu_text_view_size"/>
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
 
             <TextView
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/imagebtn_bg"
-                    android:id="@+id/text_view_progress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:textColor="@android:color/primary_text_light"
-                    android:textSize="@dimen/dialog_reader_menu_text_view_size"
-                    android:text="1/1"/>
+                android:background="@drawable/imagebtn_bg"
+                android:id="@+id/text_view_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:textColor="@android:color/primary_text_light"
+                android:textSize="@dimen/dialog_reader_menu_text_view_size"
+                android:text="1/1"/>
 
-            <TextView
-                    android:gravity="center_vertical"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:id="@+id/text_view_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@id/text_view_progress"
-                    android:textColor="@android:color/primary_text_light"
-                    android:textSize="@dimen/dialog_reader_menu_text_view_size"/>
 
-        </RelativeLayout>>
+        </LinearLayout>>
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
