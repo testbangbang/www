@@ -41,7 +41,7 @@ public abstract class BaseHandler {
 
     private Point startPoint = new Point();
     private HandlerManager parent;
-    private boolean longPress;
+    private boolean longPress = false;
     private boolean singleTapUp = false;
     private boolean actionUp = false;
     private boolean scaling = false;
@@ -234,7 +234,6 @@ public abstract class BaseHandler {
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
         setLongPress(true);
         actionUp = false;
-        setLongPress(true);
     }
 
     public void panning(ReaderDataHolder readerDataHolder,int offsetX, int offsetY) {

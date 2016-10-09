@@ -126,6 +126,9 @@ public class ScribbleHandler extends BaseHandler {
         return false;
     }
 
+    public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+    }
+
     public void close(final ReaderDataHolder readerDataHolder) {
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain();
         stopNoteActionChain.execute(readerDataHolder, null);
