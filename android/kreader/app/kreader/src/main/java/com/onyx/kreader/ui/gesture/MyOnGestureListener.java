@@ -39,23 +39,8 @@ public class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener
     }
 
     @Override
-    public void onShowPress(MotionEvent e) {
-        readerDataHolder.getHandlerManager().onShowPress(readerDataHolder, e);
-    }
-
-    @Override
     public boolean onDown(MotionEvent e) {
         return readerDataHolder.getHandlerManager().onDown(readerDataHolder, e);
-    }
-
-    @Override
-    public boolean onDoubleTap(MotionEvent e) {
-        return readerDataHolder.getHandlerManager().onDoubleTap(readerDataHolder, e);
-    }
-
-    @Override
-    public boolean onDoubleTapEvent(MotionEvent e) {
-        return false;
     }
 
     @Override
