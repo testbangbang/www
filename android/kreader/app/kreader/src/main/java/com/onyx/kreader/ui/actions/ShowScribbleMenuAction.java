@@ -56,7 +56,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         this.actionCallback = actionCallback;
     }
 
-    public void execute(ReaderDataHolder readerDataHolder,  BaseCallback callback) {
+    public void execute(ReaderDataHolder readerDataHolder, BaseCallback callback) {
         this.callback = callback;
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         readerDataHolder.getEventBus().register(this);
@@ -96,7 +96,6 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.WIDTH);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.SHAPE);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_txt, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.TEXT);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_eraser, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.ERASER);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_drag, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.DRAG);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_pack_up, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.MINIMIZE);
@@ -340,13 +339,13 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         this.selectEraserAction = selectEraserAction;
     }
 
-    private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder){
+    private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder) {
         int bottomOfTopToolBar = 0;
         int topOfBottomToolBar = 0;
-        if (bottomToolbar.getVisibility() == View.VISIBLE){
+        if (bottomToolbar.getVisibility() == View.VISIBLE) {
             bottomOfTopToolBar = topToolbar.getBottom();
         }
-        if (topToolbar.getVisibility() == View.VISIBLE){
+        if (topToolbar.getVisibility() == View.VISIBLE) {
             topOfBottomToolBar = bottomToolbar.getTop();
         }
         readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar));
