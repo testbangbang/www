@@ -28,7 +28,6 @@ import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 
@@ -250,6 +249,10 @@ public class NoteManager {
 
     public void setCurrentShapeType(int type) {
         getNoteDrawingArgs().setCurrentShapeType(type);
+    }
+
+    public void restoreCurrentShapeType() {
+        getNoteDrawingArgs().restoreCurrentShapeType();
     }
 
     public void setCurrentStrokeWidth(float w) {
