@@ -2,6 +2,7 @@ package com.onyx.android.sdk.ui.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -226,7 +227,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
 
             button.setGravity(Gravity.CENTER);
             if (textSize > 0){
-                button.setTextSize(textSize);
+                button.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             }
             //4.0 the default padding has value So to judge
             button.setPadding(paddingLeft >= 0 ? paddingLeft : button.getPaddingLeft(),
