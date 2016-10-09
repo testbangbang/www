@@ -54,4 +54,8 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
     public void setDrawableResourceId(int drawableResourceId) {
         this.drawableResourceId = drawableResourceId;
     }
+
+    public void setTitleResourceId(int titleResourceId) {
+        this.titleResourceId = titleResourceId;
+    }
 }
