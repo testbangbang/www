@@ -15,7 +15,8 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class PanAction extends BaseAction {
 
     private int offsetX, offsetY;
-    static private Matrix translateMatrix = new Matrix();
+    private static Matrix translateMatrix = new Matrix();
+
 
     public PanAction(int x, int y) {
         offsetX = x;
@@ -23,19 +24,27 @@ public class PanAction extends BaseAction {
     }
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        ensureInNormalUpdateMode();
         translateMatrix.reset();
-        ReaderDeviceManager.exitAnimationUpdate(false);
         final BaseReaderRequest request = new PanRequest(offsetX, offsetY);
         readerDataHolder.submitRenderRequest(request, callback);
     }
 
     public static void panning(final ReaderDataHolder readerDataHolder, int offsetX, int offsetY) {
+        ensureInFastUpdateMode();
         fastRedrawPanningBitmap(readerDataHolder, offsetX, offsetY);
     }
 
-    static public void fastRedrawPanningBitmap(final ReaderDataHolder readerDataHolder, int dx, int dy) {
-        ReaderActivity readerActivity = (ReaderActivity) readerDataHolder.getContext();
+    private static void ensureInFastUpdateMode() {
         ReaderDeviceManager.enterAnimationUpdate(true);
+    }
+
+    private static void ensureInNormalUpdateMode() {
+        ReaderDeviceManager.exitAnimationUpdate(false);
+    }
+
+    public static void fastRedrawPanningBitmap(final ReaderDataHolder readerDataHolder, int dx, int dy) {
+        ReaderActivity readerActivity = (ReaderActivity) readerDataHolder.getContext();
         final SurfaceHolder holder = readerActivity.getHolder();
         Canvas canvas =  holder.lockCanvas();
         Bitmap bmp = readerDataHolder.getReader().getViewportBitmap().getBitmap();
