@@ -49,6 +49,7 @@ public class NoteDrawingArgs {
     }
 
     public int restoreCurrentShapeType() {
+        currentShapeType = defaultShape();
         if (lastShapeType != ShapeFactory.SHAPE_INVALID) {
             currentShapeType = lastShapeType;
         }
