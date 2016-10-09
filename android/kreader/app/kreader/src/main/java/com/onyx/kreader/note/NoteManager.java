@@ -249,7 +249,7 @@ public class NoteManager {
     }
 
     public void setCurrentShapeType(int type) {
-        getNoteDrawingArgs().currentShapeType = type;
+        getNoteDrawingArgs().setCurrentShapeType(type);
     }
 
     public void setCurrentStrokeWidth(float w) {
@@ -257,7 +257,7 @@ public class NoteManager {
     }
 
     public Shape createNewShape(final PageInfo pageInfo) {
-        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().currentShapeType);
+        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
         shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
         shape.setColor(getNoteDrawingArgs().strokeColor);
         shape.setPageUniqueId(pageInfo.getName());
@@ -271,15 +271,15 @@ public class NoteManager {
     }
 
     public boolean isDFBForCurrentShape() {
-        return ShapeFactory.isDFBShape(getNoteDrawingArgs().currentShapeType);
+        return ShapeFactory.isDFBShape(getNoteDrawingArgs().getCurrentShapeType());
     }
 
     public boolean isEraser() {
-        return getNoteDrawingArgs().currentShapeType == ShapeFactory.SHAPE_ERASER;
+        return getNoteDrawingArgs().getCurrentShapeType() == ShapeFactory.SHAPE_ERASER;
     }
 
     public boolean isInSelection() {
-        return getNoteDrawingArgs().currentShapeType == ShapeFactory.SHAPE_SELECTOR;
+        return getNoteDrawingArgs().getCurrentShapeType() == ShapeFactory.SHAPE_SELECTOR;
     }
 
     public void resetCurrentShape() {
