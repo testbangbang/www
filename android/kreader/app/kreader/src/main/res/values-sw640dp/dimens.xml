@@ -37,4 +37,6 @@
     <dimen name="popup_selection_menu_divider_height">30dp</dimen>
     <dimen name="dialog_quick_preview_padding">10dp</dimen>
     <dimen name="dialog_table_of_content_list_item_padding_top">12dp</dimen>
+    <dimen name="dialog_export_text_size">18sp</dimen>
+    <dimen name="dialog_export_margin">5dp</dimen>
 </resources>

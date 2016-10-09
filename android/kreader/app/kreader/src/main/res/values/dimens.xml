@@ -56,4 +56,6 @@
     <dimen name="dialog_reflow_text_view_width">120dp</dimen>
     <dimen name="reflow_checkbox_text_padding_top">10dp</dimen>
     <dimen name="reflow_checkbox_text_size">12sp</dimen>
+    <dimen name="dialog_export_text_size">16sp</dimen>
+    <dimen name="dialog_export_margin">5dp</dimen>
 </resources>
