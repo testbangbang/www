@@ -75,7 +75,9 @@ bool createAnnotationPolyLine(PoDoFo::PdfDocument *document,
     PdfDictionary &dict = polyline->GetObject()->GetDictionary();
     PdfArray *vertices = new PdfArray();
     for (auto point : stroke.points) {
-        if (!translateFromDeviceToPage(cropBox, &point))
+        if (!translateFromDeviceToPage(cropBox, &point)) {
+            return false;
+        }
         vertices->push_back(point.x);
         vertices->push_back(point.y);
     }
