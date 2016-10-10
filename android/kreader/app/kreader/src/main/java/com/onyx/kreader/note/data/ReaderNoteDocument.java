@@ -197,7 +197,9 @@ public class ReaderNoteDocument {
     public ReaderNotePage createPage(final String pageName, int subPageIndex) {
         String pageUniqueId = ShapeUtils.generateUniqueId();
         createIndexEntry(pageName, subPageIndex, pageUniqueId);
-        return ensureDataEntry(pageName, pageUniqueId);
+        ReaderNotePage readerNotePage = ensureDataEntry(pageName, pageUniqueId);
+        readerNotePage.setLoaded(true);
+        return readerNotePage;
     }
 
     public String clearPage(final Context context, final String pageName, final int subPageIndex) {

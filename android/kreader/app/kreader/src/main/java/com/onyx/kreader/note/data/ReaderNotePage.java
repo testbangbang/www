@@ -2,6 +2,8 @@ package com.onyx.kreader.note.data;
 
 import android.content.Context;
 import android.graphics.Matrix;
+import android.util.Log;
+
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -225,6 +227,10 @@ public class ReaderNotePage {
         return modelList;
     }
 
+    public List<Shape> getNewAddedShapeList() {
+        return newAddedShapeList;
+    }
+
     public List<String> getRemovedShapeIdList() {
         List<String> list = new ArrayList<>();
         for(Shape shape: removedShapeList) {
@@ -251,7 +257,9 @@ public class ReaderNotePage {
         for(Shape shape: removedShapeList) {
             list.add(shape.getShapeUniqueId());
         }
-        ReaderNoteDataProvider.removeShapesByIdList(context, list);
+        if (list.size() > 0) {
+            ReaderNoteDataProvider.removeShapesByIdList(context, list);
+        }
         newAddedShapeList.clear();
         removedShapeList.clear();
         return true;

@@ -12,7 +12,7 @@ public class ChangeStrokeWidthRequest extends ReaderBaseNoteRequest {
     private volatile float newWidth;
 
     public ChangeStrokeWidthRequest(float width) {
-        setAbortPendingTasks(true);
+        setAbortPendingTasks(false);
         newWidth = width;
     }
 

@@ -35,7 +35,7 @@ import java.util.List;
  * Time: 8:42 PM
  * Basic event handler.
  */
-public class ReadingHandler extends BaseHandler{
+public class ReadingHandler extends BaseHandler {
 
     @SuppressWarnings("unused")
     private static final String TAG = ReadingHandler.class.getSimpleName();

@@ -351,7 +351,7 @@ public class HandlerManager {
     }
 
     public boolean processKeyDown(ReaderDataHolder readerDataHolder, final String action, final String args) {
-        getActiveProvider().beforeProcessKeyDown(readerDataHolder);
+        getActiveProvider().beforeProcessKeyDown(readerDataHolder, action, args);
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }

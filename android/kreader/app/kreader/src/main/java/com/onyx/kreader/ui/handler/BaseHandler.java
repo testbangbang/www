@@ -119,7 +119,7 @@ public abstract class BaseHandler {
         return false;
     }
 
-    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder) {}
+    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder, final String action, final String args) {}
 
     public void beforeChangePosition(final ReaderDataHolder readerDataHolder) {}
 
@@ -169,7 +169,6 @@ public abstract class BaseHandler {
         final PanAction panAction = new PanAction(x, y);
         panAction.execute(readerDataHolder, null);
     }
-
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (tryHitTest(readerDataHolder,e.getX(), e.getY())) {

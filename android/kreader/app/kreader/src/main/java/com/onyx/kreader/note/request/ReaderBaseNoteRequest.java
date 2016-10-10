@@ -36,7 +36,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private volatile boolean transfer = true;
 
     public ReaderBaseNoteRequest() {
-        setAbortPendingTasks(true);
+        setAbortPendingTasks(false);
     }
 
     public boolean isRender() {

@@ -6,6 +6,8 @@ import android.view.ScaleGestureDetector;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.KeyAction;
+import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.note.request.StopNoteRequest;
@@ -76,10 +78,6 @@ public class ScribbleHandler extends BaseHandler {
         return readerDataHolder.getNoteManager().getNoteEventProcessorManager().onTouchEvent(e);
     }
 
-    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getNoteManager().enableScreenPost(true);
-    }
-
     private boolean inSelection(final ReaderDataHolder readerDataHolder) {
         return readerDataHolder.getNoteManager().isInSelection();
     }
@@ -127,6 +125,15 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+    }
+
+    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder, final String action, final String args) {
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false);
+        flushNoteAction.execute(getParent().getReaderDataHolder(), null);
+    }
+
+    public void beforePageChangeByUser() {
+
     }
 
     public void close(final ReaderDataHolder readerDataHolder) {
