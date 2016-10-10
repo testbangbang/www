@@ -67,12 +67,12 @@ public class HighlightCursor {
         if (cursorType == Type.BEGIN_CURSOR) {
             float width = startCursorBitmap.getWidth();
             float height = startCursorBitmap.getHeight();
-            originRect.set(x - width, y - fontHeight /2, x, y + height - fontHeight /2);
+            originRect.set(x - width, y, x, y + height );
             hitTestRect.set(originRect.left - width * HIT_TEST_SCALE_VALUE, originRect.top, originRect.right + width * HIT_TEST_SCALE_VALUE, originRect.bottom + height * HIT_TEST_SCALE_VALUE);
         } else {
             float width = endCursorBitmap.getWidth();
             float height = endCursorBitmap.getHeight();
-            originRect.set(x, y - fontHeight /2, x + width, y + height - fontHeight / 2);
+            originRect.set(x, y, x + width, y + height);
             hitTestRect.set(originRect.left - width * HIT_TEST_SCALE_VALUE, originRect.top, originRect.right + width * HIT_TEST_SCALE_VALUE, originRect.bottom + height * HIT_TEST_SCALE_VALUE);
         }
     }
