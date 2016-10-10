@@ -23,9 +23,18 @@ public class ReaderBitmapImpl implements ReaderBitmap {
         super();
     }
 
+    public ReaderBitmapImpl(final String key, final Bitmap bitmap) {
+        this.key = key;
+        this.bitmap = bitmap;
+    }
+
     public ReaderBitmapImpl(int width, int height, Bitmap.Config config) {
         super();
         bitmap = Bitmap.createBitmap(width, height, config);
+    }
+
+    public boolean isValid() {
+        return BitmapUtils.isValid(bitmap);
     }
 
     public void clear() {
