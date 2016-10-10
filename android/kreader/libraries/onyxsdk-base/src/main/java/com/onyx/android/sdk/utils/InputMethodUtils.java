@@ -16,10 +16,9 @@ import java.util.List;
  */
 public class InputMethodUtils {
     private static final int SOFT_KEYBOARD_HEIGHT = 70;
-    private static InputMethodManager imm;
 
     public static void showForcedInputKeyboard(Context context, View focusView) {
-        imm = (InputMethodManager) context
+        InputMethodManager imm = (InputMethodManager) context
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(focusView, InputMethodManager.SHOW_FORCED);
     }
@@ -27,14 +26,14 @@ public class InputMethodUtils {
     public static void hideInputKeyboard(Context context) {
         View view = ((Activity) context).getWindow().peekDecorView();
         if (view != null && view.getWindowToken() != null) {
-            imm = (InputMethodManager) context
+            InputMethodManager imm = (InputMethodManager) context
                     .getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
     public static void toggleStatus(Context context) {
-        imm = (InputMethodManager) context
+        InputMethodManager imm = (InputMethodManager) context
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
