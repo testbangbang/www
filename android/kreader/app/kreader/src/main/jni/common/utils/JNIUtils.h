@@ -89,6 +89,10 @@ public:
         }
         return array;
     }
+
+    void detachByteArray() {
+        array = nullptr;
+    }
     
     void copyToJavaArray() {
         myEnv->SetByteArrayRegion(array, 0, size, buffer);
