@@ -3,8 +3,6 @@ package com.onyx.kreader.ui.handler;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.os.Debug;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -12,7 +10,6 @@ import android.view.ScaleGestureDetector;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.common.PageAnnotation;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
@@ -50,6 +47,14 @@ public abstract class BaseHandler {
 
     public boolean isSingleTapUp() {
         return singleTapUp;
+    }
+
+    public void setSingleTapUp(boolean singleTapUp) {
+        this.singleTapUp = singleTapUp;
+    }
+
+    public void setActionUp(boolean actionUp) {
+        this.actionUp = actionUp;
     }
 
     public boolean isActionUp() {
@@ -180,7 +185,6 @@ public abstract class BaseHandler {
         } else {
             showReaderMenu(readerDataHolder);
         }
-        singleTapUp = true;
         return true;
     }
 
@@ -211,8 +215,6 @@ public abstract class BaseHandler {
             panFinished(readerDataHolder,(int) (getStartPoint().x - endX), (int) (getStartPoint().y - endY));
         }
         resetState();
-        singleTapUp = false;
-        actionUp = true;
         return true;
     }
 

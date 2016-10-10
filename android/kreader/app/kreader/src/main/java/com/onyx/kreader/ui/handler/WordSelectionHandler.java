@@ -81,7 +81,8 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return super.onSingleTapUp(readerDataHolder, e);
+        setSingleTapUp(true);
+        return true;
     }
 
     public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
@@ -91,7 +92,9 @@ public class WordSelectionHandler extends BaseHandler{
                 analyzeWord(readerDataHolder, text);
             }
         }
-        return super.onActionUp(readerDataHolder, startX, startY, endX, endY);
+        setSingleTapUp(false);
+        setActionUp(true);
+        return true;
     }
 
     private void analyzeWord(final ReaderDataHolder readerDataHolder, String text) {

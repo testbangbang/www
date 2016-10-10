@@ -23,6 +23,7 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
     <style name="popup_selection_menu_text_view">
+        <item name="android:textColor">@android:color/black</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:maxLines">1</item>
