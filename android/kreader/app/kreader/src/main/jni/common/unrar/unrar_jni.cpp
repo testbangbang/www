@@ -343,6 +343,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper
         } 
         
         jbyteArray array = context->getByteArray()->getByteArray(true);
+        context->getByteArray()->detachByteArray();
         context->resetByteArray();
         return array;
     }
