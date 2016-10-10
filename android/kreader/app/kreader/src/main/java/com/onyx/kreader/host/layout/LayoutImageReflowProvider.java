@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.ReaderDrawContext;
@@ -36,7 +35,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     public void activate() {
         getPageManager().setPageRepeat(0);
         getPageManager().scaleToPage(getCurrentPageName());
-        getLayoutManager().getImageReflowManager().loadSubPageListMap();
     }
 
     @Override
