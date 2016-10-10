@@ -239,6 +239,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         startNoteDrawing(readerDataHolder);
                         break;
                     case EXIT:
+                        resetReaderMenu(readerDataHolder);
                         readerActivity.onBackPressed();
                         break;
                 }
