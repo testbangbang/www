@@ -135,7 +135,7 @@ public class ImageReflowManager {
     }
 
     /**
-     * will be called from jni
+     * will be called back from jni during reflowing
      *
      * @param pageName
      * @param subPage
