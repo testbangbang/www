@@ -17,10 +17,8 @@ import retrofit2.Response;
 public class AccountUpdateRequest extends BaseCloudRequest {
 
     private OnyxAccount updateAccount;
-    private String sessionToken;
 
-    public AccountUpdateRequest(String sessionToken, OnyxAccount updateAccount) {
-        this.sessionToken = sessionToken;
+    public AccountUpdateRequest(OnyxAccount updateAccount) {
         this.updateAccount = updateAccount;
     }
 
@@ -35,11 +33,11 @@ public class AccountUpdateRequest extends BaseCloudRequest {
         }
 
         Call<OnyxAccount> call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
-                .updateAccountInfo(updateAccount, sessionToken);
+                .updateAccountInfo(updateAccount, getAccountSessionToken());
         Response<OnyxAccount> response = call.execute();
         if (response.isSuccessful()) {
             updateAccount = response.body();
-            updateAccount.sessionToken = sessionToken;
+            updateAccount.sessionToken = getAccountSessionToken();
         } else {
             String errorCode = JSONObjectParseUtils.httpStatus(response.code(), new JSONObject(response.errorBody().string()));
             throw new Exception(errorCode);

@@ -22,11 +22,9 @@ public class AccountAvatarUploadRequest extends BaseCloudRequest {
 
     private String avatarUrl;
     private File avatarFile;
-    private String sessionToken;
 
-    public AccountAvatarUploadRequest(File file, String sessionToken) {
+    public AccountAvatarUploadRequest(File file) {
         this.avatarFile = file;
-        this.sessionToken = sessionToken;
     }
 
     public String getAvatarUrl() {
@@ -39,7 +37,7 @@ public class AccountAvatarUploadRequest extends BaseCloudRequest {
         RequestBody requestFile = RequestBody.create(mediaType, avatarFile);
         MultipartBody.Part partBody = MultipartBody.Part.createFormData(Constant.AVATAR_TAG, avatarFile.getName(), requestFile);
         Call<OnyxAccount> call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
-                .uploadAvatar(partBody, sessionToken);
+                .uploadAvatar(partBody, getAccountSessionToken());
         Response<OnyxAccount> response = call.execute();
         if (response.isSuccessful()) {
             avatarUrl = response.body().avatarUrl;

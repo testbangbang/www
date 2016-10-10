@@ -11,11 +11,9 @@ public class DeviceAddRequest extends BaseCloudRequest {
     private static final String TAG = DeviceAddRequest.class.getSimpleName();
     private Device device;
     private Device bindDevice;
-    private String sessionToken;
 
-    public DeviceAddRequest(final Device value, final String sessionToken) {
+    public DeviceAddRequest(final Device value) {
         this.device = value;
-        this.sessionToken = sessionToken;
     }
 
     public final Device getBindedDevice() {
@@ -24,7 +22,7 @@ public class DeviceAddRequest extends BaseCloudRequest {
 
     public void execute(final CloudManager parent) throws Exception {
         Call<Device > call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
-                .addDevice(device, sessionToken);
+                .addDevice(device, getAccountSessionToken());
         Response<Device > response = call.execute();
         if (response.isSuccessful()) {
             bindDevice = response.body();

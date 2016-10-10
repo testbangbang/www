@@ -13,13 +13,11 @@ public class CommentDisagreeRequest extends BaseCloudRequest {
 
     private String bookId;
     private String commentId;
-    private String sessionToken;
     private Comment comment;
 
-    public CommentDisagreeRequest(String bookId, String commentId, String sessionToken) {
+    public CommentDisagreeRequest(String bookId, String commentId) {
         this.bookId = bookId;
         this.commentId = commentId;
-        this.sessionToken = sessionToken;
     }
 
     public Comment getComment() {
@@ -29,7 +27,7 @@ public class CommentDisagreeRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Response<Comment> response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
-                .disagreeBookComment(bookId, commentId, sessionToken).execute();
+                .disagreeBookComment(bookId, commentId, getAccountSessionToken()).execute();
         if (response.isSuccessful()) {
             comment = response.body();
         }
