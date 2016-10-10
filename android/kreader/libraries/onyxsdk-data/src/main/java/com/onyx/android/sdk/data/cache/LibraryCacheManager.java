@@ -7,20 +7,22 @@ import java.util.Map;
 
 /**
  * Created by suicheng on 2016/9/15.
+ * All library cache is maintained
  */
-public class MemoryCache {
+public class LibraryCacheManager {
+
     private Map<String, LibraryCache> memoryCacheMap = new LinkedHashMap<>();
     private DataProviderBase dataProvider;
 
-    public MemoryCache(DataProviderBase dataProvider) {
+    public LibraryCacheManager(DataProviderBase dataProvider) {
         this.dataProvider = dataProvider;
     }
 
-    public void clearDataCache(String id) {
-        memoryCacheMap.get(id).clear();
+    public void clearLibraryCache(final String libraryId) {
+        memoryCacheMap.get(libraryId).clear();
     }
 
-    public void clearAllDataCache() {
+    public void clear() {
         memoryCacheMap.clear();
     }
 
@@ -28,11 +30,11 @@ public class MemoryCache {
         memoryCacheMap.put(id, cache);
     }
 
-    public LibraryCache getDataCache(String id) {
-        LibraryCache cache = memoryCacheMap.get(id);
+    public LibraryCache getLibraryCache(final String libraryId) {
+        LibraryCache cache = memoryCacheMap.get(libraryId);
         if (cache == null) {
             cache = new LibraryCache(dataProvider);
-            memoryCacheMap.put(id, cache);
+            memoryCacheMap.put(libraryId, cache);
         }
         return cache;
     }

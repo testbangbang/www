@@ -1,16 +1,23 @@
 package com.onyx.kreader.ui;
 
 import android.content.Context;
-import android.graphics.*;
-import android.util.Log;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PathEffect;
+import android.graphics.PixelXorXfermode;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
@@ -42,6 +49,7 @@ public class ReaderPainter {
     private enum DrawHighlightPaintStyle {UnderLine, Fill}
 
     public ReaderPainter() {
+        
     }
 
     public void drawPage(Context context,
@@ -59,7 +67,7 @@ public class ReaderPainter {
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
-        drawShapes(context, canvas, paint, noteManager);
+        drawShapes(context, canvas, paint, userDataInfo, noteManager);
         drawStashShapes(context, canvas, paint, noteManager, viewInfo);
         drawShapeEraser(context, canvas, paint, noteManager);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
@@ -124,7 +132,7 @@ public class ReaderPainter {
             if (userDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = userDataInfo.getPageAnnotations(pageInfo);
                 for (PageAnnotation annotation : annotations) {
-                    drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()), paintStyle);
+                    drawHighlightRectangles(canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()), paintStyle);
                     String note = annotation.getAnnotation().getNote();
                     if (!StringUtils.isNullOrEmpty(note)){
                         drawHighLightSign(context, canvas, paint, annotation.getRectangles());
@@ -146,7 +154,7 @@ public class ReaderPainter {
     private void drawReaderSelection(Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection, DrawHighlightPaintStyle paintStyle) {
         PageInfo pageInfo = viewInfo.getPageInfo(selection.getPagePosition());
         if (pageInfo != null) {
-            drawHighlightRectangles(canvas, paint, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()), paintStyle);
+            drawHighlightRectangles(canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()), paintStyle);
         }
     }
 
@@ -159,10 +167,11 @@ public class ReaderPainter {
         }
     }
 
-    private void drawHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles, DrawHighlightPaintStyle paintStyle) {
+    private void drawHighlightRectangles(Canvas canvas, List<RectF> rectangles, DrawHighlightPaintStyle paintStyle) {
         if (rectangles == null) {
             return;
         }
+        Paint paint = new Paint();
         switch (paintStyle){
             case UnderLine:
                 drawUnderLineHighlightRectangles(canvas, paint, rectangles);
@@ -206,8 +215,9 @@ public class ReaderPainter {
     private void drawShapes(final Context context,
                             final Canvas canvas,
                             final Paint paint,
+                            final ReaderUserDataInfo userDataInfo,
                             final NoteManager noteManager) {
-        if (!SingletonSharedPreference.isShowNote(context)) {
+        if (!SingletonSharedPreference.isShowNote(context) || userDataInfo.hasHighlightResult()) {
             return;
         }
         final ReaderNoteDataInfo noteDataInfo = noteManager.getNoteDataInfo();

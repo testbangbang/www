@@ -200,7 +200,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
             return false;
         }
         benchmark.restart();
-        // get doc position
+        // getById doc position
         boolean ret = getPluginImpl().drawImage(path, scale, rotation, displayRect, pageRect, visibleRect, bitmap);
         Log.e(TAG, "rendering png:　"+ benchmark.duration());
         return ret;

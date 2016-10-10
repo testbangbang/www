@@ -33,7 +33,7 @@ public class LegacySdkDataUtils {
                 Log.w(TAG, "saveMetadata: create file metadata failed, " + documentPath);
                 return false;
             }
-            // get metadata from cms will overwrite existing data, so we update metadata after it
+            // getById metadata from cms will overwrite existing data, so we update metadata after it
             if (!OnyxCmsCenter.getMetadata(context, data)) {
                 initDataWithDocumentMetadata(data, metadata);
                 return OnyxCmsCenter.insertMetadata(context, data);

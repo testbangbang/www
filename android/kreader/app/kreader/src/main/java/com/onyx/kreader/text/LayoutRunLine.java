@@ -216,7 +216,7 @@ public class LayoutRunLine {
     }
 
     /**
-     * distribute the spacing to runs. select spacing run at first, if not possible
+     * distribute the spacing to runs. selectText spacing run at first, if not possible
      * or if it's too large, distribute to all runs instead.
      */
     public void adjustifyLine() {

@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.api.ReaderHitTestArgs;
@@ -54,9 +55,18 @@ public class SelectWordRequest extends BaseReaderRequest {
         selection = hitTestManager.select(argsStart, argsEnd, hitTestOptions);
         LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
-            getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
+            boolean wordSelected = isWordSelected(hitTestOptions, selection);
+            getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection), wordSelected);
             getReaderUserDataInfo().setTouchPoint(touchPoint);
         }
+    }
+
+    private boolean isWordSelected(final ReaderHitTestOptions hitTestOptions, final ReaderSelection selection) {
+        boolean wordSelected = false;
+        if (hitTestOptions.isSelectingWord()) {
+            wordSelected = selection.isSelectedOnWord();
+        }
+        return wordSelected;
     }
 
     private ReaderSelection translateToScreen(PageInfo pageInfo, ReaderSelection selection) {

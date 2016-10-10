@@ -196,7 +196,7 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     private boolean isSelectedOnWord(ReaderDataHolder readerDataHolder){
-        return readerDataHolder.getReaderUserDataInfo().getHighlightResult().isSelectedOnWord();
+        return readerDataHolder.getReaderUserDataInfo().isWordSelected();
     }
 
     public void hide() {

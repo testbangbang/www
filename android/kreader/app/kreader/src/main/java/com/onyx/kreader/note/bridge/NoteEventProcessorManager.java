@@ -137,10 +137,21 @@ public class NoteEventProcessorManager {
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         if (getNoteManager().isInSelection()) {
             return onTouchSelecting(motionEvent);
-        } else if (getNoteManager().isEraser()) {
+        } else if (getNoteManager().isEraser() || isEraserPressed(motionEvent)) {
             return onTouchEventErasing(motionEvent);
         } else if (!getNoteManager().isDFBForCurrentShape() || useNormalTouchEvent()) {
             return onTouchEventDrawing(motionEvent);
+        }
+        return false;
+    }
+
+    private boolean isEraserPressed(final MotionEvent motionEvent) {
+        if (!getNoteManager().getNoteConfig().supportBigPen()) {
+            return false;
+        }
+        int toolType = motionEvent.getToolType(0);
+        if (toolType == MotionEvent.TOOL_TYPE_ERASER) {
+            return true;
         }
         return false;
     }

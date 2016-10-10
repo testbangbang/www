@@ -20,8 +20,10 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), getVisiblePages().get(0).getName(), 0);
-        notePage.removeShapesByTouchPointList(touchPointList, noteManager.getNoteDocument().getNoteDrawingArgs().eraserRadius);
+        final PageInfo pageInfo = getVisiblePages().get(0);
+        final float radius = noteManager.getNoteDrawingArgs().eraserRadius / pageInfo.getActualScale();
+        final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), pageInfo.getName(), 0);
+        notePage.removeShapesByTouchPointList(touchPointList, radius);
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         updateShapeDataInfo(noteManager);
     }

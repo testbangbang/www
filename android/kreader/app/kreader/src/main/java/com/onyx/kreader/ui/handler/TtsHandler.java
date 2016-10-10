@@ -144,7 +144,7 @@ public class TtsHandler extends BaseHandler {
                 }
                 currentSentence = sentenceRequest.getSentenceResult();
                 if (currentSentence == null) {
-                    Log.w(TAG, "get sentence failed");
+                    Log.w(TAG, "getById sentence failed");
                     return;
                 }
                 dumpCurrentSentence();

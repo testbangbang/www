@@ -12,6 +12,7 @@ import java.util.List;
  * Created by suicheng on 2016/9/5.
  */
 public class LibraryRequest extends BaseDataRequest {
+
     private List<Metadata> bookList = new ArrayList<>();
     private List<Library> libraryList = new ArrayList<>();
     private QueryArgs queryArgs;

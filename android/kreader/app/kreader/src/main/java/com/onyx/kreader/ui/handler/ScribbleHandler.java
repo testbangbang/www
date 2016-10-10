@@ -4,6 +4,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.onyx.kreader.note.actions.StopNoteActionChain;
+import com.onyx.kreader.note.request.StartNoteRequest;
+import com.onyx.kreader.note.request.StopNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 
@@ -21,13 +23,13 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     public void onActivate(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getNoteManager().setVisiblePages(readerDataHolder.getVisiblePages());
-        readerDataHolder.getNoteManager().startRawEventProcessor();
+        final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages());
+        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getNoteManager().enableScreenPost(true);
-        readerDataHolder.getNoteManager().stopRawEventProcessor();
+        final StopNoteRequest request = new StopNoteRequest();
+        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
     }
 
     @Override

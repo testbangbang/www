@@ -882,7 +882,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(libraryCache.getIdList().size(), list.size());
         for (Metadata metadata : list) {
             assertTrue(libraryCache.getIdList().contains(metadata.getIdString()));
-            assertEquals(cacheManager.get(metadata.getIdString()), metadata);
+            assertEquals(cacheManager.getById(metadata.getIdString()), metadata);
         }
 
         //test reading and desc by Name
@@ -917,7 +917,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertTrue(list.size() == 1);
         List<String> md5List = cacheManager.getLibraryCache(libraryUniqueId).getIdList();
         assertTrue(md5List.contains(list.get(0).getIdString()));
-        assertNotNull(cacheManager.get(md5List.get(0)));
+        assertNotNull(cacheManager.getById(md5List.get(0)));
     }
 }
 
