@@ -1,6 +1,7 @@
 package com.onyx.kreader.note.request;
 
 import android.graphics.*;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -29,8 +30,8 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private boolean debugPathBenchmark = false;
-    private boolean pauseRawInputProcessor = true;
-    private boolean resumeRawInputProcessor = false;
+    private volatile boolean pauseRawInputProcessor = true;
+    private volatile boolean resumeRawInputProcessor = false;
     private volatile boolean render = true;
     private volatile boolean transfer = true;
 
@@ -143,6 +144,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         }
         benchmarkEnd();
         setResumeRawInputProcessor(parent.isDFBForCurrentShape());
+        if (isResumeRawInputProcessor()) {
+            parent.resumeRawEventProcessor();
+        }
         final Runnable runnable = postExecuteRunnable(parent);
         if (isRunInBackground()) {
             parent.getRequestManager().getLooperHandler().post(runnable);
@@ -164,9 +168,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                         }
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
-                    if (isResumeRawInputProcessor()) {
-                        parent.resumeRawEventProcessor();
-                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

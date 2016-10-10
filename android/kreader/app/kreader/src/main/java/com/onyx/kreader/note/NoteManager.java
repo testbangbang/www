@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -28,7 +29,6 @@ import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 
@@ -249,7 +249,11 @@ public class NoteManager {
     }
 
     public void setCurrentShapeType(int type) {
-        getNoteDrawingArgs().currentShapeType = type;
+        getNoteDrawingArgs().setCurrentShapeType(type);
+    }
+
+    public void restoreCurrentShapeType() {
+        getNoteDrawingArgs().restoreCurrentShapeType();
     }
 
     public void setCurrentStrokeWidth(float w) {
@@ -257,7 +261,7 @@ public class NoteManager {
     }
 
     public Shape createNewShape(final PageInfo pageInfo) {
-        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().currentShapeType);
+        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
         shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
         shape.setColor(getNoteDrawingArgs().strokeColor);
         shape.setPageUniqueId(pageInfo.getName());
@@ -271,15 +275,15 @@ public class NoteManager {
     }
 
     public boolean isDFBForCurrentShape() {
-        return ShapeFactory.isDFBShape(getNoteDrawingArgs().currentShapeType);
+        return ShapeFactory.isDFBShape(getNoteDrawingArgs().getCurrentShapeType());
     }
 
     public boolean isEraser() {
-        return getNoteDrawingArgs().currentShapeType == ShapeFactory.SHAPE_ERASER;
+        return getNoteDrawingArgs().getCurrentShapeType() == ShapeFactory.SHAPE_ERASER;
     }
 
     public boolean isInSelection() {
-        return getNoteDrawingArgs().currentShapeType == ShapeFactory.SHAPE_SELECTOR;
+        return getNoteDrawingArgs().getCurrentShapeType() == ShapeFactory.SHAPE_SELECTOR;
     }
 
     public void resetCurrentShape() {

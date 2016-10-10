@@ -85,11 +85,11 @@ public class ReaderNoteDataInfo {
     }
 
     public int getCurrentShapeType() {
-        return drawingArgs.currentShapeType;
+        return drawingArgs.getCurrentShapeType();
     }
 
     public void setCurrentShapeType(int currentShape) {
-        drawingArgs.currentShapeType = currentShape;
+        drawingArgs.setCurrentShapeType(currentShape);
     }
 
     public String getDocumentUniqueId() {

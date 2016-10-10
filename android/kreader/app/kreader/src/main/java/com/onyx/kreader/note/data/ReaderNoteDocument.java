@@ -74,7 +74,7 @@ public class ReaderNoteDocument {
             noteModel = ReaderNoteDocumentModel.createNote(getDocumentUniqueId(), getParentUniqueId(), title);
         }
         noteModel.setReaderNotePageNameMap(pageIndex);
-        noteModel.setCurrentShapeType(noteDrawingArgs.currentShapeType);
+        noteModel.setCurrentShapeType(noteDrawingArgs.getCurrentShapeType());
         noteModel.setStrokeWidth(noteDrawingArgs.strokeWidth);
         noteModel.setBackground(noteDrawingArgs.background);
         noteModel.setStrokeColor(noteDrawingArgs.strokeColor);
@@ -148,7 +148,7 @@ public class ReaderNoteDocument {
     }
 
     private void resetNoteDrawingArgs() {
-        noteDrawingArgs.currentShapeType = NoteModel.getDefaultShapeType();
+        noteDrawingArgs.setCurrentShapeType(NoteDrawingArgs.defaultShape());
         noteDrawingArgs.strokeWidth = NoteModel.getDefaultStrokeWidth();
         noteDrawingArgs.background = NoteModel.getDefaultBackground();
         noteDrawingArgs.strokeColor = NoteModel.getDefaultStrokeColor();
@@ -161,7 +161,7 @@ public class ReaderNoteDocument {
         if (noteModel != null) {
             noteDrawingArgs.background = noteModel.getBackground();
             noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
-            noteDrawingArgs.currentShapeType = noteModel.getCurrentShapeType();
+            noteDrawingArgs.setCurrentShapeType(noteModel.getCurrentShapeType());
             noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
         }
     }

@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.api.ReaderBitmapList;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.ReaderDrawContext;
@@ -13,6 +12,7 @@ import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.reflow.ImageReflowManager;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -23,7 +23,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     private static final String TAG = LayoutImageReflowProvider.class.getSimpleName();
 
     private boolean reverseOrder;
-    private boolean isNewPage;
 
     public LayoutImageReflowProvider(final ReaderLayoutManager lm) {
         super(lm);
@@ -36,7 +35,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     public void activate() {
         getPageManager().setPageRepeat(0);
         getPageManager().scaleToPage(getCurrentPageName());
-        getLayoutManager().getImageReflowManager().loadPageMap();
     }
 
     @Override
@@ -76,7 +74,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     public boolean nextPage() throws ReaderException {
         if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
             moveToFirstSubPage();
-            isNewPage = true;
             return true;
         }
         return false;
@@ -98,19 +95,16 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (bmp != null) {
             drawContext.renderingBitmap.attachWith(key, bmp);
             LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
-            if (isNewPage) {
+            if (drawContext.asyncDraw) {
                 reflowNextPageInBackground(reader, drawContext, readerViewInfo);
-                isNewPage = false;
             }
             return true;
         }
 
-        reflowFirstVisiblePage(reader, drawContext, readerViewInfo, drawContext.asyncDraw);
+        reflowFirstVisiblePageAsync(reader, drawContext, readerViewInfo);
         if (drawContext.asyncDraw) {
             return false;
         }
-
-        reflowNextPageInBackground(reader, drawContext, readerViewInfo);
         if (reverseOrder) {
             moveToLastSubPage();
             reverseOrder = false;
@@ -123,14 +117,12 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return true;
     }
 
-    private void reflowFirstVisiblePage(final Reader reader,
-                                        final ReaderDrawContext drawContext,
-                                        final ReaderViewInfo readerViewInfo,
-                                        boolean background) throws ReaderException {
+    private void reflowFirstVisiblePageAsync(final Reader reader,
+                                             final ReaderDrawContext drawContext,
+                                             final ReaderViewInfo readerViewInfo) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
-        reader.getImageReflowManager().reflowBitmap(drawContext.renderingBitmap.getBitmap(),
-                getCurrentPageName(),
-                background);
+        reader.getImageReflowManager().reflowBitmapAsync(drawContext.renderingBitmap.getBitmap(),
+                getCurrentPageName());
     }
 
     private void reflowNextPageInBackground(final Reader reader,
@@ -139,7 +131,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
             ReaderDrawContext reflowContext = ReaderDrawContext.copy(drawContext);
             reflowContext.renderingBitmap = new ReaderBitmapImpl();
-            reflowFirstVisiblePage(reader, reflowContext, readerViewInfo, true);
+            reflowFirstVisiblePageAsync(reader, reflowContext, readerViewInfo);
             gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
         }
     }
@@ -227,8 +219,8 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return true;
     }
 
-    private ReaderBitmapList getCurrentSubPageList() {
-        return getLayoutManager().getImageReflowManager().getSubPageList(getCurrentPageName());
+    private ImageReflowManager getReflowManager() {
+        return getLayoutManager().getImageReflowManager();
     }
 
     private String getCurrentSubPageKey() {
@@ -240,35 +232,35 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     private int getCurrentSubPageIndex() {
-        return getCurrentSubPageList().getCurrent();
+        return getReflowManager().getCurrentSubPageIndex(getCurrentPageName());
     }
 
     private boolean atFirstSubPage() {
-        return getCurrentSubPageList().atBegin();
+        return getReflowManager().atFirstSubPage(getCurrentPageName());
     }
 
     private boolean atLastSubPage() {
-        return getCurrentSubPageList().atEnd();
+        return getReflowManager().atLastSubPage(getCurrentPageName());
     }
 
     private void moveToFirstSubPage() {
-        getCurrentSubPageList().moveToBegin();
+        getReflowManager().moveToFirstSubPage(getCurrentPageName());
     }
 
     private void moveToLastSubPage() {
-        getCurrentSubPageList().moveToEnd();
+        getReflowManager().moveToLastSubPage(getCurrentPageName());
     }
 
     private void previousSubPage() {
-        getCurrentSubPageList().prev();
+        getReflowManager().previousSubPage(getCurrentPageName());
     }
 
     private void nextSubPage() {
-        getCurrentSubPageList().next();
+        getReflowManager().nextSubPage(getCurrentPageName());
     }
 
-    private void moveToSubSPage(int index) {
-        getCurrentSubPageList().moveToScreen(index);
+    private void moveToSubSPage(final int index) {
+        getReflowManager().moveToSubSPage(getCurrentPageName(), index);
     }
 
 }

@@ -41,6 +41,7 @@ import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.ClearPageAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RedoAction;
+import com.onyx.kreader.note.actions.RestoreShapeAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
@@ -541,7 +542,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 eraseWholePage(readerDataHolder);
                 break;
             case DRAG:
-                startSelection(readerDataHolder);
+                toggleSelection(readerDataHolder);
                 break;
             case MINIMIZE:
                 break;
@@ -631,12 +632,18 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.execute(readerDataHolder, null);
     }
 
-    private void startSelection(final ReaderDataHolder readerDataHolder) {
-        final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
-        actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
-        actionChain.addAction(new ChangeNoteShapeAction(ShapeFactory.SHAPE_SELECTOR));
-        actionChain.execute(readerDataHolder, null);
+    private void toggleSelection(final ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.getNoteManager().isInSelection()) {
+            final ActionChain actionChain = new ActionChain();
+            actionChain.addAction(new RestoreShapeAction());
+            actionChain.execute(readerDataHolder, null);
+        } else {
+            final ActionChain actionChain = new ActionChain();
+            final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+            actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
+            actionChain.addAction(new ChangeNoteShapeAction(ShapeFactory.SHAPE_SELECTOR));
+            actionChain.execute(readerDataHolder, null);
+        }
     }
 
 }

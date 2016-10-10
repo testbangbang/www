@@ -222,24 +222,6 @@ public class HandlerManager {
         return getActiveProvider().onDown(readerDataHolder, e);
     }
 
-    public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (!isEnable()) {
-            return false;
-        }
-        if (!isEnableTouch()) {
-            return false;
-        }
-
-        return getActiveProvider().onDoubleTap(readerDataHolder, e);
-    }
-
-    public void onShowPress(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (!isEnable()) {
-            return;
-        }
-        getActiveProvider().onShowPress(readerDataHolder, e);
-    }
-
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnable()) {
             return false;
