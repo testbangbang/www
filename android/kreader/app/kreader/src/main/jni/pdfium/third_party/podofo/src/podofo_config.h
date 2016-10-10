@@ -38,7 +38,7 @@
 
 /* Sizes of int64 and long, to pick proper printf format */
 #define SZ_INT64 8
-#define SZ_LONG 8
+#define SZ_LONG 4
 
 /* Endianness */
 /* #undef TEST_BIG */
