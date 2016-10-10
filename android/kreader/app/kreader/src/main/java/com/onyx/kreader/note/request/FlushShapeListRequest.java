@@ -1,6 +1,5 @@
 package com.onyx.kreader.note.request;
 
-import android.os.Build;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
@@ -36,7 +35,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
         for(Shape shape : shapeList) {
-            final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePage(getContext(), shape.getPageUniqueId(), subPageIndex);
+            final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePageExist(getContext(), shape.getPageUniqueId(), subPageIndex);
             readerNotePage.addShape(shape, true);
             count = readerNotePage.getNewAddedShapeList().size();
         }

@@ -264,7 +264,7 @@ public class ReaderNoteDocument {
         return notePage;
     }
 
-    public ReaderNotePage ensurePage(final Context context, final String pageName, int subPageIndex) {
+    public ReaderNotePage ensurePageExist(final Context context, final String pageName, int subPageIndex) {
         final ReaderNotePage readerNotePage = loadPage(context, pageName, subPageIndex);
         if (readerNotePage != null) {
             return readerNotePage;
