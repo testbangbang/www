@@ -46,7 +46,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private ScribbleMenuAction selectEraserAction = ScribbleMenuAction.ERASER_PART;
     private ActionCallback actionCallback;
     private ReaderDataHolder readerDataHolder;
-
+    private boolean isDrag = true;
 
     public ShowScribbleMenuAction(ViewGroup parent,
                                   final View hostView,
@@ -295,6 +295,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
         actionCallback.onClicked(action);
         switch (action) {
+            case DRAG:
+                changeDragIcon();
+                break;
             case WIDTH:
                 break;
             case SHAPE:
@@ -311,6 +314,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             case MAXIMIZE:
                 changeToolBarVisibility(false);
         }
+    }
+
+    private void changeDragIcon(){
+        isDrag = !isDrag;
+        SimpleMarkerViewHolder simpleMarkerViewHolder = (SimpleMarkerViewHolder) scribbleViewHolderMap.get(ScribbleMenuAction.DRAG);
+        simpleMarkerViewHolder.contentView.setImageResource(isDrag ? R.drawable.ic_drag : R.drawable.ic_drag_forbid);
     }
 
     @Subscribe
@@ -337,6 +346,10 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     public void setSelectEraserAction(ScribbleMenuAction selectEraserAction) {
         this.selectEraserAction = selectEraserAction;
+    }
+
+    public boolean isDrag() {
+        return isDrag;
     }
 
     private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder) {
