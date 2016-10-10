@@ -1,0 +1,108 @@
+package com.onyx.android.sdk.ui.view;
+
+import android.text.SpannableStringBuilder;
+import android.util.SparseArray;
+import android.view.View;
+import android.widget.Checkable;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+/**
+ * Created by ming on 16/9/22.
+ */
+public class CommonViewHolder {
+
+    public final View itemView;
+    private SparseArray<View> views;
+
+    public CommonViewHolder(View itemView) {
+        if (itemView == null) {
+            throw new IllegalArgumentException("itemView may not be null");
+        }
+        this.itemView = itemView;
+        views = new SparseArray<>();
+    }
+
+    public <T extends View> T getView(int viewId) {
+        View view = views.get(viewId);
+        if (view == null) {
+            view = itemView.findViewById(viewId);
+            views.put(viewId, view);
+        }
+        return (T) view;
+    }
+
+    public CommonViewHolder setText(int viewId, int resId) {
+        TextView textView = getView(viewId);
+        textView.setText(resId);
+        return this;
+    }
+
+    public CommonViewHolder setText(int viewId, String text) {
+        TextView textView = getView(viewId);
+        textView.setText(text);
+        return this;
+    }
+
+    public CommonViewHolder setText(int viewId, SpannableStringBuilder text) {
+        TextView textView = getView(viewId);
+        textView.setText(text);
+        return this;
+    }
+
+    public CommonViewHolder setImageResource(int viewId, int resId) {
+        ImageView view = getView(viewId);
+        view.setImageResource(resId);
+        return this;
+    }
+
+    public CommonViewHolder setBackgroundColor(int viewId, int color) {
+        View view = getView(viewId);
+        view.setBackgroundColor(color);
+        return this;
+    }
+
+    public CommonViewHolder setBackgroundResource(int viewId, int backgroundRes) {
+        View view = getView(viewId);
+        view.setBackgroundResource(backgroundRes);
+        return this;
+    }
+
+    public CommonViewHolder setTextColor(int viewId, int textColor) {
+        TextView view = getView(viewId);
+        view.setTextColor(textColor);
+        return this;
+    }
+
+    public CommonViewHolder setVisibility(int viewId, int visibility) {
+        View view = getView(viewId);
+        view.setVisibility(visibility);
+        return this;
+    }
+
+    public CommonViewHolder setTag(int viewId, Object tag) {
+        View view = getView(viewId);
+        view.setTag(tag);
+        return this;
+    }
+
+    public CommonViewHolder setTag(int viewId, int key, Object tag) {
+        View view = getView(viewId);
+        view.setTag(key, tag);
+        return this;
+    }
+
+    public CommonViewHolder setChecked(int viewId, boolean checked) {
+        Checkable view = (Checkable) getView(viewId);
+        view.setChecked(checked);
+        return this;
+    }
+
+    public CommonViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
+
+        View view = getView(viewId);
+        view.setOnClickListener(listener);
+        return this;
+    }
+
+}
