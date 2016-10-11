@@ -10,8 +10,11 @@ import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.kreader.R;
+import com.onyx.kreader.ui.actions.ExportNotesAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
     @Bind(R.id.merged_layout)
     RadioGroup mergedLayout;
 
+    private ReaderDataHolder readerDataHolder;
     private boolean annotationMerge = true;
     private boolean scribbleMerge = true;
     private boolean isMergedAll = true;
@@ -58,6 +62,7 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         initBrushStrokeColor();
         setupListener();
 
+        this.readerDataHolder = readerDataHolder;
         annotationCheckbox.setChecked(annotationMerge);
         scribbleCheckbox.setChecked(scribbleMerge);
         mergedLayout.check(isMergedAll ? R.id.merged_all : R.id.merged_part);
@@ -95,6 +100,12 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new ExportNotesAction().execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+
+                    }
+                });
             }
         });
     }

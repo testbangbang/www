@@ -18,7 +18,10 @@ public:
     bool saveAs(const std::string &path);
     void close();
 
+    bool isOpened() const;
+    bool writeScribble(const PageScribble &scribble);
     bool writeScribbles(const std::vector<PageScribble> &scribbles);
+    bool writeAnnotation(const PageAnnotation &annotation);
     bool writeAnnotations(const std::vector<PageAnnotation> &annotations);
 
 private:

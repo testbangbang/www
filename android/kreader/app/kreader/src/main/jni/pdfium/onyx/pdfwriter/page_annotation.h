@@ -11,9 +11,6 @@ struct PageAnnotation
     int page;
     std::string note;
     std::vector<RectF> rects;
-    std::string beginPosition;
-    std::string endPosition;
-
 };
 
 #endif // PDFANNOTATION_H
