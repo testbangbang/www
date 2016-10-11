@@ -128,7 +128,7 @@ public class PageRecyclerView extends RecyclerView {
         }
         rows = ((PageAdapter) adapter).getRowCount();
         columns = ((PageAdapter) adapter).getColumnCount();
-        int size = adapter.getItemCount();
+        int size = ((PageAdapter) adapter).getDataCount();
         paginator = new GPaginator(rows, columns,size);
         paginator.gotoPageByIndex(0);
 
