@@ -151,6 +151,7 @@ public class ReaderHelper {
 
         clearBitmapCache();
         clearImageReflowManager();
+        releaseWordAnalyzer();
     }
 
     public void updateViewportSize(int newWidth, int newHeight) throws ReaderException {
@@ -273,6 +274,10 @@ public class ReaderHelper {
             bitmapCache.clear();
             bitmapCache = null;
         }
+    }
+
+    private void releaseWordAnalyzer() {
+        AnalyzerAndroidWrapper.release();
     }
 
     public ReaderPluginOptionsImpl getPluginOptions() {
