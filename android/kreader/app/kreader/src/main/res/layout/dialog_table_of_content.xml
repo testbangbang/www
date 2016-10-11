@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
     <FrameLayout
-        android:layout_above="@+id/layout_turn"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -15,18 +15,23 @@
             android:layout_height="match_parent">
         </com.onyx.android.sdk.ui.view.OnyxCustomViewPager>
 
-        <TextView
-            android:text="无文档"
-            android:id="@+id/empty_text"
-            android:textSize="30sp"
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/empty_layout"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:src="@drawable/ic_dialog_empty_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
     </FrameLayout>
 
 
     <RelativeLayout
-        android:layout_above="@+id/layout_menu"
         android:id="@+id/layout_turn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/directory_page_indicator_height">
@@ -134,7 +139,6 @@
     </RelativeLayout>
 
     <RadioGroup
-        android:layout_alignParentBottom="true"
         android:id="@+id/layout_menu"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -165,4 +169,4 @@
             android:button="@drawable/scribble_radio_button_drawable"/>
     </RadioGroup>
 
-</RelativeLayout>
+</LinearLayout>

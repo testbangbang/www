@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 
 import com.onyx.android.sdk.ui.R;
 
@@ -15,7 +15,7 @@ import com.onyx.android.sdk.ui.R;
  * Created by ming on 16/10/8.
  */
 
-public class RadioButtonCenter extends RadioButton {
+public class RadioButtonCenter extends AppCompatRadioButton {
 
     private Drawable buttonDrawable;
 
