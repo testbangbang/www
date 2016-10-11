@@ -2,6 +2,7 @@ package org.apache.lucene.analysis.cn;
 
 import android.content.Context;
 import android.util.Log;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
@@ -12,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -60,6 +60,13 @@ public class AnalyzerAndroidWrapper {
 
     public static boolean isInitialized() {
         return initialized.get();
+    }
+
+    /**
+     * just release context being holder, to avoid static resource leaking
+     */
+    public static void release() {
+        context = null;
     }
 
     private static boolean isInitializing() {

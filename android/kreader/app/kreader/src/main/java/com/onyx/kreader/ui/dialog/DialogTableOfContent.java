@@ -70,7 +70,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private RadioButtonCenter btnScribble;
     private RadioGroup btnGroup;
     private OnyxCustomViewPager viewPager;
-    private TextView emptyText;
+    private LinearLayout emptyLayout;
     private TextView totalText;
     private LinearLayout backLayout;
     private LinearLayout pageIndicatorLayout;
@@ -258,12 +258,12 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         btnScribble = (RadioButtonCenter) findViewById(R.id.btn_scribble);
         viewPager = (OnyxCustomViewPager) findViewById(R.id.viewpager);
         totalText = (TextView) findViewById(R.id.total);
-        emptyText = (TextView) findViewById(R.id.empty_text);
+        emptyLayout = (LinearLayout) findViewById(R.id.empty_layout);
         backLayout = (LinearLayout) findViewById(R.id.back_layout);
         pageIndicatorLayout = (LinearLayout) findViewById(R.id.page_indicator_layout);
         exportLayout = (LinearLayout) findViewById(R.id.export_layout);
         btnGroup = (RadioGroup) findViewById(R.id.layout_menu);
-        emptyText.setVisibility(View.GONE);
+        emptyLayout.setVisibility(View.GONE);
         viewPager.setPagingEnabled(false);
 
         btnToc.setOnCheckedChangeListener(this);
@@ -287,10 +287,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(currentTab);
                 boolean hasContents = pageAdapter != null && pageAdapter.getItemCount() > 0;
                 viewPager.setVisibility(hasContents ? View.VISIBLE : View.INVISIBLE);
-                emptyText.setVisibility(hasContents ? View.GONE : View.VISIBLE);
-                if (!hasContents){
-                    emptyText.setText(getEmptyTips(currentTab));
-                }
+                emptyLayout.setVisibility(hasContents ? View.GONE : View.VISIBLE);
                 onPageChanged();
             }
 
@@ -392,21 +389,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 return 9;
         }
         return 0;
-    }
-
-    private String getEmptyTips(DirectoryTab tab){
-        switch (tab){
-            case TOC:
-                return getContext().getString(R.string.no_directories);
-            case Bookmark:
-                return getContext().getString(R.string.no_bookmarks);
-            case Annotation:
-                return getContext().getString(R.string.no_annotation);
-            case Scribble:
-                return getContext().getString(R.string.no_scribble);
-            default:
-                return getContext().getString(R.string.no_directories);
-        }
     }
 
     private PageRecyclerView.PageAdapter getPageAdapter(DirectoryTab tab){
