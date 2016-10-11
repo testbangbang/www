@@ -41,7 +41,7 @@ import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.ClearPageAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RedoAction;
-import com.onyx.kreader.note.actions.StartErasingAction;
+import com.onyx.kreader.note.actions.RestoreShapeAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
@@ -205,9 +205,6 @@ public class ShowReaderMenuAction extends BaseAction {
                     case DIRECTORY_EXPORT:
                         showExportDialog(readerDataHolder);
                         break;
-                    case SHOW_ANNOTATION:
-                        showAnnotation(readerDataHolder);
-                        break;
                     case SHOW_SCRIBBLE:
                         showScribble(readerDataHolder);
                         break;
@@ -242,6 +239,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         startNoteDrawing(readerDataHolder);
                         break;
                     case EXIT:
+                        resetReaderMenu(readerDataHolder);
                         readerActivity.onBackPressed();
                         break;
                 }
@@ -260,13 +258,11 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void initPageMenuItems(ReaderDataHolder readerDataHolders, List<ReaderLayerMenuItem> menuItems) {
         for (ReaderLayerMenuItem item : menuItems) {
-            if (item.getAction() == ReaderMenuAction.SHOW_ANNOTATION) {
-                item.setDrawableResourceId(SingletonSharedPreference.isShowAnnotation(readerDataHolders.getContext())
-                        ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
-            }
             if (item.getAction() == ReaderMenuAction.SHOW_SCRIBBLE) {
                 item.setDrawableResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
                         ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
+                item.setTitleResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
+                        ? R.string.reader_layer_menu_hide_scribble : R.string.reader_layer_menu_show_scribble);
             }
             initPageMenuItems(readerDataHolders, (List<ReaderLayerMenuItem>)item.getChildren());
         }
@@ -447,13 +443,6 @@ public class ShowReaderMenuAction extends BaseAction {
         new ShowReaderSettingsAction().execute(readerDataHolder, null);
     }
 
-    private void showAnnotation(ReaderDataHolder readerDataHolder) {
-        hideReaderMenu();
-        boolean isShowAnnotation = !SingletonSharedPreference.isShowAnnotation(readerDataHolder.getContext());
-        SingletonSharedPreference.setIsShowAnnotation(readerDataHolder.getContext(), isShowAnnotation);
-        new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
-    }
-
     private void showScribble(ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         boolean isShowScribble = !SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
@@ -470,7 +459,6 @@ public class ShowReaderMenuAction extends BaseAction {
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
-                readerActivity.getSurfaceView(),
                 getScribbleActionCallback(readerDataHolder));
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
@@ -555,7 +543,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 eraseWholePage(readerDataHolder);
                 break;
             case DRAG:
-                startSelection(readerDataHolder);
+                toggleSelection(readerDataHolder);
                 break;
             case MINIMIZE:
                 break;
@@ -645,12 +633,18 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.execute(readerDataHolder, null);
     }
 
-    private void startSelection(final ReaderDataHolder readerDataHolder) {
-        final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
-        actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
-        actionChain.addAction(new ChangeNoteShapeAction(ShapeFactory.SHAPE_SELECTOR));
-        actionChain.execute(readerDataHolder, null);
+    private void toggleSelection(final ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.getNoteManager().isInSelection()) {
+            final ActionChain actionChain = new ActionChain();
+            actionChain.addAction(new RestoreShapeAction());
+            actionChain.execute(readerDataHolder, null);
+        } else {
+            final ActionChain actionChain = new ActionChain();
+            final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+            actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
+            actionChain.addAction(new ChangeNoteShapeAction(ShapeFactory.SHAPE_SELECTOR));
+            actionChain.execute(readerDataHolder, null);
+        }
     }
 
 }

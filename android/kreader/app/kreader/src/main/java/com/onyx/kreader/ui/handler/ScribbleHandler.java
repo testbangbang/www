@@ -2,10 +2,16 @@ package com.onyx.kreader.ui.handler;
 
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.KeyAction;
+import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.note.request.StopNoteRequest;
+import com.onyx.kreader.ui.actions.PinchZoomAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 
@@ -72,8 +78,62 @@ public class ScribbleHandler extends BaseHandler {
         return readerDataHolder.getNoteManager().getNoteEventProcessorManager().onTouchEvent(e);
     }
 
-    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getNoteManager().enableScreenPost(true);
+    private boolean inSelection(final ReaderDataHolder readerDataHolder) {
+        return readerDataHolder.getNoteManager().isInSelection();
+    }
+
+    public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        if (inSelection(readerDataHolder)) {
+            return super.onScroll(readerDataHolder, e1, e2, distanceX, distanceY);
+        }
+        return false;
+    }
+
+    public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        if (inSelection(readerDataHolder)) {
+            return super.onSingleTapUp(readerDataHolder, e);
+        }
+        return false;
+    }
+
+    public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
+        if (inSelection(readerDataHolder)) {
+            return super.onScaleEnd(readerDataHolder, detector);
+        }
+        return false;
+    }
+
+    public boolean onScaleBegin(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
+        if (inSelection(readerDataHolder)) {
+            return super.onScaleBegin(readerDataHolder, detector);
+        }
+        return false;
+    }
+
+    public boolean onScale(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector)  {
+        if (inSelection(readerDataHolder)) {
+            return super.onScale(readerDataHolder, detector);
+        }
+        return false;
+    }
+
+    public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
+        if (inSelection(readerDataHolder)) {
+            return super.onActionUp(readerDataHolder, startX, startY, endX, endY);
+        }
+        return false;
+    }
+
+    public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+    }
+
+    public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder, final String action, final String args) {
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false);
+        flushNoteAction.execute(getParent().getReaderDataHolder(), null);
+    }
+
+    public void beforePageChangeByUser() {
+
     }
 
     public void close(final ReaderDataHolder readerDataHolder) {

@@ -132,8 +132,13 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
             for (int i = 0; i < colorStrIds.length; i++) {
                 colorList.add(context.getString(colorStrIds[i]));
             }
+
             setButtonTexts(colorList);
             setMultiCheck(false);
+            int margin = (int) context.getResources().getDimension(R.dimen.dialog_export_margin);
+            setMargin(0, margin, 0, 0);
+            float textSize = context.getResources().getDimension(R.dimen.dialog_export_text_size);
+            setTextSize(textSize);
         }
 
         @Override

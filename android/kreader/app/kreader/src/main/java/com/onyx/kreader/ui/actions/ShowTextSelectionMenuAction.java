@@ -27,10 +27,10 @@ public class ShowTextSelectionMenuAction{
         }
     }
 
-    public static void showTextSelectionPopupMenu(ReaderDataHolder readerDataHolder){
+    public static void showTextSelectionPopupMenu(ReaderDataHolder readerDataHolder, boolean isWord) {
         popupSelectionMenu =  getTextSelectionPopupMenu(readerDataHolder);
         if (popupSelectionMenu != null) {
-            popupSelectionMenu.show(readerDataHolder);
+            popupSelectionMenu.show(readerDataHolder, isWord);
         }
     }
 

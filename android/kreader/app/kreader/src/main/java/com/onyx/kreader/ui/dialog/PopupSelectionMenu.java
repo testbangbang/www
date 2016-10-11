@@ -182,21 +182,17 @@ public class PopupSelectionMenu extends LinearLayout {
         return true;
     }
 
-    public void show(ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.getReaderUserDataInfo().getHighlightResult() == null){
+    public void show(ReaderDataHolder readerDataHolder, boolean isWord) {
+        if (readerDataHolder.getReaderUserDataInfo().getHighlightResult() == null) {
             return;
         }
-        if (isSelectedOnWord(readerDataHolder)){
+        if (isWord) {
             showTranslation();
             PopupSelectionMenu.this.updateTranslation(mMenuCallback.getSelectionText());
-        }else {
+        } else {
             hideTranslation();
         }
         requestLayoutView(readerDataHolder);
-    }
-
-    private boolean isSelectedOnWord(ReaderDataHolder readerDataHolder){
-        return readerDataHolder.getReaderUserDataInfo().isWordSelected();
     }
 
     public void hide() {

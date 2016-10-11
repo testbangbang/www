@@ -313,7 +313,7 @@ public class NoteViewHelper {
     public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
         setStrokeColor(drawingArgs.strokeColor);
         setStrokeWidth(drawingArgs.strokeWidth);
-        setCurrentShapeType(drawingArgs.currentShapeType);
+        setCurrentShapeType(drawingArgs.getCurrentShapeType());
         setBackground(drawingArgs.background);
     }
 
@@ -463,7 +463,7 @@ public class NoteViewHelper {
     }
 
     private Shape createNewShape() {
-        Shape shape = ShapeFactory.createShape(getNoteDocument().getNoteDrawingArgs().currentShapeType);
+        Shape shape = ShapeFactory.createShape(getNoteDocument().getNoteDrawingArgs().getCurrentShapeType());
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
         return shape;
@@ -534,11 +534,11 @@ public class NoteViewHelper {
     }
 
     public int getCurrentShapeType() {
-        return getNoteDocument().getNoteDrawingArgs().currentShapeType;
+        return getNoteDocument().getNoteDrawingArgs().getCurrentShapeType();
     }
 
     public void setCurrentShapeType(int currentShapeType) {
-        getNoteDocument().getNoteDrawingArgs().currentShapeType = currentShapeType;
+        getNoteDocument().getNoteDrawingArgs().setCurrentShapeType(currentShapeType);
         updatePenStateByCurrentShapeType();
     }
 

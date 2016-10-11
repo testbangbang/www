@@ -10,8 +10,7 @@ import android.widget.RelativeLayout;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.ScribbleMenuAction;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
-import com.onyx.android.sdk.ui.view.viewholder.BaseViewHolder;
-import com.onyx.android.sdk.ui.view.viewholder.SimpleMarkerViewHolder;
+import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -28,35 +27,30 @@ import java.util.HashMap;
  */
 public class ShowScribbleMenuAction extends BaseAction implements View.OnClickListener {
 
-    private static final String TAG = ShowScribbleMenuAction.class.getSimpleName();
-
     public static abstract class ActionCallback {
         public abstract void onClicked(final ScribbleMenuAction action);
     }
 
     private ViewGroup parent;
-    private View hostView;
     private OnyxToolbar bottomToolbar;
     private OnyxToolbar topToolbar;
     private View fullToolbar;
-    private HashMap<ScribbleMenuAction, BaseViewHolder> scribbleViewHolderMap = new HashMap<>();
+    private HashMap<ScribbleMenuAction, CommonViewHolder> scribbleViewHolderMap = new HashMap<>();
     private BaseCallback callback;
     private ScribbleMenuAction selectWidthAction = ScribbleMenuAction.WIDTH1;
     private ScribbleMenuAction selectShapeAction = ScribbleMenuAction.PENCIL;
     private ScribbleMenuAction selectEraserAction = ScribbleMenuAction.ERASER_PART;
     private ActionCallback actionCallback;
     private ReaderDataHolder readerDataHolder;
-
+    private boolean isDrag = false;
 
     public ShowScribbleMenuAction(ViewGroup parent,
-                                  final View hostView,
                                   final ActionCallback actionCallback) {
         this.parent = parent;
-        this.hostView = hostView;
         this.actionCallback = actionCallback;
     }
 
-    public void execute(ReaderDataHolder readerDataHolder,  BaseCallback callback) {
+    public void execute(ReaderDataHolder readerDataHolder, BaseCallback callback) {
         this.callback = callback;
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         readerDataHolder.getEventBus().register(this);
@@ -96,12 +90,11 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.WIDTH);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.SHAPE);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_txt, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.TEXT);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_eraser, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.ERASER);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_drag, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.DRAG);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_drag_forbid, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.DRAG);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_pack_up, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.MINIMIZE);
 
-        toolbar.addViewHolder(new BaseViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
+        toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_left, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.PREV_PAGE);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_right, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ScribbleMenuAction.NEXT_PAGE);
@@ -130,7 +123,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_save, ScribbleMenuAction.SAVE);
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_redo, ScribbleMenuAction.REDO);
 
-        toolbar.addViewHolder(new BaseViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
+        toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_dialog_reader_page_closed, ScribbleMenuAction.CLOSE);
 
@@ -167,22 +160,22 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private void updateMarkerView(ScribbleMenuAction selectAction, ScribbleMenuAction[] actions) {
         for (int i = 0; i < actions.length; i++) {
-            ((SimpleMarkerViewHolder) scribbleViewHolderMap.get(actions[i])).markerView.setVisibility(View.INVISIBLE);
+            scribbleViewHolderMap.get(actions[i]).setVisibility(R.id.marker_view, View.INVISIBLE);
             if (selectAction == actions[i]) {
-                ((SimpleMarkerViewHolder) scribbleViewHolderMap.get(selectAction)).markerView.setVisibility(View.VISIBLE);
+                scribbleViewHolderMap.get(actions[i]).setVisibility(R.id.marker_view, View.VISIBLE);
             }
         }
     }
 
     private void addMarkerViewHolder(OnyxToolbar toolbar, Context context, int imageResId, int selectResId, int layoutId, final ScribbleMenuAction action) {
-        SimpleMarkerViewHolder simpleMarkerViewHolder = OnyxToolbar.Builder.createMarkerViewHolder(context, imageResId, selectResId, layoutId, action);
-        toolbar.addViewHolder(simpleMarkerViewHolder);
-        scribbleViewHolderMap.put(action, simpleMarkerViewHolder);
+        CommonViewHolder markerViewHolder = OnyxToolbar.Builder.createMarkerViewHolder(context, R.id.content_view, R.id.marker_view, imageResId, selectResId, layoutId, action);
+        toolbar.addViewHolder(markerViewHolder);
+        scribbleViewHolderMap.put(action, markerViewHolder);
     }
 
     private void addImageViewHolder(OnyxToolbar toolbar, Context context, int imageResId, final ScribbleMenuAction action) {
         ImageView imageView = OnyxToolbar.Builder.createImageView(context, imageResId);
-        BaseViewHolder viewHolder = new BaseViewHolder(imageView);
+        CommonViewHolder viewHolder = new CommonViewHolder(imageView);
         imageView.setTag(action);
         toolbar.addViewHolder(viewHolder);
         scribbleViewHolderMap.put(action, viewHolder);
@@ -296,6 +289,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
         actionCallback.onClicked(action);
         switch (action) {
+            case DRAG:
+                changeDragIcon();
+                break;
             case WIDTH:
                 break;
             case SHAPE:
@@ -312,6 +308,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             case MAXIMIZE:
                 changeToolBarVisibility(false);
         }
+    }
+
+    private void changeDragIcon(){
+        isDrag = !isDrag;
+        scribbleViewHolderMap.get(ScribbleMenuAction.DRAG).setImageResource(R.id.content_view,
+                isDrag ? R.drawable.ic_drag : R.drawable.ic_drag_forbid);
     }
 
     @Subscribe
@@ -340,13 +342,17 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         this.selectEraserAction = selectEraserAction;
     }
 
-    private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder){
+    public boolean isDrag() {
+        return isDrag;
+    }
+
+    private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder) {
         int bottomOfTopToolBar = 0;
         int topOfBottomToolBar = 0;
-        if (bottomToolbar.getVisibility() == View.VISIBLE){
+        if (bottomToolbar.getVisibility() == View.VISIBLE) {
             bottomOfTopToolBar = topToolbar.getBottom();
         }
-        if (topToolbar.getVisibility() == View.VISIBLE){
+        if (topToolbar.getVisibility() == View.VISIBLE) {
             topOfBottomToolBar = bottomToolbar.getTop();
         }
         readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar));

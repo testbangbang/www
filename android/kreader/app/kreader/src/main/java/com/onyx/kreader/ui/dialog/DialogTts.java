@@ -5,17 +5,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
@@ -27,7 +31,11 @@ import com.onyx.kreader.ui.events.TtsRequestSentenceEvent;
 import com.onyx.kreader.ui.events.TtsStateChangedEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.handler.TtsHandler;
+
 import org.greenrobot.eventbus.Subscribe;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by ming on 16/8/12.
@@ -67,6 +75,8 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     ImageButton minusVoice;
     @Bind(R.id.plus_voice)
     ImageButton plusVoice;
+    @Bind(R.id.content_view)
+    RelativeLayout contentView;
 
     private int maxVolume;
     private AudioManager audioMgr;
@@ -74,7 +84,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     private TtsHandler ttsHandler;
 
     private Pair<Integer, Pair<Integer, Float>>[] speedCheckBoxCollection = new Pair[] {
-        new Pair(R.id.slowest_speed, new Pair<>(1, 0.5f)),
+            new Pair(R.id.slowest_speed, new Pair<>(1, 0.5f)),
             new Pair(R.id.slower_speed, new Pair<>(2, 0.75f)),
             new Pair(R.id.normal_speed, new Pair<>(3, 1.0f)),
             new Pair(R.id.faster_speed, new Pair<>(4, 1.5f)),
@@ -90,14 +100,23 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         this.readerDataHolder = readerDataHolder;
         readerDataHolder.getEventBus().register(this);
 
-        ttsHandler = (TtsHandler)readerDataHolder.getHandlerManager().getActiveProvider();
+        ttsHandler = (TtsHandler) readerDataHolder.getHandlerManager().getActiveProvider();
 
         ButterKnife.bind(this);
+        fitDialogToWindow();
         initView();
         initData();
 
-        // force to be false, or else it will be turned on for unknown reason
-        setCanceledOnTouchOutside(false);
+    }
+
+    private void fitDialogToWindow() {
+        Window mWindow = getWindow();
+        WindowManager.LayoutParams mParams = mWindow.getAttributes();
+        mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        mParams.gravity = Gravity.BOTTOM;
+        mWindow.setAttributes(mParams);
+        //force use all space in the screen.
+        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     public void show() {
@@ -119,6 +138,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         ttsClose.setOnClickListener(this);
         ttsPlay.setOnClickListener(this);
         ttsStop.setOnClickListener(this);
+        contentView.setOnClickListener(this);
 
         minusVoice.setOnClickListener(this);
         plusVoice.setOnClickListener(this);
@@ -141,10 +161,8 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         voiceSpeedLayout.post(new Runnable() {
             @Override
             public void run() {
-                int width = voiceSpeedLayout.getMeasuredWidth();
                 int btnWidth = ttsSpeed.getMeasuredWidth();
-                float speedButtonX = ttsSpeed.getX();
-                voiceSpeedLayout.setX(speedButtonX - width / 2 + btnWidth / 2);
+                voiceSpeedLayout.setX(voiceSpeedLayout.getX() + btnWidth + getContext().getResources().getDimension(R.dimen.tts_button_margin) * 2);
             }
         });
 
@@ -186,7 +204,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
     }
 
-    private void initData(){
+    private void initData() {
         audioMgr = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
         maxVolume = audioMgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         int curVolume = audioMgr.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -231,36 +249,45 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         } else if (v.equals(ttsClose)) {
             ttsHandler.ttsStop();
             dismiss();
-        }else if (v.equals(ttsPlay)){
+        } else if (v.equals(ttsPlay)) {
+            hideVoiceControlLayout();
             if (readerDataHolder.getTtsManager().isSpeaking()) {
                 ttsHandler.ttsPause();
             } else {
                 ttsHandler.ttsPlay();
             }
-        }else if (v.equals(ttsStop)){
+        } else if (v.equals(ttsStop)) {
+            hideVoiceControlLayout();
             ttsHandler.ttsStop();
-        }else if (v.equals(minusVoice)){
+        } else if (v.equals(minusVoice)) {
             setSeekBarValue(false);
-        }else if (v.equals(plusVoice)){
+        } else if (v.equals(plusVoice)) {
             setSeekBarValue(true);
+        } else if (v.equals(contentView)) {
+            hideVoiceControlLayout();
         }
     }
 
-    private void setSeekBarValue(boolean plus){
+    private void hideVoiceControlLayout() {
+        voiceSpeedLayout.setVisibility(View.GONE);
+        voiceSizeLayout.setVisibility(View.GONE);
+    }
+
+    private void setSeekBarValue(boolean plus) {
         int volumeProgress = seekBarTts.getProgress();
-        if (plus){
+        if (plus) {
             volumeProgress = volumeProgress + VOLUME_SPAN;
-            volumeProgress = Math.min(maxVolume,volumeProgress);
-        }else {
+            volumeProgress = Math.min(maxVolume, volumeProgress);
+        } else {
             volumeProgress = volumeProgress - VOLUME_SPAN;
-            volumeProgress = Math.max(0,volumeProgress);
+            volumeProgress = Math.max(0, volumeProgress);
         }
         seekBarTts.setProgress(volumeProgress);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(!buttonView.isPressed()){
+        if (!buttonView.isPressed()) {
             return;
         }
         for (int i = 0; i < speedCheckBoxCollection.length; i++) {
@@ -293,9 +320,9 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         return speedCheckBoxCollection[index].second.second;
     }
 
-    private int getCheckBoxSpeedByRate(final float rate){
+    private int getCheckBoxSpeedByRate(final float rate) {
         for (int i = 0; i < speedCheckBoxCollection.length; i++) {
-            if (getCheckBoxRate(i) == rate){
+            if (getCheckBoxRate(i) == rate) {
                 return getCheckBoxSpeed(i);
             }
         }
@@ -306,7 +333,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         for (int i = 0; i < speedCheckBoxCollection.length; i++) {
             final int speed = getCheckBoxSpeed(i);
             if (speed <= targetSpeed) {
-                ((CompoundButton)findViewById(getCheckBoxId(i))).setChecked(true);
+                ((CompoundButton) findViewById(getCheckBoxId(i))).setChecked(true);
             } else {
                 ((CompoundButton) findViewById(getCheckBoxId(i))).setChecked(false);
             }
@@ -314,13 +341,13 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
     }
 
     //调节音量
-    private void controlVolume(int volume){
+    private void controlVolume(int volume) {
         audioMgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume,
                 AudioManager.FLAG_PLAY_SOUND);
     }
 
     //调节声音速度(1-5档)
-    private void controlSpeedOfSound(final float rate){
+    private void controlSpeedOfSound(final float rate) {
         ttsHandler.setSpeechRate(rate);
     }
 

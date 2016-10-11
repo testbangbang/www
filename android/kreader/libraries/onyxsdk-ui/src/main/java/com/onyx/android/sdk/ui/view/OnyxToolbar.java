@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.R;
-import com.onyx.android.sdk.ui.view.viewholder.BaseViewHolder;
-import com.onyx.android.sdk.ui.view.viewholder.SimpleMarkerViewHolder;
 import com.onyx.android.sdk.utils.DimenUtils;
 
 import java.util.List;
@@ -120,12 +118,12 @@ public class OnyxToolbar extends ViewGroup {
         invalidate();
     }
 
-    public void addViewHolder(BaseViewHolder viewHolder) {
+    public void addViewHolder(CommonViewHolder viewHolder) {
         addView(viewHolder.itemView);
     }
 
-    public void addViewHolders(List<BaseViewHolder> viewHolders) {
-        for (BaseViewHolder viewHolder : viewHolders) {
+    public void addViewHolders(List<CommonViewHolder> viewHolders) {
+        for (CommonViewHolder viewHolder : viewHolders) {
             addViewHolder(viewHolder);
         }
     }
@@ -450,18 +448,24 @@ public class OnyxToolbar extends ViewGroup {
             return spaceView;
         }
 
-        public static SimpleMarkerViewHolder createMarkerViewHolder(Context context, int imageResId, int selectResId, int layoutId, final Object tag) {
+        public static CommonViewHolder createMarkerViewHolder(Context context,
+                                                              int contentId,
+                                                              int markerId,
+                                                              int contentResId,
+                                                              int markerResId,
+                                                              int layoutId,
+                                                              final Object tag) {
             View view = LayoutInflater.from(context).inflate(layoutId, null, false);
             view.setTag(tag);
-            SimpleMarkerViewHolder simpleMarkerViewHolder = new SimpleMarkerViewHolder(view, R.id.marker_view, R.id.content_view);
-            simpleMarkerViewHolder.contentView.setImageResource(imageResId);
-            simpleMarkerViewHolder.markerView.setImageResource(selectResId);
+            CommonViewHolder viewHolder = new CommonViewHolder(view);
+            viewHolder.setImageResource(markerId, markerResId);
+            viewHolder.setImageResource(contentId, contentResId);
             OnyxToolbar.LayoutParams lp = new OnyxToolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(lp);
-            return simpleMarkerViewHolder;
+            return viewHolder;
         }
 
-        public static void setDefaultLayoutParams(Context content, View view) {
+        private static void setDefaultLayoutParams(Context content, View view) {
             int padding = DimenUtils.dip2px(content, 10);
             int margin = DimenUtils.dip2px(content, 5);
             view.setBackgroundResource(R.drawable.imagebtn_bg);

@@ -1,10 +1,15 @@
 package com.onyx.kreader.note.request;
 
+import android.util.Log;
+
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNotePage;
 
+import org.apache.lucene.analysis.cn.BuildConfig;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,24 +18,30 @@ import java.util.List;
 public class FlushShapeListRequest extends ReaderBaseNoteRequest {
 
     private volatile int subPageIndex;
-    private volatile List<Shape> shapeList;
+    private volatile List<Shape> shapeList = new ArrayList<>();
     private volatile boolean saveDocument;
+    private volatile int count;
 
     public FlushShapeListRequest(final List<PageInfo> pages, final List<Shape> list, int spi, boolean r, boolean t, boolean save) {
-        setAbortPendingTasks(true);
+        setAbortPendingTasks(false);
         setRender(r);
         setTransfer(t);
         setVisiblePages(pages);
         subPageIndex = spi;
-        shapeList = list;
+        shapeList.addAll(list);
         saveDocument = save;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
         for(Shape shape : shapeList) {
-            final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePage(getContext(), shape.getPageUniqueId(), subPageIndex);
+            final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePageExist(getContext(), shape.getPageUniqueId(), subPageIndex);
             readerNotePage.addShape(shape, true);
+            count = readerNotePage.getNewAddedShapeList().size();
+        }
+
+        if (count != shapeList.size() && BuildConfig.DEBUG) {
+            Log.e("###########", "adding error: " + " origin size: " + shapeList.size() + " result: " + count);
         }
         if (isRender()) {
             getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
@@ -40,5 +51,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         }
         updateShapeDataInfo(noteManager);
     }
+
+
 
 }

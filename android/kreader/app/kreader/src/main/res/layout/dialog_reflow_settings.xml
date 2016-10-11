@@ -91,7 +91,7 @@
 
             <com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView
                 android:layout_toRightOf="@+id/font_size_text"
-                android:layout_margin="5dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/font_size_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -115,7 +115,7 @@
 
             <com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView
                 android:layout_toRightOf="@+id/upgrade_text"
-                android:layout_margin="5dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/upgrade_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">

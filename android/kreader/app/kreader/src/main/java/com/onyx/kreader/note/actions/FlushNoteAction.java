@@ -39,10 +39,11 @@ public class FlushNoteAction extends BaseAction {
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final NoteManager noteManager = readerDataHolder.getNoteManager();
         final List<Shape> stash = noteManager.detachShapeStash();
-        if (!readerDataHolder.isDocumentOpened() || CollectionUtils.isNullOrEmpty(stash) && !save) {
+        if (!readerDataHolder.isDocumentOpened() && !save && CollectionUtils.isNullOrEmpty(stash)) {
             BaseCallback.invoke(callback, null, null);
             return;
         }
+
         if (showDialog) {
             showLoadingDialog(readerDataHolder, R.string.saving);
         }

@@ -29,6 +29,7 @@ import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
+import com.onyx.android.sdk.ui.view.RadioButtonCenter;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
@@ -63,13 +64,13 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private ImageView preIcon;
     private ImageView nextIcon;
     private TextView pageIndicator;
-    private RadioButton btnToc;
-    private RadioButton btnBookmark;
-    private RadioButton btnAnt;
-    private RadioButton btnScribble;
+    private RadioButtonCenter btnToc;
+    private RadioButtonCenter btnBookmark;
+    private RadioButtonCenter btnAnt;
+    private RadioButtonCenter btnScribble;
     private RadioGroup btnGroup;
     private OnyxCustomViewPager viewPager;
-    private TextView emptyText;
+    private LinearLayout emptyLayout;
     private TextView totalText;
     private LinearLayout backLayout;
     private LinearLayout pageIndicatorLayout;
@@ -251,18 +252,18 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         preIcon = (ImageView) findViewById(R.id.pre_icon);
         nextIcon = (ImageView) findViewById(R.id.next_icon);
         pageIndicator = (TextView) findViewById(R.id.page_size_indicator);
-        btnToc = (RadioButton) findViewById(R.id.btn_directory);
-        btnBookmark = (RadioButton) findViewById(R.id.btn_bookmark);
-        btnAnt = (RadioButton) findViewById(R.id.btn_annotation);
-        btnScribble = (RadioButton) findViewById(R.id.btn_scribble);
+        btnToc = (RadioButtonCenter) findViewById(R.id.btn_directory);
+        btnBookmark = (RadioButtonCenter) findViewById(R.id.btn_bookmark);
+        btnAnt = (RadioButtonCenter) findViewById(R.id.btn_annotation);
+        btnScribble = (RadioButtonCenter) findViewById(R.id.btn_scribble);
         viewPager = (OnyxCustomViewPager) findViewById(R.id.viewpager);
         totalText = (TextView) findViewById(R.id.total);
-        emptyText = (TextView) findViewById(R.id.empty_text);
+        emptyLayout = (LinearLayout) findViewById(R.id.empty_layout);
         backLayout = (LinearLayout) findViewById(R.id.back_layout);
         pageIndicatorLayout = (LinearLayout) findViewById(R.id.page_indicator_layout);
         exportLayout = (LinearLayout) findViewById(R.id.export_layout);
         btnGroup = (RadioGroup) findViewById(R.id.layout_menu);
-        emptyText.setVisibility(View.GONE);
+        emptyLayout.setVisibility(View.GONE);
         viewPager.setPagingEnabled(false);
 
         btnToc.setOnCheckedChangeListener(this);
@@ -286,10 +287,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(currentTab);
                 boolean hasContents = pageAdapter != null && pageAdapter.getItemCount() > 0;
                 viewPager.setVisibility(hasContents ? View.VISIBLE : View.INVISIBLE);
-                emptyText.setVisibility(hasContents ? View.GONE : View.VISIBLE);
-                if (!hasContents){
-                    emptyText.setText(getEmptyTips(currentTab));
-                }
+                emptyLayout.setVisibility(hasContents ? View.GONE : View.VISIBLE);
                 onPageChanged();
             }
 
@@ -391,21 +389,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 return 9;
         }
         return 0;
-    }
-
-    private String getEmptyTips(DirectoryTab tab){
-        switch (tab){
-            case TOC:
-                return getContext().getString(R.string.no_directories);
-            case Bookmark:
-                return getContext().getString(R.string.no_bookmarks);
-            case Annotation:
-                return getContext().getString(R.string.no_annotation);
-            case Scribble:
-                return getContext().getString(R.string.no_scribble);
-            default:
-                return getContext().getString(R.string.no_directories);
-        }
     }
 
     private PageRecyclerView.PageAdapter getPageAdapter(DirectoryTab tab){
@@ -760,9 +743,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        int pressedColor = getContext().getResources().getColor(android.R.color.white);
-        int normalColor = getContext().getResources().getColor(android.R.color.black);
-        buttonView.setTextColor(isChecked ? pressedColor : normalColor);
         if (isChecked){
             switchViewPage((DirectoryTab)buttonView.getTag());
         }

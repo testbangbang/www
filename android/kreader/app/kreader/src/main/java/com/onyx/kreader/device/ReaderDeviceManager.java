@@ -22,6 +22,7 @@ public class ReaderDeviceManager {
 
     private static int gcInterval;
     private static int refreshCount;
+    private static boolean inFastUpdateMode = false;
 
     private final static EpdDevice epdDevice;
 
@@ -34,11 +35,17 @@ public class ReaderDeviceManager {
     }
 
     public static void enterAnimationUpdate(boolean clear) {
-        EpdController.applyApplicationFastMode(APP, true, clear);
+        if (!inFastUpdateMode) {
+            EpdController.applyApplicationFastMode(APP, true, clear);
+            inFastUpdateMode = true;
+        }
     }
 
     public static void exitAnimationUpdate(boolean clear) {
-        EpdController.applyApplicationFastMode(APP, false, clear);
+        if (inFastUpdateMode) {
+            EpdController.applyApplicationFastMode(APP, false, clear);
+            inFastUpdateMode = false;
+        }
     }
 
     public static void startScreenHandWriting(final View view) {

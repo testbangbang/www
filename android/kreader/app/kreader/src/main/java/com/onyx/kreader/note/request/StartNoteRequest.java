@@ -15,7 +15,7 @@ import java.util.List;
 public class StartNoteRequest extends ReaderBaseNoteRequest {
 
     public StartNoteRequest(final List<PageInfo> list) {
-        setAbortPendingTasks(true);
+        setAbortPendingTasks(false);
         setVisiblePages(list);
     }
 

@@ -132,6 +132,7 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:background="@drawable/all_line_press_bg"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:text="@string/cancel"
@@ -139,6 +140,7 @@
             android:id="@+id/button_Cancel" />
 
         <Button
+            android:background="@drawable/no_left_line_press_bg"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
