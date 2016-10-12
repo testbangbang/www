@@ -115,7 +115,7 @@ public class ReaderUserDataInfo {
                 annotationMap.get(annotation.getPosition()).add(annotation);
             }
         }
-        return false;
+        return true;
     }
 
     public boolean hasPageAnnotations(final PageInfo pageInfo) {

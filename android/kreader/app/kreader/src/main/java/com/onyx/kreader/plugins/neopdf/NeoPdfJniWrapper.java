@@ -69,8 +69,6 @@ public class NeoPdfJniWrapper {
 
     private native boolean nativeGetTableOfContent(int id, ReaderDocumentTableOfContentEntry root);
 
-    private native boolean nativeExportNotes(int id, String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles);
-
     private int id;
     private String filePath = null;
 
@@ -153,10 +151,6 @@ public class NeoPdfJniWrapper {
 
     public boolean getTableOfContent(ReaderDocumentTableOfContentEntry root) {
         return nativeGetTableOfContent(id, root);
-    }
-
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return nativeExportNotes(id, sourceDocPath, targetDocPath, annotations, scribbles);
     }
 
 }

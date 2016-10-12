@@ -2,7 +2,6 @@ package org.apache.lucene.analysis.cn;
 
 import android.content.Context;
 import android.util.Log;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -24,6 +24,8 @@ public class AnalyzerAndroidWrapper {
     private static Context context;
     private static AtomicBoolean initialized = new AtomicBoolean(false);
     private static AtomicBoolean initializing = new AtomicBoolean(false);
+
+    private static Set<String> stopWords = null;
 
     public static void initialize(final Context context, boolean background) {
         if (isInitialized()) {
@@ -84,7 +86,14 @@ public class AnalyzerAndroidWrapper {
         }
         try {
             Token nt = new Token();
-            Analyzer ca = new SmartChineseAnalyzer(true);
+            if (stopWords == null) {
+                try {
+                    stopWords = SmartChineseAnalyzer.loadStopWords(openAssetFile("stopwords.txt"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            Analyzer ca = new SmartChineseAnalyzer(stopWords);
             TokenStream ts = ca.tokenStream("sentence", new StringReader(sentence));
             nt = ts.next(nt);
             while (nt != null) {

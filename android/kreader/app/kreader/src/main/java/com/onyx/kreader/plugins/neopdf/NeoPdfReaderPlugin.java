@@ -163,7 +163,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     @Override
     public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return getPluginImpl().exportNotes(sourceDocPath, targetDocPath, annotations, scribbles);
+        return false;
     }
 
     public ReaderView getView(final ReaderViewOptions viewOptions) {
