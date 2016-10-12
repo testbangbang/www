@@ -52,6 +52,7 @@ import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
+import com.onyx.kreader.ui.events.QuitEvent;
 
 import java.util.List;
 
@@ -240,7 +241,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case EXIT:
                         resetReaderMenu(readerDataHolder);
-                        readerActivity.onBackPressed();
+                        readerDataHolder.getEventBus().post(new QuitEvent());
                         break;
                 }
             }
