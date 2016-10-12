@@ -15,7 +15,7 @@ public:
     ~OnyxPdfWriter();
 
     bool openPDF(const std::string &path);
-    bool saveAs(const std::string &path);
+    bool saveAs(const std::string &path, bool savePagesWithAnnotation);
     void close();
 
     bool isOpened() const;

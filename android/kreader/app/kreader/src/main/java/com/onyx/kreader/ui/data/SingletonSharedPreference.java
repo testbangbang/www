@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.onyx.kreader.R;
+import com.onyx.kreader.host.request.ExportNotesRequest;
 
 /**
  * Created by solskjaer49 on 14-4-22.
@@ -12,8 +13,18 @@ public class SingletonSharedPreference {
 
     public enum AnnotationHighlightStyle { Highlight, Underline }
 
+    // define keys not to be used by PreferenceActivity
+    private final static String TTS_SPEECH_RATE_KEY = "tts_speech_rate_key";
+    private final static String QUICK_VIEW_GRID_TYPE = "quick_view_grid_type";
+    private final static String DIALOG_TABLE_OF_CONTENT_TAB = "dialog_table_of_content_tab";
+    private final static String EXPORT_WITH_ANNOTATION = "export_with_annotation";
+    private final static String EXPORT_WITH_SCRIBBLE = "export_with_scribble";
+    private final static String EXPORT_SCRIBBLE_COLOR = "export_scribble_color";
+    private final static String EXPORT_ALL_PAGES = "export_all_pages";
+
     private static SharedPreferences sPreferences;
     private static SharedPreferences.Editor sDefaultEditor;
+
     public static void init(Context context) {
         sPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -205,30 +216,6 @@ public class SingletonSharedPreference {
         return getBooleanByStringID(context, R.string.settings_acquire_scribble_lock_key, true);
     }
 
-    public static void setTtsSpeechRate(Context context, float value) {
-        setFloatValue(context, R.string.tts_speech_rate_key, value);
-    }
-
-    public static float getTtsSpeechRate(Context context) {
-        return getFloatByStringID(context, R.string.tts_speech_rate_key, 1.0f);
-    }
-
-    public static void setQuickViewGridType(Context context, int value) {
-        setIntValue(context, R.string.quick_view_grid_type, value);
-    }
-
-    public static int getQuickViewGridType(Context context, int defaultValue) {
-        return getIntByStringID(context, R.string.quick_view_grid_type, defaultValue);
-    }
-
-    public static void setDialogTableOfContentTab(Context context, int value) {
-        setIntValue(context, R.string.dialog_table_of_content_tab, value);
-    }
-
-    public static int getDialogTableOfContentTab(Context context, int defaultValue) {
-        return getIntByStringID(context, R.string.dialog_table_of_content_tab, defaultValue);
-    }
-
     public static float getBaseLineWidth(Context context) {
         float defaultValue = 1.0f;
         String value = sPreferences.getString(context.getString( R.string.settings_scribble_base_width_key), String.valueOf(defaultValue));
@@ -238,6 +225,67 @@ public class SingletonSharedPreference {
         } finally {
             return defaultValue;
         }
+    }
+
+    public static void setTtsSpeechRate(Context context, float value) {
+        setFloatValue(TTS_SPEECH_RATE_KEY, value);
+    }
+
+    public static float getTtsSpeechRate(Context context) {
+        return sPreferences.getFloat(TTS_SPEECH_RATE_KEY, 1.0f);
+    }
+
+    public static void setQuickViewGridType(Context context, int value) {
+        setIntValue(QUICK_VIEW_GRID_TYPE, value);
+    }
+
+    public static int getQuickViewGridType(Context context, int defaultValue) {
+        return sPreferences.getInt(QUICK_VIEW_GRID_TYPE, defaultValue);
+    }
+
+    public static void setDialogTableOfContentTab(Context context, int value) {
+        setIntValue(DIALOG_TABLE_OF_CONTENT_TAB, value);
+    }
+
+    public static int getDialogTableOfContentTab(Context context, int defaultValue) {
+        return sPreferences.getInt(DIALOG_TABLE_OF_CONTENT_TAB, defaultValue);
+    }
+
+    public static void setExportWithAnnotation(boolean value) {
+        setBooleanValue(EXPORT_WITH_ANNOTATION, value);
+    }
+
+    public static boolean isExportWithAnnotation() {
+        return sPreferences.getBoolean(EXPORT_WITH_ANNOTATION, true);
+    }
+
+    public static void setExportWithScribble(boolean value) {
+        setBooleanValue(EXPORT_WITH_SCRIBBLE, value);
+    }
+
+    public static boolean isExportWithScribble() {
+        return sPreferences.getBoolean(EXPORT_WITH_SCRIBBLE, true);
+    }
+
+    public static void setExportScribbleColor(ExportNotesRequest.BrushColor color) {
+        setIntValue(EXPORT_SCRIBBLE_COLOR, color.ordinal());
+    }
+
+    public static ExportNotesRequest.BrushColor getExportScribbleColor() {
+        int ordinal = sPreferences.getInt(EXPORT_SCRIBBLE_COLOR, 0);
+        ExportNotesRequest.BrushColor[] values = ExportNotesRequest.BrushColor.values();
+        if (ordinal > values.length) {
+            return ExportNotesRequest.BrushColor.Original;
+        }
+        return values[ordinal];
+    }
+
+    public static void setExportAllPages(boolean value) {
+        setBooleanValue(EXPORT_ALL_PAGES, value);
+    }
+
+    public static boolean isExportAllPages() {
+        return sPreferences.getBoolean(EXPORT_ALL_PAGES, true);
     }
 
 }

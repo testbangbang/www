@@ -119,14 +119,14 @@ jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_writePolyLine(JNIEnv *env, j
     return g_writer.writeScribble(scribble);
 }
 
-jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_saveAs(JNIEnv *env, jclass, jstring pathString)
+jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_saveAs(JNIEnv *env, jclass, jstring pathString, jboolean savePagesWithAnnotation)
 {
     if (!g_writer.isOpened()) {
         return false;
     }
 
     JNIString string(env, pathString);
-    return g_writer.saveAs(string.getLocalString());
+    return g_writer.saveAs(string.getLocalString(), savePagesWithAnnotation);
 }
 
 void Java_com_onyx_kreader_utils_PdfWriterUtils_close(JNIEnv *, jclass)

@@ -1,5 +1,6 @@
 package com.onyx.kreader.host.request;
 
+import android.graphics.Color;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -9,6 +10,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.utils.PdfWriterUtils;
 
 import java.io.File;
@@ -19,6 +21,8 @@ import java.util.List;
  * Created by zhuzeng on 10/15/15.
  */
 public class ExportNotesRequest extends BaseReaderRequest {
+
+    public enum BrushColor { Original, Red, Black, Green, White, Blue }
 
     private List<Annotation> annotations = new ArrayList<>();
     private List<Shape> shapes = new ArrayList<>();
@@ -42,13 +46,18 @@ public class ExportNotesRequest extends BaseReaderRequest {
 
         try {
             List<NormalPencilShape> scribbles = getScribblesFromShapes();
-            if (!writePolyLines(scribbles)) {
-                return false;
+            if (SingletonSharedPreference.isExportWithScribble()) {
+                if (!writePolyLines(scribbles)) {
+                    return false;
+                }
             }
-            if (!writeAnnotations(annotations)) {
-                return false;
+            if (SingletonSharedPreference.isExportWithAnnotation()) {
+                if (!writeAnnotations(annotations)) {
+                    return false;
+                }
             }
-            if (!PdfWriterUtils.saveAs(getExportDocPath(reader.getDocumentPath()))) {
+            if (!PdfWriterUtils.saveAs(getExportDocPath(reader.getDocumentPath()),
+                    !SingletonSharedPreference.isExportAllPages())) {
                 return false;
             }
 
@@ -86,6 +95,7 @@ public class ExportNotesRequest extends BaseReaderRequest {
     }
 
     private boolean writePolyLines(final List<NormalPencilShape> polyLines) {
+        BrushColor colorOptions = SingletonSharedPreference.getExportScribbleColor();
         for (NormalPencilShape line : polyLines) {
             int page = Integer.parseInt(line.getPageUniqueId());
 
@@ -102,11 +112,31 @@ public class ExportNotesRequest extends BaseReaderRequest {
                 vertices[(i * 2) + 1] = point.getY();
             }
 
-            if (!PdfWriterUtils.writePolyLine(page, boundingRect, line.getColor(), line.getStrokeWidth(), vertices)) {
+            int color = getColorOfShape(line, colorOptions);
+            if (!PdfWriterUtils.writePolyLine(page, boundingRect, color, line.getStrokeWidth(), vertices)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private int getColorOfShape(Shape shape, BrushColor overrideColor) {
+        switch (overrideColor) {
+            case Original:
+                return shape.getColor();
+            case Red:
+                return Color.RED;
+            case Black:
+                return Color.BLACK;
+            case Green:
+                return Color.GREEN;
+            case White:
+                return Color.WHITE;
+            case Blue:
+                return Color.BLUE;
+            default:
+                return shape.getColor();
+        }
     }
 
     private String getExportDocPath(String sourceDocPath) {
