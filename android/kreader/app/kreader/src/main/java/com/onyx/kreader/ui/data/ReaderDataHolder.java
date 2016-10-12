@@ -119,7 +119,7 @@ public class ReaderDataHolder {
     }
 
     public boolean isDocumentOpened() {
-        return documentOpened;
+        return documentOpened && reader != null;
     }
 
     public String getCurrentPageName() {

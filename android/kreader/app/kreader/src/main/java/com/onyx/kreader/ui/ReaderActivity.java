@@ -306,6 +306,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
+        if (!verifyReader()) {
+            return;
+        }
         if (event != null && event.isApplyGCIntervalUpdate()) {
             ReaderDeviceManager.applyWithGCInterval(surfaceView, readerDataHolder.getReaderViewInfo().isTextPages());
         }
@@ -314,6 +317,10 @@ public class ReaderActivity extends ActionBarActivity {
         if (event != null && event.isRenderShapeData()) {
             renderShapeDataInBackground();
         }
+    }
+
+    private boolean verifyReader() {
+        return getReaderDataHolder().isDocumentOpened();
     }
 
     @Subscribe
