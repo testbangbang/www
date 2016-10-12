@@ -20,6 +20,8 @@ import java.util.List;
  */
 public class ExportNotesRequest extends BaseReaderRequest {
 
+    public enum BrushColor { Original, Red, Black, Green, White, Blue }
+
     private List<Annotation> annotations = new ArrayList<>();
     private List<Shape> shapes = new ArrayList<>();
 

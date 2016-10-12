@@ -14,6 +14,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.kreader.R;
+import com.onyx.kreader.host.request.ExportNotesRequest;
 import com.onyx.kreader.ui.actions.ExportNotesActionChain;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -22,6 +23,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 /**
  * Created by ming on 16/9/26.
@@ -47,12 +49,6 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
     RadioGroup mergedLayout;
 
     private ReaderDataHolder readerDataHolder;
-    private boolean annotationMerge = true;
-    private boolean scribbleMerge = true;
-    private boolean isMergedAll = true;
-    private BrushColor brushColor = BrushColor.Original;
-
-    private enum BrushColor {Original, Red, Black, Green, White, Blue}
 
     public DialogExport(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
@@ -63,16 +59,16 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         setupListener();
 
         this.readerDataHolder = readerDataHolder;
-        annotationCheckbox.setChecked(annotationMerge);
-        scribbleCheckbox.setChecked(scribbleMerge);
-        mergedLayout.check(isMergedAll ? R.id.merged_all : R.id.merged_part);
+        annotationCheckbox.setChecked(SingletonSharedPreference.isExportWithAnnotation());
+        scribbleCheckbox.setChecked(SingletonSharedPreference.isExportWithScribble());
+        mergedLayout.check(SingletonSharedPreference.isExportAllPages() ? R.id.merged_all : R.id.merged_part);
     }
 
     private void initBrushStrokeColor() {
         int[] colorStrIds = {R.string.Original, R.string.Red, R.string.Black, R.string.Green, R.string.White, R.string.Blue};
         ColorAdapter colorAdapter = new ColorAdapter(getContext(), colorStrIds);
         colorGroup.setMultiAdapter(colorAdapter);
-        colorAdapter.setItemChecked(true, brushColor.ordinal());
+        colorAdapter.setItemChecked(true, SingletonSharedPreference.getExportScribbleColor().ordinal());
     }
 
     private void setupListener() {
@@ -85,7 +81,7 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
                 if (isChecked) {
-                    brushColor = BrushColor.values()[position];
+                    SingletonSharedPreference.setExportScribbleColor(ExportNotesRequest.BrushColor.values()[position]);
                 }
             }
         });
@@ -113,11 +109,11 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.equals(annotationCheckbox)) {
-            annotationMerge = isChecked;
+            SingletonSharedPreference.setExportWithAnnotation(isChecked);
         } else if (buttonView.equals(scribbleCheckbox)) {
-            scribbleMerge = isChecked;
+            SingletonSharedPreference.setExportWithScribble(isChecked);
         } else if (buttonView.equals(mergedAll)) {
-            isMergedAll = isChecked;
+            SingletonSharedPreference.setExportAllPages(isChecked);
         }
     }
 
