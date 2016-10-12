@@ -206,19 +206,21 @@ public:
         return true;
     }
 
-    bool saveAs(const std::string &dstPath) {
+    bool saveAs(const std::string &dstPath, bool savePagesWithAnnotation) {
         if (!isOpened()) {
             return false;
         }
 
-        if (doc_->GetInfo() && doc_->GetInfo()->GetTitle().IsValid()) {
-            std::string utf8Title = doc_->GetInfo()->GetTitle().GetStringUtf8();
-            std::string newTitle = std::string(utf8Title) + " - Merged";
-            PoDoFo::PdfString dstTitle(reinterpret_cast<const PoDoFo::pdf_utf8*>(newTitle.c_str()));
-            doc_->GetInfo()->SetTitle(dstTitle);
+        if (!savePagesWithAnnotation) {
+            doc_->Write(dstPath.c_str());
+            return true;
         }
 
-        doc_->Write(dstPath.c_str());
+        PoDoFo::PdfMemDocument copy;
+        for (const auto page : pagesWithAnnotation) {
+            copy.InsertExistingPageAt(*doc_, page, -1);
+        }
+        copy.Write(dstPath.c_str());
         return true;
     }
 
@@ -258,7 +260,7 @@ public:
         }
 
         for (const auto &scribble : pageScribbles) {
-            PoDoFo::PdfPage *page = doc_->GetPage(scribble.page);
+            PoDoFo::PdfPage *page = getPage(scribble.page);
             if (!page) {
                 return false;
             }
@@ -275,7 +277,7 @@ public:
             return false;
         }
 
-        PoDoFo::PdfPage *page = doc_->GetPage(annotation.page);
+        PoDoFo::PdfPage *page = getPage(annotation.page);
         if (!page) {
             return false;
         }
@@ -296,9 +298,19 @@ public:
         return true;
     }
 
+    PoDoFo::PdfPage *getPage(int page) {
+        PoDoFo::PdfPage *pdfPage = doc_->GetPage(page);
+        if (!pdfPage) {
+            return nullptr;
+        }
+        pagesWithAnnotation.insert(page);
+        return pdfPage;
+    }
+
 private:
     std::string docPath_;
     PoDoFo::PdfMemDocument *doc_;
+    std::set<int, std::greater<int>> pagesWithAnnotation;
 };
 
 OnyxPdfWriter::OnyxPdfWriter()
@@ -316,9 +328,9 @@ bool OnyxPdfWriter::openPDF(const std::string &path)
     return impl->openPDF(path);
 }
 
-bool OnyxPdfWriter::saveAs(const std::string &path)
+bool OnyxPdfWriter::saveAs(const std::string &path, bool savePagesWithAnnotation)
 {
-    return impl->saveAs(path);
+    return impl->saveAs(path, savePagesWithAnnotation);
 }
 
 void OnyxPdfWriter::close()
