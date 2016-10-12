@@ -52,6 +52,4 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         updateShapeDataInfo(noteManager);
     }
 
-
-
 }

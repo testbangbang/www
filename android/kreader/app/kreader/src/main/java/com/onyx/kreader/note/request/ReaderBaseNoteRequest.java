@@ -143,8 +143,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
-        setResumeRawInputProcessor(parent.isDFBForCurrentShape());
-        if (isResumeRawInputProcessor()) {
+        if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
             parent.resumeRawEventProcessor();
         }
         final Runnable runnable = postExecuteRunnable(parent);

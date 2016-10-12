@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -386,4 +385,46 @@ public class NoteManager {
     public boolean inVisibleDrawRectF(float x, float y){
         return visibleDrawRectF.contains(x, y);
     }
+
+    public Shape collectPoint(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean up) {
+        if (pageInfo == null) {
+            return onShapeUp(pageInfo, normal, screen);
+        }
+        normal.normalize(pageInfo);
+        if (getCurrentShape() == null) {
+            return onShapeDown(pageInfo, normal, screen);
+        }
+        if (!up) {
+            return onShapeMove(pageInfo, normal, screen);
+        }
+        return onShapeUp(pageInfo, normal, screen);
+    }
+
+    private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
+        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
+        onDownMessage(shape);
+        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
+        shape.setColor(getNoteDrawingArgs().strokeColor);
+        shape.setPageUniqueId(pageInfo.getName());
+        shape.ensureShapeUniqueId();
+        shape.onDown(normal, screen);
+        currentShape = shape;
+        return shape;
+    }
+
+    private Shape onShapeMove(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
+        getCurrentShape().onMove(normal, screen);
+        return getCurrentShape();
+    }
+
+    private Shape onShapeUp(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
+        final Shape shape = getCurrentShape();
+        if (shape == null) {
+            return null;
+        }
+        shape.onUp(normal, screen);
+        resetCurrentShape();
+        return shape;
+    }
+
 }

@@ -4,8 +4,10 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.SingleThreadExecutor;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -281,46 +283,41 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y)) {
             return;
         }
-        touchPoint.normalize(getLastPageInfo());
-        final Shape shape = getNoteManager().createNewShape(getLastPageInfo());
-        getNoteManager().onDownMessage(shape);
-        shape.onDown(touchPoint, screen);
+        getNoteManager().collectPoint(getLastPageInfo(), touchPoint, screen, false);
     }
 
     private void drawingMoveReceived(int x, int y, int pressure, int size, long ts) {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
         mapScreenPointToView(touchPoint);
-        if (!isInValidRegion(touchPoint.x, touchPoint.y)) {
+        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y)) {
+            flushShape(getLastPageInfo(), touchPoint, screen);
             return;
         }
-        final Shape shape = getNoteManager().getCurrentShape();
-        if (shape == null) {
-            return;
-        }
-        touchPoint.normalize(getLastPageInfo());
-        shape.onMove(touchPoint, screen);
+        getNoteManager().collectPoint(getLastPageInfo(), touchPoint, screen, false);
     }
 
     private void drawingReleaseReceived(int x, int y, int pressure, int size, long ts) {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
         mapScreenPointToView(touchPoint);
-        if (!isInValidRegion(touchPoint.x, touchPoint.y)) {
+        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y)) {
+            flushShape(getLastPageInfo(), touchPoint, screen);
             return;
         }
-        final Shape shape = getNoteManager().getCurrentShape();
-        if (shape == null) {
-            return;
-        }
-        touchPoint.normalize(getLastPageInfo());
-        shape.onUp(touchPoint, screen);
-        getNoteManager().resetCurrentShape();
+        flushShape(getLastPageInfo(), touchPoint, screen);
+    }
+
+    private void flushShape(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
+        final Shape shape = getNoteManager().collectPoint(pageInfo, normal, screen, true);
         resetLastPageInfo();
         invokeDFBShapeFinished(shape);
     }
 
     private void invokeDFBShapeFinished(final Shape shape) {
+        if (shape == null) {
+            return;
+        }
         handler.post(new Runnable() {
             @Override
             public void run() {

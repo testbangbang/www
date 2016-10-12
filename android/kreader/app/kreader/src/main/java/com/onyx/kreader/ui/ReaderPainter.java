@@ -44,7 +44,7 @@ public class ReaderPainter {
     private static final String TAG = ReaderPainter.class.getCanonicalName();
     private static boolean debugTestTouchPointCircle = false;
     private static boolean debugTestOffsetTouchPointCircle = false;
-    private static boolean debugPageInfo = false;
+    private static boolean debugPageInfo = true;
 
     private enum DrawHighlightPaintStyle {UnderLine, Fill}
 

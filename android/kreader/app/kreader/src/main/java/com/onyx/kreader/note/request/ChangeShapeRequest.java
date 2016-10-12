@@ -19,6 +19,7 @@ public class ChangeShapeRequest extends ReaderBaseNoteRequest {
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
         noteManager.setCurrentShapeType(newShape);
+        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
         updateShapeDataInfo(noteManager);
     }
 
