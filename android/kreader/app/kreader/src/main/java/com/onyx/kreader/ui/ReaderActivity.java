@@ -1,6 +1,8 @@
 package com.onyx.kreader.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,6 +12,8 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -21,13 +25,13 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -39,11 +43,32 @@ import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
-import com.onyx.kreader.ui.actions.*;
+import com.onyx.kreader.ui.actions.BackwardAction;
+import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
+import com.onyx.kreader.ui.actions.CloseActionChain;
+import com.onyx.kreader.ui.actions.ForwardAction;
+import com.onyx.kreader.ui.actions.OpenDocumentAction;
+import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
+import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
+import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
-import com.onyx.kreader.ui.events.*;
+import com.onyx.kreader.ui.events.BeforeDocumentCloseEvent;
+import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
+import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
+import com.onyx.kreader.ui.events.ChangeOrientationEvent;
+import com.onyx.kreader.ui.events.ClosePopupEvent;
+import com.onyx.kreader.ui.events.DocumentOpenEvent;
+import com.onyx.kreader.ui.events.QuitEvent;
+import com.onyx.kreader.ui.events.RequestFinishEvent;
+import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
+import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
+import com.onyx.kreader.ui.events.ShapeAddedEvent;
+import com.onyx.kreader.ui.events.ShapeDrawingEvent;
+import com.onyx.kreader.ui.events.ShapeErasingEvent;
+import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -72,6 +97,12 @@ public class ReaderActivity extends ActionBarActivity {
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private final ReaderPainter readerPainter = new ReaderPainter();
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -392,13 +423,37 @@ public class ReaderActivity extends ActionBarActivity {
             } else if (action.equals(Intent.ACTION_MAIN)) {
                 quitApplication(null);
             } else if (action.equals(Intent.ACTION_VIEW)) {
-                openFileFromIntent();
+                checkExternalStoragePermissions();
             }
             return true;
         } catch (java.lang.Exception e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private void checkExternalStoragePermissions() {
+        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE);
+        } else {
+            openFileFromIntent();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openFileFromIntent();
+            } else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void openFileFromIntent() {
