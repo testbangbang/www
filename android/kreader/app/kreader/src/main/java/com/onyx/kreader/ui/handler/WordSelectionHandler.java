@@ -51,13 +51,14 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
-        longPressPoint.set((int) x2, (int)y2);
-        cursorSelected = getCursorSelected(readerDataHolder,(int)x2, (int)y2);
+        longPressPoint.set((int) x2, (int) y2);
+        lastMovedPoint = new Point((int) x2, (int) y2);
+        cursorSelected = getCursorSelected(readerDataHolder, (int) x2, (int) y2);
         if (!hasSelectionWord(readerDataHolder)) {
             showSelectionCursor = false;
             super.onLongPress(readerDataHolder, x1, y1, x2, y2);
-            selectWord(readerDataHolder,x1, y1, x2, y2);
-        } else if (cursorSelected < 0){
+            selectWord(readerDataHolder, x1, y1, x2, y2);
+        } else if (cursorSelected < 0) {
             quitWordSelection(readerDataHolder);
         }
         readerDataHolder.changeEpdUpdateMode(UpdateMode.DU);
@@ -182,6 +183,12 @@ public class WordSelectionHandler extends BaseHandler{
                 if (cursorSelected < 0 && showSelectionCursor){
                     return true;
                 }
+
+                if (lastMovedPoint.equals((int) x, (int) y)){
+                    return true;
+                }
+                lastMovedPoint.set((int) x, (int) y);
+
                 highlightAlongTouchMoved(readerDataHolder,x, y, cursorSelected);
                 break;
             case MotionEvent.ACTION_UP:
