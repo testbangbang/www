@@ -42,10 +42,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_PdfWriterUtils_writePolyL
 /*
  * Class:     com_onyx_kreader_utils_PdfWriterUtils
  * Method:    saveAs
- * Signature: (Ljava/lang/String;)Z
+ * Signature: (Ljava/lang/String;Z)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_PdfWriterUtils_saveAs
-  (JNIEnv *, jclass, jstring);
+  (JNIEnv *, jclass, jstring, jboolean);
 
 /*
  * Class:     com_onyx_kreader_utils_PdfWriterUtils
