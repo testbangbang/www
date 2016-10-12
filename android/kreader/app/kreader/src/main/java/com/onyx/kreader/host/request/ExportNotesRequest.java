@@ -9,8 +9,6 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.note.NoteManager;
-import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.utils.PdfWriterUtils;
 
 import java.io.File;
@@ -22,10 +20,12 @@ import java.util.List;
  */
 public class ExportNotesRequest extends BaseReaderRequest {
 
-    private NoteManager noteManager;
+    private List<Annotation> annotations = new ArrayList<>();
+    private List<Shape> shapes = new ArrayList<>();
 
-    public ExportNotesRequest(NoteManager noteManager) {
-        this.noteManager = noteManager;
+    public ExportNotesRequest(List<Annotation> annotations, List<Shape> shapes) {
+        this.annotations.addAll(annotations);
+        this.shapes.addAll(shapes);
     }
 
     public void execute(final Reader reader) throws Exception {
@@ -41,15 +41,8 @@ public class ExportNotesRequest extends BaseReaderRequest {
         }
 
         try {
-            List<NormalPencilShape> scribbles = loadScribbles();
-            if (scribbles == null) {
-                return false;
-            }
+            List<NormalPencilShape> scribbles = getScribblesFromShapes();
             if (!writePolyLines(scribbles)) {
-                return false;
-            }
-            List<Annotation> annotations = loadAnnotations(reader);
-            if (annotations == null) {
                 return false;
             }
             if (!writeAnnotations(annotations)) {
@@ -65,30 +58,14 @@ public class ExportNotesRequest extends BaseReaderRequest {
         }
     }
 
-    private List<NormalPencilShape> loadScribbles() {
-        List<NormalPencilShape> shapeList = new ArrayList<>();
-        List<String> pageList = noteManager.getNoteDocument().getPageList();
-        for (String page : pageList) {
-            ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), page, 0);
-            if (notePage != null) {
-                if (!notePage.isLoaded()) {
-                    notePage.loadPage(getContext());
-                }
-                for (Shape shape : notePage.getShapeList()) {
-                    if (shape instanceof NormalPencilShape) {
-                        shapeList.add((NormalPencilShape) shape);
-                    }
-                }
+    private List<NormalPencilShape> getScribblesFromShapes() {
+        List<NormalPencilShape> scribbles = new ArrayList<>();
+        for (Shape shape : shapes) {
+            if (shape instanceof NormalPencilShape) {
+                scribbles.add((NormalPencilShape) shape);
             }
         }
-        return shapeList;
-    }
-
-    private List<Annotation> loadAnnotations(final Reader reader) {
-        if (!getReaderUserDataInfo().loadDocumentAnnotations(getContext(), reader)) {
-            return null;
-        }
-        return getReaderUserDataInfo().getAnnotations();
+        return scribbles;
     }
 
     private boolean writeAnnotations(final List<Annotation> annotations) {

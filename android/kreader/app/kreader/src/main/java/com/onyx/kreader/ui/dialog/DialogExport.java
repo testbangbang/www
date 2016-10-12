@@ -14,7 +14,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.ui.actions.ExportNotesAction;
+import com.onyx.kreader.ui.actions.ExportNotesActionChain;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.ArrayList;
@@ -100,7 +100,7 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ExportNotesAction().execute(readerDataHolder, new BaseCallback() {
+                new ExportNotesActionChain().execute(readerDataHolder, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
 
