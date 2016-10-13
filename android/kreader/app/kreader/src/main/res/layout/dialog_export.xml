@@ -4,108 +4,119 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <TextView
-        android:layout_margin="@dimen/dialog_export_margin"
-        android:layout_gravity="center"
-        android:text="@string/merged_pdf"
-        android:textSize="@dimen/dialog_title_text_size"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <View
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
-
-    <TextView
-        android:layout_marginLeft="5dp"
-        android:textSize="@dimen/dialog_export_text_size"
-        android:layout_marginTop="@dimen/dialog_export_margin"
-        android:layout_marginBottom="@dimen/dialog_export_margin"
-        android:text="@string/export_options"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <CheckBox
-        android:textSize="@dimen/dialog_export_text_size"
-        android:id="@+id/annotation_checkbox"
-        android:text="@string/merged_annotation_highlight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <CheckBox
-        android:layout_marginTop="@dimen/dialog_export_margin"
-        android:textSize="@dimen/dialog_export_text_size"
-        android:id="@+id/scribble_checkbox"
-        android:text="@string/merged_scribble"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <View
-        android:layout_marginTop="@dimen/dialog_export_margin"
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
-
-    <RadioGroup
-        android:layout_marginTop="@dimen/dialog_export_margin"
-        android:layout_marginBottom="@dimen/dialog_export_margin"
-        android:id="@+id/merged_layout"
+    <LinearLayout
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RadioButton
-            android:textSize="@dimen/dialog_export_text_size"
-            android:id="@+id/merged_all"
-            android:text="@string/merged_all"
+        <TextView
+            android:textColor="@android:color/black"
+            android:layout_margin="@dimen/dialog_export_margin"
+            android:layout_gravity="center"
+            android:text="@string/export_pdf"
+            android:textSize="@dimen/dialog_title_text_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <RadioButton
+        <View
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <com.onyx.android.sdk.ui.view.OnyxCheckBox
             android:layout_marginTop="@dimen/dialog_export_margin"
             android:textSize="@dimen/dialog_export_text_size"
-            android:id="@+id/merged_part"
-            android:text="@string/merged_part"
+            android:id="@+id/annotation_checkbox"
+            android:text="@string/export_annotation_highlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-    </RadioGroup>
 
-    <View
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        <com.onyx.android.sdk.ui.view.OnyxCheckBox
+            android:layout_marginTop="@dimen/dialog_export_margin"
+            android:textSize="@dimen/dialog_export_text_size"
+            android:id="@+id/scribble_checkbox"
+            android:text="@string/export_scribble"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-    <TextView
-        android:layout_marginLeft="5dp"
-        android:textSize="@dimen/dialog_export_text_size"
-        android:layout_marginTop="@dimen/dialog_export_margin"
-        android:layout_marginBottom="@dimen/dialog_export_margin"
-        android:text="@string/export_brush_stroke_color"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <View
+            android:layout_marginTop="@dimen/dialog_export_margin"
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
 
-    <com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView
-        android:id="@+id/color_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <RadioGroup
+            android:layout_marginTop="@dimen/dialog_export_margin"
+            android:layout_marginBottom="@dimen/dialog_export_margin"
+            android:id="@+id/merged_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    </com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView>
+            <com.onyx.android.sdk.ui.view.OnyxRadioButton
+                android:textSize="@dimen/dialog_export_text_size"
+                android:id="@+id/merged_all"
+                android:text="@string/export_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-    <View
-        android:layout_marginTop="@dimen/dialog_export_margin"
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+            <com.onyx.android.sdk.ui.view.OnyxRadioButton
+                android:layout_marginTop="@dimen/dialog_export_margin"
+                android:textSize="@dimen/dialog_export_text_size"
+                android:id="@+id/merged_part"
+                android:text="@string/export_part"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RadioGroup>
 
-    <TextView
-        android:layout_marginLeft="5dp"
-        android:textSize="@dimen/dialog_export_text_size"
-        android:maxEms="24"
-        android:layout_marginTop="@dimen/dialog_export_margin"
-        android:layout_marginBottom="@dimen/dialog_export_margin"
-        android:text="@string/export_location_explain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <View
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="5dp"
+            android:textSize="@dimen/dialog_export_text_size"
+            android:layout_marginTop="@dimen/dialog_export_margin"
+            android:text="@string/export_brush_stroke_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView
+            android:id="@+id/color_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView>
+
+        <View
+            android:layout_marginTop="@dimen/dialog_export_margin"
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:id="@+id/export_location"
+            android:layout_marginLeft="5dp"
+            android:textSize="@dimen/dialog_export_text_size"
+            android:maxEms="24"
+            android:layout_marginTop="@dimen/dialog_export_margin"
+            android:layout_marginBottom="@dimen/dialog_export_margin"
+            android:text="@string/export_location_explain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_marginTop="@dimen/dialog_export_margin"
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -115,18 +126,23 @@
             android:textSize="@dimen/dialog_export_text_size"
             android:id="@+id/btn_cancel"
             android:text="@string/cancel"
-            android:background="@drawable/all_line_press_bg"
+            android:background="@drawable/no_line_press_bg"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="50dp"/>
+
+        <View
+            android:background="@android:color/black"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
 
         <Button
             android:textSize="@dimen/dialog_export_text_size"
             android:id="@+id/btn_ok"
             android:text="@string/ok"
-            android:background="@drawable/no_left_line_press_bg"
+            android:background="@drawable/no_line_press_bg"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="50dp"/>
     </LinearLayout>
 </LinearLayout>

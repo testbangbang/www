@@ -1,7 +1,8 @@
 package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.host.request.ExportNotesRequest;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.kreader.R;
 import com.onyx.kreader.note.actions.GetAllShapesAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -11,7 +12,8 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class ExportNotesActionChain extends BaseAction {
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
+    public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
+        showLoadingDialog(readerDataHolder, R.string.loading);
         ActionChain chain = new ActionChain();
         GetDocumentInfoAction documentInfoAction = new GetDocumentInfoAction();
         GetAllShapesAction shapesAction = new GetAllShapesAction();
@@ -19,6 +21,12 @@ public class ExportNotesActionChain extends BaseAction {
         chain.addAction(documentInfoAction);
         chain.addAction(shapesAction);
         chain.addAction(exportNotesAction);
-        chain.execute(readerDataHolder, baseCallback);
+        chain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                hideLoadingDialog();
+                baseCallback.done(request, e);
+            }
+        });
     }
 }
