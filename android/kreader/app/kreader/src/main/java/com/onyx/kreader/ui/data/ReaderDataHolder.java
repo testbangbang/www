@@ -21,6 +21,7 @@ import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.note.NoteManager;
+import com.onyx.kreader.note.receiver.DeviceReceiver;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.events.*;
@@ -49,6 +50,7 @@ public class ReaderDataHolder {
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
     private EventBus eventBus = new EventBus();
+    private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -112,6 +114,7 @@ public class ReaderDataHolder {
     public void onDocumentOpened() {
         documentOpened = true;
         getEventBus().post(new DocumentOpenEvent(documentPath));
+        registerDeviceReceiver();
     }
 
     public void onDocumentInitRendered() {
@@ -165,6 +168,25 @@ public class ReaderDataHolder {
 
     public boolean canCurrentPageScaleUp() {
         return getReaderViewInfo().getFirstVisiblePage().getActualScale() < PageConstants.MAX_SCALE;
+    }
+
+    private void registerDeviceReceiver() {
+        deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
+            @Override
+            public void onSystemUIChanged(String type, boolean open) {
+                getEventBus().post(new SystemUIChangedEvent(open));
+            }
+
+            @Override
+            public void onHomeClicked() {
+                getEventBus().post(new HomeClickEvent());
+            }
+        });
+        deviceReceiver.registerReceiver(getContext());
+    }
+
+    private void unregisterReceiver() {
+        deviceReceiver.unregisterReceiver(getContext());
     }
 
     public final HandlerManager getHandlerManager() {
@@ -358,6 +380,7 @@ public class ReaderDataHolder {
     }
 
     public void destroy(final BaseCallback callback) {
+        unregisterReceiver();
         closeActiveDialogs();
         closeTts();
         closeNoteManager();

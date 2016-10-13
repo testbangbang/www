@@ -117,7 +117,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
                     reader.transferRenderBitmapToViewport(getRenderBitmap());
                 }
                 BaseCallback.invoke(getCallback(), BaseReaderRequest.this, getException());
-                reader.releaseWakeLock();
+                reader.releaseWakeLock(BaseReaderRequest.this.getClass().getSimpleName());
         }};
 
         if (isRunInBackground()) {

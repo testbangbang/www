@@ -2,6 +2,8 @@ package com.onyx.kreader.host.wrapper;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
+
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
@@ -30,7 +32,6 @@ import com.onyx.kreader.reflow.ImageReflowSettings;
  */
 public class Reader {
 
-    private static final String TAG = Reader.class.getSimpleName();
     private RequestManager requestManager;
     private ReaderHelper readerHelper = null;
 
@@ -47,7 +48,7 @@ public class Reader {
         requestManager.acquireWakeLock(context, tag);
     }
 
-    public void releaseWakeLock() {
+    public void releaseWakeLock(final String tag) {
         requestManager.releaseWakeLock();
     }
 

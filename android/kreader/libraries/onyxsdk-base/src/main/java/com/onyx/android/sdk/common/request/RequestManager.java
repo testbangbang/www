@@ -8,6 +8,7 @@ import android.util.Log;
 import com.onyx.android.sdk.device.Device;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by zhuzeng on 5/31/16.
@@ -15,8 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RequestManager {
 
     private static final String TAG = RequestManager.class.getSimpleName();
-    private PowerManager.WakeLock wakeLock;
-    private int wakeLockCounting = 0;
+    private volatile PowerManager.WakeLock wakeLock;
+    private AtomicInteger wakeLockCounting = new AtomicInteger();
     private boolean debugWakelock = false;
 
     private ExecutorContext executor;
@@ -46,7 +47,7 @@ public class RequestManager {
             }
             if (wakeLock != null) {
                 wakeLock.acquire();
-                ++wakeLockCounting;
+                wakeLockCounting.incrementAndGet();
             }
         } catch (java.lang.Exception e) {
             e.printStackTrace();
@@ -59,7 +60,7 @@ public class RequestManager {
                 if (wakeLock.isHeld()) {
                     wakeLock.release();
                 }
-                if (--wakeLockCounting <= 0) {
+                if (wakeLockCounting.decrementAndGet() <= 0) {
                     wakeLock = null;
                 }
             }
@@ -70,8 +71,8 @@ public class RequestManager {
 
     public void dumpWakelocks() {
         if (debugWakelock) {
-            if (wakeLock != null || wakeLockCounting > 0) {
-                Log.w(TAG, "wake lock not released. check wake lock." + wakeLock.toString() + " counting: " + wakeLockCounting);
+            if (wakeLock != null || wakeLockCounting.get() > 0) {
+                Log.w(TAG, "wake lock not released. check wake lock." + wakeLock.toString() + " counting: " + wakeLockCounting.get());
             }
         }
     }
