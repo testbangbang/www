@@ -13,7 +13,7 @@ import java.util.List;
 public class StopNoteRequest extends ReaderBaseNoteRequest {
 
     public StopNoteRequest() {
-        setAbortPendingTasks(true);
+        setAbortPendingTasks(false);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {

@@ -386,13 +386,16 @@ public class NoteManager {
         return visibleDrawRectF.contains(x, y);
     }
 
-    public Shape collectPoint(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean up) {
+    public Shape collectPoint(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean createShape, boolean up) {
         if (pageInfo == null) {
             return onShapeUp(pageInfo, normal, screen);
         }
         normal.normalize(pageInfo);
         if (getCurrentShape() == null) {
-            return onShapeDown(pageInfo, normal, screen);
+            if (createShape) {
+                return onShapeDown(pageInfo, normal, screen);
+            }
+            return null;
         }
         if (!up) {
             return onShapeMove(pageInfo, normal, screen);

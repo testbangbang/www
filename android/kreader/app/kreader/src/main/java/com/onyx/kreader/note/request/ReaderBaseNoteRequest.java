@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.note.NoteManager;
