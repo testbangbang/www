@@ -28,6 +28,10 @@ public class ReflowedSubPageCache {
         return new ReflowedSubPageCache(cacheRoot);
     }
 
+    public boolean contains(final String key) {
+        return diskCache.contains(key);
+    }
+
     public void put(final String key, final Bitmap bitmap) {
         synchronized (softLruCache) {
             softLruCache.put(key, new ReaderBitmapImpl(key, bitmap));

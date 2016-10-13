@@ -259,7 +259,7 @@ public class ReaderHelper {
 
     private void clearImageReflowManager() {
         if (imageReflowManager != null) {
-            imageReflowManager.clearAllCacheFiles();
+            imageReflowManager.release();
         }
     }
 

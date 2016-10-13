@@ -101,7 +101,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
             return true;
         }
 
-        reflowFirstVisiblePageAsync(reader, drawContext, readerViewInfo);
+        reflowFirstVisiblePageAsync(reader, drawContext, readerViewInfo, true);
         if (drawContext.asyncDraw) {
             return false;
         }
@@ -119,10 +119,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     private void reflowFirstVisiblePageAsync(final Reader reader,
                                              final ReaderDrawContext drawContext,
-                                             final ReaderViewInfo readerViewInfo) throws ReaderException {
+                                             final ReaderViewInfo readerViewInfo,
+                                             final boolean abortPendingTasks) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
         reader.getImageReflowManager().reflowBitmapAsync(drawContext.renderingBitmap.getBitmap(),
-                getCurrentPageName());
+                getCurrentPageName(), abortPendingTasks);
     }
 
     private void reflowNextPageInBackground(final Reader reader,
@@ -131,7 +132,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
             ReaderDrawContext reflowContext = ReaderDrawContext.copy(drawContext);
             reflowContext.renderingBitmap = new ReaderBitmapImpl();
-            reflowFirstVisiblePageAsync(reader, reflowContext, readerViewInfo);
+            reflowFirstVisiblePageAsync(reader, reflowContext, readerViewInfo, false);
             gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
         }
     }
