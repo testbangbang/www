@@ -239,11 +239,11 @@
     <string name="saving">Saving</string>
 
     <string name="export">Export</string>
-    <string name="merged_pdf">Merged PDF</string>
-    <string name="merged_annotation_highlight">Merged Annotation/Highlight</string>
-    <string name="merged_scribble">Merged Scribble</string>
-    <string name="merged_all">Merge all export documentation page</string>
-    <string name="merged_part">Only merge export document containing notes page</string>
+    <string name="export_pdf">Export PDF</string>
+    <string name="export_annotation_highlight">Export Annotation/Highlight</string>
+    <string name="export_scribble">Export Scribble</string>
+    <string name="export_all">Export all documentation page</string>
+    <string name="export_part">Only export document containing notes page</string>
     <string name="export_options">Export Options</string>
     <string name="export_annotation_explain">(Part only text annotation, exported as TXT format)</string>
     <string name="export_highlight_explain">(Part only highlight show, exported as TXT format)</string>
@@ -251,7 +251,9 @@
     <string name="export_data_page">Export Data Page</string>
     <string name="export_scribble_full_document_explain">(With scribble and all the original documents, exported as PDF format)</string>
     <string name="export_brush_stroke_color">Export Brush Stroke Color</string>
-    <string name="export_location_explain">Export location: the original documents to the same folder with the same directory</string>
+    <string name="export_location_explain" formatted="false">Export Location: %s</string>
+    <string name="export_success" formatted="false">Export success</string>
+    <string name="export_fail" formatted="false">Export fail</string>
 
     <string name="Original">Original</string>
     <string name="Red">Red</string>

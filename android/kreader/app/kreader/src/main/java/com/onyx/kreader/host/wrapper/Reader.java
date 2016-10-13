@@ -7,6 +7,7 @@ import android.util.Log;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.api.ReaderNavigator;
@@ -24,6 +25,8 @@ import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.reflow.ImageReflowSettings;
+
+import java.io.File;
 
 
 /**
@@ -168,5 +171,12 @@ public class Reader {
 
     public void saveOptions() {
         getReaderHelper().saveOptions();
+    }
+
+    public String getExportDocPath() {
+        String parent = FileUtils.getParent(getDocumentPath());
+        String baseName = FileUtils.getBaseName(getDocumentPath());
+        String ext = FileUtils.getFileExtension(getDocumentPath());
+        return new File(parent, baseName + "-Exported." + ext).getAbsolutePath();
     }
 }

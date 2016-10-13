@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
-    <style name="dialog_no_title" parent="@android:style/Theme.Holo.Light.Dialog">
+    <style name="dialog_no_title" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/square_bg</item>
+        <item name="colorAccent">@android:color/background_dark</item>
+        <item name="colorPrimaryDark">@color/background_device_default_dark</item>
+        <item name="android:textColor">@color/background_device_default_dark</item>
     </style>
     <style name="single_line_X_axis_View">
         <item name="android:layout_width">match_parent</item>
