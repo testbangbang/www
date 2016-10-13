@@ -42,6 +42,7 @@ import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
+import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
@@ -61,6 +62,7 @@ import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
+import com.onyx.kreader.ui.events.HomeClickEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
@@ -69,6 +71,7 @@ import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
+import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -352,6 +355,32 @@ public class ReaderActivity extends ActionBarActivity {
 
     private boolean verifyReader() {
         return getReaderDataHolder().isDocumentOpened();
+    }
+
+    private boolean inNoteWriting() {
+        return getReaderDataHolder().getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+    }
+
+    @Subscribe
+    public void onSystemUIChanged(final SystemUIChangedEvent event) {
+        if (event == null || !inNoteWriting()) {
+            return;
+        }
+        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+        if (event.isUiOpen()) {
+            FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
+            flushNoteAction.execute(getReaderDataHolder(), null);
+        } else {
+            ResumeDrawingAction action = new ResumeDrawingAction(list);
+            action.execute(getReaderDataHolder(), null);
+        }
+    }
+
+    @Subscribe
+    public void onHomeClick(final HomeClickEvent event) {
+        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+        FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, true);
+        flushNoteAction.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe
