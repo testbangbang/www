@@ -42,6 +42,7 @@
     <dimen name="reflow_checkbox_big_width">100dp</dimen>
     <dimen name="dialog_reflow_checkbox_layout_width">300dp</dimen>
     <dimen name="dialog_reflow_text_view_width">140dp</dimen>
-    <dimen name="dialog_export_margin">5dp</dimen>
+    <dimen name="dialog_export_margin">7dp</dimen>
     <dimen name="dialog_table_of_content_radio_button_padding">7dp</dimen>
+    <dimen name="dialog_export_text_size">18sp</dimen>
 </resources>

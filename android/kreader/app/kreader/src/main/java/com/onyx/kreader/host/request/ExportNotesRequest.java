@@ -2,18 +2,17 @@ package com.onyx.kreader.host.request;
 
 import android.graphics.Color;
 import android.graphics.RectF;
+
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.utils.PdfWriterUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class ExportNotesRequest extends BaseReaderRequest {
                     return false;
                 }
             }
-            if (!PdfWriterUtils.saveAs(getExportDocPath(reader.getDocumentPath()),
+            if (!PdfWriterUtils.saveAs(reader.getExportDocPath(),
                     !SingletonSharedPreference.isExportAllPages())) {
                 return false;
             }
@@ -138,12 +137,4 @@ public class ExportNotesRequest extends BaseReaderRequest {
                 return shape.getColor();
         }
     }
-
-    private String getExportDocPath(String sourceDocPath) {
-        String parent = FileUtils.getParent(sourceDocPath);
-        String baseName = FileUtils.getBaseName(sourceDocPath);
-        String ext = FileUtils.getFileExtension(sourceDocPath);
-        return new File(parent, baseName + "-Exported." + ext).getAbsolutePath();
-    }
-
 }

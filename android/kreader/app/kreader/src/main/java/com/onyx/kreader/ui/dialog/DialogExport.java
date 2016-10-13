@@ -2,6 +2,9 @@ package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +12,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -17,19 +22,18 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.host.request.ExportNotesRequest;
 import com.onyx.kreader.ui.actions.ExportNotesActionChain;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 /**
  * Created by ming on 16/9/26.
  */
 public class DialogExport extends Dialog implements CompoundButton.OnCheckedChangeListener {
-
 
     @Bind(R.id.annotation_checkbox)
     CheckBox annotationCheckbox;
@@ -47,6 +51,8 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
     Button btnOk;
     @Bind(R.id.merged_layout)
     RadioGroup mergedLayout;
+    @Bind(R.id.export_location)
+    TextView exportLocation;
 
     private ReaderDataHolder readerDataHolder;
 
@@ -62,6 +68,9 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         annotationCheckbox.setChecked(SingletonSharedPreference.isExportWithAnnotation());
         scribbleCheckbox.setChecked(SingletonSharedPreference.isExportWithScribble());
         mergedLayout.check(SingletonSharedPreference.isExportAllPages() ? R.id.merged_all : R.id.merged_part);
+
+        String location = String.format(getContext().getString(R.string.export_location_explain), readerDataHolder.getReader().getExportDocPath());
+        exportLocation.setText(location);
     }
 
     private void initBrushStrokeColor() {
@@ -99,7 +108,8 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
                 new ExportNotesActionChain().execute(readerDataHolder, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-
+                        String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);
+                        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -154,7 +164,14 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
 
         @Override
         public void bindView(CompoundButton button, int position) {
-            button.setGravity(Gravity.START | Gravity.CENTER);
+            int gravity;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                gravity = Gravity.LEFT | Gravity.CENTER;
+            } else {
+                gravity = Gravity.START | Gravity.CENTER;
+            }
+            button.setGravity(gravity);
+            button.setTextColor(ColorStateList.valueOf(Color.BLACK));
         }
     }
 }

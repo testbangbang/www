@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +78,7 @@ public class ReaderLayerMenuViewFactory {
 
     private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         final RecyclerView view = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
+        GridLayoutManager gridLayoutManager = new DisableScrollGridManager(context, 1);
         gridLayoutManager.setSpanCount(6);
         view.setLayoutManager(gridLayoutManager);
         final LayoutInflater inflater = LayoutInflater.from(context);
