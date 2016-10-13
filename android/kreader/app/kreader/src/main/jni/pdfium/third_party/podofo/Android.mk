@@ -2,6 +2,7 @@ LOCAL_PATH:= $(call my-dir)
 
 MY_LOCAL_PATH := $(LOCAL_PATH)
 FREETYPE_SRC_ROOT := $(MY_LOCAL_PATH)/../freetype
+OPENSSL_ROOT := $(MY_LOCAL_PATH)/../../../prebuilt/openssl
 
 include $(CLEAR_VARS)
 
@@ -14,7 +15,7 @@ LOCAL_NDK_STL_VARIANT := gnustl_static
 
 LOCAL_LDLIBS := -llog -lz
 
-LOCAL_STATIC_LIBRARIES += libft2
+LOCAL_STATIC_LIBRARIES += libft2 libssl-prebuilt libcrypto-prebuilt
 
 LOCAL_CXXFLAGS += --rtti
 LOCAL_CXXFLAGS += -DBUILDING_PODOFO 
