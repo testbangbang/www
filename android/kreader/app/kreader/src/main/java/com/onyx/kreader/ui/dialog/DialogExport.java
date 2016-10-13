@@ -110,6 +110,9 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
                     public void done(BaseRequest request, Throwable e) {
                         String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);
                         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+                        if (e == null) {
+                            dismiss();
+                        }
                     }
                 });
             }
