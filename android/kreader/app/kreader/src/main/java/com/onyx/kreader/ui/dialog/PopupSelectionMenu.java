@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -186,9 +187,11 @@ public class PopupSelectionMenu extends LinearLayout {
         if (readerDataHolder.getReaderUserDataInfo().getHighlightResult() == null) {
             return;
         }
-        if (isWord) {
+
+        StringBuffer explanation = new StringBuffer();
+        if (isWord && loadExplanation(readerDataHolder, mMenuCallback.getSelectionText(), explanation)) {
             showTranslation();
-            PopupSelectionMenu.this.updateTranslation(mMenuCallback.getSelectionText());
+            PopupSelectionMenu.this.updateTranslation(mMenuCallback.getSelectionText(), explanation.toString());
         } else {
             hideTranslation();
         }
@@ -256,14 +259,18 @@ public class PopupSelectionMenu extends LinearLayout {
         this.findViewById(R.id.layout_dict).setVisibility(View.VISIBLE);
     }
 
-    private String getExplanation(String token) {
-        Cursor cursor = mActivity.getContentResolver().query(
-                Uri.parse("content://com.onyx.android.dict.OnyxDictProvider"), null, "token=\'" + token + "\'", null,
-                null);
-        String expString = "";
+    private boolean loadExplanation(ReaderDataHolder readerDataHolder, String token, StringBuffer explanation) {
+        Cursor cursor = null;
+
         try {
-            if (cursor == null || cursor.getCount() == 0)
-                return null;
+            cursor = mActivity.getContentResolver().query(
+                    Uri.parse("content://com.onyx.android.dict.OnyxDictProvider"), null, "token=\'" + token + "\'", null,
+                    null);
+            String expString = "";
+            if (cursor == null || cursor.getCount() == 0) {
+                Toast.makeText(readerDataHolder.getContext(), getContext().getString(R.string.dictionary_not_installed), Toast.LENGTH_SHORT).show();
+                return false;
+            }
             int count = cursor.getCount();
             int index = 0;
             while (cursor.moveToNext()) {
@@ -272,7 +279,11 @@ public class PopupSelectionMenu extends LinearLayout {
                     expString += "<br><br><br><br>";
                 index++;
             }
-            return expString;
+            explanation.append(expString);
+            return true;
+        } catch (Exception e) {
+            Toast.makeText(readerDataHolder.getContext(), getContext().getString(R.string.dictionary_exception), Toast.LENGTH_SHORT).show();
+            return false;
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -280,8 +291,8 @@ public class PopupSelectionMenu extends LinearLayout {
         }
     }
 
-    private void updateTranslation(String token) {
+    private void updateTranslation(String token, String explanation) {
         mDictTitle.setText(token);
-        mWebView.loadDataWithBaseURL(null, getExplanation(token), "text/html", "utf-8", null);
+        mWebView.loadDataWithBaseURL(null, explanation, "text/html", "utf-8", null);
     }
 }
