@@ -118,20 +118,23 @@ public class NoteManager {
 
             @Override
             public void onDrawingTouchDown(MotionEvent motionEvent, Shape shape) {
-                if (!shape.supportDFB()) {
+                if (shape != null && !shape.supportDFB()) {
                     getParent().getEventBus().post(new ShapeDrawingEvent(shape));
                 }
             }
 
             @Override
             public void onDrawingTouchMove(MotionEvent motionEvent, Shape shape, boolean last) {
-                if (!shape.supportDFB() && last) {
+                if (shape != null && !shape.supportDFB() && last) {
                     getParent().getEventBus().post(new ShapeDrawingEvent(shape));
                 }
             }
 
             @Override
             public void onDrawingTouchUp(MotionEvent motionEvent, Shape shape) {
+                if (shape == null) {
+                    return;
+                }
                 onNewStash(shape);
                 if (!shape.supportDFB()) {
                     getParent().getEventBus().post(new ShapeDrawingEvent(shape));

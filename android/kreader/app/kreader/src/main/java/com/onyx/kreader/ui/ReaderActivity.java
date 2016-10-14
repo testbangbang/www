@@ -71,6 +71,7 @@ import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
+import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
@@ -354,6 +355,14 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
+    @Subscribe
+    public void onShapeRendered(final ShapeRenderFinishEvent event) {
+        if (!getReaderDataHolder().getNoteManager().getNoteDataInfo().isContentRendered()) {
+            return;
+        }
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+    }
+
     private boolean verifyReader() {
         return getReaderDataHolder().isDocumentOpened();
     }
@@ -606,7 +615,7 @@ public class ReaderActivity extends ActionBarActivity {
                 if (e != null || request.isAbort()) {
                     return;
                 }
-                onRequestFinished(RequestFinishEvent.shapeReadyEvent());
+                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEvent());
             }
         });
     }

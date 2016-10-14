@@ -11,6 +11,7 @@ import com.onyx.kreader.note.request.FlushShapeListRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
+import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class FlushNoteAction extends BaseAction {
                 if (showDialog) {
                     hideLoadingDialog();
                 }
-                readerDataHolder.getEventBus().post(RequestFinishEvent.shapeReadyEvent());
+                readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEvent());
                 BaseCallback.invoke(callback, request, e);
             }
         });

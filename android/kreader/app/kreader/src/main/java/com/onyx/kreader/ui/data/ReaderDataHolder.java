@@ -331,7 +331,10 @@ public class ReaderDataHolder {
         eventBus.post(new ResetEpdUpdateModeEvent());
     }
 
-    public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e, boolean applyGCIntervalUpdate, boolean renderShapeData) {
+    public void onRenderRequestFinished(final BaseReaderRequest request,
+                                        Throwable e,
+                                        boolean applyGCIntervalUpdate,
+                                        boolean renderShapeData) {
         if (e != null || request.isAbort()) {
             return;
         }
