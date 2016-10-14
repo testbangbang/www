@@ -263,4 +263,6 @@
     <string name="Blue">Blue</string>
 
     <string name="sure_exit">Are you sure want to exit</string>
+    <string name="dictionary_error">The dictionary is not installed or have exception</string>
+    <string name="no_data">There is no data</string>
 </resources>
