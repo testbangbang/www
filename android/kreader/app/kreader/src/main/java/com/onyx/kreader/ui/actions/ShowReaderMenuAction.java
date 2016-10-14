@@ -603,7 +603,12 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void save(final ReaderDataHolder readerDataHolder) {
         FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, true, true);
-        flushNoteAction.execute(readerDataHolder, null);
+        flushNoteAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                resumeDrawing(readerDataHolder);
+            }
+        });
     }
 
     private void nextScreen(final ReaderDataHolder readerDataHolder) {
