@@ -68,7 +68,6 @@ public class AnalyzerAndroidWrapper {
      * just release context being holder, to avoid static resource leaking
      */
     public static void release() {
-        context = null;
     }
 
     private static boolean isInitializing() {
