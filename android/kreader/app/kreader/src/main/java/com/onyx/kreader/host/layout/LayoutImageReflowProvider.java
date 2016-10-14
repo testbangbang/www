@@ -47,8 +47,8 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean prevScreen() throws ReaderException {
-        reverseOrder = true;
         if (atFirstSubPage()) {
+            reverseOrder = true;
             return prevPage();
         }
         previousSubPage();
@@ -103,10 +103,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
         if (!isCurrentSubPageReady()) {
             reflowFirstVisiblePageAsync(reader, drawContext, readerViewInfo, true);
-            if (reverseOrder) {
-                moveToLastSubPage();
-                reverseOrder = false;
-            }
+        }
+
+        if (reverseOrder) {
+            moveToLastSubPage();
+            reverseOrder = false;
         }
 
         String key = getCurrentSubPageKey();
