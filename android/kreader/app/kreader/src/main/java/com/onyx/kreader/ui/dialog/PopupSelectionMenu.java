@@ -264,7 +264,7 @@ public class PopupSelectionMenu extends LinearLayout {
 
     private void updateTranslation(final ReaderDataHolder readerDataHolder, String token) {
         mDictTitle.setText(token);
-        final DictionaryQueryAction dictionaryQueryAction = new DictionaryQueryAction(token);
+        final DictionaryQueryAction dictionaryQueryAction = new DictionaryQueryAction(token, "content://com.onyx.android.dict.OnyxDictProvider");
         dictionaryQueryAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
