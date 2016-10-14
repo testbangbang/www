@@ -13,7 +13,7 @@ public class ExportNotesActionChain extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        showLoadingDialog(readerDataHolder, R.string.loading);
+        showLoadingDialog(readerDataHolder, R.string.exporting);
         ActionChain chain = new ActionChain();
         GetDocumentInfoAction documentInfoAction = new GetDocumentInfoAction();
         GetAllShapesAction shapesAction = new GetAllShapesAction();

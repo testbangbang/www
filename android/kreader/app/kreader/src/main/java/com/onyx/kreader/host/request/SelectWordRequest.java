@@ -42,6 +42,8 @@ public class SelectWordRequest extends BaseReaderRequest {
 
     // check page at first. and then goto the location.
     public void execute(final Reader reader) throws Exception {
+        setLoadBookmark(false);
+        setLoadPageAnnotation(false);
         setTransferBitmap(false);
         createReaderViewInfo();
         if (!reader.getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
@@ -60,7 +62,8 @@ public class SelectWordRequest extends BaseReaderRequest {
     }
 
     private ReaderSelection translateToScreen(PageInfo pageInfo, ReaderSelection selection) {
-        for (int i = 0; i < selection.getRectangles().size(); i++) {
+        int size = selection.getRectangles().size();
+        for (int i = 0; i < size; i++) {
             PageUtils.translate(pageInfo.getDisplayRect().left,
                     pageInfo.getDisplayRect().top,
                     pageInfo.getActualScale(),
