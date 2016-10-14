@@ -83,7 +83,7 @@ public class ReflowedSubPageIndex {
         synchronized (pageListLock) {
             ReaderBitmapList list = pageListMap.get(pageName);
             if (list == null) {
-                return false;
+                return true;
             }
             return list.atBegin();
         }
@@ -93,7 +93,7 @@ public class ReflowedSubPageIndex {
         synchronized (pageListLock) {
             ReaderBitmapList list = pageListMap.get(pageName);
             if (list == null) {
-                return false;
+                return true;
             }
             return list.atEnd();
         }
