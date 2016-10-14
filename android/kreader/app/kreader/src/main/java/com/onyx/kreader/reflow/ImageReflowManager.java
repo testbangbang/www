@@ -219,6 +219,10 @@ public class ImageReflowManager {
         return getSubPageBitmapFromCache(pageName, subPage);
     }
 
+    public boolean isSubPageReady(final String pageName, final int subPage) {
+        return isSubPageBitmapInCache(pageName, subPage);
+    }
+
     public String getSubPageKey(final String pageName, final int subPage) {
         return getKeyOfSubPage(documentMd5, settings, pageName, subPage);
     }
