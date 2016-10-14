@@ -62,6 +62,10 @@ public class ImageReflowManager {
 
     public void updateSettings(final ImageReflowSettings s) {
         settings.update(s);
+        notifySettingsUpdated();
+    }
+
+    public void notifySettingsUpdated() {
         loadSubPageIndex();
     }
 
