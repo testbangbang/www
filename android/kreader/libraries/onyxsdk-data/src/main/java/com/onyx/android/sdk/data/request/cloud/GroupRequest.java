@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.data.request.cloud;
 
 import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.model.Group;
+import com.onyx.android.sdk.data.model.OnyxGroup;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 
 import retrofit2.Call;
@@ -15,7 +15,7 @@ public class GroupRequest extends BaseCloudRequest {
     private long id;
     private String param;
     private String sessionToken;
-    private Group group;
+    private OnyxGroup group;
 
     public GroupRequest(long groupId, String param, String sessionToken) {
         this.id = groupId;
@@ -23,15 +23,15 @@ public class GroupRequest extends BaseCloudRequest {
         this.sessionToken = sessionToken;
     }
 
-    public Group getGroup() {
+    public OnyxGroup getGroup() {
         return group;
     }
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Call<Group> call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
+        Call<OnyxGroup> call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
                 .getGroup(id, param, sessionToken);
-        Response<Group> response = call.execute();
+        Response<OnyxGroup> response = call.execute();
         if (response.isSuccessful()) {
             group = response.body();
         }

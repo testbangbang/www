@@ -28,6 +28,7 @@ public class Device extends BaseData {
     public Map<String, String> hwinfo;
     public String timezone;
     public String macAddress;
+    public String accountId;
     public String deviceUniqueId;
     public Map<String, String> installationMap = new HashMap<String, String>();
     public String name;

@@ -22,24 +22,26 @@ public class Firmware extends BaseData {
     public String model;            // post by admin
     public String brand;            // post by admin
     public String fwType;           // firmware type, testing or release.
+    public String deviceMAC;        // device mac
 
     public List<String> changeList;
     public List<String> downloadUrlList;
 
     public static Firmware currentFirmware() {
         Firmware fw = new Firmware();
+        fw.model = Build.MODEL;
         fw.fingerprint = Build.FINGERPRINT;
-        fw.updateReleaseBuildParamters();
+        fw.updateReleaseBuildParameters();
         return fw;
     }
 
-    public void updateReleaseBuildParamters() {
+    public void updateReleaseBuildParameters() {
         buildNumber = FirmwareUtils.getBuildIdFromFingerprint(fingerprint);
         buildType = FirmwareUtils.getBuildTypeFromFingerprint(fingerprint);
         fwType = RELEASE_TAG;
     }
 
-    public void updateTestingBuildParamters() {
+    public void updateTestingBuildParameters() {
         buildNumber = FirmwareUtils.getBuildIdFromFingerprint(fingerprint);
         buildType = FirmwareUtils.getBuildTypeFromFingerprint(fingerprint);
         fwType = TESTING_TAG;

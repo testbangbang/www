@@ -52,11 +52,11 @@ public class BaseData extends BaseModel {
         idString = value;
     }
 
-    public final String getGlobalUniqueId() {
+    public final String getGuid() {
         return guid;
     }
 
-    public void setGlobalUniqueId(final String value) {
+    public void setGuid(final String value) {
         guid = value;
     }
 

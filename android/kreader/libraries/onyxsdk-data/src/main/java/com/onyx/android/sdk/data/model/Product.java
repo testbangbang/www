@@ -174,6 +174,17 @@ public class Product extends BaseData {
         super.save();
     }
 
+    public Link getCoverLink(final String type, final String provider) {
+        if (CollectionUtils.isNullOrEmpty(covers)) {
+            return null;
+        }
+        Map<String, Link> map = covers.get(type);
+        if (CollectionUtils.isNullOrEmpty(map)) {
+            return null;
+        }
+        return map.get(provider);
+    }
+
     public Link getDownloadLink(final String type, final String provider) {
         if (CollectionUtils.isNullOrEmpty(storage)) {
             return null;

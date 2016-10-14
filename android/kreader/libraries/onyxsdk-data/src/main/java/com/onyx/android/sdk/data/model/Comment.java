@@ -14,8 +14,16 @@ public class Comment extends BaseData {
     public String commentatorName;
     public String commentatorAvatarUrl;
     public String commentatorEmail;
-    public int commentatorId;
+    public String commentatorId;
     public int downCount;
     public int upCount;
     public int rating;
+
+    public Comment() {
+    }
+
+    public Comment(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

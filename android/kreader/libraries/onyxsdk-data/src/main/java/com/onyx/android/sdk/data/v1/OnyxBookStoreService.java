@@ -47,7 +47,7 @@ public interface OnyxBookStoreService {
     Call<List<DownloadLink>> bookDownloadLink(@Path("id") final String uniqueId);
 
     @GET("book/list/recommended")
-    Call<ProductResult<Product>> bookRecommendedList();
+    Call<ProductResult<Product>> bookRecommendedList(@Query(Constant.WHERE_TAG) final String param);
 
     @GET("book/list/recent")
     Call<ProductResult<Product>> bookRecentList();
@@ -62,9 +62,9 @@ public interface OnyxBookStoreService {
     Call<Category> bookContainer(@Path("id") final String idString);
 
     @DELETE("book/{id}/data")
-    Call deleteBook(@Path("id") final String uniqueId,
-                    @Query(Constant.FORMAT_TAG) final String format,
-                    @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
+    Call<ResponseBody> deleteBook(@Path("id") final String uniqueId,
+                                  @Query(Constant.FORMAT_TAG) final String format,
+                                  @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
 
     @GET("book/{id}/{type}/cover")
     Call<ResponseBody> getBookCover(@Path("id") final String uniqueId,
@@ -90,16 +90,18 @@ public interface OnyxBookStoreService {
                                     @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
 
     @DELETE("book/{pid}/comment/{cid}")
-    Call deleteBookComment(@Path("pid") final String bookId,
-                           @Path("cid") final String commentId,
-                           @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
+    Call<ResponseBody> deleteBookComment(@Path("pid") final String bookId,
+                                         @Path("cid") final String commentId,
+                                         @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
 
     @PUT("book/{pid}/comment/{cid}/up")
     Call<Comment> supportBookComment(@Path("pid") final String bookId,
-                                @Path("cid") final String commentId);
+                                     @Path("cid") final String commentId,
+                                     @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
 
     @PUT("book/{pid}/comment/{cid}/down")
     Call<Comment> disagreeBookComment(@Path("pid") final String bookId,
-                                  @Path("cid") final String commentId);
+                                      @Path("cid") final String commentId,
+                                      @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
 
 }
