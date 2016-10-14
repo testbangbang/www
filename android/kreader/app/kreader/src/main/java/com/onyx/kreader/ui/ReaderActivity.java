@@ -43,6 +43,7 @@ import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
+import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
@@ -378,9 +379,11 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onHomeClick(final HomeClickEvent event) {
-        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
-        FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, true);
-        flushNoteAction.execute(getReaderDataHolder(), null);
+        if (event == null || !inNoteWriting()) {
+            return;
+        }
+        StopNoteActionChain actionChain = new StopNoteActionChain(true, true);
+        actionChain.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe

@@ -10,9 +10,17 @@ import com.onyx.kreader.ui.handler.HandlerManager;
  */
 public class StopNoteActionChain  {
 
+    private boolean save;
+    private boolean show;
+
+    public StopNoteActionChain(boolean saveToDatabase, boolean showDialog) {
+        save = saveToDatabase;
+        show = showDialog;
+    }
+
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final ActionChain actionChain = new ActionChain();
-        actionChain.addAction(new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false));
+        actionChain.addAction(new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, save, show));
         actionChain.addAction(new CloseNoteMenuAction());
         actionChain.execute(readerDataHolder, callback);
     }

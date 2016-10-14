@@ -465,7 +465,7 @@ public class ShowReaderMenuAction extends BaseAction {
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                StopNoteActionChain stopNoteActionChain = new StopNoteActionChain();
+                StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(false, false);
                 stopNoteActionChain.execute(readerDataHolder, null);
             }
         });
