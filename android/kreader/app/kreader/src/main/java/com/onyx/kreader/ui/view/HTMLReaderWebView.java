@@ -13,8 +13,8 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.onyx.kreader.ui.data.PageTurningDetector;
-import com.onyx.kreader.ui.data.PageTurningDirection;
+
+import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +36,7 @@ public class HTMLReaderWebView extends WebView
     public static final int PAGE_TURN_TYPE_VERTICAL = 1;
     public static final int PAGE_TURN_TYPE_HORIZOTAL = 2;
     private int pageTurnType = PAGE_TURN_TYPE_VERTICAL;
+    private float lastX, lastY;
 
     private int heightForSaveView = 50;
     private int pageTurnThreshold = 300;
@@ -182,61 +183,10 @@ public class HTMLReaderWebView extends WebView
         });
 
         getSettings().setJavaScriptEnabled(true);
+        getSettings().setBuiltInZoomControls(false);
         setVerticalScrollBarEnabled(false);
         setHorizontalScrollBarEnabled(false);
 
-        setOnTouchListener(new OnTouchListener() {
-            float mX = 0;
-            float mY = 0;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mX = event.getX();
-                    mY = event.getY();
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                    float x = event.getX();
-                    float y = event.getY();
-
-                    if (pageTurnType == PAGE_TURN_TYPE_HORIZOTAL) {
-                        PageTurningDirection direction = PageTurningDetector.detectHorizontalTuring(getContext(), (int)(x - mX));
-                        if (direction == PageTurningDirection.Left) {
-                            prevPage();
-                        } else if (direction == PageTurningDirection.Right) {
-                            nextPage();
-                        }
-
-                    } else if (pageTurnType == PAGE_TURN_TYPE_VERTICAL) {
-                        PageTurningDirection direction = PageTurningDetector.detectVerticalTuring(getContext(), (int)(y - mY));
-                        if (direction == PageTurningDirection.Left) {
-                            prevPage();
-                        } else if (direction == PageTurningDirection.Right) {
-                            nextPage();
-                        }
-                    } else if (pageTurnType == (PAGE_TURN_TYPE_VERTICAL & PAGE_TURN_TYPE_HORIZOTAL)) {
-                        PageTurningDirection direction = PageTurningDetector.detectVerticalTuring(getContext(), (int)(y - mY));
-                        if (direction == PageTurningDirection.Left) {
-                            prevPage();
-                        } else if (direction == PageTurningDirection.Right) {
-                            nextPage();
-                        }
-                    }
-                    break;
-
-                case MotionEvent.ACTION_MOVE:
-                    return true;
-
-                case MotionEvent.ACTION_CANCEL:
-                    break;
-                }
-
-                return false;
-            }
-        });
         setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -244,9 +194,36 @@ public class HTMLReaderWebView extends WebView
             }
         });
         setLongClickable(false);
+        setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        lastX = event.getX();
+                        lastY = event.getY();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        int direction = detectDirection(event);
+                        if (direction == PageTurningDirection.NEXT) {
+                            nextPage();
+                            return true;
+                        } else if (direction == PageTurningDirection.PREV) {
+                            prevPage();
+                            return true;
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
-      @Override
+    private int detectDirection(MotionEvent currentEvent) {
+        return com.onyx.android.sdk.ui.utils.PageTurningDetector.detectBothAxisTuring(getContext(), (int) (currentEvent.getX() - lastX), (int) (currentEvent.getY() - lastY));
+    }
+
+    @Override
     protected int computeHorizontalScrollRange() {
         return super.computeHorizontalScrollRange();
     }
