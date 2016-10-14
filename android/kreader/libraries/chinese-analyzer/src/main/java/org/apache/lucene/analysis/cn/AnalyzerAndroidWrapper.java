@@ -1,5 +1,6 @@
 package org.apache.lucene.analysis.cn;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import org.apache.lucene.analysis.Analyzer;
@@ -27,7 +28,7 @@ public class AnalyzerAndroidWrapper {
 
     private static Set<String> stopWords = null;
 
-    public static void initialize(final Context context, boolean background) {
+    public static void initialize(final Application application, boolean background) {
         if (isInitialized()) {
             return;
         }
@@ -35,7 +36,7 @@ public class AnalyzerAndroidWrapper {
             return;
         }
         initializing.set(true);
-        final Runnable runnable = initializeRunnable(context);
+        final Runnable runnable = initializeRunnable(application.getApplicationContext());
         if (background) {
             new Thread(runnable).start();
         } else {

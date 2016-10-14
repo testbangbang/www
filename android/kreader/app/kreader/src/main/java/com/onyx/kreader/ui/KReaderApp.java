@@ -1,7 +1,6 @@
 package com.onyx.kreader.ui;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -18,7 +17,6 @@ import java.util.List;
  */
 public class KReaderApp extends Application {
     private static KReaderApp instance;
-    private static Context context;
 
     @Override
     public void onCreate() {
@@ -27,15 +25,10 @@ public class KReaderApp extends Application {
         SingletonSharedPreference.init(this);
         LeakCanary.install(this);
         instance = this;
-        context = getApplicationContext();
     }
 
     public static KReaderApp instance() {
         return instance;
-    }
-
-    public static Context getContext() {
-        return context;
     }
 
     private List<Class<? extends DatabaseHolder>> databaseHolderList() {

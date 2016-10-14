@@ -242,7 +242,7 @@ public class ReaderHelper {
     }
 
     private void initWordAnalyzerInBackground() {
-        AnalyzerAndroidWrapper.initialize(KReaderApp.getContext(), true);
+        AnalyzerAndroidWrapper.initialize(KReaderApp.instance(), true);
     }
 
     private void initImageReflowManager(Context context) {
