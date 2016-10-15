@@ -67,7 +67,9 @@ public class NoteEventProcessorManager {
         detectTouchType();
         view = targetView;
         getTouchEventProcessor().update(targetView, getViewToEpdMatrix(mappingConfig, orientation), visibleDrawRect);
-        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig, orientation), getScreenToViewMatrix(noteConfig, orientation), visibleDrawRect);
+        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig, orientation),
+                getScreenToViewMatrix(noteConfig, mappingConfig, orientation),
+                visibleDrawRect);
     }
 
     private void detectTouchType() {
@@ -97,7 +99,7 @@ public class NoteEventProcessorManager {
         return screenMatrix;
     }
 
-    private Matrix getScreenToViewMatrix(final DeviceConfig noteConfig, int orientation) {
+    private Matrix getScreenToViewMatrix(final DeviceConfig noteConfig, final MappingConfig mappingConfig, int orientation) {
         if (!noteConfig.useRawInput()) {
             return null;
         }
@@ -105,8 +107,9 @@ public class NoteEventProcessorManager {
         int viewPosition[] = {0, 0};
         view.getLocationOnScreen(viewPosition);
         final Matrix viewMatrix = new Matrix();
-        viewMatrix.postRotate(noteConfig.getEpdPostOrientation());
-        viewMatrix.postTranslate(noteConfig.getEpdPostTx() - viewPosition[0], noteConfig.getEpdPostTy() - viewPosition[1]);
+        final MappingConfig.MappingEntry entry = mappingConfig.getEntry(orientation);
+        viewMatrix.postRotate(entry.epd);
+        viewMatrix.postTranslate(entry.etx - viewPosition[0], entry.ety - viewPosition[1]);
         return viewMatrix;
     }
 

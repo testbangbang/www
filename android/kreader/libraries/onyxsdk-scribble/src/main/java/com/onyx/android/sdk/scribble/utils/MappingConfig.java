@@ -28,6 +28,9 @@ public class MappingConfig {
         public int orientation;
         public int tx;
         public int ty;
+        public int epd;
+        public int etx;
+        public int ety;
     }
 
     private Map<String, List<MappingEntry>> modelMapping;
