@@ -50,12 +50,13 @@ public class MappingConfig {
     }
 
     public MappingEntry getEntry(int offset) {
-        if (modelMapping.containsKey(Build.MODEL)) {
-            List<MappingEntry> list = modelMapping.get(Build.MODEL);
+        final String model = Build.MODEL.toLowerCase();
+        if (modelMapping.containsKey(model)) {
+            List<MappingEntry> list = modelMapping.get(model);
             return getEntry(list, offset);
         }
         for(Map.Entry<String, List<MappingEntry>> entry : modelMapping.entrySet()) {
-            if (Build.MODEL.toLowerCase().startsWith(entry.getKey())) {
+            if (model.startsWith(entry.getKey())) {
                 return getEntry(entry.getValue(), offset);
             }
         }
