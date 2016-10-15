@@ -19,6 +19,7 @@ import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
 import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
@@ -53,6 +54,7 @@ public class NoteManager {
 
     private List<Shape> shapeStash = new ArrayList<>();
     private DeviceConfig noteConfig;
+    private MappingConfig mappingConfig;
     private List<PageInfo> visiblePages = new ArrayList<>();
     private ReaderDataHolder parent;
     private ReaderNoteDataInfo noteDataInfo;
@@ -87,10 +89,11 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void updateHostView(final Context context, final View sv, Rect visibleDrawRect) {
+    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, int orientation) {
         view = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
-        getNoteEventProcessorManager().update(view, noteConfig, visibleDrawRect);
+        mappingConfig = MappingConfig.sharedInstance(context, "note");
+        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, orientation);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {

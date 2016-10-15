@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Size;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -529,7 +531,8 @@ public class ReaderActivity extends ActionBarActivity {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect);
+        int rotation =  getWindowManager().getDefaultDisplay().getRotation();
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, rotation);
         if (getReaderDataHolder().isDocumentOpened()) {
             new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
         }
@@ -549,7 +552,8 @@ public class ReaderActivity extends ActionBarActivity {
             rect.bottom = Math.min(rect.bottom, topOfBottomToolBar);
         }
 
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect);
+        int rotation =  getWindowManager().getDefaultDisplay().getRotation();
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, rotation);
     }
 
     @Subscribe

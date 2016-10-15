@@ -9,6 +9,7 @@ import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.utils.DeviceUtils;
 
@@ -58,14 +59,15 @@ public class NoteEventProcessorManager {
         return noteManager;
     }
 
-    public void update(final View targetView, final DeviceConfig noteConfig, final Rect visibleDrawRect) {
+    public void update(final View targetView,
+                       final DeviceConfig noteConfig,
+                       final MappingConfig mappingConfig,
+                       final Rect visibleDrawRect,
+                       int orientation) {
         detectTouchType();
         view = targetView;
-        OnyxMatrix viewMatrix = new OnyxMatrix();
-        viewMatrix.postRotate(noteConfig.getViewPostOrientation());
-        viewMatrix.postTranslate(noteConfig.getViewPostTx(), noteConfig.getViewPostTy());
-        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(noteConfig), visibleDrawRect);
-        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig), getScreenToViewMatrix(noteConfig), visibleDrawRect);
+        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(mappingConfig, orientation), visibleDrawRect);
+        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig, orientation), getScreenToViewMatrix(noteConfig, orientation), visibleDrawRect);
     }
 
     private void detectTouchType() {
@@ -80,21 +82,22 @@ public class NoteEventProcessorManager {
         return singleTouch;
     }
 
-    private OnyxMatrix getViewToEpdMatrix(final DeviceConfig noteConfig) {
+    private OnyxMatrix getViewToEpdMatrix(final MappingConfig mappingConfig, int orientation) {
+        final MappingConfig.MappingEntry entry = mappingConfig.getEntry(orientation);
         OnyxMatrix viewMatrix = new OnyxMatrix();
-        viewMatrix.postRotate(noteConfig.getViewPostOrientation());
-        viewMatrix.postTranslate(noteConfig.getViewPostTx(), noteConfig.getViewPostTy());
+        viewMatrix.postRotate(entry.orientation);
+        viewMatrix.postTranslate(entry.tx, entry.ty);
         return viewMatrix;
     }
 
-    private Matrix getTouchToScreenMatrix(final DeviceConfig noteConfig) {
+    private Matrix getTouchToScreenMatrix(final DeviceConfig noteConfig, int orientation) {
         final Matrix screenMatrix = new Matrix();
         screenMatrix.preScale(noteConfig.getEpdWidth() / getTouchWidth(noteConfig),
                 noteConfig.getEpdHeight() / getTouchHeight(noteConfig));
         return screenMatrix;
     }
 
-    private Matrix getScreenToViewMatrix(final DeviceConfig noteConfig) {
+    private Matrix getScreenToViewMatrix(final DeviceConfig noteConfig, int orientation) {
         if (!noteConfig.useRawInput()) {
             return null;
         }
