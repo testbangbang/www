@@ -33,6 +33,7 @@ import com.onyx.kreader.ui.events.ShapeErasingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by zhuzeng on 9/2/16.
@@ -56,6 +57,7 @@ public class NoteManager {
     private ReaderDataHolder parent;
     private ReaderNoteDataInfo noteDataInfo;
     private RectF visibleDrawRectF;
+    private AtomicBoolean noteDirty = new AtomicBoolean(false);
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -433,4 +435,11 @@ public class NoteManager {
         return shape;
     }
 
+    public boolean isNoteDirty() {
+        return noteDirty.get();
+    }
+
+    public void setNoteDirty(boolean dirty) {
+        noteDirty.set(dirty);
+    }
 }

@@ -44,6 +44,7 @@ import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
@@ -357,7 +358,8 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShapeRendered(final ShapeRenderFinishEvent event) {
-        if (!getReaderDataHolder().getNoteManager().getNoteDataInfo().isContentRendered()) {
+        final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
+        if (noteDataInfo == null || !noteDataInfo.isContentRendered()) {
             return;
         }
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
@@ -367,13 +369,9 @@ public class ReaderActivity extends ActionBarActivity {
         return getReaderDataHolder().isDocumentOpened();
     }
 
-    private boolean inNoteWriting() {
-        return getReaderDataHolder().getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
-    }
-
     @Subscribe
     public void onSystemUIChanged(final SystemUIChangedEvent event) {
-        if (event == null || !inNoteWriting()) {
+        if (event == null || !getReaderDataHolder().inNoteWriting()) {
             return;
         }
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
@@ -388,7 +386,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onHomeClick(final HomeClickEvent event) {
-        if (event == null || !inNoteWriting()) {
+        if (event == null || !getReaderDataHolder().inNoteWriting()) {
             return;
         }
         StopNoteActionChain actionChain = new StopNoteActionChain(true, true);

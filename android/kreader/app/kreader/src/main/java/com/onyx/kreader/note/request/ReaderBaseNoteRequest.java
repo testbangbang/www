@@ -161,11 +161,11 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             public void run() {
                 try {
                     parent.enableScreenPost(true);
-                    if (isRender() && isTransfer()) {
-                        synchronized (parent) {
+                    synchronized (parent) {
+                        if (isRender() && isTransfer()) {
                             parent.copyBitmap();
-                            parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
                         }
+                        parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
                 } catch (Exception e) {
