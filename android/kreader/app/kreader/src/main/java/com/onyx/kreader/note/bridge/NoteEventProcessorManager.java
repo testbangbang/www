@@ -34,6 +34,9 @@ public class NoteEventProcessorManager {
     }
 
     public void start() {
+        if (!useRawInput) {
+            return;
+        }
         getRawEventProcessor().start();
     }
 
