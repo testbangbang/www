@@ -49,7 +49,6 @@ public class ReaderDataHolder {
     private ReaderSelectionManager selectionManager;
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
-    private EventBus eventBus = new EventBus();
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
     private boolean preRender = true;
@@ -74,7 +73,7 @@ public class ReaderDataHolder {
     }
 
     public EventBus getEventBus() {
-        return eventBus;
+        return EventBus.getDefault();
     }
 
     public void saveReaderViewInfo(final BaseReaderRequest request) {
@@ -123,6 +122,14 @@ public class ReaderDataHolder {
 
     public boolean isDocumentOpened() {
         return documentOpened && reader != null;
+    }
+
+    public boolean inNoteWriting() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+    }
+
+    public boolean isNoteDirty() {
+        return noteManager != null && getNoteManager().isNoteDirty();
     }
 
     public String getCurrentPageName() {
@@ -211,15 +218,15 @@ public class ReaderDataHolder {
     }
 
     public void notifyTtsStateChanged() {
-        eventBus.post(new TtsStateChangedEvent());
+        getEventBus().post(new TtsStateChangedEvent());
     }
 
     public void notifyTtsRequestSentence() {
-        eventBus.post(new TtsRequestSentenceEvent());
+        getEventBus().post(new TtsRequestSentenceEvent());
     }
 
     public void notifyTtsError() {
-        eventBus.post(new TtsErrorEvent());
+        getEventBus().post(new TtsErrorEvent());
     }
 
     private void updateReaderMenuState() {
@@ -324,11 +331,11 @@ public class ReaderDataHolder {
     }
 
     public void changeEpdUpdateMode(final UpdateMode mode) {
-        eventBus.post(new ChangeEpdUpdateModeEvent(mode));
+        getEventBus().post(new ChangeEpdUpdateModeEvent(mode));
     }
 
     public void resetEpdUpdateMode() {
-        eventBus.post(new ResetEpdUpdateModeEvent());
+        getEventBus().post(new ResetEpdUpdateModeEvent());
     }
 
     public void onRenderRequestFinished(final BaseReaderRequest request,
@@ -340,7 +347,7 @@ public class ReaderDataHolder {
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        eventBus.post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData));
+        getEventBus().post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData));
     }
 
 
@@ -351,7 +358,7 @@ public class ReaderDataHolder {
     }
 
     public void showReaderSettings() {
-        eventBus.post(new ShowReaderSettingsEvent());
+        getEventBus().post(new ShowReaderSettingsEvent());
     }
 
     public void addActiveDialog(Dialog dialog) {
