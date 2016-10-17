@@ -26,9 +26,21 @@ public class ExportNotesRequest extends BaseReaderRequest {
     private List<Annotation> annotations = new ArrayList<>();
     private List<Shape> shapes = new ArrayList<>();
 
+
     public ExportNotesRequest(List<Annotation> annotations, List<Shape> shapes) {
-        this.annotations.addAll(annotations);
-        this.shapes.addAll(shapes);
+        if (annotations != null) {
+            this.annotations.addAll(annotations);
+        }
+        if (shapes != null) {
+            this.shapes.addAll(shapes);
+        }
+
+    }
+
+    public ExportNotesRequest(List<Annotation> annotations) {
+        if (annotations != null) {
+            this.annotations.addAll(annotations);
+        }
     }
 
     public void execute(final Reader reader) throws Exception {
@@ -45,15 +57,11 @@ public class ExportNotesRequest extends BaseReaderRequest {
 
         try {
             List<NormalPencilShape> scribbles = getScribblesFromShapes();
-            if (SingletonSharedPreference.isExportWithScribble()) {
-                if (!writePolyLines(scribbles)) {
-                    return false;
-                }
+            if (!writePolyLines(scribbles)) {
+                return false;
             }
-            if (SingletonSharedPreference.isExportWithAnnotation()) {
-                if (!writeAnnotations(annotations)) {
-                    return false;
-                }
+            if (!writeAnnotations(annotations)) {
+                return false;
             }
             if (!PdfWriterUtils.saveAs(reader.getExportDocPath(),
                     !SingletonSharedPreference.isExportAllPages())) {
