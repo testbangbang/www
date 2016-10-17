@@ -3,7 +3,7 @@
 **
 ** Part of willus.com general purpose C code library.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2016  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -319,15 +319,21 @@ static int wpdf_getbufline(char *buf,int maxlen,char *opbuf,int *i0,int bufsize)
 static void insert_length(FILE *f,long pos,int len);
 static void ocrwords_to_pdf_stream(OCRWORDS *ocrwords,FILE *f,double dpi,
                                    double page_height_pts,int text_render_mode,
-                                   WILLUSCHARMAPLIST *cmaplist);
+                                   WILLUSCHARMAPLIST *cmaplist,int use_spaces,int ocr_flags);
 static double ocrwords_median_size(OCRWORDS *ocrwords,double dpi,WILLUSCHARMAPLIST *cmaplist);
 static void ocrword_width_and_maxheight(OCRWORD *word,double *width,double *maxheight,
-                                        WILLUSCHARMAPLIST *cmaplist);
+                                        WILLUSCHARMAPLIST *cmaplist,double *charpos);
 static double size_round_off(double size,double median_size,double log_size_increment);
+static void ocrwords_optimize_spaces(OCRWORD *sentence,OCRWORD *word,int n,double dpi,
+                                     WILLUSCHARMAPLIST *cmaplist,int optimize);
+static void ocrwords_sentence_construct(OCRWORD *sentence,OCRWORD *word,int n,int *nspaces);
+static void sentence_check_alignment(OCRWORD *word,int n,int *nspaces,double *pos,
+                                     WILLUSCHARMAPLIST *cmaplist);
 static void ocrword_to_pdf_stream(OCRWORD *word,FILE *f,double dpi,
                                   double page_height_pts,double median_size_pts,
-                                  WILLUSCHARMAPLIST *cmaplist);
+                                  WILLUSCHARMAPLIST *cmaplist,int ocr_flags);
 static void willuscharmaplist_init(WILLUSCHARMAPLIST *list);
+static void willuscharmaplist_free(WILLUSCHARMAPLIST *list);
 static void willuscharmaplist_add_charmap(WILLUSCHARMAPLIST *list,int unichar);
 static int  willuscharmaplist_maxcid(WILLUSCHARMAPLIST *list);
 static int  willuscharmaplist_cid_index(WILLUSCHARMAPLIST *list,int unichar);
@@ -354,10 +360,10 @@ FILE *pdffile_init(PDFFILE *pdf,char *filename,int pages_at_end)
     pdf->imc=0;
     strncpy(pdf->filename,filename,511);
     pdf->filename[511]='\0';
-    pdf->f = fopen(filename,"wb");
+    pdf->f = wfile_fopen_utf8(filename,"wb");
     if (pdf->f!=NULL)
         fclose(pdf->f);
-    pdf->f = fopen(filename,"rb+");
+    pdf->f = wfile_fopen_utf8(filename,"rb+");
     if (pdf->f!=NULL)
         pdffile_start(pdf,pages_at_end);
     return(pdf->f);
@@ -584,24 +590,42 @@ void pdffile_add_bitmap(PDFFILE *pdf,WILLUSBITMAP *bmp,double dpi,int quality,in
 **         ==2 for 2-bits per color plane
 **         ==3 for 1-bit  per color plane
 **
-** visibility_flags
+** ocr_render_flags
 **     Bit 1 (1):  1=Show source bitmap
 **     Bit 2 (2):  1=Show OCR text
 **     Bit 3 (4):  1=Box around text
+**     Bit 4 (8):  1=Use spaces, 1 space per word
+**     Bit 5 (16): 1=Use spaces, optimize number of spaces per word
+**     Bit 6 (32): 1=Do not round off font sizes
 **
 */
 void pdffile_add_bitmap_with_ocrwords(PDFFILE *pdf,WILLUSBITMAP *bmp,double dpi,
                                       int quality,int halfsize,OCRWORDS *ocrwords,
-                                      int visibility_flags)
+                                      int ocr_render_flags)
 
     {
     double pw,ph;
     int ptr1,ptr2,ptrlen,showbitmap,nf;
     WILLUSCHARMAPLIST *cmaplist,_cmaplist;
-
+/*
+{
+int i;
+printf("ADDING BITMAP.\n");
+printf("    Words=%d\n",ocrwords->n);
+printf("    dpi=%g\n",dpi);
+printf("    bmp=%dx%d\n",bmp->width,bmp->height);
+for (i=0;i<ocrwords->n;i++)
+printf("    OCR %s: (c=%d,r=%d) (%dx%d)\n",
+ocrwords->word[i].text,
+ocrwords->word[i].c,
+ocrwords->word[i].r,
+ocrwords->word[i].w,
+ocrwords->word[i].h);
+}
+*/
     lastfont=-1;
     lastfontsize=-1;
-    showbitmap = (visibility_flags&1);
+    showbitmap = (ocr_render_flags&1);
 
     pw=bmp->width*72./dpi;
     ph=bmp->height*72./dpi;
@@ -679,8 +703,21 @@ void pdffile_add_bitmap_with_ocrwords(PDFFILE *pdf,WILLUSBITMAP *bmp,double dpi,
     if (showbitmap)
         fprintf(pdf->f,"q\n%.1f 0 0 %.1f 0 0 cm\n/Im%d Do\nQ\n",pw,ph,pdf->imc);
     if (ocrwords!=NULL)
-        ocrwords_to_pdf_stream(ocrwords,pdf->f,dpi,ph,(visibility_flags&2)?0:3,cmaplist);
-    if (visibility_flags&4)
+        {
+        int use_spaces;
+
+        if (ocr_render_flags&16)
+            use_spaces=2;
+        else if (ocr_render_flags&8)
+            use_spaces=1;
+        else
+            use_spaces=0;
+        ocrwords_to_pdf_stream(ocrwords,pdf->f,dpi,ph,(ocr_render_flags&2)?0:3,cmaplist,use_spaces,
+                               ocr_render_flags);
+        /* 2-1-14: Fix memory leak */
+        willuscharmaplist_free(cmaplist);
+        }
+    if (ocr_render_flags&4)
         ocrwords_box(ocrwords,bmp);
     fflush(pdf->f);
     fseek(pdf->f,0L,1);
@@ -854,7 +891,7 @@ static void pdffile_bmp_stream(PDFFILE *pdf,WILLUSBITMAP *src,int quality,int ha
         compress_handle h;
         h=compress_start(pdf->f,7); /* compression level = 7 */
         bmp_flate_decode(bmp,pdf->f,h,halfsize);
-        compress_done(pdf->f,h);
+        compress_done(pdf->f,&h);
         fprintf(pdf->f,"\n");
         }
     fflush(pdf->f);
@@ -1104,7 +1141,7 @@ void pdffile_finish(PDFFILE *pdf,char *title,char *author,char *producer,char *c
                 }
         }
     fclose(pdf->f);
-    pdf->f=fopen(pdf->filename,"ab");
+    pdf->f=wfile_fopen_utf8(pdf->filename,"ab");
     }
 
 
@@ -1149,7 +1186,7 @@ int pdf_numpages(char *filename)
     FILE *f;
     int np;
 
-    f=fopen(filename,"rb");
+    f=wfile_fopen_utf8(filename,"rb");
     if (f==NULL)
         return(-1);
     np=pdf_numpages_1((void *)f,0);
@@ -1389,7 +1426,7 @@ void ocrwords_box(OCRWORDS *ocrwords,WILLUSBITMAP *bmp)
 
 static void ocrwords_to_pdf_stream(OCRWORDS *ocrwords,FILE *f,double dpi,
                                    double page_height_pts,int text_render_mode,
-                                   WILLUSCHARMAPLIST *cmaplist)
+                                   WILLUSCHARMAPLIST *cmaplist,int use_spaces,int ocr_flags)
 
     {
     int i;
@@ -1397,8 +1434,28 @@ static void ocrwords_to_pdf_stream(OCRWORDS *ocrwords,FILE *f,double dpi,
 
     fprintf(f,"BT\n%d Tr\n",text_render_mode);
     median_size=ocrwords_median_size(ocrwords,dpi,cmaplist);
-    for (i=0;i<ocrwords->n;i++)
-        ocrword_to_pdf_stream(&ocrwords->word[i],f,dpi,page_height_pts,median_size,cmaplist);
+    if (use_spaces)
+        {
+        int i1;
+
+        for (i1=i=0;i<ocrwords->n;i++)
+            {
+            if (i==ocrwords->n-1 || ocrwords->word[i+1].r!=ocrwords->word[i].r)
+                {
+                OCRWORD word;
+                ocrword_init(&word);
+                ocrwords_optimize_spaces(&word,&ocrwords->word[i1],i-i1+1,dpi,cmaplist,
+                                         use_spaces==2 ? 1 : 0);
+                ocrword_to_pdf_stream(&word,f,dpi,page_height_pts,median_size,cmaplist,ocr_flags);
+                ocrword_free(&word);
+                i1=i+1;
+                }
+            }
+        }
+    else
+        for (i=0;i<ocrwords->n;i++)
+            ocrword_to_pdf_stream(&ocrwords->word[i],f,dpi,page_height_pts,median_size,cmaplist,
+                                  ocr_flags);
     fprintf(f,"ET\n");
     }
 
@@ -1417,7 +1474,7 @@ static double ocrwords_median_size(OCRWORDS *ocrwords,double dpi,WILLUSCHARMAPLI
     for (i=0;i<ocrwords->n;i++)
         {
         double w,h;
-        ocrword_width_and_maxheight(&ocrwords->word[i],&w,&h,cmaplist);
+        ocrword_width_and_maxheight(&ocrwords->word[i],&w,&h,cmaplist,NULL);
         fontsize_hist[i] = (72.*ocrwords->word[i].maxheight/dpi) / h;
         }
     sortd(fontsize_hist,ocrwords->n);
@@ -1429,8 +1486,15 @@ static double ocrwords_median_size(OCRWORDS *ocrwords,double dpi,WILLUSCHARMAPLI
     }
 
 
+/*
+** If charpos[] is not NULL, it gets the position of the right side of each character.
+** Must be dimensioned from [0..n-1] where n is the number of chars in the word.
+**
+** Returned values are in points for a 1-point-sized font (points per point).
+**
+*/
 static void ocrword_width_and_maxheight(OCRWORD *word,double *width,double *maxheight,
-                                        WILLUSCHARMAPLIST *cmaplist)
+                                        WILLUSCHARMAPLIST *cmaplist,double *charpos)
 
     {
     int i,n;
@@ -1458,11 +1522,13 @@ static void ocrword_width_and_maxheight(OCRWORD *word,double *width,double *maxh
             }
         c=cid-32;
         if (c<0 || c>=224)
-            c=0; 
+            c=0;
         if (word->text[i+1]=='\0')
             (*width) += Helvetica[c].width;
         else
             (*width) += Helvetica[c].nextchar;
+        if (charpos!=NULL)
+            charpos[i]=(*width);
         if (Helvetica[c].abovebase > (*maxheight))
             (*maxheight)=Helvetica[c].abovebase;
         }
@@ -1493,9 +1559,200 @@ static double size_round_off(double size,double median_size,double log_size_incr
     }
 
 
+/*
+** In "sentence", put all of the words in "words" separated by an optimum
+** number of spaces between each word so that the words best line up with
+** where their bitmaps are on the page.
+*/
+static void ocrwords_optimize_spaces(OCRWORD *sentence,OCRWORD *word,int n,double dpi,
+                                     WILLUSCHARMAPLIST *cmaplist,int optimize)
+                              
+
+    {
+    int i,pixwidth;
+    int *nspaces;
+    double *pos; /* Left position of each word rel to sentence length */
+    static char *funcname="ocrwords_optimize_spaces";
+
+    pixwidth=word[n-1].c+word[n-1].w-word[0].c;
+/*
+printf("Text row: ");
+for (i=0;i<n;i++)
+printf(" %s (%5.3f)",word[i].text,(double)word[i].w/pixwidth);
+printf("\n");
+printf("pixwidth=%d\n",pixwidth);
+*/
+    willus_mem_alloc_warn((void **)&pos,sizeof(double)*2*n,funcname,10);
+    willus_mem_alloc_warn((void **)&nspaces,sizeof(int)*n,funcname,10);
+    for (i=0;i<n-1;i++)
+        nspaces[i]=1;
+    nspaces[n-1]=0;
+    if (optimize)
+        {
+        /* First find number of spaces on end that makes all pos[] values negative */
+        for (i=0;i<n;i++)
+            nspaces[i]=1;
+        for (i=0;i<2000;i++)
+            {
+            int j;
+
+            nspaces[n-1]=i;
+            sentence_check_alignment(word,n,nspaces,pos,cmaplist);
+/*
+{
+int k;
+printf("  i=%3d ",i);
+for (k=0;k<n;k++)
+printf(" %5.3f",pos[k*2]-(k==0?0.:pos[k*2-1]));
+printf("\n");
+}
+*/
+            /* Are any words still too long? */
+            for (j=0;j<n;j++)
+                if (pos[j*2]-(j==0 ? 0. : pos[j*2-1]) > (double)word[j].w/pixwidth)
+                    break;
+            if (j>=n)
+                break;
+            }
+        for (i=0;i<n-1;i++)
+            {
+            int j,ns1;
+            double err;
+            double wordpos;
+
+            ns1=nspaces[n-1];
+            wordpos=(double)(word[i+1].c-word[0].c)/pixwidth;
+            err=0.;
+            for (j=1;j<ns1;j++)
+                {
+                nspaces[i]=j;
+                nspaces[n-1]=ns1+1-j;
+                sentence_check_alignment(word,n,nspaces,pos,cmaplist);
+                if (pos[2*i+1] > wordpos)
+                    {
+                    if (j>1 && pos[2*i+1]-wordpos > err)
+                        {
+                        nspaces[i]=j-1;
+                        nspaces[n-1]=ns1+1-(j-1);
+                        sentence_check_alignment(word,n,nspaces,pos,cmaplist);
+                        }
+                    break;
+                    }
+                err=wordpos-pos[2*i+1];
+                }
+            }
+/*
+{
+int k;
+printf("    Pass %d: ",i);
+for (k=0;k<n-1;k++)
+printf(" %d (%5.3f, %5.3f)",nspaces[k],pos[2*k],pos[2*k+1]);
+printf("\n");
+}
+*/
+        }
+    ocrwords_sentence_construct(sentence,word,n,nspaces);
+    willus_mem_free((double **)&nspaces,funcname);
+    willus_mem_free(&pos,funcname);
+    }
+
+
+/*
+** Construct single OCRWORD "sentence" from array of OCRWORDs and nspaces[] array
+*/
+static void ocrwords_sentence_construct(OCRWORD *sentence,OCRWORD *word,int n,int *nspaces)
+
+    {
+    int i,len;
+    static char *funcname="ocrwords_sentence_construct";
+
+    for (len=i=0;i<n;i++)
+        len += strlen(word[i].text)+nspaces[i];
+    ocrword_free(sentence);
+    willus_mem_alloc_warn((void **)&sentence->text,len+1,funcname,10);
+    sentence->text[0]='\0';
+    sentence->r=word[0].r;
+    sentence->c=word[0].c;
+    sentence->w=word[n-1].c+word[n-1].w-word[0].c;
+    sentence->maxheight=0;
+    sentence->rot=word[0].rot;
+    for (i=0;i<n;i++)
+        {
+        int j;
+
+        strcat(sentence->text,word[i].text);
+        if (word[i].maxheight > sentence->maxheight)
+            sentence->maxheight = word[i].maxheight;
+        len=strlen(sentence->text);
+        for (j=0;j<nspaces[i];j++)
+            sentence->text[len+j]=' ';
+        sentence->text[len+j]='\0';
+        }
+    }
+
+
+/*
+** Inputs:  word[0..n-1] = words in sentence / row of text.
+**          nspaces[0..n-1] = number of spaces after word[0..n-1]
+**
+** Output:  pos[0..2*n-1] = positional error of right side of word[i/2] or space[i/2].
+**              pos[0] = right side of first word
+**              pos[1] = right side of space after first word (left side of next word)
+**              pos[2] = right side of 2nd word
+**              pos[3] = right side of space after second word
+**              ...
+**          positive means the OCR layer word starts to the right of the bitmap word.
+**
+*/
+static void sentence_check_alignment(OCRWORD *word,int n,int *nspaces,double *pos,
+                                     WILLUSCHARMAPLIST *cmaplist)
+
+    {
+    int i,index,len;
+    double *charpos;
+    static char *funcname="sentence_check_alignment";
+    double ptwidth,ptheight;
+    OCRWORD _sentence,*sentence;
+
+    sentence=&_sentence;
+    ocrword_init(sentence);
+    ocrwords_sentence_construct(sentence,word,n,nspaces);
+    len=strlen(sentence->text);
+    willus_mem_alloc_warn((void **)&charpos,sizeof(double)*(len+2),funcname,10);
+    ocrword_width_and_maxheight(sentence,&ptwidth,&ptheight,cmaplist,charpos);
+/*
+{
+int wordlen;
+printf("S:");
+wordlen=utf8_to_unicode(NULL,sentence->text,len+2);
+for (i=0;i<wordlen;i++)
+printf(" %.3f",charpos[i]/ptwidth);
+printf("\n");
+}
+*/
+    ocrword_free(sentence);
+    for (i=index=0;i<n;i++)
+        {
+        int wordlen;
+        double xpt;
+
+        wordlen=utf8_to_unicode(NULL,word[i].text,len+2);
+        xpt=charpos[index+wordlen-1];
+        pos[2*i]=xpt/ptwidth;
+        if (i<n-1)
+            {
+            xpt=charpos[index+wordlen+nspaces[i]-1];
+            pos[2*i+1]=xpt/ptwidth;
+            }
+        index += wordlen+nspaces[i];
+        }
+    willus_mem_free((double **)&charpos,funcname);
+    }
+
+
 static void ocrword_to_pdf_stream(OCRWORD *word,FILE *f,double dpi,
                                   double page_height_pts,double median_size_pts,
-                                  WILLUSCHARMAPLIST *cmaplist)
+                                  WILLUSCHARMAPLIST *cmaplist,int ocr_flags)
 
     {
     int cc,i,n,wordw;
@@ -1505,17 +1762,33 @@ static void ocrword_to_pdf_stream(OCRWORD *word,FILE *f,double dpi,
     int *d;
     static char *funcname="ocrword_to_pdf_stream";
 
+/*
+printf("word->text='%s'\n",word->text);
+printf("    wxh = %dx%d\n",word->w,word->h);
+*/
     n=strlen(word->text)+2;
     willus_mem_alloc_warn((void **)&d,sizeof(int)*n,funcname,10);
     n=utf8_to_unicode(d,word->text,n-1);
-    ocrword_width_and_maxheight(word,&width_per_point,&height_per_point,cmaplist);
+    ocrword_width_and_maxheight(word,&width_per_point,&height_per_point,cmaplist,NULL);
+/*
+printf("    word->maxheight=%g\n",word->maxheight);
+*/
     if (word->w/10. < word->lcheight)
         wordw = 0.9*word->w;
     else
         wordw = word->w-word->lcheight;
     fontsize_width = 72.*wordw/dpi / width_per_point;
-    fontsize_height = size_round_off((72.*word->maxheight/dpi) / height_per_point,
-                                       median_size_pts,.25);
+    fontsize_height = (72.*word->maxheight/dpi) / height_per_point;
+    if (!(ocr_flags & 0x20))
+        fontsize_height = size_round_off(fontsize_height,median_size_pts,.25);
+/*
+printf("    fontsize_height=%g\n",fontsize_height);
+*/
+    /*
+    ** Keeping the height small generally improves the ability to graphically
+    ** select the text in PDF readers, so multiply by 0.5.
+    */
+    fontsize_height = 0.5*fontsize_height;
     arat = fontsize_width / fontsize_height;
     ybase = page_height_pts - 72.*word->r/dpi;
     if (word->rot==0)
@@ -1580,6 +1853,8 @@ static void ocrword_to_pdf_stream(OCRWORD *word,FILE *f,double dpi,
         cc++;
         x0 += fontsize_height*arat*Helvetica[cid-32].nextchar;
         }
+    /* 2-1-14: Memory leak fixed */
+    willus_mem_free((double **)&d,funcname);
     if (cc>0)
         fprintf(f,"> Tj\n");
     }
@@ -1590,6 +1865,14 @@ static void willuscharmaplist_init(WILLUSCHARMAPLIST *list)
     {
     list->n=list->na=0;
     list->cmap=NULL;
+    }
+
+
+static void willuscharmaplist_free(WILLUSCHARMAPLIST *list)
+
+    {
+    willus_mem_free((double **)&list->cmap,"willuscharmaplist_free");
+    list->n=list->na=0;
     }
 
 
@@ -1740,14 +2023,38 @@ void wpdfoutline_init(WPDFOUTLINE *wpdfoutline)
 void wpdfoutline_free(WPDFOUTLINE *wpdfoutline)
 
     {
+    static char *funcname="wpdfoutline_free";
+
     if (wpdfoutline==NULL)
         return;
     wpdfoutline_free(wpdfoutline->down);
-    wpdfoutline->down=NULL;
+    willus_mem_free((double **)&wpdfoutline->down,funcname);
     wpdfoutline_free(wpdfoutline->next);
-    wpdfoutline->next=NULL;
+    willus_mem_free((double **)&wpdfoutline->next,funcname);
+    willus_mem_free((double **)&wpdfoutline->title,funcname);
     wpdfoutline->srcpage=-1;
     wpdfoutline->dstpage=-1;
+    }
+
+
+void wpdfoutline_append(WPDFOUTLINE *outline1,WPDFOUTLINE *outline2)
+
+    {
+    WPDFOUTLINE *p;
+
+    for (p=outline1;p->next!=NULL;p=p->next);
+    p->next=outline2;
+    }
+
+
+void wpdfoutline_add_to_srcpages(WPDFOUTLINE *outline,int pagecount)
+
+    {
+    if (outline==NULL)
+        return;
+    outline->srcpage += pagecount;
+    wpdfoutline_add_to_srcpages(outline->next,pagecount);
+    wpdfoutline_add_to_srcpages(outline->down,pagecount);
     }
 
 
@@ -1758,10 +2065,11 @@ WPDFOUTLINE *wpdfoutline_read_from_text_file(char *filename)
     WPDFOUTLINE *outline0,*outline,*parent[16];
     char buf[512];
     int level,count;
+    static char *funcname="wpdfoutline_read_from_text_file";
 
     for (level=0;level<16;level++)
         parent[level]=NULL;
-    f=fopen(filename,"r");
+    f=wfile_fopen_utf8(filename,"r");
     if (f==NULL)
         return(NULL);
     outline0=outline=NULL;
@@ -1778,11 +2086,11 @@ WPDFOUTLINE *wpdfoutline_read_from_text_file(char *filename)
                llev++;
         for (j=i;buf[j]>='0' && buf[j]<='9';j++);
         count++;
-        oline=malloc(sizeof(WPDFOUTLINE));
+        willus_mem_alloc_warn((void **)&oline,sizeof(WPDFOUTLINE),funcname,10);
         wpdfoutline_init(oline);
         oline->srcpage=atoi(&buf[i])-1;
         clean_line(&buf[j]);
-        oline->title=malloc(strlen(&buf[j])+1);
+        willus_mem_alloc_warn((void **)&oline->title,strlen(&buf[j])+1,funcname,10);
         strcpy(oline->title,&buf[j]);
         oline->dstpage=-1;
         if (count==1)

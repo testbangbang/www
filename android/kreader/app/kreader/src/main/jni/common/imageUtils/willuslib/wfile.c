@@ -5,7 +5,7 @@
 **
 ** Part of willus.com general purpose C code library.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2016  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,9 @@
 #endif
 #if (defined(WIN32))
 #include <windows.h>
+#include <direct.h>
+#include <errno.h>
+#include <io.h>
 #endif
 #include <stdio.h>
 #ifdef MSDOS16
@@ -116,6 +119,8 @@ static FILIST *wfile_lastptr(RFIND *rf);
 static void wfile_wf2rf(RFIND *rf);
 static int wfile_recfreelast(RFIND *rf);
 static int wfile_correct_exe(char *basename,char *correctname,char *fullname);
+static double generic_size(char *filename);
+static int wfile_makedir_ascii(char *path);
 
 /* Prevent DJGPP from globbing */
 #ifdef DJGPP
@@ -260,7 +265,7 @@ int wfile_ascii(char *filename,int maxcheck)
     int i,c;
     FILE *f;
 
-    f=fopen(filename,"rb");
+    f=wfile_fopen_utf8(filename,"rb");
     if (f==NULL)
         return(0);
     for (i=0;i<maxcheck;i++)
@@ -359,18 +364,25 @@ char *wfile_getenv(char *envvar)
 int wfile_findfirst(const char *spec,wfile *wptr)
 
     {
-#if (defined(WIN32))
+#if (defined(HAVE_WIN32_API))
     if (wsys_win32_api())
         {
-        WIN32_FIND_DATA *fd;
+        WIN32_FIND_DATAW *fd;
+        short *specw;
+        char *fname;
+        static char *funcname="wfile_findfirst";
 
-        fd=(WIN32_FIND_DATA *)wptr->ds;
+        fd=(WIN32_FIND_DATAW *)wptr->ds;
         wfile_basepath(wptr->path,spec);
-        wptr->winhandle=(void *)FindFirstFile((char *)spec,fd);
+        utf8_to_utf16_alloc((void **)&specw,(char *)spec);
+        wptr->winhandle=(void *)FindFirstFileW((LPWSTR)specw,fd);
+        willus_mem_free((double **)&specw,funcname);
         if ((HANDLE)wptr->winhandle==INVALID_HANDLE_VALUE)
             return(0);
-        wfile_fullname(wptr->fullname,wptr->path,fd->cFileName);
-        strcpy(wptr->basename,fd->cFileName);
+        utf16_to_utf8_alloc((void **)&fname,(short *)fd->cFileName);
+        wfile_fullname(wptr->fullname,wptr->path,fname);
+        strcpy(wptr->basename,fname);
+        willus_mem_free((double **)&fname,funcname);
         win_file_windate_to_tm(&wptr->date,&fd->ftLastWriteTime,wptr->fullname);
         wptr->size = (double)fd->nFileSizeLow;
         if (fd->nFileSizeHigh!=0)
@@ -386,6 +398,8 @@ int wfile_findfirst(const char *spec,wfile *wptr)
             wptr->attr |= WFILE_HIDDEN;
         if (fd->dwFileAttributes&FILE_ATTRIBUTE_READONLY)
             wptr->attr |= WFILE_READONLY;
+        if (fd->dwFileAttributes&FILE_ATTRIBUTE_REPARSE_POINT)
+            wptr->attr |= WFILE_SYMLINK;
         return(1);
         }
     else
@@ -410,18 +424,23 @@ int wfile_findfirst(const char *spec,wfile *wptr)
 int wfile_findnext(wfile *wptr)
 
     {
-#if (defined(WIN32))
+#if (defined(HAVE_WIN32_API))
     if (wsys_win32_api())
         {
-        WIN32_FIND_DATA *fd;
+        WIN32_FIND_DATAW *fd;
 
         if ((HANDLE)wptr->winhandle==INVALID_HANDLE_VALUE)
             return(0);
-        fd=(WIN32_FIND_DATA *)wptr->ds;
-        if (FindNextFile((HANDLE)wptr->winhandle,fd))
+        fd=(WIN32_FIND_DATAW *)wptr->ds;
+        if (FindNextFileW((HANDLE)wptr->winhandle,fd))
             {
-            wfile_fullname(wptr->fullname,wptr->path,fd->cFileName);
-            strcpy(wptr->basename,fd->cFileName);
+            char *fname;
+            static char *funcname="wfile_findfirst";
+
+            utf16_to_utf8_alloc((void **)&fname,(short *)fd->cFileName);
+            wfile_fullname(wptr->fullname,wptr->path,fname);
+            strcpy(wptr->basename,fname);
+            willus_mem_free((double **)&fname,funcname);
             win_file_windate_to_tm(&wptr->date,&fd->ftLastWriteTime,wptr->fullname);
             wptr->size = (double)fd->nFileSizeLow;
             if (fd->nFileSizeHigh!=0)
@@ -437,6 +456,8 @@ int wfile_findnext(wfile *wptr)
                 wptr->attr |= WFILE_HIDDEN;
             if (fd->dwFileAttributes&FILE_ATTRIBUTE_READONLY)
                 wptr->attr |= WFILE_READONLY;
+            if (fd->dwFileAttributes&FILE_ATTRIBUTE_REPARSE_POINT)
+                wptr->attr |= WFILE_SYMLINK;
             return(1);
             }
         wfile_findclose(wptr);
@@ -491,8 +512,8 @@ void wfile_findclose(wfile *wptr)
 int wfile_date(const char *filename,struct tm *filedate)
 
     {
-#if (defined(WIN32))
-    HANDLE  handle;
+#if (defined(HAVE_WIN32_API))
+    void *handle;
 //    OFSTRUCT    buf;
     FILETIME    ctime,mtime,atime;
 
@@ -500,29 +521,38 @@ int wfile_date(const char *filename,struct tm *filedate)
         {
         char fn2[MAXFILENAMELEN];
 
+        strcpy(fn2,filename);
+        /* If a folder, use a different method since CreateFile doesn't work */
+        /* the way I have it set up.                                         */
+        if (wfile_status(fn2)==2)
+            {
+            FILELIST *fl,_fl;
+            fl=&_fl;
+            filelist_init(fl);
+            filelist_fill_from_disk_1(fl,fn2,0,1);
+            if (fl->n==1)
+                {
+                (*filedate)=fl->entry[0].date;
+                filelist_free(fl);
+                return(1);
+                }
+            filelist_free(fl);
+            }
         /* Weird bug:  If I don't use the full path, then sometimes */
         /* this returns an incorrect result.                        */
         /* Started using CreateFile instead of OpenFile because OpenFile */
         /* can't handle long paths.  4-16-09                             */
-        strcpy(fn2,filename);
-        handle=(HANDLE)CreateFile(fn2,GENERIC_READ,
-                                 FILE_SHARE_DELETE
-                                   | FILE_SHARE_READ
-                                   | FILE_SHARE_WRITE,
-                                 NULL,
-                                 OPEN_EXISTING,
-                                 FILE_ATTRIBUTE_NORMAL,
-                                 NULL);
+        handle=win_shared_handle_utf8(fn2);
 //printf("handle=%d, HFILE_ERROR=%d\n",(int)handle,(int)INVALID_HANDLE_VALUE);
 //printf("error=%s\n",win_lasterror());
-        if ((HANDLE)handle==INVALID_HANDLE_VALUE)
+        if (handle==NULL)
             return(0);
-        if (!GetFileTime(handle,&ctime,&atime,&mtime))
+        if (!GetFileTime((HANDLE)handle,&ctime,&atime,&mtime))
             {
-            CloseHandle(handle);
+            win_close_handle(handle);
             return(0);
             }
-        CloseHandle(handle);
+        win_close_handle(handle);
         win_file_windate_to_tm(filedate,&mtime,(char *)fn2);
         return(1);
         }
@@ -683,7 +713,7 @@ void wfile_date_decrement_hour(struct tm *date)
 void wfile_set_mod_date(char *filename,struct tm *date)
 
     {
-#ifdef WIN32
+#ifdef HAVE_WIN32_API
     win_set_mod_filetime(filename,date);
 #else
     char cmdbuf[MAXFILENAMELEN];
@@ -709,11 +739,18 @@ void wfile_set_mod_date(char *filename,struct tm *date)
     }
 
 
+/*
+** see rpp.c in utility folder!
+*/
 int wfile_is_symlink_ex(char *filename,char *src)
 
     {
 #if (defined(UNIX))
     return(unix_is_symlink(filename,src));
+#elif (defined(WIN32) || defined(WIN64))
+    int status;
+    status=win_symlink(filename,src,255,NULL);
+    return(status==1 || status==2);
 #else
     return(0);
 #endif
@@ -726,7 +763,9 @@ int wfile_is_symlink(char *filename)
     return(wfile_is_symlink_ex(filename,NULL));
     }
 
-
+/*
+** Is file not a device and not a pipe, etc.?
+*/
 int wfile_is_regular_file(char *filename)
 
     {
@@ -933,12 +972,21 @@ int wfile_set_wd(char *path)
 char *wfile_get_wd(void)
 
     {
-    static char dir[MAXFILENAMELEN];
-
 #ifdef WIN32
-    GetCurrentDirectory(255,dir);
+    static char *dir=NULL;
+    static char *funcname="wfile_get_wd";
+    short *wdir;
+    if (dir==NULL)
+        willus_mem_alloc_warn((void **)&dir,MAXUTF8PATHLEN,funcname,10);
+    willus_mem_alloc_warn((void **)&wdir,MAXUTF16PATHLEN,funcname,10);
+    GetCurrentDirectoryW(MAXUTF16PATHLEN-1,(LPWSTR)wdir);
+    utf16_to_utf8(dir,wdir,MAXUTF8PATHLEN-1);
+    willus_mem_free((double **)&wdir,funcname);
+    return(dir);
+    /* GetCurrentDirectory(255,dir); */
 #else
-    getcwd(dir,255);
+    static char dir[MAXFILENAMELEN];
+    getcwd(dir,MAXFILENAMELEN-1);
 #endif
     return(dir);
     }
@@ -1025,14 +1073,15 @@ double wfile_freespace(char *volume,double *totalspace)
     int     na;
     FILE *f;
 
-    strcpy(tempname,wfile_tempname("",""));
+    /* strcpy(tempname,wfile_tempname("","")); */
+    wfile_abstmpnam(tempname);
 #if (defined(hpux) || defined(__hpux))
-    sprintf(cmd,"bdf %s > %s",volume,tempname);
+    sprintf(cmd,"bdf \"%s\" > \"%s\"",volume,tempname);
 #else
-    sprintf(cmd,"df -k %s > %s",volume,tempname);
+    sprintf(cmd,"df -k \"%s\" > \"%s\"",volume,tempname);
 #endif
     system(cmd);
-    f=fopen(tempname,"r");
+    f=wfile_fopen_utf8(tempname,"r");
     freebytes = totbytes = -1;
     if (f!=NULL)
         {
@@ -1063,7 +1112,7 @@ double wfile_freespace(char *volume,double *totalspace)
             }
         fclose(f);
         }
-    remove(tempname);
+    wfile_remove_utf8(tempname);
     if (totalspace!=NULL)
         (*totalspace) = totbytes;
     return(freebytes);
@@ -1107,7 +1156,7 @@ int wfile_prepdir(char *filename)
 **         -2 if error
 **          0 if OK
 */
-int wfile_makedir(char *path)
+static int wfile_makedir_ascii(char *path)
 
     {
     int status;
@@ -1226,9 +1275,9 @@ int wfile_check_file_64bit(char *filename)
     FILE *f;
     
     wfile_abstmpnam(tmpfile);
-    sprintf(cmd,"which %s > %s",filename,tmpfile);
+    sprintf(cmd,"which \"%s\" > \"%s\"",filename,tmpfile);
     system(cmd);
-    f=fopen(tmpfile,"r");
+    f=wfile_fopen_utf8(tmpfile,"r");
     if (f==NULL)
         return(0);
     if (fgets(fullname,250,f)==NULL)
@@ -1237,11 +1286,11 @@ int wfile_check_file_64bit(char *filename)
         return(0);
         }
     fclose(f);
-    remove(tmpfile);
+    wfile_remove_utf8(tmpfile);
     clean_line(fullname);
-    sprintf(cmd,"file %s > %s",fullname,tmpfile);
+    sprintf(cmd,"file \"%s\" > \"%s\"",fullname,tmpfile);
     system(cmd);
-    f=fopen(tmpfile,"r");
+    f=wfile_fopen_utf8(tmpfile,"r");
     if (f==NULL)
         return(0);
     if (fgets(cmd,250,f)==NULL)
@@ -1250,7 +1299,7 @@ int wfile_check_file_64bit(char *filename)
         return(0);
         }
     fclose(f);
-    remove(tmpfile);
+    wfile_remove_utf8(tmpfile);
     if (in_string(cmd,"64-bit")>=0)
         return(-1);
     return(0);
@@ -1308,8 +1357,8 @@ int wfile_strong_remove(char *filename)
     int     status;
 
     /* First try removing the file */
-    status=remove(filename);
-#ifdef WIN32
+    status=wfile_remove_utf8(filename);
+#ifdef HAVE_WIN32_API
 #define PROBLEM_ATTRIBUTE (FILE_ATTRIBUTE_HIDDEN|FILE_ATTRIBUTE_READONLY|FILE_ATTRIBUTE_SYSTEM)
     /* No more Mr. Nice Guy */
     if (status)
@@ -1333,7 +1382,7 @@ printf("win_grant_full_file_access(%s)=%d\n",filename,status);
                 printf("err = %s\n",win_lasterror());
 */
             }
-        status=remove(filename);
+        status=wfile_remove_utf8(filename);
         }
 #endif
     return(status);
@@ -1346,7 +1395,7 @@ int wfile_strong_rmdir(char *dirname)
     int     status;
 
     status=rmdir(dirname);
-#ifndef WIN32
+#ifndef HAVE_WIN32_API
     return(status);
 #else
     if (status)
@@ -1497,6 +1546,7 @@ int wfile_filename_basename_compare(char *fn1,char *fn2)
 
 /*
 ** Returns 0 for no file, 1 for a reg. file, 2 for a directory
+** UTF-8 compatible in Windows
 */
 int wfile_status(char *filename)
 
@@ -1506,7 +1556,16 @@ int wfile_status(char *filename)
 
     if (wsys_win32_api())
         {
-        status=GetFileAttributes(filename);
+        if (!utf8_is_ascii(filename))
+            {
+            short *w;
+            static char *funcname="wfile_status";
+            utf8_to_utf16_alloc((void **)&w,filename);
+            status=GetFileAttributesW((LPWSTR)w);
+            willus_mem_free((double **)&w,funcname);
+            }
+        else
+            status=GetFileAttributes(filename);
         if (status==-1)
             return(0);
         if (status&FILE_ATTRIBUTE_DIRECTORY)
@@ -1986,7 +2045,7 @@ char *wfile_tempname(char *dir,char *prefix)
         /* This actually creates the file, so we have to delete it */
         /* in case the user wishes to use it for a directory.      */
         if (wfile_status(tname)==1)
-            remove(tname);
+            wfile_remove_utf8(tname);
         return(tname);
         }
 #endif /* WIN32 */
@@ -2004,7 +2063,7 @@ char *wfile_tempname(char *dir,char *prefix)
     if (fd!=-1)
         {
         close(fd);
-        remove(tname);
+        wfile_remove_utf8(tname);
         }
     }
     return(tname);
@@ -2045,6 +2104,14 @@ char *wfile_tempname(char *dir,char *prefix)
         }
     return(tname);
 #endif /* LINUX */
+    }
+
+
+void wfile_abstmpnam_ex(char *filename,char *ext)
+
+    {
+    wfile_abstmpnam(filename);
+    wfile_newext(filename,NULL,ext);
     }
 
 
@@ -2108,49 +2175,53 @@ double wfile_size(char *filename)
     double size;
 
 #if (defined(WIN32) || defined(WIN64))
-    HFILE   hfile;
-    static OFSTRUCT buf;
+    void *handle;
     DWORD high_order_32_bits;
     static char fullname[MAXFILENAMELEN];
 
     wfile_expandname(fullname,filename);
-    hfile=OpenFile(fullname,&buf,OF_READ);
-    if (hfile==HFILE_ERROR)
-        size=-1.0;
+    handle=win_shared_handle_utf8(fullname);
+    if (handle==NULL)
+        return(generic_size(filename));
     else
         {
-        HANDLE  handle;
+/*
 #ifdef WIN64
         long long xhandle;
 
-        xhandle=(long long)hfile;  /* Avoid compiler warning */
+        xhandle=(long long)hfile;
         handle=(HANDLE)xhandle;
 #else
         handle=(HANDLE)hfile;
 #endif
-        size=(double)GetFileSize(handle,&high_order_32_bits);
+*/
+        size=(double)GetFileSize((HANDLE)handle,&high_order_32_bits);
         if (high_order_32_bits!=0)
             size += (double)high_order_32_bits*4294967296.0;  /* (2^32) */
-        CloseHandle(handle);
+        win_close_handle(handle);
         }
 #elif (defined(UNIX))
     return(unix_size(filename));
 #else
-    FILE *f;
-    long lsize;
-
-    f=fopen(filename,"rb");
-    if (f==NULL)
-        size=-1.0;
-    else
-        {
-        fseek(f,0L,2);
-        lsize=ftell(f);
-        fclose(f);
-        size=(double)lsize;
-        }
+    return(generic_size(filename));
 #endif
     return(size);
+    }
+
+
+static double generic_size(char *filename)
+
+    {
+    size_t ptr;
+    FILE *f;
+
+    f=wfile_fopen_utf8(filename,"rb");
+    if (f==NULL)
+        return(-1.0);
+    fseek(f,(size_t)0,2);
+    ptr=ftell(f);
+    fclose(f);
+    return((double)ptr);
     }
 
 
@@ -2163,13 +2234,13 @@ int wfile_copy_file(char *destname,char *srcname,int append)
     static char *writeerr="** \aWrite error copying %s to %s **\n";
 
     status=1;
-    src=fopen(srcname,"rb");
+    src=wfile_fopen_utf8(srcname,"rb");
     if (src==NULL)
         {
         wlprintf("Cannot open source file %s.\nCopy failed.\n",srcname);
         return(0);
         }
-    dest=fopen(destname,append ? "ab" : "wb");
+    dest=wfile_fopen_utf8(destname,append ? "ab" : "wb");
         if (dest==NULL)
             {
             wlprintf("Cannot open destination file %s.\nCopy failed.\n",destname);
@@ -2258,7 +2329,7 @@ int wfile_shorten_ascii(char *filename,char *pattern,int maxlen,
     FILE    *f;
     int     lc,len,patlen;
 
-    f=fopen(filename,"r");
+    f=wfile_fopen_utf8(filename,"r");
     if (f==NULL)
         return(-2);
     fseek(f,0L,2);
@@ -2289,7 +2360,7 @@ int wfile_shorten_ascii(char *filename,char *pattern,int maxlen,
         if (bytesleft <= desired_len)
             {
             FILE *out;
-            out=fopen(tempname,"w");
+            out=wfile_fopen_utf8(tempname,"w");
             if (out==NULL)
                 {
                 fclose(f);
@@ -2305,9 +2376,9 @@ int wfile_shorten_ascii(char *filename,char *pattern,int maxlen,
                 fputc(c,out);
             fclose(out);
             fclose(f);
-            if (remove(filename) || rename(tempname,filename))
+            if (wfile_remove_utf8(filename) || wfile_rename_utf8(tempname,filename))
                 return(-4);
-            f=fopen(filename,"r");
+            f=wfile_fopen_utf8(filename,"r");
             if (f==NULL)
                 return(-5);
             fseek(f,0L,2);
@@ -2317,7 +2388,7 @@ int wfile_shorten_ascii(char *filename,char *pattern,int maxlen,
             }
         }
     fclose(f);
-    remove(filename);
+    wfile_remove_utf8(filename);
     return(0);
     }
 
@@ -2412,6 +2483,48 @@ int wfile_wild_match(char *pattern,char *name)
 */
     }
 
+
+int wfile_symlink_size(char *filename)
+
+    {
+#ifdef WIN32
+    int status,size;
+    char target[256];
+    status=win_symlink(filename,target,255,&size);
+    if (status!=1 && status!=2)
+        return(-1);
+    return(size);
+#else
+    struct stat fs;
+    int status;
+    status=lstat(filename,&fs);
+    if (status)
+        return(-1);
+    return((int)fs.st_size);
+#endif
+    }
+
+/*
+** Return the date of the "link file," not the date of the target.
+*/
+int wfile_symlink_date(const char *filename,struct tm *filedate)
+
+    {
+#ifdef WIN32
+    return(wfile_date(filename,filedate));
+#else
+    struct stat fs;
+    struct tm *t;
+    int status;
+
+    status=lstat(filename,&fs);
+    if (status)
+        return(0);
+    t=localtime(&fs.st_mtime);
+    (*filedate)=(*t);
+    return(1);
+#endif
+    }
 
 #ifdef UNIX
 static int unix_findfirst(const char *spec,wfile *wptr)
@@ -2553,41 +2666,6 @@ static int unix_is_symlink(char *filename,char *src)
 #endif
     }
 
-
-int wfile_symlink_size(char *filename)
-
-    {
-#ifdef WIN32
-    return(-1);
-#else
-    struct stat fs;
-    int status;
-    status=lstat(filename,&fs);
-    if (status)
-        return(-1);
-    return((int)fs.st_size);
-#endif
-    }
-
-
-int wfile_symlink_date(const char *filename,struct tm *filedate)
-
-    {
-#ifdef WIN32
-    return(wfile_date(filename,filedate));
-#else
-    struct stat fs;
-    struct tm *t;
-    int status;
-
-    status=lstat(filename,&fs);
-    if (status)
-        return(0);
-    t=localtime(&fs.st_mtime);
-    (*filedate)=(*t);
-    return(1);
-#endif
-    }
 
 
 static int unix_date(const char *filename,struct tm *filedate)
@@ -3010,7 +3088,7 @@ void wfile_touch(char *filename)
     FILE *f;
     int     c;
 
-    f=fopen(filename,"rb+");
+    f=wfile_fopen_utf8(filename,"rb+");
     if (f!=NULL)
         {
         fseek(f,0L,0);
@@ -3038,7 +3116,7 @@ FILE *wfile_open_most_recent(char *wildspec,char *mode,int recursive)
         return(NULL);
     filelist_sort_by_date(fl);
     wfile_fullname(wildspec,fl->dir,fl->entry[fl->n-1].name);
-    return(fopen(wildspec,mode));
+    return(wfile_fopen_utf8(wildspec,mode));
     }
 
 
@@ -3088,8 +3166,8 @@ int wfile_extract_in_place(char *filename)
     strcpy(fullname,fl->entry[0].name);
     filelist_free(fl);
     if (wfile_status(newloc)==1)
-        remove(newloc);
-    status=rename(temploc,newloc);
+        wfile_remove_utf8(newloc);
+    status=wfile_rename_utf8(temploc,newloc);
     if (status)
         return(-2);
     wfile_set_wd(curdir);
@@ -3300,7 +3378,99 @@ void wfile_remove_file_plus_parent_dir(char *tempfile)
 
     if (tempfile[0]=='\0')
         return;
-    remove(tempfile);
+    wfile_remove_utf8(tempfile);
     wfile_basepath(path,tempfile);
     wfile_remove_dir(path,0);
+    }
+
+
+FILE *wfile_fopen_utf8(char *filename,char *mode)
+
+    {
+#if (defined(WIN32) || defined(WIN64))
+    short *fw;
+    short mw[32];
+    static char *funcname="wfile_fopen_utf8";
+    FILE *f;
+    if (utf8_is_ascii(filename))
+        return(fopen(filename,mode));
+    utf8_to_utf16_alloc((void **)&fw,filename);
+    utf8_to_utf16(mw,mode,31);
+    f=_wfopen((LPWSTR)fw,(LPWSTR)mw);
+    willus_mem_free((double **)&fw,funcname);
+    return(f);
+#else
+    return(fopen(filename,mode));
+#endif
+    }
+
+/*
+** Make directory.
+** UTF-8 compatible in Windows
+** Returns -1 if already exists.
+**         -2 if error
+**          0 if OK
+*/
+int wfile_makedir(char *foldername)
+
+    {
+#if (defined(WIN32) || defined(WIN64))
+    short *fw;
+    static char *funcname="wfile_makedir";
+    int status;
+    if (utf8_is_ascii(foldername))
+        return(wfile_makedir_ascii(foldername));
+    utf8_to_utf16_alloc((void **)&fw,foldername);
+    status=_wmkdir((wchar_t*)fw);
+    willus_mem_free((double **)&fw,funcname);
+    if (!status)
+        return(0);
+    else if (status==EEXIST)
+        return(-1);
+    return(-2);
+#else
+    return(wfile_makedir_ascii(foldername));
+#endif
+    }
+
+
+int wfile_remove_utf8(char *filename)
+
+    {
+#if (defined(WIN32) || defined(WIN64))
+    short *fw;
+    static char *funcname="wfile_remove_utf8";
+    int status;
+
+    if (utf8_is_ascii(filename))
+        return(remove(filename));
+    utf8_to_utf16_alloc((void **)&fw,filename);
+    status=_wremove((LPWSTR)fw);
+    willus_mem_free((double **)&fw,funcname);
+    return(status);
+#else
+    return(remove(filename));
+#endif
+    }
+
+
+int wfile_rename_utf8(char *filename1,char *filename2)
+
+    {
+#if (defined(WIN32) || defined(WIN64))
+    short *fw1,*fw2;
+    static char *funcname="wfile_rename_utf8";
+    int status;
+
+    if (utf8_is_ascii(filename1) && utf8_is_ascii(filename2))
+        return(rename(filename1,filename2));
+    utf8_to_utf16_alloc((void **)&fw1,filename1);
+    utf8_to_utf16_alloc((void **)&fw2,filename2);
+    status=_wrename((LPWSTR)fw1,(LPWSTR)fw2);
+    willus_mem_free((double **)&fw2,funcname);
+    willus_mem_free((double **)&fw1,funcname);
+    return(status);
+#else
+    return(rename(filename1,filename2));
+#endif
     }

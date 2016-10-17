@@ -3,7 +3,7 @@
 **
 ** Part of willus.com general purpose C code library.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2016  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,7 @@
 
 #include "willus.h"
 
-#if (defined(WIN32) || defined(WIN64))
+#ifdef HAVE_WIN32_API
 
 #include <windows.h>
 #include <stdio.h>
@@ -388,9 +388,10 @@ unsigned char xfitpage[1096] = {
 
 
 
-static int wmb_inuse=0;
+static int wmb_inuse=-1;
 static WINMBOX _wmb,*wmb;
 
+static void winmbox_init(void);
 static void winmbox_message_box_calc_size(WINMBOX *wmb);
 static void winmbox_message_box_add_children(void);
 static LRESULT CALLBACK winmbox_edit_proc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam);
@@ -405,6 +406,14 @@ static void winmbox_display_line(HFONT hf,char *s,SIZE *size,int maxwidth,
                                   HDC hdc,int x0,int y0);
 static void winmbox_display_text_1(HFONT hf,char *buf,SIZE *size,HDC hdc,int x0,int y0);
 static HFONT winmbox_get_font(double fsize);
+
+
+static void winmbox_init(void)
+
+    {
+    if (wmb_inuse < 0)
+        winmbox_set_font("");
+    }
 
 
 /*
@@ -508,6 +517,7 @@ int winmbox_message_box_ex2(void *parent,char *title,char *message,
 /*
 ansi_dprintf(NULL,"@winmbox_message_box_ex(%s,...) wmb_inuse=%d\n",message,wmb_inuse);
 */
+    winmbox_init();
     if (wmb_inuse)
         return(0);
     wmb_inuse=1;
@@ -542,9 +552,9 @@ ansi_dprintf(NULL,"@winmbox_message_box_ex(%s,...) wmb_inuse=%d\n",message,wmb_i
     wndclass.hCursor       = NULL;
     wndclass.hbrBackground = wmb->brush;
     wndclass.lpszMenuName  = NULL;
-    wndclass.lpszClassName = wmb->class;
+    wndclass.lpszClassName = classname;
     wndclass.hIconSm       = NULL;
-   
+    
     RegisterClassEx(&wndclass) ;
 
     wmb->inbuf=inbuf;
@@ -572,9 +582,9 @@ ansi_dprintf(NULL,"@winmbox_message_box_ex(%s,...) wmb_inuse=%d\n",message,wmb_i
     winmbox_message_box_calc_size(wmb);
     x0 = rect.left + ((rect.right-rect.left)-wmb->width)/2;
     y0 = rect.top + ((rect.bottom-rect.top)-wmb->height)/2;
-    wmb->hwnd=CreateWindowEx(WS_EX_TOPMOST,wmb->class,title,WS_OVERLAPPED,
-                              x0,y0,wmb->width,wmb->height,
-                              NULL,NULL,0,NULL);
+    wmb->hwnd=CreateWindowEx(WS_EX_TOPMOST,classname,title,WS_OVERLAPPED,
+                             x0,y0,wmb->width,wmb->height,
+                             NULL,NULL,0,NULL);
     if (window!=NULL)
         (*window)=(void *)wmb->hwnd;
     if (wmb->hwnd==NULL)
@@ -642,7 +652,10 @@ static void winmbox_message_box_calc_size(WINMBOX *wmb)
         }
     wmb->mf=winmbox_get_font(wmb->mfsize);
     winmbox_text_extents(wmb->mf,wmb->msg,&m,w);
-    wmb->width=w;
+    /* wmb->width=w; */
+    wmb->width=m.cx+10 > wmb->maxwidth ? wmb->maxwidth: m.cx+10;
+    if (wmb->width<w)
+        wmb->width=w;
     wmb->height += wmb->mfsize*2.+m.cy;
     if (wmb->aboutbox.right-wmb->aboutbox.left>0)
         {
@@ -762,7 +775,7 @@ wmb->msg,wmb->inbuf,wmb->aboutbox.right-wmb->aboutbox.left);
         else
             {
             dx=(int)(wmb->width*.9);
-            dy=(int)(wmb->mfsize*1.2);
+            dy=(int)(wmb->mfsize*1.25);
             flags=WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP;
             }
         x1=(wmb->width - dx)/2;
@@ -985,6 +998,7 @@ static void add_gray(int *r0,int *g0,int *b0,int delta)
 
 /*
 ** Assumes button was created WITHOUT WS_BORDER flag!
+** Does not work correctly w/o PNG library support.
 */
 void winmbox_checkbox_button_draw(void *hdc0,void *rect0,int state,void *hfont0,
                                   char *text,int textcolorrgb,int checked,
@@ -1033,7 +1047,10 @@ void winmbox_checkbox_button_draw(void *hdc0,void *rect0,int state,void *hfont0,
     cbw=h/2;
     dx=cbw*3/2;
     n8=cbw*4/3;
-
+/*
+printf("@winmbox_checkbox_button_draw: text='%s'\n",text);
+*/
+#if (defined(HAVE_PNG_LIB))
     /* Get checkmark bitmap */
     if (checked && n8!=x8)
         {
@@ -1153,6 +1170,7 @@ void winmbox_checkbox_button_draw(void *hdc0,void *rect0,int state,void *hfont0,
             }
         bmp_free(bmp);
         }
+#endif
 
     /* Get background bitmap */
     if (bgbmp!=NULL)
@@ -1224,67 +1242,70 @@ void winmbox_checkbox_button_draw(void *hdc0,void *rect0,int state,void *hfont0,
     FrameRect(hdc,&r,tbrush);
     }
 */
-    oldfont=SelectObject(hdc,hfont);
-    SetTextColor(hdc,tcolor);
-    SetBkMode(hdc,TRANSPARENT);
-    ulx1=ulx2=uly=-1;
-    for (i=j=0;text[i]!='\0' && j<255;i++)
+    if (text[0]!='\0')
         {
-        if (i==0 && text[i]=='*')
-            continue;
-        if (text[i]=='&')
-            {
-            i++;
-            if (text[i]!='&')
-                ulx1=j;
-            }
-        t2[j++]=text[i];
-        }
-    t2[j]='\0';
-    GetTextExtentPoint(hdc,t2,strlen(t2),&size);
-    if (ulx1>=0)
-        {
-        if (ulx1>0)
-            {
-            int c;
-            c=t2[ulx1];
-            t2[ulx1]='\0';
-            GetTextExtentPoint(hdc,t2,strlen(t2),&tusize);
-            t2[ulx1]=c;
-            ulx1=tusize.cx;
-            }
-        else
-            ulx1=0;
-        tu[0]=t2[0];
-        tu[1]='\0';
-        GetTextExtentPoint(hdc,tu,strlen(tu),&tusize);
-        ulx1 += rect->left+cbw+dx;
-        ulx2 = ulx1 + tusize.cx - 1;
-        uly = (rect->top+rect->bottom)/2+size.cy/2-3;
-        }
-    SetTextAlign(hdc,TA_TOP|TA_LEFT);
-    TextOut(hdc,rect->left+cbw+dx,(rect->top+rect->bottom-size.cy)/2,t2,strlen(t2));
-    SelectObject(hdc,oldfont);
-    if (ulx1 > 0)
-        {
-        SelectObject(hdc,pen);
+        oldfont=SelectObject(hdc,hfont);
+        SetTextColor(hdc,tcolor);
         SetBkMode(hdc,TRANSPARENT);
-        MoveToEx(hdc,ulx1,uly,NULL);
-        LineTo(hdc,ulx2,uly);
-        }
-    if (state&ODS_FOCUS)
-        {
-        int x1;
-        j= 5;
-        SelectObject(hdc,pen_dotted);
-        SetBkMode(hdc,TRANSPARENT);
-        x1=rect->left+j+cbw+dx-5;
-        MoveToEx(hdc,x1,rect->top+j,NULL);
-        LineTo(hdc,rect->right-j-1,rect->top+j);
-        LineTo(hdc,rect->right-j-1,rect->bottom-j-1);
-        LineTo(hdc,x1,rect->bottom-j-1);
-        LineTo(hdc,x1,rect->top+j);
-        }
+        ulx1=ulx2=uly=-1;
+        for (i=j=0;text[i]!='\0' && j<255;i++)
+            {
+            if (i==0 && text[i]=='*')
+                continue;
+            if (text[i]=='&')
+                {
+                i++;
+                if (text[i]!='&')
+                    ulx1=j;
+                }
+            t2[j++]=text[i];
+            }
+        t2[j]='\0';
+        win_gettextextentpoint_utf8((void *)hdc,t2,&size.cx,&size.cy);
+        if (ulx1>=0)
+            {
+            if (ulx1>0)
+                {
+                int c;
+                c=t2[ulx1];
+                t2[ulx1]='\0';
+                win_gettextextentpoint_utf8((void *)hdc,t2,&tusize.cx,&tusize.cy);
+                t2[ulx1]=c;
+                ulx1=tusize.cx;
+                }
+            else
+                ulx1=0;
+            tu[0]=t2[0];
+            tu[1]='\0';
+            win_gettextextentpoint_utf8((void *)hdc,tu,&tusize.cx,&tusize.cy);
+            ulx1 += rect->left+cbw+dx;
+            ulx2 = ulx1 + tusize.cx - 1;
+            uly = (rect->top+rect->bottom)/2+size.cy/2-3;
+            }
+        SetTextAlign(hdc,TA_TOP|TA_LEFT);
+        win_textout_utf8((void *)hdc,rect->left+cbw+dx,(rect->top+rect->bottom-size.cy)/2,t2);
+        SelectObject(hdc,oldfont);
+        if (ulx1 > 0)
+            {
+            SelectObject(hdc,pen);
+            SetBkMode(hdc,TRANSPARENT);
+            MoveToEx(hdc,ulx1,uly,NULL);
+            LineTo(hdc,ulx2,uly);
+            }
+        if (state&ODS_FOCUS)
+            {
+            int x1;
+            j= 5;
+            SelectObject(hdc,pen_dotted);
+            SetBkMode(hdc,TRANSPARENT);
+            x1=rect->left+j+cbw+dx-5;
+            MoveToEx(hdc,x1,rect->top+j,NULL);
+            LineTo(hdc,rect->right-j-1,rect->top+j);
+            LineTo(hdc,rect->right-j-1,rect->bottom-j-1);
+            LineTo(hdc,x1,rect->bottom-j-1);
+            LineTo(hdc,x1,rect->top+j);
+            }
+        } /* text[0]!='\0' */
     /* Delete pens / brushes */
     DeleteObject(pen_dotted);
     DeleteObject(pen);
@@ -1445,7 +1466,7 @@ void winmbox_button_draw(void *hdc0,void *rect0,int state,int basecolorrgb,
             t2[j++]=text[i];
             }
         t2[j]='\0';
-        GetTextExtentPoint(hdc,t2,strlen(t2),&size);
+        win_gettextextentpoint_utf8((void *)hdc,t2,&size.cx,&size.cy);
         if (ulx1>=0)
             {
             if (ulx1>0)
@@ -1453,7 +1474,7 @@ void winmbox_button_draw(void *hdc0,void *rect0,int state,int basecolorrgb,
                 int c;
                 c=t2[ulx1];
                 t2[ulx1]='\0';
-                GetTextExtentPoint(hdc,t2,strlen(t2),&tusize);
+                win_gettextextentpoint_utf8((void *)hdc,t2,&tusize.cx,&tusize.cy);
                 t2[ulx1]=c;
                 ulx1=tusize.cx;
                 }
@@ -1461,13 +1482,13 @@ void winmbox_button_draw(void *hdc0,void *rect0,int state,int basecolorrgb,
                 ulx1=0;
             tu[0]=t2[0];
             tu[1]='\0';
-            GetTextExtentPoint(hdc,tu,strlen(tu),&tusize);
+            win_gettextextentpoint_utf8((void *)hdc,tu,&tusize.cx,&tusize.cy);
             ulx1 += dx+(rect->left+rect->right)/2-size.cx/2;
             ulx2 = ulx1 + tusize.cx - 1;
             uly = dy+(rect->top+rect->bottom)/2+size.cy/2-3;
             }
         SetTextAlign(hdc,TA_TOP|TA_CENTER);
-        TextOut(hdc,dx+(rect->left+rect->right)/2,dy+(rect->top+rect->bottom-size.cy)/2,t2,strlen(t2));
+        win_textout_utf8((void *)hdc,dx+(rect->left+rect->right)/2,dy+(rect->top+rect->bottom-size.cy)/2,t2);
         SelectObject(hdc,oldfont);
         if (ulx1 > 0)
             {
@@ -1503,7 +1524,10 @@ void winmbox_button_draw(void *hdc0,void *rect0,int state,int basecolorrgb,
         DeleteObject(brush[i]);
     }
    
- 
+
+/*
+** Does not work entirely correctly without PNG lib.
+*/ 
 static int special_button_text(HDC hdc,char *text,RECT *rect,HBRUSH brush,HPEN pen,int simple,
                                int r0,int g0,int b0)
 
@@ -1599,6 +1623,7 @@ static int special_button_text(HDC hdc,char *text,RECT *rect,HBRUSH brush,HPEN p
                 nbmpdata=n_fitpage;
                 bmpdata=xfitpage;
                 }
+#if (defined(HAVE_PNG_LIB))
             if (!bmp_read_png_stream(bmp,(void *)bmpdata,nbmpdata,NULL))
                 {
                 WILLUSBITMAP *bmpsmall,_bmpsmall;
@@ -1630,6 +1655,7 @@ static int special_button_text(HDC hdc,char *text,RECT *rect,HBRUSH brush,HPEN p
                 bmp_free(bmpsmall);
                 bmp_free(bmp);
                 }
+#endif
             }
         }
     if (ik>=0 && ik<=5)
@@ -1843,27 +1869,29 @@ static void winmbox_display_line(HFONT hf,char *s,SIZE *size,int maxwidth,
 
     linerat=WMB_LINERAT;
     size->cx=size->cy=0;
-    for (i0=0,i=i0+strlen(&s[i0]);i>=0;i--)
+    for (i0=0,i=i0+strlen(&s[i0]);i>=i0;i--)
         {
-        int c;
-        c=s[i];
-        s[i]='\0';
+        int c,j;
+
+        j=(i==i0)?i0+strlen(&s[i0]):i;
+        c=s[j];
+        s[j]='\0';
         winmbox_display_text_1(hf,&s[i0],&sz,NULL,0,0);
-        s[i]=c;
-        if (sz.cx+sz.cy*2. <= maxwidth && (s[i]=='\0' || s[i]==' '))
+        s[j]=c;
+        if (i==i0 || (sz.cx+sz.cy*2. <= maxwidth && (s[i]=='\0' || s[i]==' ')))
             {
             if (hdc!=NULL)
                 {
-                c=s[i];
-                s[i]='\0';
+                c=s[j];
+                s[j]='\0';
                 winmbox_display_text_1(hf,&s[i0],&sz,hdc,x0,y0);
-                s[i]=c;
+                s[j]=c;
                 }
             size->cy += sz.cy*linerat;
             y0 += sz.cy*linerat;
             if (sz.cx > size->cx)
                 size->cx=sz.cx;
-            if (s[i]=='\0')
+            if (s[j]=='\0')
                 return;
             i0=i+1;
             i=i0+strlen(&s[i0])+1;
@@ -1881,12 +1909,24 @@ static void winmbox_display_text_1(HFONT hf,char *buf,SIZE *size,
 
     hdc=(hdc1==NULL) ? GetDC(GetDesktopWindow()) : hdc1;
     oldfont=(HFONT)SelectObject(hdc,hf);
-    GetTextExtentPoint(hdc,buf,strlen(buf),size);
+    win_gettextextentpoint_utf8((void *)hdc,buf,&size->cx,&size->cy);
     if (hdc1!=NULL)
-        TextOut(hdc,x0,y0,buf,strlen(buf));
+        win_textout_utf8((void *)hdc,x0,y0,buf);
     SelectObject(hdc,oldfont);
     if (hdc1==NULL)
         ReleaseDC(GetDesktopWindow(),hdc);
+    }
+
+
+static char winmbox_fontname[64];
+
+void winmbox_set_font(char *fontname)
+
+    {
+    strncpy(winmbox_fontname,fontname,63);
+    winmbox_fontname[63]='\0';
+    if (wmb_inuse < 0)
+        wmb_inuse = 0;
     }
 
 
@@ -1896,7 +1936,8 @@ static HFONT winmbox_get_font(double fsize)
     HFONT hf;
     hf=CreateFont((int)(fsize+.5),0,0,0,FW_NORMAL,0,0,0,ANSI_CHARSET,
                       OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,
-                      DEFAULT_QUALITY,DEFAULT_PITCH|FF_DONTCARE,"Calibri");
+                      DEFAULT_QUALITY,DEFAULT_PITCH|FF_DONTCARE,
+                      winmbox_fontname[0]!='\0' ? winmbox_fontname : "Calibri");
     if (hf==NULL)
         hf=CreateFont((int)(fsize+.5),0,0,0,FW_NORMAL,0,0,0,ANSI_CHARSET,
                       OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,
@@ -1904,4 +1945,4 @@ static HFONT winmbox_get_font(double fsize)
     return(hf);
     }
 
-#endif /* WIN32/64 */
+#endif /* HAVE_WIN32_API */

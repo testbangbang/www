@@ -3,7 +3,7 @@
 **
 ** Part of willus.com general purpose C code library.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2015  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@
 
 #ifdef HAVE_MUPDF_LIB
 #include <mupdf/pdf.h>
+void pdf_install_load_system_font_funcs(fz_context *ctx);
 
 static int bmpmupdf_pixmap_to_bmp(WILLUSBITMAP *bmp,fz_context *ctx,fz_pixmap *pixmap);
 
@@ -56,14 +57,19 @@ int bmpmupdf_pdffile_to_bmp(WILLUSBITMAP *bmp,char *filename,int pageno,double d
     ctx = fz_new_context(NULL,NULL,FZ_STORE_DEFAULT);
     if (!ctx)
         return(-1);
+    fz_try(ctx)
+    {
+    fz_register_document_handlers(ctx);
     fz_set_aa_level(ctx,8);
+    /* Sumatra version of MuPDF v1.4 -- use locally installed fonts */
+    pdf_install_load_system_font_funcs(ctx);
 //    fz_accelerate();
 //    glyphcache=fz_new_glyph_cache();
     colorspace=(bpp==8 ? fz_device_gray(ctx) : fz_device_rgb(ctx));
     fz_try(ctx) { doc=fz_open_document(ctx,filename); }
     fz_catch(ctx) 
         { 
-        fz_free_context(ctx);
+        fz_drop_context(ctx);
         return(-1);
         }
     /*
@@ -77,35 +83,35 @@ int bmpmupdf_pdffile_to_bmp(WILLUSBITMAP *bmp,char *filename,int pageno,double d
 //        return(-2);
 //        }
 
-    np=fz_count_pages(doc);
+    np=fz_count_pages(ctx,doc);
     if (pageno>np)
         return(-99);
-    fz_try(ctx) { page = fz_load_page(doc,pageno-1); }
+    fz_try(ctx) { page = fz_load_page(ctx,doc,pageno-1); }
     fz_catch(ctx) 
         {
-        fz_close_document(doc);
-        fz_free_context(ctx);
+        fz_drop_document(ctx,doc);
+        fz_drop_context(ctx);
         return(-3);
         }
     fz_try(ctx) { list=fz_new_display_list(ctx);
                   dev=fz_new_list_device(ctx,list);
-                  fz_run_page(doc,page,dev,&fz_identity,NULL);
+                  fz_run_page(ctx,page,dev,&fz_identity,NULL);
                 }
     fz_catch(ctx)
         {
-        fz_free_device(dev);
+        fz_drop_device(ctx,dev);
         fz_drop_display_list(ctx,list);
-        fz_free_page(doc,page);
-        fz_close_document(doc);
-        fz_free_context(ctx);
+        fz_drop_page(ctx,page);
+        fz_drop_document(ctx,doc);
+        fz_drop_context(ctx);
         return(-4);
         }
-    fz_free_device(dev);
+    fz_drop_device(ctx,dev);
     dev=NULL;
     dpp=dpi/72.;
     pix=NULL;
     fz_var(pix);
-    fz_bound_page(doc,page,&bounds);
+    fz_bound_page(ctx,page,&bounds);
     ctm=fz_identity;
     fz_scale(&ctm,dpp,dpp);
 //    ctm=fz_concat(ctm,fz_rotate(rotation));
@@ -124,31 +130,36 @@ int bmpmupdf_pdffile_to_bmp(WILLUSBITMAP *bmp,char *filename,int pageno,double d
         fz_clear_pixmap_with_value(ctx,pix,255);
         dev=fz_new_draw_device(ctx,pix);
         if (list)
-            fz_run_display_list(list,dev,&ctm,&bounds2,NULL);
+            fz_run_display_list(ctx,list,dev,&ctm,&bounds2,NULL);
         else
-            fz_run_page(doc,page,dev,&ctm,NULL);
-        fz_free_device(dev);
+            fz_run_page(ctx,page,dev,&ctm,NULL);
+        fz_drop_device(ctx,dev);
         dev=NULL;
         status=bmpmupdf_pixmap_to_bmp(bmp,ctx,pix);
         fz_drop_pixmap(ctx,pix);
         }
     fz_catch(ctx)
         {
-        fz_free_device(dev);
+        fz_drop_device(ctx,dev);
         fz_drop_pixmap(ctx,pix);
         fz_drop_display_list(ctx,list);
-        fz_free_page(doc,page);
-        fz_close_document(doc);
-        fz_free_context(ctx);
+        fz_drop_page(ctx,page);
+        fz_drop_document(ctx,doc);
+        fz_drop_context(ctx);
         return(-5);
         }
     if (list)
         fz_drop_display_list(ctx,list);
-    fz_free_page(doc,page);
+    fz_drop_page(ctx,page);
 //    pdf_free_xref(xref);
-    fz_close_document(doc);
+    fz_drop_document(ctx,doc);
     fz_flush_warnings(ctx);
-    fz_free_context(ctx);
+    } /* fz_catch before registering handlers */
+    fz_catch(ctx) /* Error registering */
+    {
+    status = -10;
+    }
+    fz_drop_context(ctx);
 //    fz_free_glyph_cache(glyphcache);
 //    fz_flush_warnings();
     if (status<0)
@@ -179,47 +190,58 @@ int bmpmupdf_pdffile_width_and_height(char *filename,int pageno,double *width_in
     ctx = fz_new_context(NULL,NULL,FZ_STORE_DEFAULT);
     if (!ctx)
         return(-1);
+    fz_try(ctx)
+    {
+    fz_register_document_handlers(ctx);
     fz_set_aa_level(ctx,8);
+    /* Sumatra version of MuPDF v1.4 -- use locally installed fonts */
+    pdf_install_load_system_font_funcs(ctx);
     fz_try(ctx) { doc=fz_open_document(ctx,filename); }
     fz_catch(ctx) 
         { 
-        fz_free_context(ctx);
+        fz_drop_context(ctx);
         return(-1);
         }
-    np=fz_count_pages(doc);
+    np=fz_count_pages(ctx,doc);
     if (pageno>np)
         return(-99);
-    fz_try(ctx) { page = fz_load_page(doc,pageno-1); }
+    fz_try(ctx) { page = fz_load_page(ctx,doc,pageno-1); }
     fz_catch(ctx) 
         {
-        fz_close_document(doc);
-        fz_free_context(ctx);
+        fz_drop_document(ctx,doc);
+        fz_drop_context(ctx);
         return(-3);
         }
     fz_try(ctx) { list=fz_new_display_list(ctx);
                   dev=fz_new_list_device(ctx,list);
-                  fz_run_page(doc,page,dev,&fz_identity,NULL);
+                  fz_run_page(ctx,page,dev,&fz_identity,NULL);
                 }
     fz_catch(ctx)
         {
-        fz_free_device(dev);
+        fz_drop_device(ctx,dev);
         fz_drop_display_list(ctx,list);
-        fz_free_page(doc,page);
-        fz_close_document(doc);
-        fz_free_context(ctx);
+        fz_drop_page(ctx,page);
+        fz_drop_document(ctx,doc);
+        fz_drop_context(ctx);
         return(-4);
         }
-    fz_free_device(dev);
+    fz_drop_device(ctx,dev);
     dev=NULL;
-    fz_bound_page(doc,page,&bounds);
+    fz_bound_page(ctx,page,&bounds);
     if (width_in!=NULL)
         (*width_in)=fabs(bounds.x1-bounds.x0)/72.;
     if (height_in!=NULL)
         (*height_in)=fabs(bounds.y1-bounds.y0)/72.;
     fz_drop_display_list(ctx,list);
-    fz_free_page(doc,page);
-    fz_close_document(doc);
-    fz_free_context(ctx);
+    fz_drop_page(ctx,page);
+    fz_drop_document(ctx,doc);
+    } 
+    fz_catch(ctx) /* Error registering */
+    {
+    fz_drop_context(ctx);
+    return(-20);
+    }
+    fz_drop_context(ctx);
     return(0);
     }
 
