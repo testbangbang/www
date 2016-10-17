@@ -1,7 +1,6 @@
 package com.onyx.kreader.note.request;
 
 import android.graphics.*;
-import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -10,7 +9,6 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.note.NoteManager;
@@ -301,6 +299,11 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public void ensureDocumentOpened(final NoteManager parent) {
+        final String src = getDocUniqueId();
+        final String dst = parent.getNoteDocument().getDocumentUniqueId();
+        if (src != null && dst != null && !src.equalsIgnoreCase(dst)) {
+            parent.getNoteDocument().close(getContext());
+        }
         if (!parent.getNoteDocument().isOpen()) {
             parent.getNoteDocument().open(getContext(),
                     getDocUniqueId(),

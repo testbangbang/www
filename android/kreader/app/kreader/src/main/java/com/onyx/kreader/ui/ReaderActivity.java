@@ -42,6 +42,7 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
@@ -53,6 +54,7 @@ import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
 import com.onyx.kreader.ui.actions.ForwardAction;
 import com.onyx.kreader.ui.actions.OpenDocumentAction;
+import com.onyx.kreader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
@@ -389,10 +391,24 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onHomeClick(final HomeClickEvent event) {
         if (event == null || !getReaderDataHolder().inNoteWriting()) {
+            saveDocumentOptions();
             return;
         }
-        StopNoteActionChain actionChain = new StopNoteActionChain(true, true);
-        actionChain.execute(getReaderDataHolder(), null);
+
+        readerDataHolder.getNoteManager().enableScreenPost(true);
+        ShowReaderMenuAction.resetReaderMenu(readerDataHolder);
+        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false);
+        actionChain.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                saveDocumentOptions();
+            }
+        });
+    }
+
+    private void saveDocumentOptions() {
+        final SaveDocumentOptionsAction action = new SaveDocumentOptionsAction();
+        action.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe
@@ -628,6 +644,8 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
+        readerDataHolder.getNoteManager().enableScreenPost(true);
+        ShowReaderMenuAction.resetReaderMenu(readerDataHolder);
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override

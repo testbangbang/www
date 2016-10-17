@@ -1,6 +1,7 @@
 package com.onyx.kreader.reflow;
 
 import android.graphics.Bitmap;
+
 import com.onyx.kreader.utils.HashUtils;
 import com.onyx.kreader.utils.ImageUtils;
 
