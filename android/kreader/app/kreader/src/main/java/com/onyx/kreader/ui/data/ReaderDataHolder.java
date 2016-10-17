@@ -50,6 +50,7 @@ public class ReaderDataHolder {
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
+    private EventBus eventBus = new EventBus();
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -73,7 +74,7 @@ public class ReaderDataHolder {
     }
 
     public EventBus getEventBus() {
-        return EventBus.getDefault();
+        return eventBus;
     }
 
     public void saveReaderViewInfo(final BaseReaderRequest request) {
@@ -425,7 +426,6 @@ public class ReaderDataHolder {
         if (noteManager == null) {
             return;
         }
-
         getNoteManager().stopRawEventProcessor();
     }
 }
