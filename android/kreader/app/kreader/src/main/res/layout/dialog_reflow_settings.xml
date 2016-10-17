@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:padding="1dp"
+              android:gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/textview_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:text="@string/menu_item_smart_reflow"
@@ -25,7 +26,7 @@
     <LinearLayout
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <RelativeLayout
@@ -151,9 +152,9 @@
         <Button
             android:gravity="center"
             android:textSize="20sp"
-            android:id="@+id/confirm_button"
+            android:id="@+id/cancel_button"
             android:background="@drawable/left_right_line_press_button_bg"
-            android:text="@string/confirm"
+            android:text="@string/cancel"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"/>
@@ -161,11 +162,13 @@
         <Button
             android:gravity="center"
             android:textSize="20sp"
-            android:id="@+id/cancel_button"
+            android:id="@+id/confirm_button"
             android:background="@drawable/no_line_press_bg"
-            android:text="@string/cancel"
+            android:text="@string/ok"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"/>
+
+
     </LinearLayout>
 </LinearLayout>

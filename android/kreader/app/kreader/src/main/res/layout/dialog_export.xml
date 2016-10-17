@@ -126,21 +126,16 @@
             android:textSize="@dimen/dialog_export_text_size"
             android:id="@+id/btn_cancel"
             android:text="@string/cancel"
-            android:background="@drawable/no_line_press_bg"
+            android:background="@drawable/no_top_line_press_bg"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="50dp"/>
-
-        <View
-            android:background="@android:color/black"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"/>
 
         <Button
             android:textSize="@dimen/dialog_export_text_size"
             android:id="@+id/btn_ok"
             android:text="@string/ok"
-            android:background="@drawable/no_line_press_bg"
+            android:background="@drawable/no_left_top_line_press_bg"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="50dp"/>
