@@ -3,7 +3,7 @@
 **
 ** Part of willus.com general purpose C code library.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2016  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,7 @@
 
 #include "willus.h"
 
-#ifdef WIN32
+#ifdef HAVE_WIN32_API
 
 #include <windows.h>
 #include <stdio.h>
@@ -51,6 +51,9 @@ static int get_desktop_directory_1(char *desktop,int maxlen,HKEY key_class,
                                    char *keyname);
 static int win_registry_search1(char *value,int maxlen,HKEY key_class,char *keyname,char *searchvalue,int recursive);
 static BOOL CALLBACK find_win_by_procid(HWND hwnd,LPARAM lp);
+static int win_adjust_privilege(void);
+
+static int windate_warn=1;
 
 typedef struct
     {
@@ -232,7 +235,10 @@ static void win_launch_local(char *exename,char *cmdlineopts,int flags,
     gsi.dwFlags = STARTF_USESHOWWINDOW;
     gsi.wShowWindow=flags;
     sprintf(cmdline,"\"%s\" %s",exename,cmdlineopts);
+    win_createprocess_utf8(exename,cmdline,0,cflags|DETACHED_PROCESS,NULL,(void *)&gsi,(void *)&gpi);
+    /*
     CreateProcess(exename,cmdline,0,0,0,cflags|DETACHED_PROCESS,0,0,&gsi,&gpi);
+    */
     }
 
 
@@ -310,10 +316,14 @@ int process_launch_ex_ii(char *command,char *cmdlineopts,int inherits,
                               &sa,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
     sprintf(cmdline,"\"%s\"%s%s",exename,cmdlineopts[0]=='\0'?"":" ",
                                  cmdlineopts);
+    status=win_createprocess_utf8(exename,cmdline,TRUE,detached?DETACHED_PROCESS:0,
+                                  pwd,(void *)&gsi[i],(void *)&gpi[i]);
+    /*
     status=CreateProcess(exename,cmdline,0,0,TRUE,
                          detached?DETACHED_PROCESS:0,
                          0,(pwd!=NULL && pwd[0]=='\0') ? NULL : pwd,
                          &gsi[i],&gpi[i]);
+    */
     if (!status)
         return(status);
     (*pnum)=i;
@@ -328,6 +338,16 @@ int process_launch_ex(char *command,char *cmdlineopts,int inherits,
     static char cmdline[MAXFILENAMELEN];
     static char exename[MAXFILENAMELEN];
 
+/*
+printf("@process_launch_ex()\n");
+printf("    command='%s'\n",command);
+printf("    cmdlineopts='%s'\n",cmdlineopts);
+printf("    inherits=%d\n",inherits);
+printf("    detached=%d\n",detached);
+printf("    pwd='%s'\n",pwd);
+printf("    flags=%d\n",flags);
+printf("    pnum=%p\n",pnum);
+*/
     if (win_which(exename,command)==0)
         return(0);
     if (gpii<0)
@@ -347,10 +367,15 @@ int process_launch_ex(char *command,char *cmdlineopts,int inherits,
     gsi[i].wShowWindow = flags;
 
     sprintf(cmdline,"\"%s\" %s",exename,cmdlineopts);
+    status=win_createprocess_utf8(exename,cmdline,inherits,
+                                  detached?DETACHED_PROCESS:0,pwd,
+                                  (void *)&gsi[i],(void *)&gpi[i]);
+    /*
     status=CreateProcess(exename,cmdline,0,0,inherits,
                          detached?DETACHED_PROCESS:0,
                          0,(pwd!=NULL && pwd[0]=='\0') ? NULL : pwd,
                          &gsi[i],&gpi[i]);
+    */
     if (!status)
         return(status);
     (*pnum)=i;
@@ -380,8 +405,61 @@ int detail_process(char *exename,char *cmdlineopts,int inherits,
     gsi[i].wShowWindow = swflags;
     gsi[i].dwFlags = dwflags;
     sprintf(cmdline,"\"%s\" %s",exename,cmdlineopts);
+    return(win_createprocess_utf8(exename,cmdline,inherits,cflags,pwd,
+                                  (void *)&gsi[i],(void *)&gpi[i]));
+    /*
     return(CreateProcess(exename,cmdline,0,0,inherits,cflags,0,pwd,
                          &gsi[i],&gpi[i]));
+    */
+    }
+
+
+int win_createprocess_utf8(char *exename,char *cmdline,int inherits,int cflags,
+                           char *pwd,void *si,void *pi)
+                           
+    {
+    int status;
+    short *exenamew,*cmdlinew,*pwdw;
+    STARTUPINFOW *siw;
+    STARTUPINFO *sii;
+    static char *funcname="win_createprocess_utf8";
+
+    /*
+    ** VERY important not to pass pwd as empty string.  CreateProcess will fail.
+    ** Pass a full path or NULL, but NOT an empty string.
+    */
+    if (utf8_is_ascii(exename) && utf8_is_ascii(cmdline) && (pwd==NULL || utf8_is_ascii(pwd)))
+        {
+        int status;
+        sii=(STARTUPINFO *)si;
+        status=CreateProcess(exename,cmdline,0,0,inherits,cflags,0,
+                             pwd==NULL?pwd:(pwd[0]=='\0'?NULL:pwd),
+                             sii,(LPPROCESS_INFORMATION)pi);
+        return(status);
+        }
+    utf8_to_utf16_alloc((void **)&exenamew,exename);
+    utf8_to_utf16_alloc((void **)&cmdlinew,cmdline);
+    if (pwd!=NULL && pwd[0]!='\0')
+        utf8_to_utf16_alloc((void **)&pwdw,pwd);
+    else
+        pwdw=NULL;
+    willus_mem_alloc_warn((void **)&siw,sizeof(STARTUPINFOW),funcname,10);
+    memset(siw,0,sizeof(STARTUPINFOW));
+    sii=(LPSTARTUPINFO)si;
+    siw->cb=sizeof(STARTUPINFOW);
+    siw->dwX = sii->dwX;
+    siw->dwY = sii->dwY;
+    siw->dwXSize = sii->dwXSize;
+    siw->dwYSize = sii->dwYSize;
+    siw->wShowWindow = sii->wShowWindow;
+    siw->dwFlags = sii->dwFlags;
+    status=CreateProcessW((LPWSTR)exenamew,(LPWSTR)cmdlinew,0,0,inherits,cflags,0,(LPWSTR)pwdw,
+                          siw,(LPPROCESS_INFORMATION)pi);
+    willus_mem_free((double **)&siw,funcname);
+    willus_mem_free((double **)&pwdw,funcname);
+    willus_mem_free((double **)&cmdlinew,funcname);
+    willus_mem_free((double **)&exenamew,funcname);
+    return(status);
     }
 
 
@@ -483,7 +561,7 @@ int win_text_file_to_clipboard(char *filename,FILE *out)
     int size;
     static char *funcname="win_text_file_to_clipboard";
 
-    f=fopen(filename,"rb");
+    f=wfile_fopen_utf8(filename,"rb");
     if (f==NULL)
         {
         nprintf(out,"Cannot open file %s to put to clipboard.\n",filename);
@@ -570,6 +648,8 @@ int win_buf_to_clipboard(char *lbuf,FILE *out)
     /*  Don't free the memory.  The Clipboard will do it when it empties it. */
     return(0);
     }
+
+
 
 
 /*
@@ -678,7 +758,7 @@ wmetafile *win_emf_from_metafile(char *metafile)
         return(NULL);
     willus_mem_alloc_warn(&vp,size,funcname,10);
     buf=(char *)vp;
-    f=fopen(metafile,"rb");
+    f=wfile_fopen_utf8(metafile,"rb");
     nr=fread(buf,1,size,f);
     fclose(f);
     if (nr<size)
@@ -715,7 +795,7 @@ int win_emf_write_to_file(wmetafile *wmf,char *filename)
     FILE *f;
     int status;
 
-    f=fopen(filename,"wb");
+    f=wfile_fopen_utf8(filename,"wb");
     if (f==NULL)
         return(-1);
     status=win_emf_write(wmf,f);
@@ -1160,7 +1240,7 @@ int win_copy_file(char *destfile,char *srcfile)
     if (h==INVALID_HANDLE_VALUE)
         return(-1);
     maxblock = 16384;
-    f=fopen(srcfile,"rb");
+    f=wfile_fopen_utf8(srcfile,"rb");
     if (f==NULL)
         return(-2);
     fseek(f,0L,2);
@@ -1224,6 +1304,13 @@ void win_windate_to_tm(struct tm *filedate,void *wtime)
     }
 
 
+void win_set_windate_warn(int status)
+
+    {
+    windate_warn=status;
+    }
+
+
 void win_windate_to_tm_direct(struct tm *filedate,void *wtime)
 
     {
@@ -1251,7 +1338,8 @@ void win_windate_to_tm_direct(struct tm *filedate,void *wtime)
     /* ANSI C 32-bit date structure can only handle dates up to 2036 */
     if (stime.wYear > 2036)
         {
-        printf("Warning:  File date beyond 2036 in win_windate_to_tm_direct()!\n");
+        if (windate_warn)
+            printf("Warning:  File date beyond 2036 in win_windate_to_tm_direct()!\n");
         stime.wYear=2036;
         }
     filedate->tm_sec  = stime.wSecond;
@@ -2189,10 +2277,246 @@ static BOOL CALLBACK find_win_by_procid(HWND hwnd,LPARAM lp)
     GetWindowThreadProcessId(hwnd,(LPDWORD)&pid);
     if (pid==fwbp_pid)
         {
-        // fwbp_handle=hwnd;
-        fwbp_count++;
+        char buf[64];
+        GetWindowText(hwnd,buf,63);
+        if (strcmp(buf,"GDI+ Window") && strcmp(buf,"Default IME"))
+            {
+            // fwbp_handle=hwnd;
+            fwbp_count++;
+            }
         }
     return(TRUE);
     }
 
-#endif /* WIN32 */
+
+typedef struct
+    {
+    unsigned int ReparseTag;
+    short ReparseDataLength;
+    short Reserved;
+    short SubsNameOffset;
+    short SubsNameLength;
+    short PrintNameOffset;
+    short PrintNameLength;
+    char ReparseTarget[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
+    } REPARSE_DATA_BUFFER;
+/*
+#define IO_REPARSE_TAG_MOUNT_POINT  0xA0000003
+#define IO_REPARSE_TAG_HSM  0xC0000004
+#define IO_REPARSE_TAG_SIS  0x80000007
+#define IO_REPARSE_TAG_DFS  0x8000000A
+#define IO_REPARSE_TAG_FILTER_MANAGER  0x8000000B
+*/
+/*
+** Returns:
+**    -1 if cannot get handle for file.
+**     0 if file is not a link (or DeviceIoControl fails, which means its not a link).
+**     1 if file is a SYMLINK.
+**     2 if file is a MOUNT POINT (symbolic folder pointing to a different folder)
+**
+** linkname is the name of the file being queried.
+** target is where that file points if it is a link.
+*/
+int win_symlink(char *linkname,char *target,int maxlen,int *linksize)
+
+    {
+    HANDLE h;
+    REPARSE_DATA_BUFFER buffer;
+    int n,status,len;
+    char *x;
+
+    win_adjust_privilege();
+    h=CreateFile(linkname,GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_FLAG_OPEN_REPARSE_POINT|FILE_FLAG_BACKUP_SEMANTICS,NULL);
+    /* printf("invalid handle = %d\n",(int)INVALID_HANDLE_VALUE); */
+    if (h==INVALID_HANDLE_VALUE)
+        return(-1);
+    status=DeviceIoControl(h,FSCTL_GET_REPARSE_POINT,NULL,0,&buffer,MAXIMUM_REPARSE_DATA_BUFFER_SIZE,(LPDWORD)&len,NULL);
+    CloseHandle(h);
+    if (status==0)
+        return(0);
+    if (linksize!=NULL)
+        (*linksize)=len;
+    if (buffer.ReparseTag == IO_REPARSE_TAG_SYMLINK || buffer.ReparseTag == IO_REPARSE_TAG_MOUNT_POINT)
+        {
+        if (target!=NULL)
+            {
+            int i,n,l1;
+            i=buffer.SubsNameOffset;
+            if (i>0)
+                i+=4;
+            x=&buffer.ReparseTarget[i];
+            l1=buffer.SubsNameLength/2;
+            for (n=i=0;i<maxlen && i<l1;i++)
+                {
+                if (x[i*2]=='\0' && x[i*2+1]=='\0')
+                    break;
+                target[n++]=x[i*2];
+                }
+            target[n]='\0';
+            i=in_string(target,"\\??\\");
+            if (i>=0)
+                memmove(target,&target[i+4],strlen(target)-(i+4)+1);
+            else
+                target[l1]='\0';
+            if ((target[1]!=':' || target[2]!='\\')  && target[0]!='\\')
+                {
+                char absname[256];
+                char path[256];
+                strcpy(absname,linkname);
+                wfile_make_absolute(absname);
+                wfile_basepath(path,absname);
+                wfile_fullname(absname,path,target);
+                strncpy(target,absname,maxlen-1);
+                target[maxlen-1]='\0';
+                }
+            /*
+            n=WideCharToMultiByte(CP_ACP,0,(LPCWCH)x,buffer.PrintNameLength/2,target,maxlen,NULL,NULL);
+            */
+            }
+        return(1);
+        }
+    else if (buffer.ReparseTag == IO_REPARSE_TAG_MOUNT_POINT)
+        {
+        if (target!=NULL)
+            {
+            x=&buffer.ReparseTarget[buffer.PrintNameOffset];
+            n=WideCharToMultiByte(CP_ACP,0,(LPCWCH)x,buffer.PrintNameLength/2,target,maxlen,NULL,NULL);
+            target[n]='\0';
+            }
+        return(2);
+        }
+    return(0);
+    }
+
+/*
+**
+** Used internally
+**
+** Adjust privileges to file access so that we can determine if a file is
+** a symbolic link in windows (mount point or junction).
+**
+** NZ = success
+*/
+static int win_adjust_privilege(void)
+
+    {
+    int success;
+    HANDLE token;
+    TOKEN_PRIVILEGES tokenPrivileges;
+
+    /* tokenPrivileges.Privileges = (LUID_AND_ATTRIBUTES*)malloc(sizeof(LUID_AND_ATTRIBUTES)); */
+    success = OpenProcessToken(GetCurrentProcess(),TOKEN_ADJUST_PRIVILEGES,&token);
+    if (success)
+        {
+        success = LookupPrivilegeValue(NULL,SE_BACKUP_NAME,&tokenPrivileges.Privileges[0].Luid);
+        if (success)
+            {
+            tokenPrivileges.PrivilegeCount = 1;
+            tokenPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+            success = AdjustTokenPrivileges(token,0,&tokenPrivileges,
+                      sizeof(tokenPrivileges),NULL,NULL);
+            }
+        CloseHandle(token);
+        }
+    return(success);
+    }
+
+/*
+** UTF-8 windows funcs
+*/
+int win_textout_utf8(void *hdc,int x,int y,char *s)
+
+    {
+    short *sw;
+    int len,status;
+
+    if (utf8_is_ascii(s))
+        return(TextOut((HDC)hdc,x,y,s,strlen(s)));
+    len=utf8_to_utf16_alloc((void **)&sw,s);
+    status=TextOutW((HDC)hdc,x,y,(LPWSTR)sw,len);
+    willus_mem_free((double **)&sw,"win_textout_utf8");
+    return(status);
+    }
+
+
+int win_gettextextentpoint_utf8(void *hdc,char *s,long *dx,long *dy)
+
+    {
+    SIZE size;
+    int len,status;
+    short *sw;
+
+    if (utf8_is_ascii(s))
+        {
+        status=GetTextExtentPoint((HDC)hdc,s,strlen(s),&size);
+        (*dx)=size.cx;
+        (*dy)=size.cy;
+        return(status);
+        }
+    len=utf8_to_utf16_alloc((void **)&sw,s);
+    status=GetTextExtentPointW((HDC)hdc,(LPWSTR)sw,len,&size);
+    (*dx)=size.cx;
+    (*dy)=size.cy;
+    willus_mem_free((double **)&sw,"win_gettextextentpoint_utf8");
+    return(status);
+    }
+
+
+/*
+** Returns 0 for success, -1 for error
+*/
+int win_close_handle(void *handle)
+
+    {
+    int status;
+
+    status=CloseHandle((HANDLE)handle);
+    return(!status);
+    }
+
+
+/*
+** Works w/UTF-8 names
+** Returns NULL for bad handle.
+*/
+void *win_shared_handle_utf8(char *filename)
+
+    {
+    HANDLE handle;
+
+    if (utf8_is_ascii(filename))
+        handle=(HANDLE)CreateFile(filename,GENERIC_READ,
+                             FILE_SHARE_DELETE
+                               | FILE_SHARE_READ
+                               | FILE_SHARE_WRITE,
+                             NULL,
+                             OPEN_EXISTING,
+                             FILE_ATTRIBUTE_NORMAL,
+                             NULL);
+    else
+        {
+        short *fnamew;
+        int len;
+        static char *funcname="win_shared_handle";
+
+        len=utf8_to_utf16(NULL,filename,MAXUTF16PATHLEN);
+        willus_mem_alloc_warn((void **)&fnamew,sizeof(short)*(len+1),funcname,10);
+        utf8_to_utf16(fnamew,filename,MAXUTF16PATHLEN);
+        handle=(HANDLE)CreateFileW((LPWSTR)fnamew,GENERIC_READ,
+                             FILE_SHARE_DELETE
+                               | FILE_SHARE_READ
+                               | FILE_SHARE_WRITE,
+                             NULL,
+                             OPEN_EXISTING,
+                             FILE_ATTRIBUTE_NORMAL,
+                             NULL);
+        willus_mem_free((double **)&fnamew,funcname);
+        }
+    if (handle==INVALID_HANDLE_VALUE)
+        return(NULL);
+    return((void *)handle);
+    }
+
+
+
+#endif /* HAVE_WIN32_API */

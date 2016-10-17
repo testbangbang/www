@@ -31,7 +31,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <termios.h>
 
 /*
 ** For calling ioctl() function to get tty size (rows and columns)
@@ -40,39 +39,10 @@
 #if (!defined(WIN32) && !defined(WIN64))
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <asm/termios.h>
 #endif
 
-/* ========
-   Android Porting
-   ======== */
-#if defined(ANDROID) || defined(__ANDROID__)
-#include <stdio.h>
-#include <android/log.h>
 
-#define  LOG_TAG    "libk2pdfoptjni"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-static int my_vfprintf(FILE *stream, const char *format, ...){
-    va_list ap;
-    va_start(ap, format);
-    __android_log_vprint(ANDROID_LOG_INFO, LOG_TAG, format, ap);
-    va_end(ap);
-    return 0;
-}
-
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef fprintf
-#undef fprintf
-#endif
-#define vfprintf(fp,...) my_vfprintf(fp, __VA_ARGS__)
-
-#endif /*__ANDROID__*/
 
 #ifdef WIN32
 #define ANSI_PARSE

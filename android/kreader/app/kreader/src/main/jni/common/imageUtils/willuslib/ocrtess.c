@@ -3,7 +3,7 @@
 **
 ** Part of willus.com general purpose C code library.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2015  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -19,8 +19,6 @@
 ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **
 */
-
-#ifdef HAVE_OCR_LIB
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,11 +38,11 @@ static void endian_flip(char *x,int n);
 /*
 ** Returns 0 for success, NZ for failure.
 */
-int ocrtess_init(char *datadir,char *lang,FILE *out)
+int ocrtess_init(char *datadir,char *lang,FILE *out,char *initstr,int maxlen)
 
     {
     char langdef[16];
-    int ocr_type;
+    int status;
 
     if (lang==NULL || lang[0]=='\0')
         lang_default(langdef);
@@ -53,14 +51,21 @@ int ocrtess_init(char *datadir,char *lang,FILE *out)
         strncpy(langdef,lang,15);
         langdef[15]='\0';
         }
-/*
-    if (ocr_type==3 && !has_cube_data(langdef))
-        ocr_type=0;
-    if (ocr_type < 0)
-        ocr_type = -ocr_type;
-*/
-    ocr_type=0;
-    return(tess_capi_init(datadir,langdef,ocr_type,out));
+    /* Try CUBE/COMBINED first */
+    status=tess_capi_init(datadir,langdef,0,out,initstr,maxlen);
+    /* Next try just CUBE if that didn't work */
+    if (status)
+        {
+        tess_capi_end();
+        status=tess_capi_init(datadir,langdef,2,out,initstr,maxlen);
+        }
+    /* Final try:  regular */
+    if (status)
+        {
+        tess_capi_end();
+        status=tess_capi_init(datadir,langdef,1,out,initstr,maxlen);
+        }
+    return(status);
     }
 
 
@@ -209,5 +214,3 @@ static void endian_flip(char *x,int n)
         x[2]=c;
         }
     }
-
-#endif

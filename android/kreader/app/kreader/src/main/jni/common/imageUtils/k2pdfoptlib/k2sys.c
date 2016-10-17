@@ -1,7 +1,7 @@
 /*
 ** k2sys.c     K2pdfopt system functions
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2016  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,9 @@ void k2sys_close(K2PDFOPT_SETTINGS *k2settings)
     /* wrapbmp_free(); */
     wsys_set_decimal_period(0);
     k2ocr_end(k2settings);
+#if (WILLUSDEBUGX & 0x100000)
+    willus_dmem_check();
+#endif
     }
 
 
@@ -112,25 +115,38 @@ void k2sys_header(char *s)
     }
 
 
+
 int k2printf(char *fmt,...)
 
     {
     va_list args;
     int     status;
-
+    static void *k2printf_semaphore;
+    static int count=0;
+    
+    if (count==0)
+        k2printf_semaphore = willusgui_semaphore_create_ex("k2printf",1,1);
+    count++;
+    if (k2printf_semaphore)
+        willusgui_semaphore_status_wait(k2printf_semaphore);
+    status=0;
     va_start(args,fmt);
 #ifdef HAVE_K2GUI
-    if (k2gui_active() && k2gui_cbox_converting())
+    if (k2gui_active())
         {
 #if (WILLUSDEBUGX & 0x4000)
         status=avprintf(stdout,fmt,args);
 #endif          
-        status=k2gui_cbox_vprintf(stdout,fmt,args);
+        if (k2gui_cbox_converting())
+            status=k2gui_cbox_vprintf(stdout,fmt,args);
+        else if (k2gui_overlay_converting())
+            status=k2gui_overlay_vprintf(stdout,fmt,args);
         }
     else
 #endif
     status=avprintf(stdout,fmt,args);
     va_end(args);
+    willusgui_semaphore_release(k2printf_semaphore);
     return(status);
     }
 
@@ -152,3 +168,19 @@ void k2gets(char *buf,int maxlen,char *def)
         buf[maxlen-1]='\0';
         }
     }
+
+/*
+void k2pdfopt_non_ascii_warning(FILE *out)
+
+    {
+    afprintf(out,"\a\n\n" ANSI_RED
+         "*************************************************************\n"
+         "**                                                         **\n"
+         "** " ANSI_YELLOW "Your command-line arguments have non-ASCII characters!" ANSI_RED "  **\n"
+         "**                                                         **\n"
+         "** " ANSI_YELLOW "This may cause the k2pdfopt conversion to fail!" ANSI_RED "         **\n"
+         "**                                                         **\n"
+         "*************************************************************\n"
+         "\n");
+    }
+*/

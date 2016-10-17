@@ -4,7 +4,7 @@
 **
 ** Part of willus.com general purpose C code library.
 **
-** Copyright (C) 2012  http://willus.com
+** Copyright (C) 2014  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -234,6 +234,27 @@ void array_sort(double *a,int n)
     {
     sortd(a,(long)n);
     }
+
+
+void array_flipi(int *x,int n)
+
+    {
+    int n2;
+    int i;
+
+    if (n<2)
+        return;
+    n2=n/2;
+    for (i=0;i<n2;i++)
+        {
+        int t;
+        t=x[i];
+        x[i]=x[n-1-i];
+        x[n-1-i]=t;
+        }
+    }
+
+
 
 
 /*
@@ -506,6 +527,10 @@ printf("    xmin0 = %g\n",xmin0);
     yminbest = ymin3 = ymin0;
     /* Try some different parabolic fits around the minimum point */
     /* and choose the best one.                                   */
+/*
+{
+double dxbest,dxbest3;
+*/
     for (ipos=-2;ipos<=2;ipos++)
         {
         int   i0;
@@ -528,6 +553,9 @@ printf("%g %g %d\n",x1,conf,npfit);
 */
             if (npfit>3 && conf<errmax && (confbest < 0 || conf < confbest))
                 {
+/*
+dxbest = dxmean*(i+.6);
+*/
                 confbest = conf;
                 xmin = x1;
                 npfbest = npfit;
@@ -535,6 +563,9 @@ printf("%g %g %d\n",x1,conf,npfit);
                 }
             else if (npfit==3 && conf<errmax && (conf3 <0 || conf < conf3))
                 {
+/*
+dxbest3 = dxmean*(i+.6);
+*/
                 conf3 = conf;
                 xmin3 = x1;
                 npf3 = npfit;
@@ -549,7 +580,14 @@ printf("%g %g %d\n",x1,conf,npfit);
         confbest = conf3;
         npfbest = npf3;
         yminbest = ymin3;
+/*
+dxbest = dxbest3;
+*/
         }
+/*
+printf("dxbest = %g\n",dxbest);
+}
+*/
     if (err!=NULL)
         (*err) = confbest;
     if (npf!=NULL)
