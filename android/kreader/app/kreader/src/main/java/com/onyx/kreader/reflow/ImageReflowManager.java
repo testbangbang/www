@@ -117,8 +117,15 @@ public class ImageReflowManager {
             if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
                 subPageIndex.addSubPageBitmap(pageName, bitmap);
             }
-            saveSubPageBitmapToCache(pageName, subPage, bitmap);
+            // using memory cache to save sub page, so waiting thread can access it immediately
+            saveSubPageBitmapToMemoryCache(pageName, subPage, bitmap);
             reflowReadyCondition.signal();
+        } finally {
+            reflowLock.unlock();
+        }
+        reflowLock.lock();
+        try {
+            saveSubPageBitmapToDiskCache(pageName, subPage, bitmap);
         } finally {
             reflowLock.unlock();
         }
@@ -249,9 +256,14 @@ public class ImageReflowManager {
         return subPageCache.contains(getSubPageKey(pageName, subPage));
     }
 
-    private void saveSubPageBitmapToCache(String pageName, int subPage, Bitmap bitmap) {
+    private void saveSubPageBitmapToMemoryCache(String pageName, int subPage, Bitmap bitmap) {
         final String pageKey = getSubPageKey(pageName, subPage);
-        subPageCache.put(pageKey, bitmap);
+        subPageCache.putMemoryCache(pageKey, bitmap);
+    }
+
+    private void saveSubPageBitmapToDiskCache(String pageName, int subPage, Bitmap bitmap) {
+        final String pageKey = getSubPageKey(pageName, subPage);
+        subPageCache.putDiskCache(pageKey, bitmap);
     }
 
     private Bitmap getSubPageBitmapFromCache(final String pageName, final int subPage) {

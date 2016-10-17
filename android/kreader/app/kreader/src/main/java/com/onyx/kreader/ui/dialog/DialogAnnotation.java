@@ -6,6 +6,7 @@ import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.onyx.kreader.R;
 
 public class DialogAnnotation extends DialogBase {

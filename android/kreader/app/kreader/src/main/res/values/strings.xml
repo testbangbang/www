@@ -73,7 +73,7 @@
     <string name="action_return">Return</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
-    <string name="page" formatted="false">第%d页</string>
+    <string name="page" formatted="false">page %d</string>
     <string name="crop">Crop</string>
     <string name="column">Column</string>
     <string name="direction">Direction</string>

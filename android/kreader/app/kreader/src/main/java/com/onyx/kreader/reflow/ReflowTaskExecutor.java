@@ -13,7 +13,6 @@ public class ReflowTaskExecutor {
         @Override
         public Thread newThread(Runnable r) {
             Thread t = new Thread(r);
-            t.setPriority(Thread.MIN_PRIORITY);
             return t;
         }
     });
