@@ -109,7 +109,7 @@ public class LayoutProviderUtils {
         for (PageInfo pageInfo : visiblePages) {
             readerViewInfo.copyPageInfo(pageInfo);
         }
-        readerViewInfo.supportScalable = layoutManager.isSupportScale();
+        readerViewInfo.supportScalable = layoutManager.getCurrentLayoutProvider().supportScale();
         readerViewInfo.supportReflow = layoutManager.isSupportReflow();
         readerViewInfo.canGoBack = layoutManager.canGoBack();
         readerViewInfo.canGoForward = layoutManager.canGoForward();

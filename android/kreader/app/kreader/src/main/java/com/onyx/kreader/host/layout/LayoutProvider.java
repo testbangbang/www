@@ -132,6 +132,10 @@ public class LayoutProvider {
         return false;
     }
 
+    public boolean supportScale() throws ReaderException {
+        return false;
+    }
+
     public boolean supportSubScreenNavigation() {
         return false;
     }
