@@ -5,15 +5,11 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.DeviceConfig;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
@@ -27,7 +23,6 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
@@ -58,10 +53,10 @@ import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.events.QuitEvent;
+import com.onyx.kreader.utils.ReaderConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Joy on 2016/6/7.
@@ -125,12 +120,11 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void getDisableMenus(ReaderDataHolder readerDataHolder) {
-        String content = RawResourceUtil.contentOfRawResource(readerDataHolder.getContext(), R.raw.device_config);
-        Map<String, DeviceConfig> deviceConfigMap = JSON.parseObject(content, new TypeReference<Map<String, DeviceConfig>>() {});
-        String currentDevice = Build.MODEL.toString();
-        DeviceConfig deviceConfig = deviceConfigMap.get(currentDevice);
-        if (deviceConfig != null) {
-            disableMenus = deviceConfig.getDisableMenus();
+        if (ReaderConfig.sharedInstance(readerDataHolder.getContext()).isDisable_writing()) {
+            disableMenus.add(ReaderMenuAction.NOTE);
+        }
+        if (!readerDataHolder.supportNoteExport()) {
+            disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
     }
 
@@ -272,9 +266,6 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        if (!readerDataHolder.supportNoteExport()) {
-            disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
-        }
         return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems, disableMenus);
     }
 
@@ -506,10 +497,10 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private boolean isGroupAction(final ReaderMenuAction action) {
-        return (action == ReaderMenuAction.ERASER ||
-                action == ReaderMenuAction.WIDTH ||
-                action == ReaderMenuAction.SHAPE ||
-                action == ReaderMenuAction.MINIMIZE);
+        return (action == ReaderMenuAction.SCRIBBLE_ERASER ||
+                action == ReaderMenuAction.SCRIBBLE_WIDTH ||
+                action == ReaderMenuAction.SCRIBBLE_SHAPE ||
+                action == ReaderMenuAction.SCRIBBLE_MINIMIZE);
     }
 
     private boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
@@ -523,68 +514,68 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         switch (action) {
-            case WIDTH1:
+            case SCRIBBLE_WIDTH1:
                 useStrokeWidth(readerDataHolder, 2.0f);
                 break;
-            case WIDTH2:
+            case SCRIBBLE_WIDTH2:
                 useStrokeWidth(readerDataHolder, 4.0f);
                 break;
-            case WIDTH3:
+            case SCRIBBLE_WIDTH3:
                 useStrokeWidth(readerDataHolder, 6.0f);
                 break;
-            case WIDTH4:
+            case SCRIBBLE_WIDTH4:
                 useStrokeWidth(readerDataHolder, 9.0f);
                 break;
-            case WIDTH5:
+            case SCRIBBLE_WIDTH5:
                 useStrokeWidth(readerDataHolder, 12.0f);
                 break;
-            case PENCIL:
+            case SCRIBBLE_PENCIL:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
                 break;
-            case BRUSH:
+            case SCRIBBLE_BRUSH:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_BRUSH_SCRIBBLE);
                 break;
-            case LINE:
+            case SCRIBBLE_LINE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_LINE);
                 break;
-            case TRIANGLE:
+            case SCRIBBLE_TRIANGLE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_TRIANGLE);
                 break;
-            case CIRCLE:
+            case SCRIBBLE_CIRCLE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_CIRCLE);
                 break;
-            case SQUARE:
+            case SCRIBBLE_SQUARE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_RECTANGLE);
                 break;
-            case TEXT:
+            case SCRIBBLE_TEXT:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_ANNOTATION);
                 break;
-            case ERASER_PART:
+            case SCRIBBLE_ERASER_PART:
                 startErasing(readerDataHolder);
                 break;
-            case ERASER_ALL:
+            case SCRIBBLE_ERASER_ALL:
                 eraseWholePage(readerDataHolder);
                 break;
-            case DRAG:
+            case SCRIBBLE_DRAG:
                 toggleSelection(readerDataHolder);
                 break;
-            case MINIMIZE:
+            case SCRIBBLE_MINIMIZE:
                 break;
-            case MAXIMIZE:
+            case SCRIBBLE_MAXIMIZE:
                 break;
-            case PREV_PAGE:
+            case SCRIBBLE_PREV_PAGE:
                 prevScreen(readerDataHolder);
                 break;
-            case NEXT_PAGE:
+            case SCRIBBLE_NEXT_PAGE:
                 nextScreen(readerDataHolder);
                 break;
-            case UNDO:
+            case SCRIBBLE_UNDO:
                 undo(readerDataHolder);
                 break;
-            case SAVE:
+            case SCRIBBLE_SAVE:
                 save(readerDataHolder);
                 break;
-            case REDO:
+            case SCRIBBLE_REDO:
                 redo(readerDataHolder);
                 break;
         }
