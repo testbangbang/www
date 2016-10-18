@@ -5,18 +5,21 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.DeviceConfig;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
-import com.onyx.android.sdk.data.ScribbleMenuAction;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
@@ -24,6 +27,7 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
@@ -55,7 +59,9 @@ import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.events.QuitEvent;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Joy on 2016/6/7.
@@ -68,6 +74,7 @@ public class ShowReaderMenuAction extends BaseAction {
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderLayerMenu readerMenu;
     private static ReaderLayerMenuState state;
+    private List<ReaderMenuAction> disableMenus = new ArrayList<>();
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -114,6 +121,17 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void initReaderMenu(final ReaderDataHolder readerDataHolder) {
         createReaderSideMenu(readerDataHolder);
+        getDisableMenus(readerDataHolder);
+    }
+
+    private void getDisableMenus(ReaderDataHolder readerDataHolder) {
+        String content = RawResourceUtil.contentOfRawResource(readerDataHolder.getContext(), R.raw.device_config);
+        Map<String, DeviceConfig> deviceConfigMap = JSON.parseObject(content, new TypeReference<Map<String, DeviceConfig>>() {});
+        String currentDevice = Build.MODEL.toString();
+        DeviceConfig deviceConfig = deviceConfigMap.get(currentDevice);
+        if (deviceConfig != null) {
+            disableMenus = deviceConfig.getDisableMenus();
+        }
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
@@ -204,10 +222,10 @@ public class ShowReaderMenuAction extends BaseAction {
                     case DIRECTORY_SCRIBBLE:
                         startNoteDrawing(readerDataHolder);
                         break;
-                    case DIRECTORY_EXPORT:
+                    case NOTE_EXPORT:
                         showExportDialog(readerDataHolder);
                         break;
-                    case SHOW_SCRIBBLE:
+                    case SHOW_NOTE:
                         showScribble(readerDataHolder);
                         break;
                     case TTS:
@@ -260,7 +278,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void initPageMenuItems(ReaderDataHolder readerDataHolders, List<ReaderLayerMenuItem> menuItems) {
         for (ReaderLayerMenuItem item : menuItems) {
-            if (item.getAction() == ReaderMenuAction.SHOW_SCRIBBLE) {
+            if (item.getAction() == ReaderMenuAction.SHOW_NOTE) {
                 item.setDrawableResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
                         ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
                 item.setTitleResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
@@ -461,7 +479,8 @@ public class ShowReaderMenuAction extends BaseAction {
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
-                getScribbleActionCallback(readerDataHolder));
+                getScribbleActionCallback(readerDataHolder),
+                disableMenus);
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -474,7 +493,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
         final ShowScribbleMenuAction.ActionCallback callback = new ShowScribbleMenuAction.ActionCallback() {
             @Override
-            public void onClicked(final ScribbleMenuAction action) {
+            public void onClicked(final ReaderMenuAction action) {
                 if (processScribbleActionGroup(readerDataHolder, action)) {
                     return;
                 }
@@ -484,14 +503,14 @@ public class ShowReaderMenuAction extends BaseAction {
         return callback;
     }
 
-    private boolean isGroupAction(final ScribbleMenuAction action) {
-        return (action == ScribbleMenuAction.ERASER ||
-                action == ScribbleMenuAction.WIDTH ||
-                action == ScribbleMenuAction.SHAPE ||
-                action == ScribbleMenuAction.MINIMIZE);
+    private boolean isGroupAction(final ReaderMenuAction action) {
+        return (action == ReaderMenuAction.ERASER ||
+                action == ReaderMenuAction.WIDTH ||
+                action == ReaderMenuAction.SHAPE ||
+                action == ReaderMenuAction.MINIMIZE);
     }
 
-    private boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
+    private boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         if (!isGroupAction(action)) {
             return false;
         }
@@ -500,7 +519,7 @@ public class ShowReaderMenuAction extends BaseAction {
         return true;
     }
 
-    private void processScribbleAction(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
+    private void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         switch (action) {
             case WIDTH1:
                 useStrokeWidth(readerDataHolder, 2.0f);
