@@ -44,7 +44,6 @@ public abstract class BaseHandler {
     private boolean singleTapUp = false;
     private boolean actionUp = false;
     private boolean pinchZooming = false;
-    private boolean skipPinchZooming = false;
     private boolean scrolling = false;
 
 
@@ -192,7 +191,7 @@ public abstract class BaseHandler {
     }
 
     public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
-        if (isSkipPinchZooming()) {
+        if (isSkipPinchZooming(readerDataHolder)) {
             return true;
         }
         PinchZoomAction.scaleEnd(readerDataHolder, new BaseCallback() {
@@ -205,8 +204,7 @@ public abstract class BaseHandler {
 
     public boolean onScaleBegin(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
         setPinchZooming(true);
-        if (!readerDataHolder.getReaderViewInfo().supportScalable) {
-            setSkipPinchZooming(true);
+        if (isSkipPinchZooming(readerDataHolder)) {
             Toast.makeText(readerDataHolder.getContext(), R.string.pinch_zooming_can_not_be_used, Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -215,7 +213,7 @@ public abstract class BaseHandler {
     }
 
     public boolean onScale(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector)  {
-        if (isSkipPinchZooming()) {
+        if (isSkipPinchZooming(readerDataHolder)) {
             return true;
         }
         PinchZoomAction.scaling(readerDataHolder, detector);
@@ -349,18 +347,13 @@ public abstract class BaseHandler {
         return pinchZooming;
     }
 
-    public void setSkipPinchZooming(boolean skipPinchZooming) {
-        this.skipPinchZooming = skipPinchZooming;
-    }
-
-    public boolean isSkipPinchZooming() {
-        return skipPinchZooming;
+    public boolean isSkipPinchZooming(final ReaderDataHolder readerDataHolder) {
+        return !readerDataHolder.getReaderViewInfo().supportScalable;
     }
 
     public void resetState() {
         scrolling = false;
         pinchZooming = false;
-        skipPinchZooming = false;
     }
 
     public void setPenErasing(boolean c) {
