@@ -32,7 +32,7 @@ public class OnyxMatrix {
     static private class OnyxMatrixMap180 extends OnyxMatrixMap  {
         public void mapPoints(final float dst[], final float src[], final int dx, final int dy) {
             dst[0] = dx - src[0];
-            dst[1] = -src[1];
+            dst[1] = dy - src[1];
         }
     }
 

@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.model.OnyxAccount;
 import com.onyx.android.sdk.data.utils.ProgressRequestBody;
 
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -45,8 +46,17 @@ public interface OnyxAccountService {
     @PUT("account/password/reset")
     Call resetAccountPwd(@Body final Map<String, String> map);
 
-    @POST("account/devices")
+    @POST("account/device")
     Call<Device> addDevice(@Body final Device device, @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
+
+    @GET("account/device")
+    Call<List<Device>> getBoundDeviceList(@Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
+
+    @GET("account/device/{deviceId}")
+    Call<Device> getBoundDevice(@Path("deviceId") String deviceId, @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
+
+    @DELETE("account/device/{deviceId}")
+    Call<ResponseBody> removeBoundDevice(@Path("deviceId") String deviceId, @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
 
     @POST("captcha")
     Call<Captcha> generateCaptcha();

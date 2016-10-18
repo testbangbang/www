@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
-
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -118,6 +117,9 @@ public class PinchZoomAction extends BaseAction {
 //        handlerManager.setEnable(false);
 
         ReaderDeviceManager.exitAnimationUpdate(false);
+        float newScale = pageInfo.getActualScale() * deltaScale;
+        pageInfo.setScale(newScale);
+
         if (deltaScale < 1.0f && !readerDataHolder.canCurrentPageScaleDown()) {
             Toast.makeText(readerDataHolder.getContext(),
                     R.string.min_scroll_toast, Toast.LENGTH_SHORT).show();
@@ -129,7 +131,7 @@ public class PinchZoomAction extends BaseAction {
             readerDataHolder.submitRenderRequest(new RenderRequest(), callback);
             return;
         }
-        float newScale = pageInfo.getActualScale() * deltaScale;
+
         final ScaleRequest scaleRequest = new ScaleRequest(pageInfo.getName(), newScale, left, top);
         readerDataHolder.submitRenderRequest(scaleRequest, callback);
     }

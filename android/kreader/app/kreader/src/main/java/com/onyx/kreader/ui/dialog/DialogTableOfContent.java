@@ -21,6 +21,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -29,8 +30,8 @@ import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
-import com.onyx.android.sdk.ui.view.RadioButtonCenter;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.ui.view.RadioButtonCenter;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.DimenUtils;
@@ -41,6 +42,8 @@ import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.host.request.DeleteAnnotationRequest;
 import com.onyx.kreader.host.request.DeleteBookmarkRequest;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
+import com.onyx.kreader.ui.actions.ExportAnnotationAction;
+import com.onyx.kreader.ui.actions.ExportNotesActionChain;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -337,9 +340,29 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         exportLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                export();
             }
         });
+    }
+
+    private void export() {
+        if (currentTab == DirectoryTab.Annotation) {
+            new ExportAnnotationAction(annotationList).execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);
+                    Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if (currentTab == DirectoryTab.Scribble) {
+            new ExportNotesActionChain(false, true).execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);
+                    Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void fitDialogToWindow() {

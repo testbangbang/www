@@ -41,6 +41,7 @@ public class PageInfo {
         displayRect.set(pageInfo.displayRect);
         actualScale = pageInfo.actualScale;
         specialScale = pageInfo.specialScale;
+        isTextPage = pageInfo.isTextPage;
     }
 
     public final float getOriginWidth() {

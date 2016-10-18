@@ -14,7 +14,7 @@ public class ProductQuery {
     public int count = 30;
     public int consumer = 0;
     public List<Integer> domains;
-    public List<String> category;
+    public String category;
     public String sortBy = QueryUtils.defaultSortBy();
     public Boolean sortOrder = QueryUtils.defaultSortOrder();
     public String key;
@@ -30,23 +30,15 @@ public class ProductQuery {
     }
 
     public void resetCategory() {
-        getCategory().clear();
+        category = null;
     }
 
-    public final List<String> getCategory() {
-        if (category == null) {
-            category = new ArrayList<String>();
-        }
+    public final String getCategory() {
         return category;
     }
 
-    public void addCategory(final String value) {
-        getCategory().add(value);
-    }
-
-    public void useCategory(final String value) {
-        resetCategory();
-        addCategory(value);
+    public void setCategory(final String value) {
+        category = value;
     }
 
     public void resetOffset() {

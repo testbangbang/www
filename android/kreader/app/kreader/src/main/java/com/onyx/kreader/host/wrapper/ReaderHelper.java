@@ -32,6 +32,7 @@ import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
 import com.onyx.kreader.plugins.neopdf.NeoPdfReaderPlugin;
 import com.onyx.kreader.reflow.ImageReflowManager;
+import com.onyx.kreader.ui.KReaderApp;
 import com.onyx.kreader.utils.ImageUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
@@ -232,7 +233,7 @@ public class ReaderHelper {
     public void initData(Context context) {
         initImageReflowManager(context);
         initBitmapCache();
-        initWordAnalyzerInBackground(context);
+        initWordAnalyzerInBackground();
     }
 
     private void initLayoutManager() {
@@ -240,8 +241,8 @@ public class ReaderHelper {
         getReaderLayoutManager().init();
     }
 
-    private void initWordAnalyzerInBackground(Context context) {
-        AnalyzerAndroidWrapper.initialize(context, true);
+    private void initWordAnalyzerInBackground() {
+        AnalyzerAndroidWrapper.initialize(KReaderApp.instance(), true);
     }
 
     private void initImageReflowManager(Context context) {

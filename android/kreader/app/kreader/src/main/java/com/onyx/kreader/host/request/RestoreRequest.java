@@ -26,7 +26,7 @@ public class RestoreRequest extends BaseReaderRequest {
         restoreOrientation(reader);
         restoreViewport(reader);
         restoreReflowSettings(reader);
-        restoreOthers(reader);
+        restoreContrast(reader);
         drawVisiblePages(reader);
     }
 
@@ -57,7 +57,9 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private void restoreViewport(final Reader reader) throws Exception {
-        if (baseOptions.getViewport() != null) {
+        if (baseOptions.getViewport() != null &&
+            baseOptions.getViewport().width() > 0 &&
+            baseOptions.getViewport().height() > 0) {
             reader.getReaderLayoutManager().getPageManager().setViewportRect(baseOptions.getViewport());
         }
     }
@@ -68,7 +70,7 @@ public class RestoreRequest extends BaseReaderRequest {
         }
     }
 
-    private void restoreOthers(final Reader reader) {
+    private void restoreContrast(final Reader reader) {
         reader.getDocumentOptions().setGamma(baseOptions.getGammaLevel());
         reader.getDocumentOptions().setEmboldenLevel(baseOptions.getEmboldenLevel());
     }

@@ -10,11 +10,11 @@ import retrofit2.Response;
 /**
  * Created by zhuzeng on 11/21/15.
  */
-public class FirmwareUpdateRequest extends BaseCloudRequest {
+public class FirmwareReleaseUpdateRequest extends BaseCloudRequest {
     private Firmware fw;
     private Firmware resultFirmware;
 
-    public FirmwareUpdateRequest(final Firmware current) {
+    public FirmwareReleaseUpdateRequest(final Firmware current) {
         fw = current;
     }
 
@@ -25,7 +25,7 @@ public class FirmwareUpdateRequest extends BaseCloudRequest {
     @Override
     public void execute(final CloudManager parent) throws Exception {
         Call<Firmware> call = ServiceFactory.getOTAService(parent.getCloudConf().getApiBase())
-                .firmwareUpdate(JSON.toJSONString(fw));
+                .ReleaseFirmwareUpdate(JSON.toJSONString(fw));
         Response<Firmware> response = call.execute();
         if (response.isSuccessful()) {
             resultFirmware = response.body();

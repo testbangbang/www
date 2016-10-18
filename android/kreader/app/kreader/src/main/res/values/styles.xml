@@ -7,6 +7,7 @@
         <item name="colorAccent">@android:color/background_dark</item>
         <item name="colorPrimaryDark">@color/background_device_default_dark</item>
         <item name="android:textColor">@color/background_device_default_dark</item>
+        <item name="android:textAllCaps">false</item>
     </style>
     <style name="single_line_X_axis_View">
         <item name="android:layout_width">match_parent</item>

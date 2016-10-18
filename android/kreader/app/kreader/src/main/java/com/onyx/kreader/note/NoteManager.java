@@ -19,6 +19,7 @@ import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
 import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
@@ -33,6 +34,7 @@ import com.onyx.kreader.ui.events.ShapeErasingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by zhuzeng on 9/2/16.
@@ -52,10 +54,12 @@ public class NoteManager {
 
     private List<Shape> shapeStash = new ArrayList<>();
     private DeviceConfig noteConfig;
+    private MappingConfig mappingConfig;
     private List<PageInfo> visiblePages = new ArrayList<>();
     private ReaderDataHolder parent;
     private ReaderNoteDataInfo noteDataInfo;
     private RectF visibleDrawRectF;
+    private AtomicBoolean noteDirty = new AtomicBoolean(false);
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -85,10 +89,11 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void updateHostView(final Context context, final View sv, Rect visibleDrawRect) {
+    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, int orientation) {
         view = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
-        getNoteEventProcessorManager().update(view, noteConfig, visibleDrawRect);
+        mappingConfig = MappingConfig.sharedInstance(context, "note");
+        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, orientation);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {
@@ -118,20 +123,23 @@ public class NoteManager {
 
             @Override
             public void onDrawingTouchDown(MotionEvent motionEvent, Shape shape) {
-                if (!shape.supportDFB()) {
+                if (shape != null && !shape.supportDFB()) {
                     getParent().getEventBus().post(new ShapeDrawingEvent(shape));
                 }
             }
 
             @Override
             public void onDrawingTouchMove(MotionEvent motionEvent, Shape shape, boolean last) {
-                if (!shape.supportDFB() && last) {
+                if (shape != null && !shape.supportDFB() && last) {
                     getParent().getEventBus().post(new ShapeDrawingEvent(shape));
                 }
             }
 
             @Override
             public void onDrawingTouchUp(MotionEvent motionEvent, Shape shape) {
+                if (shape == null) {
+                    return;
+                }
                 onNewStash(shape);
                 if (!shape.supportDFB()) {
                     getParent().getEventBus().post(new ShapeDrawingEvent(shape));
@@ -430,4 +438,11 @@ public class NoteManager {
         return shape;
     }
 
+    public boolean isNoteDirty() {
+        return noteDirty.get();
+    }
+
+    public void setNoteDirty(boolean dirty) {
+        noteDirty.set(dirty);
+    }
 }

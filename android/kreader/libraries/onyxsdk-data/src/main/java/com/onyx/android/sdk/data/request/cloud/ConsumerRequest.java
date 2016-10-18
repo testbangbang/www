@@ -14,9 +14,11 @@ public class ConsumerRequest extends BaseCloudRequest {
 
     private Consumer consumer;
     private long consumerId;
+    private String sessionToken;
 
-    public ConsumerRequest(long id) {
-        consumerId = id;
+    public ConsumerRequest(long id, String sessionToken) {
+        this.consumerId = id;
+        this.sessionToken = sessionToken;
     }
 
     public Consumer getConsumer() {
@@ -26,7 +28,7 @@ public class ConsumerRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Call<Consumer> call = ServiceFactory.getConsumerService(parent.getCloudConf().getApiBase())
-                .getConsumer(consumerId);
+                .getConsumer(consumerId, sessionToken);
         Response<Consumer> response = call.execute();
         if (response.isSuccessful()) {
             consumer = response.body();

@@ -19,8 +19,6 @@ import com.onyx.kreader.reflow.ImageReflowManager;
  * For reflow stream document.
  */
 public class LayoutImageReflowProvider extends LayoutProvider {
-    @SuppressWarnings("unused")
-    private static final String TAG = LayoutImageReflowProvider.class.getSimpleName();
 
     private boolean reverseOrder;
 

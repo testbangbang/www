@@ -1,6 +1,7 @@
 package com.onyx.kreader.note.bridge;
 
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -107,7 +108,7 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
 
     private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
         if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y)) {
-            flushShape(getLastPageInfo(), touchPoint, screen, false);
+            finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
             return false;
         }
         return true;
@@ -166,8 +167,12 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
         return eraserPoint;
     }
 
-    private void flushShape(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean create) {
-        getNoteManager().collectPoint(pageInfo, normal, screen, create, true);
+    private void finishCurrentShape(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean create) {
+        final Shape shape = getNoteManager().getCurrentShape();
+        if (getCallback() != null && shape != null) {
+            getCallback().onDrawingTouchUp(null, shape);
+        }
+        getNoteManager().resetCurrentShape();
         resetLastPageInfo();
     }
 

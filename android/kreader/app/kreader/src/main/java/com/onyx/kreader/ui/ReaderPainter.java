@@ -185,7 +185,8 @@ public class ReaderPainter {
     private void drawUnderLineHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles){
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(3);
-        for (int i = 0; i < rectangles.size(); ++i) {
+        int size = rectangles.size();
+        for (int i = 0; i < size; ++i) {
             canvas.drawLine(rectangles.get(i).left, rectangles.get(i).bottom, rectangles.get(i).right, rectangles.get(i).bottom, paint);
         }
     }
@@ -194,7 +195,8 @@ public class ReaderPainter {
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
         paint.setXfermode(xorMode);
-        for (int i = 0; i < rectangles.size(); ++i) {
+        int size = rectangles.size();
+        for (int i = 0; i < size; ++i) {
             canvas.drawRect(rectangles.get(i), paint);
         }
     }

@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.data.model;
 
+import com.onyx.android.sdk.data.converter.ListCategoryConverter;
 import com.onyx.android.sdk.data.db.OnyxCloudDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -22,8 +23,8 @@ public class Category extends BaseData {
     @Column
     public long count; // the product count.
     @Column
-    public String parentId;
-
+    public String parentGuid;
+    @Column(typeConverter = ListCategoryConverter.class)
     public List<Category> children;
 
     public Category() {

@@ -11,21 +11,35 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class ExportNotesActionChain extends BaseAction {
 
+    private boolean exportAnnotation = false;
+    private boolean exportScribble = false;
+
+    public ExportNotesActionChain(boolean exportAnnotation, boolean exportScribble) {
+        this.exportAnnotation = exportAnnotation;
+        this.exportScribble = exportScribble;
+    }
+
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        showLoadingDialog(readerDataHolder, R.string.loading);
+        showLoadingDialog(readerDataHolder, R.string.exporting);
         ActionChain chain = new ActionChain();
         GetDocumentInfoAction documentInfoAction = new GetDocumentInfoAction();
         GetAllShapesAction shapesAction = new GetAllShapesAction();
         ExportNotesAction exportNotesAction = new ExportNotesAction(documentInfoAction, shapesAction);
-        chain.addAction(documentInfoAction);
-        chain.addAction(shapesAction);
+        if (exportAnnotation) {
+            chain.addAction(documentInfoAction);
+        }
+        if (exportScribble) {
+            chain.addAction(shapesAction);
+        }
         chain.addAction(exportNotesAction);
         chain.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog();
-                baseCallback.done(request, e);
+                if (baseCallback != null) {
+                    baseCallback.done(request, e);
+                }
             }
         });
     }

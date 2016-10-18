@@ -6,6 +6,7 @@ import android.test.ApplicationTestCase;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.Captcha;
+import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.request.cloud.AccountSignUpRequest;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.data.model.OnyxAccount;
@@ -15,10 +16,12 @@ import com.onyx.android.sdk.data.v1.ServiceFactory;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -140,7 +143,7 @@ public class AccountTest extends ApplicationTestCase<Application> {
         assertNotNull(response.body().url);
     }
 
-    public void testSignUpRequest() throws Exception {
+    public static OnyxAccount testSignUpRequest() throws Exception {
         OnyxAccount account = AccountUtils.generateRandomAccount();
         final CloudManager cloudManager = new CloudManager();
         AccountSignUpRequest accountSignUpRequest = new AccountSignUpRequest(account);
@@ -149,6 +152,44 @@ public class AccountTest extends ApplicationTestCase<Application> {
         assertNotNull(result);
         assertNotNull(result.sessionToken);
         account.sessionToken = result.sessionToken;
+        return account;
     }
 
+    public void testBindDevice() throws Exception {
+        OnyxAccount account = testSignUpRequest();
+
+        //remove first avoid duplicate device
+        Response<ResponseBody> removeResponse = getService().removeBoundDevice(Device.updateCurrentDeviceInfo(getContext()).deviceUniqueId, account.sessionToken).execute();
+        assertNotNull(removeResponse);
+
+        // test add device
+        Response<Device> response = getService().addDevice(Device.updateCurrentDeviceInfo(getContext()), account.sessionToken).execute();
+        assertNotNull(response);
+        assertNotNull(response.body());
+        Device device = response.body();
+        assertEquals(device.deviceUniqueId, Device.updateCurrentDeviceInfo(getContext()).deviceUniqueId);
+        assertNotNull(device.accountId);
+
+        //test get bound Device
+        response = getService().getBoundDevice(device.deviceUniqueId, account.sessionToken).execute();
+        assertNotNull(response);
+        assertNotNull(response.body());
+        Device specDevice = response.body();
+        assertEquals(device.accountId, specDevice.accountId);
+        assertEquals(device.model, specDevice.model);
+
+        //test get bound device list
+        Response<List<Device>> listResponse = getService().getBoundDeviceList(account.sessionToken).execute();
+        assertNotNull(listResponse);
+        assertNotNull(listResponse.body());
+        List<Device> deviceList = listResponse.body();
+        assertTrue(deviceList.size() > 0);
+        assertEquals(deviceList.get(0).accountId, specDevice.accountId);
+
+        //test unbound device
+        removeResponse = getService().removeBoundDevice(specDevice.deviceUniqueId, account.sessionToken).execute();
+        assertNotNull(removeResponse);
+        assertTrue(removeResponse.isSuccessful());
+        assertNotNull(removeResponse.body());
+    }
 }

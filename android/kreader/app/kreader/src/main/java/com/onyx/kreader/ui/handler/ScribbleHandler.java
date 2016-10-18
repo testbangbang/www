@@ -8,6 +8,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
+import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.note.request.StopNoteRequest;
@@ -136,8 +137,13 @@ public class ScribbleHandler extends BaseHandler {
 
     }
 
+    public void afterChangePosition(final ReaderDataHolder readerDataHolder) {
+        final ResumeDrawingAction action = new ResumeDrawingAction(readerDataHolder.getVisiblePages());
+        action.execute(readerDataHolder, null);
+    }
+
     public void close(final ReaderDataHolder readerDataHolder) {
-        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain();
+        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false);
         stopNoteActionChain.execute(readerDataHolder, null);
     }
 }

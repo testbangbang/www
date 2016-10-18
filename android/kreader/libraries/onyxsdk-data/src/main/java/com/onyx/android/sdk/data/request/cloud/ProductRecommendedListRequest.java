@@ -1,13 +1,16 @@
 package com.onyx.android.sdk.data.request.cloud;
 
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.Product;
+import com.onyx.android.sdk.data.model.ProductQuery;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 
 import com.onyx.android.sdk.data.v1.OnyxBookStoreService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+
 import retrofit2.Response;
 
 /**
@@ -17,8 +20,10 @@ import retrofit2.Response;
 public class ProductRecommendedListRequest extends BaseCloudRequest {
 
     private ProductResult<Product> productResult;
+    private ProductQuery productQuery;
 
-    public ProductRecommendedListRequest() {
+    public ProductRecommendedListRequest(ProductQuery productQuery) {
+        this.productQuery = productQuery;
     }
 
     public final ProductResult<Product> getProductResult() {
@@ -35,7 +40,7 @@ public class ProductRecommendedListRequest extends BaseCloudRequest {
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         OnyxBookStoreService service = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase());
-        Response<ProductResult<Product>> response = service.bookRecommendedList().execute();
+        Response<ProductResult<Product>> response = service.bookRecommendedList(JSON.toJSONString(productQuery)).execute();
         if (response.isSuccessful()) {
             productResult = response.body();
         }
