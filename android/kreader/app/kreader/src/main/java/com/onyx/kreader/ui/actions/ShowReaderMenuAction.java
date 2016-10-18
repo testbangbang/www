@@ -120,8 +120,8 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void initReaderMenu(final ReaderDataHolder readerDataHolder) {
-        createReaderSideMenu(readerDataHolder);
         getDisableMenus(readerDataHolder);
+        createReaderSideMenu(readerDataHolder);
     }
 
     private void getDisableMenus(ReaderDataHolder readerDataHolder) {
@@ -272,12 +272,10 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.supportNoteExport()) {
-            return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems);
-        } else {
-            return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems,
-                    new ReaderMenuAction[] { ReaderMenuAction.DIRECTORY_EXPORT });
+        if (!readerDataHolder.supportNoteExport()) {
+            disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
+        return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems, disableMenus);
     }
 
     private void initPageMenuItems(ReaderDataHolder readerDataHolders, List<ReaderLayerMenuItem> menuItems) {

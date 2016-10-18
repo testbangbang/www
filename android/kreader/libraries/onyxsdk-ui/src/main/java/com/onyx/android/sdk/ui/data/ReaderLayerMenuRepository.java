@@ -5,7 +5,6 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,8 +60,8 @@ public class ReaderLayerMenuRepository {
         return menuGroupList;
     }
 
-    public static List<ReaderLayerMenuItem> createFromArray(ReaderLayerMenuItem[] flattenArray, ReaderMenuAction[] excludingList) {
-        Set<ReaderMenuAction> excludingSet = new HashSet<>(Arrays.asList(excludingList));
+    public static List<ReaderLayerMenuItem> createFromArray(ReaderLayerMenuItem[] flattenArray, List<ReaderMenuAction> excludingList) {
+        Set<ReaderMenuAction> excludingSet = new HashSet<>(excludingList);
 
         ArrayList<ReaderLayerMenuItem> menuGroupList = new ArrayList<>();
         ReaderLayerMenuItem currentGroup = null;
