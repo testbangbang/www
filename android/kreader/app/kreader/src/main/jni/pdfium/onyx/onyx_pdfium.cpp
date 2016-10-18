@@ -188,7 +188,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
     	AndroidBitmap_unlockPixels(env, bitmap);
         return false;
     }
-    FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT);
+    FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT);
     AndroidBitmap_unlockPixels(env, bitmap);
     return true;
 }
