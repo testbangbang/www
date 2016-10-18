@@ -87,8 +87,10 @@ public class NoteEventProcessorManager {
     private OnyxMatrix getViewToEpdMatrix(final MappingConfig mappingConfig, int orientation) {
         final MappingConfig.MappingEntry entry = mappingConfig.getEntry(orientation);
         OnyxMatrix viewMatrix = new OnyxMatrix();
-        viewMatrix.postRotate(entry.orientation);
-        viewMatrix.postTranslate(entry.tx, entry.ty);
+        if (entry != null) {
+            viewMatrix.postRotate(entry.orientation);
+            viewMatrix.postTranslate(entry.tx, entry.ty);
+        }
         return viewMatrix;
     }
 
