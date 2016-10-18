@@ -7,8 +7,6 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 /**

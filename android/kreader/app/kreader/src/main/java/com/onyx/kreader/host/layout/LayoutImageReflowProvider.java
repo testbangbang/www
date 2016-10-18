@@ -168,6 +168,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return true;
     }
 
+    @Override
+    public boolean supportScale() throws ReaderException {
+        return false;
+    }
+
     public boolean supportSubScreenNavigation() {
         return false;
     }
