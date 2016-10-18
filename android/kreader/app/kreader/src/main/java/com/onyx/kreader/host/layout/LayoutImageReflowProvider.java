@@ -19,8 +19,6 @@ import com.onyx.kreader.reflow.ImageReflowManager;
  * For reflow stream document.
  */
 public class LayoutImageReflowProvider extends LayoutProvider {
-    @SuppressWarnings("unused")
-    private static final String TAG = LayoutImageReflowProvider.class.getSimpleName();
 
     private boolean reverseOrder;
 
@@ -47,8 +45,8 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean prevScreen() throws ReaderException {
-        reverseOrder = true;
         if (atFirstSubPage()) {
+            reverseOrder = true;
             return prevPage();
         }
         previousSubPage();
@@ -90,48 +88,54 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
         drawContext.renderingBitmap = new ReaderBitmapImpl();
 
-        String key = getCurrentSubPageKey();
-        Bitmap bmp = getCurrentSubPageBitmap();
-        if (bmp != null) {
-            drawContext.renderingBitmap.attachWith(key, bmp);
-            LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
-            if (drawContext.asyncDraw) {
+        if (drawContext.asyncDraw) {
+            if (!isCurrentSubPageReady()) {
+                reflowFirstVisiblePageAsync(reader, drawContext, readerViewInfo, false);
+            } else if (getCurrentSubPageIndex() == 1) {
+                // pre-render request of next sub page with index 1 means
+                // we actually want to pre-render next page of document
                 reflowNextPageInBackground(reader, drawContext, readerViewInfo);
             }
-            return true;
-        }
-
-        reflowFirstVisiblePageAsync(reader, drawContext, readerViewInfo);
-        if (drawContext.asyncDraw) {
             return false;
         }
+
+        if (!isCurrentSubPageReady()) {
+            reflowFirstVisiblePageAsync(reader, drawContext, readerViewInfo, true);
+        }
+
         if (reverseOrder) {
             moveToLastSubPage();
             reverseOrder = false;
         }
-        bmp = getCurrentSubPageBitmap();
+
+        String key = getCurrentSubPageKey();
+        Bitmap bmp = getCurrentSubPageBitmap();
         if (bmp == null) {
             return false;
         }
         drawContext.renderingBitmap.attachWith(key, bmp);
+        LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
         return true;
     }
 
     private void reflowFirstVisiblePageAsync(final Reader reader,
                                              final ReaderDrawContext drawContext,
-                                             final ReaderViewInfo readerViewInfo) throws ReaderException {
+                                             final ReaderViewInfo readerViewInfo,
+                                             final boolean abortPendingTasks) throws ReaderException {
         LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
         reader.getImageReflowManager().reflowBitmapAsync(drawContext.renderingBitmap.getBitmap(),
-                getCurrentPageName());
+                getCurrentPageName(), abortPendingTasks);
     }
 
     private void reflowNextPageInBackground(final Reader reader,
                                             final ReaderDrawContext drawContext,
                                             final ReaderViewInfo readerViewInfo) throws ReaderException {
         if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
-            ReaderDrawContext reflowContext = ReaderDrawContext.copy(drawContext);
-            reflowContext.renderingBitmap = new ReaderBitmapImpl();
-            reflowFirstVisiblePageAsync(reader, reflowContext, readerViewInfo);
+            if (!isCurrentSubPageReady()) {
+                ReaderDrawContext reflowContext = ReaderDrawContext.copy(drawContext);
+                reflowContext.renderingBitmap = new ReaderBitmapImpl();
+                reflowFirstVisiblePageAsync(reader, reflowContext, readerViewInfo, false);
+            }
             gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
         }
     }
@@ -229,6 +233,10 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     private Bitmap getCurrentSubPageBitmap() {
         return getLayoutManager().getImageReflowManager().getSubPageBitmap(getCurrentPageName(), getCurrentSubPageIndex());
+    }
+
+    private boolean isCurrentSubPageReady() {
+        return getLayoutManager().getImageReflowManager().isSubPageReady(getCurrentPageName(), getCurrentSubPageIndex());
     }
 
     private int getCurrentSubPageIndex() {

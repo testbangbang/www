@@ -242,7 +242,7 @@ public:
             return false;
         }
 
-        PoDoFo::PdfPage *page = doc_->GetPage(scribble.page);
+        PoDoFo::PdfPage *page = getPage(scribble.page);
         if (!page) {
             return false;
         }
@@ -260,10 +260,6 @@ public:
         }
 
         for (const auto &scribble : pageScribbles) {
-            PoDoFo::PdfPage *page = getPage(scribble.page);
-            if (!page) {
-                return false;
-            }
             if (!writeScribble(scribble)) {
                 return false;
             }

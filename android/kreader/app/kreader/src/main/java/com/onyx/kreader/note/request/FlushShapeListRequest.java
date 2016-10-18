@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNotePage;
 
@@ -41,7 +42,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         }
 
         if (count != shapeList.size() && BuildConfig.DEBUG) {
-            Log.e("###########", "adding error: " + " origin size: " + shapeList.size() + " result: " + count);
+            Debug.e(this.getClass(),  "adding error: " + " origin size: " + shapeList.size() + " result: " + count);
         }
         if (isRender()) {
             getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));

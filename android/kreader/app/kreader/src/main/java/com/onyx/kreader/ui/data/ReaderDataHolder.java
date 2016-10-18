@@ -10,6 +10,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
@@ -49,8 +50,8 @@ public class ReaderDataHolder {
     private ReaderSelectionManager selectionManager;
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
-    private EventBus eventBus = new EventBus();
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
+    private EventBus eventBus = new EventBus();
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -123,6 +124,14 @@ public class ReaderDataHolder {
 
     public boolean isDocumentOpened() {
         return documentOpened && reader != null;
+    }
+
+    public boolean inNoteWriting() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+    }
+
+    public boolean isNoteDirty() {
+        return noteManager != null && getNoteManager().isNoteDirty();
     }
 
     public String getCurrentPageName() {
@@ -211,15 +220,15 @@ public class ReaderDataHolder {
     }
 
     public void notifyTtsStateChanged() {
-        eventBus.post(new TtsStateChangedEvent());
+        getEventBus().post(new TtsStateChangedEvent());
     }
 
     public void notifyTtsRequestSentence() {
-        eventBus.post(new TtsRequestSentenceEvent());
+        getEventBus().post(new TtsRequestSentenceEvent());
     }
 
     public void notifyTtsError() {
-        eventBus.post(new TtsErrorEvent());
+        getEventBus().post(new TtsErrorEvent());
     }
 
     private void updateReaderMenuState() {
@@ -248,6 +257,14 @@ public class ReaderDataHolder {
             return null;
         }
         return getReaderUserDataInfo().getDocumentMetadata().getTitle();
+    }
+
+    public boolean supportNoteExport() {
+        if (StringUtils.isNullOrEmpty(documentPath) ||
+                !documentPath.toLowerCase().endsWith(".pdf")) {
+            return false;
+        }
+        return true;
     }
 
     public boolean hasBookmark() {
@@ -324,20 +341,23 @@ public class ReaderDataHolder {
     }
 
     public void changeEpdUpdateMode(final UpdateMode mode) {
-        eventBus.post(new ChangeEpdUpdateModeEvent(mode));
+        getEventBus().post(new ChangeEpdUpdateModeEvent(mode));
     }
 
     public void resetEpdUpdateMode() {
-        eventBus.post(new ResetEpdUpdateModeEvent());
+        getEventBus().post(new ResetEpdUpdateModeEvent());
     }
 
-    public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e, boolean applyGCIntervalUpdate, boolean renderShapeData) {
+    public void onRenderRequestFinished(final BaseReaderRequest request,
+                                        Throwable e,
+                                        boolean applyGCIntervalUpdate,
+                                        boolean renderShapeData) {
         if (e != null || request.isAbort()) {
             return;
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        eventBus.post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData));
+        getEventBus().post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData));
     }
 
 
@@ -348,7 +368,7 @@ public class ReaderDataHolder {
     }
 
     public void showReaderSettings() {
-        eventBus.post(new ShowReaderSettingsEvent());
+        getEventBus().post(new ShowReaderSettingsEvent());
     }
 
     public void addActiveDialog(Dialog dialog) {
@@ -415,7 +435,6 @@ public class ReaderDataHolder {
         if (noteManager == null) {
             return;
         }
-
         getNoteManager().stopRawEventProcessor();
     }
 }

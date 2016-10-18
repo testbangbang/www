@@ -63,8 +63,11 @@ public class ExportNotesRequest extends BaseReaderRequest {
             if (!writeAnnotations(annotations)) {
                 return false;
             }
-            if (!PdfWriterUtils.saveAs(reader.getExportDocPath(),
-                    !SingletonSharedPreference.isExportAllPages())) {
+            boolean exportOnlyPagesWithAnnotations = !SingletonSharedPreference.isExportAllPages();
+            if (exportOnlyPagesWithAnnotations && scribbles.size() == 0 && annotations.size() == 0) {
+                return false;
+            }
+            if (!PdfWriterUtils.saveAs(reader.getExportDocPath(), exportOnlyPagesWithAnnotations)) {
                 return false;
             }
 

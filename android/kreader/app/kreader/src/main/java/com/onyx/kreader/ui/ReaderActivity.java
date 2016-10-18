@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Size;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -40,16 +42,19 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
 import com.onyx.kreader.ui.actions.ForwardAction;
 import com.onyx.kreader.ui.actions.OpenDocumentAction;
+import com.onyx.kreader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
@@ -71,6 +76,7 @@ import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
+import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
@@ -354,17 +360,22 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
+    @Subscribe
+    public void onShapeRendered(final ShapeRenderFinishEvent event) {
+        final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
+        if (noteDataInfo == null || !noteDataInfo.isContentRendered()) {
+            return;
+        }
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+    }
+
     private boolean verifyReader() {
         return getReaderDataHolder().isDocumentOpened();
     }
 
-    private boolean inNoteWriting() {
-        return getReaderDataHolder().getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
-    }
-
     @Subscribe
     public void onSystemUIChanged(final SystemUIChangedEvent event) {
-        if (event == null || !inNoteWriting()) {
+        if (event == null || !getReaderDataHolder().inNoteWriting()) {
             return;
         }
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
@@ -379,11 +390,25 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onHomeClick(final HomeClickEvent event) {
-        if (event == null || !inNoteWriting()) {
+        if (event == null || !getReaderDataHolder().inNoteWriting()) {
+            saveDocumentOptions();
             return;
         }
-        StopNoteActionChain actionChain = new StopNoteActionChain(true, true);
-        actionChain.execute(getReaderDataHolder(), null);
+
+        readerDataHolder.getNoteManager().enableScreenPost(true);
+        ShowReaderMenuAction.resetReaderMenu(readerDataHolder);
+        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false);
+        actionChain.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                saveDocumentOptions();
+            }
+        });
+    }
+
+    private void saveDocumentOptions() {
+        final SaveDocumentOptionsAction action = new SaveDocumentOptionsAction();
+        action.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe
@@ -522,7 +547,8 @@ public class ReaderActivity extends ActionBarActivity {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect);
+        int rotation =  getWindowManager().getDefaultDisplay().getRotation();
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, rotation);
         if (getReaderDataHolder().isDocumentOpened()) {
             new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
         }
@@ -542,7 +568,8 @@ public class ReaderActivity extends ActionBarActivity {
             rect.bottom = Math.min(rect.bottom, topOfBottomToolBar);
         }
 
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect);
+        int rotation =  getWindowManager().getDefaultDisplay().getRotation();
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, rotation);
     }
 
     @Subscribe
@@ -606,7 +633,7 @@ public class ReaderActivity extends ActionBarActivity {
                 if (e != null || request.isAbort()) {
                     return;
                 }
-                onRequestFinished(RequestFinishEvent.shapeReadyEvent());
+                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEvent());
             }
         });
     }
@@ -617,6 +644,8 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
+        readerDataHolder.getNoteManager().enableScreenPost(true);
+        ShowReaderMenuAction.resetReaderMenu(readerDataHolder);
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override

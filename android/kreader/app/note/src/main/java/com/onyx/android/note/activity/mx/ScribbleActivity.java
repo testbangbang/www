@@ -3,6 +3,7 @@ package com.onyx.android.note.activity.mx;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -276,7 +277,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onCancelAction() {
                 dialogNoteNameInput.dismiss();
-                syncWithCallback(true, true, null);
+                Handler handler = new Handler(getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        syncWithCallback(true, true, null);
+                    }
+                }, 500);
             }
 
             @Override

@@ -35,7 +35,9 @@ public class DeviceReceiver extends BroadcastReceiver {
     }
 
     public void registerReceiver(final Context context) {
-        context.registerReceiver(this, systemIntentFilter());
+        if (!registered && context != null) {
+            context.registerReceiver(this, systemIntentFilter());
+        }
         registered = true;
     }
 

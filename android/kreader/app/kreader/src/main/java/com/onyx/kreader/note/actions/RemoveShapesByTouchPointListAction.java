@@ -9,6 +9,7 @@ import com.onyx.kreader.note.request.RemoveShapesByTouchPointListRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
+import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class RemoveShapesByTouchPointListAction extends BaseAction {
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.getEventBus().post(RequestFinishEvent.shapeReadyEvent());
+                readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEvent());
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

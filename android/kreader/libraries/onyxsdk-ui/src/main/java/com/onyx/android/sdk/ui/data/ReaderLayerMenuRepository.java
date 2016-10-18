@@ -5,7 +5,10 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by joy on 8/25/16.
@@ -46,6 +49,34 @@ public class ReaderLayerMenuRepository {
         ArrayList<ReaderLayerMenuItem> menuGroupList = new ArrayList<>();
         ReaderLayerMenuItem currentGroup = null;
         for (ReaderLayerMenuItem item : flattenArray) {
+            if (item.getItemType() == ReaderMenuItem.ItemType.Group) {
+                ReaderLayerMenuItem group = new ReaderLayerMenuItem(item);
+                menuGroupList.add(group);
+                currentGroup = group;
+            } else {
+                ((List<ReaderLayerMenuItem>)currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
+                        item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId()));
+            }
+        }
+        return menuGroupList;
+    }
+
+    public static List<ReaderLayerMenuItem> createFromArray(ReaderLayerMenuItem[] flattenArray, ReaderMenuAction[] excludingList) {
+        Set<ReaderMenuAction> excludingSet = new HashSet<>(Arrays.asList(excludingList));
+
+        ArrayList<ReaderLayerMenuItem> menuGroupList = new ArrayList<>();
+        ReaderLayerMenuItem currentGroup = null;
+        for (int i = 0; i < flattenArray.length; i++) {
+            ReaderLayerMenuItem item = flattenArray[i];
+            if (excludingSet.contains(item.getAction())) {
+                if (item.getItemType() != ReaderMenuItem.ItemType.Group) {
+                    continue;
+                }
+                do {
+                    i++;
+                    item = flattenArray[i];
+                } while (item.getItemType() != ReaderMenuItem.ItemType.Group);
+            }
             if (item.getItemType() == ReaderMenuItem.ItemType.Group) {
                 ReaderLayerMenuItem group = new ReaderLayerMenuItem(item);
                 menuGroupList.add(group);

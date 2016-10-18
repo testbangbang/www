@@ -3,7 +3,7 @@
 **
 ** Part of willus.com general purpose C code library.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2015  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -236,7 +236,7 @@ int wsys_win32_api(void)
         return((_emx_rev>>16)==2);
     else
         return(0);
-#elif (defined(WIN32))
+#elif (defined(HAVE_WIN32_API))
         return(1);
 #else
     return(0);
@@ -254,7 +254,7 @@ int wsys_win32_api(void)
 int wsys_wpid_status(int pid)
 
     {
-#ifdef WIN32
+#ifdef HAVE_WIN32_API
     HANDLE prochandle;
     prochandle = OpenProcess(PROCESS_QUERY_INFORMATION,0,pid);
     if (prochandle==NULL)
@@ -296,14 +296,14 @@ int wsys_wpid_status(int pid)
 #else
     return(WPID_UNKNOWN);
 #endif /* UNIX */
-#endif /* WIN32 */
+#endif /* HAVE_WIN32_API */
     }
 
 
 void wsys_sleep(int secs)
 
     {
-#ifdef WIN32
+#ifdef HAVE_WIN32_API
     win_sleep(secs*1000);
 #else
     sleep(secs);
@@ -314,7 +314,7 @@ void wsys_sleep(int secs)
 char *wsys_full_exe_name(char *s)
 
     {
-#if (defined(WIN32) || defined(WIN64))
+#ifdef HAVE_WIN32_API
     return(win_full_exe_name(s));
 #else
     if (!wfile_is_symlink_ex("/proc/self/exe",s))
@@ -338,7 +338,7 @@ void wsys_append_nul_redirect(char *s)
 int wsys_which(char *exactname,char *exename)
 
     {
-#ifdef WIN32
+#ifdef HAVE_WIN32_API
     return(win_which(exactname,exename));
 #else
 #if (defined(LINUX) || defined(UNIXPURE))
@@ -353,7 +353,7 @@ int wsys_which(char *exactname,char *exename)
 int wsys_most_recent_in_path(char *exename,char *wildcard)
 
     {
-#ifdef WIN32
+#ifdef HAVE_WIN32_API
     return(win_most_recent_in_path(exename,wildcard));
 #else
 #if (defined(LINUX) || defined(UNIXPURE))
@@ -368,7 +368,7 @@ int wsys_most_recent_in_path(char *exename,char *wildcard)
 void wsys_computer_name(char *name,int maxlen)
 
     {
-#ifdef WIN32
+#ifdef HAVE_WIN32_API
     int n;
     n=maxlen;
     GetComputerName(name,(LPDWORD)&n);
@@ -381,7 +381,7 @@ void wsys_computer_name(char *name,int maxlen)
 void wsys_enter_to_exit(char *mesg)
 
     {
-#if (defined(WIN32) || defined(WIN64))
+#ifdef HAVE_WIN32_API
     if (win_has_own_window())
 #endif
         {
@@ -399,7 +399,7 @@ void wsys_enter_to_exit(char *mesg)
 int wsys_filename_8dot3(char *dst,char *src,int maxlen)
 
     {
-#if (defined(WIN32) || defined(WIN64))
+#ifdef HAVE_WIN32_API
     return(GetShortPathName(src,dst,maxlen));
 #else
     strncpy(dst,src,maxlen-1);
@@ -522,22 +522,38 @@ static int wsys_decimal_is_period(void)
 ** Returns 0 for okay, negative value for error.
 ** Only implemented in Windows for now.
 ** system==NZ for system level var, 0 for user var.
+**
+** 7-20-2014:  Only use Windows calls in Windows.
 */
 int wsys_set_envvar(char *varname,char *value,int system)
 
     {
-    char *estr;
-    static char *funcname="wsys_set_envvar";
-#if (defined(WIN32) || defined(WIN64))
+#ifdef HAVE_WIN32_API
     int status;
     HKEY newkey;
+#else
+    char *estr;
+    static char *funcname="wsys_set_envvar";
+    int assign;
 #endif
 
-    willus_mem_alloc_warn((void **)&estr,strlen(varname)+strlen(value)+16,funcname,10);
-    sprintf(estr,"%s=%s",varname,value);
-    putenv(estr);
-    willus_mem_free((double **)&estr,funcname);
-#if (defined(WIN32) || defined(WIN64))
+#if (!defined(HAVE_WIN32_API))
+    /* Linux / OSX */
+    assign=1;
+    if (value[0]=='\0')
+        {
+        estr=getenv(varname);
+        if (estr==NULL);
+            assign=0;
+        }
+    if (assign)
+        {
+        willus_mem_alloc_warn((void **)&estr,strlen(varname)+strlen(value)+16,funcname,10);
+        sprintf(estr,"%s=%s",varname,value);
+        putenv(estr);
+        willus_mem_free((double **)&estr,funcname);
+        }
+#else
     /* Make permanent by changing Windows registry */
     if (system)
         status=RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment",0,KEY_WRITE,&newkey);
@@ -545,11 +561,14 @@ int wsys_set_envvar(char *varname,char *value,int system)
         status=RegOpenKeyEx(HKEY_CURRENT_USER,"Environment",0,KEY_WRITE,&newkey);
     if (status!=ERROR_SUCCESS)
         return(-1);
-    status=RegSetValueEx(newkey,varname,0,REG_SZ,(unsigned char *)value,strlen(value)+1);
+    if (value[0]!='\0')
+        status=RegSetValueEx(newkey,varname,0,REG_SZ,(unsigned char *)value,strlen(value)+1);
+    else
+        status=RegDeleteValue(newkey,varname);
     if (status!=ERROR_SUCCESS)
-        return(-2);
+        return(-1);
     RegCloseKey(newkey);
-#endif
+#endif /* WIN32 || WIN64 */
     return(0);
     }
 
@@ -559,12 +578,14 @@ int wsys_set_envvar(char *varname,char *value,int system)
 **
 ** If windows, uses registry first.
 **
+** 7-20-2014:  Only use Windows functions for env var in Windows.
+**
 */
 int wsys_get_envvar_ex(char *varname,char *value,int maxlen)
 
     {
     char *p;
-#if (defined(WIN32) || defined(WIN64))
+#ifdef HAVE_WIN32_API
     int i,status;
     HKEY newkey;
     
@@ -596,6 +617,7 @@ int wsys_get_envvar_ex(char *varname,char *value,int maxlen)
             }
         RegCloseKey(newkey);
         }
+    return(-10);
 #endif
     value[0]='\0';
     p=getenv(varname);
