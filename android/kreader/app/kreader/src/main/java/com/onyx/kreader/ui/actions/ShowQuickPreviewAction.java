@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.graphics.Bitmap;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -23,13 +24,14 @@ public class ShowQuickPreviewAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        dialogQuickPreview = new DialogQuickPreview(readerDataHolder, readerDataHolder.getPageCount(),
-                readerDataHolder.getCurrentPage(), new DialogQuickPreview.Callback() {
+        dialogQuickPreview = new DialogQuickPreview(readerDataHolder, new DialogQuickPreview.Callback() {
 
             @Override
             public void abort() {
-                isAborted = true;
-                pagesToPreview.clear();
+//                isAborted = true;
+                if (pagesToPreview != null) {
+                    pagesToPreview.clear();
+                }
             }
 
             @Override
@@ -61,6 +63,7 @@ public class ShowQuickPreviewAction extends BaseAction {
             public void done(BaseRequest request, Throwable e) {
                 dialogQuickPreview.updatePreview(current, bitmap.getBitmap());
                 requestPreviewBySequence(readerDataHolder, desiredSize);
+//                bitmap.recycleBitmap();
             }
         });
     }

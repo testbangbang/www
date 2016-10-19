@@ -18,6 +18,7 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
     private TextView pageTextView;
     private TextView pageText;
     private RelativeLayout container;
+    private Bitmap bitmap;
 
     public PreviewViewHolder(View itemView) {
         super(itemView);
@@ -29,7 +30,8 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
 
     public void bindPreview(Bitmap bitmap, int page) {
         this.page = page;
-        if (bitmap != null){
+        this.bitmap = bitmap;
+        if (bitmap != null && !bitmap.isRecycled()) {
             imageView.setImageBitmap(bitmap);
         }
         pageTextView.setVisibility(View.GONE);
@@ -43,5 +45,13 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
 
     public int getPage() {
         return page;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
     }
 }
