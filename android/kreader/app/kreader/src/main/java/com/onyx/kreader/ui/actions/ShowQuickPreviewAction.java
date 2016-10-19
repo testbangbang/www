@@ -28,7 +28,6 @@ public class ShowQuickPreviewAction extends BaseAction {
 
             @Override
             public void abort() {
-//                isAborted = true;
                 if (pagesToPreview != null) {
                     pagesToPreview.clear();
                 }
@@ -63,7 +62,6 @@ public class ShowQuickPreviewAction extends BaseAction {
             public void done(BaseRequest request, Throwable e) {
                 dialogQuickPreview.updatePreview(current, bitmap.getBitmap());
                 requestPreviewBySequence(readerDataHolder, desiredSize);
-//                bitmap.recycleBitmap();
             }
         });
     }
