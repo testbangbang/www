@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -89,9 +91,9 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private GetScribbleBitmapAction getScribbleBitmapAction;
     List<String> requestPages;
 
-    public enum DirectoryTab { TOC , Bookmark, Annotation, Scribble}
+    public enum DirectoryTab {TOC, Bookmark, Annotation, Scribble}
 
-    private class SimpleListViewItemViewHolder extends RecyclerView.ViewHolder{
+    private class SimpleListViewItemViewHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewDescription;
         private TextView textViewTitle;
@@ -106,12 +108,12 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         public SimpleListViewItemViewHolder(final ReaderDataHolder readerDataHolder, final View itemView) {
             super(itemView);
 
-            textViewTitle = (TextView)itemView.findViewById(R.id.text_view_title);
-            textViewDescription = (TextView)itemView.findViewById(R.id.text_view_description);
-            textViewPage = (TextView)itemView.findViewById(R.id.text_view_page);
-            textViewTime = (TextView)itemView.findViewById(R.id.text_view_time);
+            textViewTitle = (TextView) itemView.findViewById(R.id.text_view_title);
+            textViewDescription = (TextView) itemView.findViewById(R.id.text_view_description);
+            textViewPage = (TextView) itemView.findViewById(R.id.text_view_page);
+            textViewTime = (TextView) itemView.findViewById(R.id.text_view_time);
             deleteLayout = (LinearLayout) itemView.findViewById(R.id.delete_layout);
-            editLayout = (LinearLayout)itemView.findViewById(R.id.edit_layout);
+            editLayout = (LinearLayout) itemView.findViewById(R.id.edit_layout);
             splitLine = itemView.findViewById(R.id.split_line);
 
             deleteLayout.setOnClickListener(new View.OnClickListener() {
@@ -120,10 +122,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                     DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (currentTab == DirectoryTab.Bookmark){
-                                deleteBookmark(readerDataHolder,position);
-                            }else {
-                                deleteAnnotation(readerDataHolder,position);
+                            if (currentTab == DirectoryTab.Bookmark) {
+                                deleteBookmark(readerDataHolder, position);
+                            } else {
+                                deleteAnnotation(readerDataHolder, position);
                             }
                         }
                     }).show();
@@ -150,29 +152,29 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             });
         }
 
-        public void bindView(String title,String description,String page,long time,int position,DirectoryTab tab){
+        public void bindView(String title, String description, String page, long time, int position, DirectoryTab tab) {
             textViewTitle.setText(title);
             description = StringUtils.deleteNewlineSymbol(description);
             textViewDescription.setText(description);
             Date date = new Date(time);
-            textViewTime.setText(DateTimeUtil.formatDate(date,DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
-            String format = String.format(readerDataHolder.getContext().getString(R.string.page),Integer.valueOf(page) + 1);
+            textViewTime.setText(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
+            String format = String.format(readerDataHolder.getContext().getString(R.string.page), Integer.valueOf(page) + 1);
             textViewPage.setText(format);
             this.page = page;
             this.position = position;
 
             boolean showPageLastLine = (position + 1) % getPageSize(tab) != 0;
-            this.splitLine.setVisibility(showPageLastLine ? View.VISIBLE :View.INVISIBLE);
+            this.splitLine.setVisibility(showPageLastLine ? View.VISIBLE : View.INVISIBLE);
             editLayout.setVisibility(currentTab == DirectoryTab.Annotation ? View.VISIBLE : View.GONE);
         }
     }
 
-    private void showAnnotationEditDialog(final int position){
+    private void showAnnotationEditDialog(final int position) {
         ShowAnnotationEditDialogAction action = new ShowAnnotationEditDialogAction(annotationList.get(position));
         action.setOnEditListener(new ShowAnnotationEditDialogAction.OnEditListener() {
             @Override
             public void onUpdateFinished(Annotation annotation) {
-                annotationList.set(position,annotation);
+                annotationList.set(position, annotation);
                 notifyPageDataSetChanged(currentTab);
             }
 
@@ -186,7 +188,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         action.execute(readerDataHolder, null);
     }
 
-    private void deleteBookmark(ReaderDataHolder readerDataHolder, final int position){
+    private void deleteBookmark(ReaderDataHolder readerDataHolder, final int position) {
         final DeleteBookmarkRequest DbRequest = new DeleteBookmarkRequest(bookmarkList.get(position));
         readerDataHolder.submitRenderRequest(DbRequest, new BaseCallback() {
             @Override
@@ -198,7 +200,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         });
     }
 
-    private void deleteAnnotation(ReaderDataHolder readerDataHolder, final int position){
+    private void deleteAnnotation(ReaderDataHolder readerDataHolder, final int position) {
         final DeleteAnnotationRequest DaRequest = new DeleteAnnotationRequest(annotationList.get(position));
         readerDataHolder.submitRenderRequest(DaRequest, new BaseCallback() {
             @Override
@@ -210,7 +212,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         });
     }
 
-    public class ViewPagerAdapter extends PagerAdapter{
+    public class ViewPagerAdapter extends PagerAdapter {
         @Override
         public int getCount() {
             return 4;
@@ -242,9 +244,9 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
         this.readerDataHolder = readerDataHolder;
         int position = SingletonSharedPreference.getDialogTableOfContentTab(getContext(), 0);
-        if (position < DirectoryTab.values().length ){
+        if (position < DirectoryTab.values().length) {
             currentTab = DirectoryTab.values()[position];
-        }else {
+        } else {
             currentTab = DirectoryTab.TOC;
         }
 
@@ -279,9 +281,9 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         btnAnt.setTag(DirectoryTab.Annotation);
         btnScribble.setTag(DirectoryTab.Scribble);
 
-        viewList.add(initTocView(readerDataHolder,toc));
-        viewList.add(initBookmarkView(readerDataHolder,bookmarks));
-        viewList.add(initAnnotationsView(readerDataHolder,annotations));
+        viewList.add(initTocView(readerDataHolder, toc));
+        viewList.add(initBookmarkView(readerDataHolder, bookmarks));
+        viewList.add(initAnnotationsView(readerDataHolder, annotations));
         viewList.add(initScribbleView(readerDataHolder, scribblePages));
         viewPager.setAdapter(new ViewPagerAdapter());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -308,7 +310,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         setViewListener();
     }
 
-    private void setViewListener(){
+    private void setViewListener() {
         preIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -375,33 +377,33 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
-    private void notifyPageDataSetChanged(DirectoryTab tab){
+    private void notifyPageDataSetChanged(DirectoryTab tab) {
         PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
-        if (pageAdapter != null){
+        if (pageAdapter != null) {
             pageAdapter.notifyDataSetChanged();
         }
     }
 
-    private int getPageItemCount(DirectoryTab tab){
+    private int getPageItemCount(DirectoryTab tab) {
         PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
-        if (pageAdapter != null){
+        if (pageAdapter != null) {
             return pageAdapter.getItemCount();
         }
         return 0;
     }
 
-    private int getTabIndex(DirectoryTab tab){
+    private int getTabIndex(DirectoryTab tab) {
         return tab.ordinal();
     }
 
     private void checkRadioButton(DirectoryTab tab) {
-        RadioButton checkButton = (RadioButton)btnGroup.getChildAt(getTabIndex(tab));
+        RadioButton checkButton = (RadioButton) btnGroup.getChildAt(getTabIndex(tab));
         checkButton.setChecked(true);
     }
 
-    private int getPageSize(DirectoryTab tab){
+    private int getPageSize(DirectoryTab tab) {
         Resources res = readerDataHolder.getContext().getResources();
-        switch (tab){
+        switch (tab) {
             case TOC:
                 return res.getInteger(R.integer.table_of_content_row);
             case Bookmark:
@@ -414,15 +416,15 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         return 0;
     }
 
-    private PageRecyclerView.PageAdapter getPageAdapter(DirectoryTab tab){
+    private PageRecyclerView.PageAdapter getPageAdapter(DirectoryTab tab) {
         int pos = getTabIndex(tab);
-        if (viewList.size() > pos){
+        if (viewList.size() > pos) {
             return (PageRecyclerView.PageAdapter) viewList.get(pos).getAdapter();
         }
         return null;
     }
 
-    private PageRecyclerView initTocView(final ReaderDataHolder readerDataHolder, final ReaderDocumentTableOfContent toc){
+    private PageRecyclerView initTocView(final ReaderDataHolder readerDataHolder, final ReaderDocumentTableOfContent toc) {
         final int row = getPageSize(DirectoryTab.TOC);
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = buildTreeNodesFromToc(toc);
         TreeRecyclerView treeRecyclerView = new TreeRecyclerView(viewPager.getContext());
@@ -430,7 +432,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         treeRecyclerView.bindTree(rootNodes, new TreeRecyclerView.Callback() {
             @Override
             public void onTreeNodeClicked(TreeRecyclerView.TreeNode node) {
-                ReaderDocumentTableOfContentEntry entry = (ReaderDocumentTableOfContentEntry)node.getTag();
+                ReaderDocumentTableOfContentEntry entry = (ReaderDocumentTableOfContentEntry) node.getTag();
                 if (entry == null) {
                     return;
                 }
@@ -445,10 +447,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             }
 
             @Override
-            public void onItemCountChanged(int position,int itemCount) {
+            public void onItemCountChanged(int position, int itemCount) {
                 onPageChanged();
             }
-        },row);
+        }, row);
 
         if (toc != null && hasChildren(toc.getRootEntry())) {
             ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), readerDataHolder.getCurrentPage());
@@ -498,7 +500,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                     ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), PagePositionUtils.getPosition(bookmark.getPosition()));
                     title = entry.getTitle();
                 }
-                ((SimpleListViewItemViewHolder)holder).bindView(title,
+                ((SimpleListViewItemViewHolder) holder).bindView(title,
                         bookmark.getQuote(),
                         bookmark.getPosition(),
                         bookmark.getCreatedAt().getTime(),
@@ -539,7 +541,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 Annotation annotation = annotationList.get(position);
-                ((SimpleListViewItemViewHolder)holder).bindView(annotation.getNote(),
+                ((SimpleListViewItemViewHolder) holder).bindView(annotation.getNote(),
                         annotation.getQuote(),
                         annotation.getPosition(),
                         annotation.getCreatedAt().getTime(),
@@ -551,8 +553,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         return view;
     }
 
-    private PageRecyclerView initScribbleView(final ReaderDataHolder readerDataHolder, List<String> scribblePages){
-        for (String  page: scribblePages) {
+    private PageRecyclerView initScribbleView(final ReaderDataHolder readerDataHolder, List<String> scribblePages) {
+        for (String page : scribblePages) {
             scribblePreviewMap.put(Integer.valueOf(page), null);
         }
         scribblePageView = new PageRecyclerView(viewPager.getContext());
@@ -595,10 +597,21 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                final PreviewViewHolder previewViewHolder = (PreviewViewHolder)holder;
+                final PreviewViewHolder previewViewHolder = (PreviewViewHolder) holder;
                 final int page = scribblePreviewMap.keyAt(position);
                 Bitmap scribbleBitmap = scribblePreviewMap.get(page);
-                previewViewHolder.bindPreview(scribbleBitmap,page);
+                previewViewHolder.bindPreview(scribbleBitmap, page);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+                super.onViewDetachedFromWindow(holder);
+                final PreviewViewHolder previewViewHolder = (PreviewViewHolder) holder;
+                Bitmap bitmap = previewViewHolder.getBitmap();
+                if (bitmap != null && !bitmap.isRecycled()) {
+                    bitmap.recycle();
+                    previewViewHolder.getImageView().setImageDrawable(new ColorDrawable(Color.WHITE));
+                }
             }
         });
 
@@ -606,24 +619,24 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         return scribblePageView;
     }
 
-    private void requestScribblePreview(final PageRecyclerView scribblePageView){
-        if (scribblePreviewMap.size() <= 0){
+    private void requestScribblePreview(final PageRecyclerView scribblePageView) {
+        clearRequestPages();
+        if (scribblePreviewMap.size() <= 0) {
             return;
         }
         int pageBegin = scribblePageView.getPaginator().getCurrentPageBegin();
         int pageEnd = scribblePageView.getPaginator().getCurrentPageEnd();
 
-        if (pageBegin < 0 || pageBegin > pageEnd){
+        if (pageBegin < 0 || pageBegin > pageEnd) {
             return;
         }
 
-        clearRequestPages();
         requestPages = new ArrayList<>();
         for (int i = pageBegin; i <= pageEnd; i++) {
             requestPages.add(String.valueOf(scribblePreviewMap.keyAt(i)));
         }
 
-        getScribbleBitmapAction  = new GetScribbleBitmapAction(requestPages, 300, 400);
+        getScribbleBitmapAction = new GetScribbleBitmapAction(requestPages, 300, 400);
         getScribbleBitmapAction.execute(readerDataHolder, new GetScribbleBitmapAction.Callback() {
             @Override
             public void onNext(String page, Bitmap bitmap) {
@@ -634,58 +647,58 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         });
     }
 
-    private void clearRequestPages(){
-        if (requestPages != null){
+    private void clearRequestPages() {
+        if (requestPages != null) {
             requestPages.clear();
         }
     }
 
-    private void onPageChanged(){
-        if (viewList.size() == 0){
+    private void onPageChanged() {
+        if (viewList.size() == 0) {
             return;
         }
         PageRecyclerView pageView = viewList.get(getTabIndex(currentTab));
         int currentPage = Math.max(pageView.getPaginator().getCurrentPage() + 1, 1);
         int pages = Math.max(pageView.getPaginator().pages(), 1);
-        String show = String.format("%d/%d",currentPage,pages);
+        String show = String.format("%d/%d", currentPage, pages);
         pageIndicator.setText(show);
         updateTotalText(currentTab);
 
-        if (currentTab == DirectoryTab.Scribble && scribblePageView != null){
+        if (currentTab == DirectoryTab.Scribble && scribblePageView != null) {
             requestScribblePreview(scribblePageView);
         }
         showExportLayout(currentTab);
     }
 
-    private void showExportLayout(DirectoryTab tab){
+    private void showExportLayout(DirectoryTab tab) {
         boolean showExport = tab == DirectoryTab.Scribble || tab == DirectoryTab.Annotation;
         exportLayout.setVisibility(showExport ? View.VISIBLE : View.GONE);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (showExport){
+        if (showExport) {
             lp.addRule(RelativeLayout.RIGHT_OF, R.id.total);
             lp.addRule(RelativeLayout.CENTER_VERTICAL);
             lp.leftMargin = DimenUtils.dip2px(getContext(), 20);
-        }else {
+        } else {
             lp.addRule(RelativeLayout.CENTER_IN_PARENT);
         }
         pageIndicatorLayout.setLayoutParams(lp);
     }
 
-    private void updateTotalText(DirectoryTab tab){
-        switch (tab){
+    private void updateTotalText(DirectoryTab tab) {
+        switch (tab) {
             case TOC:
                 totalText.setVisibility(View.GONE);
                 break;
             case Bookmark:
-                totalText.setText(String.format(getContext().getString(R.string.total_page),bookmarkList.size()));
+                totalText.setText(String.format(getContext().getString(R.string.total_page), bookmarkList.size()));
                 totalText.setVisibility(View.VISIBLE);
                 break;
             case Annotation:
-                totalText.setText(String.format(getContext().getString(R.string.total_page),annotationList.size()));
+                totalText.setText(String.format(getContext().getString(R.string.total_page), annotationList.size()));
                 totalText.setVisibility(View.VISIBLE);
                 break;
             case Scribble:
-                totalText.setText(String.format(getContext().getString(R.string.total_page),scribblePreviewMap.size()));
+                totalText.setText(String.format(getContext().getString(R.string.total_page), scribblePreviewMap.size()));
                 totalText.setVisibility(View.VISIBLE);
                 break;
         }
@@ -766,31 +779,26 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked){
-            switchViewPage((DirectoryTab)buttonView.getTag());
+        if (isChecked) {
+            switchViewPage((DirectoryTab) buttonView.getTag());
         }
     }
 
-    private void switchViewPage(DirectoryTab tab){
+    private void switchViewPage(DirectoryTab tab) {
         int position = getTabIndex(tab);
         SingletonSharedPreference.setDialogTableOfContentTab(getContext(), position);
         currentTab = tab;
-        viewPager.setCurrentItem(position,false);
+        viewPager.setCurrentItem(position, false);
         PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
-        if (pageAdapter != null){
-            if (tab != DirectoryTab.TOC){
+        if (pageAdapter != null) {
+            if (tab != DirectoryTab.TOC) {
                 pageAdapter.notifyDataSetChanged();
             }
         }
     }
 
     @Override
-    public void onPrevPage(int prevPosition, int itemCount,int pageSize) {
-        onPageChanged();
-    }
-
-    @Override
-    public void onNextPage(int nextPosition, int itemCount,int pageSize) {
+    public void onPageChange(int position, int itemCount, int pageSize) {
         onPageChanged();
     }
 }

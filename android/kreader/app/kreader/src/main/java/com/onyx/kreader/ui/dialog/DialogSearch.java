@@ -244,13 +244,8 @@ public class DialogSearch extends Dialog{
         });
         pageRecyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
-            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
-                updatePageIndicator(prevPosition,itemCount);
-            }
-
-            @Override
-            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
-                updatePageIndicator(nextPosition,itemCount);
+            public void onPageChange(int position, int itemCount, int pageSize) {
+                updatePageIndicator(position,itemCount);
             }
         });
         updatePageIndicator(0,0);
