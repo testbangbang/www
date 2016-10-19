@@ -2,11 +2,13 @@ package com.onyx.android.sdk.ui;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
+
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,15 +49,19 @@ public class ReaderLayerMenuRepositoryTest extends ApplicationTestCase<Applicati
     }
 
     public void testCreateMenuWithExcludingList() {
+        List<ReaderMenuAction> menuActions = new ArrayList<>();
+        menuActions.add(ReaderMenuAction.ZOOM);
         List<ReaderLayerMenuItem> menuList = ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems,
-                new ReaderMenuAction[]{ ReaderMenuAction.ZOOM });
+                menuActions);
         assertEquals(menuList.size(), getGroupCount(ReaderLayerMenuRepository.fixedPageMenuItems) - 1);
         assertFalse(contains(menuList, ReaderMenuAction.ZOOM));
 
+        menuActions.clear();
+        menuActions.add(ReaderMenuAction.NOTE_EXPORT);
         menuList = ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems,
-                new ReaderMenuAction[]{ ReaderMenuAction.DIRECTORY_EXPORT });
+                menuActions);
         assertEquals(menuList.size(), getGroupCount(ReaderLayerMenuRepository.fixedPageMenuItems));
-        assertFalse(contains(menuList, ReaderMenuAction.DIRECTORY_EXPORT));
+        assertFalse(contains(menuList, ReaderMenuAction.NOTE_EXPORT));
         assertTrue(contains(menuList, ReaderMenuAction.DIRECTORY_SCRIBBLE));
     }
 }

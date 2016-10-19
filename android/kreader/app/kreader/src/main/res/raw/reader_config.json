@@ -1,0 +1,8 @@
+{
+  "C67ML_Carta" : {
+    "disable_writing" : true
+  },
+  "Kepler_Pro" : {
+    "disable_writing" : false
+  }
+}
