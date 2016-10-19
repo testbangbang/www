@@ -350,11 +350,12 @@ public class ReaderActivity extends ActionBarActivity {
         if (!verifyReader()) {
             return;
         }
-        if (event != null && event.isApplyGCIntervalUpdate()) {
-            ReaderDeviceManager.applyWithGCInterval(surfaceView, readerDataHolder.getReaderViewInfo().isTextPages());
+        boolean update = (event != null && event.isApplyGCIntervalUpdate());
+        if (update) {
+            ReaderDeviceManager.applyWithGCIntervalWithoutRegal(surfaceView);
         }
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         updateStatusBar();
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         if (event != null && event.isRenderShapeData()) {
             renderShapeDataInBackground();
         }
