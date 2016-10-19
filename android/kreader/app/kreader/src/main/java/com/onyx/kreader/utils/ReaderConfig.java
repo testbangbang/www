@@ -4,11 +4,8 @@ import android.content.Context;
 import android.os.Build;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.sdk.utils.RawResourceUtil;
-import com.onyx.kreader.R;
-
-import java.util.Map;
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by ming on 16/10/18.
@@ -18,16 +15,29 @@ public class ReaderConfig {
     private static ReaderConfig ourInstance;
 
     private ReaderConfig(Context context) {
-        String content = RawResourceUtil.contentOfRawResource(context, R.raw.reader_config);
-        Map<String, ReaderConfig> deviceConfigMap = JSON.parseObject(content, new TypeReference<Map<String, ReaderConfig>>() {});
-        String currentDevice = Build.MODEL.toString();
-        ourInstance = deviceConfigMap.get(currentDevice);
+        String content = contentFromRawResource(context, Build.MODEL.toString());
+        if (!StringUtils.isNullOrEmpty(content)) {
+            ourInstance = JSON.parseObject(content, ReaderConfig.class);
+        }
         if (ourInstance == null) {
             ourInstance = new ReaderConfig();
         }
     }
 
-    public ReaderConfig() {}
+    private String contentFromRawResource(Context context, String name) {
+        String content = "";
+        try {
+            int res = context.getResources().getIdentifier(name.toLowerCase(), "raw", context.getPackageName());
+            content = RawResourceUtil.contentOfRawResource(context, res);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return content;
+        }
+    }
+
+    public ReaderConfig() {
+    }
 
     static public ReaderConfig sharedInstance(Context context) {
         if (ourInstance == null) {
