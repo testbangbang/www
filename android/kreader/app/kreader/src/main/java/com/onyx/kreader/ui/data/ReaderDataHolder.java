@@ -10,6 +10,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
@@ -256,6 +257,14 @@ public class ReaderDataHolder {
             return null;
         }
         return getReaderUserDataInfo().getDocumentMetadata().getTitle();
+    }
+
+    public boolean supportNoteExport() {
+        if (StringUtils.isNullOrEmpty(documentPath) ||
+                !documentPath.toLowerCase().endsWith(".pdf")) {
+            return false;
+        }
+        return true;
     }
 
     public boolean hasBookmark() {

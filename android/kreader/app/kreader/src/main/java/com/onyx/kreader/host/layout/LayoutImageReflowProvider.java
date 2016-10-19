@@ -89,9 +89,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         drawContext.renderingBitmap = new ReaderBitmapImpl();
 
         if (drawContext.asyncDraw) {
-            if (!isCurrentSubPageReady()) {
-                reflowFirstVisiblePageAsync(reader, drawContext, readerViewInfo, false);
-            } else if (getCurrentSubPageIndex() == 1) {
+            if (getCurrentSubPageIndex() == 1) {
                 // pre-render request of next sub page with index 1 means
                 // we actually want to pre-render next page of document
                 reflowNextPageInBackground(reader, drawContext, readerViewInfo);
@@ -166,6 +164,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public boolean supportPreRender() throws ReaderException {
         return true;
+    }
+
+    @Override
+    public boolean supportScale() throws ReaderException {
+        return false;
     }
 
     public boolean supportSubScreenNavigation() {

@@ -16,7 +16,6 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
-import com.onyx.android.sdk.data.ScribbleMenuAction;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
@@ -54,7 +53,9 @@ import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.events.QuitEvent;
+import com.onyx.kreader.utils.ReaderConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,6 +69,7 @@ public class ShowReaderMenuAction extends BaseAction {
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderLayerMenu readerMenu;
     private static ReaderLayerMenuState state;
+    private List<ReaderMenuAction> disableMenus = new ArrayList<>();
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -113,7 +115,17 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void initReaderMenu(final ReaderDataHolder readerDataHolder) {
+        getDisableMenus(readerDataHolder);
         createReaderSideMenu(readerDataHolder);
+    }
+
+    private void getDisableMenus(ReaderDataHolder readerDataHolder) {
+        if (ReaderConfig.sharedInstance(readerDataHolder.getContext()).isDisable_writing()) {
+            disableMenus.add(ReaderMenuAction.NOTE);
+        }
+        if (!readerDataHolder.supportNoteExport()) {
+            disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
+        }
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
@@ -204,10 +216,10 @@ public class ShowReaderMenuAction extends BaseAction {
                     case DIRECTORY_SCRIBBLE:
                         startNoteDrawing(readerDataHolder);
                         break;
-                    case DIRECTORY_EXPORT:
+                    case NOTE_EXPORT:
                         showExportDialog(readerDataHolder);
                         break;
-                    case SHOW_SCRIBBLE:
+                    case SHOW_NOTE:
                         showScribble(readerDataHolder);
                         break;
                     case TTS:
@@ -254,12 +266,12 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems);
+        return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems, disableMenus);
     }
 
     private void initPageMenuItems(ReaderDataHolder readerDataHolders, List<ReaderLayerMenuItem> menuItems) {
         for (ReaderLayerMenuItem item : menuItems) {
-            if (item.getAction() == ReaderMenuAction.SHOW_SCRIBBLE) {
+            if (item.getAction() == ReaderMenuAction.SHOW_NOTE) {
                 item.setDrawableResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
                         ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
                 item.setTitleResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
@@ -460,7 +472,8 @@ public class ShowReaderMenuAction extends BaseAction {
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
-                getScribbleActionCallback(readerDataHolder));
+                getScribbleActionCallback(readerDataHolder),
+                disableMenus);
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -473,7 +486,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
         final ShowScribbleMenuAction.ActionCallback callback = new ShowScribbleMenuAction.ActionCallback() {
             @Override
-            public void onClicked(final ScribbleMenuAction action) {
+            public void onClicked(final ReaderMenuAction action) {
                 if (processScribbleActionGroup(readerDataHolder, action)) {
                     return;
                 }
@@ -483,14 +496,14 @@ public class ShowReaderMenuAction extends BaseAction {
         return callback;
     }
 
-    private boolean isGroupAction(final ScribbleMenuAction action) {
-        return (action == ScribbleMenuAction.ERASER ||
-                action == ScribbleMenuAction.WIDTH ||
-                action == ScribbleMenuAction.SHAPE ||
-                action == ScribbleMenuAction.MINIMIZE);
+    private boolean isGroupAction(final ReaderMenuAction action) {
+        return (action == ReaderMenuAction.SCRIBBLE_ERASER ||
+                action == ReaderMenuAction.SCRIBBLE_WIDTH ||
+                action == ReaderMenuAction.SCRIBBLE_SHAPE ||
+                action == ReaderMenuAction.SCRIBBLE_MINIMIZE);
     }
 
-    private boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
+    private boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         if (!isGroupAction(action)) {
             return false;
         }
@@ -499,70 +512,70 @@ public class ShowReaderMenuAction extends BaseAction {
         return true;
     }
 
-    private void processScribbleAction(final ReaderDataHolder readerDataHolder, final ScribbleMenuAction action) {
+    private void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         switch (action) {
-            case WIDTH1:
+            case SCRIBBLE_WIDTH1:
                 useStrokeWidth(readerDataHolder, 2.0f);
                 break;
-            case WIDTH2:
+            case SCRIBBLE_WIDTH2:
                 useStrokeWidth(readerDataHolder, 4.0f);
                 break;
-            case WIDTH3:
+            case SCRIBBLE_WIDTH3:
                 useStrokeWidth(readerDataHolder, 6.0f);
                 break;
-            case WIDTH4:
+            case SCRIBBLE_WIDTH4:
                 useStrokeWidth(readerDataHolder, 9.0f);
                 break;
-            case WIDTH5:
+            case SCRIBBLE_WIDTH5:
                 useStrokeWidth(readerDataHolder, 12.0f);
                 break;
-            case PENCIL:
+            case SCRIBBLE_PENCIL:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
                 break;
-            case BRUSH:
+            case SCRIBBLE_BRUSH:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_BRUSH_SCRIBBLE);
                 break;
-            case LINE:
+            case SCRIBBLE_LINE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_LINE);
                 break;
-            case TRIANGLE:
+            case SCRIBBLE_TRIANGLE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_TRIANGLE);
                 break;
-            case CIRCLE:
+            case SCRIBBLE_CIRCLE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_CIRCLE);
                 break;
-            case SQUARE:
+            case SCRIBBLE_SQUARE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_RECTANGLE);
                 break;
-            case TEXT:
+            case SCRIBBLE_TEXT:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_ANNOTATION);
                 break;
-            case ERASER_PART:
+            case SCRIBBLE_ERASER_PART:
                 startErasing(readerDataHolder);
                 break;
-            case ERASER_ALL:
+            case SCRIBBLE_ERASER_ALL:
                 eraseWholePage(readerDataHolder);
                 break;
-            case DRAG:
+            case SCRIBBLE_DRAG:
                 toggleSelection(readerDataHolder);
                 break;
-            case MINIMIZE:
+            case SCRIBBLE_MINIMIZE:
                 break;
-            case MAXIMIZE:
+            case SCRIBBLE_MAXIMIZE:
                 break;
-            case PREV_PAGE:
+            case SCRIBBLE_PREV_PAGE:
                 prevScreen(readerDataHolder);
                 break;
-            case NEXT_PAGE:
+            case SCRIBBLE_NEXT_PAGE:
                 nextScreen(readerDataHolder);
                 break;
-            case UNDO:
+            case SCRIBBLE_UNDO:
                 undo(readerDataHolder);
                 break;
-            case SAVE:
+            case SCRIBBLE_SAVE:
                 save(readerDataHolder);
                 break;
-            case REDO:
+            case SCRIBBLE_REDO:
                 redo(readerDataHolder);
                 break;
         }

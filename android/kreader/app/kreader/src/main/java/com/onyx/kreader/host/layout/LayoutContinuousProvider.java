@@ -105,6 +105,11 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return true;
     }
 
+    @Override
+    public boolean supportScale() throws ReaderException {
+        return true;
+    }
+
     public boolean supportSubScreenNavigation() {
         return false;
     }
