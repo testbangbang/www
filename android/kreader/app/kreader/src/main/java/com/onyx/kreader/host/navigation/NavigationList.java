@@ -18,8 +18,8 @@ public class NavigationList {
     public RectF limitedRect;
 
     static public NavigationList rowsLeftToRight(final PointMatrix pointMatrix, final RectF limited) {
-        final int rows = pointMatrix.rows() + 1;
-        final int cols = pointMatrix.cols() + 1;
+        final int rows = pointMatrix.getOriginRows();
+        final int cols = pointMatrix.getOriginCols();
         RectF child = new RectF(0, 0, 1, 1);
         List<RectF> list = new ArrayList<RectF>();
         for(int r = 0; r < rows; ++r) {
@@ -50,8 +50,8 @@ public class NavigationList {
     }
 
     static public NavigationList rowsRightToLeft(final PointMatrix pointMatrix, final RectF limited) {
-        final int rows = pointMatrix.rows() + 1;
-        final int cols = pointMatrix.cols() + 1;
+        final int rows = pointMatrix.getOriginRows();
+        final int cols = pointMatrix.getOriginCols();
         RectF child = new RectF(0, 0, 1, 1);
         List<RectF> list = new ArrayList<RectF>();
         for(int r = 0; r < rows; ++r) {
@@ -82,8 +82,8 @@ public class NavigationList {
     }
 
     static public NavigationList columnsLeftToRight(final PointMatrix pointMatrix, final RectF limited) {
-        final int rows = pointMatrix.rows() + 1;
-        final int cols = pointMatrix.cols() + 1;
+        final int rows = pointMatrix.getOriginRows();
+        final int cols = pointMatrix.getOriginCols();
         RectF child = new RectF(0, 0, 1, 1);
         List<RectF> list = new ArrayList<RectF>();
         for(int c = 0; c < cols; ++c) {
@@ -114,8 +114,8 @@ public class NavigationList {
     }
 
     static public NavigationList columnsRightToLeft(final PointMatrix pointMatrix, final RectF limited) {
-        final int rows = pointMatrix.rows() + 1;
-        final int cols = pointMatrix.cols() + 1;
+        final int rows = pointMatrix.getOriginRows();
+        final int cols = pointMatrix.getOriginCols();
         RectF child = new RectF(0, 0, 1, 1);
         List<RectF> list = new ArrayList<RectF>();
         for(int c = 0; c < cols; ++c) {

@@ -18,10 +18,10 @@ import com.onyx.kreader.host.request.AnalyzeWordAction;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.actions.SelectWordAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
-import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.utils.MathUtils;
+import com.onyx.kreader.utils.ReaderConfig;
 import com.onyx.kreader.utils.RectUtils;
 
 /**

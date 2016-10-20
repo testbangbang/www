@@ -8,16 +8,15 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.ui.actions.PanAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
-import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.utils.ReaderConfig;
 
 import java.util.HashMap;
 import java.util.Map;
