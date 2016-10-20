@@ -349,6 +349,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
     private void export() {
         if (currentTab == DirectoryTab.Annotation) {
+            if (annotationList.size() <= 0) {
+                Toast.makeText(getContext(), getContext().getString(R.string.no_data), Toast.LENGTH_SHORT).show();
+                return;
+            }
             new ExportAnnotationAction(annotationList).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -357,6 +361,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 }
             });
         } else if (currentTab == DirectoryTab.Scribble) {
+            if (scribblePreviewMap.size() <= 0) {
+                Toast.makeText(getContext(), getContext().getString(R.string.no_data), Toast.LENGTH_SHORT).show();
+                return;
+            }
             new ExportNotesActionChain(false, true).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {

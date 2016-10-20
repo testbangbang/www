@@ -34,7 +34,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textSize="@dimen/dialog_reflow_text_size"
+                android:textSize="@dimen/dialog_common_text_size"
                 android:layout_centerVertical="true"
                 android:gravity="left"
                 android:layout_marginRight="10dp"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textSize="@dimen/dialog_reflow_text_size"
+                android:textSize="@dimen/dialog_common_text_size"
                 android:layout_centerVertical="true"
                 android:gravity="left"
                 android:layout_marginRight="10dp"
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textSize="@dimen/dialog_reflow_text_size"
+                android:textSize="@dimen/dialog_common_text_size"
                 android:gravity="left"
                 android:layout_marginRight="10dp"
                 android:text="@string/dialog_reflow_settings_font_size"
@@ -109,7 +109,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textSize="@dimen/dialog_reflow_text_size"
+                android:textSize="@dimen/dialog_common_text_size"
                 android:gravity="left"
                 android:layout_marginRight="10dp"
                 android:text="@string/dialog_reflow_settings_auto_straighten"
@@ -145,7 +145,7 @@
         <Button
             android:text="@string/reset"
             android:gravity="center"
-            android:textSize="@dimen/dialog_reflow_text_size"
+            android:textSize="@dimen/dialog_common_text_size"
             android:id="@+id/reset_button"
             android:background="@drawable/no_line_press_bg"
             android:layout_width="0dp"
@@ -154,7 +154,7 @@
 
         <Button
             android:gravity="center"
-            android:textSize="@dimen/dialog_reflow_text_size"
+            android:textSize="@dimen/dialog_common_text_size"
             android:id="@+id/cancel_button"
             android:background="@drawable/left_right_line_press_button_bg"
             android:text="@string/cancel"
@@ -164,7 +164,7 @@
 
         <Button
             android:gravity="center"
-            android:textSize="@dimen/dialog_reflow_text_size"
+            android:textSize="@dimen/dialog_common_text_size"
             android:id="@+id/confirm_button"
             android:background="@drawable/no_line_press_bg"
             android:text="@string/ok"

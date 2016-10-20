@@ -18,6 +18,7 @@
             android:src="@drawable/ic_menu_more" />
 
         <TextView
+            android:textSize="@dimen/dialog_common_text_size"
             android:id="@+id/textView_dialog_Tittle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,10 +45,12 @@
         android:layout_margin="5dp">
 
         <TextView
+            android:textStyle="bold"
+            android:textSize="@dimen/dialog_common_text_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Current Value:"
+            android:text="@string/current_value"
             android:id="@+id/textView_tittle"
             android:layout_alignParentTop="true"
             android:layout_alignBaseline="@+id/editText_ValueInput"
@@ -131,6 +134,7 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:textSize="@dimen/dialog_common_text_size"
             android:background="@drawable/all_line_press_bg"
             android:layout_width="0dp"
             android:layout_height="50dp"
@@ -139,6 +143,7 @@
             android:id="@+id/button_Cancel" />
 
         <Button
+            android:textSize="@dimen/dialog_common_text_size"
             android:background="@drawable/no_left_line_press_bg"
             android:layout_width="0dp"
             android:layout_height="50dp"
