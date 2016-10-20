@@ -44,8 +44,6 @@ public class HandlerManager {
     private boolean enable;
     private boolean enableTouch;
     static private boolean enableScrollAfterLongPress = false;
-    private boolean  penErasing = false;
-    private boolean penStart = false;
     private ReaderConfig readerConfig;
     private ReaderDataHolder readerDataHolder;
 
@@ -305,25 +303,6 @@ public class HandlerManager {
             return false;
         }
         return getActiveProvider().onScale(readerDataHolder, detector);
-    }
-
-    public void setPenErasing(boolean c) {
-        penErasing = c;
-    }
-
-    public boolean isPenErasing() {
-        return penErasing;
-    }
-
-    public void setPenStart(boolean s) {
-        penStart = s;
-    }
-
-    public boolean isPenStart() {
-        return penStart;
-    }
-
-    public void resetPenState() {
     }
 
     public boolean processKeyDownEvent(final ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
