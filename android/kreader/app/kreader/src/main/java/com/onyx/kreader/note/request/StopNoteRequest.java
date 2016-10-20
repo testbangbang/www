@@ -22,9 +22,9 @@ public class StopNoteRequest extends ReaderBaseNoteRequest {
 
     public void execute(final NoteManager noteManager) throws Exception {
         noteManager.enableScreenPost(true);
+        noteManager.enableRawEventProcessor(false);
         if (stop) {
             noteManager.stopRawEventProcessor();
-            noteManager.enableRawEventProcessor(false);
         }
     }
 }
