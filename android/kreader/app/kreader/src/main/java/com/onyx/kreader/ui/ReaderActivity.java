@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -16,7 +15,6 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Size;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -34,6 +32,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -42,13 +41,14 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
+import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
+import com.onyx.kreader.ui.actions.ActionChain;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
@@ -75,8 +75,10 @@ import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
+import com.onyx.kreader.ui.events.ShortcutFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
+import com.onyx.kreader.ui.events.ShortcutStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
@@ -594,6 +596,27 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onChangeOrientation(final ChangeOrientationEvent event) {
         setRequestedOrientation(event.getOrientation());
+    }
+
+    @Subscribe
+    public void onShortcutStart(final ShortcutStartEvent event) {
+        getHandlerManager().setEnableTouch(false);
+    }
+
+    @Subscribe
+    public void onShortcutFinished(final ShortcutFinishedEvent event) {
+        getHandlerManager().setEnableTouch(true);
+        if (getReaderDataHolder().inNoteWriting()) {
+            return;
+        }
+        ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), this);
+        ActionChain actionChain = new ActionChain();
+        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+        FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
+        ChangeNoteShapeAction action = new ChangeNoteShapeAction(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
+        actionChain.addAction(flushNoteAction);
+        actionChain.addAction(action);
+        actionChain.execute(getReaderDataHolder(), null);
     }
 
     public void backward() {

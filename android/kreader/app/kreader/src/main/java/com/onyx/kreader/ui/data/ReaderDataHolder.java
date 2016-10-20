@@ -116,6 +116,7 @@ public class ReaderDataHolder {
         documentOpened = true;
         getEventBus().post(new DocumentOpenEvent(documentPath));
         registerDeviceReceiver();
+        initNoteManager();
     }
 
     public void onDocumentInitRendered() {
@@ -242,6 +243,11 @@ public class ReaderDataHolder {
             noteManager = new NoteManager(this);
         }
         return noteManager;
+    }
+
+    private void initNoteManager() {
+        getNoteManager().startRawEventProcessor();
+        getNoteManager().pauseRawEventProcessor();
     }
 
     public String getDocumentPath() {

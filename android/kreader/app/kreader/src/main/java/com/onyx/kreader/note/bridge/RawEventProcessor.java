@@ -43,7 +43,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private volatile int px, py, pressure;
     private volatile boolean erasing = false;
-    private volatile boolean lastErasing = false;
+    private volatile boolean forceDrawing = false;
+    private volatile boolean forceErasing = false;
     private volatile boolean pressed = false;
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
@@ -91,7 +92,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private void clearInternalState() {
         pressed = false;
-        lastErasing = false;
+        forceDrawing = false;
+        forceErasing = false;
         lastPressed = false;
     }
 
@@ -159,15 +161,17 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         } else if (type == EV_KEY) {
             if (code ==  BTN_TOUCH)  {
                 erasing = false;
-                lastErasing = false;
                 pressed = value > 0;
                 lastPressed = false;
             } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
                 erasing = false;
+                forceDrawing = true;
+                forceErasing = false;
             } else if (code == BTN_TOOL_RUBBER) {
                 pressed = value > 0;
                 erasing = true;
-                lastErasing = true;
+                forceDrawing = false;
+                forceErasing = true;
             }
         }
     }
@@ -230,14 +234,18 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean isReportData() {
-        return reportData;
+        return reportData || forceErasing || forceDrawing;
+    }
+
+    private boolean inErasing() {
+        return erasing || forceErasing;
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
         if (!isReportData()) {
             return;
         }
-        if (erasing) {
+        if (inErasing()) {
             erasingPressReceived(x, y, pressure, size, ts);
         } else {
             drawingPressReceived(x, y, pressure, size, ts);
@@ -248,7 +256,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         if (!isReportData()) {
             return;
         }
-        if (erasing) {
+        if (inErasing()) {
             erasingMoveReceived(x, y, pressure, size, ts);
         } else {
             drawingMoveReceived(x, y, pressure, size, ts);
@@ -259,7 +267,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         if (!isReportData()) {
             return;
         }
-        if (erasing) {
+        if (inErasing()) {
             erasingReleaseReceived(x, y, pressure, size, ts);
         } else {
             drawingReleaseReceived(x, y, pressure, size, ts);
@@ -276,6 +284,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void drawingPressReceived(int x, int y, int pressure, int size, long ts) {
+        invokeDFBShapeStart();
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
         mapScreenPointToView(touchPoint);
@@ -320,14 +329,27 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         getNoteManager().resetCurrentShape();
     }
 
+    private void invokeDFBShapeStart() {
+        final boolean shortcut = forceDrawing;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                getCallback().onDFBShapeStart(shortcut);
+            }
+        });
+    }
+
     private void invokeDFBShapeFinished(final Shape shape) {
+        final boolean shortcut = forceDrawing;
+        forceDrawing = false;
+        forceErasing = false;
         if (shape == null) {
             return;
         }
         handler.post(new Runnable() {
             @Override
             public void run() {
-                getCallback().onDFBShapeFinished(shape);
+                getCallback().onDFBShapeFinished(shape, shortcut);
             }
         });
     }

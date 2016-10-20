@@ -35,7 +35,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
-        final StopNoteRequest request = new StopNoteRequest();
+        final StopNoteRequest request = new StopNoteRequest(false);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
     }
 
