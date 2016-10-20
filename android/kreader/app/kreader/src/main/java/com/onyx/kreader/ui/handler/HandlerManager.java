@@ -43,10 +43,7 @@ public class HandlerManager {
     private boolean enable;
     private boolean enableTouch;
     static private boolean enableScrollAfterLongPress = false;
-    private boolean  penErasing = false;
-    private boolean penStart = false;
     private ReaderConfig readerConfig;
-    private int lastToolType = MotionEvent.TOOL_TYPE_FINGER;
     private ReaderDataHolder readerDataHolder;
 
     public HandlerManager(final ReaderDataHolder holder) {
@@ -187,16 +184,6 @@ public class HandlerManager {
         if (!isEnableTouch()) {
             return false;
         }
-        int toolType = e.getToolType(0);
-        if (lastToolType != toolType) {
-            if ((toolType == MotionEvent.TOOL_TYPE_STYLUS) || (lastToolType == MotionEvent.TOOL_TYPE_ERASER && toolType == MotionEvent.TOOL_TYPE_FINGER)) {
-                //activity.changeToScribbleMode();
-            } else if (toolType == MotionEvent.TOOL_TYPE_ERASER) {
-                //activity.changeToEraseMode();
-            }
-            lastToolType = toolType;
-        }
-
         return getActiveProvider().onTouchEvent(readerDataHolder, e);
     }
 
@@ -315,28 +302,6 @@ public class HandlerManager {
             return false;
         }
         return getActiveProvider().onScale(readerDataHolder, detector);
-    }
-
-    public void setPenErasing(boolean c) {
-        penErasing = c;
-    }
-
-    public boolean isPenErasing() {
-        return penErasing;
-    }
-
-    public void setPenStart(boolean s) {
-        penStart = s;
-    }
-
-    public boolean isPenStart() {
-        return penStart;
-    }
-
-    public void resetPenState() {
-        penErasing = false;
-        penStart = false;
-        lastToolType = MotionEvent.TOOL_TYPE_FINGER;
     }
 
     public boolean processKeyDownEvent(final ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {

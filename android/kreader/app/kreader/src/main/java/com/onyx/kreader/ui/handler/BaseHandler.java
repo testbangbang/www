@@ -356,23 +356,6 @@ public abstract class BaseHandler {
         pinchZooming = false;
     }
 
-    public void setPenErasing(boolean c) {
-        getParent().setPenErasing(c);
-    }
-
-    public boolean isPenErasing() {
-        return getParent().isPenErasing();
-    }
-
-    public void setPenStart(boolean s) {
-        getParent().setPenStart(s);
-    }
-
-    public boolean isPenStart() {
-        return getParent().isPenStart();
-    }
-
-
     public void close(final ReaderDataHolder readerDataHolder) {
         if (ShowReaderMenuAction.isReaderMenuShown()) {
             readerDataHolder.getEventBus().post(new ClosePopupEvent());

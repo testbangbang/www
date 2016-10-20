@@ -69,8 +69,8 @@ public class ShowReaderMenuAction extends BaseAction {
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderLayerMenu readerMenu;
     private static ReaderLayerMenuState state;
-    private List<ReaderMenuAction> disableMenus = new ArrayList<>();
     private boolean disableScribbleBrush = true;
+    private static List<ReaderMenuAction> disableMenus = new ArrayList<>();
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -218,7 +218,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.Annotation);
                         break;
                     case DIRECTORY_SCRIBBLE:
-                        startNoteDrawing(readerDataHolder);
+                        startNoteDrawing(readerDataHolder, readerActivity);
                         break;
                     case NOTE_EXPORT:
                         showExportDialog(readerDataHolder);
@@ -254,7 +254,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showReaderSettings(readerDataHolder);
                         break;
                     case NOTE_WRITING:
-                        startNoteDrawing(readerDataHolder);
+                        startNoteDrawing(readerDataHolder, readerActivity);
                         break;
                     case EXIT:
                         readerDataHolder.getEventBus().post(new QuitEvent());
@@ -473,7 +473,7 @@ public class ShowReaderMenuAction extends BaseAction {
         updateReaderMenuState(readerDataHolder, state);
     }
 
-    private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
+    public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         hideReaderMenu();
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
@@ -487,7 +487,7 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    private ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
+    public static ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
         final ShowScribbleMenuAction.ActionCallback callback = new ShowScribbleMenuAction.ActionCallback() {
             @Override
             public void onClicked(final ReaderMenuAction action) {
@@ -500,14 +500,14 @@ public class ShowReaderMenuAction extends BaseAction {
         return callback;
     }
 
-    private boolean isGroupAction(final ReaderMenuAction action) {
+    public static boolean isGroupAction(final ReaderMenuAction action) {
         return (action == ReaderMenuAction.SCRIBBLE_ERASER ||
                 action == ReaderMenuAction.SCRIBBLE_WIDTH ||
                 action == ReaderMenuAction.SCRIBBLE_SHAPE ||
                 action == ReaderMenuAction.SCRIBBLE_MINIMIZE);
     }
 
-    private boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
+    public static boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         if (!isGroupAction(action)) {
             return false;
         }
@@ -516,7 +516,7 @@ public class ShowReaderMenuAction extends BaseAction {
         return true;
     }
 
-    private void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
+    public static void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         switch (action) {
             case SCRIBBLE_WIDTH1:
                 useStrokeWidth(readerDataHolder, 2.0f);
@@ -585,7 +585,7 @@ public class ShowReaderMenuAction extends BaseAction {
         }
     }
 
-    private void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
+    private static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
@@ -593,7 +593,7 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.execute(readerDataHolder, null);
     }
 
-    private void useShape(final ReaderDataHolder readerDataHolder, int type) {
+    private static void useShape(final ReaderDataHolder readerDataHolder, int type) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
@@ -601,7 +601,7 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.execute(readerDataHolder, null);
     }
 
-    private void undo(final ReaderDataHolder readerDataHolder) {
+    private static void undo(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
@@ -609,7 +609,7 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.execute(readerDataHolder, null);
     }
 
-    private void redo(final ReaderDataHolder readerDataHolder) {
+    private static void redo(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
@@ -617,7 +617,7 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.execute(readerDataHolder, null);
     }
 
-    private void save(final ReaderDataHolder readerDataHolder) {
+    private static void save(final ReaderDataHolder readerDataHolder) {
         FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, true, true);
         flushNoteAction.execute(readerDataHolder, new BaseCallback() {
             @Override
@@ -627,7 +627,7 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    private void nextScreen(final ReaderDataHolder readerDataHolder) {
+    private static void nextScreen(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
@@ -640,7 +640,7 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    private void prevScreen(final ReaderDataHolder readerDataHolder) {
+    private static void prevScreen(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
@@ -653,17 +653,17 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    private void resumeDrawing(final ReaderDataHolder readerDataHolder) {
+    private static void resumeDrawing(final ReaderDataHolder readerDataHolder) {
         final ResumeDrawingAction action = new ResumeDrawingAction(readerDataHolder.getVisiblePages());
         action.execute(readerDataHolder, null);
     }
 
-    private void eraseWholePage(final ReaderDataHolder readerDataHolder) {
+    private static void eraseWholePage(final ReaderDataHolder readerDataHolder) {
         final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getFirstPageInfo());
         clearPageAction.execute(readerDataHolder, null);
     }
 
-    private void startErasing(final ReaderDataHolder readerDataHolder) {
+    private static void startErasing(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
@@ -671,7 +671,7 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.execute(readerDataHolder, null);
     }
 
-    private void toggleSelection(final ReaderDataHolder readerDataHolder) {
+    private static void toggleSelection(final ReaderDataHolder readerDataHolder) {
         if (readerDataHolder.getNoteManager().isInSelection()) {
             final ActionChain actionChain = new ActionChain();
             actionChain.addAction(new RestoreShapeAction());
