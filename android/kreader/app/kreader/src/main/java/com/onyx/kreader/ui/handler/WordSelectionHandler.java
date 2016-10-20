@@ -18,10 +18,10 @@ import com.onyx.kreader.host.request.AnalyzeWordAction;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.actions.SelectWordAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
-import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.utils.MathUtils;
+import com.onyx.kreader.utils.ReaderConfig;
 import com.onyx.kreader.utils.RectUtils;
 
 /**
@@ -46,7 +46,7 @@ public class WordSelectionHandler extends BaseHandler{
 
     public WordSelectionHandler(HandlerManager parent, Context context) {
         super(parent);
-        selectionMoveDistanceThreshold = ReaderConfig.sharedInstance(context).getSelectionMoveDistanceThreshold();
+        selectionMoveDistanceThreshold = ReaderConfig.sharedInstance(context).getSelection_move_distance_threshold();
         movePointOffsetHeight = context.getResources().getDimension(R.dimen.move_point_offset_height);
     }
 

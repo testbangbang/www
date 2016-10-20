@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.request.ExportNotesRequest;
-
+import com.onyx.kreader.utils.ReaderConfig;
 /**
  * Created by solskjaer49 on 14-4-22.
  */
@@ -106,11 +106,11 @@ public class SingletonSharedPreference {
     }
 
     public static boolean isSystemStatusBarEnabled(Context context) {
-        return getBooleanByStringID(context, R.string.settings_enable_system_status_bar_key, ReaderConfig.sharedInstance(context).defaultUseSystemStatusBar());
+        return getBooleanByStringID(context, R.string.settings_enable_system_status_bar_key, ReaderConfig.sharedInstance(context).isDefault_use_system_status_bar());
     }
 
     public static boolean isReaderStatusBarEnabled(Context context) {
-        return getBooleanByStringID(context, R.string.settings_enable_reader_status_bar_key, ReaderConfig.sharedInstance(context).defaultUseReaderStatusBar());
+        return getBooleanByStringID(context, R.string.settings_enable_reader_status_bar_key, ReaderConfig.sharedInstance(context).isDefault_use_reader_status_bar());
     }
 
     public static boolean isAnimationEnabled(Context context) {
@@ -166,7 +166,7 @@ public class SingletonSharedPreference {
     }
 
     public static boolean isShowDocTitleInStatusBar(Context context) {
-        return getBooleanByStringID(context, R.string.settings_show_doc_title_key, ReaderConfig.sharedInstance(context).defaultShowDocTitleInStatusBar());
+        return getBooleanByStringID(context, R.string.settings_show_doc_title_key, ReaderConfig.sharedInstance(context).isDefault_show_doc_title_in_status_bar());
     }
 
     public static boolean isCropToWidthInLandscape(Context context) {

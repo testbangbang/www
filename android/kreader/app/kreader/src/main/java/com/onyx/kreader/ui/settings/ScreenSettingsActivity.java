@@ -11,10 +11,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.utils.ReaderConfig;
 
 public class ScreenSettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
