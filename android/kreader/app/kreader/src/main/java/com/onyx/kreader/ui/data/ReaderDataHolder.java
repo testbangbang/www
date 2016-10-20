@@ -10,6 +10,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
@@ -50,6 +51,7 @@ public class ReaderDataHolder {
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
+    private EventBus eventBus = new EventBus();
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -73,7 +75,7 @@ public class ReaderDataHolder {
     }
 
     public EventBus getEventBus() {
-        return EventBus.getDefault();
+        return eventBus;
     }
 
     public void saveReaderViewInfo(final BaseReaderRequest request) {
@@ -114,6 +116,7 @@ public class ReaderDataHolder {
         documentOpened = true;
         getEventBus().post(new DocumentOpenEvent(documentPath));
         registerDeviceReceiver();
+        initNoteManager();
     }
 
     public void onDocumentInitRendered() {
@@ -242,6 +245,11 @@ public class ReaderDataHolder {
         return noteManager;
     }
 
+    private void initNoteManager() {
+        getNoteManager().startRawEventProcessor();
+        getNoteManager().pauseRawEventProcessor();
+    }
+
     public String getDocumentPath() {
         return documentPath;
     }
@@ -255,6 +263,14 @@ public class ReaderDataHolder {
             return null;
         }
         return getReaderUserDataInfo().getDocumentMetadata().getTitle();
+    }
+
+    public boolean supportNoteExport() {
+        if (StringUtils.isNullOrEmpty(documentPath) ||
+                !documentPath.toLowerCase().endsWith(".pdf")) {
+            return false;
+        }
+        return true;
     }
 
     public boolean hasBookmark() {
@@ -425,7 +441,6 @@ public class ReaderDataHolder {
         if (noteManager == null) {
             return;
         }
-
         getNoteManager().stopRawEventProcessor();
     }
 }

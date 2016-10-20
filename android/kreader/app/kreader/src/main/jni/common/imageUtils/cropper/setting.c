@@ -44,12 +44,7 @@ void k2pdfopt_settings_init_from_koptcontext(K2PDFOPT_SETTINGS *k2settings, KOPT
 	k2settings->dst_userheight = 800;
 	k2settings->dst_width = k2settings->dst_userwidth;
 	k2settings->dst_height = k2settings->dst_userheight;
-	k2settings->dst_color = 0;
-	k2settings->dst_mar = 0.06;
-	k2settings->dst_martop = -1.0;
-	k2settings->dst_marbot = -1.0;
-	k2settings->dst_marleft = -1.0;
-	k2settings->dst_marright = -1.0;
+    k2settings->dst_color = 0;
 	k2settings->use_crop_boxes = 0;
 	k2settings->defect_size_pts = 1.0;
 
@@ -72,24 +67,20 @@ void k2pdfopt_settings_init_from_koptcontext(K2PDFOPT_SETTINGS *k2settings, KOPT
 	k2settings->defect_size_pts = kctx->defect_size;
 	k2settings->dst_gamma = kctx->contrast;
 
-	if (kctx->trim == 0) {
-		k2settings->mar_left = 0;
-		k2settings->mar_top = 0;
-		k2settings->mar_right = 0;
-		k2settings->mar_bot = 0;
-	} else {
-		k2settings->mar_left = -1;
-		k2settings->mar_top = -1;
-		k2settings->mar_right = -1;
-		k2settings->mar_bot = -1;
-	}
+    int i = 0;
+    k2settings->srccropmargins.pagelist[0]='\0';
+    k2settings->srccropmargins.cboxflags=0;
+    for (i=0;i<4;i++) {
+        k2settings->srccropmargins.box[i]=0.0;
+        k2settings->srccropmargins.units[i]=UNITS_INCHES;
+    }
 
-	// margin
-	k2settings->dst_mar = kctx->margin;
-	k2settings->dst_martop = -1.0;
-	k2settings->dst_marbot = -1.0;
-	k2settings->dst_marleft = -1.0;
-	k2settings->dst_marright = -1.0;
+    k2settings->dstmargins.pagelist[0]='\0';
+    k2settings->dstmargins.cboxflags=0;
+    for (i=0;i<4;i++) {
+        k2settings->dstmargins.box[i]=kctx->margin;
+        k2settings->dstmargins.units[i]=UNITS_INCHES;
+    }
 
 	// justification
 	if (kctx->justification < 0) {

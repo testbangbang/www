@@ -139,7 +139,7 @@
                 android:src="@drawable/ic_dialog_reader_page_arrow_right"/>
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:id="@+id/grid_view_preview"

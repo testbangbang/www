@@ -5,13 +5,12 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.SparseArray;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,12 +29,12 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.actions.GetTableOfContentAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -44,7 +43,6 @@ import com.onyx.kreader.ui.view.PreviewViewHolder;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -54,10 +52,11 @@ public class DialogQuickPreview extends Dialog {
 
     public static abstract class Callback {
         public abstract void abort();
+
         public abstract void requestPreview(final List<Integer> pages, final Size desiredSize);
     }
 
-    static class GridType{
+    static class GridType {
         final static int One = 1;
         final static int Four = 4;
         final static int Nine = 9;
@@ -75,7 +74,7 @@ public class DialogQuickPreview extends Dialog {
         }
 
         public int getRows() {
-            switch (grid){
+            switch (grid) {
                 case GridType.One:
                     return 1;
                 case GridType.Four:
@@ -88,7 +87,7 @@ public class DialogQuickPreview extends Dialog {
         }
 
         public int getColumns() {
-            switch (grid){
+            switch (grid) {
                 case GridType.One:
                     return 1;
                 case GridType.Four:
@@ -105,48 +104,29 @@ public class DialogQuickPreview extends Dialog {
         }
     }
 
-    private class PreviewAdapter extends RecyclerView.Adapter<PreviewViewHolder> {
+    private class PagePreviewAdapter extends PageRecyclerView.PageAdapter<PreviewViewHolder> {
 
-        private final Bitmap BlankBitmap = Bitmap.createBitmap(300, 400, Bitmap.Config.ARGB_8888);
-
-        private ViewGroup parent;
-        private Grid grid;
         private Size childSize = new Size(300, 400);
-        private ArrayList<Bitmap> bitmapList = new ArrayList<>();
-        private HashMap<Integer, Bitmap> bitmapCache = new HashMap<>();
-
-        public PreviewAdapter() {
-            BlankBitmap.eraseColor(Color.WHITE);
-        }
+        private Grid grid;
 
         public void requestMissingBitmaps() {
-            ArrayList<Integer> toRequest = new ArrayList<>();
-            HashMap<Integer, Bitmap> cache = new HashMap<>();
-            for (int i = 0; i < bitmapList.size(); i++) {
-                int page = paginator.indexByPageOffset(i);
-                if (bitmapCache.containsKey(page)) {
-                    cache.put(page, bitmapCache.get(page));
-                    setBitmap(i, cache.get(page));
-                    bitmapCache.remove(page);
-                    continue;
-                }
-                toRequest.add(page);
-            }
-            for (Bitmap bitmap : bitmapCache.values()) {
-                bitmap.recycle();
-            }
-            bitmapCache.clear();
-            bitmapCache.putAll(cache);
+            int pageBegin = getPaginator().getCurrentPageBegin();
+            int pageEnd = getPaginator().getCurrentPageEnd();
 
+            if (pageBegin < 0 || pageBegin > pageEnd) {
+                return;
+            }
+
+            List<Integer> toRequest = new ArrayList<>();
+            for (int i = pageBegin; i <= pageEnd; i++) {
+                toRequest.add(i);
+            }
             callback.requestPreview(toRequest, childSize);
         }
 
-        public void resetListSize(int size) {
-            bitmapList = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                bitmapList.add(BlankBitmap);
-            }
-            notifyDataSetChanged();
+        public void setGridType(Grid grid) {
+            this.grid = grid;
+            gridRecyclerView.resize(grid.getRows(), grid.getColumns(), readerDataHolder.getPageCount());
         }
 
         public Size getDesiredSize() {
@@ -154,20 +134,27 @@ public class DialogQuickPreview extends Dialog {
         }
 
         public void setBitmap(int index, Bitmap bitmap) {
-            Debug.d("setBitmap: " + bitmap);
-            bitmapList.set(index, bitmap);
-            bitmapCache.put(paginator.indexByPageOffset(index), bitmap);
-            // notifyItemChanged() will cause delayed update on UI, not sure why
-            notifyDataSetChanged();
-        }
-
-        public void setGridType(Grid grid) {
-            this.grid = grid;
+            previewMap.put(index, bitmap);
+            notifyItemChanged(index);
         }
 
         @Override
-        public PreviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            this.parent = parent;
+        public int getRowCount() {
+            return grid.getRows();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return grid.getColumns();
+        }
+
+        @Override
+        public int getDataCount() {
+            return readerDataHolder.getPageCount();
+        }
+
+        @Override
+        public PreviewViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
             final PreviewViewHolder previewViewHolder = new PreviewViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.preview_list_item_view, parent, false));
             previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -184,42 +171,25 @@ public class DialogQuickPreview extends Dialog {
         }
 
         @Override
-        public void onBindViewHolder(PreviewViewHolder holder, int position) {
-            GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams)holder.itemView.getLayoutParams();
-            if (params == null) {
-                params = new GridLayoutManager.LayoutParams(GridLayoutManager.LayoutParams.MATCH_PARENT,
-                        GridLayoutManager.LayoutParams.MATCH_PARENT);
-            }
-            int spaceHeight = ((GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams()).topMargin +
-                    ((GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams()).bottomMargin;
-            spaceHeight = spaceHeight * grid.getRows();
-            int spaceWidth = ((GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams()).leftMargin +
-                    ((GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams()).rightMargin;
-            spaceWidth = spaceWidth * grid.getColumns();
-            int itemWidth = (parent.getMeasuredWidth() - spaceWidth)  / grid.getColumns();
-            int itemHeight = (parent.getMeasuredHeight() - spaceHeight) / grid.getRows();
-            childSize.width = itemWidth;
-            childSize.height = itemHeight;
+        public void onPageBindViewHolder(PreviewViewHolder holder, int position) {
+            Bitmap bmp = previewMap.get(position);
 
-            params.height = itemHeight;
-            params.width = itemWidth;
-            holder.itemView.setLayoutParams(params);
-            Bitmap bmp = bitmapList.get(position);
-            if (bmp == null) {
-                bmp = BlankBitmap;
-            }
-
-            holder.bindPreview(bmp,paginator.indexByPageOffset(position));
-            holder.getContainer().setActivated(readerDataHolder.getCurrentPage() == paginator.indexByPageOffset(position));
+            holder.bindPreview(bmp, position);
+            holder.getContainer().setActivated(readerDataHolder.getCurrentPage() == position);
         }
 
         @Override
-        public int getItemCount() {
-            return bitmapList.size();
+        public void onViewDetachedFromWindow(PreviewViewHolder holder) {
+            super.onViewDetachedFromWindow(holder);
+            Bitmap bitmap = holder.getBitmap();
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+                holder.getImageView().setImageDrawable(new ColorDrawable(Color.WHITE));
+            }
         }
     }
 
-    private RecyclerView gridRecyclerView;
+    private PageRecyclerView gridRecyclerView;
     private TextView textViewProgress;
     private SeekBar seekBarProgress;
     private ImageView oneImageGrid;
@@ -229,29 +199,26 @@ public class DialogQuickPreview extends Dialog {
     private ImageButton chapterForward;
 
     private Grid grid = new Grid();
-    private GPaginator paginator;
-    private PreviewAdapter adapter = new PreviewAdapter();
+    private SparseArray<Bitmap> previewMap = new SparseArray<>();
+    private PagePreviewAdapter adapter = new PagePreviewAdapter();
 
     private ReaderDataHolder readerDataHolder;
-    private int pageCount;
     private int currentPage;
     private Callback callback;
     private List<Integer> tocChapterNodeList = new ArrayList<>();
 
-    public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, final int pageCount, final int currentPage,
-                              Callback callback) {
+    public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, Callback callback) {
         super(readerDataHolder.getContext(), android.R.style.Theme_NoTitleBar);
         setContentView(R.layout.dialog_quick_preview);
 
         this.readerDataHolder = readerDataHolder;
-        this.pageCount = pageCount;
-        this.currentPage = currentPage;
         this.callback = callback;
+        currentPage = readerDataHolder.getCurrentPage();
 
         fitDialogToWindow();
         initGridType();
         setupLayout();
-        setupContent(pageCount, currentPage);
+        setupContent();
     }
 
     private void fitDialogToWindow() {
@@ -271,17 +238,19 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void setupLayout() {
-        gridRecyclerView = (RecyclerView)findViewById(R.id.grid_view_preview);
+        gridRecyclerView = (PageRecyclerView) findViewById(R.id.grid_view_preview);
         gridRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext(), grid.getColumns()));
+        adapter.setGridType(grid);
         gridRecyclerView.setAdapter(adapter);
+        gridRecyclerView.setDefaultPageKeyBinding();
 
-        textViewProgress = (TextView)findViewById(R.id.text_view_progress);
-        seekBarProgress = (SeekBar)findViewById(R.id.seek_bar_page);
+        textViewProgress = (TextView) findViewById(R.id.text_view_progress);
+        seekBarProgress = (SeekBar) findViewById(R.id.seek_bar_page);
         oneImageGrid = (ImageView) findViewById(R.id.image_view_one_grids);
         fourImageGrid = (ImageView) findViewById(R.id.image_view_four_grids);
-        nineImageGrid = (ImageView)findViewById(R.id.image_view_nine_grids);
+        nineImageGrid = (ImageView) findViewById(R.id.image_view_nine_grids);
         chapterBack = (ImageButton) findViewById(R.id.chapter_back);
-        chapterForward = (ImageButton)findViewById(R.id.chapter_forward);
+        chapterForward = (ImageButton) findViewById(R.id.chapter_forward);
         textViewProgress.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 
         findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
@@ -360,20 +329,20 @@ public class DialogQuickPreview extends Dialog {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String page = editText.getText().toString();
-                        if (!StringUtils.isNullOrEmpty(page)){
+                        if (!StringUtils.isNullOrEmpty(page)) {
                             int pageNumber = PagePositionUtils.getPageNumber(page);
                             pageNumber--;
-                            if (pageNumber >= 0 && pageNumber < readerDataHolder.getPageCount()){
+                            if (pageNumber >= 0 && pageNumber < readerDataHolder.getPageCount()) {
                                 new GotoPageAction(PagePositionUtils.fromPageNumber(pageNumber), true).execute(readerDataHolder, new BaseCallback() {
                                     @Override
                                     public void done(BaseRequest request, Throwable e) {
                                         DialogQuickPreview.this.dismiss();
                                     }
                                 });
-                            }else {
+                            } else {
                                 Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error), Toast.LENGTH_SHORT).show();
                             }
-                        }else {
+                        } else {
                             Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error), Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -387,33 +356,38 @@ public class DialogQuickPreview extends Dialog {
                 readerDataHolder.addActiveDialog(dlg);
             }
         });
+
+        gridRecyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPageChange(int position, int itemCount, int pageSize) {
+                onPageDataChanged();
+            }
+        });
     }
 
-    private void initGridType(){
+    private void initGridType() {
         int defaultGridType = getContext().getResources().getInteger(R.integer.quick_view_default_grid_type);
         grid.setGridType(SingletonSharedPreference.getQuickViewGridType(getContext(), defaultGridType));
     }
 
-    private void onGridTypeChange(int gridType){
+    private void onGridTypeChange(int gridType) {
         grid.setGridType(gridType);
         SingletonSharedPreference.setQuickViewGridType(getContext(), gridType);
-        paginator.resize(grid.getRows(), grid.getColumns(), pageCount);
-        paginator.gotoPageByIndex(currentPage);
-        gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), grid.getColumns()));
+        gridRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext(), grid.getColumns()));
         adapter.setGridType(grid);
-        onPageDataChanged();
+        gridRecyclerView.gotoPage(getPaginator().pageByIndex(currentPage));
         onPressedImageView(gridType);
     }
 
-    private int getGridPage(int page){
+    private int getGridPage(int page) {
         return page / grid.getGridType();
     }
 
-    private void loadDocumentTableOfContent(){
+    private void loadDocumentTableOfContent() {
         GetTableOfContentAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                BaseReaderRequest readerRequest = (BaseReaderRequest)request;
+                BaseReaderRequest readerRequest = (BaseReaderRequest) request;
                 ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
                 chapterBack.setEnabled(toc != null && toc.getRootEntry() != null);
                 chapterForward.setEnabled(toc != null && toc.getRootEntry() != null);
@@ -423,75 +397,79 @@ public class DialogQuickPreview extends Dialog {
         });
     }
 
-    private void gotoChapterIndex(boolean back){
+    private GPaginator getPaginator() {
+        return gridRecyclerView.getPaginator();
+    }
+
+    private void gotoChapterIndex(boolean back) {
         int chapterPosition;
-        if (back){
-            int pageBegin = paginator.getCurrentPageBegin();
+        if (back) {
+            int pageBegin = getPaginator().getCurrentPageBegin();
             chapterPosition = getChapterPositionByPage(pageBegin, back);
-        }else {
-            int pageEnd = paginator.getCurrentPageEnd();
+        } else {
+            int pageEnd = getPaginator().getCurrentPageEnd();
             chapterPosition = getChapterPositionByPage(pageEnd, back);
         }
 
-        paginator.gotoPage(getGridPage(chapterPosition));
-        onPageDataChanged();
-    }
-    private void updateChapterButtonState(){
-        chapterBack.setEnabled(paginator.canPrevPage() && tocChapterNodeList.size() > 0);
-        chapterForward.setEnabled(paginator.canNextPage() && tocChapterNodeList.size() > 0);
+        gridRecyclerView.gotoPage(getGridPage(chapterPosition));
     }
 
-    private int getChapterPositionByPage(int page, boolean back){
+    private void updateChapterButtonState() {
+        chapterBack.setEnabled(getPaginator().canPrevPage() && tocChapterNodeList.size() > 0);
+        chapterForward.setEnabled(getPaginator().canNextPage() && tocChapterNodeList.size() > 0);
+    }
+
+    private int getChapterPositionByPage(int page, boolean back) {
         int size = tocChapterNodeList.size();
         for (int i = 0; i < size; i++) {
-            if (page < tocChapterNodeList.get(i)){
-                if (back){
+            if (page < tocChapterNodeList.get(i)) {
+                if (back) {
                     int position = tocChapterNodeList.get(Math.max(0, i - 1));
-                    if (paginator.isItemInCurrentPage(position)){
+                    if (getPaginator().isItemInCurrentPage(position)) {
                         return getChapterPositionByPage(page - 1, back);
-                    }else {
+                    } else {
                         return position;
                     }
-                }else {
+                } else {
                     int position = tocChapterNodeList.get(i);
-                    if (paginator.isItemInCurrentPage(position)){
+                    if (getPaginator().isItemInCurrentPage(position)) {
                         return getChapterPositionByPage(page + 1, back);
-                    }else {
+                    } else {
                         return position;
                     }
                 }
             }
         }
 
-        if (back){
+        if (back) {
             return page - 1;
-        }else {
+        } else {
             return page + 1;
         }
 
     }
 
-    private void buildChapterNodeList(ReaderDocumentTableOfContent toc){
+    private void buildChapterNodeList(ReaderDocumentTableOfContent toc) {
         ReaderDocumentTableOfContentEntry rootEntry = toc.getRootEntry();
-        if (rootEntry.getChildren() != null){
+        if (rootEntry.getChildren() != null) {
             buildChapterNode(rootEntry.getChildren());
         }
     }
 
-    private void buildChapterNode(List<ReaderDocumentTableOfContentEntry> entries){
+    private void buildChapterNode(List<ReaderDocumentTableOfContentEntry> entries) {
         for (ReaderDocumentTableOfContentEntry entry : entries) {
-            if (entry.getChildren() != null){
+            if (entry.getChildren() != null) {
                 buildChapterNode(entry.getChildren());
-            }else {
+            } else {
                 int position = Integer.valueOf(entry.getPosition());
-                if (!tocChapterNodeList.contains(position)){
+                if (!tocChapterNodeList.contains(position)) {
                     tocChapterNodeList.add(Integer.valueOf(entry.getPosition()));
                 }
             }
         }
     }
 
-    private void onPressedImageView(int gridType){
+    private void onPressedImageView(int gridType) {
         nineImageGrid.setImageResource(gridType == GridType.Nine ? R.drawable.ic_dialog_reader_page_nine_black_focused
                 : R.drawable.ic_dialog_reader_page_nine_white_focused);
         fourImageGrid.setImageResource(gridType == GridType.Four ? R.drawable.ic_dialog_reader_page_four_black_focused
@@ -500,11 +478,8 @@ public class DialogQuickPreview extends Dialog {
                 : R.drawable.ic_dialog_reader_page_one_white_focused);
     }
 
-    private void setupContent(int pageCount, int currentPage) {
-        paginator = new GPaginator(grid.getRows(), grid.getColumns(), pageCount);
-        paginator.gotoPageByIndex(currentPage);
-        adapter.setGridType(grid);
-        adapter.resetListSize(paginator.itemsInCurrentPage());
+    private void setupContent() {
+        gridRecyclerView.gotoPage(getPaginator().pageByIndex(currentPage));
         if (callback != null) {
             adapter.requestMissingBitmaps();
         }
@@ -515,12 +490,13 @@ public class DialogQuickPreview extends Dialog {
 
     /**
      * will clone a copy of passed in bitmap
+     *
      * @param page
      * @param bitmap
      */
     public void updatePreview(int page, Bitmap bitmap) {
-        if (paginator.isItemInCurrentPage(page)) {
-            adapter.setBitmap(paginator.offsetInCurrentPage(page), bitmap);
+        if (getPaginator().isItemInCurrentPage(page)) {
+            adapter.setBitmap(page, bitmap);
         }
     }
 
@@ -529,8 +505,9 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void onPageDataChanged() {
-        currentPage = paginator.getCurrentPageBegin();
-        adapter.resetListSize(paginator.itemsInCurrentPage());
+        currentPage = getPaginator().getCurrentPageBegin();
+        callback.abort();
+        previewMap.clear();
         adapter.requestMissingBitmaps();
         updatePageProgress();
         updateChapterButtonState();
@@ -544,8 +521,7 @@ public class DialogQuickPreview extends Dialog {
                     return;
                 }
                 int page = progress - 1;
-                paginator.gotoPage(page);
-                onPageDataChanged();
+                gridRecyclerView.gotoPage(page);
             }
 
             @Override
@@ -558,40 +534,22 @@ public class DialogQuickPreview extends Dialog {
 
             }
         });
-
         updatePageProgress();
     }
 
     private void updatePageProgress() {
-        seekBarProgress.setMax(paginator.pages());
-        seekBarProgress.setProgress(paginator.getCurrentPage() + 1);
-        textViewProgress.setText((paginator.getCurrentPage() + 1) + "/" + paginator.pages());
+        seekBarProgress.setMax(getPaginator().pages());
+        seekBarProgress.setProgress(getPaginator().getCurrentPage() + 1);
+        textViewProgress.setText((getPaginator().getCurrentPage() + 1) + "/" + getPaginator().pages());
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode){
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                nextPage();
-                return true;
-            case KeyEvent.KEYCODE_PAGE_UP:
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                prevPage();
-                return true;
-        }
-        return super.onKeyDown(keyCode, event);
+    private void nextPage() {
+        gridRecyclerView.nextPage();
+        onPageDataChanged();
     }
 
-    private void nextPage(){
-        if (paginator.nextPage()) {
-            onPageDataChanged();
-        }
-    }
-
-    private void prevPage(){
-        if (paginator.prevPage()) {
-            onPageDataChanged();
-        }
+    private void prevPage() {
+        gridRecyclerView.prevPage();
+        onPageDataChanged();
     }
 }

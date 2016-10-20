@@ -78,6 +78,37 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void enableScreenUpdate(View view, boolean enable) {
+        epdDevice.enableScreenUpdate(view, enable);
+    }
+
+    public static void refreshScreenWithGCInterval(View view, boolean isTextPage) {
+        enableScreenUpdate(view, true);
+        if (isTextPage && EpdController.supportRegal()) {
+            refreshScreenWithGCIntervalWithRegal(view);
+        } else {
+            refreshScreenWithGCIntervalWithoutRegal(view);
+        }
+    }
+
+    public static void refreshScreenWithGCIntervalWithRegal(View view) {
+        if (refreshCount++ >= gcInterval) {
+            refreshCount = 0;
+            epdDevice.refreshScreen(view, UpdateMode.GC);
+        } else {
+            epdDevice.refreshScreen(view, UpdateMode.REGAL);
+        }
+    }
+
+    public static void refreshScreenWithGCIntervalWithoutRegal(View view) {
+        if (refreshCount++ >= gcInterval) {
+            refreshCount = 0;
+            epdDevice.refreshScreen(view, UpdateMode.GC);
+        } else {
+            epdDevice.refreshScreen(view, UpdateMode.GU);
+        }
+    }
+
     public static void applyWithGCIntervalWitRegal(View view) {
         if (refreshCount++ >= gcInterval) {
             refreshCount = 0;

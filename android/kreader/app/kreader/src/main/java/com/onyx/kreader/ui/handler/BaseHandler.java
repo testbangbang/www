@@ -7,9 +7,11 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.R;
 import com.onyx.kreader.common.PageAnnotation;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
@@ -41,7 +43,7 @@ public abstract class BaseHandler {
     private boolean longPress = false;
     private boolean singleTapUp = false;
     private boolean actionUp = false;
-    private boolean scaling = false;
+    private boolean pinchZooming = false;
     private boolean scrolling = false;
 
 
@@ -189,29 +191,38 @@ public abstract class BaseHandler {
     }
 
     public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
+        if (isSkipPinchZooming(readerDataHolder)) {
+            return true;
+        }
         PinchZoomAction.scaleEnd(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                setScaling(false);
             }
         });
         return true;
     }
 
     public boolean onScaleBegin(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
-        setScaling(true);
+        setPinchZooming(true);
+        if (isSkipPinchZooming(readerDataHolder)) {
+            Toast.makeText(readerDataHolder.getContext(), R.string.pinch_zooming_can_not_be_used, Toast.LENGTH_SHORT).show();
+            return true;
+        }
         PinchZoomAction.scaleBegin(readerDataHolder, detector);
         return true;
     }
 
     public boolean onScale(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector)  {
+        if (isSkipPinchZooming(readerDataHolder)) {
+            return true;
+        }
         PinchZoomAction.scaling(readerDataHolder, detector);
         return true;
     }
 
     public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
         if (isLongPress()) {
-        } else if (isScrolling() && !isScaling()) {
+        } else if (isScrolling() && !isPinchZooming()) {
             panFinished(readerDataHolder,(int) (getStartPoint().x - endX), (int) (getStartPoint().y - endY));
         }
         resetState();
@@ -219,8 +230,8 @@ public abstract class BaseHandler {
     }
 
     public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (isScaling()) {
-            // scrolling may happens before scale, so we always reset scroll state to avoid conflicts
+        if (isPinchZooming()) {
+            // scrolling may happens after pinch zoom, so we always reset scroll state to avoid conflicts
             setScrolling(false);
             return true;
         }
@@ -328,34 +339,22 @@ public abstract class BaseHandler {
         scrolling = s;
     }
 
-    public void setScaling(boolean s) {
-        scaling = s;
+    public void setPinchZooming(boolean s) {
+        pinchZooming = s;
     }
 
-    public boolean isScaling() {
-        return scaling;
+    public boolean isPinchZooming() {
+        return pinchZooming;
+    }
+
+    public boolean isSkipPinchZooming(final ReaderDataHolder readerDataHolder) {
+        return !readerDataHolder.getReaderViewInfo().supportScalable;
     }
 
     public void resetState() {
         scrolling = false;
+        pinchZooming = false;
     }
-
-    public void setPenErasing(boolean c) {
-        getParent().setPenErasing(c);
-    }
-
-    public boolean isPenErasing() {
-        return getParent().isPenErasing();
-    }
-
-    public void setPenStart(boolean s) {
-        getParent().setPenStart(s);
-    }
-
-    public boolean isPenStart() {
-        return getParent().isPenStart();
-    }
-
 
     public void close(final ReaderDataHolder readerDataHolder) {
         if (ShowReaderMenuAction.isReaderMenuShown()) {

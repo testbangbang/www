@@ -12,12 +12,17 @@ import java.util.List;
 
 public class StopNoteRequest extends ReaderBaseNoteRequest {
 
-    public StopNoteRequest() {
+    private volatile boolean stop = false;
+
+    public StopNoteRequest(boolean s) {
+        stop = s;
         setAbortPendingTasks(false);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
         noteManager.enableScreenPost(true);
-        noteManager.stopRawEventProcessor();
+        if (stop) {
+            noteManager.stopRawEventProcessor();
+        }
     }
 }
