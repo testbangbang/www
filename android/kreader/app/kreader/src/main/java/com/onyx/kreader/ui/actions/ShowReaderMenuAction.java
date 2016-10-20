@@ -70,6 +70,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private static ReaderLayerMenu readerMenu;
     private static ReaderLayerMenuState state;
     private List<ReaderMenuAction> disableMenus = new ArrayList<>();
+    private boolean disableScribbleBrush = true;
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -125,6 +126,9 @@ public class ShowReaderMenuAction extends BaseAction {
         }
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
+        }
+        if (disableScribbleBrush) {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
     }
 
