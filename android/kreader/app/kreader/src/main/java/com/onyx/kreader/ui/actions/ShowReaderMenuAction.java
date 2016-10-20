@@ -69,6 +69,7 @@ public class ShowReaderMenuAction extends BaseAction {
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderLayerMenu readerMenu;
     private static ReaderLayerMenuState state;
+    private boolean disableScribbleBrush = true;
     private static List<ReaderMenuAction> disableMenus = new ArrayList<>();
 
     @Override
@@ -120,11 +121,14 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void getDisableMenus(ReaderDataHolder readerDataHolder) {
-        if (ReaderConfig.sharedInstance(readerDataHolder.getContext()).isDisable_writing()) {
+        if (ReaderConfig.sharedInstance(readerDataHolder.getContext()).isDisableNoteFunc()) {
             disableMenus.add(ReaderMenuAction.NOTE);
         }
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
+        }
+        if (disableScribbleBrush) {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
     }
 

@@ -76,6 +76,7 @@
             android:layout_height="1dp"/>
 
         <TextView
+            android:textStyle="bold"
             android:textColor="@android:color/black"
             android:layout_marginLeft="5dp"
             android:textSize="@dimen/dialog_export_text_size"

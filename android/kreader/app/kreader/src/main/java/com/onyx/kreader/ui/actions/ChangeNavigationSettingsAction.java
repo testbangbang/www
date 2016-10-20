@@ -2,7 +2,6 @@ package com.onyx.kreader.ui.actions;
 
 import android.graphics.RectF;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.android.cropimage.data.PointMatrix;
 import com.onyx.android.sdk.common.request.BaseCallback;
