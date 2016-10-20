@@ -9,6 +9,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -116,11 +117,11 @@ public class ReaderDataHolder {
         documentOpened = true;
         getEventBus().post(new DocumentOpenEvent(documentPath));
         registerDeviceReceiver();
-        initNoteManager();
     }
 
     public void onDocumentInitRendered() {
         getEventBus().post(new DocumentInitRenderedEvent());
+        prepareNoteManager();
     }
 
     public boolean isDocumentOpened() {
@@ -245,7 +246,7 @@ public class ReaderDataHolder {
         return noteManager;
     }
 
-    private void initNoteManager() {
+    public void prepareNoteManager() {
         getNoteManager().startRawEventProcessor();
         getNoteManager().pauseRawEventProcessor();
     }

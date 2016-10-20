@@ -45,6 +45,7 @@ import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
+import com.onyx.kreader.note.actions.StartErasingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
@@ -75,10 +76,11 @@ import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
-import com.onyx.kreader.ui.events.ShortcutFinishedEvent;
+import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
-import com.onyx.kreader.ui.events.ShortcutStartEvent;
+import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
@@ -128,6 +130,12 @@ public class ReaderActivity extends ActionBarActivity {
     protected void onResume() {
         checkForNewConfiguration();
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        afterPause(null);
     }
 
     @Override
@@ -330,9 +338,10 @@ public class ReaderActivity extends ActionBarActivity {
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
-                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                    surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 }
+                getReaderDataHolder().prepareNoteManager();
             }
         });
     }
@@ -397,14 +406,23 @@ public class ReaderActivity extends ActionBarActivity {
             saveDocumentOptions();
             return;
         }
+        afterPause(null);
+    }
 
+    private void afterPause(final BaseCallback baseCallback) {
         readerDataHolder.getNoteManager().enableScreenPost(true);
+        if (!verifyReader()) {
+            baseCallback.invoke(baseCallback, null, null);
+            return;
+        }
+
         ShowReaderMenuAction.resetReaderMenu(readerDataHolder);
-        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false);
+        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false, true);
         actionChain.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 saveDocumentOptions();
+                baseCallback.invoke(baseCallback, request, e);
             }
         });
     }
@@ -599,12 +617,18 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
-    public void onShortcutStart(final ShortcutStartEvent event) {
+    public void onShortcutErasing(final ShortcutErasingStartEvent event) {
+        StartErasingAction startErasingAction = new StartErasingAction();
+        startErasingAction.execute(getReaderDataHolder(), null);
+    }
+
+    @Subscribe
+    public void onShortcutStart(final ShortcutDrawingStartEvent event) {
         getHandlerManager().setEnableTouch(false);
     }
 
     @Subscribe
-    public void onShortcutFinished(final ShortcutFinishedEvent event) {
+    public void onShortcutFinished(final ShortcutDrawingFinishedEvent event) {
         getHandlerManager().setEnableTouch(true);
         if (getReaderDataHolder().inNoteWriting()) {
             return;

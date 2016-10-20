@@ -49,6 +49,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
     private volatile boolean reportData = false;
+    private volatile boolean enableEventProcessor = false;
     private String inputDevice = "/dev/input/event1";
     private volatile Matrix inputToScreenMatrix;
     private volatile Matrix screenToViewMatrix;
@@ -81,6 +82,14 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     public void pause() {
         reportData = false;
+    }
+
+    public boolean isEnableEventProcessor() {
+        return enableEventProcessor;
+    }
+
+    public void setEnableEventProcessor(boolean enableEventProcessor) {
+        this.enableEventProcessor = enableEventProcessor;
     }
 
     public void quit() {
@@ -234,7 +243,10 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean isReportData() {
-        return reportData || forceErasing || forceDrawing;
+        if (forceDrawing || forceErasing) {
+            return true;
+        }
+        return reportData && enableEventProcessor;
     }
 
     private boolean inErasing() {
@@ -275,12 +287,15 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void erasingPressReceived(int x, int y, int pressure, int size, long ts) {
+        invokeRawErasingStart();
     }
 
     private void erasingMoveReceived(int x, int y, int pressure, int size, long ts) {
     }
 
     private void erasingReleaseReceived(int x, int y, int pressure, int size, long ts) {
+        forceDrawing = false;
+        forceErasing = false;
     }
 
     private void drawingPressReceived(int x, int y, int pressure, int size, long ts) {
@@ -327,6 +342,15 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         resetLastPageInfo();
         invokeDFBShapeFinished(shape);
         getNoteManager().resetCurrentShape();
+    }
+
+    private void invokeRawErasingStart() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                getCallback().onRawErasingStart();
+            }
+        });
     }
 
     private void invokeDFBShapeStart() {
