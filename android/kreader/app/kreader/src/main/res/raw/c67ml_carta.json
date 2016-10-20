@@ -1,6 +1,6 @@
 {
-  "disable_note_func" : true,
-  "key_binding": {
+  "disableNoteFunc" : true,
+  "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
       "KEYCODE_PAGE_UP":  {"action": "prevScreen", "args": ""},

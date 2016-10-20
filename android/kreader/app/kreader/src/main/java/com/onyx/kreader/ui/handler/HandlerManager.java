@@ -69,7 +69,7 @@ public class HandlerManager {
     }
 
     public Map<String, Map<String, JSONObject>> getKeyBinding() {
-        return readerConfig.getKey_binding();
+        return readerConfig.getKeyBinding();
     }
 
     public JSONObject getKeyBinding(final String state, final String keycode) {

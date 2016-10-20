@@ -46,7 +46,7 @@ public class WordSelectionHandler extends BaseHandler{
 
     public WordSelectionHandler(HandlerManager parent, Context context) {
         super(parent);
-        selectionMoveDistanceThreshold = ReaderConfig.sharedInstance(context).getSelection_move_distance_threshold();
+        selectionMoveDistanceThreshold = ReaderConfig.sharedInstance(context).getSelectionMoveDistanceThreshold();
         movePointOffsetHeight = context.getResources().getDimension(R.dimen.move_point_offset_height);
     }
 

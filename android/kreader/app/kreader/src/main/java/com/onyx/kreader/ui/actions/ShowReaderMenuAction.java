@@ -121,7 +121,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void getDisableMenus(ReaderDataHolder readerDataHolder) {
-        if (ReaderConfig.sharedInstance(readerDataHolder.getContext()).isDisable_note_func()) {
+        if (ReaderConfig.sharedInstance(readerDataHolder.getContext()).isDisableNoteFunc()) {
             disableMenus.add(ReaderMenuAction.NOTE);
         }
         if (!readerDataHolder.supportNoteExport()) {

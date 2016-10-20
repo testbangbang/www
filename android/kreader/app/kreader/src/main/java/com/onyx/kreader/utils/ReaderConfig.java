@@ -98,212 +98,212 @@ public class ReaderConfig {
         return ourInstance;
     }
 
-    private Map<String, Map<String, JSONObject>> key_binding = null;
+    private Map<String, Map<String, JSONObject>> keyBinding = null;
 
-    private boolean delete_acsm_after_fulfillment = false;
-    private boolean support_zip_compressed_books = false;
-    private boolean disable_dictionary_func = false;
-    private boolean disable_font_func = false;
-    private boolean disable_note_func = false;
-    private boolean disable_rotation_func = false;
-    private boolean use_big_pen = false;
-    private boolean default_use_system_status_bar = false;
-    private boolean default_use_reader_status_bar = false;
-    private boolean default_show_doc_title_in_status_bar = false;
-    private boolean disable_navigation = false;
-    private boolean hide_selection_mode_ui_option = false;
-    private boolean hide_control_settings = false;
+    private boolean deleteAcsmAfterFulfillment = false;
+    private boolean supportZipCompressedBooks = false;
+    private boolean disableDictionaryFunc = false;
+    private boolean disableFontFunc = false;
+    private boolean disableNoteFunc = false;
+    private boolean disableRotationFunc = false;
+    private boolean useBigPen = false;
+    private boolean defaultUseSystemStatusBar = false;
+    private boolean defaultUseReaderStatusBar = false;
+    private boolean defaultShowDocTitleInStatusBar = false;
+    private boolean disableNavigation = false;
+    private boolean hideSelectionModeUiOption = false;
+    private boolean hideControlSettings = false;
 
-    private int rotation_offset = 0;
-    private int dialog_navigation_settings_subscreen_landscape_rows = -1;
-    private int dialog_navigation_settings_subscreen_landscape_columns = -1;
-    private int selection_offset_x = 15;
-    private int default_font_size = 0;
-    private int selection_move_distance_threshold = 8;
-    private int gc_interval = 0;
+    private int rotationOffset = 0;
+    private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
+    private int dialogNavigationSettingsSubScreenLandscapeColumns = -1;
+    private int selectionOffsetX = 15;
+    private int defaultFontSize = 0;
+    private int selectionMoveDistanceThreshold = 8;
+    private int gcInterval = 0;
 
-    private String default_annotation_highlight_style = "Highlight";
+    private String defaultAnnotationHighlightStyle = "Highlight";
 
-    public Map<String, Map<String, JSONObject>> getKey_binding() {
-        return key_binding;
+    public Map<String, Map<String, JSONObject>> getKeyBinding() {
+        return keyBinding;
     }
 
-    public void setKey_binding(Map<String, Map<String, JSONObject>> key_binding) {
-        this.key_binding = key_binding;
+    public void setKeyBinding(Map<String, Map<String, JSONObject>> keyBinding) {
+        this.keyBinding = keyBinding;
     }
 
-    public boolean isDelete_acsm_after_fulfillment() {
-        return delete_acsm_after_fulfillment;
+    public boolean isDeleteAcsmAfterFulfillment() {
+        return deleteAcsmAfterFulfillment;
     }
 
-    public void setDelete_acsm_after_fulfillment(boolean delete_acsm_after_fulfillment) {
-        this.delete_acsm_after_fulfillment = delete_acsm_after_fulfillment;
+    public void setDeleteAcsmAfterFulfillment(boolean deleteAcsmAfterFulfillment) {
+        this.deleteAcsmAfterFulfillment = deleteAcsmAfterFulfillment;
     }
 
-    public boolean isSupport_zip_compressed_books() {
-        return support_zip_compressed_books;
+    public boolean isSupportZipCompressedBooks() {
+        return supportZipCompressedBooks;
     }
 
-    public void setSupport_zip_compressed_books(boolean support_zip_compressed_books) {
-        this.support_zip_compressed_books = support_zip_compressed_books;
+    public void setSupportZipCompressedBooks(boolean supportZipCompressedBooks) {
+        this.supportZipCompressedBooks = supportZipCompressedBooks;
     }
 
-    public boolean isDisable_dictionary_func() {
-        return disable_dictionary_func;
+    public boolean isDisableDictionaryFunc() {
+        return disableDictionaryFunc;
     }
 
-    public void setDisable_dictionary_func(boolean disable_dictionary_func) {
-        this.disable_dictionary_func = disable_dictionary_func;
+    public void setDisableDictionaryFunc(boolean disableDictionaryFunc) {
+        this.disableDictionaryFunc = disableDictionaryFunc;
     }
 
-    public boolean isDisable_font_func() {
-        return disable_font_func;
+    public boolean isDisableFontFunc() {
+        return disableFontFunc;
     }
 
-    public void setDisable_font_func(boolean disable_font_func) {
-        this.disable_font_func = disable_font_func;
+    public void setDisableFontFunc(boolean disableFontFunc) {
+        this.disableFontFunc = disableFontFunc;
     }
 
-    public boolean isDisable_note_func() {
-        return disable_note_func;
+    public boolean isDisableNoteFunc() {
+        return disableNoteFunc;
     }
 
-    public void setDisable_note_func(boolean disable_note_func) {
-        this.disable_note_func = disable_note_func;
+    public void setDisableNoteFunc(boolean disableNoteFunc) {
+        this.disableNoteFunc = disableNoteFunc;
     }
 
-    public boolean isDisable_rotation_func() {
-        return disable_rotation_func;
+    public boolean isDisableRotationFunc() {
+        return disableRotationFunc;
     }
 
-    public void setDisable_rotation_func(boolean disable_rotation_func) {
-        this.disable_rotation_func = disable_rotation_func;
+    public void setDisableRotationFunc(boolean disableRotationFunc) {
+        this.disableRotationFunc = disableRotationFunc;
     }
 
-    public boolean isUse_big_pen() {
-        return use_big_pen;
+    public boolean isUseBigPen() {
+        return useBigPen;
     }
 
-    public void setUse_big_pen(boolean use_big_pen) {
-        this.use_big_pen = use_big_pen;
+    public void setUseBigPen(boolean useBigPen) {
+        this.useBigPen = useBigPen;
     }
 
-    public boolean isDefault_use_system_status_bar() {
-        return default_use_system_status_bar;
+    public boolean isDefaultUseSystemStatusBar() {
+        return defaultUseSystemStatusBar;
     }
 
-    public void setDefault_use_system_status_bar(boolean default_use_system_status_bar) {
-        this.default_use_system_status_bar = default_use_system_status_bar;
+    public void setDefaultUseSystemStatusBar(boolean defaultUseSystemStatusBar) {
+        this.defaultUseSystemStatusBar = defaultUseSystemStatusBar;
     }
 
-    public boolean isDefault_use_reader_status_bar() {
-        return default_use_reader_status_bar;
+    public boolean isDefaultUseReaderStatusBar() {
+        return defaultUseReaderStatusBar;
     }
 
-    public void setDefault_use_reader_status_bar(boolean default_use_reader_status_bar) {
-        this.default_use_reader_status_bar = default_use_reader_status_bar;
+    public void setDefaultUseReaderStatusBar(boolean defaultUseReaderStatusBar) {
+        this.defaultUseReaderStatusBar = defaultUseReaderStatusBar;
     }
 
-    public boolean isDefault_show_doc_title_in_status_bar() {
-        return default_show_doc_title_in_status_bar;
+    public boolean isDefaultShowDocTitleInStatusBar() {
+        return defaultShowDocTitleInStatusBar;
     }
 
-    public void setDefault_show_doc_title_in_status_bar(boolean default_show_doc_title_in_status_bar) {
-        this.default_show_doc_title_in_status_bar = default_show_doc_title_in_status_bar;
+    public void setDefaultShowDocTitleInStatusBar(boolean defaultShowDocTitleInStatusBar) {
+        this.defaultShowDocTitleInStatusBar = defaultShowDocTitleInStatusBar;
     }
 
-    public boolean isDisable_navigation() {
-        return disable_navigation;
+    public boolean isDisableNavigation() {
+        return disableNavigation;
     }
 
-    public void setDisable_navigation(boolean disable_navigation) {
-        this.disable_navigation = disable_navigation;
+    public void setDisableNavigation(boolean disableNavigation) {
+        this.disableNavigation = disableNavigation;
     }
 
-    public boolean isHide_selection_mode_ui_option() {
-        return hide_selection_mode_ui_option;
+    public boolean isHideSelectionModeUiOption() {
+        return hideSelectionModeUiOption;
     }
 
-    public void setHide_selection_mode_ui_option(boolean hide_selection_mode_ui_option) {
-        this.hide_selection_mode_ui_option = hide_selection_mode_ui_option;
+    public void setHideSelectionModeUiOption(boolean hideSelectionModeUiOption) {
+        this.hideSelectionModeUiOption = hideSelectionModeUiOption;
     }
 
-    public boolean isHide_control_settings() {
-        return hide_control_settings;
+    public boolean isHideControlSettings() {
+        return hideControlSettings;
     }
 
-    public void setHide_control_settings(boolean hide_control_settings) {
-        this.hide_control_settings = hide_control_settings;
+    public void setHideControlSettings(boolean hideControlSettings) {
+        this.hideControlSettings = hideControlSettings;
     }
 
-    public int getRotation_offset() {
-        return rotation_offset;
+    public int getRotationOffset() {
+        return rotationOffset;
     }
 
-    public void setRotation_offset(int rotation_offset) {
-        this.rotation_offset = rotation_offset;
+    public void setRotationOffset(int rotationOffset) {
+        this.rotationOffset = rotationOffset;
     }
 
-    public int getDialog_navigation_settings_subscreen_landscape_rows() {
-        return dialog_navigation_settings_subscreen_landscape_rows;
+    public int getDialogNavigationSettingsSubScreenLandscapeRows() {
+        return dialogNavigationSettingsSubScreenLandscapeRows;
     }
 
-    public void setDialog_navigation_settings_subscreen_landscape_rows(int dialog_navigation_settings_subscreen_landscape_rows) {
-        this.dialog_navigation_settings_subscreen_landscape_rows = dialog_navigation_settings_subscreen_landscape_rows;
+    public void setDialogNavigationSettingsSubScreenLandscapeRows(int dialogNavigationSettingsSubScreenLandscapeRows) {
+        this.dialogNavigationSettingsSubScreenLandscapeRows = dialogNavigationSettingsSubScreenLandscapeRows;
     }
 
-    public int getDialog_navigation_settings_subscreen_landscape_columns() {
-        return dialog_navigation_settings_subscreen_landscape_columns;
+    public int getDialogNavigationSettingsSubScreenLandscapeColumns() {
+        return dialogNavigationSettingsSubScreenLandscapeColumns;
     }
 
-    public void setDialog_navigation_settings_subscreen_landscape_columns(int dialog_navigation_settings_subscreen_landscape_columns) {
-        this.dialog_navigation_settings_subscreen_landscape_columns = dialog_navigation_settings_subscreen_landscape_columns;
+    public void setDialogNavigationSettingsSubScreenLandscapeColumns(int dialogNavigationSettingsSubScreenLandscapeColumns) {
+        this.dialogNavigationSettingsSubScreenLandscapeColumns = dialogNavigationSettingsSubScreenLandscapeColumns;
     }
 
-    public int getSelection_offset_x() {
-        return selection_offset_x;
+    public int getSelectionOffsetX() {
+        return selectionOffsetX;
     }
 
-    public void setSelection_offset_x(int selection_offset_x) {
-        this.selection_offset_x = selection_offset_x;
+    public void setSelectionOffsetX(int selectionOffsetX) {
+        this.selectionOffsetX = selectionOffsetX;
     }
 
-    public int getDefault_font_size() {
-        return default_font_size;
+    public int getDefaultFontSize() {
+        return defaultFontSize;
     }
 
-    public void setDefault_font_size(int default_font_size) {
-        this.default_font_size = default_font_size;
+    public void setDefaultFontSize(int defaultFontSize) {
+        this.defaultFontSize = defaultFontSize;
     }
 
-    public int getSelection_move_distance_threshold() {
-        return selection_move_distance_threshold;
+    public int getSelectionMoveDistanceThreshold() {
+        return selectionMoveDistanceThreshold;
     }
 
-    public void setSelection_move_distance_threshold(int selection_move_distance_threshold) {
-        this.selection_move_distance_threshold = selection_move_distance_threshold;
+    public void setSelectionMoveDistanceThreshold(int selectionMoveDistanceThreshold) {
+        this.selectionMoveDistanceThreshold = selectionMoveDistanceThreshold;
     }
 
-    public int getGc_interval() {
-        return gc_interval;
+    public int getGcInterval() {
+        return gcInterval;
     }
 
-    public void setGc_interval(int gc_interval) {
-        this.gc_interval = gc_interval;
+    public void setGcInterval(int gcInterval) {
+        this.gcInterval = gcInterval;
     }
 
-    public String getDefault_annotation_highlight_style() {
-        return default_annotation_highlight_style;
+    public String getDefaultAnnotationHighlightStyle() {
+        return defaultAnnotationHighlightStyle;
     }
 
-    public void setDefault_annotation_highlight_style(String default_annotation_highlight_style) {
-        this.default_annotation_highlight_style = default_annotation_highlight_style;
+    public void setDefaultAnnotationHighlightStyle(String defaultAnnotationHighlightStyle) {
+        this.defaultAnnotationHighlightStyle = defaultAnnotationHighlightStyle;
     }
 
     public SingletonSharedPreference.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {
         SingletonSharedPreference.AnnotationHighlightStyle style = SingletonSharedPreference.AnnotationHighlightStyle.Underline;
         try {
-            style = Enum.valueOf(SingletonSharedPreference.AnnotationHighlightStyle.class, default_annotation_highlight_style);
+            style = Enum.valueOf(SingletonSharedPreference.AnnotationHighlightStyle.class, defaultAnnotationHighlightStyle);
         } catch (Exception e) {
         }
         return style;
