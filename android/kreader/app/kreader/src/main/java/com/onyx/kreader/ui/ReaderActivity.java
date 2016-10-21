@@ -410,7 +410,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void afterPause(final BaseCallback baseCallback) {
-        getReaderDataHolder().getNoteManager().enableScreenPost(true);
+        enablePost(true);
         if (!verifyReader()) {
             baseCallback.invoke(baseCallback, null, null);
             return;
@@ -425,6 +425,10 @@ public class ReaderActivity extends ActionBarActivity {
                 baseCallback.invoke(baseCallback, request, e);
             }
         });
+    }
+
+    private void enablePost(boolean enable) {
+        EpdController.enablePost(surfaceView, enable ? 1 : 0);
     }
 
     private void saveDocumentOptions() {
@@ -520,9 +524,7 @@ public class ReaderActivity extends ActionBarActivity {
     private void checkExternalStoragePermissions() {
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE);
+            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
         } else {
             openFileFromIntent();
         }
@@ -595,13 +597,15 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onBeforeDocumentOpen(final BeforeDocumentOpenEvent event) {
-        EpdController.enablePost(surfaceView, 1);
+        enablePost(true);
+        clearCanvas(holder);
+        resetStatusBar();
         resetMenus();
     }
 
     @Subscribe
     public void onBeforeDocumentClose(final BeforeDocumentCloseEvent event) {
-        EpdController.enablePost(surfaceView, 1);
+        enablePost(true);
         resetMenus();
     }
 
@@ -699,7 +703,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
-        getReaderDataHolder().getNoteManager().enableScreenPost(true);
+        enablePost(true);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
@@ -757,6 +761,10 @@ public class ReaderActivity extends ActionBarActivity {
         }
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
                 current, total, 0, title));
+    }
+
+    private void resetStatusBar() {
+        statusBar.clear();
     }
 
     private RectF translateDisplayRectToViewportRect(RectF displayRect) {
