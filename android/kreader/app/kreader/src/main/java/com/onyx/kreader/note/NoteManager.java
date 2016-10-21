@@ -33,6 +33,7 @@ import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 
 import java.util.ArrayList;
@@ -169,6 +170,10 @@ public class NoteManager {
 
             public void onRawErasingStart() {
                 getParent().getEventBus().post(new ShortcutErasingStartEvent());
+            }
+
+            public void onRawErasingFinished(final TouchPointList list) {
+                getParent().getEventBus().post(new ShortcutErasingFinishEvent(list));
             }
 
             public void onDFBShapeStart(boolean shortcut) {

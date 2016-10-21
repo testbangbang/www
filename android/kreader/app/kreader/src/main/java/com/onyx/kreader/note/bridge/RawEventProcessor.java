@@ -40,6 +40,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private static final int PEN_SIZE = 0;
 
+    private String inputDevice = "/dev/input/event1";
 
     private volatile int px, py, pressure;
     private volatile boolean erasing = false;
@@ -50,7 +51,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean stop = false;
     private volatile boolean reportData = false;
     private volatile boolean enableEventProcessor = false;
-    private String inputDevice = "/dev/input/event1";
+
     private volatile Matrix inputToScreenMatrix;
     private volatile Matrix screenToViewMatrix;
     private volatile float[] srcPoint = new float[2];
@@ -288,14 +289,38 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private void erasingPressReceived(int x, int y, int pressure, int size, long ts) {
         invokeRawErasingStart();
+        final PageInfo pageInfo = hitTest(x, y);
+        if (pageInfo == null) {
+            return;
+        }
+        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+        mapScreenPointToView(touchPoint);
+        touchPoint.normalize(pageInfo);
+        addToList(touchPoint, true);
     }
 
     private void erasingMoveReceived(int x, int y, int pressure, int size, long ts) {
+        final PageInfo pageInfo = hitTest(x, y);
+        if (pageInfo == null) {
+            return;
+        }
+        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+        mapScreenPointToView(touchPoint);
+        touchPoint.normalize(pageInfo);
+        addToList(touchPoint, true);
     }
 
     private void erasingReleaseReceived(int x, int y, int pressure, int size, long ts) {
         forceDrawing = false;
         forceErasing = false;
+        final PageInfo pageInfo = hitTest(x, y);
+        if (pageInfo != null) {
+            final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+            mapScreenPointToView(touchPoint);
+            touchPoint.normalize(pageInfo);
+            addToList(touchPoint, true);
+        }
+        invokeRawErasingFinish();
     }
 
     private void drawingPressReceived(int x, int y, int pressure, int size, long ts) {
@@ -349,6 +374,16 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             @Override
             public void run() {
                 getCallback().onRawErasingStart();
+            }
+        });
+    }
+
+    private void invokeRawErasingFinish() {
+        final TouchPointList list = touchPointList;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                getCallback().onRawErasingFinished(list);
             }
         });
     }

@@ -128,7 +128,7 @@ public class ReaderDataHolder {
         return documentOpened && reader != null;
     }
 
-    public boolean inNoteWriting() {
+    public boolean inNoteWritingProvider() {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
     }
 
@@ -442,6 +442,7 @@ public class ReaderDataHolder {
         if (noteManager == null) {
             return;
         }
+        getNoteManager().enableRawEventProcessor(false);
         getNoteManager().stopRawEventProcessor();
     }
 }
