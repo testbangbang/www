@@ -10,7 +10,7 @@ LOCAL_SRC_FILES := $(addprefix ../../../../, $(LOCAL_SRC_FILES))
 
 LOCAL_LDLIBS := -llog -lz -ljnigraphics
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
-LOCAL_STATIC_LIBRARIES += k2pdfoptlib willuslib
+LOCAL_STATIC_LIBRARIES += k2pdfoptlib willuslib libutils
 
 
 include $(BUILD_SHARED_LIBRARY)

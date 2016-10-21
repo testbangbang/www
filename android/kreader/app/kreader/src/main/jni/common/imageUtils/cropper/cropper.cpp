@@ -12,6 +12,10 @@
 #include <cassert>
 #include <cstring>
 #include <string>
+#include <list>
+#include <algorithm>
+#include <mutex>
+#include <thread>
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,8 +30,6 @@ extern "C" {
 }
 #endif
 
-
-
 #ifdef NDK_PROFILER
 #include "prof.h"
 #endif
@@ -36,15 +38,13 @@ extern "C" {
 #include "image_embolden_filter.h"
 #include "image_gamma_filter.h"
 
-static const char * readerBitmapClassName = "com/onyx/kreader/reflow/ImageReflowManager";
+#include "JNIUtils.h"
 
 #define COLUMN_HALF_HEIGHT 15
 #define V_LINE_SIZE 5
 #define H_LINE_SIZE 5
 #define LINE_MARGIN 20
 #define COLUMN_WIDTH 5
-
-static double WHITE_THRESHOLD  = 0.05;
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
@@ -53,6 +53,48 @@ static double WHITE_THRESHOLD  = 0.05;
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define LOGT(...) __android_log_print(ANDROID_LOG_INFO,"alert",__VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
+namespace {
+
+double WHITE_THRESHOLD  = 0.05;
+
+// use std::list to simulate FIFO queue
+std::shared_ptr<WILLUSBITMAP> currentReflowedPage;
+std::list<std::pair<std::string, std::shared_ptr<WILLUSBITMAP>>> reflowedPages;
+std::mutex pagesMutex;
+
+void insertReflowedPage(const std::string &pageName, WILLUSBITMAP *bmp) {
+    std::lock_guard<std::mutex> lock(pagesMutex);
+    reflowedPages.push_back(std::make_pair(pageName,
+                                           std::shared_ptr<WILLUSBITMAP>(bmp, [](WILLUSBITMAP *bmp) {
+                                               bmp_free(bmp);
+                                               free(bmp);
+                                           })));
+    const int MAX_QUEUE_SIZE = 2;
+    if (reflowedPages.size() > MAX_QUEUE_SIZE) {
+        reflowedPages.pop_front();
+    }
+}
+
+void releaseReflowedPages() {
+    std::lock_guard<std::mutex> lock(pagesMutex);
+    while (!reflowedPages.empty()) {
+        reflowedPages.pop_front();
+    }
+}
+
+WILLUSBITMAP *getReflowedPage(const std::string &pageName) {
+    std::lock_guard<std::mutex> lock(pagesMutex);
+    auto found = std::find_if(reflowedPages.cbegin(), reflowedPages.cend(),
+                             [&pageName](const std::pair<std::string, std::shared_ptr<WILLUSBITMAP>> &pair) {
+        return pair.first == pageName;
+    });
+    if (found == reflowedPages.cend()) {
+        return nullptr;
+    }
+    currentReflowedPage = found->second;
+    return currentReflowedPage.get();
+}
 
 int calculateAvgLum(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h);
 float getLeftBound(uint8_t* src, int width, int height, int avgLum);
@@ -232,7 +274,7 @@ jdoubleArray doubleArrayFromRect(JNIEnv * env, double left, double top, double r
     return array;
 }
 
-static bool convertToWillusBmp(JNIEnv *env, void * data, jint width, jint height, jint stride, WILLUSBITMAP *bmp) {
+bool convertToWillusBmp(JNIEnv *env, void * data, jint width, jint height, jint stride, WILLUSBITMAP *bmp) {
     bmp_init(bmp);
     bmp->width = width;
     bmp->height = height;
@@ -252,7 +294,7 @@ static bool convertToWillusBmp(JNIEnv *env, void * data, jint width, jint height
 }
 
 /*
-static jobject createReaderBitmapList(JNIEnv * env) {
+jobject createReaderBitmapList(JNIEnv * env) {
     jclass cls_bmp_list = env->FindClass(readerBitmapClassName);
     if (cls_bmp_list == 0) {
         LOGE("Could not find class: %s", readerBitmapClassName);
@@ -273,10 +315,26 @@ static jobject createReaderBitmapList(JNIEnv * env) {
 }
 
 */
+
+void bmp_move(WILLUSBITMAP *dest, WILLUSBITMAP *src) {
+    dest->width  = src->width;
+    dest->height = src->height;
+    dest->bpp    = src->bpp;
+    dest->type   = src->type;
+    memcpy(dest->red,src->red,sizeof(int)*256);
+    memcpy(dest->green,src->green,sizeof(int)*256);
+    memcpy(dest->blue,src->blue,sizeof(int)*256);
+    dest->data = src->data;
+    dest->size_allocated = src->size_allocated;
+
+    src->data = NULL;
+    src->size_allocated = 0;
+}
+
 /**
  * create context from settings
  */
-static bool convertToKoptContext(JNIEnv *env, jobject jSettings, KOPTContext *context) {
+bool convertToKoptContext(JNIEnv *env, jobject jSettings, KOPTContext *context) {
     jclass clz_settings = env->GetObjectClass(jSettings);
     if (clz_settings == 0) {
         LOGE("Find class com/onyx/kreader/reflow/ImageReflowSettings failed");
@@ -393,12 +451,10 @@ static bool convertToKoptContext(JNIEnv *env, jobject jSettings, KOPTContext *co
     double quality = env->GetDoubleField(jSettings, fid_quality);
     double contrast = env->GetDoubleField(jSettings, fid_contrast);
 
-/*
     LOGI("dev_dpi: %d, dev_width: %d, dev_height: %d, page_width: %d, page_height: %d, trim: %d, wrap: %d, columns: %d, indent: %d, "
          "straighten: %d, rotate: %d, justification: %d, word_spacing: %f, defect_size: %f, line_spacing: %f, margin: %f, quality: %f, contrast: %f",
          dev_dpi, dev_width, dev_height, page_width, page_height, trim, wrap, columns, indent, straighten, rotate, justification,
          word_spacing, defect_size, line_spacing, margin, quality, contrast);
-*/
 
     context->dev_dpi = dev_dpi;
     context->dev_width = dev_width;
@@ -424,7 +480,7 @@ static bool convertToKoptContext(JNIEnv *env, jobject jSettings, KOPTContext *co
     return true;
 }
 
-static jobject createBitmap(JNIEnv * env, WILLUSBITMAP *bmp) {
+jobject createBitmap(JNIEnv * env, WILLUSBITMAP *bmp) {
     using namespace std;
     jclass java_bitmap_class = (jclass)env->FindClass("android/graphics/Bitmap");
     jmethodID mid = env->GetStaticMethodID(java_bitmap_class, "createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
@@ -462,77 +518,79 @@ static jobject createBitmap(JNIEnv * env, WILLUSBITMAP *bmp) {
     return bitmap;
 }
 
-static bool addBitmap(JNIEnv * env, jstring pageName, int subPage, jobject parent, jobject bitmap) {
-    jclass cls_bmp_list = env->FindClass(readerBitmapClassName);
-    if (cls_bmp_list == 0) {
-        LOGE("Could not find class: %s", readerBitmapClassName);
-        return false;
+jboolean k2pdfopt_reflow_bmp(const std::string &pageName, KOPTContext *kctx) {
+    K2PDFOPT_SETTINGS _k2settings, *k2settings;
+    MASTERINFO _masterinfo, *masterinfo;
+    WILLUSBITMAP _srcgrey, *srcgrey;
+    WILLUSBITMAP *src, *dst;
+    BMPREGION region;
+    int i, bw, martop, marbot, marleft;
+
+    if (0) {
+        bmp_write(&kctx->src, "/sdcard/reflowin.bmp", stdout, 100);
     }
 
-    jmethodID mid = env->GetMethodID(cls_bmp_list, "addBitmap", "(Ljava/lang/String;ILandroid/graphics/Bitmap;)V");
-    if (mid == 0) {
-        LOGE("Find method addBitmap failed");
-        return false;
+    src = &kctx->src;
+    srcgrey = &_srcgrey;
+    bmp_init(srcgrey);
+
+    k2settings = &_k2settings;
+    masterinfo = &_masterinfo;
+    /* Initialize settings */
+    k2pdfopt_settings_init_from_koptcontext(k2settings, kctx);
+    k2pdfopt_settings_quick_sanity_check(k2settings);
+    /* Init for new source doc */
+    k2pdfopt_settings_new_source_document_init(k2settings);
+    /* Init master output structure */
+    masterinfo_init(masterinfo, k2settings);
+    wrapbmp_init(&masterinfo->wrapbmp, k2settings->dst_color);
+    /* Init new source bitmap */
+    bmpregion_init(&region);
+    masterinfo_new_source_page_init(masterinfo, k2settings, src, srcgrey, NULL,
+                                    &region, k2settings->src_rot, NULL, NULL, 1, -1, NULL );
+    /* Set output size */
+    k2pdfopt_settings_set_margins_and_devsize(k2settings,&region,masterinfo,-1.,0);
+    /* Process single source page */
+    bmpregion_source_page_add(&region, k2settings, masterinfo, 1, 0);
+    wrapbmp_flush(masterinfo, k2settings, 0);
+
+    if (fabs(k2settings->dst_gamma - 1.0) > .001) {
+        bmp_gamma_correct(&masterinfo->bmp, &masterinfo->bmp, k2settings->dst_gamma);
     }
 
-    env->CallVoidMethod(parent, mid, pageName, subPage, bitmap);
+    /* copy master bitmap to context dst bitmap */
+    dst = (WILLUSBITMAP *)malloc(sizeof(WILLUSBITMAP));
+    bmp_init(dst);
+    martop = (int) (k2settings->dst_dpi * k2settings->dstmargins.box[1] * 2 + .5);
+    marbot = (int) (k2settings->dst_dpi * k2settings->dstmargins.box[1] * 2 + .5);
+    marleft = (int) (k2settings->dst_dpi * k2settings->dstmargins.box[0] + .5);
+    dst->bpp = masterinfo->bmp.bpp;
+    dst->width = (masterinfo->bmp.width / 4) * 4;
+    // avoid too small page height that will cause perfermance issue in scroll mode
+    dst->height = masterinfo->rows + martop + marbot > kctx->page_height
+            ? masterinfo->rows + martop + marbot : kctx->page_height;
+    bmp_alloc(dst);
+    bmp_fill(dst, 255, 255, 255);
+    bw = bmp_bytewidth(&masterinfo->bmp);
+    for (i = 0; i < masterinfo->rows; i++)
+        memcpy(bmp_rowptr_from_top(dst, i + martop),
+               bmp_rowptr_from_top(&masterinfo->bmp, i), bw);
+
+    kctx->page_width = kctx->dst.width;
+    kctx->page_height = kctx->dst.height;
+
+    if (0) {
+        bmp_write(dst, "/sdcard/reflowout.bmp", stdout, 100);
+    }
+
+    insertReflowedPage(pageName, dst);
+
+    bmp_free(src);
+    bmp_free(srcgrey);
+    masterinfo_free(masterinfo, k2settings);
     return true;
 }
 
-jboolean k2pdfopt_reflow_bmp(JNIEnv * env, jstring pageName, jobject parent, KOPTContext *kctx) {
-    K2PDFOPT_SETTINGS k2settings;
-    MASTERINFO masterinfo;
-    WILLUSBITMAP srcgrey;
-    WILLUSBITMAP *src;
-    BMPREGION region;
-    int initgap;
-
-    src = &kctx->src;
-    bmp_init(&srcgrey);
-
-    k2pdfopt_settings_init_from_koptcontext(&k2settings, kctx);
-    k2pdfopt_settings_quick_sanity_check(&k2settings);
-
-    masterinfo_init(&masterinfo, &k2settings);
-    bmp_free(&masterinfo.bmp);
-    bmp_init(&masterinfo.bmp);
-    masterinfo.bmp.width = 0;
-    masterinfo.bmp.height = 0;
-    wrapbmp_free(&masterinfo.wrapbmp);
-    wrapbmp_init(&masterinfo.wrapbmp, k2settings.dst_color);
-
-    bmpregion_init(&region);
-    masterinfo_new_source_page_init(&masterinfo, &k2settings, src, &srcgrey, NULL, &region, k2settings.src_rot, NULL, NULL, 1, -1, NULL);
-    k2pdfopt_settings_set_margins_and_devsize(&k2settings,&region,&masterinfo,-1.,0);
-    bmpregion_source_page_add(&region, &k2settings, &masterinfo, 1, 0);
-    wrapbmp_flush(&masterinfo, &k2settings, 0);
-
-    bmp_free(src);
-    bmp_free(&srcgrey);
-
-    if (fabs(k2settings.dst_gamma - 1.0) > .001) {
-        bmp_gamma_correct(&masterinfo.bmp, &masterinfo.bmp, k2settings.dst_gamma);
-    }
-
-    LOGI("Generating sub pages...");
-    WILLUSBITMAP subPage;
-    int pn = 0, rows, size_reduction;
-    double bmpdpi;
-    bmp_init(&subPage);
-    while ((rows=masterinfo_get_next_output_page(&masterinfo, &k2settings,1, &subPage, &bmpdpi, &size_reduction, NULL)) > 0) {
-        jobject androidBitmap = createBitmap(env, &subPage);
-        addBitmap(env, pageName, pn, parent, androidBitmap);
-        pn++;
-        LOGI("sub page number : %d bmp %d %d", pn, subPage.width, subPage.height);
-        if (0) {
-            char filename[256] = {0};
-            sprintf(filename, "/mnt/sdcard/out%03d.png", pn);
-            bmp_write(&subPage, filename, stdout, 100);
-        }
-    }
-    bmp_free(&subPage);
-    masterinfo_free(&masterinfo, &k2settings);
-    return true;
 }
 
 JNIEXPORT jdoubleArray JNICALL Java_com_onyx_kreader_utils_ImageUtils_crop(JNIEnv *env, jclass,
@@ -569,42 +627,6 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_kreader_utils_ImageUtils_crop(JNIEn
     coords[3] = getBottomBound(src, width, height, avgLum) * (bottom - top) + top;
     return doubleArrayFromRect(env, coords[0], coords[1], coords[2], coords[3]);
 }
-
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_reflowPage
-  (JNIEnv * env, jclass thiz, jobject  bitmap, jstring pageName, jobject parent, jobject settings) {
-    AndroidBitmapInfo info;
-	void *pixels;
-	int ret;
-
-	if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
-		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
-		return false;
-	}
-
-	if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
-		LOGE("Bitmap format is not RGBA_8888 !");
-		return false;
-	}
-
-	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
-		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
-		return false;
-	}
-
-    KOPTContext kctx = {0};
-    if (!convertToKoptContext(env, settings, &kctx)) {
-        LOGE("convertToKoptContext failed");
-        return false;
-    }
-
-    LOGI("Java_com_onyx_reader_ReaderImageUtils_reflowPage: %d %d %d", info.width, info.height, info.stride);
-    if (!convertToWillusBmp(env, pixels, info.width, info.height, info.stride, &kctx.src)) {
-        LOGE("convertToWillusBmp failed");
-        return false;
-    }
-    return k2pdfopt_reflow_bmp(env, pageName, parent, &kctx);
-}
-
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_emboldenInPlace
   (JNIEnv *env, jclass thiz, jobject bitmap, jint level) {
@@ -666,4 +688,122 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_gammaCorrectio
         return false;
     }
     return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_reflowPage
+  (JNIEnv * env, jclass thiz, jstring pageNameString, jobject  bitmap, jobject settings) {
+    JNIString pageName(env, pageNameString);
+    auto page = getReflowedPage(pageName.getLocalString());
+    if (page) {
+        return true;
+    }
+
+    AndroidBitmapInfo info;
+    void *pixels;
+    int ret;
+
+    if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+        LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+        return false;
+    }
+
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap format is not RGBA_8888 !");
+        return false;
+    }
+
+    if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
+        LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        return false;
+    }
+
+    KOPTContext kctx = {0};
+    if (!convertToKoptContext(env, settings, &kctx)) {
+        LOGE("convertToKoptContext failed");
+        return false;
+    }
+
+    LOGI("Java_com_onyx_reader_ReaderImageUtils_reflowPage: %d %d %d", info.width, info.height, info.stride);
+    if (!convertToWillusBmp(env, pixels, info.width, info.height, info.stride, &kctx.src)) {
+        LOGE("convertToWillusBmp failed");
+        return false;
+    }
+    LOGI("convertToWillusBmp finished");
+    return k2pdfopt_reflow_bmp(pageName.getLocalString(), &kctx);
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_isPageReflowed
+  (JNIEnv *env, jclass, jstring pageNameString) {
+    JNIString pageName(env, pageNameString);
+    return getReflowedPage(pageName.getLocalString()) != nullptr;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_getReflowedPageSize
+  (JNIEnv *env, jclass, jstring pageNameString, jintArray sizeArray) {
+    JNIString pageName(env, pageNameString);
+    auto page = getReflowedPage(pageName.getLocalString());
+    if (!page) {
+        return false;
+    }
+
+    jint size[] = { page->width, page->height };
+    env->SetIntArrayRegion(sizeArray, 0, 2, size);
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowedPage
+  (JNIEnv *env, jclass, jstring pageNameString, jint x, jint y, jint width, jint height, jobject bitmap) {
+    JNIString pageName(env, pageNameString);
+    auto page = getReflowedPage(pageName.getLocalString());
+    if (!page) {
+        return false;
+    }
+
+    AndroidBitmapInfo info;
+    void *pixels;
+    int ret;
+
+    if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+        LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+        return false;
+    }
+
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap format is not RGBA_8888 !");
+        return false;
+    }
+
+    if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
+        LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        return false;
+    }
+
+
+    WILLUSBITMAP dst;
+    bmp_init(&dst);
+    LOGE("renderReflowedPage, crop region: [%d, %d] - [%d, %d]", x, y, width, height);
+    bmp_crop_ex(&dst, page, x, y, width, height);
+    LOGE("renderReflowedPage, crop region finished");
+
+    unsigned int * target = (unsigned int *)pixels;
+    for(int row = 0; row < dst.height; ++row) {
+        unsigned char *src;
+        src = bmp_rowptr_from_top(&dst, row);
+        for (int col = 0; col < dst.width ; col++) {
+            const unsigned char gray = *src++;
+            *target++ = 0xFF000000 | (gray << 16) | (gray << 8) | gray;
+        }
+    }
+
+    LOGE("renderReflowedPage, render reflow page finished");
+
+    bmp_free(&dst);
+    AndroidBitmap_unlockPixels(env, bitmap);
+
+    return true;
+}
+
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPage
+  (JNIEnv *, jclass, jstring) {
+    releaseReflowedPages();
 }
