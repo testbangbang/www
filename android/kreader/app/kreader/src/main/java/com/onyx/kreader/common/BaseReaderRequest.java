@@ -92,7 +92,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         try {
             afterExecuteImpl(reader);
         } catch (Throwable tr) {
-            Log.w(TAG, tr);
+            Log.w(getClass().getSimpleName(), tr);
         } finally {
             transferBitmapToViewport(reader);
         }
