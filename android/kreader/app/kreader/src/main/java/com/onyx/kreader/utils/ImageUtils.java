@@ -2,6 +2,8 @@ package com.onyx.kreader.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.reflow.ImageReflowSettings;
 
