@@ -23,7 +23,7 @@ public class HighlightCursor {
 
     public static final int BEGIN_CURSOR_INDEX = 0;
     public static final int END_CURSOR_INDEX   = 1;
-    public static final int HIT_TEST_SCALE_VALUE = 2;
+    public static final int HIT_TEST_SCALE_VALUE = 1;
 
     private Bitmap startCursorBitmap;
     private Bitmap endCursorBitmap;
