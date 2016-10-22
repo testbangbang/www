@@ -4,7 +4,7 @@
 **
 ** Part of willus.com general purpose C code library.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2014  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,7 @@
 
 #include "willus.h"
 
-#ifdef WIN32
+#ifdef HAVE_WIN32_API
 
 #include <windows.h>
 #include <stdio.h>
@@ -51,11 +51,13 @@
 **
 ** If must_exist!=0, the file must already exist.
 **
+** If for_writing is non-zero, calls GetSaveFileName().
+**
 ** Returns 1 for success, 0 for cancel.
 **
 */
 int wincomdlg_get_filename(char *filename,int maxlen,char *filter,char *title,char *defext,
-                           int multiselect,int must_exist)
+                           int multiselect,int must_exist,int for_writing)
 
     {
     OPENFILENAME *fn,_fn;
@@ -76,7 +78,7 @@ int wincomdlg_get_filename(char *filename,int maxlen,char *filter,char *title,ch
     fn->lpstrInitialDir=NULL;
     fn->lpstrTitle=title;
     fn->Flags = 0;
-    if (multiselect)
+    if (!for_writing && multiselect)
         fn->Flags |= OFN_ALLOWMULTISELECT | OFN_EXPLORER;
     if (must_exist)
         fn->Flags |= OFN_FILEMUSTEXIST;
@@ -89,8 +91,55 @@ int wincomdlg_get_filename(char *filename,int maxlen,char *filter,char *title,ch
     fn->pvReserved=NULL;
     fn->dwReserved=0;
     fn->FlagsEx=0;
-    return(GetOpenFileName(fn));
+    return(for_writing ? GetSaveFileName(fn) : GetOpenFileName(fn));
     }
 
 
-#endif /* WIN32 */
+int wincomdlg_get_filenamew(short *filename,int maxlen,char *filter,char *title,char *defext,
+                            int multiselect,int must_exist,int for_writing)
+
+    {
+    OPENFILENAMEW *fn,_fn;
+    short *wfilter,*wtitle,*wdef;
+    int status;
+    static char *funcname="windcomdlg_get_filenamew";
+
+    wfilter=char_to_wide(NULL,filter);
+    wtitle=char_to_wide(NULL,title);
+    wdef=char_to_wide(NULL,defext);
+    fn=&_fn;
+    fn->lStructSize=sizeof(OPENFILENAME);
+    fn->hwndOwner=NULL;
+    fn->hInstance=0;
+    fn->lpstrFilter=(LPWSTR)wfilter;
+    fn->lpstrCustomFilter=NULL;
+    fn->nMaxCustFilter=0;
+    fn->nFilterIndex=1;
+    fn->lpstrFile=(LPWSTR)filename;
+    fn->lpstrFile[0]='\0';
+    fn->nMaxFile=maxlen;
+    fn->lpstrFileTitle=NULL;
+    fn->nMaxFileTitle=0;
+    fn->lpstrInitialDir=NULL;
+    fn->lpstrTitle=(LPWSTR)wtitle;
+    fn->Flags = 0;
+    if (!for_writing && multiselect)
+        fn->Flags |= OFN_ALLOWMULTISELECT | OFN_EXPLORER;
+    if (must_exist)
+        fn->Flags |= OFN_FILEMUSTEXIST;
+    fn->nFileOffset=0;
+    fn->nFileExtension=0;
+    fn->lpstrDefExt=(LPWSTR)wdef;
+    fn->lCustData=0;
+    fn->lpfnHook=NULL;
+    fn->lpTemplateName=NULL;
+    fn->pvReserved=NULL;
+    fn->dwReserved=0;
+    fn->FlagsEx=0;
+    status = (for_writing ? GetSaveFileNameW(fn) : GetOpenFileNameW(fn));
+    willus_mem_free((double **)&wdef,funcname);
+    willus_mem_free((double **)&wtitle,funcname);
+    willus_mem_free((double **)&wfilter,funcname);
+    return(status);
+    }
+#endif /* HAVE_WIN32_API */

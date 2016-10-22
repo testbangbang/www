@@ -37,8 +37,7 @@ public class PageRecyclerView extends RecyclerView {
     private Map<Integer, String> keyBindingMap = new Hashtable<>();
 
     public interface OnPagingListener {
-        void onPrevPage(int prevPosition,int itemCount,int pageSize);
-        void onNextPage(int nextPosition,int itemCount,int pageSize);
+        void onPageChange(int position,int itemCount,int pageSize);
     }
 
     public interface OnChangeFocusListener {
@@ -128,7 +127,7 @@ public class PageRecyclerView extends RecyclerView {
         }
         rows = ((PageAdapter) adapter).getRowCount();
         columns = ((PageAdapter) adapter).getColumnCount();
-        int size = adapter.getItemCount();
+        int size = ((PageAdapter) adapter).getDataCount();
         paginator = new GPaginator(rows, columns,size);
         paginator.gotoPageByIndex(0);
 
@@ -142,12 +141,14 @@ public class PageRecyclerView extends RecyclerView {
         return ((PageAdapter) getAdapter());
     }
 
-    public void resize(int newRows, int newColumns, int newSize){
-        paginator.resize(newRows,newColumns,newSize);
+    public void resize(int newRows, int newColumns, int newSize) {
+        if (paginator != null) {
+            paginator.resize(newRows,newColumns,newSize);
+        }
     }
 
-    public void setCurrentPage(int currentPage){
-        if (paginator != null){
+    public void setCurrentPage(int currentPage) {
+        if (paginator != null) {
             paginator.setCurrentPage(currentPage);
         }
     }
@@ -267,27 +268,30 @@ public class PageRecyclerView extends RecyclerView {
 
     public void prevPage() {
         if (paginator.prevPage()){
-            int position =  paginator.getCurrentPageBegin();
-            if (!paginator.isItemInCurrentPage(currentFocusedPosition)){
-                setCurrentFocusedPosition(position);
-            }
-            managerScrollToPosition(position);
-            if (onPagingListener != null){
-                onPagingListener.onPrevPage(position,getAdapter().getItemCount(), rows * columns);
-            }
+            onPageChange();
         }
     }
 
     public void nextPage() {
         if (paginator.nextPage()){
-            int position =  paginator.getCurrentPageBegin() ;
-            if (!paginator.isItemInCurrentPage(currentFocusedPosition)){
-                setCurrentFocusedPosition(position);
-            }
-            managerScrollToPosition(position);
-            if (onPagingListener != null){
-                onPagingListener.onNextPage(position,getAdapter().getItemCount(), rows * columns);
-            }
+            onPageChange();
+        }
+    }
+
+    public void gotoPage(int page) {
+        if (paginator.gotoPage(page)) {
+            onPageChange();
+        }
+    }
+
+    private void onPageChange() {
+        int position =  paginator.getCurrentPageBegin();
+        if (!paginator.isItemInCurrentPage(currentFocusedPosition)){
+            setCurrentFocusedPosition(position);
+        }
+        managerScrollToPosition(position);
+        if (onPagingListener != null){
+            onPagingListener.onPageChange(position,getAdapter().getItemCount(), rows * columns);
         }
     }
 

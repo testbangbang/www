@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:padding="1dp"
+              android:gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/textview_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
         android:text="@string/menu_item_smart_reflow"
         android:textColor="@android:color/black"
         android:gravity="center"
@@ -25,7 +25,7 @@
     <LinearLayout
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <RelativeLayout
@@ -34,6 +34,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:textSize="@dimen/dialog_common_text_size"
                 android:layout_centerVertical="true"
                 android:gravity="left"
                 android:layout_marginRight="10dp"
@@ -58,6 +59,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:textSize="@dimen/dialog_common_text_size"
                 android:layout_centerVertical="true"
                 android:gravity="left"
                 android:layout_marginRight="10dp"
@@ -82,6 +84,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:textSize="@dimen/dialog_common_text_size"
                 android:gravity="left"
                 android:layout_marginRight="10dp"
                 android:text="@string/dialog_reflow_settings_font_size"
@@ -91,7 +94,7 @@
 
             <com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView
                 android:layout_toRightOf="@+id/font_size_text"
-                android:layout_margin="5dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/font_size_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -106,6 +109,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:textSize="@dimen/dialog_common_text_size"
                 android:gravity="left"
                 android:layout_marginRight="10dp"
                 android:text="@string/dialog_reflow_settings_auto_straighten"
@@ -115,8 +119,33 @@
 
             <com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView
                 android:layout_toRightOf="@+id/upgrade_text"
-                android:layout_margin="5dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/upgrade_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_margin="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textSize="@dimen/dialog_common_text_size"
+                android:gravity="left"
+                android:layout_marginRight="10dp"
+                android:text="@string/dialog_reflow_settings_columns"
+                android:id="@+id/columns_text"
+                android:layout_width="@dimen/dialog_reflow_text_view_width"
+                android:layout_height="wrap_content"/>
+
+            <com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView
+                android:layout_toRightOf="@+id/columns_text"
+                android:layout_marginTop="5dp"
+                android:id="@+id/columns_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             </com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView>
@@ -141,7 +170,7 @@
         <Button
             android:text="@string/reset"
             android:gravity="center"
-            android:textSize="20sp"
+            android:textSize="@dimen/dialog_common_text_size"
             android:id="@+id/reset_button"
             android:background="@drawable/no_line_press_bg"
             android:layout_width="0dp"
@@ -150,22 +179,24 @@
 
         <Button
             android:gravity="center"
-            android:textSize="20sp"
-            android:id="@+id/confirm_button"
+            android:textSize="@dimen/dialog_common_text_size"
+            android:id="@+id/cancel_button"
             android:background="@drawable/left_right_line_press_button_bg"
-            android:text="@string/confirm"
+            android:text="@string/cancel"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"/>
 
         <Button
             android:gravity="center"
-            android:textSize="20sp"
-            android:id="@+id/cancel_button"
+            android:textSize="@dimen/dialog_common_text_size"
+            android:id="@+id/confirm_button"
             android:background="@drawable/no_line_press_bg"
-            android:text="@string/cancel"
+            android:text="@string/ok"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"/>
+
+
     </LinearLayout>
 </LinearLayout>

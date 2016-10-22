@@ -84,6 +84,11 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return false;
     }
 
+    @Override
+    public boolean supportScale() throws ReaderException {
+        return false;
+    }
+
     public boolean supportSubScreenNavigation() {
         return false;
     }

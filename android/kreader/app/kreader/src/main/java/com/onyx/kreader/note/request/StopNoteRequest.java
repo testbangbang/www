@@ -2,6 +2,7 @@ package com.onyx.kreader.note.request;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.kreader.note.NoteManager;
 
 import java.util.List;
@@ -12,12 +13,18 @@ import java.util.List;
 
 public class StopNoteRequest extends ReaderBaseNoteRequest {
 
-    public StopNoteRequest() {
-        setAbortPendingTasks(true);
+    private volatile boolean stop = false;
+
+    public StopNoteRequest(boolean s) {
+        stop = s;
+        setAbortPendingTasks(false);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
         noteManager.enableScreenPost(true);
-        noteManager.stopRawEventProcessor();
+        noteManager.enableRawEventProcessor(false);
+        if (stop) {
+            noteManager.stopRawEventProcessor();
+        }
     }
 }

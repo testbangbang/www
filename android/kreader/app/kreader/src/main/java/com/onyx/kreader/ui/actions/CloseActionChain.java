@@ -11,7 +11,9 @@ public class CloseActionChain {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final ActionChain actionChain = new ActionChain();
-        actionChain.addAction(new FlushNoteAction(null, false, false, true, true));
+        if (readerDataHolder.isNoteDirty()) {
+            actionChain.addAction(new FlushNoteAction(null, false, false, true, true));
+        }
         actionChain.addAction(new CloseAction());
         actionChain.execute(readerDataHolder, callback);
     }

@@ -491,7 +491,7 @@ jboolean k2pdfopt_reflow_bmp(JNIEnv * env, jstring pageName, jobject parent, KOP
     bmp_init(&srcgrey);
 
     k2pdfopt_settings_init_from_koptcontext(&k2settings, kctx);
-    k2pdfopt_settings_sanity_check(&k2settings);
+    k2pdfopt_settings_quick_sanity_check(&k2settings);
 
     masterinfo_init(&masterinfo, &k2settings);
     bmp_free(&masterinfo.bmp);
@@ -502,7 +502,8 @@ jboolean k2pdfopt_reflow_bmp(JNIEnv * env, jstring pageName, jobject parent, KOP
     wrapbmp_init(&masterinfo.wrapbmp, k2settings.dst_color);
 
     bmpregion_init(&region);
-    masterinfo_new_source_page_init(&masterinfo, &k2settings, src, &srcgrey, NULL, &region, k2settings.src_rot, NULL, NULL, 1, NULL);
+    masterinfo_new_source_page_init(&masterinfo, &k2settings, src, &srcgrey, NULL, &region, k2settings.src_rot, NULL, NULL, 1, -1, NULL);
+    k2pdfopt_settings_set_margins_and_devsize(&k2settings,&region,&masterinfo,-1.,0);
     bmpregion_source_page_add(&region, &k2settings, &masterinfo, 1, 0);
     wrapbmp_flush(&masterinfo, &k2settings, 0);
 

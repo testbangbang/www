@@ -1,7 +1,7 @@
 /*
 ** k2menu.c      Interactive user menu for k2pdfopt.c.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2016  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -331,7 +331,7 @@ int k2pdfopt_menu(K2PDFOPT_CONVERSION *k2conv,STRBUF *env,STRBUF *cmdline,STRBUF
                                     k2settings->dst_negative?"y":"n");
             if (status<0)
                 return(status);
-            k2settings->dst_negative=!status;
+            k2settings->dst_negative=!status ? 1 : 0;
             strbuf_sprintf(usermenu,"-neg%s",k2settings->dst_negative?"":"-");
             }
         else if (!stricmp(buf,"co"))
@@ -420,10 +420,10 @@ int k2pdfopt_menu(K2PDFOPT_CONVERSION *k2conv,STRBUF *env,STRBUF *cmdline,STRBUF
                 return(status);
             strbuf_sprintf(usermenu,"-h %g",k2settings->dst_userheight);
             k2settings->dst_userheight_units=UNITS_PIXELS;
-            status=userinput_integer("E-reader display pixels per inch",167,&k2settings->dst_dpi,20,1200);
+            status=userinput_integer("E-reader display pixels per inch",167,&k2settings->dst_userdpi,20,1200);
             if (status<0)
                 return(status);
-            strbuf_sprintf(usermenu,"-dpi %d",k2settings->dst_dpi);
+            strbuf_sprintf(usermenu,"-dpi %d",k2settings->dst_userdpi);
             status=userinput_float("Input/Source file pixels per inch (use -2 if not sure)",k2settings->user_src_dpi,&k2settings->user_src_dpi,1,-10.,1200.,NULL);
             if (status<0)
                 return(status);
@@ -521,11 +521,15 @@ int k2pdfopt_menu(K2PDFOPT_CONVERSION *k2conv,STRBUF *env,STRBUF *cmdline,STRBUF
             }
         else if (!stricmp(buf,"l"))
             {
-            status=userinput_string("Landscape mode",ansyesno,k2settings->dst_landscape?"y":"n");
+            int s1;
+            s1=userinput_string("Landscape mode",ansyesno,k2settings->dst_landscape?"y":"n");
+            if (s1<0)
+                return(s1);
+            status=userinput_any_string("Applied over what page range (def=all)",k2settings->dst_landscape_pages,1023,"");
             if (status<0)
                 return(status);
-            k2settings->dst_landscape=!status;
-            strbuf_sprintf(usermenu,"-ls%s",k2settings->dst_landscape?"":"-");
+            k2settings->dst_landscape=!s1;
+            strbuf_sprintf(usermenu,"-ls%s%s",k2settings->dst_landscape?"":"-",k2settings->dst_landscape_pages);
             }
 #ifdef HAVE_MUPDF_LIB
         else if (!stricmp(buf,"n"))
@@ -543,43 +547,46 @@ int k2pdfopt_menu(K2PDFOPT_CONVERSION *k2conv,STRBUF *env,STRBUF *cmdline,STRBUF
             int i,na;
 
             defmar=-1.0;
-            if (defmar<0. && k2settings->mar_left>=0.)
-                defmar=k2settings->mar_left;
-            if (defmar<0. && k2settings->mar_top>=0.)
-                defmar=k2settings->mar_top;
-            if (defmar<0. && k2settings->mar_right>=0.)
-                defmar=k2settings->mar_right;
-            if (defmar<0. && k2settings->mar_bot>=0.)
-                defmar=k2settings->mar_bot;
+            for (i=0;i<4;i++)
+                if (defmar<0. && k2settings->srccropmargins.box[i]>=0.)
+                    {
+                    defmar=k2settings->srccropmargins.box[i];
+                    break;
+                    }
             if (defmar<0.)
                 defmar=0.25;
             na=userinput_float("Inches of source border to ignore",defmar,v,4,0.,10.,
                           "Enter one value or left,top,right,bottom values comma-separated.");
             if (na<0)
                 return(na);
-            i=0;
-            k2settings->mar_left=v[i];
-            if (i<na-1)
-                i++;
-            k2settings->mar_top=v[i];
-            if (i<na-1)
-                i++;
-            k2settings->mar_right=v[i];
-            if (i<na-1)
-                i++;
-            k2settings->mar_bot=v[i];
-            strbuf_sprintf(usermenu,"-m %g,%g,%g,%g",k2settings->mar_left,k2settings->mar_top,k2settings->mar_right,k2settings->mar_bot);
+            if (na==0)
+                {
+                v[0]=defmar;
+                na=1;
+                }
+            for (i=0;i<4;i++)
+                k2settings->srccropmargins.box[0]=v[i<na?i:na-1];
+            strbuf_sprintf(usermenu,"-m %g,%g,%g,%g",
+                           k2settings->srccropmargins.box[0],
+                           k2settings->srccropmargins.box[1],
+                           k2settings->srccropmargins.box[2],
+                           k2settings->srccropmargins.box[3]);
             }
         else if (!stricmp(buf,"mo"))
             {
-            static char *modename[]={"default","copy","trim","crop","fitwidth","fitpage","2-column","grid",""};
+            static char *modename[]={"default","copy","trim","c*rop","fitwidth","fit*page","2-column","grid",""};
             static char *shortname[]={"def","copy","tm","crop","fw","fp","2col","grid"};
             double v[3];
+            int nm;
 
             status=userinput_string("Operating mode",modename,"default");
+            /* v2.15--correctly count the number of options rather than using a fixed value. */
+            for (nm=0;modename[nm][0]!='\0';nm++);
             if (status<0)
                 return(status);
-            if (status<4)
+            if (status>=nm)
+                continue;
+            if (strcmp(modename[status],"grid"))
                 {
                 strbuf_sprintf(usermenu,"-mode %s",shortname[status]);
                 continue;
@@ -593,23 +600,30 @@ int k2pdfopt_menu(K2PDFOPT_CONVERSION *k2conv,STRBUF *env,STRBUF *cmdline,STRBUF
             {
             double v[4];
             int i,na;
-            na=userinput_float("Output device margin",k2settings->dst_mar,v,4,0.,10.,
+            double dst_mar;
+
+            for (dst_mar=0.,i=0;i<4;i++)
+                if (k2settings->dstmargins.box[i]>=0.)
+                    {
+                    dst_mar=k2settings->dstmargins.box[i];
+                    break;
+                    }
+            na=userinput_float("Output device margin",dst_mar,v,4,0.,10.,
                           "Enter one value or left,top,right,bottom values comma-separated.");
             if (na<0)
                 return(na);
-            i=0;
-            k2settings->dst_marleft=v[i];
-            if (i<na-1)
-                i++;
-            k2settings->dst_martop=v[i];
-            if (i<na-1)
-                i++;
-            k2settings->dst_marright=v[i];
-            if (i<na-1)
-                i++;
-            k2settings->dst_marbot=v[i];
+            if (na==0)
+                {
+                v[0]=dst_mar;
+                na=1;
+                }
+            for (i=0;i<4;i++)
+                k2settings->dstmargins.box[i]=v[i<na?i:na-1];
             strbuf_sprintf(usermenu,"-om %g,%g,%g,%g",
-                             k2settings->dst_marleft,k2settings->dst_martop,k2settings->dst_marright,k2settings->dst_marbot);
+                             k2settings->dstmargins.box[0],
+                             k2settings->dstmargins.box[1],
+                             k2settings->dstmargins.box[2],
+                             k2settings->dstmargins.box[3]);
             }
         else if (!stricmp(buf,"o"))
             {
@@ -832,7 +846,7 @@ int k2pdfopt_menu(K2PDFOPT_CONVERSION *k2conv,STRBUF *env,STRBUF *cmdline,STRBUF
             int i,tty_rows;
 
             k2sys_header(NULL);
-            if (!k2pdfopt_usage())
+            if (!k2pdfopt_usage("*",1))
                 return(-1);
             tty_rows = get_ttyrows();
             for (i=0;i<tty_rows-16;i++)

@@ -9,6 +9,7 @@ import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.utils.DeviceUtils;
 
@@ -34,6 +35,9 @@ public class NoteEventProcessorManager {
     }
 
     public void start() {
+        if (!useRawInput) {
+            return;
+        }
         getRawEventProcessor().start();
     }
 
@@ -51,18 +55,25 @@ public class NoteEventProcessorManager {
         getRawEventProcessor().resume();
     }
 
+    public void enable(boolean e) {
+        getRawEventProcessor().setEnableEventProcessor(e);
+    }
+
     public final NoteManager getNoteManager() {
         return noteManager;
     }
 
-    public void update(final View targetView, final DeviceConfig noteConfig, final Rect visibleDrawRect) {
+    public void update(final View targetView,
+                       final DeviceConfig noteConfig,
+                       final MappingConfig mappingConfig,
+                       final Rect visibleDrawRect,
+                       int orientation) {
         detectTouchType();
         view = targetView;
-        OnyxMatrix viewMatrix = new OnyxMatrix();
-        viewMatrix.postRotate(noteConfig.getViewPostOrientation());
-        viewMatrix.postTranslate(noteConfig.getViewPostTx(), noteConfig.getViewPostTy());
-        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(noteConfig), visibleDrawRect);
-        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig), getScreenToViewMatrix(noteConfig), visibleDrawRect);
+        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(mappingConfig, orientation), visibleDrawRect);
+        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig, orientation),
+                getScreenToViewMatrix(noteConfig, mappingConfig, orientation),
+                visibleDrawRect);
     }
 
     private void detectTouchType() {
@@ -77,21 +88,24 @@ public class NoteEventProcessorManager {
         return singleTouch;
     }
 
-    private OnyxMatrix getViewToEpdMatrix(final DeviceConfig noteConfig) {
+    private OnyxMatrix getViewToEpdMatrix(final MappingConfig mappingConfig, int orientation) {
+        final MappingConfig.MappingEntry entry = mappingConfig.getEntry(orientation);
         OnyxMatrix viewMatrix = new OnyxMatrix();
-        viewMatrix.postRotate(noteConfig.getViewPostOrientation());
-        viewMatrix.postTranslate(noteConfig.getViewPostTx(), noteConfig.getViewPostTy());
+        if (entry != null) {
+            viewMatrix.postRotate(entry.orientation);
+            viewMatrix.postTranslate(entry.tx, entry.ty);
+        }
         return viewMatrix;
     }
 
-    private Matrix getTouchToScreenMatrix(final DeviceConfig noteConfig) {
+    private Matrix getTouchToScreenMatrix(final DeviceConfig noteConfig, int orientation) {
         final Matrix screenMatrix = new Matrix();
         screenMatrix.preScale(noteConfig.getEpdWidth() / getTouchWidth(noteConfig),
                 noteConfig.getEpdHeight() / getTouchHeight(noteConfig));
         return screenMatrix;
     }
 
-    private Matrix getScreenToViewMatrix(final DeviceConfig noteConfig) {
+    private Matrix getScreenToViewMatrix(final DeviceConfig noteConfig, final MappingConfig mappingConfig, int orientation) {
         if (!noteConfig.useRawInput()) {
             return null;
         }
@@ -99,8 +113,9 @@ public class NoteEventProcessorManager {
         int viewPosition[] = {0, 0};
         view.getLocationOnScreen(viewPosition);
         final Matrix viewMatrix = new Matrix();
-        viewMatrix.postRotate(noteConfig.getEpdPostOrientation());
-        viewMatrix.postTranslate(noteConfig.getEpdPostTx() - viewPosition[0], noteConfig.getEpdPostTy() - viewPosition[1]);
+        final MappingConfig.MappingEntry entry = mappingConfig.getEntry(orientation);
+        viewMatrix.postRotate(entry.epd);
+        viewMatrix.postTranslate(entry.etx - viewPosition[0], entry.ety - viewPosition[1]);
         return viewMatrix;
     }
 

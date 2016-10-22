@@ -1,7 +1,6 @@
 package com.onyx.kreader.host.request;
 
 import android.graphics.PointF;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.api.ReaderHitTestArgs;
@@ -43,6 +42,8 @@ public class SelectWordRequest extends BaseReaderRequest {
 
     // check page at first. and then goto the location.
     public void execute(final Reader reader) throws Exception {
+        setLoadBookmark(false);
+        setLoadPageAnnotation(false);
         setTransferBitmap(false);
         createReaderViewInfo();
         if (!reader.getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
@@ -55,22 +56,14 @@ public class SelectWordRequest extends BaseReaderRequest {
         selection = hitTestManager.select(argsStart, argsEnd, hitTestOptions);
         LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
-            boolean wordSelected = isWordSelected(hitTestOptions, selection);
-            getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection), wordSelected);
+            getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);
         }
     }
 
-    private boolean isWordSelected(final ReaderHitTestOptions hitTestOptions, final ReaderSelection selection) {
-        boolean wordSelected = false;
-        if (hitTestOptions.isSelectingWord()) {
-            wordSelected = selection.isSelectedOnWord();
-        }
-        return wordSelected;
-    }
-
     private ReaderSelection translateToScreen(PageInfo pageInfo, ReaderSelection selection) {
-        for (int i = 0; i < selection.getRectangles().size(); i++) {
+        int size = selection.getRectangles().size();
+        for (int i = 0; i < size; i++) {
             PageUtils.translate(pageInfo.getDisplayRect().left,
                     pageInfo.getDisplayRect().top,
                     pageInfo.getActualScale(),

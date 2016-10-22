@@ -11,22 +11,16 @@ public class ChangeShapeRequest extends ReaderBaseNoteRequest {
     private volatile int newShape;
 
     public ChangeShapeRequest(int shape) {
-        setAbortPendingTasks(true);
+        setRender(false);
+        setTransfer(false);
         newShape = shape;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
         noteManager.setCurrentShapeType(newShape);
-        onShapeChanged(noteManager, newShape);
+        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
         updateShapeDataInfo(noteManager);
     }
 
-    private void onShapeChanged(final NoteManager noteManager, int shape) {
-        if (ShapeFactory.isDFBShape(shape)) {
-            noteManager.getNoteEventProcessorManager().resume();
-        } else {
-            noteManager.getNoteEventProcessorManager().pause();
-        }
-    }
 }

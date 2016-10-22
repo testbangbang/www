@@ -29,13 +29,13 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private boolean debugPathBenchmark = false;
-    private boolean pauseRawInputProcessor = true;
-    private boolean resumeRawInputProcessor = false;
+    private volatile boolean pauseRawInputProcessor = true;
+    private volatile boolean resumeRawInputProcessor = false;
     private volatile boolean render = true;
     private volatile boolean transfer = true;
 
     public ReaderBaseNoteRequest() {
-        setAbortPendingTasks(true);
+        setAbortPendingTasks(false);
     }
 
     public boolean isRender() {
@@ -142,7 +142,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
-        setResumeRawInputProcessor(parent.isDFBForCurrentShape());
+        if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
+            parent.resumeRawEventProcessor();
+        }
         final Runnable runnable = postExecuteRunnable(parent);
         if (isRunInBackground()) {
             parent.getRequestManager().getLooperHandler().post(runnable);
@@ -157,16 +159,13 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             public void run() {
                 try {
                     parent.enableScreenPost(true);
-                    if (isRender() && isTransfer()) {
-                        synchronized (parent) {
+                    synchronized (parent) {
+                        if (isRender() && isTransfer()) {
                             parent.copyBitmap();
-                            parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
                         }
+                        parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
-                    if (isResumeRawInputProcessor()) {
-                        parent.resumeRawEventProcessor();
-                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -300,6 +299,11 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public void ensureDocumentOpened(final NoteManager parent) {
+        final String src = getDocUniqueId();
+        final String dst = parent.getNoteDocument().getDocumentUniqueId();
+        if (src != null && dst != null && !src.equalsIgnoreCase(dst)) {
+            parent.getNoteDocument().close(getContext());
+        }
         if (!parent.getNoteDocument().isOpen()) {
             parent.getNoteDocument().open(getContext(),
                     getDocUniqueId(),

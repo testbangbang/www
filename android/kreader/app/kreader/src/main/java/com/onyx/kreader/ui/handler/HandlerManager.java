@@ -8,16 +8,15 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.ui.actions.PanAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
-import com.onyx.kreader.ui.data.ReaderConfig;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.utils.ReaderConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,10 +43,7 @@ public class HandlerManager {
     private boolean enable;
     private boolean enableTouch;
     static private boolean enableScrollAfterLongPress = false;
-    private boolean  penErasing = false;
-    private boolean penStart = false;
     private ReaderConfig readerConfig;
-    private int lastToolType = MotionEvent.TOOL_TYPE_FINGER;
     private ReaderDataHolder readerDataHolder;
 
     public HandlerManager(final ReaderDataHolder holder) {
@@ -188,16 +184,6 @@ public class HandlerManager {
         if (!isEnableTouch()) {
             return false;
         }
-        int toolType = e.getToolType(0);
-        if (lastToolType != toolType) {
-            if ((toolType == MotionEvent.TOOL_TYPE_STYLUS) || (lastToolType == MotionEvent.TOOL_TYPE_ERASER && toolType == MotionEvent.TOOL_TYPE_FINGER)) {
-                //activity.changeToScribbleMode();
-            } else if (toolType == MotionEvent.TOOL_TYPE_ERASER) {
-                //activity.changeToEraseMode();
-            }
-            lastToolType = toolType;
-        }
-
         return getActiveProvider().onTouchEvent(readerDataHolder, e);
     }
 
@@ -220,24 +206,6 @@ public class HandlerManager {
         }
 
         return getActiveProvider().onDown(readerDataHolder, e);
-    }
-
-    public boolean onDoubleTap(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (!isEnable()) {
-            return false;
-        }
-        if (!isEnableTouch()) {
-            return false;
-        }
-
-        return getActiveProvider().onDoubleTap(readerDataHolder, e);
-    }
-
-    public void onShowPress(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (!isEnable()) {
-            return;
-        }
-        getActiveProvider().onShowPress(readerDataHolder, e);
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
@@ -336,28 +304,6 @@ public class HandlerManager {
         return getActiveProvider().onScale(readerDataHolder, detector);
     }
 
-    public void setPenErasing(boolean c) {
-        penErasing = c;
-    }
-
-    public boolean isPenErasing() {
-        return penErasing;
-    }
-
-    public void setPenStart(boolean s) {
-        penStart = s;
-    }
-
-    public boolean isPenStart() {
-        return penStart;
-    }
-
-    public void resetPenState() {
-        penErasing = false;
-        penStart = false;
-        lastToolType = MotionEvent.TOOL_TYPE_FINGER;
-    }
-
     public boolean processKeyDownEvent(final ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
         final String key = KeyEvent.keyCodeToString(keyCode);
         final String action = getKeyAction(TAG, key);
@@ -369,7 +315,7 @@ public class HandlerManager {
     }
 
     public boolean processKeyDown(ReaderDataHolder readerDataHolder, final String action, final String args) {
-        getActiveProvider().beforeProcessKeyDown(readerDataHolder);
+        getActiveProvider().beforeProcessKeyDown(readerDataHolder, action, args);
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }

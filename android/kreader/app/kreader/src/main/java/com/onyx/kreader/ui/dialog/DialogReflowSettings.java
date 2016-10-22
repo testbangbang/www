@@ -55,6 +55,10 @@ public class DialogReflowSettings extends DialogBase {
     Button cancelButton;
     @Bind(R.id.layout_menu)
     LinearLayout layoutMenu;
+    @Bind(R.id.columns_text)
+    TextView columnsText;
+    @Bind(R.id.columns_layout)
+    DynamicMultiRadioGroupView columnsLayout;
 
     static public abstract class ReflowCallback {
         abstract public void onFinished(boolean confirm, final ImageReflowSettings settings);
@@ -65,15 +69,18 @@ public class DialogReflowSettings extends DialogBase {
     private double[] fontSizeValues = {0.7, 0.6, 0.5, 0.4};
     private int[] autoStraightenValues = {0, 5, 10};
     private int[] justificationValues = {0, 3, 2};
+    private int[] columnValues = {1, 2, 3};
     private double[][] formatValues = {{0.05, 1.0, 0.05}, {0.15, 1.2, 0.10}, {0.375, 1.4, 0.15}};
 
     private final String[] fontSizes = {"1", "2", "3", "4"};
     private final String[] upgradeSizes = {"0", "5", "10",};
+    private final String[] columnsSize = {"1", "2", "3"};
 
     private int fontSizeDefaultIndex = 0;
     private int autoStraightenDefaultIndex = 0;
     private int justificationDefaultIndex = 1;
     private int formatDefaultIndex = 0;
+    private int columnDefaultIndex = 1;
 
     public DialogReflowSettings(ReaderDataHolder readerDataHolder, ImageReflowSettings settings, ReflowCallback callback) {
         super(readerDataHolder.getContext());
@@ -92,6 +99,9 @@ public class DialogReflowSettings extends DialogBase {
         ReflowMultiAdapter upgradeAdapter = new ReflowMultiAdapter(getContext(), upgradeSizes, 1, upgradeSizes.length, R.drawable.reflow_big_select, R.drawable.reflow_big_select_no_label, true);
         upgradeLayout.setMultiAdapter(upgradeAdapter);
 
+        ReflowMultiAdapter columnAdapter = new ReflowMultiAdapter(getContext(), columnsSize, 1, columnsSize.length, R.drawable.reflow_big_select, R.drawable.reflow_big_select_no_label, true);
+        columnsLayout.setMultiAdapter(columnAdapter);
+
         int[] formatResIds = {R.drawable.ic_dialog_reader_reset_format_small, R.drawable.ic_dialog_reader_reset_format_mid, R.drawable.ic_dialog_reader_reset_format_big};
         formatRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         ReflowPageAdapter formatAdapter = new ReflowPageAdapter(1, 3, formatResIds);
@@ -104,6 +114,7 @@ public class DialogReflowSettings extends DialogBase {
 
         setupListeners();
         updateFontSize(settings);
+        updateColumns(settings);
         updateAutoStraighten(settings);
         updateJustification(settings);
         updateFormat(settings);
@@ -112,29 +123,40 @@ public class DialogReflowSettings extends DialogBase {
     private void updateFontSize(ImageReflowSettings s) {
         int index = fontSizeDefaultIndex;
         for (int i = 0; i < fontSizeValues.length; i++) {
-            if (fontSizeValues[i] == s.quality){
+            if (fontSizeValues[i] == s.quality) {
                 index = i;
                 break;
             }
         }
-        fontSizeLayout.getMultiAdapter().setItemChecked(true, index);
+        fontSizeLayout.getMultiAdapter().setItemRangeChecked(true, 0, index + 1);
     }
 
     private void updateAutoStraighten(ImageReflowSettings s) {
         int index = autoStraightenDefaultIndex;
         for (int i = 0; i < autoStraightenValues.length; i++) {
-            if (autoStraightenValues[i] == s.straighten){
+            if (autoStraightenValues[i] == s.straighten) {
                 index = i;
                 break;
             }
         }
-        upgradeLayout.getMultiAdapter().setItemChecked(true, index);
+        upgradeLayout.getMultiAdapter().setItemRangeChecked(true, 0, index + 1);
     }
 
-    private void updateJustification(ImageReflowSettings s){
+    private void updateColumns(ImageReflowSettings s) {
+        int index = columnDefaultIndex;
+        for (int i = 0; i < columnValues.length; i++) {
+            if (columnValues[i] == s.columns) {
+                index = i;
+                break;
+            }
+        }
+        columnsLayout.getMultiAdapter().setItemRangeChecked(true, 0, index + 1);
+    }
+
+    private void updateJustification(ImageReflowSettings s) {
         int index = justificationDefaultIndex;
         for (int i = 0; i < justificationValues.length; i++) {
-            if (justificationValues[i] == s.justification){
+            if (justificationValues[i] == s.justification) {
                 index = i;
                 break;
             }
@@ -142,12 +164,12 @@ public class DialogReflowSettings extends DialogBase {
         alignRecycler.setCurrentFocusedPosition(index);
     }
 
-    private void updateFormat(ImageReflowSettings s){
+    private void updateFormat(ImageReflowSettings s) {
         int index = formatDefaultIndex;
         for (int i = 0; i < formatValues.length; i++) {
             if (formatValues[i][0] == s.word_spacing
                     && formatValues[i][1] == s.line_spacing
-                    && formatValues[i][2] == s.margin){
+                    && formatValues[i][2] == s.margin) {
                 index = i;
                 break;
             }
@@ -156,50 +178,58 @@ public class DialogReflowSettings extends DialogBase {
     }
 
     private void syncAutoStraighten(ImageReflowSettings s, int checkIndex) {
-        if (checkIndex < autoStraightenValues.length){
+        if (checkIndex < autoStraightenValues.length) {
             s.straighten = autoStraightenValues[checkIndex];
         }
     }
 
     private void syncFontSize(ImageReflowSettings s, int checkIndex) {
-        if (checkIndex < fontSizeValues.length){
+        if (checkIndex < fontSizeValues.length) {
             s.quality = fontSizeValues[checkIndex];
         }
     }
 
-    private void syncJustification(ImageReflowSettings s, int focusPosition){
-        if (focusPosition < justificationValues.length){
+    private void syncColumns(ImageReflowSettings s, int checkIndex) {
+        if (checkIndex < columnValues.length) {
+            s.columns = columnValues[checkIndex];
+        }
+    }
+
+    private void syncJustification(ImageReflowSettings s, int focusPosition) {
+        if (focusPosition < justificationValues.length) {
             s.justification = justificationValues[focusPosition];
         }
     }
 
-    private void syncFormat(ImageReflowSettings s, int focusPosition){
-        if (focusPosition < formatValues.length){
+    private void syncFormat(ImageReflowSettings s, int focusPosition) {
+        if (focusPosition < formatValues.length) {
             s.word_spacing = formatValues[focusPosition][0];
             s.line_spacing = formatValues[focusPosition][1];
             s.margin = formatValues[focusPosition][2];
         }
     }
 
-    private void syncSettings(ImageReflowSettings settings){
+    private void syncSettings(ImageReflowSettings settings) {
         syncAutoStraighten(settings, getCheckedButtonIndex(upgradeLayout.getCompoundButtonList()));
         syncFontSize(settings, getCheckedButtonIndex(fontSizeLayout.getCompoundButtonList()));
         syncJustification(settings, alignRecycler.getCurrentFocusedPosition());
         syncFormat(settings, formatRecycler.getCurrentFocusedPosition());
+        syncColumns(settings, getCheckedButtonIndex(columnsLayout.getCompoundButtonList()));
     }
 
-    private void resetSettings(ImageReflowSettings settings){
-        upgradeLayout.getMultiAdapter().setItemChecked(false,autoStraightenDefaultIndex + 1);
-        fontSizeLayout.getMultiAdapter().setItemChecked(false,fontSizeDefaultIndex + 1);
+    private void resetSettings(ImageReflowSettings settings) {
+        upgradeLayout.getMultiAdapter().setItemChecked(false, autoStraightenDefaultIndex + 1);
+        fontSizeLayout.getMultiAdapter().setItemChecked(false, fontSizeDefaultIndex + 1);
+        columnsLayout.getMultiAdapter().setItemChecked(false, columnDefaultIndex + 1);
         alignRecycler.setCurrentFocusedPosition(justificationDefaultIndex);
         formatRecycler.setCurrentFocusedPosition(formatDefaultIndex);
     }
 
-    private int getCheckedButtonIndex(List<CompoundButton> compoundButtons){
+    private int getCheckedButtonIndex(List<CompoundButton> compoundButtons) {
         int index = -1;
         for (CompoundButton button : compoundButtons) {
-            if (button.isChecked()){
-                index ++;
+            if (button.isChecked()) {
+                index++;
             }
         }
         return Math.max(index, 0);
@@ -223,7 +253,7 @@ public class DialogReflowSettings extends DialogBase {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (callback != null){
+                if (callback != null) {
                     syncSettings(settings);
                     callback.onFinished(true, settings);
                 }
@@ -233,12 +263,8 @@ public class DialogReflowSettings extends DialogBase {
         fontSizeLayout.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
-                if (isChecked) {
-                    fontSizeLayout.getMultiAdapter().setItemChecked(true, position - 1);
-                } else {
-                    if (position == 0){
-                        fontSizeLayout.getMultiAdapter().setItemChecked(true, position);
-                    }
+                if (buttonView.isPressed()) {
+                    fontSizeLayout.getMultiAdapter().setItemRangeChecked(true, 0, position + 1);
                     fontSizeLayout.getMultiAdapter().setItemRangeChecked(false, position + 1, fontSizes.length - position - 1);
                 }
             }
@@ -247,13 +273,19 @@ public class DialogReflowSettings extends DialogBase {
         upgradeLayout.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
-                if (isChecked) {
-                    upgradeLayout.getMultiAdapter().setItemChecked(true, position - 1);
-                } else {
-                    if (position == 0){
-                        upgradeLayout.getMultiAdapter().setItemChecked(true, 0);
-                    }
+                if (buttonView.isPressed()) {
+                    upgradeLayout.getMultiAdapter().setItemRangeChecked(true, 0, position + 1);
                     upgradeLayout.getMultiAdapter().setItemRangeChecked(false, position + 1, upgradeSizes.length - position - 1);
+                }
+            }
+        });
+
+        columnsLayout.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
+                if (buttonView.isPressed()) {
+                    columnsLayout.getMultiAdapter().setItemRangeChecked(true, 0, position + 1);
+                    columnsLayout.getMultiAdapter().setItemRangeChecked(false, position + 1, columnsSize.length - position - 1);
                 }
             }
         });
@@ -295,7 +327,7 @@ public class DialogReflowSettings extends DialogBase {
 
         @Override
         public void bindView(CompoundButton button, int position) {
-            if (position == textList.size() - 1){
+            if (position == textList.size() - 1) {
                 button.setBackgroundResource(endBackgroundResId);
             }
             button.setPadding(0, (int) context.getResources().getDimension(R.dimen.reflow_checkbox_text_padding_top), 0, 0);

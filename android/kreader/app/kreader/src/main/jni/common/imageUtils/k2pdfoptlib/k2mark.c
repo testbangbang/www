@@ -1,7 +1,7 @@
 /*
 ** k2mark.c    Functions to mark the regions on the source page.
 **
-** Copyright (C) 2013  http://willus.com
+** Copyright (C) 2014  http://willus.com
 **
 ** This program is free software: you can redistribute it and/or modify
 ** it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ void publish_marked_page(PDFFILE *mpdf,WILLUSBITMAP *src,int src_dpi)
 
 #if (WILLUSDEBUGX & 9)
 static int count=1;
-char filename[256];
+char filename[MAXFILENAMELEN];
 sprintf(filename,"outsrc%02d.png",count++);
 bmp_write(src,filename,stdout,100);
 #endif
@@ -60,7 +60,8 @@ bmp_write(src,filename,stdout,100);
 ** mark_flags & 8 :  Mark right
 **
 */
-void mark_source_page(K2PDFOPT_SETTINGS *k2settings,BMPREGION *region0,int caller_id,int mark_flags)
+void mark_source_page(K2PDFOPT_SETTINGS *k2settings,MASTERINFO *masterinfo,
+                      BMPREGION *region0,int caller_id,int mark_flags)
 
     {
     static int display_order=0;
@@ -70,7 +71,6 @@ void mark_source_page(K2PDFOPT_SETTINGS *k2settings,BMPREGION *region0,int calle
     char num[16];
 #endif
     BMPREGION *region,_region;
-    BMPREGION *clip,_clip;
 
     if (!k2settings->show_marked_source)
         return;
@@ -86,13 +86,19 @@ void mark_source_page(K2PDFOPT_SETTINGS *k2settings,BMPREGION *region0,int calle
         }
 
     region=&_region;
-    (*region)=(*region0);
+    /* v2.15--use new conventions for bmpregion--init and free */
+    bmpregion_init(region);
+    bmpregion_copy(region,region0,0);
 
     /* Clip the region w/ignored margins */
+    {
+    BMPREGION *clip,_clip;
     clip=&_clip;
+    bmpregion_init(clip);
     clip->bmp=region0->bmp;
+    clip->bmp8=region0->bmp8;
     clip->dpi=region0->dpi;
-    bmpregion_trim_to_crop_margins(clip,k2settings);
+    bmpregion_trim_to_crop_margins(clip,masterinfo,k2settings);
     if (region->c1 < clip->c1)
         region->c1 = clip->c1;
     if (region->c2 > clip->c2)
@@ -101,14 +107,20 @@ void mark_source_page(K2PDFOPT_SETTINGS *k2settings,BMPREGION *region0,int calle
         region->r1 = clip->r1;
     if (region->r2 > clip->r2)
         region->r2 = clip->r2;
+    bmpregion_free(clip);
+    }
     if (region->r2 <= region->r1 || region->c2 <= region->c1)
+        {
+        bmpregion_free(region);
         return;
+        }
 
     /* k2printf("@mark_source_page(display_order=%d)\n",display_order); */
 #ifndef K2PDFOPT_KINDLEPDFVIEWER
     shownum=0;
     nval=0;
 #endif
+/* aprintf(ANSI_YELLOW "MARK CALLER ID = %d" ANSI_NORMAL "\n",caller_id); */
     if (caller_id==1)
         {
         display_order++;
@@ -134,18 +146,28 @@ void mark_source_page(K2PDFOPT_SETTINGS *k2settings,BMPREGION *region0,int calle
         n=(int)(region->dpi/80.+0.5);
         if (n<4)
             n=4;
-        r=0;
-        g=255;
-        b=0;
+        if (caller_id==3)
+            {
+            r=0;
+            g=255;
+            b=0;
+            }
         }
-    else if (caller_id==4)
+    else if (caller_id==4) /* Notes */
         {
-        n=2;
+        n=4;
         r=255;
         g=0;
         b=255;
         }
-    else if (caller_id>=100 && caller_id<=199)
+    else if (caller_id==5) /* rows of text */
+        {
+        n=2;
+        r=140;
+        g=140;
+        b=140;
+        }
+    else if (caller_id>=100 && caller_id<=199) /* Double rows */
         {
 #ifndef K2PDFOPT_KINDLEPDFVIEWER
         shownum=1;
@@ -156,12 +178,12 @@ void mark_source_page(K2PDFOPT_SETTINGS *k2settings,BMPREGION *region0,int calle
         g=90;
         b=40;
         }
-    else
+    else /* Not sure this is used anymore -- v2.20 */
         {
         n=2;
-        r=140;
-        g=140;
-        b=140;
+        r=110;
+        g=110;
+        b=110;
         }
     if (n<2)
         n=2;
@@ -233,7 +255,10 @@ void mark_source_page(K2PDFOPT_SETTINGS *k2settings,BMPREGION *region0,int calle
 */
 #ifndef K2PDFOPT_KINDLEPDFVIEWER
     if (!shownum)
+        {
+        bmpregion_free(region);
         return;
+        }
     fontsize=region->c2-region->c1+1;
     if (fontsize > region->r2-region->r1+1)
         fontsize=region->r2-region->r1+1;
@@ -241,7 +266,10 @@ void mark_source_page(K2PDFOPT_SETTINGS *k2settings,BMPREGION *region0,int calle
     if (fontsize > region->dpi)
         fontsize = region->dpi;
     if (fontsize < 5)
+        {
+        bmpregion_free(region);
         return;
+        }
     fontrender_set_typeface("helvetica-bold");
     fontrender_set_fgcolor(r,g,b);
     fontrender_set_bgcolor(255,255,255);
@@ -252,5 +280,6 @@ void mark_source_page(K2PDFOPT_SETTINGS *k2settings,BMPREGION *region0,int calle
     fontrender_render(region->marked,(double)(region->c1+region->c2)/2.,
                       (double)(region->marked->height-((region->r1+region->r2)/2.)),num,0,NULL);    
 #endif
+    bmpregion_free(region);
     /* k2printf("    done mark_source_page.\n"); */
     }

@@ -19,8 +19,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
+import com.onyx.kreader.ui.actions.DictionaryQueryAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.ui.view.HTMLReaderWebView;
@@ -182,21 +186,19 @@ public class PopupSelectionMenu extends LinearLayout {
         return true;
     }
 
-    public void show(ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.getReaderUserDataInfo().getHighlightResult() == null){
+    public void show(final ReaderDataHolder readerDataHolder, boolean isWord) {
+        if (readerDataHolder.getReaderUserDataInfo().getHighlightResult() == null) {
             return;
         }
-        if (isSelectedOnWord(readerDataHolder)){
+
+        if (isWord) {
+            updateTranslation(readerDataHolder, mMenuCallback.getSelectionText());
             showTranslation();
-            PopupSelectionMenu.this.updateTranslation(mMenuCallback.getSelectionText());
-        }else {
+        } else {
             hideTranslation();
         }
-        requestLayoutView(readerDataHolder);
-    }
 
-    private boolean isSelectedOnWord(ReaderDataHolder readerDataHolder){
-        return readerDataHolder.getReaderUserDataInfo().isWordSelected();
+        requestLayoutView(readerDataHolder);
     }
 
     public void hide() {
@@ -260,32 +262,14 @@ public class PopupSelectionMenu extends LinearLayout {
         this.findViewById(R.id.layout_dict).setVisibility(View.VISIBLE);
     }
 
-    private String getExplanation(String token) {
-        Cursor cursor = mActivity.getContentResolver().query(
-                Uri.parse("content://com.onyx.android.dict.OnyxDictProvider"), null, "token=\'" + token + "\'", null,
-                null);
-        String expString = "";
-        try {
-            if (cursor == null || cursor.getCount() == 0)
-                return null;
-            int count = cursor.getCount();
-            int index = 0;
-            while (cursor.moveToNext()) {
-                expString += cursor.getString(3);
-                if (index >= 0 && index < count - 1)
-                    expString += "<br><br><br><br>";
-                index++;
-            }
-            return expString;
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
-    private void updateTranslation(String token) {
+    private void updateTranslation(final ReaderDataHolder readerDataHolder, String token) {
         mDictTitle.setText(token);
-        mWebView.loadDataWithBaseURL(null, getExplanation(token), "text/html", "utf-8", null);
+        final DictionaryQueryAction dictionaryQueryAction = new DictionaryQueryAction(token, "content://com.onyx.android.dict.OnyxDictProvider");
+        dictionaryQueryAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                mWebView.loadDataWithBaseURL(null, dictionaryQueryAction.getExpString(), "text/html", "utf-8", null);
+            }
+        });
     }
 }

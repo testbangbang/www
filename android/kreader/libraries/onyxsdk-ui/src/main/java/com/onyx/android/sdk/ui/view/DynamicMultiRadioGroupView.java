@@ -1,13 +1,14 @@
 package com.onyx.android.sdk.ui.view;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,9 +197,9 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             this.parent = parent;
             CompoundButton button;
             if (isMultiCheck()){
-                button = new CheckBox(parent.getContext());
+                button = new OnyxCheckBox(parent.getContext());
             }else {
-                button = new RadioButton(parent.getContext());
+                button = new OnyxRadioButton(parent.getContext());
             }
             setDefaultStyle(button,position);
             if (position < getItemCount()){
@@ -226,7 +227,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
 
             button.setGravity(Gravity.CENTER);
             if (textSize > 0){
-                button.setTextSize(textSize);
+                button.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             }
             //4.0 the default padding has value So to judge
             button.setPadding(paddingLeft >= 0 ? paddingLeft : button.getPaddingLeft(),

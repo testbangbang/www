@@ -15,11 +15,14 @@ public:
     ~OnyxPdfWriter();
 
     bool openPDF(const std::string &path);
-    bool saveAs(const std::string &path);
+    bool saveAs(const std::string &path, bool savePagesWithAnnotation);
     void close();
 
-    bool writeScribbles(std::vector<PageScribble> &scribbles);
-    bool writeAnnotations(std::vector<PageAnnotation> &annotations);
+    bool isOpened() const;
+    bool writeScribble(const PageScribble &scribble);
+    bool writeScribbles(const std::vector<PageScribble> &scribbles);
+    bool writeAnnotation(const PageAnnotation &annotation);
+    bool writeAnnotations(const std::vector<PageAnnotation> &annotations);
 
 private:
     class Impl;

@@ -27,7 +27,13 @@ public class NoteEventProcessorBase {
 
         public abstract void onErasingTouchUp(final MotionEvent motionEvent, final TouchPointList list);
 
-        public abstract void onDFBShapeFinished(final Shape shape);
+        public abstract void onRawErasingStart();
+
+        public abstract void onRawErasingFinished(final TouchPointList list);
+
+        public abstract void onDFBShapeStart(boolean triggerByButton);
+
+        public abstract void onDFBShapeFinished(final Shape shape, boolean triggerByButton);
 
     }
 

@@ -5,7 +5,9 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.ui.R;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by joy on 8/25/16.
@@ -27,11 +29,9 @@ public class ReaderLayerMenuRepository {
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_ARTICLE_MODE, null, R.string.reader_layer_menu_navigation_article_mode, "", R.drawable.ic_dialog_reader_menu_browse_thesis),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_RESET, null, R.string.reader_layer_menu_navigation_reset, "", R.drawable.ic_dialog_reader_menu_browse_reset),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_MORE_SETTINGS, null, R.string.reader_layer_menu_navigation_more_settings, "", R.drawable.ic_dialog_reader_menu_browse_more),
-        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.DIRECTORY, null, R.string.reader_layer_menu_notes, "", R.drawable.ic_dialog_reader_menu_note),
-        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.DIRECTORY_SCRIBBLE, null, R.string.reader_layer_menu_directory_scribble, "", R.drawable.ic_dialog_reader_menu_browse_write),
-        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.DIRECTORY_EXPORT, null, R.string.reader_layer_menu_directory_export, "", R.drawable.ic_dialog_reader_menu_browse_export),
-        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SHOW_ANNOTATION, null, R.string.reader_layer_menu_show_annotation, "", R.drawable.ic_dialog_reader_menu_note_show),
-        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SHOW_SCRIBBLE, null, R.string.reader_layer_menu_show_scribble, "", R.drawable.ic_dialog_reader_menu_note_show),
+        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.NOTE, null, R.string.reader_layer_menu_notes, "", R.drawable.ic_dialog_reader_menu_note),
+        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.DIRECTORY_SCRIBBLE, null, R.string.reader_layer_menu_directory_scribble, "", R.drawable.ic_dialog_reader_menu_browse_write), new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SHOW_NOTE, null, R.string.reader_layer_menu_show_scribble, "", R.drawable.ic_dialog_reader_menu_note_show),
+        new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NOTE_EXPORT, null, R.string.reader_layer_menu_directory_export, "", R.drawable.ic_dialog_reader_menu_browse_export),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.ROTATION, null, R.string.reader_layer_menu_rotation, "", R.drawable.ic_dialog_reader_menu_revolve),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ROTATION_ROTATE_90, null, 0, "", R.drawable.ic_dialog_reader_menu_revolve_left),
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ROTATION_ROTATE_0, null, 0, "", R.drawable.ic_dialog_reader_menu_revolve_up),
@@ -48,6 +48,34 @@ public class ReaderLayerMenuRepository {
         ArrayList<ReaderLayerMenuItem> menuGroupList = new ArrayList<>();
         ReaderLayerMenuItem currentGroup = null;
         for (ReaderLayerMenuItem item : flattenArray) {
+            if (item.getItemType() == ReaderMenuItem.ItemType.Group) {
+                ReaderLayerMenuItem group = new ReaderLayerMenuItem(item);
+                menuGroupList.add(group);
+                currentGroup = group;
+            } else {
+                ((List<ReaderLayerMenuItem>)currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
+                        item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId()));
+            }
+        }
+        return menuGroupList;
+    }
+
+    public static List<ReaderLayerMenuItem> createFromArray(ReaderLayerMenuItem[] flattenArray, List<ReaderMenuAction> excludingList) {
+        Set<ReaderMenuAction> excludingSet = new HashSet<>(excludingList);
+
+        ArrayList<ReaderLayerMenuItem> menuGroupList = new ArrayList<>();
+        ReaderLayerMenuItem currentGroup = null;
+        for (int i = 0; i < flattenArray.length; i++) {
+            ReaderLayerMenuItem item = flattenArray[i];
+            if (excludingSet.contains(item.getAction())) {
+                if (item.getItemType() != ReaderMenuItem.ItemType.Group) {
+                    continue;
+                }
+                do {
+                    i++;
+                    item = flattenArray[i];
+                } while (item.getItemType() != ReaderMenuItem.ItemType.Group);
+            }
             if (item.getItemType() == ReaderMenuItem.ItemType.Group) {
                 ReaderLayerMenuItem group = new ReaderLayerMenuItem(item);
                 menuGroupList.add(group);

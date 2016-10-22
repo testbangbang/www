@@ -19,12 +19,12 @@
         </activity>
         <activity
             android:name=".ui.chooseexercise.ChooseExerciseActivity">
-        </activity>
-        <activity android:name=".ui.chapter.ChapterTypeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".ui.chapter.ChapterTypeActivity">
         </activity>
         <activity
             android:name=".ui.wrongquestions.WrongQuestionActivity">

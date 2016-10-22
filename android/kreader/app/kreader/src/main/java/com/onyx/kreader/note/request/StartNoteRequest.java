@@ -15,7 +15,7 @@ import java.util.List;
 public class StartNoteRequest extends ReaderBaseNoteRequest {
 
     public StartNoteRequest(final List<PageInfo> list) {
-        setAbortPendingTasks(true);
+        setAbortPendingTasks(false);
         setVisiblePages(list);
     }
 
@@ -24,6 +24,8 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
         setVisiblePages(getVisiblePages());
         noteManager.setCurrentShapeType(NoteDrawingArgs.defaultShape());
         noteManager.startRawEventProcessor();
+        noteManager.enableRawEventProcessor(true);
+        noteManager.setNoteDirty(true);
     }
 
 }

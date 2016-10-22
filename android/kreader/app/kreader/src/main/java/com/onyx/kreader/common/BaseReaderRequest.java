@@ -22,6 +22,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     private volatile boolean transferBitmap = true;
+    private boolean loadPageAnnotation = true;
+    private boolean loadBookmark = true;
 
     public BaseReaderRequest() {
     }
@@ -117,7 +119,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
                     reader.transferRenderBitmapToViewport(getRenderBitmap());
                 }
                 BaseCallback.invoke(getCallback(), BaseReaderRequest.this, getException());
-                reader.releaseWakeLock();
+                reader.releaseWakeLock(BaseReaderRequest.this.getClass().getSimpleName());
         }};
 
         if (isRunInBackground()) {
@@ -178,11 +180,19 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private void loadUserData(final Reader reader) {
         getReaderUserDataInfo().setDocumentPath(reader.getDocumentPath());
         getReaderUserDataInfo().setDocumentMetadata(reader.getDocumentMetadata());
-        if (readerViewInfo != null) {
+        if (readerViewInfo != null && loadPageAnnotation) {
             getReaderUserDataInfo().loadPageAnnotations(getContext(), reader, readerViewInfo.getVisiblePages());
         }
-        if (readerViewInfo != null) {
+        if (readerViewInfo != null && loadBookmark) {
             getReaderUserDataInfo().loadBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
         }
+    }
+
+    public void setLoadPageAnnotation(boolean loadPageAnnotation) {
+        this.loadPageAnnotation = loadPageAnnotation;
+    }
+
+    public void setLoadBookmark(boolean loadBookmark) {
+        this.loadBookmark = loadBookmark;
     }
 }

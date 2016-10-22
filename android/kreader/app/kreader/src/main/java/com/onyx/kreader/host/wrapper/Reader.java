@@ -2,9 +2,12 @@ package com.onyx.kreader.host.wrapper;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
+
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.api.ReaderNavigator;
@@ -23,6 +26,8 @@ import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.reflow.ImageReflowManager;
 import com.onyx.kreader.reflow.ImageReflowSettings;
 
+import java.io.File;
+
 
 /**
  * Created by zhuzeng on 10/2/15.
@@ -30,7 +35,6 @@ import com.onyx.kreader.reflow.ImageReflowSettings;
  */
 public class Reader {
 
-    private static final String TAG = Reader.class.getSimpleName();
     private RequestManager requestManager;
     private ReaderHelper readerHelper = null;
 
@@ -47,7 +51,7 @@ public class Reader {
         requestManager.acquireWakeLock(context, tag);
     }
 
-    public void releaseWakeLock() {
+    public void releaseWakeLock(final String tag) {
         requestManager.releaseWakeLock();
     }
 
@@ -167,5 +171,12 @@ public class Reader {
 
     public void saveOptions() {
         getReaderHelper().saveOptions();
+    }
+
+    public String getExportDocPath() {
+        String parent = FileUtils.getParent(getDocumentPath());
+        String baseName = FileUtils.getBaseName(getDocumentPath());
+        String ext = FileUtils.getFileExtension(getDocumentPath());
+        return new File(parent, baseName + "-Exported." + ext).getAbsolutePath();
     }
 }

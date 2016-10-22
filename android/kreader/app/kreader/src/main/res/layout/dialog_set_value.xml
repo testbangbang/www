@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="@dimen/common_dialog_width"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -18,6 +18,7 @@
             android:src="@drawable/ic_menu_more" />
 
         <TextView
+            android:textSize="@dimen/dialog_common_text_size"
             android:id="@+id/textView_dialog_Tittle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,10 +45,12 @@
         android:layout_margin="5dp">
 
         <TextView
+            android:textStyle="bold"
+            android:textSize="@dimen/dialog_common_text_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Current Value:"
+            android:text="@string/current_value"
             android:id="@+id/textView_tittle"
             android:layout_alignParentTop="true"
             android:layout_alignBaseline="@+id/editText_ValueInput"
@@ -72,18 +75,17 @@
             android:layout_below="@id/editText_ValueInput" >
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dialog_set_value_image_size"
+                android:layout_height="@dimen/dialog_set_value_image_size"
                 android:id="@+id/imageView_MinusButton"
                 android:src="@drawable/ic_dialog_set_value_decrease"
                 android:focusable="true"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/image_button_bg"
-                />
+                android:background="@drawable/image_button_bg"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dialog_set_value_image_size"
+                android:layout_height="@dimen/dialog_set_value_image_size"
                 android:id="@+id/imageView_AddButton"
                 android:src="@drawable/ic_dialog_set_value_increase"
                 android:focusable="true"
@@ -132,6 +134,8 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:textSize="@dimen/dialog_common_text_size"
+            android:background="@drawable/all_line_press_bg"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:text="@string/cancel"
@@ -139,10 +143,12 @@
             android:id="@+id/button_Cancel" />
 
         <Button
+            android:textSize="@dimen/dialog_common_text_size"
+            android:background="@drawable/no_left_line_press_bg"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="@string/confirm"
+            android:text="@string/ok"
             android:id="@+id/button_Confirm" />
     </LinearLayout>
 

@@ -1,6 +1,7 @@
 package com.onyx.kreader.note.bridge;
 
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -60,63 +61,57 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
         final TouchPoint touchPoint = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(touchPoint);
-        if (hitTest(touchPoint.x, touchPoint.y) == null) {
+        if (!checkTouchPoint(touchPoint, screen)) {
             return;
         }
-        touchPoint.normalize(getLastPageInfo());
-        final Shape shape = getNoteManager().createNewShape(getLastPageInfo());
-        getNoteManager().onDownMessage(shape);
-        shape.onDown(touchPoint, screen);
+        final Shape shape = getNoteManager().collectPoint(getLastPageInfo(), touchPoint, screen, true, false);
         if (getCallback() != null) {
             getCallback().onDrawingTouchDown(motionEvent, shape);
         }
     }
 
     private void onDrawingTouchMove(final MotionEvent motionEvent) {
-        final Shape shape = getNoteManager().getCurrentShape();
-        if (shape == null) {
-            return;
-        }
         int n = motionEvent.getHistorySize();
         for(int i = 0; i < n; ++i) {
             final TouchPoint touchPoint = fromHistorical(motionEvent, i);
             final TouchPoint screen = touchPointFromNormalized(touchPoint);
-            if (!inLastPage(touchPoint.x, touchPoint.y)) {
+            if (!checkTouchPoint(touchPoint, screen)) {
                 continue;
             }
-            touchPoint.normalize(getLastPageInfo());
-            shape.onMove(touchPoint, screen);
+            final Shape shape = getNoteManager().collectPoint(getLastPageInfo(), touchPoint, screen, true, false);
             if (getCallback() != null) {
                 getCallback().onDrawingTouchMove(motionEvent, shape, false);
             }
         }
         final TouchPoint touchPoint = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(touchPoint);
-        if (!inLastPage(touchPoint.x, touchPoint.y)) {
+        if (!checkTouchPoint(touchPoint, screen)) {
             return;
         }
-        touchPoint.normalize(getLastPageInfo());
-        shape.onMove(touchPoint, screen);
+        final Shape shape = getNoteManager().collectPoint(getLastPageInfo(), touchPoint, screen, true, false);
         if (getCallback() != null) {
             getCallback().onDrawingTouchMove(motionEvent, shape, true);
         }
     }
 
     private void onDrawingTouchUp(final MotionEvent motionEvent) {
-        final Shape shape = getNoteManager().getCurrentShape();
-        if (shape == null) {
-            return;
-        }
         final TouchPoint touchPoint = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(touchPoint);
-        if (!inLastPage(touchPoint.x, touchPoint.y)) {
+        if (!checkTouchPoint(touchPoint, screen)) {
             return;
         }
-        touchPoint.normalize(getLastPageInfo());
-        shape.onUp(touchPoint, screen);
+        final Shape shape = getNoteManager().collectPoint(getLastPageInfo(), touchPoint, screen, true, true);
         if (getCallback() != null) {
             getCallback().onDrawingTouchUp(motionEvent, shape);
         }
+    }
+
+    private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
+        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y)) {
+            finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
+            return false;
+        }
+        return true;
     }
 
     private void onErasingTouchDown(final MotionEvent motionEvent) {
@@ -170,6 +165,15 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
 
     public final TouchPoint getEraserPoint() {
         return eraserPoint;
+    }
+
+    private void finishCurrentShape(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean create) {
+        final Shape shape = getNoteManager().getCurrentShape();
+        if (getCallback() != null && shape != null) {
+            getCallback().onDrawingTouchUp(null, shape);
+        }
+        getNoteManager().resetCurrentShape();
+        resetLastPageInfo();
     }
 
 }

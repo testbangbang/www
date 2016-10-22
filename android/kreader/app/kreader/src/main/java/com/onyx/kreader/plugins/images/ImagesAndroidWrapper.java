@@ -27,12 +27,23 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
             Rect bitmapRegion = new Rect((int) (visibleRect.left / scale), (int) (visibleRect.top / scale),
                     (int) (visibleRect.right / scale), (int) (visibleRect.bottom / scale));
 
-            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(stream, true);
+            Bitmap src;
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inDither = false;
             options.inPreferQualityOverSpeed = true;
+            options.inMutable = true; // set mutable to be true, so we can always get a copy of the bitmap with Bitmap.createBitmap()
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap src = decoder.decodeRegion(bitmapRegion, new BitmapFactory.Options());
+            // not using BitmapRegionDecoder because it only supports JPEG and PNG
+            Bitmap bmp = BitmapFactory.decodeStream(stream, null, options);
+            if (bmp == null) {
+                return false;
+            }
+            try {
+                src = Bitmap.createBitmap(bmp, bitmapRegion.left, bitmapRegion.top,
+                        bitmapRegion.width(), bitmapRegion.height());
+            } finally {
+                bmp.recycle();
+            }
             if (src == null) {
                 return false;
             }
@@ -44,8 +55,8 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
                 src.recycle();
             }
             return true;
-        } catch (IOException ex) {
-            Log.w(TAG, ex);
+        } catch (Throwable tr) {
+            Log.w(TAG, tr);
         }
 
         return false;

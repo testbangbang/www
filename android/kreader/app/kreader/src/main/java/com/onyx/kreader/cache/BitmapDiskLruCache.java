@@ -35,6 +35,18 @@ public class BitmapDiskLruCache {
         }
     }
 
+    public boolean contains(String key) {
+        try {
+            if (isClosed()) {
+                return false;
+            }
+            return diskCache.get(key) != null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public Bitmap get(String key) {
         return get(key, null);
     }
@@ -55,7 +67,7 @@ public class BitmapDiskLruCache {
     }
 
     public void clear() {
-        if (diskCache != null && !diskCache.isClosed()) {
+        if (!isClosed()) {
             try {
                 diskCache.delete();
                 diskCache = null;
@@ -66,7 +78,7 @@ public class BitmapDiskLruCache {
     }
 
     public Bitmap getFromDiskCache(final String key, final BitmapFactory.Options options) {
-        if (diskCache == null || diskCache.isClosed()) {
+        if (isClosed()) {
             return null;
         }
 
@@ -103,7 +115,7 @@ public class BitmapDiskLruCache {
     private void putDiskCache(final String key, final Bitmap bitmap,
                               final Bitmap.CompressFormat compressFormat,
                               final int compressQuality) {
-        if (diskCache == null || diskCache.isClosed()) {
+        if (isClosed()) {
             return;
         }
 
@@ -123,5 +135,9 @@ public class BitmapDiskLruCache {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isClosed() {
+        return diskCache == null || diskCache.isClosed();
     }
 }

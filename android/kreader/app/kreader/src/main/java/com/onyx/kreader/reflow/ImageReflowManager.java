@@ -1,22 +1,14 @@
 package com.onyx.kreader.reflow;
 
 import android.graphics.Bitmap;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.kreader.api.ReaderBitmapList;
-import com.onyx.kreader.cache.BitmapDiskLruCache;
-import com.onyx.kreader.common.Debug;
+
 import com.onyx.kreader.utils.HashUtils;
 import com.onyx.kreader.utils.ImageUtils;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,36 +26,28 @@ public class ImageReflowManager {
 
     static private final String INDEX_FILE_NAME = "reflow-index.json";
 
-    /**
-     * we must have space big enough to hold at least one page's reflowed bitmaps
-     */
-    private static final int MAX_DISK_CACHE_SIZE = 20 * 1024 * 1024;
-
     private String documentMd5;
-    private Map<String, ReaderBitmapList> pageMap;
-    private ConcurrentHashMap<String, Object> mapLock = new ConcurrentHashMap<>();
     private File cacheRoot;
-    private BitmapDiskLruCache bitmapCache;
     private ImageReflowSettings settings;
 
-    private ExecutorService reflowExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(r);
-            t.setPriority(Thread.MIN_PRIORITY);
-            return t;
-        }
-    });
+    private ReflowedSubPageIndex subPageIndex;
+    private ReflowedSubPageCache subPageCache;
 
-    public ImageReflowManager(final String documentMd5, final File root, int dw, int dh) {
+    private Lock reflowLock = new ReentrantLock(); // to be hold for a short time to check if a page is being reflowed or not
+    private Condition reflowReadyCondition = reflowLock.newCondition();
+
+    private ReflowTaskExecutor reflowExecutor = new ReflowTaskExecutor(ImageReflowManager.this);
+
+    public ImageReflowManager(final String documentMd5, final File cacheRoot, int dw, int dh) {
         super();
+
         this.documentMd5 = documentMd5;
-        cacheRoot = root;
+        this.cacheRoot = cacheRoot;
         settings = ImageReflowSettings.createSettings();
         settings.dev_width = dw;
         settings.dev_height = dh;
-
-        bitmapCache = BitmapDiskLruCache.create(root, MAX_DISK_CACHE_SIZE);
+        subPageCache = ReflowedSubPageCache.create(cacheRoot);
+        loadSubPageIndex();
     }
 
     public ImageReflowSettings getSettings() {
@@ -79,81 +63,185 @@ public class ImageReflowManager {
 
     public void updateSettings(final ImageReflowSettings s) {
         settings.update(s);
-        loadPageMap();
+        notifySettingsUpdated();
     }
 
-    public void reflowBitmap(final Bitmap bitmap, final String pageName, final boolean background) {
-        synchronized (mapLock) {
-            if (!mapLock.containsKey(pageName)) {
-                clear(pageName);
-                mapLock.put(pageName, new Object());
-            }
-        }
-
-        if (!background) {
-            reflowBitmapImpl(bitmap, pageName);
-            return;
-        }
-        reflowExecutor.submit(new Runnable() {
-            @Override
-            public void run() {
-                reflowBitmapImpl(bitmap, pageName);
-            }
-        });
+    public void notifySettingsUpdated() {
+        loadSubPageIndex();
     }
 
-    private void reflowBitmapImpl(final Bitmap bitmap, final String pageName) {
-        synchronized (mapLock.get(pageName)) {
-            if (!isReflowed(pageName)) {
+    public void release() {
+        reflowExecutor.abort();
+        documentMd5 = null;
+    }
 
-                reflow(bitmap, pageName);
-            }
+    public void reflowBitmapAsync(final Bitmap bitmap, final String pageName, final boolean abortPendingTasks) {
+        ReflowTask task = new ReflowTask(this, pageName, bitmap);
+        task.setAbortPendingTasks(abortPendingTasks);
+        reflowExecutor.submitTask(task);
+    }
+
+    void signalTaskFinished() {
+        reflowLock.lock();
+        try {
+            reflowReadyCondition.signal();
+        } finally {
+            reflowLock.unlock();
         }
     }
 
-    public void loadPageMap() {
-        synchronized (mapLock) {
-            if (pageMap != null) {
-                pageMap.clear();
+    /**
+     * will be called back from ReflowTask
+     *
+     * @param pageName
+     * @param bitmap
+     */
+    void reflowBitmap(final String pageName, final Bitmap bitmap) {
+        if (ImageUtils.reflowScannedPage(bitmap, pageName, this)) {
+            subPageIndex.markSubPageListReflowComplete(pageName);
+            subPageIndex.saveSubPageIndex();
+        }
+    }
+
+    /**
+     * will be called back from jni during reflowing
+     *
+     * @param pageName
+     * @param subPage
+     * @param bitmap
+     */
+    @SuppressWarnings("unused")
+    public void addBitmap(final String pageName, final int subPage, final Bitmap bitmap) {
+        reflowLock.lock();
+        try {
+            if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
+                subPageIndex.addSubPageBitmap(pageName, bitmap);
             }
+            // using memory cache to save sub page, so waiting thread can access it immediately
+            saveSubPageBitmapToMemoryCache(pageName, subPage, bitmap);
+            reflowReadyCondition.signal();
+        } finally {
+            reflowLock.unlock();
+        }
+        reflowLock.lock();
+        try {
+            saveSubPageBitmapToDiskCache(pageName, subPage, bitmap);
+        } finally {
+            reflowLock.unlock();
+        }
+    }
+
+    private void waitUntilAllSubPagesAvailable(final String pageName) {
+        try {
+            reflowLock.lock();
             try {
-                File file = cacheFilePath(cacheRoot, documentMd5, settings, INDEX_FILE_NAME);
-                if (file != null && FileUtils.fileExist(file.getAbsolutePath())) {
-                    String json = FileUtils.readContentOfFile(file);
-                    pageMap = JSON.parseObject(json, new TypeReference<Map<String, ReaderBitmapList>>() {
-                    });
+                while (reflowExecutor.isPageWaitingReflow(pageName)) {
+                    reflowReadyCondition.await();
                 }
-            } catch (Exception e) {
-                Debug.w(TAG, e);
+            } finally {
+                reflowLock.unlock();
             }
-
-            if (pageMap == null) {
-                pageMap = new HashMap<>();
-            }
+        } catch (InterruptedException ex) {
         }
     }
 
-    public ReaderBitmapList getSubPageList(final String pageName) {
-        synchronized (mapLock) {
-            ReaderBitmapList list = pageMap.get(pageName);
-            if (list == null) {
-                list = new ReaderBitmapList();
-                pageMap.put(pageName, list);
+    private void waitUntilNextSubPageAvailable(final String pageName) {
+        try {
+            reflowLock.lock();
+            try {
+                while (reflowExecutor.isPageWaitingReflow(pageName)) {
+                    if (!subPageIndex.atLastSubPage(pageName)) {
+                        return;
+                    }
+                    reflowReadyCondition.await();
+                }
+            } finally {
+                reflowLock.unlock();
             }
-            return list;
+        } catch (InterruptedException ex) {
         }
     }
 
-    public String getSubPageKey(final String pageName, int subPage) {
+    private void waitUntilSubPageAvailable(final String pageName, final int subPage) {
+        try {
+            reflowLock.lock();
+            try {
+                while (reflowExecutor.isPageWaitingReflow(pageName)) {
+                    if (subPageIndex.getSubPageCount(pageName) > subPage) {
+                        return;
+                    }
+                    reflowReadyCondition.await();
+                }
+            } finally {
+                reflowLock.unlock();
+            }
+        } catch (InterruptedException ex) {
+        }
+    }
+
+    public int getCurrentSubPageIndex(final String pageName) {
+        return subPageIndex.getSubPageCurrentIndex(pageName);
+    }
+
+    public boolean atFirstSubPage(final String pageName) {
+        return subPageIndex.atFirstSubPage(pageName);
+    }
+
+    public boolean atLastSubPage(final String pageName) {
+        if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
+            waitUntilNextSubPageAvailable(pageName);
+        }
+        return subPageIndex.atLastSubPage(pageName);
+    }
+
+    public void moveToFirstSubPage(final String pageName) {
+        subPageIndex.moveToFirstSubPage(pageName);
+    }
+
+    public void moveToLastSubPage(final String pageName) {
+        if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
+            waitUntilAllSubPagesAvailable(pageName);
+        }
+        subPageIndex.moveToLastSubPage(pageName);
+    }
+
+    public void previousSubPage(final String pageName) {
+        subPageIndex.previousSubPage(pageName);
+    }
+
+    public void nextSubPage(final String pageName) {
+        if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
+            waitUntilNextSubPageAvailable(pageName);
+        }
+        subPageIndex.nextSubPage(pageName);
+    }
+
+    public void moveToSubSPage(final String pageName, final int index) {
+        if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
+            waitUntilSubPageAvailable(pageName, index);
+        }
+        subPageIndex.moveToSubPage(pageName, index);
+    }
+
+    public Bitmap getSubPageBitmap(final String pageName, final int subPage) {
+        if (isSubPageBitmapInCache(pageName, subPage)) {
+            return getSubPageBitmapFromCache(pageName, subPage);
+        }
+        waitUntilSubPageAvailable(pageName, subPage);
+        return getSubPageBitmapFromCache(pageName, subPage);
+    }
+
+    public boolean isSubPageReady(final String pageName, final int subPage) {
+        return isSubPageBitmapInCache(pageName, subPage);
+    }
+
+    public String getSubPageKey(final String pageName, final int subPage) {
         return getKeyOfSubPage(documentMd5, settings, pageName, subPage);
     }
 
-    public Bitmap getSubPageBitmap(final String pageName, int subPage) {
-        return getBitmapCache(getKeyOfSubPage(documentMd5, settings, pageName, subPage));
-    }
-
-    public void clear(final String pageName) {
-        getSubPageList(pageName).clear();
+    private void loadSubPageIndex() {
+        File file = subPageIndexFilePath(cacheRoot, documentMd5, settings, INDEX_FILE_NAME);
+        subPageIndex = ReflowedSubPageIndex.load(file);
     }
 
     private static final String getKeyOfSubPage(final String documentMd5, final ImageReflowSettings settings, final String pageName, int index) {
@@ -164,80 +252,25 @@ public class ImageReflowManager {
         return HashUtils.md5(documentMd5 + "-" + settings.md5());
     }
 
-    /**
-     * will be called from jni
-     *
-     * @param pageName
-     * @param subPage
-     * @param bitmap
-     */
-    @SuppressWarnings("unused")
-    public void addBitmap(final String pageName, int subPage, Bitmap bitmap) {
-        ReaderBitmapList list = getSubPageList(pageName);
-        list.addBitmap(bitmap);
-        putBitmapCache(getKeyOfSubPage(documentMd5, settings, pageName, subPage), bitmap);
+    private boolean isSubPageBitmapInCache(final String pageName, final int subPage) {
+        return subPageCache.contains(getSubPageKey(pageName, subPage));
     }
 
-    public void clearAllCacheFiles() {
-        documentMd5 = null;
-//        clearBitmapCache();
-//        clearPageMap();
+    private void saveSubPageBitmapToMemoryCache(String pageName, int subPage, Bitmap bitmap) {
+        final String pageKey = getSubPageKey(pageName, subPage);
+        subPageCache.putMemoryCache(pageKey, bitmap);
     }
 
-    private void savePageMap() {
-        synchronized (mapLock) {
-            try {
-                File file = cacheFilePath(cacheRoot, documentMd5, settings, INDEX_FILE_NAME);
-                String json = JSON.toJSONString(pageMap);
-                FileUtils.saveContentToFile(json, file);
-            } catch (Exception e) {
-                Debug.w(TAG, e);
-            }
-        }
+    private void saveSubPageBitmapToDiskCache(String pageName, int subPage, Bitmap bitmap) {
+        final String pageKey = getSubPageKey(pageName, subPage);
+        subPageCache.putDiskCache(pageKey, bitmap);
     }
 
-    private void clearPageMap() {
-        synchronized (mapLock) {
-            if (pageMap == null) {
-                return;
-            }
-            pageMap.clear();
-            savePageMap();
-        }
+    private Bitmap getSubPageBitmapFromCache(final String pageName, final int subPage) {
+        return subPageCache.get(getSubPageKey(pageName, subPage));
     }
 
-    private boolean isReflowed(final String pageName) {
-        ReaderBitmapList list = getSubPageList(pageName);
-        if (list == null || list.isEmpty()) {
-            return false;
-        }
-        Bitmap bitmap = getSubPageBitmap(pageName, list.getCurrent());
-        if (bitmap == null) {
-            return false;
-        }
-        bitmap.recycle();
-        return true;
-    }
-
-    private void reflow(Bitmap bitmap, final String pageName) {
-        if (ImageUtils.reflowScannedPage(bitmap, pageName, this)) {
-            savePageMap();
-        }
-    }
-
-    private void putBitmapCache(final String key, Bitmap bitmap) {
-        bitmapCache.put(key, bitmap);
-    }
-
-    private Bitmap getBitmapCache(final String key) {
-        return bitmapCache.get(key);
-    }
-
-    private void clearBitmapCache() {
-        bitmapCache.clear();
-    }
-
-    private static File cacheFilePath(final File root, final String documentMd5, final ImageReflowSettings settings, final String fileName) {
+    private static File subPageIndexFilePath(final File root, final String documentMd5, final ImageReflowSettings settings, final String fileName) {
         if (settings == null || root == null) {
             return null;
         }

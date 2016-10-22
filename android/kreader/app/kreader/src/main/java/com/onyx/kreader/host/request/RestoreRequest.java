@@ -6,6 +6,7 @@ import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.reflow.ImageReflowSettings;
+import com.onyx.kreader.utils.ImageUtils;
 
 /**
  * Created by zhuzeng on 2/15/16.
@@ -26,7 +27,7 @@ public class RestoreRequest extends BaseReaderRequest {
         restoreOrientation(reader);
         restoreViewport(reader);
         restoreReflowSettings(reader);
-        restoreOthers(reader);
+        restoreContrast(reader);
         drawVisiblePages(reader);
     }
 
@@ -57,7 +58,9 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private void restoreViewport(final Reader reader) throws Exception {
-        if (baseOptions.getViewport() != null) {
+        if (baseOptions.getViewport() != null &&
+            baseOptions.getViewport().width() > 0 &&
+            baseOptions.getViewport().height() > 0) {
             reader.getReaderLayoutManager().getPageManager().setViewportRect(baseOptions.getViewport());
         }
     }
@@ -68,8 +71,11 @@ public class RestoreRequest extends BaseReaderRequest {
         }
     }
 
-    private void restoreOthers(final Reader reader) {
-        reader.getDocumentOptions().setGamma(baseOptions.getGammaLevel());
+    private void restoreContrast(final Reader reader) {
+        float value = baseOptions.getGammaLevel();
+        if (value > ImageUtils.NO_GAMMA && value <= ImageUtils.MAX_GAMMA) {
+            reader.getDocumentOptions().setGamma(value);
+        }
         reader.getDocumentOptions().setEmboldenLevel(baseOptions.getEmboldenLevel());
     }
 

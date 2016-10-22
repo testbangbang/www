@@ -22,6 +22,7 @@ public class ReaderDeviceManager {
 
     private static int gcInterval;
     private static int refreshCount;
+    private static boolean inFastUpdateMode = false;
 
     private final static EpdDevice epdDevice;
 
@@ -34,11 +35,17 @@ public class ReaderDeviceManager {
     }
 
     public static void enterAnimationUpdate(boolean clear) {
-        EpdController.applyApplicationFastMode(APP, true, clear);
+        if (!inFastUpdateMode) {
+            EpdController.applyApplicationFastMode(APP, true, clear);
+            inFastUpdateMode = true;
+        }
     }
 
     public static void exitAnimationUpdate(boolean clear) {
-        EpdController.applyApplicationFastMode(APP, false, clear);
+        if (inFastUpdateMode) {
+            EpdController.applyApplicationFastMode(APP, false, clear);
+            inFastUpdateMode = false;
+        }
     }
 
     public static void startScreenHandWriting(final View view) {
@@ -68,6 +75,37 @@ public class ReaderDeviceManager {
             applyWithGCIntervalWitRegal(view);
         } else {
             applyWithGCIntervalWithoutRegal(view);
+        }
+    }
+
+    public static void enableScreenUpdate(View view, boolean enable) {
+        epdDevice.enableScreenUpdate(view, enable);
+    }
+
+    public static void refreshScreenWithGCInterval(View view, boolean isTextPage) {
+        enableScreenUpdate(view, true);
+        if (isTextPage && EpdController.supportRegal()) {
+            refreshScreenWithGCIntervalWithRegal(view);
+        } else {
+            refreshScreenWithGCIntervalWithoutRegal(view);
+        }
+    }
+
+    public static void refreshScreenWithGCIntervalWithRegal(View view) {
+        if (refreshCount++ >= gcInterval) {
+            refreshCount = 0;
+            epdDevice.refreshScreen(view, UpdateMode.GC);
+        } else {
+            epdDevice.refreshScreen(view, UpdateMode.REGAL);
+        }
+    }
+
+    public static void refreshScreenWithGCIntervalWithoutRegal(View view) {
+        if (refreshCount++ >= gcInterval) {
+            refreshCount = 0;
+            epdDevice.refreshScreen(view, UpdateMode.GC);
+        } else {
+            epdDevice.refreshScreen(view, UpdateMode.GU);
         }
     }
 

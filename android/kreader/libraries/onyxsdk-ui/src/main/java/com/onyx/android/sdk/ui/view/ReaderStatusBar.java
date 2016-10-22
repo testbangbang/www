@@ -84,6 +84,15 @@ public class ReaderStatusBar extends LinearLayout {
         updateStatusBarBatteryText(info.batteryStatus);
     }
 
+    public void clear() {
+        final Rect rect = new Rect(0, 0, 100, 100);
+        updateStatusBarNavigator(rect, rect);
+        updateStatusProgressText(null);
+        updateStatusBarProgressGraphic(1, 1);
+        updateStatusBarInfoText(null);
+        updateStatusBarBatteryText(null);
+    }
+
     public boolean updateStatusBarNavigator(Rect pageRect,Rect viewportRect){
         try{
             mStatusBarNavigatorView.setNavigatorContent(pageRect,viewportRect);
