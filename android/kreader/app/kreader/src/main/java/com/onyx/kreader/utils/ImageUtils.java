@@ -18,9 +18,14 @@ public class ImageUtils {
     }
 
     static private native double [] crop(Bitmap bitmap, int left, int top, int right, int bottom, double threshold);
-    static private native boolean reflowPage(Bitmap input, final String pageName, ImageReflowManager parent, ImageReflowSettings settings);
     static private native boolean emboldenInPlace(Bitmap bitmap, int level);
     static private native boolean gammaCorrection(Bitmap bitmap, float gamma);
+
+    static public native boolean reflowPage(String pageName, Bitmap input, ImageReflowSettings settings);
+    static public native boolean isPageReflowed(String pageName);
+    static public native boolean getReflowedPageSize(String pageName, int []size);
+    static public native boolean renderReflowedPage(String pageName, int x, int y, int width, int height, final Bitmap bitmap);
+    static public native void releaseReflowedPage(String pageName);
 
     /**
      * Return content region with specified bitmap. usually takes about 60ms to finish 1440x1080 bitmap.
@@ -34,10 +39,6 @@ public class ImageUtils {
     static public RectF cropPage(Bitmap bitmap, int left, int top, int right, int bottom, double threshold) {
         double [] result = crop(bitmap, left, top, right, bottom, threshold);
         return RectUtils.rectangle(result);
-    }
-
-    static public boolean reflowScannedPage(Bitmap bitmap, final String pageName, ImageReflowManager parent) {
-        return reflowPage(bitmap, pageName, parent, parent.getSettings());
     }
 
     /**

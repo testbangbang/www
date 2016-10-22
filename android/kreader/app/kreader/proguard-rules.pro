@@ -48,3 +48,8 @@
 -keepnames class com.onyx.kreader.host.navigation.NavigationList { *; }
 
 -keepnames class com.onyx.kreader.api.ReaderSentence { *; }
+-keepnames class com.onyx.kreader.utils.ReaderConfig { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig.MappingEntry { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
+

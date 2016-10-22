@@ -10,6 +10,10 @@ import java.util.List;
  */
 public class PointMatrix {
 
+    private int originRows;
+
+    private int originCols;
+
     private ArrayList<ArrayList<PointF>> data;
 
     public PointMatrix() {
@@ -85,6 +89,8 @@ public class PointMatrix {
      * @return
      */
     public void resize(int newRows, int newCols) {
+        originCols = newCols;
+        originRows = newRows;
         newRows = newRows <= 1 ? newRows : newRows - 1;
         newCols = newCols <= 1 ? newCols : newCols - 1;
         data = new ArrayList<ArrayList<PointF>>(newRows);
@@ -137,5 +143,19 @@ public class PointMatrix {
         }
     }
 
+    public int getOriginRows() {
+        return originRows;
+    }
 
+    public int getOriginCols() {
+        return originCols;
+    }
+
+    public void setOriginRows(int originRows) {
+        this.originRows = originRows;
+    }
+
+    public void setOriginCols(int originCols) {
+        this.originCols = originCols;
+    }
 }

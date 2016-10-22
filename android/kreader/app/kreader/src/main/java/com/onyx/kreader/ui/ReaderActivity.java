@@ -32,6 +32,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
@@ -45,6 +46,7 @@ import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
+import com.onyx.kreader.note.actions.StartErasingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
@@ -75,10 +77,12 @@ import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
-import com.onyx.kreader.ui.events.ShortcutFinishedEvent;
+import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
-import com.onyx.kreader.ui.events.ShortcutStartEvent;
+import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
@@ -105,7 +109,7 @@ public class ReaderActivity extends ActionBarActivity {
     private SurfaceHolder holder;
     private ReaderStatusBar statusBar;
 
-    private ReaderDataHolder readerDataHolder;
+    private ReaderDataHolder dataHolder;
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private final ReaderPainter readerPainter = new ReaderPainter();
@@ -131,6 +135,12 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        afterPause(null);
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         final ViewTreeObserver observer = surfaceView.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -152,7 +162,7 @@ public class ReaderActivity extends ActionBarActivity {
     public void startActivity(Intent intent) {
         // check if search intent
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            intent.putExtra(DOCUMENT_PATH_TAG, readerDataHolder.getDocumentPath());
+            intent.putExtra(DOCUMENT_PATH_TAG, getReaderDataHolder().getDocumentPath());
         }
 
         super.startActivity(intent);
@@ -191,11 +201,11 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private final ReaderDataHolder getReaderDataHolder() {
-        return readerDataHolder;
+        return dataHolder;
     }
 
     public final HandlerManager getHandlerManager() {
-        return readerDataHolder.getHandlerManager();
+        return getReaderDataHolder().getHandlerManager();
     }
 
     @Override
@@ -221,7 +231,7 @@ public class ReaderActivity extends ActionBarActivity {
         statusBar.setCallback(new ReaderStatusBar.Callback() {
             @Override
             public void onGotoPage() {
-                new ShowQuickPreviewAction().execute(readerDataHolder, null);
+                new ShowQuickPreviewAction().execute(getReaderDataHolder(), null);
             }
         });
         reconfigStatusBar();
@@ -255,14 +265,12 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 clearCanvas(holder);
-                if (!readerDataHolder.isDocumentOpened()) {
+                if (!getReaderDataHolder().isDocumentOpened()) {
                     return;
                 }
-                if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
-                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
-                    onSurfaceViewSizeChanged();
-                } else {
-                    readerDataHolder.redrawPage();
+                if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
+                    surfaceView.getHeight() == getReaderDataHolder().getDisplayHeight()) {
+                    getReaderDataHolder().redrawPage();
                 }
             }
 
@@ -309,8 +317,8 @@ public class ReaderActivity extends ActionBarActivity {
 
 
     private void initReaderDataHolder() {
-        readerDataHolder = new ReaderDataHolder(this);
-        readerDataHolder.getEventBus().register(this);
+        dataHolder = new ReaderDataHolder(this);
+        dataHolder.getEventBus().register(this);
         getHandlerManager().setEnable(false);
     }
 
@@ -321,7 +329,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void checkSurfaceViewSize() {
-        if (!readerDataHolder.isDocumentOpened()) {
+        if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
 
@@ -329,10 +337,11 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                if (surfaceView.getWidth() != readerDataHolder.getDisplayWidth() ||
-                        surfaceView.getHeight() != readerDataHolder.getDisplayHeight()) {
+                if (surfaceView.getWidth() != getReaderDataHolder().getDisplayWidth() ||
+                    surfaceView.getHeight() != getReaderDataHolder().getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 }
+                getReaderDataHolder().prepareNoteManager();
             }
         });
     }
@@ -378,7 +387,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onSystemUIChanged(final SystemUIChangedEvent event) {
-        if (event == null || !getReaderDataHolder().inNoteWriting()) {
+        if (event == null || !getReaderDataHolder().inNoteWritingProvider()) {
             return;
         }
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
@@ -393,20 +402,33 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onHomeClick(final HomeClickEvent event) {
-        if (event == null || !getReaderDataHolder().inNoteWriting()) {
+        if (event == null || !getReaderDataHolder().inNoteWritingProvider()) {
             saveDocumentOptions();
             return;
         }
+        afterPause(null);
+    }
 
-        readerDataHolder.getNoteManager().enableScreenPost(true);
-        ShowReaderMenuAction.resetReaderMenu(readerDataHolder);
-        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false);
+    private void afterPause(final BaseCallback baseCallback) {
+        enablePost(true);
+        if (!verifyReader()) {
+            baseCallback.invoke(baseCallback, null, null);
+            return;
+        }
+
+        ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
+        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false, true);
         actionChain.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 saveDocumentOptions();
+                baseCallback.invoke(baseCallback, request, e);
             }
         });
+    }
+
+    private void enablePost(boolean enable) {
+        EpdController.enablePost(surfaceView, enable ? 1 : 0);
     }
 
     private void saveDocumentOptions() {
@@ -436,7 +458,7 @@ public class ReaderActivity extends ActionBarActivity {
         final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
                 getReaderDataHolder().getVisiblePages(),
                 event.getTouchPointList());
-        action.execute(readerDataHolder, null);
+        action.execute(getReaderDataHolder(), null);
     }
 
     private void prepareForErasing() {
@@ -502,9 +524,7 @@ public class ReaderActivity extends ActionBarActivity {
     private void checkExternalStoragePermissions() {
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE);
+            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
         } else {
             openFileFromIntent();
         }
@@ -577,13 +597,15 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onBeforeDocumentOpen(final BeforeDocumentOpenEvent event) {
-        EpdController.enablePost(surfaceView, 1);
+        enablePost(true);
+        clearCanvas(holder);
+        resetStatusBar();
         resetMenus();
     }
 
     @Subscribe
     public void onBeforeDocumentClose(final BeforeDocumentCloseEvent event) {
-        EpdController.enablePost(surfaceView, 1);
+        enablePost(true);
         resetMenus();
     }
 
@@ -599,21 +621,34 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
-    public void onShortcutStart(final ShortcutStartEvent event) {
+    public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
+        ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), this);
+        StartErasingAction startErasingAction = new StartErasingAction();
+        startErasingAction.execute(getReaderDataHolder(), null);
+    }
+
+    @Subscribe
+    public void onShortcutErasingFinish(final ShortcutErasingFinishEvent event) {
+        ChangeNoteShapeAction action = new ChangeNoteShapeAction(NoteDrawingArgs.defaultShape());
+        action.execute(getReaderDataHolder(), null);
+    }
+
+    @Subscribe
+    public void onShortcutDrawingStart(final ShortcutDrawingStartEvent event) {
         getHandlerManager().setEnableTouch(false);
     }
 
     @Subscribe
-    public void onShortcutFinished(final ShortcutFinishedEvent event) {
+    public void onShortcutDrawingFinished(final ShortcutDrawingFinishedEvent event) {
         getHandlerManager().setEnableTouch(true);
-        if (getReaderDataHolder().inNoteWriting()) {
+        if (getReaderDataHolder().inNoteWritingProvider()) {
             return;
         }
         ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), this);
         ActionChain actionChain = new ActionChain();
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
         FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
-        ChangeNoteShapeAction action = new ChangeNoteShapeAction(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
+        ChangeNoteShapeAction action = new ChangeNoteShapeAction(NoteDrawingArgs.defaultShape());
         actionChain.addAction(flushNoteAction);
         actionChain.addAction(action);
         actionChain.execute(getReaderDataHolder(), null);
@@ -668,13 +703,13 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
-        readerDataHolder.getNoteManager().enableScreenPost(true);
-        ShowReaderMenuAction.resetReaderMenu(readerDataHolder);
+        enablePost(true);
+        ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.getEventBus().unregister(this);
+                getReaderDataHolder().getEventBus().unregister(this);
                 releaseStartupWakeLock();
                 finish();
             }
@@ -726,6 +761,10 @@ public class ReaderActivity extends ActionBarActivity {
         }
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
                 current, total, 0, title));
+    }
+
+    private void resetStatusBar() {
+        statusBar.clear();
     }
 
     private RectF translateDisplayRectToViewportRect(RectF displayRect) {

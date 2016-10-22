@@ -1,5 +1,5 @@
 {
-    "key_binding": {
+    "keyBinding": {
         "HandlerManager": {
             "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
             "KEYCODE_PAGE_UP":  {"action": "prevScreen", "args": ""},
