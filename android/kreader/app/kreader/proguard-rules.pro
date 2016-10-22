@@ -48,3 +48,5 @@
 -keepnames class com.onyx.kreader.host.navigation.NavigationList { *; }
 
 -keepnames class com.onyx.kreader.api.ReaderSentence { *; }
+-keepnames class com.onyx.kreader.utils.ReaderConfig { *; }
+
