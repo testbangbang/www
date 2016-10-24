@@ -233,9 +233,14 @@ public class NoteDataProvider {
                                                 boolean checkThisLevelOnly, boolean distinguishFileType) {
         Select select = new Select();
         Where where;
-        if (checkThisLevelOnly && StringUtils.isNotBlank(parentID)) {
-            where = select.from(NoteModel.class).
-                    where(NoteModel_Table.title.eq(targetName)).and(NoteModel_Table.parentUniqueId.eq(parentID));
+        if (checkThisLevelOnly) {
+            if (StringUtils.isNotBlank(parentID)) {
+                where = select.from(NoteModel.class).
+                        where(NoteModel_Table.title.eq(targetName)).and(NoteModel_Table.parentUniqueId.eq(parentID));
+            } else {
+                where = select.from(NoteModel.class).
+                        where(NoteModel_Table.title.eq(targetName)).and(NoteModel_Table.parentUniqueId.isNull());
+            }
         } else {
             where = select.from(NoteModel.class).where(NoteModel_Table.title.eq(targetName));
         }

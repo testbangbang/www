@@ -49,7 +49,23 @@ public class LayoutProvider {
         return false;
     }
 
+    public boolean atFirstPage() throws ReaderException {
+        return getCurrentPageName().equals(LayoutProviderUtils.firstPage(getLayoutManager()));
+    }
+
+    public boolean atLastPage() throws ReaderException {
+        return getCurrentPageName().equals(LayoutProviderUtils.lastPage(getLayoutManager()));
+    }
+
+    public boolean canPrevScreen() throws ReaderException {
+        return false;
+    }
+
     public boolean prevScreen() throws ReaderException {
+        return false;
+    }
+
+    public boolean canNextScreen() throws ReaderException {
         return false;
     }
 

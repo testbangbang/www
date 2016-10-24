@@ -30,9 +30,11 @@ import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
-import com.onyx.kreader.ui.events.ShortcutFinishedEvent;
+import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
-import com.onyx.kreader.ui.events.ShortcutStartEvent;
+import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +79,10 @@ public class NoteManager {
 
     public void startRawEventProcessor() {
         getNoteEventProcessorManager().start();
+    }
+
+    public void enableRawEventProcessor(boolean enable) {
+        getNoteEventProcessorManager().enable(enable);
     }
 
     public void stopRawEventProcessor() {
@@ -162,16 +168,24 @@ public class NoteManager {
                 getParent().getEventBus().post(new ShapeErasingEvent(true, list));
             }
 
+            public void onRawErasingStart() {
+                getParent().getEventBus().post(new ShortcutErasingStartEvent());
+            }
+
+            public void onRawErasingFinished(final TouchPointList list) {
+                getParent().getEventBus().post(new ShortcutErasingFinishEvent(list));
+            }
+
             public void onDFBShapeStart(boolean shortcut) {
                 if (shortcut) {
-                    getParent().getEventBus().post(new ShortcutStartEvent());
+                    getParent().getEventBus().post(new ShortcutDrawingStartEvent());
                 }
             }
 
             public void onDFBShapeFinished(final Shape shape, boolean shortcut) {
                 onNewStash(shape);
                 if (shortcut) {
-                    getParent().getEventBus().post(new ShortcutFinishedEvent());
+                    getParent().getEventBus().post(new ShortcutDrawingFinishedEvent());
                 }
             }
 

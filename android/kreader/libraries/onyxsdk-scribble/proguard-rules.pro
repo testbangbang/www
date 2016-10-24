@@ -15,3 +15,5 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }

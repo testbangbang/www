@@ -14,8 +14,7 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class PreviousScreenAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        final boolean firstPage = readerDataHolder.getCurrentPage() == 0;
-        if (firstPage) {
+        if (!readerDataHolder.getReaderViewInfo().canPrevScreen) {
             Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.min_page_toast), Toast.LENGTH_SHORT).show();
             return;
         }

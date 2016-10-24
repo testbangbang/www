@@ -13,18 +13,14 @@ import com.onyx.android.note.actions.manager.LoadNoteListAction;
 import com.onyx.android.note.actions.manager.ManageLoadPageAction;
 import com.onyx.android.note.actions.manager.NoteLibraryRemoveAction;
 import com.onyx.android.note.actions.manager.NoteLoadMovableLibraryAction;
-import com.onyx.android.note.actions.manager.NoteMoveAction;
 import com.onyx.android.note.data.DataItemType;
-import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
@@ -361,32 +357,6 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
         intent.putExtra(TAG_NOTE_TITLE, noteTitle);
         intent.putExtra(Utils.DOCUMENT_ID, uniqueID);
         return intent;
-    }
-
-    @Override
-    public void showMovableFolderDialog(List<NoteModel> curLibSubContList) {
-        final DialogMoveFolder dialogMoveFolder = new DialogMoveFolder();
-        dialogMoveFolder.setDataList(curLibSubContList);
-        dialogMoveFolder.setCallback(new DialogMoveFolder.DialogMoveFolderCallback() {
-            @Override
-            public void onMove(String targetParentId) {
-                NoteMoveAction<BaseManagerActivity> noteMoveAction = new NoteMoveAction<>(targetParentId, targetMoveIDList);
-                noteMoveAction.execute(BaseManagerActivity.this, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        loadNoteList();
-                        dialogMoveFolder.dismiss();
-                        switchMode(SelectionMode.NORMAL_MODE);
-                    }
-                });
-            }
-
-            @Override
-            public void onDismiss() {
-                switchMode(SelectionMode.NORMAL_MODE);
-            }
-        });
-        dialogMoveFolder.show(getFragmentManager());
     }
 
     protected abstract void startScribbleActivity(GObject object, final String parentId, final String action);

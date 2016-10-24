@@ -2,6 +2,8 @@ package com.onyx.kreader.reflow;
 
 import android.graphics.Bitmap;
 
+import android.graphics.Color;
+import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.kreader.utils.HashUtils;
 import com.onyx.kreader.utils.ImageUtils;
 
@@ -67,11 +69,17 @@ public class ImageReflowManager {
     }
 
     public void notifySettingsUpdated() {
+        release();
         loadSubPageIndex();
     }
 
     public void release() {
         reflowExecutor.abort();
+        String currentPage = reflowExecutor.getCurrentTaskPage();
+        if (currentPage != null) {
+            waitUntilSubPagesReady(currentPage);
+        }
+        ImageUtils.releaseReflowedPage(null);
         documentMd5 = null;
     }
 
@@ -97,85 +105,44 @@ public class ImageReflowManager {
      * @param bitmap
      */
     void reflowBitmap(final String pageName, final Bitmap bitmap) {
-        if (ImageUtils.reflowScannedPage(bitmap, pageName, this)) {
-            subPageIndex.markSubPageListReflowComplete(pageName);
-            subPageIndex.saveSubPageIndex();
+        Benchmark benchmark = new Benchmark();
+        if (ImageUtils.reflowPage(pageName, bitmap, settings)) {
+            benchmark.report("reflow page takes: " + pageName);
+            try {
+                reflowLock.lock();
+                splitSubPages(pageName);
+                reflowReadyCondition.signal();
+            } finally {
+                reflowLock.unlock();
+            }
         }
     }
 
-    /**
-     * will be called back from jni during reflowing
-     *
-     * @param pageName
-     * @param subPage
-     * @param bitmap
-     */
-    @SuppressWarnings("unused")
-    public void addBitmap(final String pageName, final int subPage, final Bitmap bitmap) {
+    private void splitSubPages(final String pageName) {
+        int[] size = new int[2];
+        if (!ImageUtils.getReflowedPageSize(pageName, size)) {
+            return;
+        }
+        int pageCount = size[1] / settings.dev_height + (size[1] % settings.dev_height != 0 ? 1 : 0);
+        if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
+            for (int i = 0; i < pageCount; i++) {
+                subPageIndex.addSubPageBitmap(pageName, null);
+            }
+        }
+        subPageIndex.markSubPageListReflowComplete(pageName);
+        subPageIndex.saveSubPageIndex();
+    }
+
+    private void waitUntilSubPagesReady(final String pageName) {
         reflowLock.lock();
         try {
-            if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
-                subPageIndex.addSubPageBitmap(pageName, bitmap);
+            while (reflowExecutor.isPageWaitingReflow(pageName)) {
+                reflowReadyCondition.await();
             }
-            // using memory cache to save sub page, so waiting thread can access it immediately
-            saveSubPageBitmapToMemoryCache(pageName, subPage, bitmap);
-            reflowReadyCondition.signal();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
             reflowLock.unlock();
-        }
-        reflowLock.lock();
-        try {
-            saveSubPageBitmapToDiskCache(pageName, subPage, bitmap);
-        } finally {
-            reflowLock.unlock();
-        }
-    }
-
-    private void waitUntilAllSubPagesAvailable(final String pageName) {
-        try {
-            reflowLock.lock();
-            try {
-                while (reflowExecutor.isPageWaitingReflow(pageName)) {
-                    reflowReadyCondition.await();
-                }
-            } finally {
-                reflowLock.unlock();
-            }
-        } catch (InterruptedException ex) {
-        }
-    }
-
-    private void waitUntilNextSubPageAvailable(final String pageName) {
-        try {
-            reflowLock.lock();
-            try {
-                while (reflowExecutor.isPageWaitingReflow(pageName)) {
-                    if (!subPageIndex.atLastSubPage(pageName)) {
-                        return;
-                    }
-                    reflowReadyCondition.await();
-                }
-            } finally {
-                reflowLock.unlock();
-            }
-        } catch (InterruptedException ex) {
-        }
-    }
-
-    private void waitUntilSubPageAvailable(final String pageName, final int subPage) {
-        try {
-            reflowLock.lock();
-            try {
-                while (reflowExecutor.isPageWaitingReflow(pageName)) {
-                    if (subPageIndex.getSubPageCount(pageName) > subPage) {
-                        return;
-                    }
-                    reflowReadyCondition.await();
-                }
-            } finally {
-                reflowLock.unlock();
-            }
-        } catch (InterruptedException ex) {
         }
     }
 
@@ -189,7 +156,7 @@ public class ImageReflowManager {
 
     public boolean atLastSubPage(final String pageName) {
         if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
-            waitUntilNextSubPageAvailable(pageName);
+            waitUntilSubPagesReady(pageName);
         }
         return subPageIndex.atLastSubPage(pageName);
     }
@@ -200,7 +167,7 @@ public class ImageReflowManager {
 
     public void moveToLastSubPage(final String pageName) {
         if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
-            waitUntilAllSubPagesAvailable(pageName);
+            waitUntilSubPagesReady(pageName);
         }
         subPageIndex.moveToLastSubPage(pageName);
     }
@@ -211,14 +178,14 @@ public class ImageReflowManager {
 
     public void nextSubPage(final String pageName) {
         if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
-            waitUntilNextSubPageAvailable(pageName);
+            waitUntilSubPagesReady(pageName);
         }
         subPageIndex.nextSubPage(pageName);
     }
 
     public void moveToSubSPage(final String pageName, final int index) {
         if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
-            waitUntilSubPageAvailable(pageName, index);
+            waitUntilSubPagesReady(pageName);
         }
         subPageIndex.moveToSubPage(pageName, index);
     }
@@ -227,12 +194,12 @@ public class ImageReflowManager {
         if (isSubPageBitmapInCache(pageName, subPage)) {
             return getSubPageBitmapFromCache(pageName, subPage);
         }
-        waitUntilSubPageAvailable(pageName, subPage);
-        return getSubPageBitmapFromCache(pageName, subPage);
+        waitUntilSubPagesReady(pageName);
+        return getReflowedSubPage(pageName, subPage);
     }
 
     public boolean isSubPageReady(final String pageName, final int subPage) {
-        return isSubPageBitmapInCache(pageName, subPage);
+        return ImageUtils.isPageReflowed(pageName) || isSubPageBitmapInCache(pageName, subPage);
     }
 
     public String getSubPageKey(final String pageName, final int subPage) {
@@ -252,18 +219,40 @@ public class ImageReflowManager {
         return HashUtils.md5(documentMd5 + "-" + settings.md5());
     }
 
+    private Bitmap getReflowedSubPage(final String pageName, final int subPage) {
+        int[] size = new int[2];
+        if (!ImageUtils.getReflowedPageSize(pageName, size)) {
+            return null;
+        }
+        int top = settings.dev_height * subPage;
+        int bottom = Math.min(top + settings.dev_height, size[1]);
+        Bitmap bitmap = Bitmap.createBitmap(settings.dev_width, settings.dev_height, Bitmap.Config.ARGB_8888);
+        bitmap.eraseColor(Color.WHITE);
+        if (!ImageUtils.renderReflowedPage(pageName, 0, top, settings.dev_width, bottom, bitmap)) {
+            bitmap.recycle();
+            return null;
+        }
+
+        return bitmap;
+    }
+
     private boolean isSubPageBitmapInCache(final String pageName, final int subPage) {
         return subPageCache.contains(getSubPageKey(pageName, subPage));
     }
 
-    private void saveSubPageBitmapToMemoryCache(String pageName, int subPage, Bitmap bitmap) {
-        final String pageKey = getSubPageKey(pageName, subPage);
-        subPageCache.putMemoryCache(pageKey, bitmap);
+    private void saveSubPagesToCache(final String pageName) {
+        int pageCount = subPageIndex.getSubPageCount(pageName);
+        for (int i = 0; i < pageCount; i++) {
+            Bitmap bitmap = getSubPageBitmap(pageName, i);
+            if (bitmap != null) {
+                saveSubPageBitmapToCache(pageName, i, bitmap);
+            }
+        }
     }
 
-    private void saveSubPageBitmapToDiskCache(String pageName, int subPage, Bitmap bitmap) {
+    private void saveSubPageBitmapToCache(String pageName, int subPage, Bitmap bitmap) {
         final String pageKey = getSubPageKey(pageName, subPage);
-        subPageCache.putDiskCache(pageKey, bitmap);
+        subPageCache.putCache(pageKey, bitmap);
     }
 
     private Bitmap getSubPageBitmapFromCache(final String pageName, final int subPage) {

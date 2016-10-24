@@ -17,8 +17,7 @@ public class ReflowedSubPageCache {
      */
     private static final int MAX_DISK_CACHE_SIZE = 20 * 1024 * 1024;
 
-    private BitmapDiskLruCache diskCache;
-    private BitmapSoftLruCache softLruCache = new BitmapSoftLruCache(1);
+    private BitmapDiskLruCache diskCache;;
 
     private ReflowedSubPageCache(final File cacheRoot) {
         diskCache = BitmapDiskLruCache.create(cacheRoot, MAX_DISK_CACHE_SIZE);
@@ -32,23 +31,11 @@ public class ReflowedSubPageCache {
         return diskCache.contains(key);
     }
 
-    public void putMemoryCache(final String key, final Bitmap bitmap) {
-        synchronized (softLruCache) {
-            softLruCache.put(key, new ReaderBitmapImpl(key, bitmap));
-        }
-    }
-
-    public void putDiskCache(final String key, final Bitmap bitmap) {
+    public void putCache(final String key, final Bitmap bitmap) {
         diskCache.put(key, bitmap);
     }
 
     public Bitmap get(final String key) {
-        synchronized (softLruCache) {
-            ReaderBitmapImpl readerBitmap = softLruCache.get(key);
-            if (readerBitmap != null && readerBitmap.isValid()) {
-                return readerBitmap.getBitmap().copy(readerBitmap.getBitmap().getConfig(), true);
-            }
-        }
         return diskCache.get(key);
     }
 }
