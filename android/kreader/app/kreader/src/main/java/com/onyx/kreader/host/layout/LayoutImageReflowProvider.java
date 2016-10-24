@@ -197,6 +197,12 @@ public class LayoutImageReflowProvider extends LayoutProvider {
                 getLayoutManager().getReaderViewOptions().getViewHeight());
     }
 
+    @Override
+    public void updateViewportRect(RectF rect) throws ReaderException {
+        super.updateViewportRect(rect);
+        getPageManager().scaleToPage(getCurrentPageName());
+    }
+
     public void scaleToPage() throws ReaderException {
 
     }
