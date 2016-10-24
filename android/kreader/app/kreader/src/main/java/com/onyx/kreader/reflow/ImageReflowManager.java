@@ -69,11 +69,17 @@ public class ImageReflowManager {
     }
 
     public void notifySettingsUpdated() {
+        release();
         loadSubPageIndex();
     }
 
     public void release() {
         reflowExecutor.abort();
+        String currentPage = reflowExecutor.getCurrentTaskPage();
+        if (currentPage != null) {
+            waitUntilSubPagesReady(currentPage);
+        }
+        ImageUtils.releaseReflowedPage(null);
         documentMd5 = null;
     }
 
