@@ -51,8 +51,9 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public boolean prevScreen() throws ReaderException {
         if (atFirstSubPage()) {
-            reverseOrder = true;
-            return prevPage();
+            if (prevPage()) {
+                reverseOrder = true;
+            }
         }
         previousSubPage();
         return true;
