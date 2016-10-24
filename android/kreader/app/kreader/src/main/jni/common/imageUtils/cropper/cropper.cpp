@@ -59,7 +59,6 @@ namespace {
 double WHITE_THRESHOLD  = 0.05;
 
 // use std::list to simulate FIFO queue
-std::shared_ptr<WILLUSBITMAP> currentReflowedPage;
 std::list<std::pair<std::string, std::shared_ptr<WILLUSBITMAP>>> reflowedPages;
 std::mutex pagesMutex;
 
@@ -83,7 +82,7 @@ void releaseReflowedPages() {
     }
 }
 
-WILLUSBITMAP *getReflowedPage(const std::string &pageName) {
+std::shared_ptr<WILLUSBITMAP> getReflowedPage(const std::string &pageName) {
     std::lock_guard<std::mutex> lock(pagesMutex);
     auto found = std::find_if(reflowedPages.cbegin(), reflowedPages.cend(),
                              [&pageName](const std::pair<std::string, std::shared_ptr<WILLUSBITMAP>> &pair) {
@@ -92,8 +91,7 @@ WILLUSBITMAP *getReflowedPage(const std::string &pageName) {
     if (found == reflowedPages.cend()) {
         return nullptr;
     }
-    currentReflowedPage = found->second;
-    return currentReflowedPage.get();
+    return found->second;
 }
 
 int calculateAvgLum(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h);
@@ -782,7 +780,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowed
     WILLUSBITMAP dst;
     bmp_init(&dst);
     LOGE("renderReflowedPage, crop region: [%d, %d] - [%d, %d]", x, y, width, height);
-    bmp_crop_ex(&dst, page, x, y, width, height);
+    bmp_crop_ex(&dst, page.get(), x, y, width, height);
     LOGE("renderReflowedPage, crop region finished");
 
     unsigned int * target = (unsigned int *)pixels;
