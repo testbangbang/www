@@ -109,6 +109,8 @@ public class LayoutProviderUtils {
         for (PageInfo pageInfo : visiblePages) {
             readerViewInfo.copyPageInfo(pageInfo);
         }
+        readerViewInfo.canPrevScreen = layoutManager.getCurrentLayoutProvider().canPrevScreen();
+        readerViewInfo.canNextScreen = layoutManager.getCurrentLayoutProvider().canNextScreen();
         readerViewInfo.supportScalable = layoutManager.getCurrentLayoutProvider().supportScale();
         readerViewInfo.supportReflow = layoutManager.isSupportReflow();
         readerViewInfo.canGoBack = layoutManager.canGoBack();

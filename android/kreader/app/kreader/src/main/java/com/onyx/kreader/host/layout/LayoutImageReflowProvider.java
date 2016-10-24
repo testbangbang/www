@@ -44,13 +44,24 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return false;
     }
 
+    @Override
+    public boolean canPrevScreen() throws ReaderException {
+        return !(atFirstSubPage() && atFirstPage());
+    }
+
     public boolean prevScreen() throws ReaderException {
         if (atFirstSubPage()) {
-            reverseOrder = true;
-            return prevPage();
+            if (prevPage()) {
+                reverseOrder = true;
+            }
         }
         previousSubPage();
         return true;
+    }
+
+    @Override
+    public boolean canNextScreen() throws ReaderException {
+        return !(atLastSubPage() && atLastPage());
     }
 
     public boolean nextScreen() throws ReaderException {
@@ -195,6 +206,12 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return new RectF(0, 0,
                 getLayoutManager().getReaderViewOptions().getViewWidth(),
                 getLayoutManager().getReaderViewOptions().getViewHeight());
+    }
+
+    @Override
+    public void updateViewportRect(RectF rect) throws ReaderException {
+        super.updateViewportRect(rect);
+        getPageManager().scaleToPage(getCurrentPageName());
     }
 
     public void scaleToPage() throws ReaderException {

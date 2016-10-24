@@ -69,11 +69,17 @@ public class ImageReflowManager {
     }
 
     public void notifySettingsUpdated() {
+        release();
         loadSubPageIndex();
     }
 
     public void release() {
         reflowExecutor.abort();
+        String currentPage = reflowExecutor.getCurrentTaskPage();
+        if (currentPage != null) {
+            waitUntilSubPagesReady(currentPage);
+        }
+        ImageUtils.releaseReflowedPage(null);
         documentMd5 = null;
     }
 
@@ -219,10 +225,10 @@ public class ImageReflowManager {
             return null;
         }
         int top = settings.dev_height * subPage;
-        int height = Math.min(settings.dev_height, size[1] - top);
+        int bottom = Math.min(top + settings.dev_height, size[1]);
         Bitmap bitmap = Bitmap.createBitmap(settings.dev_width, settings.dev_height, Bitmap.Config.ARGB_8888);
         bitmap.eraseColor(Color.WHITE);
-        if (!ImageUtils.renderReflowedPage(pageName, 0, top, settings.dev_width, height, bitmap)) {
+        if (!ImageUtils.renderReflowedPage(pageName, 0, top, settings.dev_width, bottom, bitmap)) {
             bitmap.recycle();
             return null;
         }

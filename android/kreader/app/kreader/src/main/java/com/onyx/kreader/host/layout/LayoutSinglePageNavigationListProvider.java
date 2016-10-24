@@ -47,6 +47,11 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return true;
     }
 
+    @Override
+    public boolean canPrevScreen() throws ReaderException {
+        return getNavigationList().hasPrevious() || !atFirstPage();
+    }
+
     public boolean prevScreen() throws ReaderException {
         if (getNavigationList().hasPrevious()) {
             RectF subScreen = getNavigationList().previous();
@@ -54,6 +59,11 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
             return true;
         }
         return prevPage();
+    }
+
+    @Override
+    public boolean canNextScreen() throws ReaderException {
+        return getNavigationList().hasNext() || !atLastPage();
     }
 
     public boolean nextScreen() throws ReaderException {

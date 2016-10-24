@@ -24,7 +24,7 @@ public class ImageUtils {
     static public native boolean reflowPage(String pageName, Bitmap input, ImageReflowSettings settings);
     static public native boolean isPageReflowed(String pageName);
     static public native boolean getReflowedPageSize(String pageName, int []size);
-    static public native boolean renderReflowedPage(String pageName, int x, int y, int width, int height, final Bitmap bitmap);
+    static public native boolean renderReflowedPage(String pageName, int left, int top, int right, int bottom, final Bitmap bitmap);
     static public native void releaseReflowedPage(String pageName);
 
     /**
