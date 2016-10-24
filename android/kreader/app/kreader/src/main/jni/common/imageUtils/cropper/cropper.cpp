@@ -574,8 +574,9 @@ jboolean k2pdfopt_reflow_bmp(const std::string &pageName, KOPTContext *kctx) {
         memcpy(bmp_rowptr_from_top(dst, i + martop),
                bmp_rowptr_from_top(&masterinfo->bmp, i), bw);
 
-    kctx->page_width = kctx->dst.width;
-    kctx->page_height = kctx->dst.height;
+    kctx->page_width = dst->width;
+    kctx->page_height = dst->height;
+    LOGI("reflowed page size: [%d, %d]", dst->width, dst->height);
 
     if (0) {
         bmp_write(dst, "/sdcard/reflowout.bmp", stdout, 100);
@@ -726,7 +727,6 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_reflowPage
         LOGE("convertToWillusBmp failed");
         return false;
     }
-    LOGI("convertToWillusBmp finished");
     return k2pdfopt_reflow_bmp(pageName.getLocalString(), &kctx);
 }
 
@@ -750,7 +750,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_getReflowedPag
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowedPage
-  (JNIEnv *env, jclass, jstring pageNameString, jint x, jint y, jint width, jint height, jobject bitmap) {
+  (JNIEnv *env, jclass, jstring pageNameString, jint left, jint top, jint right, jint bottom, jobject bitmap) {
     JNIString pageName(env, pageNameString);
     auto page = getReflowedPage(pageName.getLocalString());
     if (!page) {
@@ -779,8 +779,8 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowed
 
     WILLUSBITMAP dst;
     bmp_init(&dst);
-    LOGE("renderReflowedPage, crop region: [%d, %d] - [%d, %d]", x, y, width, height);
-    bmp_crop_ex(&dst, page.get(), x, y, width, height);
+    LOGE("renderReflowedPage, crop region: [%d, %d] - [%d, %d]", left, top, right, bottom);
+    bmp_crop_ex(&dst, page.get(), left, top, right - left, bottom - top);
     LOGE("renderReflowedPage, crop region finished");
 
     unsigned int * target = (unsigned int *)pixels;

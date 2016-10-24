@@ -60,9 +60,9 @@ public class ImageReflowTest extends ApplicationTestCase<Application> {
         int i = 0;
         benchmark.restart();
         for (int top = 0; top < pageHeight; top += displayHeight) {
-            int height = Math.min(displayHeight, pageHeight - top);
+            int bottom = Math.min(pageHeight, top + displayHeight);
             subPage.eraseColor(Color.WHITE);
-            assertTrue(ImageUtils.renderReflowedPage("1", 0, top, pageWidth, height, subPage));
+            assertTrue(ImageUtils.renderReflowedPage("1", 0, top, pageWidth, bottom, subPage));
             benchmark.report("rendering sub page: " + i);
             BitmapUtils.saveBitmap(subPage, String.format("/sdcard/subpage%d.png", i));
             i++;
