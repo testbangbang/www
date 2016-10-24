@@ -444,6 +444,11 @@ public class PageManager {
         reboundViewportInPageCropRegion();
     }
 
+    public boolean canNextViewport() {
+        RectF boundingRect = getActualBoundingRect();
+        return (int)viewportRect.bottom < (int)boundingRect.bottom;
+    }
+
     public boolean nextViewport() {
         RectF boundingRect = getActualBoundingRect();
         if ((int)viewportRect.bottom >= (int)boundingRect.bottom) {
@@ -453,6 +458,11 @@ public class PageManager {
         onViewportChanged();
         reboundViewportInPageCropRegion();
         return true;
+    }
+
+    public boolean canPrevViewport() {
+        RectF boundingRect = getActualBoundingRect();
+        return (int)viewportRect.top > (int)boundingRect.top;
     }
 
     public boolean prevViewport() {

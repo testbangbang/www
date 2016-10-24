@@ -39,6 +39,14 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         return false;
     }
 
+    @Override
+    public boolean canPrevScreen() throws ReaderException {
+        if (viewportAsPage()) {
+            return !atFirstPage();
+        }
+        return getPageManager().canPrevViewport() || !atFirstPage();
+    }
+
     public boolean prevScreen() throws ReaderException {
         if (viewportAsPage()) {
             return prevPage();
@@ -53,6 +61,14 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         }
         getPageManager().collectVisiblePages();
         return true;
+    }
+
+    @Override
+    public boolean canNextScreen() throws ReaderException {
+        if (viewportAsPage()) {
+            return !atLastPage();
+        }
+        return getPageManager().canNextViewport() || !atLastPage();
     }
 
     public boolean nextScreen() throws ReaderException {

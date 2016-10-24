@@ -33,8 +33,18 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return false;
     }
 
+    @Override
+    public boolean canPrevScreen() throws ReaderException {
+        return getPageManager().canPrevViewport();
+    }
+
     public boolean prevScreen() throws ReaderException {
         return getPageManager().prevViewport();
+    }
+
+    @Override
+    public boolean canNextScreen() throws ReaderException {
+        return getPageManager().canNextViewport();
     }
 
     public boolean nextScreen() throws ReaderException {

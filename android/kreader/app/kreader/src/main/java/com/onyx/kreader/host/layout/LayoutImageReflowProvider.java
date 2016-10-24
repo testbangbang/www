@@ -44,6 +44,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return false;
     }
 
+    @Override
+    public boolean canPrevScreen() throws ReaderException {
+        return !(atFirstSubPage() && atFirstPage());
+    }
+
     public boolean prevScreen() throws ReaderException {
         if (atFirstSubPage()) {
             reverseOrder = true;
@@ -51,6 +56,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         }
         previousSubPage();
         return true;
+    }
+
+    @Override
+    public boolean canNextScreen() throws ReaderException {
+        return !(atLastSubPage() && atLastPage());
     }
 
     public boolean nextScreen() throws ReaderException {

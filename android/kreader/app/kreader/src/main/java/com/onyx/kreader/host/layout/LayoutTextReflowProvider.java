@@ -31,7 +31,17 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return false;
     }
 
+    @Override
+    public boolean canPrevScreen() throws ReaderException {
+        return false;
+    }
+
     public boolean prevScreen() throws ReaderException {
+        return false;
+    }
+
+    @Override
+    public boolean canNextScreen() throws ReaderException {
         return false;
     }
 
