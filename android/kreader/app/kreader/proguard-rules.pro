@@ -49,7 +49,11 @@
 
 -keepnames class com.onyx.kreader.api.ReaderSentence { *; }
 -keepnames class com.onyx.kreader.utils.ReaderConfig { *; }
--keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig { *; }
--keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig.MappingEntry { *; }
--keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
+
+-keepnames class com.onyx.android.sdk.scribble.utils.** { *; }
+
+#-keepnames class com.onyx.android.sdk.scribble.data.ConverterRectangle { *; }
+#-keepnames class com.onyx.android.sdk.scribble.data.ConverterStringList { *; }
+#-keepnames class com.onyx.android.sdk.scribble.data.ConverterTouchPointList { *; }
+-keepnames class com.onyx.android.sdk.scribble.data.Converter* { *; }
 
