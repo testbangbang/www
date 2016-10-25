@@ -71,11 +71,11 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowed
 
 /*
  * Class:     com_onyx_kreader_utils_ImageUtils
- * Method:    releaseReflowedPage
- * Signature: (Ljava/lang/String;)V
+ * Method:    releaseReflowedPages
+ * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPage
-  (JNIEnv *, jclass, jstring);
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPages
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

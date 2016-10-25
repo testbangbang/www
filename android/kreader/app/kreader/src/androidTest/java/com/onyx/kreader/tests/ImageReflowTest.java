@@ -68,6 +68,6 @@ public class ImageReflowTest extends ApplicationTestCase<Application> {
             i++;
         }
 
-        ImageUtils.releaseReflowedPage("1");
+        ImageUtils.releaseReflowedPages();
     }
 }
