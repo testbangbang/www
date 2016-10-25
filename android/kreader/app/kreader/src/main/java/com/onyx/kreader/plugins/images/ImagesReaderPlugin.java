@@ -181,7 +181,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
      * Retrieve current visible links.
      * @return
      */
-    public List<ReaderLink> getLinks(final String position) {
+    public List<ReaderSelection> getLinks(final String position) {
         return null;
     }
 

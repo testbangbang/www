@@ -12,7 +12,9 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.R;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.PageAnnotation;
+import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
 import com.onyx.kreader.ui.actions.PinchZoomAction;
@@ -284,6 +286,9 @@ public abstract class BaseHandler {
         if (tryAnnotation(readerDataHolder,x, y)) {
             return true;
         }
+        if (tryPageLink(readerDataHolder, x, y)) {
+            return true;
+        }
         return false;
     }
 
@@ -310,6 +315,24 @@ public abstract class BaseHandler {
                 for (RectF rect : annotation.getRectangles()) {
                     if (rect.contains(x, y)) {
                         new ShowAnnotationEditDialogAction(annotation.getAnnotation()).execute(readerDataHolder, null);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean tryPageLink(ReaderDataHolder readerDataHolder, final float x, final float y) {
+        for (PageInfo pageInfo : readerDataHolder.getReaderViewInfo().getVisiblePages()) {
+            if (!readerDataHolder.getReaderUserDataInfo().hasPageLinks(pageInfo)) {
+                continue;
+            }
+            List<ReaderSelection> links = readerDataHolder.getReaderUserDataInfo().getPageLinks(pageInfo);
+            for (ReaderSelection link : links) {
+                for (RectF rect : link.getRectangles()) {
+                    if (rect.contains(x, y)) {
+                        new GotoPageAction(link.getPagePosition()).execute(readerDataHolder);
                         return true;
                     }
                 }

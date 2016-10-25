@@ -801,7 +801,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowed
     return true;
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPage
-  (JNIEnv *, jclass, jstring) {
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPages
+  (JNIEnv *, jclass) {
     releaseReflowedPages();
 }

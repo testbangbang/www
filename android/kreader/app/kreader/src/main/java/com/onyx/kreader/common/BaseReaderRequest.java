@@ -24,6 +24,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private volatile boolean transferBitmap = true;
     private boolean loadPageAnnotation = true;
     private boolean loadBookmark = true;
+    private boolean loadPageLinks = true;
 
     public BaseReaderRequest() {
     }
@@ -185,6 +186,9 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
         if (readerViewInfo != null && loadBookmark) {
             getReaderUserDataInfo().loadBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null && loadPageLinks) {
+            getReaderUserDataInfo().loadPageLinks(getContext(), reader, readerViewInfo.getVisiblePages());
         }
     }
 

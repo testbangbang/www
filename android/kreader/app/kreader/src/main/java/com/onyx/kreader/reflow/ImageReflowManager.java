@@ -79,7 +79,7 @@ public class ImageReflowManager {
         if (currentPage != null) {
             waitUntilSubPagesReady(currentPage);
         }
-        ImageUtils.releaseReflowedPage(null);
+        ImageUtils.releaseReflowedPages();
         documentMd5 = null;
     }
 

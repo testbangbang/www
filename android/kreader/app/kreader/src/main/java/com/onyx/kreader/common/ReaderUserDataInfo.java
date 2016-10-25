@@ -3,6 +3,7 @@ package com.onyx.kreader.common;
 import android.content.Context;
 import android.graphics.PointF;
 
+import android.graphics.RectF;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.PageInfo;
@@ -38,6 +39,7 @@ public class ReaderUserDataInfo {
     private Map<String, List<Annotation>> annotationMap = new LinkedHashMap<>();
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
+    private Map<String, List<ReaderSelection>> pageLinkMap = new HashMap<>();
 
     public void setDocumentPath(final String path) {
         documentPath = path;
@@ -191,14 +193,34 @@ public class ReaderUserDataInfo {
         return searchHistoryList;
     }
 
-    private Annotation translateToScreen(PageInfo pageInfo, Annotation annotation) {
-        for (int i = 0; i < annotation.getRectangles().size(); i++) {
+    public boolean hasPageLinks(final PageInfo pageInfo) {
+        return pageLinkMap.containsKey(pageInfo.getName());
+    }
+
+    public List<ReaderSelection> getPageLinks(final PageInfo pageInfo) {
+        return pageLinkMap.get(pageInfo.getName());
+    }
+
+    public boolean loadPageLinks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        for (PageInfo pageInfo : visiblePages) {
+            List<ReaderSelection> list = reader.getNavigator().getLinks(pageInfo.getName());
+            if (list.size() > 0) {
+                for (ReaderSelection link : list) {
+                    translateToScreen(pageInfo, link.getRectangles());
+                }
+                pageLinkMap.put(pageInfo.getName(), list);
+            }
+        }
+        return true;
+    }
+
+    private void translateToScreen(PageInfo pageInfo, List<RectF> list) {
+        for (RectF rect : list) {
             PageUtils.translate(pageInfo.getDisplayRect().left,
                     pageInfo.getDisplayRect().top,
                     pageInfo.getActualScale(),
-                    annotation.getRectangles().get(i));
+                    rect);
         }
-        return annotation;
     }
 
     public PointF getTouchPoint() {

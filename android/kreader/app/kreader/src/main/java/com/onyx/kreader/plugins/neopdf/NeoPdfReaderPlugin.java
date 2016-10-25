@@ -17,7 +17,6 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderHitTestArgs;
 import com.onyx.kreader.api.ReaderHitTestManager;
 import com.onyx.kreader.api.ReaderHitTestOptions;
-import com.onyx.kreader.api.ReaderLink;
 import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.api.ReaderPlugin;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -36,7 +35,9 @@ import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -59,6 +60,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     private String documentPath;
 
     List<ReaderSelection> searchResults = new ArrayList<>();
+    Map<String, List<ReaderSelection>> pageLinks = new HashMap<>();
 
     private ReaderViewOptions readerViewOptions;
 
@@ -223,8 +225,21 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
      * Retrieve current visible links.
      * @return
      */
-    public List<ReaderLink> getLinks(final String position) {
-        return null;
+    public List<ReaderSelection> getLinks(final String position) {
+        List<ReaderSelection> list = pageLinks.get(position);
+        if (list == null) {
+            list = new ArrayList<>();
+            int page = PagePositionUtils.getPageNumber(position);
+            if (!getPluginImpl().getPageLinks(page, list)) {
+                return list;
+            }
+            pageLinks.put(position, list);
+        }
+        ArrayList<ReaderSelection> copy = new ArrayList<>();
+        for (ReaderSelection link : list) {
+            copy.add(((NeoPdfSelection)link).clone());
+        }
+        return copy;
     }
 
     /**
