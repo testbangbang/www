@@ -30,6 +30,9 @@ public class StringUtils {
 
     static public String utf16le(final byte [] data) {
         String string = "";
+        if (data == null) {
+            return string;
+        }
         try {
             string = new String(data, UTF16LE);
         } catch (Exception e) {

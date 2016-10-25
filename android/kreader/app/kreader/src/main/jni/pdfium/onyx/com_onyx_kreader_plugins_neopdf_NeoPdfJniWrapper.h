@@ -127,6 +127,14 @@ JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeGetTableOfContent
   (JNIEnv *, jobject, jint, jobject);
 
+/*
+ * Class:     com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeGetPageLinks
+ * Signature: (IILjava/util/List;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageLinks
+  (JNIEnv *, jobject, jint, jint, jobject);
+
 #ifdef __cplusplus
 }
 #endif
