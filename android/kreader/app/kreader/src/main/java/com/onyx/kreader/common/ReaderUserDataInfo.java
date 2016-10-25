@@ -203,7 +203,7 @@ public class ReaderUserDataInfo {
 
     public boolean loadPageLinks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for (PageInfo pageInfo : visiblePages) {
-            List<ReaderSelection> list = reader.getDocument().getPageLinks(pageInfo.getName());
+            List<ReaderSelection> list = reader.getNavigator().getLinks(pageInfo.getName());
             if (list.size() > 0) {
                 for (ReaderSelection link : list) {
                     translateToScreen(pageInfo, link.getRectangles());
