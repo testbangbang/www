@@ -75,9 +75,7 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (cursorSelected < 0){
-            quitWordSelection(readerDataHolder);
-        }
+        quitWordSelection(readerDataHolder);
         return true;
     }
 

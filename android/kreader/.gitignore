@@ -1,6 +1,7 @@
 .idea/
 .vs/
 .gradle/
+.externalNativeBuild/
 ARM/
 gen/
 obj/

@@ -1,2 +1,2 @@
-include ':app:kreader', ':libraries:cropimage', ':libraries:onyxsdk-ui', ':libraries:onyxsdk-base', ':libraries:onyxsdk-data', ':libraries:onyxsdk-scribble',  ':app:note', ':libraries:chinese-analyzer', ':app-edu'
+include ':app:kreader', ':libraries:cropimage', ':libraries:onyxsdk-ui', ':libraries:onyxsdk-base', ':libraries:onyxsdk-data', ':libraries:onyxsdk-scribble', ':app:note', ':libraries:chinese-analyzer', ':app-edu'
 project(':app-edu').projectDir = new File('app/edu')
