@@ -28,6 +28,7 @@ import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
+import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
@@ -66,6 +67,7 @@ public class ReaderPainter {
         drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+        drawPageLinks(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
         drawShapes(context, canvas, paint, userDataInfo, noteManager);
         drawStashShapes(context, canvas, paint, noteManager, viewInfo);
@@ -138,6 +140,18 @@ public class ReaderPainter {
                         drawHighLightSign(context, canvas, paint, annotation.getRectangles());
                     }
                 }
+            }
+        }
+    }
+
+    private void drawPageLinks(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, DrawHighlightPaintStyle paintStyle) {
+        for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            if (!userDataInfo.hasPageLinks(pageInfo)) {
+                continue;
+            }
+            List<ReaderSelection> links = userDataInfo.getPageLinks(pageInfo);
+            for (ReaderSelection link : links) {
+                drawUnderLineHighlightRectangles(canvas, paint, link.getRectangles());
             }
         }
     }
