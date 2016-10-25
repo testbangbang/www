@@ -8,8 +8,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
+import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -17,7 +19,6 @@ import java.util.Map;
  */
 public class ReaderConfig {
 
-    private static String[] generalModel = {"c67"};
     private static ReaderConfig ourInstance;
     private static final boolean useDebugConfig = false;
 
@@ -78,10 +79,12 @@ public class ReaderConfig {
     }
 
     private String readFromGeneralModel(Context context) {
-        final String name = Build.MODEL.toLowerCase();
-        for (String model : generalModel) {
-            if (name.contains(model)) {
-                return contentFromRawResource(context, model);
+        final String model = Build.MODEL.toLowerCase();
+        Field[] rawFields = R.raw.class.getFields();
+        for (Field field : rawFields) {
+            String fieldName = field.getName();
+            if (model.contains(fieldName)) {
+                return contentFromRawResource(context, fieldName);
             }
         }
         return null;
