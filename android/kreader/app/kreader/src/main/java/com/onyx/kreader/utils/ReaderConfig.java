@@ -17,6 +17,7 @@ import java.util.Map;
  */
 public class ReaderConfig {
 
+    private static String[] generalModel = {"c67"};
     private static ReaderConfig ourInstance;
     private static final boolean useDebugConfig = false;
 
@@ -39,6 +40,10 @@ public class ReaderConfig {
 
         if (StringUtils.isNullOrEmpty(content)) {
             content = readFromModel(context);
+        }
+
+        if (StringUtils.isNullOrEmpty(content)) {
+            content = readFromGeneralModel(context);
         }
 
         if (StringUtils.isNullOrEmpty(content)) {
@@ -70,6 +75,16 @@ public class ReaderConfig {
     private String readFromModel(Context context) {
         final String name = Build.MODEL;
         return contentFromRawResource(context, name);
+    }
+
+    private String readFromGeneralModel(Context context) {
+        final String name = Build.MODEL.toLowerCase();
+        for (String model : generalModel) {
+            if (name.contains(model)) {
+                return contentFromRawResource(context, model);
+            }
+        }
+        return null;
     }
 
     private String readFromDefaultOnyxConfig(Context context) {
