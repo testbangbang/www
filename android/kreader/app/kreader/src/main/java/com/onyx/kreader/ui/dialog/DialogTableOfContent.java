@@ -163,8 +163,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             this.page = page;
             this.position = position;
 
-            boolean showPageLastLine = (position + 1) % getPageSize(tab) != 0;
-            this.splitLine.setVisibility(showPageLastLine ? View.VISIBLE : View.INVISIBLE);
             editLayout.setVisibility(currentTab == DirectoryTab.Annotation ? View.VISIBLE : View.GONE);
         }
     }
