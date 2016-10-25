@@ -83,7 +83,7 @@ public class ReaderConfig {
         Field[] rawFields = R.raw.class.getFields();
         for (Field field : rawFields) {
             String fieldName = field.getName();
-            if (model.contains(fieldName)) {
+            if (model.startsWith(fieldName)) {
                 return contentFromRawResource(context, fieldName);
             }
         }
