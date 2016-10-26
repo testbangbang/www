@@ -21,7 +21,17 @@ public class ShowQuickPreviewAction extends BaseAction {
 
     private DialogQuickPreview dialogQuickPreview;
     private List<Integer> pagesToPreview;
+    private List<ReaderBitmapImpl> bitmaps = new ArrayList<>();
     private int index = 0;
+    private int width = 300;
+    private int height = 400;
+
+    public ShowQuickPreviewAction(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.getReader().getRendererFeatures().supportScale()) {
+            width = readerDataHolder.getDisplayWidth();
+            height = readerDataHolder.getDisplayHeight();
+        }
+    }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -36,10 +46,17 @@ public class ShowQuickPreviewAction extends BaseAction {
             }
 
             @Override
-            public void requestPreview(final List<Integer> pages, final List<ReaderBitmapImpl> bitmaps) {
+            public void requestPreview(final List<Integer> pages) {
                 pagesToPreview = pages;
                 index = 0;
-                requestPreviewBySequence(readerDataHolder, bitmaps);
+                requestPreviewBySequence(readerDataHolder);
+            }
+
+            @Override
+            public void recycleBitmap() {
+                for (ReaderBitmapImpl bitmap : bitmaps) {
+                    bitmap.recycleBitmap();
+                }
             }
         });
         dialogQuickPreview.show();
@@ -47,11 +64,15 @@ public class ShowQuickPreviewAction extends BaseAction {
         BaseCallback.invoke(callback, null, null);
     }
 
-    private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final List<ReaderBitmapImpl> bitmaps) {
+    private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder) {
         if (pagesToPreview.size() <= 0) {
             return;
         }
         final int current = pagesToPreview.remove(0);
+        while (index >= bitmaps.size()) {
+            final ReaderBitmapImpl bitmap = new ReaderBitmapImpl(width, height, Bitmap.Config.ARGB_8888);
+            bitmaps.add(bitmap);
+        }
         final ReaderBitmapImpl readerBitmap = bitmaps.get(index);
         index++;
         RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(PagePositionUtils.fromPageNumber(current), readerBitmap);
@@ -59,7 +80,7 @@ public class ShowQuickPreviewAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dialogQuickPreview.updatePreview(current, readerBitmap.getBitmap());
-                requestPreviewBySequence(readerDataHolder, bitmaps);
+                requestPreviewBySequence(readerDataHolder);
             }
         });
     }
