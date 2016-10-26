@@ -69,17 +69,20 @@ public class ShowQuickPreviewAction extends BaseAction {
             return;
         }
         final int current = pagesToPreview.remove(0);
-        while (index >= bitmaps.size()) {
-            final ReaderBitmapImpl bitmap = new ReaderBitmapImpl(width, height, Bitmap.Config.ARGB_8888);
-            bitmaps.add(bitmap);
+        ReaderBitmapImpl readerBitmap;
+        if (index >= bitmaps.size()) {
+            readerBitmap = new ReaderBitmapImpl(width, height, Bitmap.Config.ARGB_8888);
+            bitmaps.add(readerBitmap);
+        }else {
+            readerBitmap = bitmaps.get(index);
         }
-        final ReaderBitmapImpl readerBitmap = bitmaps.get(index);
+        final ReaderBitmapImpl fBitmap = readerBitmap;
         index++;
-        RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(PagePositionUtils.fromPageNumber(current), readerBitmap);
+        RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(PagePositionUtils.fromPageNumber(current), fBitmap);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dialogQuickPreview.updatePreview(current, readerBitmap.getBitmap());
+                dialogQuickPreview.updatePreview(current, fBitmap.getBitmap());
                 requestPreviewBySequence(readerDataHolder);
             }
         });
