@@ -52,8 +52,5 @@
 
 -keepnames class com.onyx.android.sdk.scribble.utils.** { *; }
 
-#-keepnames class com.onyx.android.sdk.scribble.data.ConverterRectangle { *; }
-#-keepnames class com.onyx.android.sdk.scribble.data.ConverterStringList { *; }
-#-keepnames class com.onyx.android.sdk.scribble.data.ConverterTouchPointList { *; }
 -keepnames class com.onyx.android.sdk.scribble.data.Converter* { *; }
 
