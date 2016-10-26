@@ -52,5 +52,7 @@
 
 -keepnames class com.onyx.android.sdk.scribble.utils.** { *; }
 
--keepnames class com.onyx.android.sdk.scribble.data.Converter* { *; }
-
+# keep classes used by TypeConverter of dbflow
+-keep class com.onyx.kreader.note.data.ReaderNotePageNameMap { *; }
+-keep class com.onyx.android.sdk.scribble.data.PageNameList { *; }
+-keep class com.onyx.android.sdk.scribble.data.TouchPointList { *; }
