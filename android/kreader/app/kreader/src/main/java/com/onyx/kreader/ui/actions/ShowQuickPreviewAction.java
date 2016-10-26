@@ -11,6 +11,7 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
 import com.onyx.kreader.utils.PagePositionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +20,8 @@ import java.util.List;
 public class ShowQuickPreviewAction extends BaseAction {
 
     private DialogQuickPreview dialogQuickPreview;
-    private boolean isAborted = false;
     private List<Integer> pagesToPreview;
+    private int index = 0;
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -29,14 +30,16 @@ public class ShowQuickPreviewAction extends BaseAction {
             @Override
             public void abort() {
                 if (pagesToPreview != null) {
+                    index = 0;
                     pagesToPreview.clear();
                 }
             }
 
             @Override
-            public void requestPreview(final List<Integer> pages, final Size desiredSize) {
+            public void requestPreview(final List<Integer> pages, final List<ReaderBitmapImpl> bitmaps) {
                 pagesToPreview = pages;
-                requestPreviewBySequence(readerDataHolder, desiredSize);
+                index = 0;
+                requestPreviewBySequence(readerDataHolder, bitmaps);
             }
         });
         dialogQuickPreview.show();
@@ -44,24 +47,19 @@ public class ShowQuickPreviewAction extends BaseAction {
         BaseCallback.invoke(callback, null, null);
     }
 
-    private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final Size desiredSize) {
-        if (isAborted || pagesToPreview.size() <= 0) {
+    private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder, final List<ReaderBitmapImpl> bitmaps) {
+        if (pagesToPreview.size() <= 0) {
             return;
         }
         final int current = pagesToPreview.remove(0);
-        int width = readerDataHolder.getDisplayWidth();
-        int height = readerDataHolder.getDisplayHeight();
-        if (!readerDataHolder.getReader().getRendererFeatures().supportScale()) {
-            width = desiredSize.width;
-            height = desiredSize.height;
-        }
-        final ReaderBitmapImpl bitmap = new ReaderBitmapImpl(width, height, Bitmap.Config.ARGB_8888);
-        RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(PagePositionUtils.fromPageNumber(current), bitmap);
+        final ReaderBitmapImpl readerBitmap = bitmaps.get(index);
+        index++;
+        RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(PagePositionUtils.fromPageNumber(current), readerBitmap);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dialogQuickPreview.updatePreview(current, bitmap.getBitmap());
-                requestPreviewBySequence(readerDataHolder, desiredSize);
+                dialogQuickPreview.updatePreview(current, readerBitmap.getBitmap());
+                requestPreviewBySequence(readerDataHolder, bitmaps);
             }
         });
     }
