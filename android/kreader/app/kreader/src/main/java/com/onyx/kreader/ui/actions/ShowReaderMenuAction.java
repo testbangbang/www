@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
@@ -23,6 +22,7 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.RunnableWithArgument;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
@@ -273,16 +273,29 @@ public class ShowReaderMenuAction extends BaseAction {
         return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems, disableMenus);
     }
 
-    private void initPageMenuItems(ReaderDataHolder readerDataHolders, List<ReaderLayerMenuItem> menuItems) {
-        for (ReaderLayerMenuItem item : menuItems) {
-            if (item.getAction() == ReaderMenuAction.SHOW_NOTE) {
-                item.setDrawableResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
-                        ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
-                item.setTitleResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
-                        ? R.string.reader_layer_menu_hide_scribble : R.string.reader_layer_menu_show_scribble);
-            }
-            initPageMenuItems(readerDataHolders, (List<ReaderLayerMenuItem>)item.getChildren());
+    private void traverseMenuItems(List<ReaderLayerMenuItem> items, RunnableWithArgument<ReaderLayerMenuItem> callback) {
+        for (ReaderLayerMenuItem item : items) {
+            callback.run(item);
+            traverseMenuItems(item.getChildren(), callback);
         }
+    }
+
+    private void initPageMenuItems(final ReaderDataHolder readerDataHolders, List<ReaderLayerMenuItem> menuItems) {
+        traverseMenuItems(menuItems, new RunnableWithArgument<ReaderLayerMenuItem>() {
+            @Override
+            public void run(ReaderLayerMenuItem value) {
+                if (value.getAction() == ReaderMenuAction.SHOW_NOTE) {
+                    value.setDrawableResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
+                            ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
+                    value.setTitleResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
+                            ? R.string.reader_layer_menu_hide_scribble : R.string.reader_layer_menu_show_scribble);
+                }
+                if (value.getAction() == ReaderMenuAction.DIRECTORY_SCRIBBLE ||
+                        value.getAction() == ReaderMenuAction.SHOW_NOTE) {
+                    value.setVisible(readerDataHolders.getReaderViewInfo().supportScalable);
+                }
+            }
+        });
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
