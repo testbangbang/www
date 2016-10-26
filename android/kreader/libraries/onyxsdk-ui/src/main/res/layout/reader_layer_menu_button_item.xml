@@ -5,8 +5,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
+                android:paddingTop="@dimen/dialog_reader_menu_text_view_padding"
+                android:paddingBottom="@dimen/dialog_reader_menu_text_view_padding"
                 android:background="@drawable/menu_item_bg"
 >
 
