@@ -241,9 +241,6 @@ public class TreeRecyclerView extends PageRecyclerView {
                 }
             });
 
-            if ((position + 1) % rowCount == 0){
-                splitLine.setVisibility(GONE);
-            }
         }
 
     }
@@ -306,7 +303,7 @@ public class TreeRecyclerView extends PageRecyclerView {
 
         @Override
         public void onPageBindViewHolder(TreeNodeViewHolder holder, int position) {
-            holder.bindView(list, position,mRowCount,mParent,currentNode);
+            holder.bindView(list, position,mRowCount, pageRecyclerView,currentNode);
         }
 
     }

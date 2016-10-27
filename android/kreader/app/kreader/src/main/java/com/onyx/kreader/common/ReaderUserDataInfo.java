@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.provider.SearchHistoryProvider;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
@@ -204,7 +205,7 @@ public class ReaderUserDataInfo {
     public boolean loadPageLinks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for (PageInfo pageInfo : visiblePages) {
             List<ReaderSelection> list = reader.getNavigator().getLinks(pageInfo.getName());
-            if (list.size() > 0) {
+            if (!CollectionUtils.isNullOrEmpty(list)) {
                 for (ReaderSelection link : list) {
                     translateToScreen(pageInfo, link.getRectangles());
                 }

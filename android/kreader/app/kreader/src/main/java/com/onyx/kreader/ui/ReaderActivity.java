@@ -231,7 +231,7 @@ public class ReaderActivity extends ActionBarActivity {
         statusBar.setCallback(new ReaderStatusBar.Callback() {
             @Override
             public void onGotoPage() {
-                new ShowQuickPreviewAction().execute(getReaderDataHolder(), null);
+                new ShowQuickPreviewAction(getReaderDataHolder()).execute(getReaderDataHolder(), null);
             }
         });
         reconfigStatusBar();

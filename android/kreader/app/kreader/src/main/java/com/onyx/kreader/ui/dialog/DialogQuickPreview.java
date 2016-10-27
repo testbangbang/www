@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -53,7 +54,9 @@ public class DialogQuickPreview extends Dialog {
     public static abstract class Callback {
         public abstract void abort();
 
-        public abstract void requestPreview(final List<Integer> pages, final Size desiredSize);
+        public abstract void requestPreview(final List<Integer> pages);
+
+        public abstract void recycleBitmap();
     }
 
     static class GridType {
@@ -106,7 +109,6 @@ public class DialogQuickPreview extends Dialog {
 
     private class PagePreviewAdapter extends PageRecyclerView.PageAdapter<PreviewViewHolder> {
 
-        private Size childSize = new Size(300, 400);
         private Grid grid;
 
         public void requestMissingBitmaps() {
@@ -121,16 +123,12 @@ public class DialogQuickPreview extends Dialog {
             for (int i = pageBegin; i <= pageEnd; i++) {
                 toRequest.add(i);
             }
-            callback.requestPreview(toRequest, childSize);
+            callback.requestPreview(toRequest);
         }
 
         public void setGridType(Grid grid) {
             this.grid = grid;
             gridRecyclerView.resize(grid.getRows(), grid.getColumns(), readerDataHolder.getPageCount());
-        }
-
-        public Size getDesiredSize() {
-            return childSize;
         }
 
         public void setBitmap(int index, Bitmap bitmap) {
@@ -181,11 +179,7 @@ public class DialogQuickPreview extends Dialog {
         @Override
         public void onViewDetachedFromWindow(PreviewViewHolder holder) {
             super.onViewDetachedFromWindow(holder);
-            Bitmap bitmap = holder.getBitmap();
-            if (bitmap != null && !bitmap.isRecycled()) {
-                bitmap.recycle();
-                holder.getImageView().setImageDrawable(new ColorDrawable(Color.WHITE));
-            }
+            holder.getImageView().setImageDrawable(new ColorDrawable(Color.WHITE));
         }
     }
 
@@ -500,10 +494,6 @@ public class DialogQuickPreview extends Dialog {
         }
     }
 
-    private Bitmap getScaledPreview(Bitmap pageBitmap) {
-        return Bitmap.createScaledBitmap(pageBitmap, adapter.getDesiredSize().width, adapter.getDesiredSize().height, false);
-    }
-
     private void onPageDataChanged() {
         currentPage = getPaginator().getCurrentPageBegin();
         callback.abort();
@@ -551,5 +541,13 @@ public class DialogQuickPreview extends Dialog {
     private void prevPage() {
         gridRecyclerView.prevPage();
         onPageDataChanged();
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (callback != null) {
+            callback.recycleBitmap();
+        }
     }
 }

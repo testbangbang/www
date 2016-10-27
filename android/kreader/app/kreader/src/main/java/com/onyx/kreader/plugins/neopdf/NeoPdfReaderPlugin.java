@@ -451,7 +451,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportFontSizeAdjustment() {
-        return true;
+        return false;
     }
 
     public boolean supportTypefaceAdjustment() {

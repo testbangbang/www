@@ -32,6 +32,17 @@
 -dontwarn okio.**
 -dontwarn retrofit2.**
 
+-keepnames class * {
+    native <methods>;
+}
+
+-keep class * implements android.os.Parcelable { *; }
+
+-keep class * implements java.io.Serializable { *; }
+
 -keepnames class org.greenrobot.eventbus.** { *; }
 
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
+-keep class * extends com.raizlabs.android.dbflow.converter.TypeConverter { *; }
+-keep class * extends com.raizlabs.android.dbflow.structure.BaseModel { *; }
+

@@ -39,4 +39,5 @@
     <dimen name="dialog_export_margin">10dp</dimen>
     <dimen name="dialog_table_of_content_radio_button_padding">10dp</dimen>
     <dimen name="dialog_set_value_image_size">60dp</dimen>
+    <dimen name="dialog_scribble_full_screen_toolbar_padding">16dp</dimen>
 </resources>
