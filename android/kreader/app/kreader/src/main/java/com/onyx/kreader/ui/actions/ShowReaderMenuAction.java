@@ -389,7 +389,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        new ShowQuickPreviewAction().execute(readerDataHolder, null);
+        new ShowQuickPreviewAction(readerDataHolder).execute(readerDataHolder, null);
     }
 
     private void backward(final ReaderDataHolder readerDataHolder) {

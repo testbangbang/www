@@ -54,7 +54,9 @@ public class DialogQuickPreview extends Dialog {
     public static abstract class Callback {
         public abstract void abort();
 
-        public abstract void requestPreview(final List<Integer> pages, final List<ReaderBitmapImpl> bitmaps);
+        public abstract void requestPreview(final List<Integer> pages);
+
+        public abstract void recycleBitmap();
     }
 
     static class GridType {
@@ -121,7 +123,7 @@ public class DialogQuickPreview extends Dialog {
             for (int i = pageBegin; i <= pageEnd; i++) {
                 toRequest.add(i);
             }
-            callback.requestPreview(toRequest, bitmaps);
+            callback.requestPreview(toRequest);
         }
 
         public void setGridType(Grid grid) {
@@ -198,7 +200,6 @@ public class DialogQuickPreview extends Dialog {
     private int currentPage;
     private Callback callback;
     private List<Integer> tocChapterNodeList = new ArrayList<>();
-    private List<ReaderBitmapImpl> bitmaps = new ArrayList<>();
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, Callback callback) {
         super(readerDataHolder.getContext(), android.R.style.Theme_NoTitleBar);
@@ -208,24 +209,10 @@ public class DialogQuickPreview extends Dialog {
         this.callback = callback;
         currentPage = readerDataHolder.getCurrentPage();
 
-        initBitmaps();
         fitDialogToWindow();
         initGridType();
         setupLayout();
         setupContent();
-    }
-
-    private void initBitmaps() {
-        int width = 300;
-        int height = 400;
-        if (readerDataHolder.getReader().getRendererFeatures().supportScale()) {
-            width = readerDataHolder.getDisplayWidth();
-            height = readerDataHolder.getDisplayHeight();
-        }
-        for (int i = 0; i < GridType.Nine; i++) {
-            final ReaderBitmapImpl bitmap = new ReaderBitmapImpl(width, height, Bitmap.Config.ARGB_8888);
-            bitmaps.add(bitmap);
-        }
     }
 
     private void fitDialogToWindow() {
@@ -559,8 +546,8 @@ public class DialogQuickPreview extends Dialog {
     @Override
     public void dismiss() {
         super.dismiss();
-        for (ReaderBitmapImpl bitmap : bitmaps) {
-            bitmap.recycleBitmap();
+        if (callback != null) {
+            callback.recycleBitmap();
         }
     }
 }
