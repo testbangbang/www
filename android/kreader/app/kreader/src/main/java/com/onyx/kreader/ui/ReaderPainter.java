@@ -64,14 +64,21 @@ public class ReaderPainter {
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
-        drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
-        drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
-        drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
-        drawPageLinks(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
-        drawShapes(context, canvas, paint, userDataInfo, noteManager);
-        drawStashShapes(context, canvas, paint, noteManager, viewInfo);
-        drawShapeEraser(context, canvas, paint, noteManager);
+        if (viewInfo.supportScalable) {
+            drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+            drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
+            drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+            drawPageLinks(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+            drawShapes(context, canvas, paint, userDataInfo, noteManager);
+            drawStashShapes(context, canvas, paint, noteManager, viewInfo);
+            drawShapeEraser(context, canvas, paint, noteManager);
+        } else if (viewInfo.supportReflow) {
+            drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+            drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
+            drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+            drawPageLinks(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+        }
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
