@@ -15,11 +15,11 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
+import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
-import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.RunnableWithArgument;
@@ -68,7 +68,6 @@ public class ShowReaderMenuAction extends BaseAction {
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderLayerMenu readerMenu;
-    private static ReaderLayerMenuState state;
     private boolean disableScribbleBrush = true;
     private static List<ReaderMenuAction> disableMenus = new ArrayList<>();
 
@@ -97,21 +96,13 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showReaderMenu(final ReaderDataHolder readerDataHolder) {
-        if (state == null){
-            state = new ReaderLayerMenuState();
-        }
-        state.setTitle(FileUtils.getFileName(readerDataHolder.getReader().getDocumentPath()));
-        state.setPageCount(readerDataHolder.getPageCount());
-        state.setPageIndex(readerDataHolder.getCurrentPage());
-        getReaderMenu(readerDataHolder).show(state);
-        updateBackwardForwardState(readerDataHolder);
+        getReaderMenu(readerDataHolder).show(getReaderMenuState(readerDataHolder));
     }
 
     private ReaderMenu getReaderMenu(final ReaderDataHolder readerDataHolder) {
         if (readerMenu == null) {
             initReaderMenu(readerDataHolder);
         }
-        initPageMenuItems(readerDataHolder, readerMenu.getMenuItems());
         return readerMenu;
     }
 
@@ -137,10 +128,6 @@ public class ShowReaderMenuAction extends BaseAction {
         updateReaderMenuCallback(readerMenu, readerDataHolder);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
         readerMenu.fillItems(items);
-    }
-
-    private static void updateReaderMenuState(final ReaderDataHolder readerDataHolder, final ReaderLayerMenuState state) {
-        readerMenu.updateReaderMenuState(state);
     }
 
     private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderDataHolder readerDataHolder) {
@@ -271,31 +258,6 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
         return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems, disableMenus);
-    }
-
-    private void traverseMenuItems(List<ReaderLayerMenuItem> items, RunnableWithArgument<ReaderLayerMenuItem> callback) {
-        for (ReaderLayerMenuItem item : items) {
-            callback.run(item);
-            traverseMenuItems(item.getChildren(), callback);
-        }
-    }
-
-    private void initPageMenuItems(final ReaderDataHolder readerDataHolders, List<ReaderLayerMenuItem> menuItems) {
-        traverseMenuItems(menuItems, new RunnableWithArgument<ReaderLayerMenuItem>() {
-            @Override
-            public void run(ReaderLayerMenuItem value) {
-                if (value.getAction() == ReaderMenuAction.SHOW_NOTE) {
-                    value.setDrawableResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
-                            ? R.drawable.ic_dialog_reader_menu_note_show : R.drawable.ic_dialog_reader_menu_note_hide);
-                    value.setTitleResourceId(SingletonSharedPreference.isShowNote(readerDataHolders.getContext())
-                            ? R.string.reader_layer_menu_hide_scribble : R.string.reader_layer_menu_show_scribble);
-                }
-                if (value.getAction() == ReaderMenuAction.DIRECTORY_SCRIBBLE ||
-                        value.getAction() == ReaderMenuAction.SHOW_NOTE) {
-                    value.setVisible(readerDataHolders.getReaderViewInfo().supportScalable);
-                }
-            }
-        });
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
@@ -479,11 +441,9 @@ public class ShowReaderMenuAction extends BaseAction {
         SingletonSharedPreference.setIsShowNote(readerDataHolder.getContext(), isShowScribble);
         new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
     }
-    
-    public static void updateBackwardForwardState(ReaderDataHolder readerDataHolder){
-        state.setCanGoBack(readerDataHolder.getReaderViewInfo().canGoBack);
-        state.setCanGoForward(readerDataHolder.getReaderViewInfo().canGoForward);
-        updateReaderMenuState(readerDataHolder, state);
+
+    public static void updateReaderMenuState(final ReaderDataHolder readerDataHolder) {
+        readerMenu.updateReaderMenuState(getReaderMenuState(readerDataHolder));
     }
 
     public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
@@ -696,6 +656,45 @@ public class ShowReaderMenuAction extends BaseAction {
             actionChain.addAction(new ChangeNoteShapeAction(ShapeFactory.SHAPE_SELECTOR));
             actionChain.execute(readerDataHolder, null);
         }
+    }
+
+    private static ReaderMenuState getReaderMenuState(final ReaderDataHolder readerDataHolder) {
+        return new ReaderMenuState() {
+            @Override
+            public String getTitle() {
+                return FileUtils.getFileName(readerDataHolder.getReader().getDocumentPath());
+            }
+
+            @Override
+            public int getPageIndex() {
+                return readerDataHolder.getCurrentPage();
+            }
+
+            @Override
+            public int getPageCount() {
+                return readerDataHolder.getPageCount();
+            }
+
+            @Override
+            public boolean canGoBack() {
+                return readerDataHolder.getReaderViewInfo().canGoBack;
+            }
+
+            @Override
+            public boolean canGoForward() {
+                return readerDataHolder.getReaderViewInfo().canGoForward;
+            }
+
+            @Override
+            public boolean isFixedPagingMode() {
+                return readerDataHolder.getReaderViewInfo().supportScalable;
+            }
+
+            @Override
+            public boolean isShowingNotes() {
+                return SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
+            }
+        };
     }
 
 }

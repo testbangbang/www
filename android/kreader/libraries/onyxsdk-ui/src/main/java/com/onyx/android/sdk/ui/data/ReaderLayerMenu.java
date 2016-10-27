@@ -4,9 +4,12 @@ import android.content.Context;
 import android.view.View;
 
 import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.dialog.DialogReaderMenu;
+import com.onyx.android.sdk.utils.RunnableWithArgument;
 
 import java.util.List;
 
@@ -18,7 +21,7 @@ public class ReaderLayerMenu extends ReaderMenu {
 
     private Context context;
     private DialogReaderMenu dialog;
-    private ReaderLayerMenuState state;
+    private ReaderMenuState state;
     private List<ReaderLayerMenuItem> menuItems;
     private ReaderLayerMenuItem currentParentMenuItem;
     private View mainMenuContainerView;
@@ -52,9 +55,10 @@ public class ReaderLayerMenu extends ReaderMenu {
 
     @Override
     public void show(ReaderMenuState state) {
-        this.state = (ReaderLayerMenuState)state;
+        this.state = state;
+        updateMenuItemsWithState(state);
         updateMenuContent();
-        getDialog().show(this.state);
+        getDialog().show(state);
     }
 
     @Override
@@ -64,7 +68,9 @@ public class ReaderLayerMenu extends ReaderMenu {
 
     @Override
     public void updateReaderMenuState(ReaderMenuState state) {
-        getDialog().updateReaderState((ReaderLayerMenuState)state);
+        this.state = state;
+        updateMenuItemsWithState(state);
+        getDialog().updateReaderState(state);
     }
 
     @Override
@@ -81,11 +87,11 @@ public class ReaderLayerMenu extends ReaderMenu {
         return dialog;
     }
 
-    private View createMainMenuContainerView(List<ReaderLayerMenuItem> items, ReaderLayerMenuState state) {
+    private View createMainMenuContainerView(List<ReaderLayerMenuItem> items, ReaderMenuState state) {
         return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback);
     }
 
-    private View createSubMenuContainerView(ReaderLayerMenuItem parent, List<ReaderLayerMenuItem> items, ReaderLayerMenuState state) {
+    private View createSubMenuContainerView(ReaderLayerMenuItem parent, List<ReaderLayerMenuItem> items, ReaderMenuState state) {
         return ReaderLayerMenuViewFactory.createSubMenuContainerView(context, parent, items, state, readerMenuCallback);
     }
 
@@ -110,6 +116,43 @@ public class ReaderLayerMenu extends ReaderMenu {
         mainMenuContainerView = createMainMenuContainerView(menuItems, state);
         subMenuContainerView = createSubMenuContainerView(currentParentMenuItem, currentParentMenuItem.getChildren(), state);
         getDialog().getReaderMenuLayout().updateMenuContent(mainMenuContainerView, subMenuContainerView);
+    }
+
+    private void updateMenuItemsWithState(final ReaderMenuState state) {
+        traverseMenuItems(menuItems, new RunnableWithArgument<ReaderLayerMenuItem>() {
+            @Override
+            public void run(ReaderLayerMenuItem value) {
+                updateShowNoteMenuItem(value, state);
+                updateScribbleMenuItems(value, state);
+            }
+        });
+    }
+
+    private void traverseMenuItems(List<ReaderLayerMenuItem> items, RunnableWithArgument<ReaderLayerMenuItem> callback) {
+        for (ReaderLayerMenuItem item : items) {
+            callback.run(item);
+            traverseMenuItems(item.getChildren(), callback);
+        }
+    }
+
+    private void updateShowNoteMenuItem(final ReaderLayerMenuItem item, final ReaderMenuState state) {
+        if (item.getAction() != ReaderMenuAction.SHOW_NOTE) {
+            return;
+        }
+        item.setDrawableResourceId(state.isShowingNotes()
+                ? R.drawable.ic_dialog_reader_menu_note_show
+                : R.drawable.ic_dialog_reader_menu_note_hide);
+        item.setTitleResourceId(state.isShowingNotes()
+                ? R.string.reader_layer_menu_hide_scribble
+                : R.string.reader_layer_menu_show_scribble);
+    }
+
+    private void updateScribbleMenuItems(final ReaderLayerMenuItem item, final ReaderMenuState state) {
+        if (item.getAction() != ReaderMenuAction.DIRECTORY_SCRIBBLE &&
+                item.getAction() != ReaderMenuAction.SHOW_NOTE) {
+            return;
+        }
+        item.setVisible(state.isFixedPagingMode());
     }
 
     public List<ReaderLayerMenuItem> getMenuItems() {
