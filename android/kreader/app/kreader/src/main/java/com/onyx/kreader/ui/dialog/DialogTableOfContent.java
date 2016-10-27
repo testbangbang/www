@@ -274,6 +274,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         btnAnt.setTag(DirectoryTab.Annotation);
         btnScribble.setTag(DirectoryTab.Scribble);
 
+        showExportLayout(currentTab);
         setViewListener();
     }
 
