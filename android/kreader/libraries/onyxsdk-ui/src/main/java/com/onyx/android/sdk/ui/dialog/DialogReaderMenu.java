@@ -15,7 +15,6 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
-import com.onyx.android.sdk.ui.data.ReaderLayerMenuState;
 import com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout;
 
 /**
@@ -121,12 +120,12 @@ public class DialogReaderMenu extends Dialog {
 
     }
 
-    public void show(ReaderLayerMenuState state) {
+    public void show(ReaderMenuState state) {
         updateReaderState(state);
         show();
     }
 
-    public void updateReaderState(ReaderLayerMenuState state) {
+    public void updateReaderState(ReaderMenuState state) {
         ((TextView)findViewById(R.id.text_view_title)).setText(state.getTitle());
         ((TextView)findViewById(R.id.text_view_progress)).setText(formatPageProgress(state));
         nextButton.setEnabled(state.canGoForward());
