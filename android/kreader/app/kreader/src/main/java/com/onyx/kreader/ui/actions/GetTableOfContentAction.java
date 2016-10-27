@@ -16,6 +16,7 @@ public class GetTableOfContentAction extends BaseAction{
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), tocRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                hideLoadingDialog();
                 callback.done(request, e);
             }
         });
