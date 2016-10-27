@@ -4,6 +4,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.SingleThreadExecutor;
 import com.onyx.android.sdk.data.PageInfo;
@@ -78,10 +79,12 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     public void resume() {
+        clearInternalState();
         reportData = true;
     }
 
     public void pause() {
+        clearInternalState();
         reportData = false;
     }
 
