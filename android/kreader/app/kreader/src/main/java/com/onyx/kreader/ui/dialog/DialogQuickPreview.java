@@ -477,9 +477,6 @@ public class DialogQuickPreview extends Dialog {
 
     private void setupContent() {
         gridRecyclerView.gotoPage(getPaginator().pageByIndex(currentPage));
-        if (callback != null) {
-            adapter.requestMissingBitmaps();
-        }
         onPressedImageView(grid.getGridType());
         initPageProgress();
     }
@@ -536,12 +533,10 @@ public class DialogQuickPreview extends Dialog {
 
     private void nextPage() {
         gridRecyclerView.nextPage();
-        onPageDataChanged();
     }
 
     private void prevPage() {
         gridRecyclerView.prevPage();
-        onPageDataChanged();
     }
 
     @Override
