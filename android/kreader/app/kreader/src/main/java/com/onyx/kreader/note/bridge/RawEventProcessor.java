@@ -66,10 +66,11 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         super(p);
     }
 
-    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect) {
+    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect, final Rect excludeRect) {
         this.inputToScreenMatrix = screenMatrix;
         this.screenToViewMatrix = viewMatrix;
         setLimitRect(rect);
+        setExcludeRect(excludeRect);
     }
 
     public void start() {
@@ -243,6 +244,10 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             return false;
         }
 
+        if (inExcludeRect(touchPoint.x, touchPoint.y)) {
+            return false;
+        }
+
         if (touchPoint != null && touchPointList != null) {
             touchPointList.add(touchPoint);
         }
@@ -361,7 +366,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
-        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y)) {
+        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y) || inExcludeRect(touchPoint.x, touchPoint.y)) {
             finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
             return false;
         }

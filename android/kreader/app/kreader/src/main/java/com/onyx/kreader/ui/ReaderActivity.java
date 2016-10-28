@@ -562,7 +562,7 @@ public class ReaderActivity extends ActionBarActivity {
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, rotation);
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new Rect(), rotation);
         if (getReaderDataHolder().isDocumentOpened()) {
             new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
         }
@@ -583,7 +583,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, rotation);
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, event.getExcludeRect(), rotation);
     }
 
     @Subscribe
