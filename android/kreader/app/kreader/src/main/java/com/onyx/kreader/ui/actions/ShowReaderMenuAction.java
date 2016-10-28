@@ -477,8 +477,7 @@ public class ShowReaderMenuAction extends BaseAction {
     public static boolean isGroupAction(final ReaderMenuAction action) {
         return (action == ReaderMenuAction.SCRIBBLE_ERASER ||
                 action == ReaderMenuAction.SCRIBBLE_WIDTH ||
-                action == ReaderMenuAction.SCRIBBLE_SHAPE ||
-                action == ReaderMenuAction.SCRIBBLE_MINIMIZE);
+                action == ReaderMenuAction.SCRIBBLE_SHAPE);
     }
 
     public static boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
@@ -538,8 +537,10 @@ public class ShowReaderMenuAction extends BaseAction {
                 toggleSelection(readerDataHolder);
                 break;
             case SCRIBBLE_MINIMIZE:
+                toggleMenu(readerDataHolder);
                 break;
             case SCRIBBLE_MAXIMIZE:
+                toggleMenu(readerDataHolder);
                 break;
             case SCRIBBLE_PREV_PAGE:
                 prevScreen(readerDataHolder);
@@ -642,6 +643,16 @@ public class ShowReaderMenuAction extends BaseAction {
         final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new ChangeNoteShapeAction(ShapeFactory.SHAPE_ERASER));
+        actionChain.execute(readerDataHolder, null);
+    }
+
+    private static void toggleMenu(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(pages, true, true, false, false);
+        final ResumeDrawingAction action = new ResumeDrawingAction(pages);
+        actionChain.addAction(flushNoteAction);
+        actionChain.addAction(action);
         actionChain.execute(readerDataHolder, null);
     }
 
