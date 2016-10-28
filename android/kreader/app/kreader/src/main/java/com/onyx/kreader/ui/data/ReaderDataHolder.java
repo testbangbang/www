@@ -364,7 +364,7 @@ public class ReaderDataHolder {
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        getEventBus().post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData));
+        getEventBus().post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData, false));
     }
 
 

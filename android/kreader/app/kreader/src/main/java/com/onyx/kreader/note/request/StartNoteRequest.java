@@ -26,6 +26,8 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
         noteManager.startRawEventProcessor();
         noteManager.enableRawEventProcessor(true);
         noteManager.setNoteDirty(true);
+        getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
+        updateShapeDataInfo(noteManager);
     }
 
 }

@@ -163,25 +163,27 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         } else if (type == EV_SYN) {
             if (pressed) {
                 if (!lastPressed) {
-                    lastPressed = pressed;
                     pressReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                    lastPressed = true;
                 } else {
                     moveReceived(px, py, pressure, PEN_SIZE, ts, erasing);
                 }
-            } else {
+            } else if (lastPressed) {
                 releaseReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                lastPressed = false;
             }
         } else if (type == EV_KEY) {
             if (code ==  BTN_TOUCH)  {
                 erasing = false;
                 pressed = value > 0;
-                lastPressed = false;
+                lastPressed = value <= 0;
             } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
                 erasing = false;
                 forceDrawing = true;
                 forceErasing = false;
             } else if (code == BTN_TOOL_RUBBER) {
                 pressed = value > 0;
+                lastPressed = value <= 0;
                 erasing = true;
                 forceDrawing = false;
                 forceErasing = true;

@@ -33,6 +33,7 @@ import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 
@@ -155,17 +156,17 @@ public class NoteManager {
             }
 
             public void onErasingTouchDown(final MotionEvent motionEvent, final TouchPointList list) {
-                getParent().getEventBus().post(new ShapeErasingEvent(false, list));
+                getParent().getEventBus().post(new ShapeErasingEvent(true, false, list));
             }
 
             public void onErasingTouchMove(final MotionEvent motionEvent, final TouchPointList list, boolean last) {
                 if (last) {
-                    getParent().getEventBus().post(new ShapeErasingEvent(false, list));
+                    getParent().getEventBus().post(new ShapeErasingEvent(false, false, list));
                 }
             }
 
             public void onErasingTouchUp(final MotionEvent motionEvent, final TouchPointList list) {
-                getParent().getEventBus().post(new ShapeErasingEvent(true, list));
+                getParent().getEventBus().post(new ShapeErasingEvent(false, true, list));
             }
 
             public void onRawErasingStart() {
