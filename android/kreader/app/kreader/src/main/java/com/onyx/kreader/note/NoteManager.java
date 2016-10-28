@@ -64,6 +64,7 @@ public class NoteManager {
     private ReaderDataHolder parent;
     private ReaderNoteDataInfo noteDataInfo;
     private RectF visibleDrawRectF;
+    private volatile boolean enableRawEventProcessor = false;
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
 
     public NoteManager(final ReaderDataHolder p) {
@@ -83,7 +84,7 @@ public class NoteManager {
     }
 
     public void enableRawEventProcessor(boolean enable) {
-        getNoteEventProcessorManager().enable(enable);
+        enableRawEventProcessor = enable;
     }
 
     public void stopRawEventProcessor() {
@@ -188,6 +189,18 @@ public class NoteManager {
                 if (shortcut) {
                     getParent().getEventBus().post(new ShortcutDrawingFinishedEvent());
                 }
+            }
+
+            public boolean enableShortcutDrawing() {
+                return isDFBForCurrentShape();
+            }
+
+            public boolean enableShortcutErasing() {
+                return false;
+            }
+
+            public boolean enableRawEventProcessor() {
+                return enableRawEventProcessor;
             }
 
         };

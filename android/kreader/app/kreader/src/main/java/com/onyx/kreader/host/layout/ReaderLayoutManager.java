@@ -121,7 +121,6 @@ public class ReaderLayoutManager {
 
         // before change layout, record current position.
         String pagePosition = getCurrentPageName();
-
         currentProvider = layoutName;
         getCurrentLayoutProvider().activate();
         getCurrentLayoutProvider().setNavigationArgs(navigationArgs);
@@ -130,6 +129,7 @@ public class ReaderLayoutManager {
         if (StringUtils.isNotBlank(pagePosition)) {
             getCurrentLayoutProvider().gotoPosition(pagePosition);
         }
+        readerHelper.onLayoutChanged();
         return true;
     }
 

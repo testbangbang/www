@@ -55,10 +55,6 @@ public class NoteEventProcessorManager {
         getRawEventProcessor().resume();
     }
 
-    public void enable(boolean e) {
-        getRawEventProcessor().setEnableEventProcessor(e);
-    }
-
     public final NoteManager getNoteManager() {
         return noteManager;
     }

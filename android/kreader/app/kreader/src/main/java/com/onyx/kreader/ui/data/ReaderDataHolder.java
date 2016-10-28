@@ -247,6 +247,10 @@ public class ReaderDataHolder {
     }
 
     public void prepareNoteManager() {
+        if (getReaderViewInfo() != null && !getReaderViewInfo().supportScalable) {
+            getNoteManager().stopRawEventProcessor();
+            return;
+        }
         getNoteManager().startRawEventProcessor();
         getNoteManager().pauseRawEventProcessor();
     }

@@ -71,6 +71,7 @@ import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.HomeClickEvent;
+import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
@@ -345,6 +346,10 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().prepareNoteManager();
             }
         });
+    }
+
+    @Subscribe
+    public void onLayoutChanged(final LayoutChangeEvent event) {
     }
 
     @Subscribe

@@ -161,11 +161,9 @@ public class ReaderHelper {
     }
 
     public void onLayoutChanged() {
-
     }
 
     public void onPositionChanged(final String oldPosition, final String newPosition) {
-
     }
 
     public void beforeDraw(ReaderBitmapImpl bitmap) {

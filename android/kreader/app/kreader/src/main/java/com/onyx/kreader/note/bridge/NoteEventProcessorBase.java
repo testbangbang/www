@@ -35,6 +35,11 @@ public class NoteEventProcessorBase {
 
         public abstract void onDFBShapeFinished(final Shape shape, boolean triggerByButton);
 
+        public abstract boolean enableShortcutDrawing();
+
+        public abstract boolean enableShortcutErasing();
+
+        public abstract boolean enableRawEventProcessor();
     }
 
     private NoteManager noteManager;
