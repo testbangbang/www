@@ -33,7 +33,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -46,7 +45,6 @@ import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
-import com.onyx.kreader.note.actions.StartErasingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
@@ -343,13 +341,14 @@ public class ReaderActivity extends ActionBarActivity {
                     surfaceView.getHeight() != getReaderDataHolder().getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 }
-                getReaderDataHolder().prepareNoteManager();
+                getReaderDataHolder().updateNoteManager();
             }
         });
     }
 
     @Subscribe
     public void onLayoutChanged(final LayoutChangeEvent event) {
+        getReaderDataHolder().updateNoteManager();
     }
 
     @Subscribe

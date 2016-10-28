@@ -9,7 +9,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -121,7 +120,7 @@ public class ReaderDataHolder {
 
     public void onDocumentInitRendered() {
         getEventBus().post(new DocumentInitRenderedEvent());
-        prepareNoteManager();
+        updateNoteManager();
     }
 
     public boolean isDocumentOpened() {
@@ -246,7 +245,7 @@ public class ReaderDataHolder {
         return noteManager;
     }
 
-    public void prepareNoteManager() {
+    public void updateNoteManager() {
         if (getReaderViewInfo() != null && !getReaderViewInfo().supportScalable) {
             getNoteManager().stopRawEventProcessor();
             return;
@@ -369,6 +368,9 @@ public class ReaderDataHolder {
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
         getEventBus().post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData, false));
+        if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
+            getEventBus().post(new LayoutChangeEvent());
+        }
     }
 
 
