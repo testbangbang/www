@@ -358,8 +358,9 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showTocDialog(final ReaderDataHolder readerDataHolder, DialogTableOfContent.DirectoryTab tab) {
-        final GetDocumentInfoChain action = new GetDocumentInfoChain(tab);
-        action.execute(readerDataHolder, null);
+        Dialog dialog = new DialogTableOfContent(readerDataHolder, tab);
+        dialog.show();
+        readerDataHolder.addActiveDialog(dialog);
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
