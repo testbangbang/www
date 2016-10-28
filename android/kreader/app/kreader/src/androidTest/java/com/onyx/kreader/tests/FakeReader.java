@@ -181,7 +181,7 @@ public class FakeReader implements ReaderDocument,
         return PagePositionUtils.fromPageNumber(pageInfoList.size() - 1);
     }
 
-    public List<ReaderLink> getLinks(final String position) {
+    public List<ReaderSelection> getLinks(final String position) {
         return null;
     }
 

@@ -81,6 +81,7 @@ import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
@@ -365,8 +366,10 @@ public class ReaderActivity extends ActionBarActivity {
         if (update) {
             ReaderDeviceManager.applyWithGCIntervalWithoutRegal(surfaceView);
         }
-        updateStatusBar();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        if (event != null && !event.isWaitForShapeData()) {
+            updateStatusBar();
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        }
         if (event != null && event.isRenderShapeData()) {
             renderShapeDataInBackground();
         }
@@ -447,18 +450,6 @@ public class ReaderActivity extends ActionBarActivity {
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
         FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, false, false, false);
         flushNoteAction.execute(getReaderDataHolder(), null);
-    }
-
-    @Subscribe
-    public void onShapeErasing(final ShapeErasingEvent event) {
-        if (!event.isFinished()) {
-            prepareForErasing();
-            return;
-        }
-        final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
-                getReaderDataHolder().getVisiblePages(),
-                event.getTouchPointList());
-        action.execute(getReaderDataHolder(), null);
     }
 
     private void prepareForErasing() {
@@ -622,14 +613,27 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
-        ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), this);
-        StartErasingAction startErasingAction = new StartErasingAction();
-        startErasingAction.execute(getReaderDataHolder(), null);
+        // getReaderDataHolder().getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+    }
+
+    public void onShortcutErasingEvent(final ShortcutErasingEvent event) {
     }
 
     @Subscribe
     public void onShortcutErasingFinish(final ShortcutErasingFinishEvent event) {
-        ChangeNoteShapeAction action = new ChangeNoteShapeAction(NoteDrawingArgs.defaultShape());
+        // ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+    }
+
+    @Subscribe
+    public void onShapeErasing(final ShapeErasingEvent event) {
+        if (!event.isFinished()) {
+            prepareForErasing();
+            return;
+        }
+
+        final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
+                getReaderDataHolder().getVisiblePages(),
+                event.getTouchPointList());
         action.execute(getReaderDataHolder(), null);
     }
 

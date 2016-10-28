@@ -12,9 +12,12 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
+import com.onyx.android.sdk.data.ReaderMenuItem;
+import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,8 +56,9 @@ public class ReaderLayerMenuViewFactory {
         }
     }
 
-    public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        final View view = createSimpleButtonContainerView(context, items, state, callback);
+    public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items);
+        final View view = createSimpleButtonContainerView(context, visibleItems, state, callback);
         view.post(new Runnable() {
             @Override
             public void run() {
@@ -64,19 +68,35 @@ public class ReaderLayerMenuViewFactory {
         return view;
     }
 
-    public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+    public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         if (parent.getAction() == ReaderMenuAction.FONT) {
             return createFontStyleView(context, items, state, callback);
         }
 
-        View subView = createSimpleButtonContainerView(context, items, state, callback);
+        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items);
+        View subView = createSimpleButtonContainerView(context, visibleItems, state, callback);
         if (mainMenuContainerViewHeight > 0) {
             subView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mainMenuContainerViewHeight));
         }
         return subView;
     }
 
-    private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+    private static List<ReaderLayerMenuItem> collectVisibleItems(final List<? extends ReaderLayerMenuItem> items) {
+        List<ReaderLayerMenuItem> result = new ArrayList<>();
+        for (ReaderLayerMenuItem item : items) {
+            if (!item.isVisible()) {
+                continue;
+            }
+            if (item.getItemType() == ReaderMenuItem.ItemType.Group &&
+                    collectVisibleItems(item.getChildren()).size() <= 0) {
+                continue;
+            }
+            result.add(item);
+        }
+        return result;
+    }
+
+    private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         final RecyclerView view = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
         GridLayoutManager gridLayoutManager = new DisableScrollGridManager(context, 1);
         gridLayoutManager.setSpanCount(6);
@@ -143,7 +163,7 @@ public class ReaderLayerMenuViewFactory {
         fontStyleViewItemMap.put(R.id.image_view_increase_page_margins, ReaderMenuAction.FONT_INCREASE_PAGE_MARGINS);
     }
 
-    private static void mapFontStyleViewMenuItemFunction(final View fontStyleView, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+    private static void mapFontStyleViewMenuItemFunction(final View fontStyleView, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         for (final HashMap.Entry<Integer, ReaderMenuAction> entry : fontStyleViewItemMap.entrySet()) {
             final View view = fontStyleView.findViewById(entry.getKey());
             final ReaderLayerMenuItem item = findItem(items, entry.getValue());
@@ -165,7 +185,7 @@ public class ReaderLayerMenuViewFactory {
         }
     }
 
-    private static View createFontStyleView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderLayerMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+    private static View createFontStyleView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         View view = LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_font_style_view, null);
         mapFontStyleViewMenuItemFunction(view, items, state, callback);
         return view;

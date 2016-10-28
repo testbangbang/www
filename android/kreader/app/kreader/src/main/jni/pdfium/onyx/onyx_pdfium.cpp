@@ -211,25 +211,33 @@ static jobject createEmptySelection(JNIEnv *env, int page) {
     return env->NewObject(utils.getClazz(), utils.getMethodId(), page);
 }
 
+// convert page's left-bottom origin to screen's left-top origin
+// but there are some documents we can't get normalized coordinates simply by subtracting with page width/height,
+// so it's safer to use pdfium's built-in FPDF_PageToDevice()
+static void pageToDevice(FPDF_PAGE page, int pageWidth, int pageHeight, int rotation, int left, int top, int right, int bottom,
+                         int *newLeft, int *newTop, int *newRight, int *newBottom) {
+    FPDF_PageToDevice(page, 0, 0, pageWidth, pageHeight, rotation, left, top, newLeft, newTop);
+    FPDF_PageToDevice(page, 0, 0, pageWidth, pageHeight, rotation, right, bottom, newRight, newBottom);
+    if (*newRight < *newLeft) {
+        std::swap(*newRight, *newLeft);
+    }
+    if (*newBottom < *newTop) {
+        std::swap(*newBottom, *newTop);
+    }
+}
+
 static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, std::vector<int> & list) {
     double left, right, bottom, top;
     int newLeft, newRight, newBottom, newTop;
-    int pageWidth = FPDF_GetPageWidth(page);
-    int pageHeight = FPDF_GetPageHeight(page);
+    int pageWidth = static_cast<int>(FPDF_GetPageWidth(page));
+    int pageHeight = static_cast<int>(FPDF_GetPageHeight(page));
     int count = end - start + 1;
     for(int i = 0; i < count; ++i) {
         FPDFText_GetCharBox(textPage, i + start, &left, &right, &bottom, &top);
-        // convert page's left-bottom origin to screen's left-top origin
-        // but there are some documents we can't get normalized coordinates simply by subtracting with page width/height,
-        // so it's safer to use pdfium's built-in FPDF_PageToDevice()
-        FPDF_PageToDevice(page, 0, 0, pageWidth, pageHeight, rotation, left, top, &newLeft, &newTop);
-        FPDF_PageToDevice(page, 0, 0, pageWidth, pageHeight, rotation, right, bottom, &newRight, &newBottom);
-        if (newRight < newLeft) {
-            std::swap(newRight, newLeft);
-        }
-        if (newBottom < newTop) {
-            std::swap(newBottom, newTop);
-        }
+        pageToDevice(page, pageWidth, pageHeight, rotation,
+                     static_cast<int>(left), static_cast<int>(top),
+                     static_cast<int>(right), static_cast<int>(bottom),
+                     &newLeft, &newTop, &newRight, &newBottom);
         list.push_back(newLeft);
         list.push_back(newTop);
         list.push_back(newRight);
@@ -612,6 +620,62 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
         }
         bookmark = FPDFBookmark_GetNextSibling(doc, bookmark);
     } while (bookmark != NULL);
+
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageLinks
+  (JNIEnv *env, jobject, jint id, jint pageIndex, jobject objectList) {
+    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
+    if (doc == NULL) {
+        return false;
+    }
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    if (page == NULL) {
+        return false;
+    }
+
+    JNIUtils utils(env);
+    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[I[BIILjava/lang/String;Ljava/lang/String;)V")) {
+        return false;
+    }
+
+    int startPos = 0;
+    FPDF_LINK link = nullptr;
+    while (FPDFLink_Enumerate(page, &startPos, &link)) {
+        FPDF_DEST dest = FPDFLink_GetDest(doc, link);
+        if (dest == NULL) {
+            FPDF_ACTION action = FPDFLink_GetAction(link);
+            if (action == NULL || FPDFAction_GetType(action) != PDFACTION_GOTO) {
+                continue;
+            }
+            FPDF_DEST dest = FPDFAction_GetDest(doc, action);
+            if (dest == NULL) {
+                continue;
+            }
+        }
+        auto destPage = FPDFDest_GetPageIndex(doc, dest);
+        FS_RECTF rect;
+        if (!FPDFLink_GetAnnotRect(link, &rect)) {
+            continue;
+        }
+        int newLeft, newRight, newBottom, newTop;
+        int pageWidth = static_cast<int>(FPDF_GetPageWidth(page));
+        int pageHeight = static_cast<int>(FPDF_GetPageHeight(page));
+        int rotation = 0;
+        pageToDevice(page, pageWidth, pageHeight, rotation,
+                     static_cast<int>(rect.left), static_cast<int>(rect.top),
+                     static_cast<int>(rect.right), static_cast<int>(rect.bottom),
+                     &newLeft, &newTop, &newRight, &newBottom);
+        std::vector<int> list;
+        list.push_back(newLeft);
+        list.push_back(newTop);
+        list.push_back(newRight);
+        list.push_back(newBottom);
+
+        JNIIntArray intArray(env, list.size(), &list[0]);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, intArray.getIntArray(true), nullptr, -1, -1, nullptr, nullptr);
+    }
 
     return true;
 }

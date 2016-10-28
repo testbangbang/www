@@ -4,6 +4,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.SingleThreadExecutor;
 import com.onyx.android.sdk.data.PageInfo;
@@ -50,6 +51,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
     private volatile boolean reportData = false;
+    private volatile boolean supportScale = true;
     private volatile boolean enableEventProcessor = false;
 
     private volatile Matrix inputToScreenMatrix;
@@ -78,10 +80,12 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     public void resume() {
+        clearInternalState();
         reportData = true;
     }
 
     public void pause() {
+        clearInternalState();
         reportData = false;
     }
 
@@ -160,25 +164,27 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         } else if (type == EV_SYN) {
             if (pressed) {
                 if (!lastPressed) {
-                    lastPressed = pressed;
                     pressReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                    lastPressed = true;
                 } else {
                     moveReceived(px, py, pressure, PEN_SIZE, ts, erasing);
                 }
-            } else {
+            } else if (lastPressed) {
                 releaseReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                lastPressed = false;
             }
         } else if (type == EV_KEY) {
             if (code ==  BTN_TOUCH)  {
                 erasing = false;
                 pressed = value > 0;
-                lastPressed = false;
+                lastPressed = value <= 0;
             } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
                 erasing = false;
                 forceDrawing = true;
                 forceErasing = false;
             } else if (code == BTN_TOOL_RUBBER) {
                 pressed = value > 0;
+                lastPressed = value <= 0;
                 erasing = true;
                 forceDrawing = false;
                 forceErasing = true;
@@ -244,7 +250,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean isReportData() {
-        if (forceDrawing || forceErasing) {
+        if ((forceDrawing || forceErasing) && supportScale) {
             return true;
         }
         return reportData && enableEventProcessor;
