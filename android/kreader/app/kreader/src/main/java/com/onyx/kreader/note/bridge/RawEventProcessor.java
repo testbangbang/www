@@ -51,6 +51,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
     private volatile boolean reportData = false;
+    private volatile boolean supportScale = true;
     private volatile boolean enableEventProcessor = false;
 
     private volatile Matrix inputToScreenMatrix;
@@ -249,7 +250,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean isReportData() {
-        if (forceDrawing || forceErasing) {
+        if ((forceDrawing || forceErasing) && supportScale) {
             return true;
         }
         return reportData && enableEventProcessor;

@@ -242,8 +242,9 @@ public class NoteManager {
         if (rect != null) {
             request.setViewportSize(rect);
         }
-
-        resetNoteDataInfo();
+        if (request.isResetNoteDataInfo()) {
+            resetNoteDataInfo();
+        }
     }
 
     private final Runnable generateRunnable(final ReaderBaseNoteRequest request) {
