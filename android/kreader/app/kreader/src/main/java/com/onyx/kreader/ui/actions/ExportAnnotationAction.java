@@ -4,6 +4,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.kreader.R;
+import com.onyx.kreader.host.request.ExportAnnotationRequest;
 import com.onyx.kreader.host.request.ExportNotesRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -24,7 +25,7 @@ public class ExportAnnotationAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         showLoadingDialog(readerDataHolder, R.string.exporting);
-        final ExportNotesRequest request = new ExportNotesRequest(annotations);
+        final ExportAnnotationRequest request = new ExportAnnotationRequest(annotations);
         readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

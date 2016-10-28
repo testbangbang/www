@@ -98,11 +98,11 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, int orientation) {
+    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final Rect excludeRect, int orientation) {
         view = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
-        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, orientation);
+        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {

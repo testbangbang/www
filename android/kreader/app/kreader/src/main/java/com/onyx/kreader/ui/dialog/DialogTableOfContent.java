@@ -37,6 +37,7 @@ import com.onyx.android.sdk.ui.view.RadioButtonCenter;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.DimenUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
@@ -46,6 +47,7 @@ import com.onyx.kreader.host.request.DeleteBookmarkRequest;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ExportNotesActionChain;
+import com.onyx.kreader.ui.actions.ExportScribbleAction;
 import com.onyx.kreader.ui.actions.GetDocumentInfoChain;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
@@ -372,6 +374,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 Toast.makeText(getContext(), getContext().getString(R.string.no_data), Toast.LENGTH_SHORT).show();
                 return;
             }
+
             new ExportAnnotationAction(annotationList).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -384,7 +387,11 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 Toast.makeText(getContext(), getContext().getString(R.string.no_data), Toast.LENGTH_SHORT).show();
                 return;
             }
-            new ExportNotesActionChain(false, true).execute(readerDataHolder, new BaseCallback() {
+            List<String> requestPages = new ArrayList<>();
+            for (int i = 0; i < scribblePreviewMap.size(); i++) {
+                requestPages.add(String.valueOf(scribblePreviewMap.keyAt(i)));
+            }
+            new ExportScribbleAction(requestPages).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);

@@ -270,4 +270,5 @@
     <string name="min_page_toast">Has come to the first page</string>
     <string name="max_page_toast">Has come to the last page</string>
     <string name="current_value">Current Value:</string>
+    <string name="annotation_export_format" formatted="false">Page %d   %s \n%s\n</string>
 </resources>

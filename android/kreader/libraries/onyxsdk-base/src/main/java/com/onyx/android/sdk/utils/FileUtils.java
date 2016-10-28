@@ -2,6 +2,7 @@ package com.onyx.android.sdk.utils;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
@@ -180,6 +181,21 @@ public class FileUtils {
         try {
             out = new FileOutputStream(fileForSave);
             out.write(content.getBytes("utf-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            succeed = false;
+        } finally {
+            closeQuietly(out);
+        }
+        return succeed;
+    }
+
+    public static boolean saveBitmapToFile(Bitmap bitmap, File fileForSave, Bitmap.CompressFormat format, int quality) {
+        boolean succeed = true;
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(fileForSave);
+            bitmap.compress(format, quality, out);
         } catch (Exception e) {
             e.printStackTrace();
             succeed = false;

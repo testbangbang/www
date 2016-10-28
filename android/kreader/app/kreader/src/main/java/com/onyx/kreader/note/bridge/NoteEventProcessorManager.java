@@ -67,13 +67,14 @@ public class NoteEventProcessorManager {
                        final DeviceConfig noteConfig,
                        final MappingConfig mappingConfig,
                        final Rect visibleDrawRect,
+                       final Rect excludeRect,
                        int orientation) {
         detectTouchType();
         view = targetView;
-        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(mappingConfig, orientation), visibleDrawRect);
+        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(mappingConfig, orientation), visibleDrawRect, excludeRect);
         getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig, orientation),
                 getScreenToViewMatrix(noteConfig, mappingConfig, orientation),
-                visibleDrawRect);
+                visibleDrawRect, excludeRect);
     }
 
     private void detectTouchType() {
