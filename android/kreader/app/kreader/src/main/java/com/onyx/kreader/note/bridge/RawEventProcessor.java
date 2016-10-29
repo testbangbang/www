@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
  */
 public class RawEventProcessor extends NoteEventProcessorBase {
 
-
     private static final int EV_SYN = 0x00;
     private static final int EV_KEY = 0x01;
     private static final int EV_ABS = 0x03;

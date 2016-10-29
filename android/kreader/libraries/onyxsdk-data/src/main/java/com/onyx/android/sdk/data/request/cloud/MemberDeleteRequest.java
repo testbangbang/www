@@ -13,19 +13,17 @@ public class MemberDeleteRequest extends BaseCloudRequest {
 
     private long id;
     private long accountId;
-    private String sessionToken;
     private boolean isSuccess = true;
 
-    public MemberDeleteRequest(long groupId, long accountId, String sessionToken) {
+    public MemberDeleteRequest(long groupId, long accountId) {
         this.id = groupId;
         this.accountId = accountId;
-        this.sessionToken = sessionToken;
     }
 
     @Override
     public void execute(CloudManager parent) throws Exception {
         Response response = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .deleteGroupMember(id, accountId, sessionToken).execute();
+                .deleteGroupMember(id, accountId, getAccountSessionToken()).execute();
         isSuccess = response.isSuccessful();
     }
 }

@@ -23,7 +23,9 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
         final PageInfo pageInfo = getVisiblePages().get(0);
         final float radius = noteManager.getNoteDrawingArgs().eraserRadius / pageInfo.getActualScale();
         final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), pageInfo.getName(), 0);
-        notePage.removeShapesByTouchPointList(touchPointList, radius);
+        if (notePage != null) {
+            notePage.removeShapesByTouchPointList(touchPointList, radius);
+        }
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
         updateShapeDataInfo(noteManager);

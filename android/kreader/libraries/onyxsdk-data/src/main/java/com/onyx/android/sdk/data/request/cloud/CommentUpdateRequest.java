@@ -14,14 +14,12 @@ public class CommentUpdateRequest extends BaseCloudRequest {
     private String bookId;
     private String commentId;
     private Comment comment;
-    private String sessionToken;
     private Comment resultComment;
 
-    public CommentUpdateRequest(String bookId, String commentId, Comment comment, String sessionToken) {
+    public CommentUpdateRequest(String bookId, String commentId, Comment comment) {
         this.bookId = bookId;
         this.commentId = commentId;
         this.comment = comment;
-        this.sessionToken = sessionToken;
     }
 
     public Comment getResultComment() {
@@ -31,7 +29,7 @@ public class CommentUpdateRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Response<Comment> response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
-                .updateBookComment(bookId, commentId, comment, sessionToken).execute();
+                .updateBookComment(bookId, commentId, comment, getAccountSessionToken()).execute();
         if (response.isSuccessful()) {
             resultComment = response.body();
         }

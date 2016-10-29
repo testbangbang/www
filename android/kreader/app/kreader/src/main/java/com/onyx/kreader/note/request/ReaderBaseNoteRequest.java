@@ -143,9 +143,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
-        if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
-            parent.resumeRawEventProcessor();
-        }
         final Runnable runnable = postExecuteRunnable(parent);
         if (isRunInBackground()) {
             parent.getRequestManager().getLooperHandler().post(runnable);
@@ -170,6 +167,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
+                    if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
+                        parent.resumeRawEventProcessor();
+                    }
                     parent.getRequestManager().releaseWakeLock();
                 }
             }

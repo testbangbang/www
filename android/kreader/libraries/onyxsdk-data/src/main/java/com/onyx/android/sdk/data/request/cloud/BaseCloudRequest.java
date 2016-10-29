@@ -4,7 +4,9 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.model.OnyxAccount;
 import com.onyx.android.sdk.dataprovider.BuildConfig;
+
 import org.json.JSONObject;
 
 import android.util.Log;
@@ -160,5 +162,9 @@ public abstract class BaseCloudRequest extends BaseRequest {
         if (errorResponse != null) {
             dumpMessage(tag, errorResponse.toString());
         }
+    }
+
+    protected String getAccountSessionToken() {
+        return OnyxAccount.loadAccountSessionToken(getContext());
     }
 }
