@@ -689,6 +689,10 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void renderShapeDataInBackground() {
+        if (!getReaderDataHolder().supportScalable()) {
+            return;
+        }
+
         final ReaderNoteRenderRequest renderRequest = new ReaderNoteRenderRequest(
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 getReaderDataHolder().getReaderViewInfo().getVisiblePages(),

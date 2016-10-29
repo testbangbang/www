@@ -699,7 +699,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
             @Override
             public boolean isFixedPagingMode() {
-                return readerDataHolder.getReaderViewInfo().supportScalable;
+                return readerDataHolder.supportScalable();
             }
 
             @Override

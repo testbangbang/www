@@ -90,6 +90,10 @@ public class ReaderDataHolder {
         return readerViewInfo;
     }
 
+    public boolean supportScalable() {
+        return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
+    }
+
     public final List<PageInfo> getVisiblePages() {
         return getReaderViewInfo().getVisiblePages();
     }
@@ -246,7 +250,7 @@ public class ReaderDataHolder {
     }
 
     public void updateNoteManager() {
-        if (getReaderViewInfo() != null && !getReaderViewInfo().supportScalable) {
+        if (!supportScalable()) {
             getNoteManager().stopRawEventProcessor();
             return;
         }
