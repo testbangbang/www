@@ -31,11 +31,7 @@ import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.ReaderStyle;
-import com.onyx.kreader.plugins.neopdf.NeoPdfJniWrapper;
-import com.onyx.kreader.plugins.neopdf.NeoPdfReaderPlugin;
-import com.onyx.kreader.plugins.neopdf.NeoPdfSelection;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -61,7 +57,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     private static final String TAG = AlReaderPlugin.class.getSimpleName();
     private Benchmark benchmark = new Benchmark();
 
-    private NeoPdfJniWrapper impl;
+    private AlReaderWrapper impl;
     private String documentPath;
 
     List<ReaderSelection> searchResults = new ArrayList<>();
@@ -72,16 +68,15 @@ public class AlReaderPlugin implements ReaderPlugin,
     public AlReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
     }
 
-    public NeoPdfJniWrapper getPluginImpl() {
+    public AlReaderWrapper getPluginImpl() {
         if (impl == null) {
-            impl = new NeoPdfJniWrapper();
-            impl.nativeInitLibrary();
+            impl = new AlReaderWrapper();
         }
         return impl;
     }
 
     public String displayName() {
-        return NeoPdfReaderPlugin.class.getSimpleName();
+        return TAG;
     }
 
     static public boolean accept(final String path) {
@@ -102,19 +97,19 @@ public class AlReaderPlugin implements ReaderPlugin,
             archivePassword = documentOptions.getDocumentPassword();
         }
         long ret = getPluginImpl().openDocument(path, docPassword);
-        if (ret  == NeoPdfJniWrapper.NO_ERROR) {
+        if (ret  == AlReaderWrapper.NO_ERROR) {
             return this;
         }
-        if (ret == NeoPdfJniWrapper.ERROR_PASSWORD_INVALID) {
+        if (ret == AlReaderWrapper.ERROR_PASSWORD_INVALID) {
             throw ReaderException.passwordRequired();
-        } else if (ret == NeoPdfJniWrapper.ERROR_UNKNOWN) {
+        } else if (ret == AlReaderWrapper.ERROR_UNKNOWN) {
             throw ReaderException.cannotOpen();
         }
         return null;
     }
 
     public boolean supportDrm() {
-        return true;
+        return false;
     }
 
     public ReaderDrmManager createDrmManager() {
@@ -128,32 +123,26 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean readCover(final Bitmap bitmap) {
-        return getPluginImpl().drawPage(0, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
-                0, bitmap);
+        return false;
     }
 
     public RectF getPageOriginSize(final String position) {
-        float size [] = {0, 0};
-        getPluginImpl().pageSize(Integer.parseInt(position), size);
-        return new RectF(0, 0, size[0], size[1]);
+        return null;
     }
 
     @Override
     public boolean isTextPage(String position) {
-        return getPluginImpl().isTextPage(Integer.parseInt(position));
+        return true;
     }
 
     @Override
     public String getPageText(String position) {
-        return getPluginImpl().getPageText(PagePositionUtils.getPageNumber(position));
+        return null;
     }
 
     @Override
     public ReaderSentence getSentence(String position, String sentenceStartPosition) {
-        int page = PagePositionUtils.getPageNumber(position);
-        int startIndex = StringUtils.isNullOrEmpty(sentenceStartPosition) ? 0 :
-                Integer.parseInt(sentenceStartPosition);
-        return getPluginImpl().getSentence(page, startIndex);
+        return null;
     }
 
     public void abortCurrentJob() {
@@ -165,7 +154,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
-        return getPluginImpl().getTableOfContent(toc.getRootEntry());
+        return false;
     }
 
     @Override
@@ -243,15 +232,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
-        benchmark.restart();
-        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page),
-                (int)displayRect.left,
-                (int)displayRect.top,
-                (int)displayRect.width(),
-                (int)displayRect.height(),
-                rotation, bitmap);
-        Debug.d(TAG, "rendering takes: " + benchmark.duration());
-        return ret;
+        return false;
     }
 
     /**
@@ -280,7 +261,7 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return 1 based total page number.
      */
     public int getTotalPage() {
-        return getPluginImpl().pageCount();
+        return 0;
     }
 
     /**
@@ -372,13 +353,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (clear){
             searchResults.clear();
         }
-        getPluginImpl().searchInPage(currentPage, 0, 0,
-                getViewOptions().getViewWidth(),
-                getViewOptions().getViewHeight(),
-                0, options.pattern(), options.isCaseSensitive(),
-                options.isMatchWholeWord(), options.contextLength(),
-                searchResults);
-        return searchResults.size() > 0;
+        return false;
     }
 
     public List<ReaderSelection> searchResults() {
@@ -405,12 +380,12 @@ public class AlReaderPlugin implements ReaderPlugin,
     public String getDeviceDRMAccount() {
         return "";
     }
+
     public boolean fulfillDRMFile(String path) {
         return false;
     }
 
     public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
-
         return null;
     }
 
@@ -419,20 +394,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
-        NeoPdfSelection selection = new NeoPdfSelection(start.pageName);
-        getPluginImpl().hitTest(PagePositionUtils.getPageNumber(start.pageName),
-                (int) start.pageDisplayRect.left,
-                (int) start.pageDisplayRect.top,
-                (int) start.pageDisplayRect.width(),
-                (int) start.pageDisplayRect.height(),
-                start.pageDisplayOrientation,
-                (int) start.point.x,
-                (int) start.point.y,
-                (int) end.point.x,
-                (int) end.point.y,
-                hitTestOptions.isSelectingWord(),
-                selection);
-        return selection;
+        return null;
     }
 
     public boolean supportScale() {

@@ -27,6 +27,7 @@ import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.options.BaseOptions;
+import com.onyx.kreader.plugins.alreader.AlReaderPlugin;
 import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
@@ -78,6 +79,8 @@ public class ReaderHelper {
             plugin = new DjvuReaderPlugin(context, pluginOptions);
         } else if (ComicReaderPlugin.accept(path)) {
             plugin = new ComicReaderPlugin(context, pluginOptions);
+        } else if (AlReaderPlugin.accept(path)) {
+            plugin = new AlReaderPlugin(context, pluginOptions);
         }
         return (plugin != null);
     }
