@@ -28,7 +28,6 @@ import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
-import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
@@ -69,11 +68,7 @@ public class ReaderPainter {
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawPageLinks(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
-        if (viewInfo.supportScalable) {
-            drawShapes(context, canvas, paint, userDataInfo, noteManager);
-            drawStashShapes(context, canvas, paint, noteManager, viewInfo);
-            drawShapeEraser(context, canvas, paint, noteManager);
-        }
+        drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
@@ -156,6 +151,20 @@ public class ReaderPainter {
                 drawUnderLineHighlightRectangles(canvas, paint, link.getRectangles());
             }
         }
+    }
+
+    private void drawShapeContents(Context context,
+                                   Canvas canvas,
+                                   Paint paint,
+                                   final ReaderUserDataInfo userDataInfo,
+                                   final ReaderViewInfo viewInfo,
+                                   final NoteManager noteManager) {
+        if (!viewInfo.supportScalable) {
+            return;
+        }
+        drawShapes(context, canvas, paint, userDataInfo, noteManager);
+        drawStashShapes(context, canvas, paint, noteManager, viewInfo);
+        drawShapeEraser(context, canvas, paint, noteManager);
     }
 
     private void drawBookmark(Context context, Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
