@@ -69,6 +69,8 @@ public class NeoPdfJniWrapper {
 
     private native boolean nativeGetTableOfContent(int id, ReaderDocumentTableOfContentEntry root);
 
+    private native boolean nativeGetPageLinks(int id, int page, final List<ReaderSelection> list);
+
     private int id;
     private String filePath = null;
 
@@ -151,6 +153,10 @@ public class NeoPdfJniWrapper {
 
     public boolean getTableOfContent(ReaderDocumentTableOfContentEntry root) {
         return nativeGetTableOfContent(id, root);
+    }
+
+    public boolean getPageLinks(int page, final List<ReaderSelection> list) {
+        return nativeGetPageLinks(id, page, list);
     }
 
 }

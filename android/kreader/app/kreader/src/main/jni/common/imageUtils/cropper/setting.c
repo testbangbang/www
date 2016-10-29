@@ -34,63 +34,66 @@
 void k2pdfopt_settings_init_from_koptcontext(K2PDFOPT_SETTINGS *k2settings, KOPTContext *kctx)
 
 {
-	/* Generic settings init */
-	k2pdfopt_settings_init(k2settings);
-	k2settings->verbose = 0;
-	k2settings->debug = 0;
-	k2settings->src_rot = 0;
-	k2settings->dst_dpi = 167;
-	k2settings->dst_userwidth = 600;
-	k2settings->dst_userheight = 800;
-	k2settings->dst_width = k2settings->dst_userwidth;
-	k2settings->dst_height = k2settings->dst_userheight;
+    /* Generic settings init */
+    k2pdfopt_settings_init(k2settings);
+    k2settings->src_rot = kctx->rotate;
+    k2settings->dst_dpi = 167;
+    k2settings->dst_userwidth = 600;
+    k2settings->dst_userheight = 800;
+    k2settings->dst_width = k2settings->dst_userwidth;
+    k2settings->dst_height = k2settings->dst_userheight;
     k2settings->dst_color = 0;
-	k2settings->use_crop_boxes = 0;
-	k2settings->defect_size_pts = 1.0;
+    k2settings->use_crop_boxes = 0;
+    k2settings->defect_size_pts = 1.0;
 
-	/* Apply context */
-	k2settings->dst_dpi = kctx->dev_dpi;
-	k2settings->render_dpi = kctx->dev_dpi;
-	k2settings->dst_userwidth = kctx->dev_width;
-	k2settings->dst_userheight = kctx->dev_height;
-	k2settings->dst_width = k2settings->dst_userwidth;
-	k2settings->dst_height = k2settings->dst_userheight;
-	k2settings->vertical_line_spacing = kctx->line_spacing;
-	k2settings->word_spacing = kctx->word_spacing;
-	k2settings->text_wrap = kctx->wrap;
-	k2settings->src_autostraighten = kctx->straighten;
-	k2settings->preserve_indentation = kctx->indent;
-	k2settings->max_columns = kctx->columns;
-	k2settings->src_rot = kctx->rotate;
-	k2settings->src_dpi = kctx->dev_dpi*kctx->quality;
-	k2settings->user_src_dpi = kctx->dev_dpi*kctx->quality;
-	k2settings->defect_size_pts = kctx->defect_size;
-	k2settings->dst_gamma = kctx->contrast;
+    /* Apply context */
+    k2settings->dst_dpi = kctx->dev_dpi;
+    k2settings->dst_userdpi = kctx->dev_dpi;
+    k2settings->render_dpi = kctx->dev_dpi;
+    k2settings->dst_userwidth = kctx->dev_width;
+    k2settings->dst_userheight = kctx->dev_height;
+    k2settings->dst_width = k2settings->dst_userwidth;
+    k2settings->dst_height = k2settings->dst_userheight;
+    k2settings->vertical_line_spacing = kctx->line_spacing;
+    k2settings->text_wrap = kctx->wrap;
+    k2settings->src_autostraighten = kctx->straighten;
+    k2settings->preserve_indentation = kctx->indent;
+    k2settings->max_columns = kctx->columns;
+    k2settings->src_dpi = kctx->dev_dpi*kctx->quality;
+    k2settings->user_src_dpi = kctx->dev_dpi*kctx->quality;
+    k2settings->defect_size_pts = kctx->defect_size;
+    k2settings->dst_gamma = kctx->contrast;
 
-    int i = 0;
-    k2settings->srccropmargins.pagelist[0]='\0';
-    k2settings->srccropmargins.cboxflags=0;
-    for (i=0;i<4;i++) {
-        k2settings->srccropmargins.box[i]=0.0;
-        k2settings->srccropmargins.units[i]=UNITS_INCHES;
+    k2settings->word_spacing = kctx->word_spacing;
+
+    if (kctx->trim == 0) {
+        k2settings->srccropmargins.box[0] = 0;
+        k2settings->srccropmargins.box[1] = 0;
+        k2settings->srccropmargins.box[2] = 0;
+        k2settings->srccropmargins.box[3] = 0;
+    } else {
+        k2settings->srccropmargins.box[0] = -1;
+        k2settings->srccropmargins.box[1] = -1;
+        k2settings->srccropmargins.box[2] = -1;
+        k2settings->srccropmargins.box[3] = -1;
     }
 
-    k2settings->dstmargins.pagelist[0]='\0';
-    k2settings->dstmargins.cboxflags=0;
-    for (i=0;i<4;i++) {
-        k2settings->dstmargins.box[i]=kctx->margin;
-        k2settings->dstmargins.units[i]=UNITS_INCHES;
+    // margin
+    k2settings->dstmargins.box[0] = kctx->margin;
+    k2settings->dstmargins.box[1] = kctx->margin;
+    k2settings->dstmargins.box[2] = kctx->margin;
+    k2settings->dstmargins.box[3] = kctx->margin;
+
+    // justification
+    if (kctx->justification < 0) {
+        k2settings->dst_justify = -1;
+        k2settings->dst_fulljustify = -1;
+    } else if (kctx->justification <= 2) {
+        k2settings->dst_justify = kctx->justification;
+        k2settings->dst_fulljustify = 0;
+    } else {
+        k2settings->dst_justify = -1;
+        k2settings->dst_fulljustify = 1;
     }
 
-	// justification
-	if (kctx->justification < 0) {
-		k2settings->dst_justify = -1;
-		k2settings->dst_fulljustify = -1;
-	} else if (kctx->justification <= 2) {
-		k2settings->dst_justify = kctx->justification;
-		k2settings->dst_fulljustify = 0;
-	} else {
-		k2settings->dst_justify = -1;
-		k2settings->dst_fulljustify = 1;
-	}
 }

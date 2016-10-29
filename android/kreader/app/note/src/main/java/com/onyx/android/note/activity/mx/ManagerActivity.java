@@ -13,12 +13,14 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
+import com.onyx.android.note.actions.manager.NoteMoveAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.android.note.activity.BaseManagerActivity;
 import com.onyx.android.note.activity.onyx.SpanScribbleActivity;
 import com.onyx.android.note.data.ScribbleMode;
 import com.onyx.android.note.dialog.DialogChooseScribbleMode;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
+import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -283,5 +285,32 @@ public class ManagerActivity extends BaseManagerActivity {
         }
         toolBarIcon.setImageResource(iconRes);
         toolBarTitle.setText(titleResString);
+    }
+
+    @Override
+    public void showMovableFolderDialog(List<NoteModel> curLibSubContList) {
+        final DialogMoveFolder dialogMoveFolder = new DialogMoveFolder();
+        dialogMoveFolder.setDataList(curLibSubContList);
+        dialogMoveFolder.setCallback(new DialogMoveFolder.DialogMoveFolderCallback() {
+            @Override
+            public void onMove(String targetParentId) {
+                NoteMoveAction<BaseManagerActivity> noteMoveAction = new NoteMoveAction<>(targetParentId,
+                        targetMoveIDList, true, true, true);
+                noteMoveAction.execute(ManagerActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        loadNoteList();
+                        dialogMoveFolder.dismiss();
+                        switchMode(SelectionMode.NORMAL_MODE);
+                    }
+                });
+            }
+
+            @Override
+            public void onDismiss() {
+                switchMode(SelectionMode.NORMAL_MODE);
+            }
+        });
+        dialogMoveFolder.show(getFragmentManager());
     }
 }

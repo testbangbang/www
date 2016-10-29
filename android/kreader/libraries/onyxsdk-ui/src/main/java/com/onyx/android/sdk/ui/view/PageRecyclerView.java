@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,6 +36,8 @@ public class PageRecyclerView extends RecyclerView {
     private float lastX, lastY;
     private OnChangeFocusListener onChangeFocusListener;
     private Map<Integer, String> keyBindingMap = new Hashtable<>();
+    private int originPaddingBottom;
+    private int itemDecorationHeight = 0;
 
     public interface OnPagingListener {
         void onPageChange(int position,int itemCount,int pageSize);
@@ -69,6 +72,14 @@ public class PageRecyclerView extends RecyclerView {
         }
     }
 
+    public int getItemDecorationHeight() {
+        return itemDecorationHeight;
+    }
+
+    public void setItemDecorationHeight(int itemDecorationHeight) {
+        this.itemDecorationHeight = itemDecorationHeight;
+    }
+
     public int getCurrentFocusedPosition() {
         return currentFocusedPosition;
     }
@@ -78,6 +89,10 @@ public class PageRecyclerView extends RecyclerView {
             nextPage();
         }
         setCurrentFocusedPosition(focusedPosition);
+    }
+
+    public int getOriginPaddingBottom() {
+        return originPaddingBottom;
     }
 
     private void prevFocus(int focusedPosition){
@@ -129,7 +144,7 @@ public class PageRecyclerView extends RecyclerView {
         columns = ((PageAdapter) adapter).getColumnCount();
         int size = ((PageAdapter) adapter).getDataCount();
         paginator = new GPaginator(rows, columns,size);
-        paginator.gotoPageByIndex(0);
+        paginator.setCurrentPage(0);
 
         LayoutManager layoutManager = getDisableLayoutManager();
         if (layoutManager instanceof GridLayoutManager){
@@ -137,8 +152,19 @@ public class PageRecyclerView extends RecyclerView {
         }
     }
 
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        super.setPadding(left, top, right, bottom);
+        originPaddingBottom = bottom;
+    }
+
+    public void setOffsetPaddingBottom(int offsetBottom) {
+        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), offsetBottom);
+    }
+
     public PageAdapter getPageAdapter() {
-        return ((PageAdapter) getAdapter());
+        PageAdapter pageAdapter = (PageAdapter) getAdapter();
+        return pageAdapter;
     }
 
     public void resize(int newRows, int newColumns, int newSize) {
@@ -158,6 +184,7 @@ public class PageRecyclerView extends RecyclerView {
     }
 
     private void init() {
+        originPaddingBottom = getPaddingBottom();
         setItemAnimator(null);
         setClipToPadding(true);
         setClipChildren(true);
@@ -295,8 +322,19 @@ public class PageRecyclerView extends RecyclerView {
         }
     }
 
+    public void notifyDataSetChanged() {
+        PageAdapter pageAdapter = getPageAdapter();
+        int gotoPage = paginator.getCurrentPage() == -1 ? 0 : paginator.getCurrentPage();
+        resize(pageAdapter.getRowCount(), pageAdapter.getColumnCount(), getPageAdapter().getDataCount());
+        if (gotoPage > getPaginator().lastPage()) {
+            gotoPage(getPaginator().lastPage());
+        }else {
+            pageAdapter.notifyDataSetChanged();
+        }
+    }
+
     private void managerScrollToPosition(int position) {
-        getDisableLayoutManager().scrollToPositionWithOffset(position,0);
+        getDisableLayoutManager().scrollToPositionWithOffset(position, 0);
     }
 
     private LinearLayoutManager getDisableLayoutManager(){
@@ -321,7 +359,7 @@ public class PageRecyclerView extends RecyclerView {
 
     public static abstract class PageAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>{
 
-        protected ViewGroup mParent;
+        protected PageRecyclerView pageRecyclerView;
 
         public abstract int getRowCount();
         public abstract int getColumnCount();
@@ -331,7 +369,7 @@ public class PageRecyclerView extends RecyclerView {
 
         @Override
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-            mParent = parent;
+            pageRecyclerView = (PageRecyclerView) parent;
             return onPageCreateViewHolder(parent,viewType);
         }
 
@@ -348,12 +386,24 @@ public class PageRecyclerView extends RecyclerView {
                     view.setVisibility(INVISIBLE);
                 }
 
-                int paddingBottom = mParent.getPaddingBottom();
-                int paddingTop = mParent.getPaddingTop();
-                double itemHeight = ((double)mParent.getMeasuredHeight() - paddingBottom - paddingTop) / getRowCount();
+                int paddingBottom = pageRecyclerView.getOriginPaddingBottom();
+                int paddingTop = pageRecyclerView.getPaddingTop();
+                int parentHeight = pageRecyclerView.getMeasuredHeight() - paddingBottom - paddingTop - getRowCount() * pageRecyclerView.getItemDecorationHeight();
+                double itemHeight =  ((double)parentHeight) / getRowCount();
                 if (itemHeight > 0){
-                    view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int) Math.ceil(itemHeight)));
+                    int actualHeight = (int)Math.floor(itemHeight);
+                    int offset = parentHeight - actualHeight * getRowCount();
+                    view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, actualHeight));
+                    setOffsetPaddingBottom(offset);
                 }
+            }
+        }
+
+        private void setOffsetPaddingBottom(int offset) {
+            int bottom = pageRecyclerView.getPaddingBottom();
+            int offsetBottom = pageRecyclerView.getOriginPaddingBottom() + offset;
+            if (offsetBottom != bottom) {
+                pageRecyclerView.setOffsetPaddingBottom(offsetBottom);
             }
         }
 
@@ -368,19 +418,13 @@ public class PageRecyclerView extends RecyclerView {
                     size=  size + blankCount;
                 }
             }
-            PageRecyclerView pageRecyclerView = getPageRecyclerView();
             if (pageRecyclerView != null){
                 pageRecyclerView.resize(getRowCount(),getColumnCount(),getDataCount());
             }
             return size;
         }
 
-        public PageRecyclerView getPageRecyclerView(){
-            return (PageRecyclerView)mParent;
-        }
-
         private void updateFocusView(final View view, final int position){
-            final PageRecyclerView pageRecyclerView = getPageRecyclerView();
             if (position == pageRecyclerView.getCurrentFocusedPosition()){
                 view.setActivated(true);
             }else {
@@ -397,5 +441,11 @@ public class PageRecyclerView extends RecyclerView {
                 }
             });
         }
+
+        public PageRecyclerView getPageRecyclerView() {
+            return pageRecyclerView;
+        }
+
+
     }
 }

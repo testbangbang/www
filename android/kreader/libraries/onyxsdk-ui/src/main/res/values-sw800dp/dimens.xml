@@ -36,4 +36,5 @@
     <dimen name="navigatorWidth">30dp</dimen>
     <dimen name="dialog_reader_menu_top_bar_function_icon_margin">5dp</dimen>
     <dimen name="common_dialog_width">600dp</dimen>
+    <dimen name="dialog_reader_menu_text_view_padding">4dp</dimen>
 </resources>

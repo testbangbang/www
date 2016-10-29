@@ -1,7 +1,9 @@
 package com.onyx.kreader.ui.actions;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -319,6 +321,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 break;
             case SCRIBBLE_MINIMIZE:
                 changeToolBarVisibility(true);
+                fullToolbar.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        postMenuChangedEvent(readerDataHolder);
+                    }
+                });
                 break;
             case SCRIBBLE_MAXIMIZE:
                 changeToolBarVisibility(false);
@@ -352,13 +360,17 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder) {
         int bottomOfTopToolBar = 0;
         int topOfBottomToolBar = 0;
+        Rect excludeRect = new Rect();
         if (bottomToolbar.getVisibility() == View.VISIBLE) {
             bottomOfTopToolBar = topToolbar.getBottom();
         }
         if (topToolbar.getVisibility() == View.VISIBLE) {
             topOfBottomToolBar = bottomToolbar.getTop();
         }
-        readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar));
-    }
 
+        if (fullToolbar.getVisibility() == View.VISIBLE) {
+            excludeRect = new Rect(fullToolbar.getLeft(), fullToolbar.getTop(), fullToolbar.getRight(), fullToolbar.getBottom());
+        }
+        readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar, excludeRect));
+    }
 }

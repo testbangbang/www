@@ -24,6 +24,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private volatile boolean transferBitmap = true;
     private boolean loadPageAnnotation = true;
     private boolean loadBookmark = true;
+    private boolean loadPageLinks = true;
 
     public BaseReaderRequest() {
     }
@@ -92,7 +93,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         try {
             afterExecuteImpl(reader);
         } catch (Throwable tr) {
-            Log.w(TAG, tr);
+            Log.w(getClass().getSimpleName(), tr);
         } finally {
             transferBitmapToViewport(reader);
         }
@@ -101,8 +102,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private void afterExecuteImpl(final Reader reader) throws Throwable {
         dumpException();
         benchmarkEnd();
-        reader.getReaderHelper().clearAbortFlag();
         loadUserData(reader);
+        cleanup(reader);
     }
 
     private void dumpException() {
@@ -186,6 +187,14 @@ public abstract class BaseReaderRequest extends BaseRequest {
         if (readerViewInfo != null && loadBookmark) {
             getReaderUserDataInfo().loadBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
         }
+        if (readerViewInfo != null && loadPageLinks) {
+            getReaderUserDataInfo().loadPageLinks(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+    }
+
+    private void cleanup(final Reader reader) {
+        reader.getReaderHelper().clearAbortFlag();
+        reader.getReaderLayoutManager().setLayoutChanged(false);
     }
 
     public void setLoadPageAnnotation(boolean loadPageAnnotation) {

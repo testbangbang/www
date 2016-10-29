@@ -1,7 +1,10 @@
 package com.onyx.kreader.host.request;
 
+import android.util.Log;
+
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -58,9 +61,19 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private void restoreViewport(final Reader reader) throws Exception {
+        int viewWidth = reader.getViewOptions().getViewWidth();
+        int viewHeight = reader.getViewOptions().getViewHeight();
         if (baseOptions.getViewport() != null &&
             baseOptions.getViewport().width() > 0 &&
             baseOptions.getViewport().height() > 0) {
+            if (viewWidth != baseOptions.getViewport().width() || viewHeight != baseOptions.getViewport().height()) {
+                Debug.e(this.getClass(),
+                    "Restore with" +
+                    " width: " + baseOptions.getViewport().width() +
+                    " height: " + baseOptions.getViewport().height() +
+                    " view width: " + viewWidth +
+                    " view height: " + viewHeight);
+            }
             reader.getReaderLayoutManager().getPageManager().setViewportRect(baseOptions.getViewport());
         }
     }

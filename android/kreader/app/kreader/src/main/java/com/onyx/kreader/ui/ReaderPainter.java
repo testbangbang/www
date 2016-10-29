@@ -63,13 +63,12 @@ public class ReaderPainter {
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
+        drawBookmark(context, canvas, userDataInfo, viewInfo);
         drawSearchResults(canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
         drawHighlightResult(canvas, paint, userDataInfo, viewInfo, selectionManager, DrawHighlightPaintStyle.Fill);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
-        drawBookmark(context, canvas, userDataInfo, viewInfo);
-        drawShapes(context, canvas, paint, userDataInfo, noteManager);
-        drawStashShapes(context, canvas, paint, noteManager, viewInfo);
-        drawShapeEraser(context, canvas, paint, noteManager);
+        drawPageLinks(context, canvas, paint, userDataInfo, viewInfo, DrawHighlightPaintStyle.Fill);
+        drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
@@ -140,6 +139,32 @@ public class ReaderPainter {
                 }
             }
         }
+    }
+
+    private void drawPageLinks(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, DrawHighlightPaintStyle paintStyle) {
+        for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            if (!userDataInfo.hasPageLinks(pageInfo)) {
+                continue;
+            }
+            List<ReaderSelection> links = userDataInfo.getPageLinks(pageInfo);
+            for (ReaderSelection link : links) {
+                drawUnderLineHighlightRectangles(canvas, paint, link.getRectangles());
+            }
+        }
+    }
+
+    private void drawShapeContents(Context context,
+                                   Canvas canvas,
+                                   Paint paint,
+                                   final ReaderUserDataInfo userDataInfo,
+                                   final ReaderViewInfo viewInfo,
+                                   final NoteManager noteManager) {
+        if (!viewInfo.supportScalable) {
+            return;
+        }
+        drawShapes(context, canvas, paint, userDataInfo, noteManager);
+        drawStashShapes(context, canvas, paint, noteManager, viewInfo);
+        drawShapeEraser(context, canvas, paint, noteManager);
     }
 
     private void drawBookmark(Context context, Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {

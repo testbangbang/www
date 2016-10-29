@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
  */
 public class RawEventProcessor extends NoteEventProcessorBase {
 
-
     private static final int EV_SYN = 0x00;
     private static final int EV_KEY = 0x01;
     private static final int EV_ABS = 0x03;
@@ -44,13 +43,12 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private volatile int px, py, pressure;
     private volatile boolean erasing = false;
-    private volatile boolean forceDrawing = false;
-    private volatile boolean forceErasing = false;
+    private volatile boolean shortcutDrawing = false;
+    private volatile boolean shortcutErasing = false;
     private volatile boolean pressed = false;
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
     private volatile boolean reportData = false;
-    private volatile boolean enableEventProcessor = false;
 
     private volatile Matrix inputToScreenMatrix;
     private volatile Matrix screenToViewMatrix;
@@ -64,10 +62,11 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         super(p);
     }
 
-    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect) {
+    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect, final Rect excludeRect) {
         this.inputToScreenMatrix = screenMatrix;
         this.screenToViewMatrix = viewMatrix;
         setLimitRect(rect);
+        setExcludeRect(excludeRect);
     }
 
     public void start() {
@@ -78,19 +77,13 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     public void resume() {
+        clearInternalState();
         reportData = true;
     }
 
     public void pause() {
+        clearInternalState();
         reportData = false;
-    }
-
-    public boolean isEnableEventProcessor() {
-        return enableEventProcessor;
-    }
-
-    public void setEnableEventProcessor(boolean enableEventProcessor) {
-        this.enableEventProcessor = enableEventProcessor;
     }
 
     public void quit() {
@@ -102,8 +95,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private void clearInternalState() {
         pressed = false;
-        forceDrawing = false;
-        forceErasing = false;
+        shortcutDrawing = false;
+        shortcutErasing = false;
         lastPressed = false;
     }
 
@@ -160,28 +153,30 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         } else if (type == EV_SYN) {
             if (pressed) {
                 if (!lastPressed) {
-                    lastPressed = pressed;
                     pressReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                    lastPressed = true;
                 } else {
                     moveReceived(px, py, pressure, PEN_SIZE, ts, erasing);
                 }
-            } else {
+            } else if (lastPressed) {
                 releaseReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                lastPressed = false;
             }
         } else if (type == EV_KEY) {
             if (code ==  BTN_TOUCH)  {
                 erasing = false;
                 pressed = value > 0;
-                lastPressed = false;
+                lastPressed = value <= 0;
             } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
                 erasing = false;
-                forceDrawing = true;
-                forceErasing = false;
+                shortcutDrawing = true;
+                shortcutErasing = false;
             } else if (code == BTN_TOOL_RUBBER) {
                 pressed = value > 0;
+                lastPressed = value <= 0;
                 erasing = true;
-                forceDrawing = false;
-                forceErasing = true;
+                shortcutDrawing = false;
+                shortcutErasing = true;
             }
         }
     }
@@ -237,6 +232,10 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             return false;
         }
 
+        if (inExcludeRect(touchPoint.x, touchPoint.y)) {
+            return false;
+        }
+
         if (touchPoint != null && touchPointList != null) {
             touchPointList.add(touchPoint);
         }
@@ -244,14 +243,17 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean isReportData() {
-        if (forceDrawing || forceErasing) {
+        if (shortcutDrawing && getCallback().enableShortcutDrawing()) {
             return true;
         }
-        return reportData && enableEventProcessor;
+        if (shortcutErasing && getCallback().enableShortcutErasing()) {
+            return true;
+        }
+        return reportData && getCallback().enableRawEventProcessor();
     }
 
     private boolean inErasing() {
-        return erasing || forceErasing;
+        return erasing || shortcutErasing;
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
@@ -311,8 +313,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void erasingReleaseReceived(int x, int y, int pressure, int size, long ts) {
-        forceDrawing = false;
-        forceErasing = false;
+        shortcutDrawing = false;
+        shortcutErasing = false;
         final PageInfo pageInfo = hitTest(x, y);
         if (pageInfo != null) {
             final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
@@ -355,7 +357,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
-        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y)) {
+        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y) || inExcludeRect(touchPoint.x, touchPoint.y)) {
             finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
             return false;
         }
@@ -389,7 +391,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void invokeDFBShapeStart() {
-        final boolean shortcut = forceDrawing;
+        final boolean shortcut = shortcutDrawing;
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -399,9 +401,9 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void invokeDFBShapeFinished(final Shape shape) {
-        final boolean shortcut = forceDrawing;
-        forceDrawing = false;
-        forceErasing = false;
+        final boolean shortcut = shortcutDrawing;
+        shortcutDrawing = false;
+        shortcutErasing = false;
         if (shape == null) {
             return;
         }

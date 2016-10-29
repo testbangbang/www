@@ -8,8 +8,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
+import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -42,6 +44,10 @@ public class ReaderConfig {
         }
 
         if (StringUtils.isNullOrEmpty(content)) {
+            content = readFromGeneralModel(context);
+        }
+
+        if (StringUtils.isNullOrEmpty(content)) {
             content = readFromBrand(context);
         }
 
@@ -70,6 +76,18 @@ public class ReaderConfig {
     private String readFromModel(Context context) {
         final String name = Build.MODEL;
         return contentFromRawResource(context, name);
+    }
+
+    private String readFromGeneralModel(Context context) {
+        final String model = Build.MODEL.toLowerCase();
+        Field[] rawFields = R.raw.class.getFields();
+        for (Field field : rawFields) {
+            String fieldName = field.getName();
+            if (model.startsWith(fieldName)) {
+                return contentFromRawResource(context, fieldName);
+            }
+        }
+        return null;
     }
 
     private String readFromDefaultOnyxConfig(Context context) {

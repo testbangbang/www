@@ -17,10 +17,12 @@ import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
 import com.onyx.android.note.actions.manager.LoadNoteListAction;
+import com.onyx.android.note.actions.manager.NoteMoveAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.android.note.activity.BaseManagerActivity;
 import com.onyx.android.note.data.DataItemType;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
+import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.dialog.DialogSortBy;
 import com.onyx.android.note.utils.NotePreference;
@@ -393,5 +395,32 @@ public class ManagerActivity extends BaseManagerActivity {
                 view.setImageViewBackGround(GAdapterUtil.TAG_THUMBNAIL, 0);
                 break;
         }
+    }
+
+    @Override
+    public void showMovableFolderDialog(List<NoteModel> curLibSubContList) {
+        final DialogMoveFolder dialogMoveFolder = new DialogMoveFolder();
+        dialogMoveFolder.setDataList(curLibSubContList);
+        dialogMoveFolder.setCallback(new DialogMoveFolder.DialogMoveFolderCallback() {
+            @Override
+            public void onMove(String targetParentId) {
+                NoteMoveAction<BaseManagerActivity> noteMoveAction = new NoteMoveAction<>(targetParentId,
+                        targetMoveIDList, true, false, false);
+                noteMoveAction.execute(ManagerActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        loadNoteList();
+                        dialogMoveFolder.dismiss();
+                        switchMode(SelectionMode.NORMAL_MODE);
+                    }
+                });
+            }
+
+            @Override
+            public void onDismiss() {
+                switchMode(SelectionMode.NORMAL_MODE);
+            }
+        });
+        dialogMoveFolder.show(getFragmentManager());
     }
 }

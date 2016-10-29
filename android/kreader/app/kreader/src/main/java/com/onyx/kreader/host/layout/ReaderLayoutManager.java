@@ -43,6 +43,7 @@ public class ReaderLayoutManager {
     private boolean supportScale;
     private boolean supportTextFlow;
     private boolean savePosition = true;
+    private boolean layoutChanged = false;
 
     public ReaderLayoutManager(final ReaderHelper helper,
                                final ReaderDocument document,
@@ -121,7 +122,6 @@ public class ReaderLayoutManager {
 
         // before change layout, record current position.
         String pagePosition = getCurrentPageName();
-
         currentProvider = layoutName;
         getCurrentLayoutProvider().activate();
         getCurrentLayoutProvider().setNavigationArgs(navigationArgs);
@@ -130,6 +130,8 @@ public class ReaderLayoutManager {
         if (StringUtils.isNotBlank(pagePosition)) {
             getCurrentLayoutProvider().gotoPosition(pagePosition);
         }
+        readerHelper.onLayoutChanged();
+        setLayoutChanged(true);
         return true;
     }
 
@@ -155,6 +157,14 @@ public class ReaderLayoutManager {
 
     public int getSpecialScale() {
         return getPageManager().getSpecialScale();
+    }
+
+    public void setLayoutChanged(boolean layoutChanged) {
+        this.layoutChanged = layoutChanged;
+    }
+
+    public boolean isLayoutChanged() {
+        return layoutChanged;
     }
 
     public void setSavePosition(boolean save) {

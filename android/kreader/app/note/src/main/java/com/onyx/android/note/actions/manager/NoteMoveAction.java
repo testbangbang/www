@@ -15,10 +15,16 @@ import java.util.List;
 public class NoteMoveAction<T extends BaseManagerActivity> extends BaseNoteAction<T> {
     private List<String> targetMoveLibraryList;
     private String newParentID;
+    private boolean checkNameLegality;
+    private boolean checkThisLevelOnly;
+    private boolean distinguishFileType;
 
-    public NoteMoveAction(String parentID, List<String> targetMoveLibraryList) {
+    public NoteMoveAction(String parentID, List<String> targetMoveLibraryList, boolean checkNameLegality, boolean checkThisLevelOnly, boolean distinguishFileType) {
         this.newParentID = parentID;
         this.targetMoveLibraryList = targetMoveLibraryList;
+        this.checkNameLegality = checkNameLegality;
+        this.checkThisLevelOnly = checkThisLevelOnly;
+        this.distinguishFileType = distinguishFileType;
     }
 
     public void execute(final T activity) {
@@ -32,7 +38,8 @@ public class NoteMoveAction<T extends BaseManagerActivity> extends BaseNoteActio
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        final NoteMoveRequest request = new NoteMoveRequest(newParentID, targetMoveLibraryList);
+        final NoteMoveRequest request = new NoteMoveRequest(newParentID, targetMoveLibraryList,
+                checkNameLegality, checkThisLevelOnly, distinguishFileType);
         activity.submitRequest(request, callback);
     }
 }

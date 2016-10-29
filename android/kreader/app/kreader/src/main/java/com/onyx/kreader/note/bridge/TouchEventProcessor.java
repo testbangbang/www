@@ -26,10 +26,11 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
         super(p);
     }
 
-    public void update(final View view, final OnyxMatrix matrix, final Rect rect) {
+    public void update(final View view, final OnyxMatrix matrix, final Rect rect, final Rect excludeRect) {
         view.getLocationOnScreen(viewPosition);
         viewToEpdMatrix = matrix;
         setLimitRect(rect);
+        setExcludeRect(excludeRect);
     }
 
     public boolean onTouchEventDrawing(final MotionEvent motionEvent) {
@@ -107,7 +108,7 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
-        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y)) {
+        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y) || inExcludeRect(touchPoint.x, touchPoint.y)) {
             finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
             return false;
         }

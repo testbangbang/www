@@ -23,14 +23,6 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_kreader_utils_ImageUtils_crop
 
 /*
  * Class:     com_onyx_kreader_utils_ImageUtils
- * Method:    reflowPage
- * Signature: (Landroid/graphics/Bitmap;Ljava/lang/String;Lcom/onyx/kreader/reflow/ImageReflowManager;Lcom/onyx/kreader/reflow/ImageReflowSettings;)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_reflowPage
-  (JNIEnv *, jclass, jobject, jstring, jobject, jobject);
-
-/*
- * Class:     com_onyx_kreader_utils_ImageUtils
  * Method:    emboldenInPlace
  * Signature: (Landroid/graphics/Bitmap;I)Z
  */
@@ -44,6 +36,46 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_emboldenInPlac
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_gammaCorrection
   (JNIEnv *, jclass, jobject, jfloat);
+
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    reflowPage
+ * Signature: (Ljava/lang/String;Landroid/graphics/Bitmap;Lcom/onyx/kreader/reflow/ImageReflowSettings;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_reflowPage
+  (JNIEnv *, jclass, jstring, jobject, jobject);
+
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    isPageReflowed
+ * Signature: (Ljava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_isPageReflowed
+  (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    getReflowedPageSize
+ * Signature: (Ljava/lang/String;[I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_getReflowedPageSize
+  (JNIEnv *, jclass, jstring, jintArray);
+
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    renderReflowedPage
+ * Signature: (Ljava/lang/String;IIIILandroid/graphics/Bitmap;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowedPage
+  (JNIEnv *, jclass, jstring, jint, jint, jint, jint, jobject);
+
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    releaseReflowedPages
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPages
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

@@ -12,7 +12,7 @@ public class ShortcutErasingFinishEvent {
         this.list = list;
     }
 
-    public final TouchPointList getList() {
+    public final TouchPointList getTouchPointList() {
         return list;
     }
 }

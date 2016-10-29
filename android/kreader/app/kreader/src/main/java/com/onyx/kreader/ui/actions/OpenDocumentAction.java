@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import android.app.Activity;
 
+import android.content.pm.ActivityInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -63,15 +64,16 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private boolean processOrientation(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
+        int target = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         if (options != null && options.getOrientation() > 0) {
-            int current = DeviceUtils.getScreenOrientation(activity);
-            int target = options.getOrientation();
-            Debug.d("current orientation: " + current + ", target orientation: " + target);
-            if (current != target) {
-                readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
-                hideLoadingDialog();
-                return false;
-            }
+            target = options.getOrientation();
+        }
+        int current = DeviceUtils.getScreenOrientation(activity);
+        Debug.d("current orientation: " + current + ", target orientation: " + target);
+        if (current != target) {
+            readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
+            hideLoadingDialog();
+            return false;
         }
         return true;
     }

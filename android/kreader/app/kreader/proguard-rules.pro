@@ -48,3 +48,11 @@
 -keepnames class com.onyx.kreader.host.navigation.NavigationList { *; }
 
 -keepnames class com.onyx.kreader.api.ReaderSentence { *; }
+-keepnames class com.onyx.kreader.utils.ReaderConfig { *; }
+
+-keepnames class com.onyx.android.sdk.scribble.utils.** { *; }
+
+# keep classes used by TypeConverter of dbflow
+-keep class com.onyx.kreader.note.data.ReaderNotePageNameMap { *; }
+-keep class com.onyx.android.sdk.scribble.data.PageNameList { *; }
+-keep class com.onyx.android.sdk.scribble.data.TouchPointList { *; }

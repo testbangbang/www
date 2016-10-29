@@ -5,9 +5,15 @@
               android:orientation="vertical">
 
     <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:layout_weight="1"
         android:id="@+id/page_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
     </com.onyx.android.sdk.ui.view.PageRecyclerView>
 
+
+    <Button
+        android:id="@+id/test_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"/>
 </LinearLayout>

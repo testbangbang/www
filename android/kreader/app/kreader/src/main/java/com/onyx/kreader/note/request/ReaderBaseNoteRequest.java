@@ -33,6 +33,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private volatile boolean resumeRawInputProcessor = false;
     private volatile boolean render = true;
     private volatile boolean transfer = true;
+    private volatile boolean resetNoteDataInfo = true;
 
     public ReaderBaseNoteRequest() {
         setAbortPendingTasks(false);
@@ -142,9 +143,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             getException().printStackTrace();
         }
         benchmarkEnd();
-        if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
-            parent.resumeRawEventProcessor();
-        }
         final Runnable runnable = postExecuteRunnable(parent);
         if (isRunInBackground()) {
             parent.getRequestManager().getLooperHandler().post(runnable);
@@ -169,6 +167,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
+                    if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
+                        parent.resumeRawEventProcessor();
+                    }
                     parent.getRequestManager().releaseWakeLock();
                 }
             }
@@ -319,5 +320,11 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         return getNoteDataInfo().getDrawingArgs();
     }
 
+    public boolean isResetNoteDataInfo() {
+        return resetNoteDataInfo;
+    }
 
+    public void setResetNoteDataInfo(boolean resetNoteDataInfo) {
+        this.resetNoteDataInfo = resetNoteDataInfo;
+    }
 }

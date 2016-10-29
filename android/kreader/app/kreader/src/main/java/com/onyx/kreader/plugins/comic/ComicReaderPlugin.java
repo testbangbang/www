@@ -322,7 +322,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * @return link list.
      */
     @Override
-    public List<ReaderLink> getLinks(String position) {
+    public List<ReaderSelection> getLinks(String position) {
         return null;
     }
 

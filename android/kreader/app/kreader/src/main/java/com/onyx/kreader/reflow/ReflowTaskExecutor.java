@@ -72,6 +72,9 @@ public class ReflowTaskExecutor {
 
     public void abort() {
         synchronized (taskQueue) {
+            if (currentTask != null) {
+                currentTask.setAbort();
+            }
             for (ReflowTask t : taskQueue) {
                 t.setAbort();
             }
@@ -88,6 +91,15 @@ public class ReflowTaskExecutor {
                 return true;
             }
             return false;
+        }
+    }
+
+    public String getCurrentTaskPage() {
+        synchronized (taskQueue) {
+            if (currentTask == null) {
+                return null;
+            }
+            return currentTask.getPageName();
         }
     }
 

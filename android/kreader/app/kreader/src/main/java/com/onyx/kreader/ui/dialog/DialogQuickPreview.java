@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.Size;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -53,7 +54,9 @@ public class DialogQuickPreview extends Dialog {
     public static abstract class Callback {
         public abstract void abort();
 
-        public abstract void requestPreview(final List<Integer> pages, final Size desiredSize);
+        public abstract void requestPreview(final List<Integer> pages);
+
+        public abstract void recycleBitmap();
     }
 
     static class GridType {
@@ -106,7 +109,6 @@ public class DialogQuickPreview extends Dialog {
 
     private class PagePreviewAdapter extends PageRecyclerView.PageAdapter<PreviewViewHolder> {
 
-        private Size childSize = new Size(300, 400);
         private Grid grid;
 
         public void requestMissingBitmaps() {
@@ -121,16 +123,12 @@ public class DialogQuickPreview extends Dialog {
             for (int i = pageBegin; i <= pageEnd; i++) {
                 toRequest.add(i);
             }
-            callback.requestPreview(toRequest, childSize);
+            callback.requestPreview(toRequest);
         }
 
         public void setGridType(Grid grid) {
             this.grid = grid;
             gridRecyclerView.resize(grid.getRows(), grid.getColumns(), readerDataHolder.getPageCount());
-        }
-
-        public Size getDesiredSize() {
-            return childSize;
         }
 
         public void setBitmap(int index, Bitmap bitmap) {
@@ -181,11 +179,7 @@ public class DialogQuickPreview extends Dialog {
         @Override
         public void onViewDetachedFromWindow(PreviewViewHolder holder) {
             super.onViewDetachedFromWindow(holder);
-            Bitmap bitmap = holder.getBitmap();
-            if (bitmap != null && !bitmap.isRecycled()) {
-                bitmap.recycle();
-                holder.getImageView().setImageDrawable(new ColorDrawable(Color.WHITE));
-            }
+            holder.getImageView().setImageDrawable(new ColorDrawable(Color.WHITE));
         }
     }
 
@@ -205,7 +199,7 @@ public class DialogQuickPreview extends Dialog {
     private ReaderDataHolder readerDataHolder;
     private int currentPage;
     private Callback callback;
-    private List<Integer> tocChapterNodeList = new ArrayList<>();
+    private List<Integer> tocChapterNodeList;
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, Callback callback) {
         super(readerDataHolder.getContext(), android.R.style.Theme_NoTitleBar);
@@ -308,14 +302,14 @@ public class DialogQuickPreview extends Dialog {
         chapterBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoChapterIndex(true);
+                prepareGotoChapterIndex(true);
             }
         });
 
         chapterForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoChapterIndex(false);
+                prepareGotoChapterIndex(false);
             }
         });
 
@@ -383,25 +377,32 @@ public class DialogQuickPreview extends Dialog {
         return page / grid.getGridType();
     }
 
-    private void loadDocumentTableOfContent() {
-        GetTableOfContentAction.execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                BaseReaderRequest readerRequest = (BaseReaderRequest) request;
-                ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
-                chapterBack.setEnabled(toc != null && toc.getRootEntry() != null);
-                chapterForward.setEnabled(toc != null && toc.getRootEntry() != null);
-                buildChapterNodeList(toc);
-                updateChapterButtonState();
-            }
-        });
-    }
-
     private GPaginator getPaginator() {
         return gridRecyclerView.getPaginator();
     }
 
+    private void prepareGotoChapterIndex(final boolean back) {
+        if (tocChapterNodeList == null) {
+            new GetTableOfContentAction().execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    BaseReaderRequest readerRequest = (BaseReaderRequest) request;
+                    ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
+                    chapterBack.setEnabled(toc != null && toc.getRootEntry() != null);
+                    chapterForward.setEnabled(toc != null && toc.getRootEntry() != null);
+                    buildChapterNodeList(toc);
+                    gotoChapterIndex(back);
+                }
+            });
+        }else {
+            gotoChapterIndex(back);
+        }
+    }
+
     private void gotoChapterIndex(boolean back) {
+        if (tocChapterNodeList.size() <= 0) {
+            return;
+        }
         int chapterPosition;
         if (back) {
             int pageBegin = getPaginator().getCurrentPageBegin();
@@ -412,11 +413,6 @@ public class DialogQuickPreview extends Dialog {
         }
 
         gridRecyclerView.gotoPage(getGridPage(chapterPosition));
-    }
-
-    private void updateChapterButtonState() {
-        chapterBack.setEnabled(getPaginator().canPrevPage() && tocChapterNodeList.size() > 0);
-        chapterForward.setEnabled(getPaginator().canNextPage() && tocChapterNodeList.size() > 0);
     }
 
     private int getChapterPositionByPage(int page, boolean back) {
@@ -450,6 +446,7 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void buildChapterNodeList(ReaderDocumentTableOfContent toc) {
+        tocChapterNodeList = new ArrayList<>();
         ReaderDocumentTableOfContentEntry rootEntry = toc.getRootEntry();
         if (rootEntry.getChildren() != null) {
             buildChapterNode(rootEntry.getChildren());
@@ -480,12 +477,8 @@ public class DialogQuickPreview extends Dialog {
 
     private void setupContent() {
         gridRecyclerView.gotoPage(getPaginator().pageByIndex(currentPage));
-        if (callback != null) {
-            adapter.requestMissingBitmaps();
-        }
         onPressedImageView(grid.getGridType());
         initPageProgress();
-        loadDocumentTableOfContent();
     }
 
     /**
@@ -500,17 +493,12 @@ public class DialogQuickPreview extends Dialog {
         }
     }
 
-    private Bitmap getScaledPreview(Bitmap pageBitmap) {
-        return Bitmap.createScaledBitmap(pageBitmap, adapter.getDesiredSize().width, adapter.getDesiredSize().height, false);
-    }
-
     private void onPageDataChanged() {
         currentPage = getPaginator().getCurrentPageBegin();
         callback.abort();
         previewMap.clear();
         adapter.requestMissingBitmaps();
         updatePageProgress();
-        updateChapterButtonState();
     }
 
     private void initPageProgress() {
@@ -545,11 +533,17 @@ public class DialogQuickPreview extends Dialog {
 
     private void nextPage() {
         gridRecyclerView.nextPage();
-        onPageDataChanged();
     }
 
     private void prevPage() {
         gridRecyclerView.prevPage();
-        onPageDataChanged();
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (callback != null) {
+            callback.recycleBitmap();
+        }
     }
 }

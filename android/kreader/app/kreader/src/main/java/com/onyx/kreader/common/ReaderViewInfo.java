@@ -16,6 +16,8 @@ public class ReaderViewInfo {
 
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
 
+    public boolean canPrevScreen;
+    public boolean canNextScreen;
     public boolean canGoBack;
     public boolean canGoForward;
     public boolean supportReflow;
@@ -24,6 +26,7 @@ public class ReaderViewInfo {
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();
     public PointF lastViewportOverlayPosition = null;
+    public boolean layoutChanged = false;
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;

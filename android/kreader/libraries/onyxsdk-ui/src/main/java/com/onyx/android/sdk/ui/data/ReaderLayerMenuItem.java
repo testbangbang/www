@@ -3,6 +3,8 @@ package com.onyx.android.sdk.ui.data;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 
+import java.util.List;
+
 /**
  * Created by joy on 6/28/16.
  */
@@ -10,6 +12,7 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
     private int titleResourceId;
     private String title;
     private int drawableResourceId;
+    private boolean visible = true;
 
     public ReaderLayerMenuItem(ItemType itemType, ReaderMenuAction action, ReaderLayerMenuItem parent, int titleResourceId, String title, int drawableResourceId) {
         super(itemType, action, parent);
@@ -39,6 +42,11 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
         return resourceId.substring(idx + 1);
     }
 
+    @Override
+    public List<ReaderLayerMenuItem> getChildren() {
+        return (List<ReaderLayerMenuItem>)super.getChildren();
+    }
+
     public int getTitleResourceId() {
         return titleResourceId;
     }
@@ -57,5 +65,13 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
 
     public void setTitleResourceId(int titleResourceId) {
         this.titleResourceId = titleResourceId;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }
