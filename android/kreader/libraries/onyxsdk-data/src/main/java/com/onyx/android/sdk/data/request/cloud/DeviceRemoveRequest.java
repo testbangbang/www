@@ -12,12 +12,10 @@ import retrofit2.Response;
 public class DeviceRemoveRequest extends BaseCloudRequest {
 
     private String deviceId;
-    private String sessionToken;
     private boolean isSuccess;
 
-    public DeviceRemoveRequest(final String deviceId, final String sessionToken) {
+    public DeviceRemoveRequest(final String deviceId) {
         this.deviceId = deviceId;
-        this.sessionToken = sessionToken;
     }
 
     public boolean getResult() {
@@ -26,7 +24,7 @@ public class DeviceRemoveRequest extends BaseCloudRequest {
 
     public void execute(final CloudManager parent) throws Exception {
         Response<ResponseBody> response = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
-                .removeBoundDevice(deviceId, sessionToken).execute();
+                .removeBoundDevice(deviceId, getAccountSessionToken()).execute();
         isSuccess = response.isSuccessful();
     }
 }

@@ -15,10 +15,8 @@ import retrofit2.Response;
 public class ConsumerListRequest extends BaseCloudRequest {
 
     private List<Consumer> consumerList;
-    private String sessionToken;
 
-    public ConsumerListRequest(String sessionToken) {
-        this.sessionToken = sessionToken;
+    public ConsumerListRequest() {
     }
 
     public List<Consumer> getConsumerList() {
@@ -28,7 +26,7 @@ public class ConsumerListRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Call<List<Consumer>> call = ServiceFactory.getConsumerService(parent.getCloudConf().getApiBase())
-                .getConsumerList(sessionToken);
+                .getConsumerList(getAccountSessionToken());
         Response<List<Consumer>> response = call.execute();
         if (response.isSuccessful()) {
             consumerList = response.body();

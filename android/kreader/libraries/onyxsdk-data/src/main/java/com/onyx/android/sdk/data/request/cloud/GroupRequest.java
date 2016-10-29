@@ -14,13 +14,11 @@ public class GroupRequest extends BaseCloudRequest {
 
     private long id;
     private String param;
-    private String sessionToken;
     private OnyxGroup group;
 
-    public GroupRequest(long groupId, String param, String sessionToken) {
+    public GroupRequest(long groupId, String param) {
         this.id = groupId;
         this.param = param;
-        this.sessionToken = sessionToken;
     }
 
     public OnyxGroup getGroup() {
@@ -30,7 +28,7 @@ public class GroupRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Call<OnyxGroup> call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .getGroup(id, param, sessionToken);
+                .getGroup(id, param, getAccountSessionToken());
         Response<OnyxGroup> response = call.execute();
         if (response.isSuccessful()) {
             group = response.body();

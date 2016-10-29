@@ -12,13 +12,11 @@ import retrofit2.Response;
 public class CommentPostRequest extends BaseCloudRequest {
 
     private String bookId;
-    private String sessionToken;
     private Comment comment;
     private Comment resultComment;
 
-    public CommentPostRequest(String bookId, Comment comment, String sessionToken) {
+    public CommentPostRequest(String bookId, Comment comment) {
         this.bookId = bookId;
-        this.sessionToken = sessionToken;
         this.comment = comment;
     }
 
@@ -29,7 +27,7 @@ public class CommentPostRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Response<Comment> response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
-                .postBookComment(bookId, comment, sessionToken).execute();
+                .postBookComment(bookId, comment, getAccountSessionToken()).execute();
         if (response.isSuccessful()) {
             resultComment = response.body();
         }

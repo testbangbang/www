@@ -11,16 +11,14 @@ import retrofit2.Call;
  */
 public class AccountApplyActivateRequest extends BaseCloudRequest {
 
-    private String sessionToken;
 
-    public AccountApplyActivateRequest(String sessionToken) {
-        this.sessionToken = sessionToken;
+    public AccountApplyActivateRequest() {
     }
 
     @Override
     public void execute(CloudManager parent) throws Exception {
         Call call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
-                .applyActivateAccount(sessionToken);
+                .applyActivateAccount(getAccountSessionToken());
         call.execute();
     }
 }

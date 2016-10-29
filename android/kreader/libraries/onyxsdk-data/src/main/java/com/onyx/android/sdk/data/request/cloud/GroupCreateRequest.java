@@ -14,11 +14,9 @@ public class GroupCreateRequest extends BaseCloudRequest {
 
     private OnyxGroup resultGroup;
     private OnyxGroup group;
-    private String sessionToken;
 
-    public GroupCreateRequest(OnyxGroup group, String sessionToken) {
+    public GroupCreateRequest(OnyxGroup group) {
         this.group = group;
-        this.sessionToken = sessionToken;
     }
 
     public OnyxGroup getResultGroup() {
@@ -28,7 +26,7 @@ public class GroupCreateRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Call<OnyxGroup> call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .createGroup(group, sessionToken);
+                .createGroup(group, getAccountSessionToken());
         Response<OnyxGroup> response = call.execute();
         if (response.isSuccessful()) {
             resultGroup = response.body();
