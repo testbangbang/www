@@ -22,6 +22,7 @@
 
         <meta-data android:name="channel" android:value="${channel_value}"/>
         <meta-data android:name="type" android:value="${type_value}"/>
+        <meta-data android:name="platform" android:value="${platform_value}" />
 
         <activity android:name="com.onyx.kreader.tests.ReaderTestActivity">
 

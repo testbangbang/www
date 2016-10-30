@@ -14,12 +14,10 @@ import retrofit2.Response;
 public class MemberListRequest extends BaseCloudRequest {
 
     private long id;
-    private String sessionToken;
     private List<Member> memberList;
 
-    public MemberListRequest(long groupId, String sessionToken) {
+    public MemberListRequest(long groupId) {
         this.id = groupId;
-        this.sessionToken = sessionToken;
     }
 
     public List<Member> getMemberList() {
@@ -29,7 +27,7 @@ public class MemberListRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Response<List<Member>> response = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .getMemberList(id, sessionToken).execute();
+                .getMemberList(id, getAccountSessionToken()).execute();
         if (response.isSuccessful()) {
             memberList = response.body();
         }

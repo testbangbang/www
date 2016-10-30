@@ -14,11 +14,9 @@ import retrofit2.Response;
  */
 public class GroupListRequest extends BaseCloudRequest {
 
-    private String sessionToken;
     private List<OnyxGroup> list;
 
-    public GroupListRequest(String sessionToken) {
-        this.sessionToken = sessionToken;
+    public GroupListRequest() {
     }
 
     public List<OnyxGroup> getGroupList() {
@@ -28,7 +26,7 @@ public class GroupListRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Call<List<OnyxGroup>> call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .getGroupList(sessionToken);
+                .getGroupList(getAccountSessionToken());
         Response<List<OnyxGroup>> response = call.execute();
         if (response.isSuccessful()) {
             list = response.body();

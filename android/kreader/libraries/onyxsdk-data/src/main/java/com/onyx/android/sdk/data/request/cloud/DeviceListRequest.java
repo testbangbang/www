@@ -13,11 +13,9 @@ import retrofit2.Response;
  */
 public class DeviceListRequest extends BaseCloudRequest {
 
-    private String sessionToken;
     private List<Device> deviceList;
 
-    public DeviceListRequest(String sessionToken) {
-        this.sessionToken = sessionToken;
+    public DeviceListRequest() {
     }
 
     public List<Device> getDeviceList() {
@@ -26,8 +24,8 @@ public class DeviceListRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response<List<Device>> response = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase()).getBoundDeviceList(sessionToken)
-                .execute();
+        Response<List<Device>> response = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
+                .getBoundDeviceList(getAccountSessionToken()).execute();
         if (response.isSuccessful()) {
             deviceList = response.body();
         }
