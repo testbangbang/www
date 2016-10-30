@@ -56,6 +56,7 @@ public class ReaderDataHolder {
     private boolean preRender = true;
     private boolean preRenderNext = true;
     private boolean documentOpened = false;
+    private boolean enableShortcutErasing = false;
 
     private int displayWidth;
     private int displayHeight;
@@ -454,6 +455,10 @@ public class ReaderDataHolder {
         }
         getNoteManager().enableRawEventProcessor(false);
         getNoteManager().stopRawEventProcessor();
+    }
+
+    public boolean isEnableShortcutErasing() {
+        return enableShortcutErasing;
     }
 }
 
