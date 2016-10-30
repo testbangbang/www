@@ -617,7 +617,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
-        // getReaderDataHolder().getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+        if (getReaderDataHolder().isEnableShortcutErasing()) {
+            getReaderDataHolder().getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+        }
     }
 
     public void onShortcutErasingEvent(final ShortcutErasingEvent event) {
@@ -625,7 +627,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutErasingFinish(final ShortcutErasingFinishEvent event) {
-        // ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+        if (getReaderDataHolder().isEnableShortcutErasing()) {
+            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+        }
     }
 
     @Subscribe

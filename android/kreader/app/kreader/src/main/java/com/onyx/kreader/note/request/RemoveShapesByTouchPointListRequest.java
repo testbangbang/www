@@ -17,6 +17,7 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
     public RemoveShapesByTouchPointListRequest(final List<PageInfo> pageInfoList, final TouchPointList pointList) {
         setVisiblePages(pageInfoList);
         touchPointList = pointList;
+        setResetNoteDataInfo(false);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {

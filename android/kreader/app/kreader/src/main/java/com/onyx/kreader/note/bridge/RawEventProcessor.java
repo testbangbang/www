@@ -151,29 +151,28 @@ public class RawEventProcessor extends NoteEventProcessorBase {
                 pressure = value;
             }
         } else if (type == EV_SYN) {
-            if (pressed) {
+            if (pressed && pressure > 0) {
                 if (!lastPressed) {
                     pressReceived(px, py, pressure, PEN_SIZE, ts, erasing);
                     lastPressed = true;
                 } else {
                     moveReceived(px, py, pressure, PEN_SIZE, ts, erasing);
                 }
-            } else if (lastPressed) {
+            }
+            if (pressure <= 0 && lastPressed) {
                 releaseReceived(px, py, pressure, PEN_SIZE, ts, erasing);
                 lastPressed = false;
             }
         } else if (type == EV_KEY) {
-            if (code ==  BTN_TOUCH)  {
+            if (code == BTN_TOUCH)  {
                 erasing = false;
+                lastPressed = pressed;
                 pressed = value > 0;
-                lastPressed = value <= 0;
             } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
                 erasing = false;
                 shortcutDrawing = true;
                 shortcutErasing = false;
             } else if (code == BTN_TOOL_RUBBER) {
-                pressed = value > 0;
-                lastPressed = value <= 0;
                 erasing = true;
                 shortcutDrawing = false;
                 shortcutErasing = true;
@@ -357,7 +356,9 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
-        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y) || inExcludeRect(touchPoint.x, touchPoint.y)) {
+        if (hitTest(touchPoint.x, touchPoint.y) == null ||
+            !inLimitRect(touchPoint.x, touchPoint.y) ||
+            inExcludeRect(touchPoint.x, touchPoint.y)) {
             finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
             return false;
         }
