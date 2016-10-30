@@ -357,7 +357,9 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
-        if (hitTest(touchPoint.x, touchPoint.y) == null || !inLimitRect(touchPoint.x, touchPoint.y) || inExcludeRect(touchPoint.x, touchPoint.y)) {
+        if (hitTest(touchPoint.x, touchPoint.y) == null ||
+            !inLimitRect(touchPoint.x, touchPoint.y) ||
+            inExcludeRect(touchPoint.x, touchPoint.y)) {
             finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
             return false;
         }
