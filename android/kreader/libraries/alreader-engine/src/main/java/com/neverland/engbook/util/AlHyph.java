@@ -2,9 +2,6 @@ package com.neverland.engbook.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-
-import android.app.Application;
 
 import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
@@ -288,7 +285,7 @@ public class AlHyph {
 		InputStream is;
 		int	tmp;
 		try {
-			is = opt.appInstance.getAssets().open(file);
+			is = opt.assetManager.open(file);
 
 			tmp = is.read();
 			tmp += is.read() << 8;

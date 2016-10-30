@@ -1,6 +1,7 @@
 package com.neverland.engbook.forpublic;
 
 import android.app.Application;
+import android.content.res.AssetManager;
 
 
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_HYPH_LANG;
@@ -43,7 +44,7 @@ public class AlEngineOptions {
 	/**
 	 *
 	 */
-	public Application							appInstance;
+	public AssetManager assetManager;
 	/**
 	 * некоторые ньюансы форматирования текста на странице - устанавливать в TRUE только если локаль устройства - китайская
 	 */

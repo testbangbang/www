@@ -455,10 +455,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportTypefaceAdjustment() {
-        if (StringUtils.isNullOrEmpty(documentPath)) {
-            return false;
-        }
-        return documentPath.toLowerCase().endsWith("epub");
+        return false;
     }
 
 

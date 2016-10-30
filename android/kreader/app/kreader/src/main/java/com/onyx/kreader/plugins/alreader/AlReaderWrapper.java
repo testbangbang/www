@@ -1,7 +1,22 @@
 package com.onyx.kreader.plugins.alreader;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
 import com.neverland.engbook.bookobj.AlBookEng;
+import com.neverland.engbook.bookobj.AlUtilFunc;
+import com.neverland.engbook.forpublic.AlBitmap;
+import com.neverland.engbook.forpublic.AlBookOptions;
+import com.neverland.engbook.forpublic.AlCurrentPosition;
+import com.neverland.engbook.forpublic.AlEngineNotifyForUI;
+import com.neverland.engbook.forpublic.AlEngineOptions;
+import com.neverland.engbook.forpublic.AlPublicProfileOptions;
+import com.neverland.engbook.forpublic.EngBookMyType;
+import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.api.ReaderPluginOptions;
 
 /**
  * Created by zhuzeng on 29/10/2016.
@@ -17,18 +32,39 @@ public class AlReaderWrapper {
     static public long ERROR_SECURITY = 5;
     static public long ERROR_PAGE_NOT_FOUND = 6;
 
-    private AlBookEng eng;
+    private AlBookEng bookEng;
+    private AlEngineOptions engineOptions;
+    private AlPublicProfileOptions profileCurrent = null;
+    private AlPublicProfileOptions profileDay = new AlPublicProfileOptions();
+    private AlPublicProfileOptions profileNight = new AlPublicProfileOptions();
 
-    public AlReaderWrapper() {
-        eng = new AlBookEng();
+
+    public AlReaderWrapper(final ReaderPluginOptions pluginOptions) {
+        bookEng = new AlBookEng();
+        bookEng.initializeBookEngine(createEngineOptions(pluginOptions));
+        bookEng.initializeOwner(getEngineNotifyForUI());
+        bookEng.setNewProfileParameters(getProfileDay(pluginOptions));
+    }
+
+    public void setViewSize(int width, int height) {
+        bookEng.setNewScreenSize(width, height);
     }
 
     public long openDocument(final String path, final String password) {
-        return 0;
+        AlBookOptions bookOpt = new AlBookOptions();
+        bookOpt.codePage = TAL_CODE_PAGES.AUTO;
+        bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
+        bookOpt.formatOptions = 0;
+        bookOpt.readPosition = 0;
+        bookEng.openBook(path, bookOpt);
+        return NO_ERROR;
     }
 
     public void closeDocument() {
-
+        if (bookEng == null) {
+            return;
+        }
+        bookEng.closeBook();
     }
 
     public String metadataString(final String tag) {
@@ -36,5 +72,67 @@ public class AlReaderWrapper {
         return StringUtils.utf16le(data).trim();
     }
 
+    private AlEngineOptions createEngineOptions(final ReaderPluginOptions pluginOptions) {
+        engineOptions = new AlEngineOptions();
+        engineOptions.assetManager = pluginOptions.getAssetManager();
+        engineOptions.font_catalog = pluginOptions.getFontDirectories().get(0);
+        engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
+        engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
+        engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
+        engineOptions.chinezeFormatting = true;
+
+        float dpiMultiplex = pluginOptions.getScreenDensity();
+        engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_160;
+        if (dpiMultiplex >= 4.0f) {
+            engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_640;
+        } else if (dpiMultiplex >= 3.0f) {
+            engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_480;
+        } else if (dpiMultiplex >= 2.0f) {
+            engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_320;
+        }
+        engineOptions.textMultiplexer = dpiMultiplex;
+        return engineOptions;
+    }
+
+    private AlEngineNotifyForUI getEngineNotifyForUI() {
+        AlEngineNotifyForUI engUI = new AlEngineNotifyForUI();
+        engUI.appInstance = null;
+        engUI.hWND = null;
+        return engUI;
+    }
+
+    private AlPublicProfileOptions getProfileDay(final ReaderPluginOptions pluginOptions) {
+        profileDay.background = null;
+        profileDay.backgroundMode = AlPublicProfileOptions.BACK_TILE_Y | AlPublicProfileOptions.BACK_TILE_X;
+        profileDay.bold = false;
+        profileDay.font_name = "XZ";
+        profileDay.font_monospace = "Monospace";
+        profileDay.font_size = 18;
+        profileDay.setMargins(5); // in percent
+        profileDay.twoColumn = false;
+        profileDay.colorText = 0x000000;
+        profileDay.colorTitle = 0x9c27b0;
+        profileDay.colorBack = 0xf0f0f0;
+        profileDay.interline = 0;
+        profileDay.specialModeRoll = true;
+        profileDay.sectionNewScreen = true;
+        profileDay.justify = true;
+        profileDay.notesOnPage = true;
+        return profileDay;
+    }
+
+    public void draw(final Bitmap bitmap, final int width, final int height) {
+        AlBitmap bmp = bookEng.getPageBitmap(EngBookMyType.TAL_PAGE_INDEX.CURR, width, height);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawBitmap(bmp.bmp, 0, 0, new Paint());
+    }
+
+    public int getTotalPage() {
+        return bookEng.getPageCount(new AlCurrentPosition());
+    }
+
+    public void nextPage() {
+        bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.NEXTPAGE, 0);
+    }
 
 }

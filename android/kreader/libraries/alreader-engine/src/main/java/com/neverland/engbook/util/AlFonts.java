@@ -31,7 +31,7 @@ public class AlFonts {
 	private AlCalc calc = null;
 	public void init(AlEngineOptions opt, AlCalc c) {
 		calc = c;
-        assetManager = opt.appInstance.getResources().getAssets();
+        assetManager = opt.assetManager;
 		loadAllFonts(opt.font_catalog, opt.font_resource);
 		switch (opt.DPI) {
 		case TAL_SCREEN_DPI_320:

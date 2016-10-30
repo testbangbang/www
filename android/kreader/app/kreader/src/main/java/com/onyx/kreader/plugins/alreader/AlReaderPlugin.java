@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
+import com.neverland.engbook.forpublic.AlBitmap;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDRMCallback;
 import com.onyx.kreader.api.ReaderDocument;
@@ -36,8 +38,10 @@ import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by zhuzeng on 29/10/2016.
@@ -55,23 +59,21 @@ public class AlReaderPlugin implements ReaderPlugin,
         ReaderRendererFeatures {
 
     private static final String TAG = AlReaderPlugin.class.getSimpleName();
+    private static Set<String> extensionFilters = new HashSet<String>();
     private Benchmark benchmark = new Benchmark();
-
     private AlReaderWrapper impl;
     private String documentPath;
-
-    List<ReaderSelection> searchResults = new ArrayList<>();
-    Map<String, List<ReaderSelection>> pageLinks = new HashMap<>();
+    private List<ReaderSelection> searchResults = new ArrayList<>();
 
     private ReaderViewOptions readerViewOptions;
 
     public AlReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
+        if (impl == null) {
+            impl = new AlReaderWrapper(pluginOptions);
+        }
     }
 
     public AlReaderWrapper getPluginImpl() {
-        if (impl == null) {
-            impl = new AlReaderWrapper();
-        }
         return impl;
     }
 
@@ -79,14 +81,23 @@ public class AlReaderPlugin implements ReaderPlugin,
         return TAG;
     }
 
-    static public boolean accept(final String path) {
-        String string = path.toLowerCase();
-        if (string.endsWith(".pdf")) {
-            return true;
+    static public Set<String> getExtensionFilters() {
+        if (extensionFilters.size() <= 0) {
+            extensionFilters.add("epub");
+            extensionFilters.add("fb2");
+            extensionFilters.add("mobi");
+            extensionFilters.add("rtf");
+            extensionFilters.add("txt");
+            extensionFilters.add("doc");
+            extensionFilters.add("docx");
         }
-        return false;
+        return extensionFilters;
     }
 
+    static public boolean accept(final String path) {
+        String extension = FileUtils.getFileExtension(path);
+        return getExtensionFilters().contains(extension);
+    }
 
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
         String docPassword = "";
@@ -127,7 +138,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public RectF getPageOriginSize(final String position) {
-        return null;
+        return new RectF(0, 0, readerViewOptions.getViewWidth(), readerViewOptions.getViewHeight());
     }
 
     @Override
@@ -164,6 +175,7 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     public ReaderView getView(final ReaderViewOptions viewOptions) {
         readerViewOptions = viewOptions;
+        getPluginImpl().setViewSize(readerViewOptions.getViewWidth(), readerViewOptions.getViewHeight());
         return this;
     }
 
@@ -232,7 +244,8 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
-        return false;
+        getPluginImpl().draw(bitmap, (int)displayRect.width(), (int)displayRect.height());
+        return true;
     }
 
     /**
@@ -261,7 +274,8 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return 1 based total page number.
      */
     public int getTotalPage() {
-        return 0;
+        int total = getPluginImpl().getTotalPage();
+        return 100;
     }
 
     /**
@@ -283,6 +297,7 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String nextPage(final String position) {
+        getPluginImpl().nextPage();
         int pn = PagePositionUtils.getPageNumber(position);
         if (pn + 1 < getTotalPage()) {
             return PagePositionUtils.fromPageNumber(pn + 1);
@@ -401,18 +416,15 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (StringUtils.isNullOrEmpty(documentPath)) {
             return false;
         }
-        return documentPath.toLowerCase().endsWith("pdf");
-    }
-
-    public boolean supportFontSizeAdjustment() {
         return false;
     }
 
+    public boolean supportFontSizeAdjustment() {
+        return true;
+    }
+
     public boolean supportTypefaceAdjustment() {
-        if (StringUtils.isNullOrEmpty(documentPath)) {
-            return false;
-        }
-        return documentPath.toLowerCase().endsWith("epub");
+        return true;
     }
 
 }

@@ -1,6 +1,8 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
+
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
@@ -21,10 +23,12 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     }
 
     public String getProviderName() {
-        return PageConstants.IMAGE_REFLOW_PAGE;
+        return PageConstants.TEXT_REFLOW_PAGE;
     }
 
     public void activate() {
+        getPageManager().setPageRepeat(0);
+        getPageManager().scaleToPage(null);
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
@@ -33,36 +37,36 @@ public class LayoutTextReflowProvider extends LayoutProvider {
 
     @Override
     public boolean canPrevScreen() throws ReaderException {
-        return false;
+        return getPageManager().canPrevViewport() || !atFirstPage();
     }
 
     public boolean prevScreen() throws ReaderException {
-        return false;
+        return prevPage();
     }
 
     @Override
     public boolean canNextScreen() throws ReaderException {
-        return false;
+        return getPageManager().canNextViewport() || !atLastPage();
     }
 
     public boolean nextScreen() throws ReaderException {
-        return false;
+        return nextPage();
     }
 
     public boolean prevPage() throws ReaderException {
-        return false;
+        return gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
     }
 
     public boolean nextPage() throws ReaderException {
-        return false;
+        return gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()));
     }
 
     public boolean firstPage() throws ReaderException {
-        return false;
+        return gotoPosition(LayoutProviderUtils.firstPage(getLayoutManager()));
     }
 
     public boolean lastPage() throws ReaderException {
-        return false;
+        return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
@@ -82,8 +86,19 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean gotoPosition(final String position) throws ReaderException {
-        return false;
+    public boolean gotoPosition(final String location) throws ReaderException {
+        if (StringUtils.isNullOrEmpty(location)) {
+            return false;
+        }
+
+        final RectF viewportBeforeChange = new RectF(getPageManager().getViewportRect());
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
+        if (!getPageManager().gotoPage(location)) {
+            return false;
+        }
+
+        onPageChanged(viewportBeforeChange);
+        return true;
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
@@ -137,5 +152,12 @@ public class LayoutTextReflowProvider extends LayoutProvider {
 
     }
 
+    private void onPageChanged(final RectF viewportBeforeChange) {
+        if (PageConstants.isSpecialScale(getLayoutManager().getSpecialScale())) {
+            return;
+        }
+        getPageManager().setAbsoluteViewportPosition(viewportBeforeChange.left,
+                getPageManager().getViewportRect().top);
+    }
 
 }
