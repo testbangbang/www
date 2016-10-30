@@ -297,7 +297,9 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String nextPage(final String position) {
-        getPluginImpl().nextPage();
+        if (!getPluginImpl().nextPage()) {
+            return null;
+        }
         int pn = PagePositionUtils.getPageNumber(position);
         if (pn + 1 < getTotalPage()) {
             return PagePositionUtils.fromPageNumber(pn + 1);
@@ -310,6 +312,9 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String prevPage(final String position) {
+        if (!getPluginImpl().prevPage()) {
+            return null;
+        }
         int pn = PagePositionUtils.getPageNumber(position);
         if (pn > 0) {
             return PagePositionUtils.fromPageNumber(pn - 1);
@@ -339,7 +344,8 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return
      */
     public boolean gotoPosition(final String position) {
-        return false;
+        int pos = PagePositionUtils.getPageNumber(position);
+        return getPluginImpl().gotoPage(pos);
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {

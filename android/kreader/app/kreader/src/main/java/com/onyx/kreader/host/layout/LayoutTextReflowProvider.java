@@ -106,7 +106,7 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     }
 
     public boolean supportPreRender() throws ReaderException {
-        return false;
+        return true;
     }
 
     @Override

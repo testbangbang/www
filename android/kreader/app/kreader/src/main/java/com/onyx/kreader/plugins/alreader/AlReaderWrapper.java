@@ -14,6 +14,7 @@ import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlPublicProfileOptions;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
+import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -131,8 +132,19 @@ public class AlReaderWrapper {
         return bookEng.getPageCount(new AlCurrentPosition());
     }
 
-    public void nextPage() {
-        bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.NEXTPAGE, 0);
+    public boolean nextPage() {
+        int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.NEXTPAGE, 0);
+        return ret == TAL_RESULT.OK;
+    }
+
+    public boolean prevPage() {
+        int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.PREVPAGE, 0);
+        return ret == TAL_RESULT.OK;
+    }
+
+    public boolean gotoPage(int pos) {
+        int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.POSITION, pos);
+        return ret == TAL_RESULT.OK;
     }
 
 }
