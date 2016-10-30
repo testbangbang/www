@@ -107,7 +107,7 @@ public class AlReaderWrapper {
         profileDay.bold = false;
         profileDay.font_name = "XZ";
         profileDay.font_monospace = "Monospace";
-        profileDay.font_size = 18;
+        profileDay.font_size = 36;
         profileDay.setMargins(5); // in percent
         profileDay.twoColumn = false;
         profileDay.colorText = 0x000000;
