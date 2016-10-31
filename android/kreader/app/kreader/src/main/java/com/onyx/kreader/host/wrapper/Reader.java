@@ -2,7 +2,6 @@ package com.onyx.kreader.host.wrapper;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -173,7 +172,7 @@ public class Reader {
         getReaderHelper().saveOptions();
     }
 
-    public String getExportDictPath() {
+    public String getExportFolderPath() {
         String parent = FileUtils.getParent(getDocumentPath());
         String baseName = FileUtils.getBaseName(getDocumentPath());
         String path = parent + "/" + baseName;
@@ -184,6 +183,6 @@ public class Reader {
     public String getExportDocPath() {
         String baseName = FileUtils.getBaseName(getDocumentPath());
         String ext = FileUtils.getFileExtension(getDocumentPath());
-        return new File(getExportDictPath(), baseName + "-Exported." + ext).getAbsolutePath();
+        return new File(getExportFolderPath(), baseName + "-Exported." + ext).getAbsolutePath();
     }
 }
