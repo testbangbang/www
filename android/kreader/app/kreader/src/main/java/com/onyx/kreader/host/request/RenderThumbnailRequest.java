@@ -21,6 +21,7 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
         super();
         page = p;
         bitmap = bmp;
+        setAbortPendingTasks(true);
     }
 
     public void execute(final Reader reader) throws Exception {

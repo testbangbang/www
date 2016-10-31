@@ -36,6 +36,9 @@ public class FileUtils {
 
     public static boolean mkdirs(final String path) {
         File file = new File(path);
+        if (file.exists()) {
+            return file.isDirectory();
+        }
         return file.mkdirs();
     }
 
