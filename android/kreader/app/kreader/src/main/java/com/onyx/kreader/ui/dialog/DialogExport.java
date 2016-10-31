@@ -75,7 +75,7 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         try {
             location = String.format(getContext().getString(R.string.export_location_explain), ExportUtils.getExportPdfPath(readerDataHolder.getReader().getDocumentPath()));
         }catch (IOException e){
-            location = getContext().getString(R.string.fail_create_export_directory);
+            location =  getContext().getString(R.string.fail_create_export_directory) + e.getMessage();
             e.printStackTrace();
         }
         exportLocation.setText(location);
