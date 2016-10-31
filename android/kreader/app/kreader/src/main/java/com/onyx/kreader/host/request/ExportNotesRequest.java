@@ -14,6 +14,7 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.utils.ExportUtils;
 import com.onyx.kreader.utils.PdfWriterUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +74,9 @@ public class ExportNotesRequest extends BaseReaderRequest {
             }
 
             return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         } finally {
             PdfWriterUtils.close();
         }
