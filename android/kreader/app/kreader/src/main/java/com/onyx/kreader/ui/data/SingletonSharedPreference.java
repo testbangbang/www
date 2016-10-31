@@ -189,7 +189,7 @@ public class SingletonSharedPreference {
             } catch (Exception e) {
             }
         }
-        return AnnotationHighlightStyle.Underline;
+        return AnnotationHighlightStyle.Highlight;
     }
 
     public static boolean isSmoothScribble(Context context) {
