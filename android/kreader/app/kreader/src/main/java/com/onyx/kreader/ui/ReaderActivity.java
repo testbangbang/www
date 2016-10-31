@@ -91,6 +91,7 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
+import com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -323,6 +324,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void checkForNewConfiguration() {
+        readerPainter.setAnnotationHighlightStyle(SingletonSharedPreference.getAnnotationHighlightStyle(this));
         setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
         reconfigStatusBar();
         checkSurfaceViewSize();
