@@ -173,10 +173,17 @@ public class Reader {
         getReaderHelper().saveOptions();
     }
 
-    public String getExportDocPath() {
+    public String getExportDictPath() {
         String parent = FileUtils.getParent(getDocumentPath());
         String baseName = FileUtils.getBaseName(getDocumentPath());
+        String path = parent + "/" + baseName;
+        FileUtils.createPath(path);
+        return path;
+    }
+
+    public String getExportDocPath() {
+        String baseName = FileUtils.getBaseName(getDocumentPath());
         String ext = FileUtils.getFileExtension(getDocumentPath());
-        return new File(parent, baseName + "-Exported." + ext).getAbsolutePath();
+        return new File(getExportDictPath(), baseName + "-Exported." + ext).getAbsolutePath();
     }
 }
