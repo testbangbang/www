@@ -44,9 +44,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private View fullToolbar;
     private HashMap<ReaderMenuAction, CommonViewHolder> scribbleViewHolderMap = new HashMap<>();
     private BaseCallback callback;
-    private ReaderMenuAction selectWidthAction = ReaderMenuAction.SCRIBBLE_WIDTH1;
-    private ReaderMenuAction selectShapeAction = ReaderMenuAction.SCRIBBLE_PENCIL;
-    private ReaderMenuAction selectEraserAction = ReaderMenuAction.SCRIBBLE_ERASER_PART;
+    private ReaderMenuAction selectWidthAction = null;
+    private ReaderMenuAction selectShapeAction = null;
+    private ReaderMenuAction selectEraserAction = null;
     private ActionCallback actionCallback;
     private ReaderDataHolder readerDataHolder;
     private boolean isDrag = false;
@@ -168,6 +168,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private void updateMarkerView(ReaderMenuAction selectAction, ReaderMenuAction[] actions) {
+        if (selectAction == null) {
+            return;
+        }
         for (int i = 0; i < actions.length; i++) {
             CommonViewHolder viewHolder = scribbleViewHolderMap.get(actions[i]);
             if (viewHolder != null) {
