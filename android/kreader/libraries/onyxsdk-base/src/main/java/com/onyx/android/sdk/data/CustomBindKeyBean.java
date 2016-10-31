@@ -7,6 +7,9 @@ import android.view.KeyEvent;
  */
 public class CustomBindKeyBean {
 
+    public CustomBindKeyBean() {
+    }
+
     public CustomBindKeyBean(String args, String action) {
         this.action = action;
         this.args = args;
