@@ -91,6 +91,7 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
+import com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -113,6 +114,7 @@ public class ReaderActivity extends ActionBarActivity {
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private final ReaderPainter readerPainter = new ReaderPainter();
+    private AnnotationHighlightStyle highlightStyle = AnnotationHighlightStyle.Highlight;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -323,6 +325,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void checkForNewConfiguration() {
+        highlightStyle = SingletonSharedPreference.getAnnotationHighlightStyle(this);
         setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
         reconfigStatusBar();
         checkSurfaceViewSize();
@@ -688,7 +691,8 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().getReaderUserDataInfo(),
                 getReaderDataHolder().getReaderViewInfo(),
                 getReaderDataHolder().getSelectionManager(),
-                getReaderDataHolder().getNoteManager());
+                getReaderDataHolder().getNoteManager(),
+                highlightStyle);
         holder.unlockCanvasAndPost(canvas);
     }
 

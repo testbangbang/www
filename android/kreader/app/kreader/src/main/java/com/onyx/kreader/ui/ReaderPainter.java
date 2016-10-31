@@ -30,13 +30,11 @@ import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.kreader.utils.RectUtils;
 
 import java.util.List;
-
-import static com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle.Highlight;
-import static com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle.Underline;
 
 /**
  * Created by joy on 7/25/16.
@@ -59,15 +57,16 @@ public class ReaderPainter {
                          final ReaderUserDataInfo userDataInfo,
                          final ReaderViewInfo viewInfo,
                          ReaderSelectionManager selectionManager,
-                         NoteManager noteManager) {
+                         NoteManager noteManager,
+                         AnnotationHighlightStyle highlightStyle) {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
-        drawSearchResults(context, canvas, paint, userDataInfo, viewInfo);
-        drawHighlightResult(context, canvas, paint, userDataInfo, viewInfo, selectionManager);
-        drawAnnotations(context, canvas, paint, userDataInfo, viewInfo);
+        drawSearchResults(context, canvas, paint, userDataInfo, viewInfo, highlightStyle);
+        drawHighlightResult(context, canvas, paint, userDataInfo, viewInfo, selectionManager, highlightStyle);
+        drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, highlightStyle);
         drawPageLinks(context, canvas, paint, userDataInfo, viewInfo);
         drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
@@ -113,18 +112,18 @@ public class ReaderPainter {
         }
     }
 
-    private void drawSearchResults(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
-        drawReaderSelections(context, canvas, paint, viewInfo, userDataInfo.getSearchResults());
+    private void drawSearchResults(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, AnnotationHighlightStyle highlightStyle) {
+        drawReaderSelections(context, canvas, paint, viewInfo, userDataInfo.getSearchResults(), highlightStyle);
     }
 
-    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, ReaderSelectionManager selectionManager) {
+    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, ReaderSelectionManager selectionManager, AnnotationHighlightStyle highlightStyle) {
         if (userDataInfo.hasHighlightResult()) {
-            drawReaderSelection(context, canvas, paint, viewInfo, userDataInfo.getHighlightResult());
+            drawReaderSelection(context, canvas, paint, viewInfo, userDataInfo.getHighlightResult(), highlightStyle);
             drawSelectionCursor(canvas, paint, xorMode, selectionManager);
         }
     }
 
-    private void drawAnnotations(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+    private void drawAnnotations(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo, AnnotationHighlightStyle highlightStyle) {
         if (!SingletonSharedPreference.isShowAnnotation(context)) {
             return;
         }
@@ -132,7 +131,7 @@ public class ReaderPainter {
             if (userDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = userDataInfo.getPageAnnotations(pageInfo);
                 for (PageAnnotation annotation : annotations) {
-                    drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
+                    drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()), highlightStyle);
                     String note = annotation.getAnnotation().getNote();
                     if (!StringUtils.isNullOrEmpty(note)){
                         drawHighLightSign(context, canvas, paint, annotation.getRectangles());
@@ -177,28 +176,28 @@ public class ReaderPainter {
         canvas.drawBitmap(bitmap, point.x, point.y, null);
     }
 
-    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection) {
+    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection, AnnotationHighlightStyle highlightStyle) {
         PageInfo pageInfo = viewInfo.getPageInfo(selection.getPagePosition());
         if (pageInfo != null) {
-            drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+            drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()), highlightStyle);
         }
     }
 
-    private void drawReaderSelections(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, List<ReaderSelection> list) {
+    private void drawReaderSelections(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, List<ReaderSelection> list, AnnotationHighlightStyle highlightStyle) {
         if (list == null || list.size() <= 0) {
             return;
         }
         for (ReaderSelection sel : list) {
-            drawReaderSelection(context, canvas, paint, viewInfo, sel);
+            drawReaderSelection(context, canvas, paint, viewInfo, sel, highlightStyle);
         }
     }
 
-    private void drawHighlightRectangles(Context context, Canvas canvas, List<RectF> rectangles) {
+    private void drawHighlightRectangles(Context context, Canvas canvas, List<RectF> rectangles, AnnotationHighlightStyle highlightStyle) {
         if (rectangles == null) {
             return;
         }
         Paint paint = new Paint();
-        switch (SingletonSharedPreference.getAnnotationHighlightStyle(context)){
+        switch (highlightStyle){
             case Underline:
                 drawUnderLineHighlightRectangles(canvas, paint, rectangles);
                 break;
