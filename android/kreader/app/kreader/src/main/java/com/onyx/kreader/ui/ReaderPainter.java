@@ -46,6 +46,7 @@ public class ReaderPainter {
     private static boolean debugTestTouchPointCircle = false;
     private static boolean debugTestOffsetTouchPointCircle = false;
     private static boolean debugPageInfo = false;
+    private AnnotationHighlightStyle annotationHighlightStyle;
 
     public ReaderPainter() {
         
@@ -57,16 +58,15 @@ public class ReaderPainter {
                          final ReaderUserDataInfo userDataInfo,
                          final ReaderViewInfo viewInfo,
                          ReaderSelectionManager selectionManager,
-                         NoteManager noteManager,
-                         AnnotationHighlightStyle highlightStyle) {
+                         NoteManager noteManager) {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
-        drawSearchResults(context, canvas, paint, userDataInfo, viewInfo, highlightStyle);
-        drawHighlightResult(context, canvas, paint, userDataInfo, viewInfo, selectionManager, highlightStyle);
-        drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, highlightStyle);
+        drawSearchResults(context, canvas, paint, userDataInfo, viewInfo, annotationHighlightStyle);
+        drawHighlightResult(context, canvas, paint, userDataInfo, viewInfo, selectionManager, annotationHighlightStyle);
+        drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, annotationHighlightStyle);
         drawPageLinks(context, canvas, paint, userDataInfo, viewInfo);
         drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
@@ -320,5 +320,9 @@ public class ReaderPainter {
                 canvas.drawCircle(touchPoint.x, touchPoint.y - offset, 20, paint);
             }
         }
+    }
+
+    public void setAnnotationHighlightStyle(AnnotationHighlightStyle annotationHighlightStyle) {
+        this.annotationHighlightStyle = annotationHighlightStyle;
     }
 }
