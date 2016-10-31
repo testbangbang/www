@@ -29,6 +29,7 @@ import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
@@ -75,7 +76,13 @@ public class DjvuReaderPlugin implements ReaderPlugin,
 
     @Override
     public boolean readCover(Bitmap bitmap) {
-        return false;
+        float size [] = {0, 0};
+        if (!getPluginImpl().getPageSize(0, size)) {
+            return false;
+        }
+        float zoom = PageUtils.scaleToPage(size[0], size[1], bitmap.getWidth(), bitmap.getHeight());
+        return getPluginImpl().drawPage(0, bitmap, zoom, bitmap.getWidth(), bitmap.getHeight(),
+                0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
 
     @Override
