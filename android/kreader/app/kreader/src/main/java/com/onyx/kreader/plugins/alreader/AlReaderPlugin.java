@@ -107,7 +107,7 @@ public class AlReaderPlugin implements ReaderPlugin,
             docPassword = documentOptions.getDocumentPassword();
             archivePassword = documentOptions.getDocumentPassword();
         }
-        long ret = getPluginImpl().openDocument(path, docPassword);
+        long ret = getPluginImpl().openDocument(path, documentOptions);
         if (ret  == AlReaderWrapper.NO_ERROR) {
             return this;
         }

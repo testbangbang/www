@@ -17,6 +17,7 @@ import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 
 /**
@@ -51,7 +52,7 @@ public class AlReaderWrapper {
         bookEng.setNewScreenSize(width, height);
     }
 
-    public long openDocument(final String path, final String password) {
+    public long openDocument(final String path,  final ReaderDocumentOptions documentOptions) {
         AlBookOptions bookOpt = new AlBookOptions();
         bookOpt.codePage = TAL_CODE_PAGES.AUTO;
         bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
@@ -60,6 +61,7 @@ public class AlReaderWrapper {
         bookEng.openBook(path, bookOpt);
         return NO_ERROR;
     }
+    
 
     public void closeDocument() {
         if (bookEng == null) {
@@ -104,7 +106,7 @@ public class AlReaderWrapper {
 
     private AlPublicProfileOptions getProfileDay(final ReaderPluginOptions pluginOptions) {
         profileDay.background = null;
-        profileDay.backgroundMode = AlPublicProfileOptions.BACK_TILE_Y | AlPublicProfileOptions.BACK_TILE_X;
+        profileDay.backgroundMode = AlPublicProfileOptions.BACK_TILE_NONE;
         profileDay.bold = false;
         profileDay.font_name = "XZ";
         profileDay.font_monospace = "Monospace";
