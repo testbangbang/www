@@ -208,4 +208,6 @@
   <string name="settings_save_reader_option_paginally_tittle">保存选项</string>
   <string name="settings_top_margin_tittle">上边距</string>
   <string name="Green">绿</string>
+  <string name="annotation_export_format" formatted="false">页码 %d   %s \n%s\n</string>
+  <string name="fail_create_export_directory">创建导出目录失败: </string>
 </resources>

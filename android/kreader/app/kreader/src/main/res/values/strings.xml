@@ -271,4 +271,6 @@
     <string name="max_page_toast">Has come to the last page</string>
     <string name="current_value">Current Value:</string>
     <string name="open_document_failed">Open document failed!</string>
+    <string name="annotation_export_format" formatted="false">Page %d   %s \n%s\n</string>
+    <string name="fail_create_export_directory">Failed to create export directory: </string>
 </resources>

@@ -1,7 +1,9 @@
 package com.onyx.kreader.ui.actions;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -42,9 +44,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private View fullToolbar;
     private HashMap<ReaderMenuAction, CommonViewHolder> scribbleViewHolderMap = new HashMap<>();
     private BaseCallback callback;
-    private ReaderMenuAction selectWidthAction = ReaderMenuAction.SCRIBBLE_WIDTH1;
-    private ReaderMenuAction selectShapeAction = ReaderMenuAction.SCRIBBLE_PENCIL;
-    private ReaderMenuAction selectEraserAction = ReaderMenuAction.SCRIBBLE_ERASER_PART;
+    private ReaderMenuAction selectWidthAction = null;
+    private ReaderMenuAction selectShapeAction = null;
+    private ReaderMenuAction selectEraserAction = null;
     private ActionCallback actionCallback;
     private ReaderDataHolder readerDataHolder;
     private boolean isDrag = false;
@@ -166,6 +168,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private void updateMarkerView(ReaderMenuAction selectAction, ReaderMenuAction[] actions) {
+        if (selectAction == null) {
+            return;
+        }
         for (int i = 0; i < actions.length; i++) {
             CommonViewHolder viewHolder = scribbleViewHolderMap.get(actions[i]);
             if (viewHolder != null) {
@@ -319,6 +324,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 break;
             case SCRIBBLE_MINIMIZE:
                 changeToolBarVisibility(true);
+                fullToolbar.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        postMenuChangedEvent(readerDataHolder);
+                    }
+                });
                 break;
             case SCRIBBLE_MAXIMIZE:
                 changeToolBarVisibility(false);
@@ -352,13 +363,17 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder) {
         int bottomOfTopToolBar = 0;
         int topOfBottomToolBar = 0;
+        Rect excludeRect = new Rect();
         if (bottomToolbar.getVisibility() == View.VISIBLE) {
             bottomOfTopToolBar = topToolbar.getBottom();
         }
         if (topToolbar.getVisibility() == View.VISIBLE) {
             topOfBottomToolBar = bottomToolbar.getTop();
         }
-        readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar));
-    }
 
+        if (fullToolbar.getVisibility() == View.VISIBLE) {
+            excludeRect = new Rect(fullToolbar.getLeft(), fullToolbar.getTop(), fullToolbar.getRight(), fullToolbar.getBottom());
+        }
+        readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar, excludeRect));
+    }
 }

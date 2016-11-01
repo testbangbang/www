@@ -15,12 +15,10 @@ public class GroupUpdateRequest extends BaseCloudRequest {
     private OnyxGroup resultGroup;
     private long groupId;
     private OnyxGroup group;
-    private String sessionToken;
 
-    public GroupUpdateRequest(long groupId, OnyxGroup group, String sessionToken) {
+    public GroupUpdateRequest(long groupId, OnyxGroup group) {
         this.groupId = groupId;
         this.group = group;
-        this.sessionToken = sessionToken;
     }
 
     public OnyxGroup getResultGroup() {
@@ -30,7 +28,7 @@ public class GroupUpdateRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Call<OnyxGroup> call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .updateGroup(groupId, group, sessionToken);
+                .updateGroup(groupId, group, getAccountSessionToken());
         Response<OnyxGroup> response = call.execute();
         if (response.isSuccessful()) {
             resultGroup = response.body();

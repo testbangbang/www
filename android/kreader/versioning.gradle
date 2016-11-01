@@ -23,3 +23,10 @@ ext.releaseType = { ->
     }
     return "RELEASE"
 }
+
+ext.releasePlatform = { ->
+    if (rootProject.hasProperty("releasePlatform")) {
+        return rootProject.property("releasePlatform")
+    }
+    return "RK3026"
+}

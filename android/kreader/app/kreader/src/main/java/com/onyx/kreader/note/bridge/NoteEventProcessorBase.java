@@ -35,11 +35,17 @@ public class NoteEventProcessorBase {
 
         public abstract void onDFBShapeFinished(final Shape shape, boolean triggerByButton);
 
+        public abstract boolean enableShortcutDrawing();
+
+        public abstract boolean enableShortcutErasing();
+
+        public abstract boolean enableRawEventProcessor();
     }
 
     private NoteManager noteManager;
     private PageInfo lastPageInfo;
     private volatile RectF limitRect = new RectF();
+    private volatile RectF excludeRect = new RectF();
 
     public NoteEventProcessorBase(final NoteManager p) {
         noteManager = p;
@@ -77,11 +83,19 @@ public class NoteEventProcessorBase {
         limitRect.set(rect);
     }
 
+    public void setExcludeRect(Rect rect) {
+        excludeRect.set(rect);
+    }
+
     public boolean inLimitRect(final float x, final float y) {
         return limitRect.contains(x, y);
     }
 
+    public boolean inExcludeRect(final float x, final float y) {
+        return excludeRect.contains(x, y);
+    }
+
     public boolean isInValidRegion(final float x, final float y) {
-        return inLastPage(x, y) && inLimitRect(x, y);
+        return inLastPage(x, y) && inLimitRect(x, y) && !inExcludeRect(x, y);
     }
 }

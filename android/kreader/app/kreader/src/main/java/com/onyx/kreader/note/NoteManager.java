@@ -33,6 +33,7 @@ import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 
@@ -63,6 +64,7 @@ public class NoteManager {
     private ReaderDataHolder parent;
     private ReaderNoteDataInfo noteDataInfo;
     private RectF visibleDrawRectF;
+    private volatile boolean enableRawEventProcessor = false;
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
 
     public NoteManager(final ReaderDataHolder p) {
@@ -82,7 +84,7 @@ public class NoteManager {
     }
 
     public void enableRawEventProcessor(boolean enable) {
-        getNoteEventProcessorManager().enable(enable);
+        enableRawEventProcessor = enable;
     }
 
     public void stopRawEventProcessor() {
@@ -97,11 +99,11 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, int orientation) {
+    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final Rect excludeRect, int orientation) {
         view = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
-        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, orientation);
+        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {
@@ -155,17 +157,17 @@ public class NoteManager {
             }
 
             public void onErasingTouchDown(final MotionEvent motionEvent, final TouchPointList list) {
-                getParent().getEventBus().post(new ShapeErasingEvent(false, list));
+                getParent().getEventBus().post(new ShapeErasingEvent(true, false, list));
             }
 
             public void onErasingTouchMove(final MotionEvent motionEvent, final TouchPointList list, boolean last) {
                 if (last) {
-                    getParent().getEventBus().post(new ShapeErasingEvent(false, list));
+                    getParent().getEventBus().post(new ShapeErasingEvent(false, false, list));
                 }
             }
 
             public void onErasingTouchUp(final MotionEvent motionEvent, final TouchPointList list) {
-                getParent().getEventBus().post(new ShapeErasingEvent(true, list));
+                getParent().getEventBus().post(new ShapeErasingEvent(false, true, list));
             }
 
             public void onRawErasingStart() {
@@ -187,6 +189,18 @@ public class NoteManager {
                 if (shortcut) {
                     getParent().getEventBus().post(new ShortcutDrawingFinishedEvent());
                 }
+            }
+
+            public boolean enableShortcutDrawing() {
+                return isDFBForCurrentShape();
+            }
+
+            public boolean enableShortcutErasing() {
+                return false;
+            }
+
+            public boolean enableRawEventProcessor() {
+                return enableRawEventProcessor;
             }
 
         };
@@ -241,8 +255,9 @@ public class NoteManager {
         if (rect != null) {
             request.setViewportSize(rect);
         }
-
-        resetNoteDataInfo();
+        if (request.isResetNoteDataInfo()) {
+            resetNoteDataInfo();
+        }
     }
 
     private final Runnable generateRunnable(final ReaderBaseNoteRequest request) {

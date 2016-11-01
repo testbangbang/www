@@ -371,7 +371,7 @@ public abstract class BaseHandler {
     }
 
     public boolean isSkipPinchZooming(final ReaderDataHolder readerDataHolder) {
-        return !readerDataHolder.getReaderViewInfo().supportScalable;
+        return !readerDataHolder.supportScalable();
     }
 
     public void resetState() {

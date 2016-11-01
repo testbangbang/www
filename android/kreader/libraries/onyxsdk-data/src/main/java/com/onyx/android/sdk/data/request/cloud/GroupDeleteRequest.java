@@ -12,12 +12,10 @@ import retrofit2.Response;
 public class GroupDeleteRequest extends BaseCloudRequest {
 
     private long id;
-    private String sessionToken;
     private boolean isSuccess = true;
 
-    public GroupDeleteRequest(long groupId, String sessionToken) {
+    public GroupDeleteRequest(long groupId) {
         this.id = groupId;
-        this.sessionToken = sessionToken;
     }
 
     public boolean getResult() {
@@ -27,7 +25,7 @@ public class GroupDeleteRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Call call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .deleteGroup(id, sessionToken);
+                .deleteGroup(id, getAccountSessionToken());
         Response response = call.execute();
         isSuccess = response.isSuccessful();
     }

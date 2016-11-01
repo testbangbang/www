@@ -358,8 +358,9 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showTocDialog(final ReaderDataHolder readerDataHolder, DialogTableOfContent.DirectoryTab tab) {
-        final GetDocumentInfoChain action = new GetDocumentInfoChain(tab);
-        action.execute(readerDataHolder, null);
+        Dialog dialog = new DialogTableOfContent(readerDataHolder, tab);
+        dialog.show();
+        readerDataHolder.addActiveDialog(dialog);
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
@@ -476,8 +477,7 @@ public class ShowReaderMenuAction extends BaseAction {
     public static boolean isGroupAction(final ReaderMenuAction action) {
         return (action == ReaderMenuAction.SCRIBBLE_ERASER ||
                 action == ReaderMenuAction.SCRIBBLE_WIDTH ||
-                action == ReaderMenuAction.SCRIBBLE_SHAPE ||
-                action == ReaderMenuAction.SCRIBBLE_MINIMIZE);
+                action == ReaderMenuAction.SCRIBBLE_SHAPE);
     }
 
     public static boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
@@ -537,8 +537,10 @@ public class ShowReaderMenuAction extends BaseAction {
                 toggleSelection(readerDataHolder);
                 break;
             case SCRIBBLE_MINIMIZE:
+                toggleMenu(readerDataHolder);
                 break;
             case SCRIBBLE_MAXIMIZE:
+                toggleMenu(readerDataHolder);
                 break;
             case SCRIBBLE_PREV_PAGE:
                 prevScreen(readerDataHolder);
@@ -644,6 +646,16 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.execute(readerDataHolder, null);
     }
 
+    private static void toggleMenu(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(pages, true, true, false, false);
+        final ResumeDrawingAction action = new ResumeDrawingAction(pages);
+        actionChain.addAction(flushNoteAction);
+        actionChain.addAction(action);
+        actionChain.execute(readerDataHolder, null);
+    }
+
     private static void toggleSelection(final ReaderDataHolder readerDataHolder) {
         if (readerDataHolder.getNoteManager().isInSelection()) {
             final ActionChain actionChain = new ActionChain();
@@ -687,7 +699,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
             @Override
             public boolean isFixedPagingMode() {
-                return readerDataHolder.getReaderViewInfo().supportScalable;
+                return readerDataHolder.supportScalable();
             }
 
             @Override

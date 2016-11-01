@@ -17,6 +17,7 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
     public StartNoteRequest(final List<PageInfo> list) {
         setAbortPendingTasks(false);
         setVisiblePages(list);
+        setResetNoteDataInfo(false);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
@@ -26,6 +27,8 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
         noteManager.startRawEventProcessor();
         noteManager.enableRawEventProcessor(true);
         noteManager.setNoteDirty(true);
+        getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
+        updateShapeDataInfo(noteManager);
     }
 
 }

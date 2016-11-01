@@ -26,6 +26,7 @@ public class ReaderViewInfo {
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();
     public PointF lastViewportOverlayPosition = null;
+    public boolean layoutChanged = false;
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;

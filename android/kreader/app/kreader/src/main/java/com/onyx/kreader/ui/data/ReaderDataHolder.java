@@ -9,7 +9,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -57,6 +56,7 @@ public class ReaderDataHolder {
     private boolean preRender = true;
     private boolean preRenderNext = true;
     private boolean documentOpened = false;
+    private boolean enableShortcutErasing = false;
 
     private int displayWidth;
     private int displayHeight;
@@ -91,6 +91,10 @@ public class ReaderDataHolder {
         return readerViewInfo;
     }
 
+    public boolean supportScalable() {
+        return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
+    }
+
     public final List<PageInfo> getVisiblePages() {
         return getReaderViewInfo().getVisiblePages();
     }
@@ -121,7 +125,7 @@ public class ReaderDataHolder {
 
     public void onDocumentInitRendered() {
         getEventBus().post(new DocumentInitRenderedEvent());
-        prepareNoteManager();
+        updateNoteManager();
     }
 
     public boolean isDocumentOpened() {
@@ -246,7 +250,11 @@ public class ReaderDataHolder {
         return noteManager;
     }
 
-    public void prepareNoteManager() {
+    public void updateNoteManager() {
+        if (!supportScalable()) {
+            getNoteManager().stopRawEventProcessor();
+            return;
+        }
         getNoteManager().startRawEventProcessor();
         getNoteManager().pauseRawEventProcessor();
     }
@@ -364,7 +372,10 @@ public class ReaderDataHolder {
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        getEventBus().post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData));
+        getEventBus().post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData, false));
+        if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
+            getEventBus().post(new LayoutChangeEvent());
+        }
     }
 
 
@@ -444,6 +455,10 @@ public class ReaderDataHolder {
         }
         getNoteManager().enableRawEventProcessor(false);
         getNoteManager().stopRawEventProcessor();
+    }
+
+    public boolean isEnableShortcutErasing() {
+        return enableShortcutErasing;
     }
 }
 

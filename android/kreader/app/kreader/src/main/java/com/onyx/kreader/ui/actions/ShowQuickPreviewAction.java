@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -18,6 +19,8 @@ import java.util.List;
  * Created by joy on 7/15/16.
  */
 public class ShowQuickPreviewAction extends BaseAction {
+
+    private static final String TAG = "ShowQuickPreviewAction";
 
     private DialogQuickPreview dialogQuickPreview;
     private List<Integer> pagesToPreview;

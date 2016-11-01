@@ -12,13 +12,11 @@ public class CommentDeleteRequest extends BaseCloudRequest {
 
     private String bookId;
     private String commentId;
-    private String sessionToken;
     private boolean isSuccess = true;
 
-    public CommentDeleteRequest(String bookId, String commentId, String sessionToken) {
+    public CommentDeleteRequest(String bookId, String commentId) {
         this.bookId = bookId;
         this.commentId = commentId;
-        this.sessionToken = sessionToken;
     }
 
     public boolean getResult() {
@@ -28,7 +26,7 @@ public class CommentDeleteRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Response response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
-                .deleteBookComment(bookId, commentId, sessionToken).execute();
+                .deleteBookComment(bookId, commentId, getAccountSessionToken()).execute();
         isSuccess = response.isSuccessful();
     }
 }

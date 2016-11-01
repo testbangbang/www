@@ -37,6 +37,7 @@ import com.onyx.android.sdk.ui.view.RadioButtonCenter;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.DimenUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
@@ -46,6 +47,8 @@ import com.onyx.kreader.host.request.DeleteBookmarkRequest;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ExportNotesActionChain;
+import com.onyx.kreader.ui.actions.ExportScribbleAction;
+import com.onyx.kreader.ui.actions.GetDocumentInfoChain;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -234,11 +237,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         }
     }
 
-    public DialogTableOfContent(final ReaderDataHolder readerDataHolder, DirectoryTab tab,
-                                final ReaderDocumentTableOfContent toc,
-                                final List<Bookmark> bookmarks,
-                                final List<Annotation> annotations,
-                                final List<String> scribblePages) {
+    public DialogTableOfContent(final ReaderDataHolder readerDataHolder, DirectoryTab tab) {
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
         this.readerDataHolder = readerDataHolder;
         int position = SingletonSharedPreference.getDialogTableOfContentTab(getContext(), 0);
@@ -247,8 +246,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         } else {
             currentTab = DirectoryTab.TOC;
         }
-
-        this.toc = toc;
 
         setContentView(R.layout.dialog_table_of_content);
         fitDialogToWindow();
@@ -266,7 +263,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         pageIndicatorLayout = (LinearLayout) findViewById(R.id.page_indicator_layout);
         exportLayout = (LinearLayout) findViewById(R.id.export_layout);
         btnGroup = (RadioGroup) findViewById(R.id.layout_menu);
-        emptyLayout.setVisibility(View.GONE);
+        emptyLayout.setVisibility(View.INVISIBLE);
         viewPager.setPagingEnabled(false);
 
         btnToc.setOnCheckedChangeListener(this);
@@ -279,7 +276,34 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         btnAnt.setTag(DirectoryTab.Annotation);
         btnScribble.setTag(DirectoryTab.Scribble);
 
-        viewList.add(initTocView(readerDataHolder, toc));
+        showExportLayout(currentTab);
+        setViewListener();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getDocumentInfo();
+    }
+
+    private void getDocumentInfo() {
+        final GetDocumentInfoChain documentInfoChain = new GetDocumentInfoChain();
+        documentInfoChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                initViewPager(documentInfoChain.getTableOfContent(),
+                        documentInfoChain.getBookmarks(),
+                        documentInfoChain.getAnnotations(),
+                        documentInfoChain.getScribblePages());
+            }
+        });
+    }
+
+    private void initViewPager(final ReaderDocumentTableOfContent tableOfContent,
+                               final List<Bookmark> bookmarks,
+                               final List<Annotation> annotations,
+                               final List<String> scribblePages) {
+        viewList.add(initTocView(readerDataHolder, tableOfContent));
         viewList.add(initBookmarkView(readerDataHolder, bookmarks));
         viewList.add(initAnnotationsView(readerDataHolder, annotations));
         viewList.add(initScribbleView(readerDataHolder, scribblePages));
@@ -305,7 +329,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             }
         });
         checkRadioButton(currentTab);
-        setViewListener();
     }
 
     private void setViewListener() {
@@ -351,6 +374,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 Toast.makeText(getContext(), getContext().getString(R.string.no_data), Toast.LENGTH_SHORT).show();
                 return;
             }
+
             new ExportAnnotationAction(annotationList).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -363,7 +387,11 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 Toast.makeText(getContext(), getContext().getString(R.string.no_data), Toast.LENGTH_SHORT).show();
                 return;
             }
-            new ExportNotesActionChain(false, true).execute(readerDataHolder, new BaseCallback() {
+            List<String> requestPages = new ArrayList<>();
+            for (int i = 0; i < scribblePreviewMap.size(); i++) {
+                requestPages.add(String.valueOf(scribblePreviewMap.keyAt(i)));
+            }
+            new ExportScribbleAction(requestPages).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);
@@ -431,6 +459,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private PageRecyclerView initTocView(final ReaderDataHolder readerDataHolder, final ReaderDocumentTableOfContent toc) {
+        this.toc = toc;
         final int row = getPageSize(DirectoryTab.TOC);
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = buildTreeNodesFromToc(toc);
         TreeRecyclerView treeRecyclerView = new TreeRecyclerView(viewPager.getContext());

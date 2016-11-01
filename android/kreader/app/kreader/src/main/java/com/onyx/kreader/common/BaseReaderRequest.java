@@ -102,8 +102,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private void afterExecuteImpl(final Reader reader) throws Throwable {
         dumpException();
         benchmarkEnd();
-        reader.getReaderHelper().clearAbortFlag();
         loadUserData(reader);
+        cleanup(reader);
     }
 
     private void dumpException() {
@@ -190,6 +190,11 @@ public abstract class BaseReaderRequest extends BaseRequest {
         if (readerViewInfo != null && loadPageLinks) {
             getReaderUserDataInfo().loadPageLinks(getContext(), reader, readerViewInfo.getVisiblePages());
         }
+    }
+
+    private void cleanup(final Reader reader) {
+        reader.getReaderHelper().clearAbortFlag();
+        reader.getReaderLayoutManager().setLayoutChanged(false);
     }
 
     public void setLoadPageAnnotation(boolean loadPageAnnotation) {

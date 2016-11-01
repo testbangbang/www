@@ -37,6 +37,7 @@ public class PageRecyclerView extends RecyclerView {
     private OnChangeFocusListener onChangeFocusListener;
     private Map<Integer, String> keyBindingMap = new Hashtable<>();
     private int originPaddingBottom;
+    private int itemDecorationHeight = 0;
 
     public interface OnPagingListener {
         void onPageChange(int position,int itemCount,int pageSize);
@@ -69,6 +70,14 @@ public class PageRecyclerView extends RecyclerView {
         if (onChangeFocusListener != null){
             onChangeFocusListener.onFocusChange(lastFocusedPosition, currentFocusedPosition);
         }
+    }
+
+    public int getItemDecorationHeight() {
+        return itemDecorationHeight;
+    }
+
+    public void setItemDecorationHeight(int itemDecorationHeight) {
+        this.itemDecorationHeight = itemDecorationHeight;
     }
 
     public int getCurrentFocusedPosition() {
@@ -135,7 +144,7 @@ public class PageRecyclerView extends RecyclerView {
         columns = ((PageAdapter) adapter).getColumnCount();
         int size = ((PageAdapter) adapter).getDataCount();
         paginator = new GPaginator(rows, columns,size);
-        paginator.gotoPageByIndex(0);
+        paginator.setCurrentPage(0);
 
         LayoutManager layoutManager = getDisableLayoutManager();
         if (layoutManager instanceof GridLayoutManager){
@@ -313,7 +322,16 @@ public class PageRecyclerView extends RecyclerView {
         }
     }
 
-
+    public void notifyDataSetChanged() {
+        PageAdapter pageAdapter = getPageAdapter();
+        int gotoPage = paginator.getCurrentPage() == -1 ? 0 : paginator.getCurrentPage();
+        resize(pageAdapter.getRowCount(), pageAdapter.getColumnCount(), getPageAdapter().getDataCount());
+        if (gotoPage > getPaginator().lastPage()) {
+            gotoPage(getPaginator().lastPage());
+        }else {
+            pageAdapter.notifyDataSetChanged();
+        }
+    }
 
     private void managerScrollToPosition(int position) {
         getDisableLayoutManager().scrollToPositionWithOffset(position, 0);
@@ -370,7 +388,7 @@ public class PageRecyclerView extends RecyclerView {
 
                 int paddingBottom = pageRecyclerView.getOriginPaddingBottom();
                 int paddingTop = pageRecyclerView.getPaddingTop();
-                int parentHeight = pageRecyclerView.getMeasuredHeight() - paddingBottom - paddingTop;
+                int parentHeight = pageRecyclerView.getMeasuredHeight() - paddingBottom - paddingTop - getRowCount() * pageRecyclerView.getItemDecorationHeight();
                 double itemHeight =  ((double)parentHeight) / getRowCount();
                 if (itemHeight > 0){
                     int actualHeight = (int)Math.floor(itemHeight);
@@ -427,5 +445,7 @@ public class PageRecyclerView extends RecyclerView {
         public PageRecyclerView getPageRecyclerView() {
             return pageRecyclerView;
         }
+
+
     }
 }

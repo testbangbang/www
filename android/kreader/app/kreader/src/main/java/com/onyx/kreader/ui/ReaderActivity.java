@@ -33,7 +33,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -46,7 +45,6 @@ import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
-import com.onyx.kreader.note.actions.StartErasingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
@@ -71,6 +69,7 @@ import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.HomeClickEvent;
+import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
@@ -81,6 +80,7 @@ import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
+import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
@@ -91,6 +91,7 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
+import com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -323,6 +324,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void checkForNewConfiguration() {
+        readerPainter.setAnnotationHighlightStyle(SingletonSharedPreference.getAnnotationHighlightStyle(this));
         setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
         reconfigStatusBar();
         checkSurfaceViewSize();
@@ -341,9 +343,14 @@ public class ReaderActivity extends ActionBarActivity {
                     surfaceView.getHeight() != getReaderDataHolder().getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 }
-                getReaderDataHolder().prepareNoteManager();
+                getReaderDataHolder().updateNoteManager();
             }
         });
+    }
+
+    @Subscribe
+    public void onLayoutChanged(final LayoutChangeEvent event) {
+        getReaderDataHolder().updateNoteManager();
     }
 
     @Subscribe
@@ -365,8 +372,10 @@ public class ReaderActivity extends ActionBarActivity {
         if (update) {
             ReaderDeviceManager.applyWithGCIntervalWithoutRegal(surfaceView);
         }
-        updateStatusBar();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        if (event != null && !event.isWaitForShapeData()) {
+            updateStatusBar();
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        }
         if (event != null && event.isRenderShapeData()) {
             renderShapeDataInBackground();
         }
@@ -447,18 +456,6 @@ public class ReaderActivity extends ActionBarActivity {
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
         FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, false, false, false);
         flushNoteAction.execute(getReaderDataHolder(), null);
-    }
-
-    @Subscribe
-    public void onShapeErasing(final ShapeErasingEvent event) {
-        if (!event.isFinished()) {
-            prepareForErasing();
-            return;
-        }
-        final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
-                getReaderDataHolder().getVisiblePages(),
-                event.getTouchPointList());
-        action.execute(getReaderDataHolder(), null);
     }
 
     private void prepareForErasing() {
@@ -571,7 +568,7 @@ public class ReaderActivity extends ActionBarActivity {
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, rotation);
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new Rect(), rotation);
         if (getReaderDataHolder().isDocumentOpened()) {
             new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
         }
@@ -592,7 +589,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, rotation);
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, event.getExcludeRect(), rotation);
     }
 
     @Subscribe
@@ -622,14 +619,31 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
-        ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), this);
-        StartErasingAction startErasingAction = new StartErasingAction();
-        startErasingAction.execute(getReaderDataHolder(), null);
+        if (getReaderDataHolder().isEnableShortcutErasing()) {
+            getReaderDataHolder().getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+        }
+    }
+
+    public void onShortcutErasingEvent(final ShortcutErasingEvent event) {
     }
 
     @Subscribe
     public void onShortcutErasingFinish(final ShortcutErasingFinishEvent event) {
-        ChangeNoteShapeAction action = new ChangeNoteShapeAction(NoteDrawingArgs.defaultShape());
+        if (getReaderDataHolder().isEnableShortcutErasing()) {
+            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+        }
+    }
+
+    @Subscribe
+    public void onShapeErasing(final ShapeErasingEvent event) {
+        if (!event.isFinished()) {
+            prepareForErasing();
+            return;
+        }
+
+        final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
+                getReaderDataHolder().getVisiblePages(),
+                event.getTouchPointList());
         action.execute(getReaderDataHolder(), null);
     }
 
@@ -681,6 +695,10 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void renderShapeDataInBackground() {
+        if (!getReaderDataHolder().supportScalable()) {
+            return;
+        }
+
         final ReaderNoteRenderRequest renderRequest = new ReaderNoteRenderRequest(
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 getReaderDataHolder().getReaderViewInfo().getVisiblePages(),

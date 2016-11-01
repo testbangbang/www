@@ -1,11 +1,13 @@
 package com.onyx.kreader.ui.actions;
 
 import android.app.Dialog;
+import android.content.Context;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
+import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.note.actions.GetNotePageListAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -18,14 +20,14 @@ import java.util.List;
  */
 public class GetDocumentInfoChain extends BaseAction {
 
-    private DialogTableOfContent.DirectoryTab tab;
-
-    public GetDocumentInfoChain(DialogTableOfContent.DirectoryTab tab) {
-        this.tab = tab;
-    }
+    private ReaderDocumentTableOfContent tableOfContent;
+    private List<Bookmark> bookmarks;
+    private List<Annotation> annotations;
+    private List<String> scribblePages;
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
+        showLoadingDialog(readerDataHolder, R.string.loading);
         final ActionChain actionChain = new ActionChain();
         final GetDocumentInfoAction documentInfoAction = new GetDocumentInfoAction();
         final GetNotePageListAction notePageListAction = new GetNotePageListAction();
@@ -34,21 +36,29 @@ public class GetDocumentInfoChain extends BaseAction {
         actionChain.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                showTableOfContentDialog(readerDataHolder, documentInfoAction.getTableOfContent(),
-                        documentInfoAction.getBookmarks(),
-                        documentInfoAction.getAnnotations(),
-                        notePageListAction.getScribblePages());
+                tableOfContent = documentInfoAction.getTableOfContent();
+                bookmarks = documentInfoAction.getBookmarks();
+                annotations = documentInfoAction.getAnnotations();
+                scribblePages = notePageListAction.getScribblePages();
+                hideLoadingDialog();
+                baseCallback.done(request, e);
             }
         });
     }
 
-    private void showTableOfContentDialog(final ReaderDataHolder readerDataHolder,
-                                          final ReaderDocumentTableOfContent tableOfContent,
-                                          final List<Bookmark> bookmarks,
-                                          final List<Annotation> annotations,
-                                          final List<String> scribblePages) {
-        Dialog dialog = new DialogTableOfContent(readerDataHolder, tab, tableOfContent, bookmarks, annotations, scribblePages);
-        dialog.show();
-        readerDataHolder.addActiveDialog(dialog);
+    public ReaderDocumentTableOfContent getTableOfContent() {
+        return tableOfContent;
+    }
+
+    public List<Bookmark> getBookmarks() {
+        return bookmarks;
+    }
+
+    public List<Annotation> getAnnotations() {
+        return annotations;
+    }
+
+    public List<String> getScribblePages() {
+        return scribblePages;
     }
 }

@@ -7,13 +7,22 @@ import com.onyx.android.sdk.scribble.shape.Shape;
  * Created by zhuzeng on 9/29/16.
  */
 
+/**
+ * Triggered by touch panel in erasing model.
+ */
 public class ShapeErasingEvent {
 
+    private boolean start;
     private boolean finished;
     private TouchPointList touchPointList;
-    public ShapeErasingEvent(boolean f, final TouchPointList list) {
+    public ShapeErasingEvent(boolean s, boolean f, final TouchPointList list) {
+        start = s;
         finished = f;
         touchPointList = list;
+    }
+
+    public boolean isStart() {
+        return start;
     }
 
     public boolean isFinished() {

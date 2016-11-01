@@ -52,14 +52,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
             signingConfig signingConfigs.release
             manifestPlaceholders = [channel_value: releaseChannel(),
-                                    type_value: releaseType()]
+                                    type_value: releaseType(),
+                                    platform_value: releasePlatform()]
         }
 
         debug {
             debuggable true
             jniDebuggable true
             manifestPlaceholders = [channel_value: releaseChannel(),
-                                    type_value: releaseType()]
+                                    type_value: releaseType(),
+                                    platform_value: releasePlatform()]
         }
     }
 
