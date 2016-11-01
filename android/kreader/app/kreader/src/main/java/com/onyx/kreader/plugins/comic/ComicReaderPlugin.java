@@ -360,7 +360,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public ReaderDocument open(String path, ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) throws ReaderException {
         if (!getPluginImpl().open(path, documentOptions.getDocumentPassword())) {
-            return null;
+            if (getPluginImpl().isEncrypted()) {
+                throw ReaderException.passwordRequired();
+            } else {
+                throw ReaderException.cannotOpen();
+            }
         }
         return this;
     }
