@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import com.neverland.engbook.forpublic.AlBitmap;
+import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -157,11 +158,9 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public void abortCurrentJob() {
-
     }
 
     public void clearAbortFlag() {
-
     }
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
@@ -374,13 +373,13 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (clear){
             searchResults.clear();
         }
+        List<AlOneSearchResult> list = getPluginImpl().search(options.pattern());
         return false;
     }
 
     public List<ReaderSelection> searchResults() {
         return searchResults;
     }
-
 
     public boolean acceptDRMFile(final String path) {
         return false;
@@ -419,9 +418,6 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportScale() {
-        if (StringUtils.isNullOrEmpty(documentPath)) {
-            return false;
-        }
         return false;
     }
 

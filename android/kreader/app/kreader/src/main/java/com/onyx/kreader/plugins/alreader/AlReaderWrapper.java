@@ -11,6 +11,7 @@ import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlCurrentPosition;
 import com.neverland.engbook.forpublic.AlEngineNotifyForUI;
 import com.neverland.engbook.forpublic.AlEngineOptions;
+import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.neverland.engbook.forpublic.AlPublicProfileOptions;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
@@ -19,6 +20,9 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.api.ReaderSearchOptions;
+
+import java.util.List;
 
 /**
  * Created by zhuzeng on 29/10/2016.
@@ -61,7 +65,6 @@ public class AlReaderWrapper {
         bookEng.openBook(path, bookOpt);
         return NO_ERROR;
     }
-    
 
     public void closeDocument() {
         if (bookEng == null) {
@@ -147,6 +150,11 @@ public class AlReaderWrapper {
     public boolean gotoPage(int pos) {
         int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.POSITION, pos);
         return ret == TAL_RESULT.OK;
+    }
+
+    public List<AlOneSearchResult> search(final String text) {
+        bookEng.findText(text);
+        return bookEng.getFindTextResult();
     }
 
 }
