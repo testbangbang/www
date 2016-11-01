@@ -366,6 +366,9 @@ public class ComicReaderPlugin implements ReaderPlugin,
                 throw ReaderException.cannotOpen();
             }
         }
+        if (getPluginImpl().getPageCount() <= 0) {
+            throw ReaderException.cannotOpen();
+        }
         return this;
     }
 
