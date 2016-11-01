@@ -238,7 +238,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapp
     memset(&data, 0, sizeof(RAROpenArchiveData));
     
     data.ArcName = const_cast<char *>(context->getFilePath().c_str());
-    data.OpenMode = RAR_OM_LIST;
+    data.OpenMode = RAR_OM_EXTRACT;
     
     HandleHolder handle(RAROpenArchive(&data));
     if (!handle) {
@@ -259,16 +259,38 @@ JNIEXPORT jobjectArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapp
     
     std::vector<std::string> list;
     int error = 0;
+    bool firstEntry = true;
     while ((error = RARReadHeader(handle, &header)) == 0) {
         if (!(header.Flags & LHD_DIRECTORY) && header.FileName) {
             list.push_back(header.FileName);
         }
-        
+
         int code = RARProcessFile(handle, RAR_SKIP, NULL, NULL);
         if (code) {
-            LOGE("Unable to process %s, error: %d", header.FileName, code);
+            displayError(code, header.FileName);
             return nullptr;
         }
+        
+        if (firstEntry) {
+            // test first entry to see if contents is encrypted
+            firstEntry = false;
+            int code = RARProcessFile(handle, RAR_TEST, NULL, NULL);
+            if (code) {
+                displayError(code, header.FileName);
+                return nullptr;
+            }
+        }
+    }
+
+    LOGI("open archive status: %d", error);
+    if (error == ERAR_MISSING_PASSWORD || error == ERAR_BAD_PASSWORD) {
+        displayError(error, context->getFilePath().c_str());
+        context->setEncrypted(true);
+        return nullptr;
+    }
+
+    if (error != ERAR_END_ARCHIVE) {
+        return nullptr;
     }
     
     jobjectArray ret = (jobjectArray)env->NewObjectArray(list.size(), utils.getClazz(), NULL);
@@ -336,8 +358,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_onyx_kreader_plugins_comic_UnrarJniWrapper
         
         // don't use RAR_EXTRACT because files will be extracted in current directory
         int code = RARProcessFile(handle, RAR_TEST, NULL, NULL);
-        if (code) { 
-            LOGE("Unable to process %s, error: %d", header.FileName, code);
+        if (code) {
             displayError(code, header.FileName);
             return nullptr;
         } 
