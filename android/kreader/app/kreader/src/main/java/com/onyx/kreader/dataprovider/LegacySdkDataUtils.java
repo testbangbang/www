@@ -65,6 +65,15 @@ public class LegacySdkDataUtils {
         }
     }
 
+    public static boolean hasThumbnail(final Context context, final String documentPath) {
+        OnyxMetadata data = getMetadataByPath(documentPath);
+        if (data == null) {
+            Log.w(TAG, "hasThumbnail: create file metadata failed, " + documentPath);
+            return false;
+        }
+        return OnyxCmsCenter.hasThumbnail(context, data);
+    }
+
     public static boolean saveThumbnail(final Context context, final String documentPath,
                                         final Bitmap bitmap) {
         try {
