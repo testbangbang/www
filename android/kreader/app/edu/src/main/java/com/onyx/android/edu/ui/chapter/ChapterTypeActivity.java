@@ -8,9 +8,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.edu.R;
 import com.onyx.android.edu.base.BaseActivity;
+import com.onyx.android.edu.base.Constant;
 import com.onyx.android.edu.utils.ActivityUtils;
+import com.onyx.libedu.model.BookNode;
+import com.onyx.libedu.model.ChooseQuestionVariable;
+import com.onyx.libedu.model.KnowledgePoint;
+
+import java.util.List;
 
 import butterknife.Bind;
 
@@ -44,7 +52,6 @@ public class ChapterTypeActivity extends BaseActivity {
     protected void initView() {
         mToolbarTitle.setVisibility(View.GONE);
         mRightTitle.setVisibility(View.GONE);
-        mLeftTitle.setText("数学  九年级上");
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,6 +62,15 @@ public class ChapterTypeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        String book = getIntent().getStringExtra(Constant.BOOK_NODE);
+        String variable = getIntent().getStringExtra(Constant.CHOOSE_QUESTION_VARIABLE);
+        String knowledgePoint = getIntent().getStringExtra(Constant.KNOW_LEDGE_POINT);
+
+        List<BookNode> bookNodes = JSON.parseObject(book, new TypeReference<List<BookNode>>(){});
+        List<KnowledgePoint> knowledgePoints = JSON.parseObject(knowledgePoint, new TypeReference<List<KnowledgePoint>>(){});
+        ChooseQuestionVariable chooseQuestionVariable = JSON.parseObject(variable, ChooseQuestionVariable.class);
+        String text = chooseQuestionVariable.getStage().getStageName() + " " + chooseQuestionVariable.getTextbook().getBookName();
+        mLeftTitle.setText(text);
         mChapterTypeFragment = (ChapterTypeFragment) getFragmentManager()
                 .findFragmentById(R.id.contentFrame);
         if (mChapterTypeFragment == null) {
@@ -63,7 +79,10 @@ public class ChapterTypeActivity extends BaseActivity {
                     mChapterTypeFragment, R.id.contentFrame);
         }
 
-        new ChapterTypePresenter(mChapterTypeFragment);
+        ChapterTypePresenter chapterTypePresenter = new ChapterTypePresenter(mChapterTypeFragment);
+        chapterTypePresenter.setBookNodes(bookNodes);
+        chapterTypePresenter.setKnowledgePoints(knowledgePoints);
+        chapterTypePresenter.setChooseQuestionVariable(chooseQuestionVariable);
     }
 
     @Override

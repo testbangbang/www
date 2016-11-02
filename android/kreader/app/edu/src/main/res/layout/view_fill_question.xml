@@ -6,24 +6,39 @@
     android:padding="@dimen/question_padding"
               android:id="@+id/main_fill_view">
 
-    <TextView
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:id="@+id/question_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <ImageView
-        android:id="@+id/question_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginTop="10dp"
-        android:id="@+id/answers"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:lineSpacingExtra="8dp"
+                android:id="@+id/question_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/question_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:id="@+id/answers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+        </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
 
 </LinearLayout>
