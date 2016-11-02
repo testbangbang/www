@@ -110,6 +110,9 @@ public class ReaderHelper {
     }
 
     private void saveThumbnail(final Context context, final String path) {
+        if (LegacySdkDataUtils.hasThumbnail(context, path)) {
+            return;
+        }
         WindowManager window = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         if (window == null) {
             Log.w(TAG, "getById display metrics failed: " + documentPath);
