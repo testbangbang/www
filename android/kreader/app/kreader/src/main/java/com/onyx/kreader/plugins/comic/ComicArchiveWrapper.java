@@ -73,6 +73,7 @@ public class ComicArchiveWrapper {
     }
 
     public void close() {
+        infoCache.clear();
         if (isOpened()) {
             archive.close();
         }
