@@ -44,8 +44,8 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private View fullToolbar;
     private HashMap<ReaderMenuAction, CommonViewHolder> scribbleViewHolderMap = new HashMap<>();
     private BaseCallback callback;
-    private ReaderMenuAction selectWidthAction = null;
-    private ReaderMenuAction selectShapeAction = null;
+    private ReaderMenuAction selectWidthAction = ReaderMenuAction.SCRIBBLE_WIDTH1;
+    private ReaderMenuAction selectShapeAction = ReaderMenuAction.SCRIBBLE_PENCIL;
     private ReaderMenuAction selectEraserAction = null;
     private ActionCallback actionCallback;
     private ReaderDataHolder readerDataHolder;
@@ -266,6 +266,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             @Override
             public OnyxToolbar OnClickListener(View view) {
                 ReaderMenuAction action = (ReaderMenuAction) view.getTag();
+                selectEraserAction = action;
                 handleClickListener(action);
                 updateMarkerView(action, selectActions);
                 return null;
@@ -333,6 +334,19 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 break;
             case SCRIBBLE_MAXIMIZE:
                 changeToolBarVisibility(false);
+                break;
+            case SCRIBBLE_ERASER_PART:
+            case SCRIBBLE_ERASER_ALL:
+                selectShapeAction = null;
+                break;
+            case SCRIBBLE_PENCIL:
+            case SCRIBBLE_BRUSH:
+            case SCRIBBLE_LINE:
+            case SCRIBBLE_TRIANGLE:
+            case SCRIBBLE_CIRCLE:
+            case SCRIBBLE_SQUARE:
+                selectEraserAction = null;
+                break;
         }
     }
 
