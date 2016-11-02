@@ -10,6 +10,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:textSize="@dimen/dialog_title_text_size"
             android:padding="5dp"
             android:layout_centerInParent="true"
             android:id="@+id/textView_dialog_Tittle"
@@ -60,7 +61,7 @@
 
                 <TextView
                     android:text="@string/crop"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/dialog_common_text_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -108,7 +109,7 @@
                     android:gravity="center"
                     android:layout_below="@+id/image_view_column"
                     android:text="@string/column"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/dialog_common_text_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </RelativeLayout>
@@ -155,7 +156,7 @@
                     android:gravity="center"
                     android:layout_below="@+id/image_view_direction"
                     android:text="@string/direction"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/dialog_common_text_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </RelativeLayout>

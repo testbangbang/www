@@ -689,6 +689,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private void onPageChanged() {
+        updateTotalText(currentTab);
         if (viewList.size() == 0) {
             return;
         }
@@ -697,7 +698,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         int pages = Math.max(pageView.getPaginator().pages(), 1);
         String show = String.format("%d/%d", currentPage, pages);
         pageIndicator.setText(show);
-        updateTotalText(currentTab);
 
         if (currentTab == DirectoryTab.Scribble && scribblePageView != null) {
             requestScribblePreview(scribblePageView);
@@ -708,15 +708,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private void showExportLayout(DirectoryTab tab) {
         boolean showExport = tab == DirectoryTab.Scribble || tab == DirectoryTab.Annotation;
         exportLayout.setVisibility(showExport ? View.VISIBLE : View.GONE);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (showExport) {
-            lp.addRule(RelativeLayout.RIGHT_OF, R.id.total);
-            lp.addRule(RelativeLayout.CENTER_VERTICAL);
-            lp.leftMargin = DimenUtils.dip2px(getContext(), 20);
-        } else {
-            lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-        }
-        pageIndicatorLayout.setLayoutParams(lp);
     }
 
     private void updateTotalText(DirectoryTab tab) {
