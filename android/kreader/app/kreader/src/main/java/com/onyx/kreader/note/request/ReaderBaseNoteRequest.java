@@ -34,8 +34,10 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private volatile boolean render = true;
     private volatile boolean transfer = true;
     private volatile boolean resetNoteDataInfo = true;
+    private volatile int associatedUniqueId;
 
     public ReaderBaseNoteRequest() {
+        super();
         setAbortPendingTasks(false);
     }
 
@@ -326,5 +328,13 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public void setResetNoteDataInfo(boolean resetNoteDataInfo) {
         this.resetNoteDataInfo = resetNoteDataInfo;
+    }
+
+    public int getAssociatedUniqueId() {
+        return associatedUniqueId;
+    }
+
+    public void setAssociatedUniqueId(int associatedUniqueId) {
+        this.associatedUniqueId = associatedUniqueId;
     }
 }

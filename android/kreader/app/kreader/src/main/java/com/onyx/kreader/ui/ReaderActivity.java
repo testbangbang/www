@@ -91,7 +91,6 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
-import com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -374,6 +373,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
         if (event != null && !event.isWaitForShapeData()) {
             updateStatusBar();
+            beforeDrawPage();
             drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         }
         if (event != null && event.isRenderShapeData()) {
@@ -387,11 +387,18 @@ public class ReaderActivity extends ActionBarActivity {
         if (noteDataInfo == null || !noteDataInfo.isContentRendered()) {
             return;
         }
+        if (event.getUniqueId() < getReaderDataHolder().getLastRequestSequence()) {
+            return;
+        }
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 
     private boolean verifyReader() {
         return getReaderDataHolder().isDocumentOpened();
+    }
+
+    private void beforeDrawPage() {
+        enablePost(true);
     }
 
     @Subscribe
@@ -703,14 +710,15 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 getReaderDataHolder().getReaderViewInfo().getVisiblePages(),
                 getReaderDataHolder().getDisplayRect(),
-                true);
-        getReaderDataHolder().getNoteManager().submit(this, renderRequest, new BaseCallback() {
+                false);
+        int uniqueId = getReaderDataHolder().getLastRequestSequence();
+        getReaderDataHolder().getNoteManager().submitWithUniqueId(this, uniqueId, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null || request.isAbort()) {
+                if (e != null || request.isAbort() ) {
                     return;
                 }
-                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEvent());
+                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(renderRequest.getAssociatedUniqueId()));
             }
         });
     }

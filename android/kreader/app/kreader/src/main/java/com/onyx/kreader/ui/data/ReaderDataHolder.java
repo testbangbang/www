@@ -61,6 +61,7 @@ public class ReaderDataHolder {
     private int displayWidth;
     private int displayHeight;
     private int optionsSkippedTimes = 0;
+    private int lastRequestSequence;
 
     /**
      * can be either Dialog or DialogFragment, so we store it as basic Object
@@ -372,12 +373,12 @@ public class ReaderDataHolder {
         }
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
-        getEventBus().post(RequestFinishEvent.createEvent(applyGCIntervalUpdate, renderShapeData, false));
+        setLastRequestSequence(request.getRequestSequence());
+        getEventBus().post(RequestFinishEvent.createEvent(request.getRequestSequence(), applyGCIntervalUpdate, renderShapeData, false));
         if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
             getEventBus().post(new LayoutChangeEvent());
         }
     }
-
 
     public void redrawPage() {
         if (getReader() != null) {
@@ -459,6 +460,14 @@ public class ReaderDataHolder {
 
     public boolean isEnableShortcutErasing() {
         return enableShortcutErasing;
+    }
+
+    public int getLastRequestSequence() {
+        return lastRequestSequence;
+    }
+
+    public void setLastRequestSequence(int lastRequestSequence) {
+        this.lastRequestSequence = lastRequestSequence;
     }
 }
 

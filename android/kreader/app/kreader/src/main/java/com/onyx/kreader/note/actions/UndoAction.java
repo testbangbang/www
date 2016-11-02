@@ -5,7 +5,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.note.request.UndoRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 
 /**
@@ -18,7 +17,7 @@ public class UndoAction extends BaseAction {
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEvent());
+                readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(Integer.MAX_VALUE));
                 BaseCallback.invoke(callback, request, e);
             }
         });

@@ -27,6 +27,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private boolean loadPageLinks = true;
 
     public BaseReaderRequest() {
+        super();
     }
 
     public boolean isTransferBitmap() {
