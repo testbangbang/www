@@ -1,7 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.app.Activity;
-
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -17,6 +17,7 @@ import com.onyx.kreader.host.request.OpenRequest;
 import com.onyx.kreader.host.request.RestoreRequest;
 import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.dialog.DialogMessage;
 import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
@@ -126,6 +127,18 @@ public class OpenDocumentAction extends BaseAction {
         dlg.show();
     }
 
+    private void showErrorDialog(final ReaderDataHolder holder) {
+        hideLoadingDialog();
+        final DialogMessage dlg = new DialogMessage(holder.getContext(), R.string.open_document_failed);
+        dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                postQuitEvent(holder);
+            }
+        });
+        dlg.show();
+    }
+
     private void postQuitEvent(final ReaderDataHolder holder) {
         cleanup();
         holder.getEventBus().post(new QuitEvent());
@@ -157,7 +170,7 @@ public class OpenDocumentAction extends BaseAction {
             showPasswordDialog(holder, options);
             return;
         }
-        postQuitEvent(holder);
+        showErrorDialog(holder);
     }
 
 }

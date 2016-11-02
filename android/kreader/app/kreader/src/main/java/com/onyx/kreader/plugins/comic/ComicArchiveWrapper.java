@@ -24,6 +24,10 @@ public class ComicArchiveWrapper {
     private String filePath;
     private ComicArchive archive;
 
+    public boolean isEncrypted() {
+        return archive != null && archive.isEncrypted();
+    }
+
     public boolean open(String path, String password) {
         filePath = path;
         if (FileUtils.isZipFile(path)) {
@@ -69,6 +73,7 @@ public class ComicArchiveWrapper {
     }
 
     public void close() {
+        infoCache.clear();
         if (isOpened()) {
             archive.close();
         }
