@@ -2,13 +2,13 @@ package com.onyx.kreader.utils;
 
 import android.content.Context;
 import android.os.Build;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.lang.reflect.Field;
@@ -17,10 +17,37 @@ import java.util.Map;
 /**
  * Created by ming on 16/10/18.
  */
+@SuppressWarnings("unused")
 public class DeviceConfig {
-    
+
     private static DeviceConfig ourInstance;
     private static final boolean useDebugConfig = false;
+
+    private Map<String, Map<String, JSONObject>> keyBinding = null;
+
+    private boolean deleteAcsmAfterFulfillment = false;
+    private boolean supportZipCompressedBooks = false;
+    private boolean disableDictionaryFunc = false;
+    private boolean disableFontFunc = false;
+    private boolean disableNoteFunc = false;
+    private boolean disableRotationFunc = false;
+    private boolean useBigPen = false;
+    private boolean defaultUseSystemStatusBar = false;
+    private boolean defaultUseReaderStatusBar = false;
+    private boolean defaultShowDocTitleInStatusBar = false;
+    private boolean disableNavigation = false;
+    private boolean hideSelectionModeUiOption = false;
+    private boolean hideControlSettings = false;
+
+    private int rotationOffset = 0;
+    private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
+    private int dialogNavigationSettingsSubScreenLandscapeColumns = -1;
+    private int selectionOffsetX = 15;
+    private int defaultFontSize = 0;
+    private int selectionMoveDistanceThreshold = 8;
+    private int gcInterval = 0;
+
+    private String defaultAnnotationHighlightStyle = "Highlight";
 
     private DeviceConfig(Context context) {
         String content = readConfig(context);
@@ -100,10 +127,9 @@ public class DeviceConfig {
             int res = context.getResources().getIdentifier(name.toLowerCase(), "raw", context.getPackageName());
             content = RawResourceUtil.contentOfRawResource(context, res);
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            return content;
+            Debug.w(getClass(), e);
         }
+        return content;
     }
 
     public DeviceConfig() {
@@ -115,32 +141,6 @@ public class DeviceConfig {
         }
         return ourInstance;
     }
-
-    private Map<String, Map<String, JSONObject>> keyBinding = null;
-
-    private boolean deleteAcsmAfterFulfillment = false;
-    private boolean supportZipCompressedBooks = false;
-    private boolean disableDictionaryFunc = false;
-    private boolean disableFontFunc = false;
-    private boolean disableNoteFunc = false;
-    private boolean disableRotationFunc = false;
-    private boolean useBigPen = false;
-    private boolean defaultUseSystemStatusBar = false;
-    private boolean defaultUseReaderStatusBar = false;
-    private boolean defaultShowDocTitleInStatusBar = false;
-    private boolean disableNavigation = false;
-    private boolean hideSelectionModeUiOption = false;
-    private boolean hideControlSettings = false;
-
-    private int rotationOffset = 0;
-    private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
-    private int dialogNavigationSettingsSubScreenLandscapeColumns = -1;
-    private int selectionOffsetX = 15;
-    private int defaultFontSize = 0;
-    private int selectionMoveDistanceThreshold = 8;
-    private int gcInterval = 0;
-
-    private String defaultAnnotationHighlightStyle = "Highlight";
 
     public Map<String, Map<String, JSONObject>> getKeyBinding() {
         return keyBinding;
@@ -323,6 +323,7 @@ public class DeviceConfig {
         try {
             style = Enum.valueOf(SingletonSharedPreference.AnnotationHighlightStyle.class, defaultAnnotationHighlightStyle);
         } catch (Exception e) {
+            Debug.w(getClass(), e);
         }
         return style;
     }
