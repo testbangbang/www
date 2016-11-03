@@ -1,6 +1,6 @@
 {
     "ttsEnabled" : false,
-    "hasFrontLight" : false,
+    "hasFrontLight" : true,
     "disableNoteFunc" : true,
     "keyBinding": {
         "HandlerManager": {
@@ -22,5 +22,5 @@
             "KEYCODE_SCRIBBLER":  {"action": "changeToScribbleMode", "args": ""},
             "KEYCODE_BACK": {"action": "close", "args": ""}
         }
-    },
+    }
 }
