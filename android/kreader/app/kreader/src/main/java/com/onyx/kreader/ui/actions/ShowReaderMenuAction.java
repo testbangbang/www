@@ -114,6 +114,13 @@ public class ShowReaderMenuAction extends BaseAction {
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isDisableNoteFunc()) {
             disableMenus.add(ReaderMenuAction.NOTE);
         }
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasAudio()) {
+            disableMenus.add(ReaderMenuAction.TTS);
+        }
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasFrontLight()) {
+            disableMenus.add(ReaderMenuAction.FRONT_LIGHT);
+        }
+
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
