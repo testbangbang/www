@@ -1,7 +1,7 @@
 {
     "hasAudio" : false,
-    "hasFrontLight" : false,
-    "disableNoteFunc" : true,
+    "hasFrontLight" : true,
+    "disableNoteFunc" : false,
     "keyBinding": {
         "HandlerManager": {
             "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
@@ -22,5 +22,5 @@
             "KEYCODE_SCRIBBLER":  {"action": "changeToScribbleMode", "args": ""},
             "KEYCODE_BACK": {"action": "close", "args": ""}
         }
-    },
+    }
 }

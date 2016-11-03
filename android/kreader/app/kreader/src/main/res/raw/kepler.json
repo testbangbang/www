@@ -1,6 +1,6 @@
 {
-  "hasAudio" : false,
-  "hasFrontLight" : false,
+  "hasAudio" : true,
+  "hasFrontLight" : true,
   "disableNoteFunc" : true,
   "keyBinding": {
     "HandlerManager": {

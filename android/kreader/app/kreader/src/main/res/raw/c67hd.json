@@ -1,5 +1,5 @@
 {
-  "hasAudio" : false,
+  "hasAudio" : true,
   "hasFrontLight" : false,
   "disableNoteFunc" : true,
   "keyBinding": {

@@ -1,7 +1,7 @@
 {
-  "hasAudio" : false,
+  "hasAudio" : true,
   "hasFrontLight" : false,
-  "disableNoteFunc" : true,
+  "disableNoteFunc" : false,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
