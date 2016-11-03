@@ -23,6 +23,9 @@ public class DeviceConfig {
     private static DeviceConfig ourInstance;
     private static final boolean useDebugConfig = false;
 
+    private boolean hasAudio = false;
+    private boolean hasFrontLight = false;
+
     private Map<String, Map<String, JSONObject>> keyBinding = null;
 
     private boolean deleteAcsmAfterFulfillment = false;
@@ -140,6 +143,22 @@ public class DeviceConfig {
             new DeviceConfig(context);
         }
         return ourInstance;
+    }
+
+    public boolean hasAudio() {
+        return hasAudio;
+    }
+
+    public void setHasAudio(boolean hasAudio) {
+        this.hasAudio = hasAudio;
+    }
+
+    public boolean hasFrontLight() {
+        return hasFrontLight;
+    }
+
+    public void setHasFrontLight(boolean hasFrontLight) {
+        this.hasFrontLight = hasFrontLight;
     }
 
     public Map<String, Map<String, JSONObject>> getKeyBinding() {
