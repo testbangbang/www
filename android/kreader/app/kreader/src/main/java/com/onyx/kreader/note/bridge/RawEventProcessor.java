@@ -4,6 +4,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.SingleThreadExecutor;
 import com.onyx.android.sdk.data.PageInfo;
@@ -99,6 +100,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void clearInternalState() {
+        px = py = 0;
+        pressure = 0;
         pressed = false;
         shortcutDrawing = false;
         shortcutErasing = false;
@@ -133,6 +136,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
                     readLoop();
                 } catch (Exception e) {
                     Debug.d(RawEventProcessor.class.getSimpleName(), e.toString());
+                } finally {
+                    finishCurrentShape();
                 }
             }
         });
@@ -364,20 +369,20 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         if (!checkTouchPoint(touchPoint, screen)) {
             return;
         }
-        finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
+        finishCurrentShape();
     }
 
     private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
         if (hitTest(touchPoint.x, touchPoint.y) == null ||
             !inLimitRect(touchPoint.x, touchPoint.y) ||
             inExcludeRect(touchPoint.x, touchPoint.y)) {
-            finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
+            finishCurrentShape();
             return false;
         }
         return true;
     }
 
-    private void finishCurrentShape(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean create) {
+    private void finishCurrentShape() {
         final Shape shape = getNoteManager().getCurrentShape();
         resetLastPageInfo();
         invokeDFBShapeFinished(shape);

@@ -61,9 +61,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback callback) {
         this.callback = callback;
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         readerDataHolder.getEventBus().register(this);
         show(readerDataHolder);
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
     }
 
     public void show(final ReaderDataHolder readerDataHolder) {

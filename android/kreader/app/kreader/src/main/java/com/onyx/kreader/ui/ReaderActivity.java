@@ -360,7 +360,6 @@ public class ReaderActivity extends ActionBarActivity {
                     surfaceView.getHeight() != getReaderDataHolder().getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 }
-                getReaderDataHolder().updateNoteManager();
             }
         });
     }
@@ -683,14 +682,14 @@ public class ReaderActivity extends ActionBarActivity {
         if (getReaderDataHolder().inNoteWritingProvider()) {
             return;
         }
-        ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), this);
-        ActionChain actionChain = new ActionChain();
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
         FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
-        ChangeNoteShapeAction action = new ChangeNoteShapeAction(NoteDrawingArgs.defaultShape());
-        actionChain.addAction(flushNoteAction);
-        actionChain.addAction(action);
-        actionChain.execute(getReaderDataHolder(), null);
+        flushNoteAction.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+            }
+        });
     }
 
     public void backward() {

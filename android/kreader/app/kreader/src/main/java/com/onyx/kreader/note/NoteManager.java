@@ -191,7 +191,7 @@ public class NoteManager {
             }
 
             public boolean enableShortcutDrawing() {
-                return isDFBForCurrentShape();
+                return false;
             }
 
             public boolean enableShortcutErasing() {
