@@ -11,8 +11,8 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 
 import com.onyx.kreader.R;
+import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.DeviceUtils;
-import com.onyx.kreader.utils.ReaderConfig;
 
 import java.util.HashMap;
 
@@ -58,7 +58,7 @@ public class MainSettingsActivity extends PreferenceActivity {
         }else {
             sPreferenceIntentHashMap.put(getString(R.string.settings_scribble_bar_key), mScribbleBarIntent);
         }
-        if (ReaderConfig.sharedInstance(this).isHideControlSettings()) {
+        if (DeviceConfig.sharedInstance(this).isHideControlSettings()) {
             Preference preference = getPreferenceScreen().findPreference(getString(R.string.settings_control_key));
             if (preference != null) {
                 getPreferenceScreen().removePreference(preference);

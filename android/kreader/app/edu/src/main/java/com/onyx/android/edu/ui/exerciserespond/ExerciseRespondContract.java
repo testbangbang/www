@@ -6,6 +6,9 @@ import com.onyx.android.edu.base.BaseQuestionView;
 import com.onyx.android.edu.base.BaseView;
 import com.onyx.android.edu.bean.PaperResult;
 import com.onyx.android.edu.db.model.Chapter;
+import com.onyx.libedu.model.ChooseQuestionVariable;
+import com.onyx.libedu.model.Question;
+import com.onyx.libedu.model.QuestionAnalytical;
 
 import java.util.List;
 
@@ -15,11 +18,10 @@ import java.util.List;
 public interface ExerciseRespondContract {
 
     interface ExerciseRespondView extends BaseView<ExerciseRespondPresenter> {
-        void showPaper(Chapter chapter, boolean showAnswer);
+        void showQuestions(List<Question> questions, ChooseQuestionVariable variable, boolean showAnswer);
     }
 
     interface ExerciseRespondPresenter extends BasePresenter {
-        void loadPapers();
         PaperResult getPaperResult(List<BaseQuestionView> selectViewList);
     }
 }

@@ -14,8 +14,6 @@ import java.util.Map;
  * Created by ming on 16/7/1.
  * 章节表
  */
-@ModelContainer
-@Table(database = AppDatabase.class)
 public class Chapter extends BaseDbModel{
 
     @Column //章节名称
@@ -26,13 +24,6 @@ public class Chapter extends BaseDbModel{
     private Map quizIds; //key 为ID value为问题类型
 
     private List<Object> quizList;
-
-    public List<Object> getQuizList() {
-        if (quizList == null){
-            return QuizDataProvider.getQuizList(quizIds);
-        }
-        return quizList;
-    }
 
     public Map getQuizIds() {
         return quizIds;

@@ -9,8 +9,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 /**
  * Created by ming on 16/7/5.
  */
-@ModelContainer
-@Table(database = AppDatabase.class)
 public class CompletionQuiz extends BaseDbModel{
     @Column(typeConverter = AtomicQuizConverter.class)
     public AtomicQuiz quiz;

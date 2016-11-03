@@ -16,8 +16,11 @@
     <string name="find_more">发现更多</string>
     <string name="synchronous_practice">同步练习</string>
     <string name="composite_practice">综合练习</string>
+    <string name="choose_chapter">章节选择</string>
+    <string name="choose_knowPoint">知识点选择</string>
     <string name="select_subject">科目选择：</string>
-    <string name="select_textbook">教材版本：</string>
+    <string name="select_version">教材版本：</string>
+    <string name="select_textbook">教材册别：</string>
     <string name="select_learning_stage">学段选择：</string>
     <string name="select_question_type">题型选择：</string>
     <string name="difficulty_levels">难度级别：</string>
@@ -51,4 +54,9 @@
     <string name="random_exercise">随机抽卷</string>
     <string name="finished_exercise">已完成试卷</string>
     <string name="unfinished_exercise">为完成试卷</string>
+    <string name="no_choose_textbook">未选定教材册别</string>
+    <string name="no_choose_subject">未选定科目</string>
+    <string name="no_find_chapter">未找到该教材的章节</string>
+    <string name="no_find_knowledgePoint">未找到该科目的知识点</string>
+    <string name="no_find_questions">未找到问题</string>
 </resources>
