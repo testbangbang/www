@@ -23,8 +23,8 @@ public class DeviceConfig {
     private static DeviceConfig ourInstance;
     private static final boolean useDebugConfig = false;
 
-    private boolean hasAudio = false;
-    private boolean hasFrontLight = false;
+    private boolean ttsEnabled = false;
+    private boolean hasFrontLight = true;
 
     private Map<String, Map<String, JSONObject>> keyBinding = null;
 
@@ -145,12 +145,12 @@ public class DeviceConfig {
         return ourInstance;
     }
 
-    public boolean hasAudio() {
-        return hasAudio;
+    public boolean isTtsEnabled() {
+        return ttsEnabled;
     }
 
-    public void setHasAudio(boolean hasAudio) {
-        this.hasAudio = hasAudio;
+    public void setTtsEnabled(boolean ttsEnabled) {
+        this.ttsEnabled = ttsEnabled;
     }
 
     public boolean hasFrontLight() {

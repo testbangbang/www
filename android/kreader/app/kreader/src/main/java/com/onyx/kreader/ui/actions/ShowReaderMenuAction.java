@@ -114,7 +114,7 @@ public class ShowReaderMenuAction extends BaseAction {
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isDisableNoteFunc()) {
             disableMenus.add(ReaderMenuAction.NOTE);
         }
-        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasAudio()) {
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isTtsEnabled()) {
             disableMenus.add(ReaderMenuAction.TTS);
         }
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasFrontLight()) {
