@@ -17,18 +17,18 @@ import java.util.Map;
 /**
  * Created by ming on 16/10/18.
  */
-public class ReaderConfig {
-
-    private static ReaderConfig ourInstance;
+public class DeviceConfig {
+    
+    private static DeviceConfig ourInstance;
     private static final boolean useDebugConfig = false;
 
-    private ReaderConfig(Context context) {
+    private DeviceConfig(Context context) {
         String content = readConfig(context);
         if (!StringUtils.isNullOrEmpty(content)) {
-            ourInstance = JSON.parseObject(content, ReaderConfig.class);
+            ourInstance = JSON.parseObject(content, DeviceConfig.class);
         }
         if (ourInstance == null) {
-            ourInstance = new ReaderConfig();
+            ourInstance = new DeviceConfig();
         }
     }
 
@@ -106,12 +106,12 @@ public class ReaderConfig {
         }
     }
 
-    public ReaderConfig() {
+    public DeviceConfig() {
     }
 
-    static public ReaderConfig sharedInstance(Context context) {
+    static public DeviceConfig sharedInstance(Context context) {
         if (ourInstance == null) {
-            new ReaderConfig(context);
+            new DeviceConfig(context);
         }
         return ourInstance;
     }
@@ -327,3 +327,4 @@ public class ReaderConfig {
         return style;
     }
 }
+
