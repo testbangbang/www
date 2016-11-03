@@ -2,6 +2,7 @@ package com.onyx.android.edu.adapter;
 
 import android.widget.CompoundButton;
 
+import com.onyx.android.edu.EduApp;
 import com.onyx.android.edu.R;
 import com.onyx.android.edu.base.Global;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
@@ -29,7 +30,6 @@ public class ResultMultiAdapter extends DynamicMultiRadioGroupView.MultiAdapter{
             buttonTexts.add(texts[i]);
         }
 
-//        setPadding(20,20,20,20);
         setMargin(10,20,20,10);
         setMultiCheck(false);
         setBackgroundResId(backgroundResId);
@@ -49,10 +49,10 @@ public class ResultMultiAdapter extends DynamicMultiRadioGroupView.MultiAdapter{
     @Override
     public void bindView(CompoundButton button, int position) {
         if (rights.contains(position)){
-            button.setTextColor(Global.getContext().getResources().getColor(R.color.white));
+            button.setTextColor(EduApp.instance().getResources().getColor(R.color.white));
             button.setBackgroundResource(R.drawable.right_oval);
         }else {
-            button.setTextColor(Global.getContext().getResources().getColor(R.color.black));
+            button.setTextColor(EduApp.instance().getResources().getColor(R.color.black));
             button.setBackgroundResource(R.drawable.wrong_oval);
         }
         button.setEnabled(false);

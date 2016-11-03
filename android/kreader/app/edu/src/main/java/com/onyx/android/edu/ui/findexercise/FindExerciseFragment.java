@@ -73,15 +73,15 @@ public class FindExerciseFragment extends BaseFragment implements FindExerciseCo
     }
 
     private void initSubjectView(){
-        subjectView.setMultiAdapter(new ChooseMultiAdapter(Config.subjectNames, 2, 6, R.drawable.rectangle_radio));
-        subjectView.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
-                if (isChecked) {
-
-                }
-            }
-        });
+//        subjectView.setMultiAdapter(new ChooseMultiAdapter(Config.subjectNames, 2, 6, R.drawable.rectangle_radio));
+//        subjectView.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
+//                if (isChecked) {
+//
+//                }
+//            }
+//        });
     }
 
     private void initExerciseView(){

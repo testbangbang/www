@@ -1,10 +1,12 @@
 package com.onyx.android.edu.ui.exerciserespond;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +21,8 @@ import com.onyx.android.edu.utils.JsonUtils;
 import com.onyx.android.edu.view.ChoiceQuestionView;
 import com.onyx.android.edu.view.CustomViewPager;
 import com.onyx.android.edu.view.SubjectiveQuestionView;
+import com.onyx.libedu.model.ChooseQuestionVariable;
+import com.onyx.libedu.model.Question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +85,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         int id = v.getId();
         switch (id){
             case R.id.left_arrow:{
+                closeSoftInput();
                 int index = mPaperPager.getCurrentItem();
                 int last = index - 1;
                 if (index > 0){
@@ -90,6 +95,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
             }
             break;
             case R.id.right_arrow:{
+                closeSoftInput();
                 int index = mPaperPager.getCurrentItem();
                 int count = mQuestionsPagerAdapter.getCount();
                 int next = index + 1;
@@ -107,6 +113,9 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
             }
             break;
         }
+    }
+
+    private void closeSoftInput() {
     }
 
     private void updatePaperIndex(){
@@ -130,12 +139,15 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
     }
 
     @Override
-    public void showPaper(Chapter chapter, boolean showAnswer) {
+    public void showQuestions(List<Question> questions, ChooseQuestionVariable variable, boolean showAnswer) {
         List<BaseQuestionView> selectViews = new ArrayList<>();
-        selectViews.add(generateChoiceQuestion(showAnswer));
-        selectViews.add(generateChoiceQuestion(showAnswer));
-        selectViews.add(generateChoiceQuestion(showAnswer));
-        selectViews.add(generateSubjectiveQuestion(showAnswer));
+        for (Question question : questions) {
+            if (question.getQuestionOptions() != null && question.getQuestionOptions().size() > 0) {
+                selectViews.add(generateChoiceQuestion(question, showAnswer));
+            }else {
+                selectViews.add(generateSubjectiveQuestion(question, showAnswer));
+            }
+        }
         mQuestionsPagerAdapter = new QuestionsPagerAdapter(selectViews);
         mPaperPager.setAdapter(mQuestionsPagerAdapter);
         mPaperPager.setPagingEnabled(false);
@@ -143,18 +155,22 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         updatePaperIndex();
     }
 
-    private ChoiceQuestionView generateChoiceQuestion(boolean showAnswer){
-        List<String> options = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            options.add("选项" + (i + 1) + "");
-        }
-        ChoiceQuestionView choiceQuestionView = new ChoiceQuestionView(getActivity(), options, "单选题", showAnswer);
+    private ChoiceQuestionView generateChoiceQuestion(Question question, boolean showAnswer){
+        ChoiceQuestionView choiceQuestionView = new ChoiceQuestionView(getActivity(),
+                showAnswer,
+                question.getQuestionOptions(),
+                question.getQuestionAnalytical().getAnswer(),
+                question.getStem(),
+                question.getQuestionAnalytical().getQuestionAnalyze());
         return choiceQuestionView;
     }
 
-    private SubjectiveQuestionView generateSubjectiveQuestion(boolean showAnswer){
-        String problem = "为什么要改革开放";
-        SubjectiveQuestionView subjectiveQuestionView = new SubjectiveQuestionView(getActivity(), problem, showAnswer);
+    private SubjectiveQuestionView generateSubjectiveQuestion(Question question, boolean showAnswer){
+        SubjectiveQuestionView subjectiveQuestionView = new SubjectiveQuestionView(getActivity(),
+                showAnswer,
+                question.getQuestionAnalytical().getAnswer(),
+                question.getStem(),
+                question.getQuestionAnalytical().getQuestionAnalyze());
         return subjectiveQuestionView;
     }
 }

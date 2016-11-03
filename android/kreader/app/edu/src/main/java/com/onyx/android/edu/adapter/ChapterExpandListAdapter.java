@@ -1,7 +1,6 @@
 package com.onyx.android.edu.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.edu.R;
-import com.onyx.android.edu.ui.exerciserespond.ExerciseRespondActivity;
+import com.onyx.android.sdk.data.model.BaseData;
+import com.onyx.libedu.model.BookNode;
+import com.onyx.libedu.model.KnowledgePoint;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -24,16 +24,33 @@ public class ChapterExpandListAdapter extends BaseExpandableListAdapter {
 
     private static final String TAG = "ChapterListAdapter";
 
-    private LinkedHashMap<String,List<String>> mDataMap;
-    private Context mContext;
+    public interface OnBookNodeClickListener {
+        void onItemClick(BookNode bookNode1, BookNode bookNode2);
+    }
 
-    public ChapterExpandListAdapter(LinkedHashMap<String,List<String>> list){
-        mDataMap = list;
+    public interface OnKnowPointClickListener {
+        void onItemClick(KnowledgePoint knowledgePoint1, KnowledgePoint knowledgePoint2);
+    }
+
+    private boolean useBookNode = false;
+    private List<BookNode> bookNodes;
+    private List<KnowledgePoint> knowledgePoints;
+    private Context mContext;
+    private int lastExpandedGroupPosition;
+    private ExpandableListView listView;
+    private OnBookNodeClickListener onBookNodeClickListener;
+    private OnKnowPointClickListener onKnowPointClickListener;
+
+    public ChapterExpandListAdapter(ExpandableListView listView, boolean useBookNode, List<BookNode> bookNodes, List<KnowledgePoint> knowledgePoints){
+        this.bookNodes = bookNodes;
+        this.listView = listView;
+        this.useBookNode = useBookNode;
+        this.knowledgePoints = knowledgePoints;
     }
 
     @Override
     public int getGroupCount() {
-        return mDataMap.size();
+        return useBookNode ? bookNodes.size() : knowledgePoints.size();
     }
 
     @Override
@@ -43,26 +60,12 @@ public class ChapterExpandListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        int index = 0;
-        for (String key : mDataMap.keySet()) {
-            if (index == groupPosition){
-                return key;
-            }
-            index++;
-        }
-        return null;
+        return useBookNode ? bookNodes.get(groupPosition) : knowledgePoints.get(groupPosition);
     }
 
     @Override
-    public List<String> getChild(int groupPosition, int childPosition) {
-        int index = 0;
-        for (String key : mDataMap.keySet()) {
-            if (index == groupPosition){
-                return mDataMap.get(key);
-            }
-            index++;
-        }
-        return null;
+    public Object getChild(int groupPosition, int childPosition) {
+        return useBookNode ? bookNodes.get(groupPosition).getChildrens() : knowledgePoints.get(groupPosition).getChildrens();
     }
 
     @Override
@@ -92,7 +95,15 @@ public class ChapterExpandListAdapter extends BaseExpandableListAdapter {
             viewHolder = (GroupViewHolder) convertView.getTag();
         }
 
-        String title = getGroup(groupPosition).toString();
+
+        String title;
+        if (useBookNode) {
+            BookNode bookNode = (BookNode) getGroup(groupPosition);
+            title = bookNode.getName();
+        } else {
+            KnowledgePoint point = (KnowledgePoint) getGroup(groupPosition);
+            title = point.getName();
+        }
         viewHolder.mTitle.setText(title);
 
         final ImageView label = viewHolder.mGroupLabel;
@@ -101,21 +112,20 @@ public class ChapterExpandListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 if (isExpanded){
-                    label.setImageResource(R.mipmap.add);
                     listView.collapseGroup(groupPosition);
                 }else {
-                    label.setImageResource(R.mipmap.reduce);
                     listView.expandGroup(groupPosition);
                 }
 
             }
         });
 
+        label.setImageResource(isExpanded ? R.mipmap.reduce : R.mipmap.add);
         return convertView;
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, final ViewGroup parent) {
+    public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, final ViewGroup parent) {
         ChildViewHolder viewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_child_view, null);
@@ -125,30 +135,67 @@ public class ChapterExpandListAdapter extends BaseExpandableListAdapter {
             viewHolder = (ChildViewHolder) convertView.getTag();
         }
 
-        if (viewHolder.mChildView.getChildCount() < 1){
-            List<String> content = getChild(groupPosition,childPosition);
-            for (String str : content) {
-                View view = getSingleChapterView(parent.getContext());
-                TextView text = (TextView)view.findViewById(R.id.content);
-                ImageView write = (ImageView)view.findViewById(R.id.write);
-                text.setText(str);
-                write.setOnClickListener(new View.OnClickListener() {
+        viewHolder.mChildView.removeAllViews();
+
+        if (useBookNode) {
+            List<BookNode> bookNodes = (List<BookNode>) getChild(groupPosition,childPosition);
+            for (final BookNode bookNode : bookNodes) {
+                View childView = generateChildView(parent.getContext(), bookNode.getName());
+                childView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mContext.startActivity(new Intent(mContext,ExerciseRespondActivity.class));
+                        if (onBookNodeClickListener != null) {
+                            onBookNodeClickListener.onItemClick((BookNode) getGroup(groupPosition), bookNode);
+                        }
                     }
                 });
-                viewHolder.mChildView.addView(view);
+                viewHolder.mChildView.addView(childView);
+            }
+        } else {
+            List<KnowledgePoint> knowledgePoints = (List<KnowledgePoint>) getChild(groupPosition,childPosition);
+            for (final KnowledgePoint knowledgePoint : knowledgePoints) {
+                View childView = generateChildView(parent.getContext(), knowledgePoint.getName());
+                childView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (onKnowPointClickListener != null) {
+                            onKnowPointClickListener.onItemClick((KnowledgePoint) getGroup(groupPosition), knowledgePoint);
+                        }
+                    }
+                });
+                viewHolder.mChildView.addView(childView);
             }
         }
-
-
         return convertView;
+    }
+
+    private View generateChildView(Context context, String name) {
+        View view = getSingleChapterView(context);
+        TextView text = (TextView)view.findViewById(R.id.content);
+        text.setText(name);
+        return view;
+    }
+
+    @Override
+    public void onGroupExpanded(int groupPosition) {
+        super.onGroupExpanded(groupPosition);
+        if (groupPosition != lastExpandedGroupPosition){
+            listView.collapseGroup(lastExpandedGroupPosition);
+        }
+        lastExpandedGroupPosition = groupPosition;
     }
 
     private View getSingleChapterView(Context context){
         View view = LayoutInflater.from(context).inflate(R.layout.single_chapter_item, null);
         return view;
+    }
+
+    public void setOnBookNodeClickListener(OnBookNodeClickListener onBookNodeClickListener) {
+        this.onBookNodeClickListener = onBookNodeClickListener;
+    }
+
+    public void setOnKnowPointClickListener(OnKnowPointClickListener onKnowPointClickListener) {
+        this.onKnowPointClickListener = onKnowPointClickListener;
     }
 
     @Override

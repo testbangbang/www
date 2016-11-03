@@ -14,6 +14,9 @@ import com.onyx.android.edu.adapter.ChooseMultiAdapter;
 import com.onyx.android.edu.base.BaseActivity;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 
 /**
@@ -63,8 +66,11 @@ public class ChooseStudyingStageActivity extends BaseActivity implements View.On
     }
 
     private void initStudyingStageView(){
-        String[] list = {"小学", "初中", "高中"};
-        studyingStage.setMultiAdapter(new ChooseMultiAdapter(list, 1, 3, R.drawable.oval_radio));
+        List<String> names = new ArrayList<>();
+        names.add("小学");
+        names.add("初中");
+        names.add("初中");
+        studyingStage.setMultiAdapter(new ChooseMultiAdapter(names, 1, 3, R.drawable.oval_radio));
         studyingStage.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
@@ -76,8 +82,14 @@ public class ChooseStudyingStageActivity extends BaseActivity implements View.On
     }
 
     private void initStudyingTermView(){
-        String[] list = {"高一上", "高一下", "高二上", "高二下", "高三上","高三下"};
-        studyingTerm.setMultiAdapter(new ChooseMultiAdapter(list, 2, 4, R.drawable.rectangle_radio));
+        List<String> names = new ArrayList<>();
+        names.add("高一上");
+        names.add("高一下");
+        names.add("高二上");
+        names.add("高二下");
+        names.add("高三上");
+        names.add("高三下");
+        studyingTerm.setMultiAdapter(new ChooseMultiAdapter(names, 2, 4, R.drawable.rectangle_radio));
         studyingTerm.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
