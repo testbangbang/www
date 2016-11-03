@@ -372,8 +372,8 @@ public class ReaderActivity extends ActionBarActivity {
             ReaderDeviceManager.applyWithGCIntervalWithoutRegal(surfaceView);
         }
         if (event != null && !event.isWaitForShapeData()) {
-            updateStatusBar();
             beforeDrawPage();
+            updateStatusBar();
             drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         }
         if (event != null && event.isRenderShapeData()) {
@@ -390,6 +390,7 @@ public class ReaderActivity extends ActionBarActivity {
         if (event.getUniqueId() < getReaderDataHolder().getLastRequestSequence()) {
             return;
         }
+        beforeDrawPage();
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 
