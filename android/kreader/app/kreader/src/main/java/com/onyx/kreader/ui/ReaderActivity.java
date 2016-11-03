@@ -48,6 +48,7 @@ import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
+import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.actions.ActionChain;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
@@ -130,8 +131,8 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onResume() {
-        checkForNewConfiguration();
         super.onResume();
+        afterResume();
     }
 
     @Override
@@ -322,11 +323,28 @@ public class ReaderActivity extends ActionBarActivity {
         getHandlerManager().setEnable(false);
     }
 
-    private void checkForNewConfiguration() {
-        readerPainter.setAnnotationHighlightStyle(SingletonSharedPreference.getAnnotationHighlightStyle(this));
-        setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
+    private void afterResume() {
+        syncReaderPainter();
+        syncSystemStatusBar();
         reconfigStatusBar();
         checkSurfaceViewSize();
+        checkNoteDrawing();
+    }
+
+    private void syncReaderPainter() {
+        readerPainter.setAnnotationHighlightStyle(SingletonSharedPreference.getAnnotationHighlightStyle(this));
+    }
+
+    private void syncSystemStatusBar() {
+        setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
+    }
+
+    private void checkNoteDrawing() {
+        if (!getReaderDataHolder().inNoteWritingProvider()) {
+            return;
+        }
+        final StartNoteRequest request = new StartNoteRequest(getReaderDataHolder().getVisiblePages());
+        getReaderDataHolder().getNoteManager().submit(this, request, null);
     }
 
     private void checkSurfaceViewSize() {
@@ -433,8 +451,7 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
 
-        ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
-        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false, true);
+        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false, true, false);
         actionChain.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
