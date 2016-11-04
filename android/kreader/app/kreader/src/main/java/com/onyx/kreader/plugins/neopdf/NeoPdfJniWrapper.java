@@ -24,7 +24,7 @@ public class NeoPdfJniWrapper {
     public static final String TAG = NeoPdfJniWrapper.class.getSimpleName();
 
     static{
-        System.loadLibrary("onyx_neopdf");
+        System.loadLibrary("neo_pdf");
     }
 
     static public long NO_ERROR = 0;

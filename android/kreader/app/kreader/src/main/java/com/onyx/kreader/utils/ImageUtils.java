@@ -13,7 +13,7 @@ public class ImageUtils {
     public static final float MAX_GAMMA = 200;
 
     static {
-        System.loadLibrary("onyx_cropper");
+        System.loadLibrary("neo_cropper");
     }
 
     static private native double [] crop(Bitmap bitmap, int left, int top, int right, int bottom, double threshold);
