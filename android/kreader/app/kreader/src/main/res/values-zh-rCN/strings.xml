@@ -210,4 +210,10 @@
   <string name="Green">绿</string>
   <string name="annotation_export_format" formatted="false">页码 %d   %s \n%s\n</string>
   <string name="fail_create_export_directory">创建导出目录失败: </string>
+
+  <string name="fast">快 </string>
+  <string name="faster">较快</string>
+  <string name="normal">正常</string>
+  <string name="slower">较慢</string>
+  <string name="slow">慢 </string>
 </resources>
