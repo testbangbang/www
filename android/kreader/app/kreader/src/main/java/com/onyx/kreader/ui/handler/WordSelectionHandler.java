@@ -170,12 +170,8 @@ public class WordSelectionHandler extends BaseHandler{
                     return true;
                 }
 
-                if (!movedAfterLongPress) {
-                    if (moveOutOfRange((int) x, (int) y)) {
-                        movedAfterLongPress = true;
-                    }else {
-                        return true;
-                    }
+                if (filterMoveAfterLongPress(x, y)) {
+                    return true;
                 }
 
                 highlightAlongTouchMoved(readerDataHolder,x, y, cursorSelected);
@@ -186,6 +182,16 @@ public class WordSelectionHandler extends BaseHandler{
                 break;
         }
         return true;
+    }
+
+    private boolean filterMoveAfterLongPress(float x, float y) {
+        if (!movedAfterLongPress) {
+            if (!moveOutOfRange((int) x, (int) y)) {
+                return true;
+            }
+        }
+        movedAfterLongPress = true;
+        return false;
     }
 
     @Override
