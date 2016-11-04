@@ -66,7 +66,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private boolean processOrientation(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
         int target = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        if (options != null && options.getOrientation() > 0) {
+        if (options != null && options.getOrientation() >= 0) {
             target = options.getOrientation();
         }
         int current = DeviceUtils.getScreenOrientation(activity);
