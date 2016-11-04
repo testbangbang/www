@@ -138,6 +138,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
                     Debug.d(RawEventProcessor.class.getSimpleName(), e.toString());
                 } finally {
                     finishCurrentShape();
+                    closeInputDevice();
                 }
             }
         });
@@ -151,7 +152,6 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
             processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
         }
-        closeInputDevice();
     }
 
     private void detectInputDevicePath() {
