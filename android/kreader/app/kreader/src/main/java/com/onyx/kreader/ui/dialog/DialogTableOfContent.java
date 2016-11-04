@@ -413,18 +413,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private void notifyPageDataSetChanged(DirectoryTab tab) {
-        PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
-        if (pageAdapter != null) {
-            pageAdapter.notifyDataSetChanged();
+        PageRecyclerView pageRecyclerView = getPageView(tab);
+        if (pageRecyclerView != null) {
+            pageRecyclerView.notifyDataSetChanged();
         }
-    }
-
-    private int getPageItemCount(DirectoryTab tab) {
-        PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
-        if (pageAdapter != null) {
-            return pageAdapter.getItemCount();
-        }
-        return 0;
     }
 
     private int getTabIndex(DirectoryTab tab) {
@@ -455,6 +447,14 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         int pos = getTabIndex(tab);
         if (viewList.size() > pos) {
             return (PageRecyclerView.PageAdapter) viewList.get(pos).getAdapter();
+        }
+        return null;
+    }
+
+    private PageRecyclerView getPageView(DirectoryTab tab) {
+        int pos = getTabIndex(tab);
+        if (viewList.size() > pos) {
+            return viewList.get(pos);
         }
         return null;
     }
@@ -816,11 +816,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         SingletonSharedPreference.setDialogTableOfContentTab(getContext(), position);
         currentTab = tab;
         viewPager.setCurrentItem(position, false);
-        PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
-        if (pageAdapter != null) {
-            if (tab != DirectoryTab.TOC) {
-                pageAdapter.notifyDataSetChanged();
-            }
+        if (tab != DirectoryTab.TOC) {
+            notifyPageDataSetChanged(tab);
         }
     }
 
