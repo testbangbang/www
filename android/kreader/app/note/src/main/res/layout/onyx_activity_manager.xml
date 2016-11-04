@@ -17,9 +17,15 @@
                 style="@style/global_activities_back_function_layout">
 
                 <ImageView
+                    android:id="@+id/back_icon"
+                    style="@style/global_activities_back_btn_image"
+                    android:contentDescription="" />
+
+                <ImageView
                     android:id="@+id/imageView_main_title"
+                    android:layout_toRightOf="@+id/back_icon"
                     style="@style/global_activities_back_btn_category_image"
-                    android:src="@drawable/ic_business_write_pen_gray_34dp" />
+                    android:src="@mipmap/ic_launcher" />
 
                 <TextView
                     android:id="@+id/textView_main_title"
