@@ -74,25 +74,19 @@
                 android:layout_width="?attr/actionBarSize"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/multi_select_mode"
-                android:layout_alignWithParentIfMissing="true"
+                android:layout_toLeftOf="@+id/button_sort_by"
                 android:background="@drawable/imagebtn_bg"
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/ic_create_new_folder_black_36dp" />
 
-            <com.onyx.android.note.view.CheckableImageView
-                android:id="@+id/multi_select_mode"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
+            <ImageView
+                android:id="@+id/button_sort_by"
+                style="@style/global_activities_function_icon"
+                android:layout_marginRight="15dp"
                 android:layout_alignParentRight="true"
-                android:visibility="gone"
-                android:layout_centerVertical="true"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/onyx_multi_select_btn" />
+                android:src="@drawable/button_filter" />
+
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 
