@@ -6,7 +6,7 @@ package com.onyx.kreader.plugins.comic;
 public class UnrarJniWrapper {
 
     static{
-        System.loadLibrary("unrar_jni");
+        System.loadLibrary("neo_unrar");
     }
 
     private static int sPluginId = -1;

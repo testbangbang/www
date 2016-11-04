@@ -36,11 +36,13 @@ public class WordSelectionHandler extends BaseHandler{
     private static final String TAG = "WordSelectionHandler";
 
     private int selectionMoveDistanceThreshold;
+    private int moveRangeAfterLongPress = 6;
 
     private float movePointOffsetHeight;
     private Point lastMovedPoint = null;
     private int cursorSelected = -1;
     private boolean showSelectionCursor = true;
+    private boolean movedAfterLongPress = false;
     private Point longPressPoint = new Point();
     private SelectWordRequest selectWordRequest;
 
@@ -55,6 +57,7 @@ public class WordSelectionHandler extends BaseHandler{
         lastMovedPoint = new Point((int) x2, (int) y2);
         cursorSelected = getCursorSelected(readerDataHolder, (int) x2, (int) y2);
         if (!hasSelectionWord(readerDataHolder)) {
+            movedAfterLongPress = false;
             showSelectionCursor = false;
             super.onLongPress(readerDataHolder, x1, y1, x2, y2);
             selectWord(readerDataHolder, x1, y1, x2, y2);
@@ -151,23 +154,8 @@ public class WordSelectionHandler extends BaseHandler{
         }
     }
 
-    /**
-     * Check if the current touch point is too close with last processed one
-     * @param x
-     * @param y
-     * @return
-     */
-    private boolean checkIfPointTooClose(int x, int y) {
-        if (lastMovedPoint == null) {
-            PointF startPoint = getParent().getTouchStartPosition();
-            lastMovedPoint = new Point((int)startPoint.x, (int)startPoint.y);
-        }
-
-        if (MathUtils.distance(lastMovedPoint.x, lastMovedPoint.y, x, y) < selectionMoveDistanceThreshold) {
-            return true;
-        }
-        lastMovedPoint.set(x, y);
-        return false;
+    private boolean moveOutOfRange(int x, int y) {
+        return MathUtils.distance(lastMovedPoint.x, lastMovedPoint.y, x, y) > moveRangeAfterLongPress;
     }
 
     @Override
@@ -182,10 +170,13 @@ public class WordSelectionHandler extends BaseHandler{
                     return true;
                 }
 
-                if (lastMovedPoint.equals((int) x, (int) y)){
-                    return true;
+                if (!movedAfterLongPress) {
+                    if (moveOutOfRange((int) x, (int) y)) {
+                        movedAfterLongPress = true;
+                    }else {
+                        return true;
+                    }
                 }
-                lastMovedPoint.set((int) x, (int) y);
 
                 highlightAlongTouchMoved(readerDataHolder,x, y, cursorSelected);
                 break;
