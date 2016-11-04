@@ -5,7 +5,7 @@ UNRAR_PATH := $(LOCAL_PATH)/unrar
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../utils
 
-LOCAL_MODULE    := unrar_jni
+LOCAL_MODULE    := neo_unrar
 
 LOCAL_SRC_FILES := unrar_jni.cpp unrar/dll.cpp unrar/rar.cpp unrar/strlist.cpp unrar/strfn.cpp unrar/pathfn.cpp unrar/smallfn.cpp unrar/global.cpp unrar/file.cpp unrar/filefn.cpp unrar/filcreat.cpp \
     unrar/archive.cpp unrar/arcread.cpp unrar/unicode.cpp unrar/system.cpp unrar/isnt.cpp unrar/crypt.cpp unrar/crc.cpp unrar/rawread.cpp unrar/encname.cpp \

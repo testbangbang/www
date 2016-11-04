@@ -2,7 +2,7 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := onyx_neopdf
+LOCAL_MODULE := neo_pdf
 
 LOCAL_NDK_STL_VARIANT := gnustl_static
 
@@ -32,7 +32,7 @@ include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := onyx_pdfwriter
+LOCAL_MODULE := neo_pdfwriter
 
 LOCAL_STATIC_LIBRARIES := libutils libpodofo
 

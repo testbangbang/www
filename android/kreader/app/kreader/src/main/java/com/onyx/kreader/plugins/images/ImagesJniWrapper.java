@@ -10,7 +10,7 @@ import android.graphics.RectF;
 public class ImagesJniWrapper implements ImagesWrapper {
 
     static{
-        System.loadLibrary("onyx_images");
+        System.loadLibrary("neo_images");
     }
 
     public native boolean nativeClearBitmap(final Bitmap bitmap);

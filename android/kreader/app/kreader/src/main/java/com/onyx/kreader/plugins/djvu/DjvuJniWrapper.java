@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DjvuJniWrapper {
     static {
-        System.loadLibrary("onyx_djvu");
+        System.loadLibrary("neo_djvu");
     }
 
     private static int sPluginId = -1;

@@ -6,7 +6,7 @@ package com.onyx.kreader.utils;
 public class PdfWriterUtils {
 
     static {
-        System.loadLibrary("onyx_pdfwriter");
+        System.loadLibrary("neo_pdfwriter");
     }
 
     public static native boolean openExistingDocument(String path);
