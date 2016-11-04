@@ -26,6 +26,10 @@
     <style name="dialog_transparent_no_title" parent="dialog_no_title">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+    <style name="android_dialog_no_title" parent="android:Theme.NoTitleBar">
+        <item name="android:windowBackground">@drawable/square_bg</item>
+        <item name="android:textColor">@color/background_device_default_dark</item>
+    </style>
     <style name="popup_selection_menu_text_view">
         <item name="android:textColor">@android:color/black</item>
         <item name="android:layout_width">wrap_content</item>

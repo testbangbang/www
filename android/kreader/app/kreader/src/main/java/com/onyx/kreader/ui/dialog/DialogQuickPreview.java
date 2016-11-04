@@ -202,7 +202,7 @@ public class DialogQuickPreview extends Dialog {
     private List<Integer> tocChapterNodeList;
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, Callback callback) {
-        super(readerDataHolder.getContext(), android.R.style.Theme_NoTitleBar);
+        super(readerDataHolder.getContext(), R.style.android_dialog_no_title);
         setContentView(R.layout.dialog_quick_preview);
 
         this.readerDataHolder = readerDataHolder;

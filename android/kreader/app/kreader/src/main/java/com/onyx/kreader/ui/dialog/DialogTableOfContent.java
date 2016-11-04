@@ -238,7 +238,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     public DialogTableOfContent(final ReaderDataHolder readerDataHolder, DirectoryTab tab) {
-        super(readerDataHolder.getContext(), R.style.dialog_no_title);
+        super(readerDataHolder.getContext(), R.style.android_dialog_no_title);
         this.readerDataHolder = readerDataHolder;
         int position = SingletonSharedPreference.getDialogTableOfContentTab(getContext(), 0);
         if (position < DirectoryTab.values().length) {
@@ -278,6 +278,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
         showExportLayout(currentTab);
         setViewListener();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
     }
 
     @Override
