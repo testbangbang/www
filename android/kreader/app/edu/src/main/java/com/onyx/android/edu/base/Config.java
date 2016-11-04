@@ -24,4 +24,7 @@ public class Config {
             , R.drawable.ic_student_syllabus_geography_gray
             , R.drawable.ic_student_syllabus_political_gray};
 
+    public static final int COMMON_COLUMNS = 4;
+
+
 }

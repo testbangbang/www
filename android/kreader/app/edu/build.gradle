@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 
 apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
 apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
@@ -39,14 +38,11 @@ android {
 
 dependencies {
     compile project(':libraries:onyxsdk-ui')
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
-    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
-
     testCompile "junit:junit:$rootProject.junitVersion"
+    compile project(':libraries:libedu')
 }

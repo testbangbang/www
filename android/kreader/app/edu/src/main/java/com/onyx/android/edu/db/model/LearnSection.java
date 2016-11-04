@@ -8,11 +8,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 /**
  * Created by ming on 16/7/7.
  */
-@ModelContainer
-@Table(database = AppDatabase.class)
 public class LearnSection extends BaseDbModel{
-    @Column
     public String Name;
-    @Column
     public String Grade;
 }

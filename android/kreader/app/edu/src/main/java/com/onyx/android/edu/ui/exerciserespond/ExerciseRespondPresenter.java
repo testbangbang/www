@@ -2,9 +2,16 @@ package com.onyx.android.edu.ui.exerciserespond;
 
 import android.support.annotation.NonNull;
 
+import com.onyx.android.edu.EduApp;
 import com.onyx.android.edu.base.BaseQuestionView;
 import com.onyx.android.edu.bean.PaperResult;
 import com.onyx.android.edu.db.model.Chapter;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.libedu.EduCloudManager;
+import com.onyx.libedu.model.ChooseQuestionVariable;
+import com.onyx.libedu.model.Question;
+import com.onyx.libedu.request.cloud.GetAnswerAndAnalyzeRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,29 +24,25 @@ public class ExerciseRespondPresenter implements ExerciseRespondContract.Exercis
 
     private final ExerciseRespondContract.ExerciseRespondView exerciseRespondView;
     private boolean showAnswer = false;
-    private Chapter chapter;
+    private List<Question> questions;
+    private ChooseQuestionVariable chooseQuestionVariable;
 
-    public ExerciseRespondPresenter(@NonNull ExerciseRespondContract.ExerciseRespondView testPaperExerciseRespondView, boolean showAnswer){
+    public ExerciseRespondPresenter(@NonNull ExerciseRespondContract.ExerciseRespondView testPaperExerciseRespondView, boolean showAnswer, List<Question>questions, ChooseQuestionVariable variable){
         this.showAnswer = showAnswer;
+        this.questions = questions;
+        this.chooseQuestionVariable = variable;
         exerciseRespondView = testPaperExerciseRespondView;
         exerciseRespondView.setPresenter(this);
     }
 
     @Override
     public void subscribe() {
-        loadPapers();
+        exerciseRespondView.showQuestions(questions, chooseQuestionVariable, showAnswer);
     }
 
     @Override
     public void unSubscribe() {
 
-    }
-
-    @Override
-    public void loadPapers() {
-//        List<Chapter> chapters = new Select().from(Chapter.class).queryList();
-//        chapter = chapters.get(0);
-        exerciseRespondView.showPaper(null, showAnswer);
     }
 
     @Override
@@ -52,11 +55,4 @@ public class ExerciseRespondPresenter implements ExerciseRespondContract.Exercis
         return paperResult;
     }
 
-    public boolean isShowAnswer() {
-        return showAnswer;
-    }
-
-    public void setShowAnswer(boolean showAnswer) {
-        this.showAnswer = showAnswer;
-    }
 }

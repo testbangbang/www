@@ -2,6 +2,7 @@ package com.onyx.kreader.host.request;
 
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
