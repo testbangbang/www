@@ -9,6 +9,4 @@
         android:title="@string/rename"/>
     <item android:id="@+id/export"
         android:title="@string/export"/>
-    <item android:id="@+id/sort"
-        android:title="@string/sort"/>
 </menu>

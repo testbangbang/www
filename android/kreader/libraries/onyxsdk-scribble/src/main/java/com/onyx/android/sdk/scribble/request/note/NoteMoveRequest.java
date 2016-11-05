@@ -32,8 +32,8 @@ public class NoteMoveRequest extends BaseNoteRequest {
         for (String uniqueId : uniqueIdList) {
             if (checkNameLegality) {
                 NoteModel noteModel = NoteDataProvider.load(getContext(), uniqueId);
-                if (NoteDataProvider.checkNoteNameLegality(noteModel.getTitle(), parentID,
-                        noteModel.getType(), checkThisLevelOnly, distinguishFileType)) {
+                if (NoteDataProvider.checkNoteNameLegality(noteModel.getUniqueId(), noteModel.getTitle(), parentID,
+                        noteModel.getType(), checkThisLevelOnly, distinguishFileType, true)) {
                     NoteDataProvider.moveNote(getContext(), uniqueId, parentID);
                 }
             } else {

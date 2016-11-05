@@ -142,6 +142,16 @@
         <item name="android:src">@drawable/title_back</item>
     </style>
 
+    <style name="global_activities_function_icon">
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
     <style name="global_activities_back_btn_category_tittle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>

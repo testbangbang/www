@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +24,7 @@ import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.dialog.DialogSortBy;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.NotePreference;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.CheckableImageView;
@@ -45,8 +45,9 @@ import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
 
 
 public class ManagerActivity extends BaseManagerActivity {
+    static final String TAG = ManagerActivity.class.getCanonicalName();
     private CheckableImageView chooseModeButton;
-    private ImageView addFolderButton, moveButton, deleteButton;
+    private ImageView addFolderButton, moveButton, deleteButton, sortByButton;
     private LinearLayout controlPanel;
     private @SortBy.SortByDef int currentSortBy = SortBy.CREATED_AT;
     private @AscDescOrder.AscDescOrderDef int ascOrder= AscDescOrder.DESC;
@@ -83,7 +84,24 @@ public class ManagerActivity extends BaseManagerActivity {
                 }
             }
         });
-        chooseModeButton = (CheckableImageView) findViewById(R.id.multi_select_mode);
+        //disable choose mode function.if confirm remove,clean these code.
+//        chooseModeButton = (CheckableImageView) findViewById(R.id.multi_select_mode);
+//        chooseModeButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                chooseModeButton.setChecked(!chooseModeButton.isChecked());
+//                switch (currentSelectMode) {
+//                    case SelectionMode.NORMAL_MODE:
+//                        switchMode(SelectionMode.MULTISELECT_MODE);
+//                        break;
+//                    case SelectionMode.MULTISELECT_MODE:
+//                        switchMode(SelectionMode.NORMAL_MODE);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        });
         addFolderButton = (ImageView) findViewById(R.id.add_folder_btn);
         toolBarIcon = (ImageView) findViewById(R.id.imageView_main_title);
         toolBarTitle = (TextView) findViewById(R.id.textView_main_title);
@@ -93,22 +111,7 @@ public class ManagerActivity extends BaseManagerActivity {
         ImageView prevPageBtn = (ImageView) findViewById(R.id.button_previous_page);
         progressBtn = (Button) findViewById(R.id.button_page_progress);
         controlPanel = (LinearLayout) findViewById(R.id.control_panel);
-        chooseModeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseModeButton.setChecked(!chooseModeButton.isChecked());
-                switch (currentSelectMode) {
-                    case SelectionMode.NORMAL_MODE:
-                        switchMode(SelectionMode.MULTISELECT_MODE);
-                        break;
-                    case SelectionMode.MULTISELECT_MODE:
-                        switchMode(SelectionMode.NORMAL_MODE);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
+        sortByButton = (ImageView)findViewById(R.id.button_sort_by);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,6 +173,12 @@ public class ManagerActivity extends BaseManagerActivity {
             @Override
             public void onClick(View v) {
                 contentView.nextPage();
+            }
+        });
+        sortByButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSortBy();
             }
         });
     }
@@ -249,7 +258,7 @@ public class ManagerActivity extends BaseManagerActivity {
             case SelectionMode.NORMAL_MODE:
                 if (controlPanel != null)
                     controlPanel.setVisibility(View.GONE);
-                chooseModeButton.setChecked(false);
+//                chooseModeButton.setChecked(false);
                 addFolderButton.setEnabled(true);
                 break;
         }
@@ -275,9 +284,6 @@ public class ManagerActivity extends BaseManagerActivity {
                 break;
             case R.id.rename:
                 renameNoteOrLibrary(chosenItemsList.get(0));
-                break;
-            case R.id.sort:
-                onSortBy();
                 break;
             default:
                 break;
@@ -348,7 +354,7 @@ public class ManagerActivity extends BaseManagerActivity {
     @Override
     public void updateUIWithNewNoteList(List<NoteModel> curLibSubContList) {
         contentView.setSubLayoutParameter(scribbleItemLayoutID, getItemViewDataMap(currentSelectMode));
-        adapter = Utils.adapterFromNoteModelList(curLibSubContList, R.drawable.ic_student_note_folder_gray,
+        adapter = Utils.adapterFromNoteModelList(curLibSubContList, NoteAppConfig.sharedInstance(this).getFolderIconRes(),
                 R.drawable.ic_student_note_pic_gray);
         adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));
         contentView.setupContent(getRows(), getColumns(), adapter, 0, true);
@@ -359,22 +365,12 @@ public class ManagerActivity extends BaseManagerActivity {
 
     @Override
     protected void updateActivityTitleAndIcon() {
-        int iconRes = 0;
         String titleResString;
-        ViewGroup.LayoutParams params = toolBarIcon.getLayoutParams();
         if (currentLibraryId != null) {
-            iconRes = R.drawable.title_back;
-            titleResString = currentLibraryName;
-            params.height = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_image_height);
-            params.width = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_image_width);
+            titleResString = currentLibraryPath;
         } else {
-            iconRes = R.drawable.ic_business_write_pen_gray_34dp;
-            params.height = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_category_image_height);
-            params.width = getResources().getDimensionPixelSize(R.dimen.global_activities_back_btn_category_image_width);
             titleResString = getString(R.string.app_name);
         }
-        toolBarIcon.setLayoutParams(params);
-        toolBarIcon.setImageResource(iconRes);
         toolBarTitle.setText(titleResString);
     }
 

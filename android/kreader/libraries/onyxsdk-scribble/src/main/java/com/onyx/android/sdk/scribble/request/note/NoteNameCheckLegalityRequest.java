@@ -35,8 +35,8 @@ public class NoteNameCheckLegalityRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
-        isLegal = NoteDataProvider.checkNoteNameLegality(targetName, parentID,
-                currentType, checkThisLevelOnly, distinguishFileType);
+        isLegal = NoteDataProvider.checkNoteNameLegality(null, targetName, parentID,
+                currentType, checkThisLevelOnly, distinguishFileType, false);
     }
 
 }

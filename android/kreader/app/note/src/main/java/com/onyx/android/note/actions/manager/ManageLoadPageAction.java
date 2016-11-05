@@ -4,6 +4,7 @@ import com.onyx.android.note.R;
 import com.onyx.android.note.actions.BaseNoteAction;
 import com.onyx.android.note.activity.BaseManagerActivity;
 import com.onyx.android.note.utils.Constant;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -37,7 +38,7 @@ public class ManageLoadPageAction<T extends BaseManagerActivity> extends BaseNot
                 updateTagList.add(GAdapterUtil.TAG_THUMBNAIL);
                 GAdapterUtil.updateAdapterContent(activity.getContentView().getCurrentAdapter(),
                         Utils.adapterFromNoteModelList(loadThumbnailByUIDRequest.getNoteList(),
-                                R.drawable.ic_student_note_folder_gray,
+                                NoteAppConfig.sharedInstance(activity).getFolderIconRes(),
                                 R.drawable.ic_student_note_pic_gray),
                         GAdapterUtil.TAG_UNIQUE_ID, updateTagList, activity.getLookupTable(), false);
                 activity.getContentView().updateCurrentPage(true, false);

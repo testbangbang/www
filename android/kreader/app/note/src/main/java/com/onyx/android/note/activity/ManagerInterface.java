@@ -17,6 +17,8 @@ public interface ManagerInterface extends BaseInterface {
 
     void updateCurLibName(String curLibName);
 
+    void updateCurLibPath(String curLibPath);
+
     void updateUIWithNewNoteList(List<NoteModel> curLibSubContList);
 
     ContentView getContentView();
