@@ -189,6 +189,7 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:textSize="@dimen/dialog_common_text_size"
             android:background="@drawable/radio_button_bg"
             android:id="@+id/buttonCancel"
             android:layout_margin="3dp"
@@ -198,6 +199,7 @@
             android:layout_weight="1" />
 
         <Button
+            android:textSize="@dimen/dialog_common_text_size"
             android:background="@drawable/radio_button_bg"
             android:id="@+id/buttonConfirm"
             android:layout_margin="3dp"
