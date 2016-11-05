@@ -193,6 +193,7 @@
   <string name="sure_exit">是否确定退出</string>
   <string name="pinch_zooming_can_not_be_used">当前页面模式不支持缩放</string>
   <string name="dictionary_error">字典未安装或有异常</string>
+  <string name="dictionary_data_no_find">找不到字典数据</string>
   <string name="no_data">没有内容</string>
   <string name="min_page_toast">已是首页</string>
   <string name="max_page_toast">已是尾页</string>
