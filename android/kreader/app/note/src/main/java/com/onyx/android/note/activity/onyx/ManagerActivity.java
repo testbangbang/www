@@ -1,12 +1,12 @@
 package com.onyx.android.note.activity.onyx;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +16,7 @@ import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
 import com.onyx.android.note.actions.manager.LoadNoteListAction;
+import com.onyx.android.note.actions.manager.ManageLoadPageAction;
 import com.onyx.android.note.actions.manager.NoteMoveAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.android.note.activity.BaseManagerActivity;
@@ -47,7 +48,9 @@ import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
 public class ManagerActivity extends BaseManagerActivity {
     static final String TAG = ManagerActivity.class.getCanonicalName();
     private CheckableImageView chooseModeButton;
-    private ImageView addFolderButton, moveButton, deleteButton, sortByButton;
+    private ImageView addFolderButton;
+    private ImageView moveButton;
+    private ImageView deleteButton;
     private LinearLayout controlPanel;
     private @SortBy.SortByDef int currentSortBy = SortBy.CREATED_AT;
     private @AscDescOrder.AscDescOrderDef int ascOrder= AscDescOrder.DESC;
@@ -107,11 +110,8 @@ public class ManagerActivity extends BaseManagerActivity {
         toolBarTitle = (TextView) findViewById(R.id.textView_main_title);
         moveButton = (ImageView) findViewById(R.id.move_btn);
         deleteButton = (ImageView) findViewById(R.id.delete_btn);
-        ImageView nextPageBtn = (ImageView) findViewById(R.id.button_next_page);
-        ImageView prevPageBtn = (ImageView) findViewById(R.id.button_previous_page);
-        progressBtn = (Button) findViewById(R.id.button_page_progress);
         controlPanel = (LinearLayout) findViewById(R.id.control_panel);
-        sortByButton = (ImageView)findViewById(R.id.button_sort_by);
+        ImageView sortByButton = (ImageView) findViewById(R.id.button_sort_by);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,21 +160,10 @@ public class ManagerActivity extends BaseManagerActivity {
         contentView = (ContentView) findViewById(R.id.note_content_view);
         contentView.setBlankAreaAnswerLongClick(false);
         contentView.setupGridLayout(getRows(), getColumns());
-        contentView.setShowPageInfoArea(false);
+        contentView.setShowPageInfoArea(true);
+        contentView.setInfoTittle(R.string.total);
         contentView.setSyncLoad(false);
         contentView.setCallback(getContentViewCallBack());
-        prevPageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                contentView.prevPage();
-            }
-        });
-        nextPageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                contentView.nextPage();
-            }
-        });
         sortByButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -285,10 +274,16 @@ public class ManagerActivity extends BaseManagerActivity {
             case R.id.rename:
                 renameNoteOrLibrary(chosenItemsList.get(0));
                 break;
+            case R.id.setting:
+                onSettings();
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onSettings() {
+        startActivity(new Intent(ManagerActivity.this,SettingActivity.class));
     }
 
     private void onSortBy() {
@@ -322,6 +317,7 @@ public class ManagerActivity extends BaseManagerActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.export).setVisible(NoteAppConfig.sharedInstance(this).isEnableExport());
         if (chosenItemsList.size() <= 0 ||
                 (Utils.getItemType((chosenItemsList.get(0))) == DataItemType.TYPE_CREATE)) {
             menu.findItem(R.id.delete).setEnabled(false);
@@ -359,8 +355,25 @@ public class ManagerActivity extends BaseManagerActivity {
         adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));
         contentView.setupContent(getRows(), getColumns(), adapter, 0, true);
         contentView.updateCurrentPage();
+        contentView.setCustomInfo(getItemCountString(curLibSubContList),true);
         updateButtonsStatusByMode();
         updateActivityTitleAndIcon();
+    }
+
+    private String getItemCountString(List<NoteModel>curLibSunContList) {
+        int directoryItemCount = 0;
+        int fileItemCount = 0;
+
+        for (NoteModel noteModel : curLibSunContList) {
+            if (noteModel.isDocument()) {
+                fileItemCount++;
+            } else if (noteModel.isLibrary()){
+                directoryItemCount++;
+            }
+        }
+
+        return directoryItemCount
+                + "/" + fileItemCount;
     }
 
     @Override
@@ -419,4 +432,54 @@ public class ManagerActivity extends BaseManagerActivity {
         });
         dialogMoveFolder.show(getFragmentManager());
     }
+
+    @Override
+    protected ContentView.ContentViewCallback getContentViewCallBack() {
+        return new ContentView.ContentViewCallback() {
+            @Override
+            public void afterPageChanged(ContentView contentView, int newPage, int oldPage) {
+            }
+
+            @Override
+            public void beforePageChanging(ContentView contentView, int newPage, int oldPage) {
+                ManageLoadPageAction<ManagerActivity> loadPageAction = new ManageLoadPageAction<>(getPreloadIDList(newPage, false));
+                loadPageAction.execute(ManagerActivity.this);
+            }
+
+            @Override
+            public void beforeSetupData(ContentItemView view, GObject object) {
+                beforeSetupItemData(view, object);
+            }
+
+            @Override
+            public void onItemClick(ContentItemView view) {
+                switch (currentSelectMode) {
+                    case SelectionMode.NORMAL_MODE:
+                        onNormalModeItemClick(view);
+                        break;
+                    case SelectionMode.MULTISELECT_MODE:
+                        GObject temp = view.getData();
+                        if (!(Utils.getItemType(temp) == DataItemType.TYPE_CREATE)) {
+                            int dataIndex = adapter.getGObjectIndex(temp);
+                            if (view.getData().getBoolean(GAdapterUtil.TAG_SELECTABLE, false)) {
+                                temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, false);
+                                chosenItemsList.remove(temp);
+                            } else {
+                                temp.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
+                                chosenItemsList.add(temp);
+                            }
+                            adapter.setObject(dataIndex, temp);
+                            contentView.updateCurrentPage();
+                            contentView.setCustomInfo(Integer.toString(chosenItemsList.size()), true);
+                        }
+                        break;
+                }
+                updateButtonsStatusByMode();
+            }
+
+            @Override
+            public boolean onItemLongClick(ContentItemView view) {
+                return onItemLongClicked(view);
+            }
+        };    }
 }

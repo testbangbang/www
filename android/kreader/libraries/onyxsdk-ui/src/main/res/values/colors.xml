@@ -7,4 +7,5 @@
     <color name="divider_grey">#ff4b4b4b</color>
     <color name="normal_black">@android:color/black</color>
     <color name="transparent">#00000000</color>
+    <color name="preference_fallback_accent_color">@color/normal_black</color>
 </resources>

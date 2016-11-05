@@ -221,6 +221,15 @@ public class BaseNoteRequest extends BaseRequest {
             case NoteBackgroundType.GRID:
                 bgResID = R.drawable.scribble_back_ground_grid;
                 break;
+            case NoteBackgroundType.MUSIC:
+                bgResID = R.drawable.scribble_back_ground_music;
+                break;
+            case NoteBackgroundType.ENGLISH:
+                bgResID = R.drawable.scribble_back_ground_english;
+                break;
+            case NoteBackgroundType.MATS:
+                bgResID = R.drawable.scribble_back_ground_mats;
+                break;
         }
         drawBackgroundResource(canvas, paint, bgResID);
 

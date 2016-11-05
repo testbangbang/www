@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_about"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.onyx.android.note.activity.onyx.SettingActivity">
+
+    <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true">
+
+            <RelativeLayout
+                android:id="@id/back_function_layout"
+                style="@style/global_activities_back_function_layout">
+
+                <ImageView
+                    android:id="@+id/back_icon"
+                    style="@style/global_activities_back_btn_image"
+                    android:contentDescription="" />
+
+                <ImageView
+                    android:id="@+id/imageView_main_title"
+                    style="@style/global_activities_back_btn_category_image"
+                    android:layout_toRightOf="@+id/back_icon"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/textView_main_title"
+                    style="@style/global_activities_back_btn_category_tittle"
+                    android:layout_toRightOf="@+id/imageView_main_title"
+                    android:ellipsize="middle"
+                    android:gravity="left|center_vertical"
+                    android:maxEms="10"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="@string/action_settings" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/preference_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tool_bar"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+</RelativeLayout>
