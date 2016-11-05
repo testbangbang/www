@@ -107,6 +107,7 @@
             android:layout_marginRight="@dimen/contentView_button_X_axis_margin"
             android:background="@drawable/imagebtn_bg"
             android:gravity="center"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
             android:minWidth="@dimen/contentView_button_progress_minWidth"
             android:textColor="@android:color/black" />
 
@@ -116,6 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
             android:layout_marginLeft="@dimen/contentView_button_X_axis_margin"
             android:layout_toLeftOf="@+id/button_progress"
             android:gravity="left|center_vertical"

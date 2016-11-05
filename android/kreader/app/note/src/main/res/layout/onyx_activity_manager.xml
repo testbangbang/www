@@ -94,60 +94,6 @@
         android:id="@+id/note_content_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/page_indicator_area"
         android:layout_below="@id/tool_bar" />
-
-    <RelativeLayout
-        android:id="@+id/page_indicator_area"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/page_indicator_area_bottom_margin">
-
-        <LinearLayout
-            android:id="@+id/page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/button_previous_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/button_minHeight"
-                android:minWidth="@dimen/button_minHeight"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="center"
-                android:padding="2dp"
-                android:src="@drawable/ic_note_prev_page_gray_32dp" />
-
-            <Button
-                android:id="@+id/button_page_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="@string/paged_init_text"
-                android:textSize="22sp" />
-
-            <ImageView
-                android:id="@+id/button_next_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
-                android:minHeight="@dimen/button_minHeight"
-                android:minWidth="@dimen/button_minHeight"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="center"
-                android:padding="2dp"
-                android:src="@drawable/ic_note_next_page_gray_32dp" />
-        </LinearLayout>
-    </RelativeLayout>
 
 </RelativeLayout>

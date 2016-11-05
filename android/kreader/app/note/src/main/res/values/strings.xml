@@ -40,4 +40,5 @@
     <string name="span_scribble">Span Scribble</string>
     <string name="go_to_page">Go To Page</string>
     <string name="current_page">Current Page</string>
+    <string name="total">Total:</string>
 </resources>
