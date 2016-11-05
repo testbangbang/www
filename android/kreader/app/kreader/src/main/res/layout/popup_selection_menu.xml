@@ -155,6 +155,7 @@
                 android:src="@drawable/ic_dialog_reader_choose_highlight" />
 
             <TextView
+                android:id="@+id/highLightText"
                 style="@style/popup_selection_menu_text_view"
                 android:text="@string/Highlight"/>
         </LinearLayout>

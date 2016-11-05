@@ -9,14 +9,22 @@ import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by ming on 16/10/14.
  */
 
 public class DictionaryQueryRequest extends BaseReaderRequest{
+    public static final int DICT_STATE_PARAM_ERROR = -1;
+    public static final int DICT_STATE_QUERY_SUCCESSFUL = 0;
+    public static final int DICT_STATE_QUERY_FAILED = 1;
+    public static final int DICT_STATE_LOADING = 2;
+
     private static final String TAG = "DictionaryQueryRequest";
     private ReaderDataHolder readerDataHolder;
-    private String expString;
+    private String expString = "";
 
     private String url = "content://com.onyx.dict.DictionaryProvider";
     private String query = null;
@@ -43,13 +51,22 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
                 expString = readerDataHolder.getContext().getString(R.string.no_data);
                 return;
             }
-            int count = cursor.getCount();
-            int index = 0;
-            while (cursor.moveToNext()) {
-                expString += cursor.getString(3);
-                if (index >= 0 && index < count - 1)
-                    expString += "<br><br><br><br>";
-                index++;
+            if (cursor.moveToFirst()) {
+                int state = cursor.getInt(1);
+                switch (state){
+                    case DICT_STATE_PARAM_ERROR:
+                        expString = readerDataHolder.getContext().getString(R.string.dictionary_error);
+                        break;
+                    case DICT_STATE_QUERY_SUCCESSFUL:
+                        expString += cursor.getString(3);
+                        break;
+                    case DICT_STATE_QUERY_FAILED:
+                        expString = readerDataHolder.getContext().getString(R.string.no_data);
+                        break;
+                    case DICT_STATE_LOADING:
+                        expString = readerDataHolder.getContext().getString(R.string.dictionary_data_no_find);
+                        break;
+                }
             }
         } catch (Exception e) {
             expString = readerDataHolder.getContext().getString(R.string.dictionary_error);

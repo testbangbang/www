@@ -60,6 +60,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private View mDictPrevPage;
     private View webViewDividerLine;
     private ImageView highlightView;
+    private TextView highLightText;
     /**
      * eliminate compiler warning
      *
@@ -86,6 +87,7 @@ public class PopupSelectionMenu extends LinearLayout {
         layout.addView(this, p);
 
         highlightView = (ImageView) findViewById(R.id.imageview_highlight);
+        highLightText = (TextView) findViewById(R.id.highLightText);
         mDictTitle = (TextView) findViewById(R.id.dict_title);
         webViewDividerLine = findViewById(R.id.webView_divider_line);
         mDictNextPage = findViewById(R.id.dict_next_page);
@@ -99,8 +101,10 @@ public class PopupSelectionMenu extends LinearLayout {
             }
         });
 
-        highlightView.setImageResource(SingletonSharedPreference.getAnnotationHighlightStyle(mActivity).equals(Highlight) ?
+        boolean isHighLight = SingletonSharedPreference.getAnnotationHighlightStyle(mActivity).equals(Highlight);
+        highlightView.setImageResource(isHighLight ?
                 R.drawable.ic_dialog_reader_choose_highlight : R.drawable.ic_dialog_reader_choose_underline);
+        highLightText.setText(isHighLight ? mActivity.getString(R.string.Highlight) : mActivity.getString(R.string.settings_highlight_style_underline));
 
         mDictPrevPage = findViewById(R.id.dict_prev_page);
         mDictPrevPage.setOnClickListener(new OnClickListener() {
