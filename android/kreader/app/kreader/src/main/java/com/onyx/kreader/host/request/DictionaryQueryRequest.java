@@ -2,6 +2,7 @@ package com.onyx.kreader.host.request;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
@@ -13,25 +14,26 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 
 public class DictionaryQueryRequest extends BaseReaderRequest{
-
+    private static final String TAG = "DictionaryQueryRequest";
     private ReaderDataHolder readerDataHolder;
     private String expString;
 
-    private Uri uri;
-    private String selection = null;
+    private String url = "content://com.onyx.dict.DictionaryProvider";
+    private String query = null;
 
-    public DictionaryQueryRequest(ReaderDataHolder readerDataHolder, Uri uri, String selection) {
+    public DictionaryQueryRequest(ReaderDataHolder readerDataHolder, String query) {
         this.readerDataHolder = readerDataHolder;
-        this.uri = uri;
-        this.selection = selection;
+        this.query = query;
     }
 
     @Override
     public void execute(Reader reader) throws Exception {
         Cursor cursor = null;
         try {
+            Uri uri = Uri.parse(url);
+            String []selectionArgs = new String[]{query};
             cursor = readerDataHolder.getContext().getContentResolver().query(
-                    uri, null, selection, null,
+                    uri, null, null, selectionArgs,
                     null);
             if (cursor == null) {
                 expString = readerDataHolder.getContext().getString(R.string.dictionary_error);

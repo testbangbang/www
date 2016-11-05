@@ -15,18 +15,15 @@ public class DictionaryQueryAction extends BaseAction {
 
     private String token;
     private String expString = "";
-    private String url;
 
-    public DictionaryQueryAction(String token, String url) {
+    public DictionaryQueryAction(String token) {
         this.token = token;
-        this.url = url;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final DictionaryQueryRequest resolverQueryRequest = new DictionaryQueryRequest(readerDataHolder,
-                Uri.parse(url),
-                "token=\'" + token + "\'");
+                token);
         readerDataHolder.submitNonRenderRequest(resolverQueryRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
