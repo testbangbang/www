@@ -296,6 +296,11 @@ public class ReaderTtsService {
             Debug.d("play wave file: " + ttsState);
             mediaPlayer.setDataSource(getTempWaveFile().getAbsolutePath());
             mediaPlayer.prepare();
+            if (mediaPlayer.getDuration() < 100) {
+                // if duration is too short (LIKE 64ms), we think tts failed
+                Debug.e(getClass(), "tts speech duration too short: " + mediaPlayer.getDuration());
+                return false;
+            }
             return true;
         } catch (Exception e) {
             Log.w(TAG, e);
