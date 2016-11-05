@@ -158,4 +158,9 @@ public class NoteAppConfig {
             return new Intent(context, ScribbleActivity.class);
         }
     }
+
+    //TODO:key to config support Export or not,now just disable for no function.
+    public boolean isEnableExport() {
+        return false;
+    }
 }

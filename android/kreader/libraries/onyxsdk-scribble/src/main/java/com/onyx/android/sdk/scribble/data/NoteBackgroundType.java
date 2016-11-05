@@ -14,7 +14,7 @@ public class NoteBackgroundType {
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({EMPTY, GRID, LINE})
+    @IntDef({EMPTY, GRID, LINE, MATS, MUSIC, ENGLISH})
     // Create an interface for validating int types
     public @interface NoteBackgroundDef {
     }
@@ -22,6 +22,9 @@ public class NoteBackgroundType {
     public static final int EMPTY = 0;
     public static final int GRID = 1;
     public static final int LINE = 2;
+    public static final int MATS = 3;
+    public static final int MUSIC = 4;
+    public static final int ENGLISH = 5;
 
     public
     @NoteBackgroundDef

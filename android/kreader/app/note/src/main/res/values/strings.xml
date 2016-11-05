@@ -41,4 +41,7 @@
     <string name="go_to_page">Go To Page</string>
     <string name="current_page">Current Page</string>
     <string name="total">Total:</string>
+    <string name="about">About</string>
+    <string name="setting_version_key" translatable="false">setting_version_key</string>
+    <string name="versionName">Version Code</string>
 </resources>

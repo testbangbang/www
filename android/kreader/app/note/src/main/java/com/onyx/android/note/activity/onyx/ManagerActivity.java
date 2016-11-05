@@ -1,5 +1,6 @@
 package com.onyx.android.note.activity.onyx;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
@@ -47,7 +48,9 @@ import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
 public class ManagerActivity extends BaseManagerActivity {
     static final String TAG = ManagerActivity.class.getCanonicalName();
     private CheckableImageView chooseModeButton;
-    private ImageView addFolderButton, moveButton, deleteButton, sortByButton;
+    private ImageView addFolderButton;
+    private ImageView moveButton;
+    private ImageView deleteButton;
     private LinearLayout controlPanel;
     private @SortBy.SortByDef int currentSortBy = SortBy.CREATED_AT;
     private @AscDescOrder.AscDescOrderDef int ascOrder= AscDescOrder.DESC;
@@ -108,7 +111,7 @@ public class ManagerActivity extends BaseManagerActivity {
         moveButton = (ImageView) findViewById(R.id.move_btn);
         deleteButton = (ImageView) findViewById(R.id.delete_btn);
         controlPanel = (LinearLayout) findViewById(R.id.control_panel);
-        sortByButton = (ImageView)findViewById(R.id.button_sort_by);
+        ImageView sortByButton = (ImageView) findViewById(R.id.button_sort_by);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,10 +274,16 @@ public class ManagerActivity extends BaseManagerActivity {
             case R.id.rename:
                 renameNoteOrLibrary(chosenItemsList.get(0));
                 break;
+            case R.id.setting:
+                onSettings();
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onSettings() {
+        startActivity(new Intent(ManagerActivity.this,SettingActivity.class));
     }
 
     private void onSortBy() {
@@ -308,6 +317,7 @@ public class ManagerActivity extends BaseManagerActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.export).setVisible(NoteAppConfig.sharedInstance(this).isEnableExport());
         if (chosenItemsList.size() <= 0 ||
                 (Utils.getItemType((chosenItemsList.get(0))) == DataItemType.TYPE_CREATE)) {
             menu.findItem(R.id.delete).setEnabled(false);
@@ -357,7 +367,7 @@ public class ManagerActivity extends BaseManagerActivity {
         for (NoteModel noteModel : curLibSunContList) {
             if (noteModel.isDocument()) {
                 fileItemCount++;
-            } else {
+            } else if (noteModel.isLibrary()){
                 directoryItemCount++;
             }
         }
