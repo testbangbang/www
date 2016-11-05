@@ -145,10 +145,10 @@ public class ShowTextSelectionMenuAction{
     }
 
     private static void lookupInDictionary(final ReaderActivity activity, final String text) {
-        Intent intent = new Intent();
+        OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
+        Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
         intent.setAction(Intent.ACTION_VIEW);
-        intent.setComponent(new ComponentName("com.onyx.dict", "com.onyx.dict.activity.DictMainActivity"));
-        intent.putExtra(Intent.ACTION_SEARCH, text);
+        intent.putExtra(info.action, text);
         try {
             activity.startActivity(intent);
         } catch (ActivityNotFoundException e ) {
