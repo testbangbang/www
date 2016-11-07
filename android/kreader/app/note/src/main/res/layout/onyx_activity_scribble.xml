@@ -106,24 +106,12 @@
 
             <ImageView
                 android:id="@+id/button_delete_page"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:scaleType="center"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="2dp"
+                style="@style/global_activities_function_icon"
                 android:src="@drawable/ic_delete" />
 
             <ImageView
                 android:id="@+id/button_add_page"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:scaleType="center"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="2dp"
+                style="@style/global_activities_function_icon"
                 android:src="@drawable/ic_add" />
 
         </LinearLayout>
@@ -139,13 +127,7 @@
 
             <ImageView
                 android:id="@+id/button_previous_page"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:scaleType="center"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="2dp"
+                style="@style/global_activities_function_icon"
                 android:src="@drawable/ic_note_prev_page_black_32dp" />
 
             <Button
@@ -156,17 +138,11 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="@string/paged_init_text"
-                android:textSize="22sp" />
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large"/>
 
             <ImageView
                 android:id="@+id/button_next_page"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:scaleType="center"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="2dp"
+                style="@style/global_activities_function_icon"
                 android:src="@drawable/ic_note_next_page_black_32dp" />
         </LinearLayout>
     </RelativeLayout>
