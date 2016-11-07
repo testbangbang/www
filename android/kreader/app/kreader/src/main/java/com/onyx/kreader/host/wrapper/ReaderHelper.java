@@ -197,11 +197,7 @@ public class ReaderHelper {
     }
 
     public ReaderLayoutManager getReaderLayoutManager() {
-        return getReaderLayoutManager(false);
-    }
-
-    public ReaderLayoutManager getReaderLayoutManager(boolean createNew) {
-        if (readerLayoutManager == null || createNew) {
+        if (readerLayoutManager == null) {
             readerLayoutManager = new ReaderLayoutManager(this,
                     getDocument(),
                     getNavigator(),
@@ -244,7 +240,7 @@ public class ReaderHelper {
 
     private void initLayoutManager() {
         updateView();
-        getReaderLayoutManager(true).init();
+        getReaderLayoutManager().init();
     }
 
     private void initWordAnalyzerInBackground() {
