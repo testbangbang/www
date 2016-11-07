@@ -15,6 +15,12 @@ import java.util.UUID;
  */
 public class ShapeUtils {
 
+    public static final int maxIterations = 10;
+    public static final float[] innerPolygonCoef = new float[maxIterations + 1];
+    public static final float[] outerPolygonCoef = new float[maxIterations + 1];
+    private static boolean iterationInited = false;
+
+
     public static TouchPoint normalize(float scale, float pageX, float pageY, final MotionEvent touchPoint) {
         return new TouchPoint(
                 ((touchPoint.getX() - pageX) / scale),
@@ -34,7 +40,7 @@ public class ShapeUtils {
                 eventTime);
     }
 
-    public static TouchPoint normalize(double scale, int pageX, int pageY, final TouchPoint screenPoint) {
+    public static TouchPoint normalize(float scale, int pageX, int pageY, final TouchPoint screenPoint) {
         return new TouchPoint((float) ((screenPoint.getX() - pageX) / scale),
                 (float) ((screenPoint.getY() - pageY) / scale),
                 screenPoint.getPressure(), screenPoint.getSize(), screenPoint.getTimestamp());
@@ -148,4 +154,92 @@ public class ShapeUtils {
         float bb4ac = b * b - 4 * a * c;
         return bb4ac >= 0;
     }
+
+    private static void initIteration() {
+        if (iterationInited) {
+            return;
+        }
+        iterationInited = true;
+        for (int t = 0; t <= maxIterations; t++) {
+            int numNodes = 4 << t;
+            innerPolygonCoef[t] = 0.5f/ (float)(Math.cos(4 * (float)Math.acos(0.0) / (float)numNodes));
+            outerPolygonCoef[t] = 0.5f/ (float)(Math.cos(2 * Math.acos(0.0) / (float) numNodes) * Math.cos(2 * Math.acos(0.0) / (float)numNodes));
+        }
+    }
+
+    // http://yehar.com/blog/?p=2926
+    // Test for collision between an ellipse of horizontal radius w and vertical radius h at (x0, y0) and
+    // a circle of radius r at (x1, y1)
+    public static boolean collide(float x0, float y0, float w, float h, float x1, float y1, float r)  {
+        float x = Math.abs(x1 - x0);
+        float y = Math.abs(y1 - y0);
+
+        if (x*x + (h - y)*(h - y) <= r*r || (w - x)*(w - x) + y*y <= r*r || x*h + y*w <= w*h
+                || ((x*h + y*w - w*h)*(x*h + y*w - w*h) <= r*r*(w*w + h*h) && x*w - y*h >= -h*h && x*w - y*h <= w*w)) {
+            return true;
+        }
+        if ((x-w)*(x-w) + (y-h)*(y-h) <= r*r || (x <= w && y - r <= h) || (y <= h && x - r <= w)) {
+            return iterate(x, y, w, 0, 0, h, r*r);
+        }
+        return false;
+    }
+
+    public static boolean iterate(double x, double y, double c0x, double c0y, double c2x, double c2y, double rr) {
+        initIteration();
+        for (int t = 1; t <= maxIterations; t++) {
+            double c1x = (c0x + c2x)*innerPolygonCoef[t];
+            double c1y = (c0y + c2y)*innerPolygonCoef[t];
+            double tx = x - c1x;
+            double ty = y - c1y;
+            if (tx*tx + ty*ty <= rr) {
+                return true;
+            }
+            double t2x = c2x - c1x;
+            double t2y = c2y - c1y;
+            if (tx*t2x + ty*t2y >= 0 && tx*t2x + ty*t2y <= t2x*t2x + t2y*t2y &&
+                    (ty*t2x - tx*t2y >= 0 || rr*(t2x*t2x + t2y*t2y) >= (ty*t2x - tx*t2y)*(ty*t2x - tx*t2y))) {
+                return true;
+            }
+            double t0x = c0x - c1x;
+            double t0y = c0y - c1y;
+            if (tx*t0x + ty*t0y >= 0 && tx*t0x + ty*t0y <= t0x*t0x + t0y*t0y &&
+                    (ty*t0x - tx*t0y <= 0 || rr*(t0x*t0x + t0y*t0y) >= (ty*t0x - tx*t0y)*(ty*t0x - tx*t0y))) {
+                return true;
+            }
+            double c3x = (c0x + c1x)*outerPolygonCoef[t];
+            double c3y = (c0y + c1y)*outerPolygonCoef[t];
+            if ((c3x-x)*(c3x-x) + (c3y-y)*(c3y-y) < rr) {
+                c2x = c1x;
+                c2y = c1y;
+                continue;
+            }
+            double c4x = c1x - c3x + c1x;
+            double c4y = c1y - c3y + c1y;
+            if ((c4x-x)*(c4x-x) + (c4y-y)*(c4y-y) < rr) {
+                c0x = c1x;
+                c0y = c1y;
+                continue;
+            }
+            double t3x = c3x - c1x;
+            double t3y = c3y - c1y;
+            if (ty*t3x - tx*t3y <= 0 || rr*(t3x*t3x + t3y*t3y) > (ty*t3x - tx*t3y)*(ty*t3x - tx*t3y)) {
+                if (tx*t3x + ty*t3y > 0) {
+                    if (Math.abs(tx*t3x + ty*t3y) <= t3x*t3x + t3y*t3y || (x-c3x)*(c0x-c3x) + (y-c3y)*(c0y-c3y) >= 0) {
+                        c2x = c1x;
+                        c2y = c1y;
+                        continue;
+                    }
+                } else if (-(tx*t3x + ty*t3y) <= t3x*t3x + t3y*t3y || (x-c4x)*(c2x-c4x) + (y-c4y)*(c2y-c4y) >= 0) {
+                    c0x = c1x;
+                    c0y = c1y;
+                    continue;
+                }
+            }
+            return false;
+        }
+        return false; // Out of iterations so it is unsure if there was a collision. But have to return something.
+    }
+
+
+    
 }

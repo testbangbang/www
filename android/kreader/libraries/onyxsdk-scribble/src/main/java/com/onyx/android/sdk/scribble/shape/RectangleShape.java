@@ -26,7 +26,6 @@ public class RectangleShape extends BaseShape {
                 ShapeUtils.hitTestLine(getDownPoint().x, getDownPoint().y, getCurrentPoint().x, getDownPoint().y, x, y, radius) ||
                 ShapeUtils.hitTestLine(getDownPoint().x, getCurrentPoint().y, getCurrentPoint().x, getCurrentPoint().y, x, y, radius) ||
                 ShapeUtils.hitTestLine(getCurrentPoint().x, getDownPoint().y, getCurrentPoint().x, getCurrentPoint().y, x, y, radius);
-
     }
 
     public void render(final RenderContext renderContext) {
