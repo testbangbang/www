@@ -23,7 +23,6 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
     public static final int DICT_STATE_QUERY_SUCCESSFUL = 0;
     public static final int DICT_STATE_QUERY_FAILED = 1;
     public static final int DICT_STATE_LOADING = 2;
-    public static final String HTML_PATH = "/mnt/sdcard/test.html";
 
     private static final String TAG = "DictionaryQueryRequest";
     private ReaderDataHolder readerDataHolder;
