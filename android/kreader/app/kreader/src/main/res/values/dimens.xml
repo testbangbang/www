@@ -62,4 +62,5 @@
     <dimen name="dialog_set_value_image_size">50dp</dimen>
     <dimen name="dialog_common_text_size">20sp</dimen>
     <dimen name="dialog_scribble_full_screen_toolbar_padding">5dp</dimen>
+    <dimen name="dialog_navigation_setting_item_text_size">16sp</dimen>
 </resources>

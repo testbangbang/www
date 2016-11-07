@@ -1,4 +1,6 @@
 {
+  "ttsEnabled" : false,
+  "hasFrontLight" : false,
   "disableNoteFunc" : true,
   "keyBinding": {
     "HandlerManager": {

@@ -75,6 +75,7 @@ public class RawInputProcessor {
     private Handler handler = new Handler(Looper.getMainLooper());
     private ExecutorService singleThreadPool = null;
     private volatile RectF limitRect = new RectF();
+    private volatile DataInputStream dataInputStream;
 
     /**
      * matrix used to map point from input device to screen display.
@@ -97,6 +98,7 @@ public class RawInputProcessor {
     }
 
     public void start() {
+        closeInputDevice();
         stop = false;
         reportData = false;
         clearInternalState();
@@ -112,10 +114,16 @@ public class RawInputProcessor {
     }
 
     public void quit() {
+        closeInputDevice();
         reportData = false;
         stop = true;
         clearInternalState();
         shutdown();
+    }
+
+    private void closeInputDevice() {
+        FileUtils.closeQuietly(dataInputStream);
+        dataInputStream = null;
     }
 
     public void setLimitRect(final Rect rect) {
@@ -148,16 +156,18 @@ public class RawInputProcessor {
                     detectInputDevicePath();
                     readLoop();
                 } catch (Exception e) {
+                } finally {
+                    closeInputDevice();
                 }
             }
         });
     }
 
     private void readLoop() throws Exception {
-        DataInputStream in = new DataInputStream(new FileInputStream(systemPath));
+        dataInputStream = new DataInputStream(new FileInputStream(systemPath));
         byte[] data = new byte[16];
         while (!stop) {
-            in.readFully(data);
+            dataInputStream.readFully(data);
             ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
             processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
         }

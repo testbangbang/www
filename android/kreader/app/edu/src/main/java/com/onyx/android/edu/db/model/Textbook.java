@@ -8,8 +8,8 @@ import com.raizlabs.android.dbflow.annotation.Table;
 /**
  * Created by ming on 16/7/7.
  */
-@ModelContainer
-@Table(database = AppDatabase.class)
+//@ModelContainer
+//@Table(database = AppDatabase.class)
 public class Textbook extends BaseDbModel{
     @Column
     public String Name;

@@ -1,7 +1,9 @@
 package com.onyx.android.edu.view;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -12,9 +14,8 @@ import android.widget.TextView;
 
 import com.onyx.android.edu.R;
 import com.onyx.android.edu.base.BaseQuestionView;
-import com.onyx.android.edu.db.model.AtomicAnswer;
 
-import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -25,13 +26,19 @@ public class ChoiceQuestionView extends BaseQuestionView {
 
     private RadioGroup mOptions;
     private LinearLayout mMainSelectView;
-    private List<String> optionTexts;
-    private String problem;
+    private Map<String, String> optionMap;
 
-    public ChoiceQuestionView(Context context, List<String> optionTexts, String problem, boolean showAnswer) {
-        super(context,showAnswer);
-        this.optionTexts = optionTexts;
+    public ChoiceQuestionView(Context context,
+                              boolean showAnswer,
+                              Map<String, String> optionMap,
+                              String answer,
+                              String problem,
+                              String questionAnalyze) {
+        super(context, showAnswer);
+        this.optionMap = optionMap;
+        this.rightAnswer = answer;
         this.problem = problem;
+        this.questionAnalyze = questionAnalyze;
         initData();
     }
 
@@ -50,22 +57,17 @@ public class ChoiceQuestionView extends BaseQuestionView {
     }
 
     private void initData(){
-        mQuesTitle.setText(problem);
-        for (int i = 0; i < optionTexts.size(); i++) {
-            CompoundButton button = getCompoundButton(optionTexts.get(i),false);
+        mQuesTitle.setText(Html.fromHtml(problem).toString());
+        for (String key : optionMap.keySet()) {
+            String value = optionMap.get(key);
+            String text = Html.fromHtml(key).toString() + ": " + Html.fromHtml(value).toString();
+            CompoundButton button = getCompoundButton(text,false);
+            button.setTag(key);
             mOptions.addView(button);
         }
     }
 
-    private void addAnswer(String text){
-        AtomicAnswer answer = new AtomicAnswer();
-        mAnswers.add(answer);
-    }
-
-    private void removeAnswer(String text){
-    }
-
-    private CompoundButton getCompoundButton(String text,boolean IsMultiSelect) {
+    private CompoundButton getCompoundButton(String text, boolean IsMultiSelect) {
         CompoundButton button;
         if (IsMultiSelect){
             button = new CheckBox(mContext);
@@ -74,15 +76,19 @@ public class ChoiceQuestionView extends BaseQuestionView {
         }
         button.setText(text);
         button.setGravity(Gravity.LEFT | Gravity.CENTER);
-        button.setTextSize(20);
+        button.setTextSize(25);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     setHasAnswer(true);
+                    chooseAnswer = (String) buttonView.getTag();
                 }
             }
         });
+        LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0,10,0,10);
+        button.setLayoutParams(lp);
         return button;
     }
 
@@ -91,19 +97,14 @@ public class ChoiceQuestionView extends BaseQuestionView {
         return hasAnswer;
     }
 
-    @Override
-    public List<AtomicAnswer> getAnswers() {
-        return null;
-    }
-
 
     @Override
-    public boolean isRight(int index) {
-        return false;
+    public boolean isRight() {
+        return chooseAnswer.equals(rightAnswer);
     }
 
     @Override
-    public float getScore(int index) {
+    public float getScore() {
         return 0;
     }
 

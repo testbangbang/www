@@ -266,9 +266,19 @@
     <string name="sure_exit">Are you sure want to exit</string>
     <string name="pinch_zooming_can_not_be_used">Pinch zoom is not supported by current page layout.</string>
     <string name="dictionary_error">The dictionary is not installed or have exception</string>
+    <string name="dictionary_data_no_find">Failed to find dictionary data</string>
     <string name="no_data">There is no data</string>
     <string name="min_page_toast">Has come to the first page</string>
     <string name="max_page_toast">Has come to the last page</string>
     <string name="current_value">Current Value:</string>
+    <string name="open_document_failed">Open document failed!</string>
     <string name="annotation_export_format" formatted="false">Page %d   %s \n%s\n</string>
+    <string name="fail_create_export_directory">Failed to create export directory: </string>
+    <string name="show_password">Show the password</string>
+
+    <string name="fast">fast</string>
+    <string name="faster">faster</string>
+    <string name="normal">normal</string>
+    <string name="slower">slower</string>
+    <string name="slow">slow</string>
 </resources>

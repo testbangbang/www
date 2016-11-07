@@ -5,21 +5,22 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:padding="20dp"
+        android:padding="10dp"
         android:background="@color/gray"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/question_count"
             android:textColor="@color/black"
             android:layout_centerVertical="true"
-            android:text="注意：本题共有4道题"
             android:layout_alignParentLeft="true"
             android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <ImageButton
+            android:padding="10dp"
             android:src="@drawable/ic_exercise_arrow_left"
             android:id="@+id/left_arrow"
             android:layout_marginRight="20dp"
@@ -30,6 +31,7 @@
             android:background="@drawable/imagebtn_bg"/>
 
         <TextView
+            android:layout_centerVertical="true"
             android:textColor="@color/black"
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@+id/right_arrow"
@@ -41,6 +43,8 @@
             android:textSize="25sp"/>
 
         <ImageButton
+            android:padding="10dp"
+            android:layout_marginRight="20dp"
             android:src="@drawable/ic_exercise_arrow_right"
             android:layout_alignParentRight="true"
             android:id="@+id/right_arrow"

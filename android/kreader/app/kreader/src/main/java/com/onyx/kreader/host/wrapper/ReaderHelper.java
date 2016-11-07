@@ -67,6 +67,8 @@ public class ReaderHelper {
     private ImageReflowManager imageReflowManager;
     private BitmapSoftLruCache bitmapCache;
 
+    private boolean layoutChanged = false;
+
     public ReaderHelper() {
     }
 
@@ -113,6 +115,9 @@ public class ReaderHelper {
     }
 
     private void saveThumbnail(final Context context, final String path) {
+        if (LegacySdkDataUtils.hasThumbnail(context, path)) {
+            return;
+        }
         WindowManager window = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         if (window == null) {
             Log.w(TAG, "getById display metrics failed: " + documentPath);
@@ -164,7 +169,7 @@ public class ReaderHelper {
     }
 
     public void onLayoutChanged() {
-
+        setLayoutChanged(true);
     }
 
     public void onPositionChanged(final String oldPosition, final String newPosition) {
@@ -230,6 +235,14 @@ public class ReaderHelper {
 
     public BitmapSoftLruCache getBitmapCache() {
         return bitmapCache;
+    }
+
+    public void setLayoutChanged(boolean layoutChanged) {
+        this.layoutChanged = layoutChanged;
+    }
+
+    public boolean isLayoutChanged() {
+        return layoutChanged;
     }
 
     public void initData(Context context) {

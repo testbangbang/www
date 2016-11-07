@@ -17,9 +17,15 @@
                 style="@style/global_activities_back_function_layout">
 
                 <ImageView
+                    android:id="@+id/back_icon"
+                    style="@style/global_activities_back_btn_image"
+                    android:contentDescription="" />
+
+                <ImageView
                     android:id="@+id/imageView_main_title"
+                    android:layout_toRightOf="@+id/back_icon"
                     style="@style/global_activities_back_btn_category_image"
-                    android:src="@drawable/ic_business_write_pen_gray_34dp" />
+                    android:src="@mipmap/ic_launcher" />
 
                 <TextView
                     android:id="@+id/textView_main_title"
@@ -65,28 +71,18 @@
 
             <ImageView
                 android:id="@+id/add_folder_btn"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
+                style="@style/global_activities_function_icon"
                 android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/multi_select_mode"
-                android:layout_alignWithParentIfMissing="true"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_create_new_folder_black_36dp" />
+                android:layout_toLeftOf="@+id/button_sort_by"
+                android:src="@drawable/ic_folder_add" />
 
-            <com.onyx.android.note.view.CheckableImageView
-                android:id="@+id/multi_select_mode"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
+            <ImageView
+                android:id="@+id/button_sort_by"
+                style="@style/global_activities_function_icon"
+                android:layout_marginRight="15dp"
                 android:layout_alignParentRight="true"
-                android:visibility="gone"
-                android:layout_centerVertical="true"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/onyx_multi_select_btn" />
+                android:src="@drawable/button_filter" />
+
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 
@@ -94,60 +90,6 @@
         android:id="@+id/note_content_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/page_indicator_area"
         android:layout_below="@id/tool_bar" />
-
-    <RelativeLayout
-        android:id="@+id/page_indicator_area"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/page_indicator_area_bottom_margin">
-
-        <LinearLayout
-            android:id="@+id/page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/button_previous_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/button_minHeight"
-                android:minWidth="@dimen/button_minHeight"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="center"
-                android:padding="2dp"
-                android:src="@drawable/ic_note_prev_page_gray_32dp" />
-
-            <Button
-                android:id="@+id/button_page_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="@string/paged_init_text"
-                android:textSize="22sp" />
-
-            <ImageView
-                android:id="@+id/button_next_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
-                android:minHeight="@dimen/button_minHeight"
-                android:minWidth="@dimen/button_minHeight"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="center"
-                android:padding="2dp"
-                android:src="@drawable/ic_note_next_page_gray_32dp" />
-        </LinearLayout>
-    </RelativeLayout>
 
 </RelativeLayout>

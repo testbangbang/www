@@ -46,7 +46,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private BaseCallback callback;
     private ReaderMenuAction selectWidthAction = ReaderMenuAction.SCRIBBLE_WIDTH1;
     private ReaderMenuAction selectShapeAction = ReaderMenuAction.SCRIBBLE_PENCIL;
-    private ReaderMenuAction selectEraserAction = ReaderMenuAction.SCRIBBLE_ERASER_PART;
+    private ReaderMenuAction selectEraserAction = null;
     private ActionCallback actionCallback;
     private ReaderDataHolder readerDataHolder;
     private boolean isDrag = false;
@@ -61,9 +61,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback callback) {
         this.callback = callback;
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         readerDataHolder.getEventBus().register(this);
         show(readerDataHolder);
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
     }
 
     public void show(final ReaderDataHolder readerDataHolder) {
@@ -168,6 +168,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private void updateMarkerView(ReaderMenuAction selectAction, ReaderMenuAction[] actions) {
+        if (selectAction == null) {
+            return;
+        }
         for (int i = 0; i < actions.length; i++) {
             CommonViewHolder viewHolder = scribbleViewHolderMap.get(actions[i]);
             if (viewHolder != null) {
@@ -263,6 +266,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             @Override
             public OnyxToolbar OnClickListener(View view) {
                 ReaderMenuAction action = (ReaderMenuAction) view.getTag();
+                selectEraserAction = action;
                 handleClickListener(action);
                 updateMarkerView(action, selectActions);
                 return null;
@@ -330,6 +334,19 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 break;
             case SCRIBBLE_MAXIMIZE:
                 changeToolBarVisibility(false);
+                break;
+            case SCRIBBLE_ERASER_PART:
+            case SCRIBBLE_ERASER_ALL:
+                selectShapeAction = null;
+                break;
+            case SCRIBBLE_PENCIL:
+            case SCRIBBLE_BRUSH:
+            case SCRIBBLE_LINE:
+            case SCRIBBLE_TRIANGLE:
+            case SCRIBBLE_CIRCLE:
+            case SCRIBBLE_SQUARE:
+                selectEraserAction = null;
+                break;
         }
     }
 

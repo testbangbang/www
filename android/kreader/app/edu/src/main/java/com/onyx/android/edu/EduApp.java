@@ -1,0 +1,1 @@
+package com.onyx.android.edu;import android.app.Application;/** * Created by ming on 2016/11/1. */public class EduApp extends Application{    private static EduApp instance;    @Override    public void onCreate() {        super.onCreate();        instance = this;    }    public static EduApp instance() {        return instance;    }}

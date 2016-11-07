@@ -26,8 +26,11 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.actions.DictionaryQueryAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.ui.view.HTMLReaderWebView;
+
+import static com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle.Highlight;
 
 public class PopupSelectionMenu extends LinearLayout {
     private static final String TAG = PopupSelectionMenu.class.getSimpleName();
@@ -56,6 +59,8 @@ public class PopupSelectionMenu extends LinearLayout {
     private View mDictNextPage;
     private View mDictPrevPage;
     private View webViewDividerLine;
+    private ImageView highlightView;
+    private TextView highLightText;
     /**
      * eliminate compiler warning
      *
@@ -81,6 +86,8 @@ public class PopupSelectionMenu extends LinearLayout {
         p.addRule(RelativeLayout.CENTER_HORIZONTAL);
         layout.addView(this, p);
 
+        highlightView = (ImageView) findViewById(R.id.imageview_highlight);
+        highLightText = (TextView) findViewById(R.id.highLightText);
         mDictTitle = (TextView) findViewById(R.id.dict_title);
         webViewDividerLine = findViewById(R.id.webView_divider_line);
         mDictNextPage = findViewById(R.id.dict_next_page);
@@ -93,6 +100,11 @@ public class PopupSelectionMenu extends LinearLayout {
                 }
             }
         });
+
+        boolean isHighLight = SingletonSharedPreference.getAnnotationHighlightStyle(mActivity).equals(Highlight);
+        highlightView.setImageResource(isHighLight ?
+                R.drawable.ic_dialog_reader_choose_highlight : R.drawable.ic_dialog_reader_choose_underline);
+        highLightText.setText(isHighLight ? mActivity.getString(R.string.Highlight) : mActivity.getString(R.string.settings_highlight_style_underline));
 
         mDictPrevPage = findViewById(R.id.dict_prev_page);
         mDictPrevPage.setOnClickListener(new OnClickListener() {
@@ -264,7 +276,7 @@ public class PopupSelectionMenu extends LinearLayout {
 
     private void updateTranslation(final ReaderDataHolder readerDataHolder, String token) {
         mDictTitle.setText(token);
-        final DictionaryQueryAction dictionaryQueryAction = new DictionaryQueryAction(token, "content://com.onyx.android.dict.OnyxDictProvider");
+        final DictionaryQueryAction dictionaryQueryAction = new DictionaryQueryAction(token);
         dictionaryQueryAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

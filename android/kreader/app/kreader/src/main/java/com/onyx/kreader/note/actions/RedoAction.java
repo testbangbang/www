@@ -3,10 +3,8 @@ package com.onyx.kreader.note.actions;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.note.request.RedoRequest;
-import com.onyx.kreader.note.request.UndoRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 
 /**

@@ -16,7 +16,7 @@ import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.utils.ReaderConfig;
+import com.onyx.kreader.utils.DeviceConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class HandlerManager {
     private boolean enable;
     private boolean enableTouch;
     static private boolean enableScrollAfterLongPress = false;
-    private ReaderConfig readerConfig;
+    private DeviceConfig deviceConfig;
     private ReaderDataHolder readerDataHolder;
 
     public HandlerManager(final ReaderDataHolder holder) {
@@ -61,7 +61,7 @@ public class HandlerManager {
         activeProviderName = READING_PROVIDER;
         enable = true;
         enableTouch = true;
-        readerConfig = ReaderConfig.sharedInstance(context);
+        deviceConfig = DeviceConfig.sharedInstance(context);
     }
 
     public com.onyx.kreader.ui.data.ReaderDataHolder getReaderDataHolder() {
@@ -69,7 +69,7 @@ public class HandlerManager {
     }
 
     public Map<String, Map<String, JSONObject>> getKeyBinding() {
-        return readerConfig.getKeyBinding();
+        return deviceConfig.getKeyBinding();
     }
 
     public JSONObject getKeyBinding(final String state, final String keycode) {

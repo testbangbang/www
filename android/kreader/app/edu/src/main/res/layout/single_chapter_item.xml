@@ -20,7 +20,7 @@
         android:id="@+id/write"
         android:layout_marginLeft="10dp"
         android:src="@mipmap/write"
-        android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
 
 </LinearLayout>

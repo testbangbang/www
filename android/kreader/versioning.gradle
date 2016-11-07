@@ -28,5 +28,5 @@ ext.releasePlatform = { ->
     if (rootProject.hasProperty("releasePlatform")) {
         return rootProject.property("releasePlatform")
     }
-    return "RK3026"
+    return "ONYX"
 }

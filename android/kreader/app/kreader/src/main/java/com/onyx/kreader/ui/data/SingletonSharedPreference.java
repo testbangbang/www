@@ -5,7 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.request.ExportNotesRequest;
-import com.onyx.kreader.utils.ReaderConfig;
+import com.onyx.kreader.utils.DeviceConfig;
+
 /**
  * Created by solskjaer49 on 14-4-22.
  */
@@ -106,11 +107,11 @@ public class SingletonSharedPreference {
     }
 
     public static boolean isSystemStatusBarEnabled(Context context) {
-        return getBooleanByStringID(context, R.string.settings_enable_system_status_bar_key, ReaderConfig.sharedInstance(context).isDefaultUseSystemStatusBar());
+        return getBooleanByStringID(context, R.string.settings_enable_system_status_bar_key, DeviceConfig.sharedInstance(context).isDefaultUseSystemStatusBar());
     }
 
     public static boolean isReaderStatusBarEnabled(Context context) {
-        return getBooleanByStringID(context, R.string.settings_enable_reader_status_bar_key, ReaderConfig.sharedInstance(context).isDefaultUseReaderStatusBar());
+        return getBooleanByStringID(context, R.string.settings_enable_reader_status_bar_key, DeviceConfig.sharedInstance(context).isDefaultUseReaderStatusBar());
     }
 
     public static boolean isAnimationEnabled(Context context) {
@@ -166,7 +167,7 @@ public class SingletonSharedPreference {
     }
 
     public static boolean isShowDocTitleInStatusBar(Context context) {
-        return getBooleanByStringID(context, R.string.settings_show_doc_title_key, ReaderConfig.sharedInstance(context).isDefaultShowDocTitleInStatusBar());
+        return getBooleanByStringID(context, R.string.settings_show_doc_title_key, DeviceConfig.sharedInstance(context).isDefaultShowDocTitleInStatusBar());
     }
 
     public static boolean isCropToWidthInLandscape(Context context) {
@@ -189,7 +190,7 @@ public class SingletonSharedPreference {
             } catch (Exception e) {
             }
         }
-        return AnnotationHighlightStyle.Underline;
+        return AnnotationHighlightStyle.Highlight;
     }
 
     public static boolean isSmoothScribble(Context context) {

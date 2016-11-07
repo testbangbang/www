@@ -17,6 +17,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 public class OnyxDictionaryInfo
 {
     private static final OnyxDictionaryInfo PREDEFINED_DICTS[] = {
+        new OnyxDictionaryInfo("NeoDict", "Neo Dictionary", "com.onyx.dict", "com.onyx.dict.activity.DictMainActivity", Intent.ACTION_SEARCH, 0),
         new OnyxDictionaryInfo("OnyxDict", "Onyx Dictionary", "com.onyx.android.dict", "com.onyx.android.dict.ui.DictActivity", Intent.ACTION_SEARCH, 0),
         new OnyxDictionaryInfo("QuickDic", "QuickDic Dictionary", "com.hughes.android.dictionary", "com.hughes.android.dictionary.DictionaryManagerActivity", Intent.ACTION_SEARCH, 0),
         new OnyxDictionaryInfo("ColorDict", "ColorDict", "com.socialnmobile.colordict", "com.socialnmobile.colordict.activity.Main", Intent.ACTION_SEARCH, 0),

@@ -15,6 +15,9 @@ public class Constant {
     public static final String CN_HOST_BASE = "http://dev.onyx-international.cn";
     public static final String CN_API_BASE = "http://dev.onyx-international.cn/api/1/";
 
+    public static final String EDU_API_BASE = "http://dev.zxxk.com/api/";
+    public static final String ACCESS_KEY = "2016103189639748";
+    public static final String ACCESS_SECRET = "8a031034af2348669842683bc6115aa5";
 
     public static final String WHERE_TAG = "where";
     public static final String ARGS_TAG = "args";

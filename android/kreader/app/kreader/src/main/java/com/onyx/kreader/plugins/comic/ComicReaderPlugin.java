@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.api.*;
+import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.plugins.images.ImagesWrapper;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -63,7 +64,18 @@ public class ComicReaderPlugin implements ReaderPlugin,
      */
     @Override
     public boolean readCover(Bitmap bitmap) {
-        return false;
+        if (getPluginImpl().getPageCount() < 1) {
+            return false;
+        }
+        ImagesWrapper.ImageInformation info = getPluginImpl().imageInfo(0);
+        if (info == null) {
+            return false;
+        }
+        float zoom = PageUtils.scaleToPage(info.getWidth(), info.getHeight(),
+                bitmap.getWidth(), bitmap.getHeight());
+        RectF pageRect = new RectF(0, 0, info.getWidth() * zoom, info.getHeight() * zoom);
+        RectF displayRect = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        return getPluginImpl().drawPage(0, zoom, 0, displayRect, pageRect, pageRect, bitmap);
     }
 
     /**
@@ -348,7 +360,14 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public ReaderDocument open(String path, ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) throws ReaderException {
         if (!getPluginImpl().open(path, documentOptions.getDocumentPassword())) {
-            return null;
+            if (getPluginImpl().isEncrypted()) {
+                throw ReaderException.passwordRequired();
+            } else {
+                throw ReaderException.cannotOpen();
+            }
+        }
+        if (getPluginImpl().getPageCount() <= 0) {
+            throw ReaderException.cannotOpen();
         }
         return this;
     }

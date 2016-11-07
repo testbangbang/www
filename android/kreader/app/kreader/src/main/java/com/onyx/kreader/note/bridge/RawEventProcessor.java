@@ -4,12 +4,15 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.SingleThreadExecutor;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.utils.DeviceUtils;
 
@@ -48,6 +51,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean pressed = false;
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
+    private volatile DataInputStream dataInputStream;
     private volatile boolean reportData = false;
 
     private volatile Matrix inputToScreenMatrix;
@@ -70,6 +74,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     public void start() {
+        closeInputDevice();
         stop = false;
         reportData = true;
         clearInternalState();
@@ -87,17 +92,25 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     public void quit() {
-        reportData = false;
         stop = true;
+        reportData = false;
+        closeInputDevice();
         clearInternalState();
         shutdown();
     }
 
     private void clearInternalState() {
+        px = py = 0;
+        pressure = 0;
         pressed = false;
         shortcutDrawing = false;
         shortcutErasing = false;
         lastPressed = false;
+    }
+
+    private void closeInputDevice() {
+        FileUtils.closeQuietly(dataInputStream);
+        dataInputStream = null;
     }
 
     private void shutdown() {
@@ -122,16 +135,20 @@ public class RawEventProcessor extends NoteEventProcessorBase {
                     detectInputDevicePath();
                     readLoop();
                 } catch (Exception e) {
+                    Debug.d(RawEventProcessor.class.getSimpleName(), e.toString());
+                } finally {
+                    finishCurrentShape();
+                    closeInputDevice();
                 }
             }
         });
     }
 
     private void readLoop() throws Exception {
-        DataInputStream in = new DataInputStream(new FileInputStream(inputDevice));
+        dataInputStream = new DataInputStream(new FileInputStream(inputDevice));
         byte[] data = new byte[16];
         while (!stop) {
-            in.readFully(data);
+            dataInputStream.readFully(data);
             ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
             processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
         }
@@ -352,20 +369,20 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         if (!checkTouchPoint(touchPoint, screen)) {
             return;
         }
-        finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
+        finishCurrentShape();
     }
 
     private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
         if (hitTest(touchPoint.x, touchPoint.y) == null ||
             !inLimitRect(touchPoint.x, touchPoint.y) ||
             inExcludeRect(touchPoint.x, touchPoint.y)) {
-            finishCurrentShape(getLastPageInfo(), touchPoint, screen, false);
+            finishCurrentShape();
             return false;
         }
         return true;
     }
 
-    private void finishCurrentShape(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean create) {
+    private void finishCurrentShape() {
         final Shape shape = getNoteManager().getCurrentShape();
         resetLastPageInfo();
         invokeDFBShapeFinished(shape);

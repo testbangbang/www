@@ -48,6 +48,7 @@ import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
+import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.actions.ActionChain;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
@@ -130,8 +131,8 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onResume() {
-        checkForNewConfiguration();
         super.onResume();
+        afterResume();
     }
 
     @Override
@@ -322,10 +323,28 @@ public class ReaderActivity extends ActionBarActivity {
         getHandlerManager().setEnable(false);
     }
 
-    private void checkForNewConfiguration() {
-        setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
+    private void afterResume() {
+        syncReaderPainter();
+        syncSystemStatusBar();
         reconfigStatusBar();
         checkSurfaceViewSize();
+        checkNoteDrawing();
+    }
+
+    private void syncReaderPainter() {
+        readerPainter.setAnnotationHighlightStyle(SingletonSharedPreference.getAnnotationHighlightStyle(this));
+    }
+
+    private void syncSystemStatusBar() {
+        setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
+    }
+
+    private void checkNoteDrawing() {
+        if (!getReaderDataHolder().inNoteWritingProvider()) {
+            return;
+        }
+        final StartNoteRequest request = new StartNoteRequest(getReaderDataHolder().getVisiblePages());
+        getReaderDataHolder().getNoteManager().submit(this, request, null);
     }
 
     private void checkSurfaceViewSize() {
@@ -341,7 +360,6 @@ public class ReaderActivity extends ActionBarActivity {
                     surfaceView.getHeight() != getReaderDataHolder().getDisplayHeight()) {
                     onSurfaceViewSizeChanged();
                 }
-                getReaderDataHolder().updateNoteManager();
             }
         });
     }
@@ -371,6 +389,7 @@ public class ReaderActivity extends ActionBarActivity {
             ReaderDeviceManager.applyWithGCIntervalWithoutRegal(surfaceView);
         }
         if (event != null && !event.isWaitForShapeData()) {
+            beforeDrawPage();
             updateStatusBar();
             drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         }
@@ -385,11 +404,19 @@ public class ReaderActivity extends ActionBarActivity {
         if (noteDataInfo == null || !noteDataInfo.isContentRendered()) {
             return;
         }
+        if (event.getUniqueId() < getReaderDataHolder().getLastRequestSequence()) {
+            return;
+        }
+        beforeDrawPage();
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 
     private boolean verifyReader() {
         return getReaderDataHolder().isDocumentOpened();
+    }
+
+    private void beforeDrawPage() {
+        enablePost(true);
     }
 
     @Subscribe
@@ -423,8 +450,7 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
 
-        ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
-        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false, true);
+        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false, true, false);
         actionChain.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -656,14 +682,14 @@ public class ReaderActivity extends ActionBarActivity {
         if (getReaderDataHolder().inNoteWritingProvider()) {
             return;
         }
-        ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), this);
-        ActionChain actionChain = new ActionChain();
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
         FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
-        ChangeNoteShapeAction action = new ChangeNoteShapeAction(NoteDrawingArgs.defaultShape());
-        actionChain.addAction(flushNoteAction);
-        actionChain.addAction(action);
-        actionChain.execute(getReaderDataHolder(), null);
+        flushNoteAction.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+            }
+        });
     }
 
     public void backward() {
@@ -701,14 +727,15 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 getReaderDataHolder().getReaderViewInfo().getVisiblePages(),
                 getReaderDataHolder().getDisplayRect(),
-                true);
-        getReaderDataHolder().getNoteManager().submit(this, renderRequest, new BaseCallback() {
+                false);
+        int uniqueId = getReaderDataHolder().getLastRequestSequence();
+        getReaderDataHolder().getNoteManager().submitWithUniqueId(this, uniqueId, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null || request.isAbort()) {
+                if (e != null || request.isAbort() ) {
                     return;
                 }
-                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEvent());
+                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(renderRequest.getAssociatedUniqueId()));
             }
         });
     }

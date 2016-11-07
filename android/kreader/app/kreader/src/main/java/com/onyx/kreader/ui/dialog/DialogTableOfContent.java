@@ -238,7 +238,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     public DialogTableOfContent(final ReaderDataHolder readerDataHolder, DirectoryTab tab) {
-        super(readerDataHolder.getContext(), R.style.dialog_no_title);
+        super(readerDataHolder.getContext(), R.style.android_dialog_no_title);
         this.readerDataHolder = readerDataHolder;
         int position = SingletonSharedPreference.getDialogTableOfContentTab(getContext(), 0);
         if (position < DirectoryTab.values().length) {
@@ -278,6 +278,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
         showExportLayout(currentTab);
         setViewListener();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
     }
 
     @Override
@@ -412,18 +413,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private void notifyPageDataSetChanged(DirectoryTab tab) {
-        PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
-        if (pageAdapter != null) {
-            pageAdapter.notifyDataSetChanged();
+        PageRecyclerView pageRecyclerView = getPageView(tab);
+        if (pageRecyclerView != null) {
+            pageRecyclerView.notifyDataSetChanged();
         }
-    }
-
-    private int getPageItemCount(DirectoryTab tab) {
-        PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
-        if (pageAdapter != null) {
-            return pageAdapter.getItemCount();
-        }
-        return 0;
     }
 
     private int getTabIndex(DirectoryTab tab) {
@@ -454,6 +447,14 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         int pos = getTabIndex(tab);
         if (viewList.size() > pos) {
             return (PageRecyclerView.PageAdapter) viewList.get(pos).getAdapter();
+        }
+        return null;
+    }
+
+    private PageRecyclerView getPageView(DirectoryTab tab) {
+        int pos = getTabIndex(tab);
+        if (viewList.size() > pos) {
+            return viewList.get(pos);
         }
         return null;
     }
@@ -689,6 +690,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private void onPageChanged() {
+        updateTotalText(currentTab);
         if (viewList.size() == 0) {
             return;
         }
@@ -697,7 +699,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         int pages = Math.max(pageView.getPaginator().pages(), 1);
         String show = String.format("%d/%d", currentPage, pages);
         pageIndicator.setText(show);
-        updateTotalText(currentTab);
 
         if (currentTab == DirectoryTab.Scribble && scribblePageView != null) {
             requestScribblePreview(scribblePageView);
@@ -708,15 +709,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private void showExportLayout(DirectoryTab tab) {
         boolean showExport = tab == DirectoryTab.Scribble || tab == DirectoryTab.Annotation;
         exportLayout.setVisibility(showExport ? View.VISIBLE : View.GONE);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (showExport) {
-            lp.addRule(RelativeLayout.RIGHT_OF, R.id.total);
-            lp.addRule(RelativeLayout.CENTER_VERTICAL);
-            lp.leftMargin = DimenUtils.dip2px(getContext(), 20);
-        } else {
-            lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-        }
-        pageIndicatorLayout.setLayoutParams(lp);
     }
 
     private void updateTotalText(DirectoryTab tab) {
@@ -824,11 +816,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         SingletonSharedPreference.setDialogTableOfContentTab(getContext(), position);
         currentTab = tab;
         viewPager.setCurrentItem(position, false);
-        PageRecyclerView.PageAdapter pageAdapter = getPageAdapter(tab);
-        if (pageAdapter != null) {
-            if (tab != DirectoryTab.TOC) {
-                pageAdapter.notifyDataSetChanged();
-            }
+        if (tab != DirectoryTab.TOC) {
+            notifyPageDataSetChanged(tab);
         }
     }
 

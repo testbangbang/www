@@ -22,6 +22,7 @@ import com.onyx.android.note.dialog.DialogChooseScribbleMode;
 import com.onyx.android.note.dialog.DialogCreateNewFolder;
 import com.onyx.android.note.dialog.DialogMoveFolder;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -249,7 +250,7 @@ public class ManagerActivity extends BaseManagerActivity {
     @Override
     public void updateUIWithNewNoteList(List<NoteModel> curLibSubContList) {
         contentView.setSubLayoutParameter(scribbleItemLayoutID, getItemViewDataMap(currentSelectMode));
-        adapter = Utils.adapterFromNoteModelList(curLibSubContList, R.drawable.ic_student_note_folder_gray,
+        adapter = Utils.adapterFromNoteModelList(curLibSubContList, NoteAppConfig.sharedInstance(this).getFolderIconRes(),
                 R.drawable.ic_student_note_pic_gray);
         adapter.addObject(0, Utils.createNewItem(getString(R.string.add_new_page), R.drawable.ic_business_write_add_box_gray_240dp));
         contentView.setupContent(getRows(), getColumns(), adapter, 0, true);

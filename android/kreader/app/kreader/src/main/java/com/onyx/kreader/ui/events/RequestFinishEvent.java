@@ -11,6 +11,7 @@ public class RequestFinishEvent {
     private boolean applyGCIntervalUpdate = true;
     private boolean renderShapeData = true;
     private boolean waitForShapeData = false;
+    private int sequence;
 
     public static RequestFinishEvent fromRequest(final BaseRequest request, final Throwable throwable, boolean applyGCInterval) {
         RequestFinishEvent requestFinishEvent = new RequestFinishEvent();
@@ -18,11 +19,12 @@ public class RequestFinishEvent {
         return requestFinishEvent;
     }
 
-    public static RequestFinishEvent createEvent(boolean applyGC, boolean renderShape, boolean waitForShapeData) {
+    public static RequestFinishEvent createEvent(int sequence, boolean applyGC, boolean renderShape, boolean waitForShapeData) {
         RequestFinishEvent requestFinishEvent = new RequestFinishEvent();
         requestFinishEvent.setApplyGCIntervalUpdate(applyGC);
         requestFinishEvent.setRenderShapeData(renderShape);
         requestFinishEvent.setWaitForShapeData(waitForShapeData);
+        requestFinishEvent.setSequence(sequence);
         return requestFinishEvent;
     }
 
@@ -48,5 +50,13 @@ public class RequestFinishEvent {
 
     public void setWaitForShapeData(boolean waitForShapeData) {
         this.waitForShapeData = waitForShapeData;
+    }
+
+    public int getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
     }
 }

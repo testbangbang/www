@@ -229,8 +229,20 @@ public class NoteDataProvider {
         return path;
     }
 
-    public static boolean checkNoteNameLegality(final String targetName, final String parentID,final int currentType,
-                                                boolean checkThisLevelOnly, boolean distinguishFileType) {
+
+    /**
+     * check note name legality.
+     * @param itemID while move object,it need to exclude itself,use unique id to find.can be null if just check name legal or not.
+     * @param targetName name to test
+     * @param parentID for check level to use.
+     * @param currentType for file type check to use
+     * @param checkThisLevelOnly check only target level or not.
+     * @param distinguishFileType check file type or not.
+     * @param excludeItemItself exclude item it self for usage for moving item check.
+     * @return
+     */
+    public static boolean checkNoteNameLegality(final String itemID,final String targetName, final String parentID,final int currentType,
+                                                boolean checkThisLevelOnly, boolean distinguishFileType,boolean excludeItemItself) {
         Select select = new Select();
         Where where;
         if (checkThisLevelOnly) {
@@ -244,6 +256,11 @@ public class NoteDataProvider {
         } else {
             where = select.from(NoteModel.class).where(NoteModel_Table.title.eq(targetName));
         }
+
+        if (excludeItemItself && itemID !=null){
+            where.and(NoteModel_Table.uniqueId.notEq(itemID));
+        }
+
         if (distinguishFileType) {
             where.and(NoteModel_Table.type.eq(currentType));
         }

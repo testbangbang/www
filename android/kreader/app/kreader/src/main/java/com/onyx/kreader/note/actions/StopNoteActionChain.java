@@ -16,22 +16,27 @@ public class StopNoteActionChain  {
     private boolean save;
     private boolean show;
     private boolean quit;
+    private boolean closeMenu;
 
-    public StopNoteActionChain(boolean render, boolean transfer, boolean saveToDatabase, boolean showDialog, boolean stop) {
+    public StopNoteActionChain(boolean render, boolean transfer, boolean saveToDatabase, boolean showDialog, boolean stop, boolean closeMenu) {
         this.render = render;
         this.transfer = transfer;
         save = saveToDatabase;
         show = showDialog;
         this.quit = stop;
+        this.closeMenu = closeMenu;
     }
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final ActionChain actionChain = new ActionChain();
         if (quit) {
+            readerDataHolder.getNoteManager().stopRawEventProcessor();
             actionChain.addAction(new StopNoteAction());
         }
         actionChain.addAction(new FlushNoteAction(readerDataHolder.getVisiblePages(), render, transfer, save, show));
-        actionChain.addAction(new CloseNoteMenuAction());
+        if (closeMenu) {
+            actionChain.addAction(new CloseNoteMenuAction());
+        }
         actionChain.execute(readerDataHolder, callback);
     }
 

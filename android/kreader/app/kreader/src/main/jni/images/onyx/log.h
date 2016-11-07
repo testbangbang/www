@@ -4,7 +4,7 @@
 #include <android/log.h>
 
 
-#define LOG_TAG "libonyx_images"
+#define LOG_TAG "neo_images"
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define LOGT(...) __android_log_print(ANDROID_LOG_INFO,"alert",__VA_ARGS__)

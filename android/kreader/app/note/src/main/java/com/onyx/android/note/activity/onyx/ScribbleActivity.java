@@ -23,6 +23,7 @@ import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.ScribbleSubMenu;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -69,8 +70,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView undoBtn = (ImageView) findViewById(R.id.button_undo);
         ImageView redoBtn = (ImageView) findViewById(R.id.button_redo);
         ImageView saveBtn = (ImageView) findViewById(R.id.button_save);
-        ImageView settingBtn = (ImageView) findViewById(R.id.button_settings);
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
+        exportBtn.setVisibility(NoteAppConfig.sharedInstance(this).isEnableExport() ? View.VISIBLE : View.GONE);
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         ContentView functionContentView = (ContentView) findViewById(R.id.function_content_view);
         functionContentView.setShowPageInfoArea(false);
@@ -128,12 +129,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onClick(View v) {
                 onSave(false);
-            }
-        });
-        settingBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSetting();
             }
         });
         exportBtn.setOnClickListener(new View.OnClickListener() {
@@ -195,10 +190,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void onExport() {
         testSpan();
-    }
-
-    private void onSetting() {
-
     }
 
     private void onSave(final boolean finishAfterSave) {
@@ -306,6 +297,18 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 break;
             case ScribbleSubMenuID.BG_GRID:
                 setBackgroundType(NoteBackgroundType.GRID);
+                onBackgroundChanged();
+                break;
+            case ScribbleSubMenuID.BG_MUSIC:
+                setBackgroundType(NoteBackgroundType.MUSIC);
+                onBackgroundChanged();
+                break;
+            case ScribbleSubMenuID.BG_MATS:
+                setBackgroundType(NoteBackgroundType.MATS);
+                onBackgroundChanged();
+                break;
+            case ScribbleSubMenuID.BG_ENGLISH:
+                setBackgroundType(NoteBackgroundType.ENGLISH);
                 onBackgroundChanged();
                 break;
         }

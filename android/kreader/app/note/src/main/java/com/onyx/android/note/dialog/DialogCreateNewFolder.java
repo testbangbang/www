@@ -3,6 +3,7 @@ package com.onyx.android.note.dialog;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,14 @@ public class DialogCreateNewFolder extends OnyxAlertDialog {
 
     private OnCreateListener mOnCreatedListener;
     EditText mInputEditText = null;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (NoteAppConfig.sharedInstance(getActivity()).showInputMethodInstantlyAfterOpenDialog()) {
+            getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
