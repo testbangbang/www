@@ -4,9 +4,15 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.content.Context;
+import android.text.InputType;
+import android.text.Selection;
+import android.text.Spannable;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import com.onyx.kreader.R;
 
@@ -54,6 +60,19 @@ public class DialogPassword extends DialogBase {
             public void onClick(View v) {
                 notifyPasswordEntered(false, null);
                 DialogPassword.this.cancel();
+            }
+        });
+
+        CheckBox showPassword = (CheckBox) this.findViewById(R.id.show_password);
+        showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                txt_pwd.setInputType(isChecked ? InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                CharSequence charSequence = txt_pwd.getText();
+                if (charSequence instanceof Spannable) {
+                    Spannable spanText = (Spannable) charSequence;
+                    Selection.setSelection(spanText, charSequence.length());
+                }
             }
         });
     }

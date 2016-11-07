@@ -274,6 +274,7 @@
     <string name="open_document_failed">Open document failed!</string>
     <string name="annotation_export_format" formatted="false">Page %d   %s \n%s\n</string>
     <string name="fail_create_export_directory">Failed to create export directory: </string>
+    <string name="show_password">Show the password</string>
 
     <string name="fast">fast</string>
     <string name="faster">faster</string>
