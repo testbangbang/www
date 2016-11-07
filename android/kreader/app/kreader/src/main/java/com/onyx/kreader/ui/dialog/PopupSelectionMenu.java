@@ -6,9 +6,7 @@ package com.onyx.kreader.ui.dialog;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.RectF;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -59,8 +56,11 @@ public class PopupSelectionMenu extends LinearLayout {
     private View mDictNextPage;
     private View mDictPrevPage;
     private View webViewDividerLine;
+    private View topDividerLine;
     private ImageView highlightView;
     private TextView highLightText;
+    private int viewHeight;
+    private int viewWidth;
     /**
      * eliminate compiler warning
      *
@@ -81,15 +81,15 @@ public class PopupSelectionMenu extends LinearLayout {
         inflater.inflate(R.layout.popup_selection_menu, this, true);
         mMenuCallback = menuCallback;
 
-        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        p.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        layout.addView(this, p);
+        viewWidth = (int) (readerDataHolder.getDisplayWidth() * 0.9);
+        viewHeight = (int) (readerDataHolder.getDisplayHeight() * 0.4);
+        layout.addView(this);
 
         highlightView = (ImageView) findViewById(R.id.imageview_highlight);
         highLightText = (TextView) findViewById(R.id.highLightText);
         mDictTitle = (TextView) findViewById(R.id.dict_title);
         webViewDividerLine = findViewById(R.id.webView_divider_line);
+        topDividerLine = findViewById(R.id.top_divider_line);
         mDictNextPage = findViewById(R.id.dict_next_page);
         mDictNextPage.setOnClickListener(new OnClickListener() {
 
@@ -189,6 +189,11 @@ public class PopupSelectionMenu extends LinearLayout {
         setVisibility(View.GONE);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     Activity getActivity() {
         return mActivity;
     }
@@ -251,7 +256,7 @@ public class PopupSelectionMenu extends LinearLayout {
             setY(y);
         }else {
             float y = end.bottom + dividerHeight;
-            y = isShowTranslation() ? screenHeight - measuredHeight - dividerHeight : Math.min(y,screenHeight - measuredHeight);
+            y = isShowTranslation() ? screenHeight - viewHeight - dividerHeight : Math.min(y,screenHeight - measuredHeight);
             setY(y);
         }
     }
@@ -265,13 +270,21 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     public void hideTranslation() {
+        setLayoutParams(viewWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.webViewDividerLine.setVisibility(GONE);
         this.findViewById(R.id.layout_dict).setVisibility(View.GONE);
     }
 
     public void showTranslation() {
+        setLayoutParams(viewWidth, viewHeight);
         this.webViewDividerLine.setVisibility(VISIBLE);
         this.findViewById(R.id.layout_dict).setVisibility(View.VISIBLE);
+    }
+
+    public void setLayoutParams(int w, int h) {
+        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(w, h);
+        p.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        setLayoutParams(p);
     }
 
     private void updateTranslation(final ReaderDataHolder readerDataHolder, String token) {
@@ -280,7 +293,12 @@ public class PopupSelectionMenu extends LinearLayout {
         dictionaryQueryAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                mWebView.loadDataWithBaseURL(null, dictionaryQueryAction.getExpString(), "text/html", "utf-8", null);
+                String dict = dictionaryQueryAction.getDictPath();
+                String url = "file:///";
+                if(dict != null) {
+                    url += dict.substring(0, dict.lastIndexOf("/"));
+                }
+                mWebView.loadDataWithBaseURL(url, dictionaryQueryAction.getExpString(), "text/html", "utf-8", "about:blank");
             }
         });
     }
