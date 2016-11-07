@@ -186,6 +186,8 @@ public class HTMLReaderWebView extends WebView
         getSettings().setBuiltInZoomControls(false);
         setVerticalScrollBarEnabled(false);
         setHorizontalScrollBarEnabled(false);
+        getSettings().setDefaultTextEncodingName("UTF-8");
+        getSettings().setBlockNetworkImage(false);
 
         setOnLongClickListener(new OnLongClickListener() {
             @Override
