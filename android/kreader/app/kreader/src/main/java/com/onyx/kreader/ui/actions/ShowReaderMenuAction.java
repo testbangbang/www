@@ -570,7 +570,7 @@ public class ShowReaderMenuAction extends BaseAction {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
-        actionChain.addAction(new ChangeStrokeWidthAction(width));
+        actionChain.addAction(new ChangeStrokeWidthAction(width, true));
         actionChain.execute(readerDataHolder, null);
     }
 

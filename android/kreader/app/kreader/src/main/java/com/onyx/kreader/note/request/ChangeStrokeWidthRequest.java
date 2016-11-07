@@ -1,5 +1,6 @@
 package com.onyx.kreader.note.request;
 
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.kreader.note.NoteManager;
@@ -10,15 +11,20 @@ import com.onyx.kreader.note.NoteManager;
 public class ChangeStrokeWidthRequest extends ReaderBaseNoteRequest {
 
     private volatile float newWidth;
+    private volatile boolean switchToDrawing;
 
-    public ChangeStrokeWidthRequest(float width) {
+    public ChangeStrokeWidthRequest(float width, boolean toDrawing) {
         setAbortPendingTasks(false);
         newWidth = width;
+        switchToDrawing = toDrawing;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
         noteManager.setCurrentStrokeWidth(newWidth);
+        if (switchToDrawing) {
+            noteManager.setCurrentShapeType(NoteDrawingArgs.defaultShape());
+        }
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
         updateShapeDataInfo(noteManager);
     }
