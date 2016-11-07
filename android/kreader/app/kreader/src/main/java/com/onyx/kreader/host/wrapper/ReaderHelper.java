@@ -66,6 +66,8 @@ public class ReaderHelper {
     private ImageReflowManager imageReflowManager;
     private BitmapSoftLruCache bitmapCache;
 
+    private boolean layoutChanged = false;
+
     public ReaderHelper() {
     }
 
@@ -164,7 +166,7 @@ public class ReaderHelper {
     }
 
     public void onLayoutChanged() {
-
+        setLayoutChanged(true);
     }
 
     public void onPositionChanged(final String oldPosition, final String newPosition) {
@@ -197,11 +199,7 @@ public class ReaderHelper {
     }
 
     public ReaderLayoutManager getReaderLayoutManager() {
-        return getReaderLayoutManager(false);
-    }
-
-    public ReaderLayoutManager getReaderLayoutManager(boolean createNew) {
-        if (readerLayoutManager == null || createNew) {
+        if (readerLayoutManager == null) {
             readerLayoutManager = new ReaderLayoutManager(this,
                     getDocument(),
                     getNavigator(),
@@ -236,6 +234,14 @@ public class ReaderHelper {
         return bitmapCache;
     }
 
+    public void setLayoutChanged(boolean layoutChanged) {
+        this.layoutChanged = layoutChanged;
+    }
+
+    public boolean isLayoutChanged() {
+        return layoutChanged;
+    }
+
     public void initData(Context context) {
         initImageReflowManager(context);
         initBitmapCache();
@@ -244,7 +250,7 @@ public class ReaderHelper {
 
     private void initLayoutManager() {
         updateView();
-        getReaderLayoutManager(true).init();
+        getReaderLayoutManager().init();
     }
 
     private void initWordAnalyzerInBackground() {

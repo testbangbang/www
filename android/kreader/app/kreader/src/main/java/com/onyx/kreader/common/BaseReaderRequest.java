@@ -195,7 +195,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     private void cleanup(final Reader reader) {
         reader.getReaderHelper().clearAbortFlag();
-        reader.getReaderLayoutManager().setLayoutChanged(false);
+        reader.getReaderHelper().setLayoutChanged(false);
     }
 
     public void setLoadPageAnnotation(boolean loadPageAnnotation) {
