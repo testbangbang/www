@@ -66,6 +66,8 @@ public class ReaderHelper {
     private ImageReflowManager imageReflowManager;
     private BitmapSoftLruCache bitmapCache;
 
+    private boolean layoutChanged = false;
+
     public ReaderHelper() {
     }
 
@@ -164,7 +166,7 @@ public class ReaderHelper {
     }
 
     public void onLayoutChanged() {
-
+        setLayoutChanged(true);
     }
 
     public void onPositionChanged(final String oldPosition, final String newPosition) {
@@ -230,6 +232,14 @@ public class ReaderHelper {
 
     public BitmapSoftLruCache getBitmapCache() {
         return bitmapCache;
+    }
+
+    public void setLayoutChanged(boolean layoutChanged) {
+        this.layoutChanged = layoutChanged;
+    }
+
+    public boolean isLayoutChanged() {
+        return layoutChanged;
     }
 
     public void initData(Context context) {
