@@ -246,5 +246,4 @@
         <item name="android:layout_width">wrap_content</item>
     </style>
 
-    <dimen name="global_activities_function_icon_size">40dp</dimen>
 </resources>
