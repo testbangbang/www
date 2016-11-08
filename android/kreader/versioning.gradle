@@ -4,13 +4,13 @@ ext.gitBranch = { ->
 
 ext.gitVersionCode = { path ->
     int code = 3000 + ('bash +x ./version_code_from_git.sh ' + path).execute().text.trim().toInteger();
-    println('./get_app_version_from_git.sh ' + path + ' -> ' + code)
+    println('./version_code_from_git.sh ' + path + ' -> ' + code)
     return code
 }
 
 ext.gitHash = { path ->
     String hash = ('bash +x ./hash_code_from_git.sh ' + path).execute().text.trim()
-    println('./get_app_hash_from_git.sh ' + path + ' -> ' + hash)
+    println('./hash_code_from_git.sh ' + path + ' -> ' + hash)
     return hash
 }
 
