@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.onyx.android.note.activity.onyx.ManagerActivity">
 
     <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
@@ -69,19 +70,23 @@
             </LinearLayout>
 
 
-            <ImageView
+            <com.onyx.android.sdk.ui.view.CustomIconView
                 android:id="@+id/add_folder_btn"
-                style="@style/global_activities_function_icon"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/button_sort_by"
-                android:src="@drawable/ic_folder_add" />
+                android:src="@drawable/ic_folder_add"
+                app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
 
-            <ImageView
+            <com.onyx.android.sdk.ui.view.CustomIconView
                 android:id="@+id/button_sort_by"
-                style="@style/global_activities_function_icon"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_marginRight="15dp"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/button_filter" />
+                android:src="@drawable/button_filter"
+                app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
 
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
