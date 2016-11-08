@@ -17,4 +17,8 @@
     <declare-styleable name="CompoundButton">
         <attr name="android:button" />
     </declare-styleable>
+
+    <declare-styleable name="CustomIconView">
+        <attr name="iconDrawingSize" format="dimension" />
+    </declare-styleable>
 </resources>

@@ -328,9 +328,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private GAdapter getFunctionAdapter() {
         if (adapter == null) {
             adapter = new GAdapter();
-            adapter.addObject(createFunctionItem(R.drawable.ic_width, ScribbleMenuCategory.PEN_WIDTH));
             adapter.addObject(createFunctionItem(R.drawable.ic_shape, ScribbleMenuCategory.PEN_STYLE));
             adapter.addObject(createFunctionItem(R.drawable.ic_eraser, ScribbleMenuCategory.ERASER));
+            adapter.addObject(createFunctionItem(R.drawable.ic_width, ScribbleMenuCategory.PEN_WIDTH));
             adapter.addObject(createFunctionItem(R.drawable.ic_template, ScribbleMenuCategory.BG));
         }
         return adapter;
