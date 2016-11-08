@@ -3,7 +3,7 @@ ext.gitBranch = { ->
 }
 
 ext.gitVersionCode = { path ->
-    int code = 3000 + ('./get_app_version_from_git.sh ' + path).execute().text.trim().toInteger();
+    int code = 3000 + ('bash +x ./get_app_version_from_git.sh ' + path).execute().text.trim().toInteger();
     println('./get_app_version_from_git.sh ' + path + ' -> ' + code)
     return code
 }
