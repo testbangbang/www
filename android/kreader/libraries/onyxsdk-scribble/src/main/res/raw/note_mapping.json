@@ -26,6 +26,12 @@
     { "orientation" : 270,  "tx" : 0, "ty" : 1080},
     { "orientation" : 180,  "tx" : 1440, "ty" : 1080}],
 
+  "t76": [ { "orientation" : 90,  "tx" : 1440, "ty" : 0},
+    { "orientation" : 0,  "tx" : 0, "ty" : 0},
+    { "orientation" : 270,  "tx" : 0, "ty" : 1080},
+    { "orientation" : 180,  "tx" : 1440, "ty" : 1080}],
+
+
   "kepler": [ { "orientation" : 270,  "tx" : 0, "ty" : 1072},
     { "orientation" : 0,  "tx" : 0, "ty" : 0},
     { "orientation" : 90,  "tx" : 1448, "ty" : 0},
