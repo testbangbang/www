@@ -2,8 +2,10 @@ ext.gitBranch = { ->
     return 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
 }
 
-ext.gitVersionCode = { ->
-    return 'git rev-list --count --all'.execute().text.trim().toInteger()
+ext.gitVersionCode = { path ->
+    int code = 3000 + ('git rev-list --count --all ' + path).execute().text.trim().toInteger();
+    println('git rev-list --count --all ' + path + " -> " + code)
+    return code
 }
 
 ext.gitHash = { ->
