@@ -209,7 +209,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="2dp"
-                android:src="@drawable/ic_note_prev_page_black_32dp" />
+                android:src="@drawable/ic_note_prev_page_black" />
 
             <Button
                 android:id="@+id/button_page_progress"
@@ -230,7 +230,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="2dp"
-                android:src="@drawable/ic_note_next_page_black_32dp" />
+                android:src="@drawable/ic_note_next_page_black" />
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>
