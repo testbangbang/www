@@ -128,9 +128,9 @@ class HighlightView {
         initialAspectRatio = this.cropRect.width() / this.cropRect.height();
         drawRect = computeLayout();
 
+        rows = args.rows;
+        columns = args.columns;
         if (isSplitPage) {
-            rows = args.rows;
-            columns = args.columns;
             pointMatrix = initialSplitPoints(rows, columns);
             resetSplitPoints();
         }
