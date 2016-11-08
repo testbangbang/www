@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
+import com.onyx.kreader.host.request.DictionaryQueryRequest;
 import com.onyx.kreader.ui.actions.DictionaryQueryAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -289,10 +290,23 @@ public class PopupSelectionMenu extends LinearLayout {
 
     private void updateTranslation(final ReaderDataHolder readerDataHolder, String token) {
         mDictTitle.setText(token);
+        dictionaryQuery(readerDataHolder, token);
+    }
+
+    private void dictionaryQuery(final ReaderDataHolder readerDataHolder, final String token) {
         final DictionaryQueryAction dictionaryQueryAction = new DictionaryQueryAction(token);
         dictionaryQueryAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                int state = dictionaryQueryAction.getState();
+                if (state == DictionaryQueryRequest.DICT_STATE_LOADING) {
+                    PopupSelectionMenu.this.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            dictionaryQuery(readerDataHolder, token);
+                        }
+                    }, 2000);
+                }
                 String dict = dictionaryQueryAction.getDictPath();
                 String url = "file:///";
                 if(dict != null) {

@@ -28,6 +28,7 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
     private ReaderDataHolder readerDataHolder;
     private String expString = "";
     private String dictPath;
+    private int state;
 
     private String url = "content://com.onyx.dict.DictionaryProvider";
     private String[] columns = new String[] { "_id","state","keyword","explanation","dictPath","dictName","entryIndex"};
@@ -56,7 +57,7 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
                 return;
             }
             if (cursor.moveToFirst()) {
-                int state = cursor.getInt(cursor.getColumnIndex(columns[1]));
+                state = cursor.getInt(cursor.getColumnIndex(columns[1]));
                 switch (state){
                     case DICT_STATE_PARAM_ERROR:
                         expString = readerDataHolder.getContext().getString(R.string.dictionary_error);
@@ -69,7 +70,7 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
                         expString = readerDataHolder.getContext().getString(R.string.no_data);
                         break;
                     case DICT_STATE_LOADING:
-                        expString = readerDataHolder.getContext().getString(R.string.dictionary_data_no_find);
+                        expString = readerDataHolder.getContext().getString(R.string.loading);
                         break;
                 }
             }
@@ -88,5 +89,9 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
 
     public String getExpString() {
         return expString;
+    }
+
+    public int getState() {
+        return state;
     }
 }
