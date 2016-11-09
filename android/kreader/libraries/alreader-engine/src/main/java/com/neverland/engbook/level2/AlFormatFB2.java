@@ -11,65 +11,63 @@ import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.AlStylesOptions;
 
 public class AlFormatFB2 extends AlAXML {
+
+
 	private static final int FB2_TEST_BUF_LENGTH = 1024;
-	private static final String FB2_TEST_STR_1 = "<FictionBook";
+	private static final String FB2_TEST_STR_1 = "<fictionbook";
 	private static final String FB2_TEST_STR_2 = "<?xml";
-	private static final int FB2_BODY_TEXT  = 0;
+	private static final int FB2_BODY_TEXT = 0;
 	private static final int FB2_BODY_NOTES = 1;
 	private static final int FB2_BODY_COMMENT = 2;
 
-	private static final boolean is_support_table = true;
-	
-	private int			section_count;
 
-	private int			image_start;
-	private int			image_stop;
-	private String				image_name;
-	private int			table_start;
-	private int			table_stop;
-	private int			table_present;
-	private int 			content_start;
-	
-	private boolean			isGenre;
-	private boolean			isAuthor;
-	private boolean			isAuthorFirst;
-	private boolean			isAuthorLast;
-	private boolean			isAuthorNick;
-	private boolean			isAuthorMiddle;
-	private boolean			isBookTitle;
-	private boolean			isProgramUsed;
-	private boolean			isTitle0;
-	private boolean			isTitle1;
-	
-	private String				firstAuthor = null;
-	private String				middleAuthor = null;
-	private String				lastAuthor = null;
-	private String				nickAuthor = null;
+	private int section_count;
+
+	private int image_start;
+	private int image_stop;
+	private String image_name;
+	private int content_start;
+
+	private boolean isGenre;
+	private boolean isAuthor;
+	private boolean isAuthorFirst;
+	private boolean isAuthorLast;
+	private boolean isAuthorNick;
+	private boolean isAuthorMiddle;
+	private boolean isBookTitle;
+	private boolean isProgramUsed;
+	private boolean isTitle0;
+	private boolean isTitle1;
+
+	private String firstAuthor = null;
+	private String middleAuthor = null;
+	private String lastAuthor = null;
+	private String nickAuthor = null;
 
 	public static boolean isFB2(AlFiles a) {
-		
+
 		char[] buf_uc = new char[FB2_TEST_BUF_LENGTH];
-		String s;		
-		
-		if (getTestBuffer(a, TAL_CODE_PAGES.CP1251, buf_uc, FB2_TEST_BUF_LENGTH)) {
+		String s;
+
+		if (getTestBuffer(a, TAL_CODE_PAGES.CP1251, buf_uc, FB2_TEST_BUF_LENGTH, true)) {
 			s = String.copyValueOf(buf_uc);
 
-			if  (s.contains(FB2_TEST_STR_1) && s.contains(FB2_TEST_STR_2))
+			if (s.contains(FB2_TEST_STR_1) && s.contains(FB2_TEST_STR_2))
 				return true;
 		}
 
-		if (getTestBuffer(a, TAL_CODE_PAGES.CP1200, buf_uc, FB2_TEST_BUF_LENGTH)) {
+		if (getTestBuffer(a, TAL_CODE_PAGES.CP1200, buf_uc, FB2_TEST_BUF_LENGTH, true)) {
 			s = String.copyValueOf(buf_uc);
-			if  (s.contains(FB2_TEST_STR_1) && s.contains(FB2_TEST_STR_2))
+			if (s.contains(FB2_TEST_STR_1) && s.contains(FB2_TEST_STR_2))
 				return true;
 		}
 
-		if (getTestBuffer(a, TAL_CODE_PAGES.CP1201, buf_uc, FB2_TEST_BUF_LENGTH)) {
+		if (getTestBuffer(a, TAL_CODE_PAGES.CP1201, buf_uc, FB2_TEST_BUF_LENGTH, true)) {
 			s = String.copyValueOf(buf_uc);
-			if  (s.contains(FB2_TEST_STR_1) && s.contains(FB2_TEST_STR_2))
+			if (s.contains(FB2_TEST_STR_1) && s.contains(FB2_TEST_STR_2))
 				return true;
 		}
-				
+
 		return false;
 	}
 
@@ -78,9 +76,6 @@ public class AlFormatFB2 extends AlAXML {
 		image_start = -1;
 		image_stop = -1;
 		image_name = null;
-		table_start = -1;
-		table_stop = -1;
-		table_present = 0;
 		isGenre = false;
 		isAuthor = false;
 		isAuthorFirst = false;
@@ -99,24 +94,25 @@ public class AlFormatFB2 extends AlAXML {
 
 	}
 
-	public void initState(AlBookOptions bookOptions, AlFiles myParent, 
-			AlPreferenceOptions pref, AlStylesOptions stl) {
+	public void initState(AlBookOptions bookOptions, AlFiles myParent,
+						  AlPreferenceOptions pref, AlStylesOptions stl) {
 		allState.isOpened = true;
 
 		xml_mode = true;
 		ident = "FB2";
 
 		aFiles = myParent;
-		
+
 		if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
 			aFiles.needUnpackData();
-		
+
 		preference = pref;
 		styles = stl;
 
+		noUseCover = bookOptions.noUseCover;
 		size = 0;
-					
-		autoCodePage = bookOptions.codePage == TAL_CODE_PAGES.AUTO;		
+
+		autoCodePage = bookOptions.codePage == TAL_CODE_PAGES.AUTO;
 		if (autoCodePage) {
 			setCP(getBOMCodePage(true, true, true, true));
 		} else {
@@ -124,15 +120,20 @@ public class AlFormatFB2 extends AlAXML {
 		}
 		if (use_cpR0 == TAL_CODE_PAGES.AUTO)
 			setCP(bookOptions.codePageDefault);
-		
+
 		allState.state_parser = STATE_XML_SKIP;
 		allState.state_skipped_flag = true;
 
 		allState.state_parser = 0;
 		parser(0, aFiles.getSize());
 		newParagraph();
-		
-		allState.isOpened = false;	
+
+		allState.isOpened = false;
+	}
+
+	@Override
+	public boolean haveNotesOnPage() {
+		return haveNotesOnPageReal;
 	}
 
 	@Override
@@ -250,14 +251,6 @@ public class AlFormatFB2 extends AlAXML {
 		}
 	}
 
-	private boolean addEndTableColumn(boolean mode) {
-		if (mode) {
-			addTextFromTag(" ║ ", false);
-		} else {
-			addTextFromTag(" | ", false);
-		}
-		return true;
-	}
 
 	private void addAuthor() {
 		StringBuilder s = new StringBuilder();
@@ -415,7 +408,7 @@ public class AlFormatFB2 extends AlAXML {
 
                 }
                 return true;
-            case AlFormatTag.TAG_CSTYLE:
+            /*case AlFormatTag.TAG_CSTYLE:
                 if (tag.closed) {
                     clearTextStyle(AlStyles.PAR_STYLE_CSTYLE);
                 } else
@@ -424,7 +417,7 @@ public class AlFormatFB2 extends AlAXML {
                 } else {
 
                 }
-                return true;
+                return true;*/
             case AlFormatTag.TAG_STRIKE:
             case AlFormatTag.TAG_DEL:
             case AlFormatTag.TAG_STRIKETHROUGH:
@@ -587,7 +580,7 @@ public class AlFormatFB2 extends AlAXML {
                 return true;
             case AlFormatTag.TAG_DATE:
                 if (tag.closed) {
-                    clearParagraphStyle(AlStyles.PAR_DATE);
+                    clearParagraphStyle(AlStyles.PAR_AUTHOR);
                     newParagraph();
                     newEmptyStyleParagraph();
                 } else
@@ -595,7 +588,7 @@ public class AlFormatFB2 extends AlAXML {
                     newParagraph();
                     if ((paragraph & (AlStyles.PAR_STANZA | AlStyles.PAR_POEM)) != 0)
                         newEmptyStyleParagraph();
-                    setParagraphStyle(AlStyles.PAR_DATE);
+                    setParagraphStyle(AlStyles.PAR_AUTHOR);
                 } else {
 
                 }
@@ -679,86 +672,6 @@ public class AlFormatFB2 extends AlAXML {
 
                 } else {
                     addImages();
-                }
-                return true;
-            case AlFormatTag.TAG_TABLE:
-                if (tag.closed) {
-					//noinspection PointlessBooleanExpression
-					if (!is_support_table) {
-                        clearParagraphStyle(AlStyles.PAR_TABLE);
-                        newParagraph();
-                    } else {
-                        if (allState.isOpened) {
-                            table_present--;
-                            if (table_present == 0 && table_start != -1) {
-                                table_stop = allState.start_position;//tag.start_pos;
-                                addTable(AlOneTable.add(table_start, table_start, table_stop));
-                                table_start = -1;
-                                allState.state_skipped_flag = false;
-                            }
-                            newParagraph();
-                        }
-                    }
-                } else
-                if (!tag.ended) {
-                    newParagraph();
-					//noinspection PointlessBooleanExpression
-					if (!is_support_table) {
-                        setParagraphStyle(AlStyles.PAR_TABLE);
-                    } else {
-                        String s1 = (char)AlStyles.CHAR_LINK_S + "table:" + Integer.toString(allState.start_position_par) + (char)AlStyles.CHAR_LINK_E;
-                        StringBuilder s2 = tag.getATTRValue(AlFormatTag.TAG_TITLE);
-                        String s3 = (char)AlStyles.CHAR_IMAGE_S + LEVEL2_TABLETOTEXT_STR + (char)AlStyles.CHAR_IMAGE_E;
-
-                        if (allState.isOpened) {
-                            table_present++;
-                            if (table_present == 1) {
-                                table_start = allState.start_position_par;
-                                newEmptyTextParagraph();
-                                setParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_CENTER);
-                                addTextFromTag(s1, false);
-                                setTextStyle(AlStyles.PAR_STYLE_LINK);
-                                addTextFromTag(s3, false);
-                                addTextFromTag(s2 == null ? "Table" : s2.toString(), false);
-                                clearTextStyle(AlStyles.PAR_STYLE_LINK);
-                                clearParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_MASK);
-                                newParagraph();
-                                newEmptyTextParagraph();
-                            }
-                            allState.state_skipped_flag = true;
-                        } else {
-                            addTextFromTag(s1, false);
-                            setTextStyle(AlStyles.PAR_STYLE_LINK);
-                            addTextFromTag(s3, false);
-                            addTextFromTag(s2 == null ? "Table" : s2.toString(), false);
-                            clearTextStyle(AlStyles.PAR_STYLE_LINK);
-                        }
-
-                    }
-                } else {
-
-                }
-                return true;
-            case AlFormatTag.TAG_TH:
-            case AlFormatTag.TAG_TD:
-                if (tag.closed) {
-                    addEndTableColumn(false);
-                } else
-                if (!tag.ended) {
-
-                } else {
-
-                }
-                return true;
-            case AlFormatTag.TAG_TR:
-                if (tag.closed) {
-                    newParagraph();
-                } else
-                if (!tag.ended) {
-                    newParagraph();
-                    addEndTableColumn(true);
-                } else {
-
                 }
                 return true;
 
@@ -858,7 +771,7 @@ public class AlFormatFB2 extends AlAXML {
                         setParagraphStyle(AlStyles.PAR_DESCRIPTION1);
                         clearParagraphStyle(AlStyles.PAR_COVER);
                     } else {
-                        if (coverName != null) {
+                        if (coverName != null && !noUseCover) {
                             addCharFromTag((char)AlStyles.CHAR_IMAGE_S, false);
                             addCharFromTag(LEVEL2_COVERTOTEXT, false);
                             addCharFromTag((char)AlStyles.CHAR_IMAGE_E, false);
@@ -1035,6 +948,12 @@ public class AlFormatFB2 extends AlAXML {
                     }
                 }
                 return true;
+
+			case AlFormatTag.TAG_TABLE:
+			case AlFormatTag.TAG_TH:
+			case AlFormatTag.TAG_TD:
+			case AlFormatTag.TAG_TR:
+				return prepareTable();
         }
 
         return false;

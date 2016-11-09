@@ -14,7 +14,9 @@ public final class AlStyles {
 	public static final int CHAR_ANYCHAR = 		0x0008; // for find text
 	public static final int CHAR_SOFTPAR =		0x000a;	
 	public static final int CHAR_TITLEIMG_START=0x000b;
-	public static final int CHAR_TITLEIMG_STOP =0x000c;	
+	public static final int CHAR_TITLEIMG_STOP =0x000c;
+	public static final int	CHAR_ROWS_S =		0x000e;
+	public static final int	CHAR_ROWS_E =		0x000f;
 
 	
 	// text style specific value
@@ -27,7 +29,7 @@ public final class AlStyles {
 	public static final int	PAR_STYLE_STRIKE =						0x00000040;
 	public static final int	PAR_STYLE_CODE =						0x00000080;
 	public static final int	PAR_STYLE_RAZR =						0x00000100;
-	public static final int	PAR_STYLE_CSTYLE =						0x00000200;
+	public static final int	PAR_STYLE_HIDDEN =						0x00000200;
 	public static final int PAR_STYLE_MASK = 						0x000003ff; // !!
 	public static final int PAR_STYLE_IMASK = 						0xfffffc00; // !!
 	public static final int PAR_STYLE_ICHARMASK =						0xfc00;
@@ -55,12 +57,12 @@ public final class AlStyles {
 	public static final long	PAR_CUSTOM = 				0x0008000000000000L;	//?*/
 
 	public static final long	PAR_TEXT =					0x0000000000000000L;
-	//public static final long	 = 							0x0000000100000000L; //! reserved for just
-	//public static final long	 =							0x0000000200000000L;
-	public static final long	PAR_DATE = 					0x0000000400000000L; //!
+	//public static final long	 = 							0x0000000100000000L; //! value use with PAR_NATIVEJUST
+	//public static final long	 =							0x0000000200000000L; //! value use with PAR_NATIVEJUST
+	public static final long	PAR_TABLE = 				0x0000000400000000L;
 	public static final long	PAR_STANZA =				0x0000000800000000L;
 	public static final long	PAR_POEM = 					0x0000001000000000L;	//?
-	public static final long	PAR_TABLE =					0x0000002000000000L; //?
+	public static final long	PAR_HIDDEN =				0x0000002000000000L; // view only drawing table and footnotes
 	public static final long 	PAR_UL =					0x0000004000000000L;
 	public static final long 	PAR_V =						0x0000008000000000L;
 	public static final long 	PAR_COVER =					0x0000010000000000L;
@@ -137,7 +139,7 @@ public final class AlStyles {
 	public static final int	STYLE_STRIKE =		PAR_STYLE_STRIKE;
 	public static final int	STYLE_CODE =		PAR_STYLE_CODE;
 	public static final int	STYLE_RAZR =		PAR_STYLE_RAZR;
-	public static final int	STYLE_CSTYLE =		PAR_STYLE_CSTYLE;
+	public static final int	STYLE_HIDDEN =		PAR_STYLE_HIDDEN;
 	
 	public static final long	SL_ITALIC =		PAR_STYLE_ITALIC;
 	public static final long	SL_BOLD =		PAR_STYLE_BOLD;
@@ -148,7 +150,7 @@ public final class AlStyles {
 	public static final long	SL_STRIKE =		PAR_STYLE_STRIKE;
 	public static final long	SL_CODE =		PAR_STYLE_CODE;
 	public static final long	SL_RAZR =		PAR_STYLE_RAZR;
-	public static final long 	SL_CSTYLE =		PAR_STYLE_CSTYLE;
+	public static final long 	SL_HIDDEN =		PAR_STYLE_HIDDEN;
 	
 	public static final long	SL_MASKFORLINK =	SL_LINK | SL_UNDER | SL_SUP | SL_SUB;
 	
@@ -317,7 +319,9 @@ public final class AlStyles {
 	public static final long	SL_CHINEZEADJUST =	0x0010000000000000L;
 	public static final long	SL_STANZA =			0x0020000000000000L;
 	public static final long	SL_ENDPARAGRAPH =	0x0040000000000000L;
-	public static final long	SL_RESERV =			0x0F80000000000000L;
+
+	public static final long	SL_TABLE = 			0x0080000000000000L;
+	public static final long	SL_RESERV =			0x0F00000000000000L;
 		
 	public static final long	SL_UL_BASE = 		0xf000000000000000L;
 	public static final long	SL_UL_MASK = 		0xf;

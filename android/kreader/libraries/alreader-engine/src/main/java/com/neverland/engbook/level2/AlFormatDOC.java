@@ -20,6 +20,8 @@ import com.neverland.engbook.util.AlStylesOptions;
 @SuppressWarnings("ConstantConditions")
 public class AlFormatDOC extends AlFormat {
 
+    private static final String NOTEFORMAT = "_@%d@@@%d@";
+
     public static boolean isDOC(AlFiles a) {
         //noinspection RedundantIfStatement
         if (a.getIdentStr().contentEquals("doc"))
@@ -28,7 +30,7 @@ public class AlFormatDOC extends AlFormat {
     }
 
     AlFileDoc aDoc = null;
-    private StringBuilder			titles = new StringBuilder();
+    private final StringBuilder			titles = new StringBuilder();
     private int 					section_count = 0;
     private boolean is_hidden = false;
     static final int FRM_DOC_HIDDEN	=	0x80000000;
@@ -57,7 +59,13 @@ public class AlFormatDOC extends AlFormat {
             autoCodePage = bookOptions.codePage == TAL_CODE_PAGES.AUTO;
             if (autoCodePage) {
                 //setCP(aDoc.getCodePage());
-                setCP(aFiles.getCodePage());
+                int cp = aFiles.getCodePage();
+                if (cp == 1252) {
+                    int c = getBOMCodePage(false, false, false, true);
+                    if (c != TAL_CODE_PAGES.AUTO)
+                        cp = c;
+                }
+                setCP(cp);
             } else {
                 setCP(bookOptions.codePage);
             }
@@ -87,11 +95,6 @@ public class AlFormatDOC extends AlFormat {
                 lnk.get(i).positionS = findParagraphPositionBySourcePos(0, par.size(), isUnicode ? ap.positionS << 1 : ap.positionS);
             }
         }
-    }
-
-    @Override
-    protected void prepareCustom() {
-
     }
 
     @Override
@@ -156,13 +159,17 @@ public class AlFormatDOC extends AlFormat {
                 parPositionE = allState.start_position;
             }
         } else {
-            if (allState.text_present) {
-                stored_par.data[stored_par.cpos++] = ch;
-            } else
-            if (ch != 0x20) {
-                stored_par.data[stored_par.cpos++] = ch;
-                allState.text_present = true;
-            }
+            //try {
+                if (allState.text_present) {
+                    stored_par.data[stored_par.cpos++] = ch;
+                } else if (ch != 0x20) {
+                    stored_par.data[stored_par.cpos++] = ch;
+                    allState.text_present = true;
+                }
+            /*} catch (Exception e) {
+                e.printStackTrace();
+                haveProblem = true;
+            }*/
         }
     }
 
@@ -237,7 +244,26 @@ public class AlFormatDOC extends AlFormat {
                         allState.state_skipped_flag = false;
                         allState.state_special_flag0 = false;
 
-                        String s = state_specialBuff0.toString().trim();
+                        String slink = getHyperLink(state_specialBuff0.toString());
+                        if (slink.length() > 0) {
+                            addCharFromTag((char)AlStyles.CHAR_LINK_S, false);
+                            addTextFromTag(slink, false);
+                            addCharFromTag((char)AlStyles.CHAR_LINK_E, false);
+                            setTextStyle(AlStyles.STYLE_LINK);
+                            allState.state_parser = STATE_LINK14;
+
+                            if (allState.isOpened) {
+                                Integer it = aDoc.bookmarks != null ?
+                                        aDoc.bookmarks.get(slink) : null;
+                                if (it != null) {
+                                    lnk.add(AlOneLink.add(slink, it, 0));
+                                }
+                            }
+
+                            break;
+                        }
+
+                        /*String s = state_specialBuff0.toString().trim();
                         if (s.length() > 0) {
                             while (s.contains("  ")) {
                                 s = s.replace("  ", " ");
@@ -285,7 +311,7 @@ public class AlFormatDOC extends AlFormat {
                                     break;
                                 }
                             }
-                        }
+                        }*/
                         allState.state_parser = STATE_LINKNO;
                 }
                 break;
@@ -434,8 +460,11 @@ public class AlFormatDOC extends AlFormat {
                         allState.start_position < aDoc.format.start ||
                                 allState.start_position >= aDoc.format.limit) {
 
+                    aDoc.getFormat(allState.start_position == 0 ? 0 : allState.start_position - (aDoc.isUnicode() ? 2 : 1));
+                    int prev_special = aDoc.format.special();
                     aDoc.getFormat(allState.start_position);
                     int real_format = aDoc.format.value;
+                    int real_special = aDoc.format.special();
 
                     if ((real_format & AlFileDoc.Format.STYLE_NEWPAR) != 0) {
                         allState.start_position_par = allState.start_position;
@@ -504,48 +533,56 @@ public class AlFormatDOC extends AlFormat {
                             titles.setLength(0);
                         }
                     }
+
+                    if (prev_special != real_special) {
+                        switch (prev_special) {
+                            case 0x02: // FOOTREF
+                            case 0x04: // ENDREF
+                                clearTextStyle(AlStyles.STYLE_LINK);
+                                break;
+
+                            case 0x03: // FOOTTEXT
+                            case 0x05: // ENDTEXT
+
+                                break;
+                        }
+                        switch (real_special) {
+                            case 0x02: // FOOTREF
+                            case 0x04: // ENDREF
+                                addTextFromTag((char)AlStyles.CHAR_LINK_S + String.format(NOTEFORMAT,
+                                        real_special, aDoc.format.xnote) + (char)AlStyles.CHAR_LINK_E, false);
+
+                                setTextStyle(AlStyles.STYLE_LINK);
+
+                                if (ch == 0x02)
+                                    addTextFromTag(String.format("{%d}", aDoc.format.xnote), false);
+                                break;
+
+
+                            case 0x05: // ENDTEXT
+                                /*if (preference.onlyPopupFootnote)
+                                    clearTextStyle(AlStyles.PAR_STYLE_HIDDEN);*/
+                            case 0x03: // FOOTTEXT
+                                closeOpenNotes();
+
+                                if (allState.isOpened)
+                                    lnk.add(AlOneLink.add(String.format(NOTEFORMAT,
+                                            real_special - 1, aDoc.format.xnote), size, 1));
+
+                                if (preference.onlyPopupFootnote)
+                                    setTextStyle(AlStyles.PAR_STYLE_HIDDEN);
+
+                                if (ch == 0x02)
+                                    addTextFromTag(String.format("%d ", aDoc.format.xnote), false);
+                                break;
+                        }
+
+                    }
                 }
 
                 if (ch < 0x20) {
                     switch (ch) {
                         case 0x02:
-
-                            //В общем почитал я документацию - там не совсем так.
-                            //Смотреть надо сначала special, там 2 - текст сноски, 3 - ссылка на сноску.
-                            //
-                            //А с текстом ссылки хитрее - если текущий символ 0х02 - то это сноска
-                            //с автонумерацией, но там может быть и любой другой текст - тогда это
-                            //сноска с ручной нумерацией.
-                            //При ручной нумерации границы текста - с format.start по format.limit.
-
-                            //При этом в xnote лежит порядковый номер сноски включая и авто и ручные,
-                            //то есть если для авто использовать xnote - будут пропуски:
-                            //например имеем [0x02] [123] [0x02] - получим "1" "123" "3"
-
-                            switch (aDoc.format.special()) {
-                                case 2:
-                                case 4:
-                                case 6:
-                                    addTextFromTag((char)AlStyles.CHAR_LINK_S + String.format("_@%d@@@%d@",
-                                            aDoc.format.special(), aDoc.format.xnote) + (char)AlStyles.CHAR_LINK_E, false);
-                                    final boolean need_sup = (paragraph & AlStyles.STYLE_LINK) == 0;
-                                    if (need_sup)
-                                        setTextStyle(AlStyles.STYLE_SUP);
-                                    setTextStyle(AlStyles.STYLE_LINK);
-                                    addTextFromTag("{*}", true);
-                                    if (need_sup)
-                                        clearTextStyle(AlStyles.STYLE_SUP);
-                                    clearTextStyle(AlStyles.STYLE_LINK);
-                                    break;
-                                case 3:
-                                case 5:
-                                case 7:
-                                    if (allState.isOpened) {
-                                        lnk.add(AlOneLink.add(String.format("_@%d@@@%d@",
-                                                aDoc.format.special() - 1, aDoc.format.xnote), size, 1));
-                                    }
-                                    break;
-                            }
 
                             break;
                         case 0x09:
@@ -623,6 +660,6 @@ public class AlFormatDOC extends AlFormat {
         return im.get(im.size() - 1);
     }
 
-    private static int DOCSTYLEMASK = AlStyles.STYLE_ITALIC | AlStyles.STYLE_BOLD | AlStyles.STYLE_UNDER |
+    private static final int DOCSTYLEMASK = AlStyles.STYLE_ITALIC | AlStyles.STYLE_BOLD | AlStyles.STYLE_UNDER |
             AlStyles.STYLE_STRIKE | AlStyles.STYLE_SUP | AlStyles.STYLE_SUB;
 }

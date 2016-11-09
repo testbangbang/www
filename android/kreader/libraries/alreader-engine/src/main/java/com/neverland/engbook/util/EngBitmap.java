@@ -41,6 +41,7 @@ public class EngBitmap {
 			return true;
 
 		// ��������� ��� ����
+		if (shtamp != null)
 		shtamp.value++;	
 
 		// ����� ������ ��������� ��������� ��� - �� ������ bmp->bmp ������ ���� ������� ����� ������

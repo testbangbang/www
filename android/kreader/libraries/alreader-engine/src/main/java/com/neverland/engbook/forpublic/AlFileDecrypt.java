@@ -1,19 +1,17 @@
 package com.neverland.engbook.forpublic;
 
-import java.io.IOException;
-
 /**
  * класс-заглушка ддя работы с зашифрованными файлами
  */
 public class AlFileDecrypt {
-    private String str = "test text, simulating a file decryption";
+    private static final String str = "test text, simulating a file decryption";
 
-    private int size = str.length();
+    private static final int size = str.length();
     private int pos = 0;
 
     public final int getSize() {
         return size;
-    };
+    }
 
     public final int open(String fileName, int mode) {
         if (mode != 0)
@@ -35,7 +33,7 @@ public class AlFileDecrypt {
 
     public void close() {
 
-    };
+    }
 
     public int read(byte[] dst, int start, int cnt) {
 

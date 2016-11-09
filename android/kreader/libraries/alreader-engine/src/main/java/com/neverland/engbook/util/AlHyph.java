@@ -24,7 +24,7 @@ public class AlHyph {
 	private byte[] 				mask = null;
 	private final char[]						wordIn = new char [EngBookMyType.AL_WORD_LEN * 2 + 3];
 	private final int[]				wordAdr = new int [EngBookMyType.AL_WORD_LEN * 2 + 3];
-	private int					space_adr = -1;
+	private final int					space_adr = -1;
 
 	private TAL_HYPH_LANG				lang = TAL_HYPH_LANG.NONE;
 	
@@ -285,7 +285,7 @@ public class AlHyph {
 		InputStream is;
 		int	tmp;
 		try {
-			is = opt.assetManager.open(file);
+			is = opt.appInstance.getAssets().open(file);
 
 			tmp = is.read();
 			tmp += is.read() << 8;

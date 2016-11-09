@@ -8,13 +8,14 @@ public class AlXMLTag {
 	public boolean		ended;
 	public boolean		special;
 	public int			start_pos;
-	
+
+	public int			astart;
 	public int			aname;
 	private int			alen;
 	private final char[]		aval = new char[AlAXML.LEVEL2_XML_PARAMETER_VALUE_LEN + 1];
 
 	private int			attr_len = 0;
-	private ArrayList<AlXMLTagParam>		attr = new ArrayList<AlXMLTagParam>();
+	private final ArrayList<AlXMLTagParam>		attr = new ArrayList<>();
 
 	public final void resetTag(int start_position) {
 		clearTag();
@@ -40,7 +41,25 @@ public class AlXMLTag {
 			}
 		}
 		return null;
-	}	
+	}
+
+	public final int getATTRStart(int param){
+		for (int i = 0; i < attr_len; i++) {
+			if (attr.get(i).name == param) {// && attr.get(i).value.length() > 0) {
+				return attr.get(i).start;//.toString();
+			}
+		}
+		return -1;
+	}
+
+	public final int getATTREnd(int param){
+		for (int i = 0; i < attr_len; i++) {
+			if (attr.get(i).name == param) {// && attr.get(i).value.length() > 0) {
+				return attr.get(i).end;//.toString();
+			}
+		}
+		return -1;
+	}
 
 	public final void resetAttr(){
 		attr_len = 0;
@@ -81,11 +100,12 @@ public class AlXMLTag {
 		alen = 0x00;
 	}
 	
-	public final void clearAttrVal(){	
+	public final void clearAttrVal(int start_pos){
 		alen = 0x00;
+		astart = start_pos;
 	}
 
-	public final void addAttribute(){
+	public final void addAttribute(int end_pos){
 		if (alen < 1)
 			return;
 		
@@ -93,12 +113,16 @@ public class AlXMLTag {
 		if (attr_len < attr.size()) {
 			a = attr.get(attr_len);
 			a.name = aname;
+			a.start = astart;
+			a.end = end_pos;
 			a.value.setLength(0);
 			a.value.append(aval, 0, alen);
 		} else {
 			a = new AlXMLTagParam();
 			a.name = aname;
 			a.value.append(aval, 0, alen);
+			a.start = astart;
+			a.end = end_pos;
 			attr.add(a);
 		}
 		attr_len++;		

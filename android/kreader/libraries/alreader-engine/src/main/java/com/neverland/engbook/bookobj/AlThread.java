@@ -6,17 +6,12 @@ import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 
 class AlThread  implements Runnable {
 	
-	private volatile AlThreadData param;
-	private boolean useThread = false;
+	private volatile AlThreadData param;	
 
 	public AlThread(AlThreadData p, TAL_THREAD_TASK t) {
 		param = p;
 		param.task = t;
-		if (useThread) {
-			new Thread(this).start();
-		} else {
-            run();
-        }
+		new Thread(this).start();
 	}
 
     public void run() {
@@ -34,7 +29,12 @@ class AlThread  implements Runnable {
 	    	switch (param.task) {
 	    	case OPENBOOK:
 	    		id = TAL_NOTIFY_ID.OPENBOOK;
-	    		res = param.book_object.openBookInThread(param.param_char1, param.param_void1);
+				try {
+					res = param.book_object.openBookInThread(param.param_char1, param.param_void1);
+				} catch (Exception e) {
+					e.printStackTrace();
+					res = TAL_NOTIFY_RESULT.EXCEPT;
+				}
 	    		break;
 	    	/*case CLOSEBOOK:
 	    		id = TAL_NOTIFY_ID.CLOSEBOOK;
@@ -42,15 +42,30 @@ class AlThread  implements Runnable {
 	    		break;*/
 	    	case CREATEDEBUG:
 	    		id = TAL_NOTIFY_ID.CREATEDEBUG;
-	    		res = param.book_object.createDebugFileInThread(param.param_char1);
+				try {
+	    			res = param.book_object.createDebugFileInThread(param.param_char1);
+				} catch (Exception e) {
+					e.printStackTrace();
+					res = TAL_NOTIFY_RESULT.EXCEPT;
+				}
 	    		break;
 	    	case FIND:
 	    		id = TAL_NOTIFY_ID.FIND;
-	    		res = param.book_object.findTextInThread(param.param_char1);
+				try {
+	    			res = param.book_object.findTextInThread(param.param_char1);
+				} catch (Exception e) {
+					e.printStackTrace();
+					res = TAL_NOTIFY_RESULT.EXCEPT;
+				}
 	    		break;
 	    	case NEWCALCPAGES:
 	    		id = TAL_NOTIFY_ID.NEWCALCPAGES;
-	    		res = param.book_object.calcPagesInThread();
+				try {
+	    			res = param.book_object.calcPagesInThread();
+				} catch (Exception e) {
+					e.printStackTrace();
+					res = TAL_NOTIFY_RESULT.EXCEPT;
+				}
 	    		break;
 	    	}
         	param.sendNotifyForUIThread(TAL_NOTIFY_ID.STOPTHREAD, TAL_NOTIFY_RESULT.OK);

@@ -1,10 +1,5 @@
 package com.neverland.engbook.util;
 
-import com.neverland.engbook.forpublic.EngBookMyType;
-
-
-import android.graphics.Paint;
-
 public class InternalConst {
 
 	public final static int AL_MIN_FONTSIZE = 5;
@@ -59,8 +54,21 @@ public class InternalConst {
 	public enum TAL_CALC_MODE {
 		NORMAL,	
 		NOTES,
+		ROWS,
 	}
 
+	public enum TAL_PAGE_MODE {
+		MAIN,
+		ADDON,
+		ROWS,
+	}
+
+	public enum TAL_LINK_TYPE {
+		LINK,
+		IMAGE,
+		TABLE,
+		ROW,
+	}
 	
 	public final static int TAL_PROFILE_COLOR_TEXT = 0;
 	public final static int TAL_PROFILE_COLOR_BG = 1;

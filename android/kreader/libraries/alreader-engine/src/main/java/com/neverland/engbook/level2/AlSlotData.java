@@ -1,7 +1,5 @@
 package com.neverland.engbook.level2;
 
-import android.util.Log;
-
 import com.neverland.engbook.level1.AlFiles;
 
 public class AlSlotData {

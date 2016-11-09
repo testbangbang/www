@@ -9,7 +9,6 @@ import com.neverland.engbook.util.AlStyles;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.TreeMap;

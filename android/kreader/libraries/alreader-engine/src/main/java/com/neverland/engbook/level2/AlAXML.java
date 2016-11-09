@@ -9,6 +9,9 @@ import com.neverland.engbook.unicode.CP932;
 import com.neverland.engbook.unicode.CP936;
 import com.neverland.engbook.unicode.CP949;
 import com.neverland.engbook.unicode.CP950;
+import com.neverland.engbook.util.AlOneTable;
+import com.neverland.engbook.util.AlOneTableCell;
+import com.neverland.engbook.util.AlOneTableRow;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.InternalFunc;
 
@@ -56,14 +59,19 @@ public abstract class AlAXML extends AlFormat {
 	boolean				dinamicSize = false;
 	int					stop_posUsed;
 
-	@Override
-	protected void prepareCustom() {
-
-	}
+	boolean				noUseCover = false;
 
 	boolean isNeedAttribute(int atr) {
 		//noinspection RedundantIfStatement
 		switch (atr) {
+			case AlFormatTag.TAG_ID:
+			case AlFormatTag.TAG_ROWSPAN:
+			case AlFormatTag.TAG_COLSPAN:
+			case AlFormatTag.TAG_HREF:
+			case AlFormatTag.TAG_IDREF:
+			case AlFormatTag.TAG_NAME:
+			case AlFormatTag.TAG_TYPE:
+			case AlFormatTag.TAG_SRC:
 			case AlFormatTag.TAG_ENCODING:
 			case AlFormatTag.TAG_CHARSET:
 			case AlFormatTag.TAG_CONTENT:
@@ -186,13 +194,15 @@ public abstract class AlAXML extends AlFormat {
 						parPositionS = allState.start_position_par;
 						formatAddonInt();
 						parStart = size;
+						parTableStart = currentTable.start;
+						parTableCounter = currentTable.counter;
 						allState.text_present = true;
 						allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20); 
 						size++;
 						parPositionE = allState.start_position;
 					}
 				}	
-				
+
 				if (allState.state_special_flag0 && addSpecial)
 					state_specialBuff0.append(ch);	
 				
@@ -211,6 +221,236 @@ public abstract class AlAXML extends AlFormat {
 				}
 			}
 		}
+	}
+
+	protected boolean prepareTable() {
+        if (preference.tableMode == EngBookMyType.TAL_TABLEMODE.NONE) {
+            switch (tag.tag) {
+            case AlFormatTag.TAG_TABLE:
+            case AlFormatTag.TAG_TR:
+            case AlFormatTag.TAG_TH:
+            case AlFormatTag.TAG_TD:
+                newParagraph();
+            }
+            return true;
+        }
+
+		switch (tag.tag) {
+			case AlFormatTag.TAG_TABLE:
+				if (allState.isOpened && currentTable.counter == 0)
+					newParagraph();
+
+				if (tag.closed) {
+
+					if (currentTable.counter == 1) {
+						currentTable.stop = allState.start_position;
+
+						if (allState.isOpened) {
+							currentTable.verifyIsOneColumn();
+							currentTable.cntrow = currentTable.rows.size();
+
+							//
+							// colspan scan
+							for (int i = 0; i < currentTable.rows.size(); i++) {
+								for (int j = 0; j < currentTable.rows.get(i).cells.size(); j++) {
+									for (int k = 1; k < currentTable.rows.get(i).cells.get(j).colspan; k++) {
+										currentCell.clear(0);
+										currentCell.start = currentCell.stop = AlOneTable.LEVEL2_TABLE_CELL_COLSPANNED;
+										currentCell.colspan = currentCell.rowspan = 1;
+										currentTable.rows.get(i).cells.add(j + 1, currentCell);
+                                        currentCell = new AlOneTableCell();
+									}
+								}
+							}
+							// rowspan scan
+							for (int i = 0; i < currentTable.rows.size(); i++) {
+								for (int j = 0; j < currentTable.rows.get(i).cells.size(); j++) {
+									for (int m = 1; m < currentTable.rows.get(i).cells.get(j).rowspan; m++) {
+
+										if (i + m < currentTable.rows.size() &&
+												((j < currentTable.rows.get(i + m).cells.size() && currentTable.rows.get(i + m).cells.get(j).start != -1) ||
+														(j == currentTable.rows.get(i + m).cells.size())
+												)
+												) {
+
+											for (int k = 0; k < currentTable.rows.get(i).cells.get(j).colspan; k++) {
+												currentCell.clear(0);
+												currentCell.start = currentCell.stop = (k == currentTable.rows.get(i).cells.get(j).colspan - 1) ?
+														AlOneTable.LEVEL2_TABLE_CELL_ROWSPANNED : AlOneTable.LEVEL2_TABLE_CELL_COLSPANNED;
+												currentCell.colspan = currentCell.rowspan = 1;
+
+												if (j == currentTable.rows.get(i + m).cells.size()) {
+													currentTable.rows.get(i + m).cells.add(currentCell);
+												} else {
+													currentTable.rows.get(i + m).cells.add(j, currentCell);
+												}
+                                                currentCell = new AlOneTableCell();
+											}
+
+										} else break;
+
+									}
+								}
+							}
+							//all row have max column
+							int max_col = 0;
+							for (int i = 0; i < currentTable.rows.size(); i++) {
+								if (max_col < currentTable.rows.get(i).cells.size())
+									max_col = currentTable.rows.get(i).cells.size();
+							}
+							for (int i = 0; i < currentTable.rows.size(); i++) {
+								int cnt_add = max_col - currentTable.rows.get(i).cells.size();
+								for (int j = 0; j < cnt_add; j++) {
+									currentCell.clear(0);
+									currentCell.start = currentCell.stop = AlOneTable.LEVEL2_TABLE_CELL_ALIGNED;
+									currentTable.rows.get(i).cells.add(currentCell);
+                                    currentCell = new AlOneTableCell();
+								}
+							}
+							//
+
+							addTable(currentTable);
+							clearParagraphStyle(AlStyles.PAR_TABLE);
+
+							if (!currentTable.isOneColumn)
+								setParagraphStyle(AlStyles.PAR_NATIVEJUST | (preference.tableMode != EngBookMyType.TAL_TABLEMODE.INTERNAL ? AlStyles.SL_JUST_RIGHT : AlStyles.SL_JUST_LEFT));
+						}
+
+						if (!currentTable.isOneColumn) {
+							StringBuilder s1 = new StringBuilder();
+
+							if (preference.tableMode != EngBookMyType.TAL_TABLEMODE.EXTERNAL) {
+
+								for (int i = 0; i < currentTable.cntrow; i++) {
+									s1.setLength(0);
+									s1.append((char)AlStyles.CHAR_ROWS_S);
+									s1.append(Integer.toString(currentTable.start));
+									s1.append(':');
+									s1.append(Integer.toString(i));
+									s1.append((char)AlStyles.CHAR_ROWS_E);
+									addTextFromTag(s1, false);
+								}
+
+
+							}
+							s1.setLength(0);
+							s1.append((char)AlStyles.CHAR_SOFTPAR);
+							addTextFromTag(s1, false);
+
+							if (preference.tableMode != EngBookMyType.TAL_TABLEMODE.INTERNAL) {
+								s1.setLength(0);
+								s1.append((char)AlStyles.CHAR_LINK_S);
+								s1.append("table:");
+								s1.append(Integer.toString(currentTable.start));
+								s1.append((char)AlStyles.CHAR_LINK_E);
+								addTextFromTag(s1, false);
+
+								setTextStyle(AlStyles.PAR_STYLE_LINK);
+								addTextFromTag(currentTable.title, false);
+								clearTextStyle(AlStyles.PAR_STYLE_LINK);
+							}
+
+							clearParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_MASK);
+						}
+
+						if (allState.isOpened) {
+							if (currentTable.isOneColumn) {
+								for (int i = currentTable.startParagraph; i < par.size(); i++) {
+									par.get(i).iType &= 0xFFFFFFFFFFFFFFFFL - AlStyles.PAR_TABLE;
+									par.get(i).table_start = -1;
+								}
+							}
+
+                            int cnt = currentTable.counter;
+                            currentTable = new AlOneTable();
+                            currentTable.counter = cnt;
+						}
+					} else
+					if (currentTable.counter == 2) {
+						allState.state_skipped_flag = false;
+					}
+
+					currentTable.counter--;
+				} else
+				if (!tag.ended) {
+
+					if (currentTable.counter == 0) {
+						if (allState.isOpened) {
+							StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_TITLE);
+                            if (s != null)
+							    currentTable.title = s.toString();
+
+							currentTable.startParagraph = par.size();
+							currentTable.startSize = currentRow.start = size;
+							currentCell.clear(size);
+							currentTable.crow = 0;
+							currentTable.start = allState.start_position_par;
+							setParagraphStyle(AlStyles.PAR_TABLE);
+						}
+					} else {
+						allState.state_skipped_flag = true;
+					}
+
+					currentTable.counter++;
+				} else {
+
+				}
+				return true;
+			case AlFormatTag.TAG_TH:
+			case AlFormatTag.TAG_TD:
+				if (allState.isOpened && currentTable.counter == 1) {
+
+					if (tag.closed) {
+						currentCell.stop = size;
+						currentRow.cells.add(currentCell);
+						newParagraph();
+                        currentCell = new AlOneTableCell();
+						currentCell.clear(size);
+					} else {
+						StringBuilder s;
+						s = tag.getATTRValue(AlFormatTag.TAG_COLSPAN);
+						if (s != null) {
+							currentCell.colspan = InternalFunc.str2int(s, 10);
+							if (currentCell.colspan < 1)
+								currentCell.colspan = 1;
+						}
+						s = tag.getATTRValue(AlFormatTag.TAG_ROWSPAN);
+						if (s != null) {
+							currentCell.rowspan = InternalFunc.str2int(s, 10);
+							if (currentCell.rowspan < 1)
+								currentCell.rowspan = 1;
+						}
+
+						if (!tag.ended) {
+
+						} else {
+							currentCell.stop = size;
+							currentRow.cells.add(currentCell);
+							newParagraph();
+                            currentCell = new AlOneTableCell();
+							currentCell.clear(size);
+						}
+					}
+				}
+				return true;
+			case AlFormatTag.TAG_TR:
+				if (allState.isOpened && currentTable.counter == 1) {
+					if (tag.closed) {
+						currentTable.rows.add(currentRow);
+						currentRow = new AlOneTableRow();
+						currentRow.start = size;
+						currentTable.crow++;
+						newParagraph();
+					} else
+					if (!tag.ended) {
+
+					} else {
+
+					}
+				}
+				return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -352,10 +592,10 @@ public abstract class AlAXML extends AlFormat {
 					/////////////////// Begin Real Parser	
 
 
-					if (allState.start_position == 4927494) {
-						allState.start_position--;
-						allState.start_position++;
-					}
+					/*if (allState.start_position > 1680080*//*1680157*//*) {
+						ch--;
+						ch++;
+					}*/
 					
 					label_repeat_letter:
 					while (true) {
@@ -420,9 +660,11 @@ public abstract class AlAXML extends AlFormat {
 							allState.state_parser = STATE_XML_TEXT;
 							
 							{
-								Integer res = InternalFunc.str2int(entity.substring(2), 10);
-								if (res != null) {
-									doTextChar((char)res.intValue(), true);
+								int res = InternalFunc.str2int(entity.substring(2), 10);
+								if (res > 0) {
+                                    if (res < 0x20)
+                                        res = 0x20;
+									doTextChar((char)res, true);
 								} else {
 									addTextFromTag(entity.toString(), true);
 								}
@@ -439,9 +681,11 @@ public abstract class AlAXML extends AlFormat {
 							allState.state_parser = STATE_XML_TEXT;
 							
 							{
-								Integer res = InternalFunc.str2int(entity.substring(3), 16);
-								if (res != null) {
-									doTextChar((char)res.intValue(), true);
+                                int res = InternalFunc.str2int(entity.substring(3), 16);
+								if (res > 0) {
+                                    if (res < 0x20)
+                                        res = 0x20;
+									doTextChar((char)res, true);
 								} else {
 									addTextFromTag(entity.toString(), true);
 								}
@@ -637,18 +881,18 @@ public abstract class AlAXML extends AlFormat {
 						case STATE_XML_ATTRIBUTE_ENAME:
 							if (ch == '\'') {
 								allState.state_parser = STATE_XML_ATTRIBUTE_VALUE1;
-								tag.clearAttrVal();
+								tag.clearAttrVal(allState.start_position + (use_cpR0 == 1200 || use_cpR0 == 1201 ? 2 : 1));
 							} else
 							if (ch == '\"') {
 								allState.state_parser = STATE_XML_ATTRIBUTE_VALUE2;
-								tag.clearAttrVal();
+								tag.clearAttrVal(allState.start_position + (use_cpR0 == 1200 || use_cpR0 == 1201 ? 2 : 1));
 							} else
 							if (ch == '=' || AlUnicode.isSpace(ch)) {
 								
 							} else
 							if (AlUnicode.isLetterOrDigit(ch) || AlUnicode.isPunctuation(ch)){					
 								allState.state_parser = STATE_XML_ATTRIBUTE_VALUE3;
-								tag.clearAttrVal();
+								tag.clearAttrVal(allState.start_position);
 								tag.add2AttrValue(ch);
 							} else {
 								allState.state_parser = STATE_XML_TAG_ERROR;
@@ -683,6 +927,7 @@ public abstract class AlAXML extends AlFormat {
 							{
 								Integer res = InternalFunc.str2int(entity.substring(2), 10);
 								if (res != null) {
+									if (res < 0x20) res = 0x20;
 									tag.add2AttrValue((char) res.intValue());
 								} else {
 									tag.add2AttrValue(entity);
@@ -704,6 +949,7 @@ public abstract class AlAXML extends AlFormat {
 							{
 								Integer res = InternalFunc.str2int(entity.substring(3), 16);
 								if (res != null) {
+									if (res < 0x20) res = 0x20;
 									tag.add2AttrValue((char) res.intValue());
 								} else {
 									tag.add2AttrValue(entity);
@@ -749,13 +995,13 @@ public abstract class AlAXML extends AlFormat {
 						case STATE_XML_ATTRIBUTE_VALUE3:
 							if (ch == '>') {
 								if (isNeedAttribute(tag.aname))
-									tag.addAttribute();
+									tag.addAttribute(allState.start_position);
 								allState.state_parser = STATE_XML_TEXT;
 								prepareTAG();
 							} else
 							if (ch == ';' || AlUnicode.isSpace(ch)) {
 								if (isNeedAttribute(tag.aname))
-									tag.addAttribute();
+									tag.addAttribute(allState.start_position);
 								allState.state_parser = STATE_XML_ETAG;
 							} else 					
 							if (ch == '&') {
@@ -776,12 +1022,12 @@ public abstract class AlAXML extends AlFormat {
 							} else
 							if (ch == '\'' && allState.state_parser == STATE_XML_ATTRIBUTE_VALUE1) {
 								if (isNeedAttribute(tag.aname))
-									tag.addAttribute();
+									tag.addAttribute(allState.start_position);
 								allState.state_parser = STATE_XML_ETAG;
 							} else
 							if (ch == '\"' && allState.state_parser == STATE_XML_ATTRIBUTE_VALUE2) {
 								if (isNeedAttribute(tag.aname))
-									tag.addAttribute();
+									tag.addAttribute(allState.start_position);
 								allState.state_parser = STATE_XML_ETAG;
 							} else
 							if (ch == '&') {
@@ -919,11 +1165,11 @@ public abstract class AlAXML extends AlFormat {
 		return ch;
 	}
 
-	private static HashMap<String, Character> entityMap = null;
+	private final static HashMap<String, Character> entityMap;
 	
 	static {
 /////////////// XML  ///////////////////////		
-		entityMap = new HashMap<String, Character>(); 
+		entityMap = new HashMap<>();
 		entityMap.put("amp", '&');
 		entityMap.put("apos", '\'');
 		entityMap.put("gt", '>');

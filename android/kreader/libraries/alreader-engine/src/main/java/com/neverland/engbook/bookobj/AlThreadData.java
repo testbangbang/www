@@ -14,9 +14,10 @@ import android.app.Activity;
 class AlThreadData {
 	private final static Object lock = new Object();
 	
-	private AlThread					id = null;
-	public TAL_THREAD_TASK				task;
+	private AlThread							id = null;
+	public TAL_THREAD_TASK						task;
 	public volatile AlBookEng					book_object;
+	//public volatile WeakReference<EngBookListener> owner_window;
 	public volatile EngBookListener				owner_window;
 	private volatile boolean					is_work0 = false;
 	private volatile boolean					is_work1 = false;
@@ -72,10 +73,10 @@ class AlThreadData {
 	}
 	
 	public void sendNotifyForUIThread(final TAL_NOTIFY_ID id, final TAL_NOTIFY_RESULT result) {
-		synchronized (lock) { 
+		synchronized (lock) {
 			if (owner_window == null)
 				return;
-			
+
 			if (owner_window instanceof Activity) {
 				((Activity) owner_window).runOnUiThread(new Runnable() {
 					public void run() {
@@ -84,6 +85,13 @@ class AlThreadData {
 				});
 			} else {
 				owner_window.engBookGetMessage(id, result);
+
+                /*owner_window.handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        owner_window.engBookGetMessage(id, result);
+                    }
+                });*/
 			}
 		}
 	}

@@ -16,7 +16,8 @@ public class AlOneImage {
 	public static final int IMG_BASE64 =  		 0x01;
 	public static final int IMG_MEMO =			 0x02;
 	public static final int IMG_HEX =			 0x04;
-	public static final int IMG_TABLE =			 0x08;
+	public static final int IMG_HTMLHEX =		 0x08;
+	public static final int IMG_BINARYINFILE =	 0x10;
 		
 	public static final int  NOT_EXTERNAL_IMAGE = 0xff;
 	

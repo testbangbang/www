@@ -2,17 +2,16 @@ package com.neverland.engbook.util;
 
 public class InternalFunc {
 	
-	public static Integer str2int(String s, int base) {
+	public static int str2int(String s, int base) {
 		try {
-			Integer res = Integer.parseInt(s, base);
-			return res;
+			return Integer.parseInt(s, base);
 		} catch (NumberFormatException e) {
 			
 		}
-		return null;
+		return -1;
 	}
 	
-	public static Integer str2int(StringBuilder s, int base) {
+	public static int str2int(StringBuilder s, int base) {
 		return str2int(s.toString(), base);
 	}
 }

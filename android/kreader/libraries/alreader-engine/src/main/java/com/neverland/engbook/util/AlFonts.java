@@ -9,8 +9,6 @@ import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlResourceFont;
 
 import android.content.res.AssetManager;
-import android.graphics.Paint;
-import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Typeface;
 
@@ -29,9 +27,11 @@ public class AlFonts {
 
 	private int multiplexer = 1;
 	private AlCalc calc = null;
-	public void init(AlEngineOptions opt, AlCalc c) {
+	private AlPaintFont fparam;
+	public void init(AlEngineOptions opt, AlCalc c, AlPaintFont	fontparam) {
 		calc = c;
-        assetManager = opt.assetManager;
+		fparam = fontparam;
+        assetManager = opt.appInstance.getResources().getAssets();
 		loadAllFonts(opt.font_catalog, opt.font_resource);
 		switch (opt.DPI) {
 		case TAL_SCREEN_DPI_320:
@@ -48,9 +48,7 @@ public class AlFonts {
 		}
 	}
 	
-	public void	modifyPaint( 
-			AlPaintFont			fparam,
-		    long				old_style, 
+	public void	modifyPaint(long				old_style,
 		    long				new_style, 
 			AlProfileOptions	profile,
 			boolean needDraw) {
@@ -79,12 +77,12 @@ public class AlFonts {
 			
 			paint.setFlags(flags);*/
 			
-			fparam.fnt.setTypeface(mtpf.tpf);
-			fparam.fnt.setTextScaleX(profile.font_widths[fnt_num] / 100f);						
-			fparam.fnt.setAntiAlias(profile.useCT || profile.font_widths[fnt_num] != 0);
-									
-			fparam.fnt.setTextSkewX(mtpf.emul_italic ? -0.25f : 0.0f);
-			fparam.fnt.setFakeBoldText(mtpf.emul_bold);
+			calc.fontPaint.setTypeface(mtpf.tpf);
+			calc.fontPaint.setTextScaleX(profile.font_widths[fnt_num] / 100f);
+			calc.fontPaint.setAntiAlias(profile.useCT || profile.font_widths[fnt_num] != 0);
+
+			calc.fontPaint.setTextSkewX(mtpf.emul_italic ? -0.25f : 0.0f);
+			calc.fontPaint.setFakeBoldText(mtpf.emul_bold);
 			
 			if (mtpf.emul_italic)
 				needCorrectItalic = true;
@@ -131,16 +129,16 @@ public class AlFonts {
 			
 			
 		if (modify) {
-			fparam.fnt.setTextSize(text_size);
-			
-			fparam.fnt.getFontMetricsInt(font_metrics);
+			calc.fontPaint.setTextSize(text_size);
+
+			calc.fontPaint.getFontMetricsInt(font_metrics);
 			
 			if (fparam.style == 0) {
 				if (calc.mainWidth[SPACE_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH) 
-					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) fparam.fnt.measureText(SPACE_SPECIAL_STRCHAR);				
+					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
 				fparam.space_width_current = calc.mainWidth[SPACE_SPECIAL_CHAR];
 			} else {
-				fparam.space_width_current = (int) fparam.fnt.measureText(SPACE_SPECIAL_STRCHAR);
+				fparam.space_width_current = (int) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
 			}
 			
 			fparam.space_width_standart = fparam.space_width_current;
@@ -153,10 +151,10 @@ public class AlFonts {
 			
 			if (fparam.style == 0) {
 				if (calc.mainWidth[HYPH_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH) 
-					calc.mainWidth[HYPH_SPECIAL_CHAR] = (char) fparam.fnt.measureText(HYPH_SPECIAL_STRCHAR);
+					calc.mainWidth[HYPH_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
 				fparam.hyph_width_current = calc.mainWidth[HYPH_SPECIAL_CHAR];
 			} else {
-				fparam.hyph_width_current = (int) fparam.fnt.measureText(HYPH_SPECIAL_STRCHAR);
+				fparam.hyph_width_current = (int) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
 			}
 			
 			
@@ -204,23 +202,23 @@ public class AlFonts {
 		}
 
 		fparam.color = profile.colors[(int)((new_style & AlStyles.SL_COLOR_MASK) >> AlStyles.SL_COLOR_SHIFT)] | 0xff000000;
-		fparam.fnt.setColor(fparam.color);
-		fparam.fnt.setStrikeThruText((new_style & AlStyles.SL_STRIKE) != 0);
+		calc.fontPaint.setColor(fparam.color);
+		calc.fontPaint.setStrikeThruText((new_style & AlStyles.SL_STRIKE) != 0);
 			
 		if (needDraw) {
 			/*if ((new_style & AlStyles.SL_SHADOW) != 0) {	
-				fparam.fnt.setShadowLayer(1.5f * profile.DPIMultiplex, profile.DPIMultiplex, profile.DPIMultiplex, 
+				fparam.fontPaint.setShadowLayer(1.5f * profile.DPIMultiplex, profile.DPIMultiplex, profile.DPIMultiplex,
 						profile.colors[InternalConst.TAL_PROFILE_COLOR_SHADOW] | 0xff000000);
 			} else {*/
 				switch (profile.font_weigths[fnt_num]) {
-				case 1:  fparam.fnt.setShadowLayer(0.03f * multiplexer, 0, 0, fparam.color); break;
-				case 2:  fparam.fnt.setShadowLayer(0.07f * multiplexer, 0, 0, fparam.color); break;
-				case 3:  fparam.fnt.setShadowLayer(0.11f * multiplexer, 0, 0, fparam.color); break;
-				case 4:  fparam.fnt.setShadowLayer(0.17f * multiplexer, 0, 0, fparam.color); break;
-				case 5:	 fparam.fnt.setShadowLayer(0.25f * multiplexer, 0, 0, fparam.color); break;
-				case 6:  fparam.fnt.setShadowLayer(0.40f * multiplexer, 0, 0, fparam.color); break;
-				case 7:  fparam.fnt.setShadowLayer(0.65f * multiplexer, 0, 0, fparam.color); break;
-				default: fparam.fnt.clearShadowLayer();
+				case 1:  calc.fontPaint.setShadowLayer(0.03f * multiplexer, 0, 0, fparam.color); break;
+				case 2:  calc.fontPaint.setShadowLayer(0.07f * multiplexer, 0, 0, fparam.color); break;
+				case 3:  calc.fontPaint.setShadowLayer(0.11f * multiplexer, 0, 0, fparam.color); break;
+				case 4:  calc.fontPaint.setShadowLayer(0.17f * multiplexer, 0, 0, fparam.color); break;
+				case 5:	 calc.fontPaint.setShadowLayer(0.25f * multiplexer, 0, 0, fparam.color); break;
+				case 6:  calc.fontPaint.setShadowLayer(0.40f * multiplexer, 0, 0, fparam.color); break;
+				case 7:  calc.fontPaint.setShadowLayer(0.65f * multiplexer, 0, 0, fparam.color); break;
+				default: calc.fontPaint.clearShadowLayer();
 				}
 			//}
 		}

@@ -1,10 +1,5 @@
 package com.neverland.engbook.level1;
 
-import java.util.ArrayList;
-
-import android.util.Log;
-
-import com.neverland.engbook.forpublic.AlFileDecrypt;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
 

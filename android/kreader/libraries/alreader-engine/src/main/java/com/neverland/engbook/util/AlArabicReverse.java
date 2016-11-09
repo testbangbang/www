@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class AlArabicReverse {
 
     private final AlOneItem arabicItem = new AlOneItem();
-    private final ArrayList<AlArabicWord> token = new ArrayList<AlArabicWord>();
+    private final ArrayList<AlArabicWord> token = new ArrayList<>();
     private final StringBuilder sbtest = new StringBuilder();
 
     private void reverseArabicWord(AlOneItem item, int start, int stop) {

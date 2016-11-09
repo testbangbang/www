@@ -1,8 +1,5 @@
 package com.neverland.engbook.forpublic;
 
-import android.graphics.Point;
-import android.graphics.Rect;
-
 /**
 * структура - содержит в себе информацию о том, куда "тапнул" пользователь
 * значения полей заполняются в зависимости от того, в каком режиме выделения находится библиотека в момент тапа
@@ -45,10 +42,15 @@ public class AlTapInfo {
      */
     public boolean              isImage = false;
     /**
-     * тапнули по таблице - linkLocalPosition содержит адрес таблицы
+     * тапнули по сноске на полноценный просмотр таблицы - linkLocalPosition содержит адрес таблицы
      */
-    public boolean              isTable = false;
-    
+    public boolean				isTableLink = false;
+    /**
+     * тап был по содержимому таблицы
+     */
+    public boolean				isTableTap = false;
+
+
     public int                  tapWordStart = TAP_ON_CLEAR_SPACE;
     public int                  tapWordStop = TAP_ON_CLEAR_SPACE;
 
@@ -75,7 +77,8 @@ public class AlTapInfo {
         isFootNote = false;
         isExtLink = false;
         isImage = false;
-        isTable = false;
+        isTableLink = false;
+        isTableTap = false;
         link.setLength(0);
         image.setLength(0);
         tapWordStart = TAP_ON_CLEAR_SPACE;

@@ -73,7 +73,7 @@ public class AlFilesPDB extends AlFiles {
         int CountRecords = a.getRevWord();
         int FRec = (int) a.getRevDWord();
 
-        if (FRec < 80 || FRec > CountRecords * 8 + 128 || a.size < FRec + 16) {
+        if (FRec < 80 || /*FRec > CountRecords * 8 + 128 || */a.size < FRec + 16) {
             res = EngBookMyType.TAL_FILE_TYPE.TXT;
         } else {
             a.read_pos = FRec;
@@ -88,6 +88,8 @@ public class AlFilesPDB extends AlFiles {
                 if (ver != 0)
                     res = EngBookMyType.TAL_FILE_TYPE.PDBUnk;
             } else if (res == EngBookMyType.TAL_FILE_TYPE.PDB) {
+                if (ver == 258 || ver == 257)
+                    ver -= 256;
                 if (ver != 1 && ver != 2)
                     res = EngBookMyType.TAL_FILE_TYPE.PDBUnk;
             }
@@ -106,16 +108,16 @@ public class AlFilesPDB extends AlFiles {
     protected int	    rec0_rsize;
     protected int	    rec0_res2;
 
-    protected int	    data_start = 0;
 
-    protected final ArrayList<AlOnePDBRecord>	recordList = new ArrayList<AlOnePDBRecord>();
+
+    protected final ArrayList<AlOnePDBRecord>	recordList = new ArrayList<>();
 
     public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
         super.initState(file, myParent, fList);
 
         ident = "pdb";
 
-        int i, j;
+        int i;
         StringBuilder docName = new StringBuilder(32);
         docName.append('/');
 
@@ -156,48 +158,71 @@ public class AlFilesPDB extends AlFiles {
         ocPrev.len1 = parent.size - ocPrev.start;
         if (ocPrev.len1 > maxBuffSize)
             maxBuffSize = ocPrev.len1;
-        in_buff = new byte[maxBuffSize];
 
         parent.read_pos = recordList.get(0).start;
         rec0_ver = parent.getRevWord();
+
+        if (rec0_ver >= 257 && rec0_ver <= 258)
+            rec0_ver -= 256;
         if (rec0_ver == 2)
             ident = "pdbcomp";
+
         rec0_res1 = parent.getRevWord();
         rec0_usize = (int) parent.getRevDWord();
         rec0_nrec = parent.getRevWord();
         rec0_rsize = parent.getRevWord();
         rec0_res2 = (int) parent.getRevDWord();
 
-        if (rec0_rsize < maxBuffSize)
-            return TAL_RESULT.ERROR;
+        if (rec0_rsize > maxBuffSize)
+            maxBuffSize = rec0_rsize;
+        /*if (maxBuffSize > (rec0_rsize << 1))
+            maxBuffSize = (rec0_rsize << 1);*/
 
+        in_buff = new byte[maxBuffSize];
         out_buff = new byte[rec0_rsize];
 
-        if (rec0_usize > (numRec - 2) * rec0_rsize && rec0_usize <= (numRec - 1) * rec0_rsize) {
-            size = rec0_usize - 1;
-        } else {
-            size = 0;
-        }
-
-        if (parent.read_pos != recordList.get(1).start) {
+        if (parent.read_pos > recordList.get(1).start) {
             size = 0;
             return TAL_RESULT.ERROR;
         }
 
-        data_start = parent.read_pos;
+        boolean flagRealLength = true;
+        if (parent.read_pos + rec0_nrec * 2 == recordList.get(1).start && rec0_ver == 2) {
+            for (i = 1; i < rec0_nrec + 1; i++) {
+                recordList.get(i).len2 = parent.getRevWord();
+                if (recordList.get(i).len2 < 1 || recordList.get(i).len2 > rec0_rsize) {
+                    flagRealLength = false;
+                    break;
+                }
+            }
+            numRec = rec0_nrec + 1;
+        } else flagRealLength = false;
 
-        j = 0;
+        size = 0;
         for (i = 1; i < numRec; i++) {
             oc = recordList.get(i);
 
-            oc.len2 = rec0_rsize;
-            oc.pos = j;
+            if (rec0_ver == 1) {
+                oc.len2 = oc.len1;
+                if (oc.len2 > rec0_rsize)
+                    oc.len2 = rec0_rsize;
+            } else
+            if (!flagRealLength) {
+                parent.getByteBuffer(oc.start, in_buff, oc.len1);
+                oc.len2 = calcsize_decompressPDB(in_buff, oc.len1, rec0_rsize);
+            }
 
-            j += rec0_rsize;
+            oc.pos = size;
+            size += oc.len2;
+
+            if (size == rec0_usize) {
+                numRec = i + 1;
+                break;
+            }
         }
 
         if (size > rec0_usize)
-            size = rec0_usize;
+            size = rec0_usize - 1;
 
         return TAL_RESULT.OK;
     }
@@ -242,6 +267,44 @@ public class AlFilesPDB extends AlFiles {
         }
 
         return dst.length;
+    }
+
+    protected static final int calcsize_decompressPDB(byte[] src, int len, int maxsize) {
+        int src_num = 0;
+        int dst_num = 0;
+
+        int c, k;
+        while (src_num < len && dst_num < maxsize) {
+            c = (src[src_num++] & 0xff);
+            if (c >= 1 && c <= 8) {
+                while (c > 0 && src_num < len && dst_num < maxsize) {
+                    dst_num++;
+                    src_num++;
+                    c--;
+                }
+            } else
+            if (c < 0x7f) {
+                dst_num++;
+            } else
+            if (c >= 0xc0) {
+                dst_num++;
+                if (dst_num < maxsize)
+                    dst_num++;
+            } else
+            if (src_num < len) {
+                c = ((c << 8) | (src[src_num++] & 0xff));
+                k = ((c & 0x3fff) >> 3);
+                c = (3 + (c & 0x07));
+                if (dst_num - k < 0 || dst_num + c > maxsize)
+                    break;
+                while (c > 0 && dst_num < maxsize) {
+                    dst_num++;
+                    c--;
+                }
+            }
+        }
+
+        return dst_num;
     }
 
     protected static final int decompressPDB(byte[] src, byte[] dst, int len) {

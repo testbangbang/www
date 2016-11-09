@@ -30,6 +30,15 @@ public class AlOneItem {
 		public int				interline = 0;
 		public int					yDrawPosition = -1;
 		public boolean			isArabic = false;
+		public boolean				isTableRow = false;
+		public int				table_start = -1;
+		public int				table_row = 0;
+
+
+
+	public int					blockHeight = 0;
+		public int					blockLeft = 0;
+		public int					base_line_up4text;
 				
 		public static void free(AlOneItem a) {		
 			a.text = null;

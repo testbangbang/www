@@ -1,6 +1,6 @@
 package com.neverland.engbook.forpublic;
 
-import android.app.Application;
+import android.content.Context;
 
 /**
  * параметры, которые необходимы библиотеке для организации обмена с основным окном программы
@@ -13,5 +13,5 @@ public class AlEngineNotifyForUI {
 	/**
 	 * класс Application, для возможности загрузки ресурсов программы (доступ к Assets)
 	 */
-	public Application			appInstance;
+	public Context appInstance;
 }	

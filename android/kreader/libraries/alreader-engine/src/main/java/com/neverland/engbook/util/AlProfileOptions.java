@@ -36,6 +36,7 @@ public class AlProfileOptions {
 	
 	public int						DPIMultiplex;
 	public boolean					specialModeRoll;
+	public boolean					specialModeMadRoll = false;
 
 	public int		       			margin1Style;
 	public int		        		margin2Style;

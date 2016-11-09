@@ -33,4 +33,8 @@ public class AlBookOptions {
 	 * необходимость получить ковер книги - используется только в scanMetaData
 	 */
 	public boolean				needCoverData = false;
+	/**
+	 * вывод обложки на первой странице книги - отключен
+	 */
+	public boolean				noUseCover = false;
 }

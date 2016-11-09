@@ -54,7 +54,7 @@ public class AlFormatDOCX extends AlAXML {
         allState.isOpened = false;
     }
 
-    private HashMap<String, String> allId = new HashMap<String, String>();
+    private final HashMap<String, String> allId = new HashMap<>();
 
     private void addRelationShip() {
         if (active_type == AlOneZIPRecord.SPECIAL_FIRST) {
@@ -214,21 +214,7 @@ public class AlFormatDOCX extends AlAXML {
     @Override
     public boolean isNeedAttribute(int atr) {
         switch (atr) {
-            case AlFormatTag.TAG_NAME:
-            case AlFormatTag.TAG_ID:
-            case AlFormatTag.TAG_IDREF:
-            case AlFormatTag.TAG_NUMBER:
-            case AlFormatTag.TAG_HREF:
-            case AlFormatTag.TAG_CONTENT_TYPE:
-            case AlFormatTag.TAG_TYPE:
-            case AlFormatTag.TAG_TITLE:
             case AlFormatTag.TAG_NUMFILES:
-            case AlFormatTag.TAG_NOTE:
-            case AlFormatTag.TAG_SRC:
-            case AlFormatTag.TAG_TOC:
-            case AlFormatTag.TAG_CONTENT:
-            case AlFormatTag.TAG_FULL_PATH:
-            case AlFormatTag.TAG_MEDIA_TYPE:
             case AlFormatTag.TAG_TARGET:
             case AlFormatTag.TAG_ANCHOR:
             case AlFormatTag.TAG_EMBED:
@@ -250,7 +236,8 @@ public class AlFormatDOCX extends AlAXML {
         s = tag.getATTRValue(AlFormatTag.TAG_ID);
         if (s != null) {
             String s1 = allId.get(s.toString());
-            if (s != null) {
+
+            if (s1 != null) {
                 addTextFromTag((char) AlStyles.CHAR_LINK_S + s1 + (char) AlStyles.CHAR_LINK_E, false);
                 return true;
             }
@@ -266,7 +253,9 @@ public class AlFormatDOCX extends AlAXML {
             addTextFromTag((char)AlStyles.CHAR_LINK_S + "footnotes" + s + (char)AlStyles.CHAR_LINK_E, false);
 
             setTextStyle(AlStyles.PAR_STYLE_LINK);
-            addTextFromTag("{*}", false);
+            addTextFromTag("{", false);
+            addTextFromTag(s, false);
+            addTextFromTag("}", false);
             clearTextStyle(AlStyles.PAR_STYLE_LINK);
 
             return true;
@@ -392,7 +381,6 @@ public class AlFormatDOCX extends AlAXML {
         return false;
     }
 
-
     @Override
     protected boolean externPrepareTAG() {
         StringBuilder param;
@@ -450,13 +438,13 @@ public class AlFormatDOCX extends AlAXML {
                                 active_type = AlOneZIPRecord.SPECIAL_FIRST;
                                 if (allState.isOpened)
                                     setParagraphStyle(AlStyles.PAR_NOTE);
-                                addTextFromTag("Footnotes", false);
+                                //addTextFromTag("Footnotes", false);
                                 break;
                             case AlOneZIPRecord.SPECIAL_ENDNOTE:
                                 active_type = AlOneZIPRecord.SPECIAL_FIRST;
                                 if (allState.isOpened)
                                     setParagraphStyle(AlStyles.PAR_NOTE);
-                                addTextFromTag("Endnotes", false);
+                                //addTextFromTag("Endnotes", false);
                                 break;
                             default:
                                 active_type = AlOneZIPRecord.SPECIAL_NONE;
@@ -555,14 +543,30 @@ public class AlFormatDOCX extends AlAXML {
                 return true;
             case AlFormatTag.TAG_FOOTNOTE:
                 if (tag.closed) {
-
+                    if (preference.onlyPopupFootnote)
+                        clearTextStyle(AlStyles.PAR_STYLE_HIDDEN);
                 } else if (!tag.ended) {
                     param = tag.getATTRValue(AlFormatTag.TAG_TYPE);
                     if (param == null) {
                         newParagraph();
                         addTestFootLink(0);
-                        addTextFromTag("*", false);
+
+                        if (preference.onlyPopupFootnote)
+                            setTextStyle(AlStyles.PAR_STYLE_HIDDEN);
+
+                        param = tag.getATTRValue(AlFormatTag.TAG_ID);
+                        boolean setSUP = !((paragraph & AlStyles.PAR_STYLE_SUP) != 0);
+                        if (setSUP)
+                            setTextStyle(AlStyles.PAR_STYLE_SUP);
+                        if (param != null) {
+                            addTextFromTag(param, false);
+                        } else {
+                            addTextFromTag("*", false);
+                        }
+                        if (setSUP)
+                            clearTextStyle(AlStyles.PAR_STYLE_SUP);
                     }
+
                 } else {
 
                 }
