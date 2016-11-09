@@ -82,6 +82,9 @@ public class RK3026Device extends BaseDevice {
     private static Method sMethodStopBootAnimation;
     private static Method sMethodLed;
 
+    private static Method sMethodEnableA2;
+    private static Method sMethodDisableA2;
+
     private static final String UNKNOWN = "unknown";
     private static final String DEVICE_ID = "ro.deviceid";
 
@@ -132,6 +135,12 @@ public class RK3026Device extends BaseDevice {
                 sMethodStopBootAnimation = ReflectUtil.getMethodSafely(class_view, "requestStopBootAnimation");
 
                 sMethodLed = ReflectUtil.getMethodSafely(class_device_controller, "led", boolean.class);
+
+                // signature of "public void enableA2()"
+                sMethodEnableA2 = ReflectUtil.getMethodSafely(class_view, "enableA2");
+                // signature of "public void disableA2()"
+                sMethodDisableA2 = ReflectUtil.getMethodSafely(class_view, "disableA2");
+
             } catch (ClassNotFoundException e) {
                 Log.w(TAG, e);
             } catch (SecurityException e) {
@@ -469,6 +478,16 @@ public class RK3026Device extends BaseDevice {
     @Override
     public void setVCom(Context context, int value, String path) {
         FileUtils.saveContentToFile(String.valueOf(value), new File(path));
+    }
+
+    @Override
+    public void disableA2ForSpecificView(View view) {
+        ReflectUtil.invokeMethodSafely(sMethodDisableA2, view);
+    }
+
+    @Override
+    public void enableA2ForSpecificView(View view) {
+        ReflectUtil.invokeMethodSafely(sMethodEnableA2, view);
     }
 
 }
