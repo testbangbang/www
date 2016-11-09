@@ -16,6 +16,7 @@ public class DictionaryQueryAction extends BaseAction {
     private String token;
     private String expString = "";
     private String dictPath;
+    private int state;
 
     public DictionaryQueryAction(String token) {
         this.token = token;
@@ -30,6 +31,7 @@ public class DictionaryQueryAction extends BaseAction {
             public void done(BaseRequest request, Throwable e) {
                 expString = resolverQueryRequest.getExpString();
                 dictPath = resolverQueryRequest.getDictPath();
+                state = resolverQueryRequest.getState();
                 BaseCallback.invoke(callback, request, e);
             }
         });
@@ -41,5 +43,9 @@ public class DictionaryQueryAction extends BaseAction {
 
     public String getDictPath() {
         return dictPath;
+    }
+
+    public int getState() {
+        return state;
     }
 }
