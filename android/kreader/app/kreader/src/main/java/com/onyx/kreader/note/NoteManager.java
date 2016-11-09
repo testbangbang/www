@@ -464,6 +464,7 @@ public class NoteManager {
         shape.setColor(getNoteDrawingArgs().strokeColor);
         shape.setPageUniqueId(pageInfo.getName());
         shape.ensureShapeUniqueId();
+        shape.setDisplayStrokeWidth(getNoteDrawingArgs().strokeWidth);
         shape.onDown(normal, screen);
         currentShape = shape;
         return shape;

@@ -38,7 +38,7 @@ public class EPDShape extends BaseShape {
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         setPenDown();
         super.onDown(normalizedPoint, screenPoint);
-        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getStrokeWidth());
+        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getDisplayStrokeWidth());
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
