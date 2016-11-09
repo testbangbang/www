@@ -203,13 +203,9 @@ FT_BEGIN_HEADER
   /*                                                                       */
   /*    axis            :: An axis descriptor table.                       */
   /*                       GX fonts contain slightly more data than MM.    */
-  /*                       Memory management of this pointer is done       */
-  /*                       internally by FreeType.                         */
   /*                                                                       */
   /*    namedstyle      :: A named style table.                            */
   /*                       Only meaningful with GX.                        */
-  /*                       Memory management of this pointer is done       */
-  /*                       internally by FreeType.                         */
   /*                                                                       */
   typedef struct  FT_MM_Var_
   {
@@ -259,8 +255,7 @@ FT_BEGIN_HEADER
   /*                                                                       */
   /* <Output>                                                              */
   /*    amaster :: The Multiple Masters/GX var descriptor.                 */
-  /*               Allocates a data structure, which the user must         */
-  /*               deallocate with `free' after use.                       */
+  /*               Allocates a data structure, which the user must free.   */
   /*                                                                       */
   /* <Return>                                                              */
   /*    FreeType error code.  0~means success.                             */

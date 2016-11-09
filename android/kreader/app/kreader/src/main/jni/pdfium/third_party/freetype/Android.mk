@@ -17,15 +17,17 @@ LOCAL_SRC_FILES:= \
     src/base/ftinit.c \
     src/base/ftgasp.c \
     src/base/ftmm.c \
-    src/gzip/ftgzip.c \
+    src/cff/cff.c \
+    src/cid/type1cid.c \
+    src/psaux/psaux.c \
+    src/pshinter/pshinter.c \
+    src/psnames/psmodule.c \
+    src/psnames/psnames.c \
     src/raster/raster.c \
     src/sfnt/sfnt.c \
     src/smooth/smooth.c \
-    src/autofit/autofit.c \
     src/truetype/truetype.c \
-    src/cff/cff.c \
-    src/psnames/psnames.c \
-    src/pshinter/pshinter.c
+    src/type1/type1.c
 
 LOCAL_C_INCLUDES += \
    $(LOCAL_PATH)/include    \
