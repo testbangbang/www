@@ -9,6 +9,10 @@
            { "orientation" : 90,  "tx" : 1200, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1200},
            { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1200, "ety": 825}],
 
+  "m96": [ { "orientation" : 270,  "tx" : 0, "ty" : 825, "epd": 90, "etx": 825, "ety": 0},
+    { "orientation" : 180,  "tx" : 1200, "ty" : 825,  "epd": 0, "etx": 0, "ety": 0},
+    { "orientation" : 90,  "tx" : 1200, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1200},
+    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1200, "ety": 825}],
 
   "max": [ { "orientation" : 270,  "tx" : 0, "ty" : 1200, "epd": 90, "etx": 1200, "ety": 0},
     { "orientation" : 180,  "tx" : 1600, "ty" : 1200,  "epd": 0, "etx": 0, "ety": 0},
