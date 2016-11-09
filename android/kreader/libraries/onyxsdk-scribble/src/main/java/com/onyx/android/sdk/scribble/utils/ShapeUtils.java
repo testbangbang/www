@@ -1,10 +1,13 @@
 package com.onyx.android.sdk.scribble.utils;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
 import android.view.MotionEvent;
+
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 
 import java.util.Iterator;
@@ -80,7 +83,9 @@ public class ShapeUtils {
             lastDst[0] = touchPoint.getX();
             lastDst[1] = touchPoint.getY();
         }
-        path.transform(renderContext.matrix);
+        if (renderContext.matrix != null) {
+            path.transform(renderContext.matrix);
+        }
         return path;
     }
 
