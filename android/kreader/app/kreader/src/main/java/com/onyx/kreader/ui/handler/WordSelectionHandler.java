@@ -36,7 +36,7 @@ public class WordSelectionHandler extends BaseHandler{
     private static final String TAG = "WordSelectionHandler";
 
     private int selectionMoveDistanceThreshold;
-    private int moveRangeAfterLongPress = 6;
+    private int moveRangeAfterLongPress = 10;
 
     private float movePointOffsetHeight;
     private Point lastMovedPoint = null;
