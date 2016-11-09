@@ -68,6 +68,9 @@ public class RenderContext {
     }
 
     private void updateDisplayScale(final Matrix m) {
+        if (m == null) {
+            return;
+        }
         float[] f = new float[9];
         m.getValues(f);
         displayScale = f[Matrix.MSCALE_X];
