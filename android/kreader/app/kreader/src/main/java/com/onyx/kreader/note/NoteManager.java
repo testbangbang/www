@@ -460,7 +460,7 @@ public class NoteManager {
     private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
         Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
         onDownMessage(shape);
-        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
+        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth / pageInfo.getActualScale());
         shape.setColor(getNoteDrawingArgs().strokeColor);
         shape.setPageUniqueId(pageInfo.getName());
         shape.ensureShapeUniqueId();

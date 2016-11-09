@@ -38,7 +38,7 @@ public class CircleShape extends BaseShape {
         if (renderContext.matrix != null) {
             renderContext.matrix.mapRect(rect);
         }
-        applyStrokeStyle(renderContext.paint);
+        applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
         renderContext.canvas.drawOval(rect, renderContext.paint);
     }
 
