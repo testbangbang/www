@@ -92,7 +92,7 @@ FT_BEGIN_HEADER
   /* This is done to allow FreeType clients to run unmodified, forcing     */
   /* them to display normal gray-level anti-aliased glyphs.                */
   /*                                                                       */
-/* #define FT_CONFIG_OPTION_SUBPIXEL_RENDERING */
+#define FT_CONFIG_OPTION_SUBPIXEL_RENDERING
 
 
   /*************************************************************************/
@@ -163,7 +163,7 @@ FT_BEGIN_HEADER
   /*   Define this macro if you want to enable this `feature'.  See also   */
   /*   the macro FT_CONFIG_OPTION_SYSTEM_ZLIB below.                       */
   /*                                                                       */
-#define FT_CONFIG_OPTION_USE_ZLIB
+//#define FT_CONFIG_OPTION_USE_ZLIB
 
 
   /*************************************************************************/
@@ -225,7 +225,7 @@ FT_BEGIN_HEADER
   /*                                                                       */
   /*   Define this macro if you want to enable this `feature'.             */
   /*                                                                       */
-#define FT_CONFIG_OPTION_USE_PNG
+/* #define FT_CONFIG_OPTION_USE_PNG */
 
 
   /*************************************************************************/
@@ -336,7 +336,7 @@ FT_BEGIN_HEADER
   /*                                                                       */
   /*   Note that the `FOND' resource isn't checked.                        */
   /*                                                                       */
-#define FT_CONFIG_OPTION_MAC_FONTS
+#undef FT_CONFIG_OPTION_MAC_FONTS
 
 
   /*************************************************************************/
@@ -370,7 +370,7 @@ FT_BEGIN_HEADER
   /* supply font data incrementally as the document is parsed, such        */
   /* as the Ghostscript interpreter for the PostScript language.           */
   /*                                                                       */
-/* #define FT_CONFIG_OPTION_INCREMENTAL */
+#define FT_CONFIG_OPTION_INCREMENTAL
 
 
   /*************************************************************************/
@@ -512,7 +512,7 @@ FT_BEGIN_HEADER
   /* embedded bitmaps in all formats using the SFNT module (namely         */
   /* TrueType & OpenType).                                                 */
   /*                                                                       */
-#define TT_CONFIG_OPTION_EMBEDDED_BITMAPS
+#undef TT_CONFIG_OPTION_EMBEDDED_BITMAPS
 
 
   /*************************************************************************/
@@ -681,7 +681,7 @@ FT_BEGIN_HEADER
   /* and avar tables).  This has many similarities to Type 1 Multiple      */
   /* Masters support.                                                      */
   /*                                                                       */
-#define TT_CONFIG_OPTION_GX_VAR_SUPPORT
+#undef TT_CONFIG_OPTION_GX_VAR_SUPPORT
 
 
   /*************************************************************************/
@@ -689,25 +689,7 @@ FT_BEGIN_HEADER
   /* Define TT_CONFIG_OPTION_BDF if you want to include support for        */
   /* an embedded `BDF ' table within SFNT-based bitmap formats.            */
   /*                                                                       */
-#define TT_CONFIG_OPTION_BDF
-
-
-  /*************************************************************************/
-  /*                                                                       */
-  /* Option TT_CONFIG_OPTION_MAX_RUNNABLE_OPCODES controls the maximum     */
-  /* number of bytecode instructions executed for a single run of the      */
-  /* bytecode interpreter, needed to prevent infinite loops.  You don't    */
-  /* want to change this except for very special situations (e.g., making  */
-  /* a library fuzzer spend less time to handle broken fonts).             */
-  /*                                                                       */
-  /* It is not expected that this value is ever modified by a configuring  */
-  /* script; instead, it gets surrounded with #ifndef ... #endif so that   */
-  /* the value can be set as a preprocessor option on the compiler's       */
-  /* command line.                                                         */
-  /*                                                                       */
-#ifndef TT_CONFIG_OPTION_MAX_RUNNABLE_OPCODES
-#define TT_CONFIG_OPTION_MAX_RUNNABLE_OPCODES  1000000L
-#endif
+#undef TT_CONFIG_OPTION_BDF
 
 
   /*************************************************************************/
@@ -743,7 +725,7 @@ FT_BEGIN_HEADER
   /*                                                                       */
   /* The Chinese font MingTiEG-Medium (CNS 11643 character set) needs 256. */
   /*                                                                       */
-#define T1_MAX_CHARSTRINGS_OPERANDS  256
+#define T1_MAX_CHARSTRINGS_OPERANDS  512
 
 
   /*************************************************************************/
@@ -843,7 +825,7 @@ FT_BEGIN_HEADER
   /* `warping' property of the auto-hinter (see file `ftautoh.h' for more  */
   /* information; by default it is switched off).                          */
   /*                                                                       */
-/* #define AF_CONFIG_OPTION_USE_WARPER */
+#define AF_CONFIG_OPTION_USE_WARPER
 
   /* */
 
