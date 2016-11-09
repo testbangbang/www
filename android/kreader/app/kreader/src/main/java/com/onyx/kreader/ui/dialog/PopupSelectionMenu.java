@@ -32,6 +32,8 @@ import static com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighl
 
 public class PopupSelectionMenu extends LinearLayout {
     private static final String TAG = PopupSelectionMenu.class.getSimpleName();
+    private static final int MAX_DICTIONARY_LOAD_COUNT = 6;
+    private static final int DELAY_DICTIONARY_LOAD_TIME = 2000;
 
     public enum SelectionType {
         SingleWordType,
@@ -62,6 +64,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private TextView highLightText;
     private int viewHeight;
     private int viewWidth;
+    private int dictionaryLoadCount;
     /**
      * eliminate compiler warning
      *
@@ -299,20 +302,27 @@ public class PopupSelectionMenu extends LinearLayout {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 int state = dictionaryQueryAction.getState();
+                String content = dictionaryQueryAction.getExpString();
                 if (state == DictionaryQueryRequest.DICT_STATE_LOADING) {
-                    PopupSelectionMenu.this.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            dictionaryQuery(readerDataHolder, token);
-                        }
-                    }, 2000);
+                    if (dictionaryLoadCount < MAX_DICTIONARY_LOAD_COUNT) {
+                        dictionaryLoadCount++;
+                        PopupSelectionMenu.this.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dictionaryQuery(readerDataHolder, token);
+                            }
+                        }, DELAY_DICTIONARY_LOAD_TIME);
+                    } else {
+                        content = readerDataHolder.getContext().getString(R.string.load_fail);
+                    }
                 }
+
                 String dict = dictionaryQueryAction.getDictPath();
                 String url = "file:///";
-                if(dict != null) {
+                if (dict != null) {
                     url += dict.substring(0, dict.lastIndexOf("/"));
                 }
-                mWebView.loadDataWithBaseURL(url, dictionaryQueryAction.getExpString(), "text/html", "utf-8", "about:blank");
+                mWebView.loadDataWithBaseURL(url, content, "text/html", "utf-8", "about:blank");
             }
         });
     }

@@ -236,6 +236,7 @@
 
     <string name="reflowing">Reflowing</string>
     <string name="loading">Loading</string>
+    <string name="load_fail">Load Fail</string>
     <string name="saving">Saving</string>
     <string name="exporting">Exporting</string>
 
