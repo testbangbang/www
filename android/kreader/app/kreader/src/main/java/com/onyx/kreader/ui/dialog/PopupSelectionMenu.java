@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
@@ -140,6 +141,7 @@ public class PopupSelectionMenu extends LinearLayout {
                 mPageIndicator.setText(curPage + "/" + totalPage);
             }
         });
+        EpdController.disableA2ForSpecificView(mWebView);
 
         LinearLayout imagebuttonCopy = (LinearLayout) findViewById(R.id.imagebutton_copy);
         imagebuttonCopy.setOnClickListener(new OnClickListener() {
