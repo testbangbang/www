@@ -107,9 +107,7 @@ public class BaseShape implements Shape {
         if (renderContext == null || renderContext.matrix == null) {
             return 1.0f;
         }
-        float[] f = new float[9];
-        renderContext.matrix.getValues(f);
-        return f[Matrix.MSCALE_X];
+        return renderContext.displayScale;
     }
 
     public boolean supportDFB() {
