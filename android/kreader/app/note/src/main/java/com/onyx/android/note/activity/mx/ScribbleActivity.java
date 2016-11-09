@@ -206,7 +206,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onBackgroundChanged(int newBackground) {
-        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(newBackground);
+        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
+                new NoteBackgroundChangeAction<>(newBackground, !getNoteViewHelper().inUserErasing());
         changeBGAction.execute(ScribbleActivity.this, null);
     }
 

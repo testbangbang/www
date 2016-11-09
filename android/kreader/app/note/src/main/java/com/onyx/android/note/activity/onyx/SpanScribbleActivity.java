@@ -273,7 +273,8 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onBackgroundChanged() {
-        final NoteBackgroundChangeAction<SpanScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(getBackgroundType());
+        final NoteBackgroundChangeAction<SpanScribbleActivity> changeBGAction =
+                new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing());
         changeBGAction.execute(SpanScribbleActivity.this, null);
     }
 

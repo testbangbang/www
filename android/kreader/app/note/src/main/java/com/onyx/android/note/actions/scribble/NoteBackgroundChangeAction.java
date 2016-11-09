@@ -13,14 +13,16 @@ import com.onyx.android.sdk.scribble.request.shape.NoteBackgroundChangeRequest;
 public class NoteBackgroundChangeAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
     private int backgroundType;
     private NoteBackgroundChangeRequest bgChangeRequest;
+    private boolean resume;
 
-    public NoteBackgroundChangeAction(int backgroundType) {
+    public NoteBackgroundChangeAction(int backgroundType ,boolean resume) {
         this.backgroundType = backgroundType;
+        this.resume = resume;
     }
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        bgChangeRequest = new NoteBackgroundChangeRequest(backgroundType);
+        bgChangeRequest = new NoteBackgroundChangeRequest(backgroundType, resume);
         activity.submitRequest(bgChangeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

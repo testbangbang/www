@@ -189,7 +189,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onExport() {
-        testSpan();
     }
 
     private void onSave(final boolean finishAfterSave) {
@@ -315,7 +314,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onBackgroundChanged() {
-        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(getBackgroundType());
+        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
+                new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing());
         changeBGAction.execute(ScribbleActivity.this, null);
     }
 
@@ -465,30 +465,4 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return object;
     }
 
-    private void testSpan() {
-//        final List<Shape> stash = getNoteViewHelper().detachStash();
-//        final SpannableRequest spannableRequest = new SpannableRequest(stash);
-//        getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
-//            @Override
-//            public void done(BaseRequest request, Throwable e) {
-//                final OnyxAlertDialog dlg = new OnyxAlertDialog();
-//                dlg.setParams(new OnyxAlertDialog.Params().setCustomContentLayoutResID(R.layout.span_text_view)
-//                        .setTittleString("Message")
-//                        .setCustomViewAction(new OnyxAlertDialog.CustomViewAction() {
-//                    @Override
-//                    public void onCreateCustomView(View customView, TextView pageIndicator) {
-//                        TextView textView = (TextView)customView.findViewById(R.id.text_view);
-//                        textView.setText(spannableRequest.getSpannableStringBuilder());
-//                    }
-//                }));
-//                syncWithCallback(true, false, new BaseCallback() {
-//                    @Override
-//                    public void done(BaseRequest request, Throwable e) {
-//                        dlg.show(getFragmentManager(),"span dlg");
-//                    }
-//                });
-//
-//            }
-//        });
-    }
 }
