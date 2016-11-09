@@ -93,6 +93,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="15dp" />
 
+
         <ImageView
             android:id="@+id/color_indicator"
             android:layout_width="wrap_content"
@@ -106,6 +107,35 @@
             android:focusable="true"
             android:scaleType="center"
             android:src="@drawable/ic_business_write_color_black_black_46dp" />
+
+        <RelativeLayout
+            android:id="@+id/clear_page"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/page_indicator"
+            android:layout_toRightOf="@+id/pen_style_content_view"
+            android:background="@drawable/imagebtn_bg">
+
+            <RadioButton
+                android:id="@+id/pen_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:button="@drawable/note_check_indicator"
+                android:clickable="false"
+                android:focusable="false"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/pen_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pen_indicator"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_business_clean_page_gray_60dp" />
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/page_indicator"
