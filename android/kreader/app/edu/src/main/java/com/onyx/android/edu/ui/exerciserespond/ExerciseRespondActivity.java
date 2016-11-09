@@ -10,9 +10,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.edu.R;
 import com.onyx.android.edu.base.BaseActivity;
+import com.onyx.android.edu.base.Constant;
 import com.onyx.android.edu.utils.ActivityUtils;
+import com.onyx.libedu.model.BookNode;
+import com.onyx.libedu.model.ChooseQuestionVariable;
+import com.onyx.libedu.model.Question;
+
+import java.util.List;
 
 import butterknife.Bind;
 
@@ -46,6 +54,12 @@ public class ExerciseRespondActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        Intent intent = getIntent();
+        boolean showAnswer = intent.getBooleanExtra(SHOW_ANSWER, false);
+        String questions = intent.getStringExtra(Constant.QUESTION);
+        String variable = intent.getStringExtra(Constant.CHOOSE_QUESTION_VARIABLE);
+        List<Question> questionList = JSON.parseObject(questions, new TypeReference<List<Question>>(){});
+        ChooseQuestionVariable chooseQuestionVariable = JSON.parseObject(variable, ChooseQuestionVariable.class);
 
         ExerciseRespondFragment exerciseRespondFragment = (ExerciseRespondFragment) getFragmentManager()
                 .findFragmentById(R.id.contentFrame);
@@ -55,15 +69,15 @@ public class ExerciseRespondActivity extends BaseActivity {
                     exerciseRespondFragment, R.id.contentFrame);
         }
 
-        Intent intent = getIntent();
-        boolean showAnswer = intent.getBooleanExtra(SHOW_ANSWER, false);
 
-        new ExerciseRespondPresenter(exerciseRespondFragment, showAnswer);
+        new ExerciseRespondPresenter(exerciseRespondFragment, showAnswer, questionList, chooseQuestionVariable);
 
         mToolbarTitle.setVisibility(View.GONE);
         mRightTitle.setVisibility(View.GONE);
-        mLeftTitle.setText("科目：数学 分册：高一上册 共有10道习题");
-        mLeftTitle.setTextSize(20);
+        String text = String.format("科目：%s 分册 %s 共有%d道习题", chooseQuestionVariable.getSubject().getSubjectName(),
+                chooseQuestionVariable.getTextbook().getBookName(),
+                questionList.size());
+        mLeftTitle.setText(text);
 
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override

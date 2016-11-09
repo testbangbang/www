@@ -37,4 +37,8 @@
     <string name="span_scribble">矢量手写(测试)</string>
     <string name="go_to_page">页面跳转</string>
     <string name="current_page">当前页面</string>
+    <string name="total">总计:</string>
+    <string name="about">关于</string>
+    <string name="versionName">当前版本</string>
+    <string name="action_settings">设置</string>
 </resources>

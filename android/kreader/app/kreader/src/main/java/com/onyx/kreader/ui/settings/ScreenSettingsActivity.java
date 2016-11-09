@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.utils.ReaderConfig;
+import com.onyx.kreader.utils.DeviceConfig;
 
 public class ScreenSettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
@@ -65,7 +65,7 @@ public class ScreenSettingsActivity extends PreferenceActivity implements Shared
         preference.setEntryValues(values);
         preference.setSummary(preference.getEntry());
         if (preference.getValue() == null) {
-            preference.setValue(ReaderConfig.sharedInstance(getBaseContext()).defaultAnnotationHighlightStyle().toString());
+            preference.setValue(DeviceConfig.sharedInstance(getBaseContext()).defaultAnnotationHighlightStyle().toString());
         }
     }
 

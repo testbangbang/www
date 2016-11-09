@@ -51,15 +51,15 @@ public class ChooseExerciseActivity extends BaseActivity {
     protected void initView() {
         mBack.setVisibility(View.INVISIBLE);
         mToolbarTitle.setText(R.string.app_name);
-        mRightTitle.setText(getString(R.string.enter_wrong_view));
+//        mRightTitle.setText(getString(R.string.enter_wrong_view));
 //        mLeftTitle.setText(getString(R.string.exercise_test));
-        rightArrow.setVisibility(View.VISIBLE);
-        mRightTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ChooseExerciseActivity.this, WrongQuestionActivity.class));
-            }
-        });
+//        rightArrow.setVisibility(View.VISIBLE);
+//        mRightTitle.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(ChooseExerciseActivity.this, WrongQuestionActivity.class));
+//            }
+//        });
     }
 
     @Override

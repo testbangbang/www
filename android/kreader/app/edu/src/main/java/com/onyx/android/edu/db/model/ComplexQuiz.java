@@ -12,8 +12,6 @@ import java.util.List;
 /**
  * Created by ming on 16/7/5.
  */
-@ModelContainer
-@Table(database = AppDatabase.class)
 public class ComplexQuiz extends BaseDbModel{
     @Column(typeConverter = AtomicQuizConverter.class)
     public AtomicQuiz quiz;

@@ -6,6 +6,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.onyx.android.note.BuildConfig;
+import com.onyx.android.note.R;
 import com.onyx.android.note.activity.onyx.ManagerActivity;
 import com.onyx.android.note.activity.onyx.ScribbleActivity;
 import com.onyx.android.sdk.data.GObject;
@@ -28,8 +29,8 @@ public class NoteAppConfig {
     public static final String SCRIBBLE_ACTIVITY_PKG_NAME = "scribble_activity_pkg";
     public static final String SCRIBBLE_ACTIVITY_CLS_NAME = "scribble_activity_cls";
     public static final String USE_FULL_SCREEN = "full_screen";
-    public static final String USE_MX_STYLE_DIALOG = "use_mx_style_dialog";
-
+    public static final String SHOW_INPUT_METHOD_INSTANTLY_AFTER_OPEN_DIALOG = "show_input_method_instantly_after_open_dialog";
+    public static final String USE_MX_UI_STYLE = "use_mx_ui_style";
     static public final boolean useDebugConfig = false;
 
     static public NoteAppConfig sharedInstance(Context context) {
@@ -40,7 +41,18 @@ public class NoteAppConfig {
     }
 
     public final boolean useMXStyleDialog() {
-        return backend.hasKey(USE_MX_STYLE_DIALOG) && backend.getBoolean(USE_MX_STYLE_DIALOG, false);
+        return backend.hasKey(USE_MX_UI_STYLE) && backend.getBoolean(USE_MX_UI_STYLE, false);
+    }
+
+    public final int getFolderIconRes() {
+        return backend.getBoolean(USE_MX_UI_STYLE, false) ?
+                R.drawable.ic_student_note_folder_gray : R.drawable.directory;
+    }
+
+    //show input method instantly after dialog open ,default value is true.
+    public final boolean showInputMethodInstantlyAfterOpenDialog() {
+        return !backend.hasKey(SHOW_INPUT_METHOD_INSTANTLY_AFTER_OPEN_DIALOG)
+                || backend.getBoolean(SHOW_INPUT_METHOD_INSTANTLY_AFTER_OPEN_DIALOG, true);
     }
 
     public final String getHomeActivityPackageName() {
@@ -145,5 +157,10 @@ public class NoteAppConfig {
         } else {
             return new Intent(context, ScribbleActivity.class);
         }
+    }
+
+    //TODO:key to config support Export or not,now just disable for no function.
+    public boolean isEnableExport() {
+        return false;
     }
 }

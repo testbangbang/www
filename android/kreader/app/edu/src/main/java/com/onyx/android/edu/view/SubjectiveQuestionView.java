@@ -1,6 +1,7 @@
 package com.onyx.android.edu.view;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,6 +13,7 @@ import com.onyx.android.edu.db.model.AtomicAnswer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ming on 16/6/29.
@@ -24,14 +26,20 @@ public class SubjectiveQuestionView extends BaseQuestionView {
     private LinearLayout mMainFillView;
     private String problem;
 
-    public SubjectiveQuestionView(Context context, String problem, boolean showAnswer) {
+    public SubjectiveQuestionView(Context context,
+                              boolean showAnswer,
+                              String answer,
+                              String problem,
+                              String questionAnalyze) {
         super(context, showAnswer);
+        this.rightAnswer = answer;
         this.problem = problem;
+        this.questionAnalyze = questionAnalyze;
         initData();
     }
 
     private void initData(){
-        mQuesTitle.setText(problem);
+        mQuesTitle.setText(Html.fromHtml(problem).toString());
         addItemViews(2);
     }
 
@@ -58,27 +66,13 @@ public class SubjectiveQuestionView extends BaseQuestionView {
 
 
     @Override
-    public List<AtomicAnswer> getAnswers() {
-        generateAnswers();
-        return mAnswers;
-    }
-
-    @Override
-    public boolean isRight(int index) {
+    public boolean isRight() {
         return false;
     }
 
     @Override
-    public float getScore(int index) {
+    public float getScore() {
         return 0;
-    }
-
-    private void generateAnswers(){
-        mAnswers.clear();
-        for (SubjectiveQuestionItemView view : mItemViews) {
-            AtomicAnswer answer = new AtomicAnswer();
-            mAnswers.add(answer);
-        }
     }
 
     private void addItemViews(int count){

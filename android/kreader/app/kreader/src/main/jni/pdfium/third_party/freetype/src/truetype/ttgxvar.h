@@ -95,8 +95,6 @@ FT_BEGIN_HEADER
     FT_UInt         gv_glyphcnt;
     FT_ULong*       glyphoffsets;
 
-    FT_ULong        gvar_size;
-
   } GX_BlendRec;
 
 

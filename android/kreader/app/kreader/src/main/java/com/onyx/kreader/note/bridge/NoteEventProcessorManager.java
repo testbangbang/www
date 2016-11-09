@@ -25,6 +25,7 @@ public class NoteEventProcessorManager {
     private NoteManager noteManager;
     private boolean useRawInput = false;
     private boolean singleTouch = false;
+    private boolean supportBigPen = false;
 
     public NoteEventProcessorManager(final NoteManager p) {
         noteManager = p;
@@ -76,6 +77,7 @@ public class NoteEventProcessorManager {
     private void detectTouchType() {
         useRawInput = getNoteManager().getNoteConfig().useRawInput();
         singleTouch = DeviceUtils.detectTouchDeviceCount() <= 1;
+        supportBigPen = getNoteManager().getNoteConfig().supportBigPen();
     }
 
     private boolean useNormalTouchEvent() {
@@ -158,7 +160,7 @@ public class NoteEventProcessorManager {
     }
 
     private boolean isEraserPressed(final MotionEvent motionEvent) {
-        if (!getNoteManager().getNoteConfig().supportBigPen()) {
+        if (!supportBigPen) {
             return false;
         }
         int toolType = motionEvent.getToolType(0);

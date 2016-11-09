@@ -60,6 +60,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
     }
 
     private void initLayout(){
+        compoundButtonList.clear();
         initMultiLineGroup();
         addNewLineButton();
         clearAllButtonCheckState();
@@ -88,7 +89,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
         }
     }
 
-    private void setButtonListener(CompoundButton button, final int position){
+    private void setButtonListener(final CompoundButton button, final int position){
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -102,6 +103,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
                 if (onCheckedChangeListener != null){
                     onCheckedChangeListener.onCheckedChanged(buttonView, isChecked, position);
                 }
+                getMultiAdapter().bindView(button, position);
             }
         });
     }
@@ -116,6 +118,7 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
     }
 
     public void setMultiAdapter(MultiAdapter multiAdapter){
+        removeAllViews();
         this.multiAdapter = multiAdapter;
         initLayout();
     }
@@ -262,7 +265,11 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
         }
 
         public void setItemChecked(boolean checked, int position){
-            List<CompoundButton> compoundButtons = getParent().getCompoundButtonList();
+            DynamicMultiRadioGroupView parentView = getParent();
+            if (parentView == null) {
+                return;
+            }
+            List<CompoundButton> compoundButtons = parentView.getCompoundButtonList();
             if (compoundButtons == null || position >= compoundButtons.size() || position < 0){
                 return;
             }

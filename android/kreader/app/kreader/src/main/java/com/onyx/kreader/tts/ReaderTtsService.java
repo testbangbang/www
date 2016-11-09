@@ -296,6 +296,11 @@ public class ReaderTtsService {
             Debug.d("play wave file: " + ttsState);
             mediaPlayer.setDataSource(getTempWaveFile().getAbsolutePath());
             mediaPlayer.prepare();
+            if (mediaPlayer.getDuration() <= 64) {
+                // even pico tts failed, it may still synthesize a blank wav file with 64ms duration
+                Debug.e(getClass(), "tts speech duration too short: " + mediaPlayer.getDuration());
+                return false;
+            }
             return true;
         } catch (Exception e) {
             Log.w(TAG, e);

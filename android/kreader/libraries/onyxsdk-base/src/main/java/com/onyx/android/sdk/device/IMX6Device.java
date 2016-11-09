@@ -80,6 +80,9 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodAddStrokePoint = null;
     private static Method sMethodFinishStroke = null;
 
+    private static Method sMethodEnableA2;
+    private static Method sMethodDisableA2;
+
     /**
      * View.postInvalidate(int updateMode)
      */
@@ -625,6 +628,10 @@ public class IMX6Device extends BaseDevice {
             sMethodSaveSystemConfig = ReflectUtil.getMethodSafely(deviceControllerClass, "saveSystemConfig", String.class, String.class);
             sMethodUpdateMetadataDB = ReflectUtil.getMethodSafely(deviceControllerClass, "updateMetadataDB", String.class, String.class);
 
+            // signature of "public void enableA2()"
+            sMethodEnableA2 = ReflectUtil.getMethodSafely(cls, "enableA2");
+            // signature of "public void disableA2()"
+            sMethodDisableA2 = ReflectUtil.getMethodSafely(cls, "disableA2");
             Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
             return sInstance;
         }
@@ -928,5 +935,15 @@ public class IMX6Device extends BaseDevice {
         }
 
         return dst_value;
+    }
+
+    @Override
+    public void disableA2ForSpecificView(View view) {
+        ReflectUtil.invokeMethodSafely(sMethodDisableA2, view);
+    }
+
+    @Override
+    public void enableA2ForSpecificView(View view) {
+        ReflectUtil.invokeMethodSafely(sMethodEnableA2, view);
     }
 }

@@ -20,9 +20,6 @@ public class ComicArchiveRar implements ComicArchive {
 
     @Override
     public boolean isEncrypted() {
-        if (!isOpened()) {
-            return false;
-        }
         return wrapper.isEncrypted();
     }
 

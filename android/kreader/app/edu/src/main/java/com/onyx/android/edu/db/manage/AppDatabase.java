@@ -5,7 +5,7 @@ import com.raizlabs.android.dbflow.annotation.Database;
 /**
  * Created by ming on 16/6/27.
  */
-@Database(name = AppDatabase.NAME, version = AppDatabase.VERSION)
+//@Database(name = AppDatabase.NAME, version = AppDatabase.VERSION)
 public class AppDatabase {
     //数据库名称
     public static final String NAME = "Questions";

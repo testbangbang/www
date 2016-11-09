@@ -544,17 +544,14 @@
   /* return 0 on success                                   */
   FT_LOCAL_DEF( CF2_Int )
   cf2_initGlobalRegionBuffer( CFF_Decoder*  decoder,
-                              CF2_Int       subrNum,
+                              CF2_UInt      idx,
                               CF2_Buffer    buf )
   {
-    CF2_UInt  idx;
-
-
     FT_ASSERT( decoder );
 
     FT_ZERO( buf );
 
-    idx = (CF2_UInt)( subrNum + decoder->globals_bias );
+    idx += (CF2_UInt)decoder->globals_bias;
     if ( idx >= decoder->num_globals )
       return TRUE;     /* error */
 
@@ -631,17 +628,14 @@
 
   FT_LOCAL_DEF( CF2_Int )
   cf2_initLocalRegionBuffer( CFF_Decoder*  decoder,
-                             CF2_Int       subrNum,
+                             CF2_UInt      idx,
                              CF2_Buffer    buf )
   {
-    CF2_UInt  idx;
-
-
     FT_ASSERT( decoder );
 
     FT_ZERO( buf );
 
-    idx = (CF2_UInt)( subrNum + decoder->locals_bias );
+    idx += (CF2_UInt)decoder->locals_bias;
     if ( idx >= decoder->num_locals )
       return TRUE;     /* error */
 

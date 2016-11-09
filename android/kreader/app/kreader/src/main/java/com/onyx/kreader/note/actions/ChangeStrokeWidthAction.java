@@ -13,13 +13,15 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class ChangeStrokeWidthAction extends BaseAction {
 
     private float width;
-    public ChangeStrokeWidthAction(float w) {
+    private boolean switchToDrawing;
+    public ChangeStrokeWidthAction(float w, boolean toDrawing) {
         width = w;
+        switchToDrawing = toDrawing;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        final ChangeStrokeWidthRequest changeRequest = new ChangeStrokeWidthRequest(width);
+        final ChangeStrokeWidthRequest changeRequest = new ChangeStrokeWidthRequest(width, switchToDrawing);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), changeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

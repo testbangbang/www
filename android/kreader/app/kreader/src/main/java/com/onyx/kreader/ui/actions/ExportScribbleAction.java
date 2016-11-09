@@ -40,11 +40,14 @@ public class ExportScribbleAction extends BaseAction {
         getScribbleBitmapAction = new GetScribbleBitmapAction(requestPages, width, height);
         getScribbleBitmapAction.execute(readerDataHolder, new GetScribbleBitmapAction.Callback() {
             @Override
-            public void onNext(final String page, Bitmap bitmap) {
+            public void onNext(final String page, final Bitmap bitmap) {
                 final ExportScribbleRequest request = new ExportScribbleRequest(bitmap, page);
                 readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
+                        if (bitmap != null) {
+                            bitmap.recycle();
+                        }
                         if (requestPages.size() == 0) {
                             hideLoadingDialog();
                             if (baseCallback != null) {

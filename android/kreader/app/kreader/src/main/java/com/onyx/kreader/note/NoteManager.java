@@ -33,7 +33,6 @@ import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
-import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 
@@ -192,7 +191,7 @@ public class NoteManager {
             }
 
             public boolean enableShortcutDrawing() {
-                return isDFBForCurrentShape();
+                return false;
             }
 
             public boolean enableShortcutErasing() {
@@ -238,23 +237,30 @@ public class NoteManager {
     }
 
     public void submit(final Context context, final ReaderBaseNoteRequest request, final BaseCallback callback) {
-        beforeSubmit(context, request, callback);
+        beforeSubmit(context, Integer.MAX_VALUE, request, callback);
         getRequestManager().submitRequest(context, request, generateRunnable(request), callback);
     }
+
+    public void submitWithUniqueId(final Context context, int uniqueId, final ReaderBaseNoteRequest request, final BaseCallback callback) {
+        beforeSubmit(context, uniqueId, request, callback);
+        getRequestManager().submitRequest(context, request, generateRunnable(request), callback);
+    }
+
 
     public void submitRequestWithIdentifier(final Context context,
                                             final String identifier,
                                             final ReaderBaseNoteRequest request,
                                             final BaseCallback callback) {
-        beforeSubmit(context, request, callback);
+        beforeSubmit(context, Integer.MAX_VALUE, request, callback);
         getRequestManager().submitRequest(context, identifier, request, generateRunnable(request), callback);
     }
 
-    private void beforeSubmit(final Context context, final ReaderBaseNoteRequest request, final BaseCallback callback) {
+    private void beforeSubmit(final Context context, int uniqueId, final ReaderBaseNoteRequest request, final BaseCallback callback) {
         final Rect rect = getViewportSize();
         if (rect != null) {
             request.setViewportSize(rect);
         }
+        request.setAssociatedUniqueId(uniqueId);
         if (request.isResetNoteDataInfo()) {
             resetNoteDataInfo();
         }
@@ -454,7 +460,7 @@ public class NoteManager {
     private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
         Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
         onDownMessage(shape);
-        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
+        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth / pageInfo.getActualScale());
         shape.setColor(getNoteDrawingArgs().strokeColor);
         shape.setPageUniqueId(pageInfo.getName());
         shape.ensureShapeUniqueId();

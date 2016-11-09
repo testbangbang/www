@@ -10,7 +10,6 @@ import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.request.FlushShapeListRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 
 import java.util.ArrayList;
@@ -50,13 +49,14 @@ public class FlushNoteAction extends BaseAction {
         }
 
         final FlushShapeListRequest flushRequest = new FlushShapeListRequest(visiblePages, stash, 0, render, transfer, save);
-        noteManager.submit(readerDataHolder.getContext(), flushRequest, new BaseCallback() {
+        final int id = readerDataHolder.getLastRequestSequence();
+        noteManager.submitWithUniqueId(readerDataHolder.getContext(), id, flushRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (showDialog) {
                     hideLoadingDialog();
                 }
-                readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEvent());
+                readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(id));
                 BaseCallback.invoke(callback, request, e);
             }
         });

@@ -146,18 +146,17 @@
             android:orientation="horizontal">
 
             <TextView
+                android:singleLine="true"
+                android:ellipsize="middle"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
                 android:id="@+id/text_view_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textColor="@android:color/primary_text_light"
                 android:textSize="@dimen/dialog_reader_menu_text_view_size"/>
-
-            <View
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"/>
 
             <TextView
                 android:background="@drawable/imagebtn_bg"

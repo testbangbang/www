@@ -23,7 +23,9 @@ import com.onyx.kreader.host.request.ExportNotesRequest;
 import com.onyx.kreader.ui.actions.ExportNotesActionChain;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.utils.ExportUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +71,13 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         scribbleCheckbox.setChecked(SingletonSharedPreference.isExportWithScribble());
         mergedLayout.check(SingletonSharedPreference.isExportAllPages() ? R.id.merged_all : R.id.merged_part);
 
-        String location = String.format(getContext().getString(R.string.export_location_explain), readerDataHolder.getReader().getExportDocPath());
+        String location;
+        try {
+            location = String.format(getContext().getString(R.string.export_location_explain), ExportUtils.getExportPdfPath(readerDataHolder.getReader().getDocumentPath()));
+        }catch (IOException e){
+            location =  getContext().getString(R.string.fail_create_export_directory) + e.getMessage();
+            e.printStackTrace();
+        }
         exportLocation.setText(location);
     }
 

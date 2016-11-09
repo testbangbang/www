@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,14 @@ public class DialogNoteNameInput extends OnyxAlertDialog {
     }
 
     ActionCallBack mCallBack = null;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (NoteAppConfig.sharedInstance(getActivity()).showInputMethodInstantlyAfterOpenDialog()) {
+            getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
 
     public interface ActionCallBack {
         boolean onConfirmAction(String input);

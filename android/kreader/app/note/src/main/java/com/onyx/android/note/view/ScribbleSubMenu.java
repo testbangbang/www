@@ -230,6 +230,15 @@ public class ScribbleSubMenu extends RelativeLayout {
                     case NoteBackgroundType.GRID:
                         targetPattern = ScribbleSubMenuID.BG_GRID;
                         break;
+                    case NoteBackgroundType.ENGLISH:
+                        targetPattern = ScribbleSubMenuID.BG_ENGLISH;
+                        break;
+                    case NoteBackgroundType.MUSIC:
+                        targetPattern = ScribbleSubMenuID.BG_MUSIC;
+                        break;
+                    case NoteBackgroundType.MATS:
+                        targetPattern = ScribbleSubMenuID.BG_MATS;
+                        break;
                 }
                 break;
             default:
@@ -304,8 +313,11 @@ public class ScribbleSubMenu extends RelativeLayout {
     private GAdapter createBGAdapter() {
         GAdapter bgMenus = new GAdapter();
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_white, ScribbleSubMenuID.BG_EMPTY, true));
-        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_matts, ScribbleSubMenuID.BG_GRID, true));
-        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_four, ScribbleSubMenuID.BG_LINE, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line, ScribbleSubMenuID.BG_LINE, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_grid, ScribbleSubMenuID.BG_GRID, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_mats, ScribbleSubMenuID.BG_MATS, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_music, ScribbleSubMenuID.BG_MUSIC, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_english, ScribbleSubMenuID.BG_ENGLISH, true));
         return bgMenus;
     }
 

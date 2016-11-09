@@ -26,7 +26,7 @@ public class Global {
 
     public void init(Context context){
         mContext = context;
-        initDataProvider(context);
+//        initDataProvider(context);
     }
 
     private void initDataProvider(final Context context) {

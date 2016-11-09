@@ -5,6 +5,7 @@ include ':libraries:cropimage',
         ':libraries:onyxsdk-scribble',
         ':libraries:chinese-analyzer',
         ':libraries:alreader-engine',
+        ':libraries:libedu',
         ':app:note',
         ':app:kreader',
         ':app-edu'

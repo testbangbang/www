@@ -1,7 +1,7 @@
 <resources>
     <dimen name="button_minHeight">40dp</dimen>
-    <dimen name="contentView_button_X_axis_margin">30dp</dimen>
-    <dimen name="contentView_button_progress_minWidth">100dp</dimen>
+    <dimen name="contentView_button_X_axis_margin">15dp</dimen>
+    <dimen name="contentView_button_progress_minWidth">80dp</dimen>
     <dimen name="global_dialog_imageView_tittle_size">70dp</dimen>
     <dimen name="alert_dialog_title_text_size">20sp</dimen>
     <dimen name="onyx_alert_dialog_width_margin">45dp</dimen>
@@ -40,4 +40,5 @@
     <dimen name="dialog_reader_menu_top_bar_function_icon_margin">2dp</dimen>
     <dimen name="menu_back_text_size">20sp</dimen>
     <dimen name="common_dialog_width">510dp</dimen>
+    <dimen name="global_activities_function_icon_size">40dp</dimen>
 </resources>

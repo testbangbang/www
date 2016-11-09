@@ -2,6 +2,7 @@ package com.onyx.kreader.host.request;
 
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -11,8 +12,10 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.utils.ExportUtils;
 import com.onyx.kreader.utils.PdfWriterUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,11 +70,14 @@ public class ExportNotesRequest extends BaseReaderRequest {
             if (exportOnlyPagesWithAnnotations && scribbles.size() == 0 && annotations.size() == 0) {
                 return false;
             }
-            if (!PdfWriterUtils.saveAs(reader.getExportDocPath(), exportOnlyPagesWithAnnotations)) {
+            if (!PdfWriterUtils.saveAs(ExportUtils.getExportPdfPath(reader.getDocumentPath()), exportOnlyPagesWithAnnotations)) {
                 return false;
             }
 
             return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         } finally {
             PdfWriterUtils.close();
         }

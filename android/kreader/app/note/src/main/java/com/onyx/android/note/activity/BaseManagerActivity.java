@@ -48,6 +48,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
     protected ContentView contentView;
     protected String currentLibraryId;
     protected String currentLibraryName;
+    protected String currentLibraryPath;
     protected ImageView toolBarIcon;
     protected TextView toolBarTitle;
     protected Button progressBtn;
@@ -138,6 +139,11 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
     @Override
     public void updateCurLibName(String curLibName) {
         this.currentLibraryName = curLibName;
+    }
+
+    @Override
+    public void updateCurLibPath(String curLibPath) {
+        this.currentLibraryPath = curLibPath;
     }
 
     @Override

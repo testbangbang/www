@@ -21,7 +21,12 @@ public class CircleShape extends BaseShape {
     }
 
     public boolean hitTest(final float x, final float y, final float radius) {
-        return false;
+        float sx = getDownPoint().getX();
+        float sy = getDownPoint().getY();
+        float ex = getCurrentPoint().getX();
+        float ey = getCurrentPoint().getY();
+        return ShapeUtils.collide((sx + ex) / 2, (sy + ey) / 2, Math.abs(sx - ex), Math.abs(sy - ey),
+                x, y, radius);
     }
 
     public void render(final RenderContext renderContext) {
@@ -33,7 +38,7 @@ public class CircleShape extends BaseShape {
         if (renderContext.matrix != null) {
             renderContext.matrix.mapRect(rect);
         }
-        applyStrokeStyle(renderContext.paint);
+        applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
         renderContext.canvas.drawOval(rect, renderContext.paint);
     }
 

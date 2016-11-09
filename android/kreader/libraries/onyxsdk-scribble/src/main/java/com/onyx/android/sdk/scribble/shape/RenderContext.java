@@ -18,6 +18,7 @@ public class RenderContext {
     public boolean force = false;
     public boolean useExternal = false;
     public float handlerSize = 5;
+    public float displayScale = 1.0f;
 
     public void prepareRenderingBuffer(final Bitmap bitmap) {
         if (!useExternal) {
@@ -39,6 +40,7 @@ public class RenderContext {
         canvas = c;
         paint = p;
         matrix = m;
+        updateDisplayScale(m);
     }
 
     public RenderContext(final Bitmap b, final Canvas c, final Paint p, final Matrix m) {
@@ -46,6 +48,7 @@ public class RenderContext {
         canvas = c;
         paint = p;
         matrix = m;
+        updateDisplayScale(m);
     }
 
     public static RenderContext create(final Canvas c, final Paint p, final Matrix m) {
@@ -61,6 +64,15 @@ public class RenderContext {
         canvas = c;
         paint = p;
         matrix = m;
+        updateDisplayScale(m);
     }
 
+    private void updateDisplayScale(final Matrix m) {
+        if (m == null) {
+            return;
+        }
+        float[] f = new float[9];
+        m.getValues(f);
+        displayScale = f[Matrix.MSCALE_X];
+    }
 }

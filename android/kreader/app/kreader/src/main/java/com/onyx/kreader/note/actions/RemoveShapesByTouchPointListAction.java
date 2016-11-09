@@ -4,11 +4,9 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.kreader.note.request.ClearPageRequest;
 import com.onyx.kreader.note.request.RemoveShapesByTouchPointListRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 
 import java.util.List;

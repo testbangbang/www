@@ -2,7 +2,7 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := onyx_images
+LOCAL_MODULE := neo_images
 
 LOCAL_NDK_STL_VARIANT := gnustl_static
 

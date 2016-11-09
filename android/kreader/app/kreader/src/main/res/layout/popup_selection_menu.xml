@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/popup_selection_menu_main_background"
-              android:layout_width="@dimen/popup_selection_menu_width"
-    android:layout_height="wrap_content"
+              android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <View
         android:id="@+id/top_divider_line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:background="@android:color/black" />
 
     <LinearLayout
+        android:layout_weight="1"
         android:id="@+id/layout_dict"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -91,13 +92,13 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:background="@android:color/black" />
 
         <com.onyx.kreader.ui.view.HTMLReaderWebView
             android:id="@+id/explain"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="match_parent"
             android:layout_margin="2dp" />
 
     </LinearLayout>
@@ -105,12 +106,12 @@
     <View
         android:id="@+id/webView_divider_line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:background="@android:color/black" />
 
     <LinearLayout
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
         android:id="@+id/tools_plate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -155,6 +156,7 @@
                 android:src="@drawable/ic_dialog_reader_choose_highlight" />
 
             <TextView
+                android:id="@+id/highLightText"
                 style="@style/popup_selection_menu_text_view"
                 android:text="@string/Highlight"/>
         </LinearLayout>
@@ -241,6 +243,6 @@
     <View
         android:id="@+id/bottom_divider_line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:background="@android:color/black" />
 </LinearLayout>

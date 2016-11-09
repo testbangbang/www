@@ -15,8 +15,6 @@ import java.util.List;
 /**
  * Created by ming on 16/7/7.
  */
-@ModelContainer
-@Table(database = AppDatabase.class)
 public class Examination extends BaseDbModel{
     //标题
     @Column
@@ -43,7 +41,4 @@ public class Examination extends BaseDbModel{
     @Column(typeConverter = LongListConverter.class)
     public List chapterIds;
 
-    public List<Chapter> getChapterList() {
-        return ChapterDataProvider.getChapterList(chapterIds);
-    }
 }

@@ -16,6 +16,8 @@
 
 package com.onyx.android.edu.base;
 
+import android.content.Context;
+
 public interface BaseView<T> {
     void setPresenter(T presenter);
 }

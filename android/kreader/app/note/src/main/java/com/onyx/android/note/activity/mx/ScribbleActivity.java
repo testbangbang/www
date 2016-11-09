@@ -8,11 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
+import com.onyx.android.note.actions.scribble.ClearPageAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentEditAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
@@ -84,6 +86,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView changeBGBtn = (ImageView) findViewById(R.id.change_note_bg);
         ImageView prevPage = (ImageView) findViewById(R.id.button_previous_page);
         ImageView nextPage = (ImageView) findViewById(R.id.button_next_page);
+        RelativeLayout clearPage = (RelativeLayout) findViewById(R.id.clear_page);
         penColorBtn = (ImageView) findViewById(R.id.color_indicator);
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         penStyleContentView = (ContentView) findViewById(R.id.pen_style_content_view);
@@ -102,7 +105,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 invokePenStyleCallBack(currentPenType);
             }
         });
-        penStyleContentView.setupContent(1, 6, getPenStyleAdapter(), 0);
+        penStyleContentView.setupContent(1, 5, getPenStyleAdapter(), 0);
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,6 +128,17 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onClick(View v) {
                 onNextPage();
+            }
+        });
+        clearPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                syncWithCallback(true, true, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        onEraseClicked(false);
+                    }
+                });
             }
         });
         penColorBtn.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +170,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onLineClicked();
                 break;
             case PenType.ERASER:
-                onEraseClicked();
+                onEraseClicked(true);
                 break;
         }
     }
@@ -192,7 +206,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onBackgroundChanged(int newBackground) {
-        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction = new NoteBackgroundChangeAction<>(newBackground);
+        final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
+                new NoteBackgroundChangeAction<>(newBackground, !getNoteViewHelper().inUserErasing());
         changeBGAction.execute(ScribbleActivity.this, null);
     }
 
@@ -413,9 +428,14 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, true, null);
     }
 
-    private void onEraseClicked() {
-        setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
-        syncWithCallback(true, false, null);
+    private void onEraseClicked(boolean isPartialErase) {
+        if (isPartialErase) {
+            setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
+            syncWithCallback(true, false, null);
+        } else {
+            ClearPageAction<ScribbleActivity> action = new ClearPageAction<>();
+            action.execute(this, null);
+        }
     }
 
     @Override

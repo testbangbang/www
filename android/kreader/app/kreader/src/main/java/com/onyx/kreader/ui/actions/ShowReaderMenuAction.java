@@ -22,7 +22,6 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.RunnableWithArgument;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
@@ -53,7 +52,7 @@ import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.utils.ReaderConfig;
+import com.onyx.kreader.utils.DeviceConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,9 +111,16 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void getDisableMenus(ReaderDataHolder readerDataHolder) {
-        if (ReaderConfig.sharedInstance(readerDataHolder.getContext()).isDisableNoteFunc()) {
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isDisableNoteFunc()) {
             disableMenus.add(ReaderMenuAction.NOTE);
         }
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isTtsEnabled()) {
+            disableMenus.add(ReaderMenuAction.TTS);
+        }
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasFrontLight()) {
+            disableMenus.add(ReaderMenuAction.FRONT_LIGHT);
+        }
+
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
@@ -455,7 +461,7 @@ public class ShowReaderMenuAction extends BaseAction {
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false, false);
+                StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false, false, true);
                 stopNoteActionChain.execute(readerDataHolder, null);
             }
         });
@@ -564,7 +570,7 @@ public class ShowReaderMenuAction extends BaseAction {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
-        actionChain.addAction(new ChangeStrokeWidthAction(width));
+        actionChain.addAction(new ChangeStrokeWidthAction(width, true));
         actionChain.execute(readerDataHolder, null);
     }
 
