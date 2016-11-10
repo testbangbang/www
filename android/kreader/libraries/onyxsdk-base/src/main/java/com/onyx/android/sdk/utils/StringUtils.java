@@ -106,4 +106,13 @@ public class StringUtils {
         }
         return content.substring(start, end);
     }
+
+    public static String filterUnusedChar(String input) {
+        if (!StringUtils.isNullOrEmpty(input)) {
+            input = input.trim();
+            input = input.replaceAll("\u0000", ""); // removes NUL chars
+            input = input.replaceAll("\\u0000", ""); // removes backslash+u0000
+        }
+        return input;
+    }
 }
