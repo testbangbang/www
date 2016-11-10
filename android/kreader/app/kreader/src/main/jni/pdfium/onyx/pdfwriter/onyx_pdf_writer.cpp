@@ -187,111 +187,10 @@ public:
     }
 
     ~Impl() {
-        close();
-    }
-
-    bool openPDF(const std::string &docPath) {
-        if (isOpened()) {
-            close();
-        }
-
-        doc_ = new PoDoFo::PdfMemDocument(docPath.c_str());
-        if (!doc_->GetInfo()) {
+        if (doc_) {
             delete doc_;
             doc_ = nullptr;
-            return false;
         }
-
-        this->docPath_ = docPath;
-        return true;
-    }
-
-    bool saveAs(const std::string &dstPath, bool savePagesWithAnnotation) {
-        if (!isOpened()) {
-            return false;
-        }
-
-        if (!savePagesWithAnnotation) {
-            doc_->Write(dstPath.c_str());
-            return true;
-        }
-
-        PoDoFo::PdfMemDocument copy;
-        for (const auto page : pagesWithAnnotation) {
-            copy.InsertExistingPageAt(*doc_, page, -1);
-        }
-        copy.Write(dstPath.c_str());
-        return true;
-    }
-
-    void close() {
-        if (!isOpened()) {
-            return;
-        }
-
-        delete doc_;
-        doc_ = nullptr;
-    }
-
-    bool isOpened() const {
-        return doc_ && doc_->IsLoaded();
-    }
-
-    bool writeScribble(const PageScribble &scribble) {
-        if (!isOpened()) {
-            return false;
-        }
-
-        PoDoFo::PdfPage *page = getPage(scribble.page);
-        if (!page) {
-            return false;
-        }
-        for (const auto &stroke : scribble.strokes) {
-            if (!createAnnotationPolyLine(doc_, page, stroke)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    bool writeScribbles(const std::vector<PageScribble> &pageScribbles) {
-        if (!isOpened()) {
-            return false;
-        }
-
-        for (const auto &scribble : pageScribbles) {
-            if (!writeScribble(scribble)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    bool writeAnnotation(const PageAnnotation &annotation) {
-        if (!isOpened()) {
-            return false;
-        }
-
-        PoDoFo::PdfPage *page = getPage(annotation.page);
-        if (!page) {
-            return false;
-        }
-        return createAnnotationHightlight(doc_, page, annotation);
-    }
-
-    bool writeAnnotations(const std::vector<PageAnnotation> &pageAnnotations) {
-        if (!isOpened()) {
-            return false;
-        }
-
-        for (const auto &annot : pageAnnotations) {
-            if (!writeAnnotation(annot)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     PoDoFo::PdfPage *getPage(int page) {
@@ -299,14 +198,14 @@ public:
         if (!pdfPage) {
             return nullptr;
         }
-        pagesWithAnnotation.insert(page);
+        pagesWithAnnotation_.insert(page);
         return pdfPage;
     }
 
-private:
+public:
     std::string docPath_;
     PoDoFo::PdfMemDocument *doc_;
-    std::set<int, std::greater<int>> pagesWithAnnotation;
+    std::set<int, std::greater<int>> pagesWithAnnotation_;
 };
 
 OnyxPdfWriter::OnyxPdfWriter()
@@ -316,45 +215,114 @@ OnyxPdfWriter::OnyxPdfWriter()
 
 OnyxPdfWriter::~OnyxPdfWriter()
 {
-
 }
 
 bool OnyxPdfWriter::openPDF(const std::string &path)
 {
-    return impl->openPDF(path);
+    if (isOpened()) {
+        close();
+    }
+
+    impl->doc_ = new PoDoFo::PdfMemDocument(path.c_str());
+    if (!impl->doc_->GetInfo()) {
+        delete impl->doc_;
+        impl->doc_ = nullptr;
+        return false;
+    }
+
+    impl->docPath_ = path;
+    return true;
 }
 
 bool OnyxPdfWriter::saveAs(const std::string &path, bool savePagesWithAnnotation)
 {
-    return impl->saveAs(path, savePagesWithAnnotation);
+    if (!isOpened()) {
+        return false;
+    }
+
+    if (!savePagesWithAnnotation) {
+        impl->doc_->Write(path.c_str());
+        return true;
+    }
+
+    PoDoFo::PdfMemDocument copy;
+    for (const auto page : impl->pagesWithAnnotation_) {
+        copy.InsertExistingPageAt(*impl->doc_, page, -1);
+    }
+    copy.Write(path.c_str());
+    return true;
 }
 
 void OnyxPdfWriter::close()
 {
-    impl->close();
+    if (!isOpened()) {
+        return;
+    }
+
+    delete impl->doc_;
+    impl->doc_ = nullptr;
 }
 
 bool OnyxPdfWriter::isOpened() const
 {
-    return impl->isOpened();
+    return impl->doc_ && impl->doc_->IsLoaded();
 }
 
 bool OnyxPdfWriter::writeScribble(const PageScribble &scribble)
 {
-    return impl->writeScribble(scribble);
+    if (!isOpened()) {
+        return false;
+    }
+
+    PoDoFo::PdfPage *page = impl->getPage(scribble.page);
+    if (!page) {
+        return false;
+    }
+    for (const auto &stroke : scribble.strokes) {
+        if (!createAnnotationPolyLine(impl->doc_, page, stroke)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool OnyxPdfWriter::writeScribbles(const std::vector<PageScribble> &scribbles)
 {
-    return impl->writeScribbles(scribbles);
+    if (!isOpened()) {
+        return false;
+    }
+
+    for (const auto &scribble : scribbles) {
+        if (!writeScribble(scribble)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool OnyxPdfWriter::writeAnnotation(const PageAnnotation &annotation)
 {
-    return impl->writeAnnotation(annotation);
+    if (!isOpened()) {
+        return false;
+    }
+
+    PoDoFo::PdfPage *page = impl->getPage(annotation.page);
+    if (!page) {
+        return false;
+    }
+    return createAnnotationHightlight(impl->doc_, page, annotation);
 }
 
 bool OnyxPdfWriter::writeAnnotations(const std::vector<PageAnnotation> &annotations)
 {
-    return impl->writeAnnotations(annotations);
+    if (!isOpened()) {
+        return false;
+    }
+
+    for (const auto &annot : annotations) {
+        if (!writeAnnotation(annot)) {
+            return false;
+        }
+    }
+    return true;
 }
