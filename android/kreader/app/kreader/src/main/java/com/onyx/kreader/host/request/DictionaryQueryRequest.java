@@ -40,7 +40,7 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
         Cursor cursor = null;
         try {
             Uri uri = Uri.parse(url);
-            query = StringUtils.filterUnusedChar(query);
+            query = StringUtils.trim(query);
             String []selectionArgs = new String[]{query, String.valueOf(DICT_COUNT_LIMIT)};
             cursor = readerDataHolder.getContext().getContentResolver().query(
                     uri, null, null, selectionArgs,
