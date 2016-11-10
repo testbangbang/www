@@ -110,8 +110,8 @@ public class StringUtils {
     public static String filterUnusedChar(String input) {
         if (!StringUtils.isNullOrEmpty(input)) {
             input = input.trim();
-            input = input.replace("\u0000", ""); // removes NUL chars
-            input = input.replace("\\u0000", ""); // removes backslash+u0000
+            input = input.replaceAll("\u0000", ""); // removes NUL chars
+            input = input.replaceAll("\\u0000", ""); // removes backslash+u0000
         }
         return input;
     }
