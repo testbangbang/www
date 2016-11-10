@@ -107,12 +107,11 @@ public class StringUtils {
         return content.substring(start, end);
     }
 
-    public static String filterUnusedChar(String input, int c) {
+    public static String filterUnusedChar(String input) {
         if (!StringUtils.isNullOrEmpty(input)) {
-            int index = input.indexOf(c);
-            if (index > 0) {
-                input = input.substring(0, index);
-            }
+            input = input.trim();
+            input = input.replace("\u0000", ""); // removes NUL chars
+            input = input.replace("\\u0000", ""); // removes backslash+u0000
         }
         return input;
     }

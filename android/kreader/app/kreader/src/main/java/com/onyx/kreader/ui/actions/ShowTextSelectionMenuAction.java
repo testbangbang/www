@@ -145,7 +145,7 @@ public class ShowTextSelectionMenuAction{
     }
 
     private static void lookupInDictionary(final ReaderActivity activity, String text) {
-        text = StringUtils.filterUnusedChar(text, '\u0000');
+        text = StringUtils.filterUnusedChar(text);
         OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
         Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
         intent.setAction(Intent.ACTION_VIEW);
