@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/popup_selection_menu_main_background"
+    android:background="@android:color/white"
               android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -30,13 +30,34 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="10dp"
                 android:singleLine="true"
                 android:ellipsize="middle"
                 android:text="@string/dialog_dictionary_title"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/control_panel_floating_tittle_text_size" />
+
+            <TextView
+                android:layout_marginRight="5dp"
+                android:textSize="@dimen/control_panel_floating_tittle_text_size"
+                android:text=""
+                android:gravity="center"
+                android:id="@+id/dict_name"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/marker_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:visibility="invisible"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@+id/button_close"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_dict_unfold"
+                android:id="@+id/marker_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <ImageView
                 android:id="@+id/button_close"
@@ -49,45 +70,6 @@
                 android:background="@drawable/ic_close"
                 />
 
-            <ImageView
-                android:id="@+id/dict_next_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/button_close"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="20dp"
-                android:contentDescription=""
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:src="@drawable/ic_dialog_reader_arrow_right_black"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/page_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_toLeftOf="@id/dict_next_page"
-                android:text="@string/popup_selection_menu_page_indicator_default_value"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/control_panel_floating_tittle_text_size"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/dict_prev_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="8dp"
-                android:layout_toLeftOf="@+id/page_indicator"
-                android:contentDescription=""
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:src="@drawable/ic_dialog_reader_arrow_left_black"
-                android:visibility="gone" />
         </RelativeLayout>
 
         <View
@@ -95,11 +77,74 @@
             android:layout_height="2dp"
             android:background="@android:color/black" />
 
-        <com.onyx.kreader.ui.view.HTMLReaderWebView
-            android:id="@+id/explain"
+        <FrameLayout
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="2dp" />
+            android:layout_height="match_parent">
+
+            <com.onyx.kreader.ui.view.HTMLReaderWebView
+                android:id="@+id/explain"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:background="@drawable/no_top_line_bg"
+                android:visibility="gone"
+                android:id="@+id/dict_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:visibility="invisible"
+                android:layout_toLeftOf="@+id/page_indicator"
+                android:id="@+id/dict_prev_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:contentDescription=""
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:src="@drawable/ic_dialog_reader_arrow_left_black" />
+
+
+            <TextView
+                android:visibility="invisible"
+                android:layout_toLeftOf="@+id/dict_next_page"
+                android:id="@+id/page_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="@string/popup_selection_menu_page_indicator_default_value"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/control_panel_floating_tittle_text_size" />
+
+            <ImageView
+                android:visibility="invisible"
+                android:layout_alignParentRight="true"
+                android:id="@+id/dict_next_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:contentDescription=""
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:src="@drawable/ic_dialog_reader_arrow_right_black" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -110,13 +155,17 @@
         android:background="@android:color/black" />
 
     <LinearLayout
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
         android:id="@+id/tools_plate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
+
+        <View
+            android:id="@+id/tools_plate_left_divider_line"
+            android:background="@android:color/black"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"/>
 
         <LinearLayout
             android:id="@+id/imagebutton_copy"
@@ -238,6 +287,12 @@
                 android:textStyle="bold"
                 android:textSize="@dimen/popup_selection_menu_button_text_size" />
         </LinearLayout>
+
+        <View
+            android:id="@+id/tools_plate_right_divider_line"
+            android:background="@android:color/black"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
     <View

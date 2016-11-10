@@ -156,4 +156,11 @@ public abstract class EpdController
         Device.currentDevice().quadTo(x, y, mode);
     }
 
+    public static void disableA2ForSpecificView(View view) {
+        Device.currentDevice().disableA2ForSpecificView(view);
+    }
+
+    public static void enableA2ForSpecificView(View view) {
+        Device.currentDevice().enableA2ForSpecificView(view);
+    }
 }

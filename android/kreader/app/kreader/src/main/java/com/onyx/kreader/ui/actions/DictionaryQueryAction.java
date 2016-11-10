@@ -5,7 +5,11 @@ import android.net.Uri;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.host.request.DictionaryQueryRequest;
+import com.onyx.kreader.ui.data.DictionaryQuery;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ming on 16/10/14.
@@ -14,8 +18,9 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class DictionaryQueryAction extends BaseAction {
 
     private String token;
-    private String expString = "";
-    private String dictPath;
+    private List<DictionaryQuery> dictionaryQueries;
+    private String errorInfo;
+
 
     public DictionaryQueryAction(String token) {
         this.token = token;
@@ -28,18 +33,18 @@ public class DictionaryQueryAction extends BaseAction {
         readerDataHolder.submitNonRenderRequest(resolverQueryRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                expString = resolverQueryRequest.getExpString();
-                dictPath = resolverQueryRequest.getDictPath();
+                errorInfo = resolverQueryRequest.getErrorInfo();
+                dictionaryQueries = resolverQueryRequest.getDictionaryQueries();
                 BaseCallback.invoke(callback, request, e);
             }
         });
     }
 
-    public String getExpString() {
-        return expString;
+    public List<DictionaryQuery> getDictionaryQueries() {
+        return dictionaryQueries;
     }
 
-    public String getDictPath() {
-        return dictPath;
+    public String getErrorInfo() {
+        return errorInfo;
     }
 }

@@ -33,7 +33,7 @@ public class LineShape extends BaseShape {
         if (renderContext.matrix != null) {
             renderContext.matrix.mapPoints(points);
         }
-        applyStrokeStyle(renderContext.paint);
+        applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
         renderContext.canvas.drawLine(points[0], points[1], points[2], points[3], renderContext.paint);
     }
 

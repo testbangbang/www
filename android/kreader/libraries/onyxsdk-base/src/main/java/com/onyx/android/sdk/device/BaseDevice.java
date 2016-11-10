@@ -336,4 +336,10 @@ public class BaseDevice {
 
     public void stopBootAnimation() {
     }
+
+    public void disableA2ForSpecificView(View view) {
+    }
+
+    public void enableA2ForSpecificView(View view) {
+    }
 }

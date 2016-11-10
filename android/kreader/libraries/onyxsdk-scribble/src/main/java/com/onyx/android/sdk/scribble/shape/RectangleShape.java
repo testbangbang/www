@@ -33,7 +33,7 @@ public class RectangleShape extends BaseShape {
                 getDownPoint().y,
                 getCurrentPoint().x,
                 getCurrentPoint().y);
-        applyStrokeStyle(renderContext.paint);
+        applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
         if (renderContext.matrix != null) {
             renderContext.matrix.mapRect(rect);
         }
