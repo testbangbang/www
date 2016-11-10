@@ -49,6 +49,40 @@ bool translateFromDeviceToPage(const RectF &cropBox, RectF *rect) {
     return true;
 }
 
+bool initAnnotationAndPainter(PoDoFo::PdfDocument *document,
+                              PoDoFo::PdfPage *pdfPage,
+                              const RectF &cropBox,
+                              const PoDoFo::EPdfAnnotation annotationType,
+                              const RectF &rect,
+                              uint_t color,
+                              float strokeThickness,
+                              PoDoFo::PdfAnnotation **annotation,
+                              PoDoFo::PdfRect *annotRect,
+                              PoDoFo::PdfXObject **xobj,
+                              PoDoFo::PdfPainter *painter) {
+    using namespace PoDoFo;
+
+    RectF bounds = rect;
+    if (!translateFromDeviceToPage(cropBox, &bounds)) {
+        return false;
+    }
+
+    *annotRect = PdfRect(static_cast<int>(bounds.left),
+                    static_cast<int>(bounds.bottom),
+                    static_cast<int>(bounds.width()),
+                    static_cast<int>(bounds.height()));
+
+    *annotation = pdfPage->CreateAnnotation(annotationType, *annotRect);
+    const PdfColor pdfColor(colorFromRgb(color));
+    (*annotation)->SetColor(pdfColor.GetRed(), pdfColor.GetGreen(), pdfColor.GetBlue());
+
+    *xobj = new PdfXObject(*annotRect, document);
+    painter->SetPage(*xobj);
+    painter->SetStrokeWidth(strokeThickness);
+    painter->SetStrokingColor(pdfColor);
+    return true;
+}
+
 bool createAnnotationPolyLine(PoDoFo::PdfDocument *document,
                               PoDoFo::PdfPage *page,
                               const PageScribble::Stroke &stroke) {
@@ -268,35 +302,211 @@ bool OnyxPdfWriter::isOpened() const
     return impl->doc_ && impl->doc_->IsLoaded();
 }
 
-bool OnyxPdfWriter::writeScribble(const PageScribble &scribble)
+bool OnyxPdfWriter::writeLine(const int page, const RectF &rect, const uint32_t color, const float strokeThickness, const PointF &start, const PointF &end)
 {
+    using namespace PoDoFo;
+
     if (!isOpened()) {
         return false;
     }
 
-    PoDoFo::PdfPage *page = impl->getPage(scribble.page);
-    if (!page) {
+    PdfPage *pdfPage = impl->getPage(page);
+    if (!pdfPage) {
         return false;
     }
-    for (const auto &stroke : scribble.strokes) {
-        if (!createAnnotationPolyLine(impl->doc_, page, stroke)) {
-            return false;
-        }
+    RectF cropBox = getPageCropBox(pdfPage);
+
+    PdfAnnotation *line = nullptr;
+    PdfRect annotRect;
+    PdfXObject *xobj = nullptr;
+    PdfPainter pnt;
+    if (!initAnnotationAndPainter(impl->doc_, pdfPage, cropBox,
+                                  ePdfAnnotation_Line, rect, color, strokeThickness,
+                                  &line, &annotRect, &xobj, &pnt)) {
+        return false;
     }
+
+    PointF p1 = start;
+    PointF p2 = end;
+    if (!translateFromDeviceToPage(cropBox, &p1) ||
+            !translateFromDeviceToPage(cropBox, &p2)) {
+        return false;
+    }
+    pnt.DrawLine(p1.x, p1.y, p2.x, p2.y);
+
+    pnt.FinishPage();
+    line->SetAppearanceStream(xobj);
     return true;
 }
 
-bool OnyxPdfWriter::writeScribbles(const std::vector<PageScribble> &scribbles)
+bool OnyxPdfWriter::writePolyLine(const int page, const RectF &rect, const uint32_t color, const float strokeThickness, const std::vector<PointF> &points)
 {
+    using namespace PoDoFo;
+
     if (!isOpened()) {
         return false;
     }
 
-    for (const auto &scribble : scribbles) {
-        if (!writeScribble(scribble)) {
+    PdfPage *pdfPage = impl->getPage(page);
+    if (!pdfPage) {
+        return false;
+    }
+    const RectF cropBox = getPageCropBox(pdfPage);
+
+    PdfAnnotation *polyline = nullptr;
+    PdfRect annotRect;
+    PdfXObject *xobj = nullptr;
+    PdfPainter pnt;
+    if (!initAnnotationAndPainter(impl->doc_, pdfPage, cropBox,
+                                  ePdfAnnotation_PolyLine, rect, color, strokeThickness,
+                                  &polyline, &annotRect, &xobj, &pnt)) {
+        return false;
+    }
+
+    PdfArray vertices;
+    for (auto point : points) {
+        if (!translateFromDeviceToPage(cropBox, &point)) {
             return false;
         }
+        vertices.push_back(point.x);
+        vertices.push_back(point.y);
     }
+    polyline->GetObject()->GetDictionary().AddKey(PdfName("Vertices"), vertices);
+
+    for (size_t i = 0; i < points.size() - 1; i++) {
+        PointF p1 = points[i];
+        PointF p2 = points[i + 1];
+        if (!translateFromDeviceToPage(cropBox, &p1) ||
+                !translateFromDeviceToPage(cropBox, &p2)) {
+            return false;
+        }
+        pnt.DrawLine(p1.x, p1.y, p2.x, p2.y);
+    }
+
+    pnt.FinishPage();
+    polyline->SetAppearanceStream(xobj);
+    return true;
+}
+
+bool OnyxPdfWriter::writePolygon(const int page, const RectF &rect, const uint32_t color, const float strokeThickness, const std::vector<PointF> &points)
+{
+    using namespace PoDoFo;
+
+    if (!isOpened()) {
+        return false;
+    }
+
+    PdfPage *pdfPage = impl->getPage(page);
+    if (!pdfPage) {
+        return false;
+    }
+    const RectF cropBox = getPageCropBox(pdfPage);
+
+    PdfAnnotation *polygon = nullptr;
+    PdfRect annotRect;
+    PdfXObject *xobj = nullptr;
+    PdfPainter pnt;
+    if (!initAnnotationAndPainter(impl->doc_, pdfPage, cropBox,
+                                  ePdfAnnotation_Polygon, rect, color, strokeThickness,
+                                  &polygon, &annotRect, &xobj, &pnt)) {
+        return false;
+    }
+
+    PdfArray vertices;
+    for (auto point : points) {
+        if (!translateFromDeviceToPage(cropBox, &point)) {
+            return false;
+        }
+        vertices.push_back(point.x);
+        vertices.push_back(point.y);
+    }
+    polygon->GetObject()->GetDictionary().AddKey(PdfName("Vertices"), vertices);
+
+    for (size_t i = 0; i < points.size() - 1; i++) {
+        PointF p1 = points[i];
+        PointF p2 = points[i + 1];
+        if (!translateFromDeviceToPage(cropBox, &p1) ||
+                !translateFromDeviceToPage(cropBox, &p2)) {
+            return false;
+        }
+        pnt.DrawLine(p1.x, p1.y, p2.x, p2.y);
+    }
+    if (points.size() > 2) {
+        PointF start = points[0];
+        PointF end = points[points.size() - 1];
+        if (!translateFromDeviceToPage(cropBox, &start) ||
+                !translateFromDeviceToPage(cropBox, &end)) {
+            return false;
+        }
+        pnt.DrawLine(end.x, end.y, start.x, start.y);
+    }
+
+    pnt.FinishPage();
+    polygon->SetAppearanceStream(xobj);
+    return true;
+}
+
+bool OnyxPdfWriter::writeSquare(const int page, const RectF &rect, const uint32_t color, const float strokeThickness)
+{
+    using namespace PoDoFo;
+
+    if (!isOpened()) {
+        return false;
+    }
+
+    PdfPage *pdfPage = impl->getPage(page);
+    if (!pdfPage) {
+        return false;
+    }
+    RectF cropBox = getPageCropBox(pdfPage);
+
+    PdfAnnotation *square = nullptr;
+    PdfRect annotRect;
+    PdfXObject *xobj = nullptr;
+    PdfPainter pnt;
+    if (!initAnnotationAndPainter(impl->doc_, pdfPage, cropBox,
+                                  ePdfAnnotation_Square, rect, color, strokeThickness,
+                                  &square, &annotRect, &xobj, &pnt)) {
+        return false;
+    }
+
+    pnt.Rectangle(annotRect);
+    pnt.Stroke();
+
+    pnt.FinishPage();
+    square->SetAppearanceStream(xobj);
+    return true;
+}
+
+bool OnyxPdfWriter::writeCircle(const int page, const RectF &rect, const uint32_t color, const float strokeThickness)
+{
+    using namespace PoDoFo;
+
+    if (!isOpened()) {
+        return false;
+    }
+
+    PdfPage *pdfPage = impl->getPage(page);
+    if (!pdfPage) {
+        return false;
+    }
+    RectF cropBox = getPageCropBox(pdfPage);
+
+    PdfAnnotation *square = nullptr;
+    PdfRect annotRect;
+    PdfXObject *xobj = nullptr;
+    PdfPainter pnt;
+    if (!initAnnotationAndPainter(impl->doc_, pdfPage, cropBox,
+                                  ePdfAnnotation_Square, rect, color, strokeThickness,
+                                  &square, &annotRect, &xobj, &pnt)) {
+        return false;
+    }
+
+    pnt.Ellipse(annotRect.GetLeft(), annotRect.GetBottom(), annotRect.GetWidth(), annotRect.GetHeight());
+    pnt.Stroke();
+
+    pnt.FinishPage();
+    square->SetAppearanceStream(xobj);
     return true;
 }
 
@@ -311,18 +521,4 @@ bool OnyxPdfWriter::writeAnnotation(const PageAnnotation &annotation)
         return false;
     }
     return createAnnotationHightlight(impl->doc_, page, annotation);
-}
-
-bool OnyxPdfWriter::writeAnnotations(const std::vector<PageAnnotation> &annotations)
-{
-    if (!isOpened()) {
-        return false;
-    }
-
-    for (const auto &annot : annotations) {
-        if (!writeAnnotation(annot)) {
-            return false;
-        }
-    }
-    return true;
 }
