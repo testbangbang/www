@@ -83,61 +83,6 @@ bool initAnnotationAndPainter(PoDoFo::PdfDocument *document,
     return true;
 }
 
-bool createAnnotationPolyLine(PoDoFo::PdfDocument *document,
-                              PoDoFo::PdfPage *page,
-                              const PageScribble::Stroke &stroke) {
-    assert(document && page);
-
-    using namespace PoDoFo;
-
-    const RectF cropBox = getPageCropBox(page);
-
-    RectF rect = stroke.rect;
-    if (!translateFromDeviceToPage(cropBox, &rect)) {
-        return false;
-    }
-    PdfRect pdfRect(static_cast<int>(rect.left),
-                    static_cast<int>(rect.bottom),
-                    static_cast<int>(rect.width()),
-                    static_cast<int>(rect.height()));
-
-    PdfAnnotation *polyline = page->CreateAnnotation(ePdfAnnotation_PolyLine, pdfRect);
-
-    const PdfColor color(colorFromRgb(stroke.color));
-    polyline->SetColor(color.GetRed(), color.GetGreen(), color.GetBlue());
-
-    PdfDictionary &dict = polyline->GetObject()->GetDictionary();
-    PdfArray *vertices = new PdfArray();
-    for (auto point : stroke.points) {
-        if (!translateFromDeviceToPage(cropBox, &point)) {
-            return false;
-        }
-        vertices->push_back(point.x);
-        vertices->push_back(point.y);
-    }
-    dict.AddKey(PdfName("Vertices"), *vertices);
-
-    PdfXObject *xobj = new PdfXObject(pdfRect, document);
-    PdfPainter pnt;
-    pnt.SetPage(xobj);
-    pnt.SetStrokeWidth(stroke.thickness);
-    pnt.SetStrokingColor(color);
-    for (size_t i = 0; i < stroke.points.size() - 1; i++) {
-        PointF p1 = stroke.points[i];
-        PointF p2 = stroke.points[i + 1];
-        if (!translateFromDeviceToPage(cropBox, &p1) ||
-                !translateFromDeviceToPage(cropBox, &p2)) {
-            return false;
-        }
-        pnt.DrawLine(p1.x, p1.y, p2.x, p2.y);
-    }
-    pnt.FinishPage();
-
-    polyline->SetAppearanceStream(xobj);
-
-    return true;
-}
-
 bool createAnnotationHightlight(PoDoFo::PdfDocument *document,
                                 PoDoFo::PdfPage *page,
                                 const PageAnnotation &annotation) {
