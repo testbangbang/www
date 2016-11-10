@@ -106,4 +106,14 @@ public class StringUtils {
         }
         return content.substring(start, end);
     }
+
+    public static String filterUnusedChar(String input, int c) {
+        if (!StringUtils.isNullOrEmpty(input)) {
+            int index = input.indexOf(c);
+            if (index > 0) {
+                input = input.substring(0, index);
+            }
+        }
+        return input;
+    }
 }
