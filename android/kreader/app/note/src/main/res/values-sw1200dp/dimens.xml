@@ -11,5 +11,6 @@
     <dimen name="onyx_sub_note_menu_height">80dp</dimen>
     <dimen name="onyx_note_page_count_control_x_axis_margin">25dp</dimen>
     <dimen name="page_indicator_area_bottom_margin">10dp</dimen>
-    <dimen name="onyx_note_style_width">580dp</dimen>
+    <dimen name="onyx_note_style_width">380dp</dimen>
+    <dimen name="onyx_scribble_activity_text_size">26sp</dimen>
 </resources>
