@@ -5,6 +5,8 @@
 #include <string>
 #include <memory>
 
+class PointF;
+class RectF;
 class PageScribble;
 class PageAnnotation;
 
@@ -19,10 +21,17 @@ public:
     void close();
 
     bool isOpened() const;
-    bool writeScribble(const PageScribble &scribble);
-    bool writeScribbles(const std::vector<PageScribble> &scribbles);
+
+    bool writeLine(const int page, const RectF &rect, const uint32_t color, const float strokeThickness,
+                   const PointF &start, const PointF &end);
+    bool writePolyLine(const int page, const RectF &rect, const uint32_t color, const float strokeThickness,
+                      const std::vector<PointF> &points);
+    bool writePolygon(const int page, const RectF &rect, const uint32_t color, const float strokeThickness,
+                      const std::vector<PointF> &points);
+    bool writeSquare(const int page, const RectF &rect, const uint32_t color, const float strokeThickness);
+    bool writeCircle(const int page, const RectF &rect, const uint32_t color, const float strokeThickness);
+
     bool writeAnnotation(const PageAnnotation &annotation);
-    bool writeAnnotations(const std::vector<PageAnnotation> &annotations);
 
 private:
     class Impl;

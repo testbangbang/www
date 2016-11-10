@@ -2,12 +2,15 @@ package com.onyx.kreader.host.request;
 
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.shape.CircleShape;
+import com.onyx.android.sdk.scribble.shape.LineShape;
 import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
+import com.onyx.android.sdk.scribble.shape.RectangleShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.TriangleShape;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -59,15 +62,14 @@ public class ExportNotesRequest extends BaseReaderRequest {
         }
 
         try {
-            List<NormalPencilShape> scribbles = getScribblesFromShapes();
-            if (!writePolyLines(scribbles)) {
+            if (!writeShapes(shapes)) {
                 return false;
             }
             if (!writeAnnotations(annotations)) {
                 return false;
             }
             boolean exportOnlyPagesWithAnnotations = !SingletonSharedPreference.isExportAllPages();
-            if (exportOnlyPagesWithAnnotations && scribbles.size() == 0 && annotations.size() == 0) {
+            if (exportOnlyPagesWithAnnotations && shapes.size() == 0 && annotations.size() == 0) {
                 return false;
             }
             if (!PdfWriterUtils.saveAs(ExportUtils.getExportPdfPath(reader.getDocumentPath()), exportOnlyPagesWithAnnotations)) {
@@ -81,16 +83,6 @@ public class ExportNotesRequest extends BaseReaderRequest {
         } finally {
             PdfWriterUtils.close();
         }
-    }
-
-    private List<NormalPencilShape> getScribblesFromShapes() {
-        List<NormalPencilShape> scribbles = new ArrayList<>();
-        for (Shape shape : shapes) {
-            if (shape instanceof NormalPencilShape) {
-                scribbles.add((NormalPencilShape) shape);
-            }
-        }
-        return scribbles;
     }
 
     private boolean writeAnnotations(final List<Annotation> annotations) {
@@ -110,26 +102,25 @@ public class ExportNotesRequest extends BaseReaderRequest {
         return true;
     }
 
-    private boolean writePolyLines(final List<NormalPencilShape> polyLines) {
-        BrushColor colorOptions = SingletonSharedPreference.getExportScribbleColor();
-        for (NormalPencilShape line : polyLines) {
-            int page = Integer.parseInt(line.getPageUniqueId());
-
-            float[] boundingRect = new float[4];
-            boundingRect[0] = line.getBoundingRect().left;
-            boundingRect[1] = line.getBoundingRect().top;
-            boundingRect[2] = line.getBoundingRect().right;
-            boundingRect[3] = line.getBoundingRect().bottom;
-
-            float[] vertices = new float[line.getPoints().size() * 2];
-            for (int i = 0; i < line.getPoints().size(); i++) {
-                TouchPoint point = line.getPoints().get(i);
-                vertices[i * 2] = point.getX();
-                vertices[(i * 2) + 1] = point.getY();
+    private boolean writeShapes(final List<Shape> shapes) {
+        BrushColor colorOption = SingletonSharedPreference.getExportScribbleColor();
+        for (Shape shape : shapes) {
+            int color = getColorOfShape(shape, colorOption);
+            boolean succ;
+            if (shape instanceof NormalPencilShape) {
+                succ = writePolyLine((NormalPencilShape)shape, color);
+            } else if (shape instanceof LineShape) {
+                succ = writeLine((LineShape)shape, color);
+            } else if (shape instanceof RectangleShape) {
+                succ = writeSquare((RectangleShape)shape, color);
+            } else if (shape instanceof CircleShape) {
+                succ = writeCircle((CircleShape)shape, color);
+            } else if (shape instanceof TriangleShape) {
+                succ = writeTriangle((TriangleShape)shape, color);
+            } else {
+                return false;
             }
-
-            int color = getColorOfShape(line, colorOptions);
-            if (!PdfWriterUtils.writePolyLine(page, boundingRect, color, line.getStrokeWidth(), vertices)) {
+            if (!succ) {
                 return false;
             }
         }
@@ -154,4 +145,66 @@ public class ExportNotesRequest extends BaseReaderRequest {
                 return shape.getColor();
         }
     }
+
+    private float[] getBoundingRect(final Shape shape) {
+        float[] rect = new float[4];
+        rect[0] = shape.getBoundingRect().left;
+        rect[1] = shape.getBoundingRect().top;
+        rect[2] = shape.getBoundingRect().right;
+        rect[3] = shape.getBoundingRect().bottom;
+        return rect;
+    }
+
+    private boolean writePolyLine(final NormalPencilShape line, final int color) {
+        int page = Integer.parseInt(line.getPageUniqueId());
+        float[] boundingRect = getBoundingRect(line);
+        float[] vertices = new float[line.getPoints().size() * 2];
+        for (int i = 0; i < line.getPoints().size(); i++) {
+            TouchPoint point = line.getPoints().get(i);
+            vertices[i * 2] = point.getX();
+            vertices[(i * 2) + 1] = point.getY();
+        }
+        return PdfWriterUtils.writePolyLine(page, boundingRect, color,
+                line.getStrokeWidth(), vertices);
+    }
+
+    private boolean writeLine(final LineShape line, final int color) {
+        int page = Integer.parseInt(line.getPageUniqueId());
+        float[] boundingRect = getBoundingRect(line);
+        float startX = line.getPoints().get(0).x;
+        float startY = line.getPoints().get(0).y;
+        float endX = line.getPoints().get(1).x;
+        float endY = line.getPoints().get(1).y;
+        return PdfWriterUtils.writeLine(page, boundingRect, color,
+                line.getStrokeWidth(), startX, startY, endX, endY);
+    }
+
+    private boolean writeSquare(final RectangleShape square, final int color) {
+        int page = Integer.parseInt(square.getPageUniqueId());
+        float[] boundingRect = getBoundingRect(square);
+        return PdfWriterUtils.writeSquare(page, boundingRect, color,
+                square.getStrokeWidth());
+    }
+
+    private boolean writeCircle(final CircleShape circle, final int color) {
+        int page = Integer.parseInt(circle.getPageUniqueId());
+        float[] boundingRect = getBoundingRect(circle);
+        return PdfWriterUtils.writeCircle(page, boundingRect, color,
+                circle.getStrokeWidth());
+    }
+
+    private boolean writeTriangle(final TriangleShape triangle, final int color) {
+        int page = Integer.parseInt(triangle.getPageUniqueId());
+        float[] boundingRect = getBoundingRect(triangle);
+        float[] vertices = new float[6];
+        vertices[0] = triangle.getBoundingRect().centerX();
+        vertices[1] = triangle.getBoundingRect().top;
+        vertices[2] = triangle.getBoundingRect().left;
+        vertices[3] = triangle.getBoundingRect().bottom;
+        vertices[4] = triangle.getBoundingRect().right;
+        vertices[5] = triangle.getBoundingRect().bottom;
+        return PdfWriterUtils.writePolygon(page, boundingRect, color,
+                triangle.getStrokeWidth(), vertices);
+    }
+
 }
