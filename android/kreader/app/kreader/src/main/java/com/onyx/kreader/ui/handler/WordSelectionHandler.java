@@ -14,6 +14,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.host.request.AnalyzeWordAction;
 import com.onyx.kreader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.actions.SelectWordAction;
@@ -34,6 +35,7 @@ import com.onyx.kreader.utils.RectUtils;
 public class WordSelectionHandler extends BaseHandler{
 
     private static final String TAG = "WordSelectionHandler";
+    private static final int MAX_WORD_CHINESE_COUNT = 10;
 
     private int selectionMoveDistanceThreshold;
     private int moveRangeAfterLongPress = 10;
@@ -95,7 +97,8 @@ public class WordSelectionHandler extends BaseHandler{
         if (readerDataHolder.getReaderUserDataInfo().hasHighlightResult() && !isSingleTapUp()) {
             String text = readerDataHolder.getReaderUserDataInfo().getHighlightResult().getText();
             if (!StringUtils.isNullOrEmpty(text)) {
-                analyzeWord(readerDataHolder, text);
+                boolean isWord = isWord(text);
+                showSelectionMenu(readerDataHolder, isWord);
             }
         }
 
@@ -103,6 +106,16 @@ public class WordSelectionHandler extends BaseHandler{
         setSingleTapUp(false);
         setActionUp(true);
         return true;
+    }
+
+    private boolean isWord(String text) {
+        text = text.trim();
+        boolean isAlphaWord =  ReaderTextSplitterImpl.isAlpha(text.charAt(0));
+        if (isAlphaWord) {
+            return !text.contains(" ");
+        } else {
+            return text.length() <= MAX_WORD_CHINESE_COUNT;
+        }
     }
 
     private void updateHighLightRect(final ReaderDataHolder readerDataHolder) {

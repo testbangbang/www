@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.TextSize;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +37,7 @@ import com.onyx.kreader.ui.view.HTMLReaderWebView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.support.v7.recyclerview.R.styleable.RecyclerView;
 import static com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle.Highlight;
 
 public class PopupSelectionMenu extends LinearLayout {
@@ -160,7 +162,6 @@ public class PopupSelectionMenu extends LinearLayout {
 
         mWebView = (HTMLReaderWebView) findViewById(R.id.explain);
         mWebView.getSettings().setTextSize(TextSize.LARGER);
-        mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setPageTurnType(HTMLReaderWebView.PAGE_TURN_TYPE_VERTICAL);
         mWebView.setPageTurnThreshold(15);
         mWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
@@ -175,7 +176,6 @@ public class PopupSelectionMenu extends LinearLayout {
                 mPageIndicator.setText(curPage + "/" + totalPage);
             }
         });
-        EpdController.disableA2ForSpecificView(mWebView);
 
         LinearLayout imagebuttonCopy = (LinearLayout) findViewById(R.id.imagebutton_copy);
         imagebuttonCopy.setOnClickListener(new OnClickListener() {
@@ -433,6 +433,7 @@ public class PopupSelectionMenu extends LinearLayout {
             }
             showExplanation(query);
         }else {
+            mWebView.setLoadCssStyle(false);
             mWebView.loadDataWithBaseURL(null, error, "text/html", "utf-8", "about:blank");
         }
     }
@@ -449,6 +450,7 @@ public class PopupSelectionMenu extends LinearLayout {
             markerView.setVisibility(VISIBLE);
         }
 
+        mWebView.setLoadCssStyle(dictionaryQuery.getState() == DictionaryQuery.DICT_STATE_QUERY_SUCCESSFUL);
         mWebView.loadDataWithBaseURL(url, dictionaryQuery.getExplanation(), "text/html", "utf-8", "about:blank");
     }
 
