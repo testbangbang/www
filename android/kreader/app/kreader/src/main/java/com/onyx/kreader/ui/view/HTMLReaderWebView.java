@@ -17,6 +17,7 @@ import android.webkit.WebViewClient;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
+import com.onyx.kreader.common.Debug;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -141,7 +142,6 @@ public class HTMLReaderWebView extends WebView
             public void onProgressChanged(WebView view, int newProgress)
             {
                 super.onProgressChanged(view, newProgress);
-                Log.d(TAG, "newProgress = " + newProgress);
             }
         });
 
@@ -261,7 +261,7 @@ public class HTMLReaderWebView extends WebView
     protected void onDraw(Canvas canvas)
     {
         if (refreshWebViewSize() || !loadCssStyle) {
-            Log.d(TAG, "onDraw: ");
+            Debug.d(TAG, "onDraw: ");
             super.onDraw(canvas);
         }
 
@@ -288,7 +288,7 @@ public class HTMLReaderWebView extends WebView
             mOnPageChangedListener.onPageChanged(mTotalPage, mCurrentPage);
         }
 
-        Log.e(TAG, "page: " + mCurrentPage + " / " + mTotalPage + " " + getContentHeight() + " " + scrollWidth + " view: " + getHeight());
+        Debug.e(TAG, "page: " + mCurrentPage + " / " + mTotalPage + " " + getContentHeight() + " " + scrollWidth + " view: " + getHeight());
 
         return mTotalPage >= 1 && getContentHeight() <= getHeight();
     }
