@@ -9,3 +9,4 @@ include ':libraries:cropimage',
         ':app:note',
         ':app:kreader',
         ':app-edu'
+project(':app-edu').projectDir = new File('app/edu')

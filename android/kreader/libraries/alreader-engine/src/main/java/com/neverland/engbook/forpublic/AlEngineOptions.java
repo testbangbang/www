@@ -44,7 +44,6 @@ public class AlEngineOptions {
 	/**
 	 *
 	 */
-    public AssetManager assetManager;
     public Context							appInstance;
 
 	/**
