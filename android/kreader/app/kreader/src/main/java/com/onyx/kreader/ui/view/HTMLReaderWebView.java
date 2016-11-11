@@ -5,6 +5,7 @@ package com.onyx.kreader.ui.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -14,6 +15,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 
 import java.io.File;
@@ -37,6 +39,7 @@ public class HTMLReaderWebView extends WebView
     public static final int PAGE_TURN_TYPE_HORIZOTAL = 2;
     private int pageTurnType = PAGE_TURN_TYPE_VERTICAL;
     private float lastX, lastY;
+    private boolean loadCssStyle = true;
 
     private int heightForSaveView = 50;
     private int pageTurnThreshold = 300;
@@ -91,6 +94,10 @@ public class HTMLReaderWebView extends WebView
         super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
     }
 
+    public void setLoadCssStyle(boolean loadCssStyle) {
+        this.loadCssStyle = loadCssStyle;
+    }
+
     public void setScroll(int l, int t)
     {
         mInternalScrollX = l;
@@ -135,10 +142,6 @@ public class HTMLReaderWebView extends WebView
             {
                 super.onProgressChanged(view, newProgress);
                 Log.d(TAG, "newProgress = " + newProgress);
-                if (newProgress == 100) {
-                    setScroll(0, 0);
-                    mCurrentPage = 0;
-                }
             }
         });
 
@@ -153,25 +156,7 @@ public class HTMLReaderWebView extends WebView
 
                  final HTMLReaderWebView myWebView = (HTMLReaderWebView) view;
 
-
-                String varMySheet = "var mySheet = document.styleSheets[0];";
-
-                String addCSSRule = "function addCSSRule(selector, newRule) {"
-                        + "ruleIndex = mySheet.cssRules.length;"
-                        + "mySheet.insertRule(selector + '{' + newRule + ';}', ruleIndex);"
-
-                        + "}";
-
-                String insertRule1 = "addCSSRule('html', 'padding: 0px; height: "
-                        + (myWebView.getMeasuredHeight()/getContext().getResources().getDisplayMetrics().density )
-                        + "px; -webkit-column-gap: 0px; -webkit-column-width: "
-                        + myWebView.getMeasuredWidth() + "px;  text-align:justify; ')";
-
-
-
-                myWebView.loadUrl("javascript:" + varMySheet);
-                myWebView.loadUrl("javascript:" + addCSSRule);
-                myWebView.loadUrl("javascript:" + insertRule1);
+                applyCSS(myWebView);
 
             }
 
@@ -182,6 +167,7 @@ public class HTMLReaderWebView extends WebView
             }
         });
 
+        EpdController.disableA2ForSpecificView(this);
         getSettings().setJavaScriptEnabled(true);
         getSettings().setBuiltInZoomControls(false);
         setVerticalScrollBarEnabled(false);
@@ -221,6 +207,29 @@ public class HTMLReaderWebView extends WebView
         });
     }
 
+    private void applyCSS(WebView webView) {
+        if (!loadCssStyle) {
+            return;
+        }
+        String varMySheet = "var mySheet = document.styleSheets[0];";
+
+        String addCSSRule = "function addCSSRule(selector, newRule) {"
+                + "ruleIndex = mySheet.cssRules.length;"
+                + "mySheet.insertRule(selector + '{' + newRule + ';}', ruleIndex);"
+
+                + "}";
+
+        String insertRule1 = "addCSSRule('html', 'padding: 0px; height: "
+                + (webView.getMeasuredHeight()/getContext().getResources().getDisplayMetrics().density )
+                + "px; -webkit-column-gap: 0px; -webkit-column-width: "
+                + webView.getMeasuredWidth() + "px;  text-align:justify; ')";
+
+
+        String css = varMySheet + addCSSRule + insertRule1;
+
+        webView.loadUrl("javascript:" + css);
+    }
+
     private int detectDirection(MotionEvent currentEvent) {
         return com.onyx.android.sdk.ui.utils.PageTurningDetector.detectBothAxisTuring(getContext(), (int) (currentEvent.getX() - lastX), (int) (currentEvent.getY() - lastY));
     }
@@ -229,6 +238,7 @@ public class HTMLReaderWebView extends WebView
     protected int computeHorizontalScrollRange() {
         return super.computeHorizontalScrollRange();
     }
+
 
     public interface OnPageChangedListener
     {
@@ -250,18 +260,19 @@ public class HTMLReaderWebView extends WebView
     @Override
     protected void onDraw(Canvas canvas)
     {
-        scrollTo(mInternalScrollX, mInternalScrollY);
-        super.onDraw(canvas);
-        refreshWebViewSize();
+        if (refreshWebViewSize() || !loadCssStyle) {
+            Log.d(TAG, "onDraw: ");
+            super.onDraw(canvas);
+        }
+
     }
 
-    private void refreshWebViewSize()
+    private boolean refreshWebViewSize()
     {
         int width = getWidth();
         int scrollWidth = computeHorizontalScrollRange();
-
         if (width == 0) {
-            return;
+            return true;
         }
 
         mTotalPage = (scrollWidth + width - 1) / width;
@@ -273,8 +284,13 @@ public class HTMLReaderWebView extends WebView
             mCurrentPage = 1;
         }
 
-        if (mOnPageChangedListener != null)
+        if (mOnPageChangedListener != null) {
             mOnPageChangedListener.onPageChanged(mTotalPage, mCurrentPage);
+        }
+
+        Log.e(TAG, "page: " + mCurrentPage + " / " + mTotalPage + " " + getContentHeight() + " " + scrollWidth + " view: " + getHeight());
+
+        return mTotalPage >= 1 && getContentHeight() <= getHeight();
     }
 
     public void nextPage()
