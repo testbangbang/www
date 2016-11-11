@@ -70,7 +70,7 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     public AlReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
         if (impl == null) {
-            impl = new AlReaderWrapper(pluginOptions);
+            impl = new AlReaderWrapper(context, pluginOptions);
         }
     }
 

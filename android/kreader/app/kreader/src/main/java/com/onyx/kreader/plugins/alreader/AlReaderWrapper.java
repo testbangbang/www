@@ -1,5 +1,6 @@
 package com.onyx.kreader.plugins.alreader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -45,9 +46,9 @@ public class AlReaderWrapper {
     private AlPublicProfileOptions profileNight = new AlPublicProfileOptions();
 
 
-    public AlReaderWrapper(final ReaderPluginOptions pluginOptions) {
+    public AlReaderWrapper(final Context context, final ReaderPluginOptions pluginOptions) {
         bookEng = new AlBookEng();
-        bookEng.initializeBookEngine(createEngineOptions(pluginOptions));
+        bookEng.initializeBookEngine(createEngineOptions(context, pluginOptions));
         bookEng.initializeOwner(getEngineNotifyForUI());
         bookEng.setNewProfileParameters(getProfileDay(pluginOptions));
     }
@@ -78,16 +79,16 @@ public class AlReaderWrapper {
         return StringUtils.utf16le(data).trim();
     }
 
-    private AlEngineOptions createEngineOptions(final ReaderPluginOptions pluginOptions) {
+    private AlEngineOptions createEngineOptions(final Context context, final ReaderPluginOptions pluginOptions) {
         engineOptions = new AlEngineOptions();
-        engineOptions.assetManager = pluginOptions.getAssetManager();
+        engineOptions.appInstance = context;
         engineOptions.font_catalog = pluginOptions.getFontDirectories().get(0);
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
         engineOptions.chinezeFormatting = true;
 
-        float dpiMultiplex = pluginOptions.getScreenDensity();
+        float dpiMultiplex = context.getResources().getDisplayMetrics().density;
         engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_160;
         if (dpiMultiplex >= 4.0f) {
             engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_640;
