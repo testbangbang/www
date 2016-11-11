@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import com.onyx.android.note.R;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
+import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
@@ -25,6 +26,7 @@ import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_CIRCLE;
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_LINE;
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_RECTANGLE;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_TRIANGLE;
 
 
 /**
@@ -198,9 +200,9 @@ public class ScribbleSubMenu extends RelativeLayout {
                     case SHAPE_LINE:
                         targetPattern = ScribbleSubMenuID.LINE_STYLE;
                         break;
-//                    case SHAPE_TRIANGLE:
-//                        targetPattern = ScribbleSubMenuID.TRIANGLE_STYLE;
-//                        break;
+                    case SHAPE_TRIANGLE:
+                        targetPattern = ScribbleSubMenuID.TRIANGLE_STYLE;
+                        break;
                     case SHAPE_CIRCLE:
                         targetPattern = ScribbleSubMenuID.CIRCLE_STYLE;
                         break;
@@ -302,7 +304,9 @@ public class ScribbleSubMenu extends RelativeLayout {
     private GAdapter createPenStyleAdapter() {
         GAdapter styleMenus = new GAdapter();
         styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_pencil, ScribbleSubMenuID.NORMAL_PEN_STYLE, true));
-        styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_brush, ScribbleSubMenuID.BRUSH_PEN_STYLE, true));
+        if (NoteAppConfig.sharedInstance(getContext()).isEnablePressStressDetect()) {
+            styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_brush, ScribbleSubMenuID.BRUSH_PEN_STYLE, true));
+        }
         styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_line, ScribbleSubMenuID.LINE_STYLE, true));
         styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_triangle, ScribbleSubMenuID.TRIANGLE_STYLE, true));
         styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_circle, ScribbleSubMenuID.CIRCLE_STYLE, true));
