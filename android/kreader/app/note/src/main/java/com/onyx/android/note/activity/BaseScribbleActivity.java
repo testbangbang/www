@@ -177,7 +177,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                         syncWithCallback(true, true, null);
                     }
                 });
-        if (NoteAppConfig.sharedInstance(this).useMXStyleDialog()) {
+        if (NoteAppConfig.sharedInstance(this).useMXUIStyle()) {
             params.setCustomLayoutResID(R.layout.mx_custom_alert_dialog);
         }
         illegalDialog.setParams(params);

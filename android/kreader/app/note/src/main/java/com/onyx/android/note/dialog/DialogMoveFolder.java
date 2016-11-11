@@ -53,6 +53,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        final boolean isUseMXStyle = NoteAppConfig.sharedInstance(getActivity()).useMXUIStyle();
         Params params = new Params().setTittleString(getString(R.string.move))
                 .setCustomContentLayoutResID(R.layout.alert_dialog_content_move_folder)
                 .setCustomLayoutHeight((int) (5 * getResources().getDimension(R.dimen.button_minHeight)))
@@ -81,7 +82,8 @@ public class DialogMoveFolder extends OnyxAlertDialog {
                         mapping.put(GAdapterUtil.TAG_TITLE_STRING, R.id.textview_title);
                         mapping.put(GAdapterUtil.TAG_DIVIDER_VIEW, R.id.divider);
                         mapping.put(GAdapterUtil.TAG_SELECTABLE,R.id.target_folder_checkbox);
-                        targetLibraryContentView.setSubLayoutParameter(R.layout.dialog_move_folder_item, mapping);
+                        targetLibraryContentView.setSubLayoutParameter(isUseMXStyle ?
+                                R.layout.mx_dialog_move_folder_item : R.layout.onyx_dialog_move_folder_item, mapping);
                         targetLibraryContentView.setShowPageInfoArea(false);
                         targetLibraryContentView.setAdapter(adapter, 0);
                         targetLibraryContentView.setCallback(new ContentView.ContentViewCallback() {
@@ -98,7 +100,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
                         });
                     }
                 });
-        if (NoteAppConfig.sharedInstance(getActivity()).useMXStyleDialog()) {
+        if (isUseMXStyle) {
             params.setCustomLayoutResID(R.layout.mx_custom_alert_dialog);
         }
         setParams(params);

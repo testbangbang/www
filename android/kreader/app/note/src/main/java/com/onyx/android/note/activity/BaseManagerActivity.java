@@ -73,7 +73,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
         OnyxAlertDialog.Params params = new OnyxAlertDialog.Params().setTittleString(getString(R.string.noti))
                 .setAlertMsgString(getString(R.string.note_name_already_exist))
                 .setEnableNegativeButton(false).setCanceledOnTouchOutside(false);
-        if (NoteAppConfig.sharedInstance(this).useMXStyleDialog()) {
+        if (NoteAppConfig.sharedInstance(this).useMXUIStyle()) {
             params.setCustomLayoutResID(R.layout.mx_custom_alert_dialog);
         }
         illegalDialog.setParams(params);
