@@ -121,7 +121,7 @@ public class AlReaderWrapper {
         profileDay.colorTitle = 0x9c27b0;
         profileDay.colorBack = 0xf0f0f0;
         profileDay.interline = 0;
-        profileDay.specialModeRoll = true;
+        profileDay.specialModeRoll = false;
         profileDay.sectionNewScreen = true;
         profileDay.justify = true;
         profileDay.notesOnPage = true;
