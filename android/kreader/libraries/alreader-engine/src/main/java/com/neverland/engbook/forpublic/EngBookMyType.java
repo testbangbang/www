@@ -1,11 +1,5 @@
 package com.neverland.engbook.forpublic;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-
 public class EngBookMyType {
 
 	/**
@@ -26,7 +20,7 @@ public class EngBookMyType {
 	граница "неоднозначности" при тапе, когда палец несовсем попадает в слово или ссылку.
 	Подобрано эмпирически, корректировка по дпи проведится внутри библиотеки, значение задается для дпи 160
 	*/
-    public static final int  AL_DEFAULT_TAP_AREAL = 24;
+    public static final int  AL_DEFAULT_TAP_AREAL = 15;
 
 	/**
 	максимальный блок текста, который будет возвращен при выделении. Если на экране выделено больше символов - функция
@@ -38,6 +32,16 @@ public class EngBookMyType {
 
 
     //////////////////////////////////////////////
+
+	/*!
+	способ отображения таблиц в fb3, fb3, epub, mobi
+	*/
+	public enum TAL_TABLEMODE {
+		INTERNAL,
+		EXTERNAL,
+		BOTH,
+		NONE,
+	}
 
 	/**
 	 * Используется в методе @see gotoPosition для определения необходмого способа перемещения позиции чтения в
@@ -178,7 +182,8 @@ public class EngBookMyType {
 	 */
 	public enum TAL_NOTIFY_RESULT {
 		OK,
-		ERROR,		
+		ERROR,
+		EXCEPT
 	}
 
 	/**
@@ -203,7 +208,8 @@ public class EngBookMyType {
 		MOBI,
 		PDBUnk,
 		DOCX,
-		ODT
+		ODT,
+		FB3,
 	}
 	
 }

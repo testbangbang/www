@@ -10,10 +10,10 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 public class NoteBackgroundChangeRequest extends BaseNoteRequest {
     private int bgType;
 
-    public NoteBackgroundChangeRequest(int background) {
+    public NoteBackgroundChangeRequest(int background , boolean resume) {
         bgType = background;
         setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
+        setResumeInputProcessor(resume);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {

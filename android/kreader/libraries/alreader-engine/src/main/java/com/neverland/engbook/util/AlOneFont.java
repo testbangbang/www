@@ -7,7 +7,7 @@ import java.io.File;
 public class AlOneFont {
 	
 	public final String aName;
-	public File[] aFile = {null, null, null, null};
+	public final File[] aFile = {null, null, null, null};
 	public AlResourceFont res = null;
 	
 	public AlOneFont(final String Name, int style, File f) {

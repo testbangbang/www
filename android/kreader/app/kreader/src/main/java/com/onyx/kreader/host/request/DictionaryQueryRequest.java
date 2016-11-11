@@ -9,6 +9,8 @@ import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,8 +27,11 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
     private static final String TAG = "DictionaryQueryRequest";
     private ReaderDataHolder readerDataHolder;
     private String expString = "";
+    private String dictPath;
+    private int state;
 
     private String url = "content://com.onyx.dict.DictionaryProvider";
+    private String[] columns = new String[] { "_id","state","keyword","explanation","dictPath","dictName","entryIndex"};
     private String query = null;
 
     public DictionaryQueryRequest(ReaderDataHolder readerDataHolder, String query) {
@@ -52,19 +57,20 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
                 return;
             }
             if (cursor.moveToFirst()) {
-                int state = cursor.getInt(1);
+                state = cursor.getInt(cursor.getColumnIndex(columns[1]));
                 switch (state){
                     case DICT_STATE_PARAM_ERROR:
                         expString = readerDataHolder.getContext().getString(R.string.dictionary_error);
                         break;
                     case DICT_STATE_QUERY_SUCCESSFUL:
-                        expString += cursor.getString(3);
+                        expString += cursor.getString(cursor.getColumnIndex(columns[3]));
+                        dictPath = cursor.getString(cursor.getColumnIndex(columns[4]));
                         break;
                     case DICT_STATE_QUERY_FAILED:
                         expString = readerDataHolder.getContext().getString(R.string.no_data);
                         break;
                     case DICT_STATE_LOADING:
-                        expString = readerDataHolder.getContext().getString(R.string.dictionary_data_no_find);
+                        expString = readerDataHolder.getContext().getString(R.string.loading);
                         break;
                 }
             }
@@ -77,7 +83,15 @@ public class DictionaryQueryRequest extends BaseReaderRequest{
         }
     }
 
+    public String getDictPath() {
+        return dictPath;
+    }
+
     public String getExpString() {
         return expString;
+    }
+
+    public int getState() {
+        return state;
     }
 }

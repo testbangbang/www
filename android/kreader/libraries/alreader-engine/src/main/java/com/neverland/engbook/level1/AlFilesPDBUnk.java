@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class AlFilesPDBUnk extends AlFiles {
 
-    private String str = "Unsupported mobi format!";
+    private static final String str = "Unsupported mobi format!";
 
     public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
         super.initState(file, myParent, fList);

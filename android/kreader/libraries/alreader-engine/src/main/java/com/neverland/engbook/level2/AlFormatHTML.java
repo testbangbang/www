@@ -4,7 +4,7 @@ import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
-import com.neverland.engbook.level1.AlOneZIPRecord;
+import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.AlStylesOptions;
@@ -23,7 +23,7 @@ public class AlFormatHTML extends AlAXML {
         char[] buf_uc = new char[HTML_TEST_BUF_LENGTH];
         String s;
 
-        if (getTestBuffer(a, TAL_CODE_PAGES.CP1251, buf_uc, HTML_TEST_BUF_LENGTH)) {
+        if (getTestBuffer(a, TAL_CODE_PAGES.CP1251, buf_uc, HTML_TEST_BUF_LENGTH, true)) {
             s = String.copyValueOf(buf_uc);
             if  ((s.contains(HTML_TEST_STR_1) || s.contains(HTML_TEST_STR_5)) &&
                     (s.contains(HTML_TEST_STR_2) || s.contains(HTML_TEST_STR_3) || s.contains(HTML_TEST_STR_4))) {
@@ -31,7 +31,7 @@ public class AlFormatHTML extends AlAXML {
             }
         }
 
-        if (getTestBuffer(a, TAL_CODE_PAGES.CP1200, buf_uc, HTML_TEST_BUF_LENGTH)) {
+        if (getTestBuffer(a, TAL_CODE_PAGES.CP1200, buf_uc, HTML_TEST_BUF_LENGTH, true)) {
             s = String.copyValueOf(buf_uc);
             if  ((s.contains(HTML_TEST_STR_1) || s.contains(HTML_TEST_STR_5)) &&
                     (s.contains(HTML_TEST_STR_2) || s.contains(HTML_TEST_STR_3) || s.contains(HTML_TEST_STR_4))) {
@@ -39,7 +39,7 @@ public class AlFormatHTML extends AlAXML {
             }
         }
 
-        if (getTestBuffer(a, TAL_CODE_PAGES.CP1201, buf_uc, HTML_TEST_BUF_LENGTH)) {
+        if (getTestBuffer(a, TAL_CODE_PAGES.CP1201, buf_uc, HTML_TEST_BUF_LENGTH, true)) {
             s = String.copyValueOf(buf_uc);
             if  ((s.contains(HTML_TEST_STR_1) || s.contains(HTML_TEST_STR_5)) &&
                     (s.contains(HTML_TEST_STR_2) || s.contains(HTML_TEST_STR_3) || s.contains(HTML_TEST_STR_4))) {
@@ -95,12 +95,7 @@ public class AlFormatHTML extends AlAXML {
     @Override
     boolean isNeedAttribute(int atr) {
         switch (atr) {
-            case AlFormatTag.TAG_NAME:
-            case AlFormatTag.TAG_ID:
-            case AlFormatTag.TAG_HREF:
-            case AlFormatTag.TAG_TYPE:
             case AlFormatTag.TAG_ALIGN:
-            case AlFormatTag.TAG_SRC:
             case AlFormatTag.TAG_NOTE:
             case AlFormatTag.TAG_CHARSET:
             case AlFormatTag.TAG_CONTENT:
@@ -147,6 +142,21 @@ public class AlFormatHTML extends AlAXML {
 
     public  boolean addImages() {
         StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_SRC);
+
+        if (s != null && s.indexOf("data:image") == 0) {
+            int posBase = s.indexOf("base64");
+            int posComma = s.indexOf(",");
+            if (posComma > 0) {
+                s.setLength(0);
+                s.append(String.format("://$$$%d.image", tag.getATTRStart(AlFormatTag.TAG_SRC)));
+
+                if (allState.isOpened)
+                    im.add(AlOneImage.add(s.toString(),
+                        tag.getATTRStart(AlFormatTag.TAG_SRC) + posComma + 1,
+                        tag.getATTREnd(AlFormatTag.TAG_SRC),
+                            posBase >= 0 && posBase < posComma ? AlOneImage.IMG_BASE64 : AlOneImage.IMG_HTMLHEX));
+            }
+        }
 
         if (s == null)
             s = tag.getATTRValue(AlFormatTag.TAG_HREF);
@@ -464,299 +474,14 @@ public class AlFormatHTML extends AlAXML {
                     addImages();
                 }
                 return true;
+
             case AlFormatTag.TAG_TABLE:
-            case AlFormatTag.TAG_TR:
+            case AlFormatTag.TAG_TH:
             case AlFormatTag.TAG_TD:
-                if (tag.closed) {
-
-                } else /*if (!tag.ended) {
-                    newParagraph();
-                } else */{
-                    newParagraph();
-                }
-                return true;
+            case AlFormatTag.TAG_TR:
+                return prepareTable();
         }
-
-        /*if (tag.closed) {
-            switch (tag.tag) {
-                case AlFormatTag.TAG_SCRIPT:
-                case AlFormatTag.TAG_STYLE:
-                    if (skip_count > 0)
-                        skip_count--;
-                    if (skip_count == 0) {
-                        allState.state_skipped_flag = false;
-                    } else {
-                        allState.state_parser = STATE_XML_SKIP;
-                    }
-                    return true;
-
-                case AlFormatTag.TAG_TITLE:
-                    if ((paragraph & AlStyles.PAR_DESCRIPTION1) != 0) {
-                        setSpecialText(false);
-                    }
-                    return true;
-
-                case AlFormatTag.TAG_A:
-                    if ((paragraph & AlStyles.PAR_STYLE_LINK) != 0)
-                        clearTextStyle(AlStyles.PAR_STYLE_LINK);
-                    return true;
-
-                case AlFormatTag.TAG_HEAD:
-                    //testRealCodePage();
-                    clearParagraphStyle(AlStyles.PAR_DESCRIPTION1);
-                    newParagraph();
-                    return true;
-                case AlFormatTag.TAG_BODY:
-
-                    //state_skipped_flag = true;
-                    clearParagraphStyle(AlStyles.PAR_NOTE);
-                    newParagraph();
-                    setParagraphStyle(AlStyles.PAR_BREAKPAGE);
-                    return true;
-
-                case AlFormatTag.TAG_Q:
-                case AlFormatTag.TAG_BLOCKQUOTE:
-                case AlFormatTag.TAG_CITE:
-                    clearParagraphStyle(AlStyles.PAR_CITE);
-                    newParagraph();
-                    newEmptyTextParagraph();
-
-                case AlFormatTag.TAG_H1:
-                    clearParagraphStyle(AlStyles.PAR_TITLE);//
-                    newParagraph();
-                    newEmptyStyleParagraph();
-                    //setParagraphStyle(AlStyles.PAR_BREAKPAGE);
-                    if (allState.isOpened)
-                        setSpecialText(false);
-                    return true;
-
-                case AlFormatTag.TAG_H2:
-                case AlFormatTag.TAG_H3:
-                case AlFormatTag.TAG_H4:
-                case AlFormatTag.TAG_H5:
-                case AlFormatTag.TAG_H6:
-                case AlFormatTag.TAG_H7:
-                case AlFormatTag.TAG_H8:
-                case AlFormatTag.TAG_H9:
-                    clearParagraphStyle(AlStyles.PAR_SUBTITLE);
-                    newParagraph();
-                    newEmptyStyleParagraph();
-                    if (allState.isOpened)
-                        setSpecialText(false);
-                    return true;
-
-                case AlFormatTag.TAG_DIV:
-                case AlFormatTag.TAG_DT:
-                case AlFormatTag.TAG_DD:
-                case AlFormatTag.TAG_P:
-                    newParagraph();
-                    return true;
-
-                case AlFormatTag.TAG_TT:
-                    clearTextStyle(AlStyles.PAR_STYLE_CODE);
-                    return true;
-                case AlFormatTag.TAG_SUP:
-                    clearTextStyle(AlStyles.PAR_STYLE_SUP);
-                    return true;
-                case AlFormatTag.TAG_SUB:
-                    clearTextStyle(AlStyles.PAR_STYLE_SUB);
-                    return true;
-                case AlFormatTag.TAG_B:
-                case AlFormatTag.TAG_STRONG:
-                    clearTextStyle(AlStyles.PAR_STYLE_BOLD);
-                    return true;
-                case AlFormatTag.TAG_I:
-                case AlFormatTag.TAG_EM:
-                case AlFormatTag.TAG_DFM:
-                    clearTextStyle(AlStyles.PAR_STYLE_ITALIC);
-                    return true;
-                case AlFormatTag.TAG_U:
-                case AlFormatTag.TAG_S:
-                case AlFormatTag.TAG_INS:
-                    clearTextStyle(AlStyles.PAR_STYLE_UNDER);
-                    return true;
-                case AlFormatTag.TAG_STRIKE:
-                case AlFormatTag.TAG_DEL:
-                    clearTextStyle(AlStyles.PAR_STYLE_STRIKE);
-                    return true;
-                case AlFormatTag.TAG_PRE:
-                    clearParagraphStyle(AlStyles.PAR_PRE);
-                    newParagraph();
-                    allState.state_code_flag = false;
-                    return true;
-            }
-        } else {
-            if (!tag.ended) {
-
-
-                switch (tag.tag) {
-                    case AlFormatTag.TAG_SCRIPT:
-                    case AlFormatTag.TAG_STYLE:
-                        skip_count++;
-                        allState.state_skipped_flag = true;
-                        allState.state_parser = STATE_XML_SKIP;
-                        return true;
-
-                    case AlFormatTag.TAG_LI:
-                        newParagraph();
-                        addTextFromTag(listAdd0, true);
-                        return true;
-
-                    case AlFormatTag.TAG_A:
-                        if (allState.isOpened) {
-                            param = tag.getATTRValue(AlFormatTag.TAG_NAME);
-                            if (param != null) {
-                                addtestLink(param.toString());
-                            }
-                        }
-                        if (addNotes())
-                            setTextStyle(AlStyles.PAR_STYLE_LINK);
-                        return true;
-
-                    case AlFormatTag.TAG_TITLE:
-                        //testRealCodePage();
-                        if ((paragraph & AlStyles.PAR_DESCRIPTION1) != 0) {
-                            is_book_title = true;
-                            setSpecialText(true);
-                        }
-                    case AlFormatTag.TAG_HEAD:
-                        if (allState.isOpened) {
-                            newParagraph();
-                            setParagraphStyle(AlStyles.PAR_DESCRIPTION1);
-                        }
-                        return true;
-                    case AlFormatTag.TAG_BODY:
-                        //testRealCodePage();
-                        allState.state_skipped_flag = false;
-                        skip_count = 0;
-                        newParagraph();
-                        return true;
-
-                    case AlFormatTag.TAG_Q:
-                    case AlFormatTag.TAG_BLOCKQUOTE:
-                    case AlFormatTag.TAG_CITE:
-                        newParagraph();
-                        newEmptyTextParagraph();
-                        setParagraphStyle(AlStyles.PAR_CITE);
-                        return true;
-                    case AlFormatTag.TAG_H1:
-                        newParagraph();
-                        newEmptyStyleParagraph();
-                        setParagraphStyle(AlStyles.PAR_BREAKPAGE);
-                        setParagraphStyle(AlStyles.PAR_TITLE);// | AlStyles.PAR_BREAKPAGE);
-                        if (allState.isOpened) {
-                            section_count = 0;
-                            is_title = true;
-                            content_start = size;
-                            setSpecialText(true);
-                        }
-                        return true;
-                    case AlFormatTag.TAG_H2:
-                    case AlFormatTag.TAG_H3:
-                    case AlFormatTag.TAG_H4:
-                    case AlFormatTag.TAG_H5:
-                    case AlFormatTag.TAG_H6:
-                    case AlFormatTag.TAG_H7:
-                    case AlFormatTag.TAG_H8:
-                    case AlFormatTag.TAG_H9:
-                        newParagraph();
-                        newEmptyStyleParagraph();
-                        setParagraphStyle(AlStyles.PAR_SUBTITLE);// | AlStyles.PAR_BREAKPAGE);
-                        if (allState.isOpened) {
-                            section_count = 1;
-                            is_title = true;
-                            content_start = size;
-                            setSpecialText(true);
-                        }
-                        return true;
-
-                    case AlFormatTag.TAG_HR:
-                    case AlFormatTag.TAG_BR:
-                        newParagraph();
-                        //newEmptyTextParagraph();
-                        return true;
-
-                    case AlFormatTag.TAG_DT:
-                    case AlFormatTag.TAG_DIV:
-                    case AlFormatTag.TAG_DD:
-                    case AlFormatTag.TAG_P:
-                        newParagraph();
-                        return true;
-
-                    case AlFormatTag.TAG_IMG:
-                        addImages();
-                        return true;
-
-                    case AlFormatTag.TAG_TT:
-                        setTextStyle(AlStyles.PAR_STYLE_CODE);
-                        return true;
-                    case AlFormatTag.TAG_SUP:
-                        setTextStyle(AlStyles.PAR_STYLE_SUP);
-                        return true;
-                    case AlFormatTag.TAG_SUB:
-                        setTextStyle(AlStyles.PAR_STYLE_SUB);
-                        return true;
-                    case AlFormatTag.TAG_B:
-                    case AlFormatTag.TAG_STRONG:
-                        setTextStyle(AlStyles.PAR_STYLE_BOLD);
-                        return true;
-                    case AlFormatTag.TAG_I:
-                    case AlFormatTag.TAG_EM:
-                    case AlFormatTag.TAG_DFM:
-                        setTextStyle(AlStyles.PAR_STYLE_ITALIC);
-                        return true;
-                    case AlFormatTag.TAG_U:
-                    case AlFormatTag.TAG_S:
-                    case AlFormatTag.TAG_INS:
-                        setTextStyle(AlStyles.PAR_STYLE_UNDER);
-                        return true;
-                    case AlFormatTag.TAG_STRIKE:
-                    case AlFormatTag.TAG_DEL:
-                        setTextStyle(AlStyles.PAR_STYLE_STRIKE);
-                        return true;
-                    case AlFormatTag.TAG_PRE:
-                        newParagraph();
-                        setParagraphStyle(AlStyles.PAR_PRE);
-                        allState.state_code_flag = true;
-                        return true;
-                }
-            } else {
-                switch (tag.tag) {
-
-                    case AlFormatTag.TAG_H1:
-                    case AlFormatTag.TAG_H2:
-                    case AlFormatTag.TAG_H3:
-                    case AlFormatTag.TAG_H4:
-                    case AlFormatTag.TAG_H5:
-                    case AlFormatTag.TAG_H6:
-                    case AlFormatTag.TAG_H7:
-                    case AlFormatTag.TAG_H8:
-                    case AlFormatTag.TAG_H9:
-                        newParagraph();
-                        newEmptyStyleParagraph();
-                        return true;
-
-                    case AlFormatTag.TAG_IMG:
-                        addImages();
-                        return true;
-
-                    case AlFormatTag.TAG_HR:
-                    case AlFormatTag.TAG_BR:
-                        newParagraph();
-                        //newEmptyTextParagraph();
-                        return true;
-
-                    case AlFormatTag.TAG_DT:
-                    case AlFormatTag.TAG_DD:
-                    case AlFormatTag.TAG_DIV:
-                    case AlFormatTag.TAG_P:
-                        newParagraph();
-                        newEmptyTextParagraph();
-                        return true;
-                }
-            }
-        }
-*/        return false;
+        return false;
     }
 
 

@@ -11,8 +11,8 @@ android {
         applicationId "com.onyx.android.note"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode gitVersionCode()
-        versionName gitVersionCode().toString() + " - " + gitHash()
+        versionCode gitVersionCode(projectDir)
+        versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
     }
 
     buildTypes {

@@ -1,5 +1,6 @@
 package com.neverland.engbook.util;
 
+import com.neverland.engbook.forpublic.EngBookMyType.TAL_TABLEMODE;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_PAGES_COUNT;
 
 
@@ -30,4 +31,8 @@ public class AlPreferenceOptions {
 	public TAL_SCREEN_PAGES_COUNT			calcPagesModeRequest;
 	public TAL_SCREEN_PAGES_COUNT			calcPagesModeUsed;
 	public float		textMultiplexer;
+	public int			value2CalcMargins = 0;
+	public boolean 		onlyPopupFootnote = false;
+	public TAL_TABLEMODE tableMode;
+
 }

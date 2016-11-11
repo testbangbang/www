@@ -506,9 +506,6 @@ FT_BEGIN_HEADER
 #define FT_DRIVER_HAS_HINTER( x )  ( FT_MODULE_CLASS( x )->module_flags & \
                                      FT_MODULE_DRIVER_HAS_HINTER )
 
-#define FT_DRIVER_HINTS_LIGHTLY( x )  ( FT_MODULE_CLASS( x )->module_flags & \
-                                        FT_MODULE_DRIVER_HINTS_LIGHTLY )
-
 
   /*************************************************************************/
   /*                                                                       */

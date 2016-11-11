@@ -1,7 +1,6 @@
 package com.neverland.engbook.level2;
 
 import com.neverland.engbook.forpublic.AlBookOptions;
-import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level1.AlOneZIPRecord;
@@ -54,12 +53,7 @@ public class AlFormatODT extends AlAXML {
     @Override
     public final boolean isNeedAttribute(int atr) {
         switch (atr) {
-            case AlFormatTag.TAG_NAME:
-            case AlFormatTag.TAG_ID:
-            case AlFormatTag.TAG_HREF:
-            case AlFormatTag.TAG_TYPE:
             case AlFormatTag.TAG_NUMFILES:
-            case AlFormatTag.TAG_IDREF:
                 return true;
         }
         return super.isNeedAttribute(atr);

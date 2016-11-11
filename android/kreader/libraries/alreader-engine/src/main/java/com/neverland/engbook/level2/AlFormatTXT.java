@@ -1,7 +1,6 @@
 package com.neverland.engbook.level2;
 
 import com.neverland.engbook.forpublic.AlBookOptions;
-import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
@@ -56,10 +55,6 @@ public class AlFormatTXT extends AlFormat {
 		newParagraph();
 		
 		allState.isOpened = false;	
-	}
-
-	protected void prepareCustom() {
-
 	}
 
 	void detectTXTMode() {

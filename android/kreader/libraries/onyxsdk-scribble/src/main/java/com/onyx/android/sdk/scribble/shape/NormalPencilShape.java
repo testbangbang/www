@@ -37,7 +37,7 @@ public class NormalPencilShape extends EPDShape {
     }
 
     private void renderByDefault(final RenderContext renderContext) {
-        applyStrokeStyle(renderContext.paint);
+        applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
         Path path = getOriginDisplayPath();
         if (path == null || renderContext.force) {
             path = ShapeUtils.renderShape(renderContext, getNormalizedPoints());

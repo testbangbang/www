@@ -1,8 +1,5 @@
 package com.neverland.engbook.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
 
@@ -74,7 +71,7 @@ public class AlImage {
 		storeImage[storeIndex] = null;
 				
 		opts.inJustDecodeBounds = false;
-		opts.inSampleSize = (scale != 0) ? 1 << scale : 1;
+		opts.inSampleSize = (scale - 1 > 0) ? 1 << (scale - 1) : 1;//(scale != 0) ? 1 << scale : 1;
 		opts.inBitmap = usePrevBitmap ? storeBitmap[storeIndex].bmp : null;
 		
 		if (ai.data != null) {
@@ -133,6 +130,8 @@ public class AlImage {
 			return openMemo(ai, format);
 		case AlOneImage.IMG_HEX:
 			return openHex(ai, format);
+		case AlOneImage.IMG_BINARYINFILE:
+			return openBinInFile(ai, format);
 		}
 		return false;
 	}
@@ -180,7 +179,7 @@ public class AlImage {
 		
 		return false;
 	}
-	
+
 	private boolean openMemo(AlOneImage ai, AlFormat format) {
 		int num = format.aFiles.getExternalFileNum(ai.name);
 		if (num != AlFiles.LEVEL1_FILE_NOT_FOUND) {
@@ -195,6 +194,13 @@ public class AlImage {
 			}
 		}
 		return false;
+	}
+
+	private boolean  openBinInFile(AlOneImage ai, AlFormat format) {
+		int pos = 0;
+		ai.data = new byte [ai.positionE - ai.positionS];
+		format.aFiles.getByteBuffer(ai.positionS, ai.data, ai.positionE - ai.positionS);
+		return true;
 	}
 
 	private boolean openHex(AlOneImage ai, AlFormat format) {

@@ -1,6 +1,8 @@
 package com.neverland.engbook.level1;
 
+import com.neverland.engbook.bookobj.AlUtilFunc;
 import com.neverland.engbook.forpublic.AlIntHolder;
+import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.Base32Hex;
@@ -10,6 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AlFilesMOBI extends AlFilesPDB {
+    static final int MOBI_NOTSET = 0xffffffff;
+    static final int MOBI_LINK_SHIFT = 14;// </body></html>
+
     protected int       maxRec = 0;
     /*protected int       numRec = 0;
 
@@ -24,6 +29,8 @@ public class AlFilesMOBI extends AlFilesPDB {
     protected int	    data_start = 0;
 */
 
+    private   int     version = 0;
+
     private   int     huffman_recordOffset = -1;
     private   int     huffman_recordCount = -1;
     private   int     huffman_extra = 0;
@@ -36,6 +43,14 @@ public class AlFilesMOBI extends AlFilesPDB {
     private   int     fullname_offset = -1;
     private   int     fullname_length = -1;
 
+    private   int     index_skel = -1;
+    private   int     index_ncx = -1;
+    private   int     index_frag = -1;
+    private   int     index_guide = -1;
+
+    private   int     part_flow = -1;
+    private   int     count_flow = -1;
+
     private   String  book_title = null;
     private   final ArrayList<String>  book_author = new ArrayList<>();
     private   String  book_descrition = null;
@@ -44,14 +59,110 @@ public class AlFilesMOBI extends AlFilesPDB {
     private   final ArrayList<String>  book_ganre0 =  new ArrayList<>();
     private   String  book_lang = null;
 
+    private class TAGXTags {
+        public int tag; /**< Tag */
+        public int values_count; /**< Number of values */
+        public int bitmask; /**< Bitmask */
+        public int control_byte; /**< EOF control byte */
+    }
+
+    private class MOBITagx {
+        public ArrayList<TAGXTags> tags =  new ArrayList<>(); /**< Array of tag entries */
+        public int tags_count; /**< Number of tag entries */
+        public int control_byte_count; /**< Number of control bytes */
+    }
+
+    private class MOBIIdxt {
+        public ArrayList<Integer> offsets = new ArrayList<>(); /**< Offsets to index entries */
+        public int offsets_count; /**< Offsets count */
+    }
+
+    private class MOBIOrdt {
+        //public int ordt1; /**< ORDT1 offsets */
+        //public int ordt2; /**< ORDT2 offsets */
+        public int type; /**< Type (0: 16, 1: 8 bit offsets) */
+        public int ordt1_pos; /**< Offset of ORDT1 data */
+        public int ordt2_pos; /**< Offset of ORDT2 data */
+        public int offsets_count; /**< Offsets count */
+    }
+
+    private class MOBIIndexTag {
+        public int tagid = 0; /**< Tag id */
+        public int tagvalues_count = 0; /**< Number of tag values */
+        public ArrayList<Integer> tagvalues =  new ArrayList<>();
+    }
+
+    private class MOBIIndexEntry {
+        public String label = null; /**< Entry string, zero terminated */
+        public int tags_count = 0; /**< Number of tags */
+        public ArrayList<MOBIIndexTag> tags = new ArrayList<>();
+    }
+
+    private class MOBIPtagx {
+        public int tag;
+        public int tag_value_count;
+        public int value_count;
+        public int value_bytes;
+    }
+
+    public class MOBITOC {
+        public String label = null;
+        public int pos;
+        public int level;
+        public int fid;
+        public int off;
+
+        public int parent;
+        public int childstart;
+        public int childend;
+
+        public int real;
+
+        public void clear() {
+            label = null;
+            level = pos = fid = off = real = 0;
+        }
+    }
+
+    private class MOBIIndex {
+        public int type = 0; /**< Index type: 0 - normal, 2 - inflection */
+        public int entries_count = 0; /**< Index entries count */
+        public int encoding = 0; /**< Index encoding */
+        public int total_entries_count = 0; /**< Total index entries count */
+        public int ordt_offset = 0; /**< ORDT offset */
+        public int ligt_offset = 0; /**< LIGT offset */
+        public int ligt_entries_count = 0; /**< LIGT index entries count */
+        public int cncx_records_count = 0; /**< Number of compiled NCX records */
+        public int cncx_record = -1; /**< Link to CNCX record */
+        public ArrayList<MOBIIndexEntry> entries =  new ArrayList<>(); /**< Index entries array */
+        //char *orth_index_name; /**< Orth index name */
+    }
+
+    private class FLOWIndex {
+        public int cnt = 0;
+        public final ArrayList<Integer> ends = new ArrayList<>();
+        //public final ArrayList<byte[]> data = new ArrayList<>();
+        public final ArrayList<String> data0 = new ArrayList<>();
+    }
+
+    private FLOWIndex indFLOW = new FLOWIndex();
+
+    //private MOBIIndex indSKEL = null;
+    private MOBIIndex indFRAG = new MOBIIndex();
+    private MOBIIndex indNCX = new MOBIIndex();
+    //private MOBIIndex indGUIDE = null;
 
     //protected final ArrayList<AlOnePDBRecord>	recordList = new ArrayList<AlOnePDBRecord>();
 
-
     public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
-        super.initState(file, myParent, fList);
+        parent = myParent;
+        fileName = file;
+        fileList.clear();
+        if (fList != null)
+            fileList = (ArrayList<AlFileZipEntry>) fList.clone();
+        //super.initState(file, myParent, fList);
 
-        //ident = "mobi";
+        ident = "mobi";
 
         int i, j;
         StringBuilder docName = new StringBuilder(32);
@@ -94,17 +205,20 @@ public class AlFilesMOBI extends AlFilesPDB {
         ocPrev.len1 = parent.size - ocPrev.start;
         if (ocPrev.len1 > maxBuffSize)
             maxBuffSize = ocPrev.len1;
+        /*if (maxBuffSize > (rec0_rsize << 1))
+            maxBuffSize = (rec0_rsize << 1);*/
         in_buff = new byte[maxBuffSize];
 
         parent.read_pos = recordList.get(0).start;
         rec0_ver = parent.getRevWord();
         if (rec0_ver == 1) {
-            ident = "mobi";
+
         } else
-        if (rec0_ver == 2) {
-            ident = "mobicomp";
+        if (rec0_ver == 2 || rec0_ver == 258) {
+            rec0_ver = 2;
+            ident += "comp";
         } else {
-            ident = "mobihigh";
+            ident += "high";
         }
         rec0_res1 = parent.getRevWord();
         rec0_usize = (int) parent.getRevDWord();
@@ -112,79 +226,59 @@ public class AlFilesMOBI extends AlFilesPDB {
         rec0_rsize = parent.getRevWord();
         rec0_res2 = (int) parent.getRevDWord();
 
-        data_start = recordList.get(1).start;
-
         byte[] tmp_byte;
         StringBuilder tmp_sb = new StringBuilder();
 
         int len_header;
         oc = recordList.get(0);
-        parent.read_pos = oc.start + 0x10;
-        j = (int) parent.getRevDWord();
+        j = getRDWord(oc.start, 0x10, oc.start + oc.len1);
         if (j == 0x4d4f4249) {
-            parent.read_pos = oc.start + 0x14;
-            len_header = (int) parent.getRevDWord();
+            len_header = getRDWord(oc.start, 0x14, oc.start + oc.len1);
             len_header += oc.start + 0x10;
 
-            parent.read_pos = oc.start + 0x1c;
-            if (len_header > parent.read_pos)
-                codepage = (int) parent.getRevDWord();
+            codepage = getRDWord(oc.start, 0x1c, len_header);
             if (codepage != 1252 && codepage != 65001)
                 codepage = 1252;
+            version = getRDWord(oc.start, 0x24, len_header);
+            ident += Integer.toString(version);
 
-            parent.read_pos = oc.start + 0x50;
-            if (len_header > parent.read_pos)
-                last_book_text0 = (int) (parent.getRevDWord() /*- 1*/);
+            last_book_text0 = getRDWord(oc.start, 0x50, len_header);
+            fullname_offset = getRDWord(oc.start, 0x54, len_header);
+            fullname_length = getRDWord(oc.start, 0x58, len_header);
+            if (fullname_length > 0) {
+                if (oc.start + fullname_offset + fullname_length < oc.start + oc.len1) { // may be title
+                    tmp_byte = new byte[fullname_length];
+                    getByteArray(tmp_byte, oc.start + fullname_offset, fullname_length);
 
-            parent.read_pos = oc.start + 0x54;
-            if (len_header > parent.read_pos)
-                fullname_offset = (int) (parent.getRevDWord());
+                    AlIntHolder pos = new AlIntHolder(0);
+                    while (pos.value < fullname_length)
+                        tmp_sb.append(AlUnicode.byte2Wide(codepage, tmp_byte, pos));
 
-            parent.read_pos = oc.start + 0x58;
-            if (len_header > parent.read_pos) {
-                fullname_length = (int) (parent.getRevDWord());
-
-                if (fullname_length > 0) {
-                    if (oc.start + fullname_offset + fullname_length < oc.start + oc.len1) { // may be title
-                        tmp_byte = new byte[fullname_length];
-                        getByteArray(tmp_byte, oc.start + fullname_offset, fullname_length);
-
-                        AlIntHolder pos = new AlIntHolder(0);
-                        while (pos.value < fullname_length)
-                            tmp_sb.append(AlUnicode.byte2Wide(codepage, tmp_byte, pos));
-
-                        if (tmp_sb.length() > 0) {
-                            book_title = tmp_sb.toString();
-                            fileName = '/' + book_title + ".mobi";
-                        }
+                    if (tmp_sb.length() > 0) {
+                        book_title = tmp_sb.toString();
+                        fileName = '/' + book_title + ".mobi";
                     }
                 }
             }
+            first_image_rec = getRDWord(oc.start, 0x6c, len_header);
+            huffman_recordOffset = getRDWord(oc.start, 0x70, len_header);
+            huffman_recordCount = getRDWord(oc.start, 0x74, len_header);
+            if (version >= 8) {
+                part_flow = getRDWord(oc.start, 0xc0, len_header);
+                if (part_flow > first_image_rec)
+                    last_image_rec = part_flow - 1;
+            } else {
+                first_text_rec = getRWord(oc.start, 0xc0, len_header);
+                last_image_rec = getRDWord(oc.start, 0xc2, len_header);
+            }
+            count_flow = getRDWord(oc.start, 0xc4, len_header);
+            huffman_extra = getRWord(oc.start, 0xf2, len_header);
+            index_ncx = getRDWord(oc.start, 0xf4, len_header);
 
-            parent.read_pos = oc.start + 0x6c;
-            if (len_header > parent.read_pos)
-                first_image_rec = (int) (parent.getRevDWord());
-            parent.read_pos = oc.start + 0x70;
-            if (len_header > parent.read_pos)
-                huffman_recordOffset = (int) (parent.getRevDWord());
-            parent.read_pos = oc.start + 0x74;
-            if (len_header > parent.read_pos)
-                huffman_recordCount = (int) (parent.getRevDWord());
-            parent.read_pos = oc.start + 0x78;
-
-            parent.read_pos = oc.start + 0xc0;
-            if (len_header > parent.read_pos)
-                first_text_rec = (int) (parent.getRevWord());
-
-            parent.read_pos = oc.start + 0xc2;
-            if (len_header > parent.read_pos)
-                last_image_rec = (int) (parent.getRevWord());
-
-            if (len_header > 0xf3) {
-                parent.read_pos = oc.start + 0xf2;
-                if (len_header > parent.read_pos) {
-                    huffman_extra = (parent.getRevWord());
-                }
+            if (version >= 8) {
+                index_frag = getRDWord(oc.start, 0xf8, len_header);
+                index_skel = getRDWord(oc.start, 0xfc, len_header);
+                index_guide = getRDWord(oc.start, 0x104, len_header);
             }
 
             parent.read_pos = oc.start + 0x80;
@@ -255,7 +349,7 @@ public class AlFilesMOBI extends AlFilesPDB {
                                                 k = (int) Base32Hex.decode2int(s, false);
                                                 if (k > 0) {
                                                     book_cover = k - 1;
-                                                    if (book_cover + first_image_rec> last_image_rec)
+                                                    if (book_cover + first_image_rec > last_image_rec)
                                                         book_cover = -1;
                                                 }
                                             } catch (Exception e) {	}
@@ -265,7 +359,7 @@ public class AlFilesMOBI extends AlFilesPDB {
                                         if (ln == 4) {
                                             book_cover = (int) (parent.getRevDWord());
                                             //book_cover += first_image_rec;
-                                            if (book_cover + first_image_rec> last_image_rec)
+                                            if (book_cover + first_image_rec > last_image_rec)
                                                 book_cover = -1;
                                         }
                                         break;
@@ -301,61 +395,635 @@ public class AlFilesMOBI extends AlFilesPDB {
             numRec = rec0_nrec + 1;
         }
 
-        for (i = 1; i < numRec; i++) {
-            oc = recordList.get(i);
+        out_buff = new byte[rec0_rsize];
 
-            oc.len2 = rec0_rsize;
-            oc.pos = j;
+        if (rec0_ver > 2) {
+            HUFFreader = new HuffcdicReader();
 
-            j += rec0_rsize;
+            oc = recordList.get(huffman_recordOffset);
+            HUFFreader.loadHuff(parent, oc.start);
+            for (i = huffman_recordOffset + 1; i < huffman_recordOffset + huffman_recordCount; i++) {
+                oc = recordList.get(i);
+                HUFFreader.loadCdic(parent, oc.start);
+            }
         }
 
-        size = (numRec - 2) * rec0_rsize;
-
+        size = 0;
+        int trall;
         if (!onlyScan) {
+            for (i = 1; i < numRec; i++) {
+                oc = recordList.get(i);
 
-            oc = recordList.get(numRec - 1);
-            if (rec0_ver == 1) {
-                out_buff = new byte[rec0_rsize];
-                size += oc.len1;
-            } else if (rec0_ver == 2) {
-                out_buff = new byte[rec0_rsize];
-                parent.getByteBuffer(oc.start, in_buff, oc.len1);
-                size += AlFilesPDB.decompressPDB(in_buff, out_buff, oc.len1);
-            } else {
-                HUFFreader = new HuffcdicReader();
-
-                oc = recordList.get(huffman_recordOffset);
-                HUFFreader.loadHuff(parent, oc.start);
-                for (i = huffman_recordOffset + 1; i < huffman_recordOffset + huffman_recordCount; i++) {
-                    oc = recordList.get(i);
-                    HUFFreader.loadCdic(parent, oc.start);
-                }
-
-                size = 0;
-                j = 0;
-                int sz, trall;
-                for (i = 1; i < numRec; i++) {
-                    oc = recordList.get(i);
-
+                if (rec0_ver == 1) {
+                    oc.len2 = oc.len1;
+                    if (oc.len2 > rec0_rsize)
+                        oc.len2 = rec0_rsize;
+                } else if (rec0_ver == 2) {
                     parent.getByteBuffer(oc.start, in_buff, oc.len1);
-
+                    oc.len2 = AlFilesPDB.calcsize_decompressPDB(in_buff, oc.len1, rec0_rsize);
+                } else {
+                    parent.getByteBuffer(oc.start, in_buff, oc.len1);
                     trall = HUFFreader.calcTrailingDataEntries(in_buff, oc.len1, huffman_extra);
-                    sz = HUFFreader.calcSizeBlock(in_buff, oc.len1 - trall, 0);
-
-                    size += sz;
-
-                    oc.len2 = sz;
-                    oc.pos = j;
-                    j += sz;
+                    oc.len2 = HUFFreader.calcSizeBlock(in_buff, oc.len1 - trall, 0);
                 }
+
+                oc.pos = size;
+                size += oc.len2;
+            }
+        } else {
+            size = (numRec - 1) * rec0_rsize;
+        }
+
+        if (index_ncx >= numRec && index_ncx < recordList.size())
+            readIndex(indNCX, index_ncx);
+
+	/*if (index_skel >= numRec && index_skel < recordList.size())
+		readIndex(&indSKEL, index_skel);*/
+
+        if (index_frag >= numRec && index_frag < recordList.size())
+            readIndex(indFRAG, index_frag);
+
+	/*if (index_guide >= numRec && index_guide < recordList.size())
+		readIndex(&indGUIDE, index_guide);*/
+
+        if (indFRAG.total_entries_count > 0)
+            readRealFRAQ();
+        if (indNCX.total_entries_count > 0)
+            readRealTOC2();
+
+        if (part_flow > numRec && part_flow < recordList.size()) {
+            if (read_flow() && indFLOW.cnt > 0) {
+                //indFLOW.data.add(null);
+                indFLOW.data0.add(null);
+                for (i = 1; i < indFLOW.cnt; i++) {
+                    byte[] buf = new byte[indFLOW.ends.get(i) - indFLOW.ends.get(i - 1)];
+                    getBuffer(indFLOW.ends.get(i - 1), buf, buf.length);
+
+                    String s = (codepage == TAL_CODE_PAGES.CP1252) ?
+                            AlUnicode.ANSIbuffer2Ustring(buf, indFLOW.ends.get(i) - indFLOW.ends.get(i - 1)) :
+                            AlUnicode.UTFbuffer2Ustring(buf, indFLOW.ends.get(i) - indFLOW.ends.get(i - 1));
+
+                    //indFLOW.data.add(buf);
+                    indFLOW.data0.add(s);
+                }
+
+                size = indFLOW.ends.get(0);
             }
         }
 
         if (size > rec0_usize)
-            size = rec0_usize;
+            size = rec0_usize - 1;
 
         return TAL_RESULT.OK;
+    }
+
+    private boolean readIndex(MOBIIndex indx, int nrec) {
+        int maxoff = recordList.get(nrec).start + recordList.get(nrec).len1;
+        int start = recordList.get(nrec).start;
+
+        int tmp = getRDWord(start, 0x00, maxoff);
+        if (tmp != 0x494E4458)
+            return false;
+
+        MOBITagx tagx = new MOBITagx();
+        MOBIOrdt ordt = new MOBIOrdt();
+
+        if (!readRealIndex(indx, tagx, ordt, nrec)) {
+            indx.total_entries_count = 0;
+            return false;
+        }
+
+        int count = indx.entries_count;
+        indx.entries_count = 0;
+
+        for (int i = 1; i <= count; i++) {
+            if (!readRealIndex(indx, tagx, ordt, nrec + i)) {
+                indx.total_entries_count = 0;
+                return false;
+            }
+        }
+
+        if (indx.cncx_records_count != 0)
+            indx.cncx_record = nrec + count + 1;
+
+        if (indx.entries_count != indx.total_entries_count) {
+            indx.total_entries_count = 0;
+            return false;
+        }
+
+        return true;
+    }
+
+    private int getTagValue(MOBIIndexEntry e, int tagId, int pos) {
+        int res = -1;
+
+        if (e == null)
+            return res;
+
+        for (int i = 0; i < e.tags_count; i++) {
+            if (e.tags.get(i).tagid == tagId) {
+                if (pos < e.tags.get(i).tagvalues_count) {
+                    res = e.tags.get(i).tagvalues.get(pos);
+                }
+                break;
+            }
+        }
+
+        return res;
+    }
+
+    public int	getFIDPosition(int fid, int off) {
+        if (fid >= 0 && fid < indFRAG.total_entries_count) {
+            //return InternalFunc.str2int(indFRAG.entries.get(fid).label, 10) + off + MOBI_LINK_SHIFT;
+            return frag.get(fid) + off + MOBI_LINK_SHIFT;
+        }
+        return -1;
+    }
+
+    private ArrayList<MOBITOC> toc = new ArrayList<>();
+
+    public ArrayList<MOBITOC> getTOC() {
+        if (toc.isEmpty())
+            return null;
+        return toc;
+    }
+
+    private ArrayList<Integer> frag = new ArrayList<>();
+
+    private boolean readRealFRAQ() {
+        frag.clear();
+        for (int i = 0; i < indFRAG.entries.size(); i++) {
+            frag.add(InternalFunc.str2int(indFRAG.entries.get(i).label, 10));
+        }
+        indFRAG.entries.clear();
+        return true;
+    }
+
+    private boolean  readRealTOC2() {
+        int maxoff = recordList.get(indNCX.cncx_record).start + recordList.get(indNCX.cncx_record).len1;
+        int start = recordList.get(indNCX.cncx_record).start;
+
+        for (int i = 0; i < indNCX.total_entries_count; i++) {
+            MOBITOC t = new MOBITOC();
+
+            if (!getInfoOneTOC(t, i, start, maxoff))
+                return false;
+
+            if (t.parent < 0)
+                if (!addInfoOneTOC(t, start, maxoff))
+                    return false;
+        }
+
+        indNCX.entries.clear();
+        return true;
+    }
+
+    private boolean  getInfoOneTOC(MOBITOC m, int i, int start, int maxoff) {
+        AlIntHolder pos = new AlIntHolder(0);
+
+        byte[] text = new byte [1024];
+        int cnt;
+        pos.value = getTagValue(indNCX.entries.get(i), 3, 0);
+        if (pos.value != -1) {
+            cnt = getVarlen(start, pos, maxoff, 1);
+            if (pos.value + cnt < maxoff && cnt < 1024) {
+                StringBuilder tmp_sb = new StringBuilder();
+                getByteArray(text, start + pos.value, cnt);
+                m.label = getEncodeString(text, cnt, tmp_sb);
+            }
+        }
+
+        if (m.label.trim().isEmpty())
+            m.label = "* * *";
+
+        m.pos = getTagValue(indNCX.entries.get(i), 1, 0) + MOBI_LINK_SHIFT;
+        m.level = getTagValue(indNCX.entries.get(i), 4, 0);
+        m.fid = getTagValue(indNCX.entries.get(i), 6, 0);
+        m.off = getTagValue(indNCX.entries.get(i), 6, 1);
+
+        m.parent = getTagValue(indNCX.entries.get(i), 21, 0);
+        m.childstart = getTagValue(indNCX.entries.get(i), 22, 0);
+        m.childend = getTagValue(indNCX.entries.get(i), 23, 0);
+
+        if (m.fid != -1 && m.off != -1) {
+            int u = getFIDPosition(m.fid, m.off);
+            if (u > m.pos)
+                m.pos = u;
+        }
+
+        if (m.level < 0)
+            m.level = 0;
+
+        return true;
+    }
+
+    private boolean  addInfoOneTOC(MOBITOC m, int start, int maxoff) {
+        toc.add(m);
+
+        if (m.childstart > 0)
+            for (int i = m.childstart; i <= m.childend; i++) {
+                MOBITOC t = new MOBITOC();
+                if (!getInfoOneTOC(t, i, start, maxoff))
+                    return false;
+                if (!addInfoOneTOC(t, start, maxoff))
+                    return false;
+            }
+
+        return true;
+    }
+
+    private boolean  readRealTOC() {
+        int maxoff = recordList.get(indNCX.cncx_record).start + recordList.get(indNCX.cncx_record).len1;
+        int start = recordList.get(indNCX.cncx_record).start;
+
+        byte[] text = new byte [1024];
+        int cnt;
+        AlIntHolder pos = new AlIntHolder(0);
+
+        for (int i = 0; i < indNCX.total_entries_count; i++) {
+            MOBITOC t = new MOBITOC();
+
+            pos.value = getTagValue(indNCX.entries.get(i), 3, 0);
+            if (pos.value != -1) {
+                cnt = getVarlen(start, pos, maxoff, 1);
+                if (pos.value + cnt < maxoff && cnt < 1024) {
+                    StringBuilder tmp_sb = new StringBuilder();
+                    getByteArray(text, start + pos.value, cnt);
+                    t.label = getEncodeString(text, cnt, tmp_sb);
+                }
+            }
+
+            if (t.label.trim().isEmpty())
+                t.label = "*";
+
+            t.pos = getTagValue(indNCX.entries.get(i), 1, 0) + MOBI_LINK_SHIFT;
+            t.level = getTagValue(indNCX.entries.get(i), 4, 0);
+            t.fid = getTagValue(indNCX.entries.get(i), 6, 0);
+            t.off = getTagValue(indNCX.entries.get(i), 6, 1);
+
+            if (t.fid != -1 && t.off != -1) {
+                int u = getFIDPosition(t.fid, t.off);
+                if (u > t.pos)
+                    t.pos = u;
+            }
+
+            if (t.level < 0)
+                t.level = 0;
+
+            toc.add(t);
+        }
+
+        indNCX.entries.clear();
+
+        return true;
+    }
+
+    private boolean  readRealIndex(MOBIIndex indx, MOBITagx tagx, MOBIOrdt ordt, int nrec) {
+        int maxoff = recordList.get(nrec).start + recordList.get(nrec).len1;
+        int start = recordList.get(nrec).start;
+
+        int tmp = getRDWord(start, 0x00, maxoff);
+        if (tmp != 0x494E4458) //INDX
+            return false;
+
+        int header_length = getRDWord(start, 0x04, maxoff);
+        int type = getRDWord(start, 0x08, maxoff);
+        int idxt_offset = getRDWord(start, 0x14, maxoff);
+
+        int entries_count = getRDWord(start, 0x18, maxoff);
+        if (entries_count > 5000)
+            return false;
+
+        int encoding = getRDWord(start, 0x1c, maxoff);
+
+        int total_entries_count = getRDWord(start, 0x24, maxoff);
+        if (total_entries_count > 5000 * 0xffff)
+            return false;
+
+        int ordt_offset = getRDWord(start, 0x28, maxoff);
+        int ligt_offset = getRDWord(start, 0x2c, maxoff);
+
+        int ligt_entries_count = getRDWord(start, 0x30, maxoff);
+        if (ligt_entries_count > 5)
+            return false;
+
+        int cncx_records_count = getRDWord(start, 0x34, maxoff);
+        if (cncx_records_count > 0x0f)
+            return false;
+
+        int ordt_type = getRDWord(start, 0xa4, maxoff);
+        int ordt_entries_count = getRDWord(start, 0xa8, maxoff);
+        if (ordt_entries_count > 1024)
+            return false;
+
+        int ordt1_offset = getRDWord(start, 0xac, maxoff);
+        int ordt2_offset = getRDWord(start, 0xb0, maxoff);
+        int index_name_offset = getRDWord(start, 0xb4, maxoff);
+        int index_name_length = getRDWord(start, 0xb8, maxoff);
+
+        tmp = getRDWord(start, header_length, maxoff);
+        if (tmp == 0x54414758 && indx.total_entries_count == 0) { //TAGX
+            indx.encoding = encoding;
+            if (!readRealTAGX(tagx, start + header_length, maxoff)) {
+                return false;
+            }
+
+            if (index_name_offset > 0 && index_name_length > 0) {
+                if (index_name_length <= header_length - index_name_offset && index_name_length < 255) {
+				/*buffer_setpos(buf, index_name_offset);
+				char *name = malloc(index_name_length + 1);
+				buffer_getstring(name, buf, index_name_length);
+				indx->orth_index_name = name;*/
+                    parent.read_pos = start + index_name_offset;
+                    parent.read_pos += index_name_length;
+                }
+            }
+
+            indx.type = type;
+            indx.entries_count = entries_count;
+            indx.total_entries_count = total_entries_count;
+            indx.ligt_offset = ligt_offset;
+            tmp = getRDWord(start, ligt_offset, maxoff);
+            if (tmp != 0x4c495754 && ligt_entries_count != 0) { //LIGT
+                ligt_entries_count = 0;
+            }
+            indx.ligt_entries_count = ligt_entries_count;
+            indx.ordt_offset = ordt_offset;
+            indx.cncx_records_count = cncx_records_count;
+
+            return true;
+        }
+
+        if (idxt_offset == 0)
+            return false;
+
+        MOBIIdxt idxt = new MOBIIdxt();
+
+        tmp = getRDWord(start, idxt_offset, maxoff);
+        if (tmp != 0x49445854 || !readRealIDXT(idxt, start + idxt_offset, maxoff, entries_count)) //IDXT
+            return false;
+        idxt.offsets.add(idxt_offset);
+
+        if (entries_count > 0) {
+            int i = 0;
+            while (i < entries_count) {
+                if (!readRealEntry(indx, idxt, tagx, ordt, i, start, maxoff))
+                return false;
+                i++;
+            }
+            indx.entries_count += entries_count;
+        }
+
+        return true;
+    }
+
+    private boolean  readRealEntry(MOBIIndex indx, MOBIIdxt idxt, MOBITagx tagx, MOBIOrdt ordt, int curr_number, int off, int maxoff) {
+
+        int entry_offset = indx.entries_count;
+        int entry_length = idxt.offsets.get(curr_number + 1) - idxt.offsets.get(curr_number);
+
+        int entry_number = curr_number + entry_offset;
+        if (entry_number >= indx.total_entries_count)
+            return false;
+        if (off + idxt.offsets.get(curr_number) + entry_length > maxoff)
+            return false;
+
+        AlIntHolder pos = new AlIntHolder(idxt.offsets.get(curr_number));
+
+        int label_length = getUByte(off, pos.value++, maxoff);
+        if (label_length > entry_length)
+            return false;
+
+        MOBIIndexEntry entry = new MOBIIndexEntry();
+
+        byte[] text = new byte [255];
+        if (false) {//ordt->ordt2) {
+            //label_length = mobi_getstring_ordt(ordt, buf, (unsigned char*)text, label_length);
+            pos.value += label_length;
+            entry.label = "*";
+        } else {
+            getByteArray(text, off + pos.value, label_length);
+            pos.value += label_length;
+            StringBuilder tmp_sb = new StringBuilder();
+            entry.label = getEncodeString(text, label_length, tmp_sb);//mobi_indx_get_label((unsigned char*)text, buf, label_length, indx->ligt_entries_count);
+        }
+
+        if (tagx.tags_count > 255)
+            return false;
+        MOBIPtagx[] ptagx = new MOBIPtagx[256];
+        for (int i = 0; i < 255; i++)
+            ptagx[i] = new MOBIPtagx();
+
+        int control_bytes = getUByte(off, pos.value++, maxoff);
+        if (tagx.control_byte_count > 1)
+            pos.value += tagx.control_byte_count - 1;
+
+        entry.tags_count = 0;
+
+        if (tagx.tags_count > 0) {
+            int ptagx_count = 0;
+            int len;
+            int i = 0, j;
+            while (i < tagx.tags_count) {
+                if (tagx.tags.get(i).control_byte == 1) {
+                    control_bytes++;
+                    i++;
+                    continue;
+                }
+                int value = control_bytes/*[0]*/ & tagx.tags.get(i).bitmask;
+                if (value != 0) {
+                    int value_count = MOBI_NOTSET;
+                    int value_bytes = MOBI_NOTSET;
+                    if (value == tagx.tags.get(i).bitmask) {
+                        if (LEVEL1_MOBI_SETBITS[tagx.tags.get(i).bitmask] > 1) {
+                            len = 0;
+                            value_bytes = getVarlen(off, pos, maxoff, 1);
+                        } else {
+                            value_count = 1;
+                        }
+                    } else {
+                        int mask = tagx.tags.get(i).bitmask;
+                        while ((mask & 1) == 0) {
+                            mask >>= 1;
+                            value >>= 1;
+                        }
+                        value_count = value;
+                    }
+                    ptagx[ptagx_count].tag = tagx.tags.get(i).tag;
+                    ptagx[ptagx_count].tag_value_count = tagx.tags.get(i).values_count;
+                    ptagx[ptagx_count].value_count = value_count;
+                    ptagx[ptagx_count].value_bytes = value_bytes;
+                    ptagx_count++;
+                }
+                i++;
+            }
+
+            for (j = 0; j < tagx.tags_count; j++) {
+                MOBIIndexTag t = new MOBIIndexTag();
+                entry.tags.add(t);
+            }
+
+            i = 0;
+            while (i < ptagx_count) {
+                int tagvalues_count = 0;
+                int[] tagvalues = new int[100];
+                if (ptagx[i].value_count != MOBI_NOTSET) {
+                    int count = ptagx[i].value_count * ptagx[i].tag_value_count;
+                    while ((count--) > 0 && tagvalues_count < 100) {
+                        len = 0;
+                        final int value_bytes = getVarlen(off, pos, maxoff, 1);
+                        tagvalues[tagvalues_count++] = value_bytes;
+                    }
+				/* value count is not set */
+                } else {
+				/* read value_bytes bytes */
+                    len = 0;
+                    while (len < ptagx[i].value_bytes && tagvalues_count < 100) {
+                        final int value_bytes = getVarlen(off, pos, maxoff, 1);
+                        tagvalues[tagvalues_count++] = value_bytes;
+                    }
+                }
+
+                if (tagvalues_count > 0) {
+                    for (j = 0; j < tagvalues_count; j++) {
+                        entry.tags.get(i).tagvalues.add(tagvalues[j]);
+                    }
+                } else {
+                    entry.tags.get(i).tagvalues.clear();
+                }
+
+                entry.tags.get(i).tagid = ptagx[i].tag;
+                entry.tags.get(i).tagvalues_count = tagvalues_count;
+                entry.tags_count++;
+                i++;
+            }
+        }
+
+        indx.entries.add(entry);
+
+        return true;
+    }
+
+    private int getVarlen(int off1, AlIntHolder off2, int maxoff, int direction) {
+        int val = 0;
+        char byte_count = 0;
+        char bt;
+        final char stop_flag = 0x80;
+        final char mask = 0x7f;
+        long shift = 0;
+        do {
+            if (direction == 1) {
+                bt = (char) getUByte(off1, off2.value++, maxoff);
+                val <<= 7;
+                val |= (bt & mask);
+            } else {
+                bt = (char) getUByte(off1, off2.value--, maxoff);
+                val = val | (bt & mask) << shift;
+                shift += 7;
+            }
+            byte_count++;
+        } while ((bt & stop_flag) == 0 && (byte_count < 4));
+        return val;
+    }
+
+
+    private boolean readRealIDXT(MOBIIdxt idxt, int off, int maxoff, int entries_count) {
+
+        if (off + entries_count * 2 + 0x04 > maxoff)
+            return false;
+
+        parent.read_pos = off + 0x04;
+        while ((entries_count--) > 0)
+            idxt.offsets.add((int) parent.getRevWord());
+        idxt.offsets_count = entries_count;
+
+        return true;
+    }
+
+    private boolean  readRealTAGX(MOBITagx tagx, int off, int maxoff) {
+        tagx.control_byte_count = 0;
+        tagx.tags_count = 0;
+        tagx.tags.clear();
+
+        int tagx_record_length = getRDWord(off, 0x04, maxoff);
+        if (tagx_record_length < 12)
+            return false;
+
+        tagx.control_byte_count = getRDWord(off, 0x08, maxoff);
+        if (off + tagx_record_length > maxoff)
+            return false;
+        tagx_record_length -= 12;
+
+        int i = 0, j = 0x0c;
+
+        while (i < tagx_record_length >> 2) {
+            TAGXTags t = new TAGXTags();
+
+            t.tag = getUByte(off, j++, maxoff);
+            t.values_count = getUByte(off, j++, maxoff);
+            t.bitmask = getUByte(off, j++, maxoff);
+            t.control_byte = getUByte(off, j++, maxoff);
+
+            tagx.tags.add(t);
+            i++;
+        }
+        tagx.tags_count = tagx_record_length >> 2;
+
+        return true;
+    }
+
+
+
+    private final boolean read_flow() {
+
+        int maxoff = recordList.get(part_flow).start + recordList.get(part_flow).len1;
+        int start =  recordList.get(part_flow).start;
+
+        int tmp = getRDWord(start, 0x00, maxoff);
+        if (tmp != 0x46445354)
+            return false;
+
+        int data_offset = getRDWord(start, 0x04, maxoff);
+        int section_count = getRDWord(start, 0x08, maxoff);
+
+        if (section_count != count_flow || section_count < 1 || data_offset != 12)
+            return false;
+
+        if ((maxoff - start - 12) < section_count * 8)
+            return false;
+
+        indFLOW.cnt = 0;
+        while (indFLOW.cnt < section_count) {
+            parent.getRevDWord();
+            indFLOW.ends.add((int)parent.getRevDWord());
+            indFLOW.cnt++;
+        }
+
+        return indFLOW.cnt == count_flow;
+    }
+
+    private int getRDWord(int off1, int off2, int maxOff) {
+        if (maxOff > off1 + off2) {
+            parent.read_pos = off1 + off2;
+            return (int) parent.getRevDWord();
+        }
+        return -1;
+    }
+
+    private int getRWord(int off1, int off2, int maxOff) {
+        if (maxOff > off1 + off2) {
+            parent.read_pos = off1 + off2;
+            return parent.getRevWord();
+        }
+        return -1;
+    }
+
+    private int getUByte(int off1, int off2, int maxOff) {
+        if (maxOff > off1 + off2) {
+            parent.read_pos = off1 + off2;
+            return parent.getUByte();
+        }
+        return -1;
     }
 
     private byte[] in_buff = null;
@@ -565,4 +1233,43 @@ public class AlFilesMOBI extends AlFilesPDB {
         return false;
     }
 
+    /*public int getFlowPartSize(int num) {
+        if (num < 1 || num >= indFLOW.cnt)
+            return 0;
+
+        return indFLOW.ends.get(num) - indFLOW.ends.get(num - 1);
+    }
+
+    public byte[] getFlowPart(int num) {
+        if (num < 1 || num >= indFLOW.cnt)
+            return null;
+
+        return indFLOW.data.get(num);
+    }*/
+
+    public String getFlowString(int num) {
+        if (num < 1 || num >= indFLOW.cnt)
+            return null;
+
+        return indFLOW.data0.get(num);
+    }
+
+    private static final char LEVEL1_MOBI_SETBITS[] = {
+        0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
+                1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+                1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+                2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+                1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+                2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+                2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+                3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+                1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+                2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+                2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+                3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+                2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+                3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+                3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+                4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8,
+    };
 }

@@ -1,7 +1,6 @@
 package com.neverland.engbook.level1;
 
 import com.neverland.engbook.forpublic.TAL_RESULT;
-import com.neverland.engbook.unicode.AlUnicode;
 
 import java.util.ArrayList;
 

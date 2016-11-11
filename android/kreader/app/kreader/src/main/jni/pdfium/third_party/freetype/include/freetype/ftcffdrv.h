@@ -111,8 +111,8 @@ FT_BEGIN_HEADER
    *
    * @order:
    *   hinting-engine
-   *   no-stem-darkening[cff]
-   *   darkening-parameters[cff]
+   *   no-stem-darkening
+   *   darkening-parameters
    *
    */
 
@@ -175,7 +175,7 @@ FT_BEGIN_HEADER
   /**************************************************************************
    *
    * @property:
-   *   no-stem-darkening[cff]
+   *   no-stem-darkening
    *
    * @description:
    *   By default, the Adobe CFF engine darkens stems at smaller sizes,
@@ -205,7 +205,7 @@ FT_BEGIN_HEADER
   /**************************************************************************
    *
    * @property:
-   *   darkening-parameters[cff]
+   *   darkening-parameters
    *
    * @description:
    *   By default, the Adobe CFF engine darkens stems as follows (if the

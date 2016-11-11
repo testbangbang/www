@@ -2,12 +2,16 @@ ext.gitBranch = { ->
     return 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
 }
 
-ext.gitVersionCode = { ->
-    return 'git rev-list --count --all'.execute().text.trim().toInteger()
+ext.gitVersionCode = { path ->
+    int code = 3000 + ('bash +x ./version_code_from_git.sh ' + path).execute().text.trim().toInteger();
+    println('./version_code_from_git.sh ' + path + ' -> ' + code)
+    return code
 }
 
-ext.gitHash = { ->
-    return 'git rev-parse --short HEAD'.execute().text.trim()
+ext.gitHash = { path ->
+    String hash = ('bash +x ./hash_code_from_git.sh ' + path).execute().text.trim()
+    println('./hash_code_from_git.sh ' + path + ' -> ' + hash)
+    return hash
 }
 
 ext.releaseChannel = { ->

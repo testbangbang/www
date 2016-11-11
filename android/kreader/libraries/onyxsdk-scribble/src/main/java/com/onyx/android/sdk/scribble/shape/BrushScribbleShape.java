@@ -30,7 +30,7 @@ public class BrushScribbleShape extends EPDShape  {
 
     // render path with width list and generate path list.
     public void render(final RenderContext renderContext) {
-        applyStrokeStyle(renderContext.paint);
+        applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
         Path path = getOriginDisplayPath();
         if (path == null) {
             path = ShapeUtils.renderShape(renderContext, getNormalizedPoints());

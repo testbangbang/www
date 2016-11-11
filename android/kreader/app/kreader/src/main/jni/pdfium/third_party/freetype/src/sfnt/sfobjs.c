@@ -451,14 +451,10 @@
                                      woff.metaOrigLength != 0 ) ) ||
          ( woff.metaLength != 0 && woff.metaOrigLength == 0 )     ||
          ( woff.privOffset == 0 && woff.privLength != 0 )         )
-    {
-      FT_ERROR(( "woff_font_open: invalid WOFF header\n" ));
       return FT_THROW( Invalid_Table );
-    }
 
-    /* Don't trust `totalSfntSize' before thorough checks. */
-    if ( FT_ALLOC( sfnt, 12 + woff.num_tables * 16UL ) ||
-         FT_NEW( sfnt_stream )                         )
+    if ( FT_ALLOC( sfnt, woff.totalSfntSize ) ||
+         FT_NEW( sfnt_stream )                )
       goto Exit;
 
     sfnt_header = sfnt;
@@ -525,8 +521,6 @@
       if ( table->Tag <= old_tag )
       {
         FT_FRAME_EXIT();
-
-        FT_ERROR(( "woff_font_open: table tags are not sorted\n" ));
         error = FT_THROW( Invalid_Table );
         goto Exit;
       }
@@ -561,7 +555,6 @@
            sfnt_offset > woff.totalSfntSize - table->OrigLength ||
            table->CompLength > table->OrigLength                )
       {
-        FT_ERROR(( "woff_font_open: invalid table offsets\n" ));
         error = FT_THROW( Invalid_Table );
         goto Exit;
       }
@@ -587,8 +580,6 @@
       if ( woff.metaOffset != woff_offset                  ||
            woff.metaOffset + woff.metaLength > woff.length )
       {
-        FT_ERROR(( "woff_font_open:"
-                   " invalid `metadata' offset or length\n" ));
         error = FT_THROW( Invalid_Table );
         goto Exit;
       }
@@ -605,7 +596,6 @@
       if ( woff.privOffset != woff_offset                  ||
            woff.privOffset + woff.privLength > woff.length )
       {
-        FT_ERROR(( "woff_font_open: invalid `private' offset or length\n" ));
         error = FT_THROW( Invalid_Table );
         goto Exit;
       }
@@ -617,18 +607,9 @@
     if ( sfnt_offset != woff.totalSfntSize ||
          woff_offset != woff.length        )
     {
-      FT_ERROR(( "woff_font_open: invalid `sfnt' table structure\n" ));
       error = FT_THROW( Invalid_Table );
       goto Exit;
     }
-
-    /* Now use `totalSfntSize'. */
-    if ( FT_REALLOC( sfnt,
-                     12 + woff.num_tables * 16UL,
-                     woff.totalSfntSize ) )
-      goto Exit;
-
-    sfnt_header = sfnt + 12;
 
     /* Write the tables. */
 
@@ -670,7 +651,6 @@
           goto Exit;
         if ( output_len != table->OrigLength )
         {
-          FT_ERROR(( "woff_font_open: compressed table length mismatch\n" ));
           error = FT_THROW( Invalid_Table );
           goto Exit;
         }
@@ -903,17 +883,9 @@
 
 #ifdef TT_CONFIG_OPTION_GX_VAR_SUPPORT
     {
-      FT_ULong  fvar_len;
-
-      FT_ULong  version;
-      FT_ULong  offset;
-
-      FT_UShort  num_axes;
-      FT_UShort  axis_size;
+      FT_ULong   fvar_len;
       FT_UShort  num_instances;
-      FT_UShort  instance_size;
-
-      FT_Int  instance_index;
+      FT_Int     instance_index;
 
 
       instance_index = FT_ABS( face_instance_index ) >> 16;
@@ -921,32 +893,8 @@
       /* test whether current face is a GX font with named instances */
       if ( face->goto_table( face, TTAG_fvar, stream, &fvar_len ) ||
            fvar_len < 20                                          ||
-           FT_READ_ULONG( version )                               ||
-           FT_READ_USHORT( offset )                               ||
-           FT_STREAM_SKIP( 2 )                                    ||
-           FT_READ_USHORT( num_axes )                             ||
-           FT_READ_USHORT( axis_size )                            ||
-           FT_READ_USHORT( num_instances )                        ||
-           FT_READ_USHORT( instance_size )                        )
-      {
-        version       = 0;
-        offset        = 0;
-        num_axes      = 0;
-        axis_size     = 0;
-        num_instances = 0;
-        instance_size = 0;
-      }
-
-      /* check that the data is bound by the table length; */
-      /* based on similar code in function `TT_Get_MM_Var' */
-      if ( version != 0x00010000UL                    ||
-           axis_size != 20                            ||
-           num_axes > 0x3FFE                          ||
-           instance_size != 4 + 4 * num_axes          ||
-           num_instances > 0x7EFF                     ||
-           offset                          +
-             axis_size * num_axes          +
-             instance_size * num_instances > fvar_len )
+           FT_STREAM_SKIP( 12 )                                   ||
+           FT_READ_USHORT( num_instances )                        )
         num_instances = 0;
 
       /* we support at most 2^15 - 1 instances */

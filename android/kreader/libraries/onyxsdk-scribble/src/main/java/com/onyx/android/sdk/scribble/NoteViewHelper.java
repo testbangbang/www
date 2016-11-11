@@ -86,6 +86,7 @@ public class NoteViewHelper {
     private boolean shortcutErasing = false;
     private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
+    private boolean supportBigPen = false;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
@@ -95,6 +96,7 @@ public class NoteViewHelper {
     public void setView(final Context context, final SurfaceView view, final InputCallback c) {
         setCallback(c);
         initRawResource(context);
+        initBigPenState(context);
         initViewToEpdMatrix();
         initWithSurfaceView(view);
         initRawInputProcessor();
@@ -146,6 +148,10 @@ public class NoteViewHelper {
 
     private void initRawResource(final Context context) {
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
+    }
+
+    private void initBigPenState(final Context context) {
+        supportBigPen = deviceConfig.supportBigPen();
     }
 
     private void initWithSurfaceView(final SurfaceView view) {
@@ -584,7 +590,7 @@ public class NoteViewHelper {
             return true;
         }
 
-        if (toolType == MotionEvent.TOOL_TYPE_ERASER || inErasing()) {
+        if ((supportBigPen && toolType == MotionEvent.TOOL_TYPE_ERASER) || inErasing()) {
             if (isFingerTouch(toolType)) {
                 if (isEnableFingerErasing()) {
                     return forwardErasing(motionEvent);

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class AlOnePage {
 
-	public final ArrayList<AlOneItem>		items = new ArrayList<AlOneItem>(0);
+	public final ArrayList<AlOneItem>		items = new ArrayList<>(0);
 	public int			start_position;
 	public int			end_position;
 	public int			countItems;
@@ -18,7 +18,12 @@ public class AlOnePage {
 	public int			notesShift;
 	public int			realLength;
 
-	public static void init(AlOnePage a) {
+	public final AlOneBlock	block = new AlOneBlock();
+	public int 			textHeightWONotes;
+
+    public InternalConst.TAL_PAGE_MODE		mode;
+
+	public static void init(AlOnePage a, InternalConst.TAL_PAGE_MODE m) {
 		a.realLength = 1;
 		a.items.add(new AlOneItem());
 		a.start_position = -1;
@@ -32,6 +37,7 @@ public class AlOnePage {
 		a.selectEnd = -1;
 		a.notePresent = false;
 		a.notesShift = 0;
+		a.mode = m;
 	}
 
 	public static void	addItem(AlOnePage a) {

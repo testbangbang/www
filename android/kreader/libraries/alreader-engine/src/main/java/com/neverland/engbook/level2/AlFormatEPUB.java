@@ -29,7 +29,7 @@ public class AlFormatEPUB extends AlAXML {
     private static final String META_NAME_IMAGE = "image/";
     private static final String META_NAME_XMLHTML = "application/xhtml+xml";
     private static final String META_NAME_TOC = "application/x-dtbncx+xml";
-
+    protected static final String EPUB_FOOTNOTEMARK = "footnote";
 
 
     private String		    currentFile = null;
@@ -45,14 +45,14 @@ public class AlFormatEPUB extends AlAXML {
     private int 			toc_section = -1;
     private final StringBuilder	toc_text = new StringBuilder();
     private String		    toc_base;
-    private final ArrayList<AlOneEPUBTOC>		listTOC = new ArrayList<AlOneEPUBTOC>();
+    private final ArrayList<AlOneEPUBTOC>		listTOC = new ArrayList<>();
     private static final int		TOC_NAVMAP = 0x01;
     private static final int		TOC_NAVPOINT = 0x02;
     private static final int		TOC_NAVLABEL = 0x04;
     private static final int		TOC_TEXT = 0x08;
 
-    private final HashMap<String, AlOneEPUBIDItem>	mapId = new HashMap<String, AlOneEPUBIDItem>();
-    private final ArrayList<AlOneEPUBItem>			listFiles = new ArrayList<AlOneEPUBItem>();
+    private final HashMap<String, AlOneEPUBIDItem>	mapId = new HashMap<>();
+    private final ArrayList<AlOneEPUBItem>			listFiles = new ArrayList<>();
 
     class AlOneEPUBIDItem {
         String	    href = null;
@@ -86,6 +86,7 @@ public class AlFormatEPUB extends AlAXML {
         preference = pref;
         styles = stl;
 
+        noUseCover = bookOptions.noUseCover;
         size = 0;
 
         autoCodePage = false;
@@ -164,17 +165,11 @@ public class AlFormatEPUB extends AlAXML {
     @Override
     public boolean isNeedAttribute(int atr) {
         switch (atr) {
-            case AlFormatTag.TAG_NAME:
-            case AlFormatTag.TAG_ID:
             case AlFormatTag.TAG_NUMBER:
-            case AlFormatTag.TAG_HREF:
             case AlFormatTag.TAG_CONTENT_TYPE:
-            case AlFormatTag.TAG_TYPE:
             case AlFormatTag.TAG_TITLE:
             case AlFormatTag.TAG_NUMFILES:
-            case AlFormatTag.TAG_IDREF:
             case AlFormatTag.TAG_NOTE:
-            case AlFormatTag.TAG_SRC:
             case AlFormatTag.TAG_TOC:
             case AlFormatTag.TAG_CONTENT:
             case AlFormatTag.TAG_FULL_PATH:
@@ -218,6 +213,8 @@ public class AlFormatEPUB extends AlAXML {
                 addContent(AlOneContent.add(a.name, pos, a.section));
             }
         }
+
+        super.prepareCustom();
     }
 
     private void setSpecialText(boolean flag) {
@@ -289,14 +286,15 @@ public class AlFormatEPUB extends AlAXML {
 
         if (allState.isOpened) {
             param = tag.getATTRValue(AlFormatTag.TAG_NAME);
+            StringBuilder tp = tag.getATTRValue(AlFormatTag.TAG_TYPE);
             if (param != null) {
-                addtestLink(param.toString());
+                addtestLink(param.toString(), (tp != null) && (tp.toString().startsWith(EPUB_FOOTNOTEMARK)));
             }
         }
         return false;
     }
 
-    void addtestLink(String s) {
+    void addtestLink(String s, boolean isFootnote) {
         if (allState.isOpened) {
             StringBuilder link = new StringBuilder();// = AlFiles::getAbsoluteName(currentFile, s);
             if (currentFile != null && currentFile.length() > 0) {
@@ -304,9 +302,15 @@ public class AlFormatEPUB extends AlAXML {
                 link.append('#');
             }
             link.append(s);
-            super.addtestLink(link.toString());
+            if (!isFootnote) {
+                super.addtestLink(link.toString());
+            } else {
+                super.addtestLink(link.toString(), 1);
+            }
         }
     }
+
+    int			realSkipCoverPos = -1;
 
     private boolean addImages() {
         StringBuilder param = tag.getATTRValue(AlFormatTag.TAG_SRC);
@@ -321,15 +325,31 @@ public class AlFormatEPUB extends AlAXML {
                 name = aFiles.getExternalAbsoluteFileName(num_file);
 
 
-            if (coverName == null)
-                setParagraphStyle(AlStyles.PAR_COVER);
+            boolean needInsert = true;
 
-            addCharFromTag((char)AlStyles.CHAR_IMAGE_S, false);
-            addTextFromTag(name, false);
-            addCharFromTag((char) AlStyles.CHAR_IMAGE_E, false);
+            if (allState.isOpened) {
+                if (realSkipCoverPos == -1 && size == 0 && noUseCover) {
+                    realSkipCoverPos = tag.start_pos;
+                    needInsert = false;
+                }
+            } else {
+                needInsert = realSkipCoverPos != tag.start_pos;
+            }
 
+            if (needInsert) {
+                if (coverName == null)
+                    setParagraphStyle(AlStyles.PAR_COVER);
+
+                addCharFromTag((char) AlStyles.CHAR_IMAGE_S, false);
+                addTextFromTag(name, false);
+                addCharFromTag((char) AlStyles.CHAR_IMAGE_E, false);
+
+                if (coverName == null) {
+                    clearParagraphStyle(AlStyles.PAR_COVER);
+                    coverName = name;
+                }
+            }
             if (coverName  == null) {
-                clearParagraphStyle(AlStyles.PAR_COVER);
                 coverName = name;
             }
         }
@@ -350,11 +370,13 @@ public class AlFormatEPUB extends AlAXML {
     protected boolean externPrepareTAG() {
         StringBuilder param;
 
+
         if (allState.isOpened &&
                 (paragraph & (AlStyles.PAR_DESCRIPTION1 | AlStyles.PAR_DESCRIPTION2 | AlStyles.PAR_DESCRIPTION3 | AlStyles.PAR_DESCRIPTION4)) == 0) {
             param = tag.getATTRValue(AlFormatTag.TAG_ID);
+            StringBuilder tp = tag.getATTRValue(AlFormatTag.TAG_TYPE);
             if (param != null)
-                addtestLink(param.toString());
+                addtestLink(param.toString(), (tp != null) && (tp.toString().startsWith(EPUB_FOOTNOTEMARK)));
         }
 
 
@@ -465,29 +487,33 @@ public class AlFormatEPUB extends AlAXML {
 
                 }
                 return true;
+            case AlFormatTag.TAG_ASIDE:
+                if (tag.closed) {
+                    closeOpenNotes();
+                    if (preference.onlyPopupFootnote)
+                        if ((paragraph & AlStyles.PAR_STYLE_HIDDEN) != 0)
+                            clearTextStyle(AlStyles.PAR_STYLE_HIDDEN);
+                } else
+                if (!tag.ended) {
+                    StringBuilder tp = tag.getATTRValue(AlFormatTag.TAG_TYPE);
+                    if (preference.onlyPopupFootnote && tp != null && tp.toString().startsWith(EPUB_FOOTNOTEMARK))
+                        setParagraphStyle(AlStyles.PAR_STYLE_HIDDEN);
+                }
+                newParagraph();
+                return true;
 // paragraph
             case AlFormatTag.TAG_DIV:
             case AlFormatTag.TAG_DT:
             case AlFormatTag.TAG_DD:
             case AlFormatTag.TAG_P:
                 if (tag.closed) {
-
+                    newParagraph();
                 } else
                 if (!tag.ended) {
                     newParagraph();
                 } else {
                     newParagraph();
                     newEmptyTextParagraph();
-                }
-                return true;
-            case AlFormatTag.TAG_TABLE:
-                if (tag.closed) {
-
-                } else
-                if (!tag.ended) {
-                    newParagraph();
-                } else {
-
                 }
                 return true;
             case AlFormatTag.TAG_HR:
@@ -511,17 +537,6 @@ public class AlFormatEPUB extends AlAXML {
                     newParagraph();
                     setParagraphStyle(AlStyles.PAR_PRE);
                     allState.state_code_flag = true;
-                } else {
-
-                }
-                return true;
-            case AlFormatTag.TAG_TR:
-                if (tag.closed) {
-                    clearParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_MASK | AlStyles.PAR_TITLE | AlStyles.PAR_SUBTITLE);
-                } else
-                if (!tag.ended) {
-                    newParagraph();
-                    setParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_LEFT);
                 } else {
 
                 }
@@ -1037,26 +1052,15 @@ public class AlFormatEPUB extends AlAXML {
                         }
                     }
 
-			/*if ((paragraph & AlStyles::PAR_DESCRIPTION2) != 0) {
-				allState.state_skipped_flag = false;
-				if (allState.isOpened || coverName.length()) {
-					setParagraphStyle(AlStyles::PAR_COVER);
-					addCharFromTag((char16_t)AlStyles::CHAR_IMAGE_S, false);
-					addCharFromTag(LEVEL2_COVERTOTEXT, false);
-					addCharFromTag((char16_t)AlStyles::CHAR_IMAGE_E, false);
-					clearParagraphStyle(AlStyles::PAR_COVER);
-					allState.state_skipped_flag = true;
-				} else {
-					addCharFromTag(0xa0, false);
-					addCharFromTag(0xa0, false);
-					addCharFromTag(0xa0, false);
-					allState.state_skipped_flag = true;
-				}
-			}*/
                 } else {
 
                 }
                 return true;
+            case AlFormatTag.TAG_TABLE:
+            case AlFormatTag.TAG_TH:
+            case AlFormatTag.TAG_TD:
+            case AlFormatTag.TAG_TR:
+                return prepareTable();
         }
 
         return false;

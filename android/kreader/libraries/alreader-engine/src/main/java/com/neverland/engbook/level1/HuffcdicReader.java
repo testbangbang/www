@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 public class HuffcdicReader {
 	
-	private DictUnpackResult dict1[] = new DictUnpackResult[256];
-	private long mincode0[] = new long[33];
-	private long maxcode0[] = new long[33];
-	private ArrayList<Slice> dictionary = new ArrayList<Slice>();
+	private final DictUnpackResult dict1[] = new DictUnpackResult[256];
+	private final long mincode0[] = new long[33];
+	private final long maxcode0[] = new long[33];
+	private final ArrayList<Slice> dictionary = new ArrayList<>();
 	
 	private class DictUnpackResult {
 		int codelen;
@@ -119,7 +119,7 @@ public class HuffcdicReader {
 				n += 32;
 			}
 			
-			final long code = (x >> n) & 0x00000000ffffffffl;
+			final long code = (x >> n) & 0x00000000ffffffffL;
 			DictUnpackResult unpackedDict = dict1[(int) (code >> 24)];								
 			int codelen = unpackedDict.codelen, term = unpackedDict.term;
 			long maxcode = unpackedDict.maxcode;
@@ -168,7 +168,7 @@ public class HuffcdicReader {
 				n += 32;
 			}
 			
-			final long code = (x >> n) & 0xffffffffl;
+			final long code = (x >> n) & 0xffffffffL;
 			DictUnpackResult unpackedDict = dict1[(int) (code >> 24)];								
 			int codelen = unpackedDict.codelen, term = unpackedDict.term;
 			long maxcode = unpackedDict.maxcode;

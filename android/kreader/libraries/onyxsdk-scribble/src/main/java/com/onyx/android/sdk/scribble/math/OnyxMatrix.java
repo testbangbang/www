@@ -50,6 +50,9 @@ public class OnyxMatrix {
     private float src[] = new float[2];
     private float dst[] = new float[2];
 
+    public OnyxMatrix() {
+    }
+
     public void postRotate(final int degree) {
         rotate = degree;
         if (rotate == 0) {

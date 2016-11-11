@@ -1,6 +1,6 @@
 package com.neverland.engbook.forpublic;
 
-import android.app.Application;
+import android.content.Context;
 import android.content.res.AssetManager;
 
 
@@ -44,7 +44,9 @@ public class AlEngineOptions {
 	/**
 	 *
 	 */
-	public AssetManager assetManager;
+    public AssetManager assetManager;
+    public Context							appInstance;
+
 	/**
 	 * некоторые ньюансы форматирования текста на странице - устанавливать в TRUE только если локаль устройства - китайская
 	 */
@@ -54,4 +56,14 @@ public class AlEngineOptions {
 	 pageSize4Use = AL_USEAUTO_PAGESIZE - вариант автоматического подсчета размера страницы
 	 */
 	public int									pageSize4Use = AL_USEDEF_PAGESIZE;
+
+	public int									value2CalcMargins = 0;
+	/**
+	 * если сноски показываются только во всплывающем окошке - опция скрывает на странице сноски (ASIDE epub)
+	 */
+	public boolean 								onlyPopupFootnote = false;
+
+	public EngBookMyType.TAL_TABLEMODE			tableMode = EngBookMyType.TAL_TABLEMODE.BOTH;
+
+
 }

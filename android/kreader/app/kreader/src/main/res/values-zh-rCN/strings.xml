@@ -167,6 +167,7 @@
   <string name="dialog_quick_view_enter_page_number_empty_error">跳转页码不可为空白</string>
   <string name="reflowing">正在重排</string>
   <string name="loading">正在加载</string>
+  <string name="load_fail">加载失败</string>
   <string name="saving">正在保存</string>
   <string name="exporting">正在导出</string>
   <string name="export">导出</string>

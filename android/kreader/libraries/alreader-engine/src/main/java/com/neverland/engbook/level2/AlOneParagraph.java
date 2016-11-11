@@ -12,6 +12,9 @@ public class AlOneParagraph {
 	public long				level;
 	public long 			stack[] = null;
 	public int  			cp[] = null;
+	public int				table_start = -1;
+	public int				table_counter = 0;
+
 
 	@Override
 	public String toString() {
@@ -28,7 +31,9 @@ public class AlOneParagraph {
 				append(Integer.toHexString(addon)).append('/').
 				append(Integer.toString((stack != null ? 1 : 0) + (cp != null ? 2 : 0))).append('/').
 				append(Integer.toString((int) (level >> 31))).append('/').
-				append(Integer.toString((int) (level & 0x7fffffff)));
+				append(Integer.toString((int) (level & 0x7fffffff))).append('/').
+				append(Integer.toString(table_start)).append("-0x").
+				append(Integer.toHexString(table_counter));
 		return s.toString();
 	}
 }

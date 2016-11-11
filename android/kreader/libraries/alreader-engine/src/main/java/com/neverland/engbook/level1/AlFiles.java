@@ -2,9 +2,6 @@ package com.neverland.engbook.level1;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
-import com.neverland.engbook.forpublic.AlFileDecrypt;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
 import com.neverland.engbook.forpublic.TAL_RESULT;
@@ -22,7 +19,12 @@ public abstract class AlFiles {
 	public static final String LEVEL1_ZIP_FIRSTNAME_DOCX = "/word/document.xml";
 	public static final String LEVEL1_ZIP_FIRSTNAME_ODT = "/content.xml";
 	public static final int LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG = 0x80000000;
-	
+	public static final String LEVEL1_FB3_FILE_RELS = "/fb3/_rels/body.xml.rels";
+	public static final String LEVEL1_FB3_FILE_FORCOVER = "/_rels/.rels";
+	public static final String LEVEL1_ZIP_FIRSTNAME_FB3 = "/fb3/body.xml";
+	public static final String LEVEL1_ZIP_DESCRIPTION_FB3 = "/fb3/description.xml";
+
+
 	int					read_pos;
 	boolean				onlyScan;
 	boolean				autoCodePage;
@@ -37,7 +39,7 @@ public abstract class AlFiles {
 	AlFiles				parent;
 	String				ident;	
 	
-	ArrayList<AlFileZipEntry>	fileList = new ArrayList<AlFileZipEntry>(0);
+	ArrayList<AlFileZipEntry>	fileList = new ArrayList<>(0);
 	
 	public	AlFiles() {
 		parent = null;

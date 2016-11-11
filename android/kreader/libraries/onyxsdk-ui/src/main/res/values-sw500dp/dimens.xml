@@ -35,4 +35,5 @@
     <dimen name="reader_status_bar_text_size">20sp</dimen>
     <dimen name="navigatorWidth">30dp</dimen>
     <dimen name="dialog_reader_menu_top_bar_function_icon_margin">2dp</dimen>
+    <dimen name="global_activities_function_icon_size">40dp</dimen>
 </resources>

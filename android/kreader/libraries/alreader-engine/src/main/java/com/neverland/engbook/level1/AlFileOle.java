@@ -1,13 +1,9 @@
 package com.neverland.engbook.level1;
 
-import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.TAL_RESULT;
-import com.neverland.engbook.util.AlPreferenceOptions;
-import com.neverland.engbook.util.AlStylesOptions;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;

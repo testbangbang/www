@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class AlFilesZIPRecord extends AlFiles {
 
-    protected final ArrayList<AlOneZIPRecord> recordList = new ArrayList<AlOneZIPRecord>();
+    protected final ArrayList<AlOneZIPRecord> recordList = new ArrayList<>();
 
     public final void addFilesToRecord(String fname, int sp) {
         int num = parent.getExternalFileNum(fname);

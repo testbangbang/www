@@ -89,6 +89,7 @@ public class AlPublicProfileOptions {
 	 * режим свитка. Работает только в случае, если AlEngineOptions.useScreenPages == TAL_SCREEN_PAGES_COUNT.SIZE
 	 */
 	public boolean				specialModeRoll = false;
+	public boolean				specialModeMadRoll = false;
     /**
      * секции (главы) с новой страницы. Не работает в режиме свитка
      */

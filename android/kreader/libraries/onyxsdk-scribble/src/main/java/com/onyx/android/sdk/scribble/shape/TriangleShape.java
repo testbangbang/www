@@ -29,7 +29,7 @@ public class TriangleShape extends BaseShape {
 
     public void render(final RenderContext renderContext) {
         final float[] renderPoints = updatePoints(renderContext);
-        applyStrokeStyle(renderContext.paint);
+        applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
         renderContext.canvas.drawLine(renderPoints[0], renderPoints[1], renderPoints[2], renderPoints[3], renderContext.paint);
         renderContext.canvas.drawLine(renderPoints[0], renderPoints[1], renderPoints[4], renderPoints[5], renderContext.paint);
         renderContext.canvas.drawLine(renderPoints[4], renderPoints[5], renderPoints[2], renderPoints[3], renderContext.paint);

@@ -1,7 +1,6 @@
 package com.neverland.engbook.level2;
 
 import com.neverland.engbook.forpublic.AlBookOptions;
-import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlPreferenceOptions;
@@ -117,11 +116,6 @@ public class AlFormatNativeImages extends AlFormat {
                 allState.text_present = true;
             }
         }
-    }
-
-    @Override
-    protected void prepareCustom() {
-
     }
 
     @Override

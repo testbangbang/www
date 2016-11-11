@@ -1,8 +1,12 @@
 package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.*;
+import android.media.MediaActionSound;
+
+import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.List;
@@ -97,6 +101,13 @@ public class BaseShape implements Shape {
 
     public void setStrokeWidth(final float width) {
         strokeWidth = width;
+    }
+
+    public float getDisplayScale(final RenderContext renderContext) {
+        if (renderContext == null || renderContext.matrix == null) {
+            return 1.0f;
+        }
+        return renderContext.displayScale;
     }
 
     public boolean supportDFB() {
@@ -238,8 +249,8 @@ public class BaseShape implements Shape {
         return normalizedPoints;
     }
 
-    public void applyStrokeStyle(final Paint paint) {
-        paint.setStrokeWidth(getStrokeWidth());
+    public void applyStrokeStyle(final Paint paint, final float displayScale) {
+        paint.setStrokeWidth(getStrokeWidth() * displayScale);
         paint.setColor(getColor());
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);

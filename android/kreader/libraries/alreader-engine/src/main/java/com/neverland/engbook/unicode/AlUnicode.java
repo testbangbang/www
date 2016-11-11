@@ -38,6 +38,13 @@ public class AlUnicode {
 		return TAL_CODE_PAGES.AUTO;
 	}
 
+	public static char toLower(char ch) {
+		return Character.toLowerCase(ch);
+	}
+
+	public static char toUpper(char ch) {
+		return Character.toUpperCase(ch);
+	}
 
 	public static boolean isLetter(char ch) {
 		return ((((1 << Character.UPPERCASE_LETTER) |
@@ -69,7 +76,15 @@ public class AlUnicode {
 	public static boolean isChineze(char ch) {
 		return (ch >= 0x3000 && ch < 0xd800) || (ch >= 0xf900 && ch < 0xfb00) || (ch >= 0xfe30 && ch < 0xfe4f) || (ch >= 0xff01 && ch < 0xff1f);
 	}
-		
+
+	public static boolean isNotCharForSUP(char ch) {
+		switch (ch) {
+			case ' ': case '[': case '(': case '{':
+				return true;
+		}
+		return false;
+	}
+
 	public static boolean isDecDigit(char ch) {
 		switch (ch) {
 		case '0': case '1': case '2': case '3': case '4':
@@ -122,7 +137,12 @@ public class AlUnicode {
 		case 0x2d: // - 
 		case 0x2f: // /
 		case 0x5c: // \
-		case 0x2013: case 0x2014: case 0x2015: // -
+		case ':':
+		//case '<':
+		//case '[':
+		case '>':
+		case ']':
+		case 0x2010: case 0x2011: case 0x2013: case 0x2014: case 0x2015: // -
 			return true;
 		}
 		return false;		
@@ -635,7 +655,55 @@ public class AlUnicode {
 		}
 		return res;
 	}
-	
+
+	public static String UTFbuffer2Ustring(byte[] src, int src_len) {
+		StringBuilder s = new StringBuilder();
+		int pos = 0;
+
+		if (src_len > 3 && ((char)src[0]) == 0xef && ((char)src[1]) == 0xbb && ((char)src[2]) == 0xbf)
+			pos = 3;
+
+		char ch, ch1;
+		while (pos < src_len) {
+			ch = (char)src[pos++];
+			if ((ch & 0x80) == 0) {
+
+			} else
+			if ((ch & 0x20) == 0) {
+				ch = (char)((ch & 0x1f) << 6);
+				ch1 = (char)src[pos++];
+				ch += (char)(ch1 & 0x3f);
+			} else {
+				ch = (char)((ch & 0x1f) << 6);
+				ch1 = (char)src[pos++];
+				ch += (char)(ch1 & 0x3f);
+				ch <<= 6;
+				ch1 = (char)src[pos++];
+				ch += (char)(ch1 & 0x3f);
+			}
+			s.append(ch);
+		}
+
+		return s.toString();
+	}
+
+	public static String ANSIbuffer2Ustring(byte[] src, int src_len) {
+		StringBuilder s = new StringBuilder();
+		int pos = 0;
+
+		if (src_len > 3 && ((char)src[0]) == 0xef && ((char)src[1]) == 0xbb && ((char)src[2]) == 0xbf)
+			return UTFbuffer2Ustring(src, src_len);
+
+		char ch, ch1;
+		while (pos < src_len) {
+			ch = (char)src[pos++];
+			if (ch >= 0x80)
+				ch = data_1252[ch - 0x80];
+			s.append(ch);
+		}
+
+		return s.toString();
+	}
 	
 	public static char byte2Wide(final int cp, final byte[] src, AlIntHolder src_pos) {
 		char ch = (char)src[src_pos.value++], ch1;
@@ -847,10 +915,10 @@ public class AlUnicode {
 		return ch;
 	}
 	
-	public static HashMap<String, Integer> encodingXMLMap = null;
+	public static final HashMap<String, Integer> encodingXMLMap;
 	static {
 /////////////// XML  ///////////////////////		
-		encodingXMLMap = new HashMap<String, Integer>(); 
+		encodingXMLMap = new HashMap<>();
 		encodingXMLMap.put("cp473", TAL_CODE_PAGES.CP437);
 		encodingXMLMap.put("cp850",	TAL_CODE_PAGES.CP850);
 		encodingXMLMap.put("cp855",	TAL_CODE_PAGES.CP855);
