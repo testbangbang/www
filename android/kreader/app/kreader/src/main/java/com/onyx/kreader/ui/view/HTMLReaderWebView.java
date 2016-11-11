@@ -5,9 +5,7 @@ package com.onyx.kreader.ui.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +42,7 @@ public class HTMLReaderWebView extends WebView
 
     private int heightForSaveView = 50;
     private int pageTurnThreshold = 300;
+    private int marginTop = 10;
 
     public void setPageTurnType(int pageTurnType)
     {
@@ -190,7 +189,8 @@ public class HTMLReaderWebView extends WebView
                         lastX = event.getX();
                         lastY = event.getY();
                         break;
-
+                    case MotionEvent.ACTION_MOVE:
+                        return true;
                     case MotionEvent.ACTION_UP:
                         int direction = detectDirection(event);
                         if (direction == PageTurningDirection.NEXT) {
@@ -219,10 +219,11 @@ public class HTMLReaderWebView extends WebView
 
                 + "}";
 
-        String insertRule1 = "addCSSRule('html', 'padding: 0px; height: "
-                + (webView.getMeasuredHeight()/getContext().getResources().getDisplayMetrics().density )
-                + "px; -webkit-column-gap: 0px; -webkit-column-width: "
-                + webView.getMeasuredWidth() + "px;  text-align:justify; ')";
+        int width = webView.getMeasuredWidth();
+        String insertRule1 = "addCSSRule('html', '"
+                + " -webkit-column-gap: 0px; -webkit-column-width: "
+                + width + "px; margin-top:"+ marginTop + "px;"
+                + " line-height:130%; letter-spacing:2px; text-align:justify;')";
 
 
         String css = varMySheet + addCSSRule + insertRule1;
@@ -293,13 +294,17 @@ public class HTMLReaderWebView extends WebView
         return mTotalPage >= 1 && getContentHeight() <= getHeight();
     }
 
+    private int getScrollWidth() {
+        return getMeasuredWidth();
+    }
+
     public void nextPage()
     {
         if (mCurrentPage < mTotalPage) {
             // EpdController.invalidate(webView, UpdateMode.GC);
             mCurrentPage++;
-            setScroll(getScrollX() + getWidth(), 0);
-            scrollBy(getWidth(), 0);
+            setScroll(getScrollX() + getScrollWidth(), 0);
+            scrollBy(getScrollWidth(), 0);
             if (mOnPageChangedListener != null)
                 mOnPageChangedListener.onPageChanged(mTotalPage, mCurrentPage);
         }
@@ -310,8 +315,8 @@ public class HTMLReaderWebView extends WebView
         if (mCurrentPage > 1) {
             // EpdController.invalidate(webView, UpdateMode.GC);
             mCurrentPage--;
-            setScroll(getScrollX() - getWidth(), 0);
-            scrollBy(getWidth(), 0);
+            setScroll(getScrollX() - getScrollWidth(), 0);
+            scrollBy(getScrollWidth(), 0);
             if (mOnPageChangedListener != null)
                 mOnPageChangedListener.onPageChanged(mTotalPage, mCurrentPage);
         }
