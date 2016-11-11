@@ -48,4 +48,5 @@
     <dimen name="dialog_set_value_image_size">70dp</dimen>
     <dimen name="dialog_scribble_full_screen_toolbar_padding">20dp</dimen>
     <dimen name="popup_selection_menu_height">300dp</dimen>
+    <dimen name="dict_name_text_view_layout_width">400dp</dimen>
 </resources>
