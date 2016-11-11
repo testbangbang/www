@@ -6,12 +6,17 @@ import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 
 class AlThread  implements Runnable {
 	
-	private volatile AlThreadData param;	
+	private volatile AlThreadData param;
+	private boolean useThread = false;
 
 	public AlThread(AlThreadData p, TAL_THREAD_TASK t) {
 		param = p;
 		param.task = t;
-		new Thread(this).start();
+		if (useThread) {
+			new Thread(this).start();
+		} else {
+			run();
+		}
 	}
 
     public void run() {
