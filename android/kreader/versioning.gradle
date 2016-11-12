@@ -3,9 +3,13 @@ ext.gitBranch = { ->
 }
 
 ext.gitVersionCode = { path ->
-    int code = 3000 + ('bash +x ./version_code_from_git.sh ' + path).execute().text.trim().toInteger();
-    println('./version_code_from_git.sh ' + path + ' -> ' + code)
-    return code
+    String s = ('bash +x ./version_code_from_git.sh ' + path).execute().text.trim();
+    if (s.isInteger()) {
+        int code = 3000 + s.toInteger();
+        println('./version_code_from_git.sh ' + path + ' -> ' + code)
+        return code
+    }
+    return 0;
 }
 
 ext.gitHash = { path ->
