@@ -214,10 +214,13 @@ static jobject createEmptySelection(JNIEnv *env, int page) {
 // convert page's left-bottom origin to screen's left-top origin
 // but there are some documents we can't get normalized coordinates simply by subtracting with page width/height,
 // so it's safer to use pdfium's built-in FPDF_PageToDevice()
-static void pageToDevice(FPDF_PAGE page, int pageWidth, int pageHeight, int rotation, int left, int top, int right, int bottom,
-                         int *newLeft, int *newTop, int *newRight, int *newBottom) {
-    FPDF_PageToDevice(page, 0, 0, pageWidth, pageHeight, rotation, left, top, newLeft, newTop);
-    FPDF_PageToDevice(page, 0, 0, pageWidth, pageHeight, rotation, right, bottom, newRight, newBottom);
+static void pageToDevice(FPDF_PAGE page, double pageWidth, double pageHeight, int rotation,
+                         double left, double top, double right, double bottom,
+                         double *newLeft, double *newTop, double *newRight, double *newBottom) {
+    int pw = static_cast<int>(pageWidth);
+    int ph = static_cast<int>(pageHeight);
+    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, left, top, newLeft, newTop);
+    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, right, bottom, newRight, newBottom);
     if (*newRight < *newLeft) {
         std::swap(*newRight, *newLeft);
     }
@@ -226,17 +229,16 @@ static void pageToDevice(FPDF_PAGE page, int pageWidth, int pageHeight, int rota
     }
 }
 
-static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, std::vector<int> & list) {
+static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, std::vector<float> &list) {
     double left, right, bottom, top;
-    int newLeft, newRight, newBottom, newTop;
-    int pageWidth = static_cast<int>(FPDF_GetPageWidth(page));
-    int pageHeight = static_cast<int>(FPDF_GetPageHeight(page));
+    double newLeft, newRight, newBottom, newTop;
+    double pageWidth = FPDF_GetPageWidth(page);
+    double pageHeight = FPDF_GetPageHeight(page);
     int count = end - start + 1;
     for(int i = 0; i < count; ++i) {
         FPDFText_GetCharBox(textPage, i + start, &left, &right, &bottom, &top);
         pageToDevice(page, pageWidth, pageHeight, rotation,
-                     static_cast<int>(left), static_cast<int>(top),
-                     static_cast<int>(right), static_cast<int>(bottom),
+                     left, top, right, bottom,
                      &newLeft, &newTop, &newRight, &newBottom);
         list.push_back(newLeft);
         list.push_back(newTop);
@@ -250,8 +252,8 @@ static int reportSelection(JNIEnv *env, FPDF_PAGE page, FPDF_TEXTPAGE textPage, 
     int count = end - start + 1;
     {
         JNIUtils utils(env);
-        utils.findMethod(selectionClassName, "addRectangle", "(IIII)V");
-        std::vector<int> list;
+        utils.findMethod(selectionClassName, "addRectangle", "(FFFF)V");
+        std::vector<float> list;
         getSelectionRectangles(page, textPage, x, y, width, height, rotation, start, end, list);
         for(int i = 0; i < count; ++i) {
             env->CallVoidMethod(selection, utils.getMethodId(), list[i * 4], list[i * 4 + 1], list[i * 4 + 2], list[i * 4 + 3]);
@@ -447,12 +449,12 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nat
     int count = 0;
     FPDF_SCHHANDLE searchHandle = FPDFText_FindStart(textPage, (unsigned short *)stringData, flags, 0);
     JNIUtils utils(env);
-    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[I[BIILjava/lang/String;Ljava/lang/String;)V");
+    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V");
     while (searchHandle != NULL && FPDFText_FindNext(searchHandle)) {
         ++count;
         int startIndex = FPDFText_GetSchResultIndex(searchHandle);
         int endIndex = startIndex + FPDFText_GetSchCount(searchHandle) - 1;
-        std::vector<int> list;
+        std::vector<float> list;
         getSelectionRectangles(page, textPage, x, y, width, height, rotation, startIndex, endIndex, list);
 
         int contextLeftIndex = std::max(startIndex - contextOffset, 0);
@@ -471,8 +473,10 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nat
             rightText = StringUtils::newLocalStringUTF(env, "");
         }
 
-        JNIIntArray intArray(env, list.size(), &list[0]);
-        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, intArray.getIntArray(true), array, startIndex, endIndex, leftText.get(), rightText.get());
+        jfloatArray floatArray = env->NewFloatArray(list.size());
+        env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, floatArray, array, startIndex, endIndex, leftText.get(), rightText.get());
+        env->DeleteLocalRef(floatArray);
     }
     FPDFText_FindClose(searchHandle);
     delete [] stringData;
@@ -636,7 +640,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
     }
 
     JNIUtils utils(env);
-    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[I[BIILjava/lang/String;Ljava/lang/String;)V")) {
+    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V")) {
         return false;
     }
 
@@ -659,13 +663,12 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
         if (!FPDFLink_GetAnnotRect(link, &rect)) {
             continue;
         }
-        int newLeft, newRight, newBottom, newTop;
-        int pageWidth = static_cast<int>(FPDF_GetPageWidth(page));
-        int pageHeight = static_cast<int>(FPDF_GetPageHeight(page));
+        double newLeft, newRight, newBottom, newTop;
+        double pageWidth = static_cast<int>(FPDF_GetPageWidth(page));
+        double pageHeight = static_cast<int>(FPDF_GetPageHeight(page));
         int rotation = 0;
         pageToDevice(page, pageWidth, pageHeight, rotation,
-                     static_cast<int>(rect.left), static_cast<int>(rect.top),
-                     static_cast<int>(rect.right), static_cast<int>(rect.bottom),
+                     rect.left, rect.top, rect.right, rect.bottom,
                      &newLeft, &newTop, &newRight, &newBottom);
         std::vector<int> list;
         list.push_back(newLeft);
