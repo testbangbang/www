@@ -54,16 +54,14 @@ public class ReaderLayerMenuRepository {
                 menuGroupList.add(group);
                 currentGroup = group;
             } else {
-                ((List<ReaderLayerMenuItem>)currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
+                (currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
                         item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId()));
             }
         }
         return menuGroupList;
     }
 
-    public static List<ReaderLayerMenuItem> createFromArray(ReaderLayerMenuItem[] flattenArray, List<ReaderMenuAction> excludingList) {
-        Set<ReaderMenuAction> excludingSet = new HashSet<>(excludingList);
-
+    public static List<ReaderLayerMenuItem> createFromArray(ReaderLayerMenuItem[] flattenArray, Set<ReaderMenuAction> excludingSet) {
         ArrayList<ReaderLayerMenuItem> menuGroupList = new ArrayList<>();
         ReaderLayerMenuItem currentGroup = null;
         for (int i = 0; i < flattenArray.length; i++) {
@@ -82,7 +80,7 @@ public class ReaderLayerMenuRepository {
                 menuGroupList.add(group);
                 currentGroup = group;
             } else {
-                ((List<ReaderLayerMenuItem>)currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
+                (currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
                         item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId()));
             }
         }

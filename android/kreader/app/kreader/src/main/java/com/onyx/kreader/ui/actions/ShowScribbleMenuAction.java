@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ming on 16/9/22.
@@ -50,10 +51,11 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private ActionCallback actionCallback;
     private ReaderDataHolder readerDataHolder;
     private boolean isDrag = false;
-    private List<ReaderMenuAction> disableMenuActions;
+    private Set<ReaderMenuAction> disableMenuActions;
 
     public ShowScribbleMenuAction(ViewGroup parent,
-                                  final ActionCallback actionCallback, List<ReaderMenuAction> disableMenuActions) {
+                                  final ActionCallback actionCallback,
+                                  Set<ReaderMenuAction> disableMenuActions) {
         this.parent = parent;
         this.actionCallback = actionCallback;
         this.disableMenuActions = disableMenuActions;

@@ -88,8 +88,10 @@ public class TtsHandler extends BaseHandler {
         SingletonSharedPreference.setTtsSpeechRate(readerDataHolder.getContext(),rate);
         readerDataHolder.getTtsManager().stop();
         readerDataHolder.getTtsManager().setSpeechRate(rate);
-        readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
-        readerDataHolder.getTtsManager().play();
+        if (currentSentence != null) {
+            readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
+            readerDataHolder.getTtsManager().play();
+        }
     }
 
     public float getSpeechRate(){

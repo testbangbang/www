@@ -95,6 +95,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean supportTextPage() {
+        return false;
+    }
+
+    @Override
     public boolean isTextPage(String position) {
         return false;
     }

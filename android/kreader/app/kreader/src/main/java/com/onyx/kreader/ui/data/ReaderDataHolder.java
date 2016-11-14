@@ -92,6 +92,10 @@ public class ReaderDataHolder {
         return readerViewInfo;
     }
 
+    public boolean supportTextPage() {
+        return getReaderViewInfo() != null && getReaderViewInfo().supportTextPage;
+    }
+
     public boolean supportScalable() {
         return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
     }
