@@ -664,8 +664,8 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
             continue;
         }
         double newLeft, newRight, newBottom, newTop;
-        double pageWidth = static_cast<int>(FPDF_GetPageWidth(page));
-        double pageHeight = static_cast<int>(FPDF_GetPageHeight(page));
+        double pageWidth = FPDF_GetPageWidth(page);
+        double pageHeight = FPDF_GetPageHeight(page);
         int rotation = 0;
         pageToDevice(page, pageWidth, pageHeight, rotation,
                      rect.left, rect.top, rect.right, rect.bottom,
