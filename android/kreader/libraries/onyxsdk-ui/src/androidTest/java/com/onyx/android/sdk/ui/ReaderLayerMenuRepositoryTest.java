@@ -9,7 +9,9 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by joy on 10/18/16.
@@ -49,7 +51,7 @@ public class ReaderLayerMenuRepositoryTest extends ApplicationTestCase<Applicati
     }
 
     public void testCreateMenuWithExcludingList() {
-        List<ReaderMenuAction> menuActions = new ArrayList<>();
+        Set<ReaderMenuAction> menuActions = new HashSet<>();
         menuActions.add(ReaderMenuAction.ZOOM);
         List<ReaderLayerMenuItem> menuList = ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems,
                 menuActions);
