@@ -134,6 +134,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean supportTextPage() {
+        return true;
+    }
+
+    @Override
     public boolean isTextPage(String position) {
         return getPluginImpl().isTextPage(Integer.parseInt(position));
     }
