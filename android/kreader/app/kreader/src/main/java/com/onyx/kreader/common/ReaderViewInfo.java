@@ -20,6 +20,7 @@ public class ReaderViewInfo {
     public boolean canNextScreen;
     public boolean canGoBack;
     public boolean canGoForward;
+    public boolean supportTextPage;
     public boolean supportReflow;
     public boolean supportScalable;
     public int scale;
