@@ -596,6 +596,22 @@ DLLEXPORT void STDCALL FPDF_PageToDevice(FPDF_PAGE page, int start_x, int start_
 	*device_y = FXSYS_round(device_y_f);
 }
 
+DLLEXPORT void STDCALL FPDF_PageToDeviceEx(FPDF_PAGE page, int start_x, int start_y, int size_x, int size_y,
+                        int rotate, double page_x, double page_y, double* device_x, double* device_y)
+{
+    if (page == NULL || device_x == NULL || device_y == NULL) return;
+    CPDF_Page* pPage = (CPDF_Page*)page;
+
+    CPDF_Matrix page2device;
+    pPage->GetDisplayMatrix(page2device, start_x, start_y, size_x, size_y, rotate);
+
+    FX_FLOAT device_x_f, device_y_f;
+    page2device.Transform(((FX_FLOAT)page_x), ((FX_FLOAT)page_y), device_x_f, device_y_f);
+
+    *device_x = (double)device_x_f;
+    *device_y = (double)device_y_f;
+}
+
 DLLEXPORT FPDF_BITMAP STDCALL FPDFBitmap_Create(int width, int height, int alpha)
 {
     nonstd::unique_ptr<CFX_DIBitmap> pBitmap(new CFX_DIBitmap);
