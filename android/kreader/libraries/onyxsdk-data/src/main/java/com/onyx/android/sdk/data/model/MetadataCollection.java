@@ -7,6 +7,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 /**
  * Created by zhuzeng on 8/26/16.
+ * Mapping from metadata id to library id.
  */
 @Table(database = ContentDatabase.class)
 public class MetadataCollection extends BaseData {
