@@ -39,7 +39,7 @@ public class NeoPdfSelection implements ReaderSelection, Cloneable {
         this.pagePosition = pagePosition;
     }
 
-    public NeoPdfSelection(int page, int [] data, byte [] string, int start, int end, String leftText, String rightText) {
+    public NeoPdfSelection(int page, float [] data, byte [] string, int start, int end, String leftText, String rightText) {
         pagePosition = PagePositionUtils.fromPosition(page);
         for(int i = 0; i < data.length / 4; ++i) {
             rectangles.add(new RectF(data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3]));
@@ -126,12 +126,12 @@ public class NeoPdfSelection implements ReaderSelection, Cloneable {
     }
 
     @SuppressWarnings("unused")
-    public void addRectangle(int left, int top, int right, int bottom) {
+    public void addRectangle(float left, float top, float right, float bottom) {
         rectangles.add(new RectF(left, top, right, bottom));
     }
 
     @SuppressWarnings("unused")
-    public static void addToSelectionList(List<ReaderSelection> list, int page, int [] rectangles, final byte[] utf16le, int startIndex, int endIndex, String leftText, String rightText) {
+    public static void addToSelectionList(List<ReaderSelection> list, int page, float [] rectangles, final byte[] utf16le, int startIndex, int endIndex, String leftText, String rightText) {
         list.add(new NeoPdfSelection(page, rectangles, utf16le, startIndex, endIndex, leftText, rightText));
     }
 
