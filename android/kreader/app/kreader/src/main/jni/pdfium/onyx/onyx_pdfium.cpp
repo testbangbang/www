@@ -670,14 +670,15 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
         pageToDevice(page, pageWidth, pageHeight, rotation,
                      rect.left, rect.top, rect.right, rect.bottom,
                      &newLeft, &newTop, &newRight, &newBottom);
-        std::vector<int> list;
-        list.push_back(newLeft);
-        list.push_back(newTop);
-        list.push_back(newRight);
-        list.push_back(newBottom);
+        std::vector<float> list;
+        list.push_back(static_cast<float>(newLeft));
+        list.push_back(static_cast<float>(newTop));
+        list.push_back(static_cast<float>(newRight));
+        list.push_back(static_cast<float>(newBottom));
 
-        JNIIntArray intArray(env, list.size(), &list[0]);
-        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, intArray.getIntArray(true), nullptr, -1, -1, nullptr, nullptr);
+        jfloatArray floatArray = env->NewFloatArray(list.size());
+        env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr);
     }
 
     return true;
