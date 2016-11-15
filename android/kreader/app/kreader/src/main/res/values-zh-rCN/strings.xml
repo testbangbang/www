@@ -76,11 +76,11 @@
   <string name="direction">方向</string>
   <string name="six">6</string>
   <string name="nine">9</string>
-  <string name="two">左右切边</string>
-  <string name="four">四边切边</string>
-  <string name="single_page">单页切边</string>
-  <string name="double_page">双页切边</string>
-  <string name="nothing">无切边</string>
+  <string name="two">左右</string>
+  <string name="four">四边</string>
+  <string name="single_page">单页</string>
+  <string name="double_page">双页</string>
+  <string name="nothing">无</string>
   <string name="search">搜索</string>
   <string name="total_page" formatted="false">总计：%d</string>
   <string name="min_scroll_toast">已缩放至最小值</string>
