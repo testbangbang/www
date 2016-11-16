@@ -52,6 +52,14 @@ public interface ReaderNavigator {
     public boolean gotoPosition(final String position);
 
     /**
+     * goto specified page
+     *
+     * @param page
+     * @return
+     */
+    public boolean gotoPage(final int page);
+
+    /**
      * Navigate to next screen.
      */
     public String nextScreen(final String position);

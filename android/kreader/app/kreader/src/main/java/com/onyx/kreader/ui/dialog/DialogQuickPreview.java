@@ -26,8 +26,6 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
-import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.data.Size;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -38,6 +36,7 @@ import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.ui.actions.GetTableOfContentAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
+import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.view.PreviewViewHolder;
@@ -157,7 +156,7 @@ public class DialogQuickPreview extends Dialog {
             previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new GotoPageAction(PagePositionUtils.fromPageNumber(previewViewHolder.getPage()), true).execute(readerDataHolder, new BaseCallback() {
+                    new GotoPageAction(previewViewHolder.getPage(), true).execute(readerDataHolder, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             DialogQuickPreview.this.dismiss();
@@ -327,7 +326,7 @@ public class DialogQuickPreview extends Dialog {
                             int pageNumber = PagePositionUtils.getPageNumber(page);
                             pageNumber--;
                             if (pageNumber >= 0 && pageNumber < readerDataHolder.getPageCount()) {
-                                new GotoPageAction(PagePositionUtils.fromPageNumber(pageNumber), true).execute(readerDataHolder, new BaseCallback() {
+                                new GotoPageAction(pageNumber, true).execute(readerDataHolder, new BaseCallback() {
                                     @Override
                                     public void done(BaseRequest request, Throwable e) {
                                         DialogQuickPreview.this.dismiss();

@@ -288,7 +288,12 @@ public class AlReaderPlugin implements ReaderPlugin,
      */
     public boolean gotoPosition(final String position) {
         int pos = PagePositionUtils.getPosition(position);
-        return getPluginImpl().gotoPage(pos);
+        return getPluginImpl().gotoPosition(pos);
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return getPluginImpl().gotoPage(page);
     }
 
     /**

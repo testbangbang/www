@@ -212,6 +212,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
+    @Override
     public String nextScreen(String position) {
         return nextPage(position);
     }

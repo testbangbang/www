@@ -283,6 +283,15 @@ public class ReaderLayoutManager {
         return getPageManager().getFirstVisiblePage();
     }
 
+    public boolean gotoPage(final int page) throws ReaderException {
+        beforePositionChange();
+        if (getCurrentLayoutProvider().gotoPage(page)) {
+            onPositionChanged();
+            return true;
+        }
+        return false;
+    }
+
     public boolean gotoPosition(final String position) throws ReaderException {
         beforePositionChange();
         if (getCurrentLayoutProvider().gotoPosition(position)) {

@@ -272,6 +272,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return false;
     }
 
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
     /**
      * Navigate to next screen.
      *

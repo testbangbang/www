@@ -10,6 +10,7 @@ import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -89,7 +90,11 @@ public class LayoutProvider {
         return false;
     }
 
-    public boolean gotoPosition(final String location) throws ReaderException {
+    public boolean gotoPage(final int page) throws ReaderException {
+        return gotoPosition(PagePositionUtils.fromPageNumber(page));
+    }
+
+    public boolean gotoPosition(final String position) throws ReaderException {
         return false;
     }
 

@@ -91,17 +91,27 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean gotoPosition(final String location) throws ReaderException {
-        if (StringUtils.isNullOrEmpty(location)) {
+    @Override
+    public boolean gotoPage(int page) throws ReaderException {
+        if (!getLayoutManager().getNavigator().gotoPage(page)) {
+            return false;
+        }
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+    }
+
+    public boolean gotoPosition(final String position) throws ReaderException {
+        if (StringUtils.isNullOrEmpty(position)) {
             return false;
         }
 
-        getLayoutManager().getNavigator().gotoPosition(location);
+        if (!getLayoutManager().getNavigator().gotoPosition(position)) {
+            return false;
+        }
 
         String page = PagePositionUtils.fromPageNumber(getLayoutManager().getNavigator().getCurrentPageNumber());
         final RectF viewportBeforeChange = new RectF(getPageManager().getViewportRect());
-        LayoutProviderUtils.addSinglePage(getLayoutManager(), page, location);
-        if (!getPageManager().gotoPage(location)) {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), page, position);
+        if (!getPageManager().gotoPage(position)) {
             return false;
         }
 

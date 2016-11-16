@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +36,6 @@ import com.onyx.android.sdk.ui.view.RadioButtonCenter;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.DimenUtils;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
@@ -46,10 +44,9 @@ import com.onyx.kreader.host.request.DeleteAnnotationRequest;
 import com.onyx.kreader.host.request.DeleteBookmarkRequest;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
-import com.onyx.kreader.ui.actions.ExportNotesActionChain;
 import com.onyx.kreader.ui.actions.ExportScribbleAction;
 import com.onyx.kreader.ui.actions.GetDocumentInfoChain;
-import com.onyx.kreader.ui.actions.GotoPageAction;
+import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -145,7 +142,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new GotoPageAction(page).execute(readerDataHolder, new BaseCallback() {
+                    new GotoPositionAction(page).execute(readerDataHolder, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             DialogTableOfContent.this.dismiss();
@@ -473,7 +470,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                     return;
                 }
                 if (PagePositionUtils.isValidPosition(entry.getPosition())) {
-                    new GotoPageAction(entry.getPosition()).execute(readerDataHolder, new BaseCallback() {
+                    new GotoPositionAction(entry.getPosition()).execute(readerDataHolder, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             DialogTableOfContent.this.dismiss();
@@ -620,7 +617,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new GotoPageAction(PagePositionUtils.fromPageNumber(previewViewHolder.getPage())).execute(readerDataHolder, new BaseCallback() {
+                        new GotoPositionAction(PagePositionUtils.fromPageNumber(previewViewHolder.getPage())).execute(readerDataHolder, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
                                 DialogTableOfContent.this.dismiss();

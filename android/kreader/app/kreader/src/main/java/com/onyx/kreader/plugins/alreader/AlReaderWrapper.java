@@ -184,8 +184,13 @@ public class AlReaderWrapper {
         return ret == TAL_RESULT.OK;
     }
 
-    public boolean gotoPage(int pos) {
+    public boolean gotoPosition(int pos) {
         int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.POSITION, pos);
+        return ret == TAL_RESULT.OK;
+    }
+
+    public boolean gotoPage(int page) {
+        int ret = bookEng.gotoPage(page);
         return ret == TAL_RESULT.OK;
     }
 

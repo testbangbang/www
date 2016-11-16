@@ -164,6 +164,11 @@ public class FakeReader implements ReaderDocument,
         return false;
     }
 
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
     public String nextScreen(final String position) {
         return nextPage(position);
     }

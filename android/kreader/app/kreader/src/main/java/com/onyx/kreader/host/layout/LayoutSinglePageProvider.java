@@ -139,14 +139,14 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         return true;
     }
 
-    public boolean gotoPosition(final String location) throws ReaderException {
-        if (StringUtils.isNullOrEmpty(location)) {
+    public boolean gotoPosition(final String position) throws ReaderException {
+        if (StringUtils.isNullOrEmpty(position)) {
             return false;
         }
 
         final RectF viewportBeforeChange = new RectF(getPageManager().getViewportRect());
-        LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
-        if (!getPageManager().gotoPage(location)) {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), position);
+        if (!getPageManager().gotoPage(position)) {
             return false;
         }
 
