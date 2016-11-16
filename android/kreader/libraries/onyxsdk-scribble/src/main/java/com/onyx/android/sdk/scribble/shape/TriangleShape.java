@@ -45,7 +45,8 @@ public class TriangleShape extends BaseShape {
         float result [] = new float[6];
         if (renderContext.matrix != null) {
             renderContext.matrix.mapPoints(result, points);
+            return result;
         }
-        return result;
+        return points;
     }
 }

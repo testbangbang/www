@@ -26,6 +26,7 @@ public class BaseShape implements Shape {
     private String subPageUniqueId;
     private int color = Color.BLACK;
     private float strokeWidth;
+    private float displayStrokeWidth;
     private Path originDisplayPath;
     private int originWidth;
     private int originHeight;
@@ -101,6 +102,14 @@ public class BaseShape implements Shape {
 
     public void setStrokeWidth(final float width) {
         strokeWidth = width;
+    }
+
+    public float getDisplayStrokeWidth() {
+        return displayStrokeWidth;
+    }
+
+    public void setDisplayStrokeWidth(float displayStrokeWidth) {
+        this.displayStrokeWidth = displayStrokeWidth;
     }
 
     public float getDisplayScale(final RenderContext renderContext) {

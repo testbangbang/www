@@ -96,7 +96,21 @@ jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_writeHighlight(JNIEnv *env, 
     return g_writer.writeAnnotation(annotation);
 }
 
-jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_writePolyLine(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeWidth, jfloatArray verticeArray)
+jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_writeLine(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness, jfloat startX, jfloat startY, jfloat endX, jfloat endY)
+{
+    if (!g_writer.isOpened()) {
+        return false;
+    }
+
+    RectF rect;
+    if (!readRectFromArray(env, rectArray, &rect)) {
+        return false;
+    }
+    return g_writer.writeLine(page, rect, static_cast<uint_t>(color), strokeThickness,
+                              PointF(startX, startY), PointF(endX, endY));
+}
+
+jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_writePolyLine(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness, jfloatArray verticeArray)
 {
     if (!g_writer.isOpened()) {
         return false;
@@ -104,19 +118,64 @@ jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_writePolyLine(JNIEnv *env, j
 
     PageScribble::Stroke stroke;
     stroke.color = static_cast<uint32_t>(color);
-    stroke.thickness = strokeWidth;
-    if (!readRectFromArray(env, rectArray, &stroke.rect)) {
+    stroke.thickness = strokeThickness;
+
+    RectF rect;
+    if (!readRectFromArray(env, rectArray, &rect)) {
         return false;
     }
-    if (!readPointsFromArray(env, verticeArray, &stroke.points)) {
+    std::vector<PointF> points;
+    if (!readPointsFromArray(env, verticeArray, &points)) {
+        return false;
+    }
+    return g_writer.writePolyLine(page, rect, static_cast<uint_t>(color), strokeThickness, points);
+}
+
+jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_writePolygon(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness, jfloatArray verticeArray)
+{
+    if (!g_writer.isOpened()) {
         return false;
     }
 
-    PageScribble scribble;
-    scribble.page = page;
-    scribble.strokes.push_back(stroke);
+    PageScribble::Stroke stroke;
+    stroke.color = static_cast<uint32_t>(color);
+    stroke.thickness = strokeThickness;
 
-    return g_writer.writeScribble(scribble);
+    RectF rect;
+    if (!readRectFromArray(env, rectArray, &rect)) {
+        return false;
+    }
+    std::vector<PointF> points;
+    if (!readPointsFromArray(env, verticeArray, &points)) {
+        return false;
+    }
+    return g_writer.writePolygon(page, rect, static_cast<uint_t>(color), strokeThickness, points);
+}
+
+jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_writeSquare(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness)
+{
+    if (!g_writer.isOpened()) {
+        return false;
+    }
+
+    RectF rect;
+    if (!readRectFromArray(env, rectArray, &rect)) {
+        return false;
+    }
+    return g_writer.writeSquare(page, rect, static_cast<uint_t>(color), strokeThickness);
+}
+
+jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_writeCircle(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness)
+{
+    if (!g_writer.isOpened()) {
+        return false;
+    }
+
+    RectF rect;
+    if (!readRectFromArray(env, rectArray, &rect)) {
+        return false;
+    }
+    return g_writer.writeCircle(page, rect, static_cast<uint_t>(color), strokeThickness);
 }
 
 jboolean Java_com_onyx_kreader_utils_PdfWriterUtils_saveAs(JNIEnv *env, jclass, jstring pathString, jboolean savePagesWithAnnotation)

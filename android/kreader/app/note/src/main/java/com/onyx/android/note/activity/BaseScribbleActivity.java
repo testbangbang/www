@@ -381,7 +381,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     private void drawStashShape(final Canvas canvas, final Paint paint) {
-        final RenderContext renderContext = RenderContext.create(canvas, paint, null);;
+        final RenderContext renderContext = RenderContext.create(canvas, paint, null);
         final List<Shape> stash = getNoteViewHelper().getDirtyStash();
         for (Shape shape : stash) {
             shape.render(renderContext);

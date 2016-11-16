@@ -17,7 +17,7 @@ public class ReflowedSubPageCache {
      */
     private static final int MAX_DISK_CACHE_SIZE = 20 * 1024 * 1024;
 
-    private BitmapDiskLruCache diskCache;;
+    private BitmapDiskLruCache diskCache;
 
     private ReflowedSubPageCache(final File cacheRoot) {
         diskCache = BitmapDiskLruCache.create(cacheRoot, MAX_DISK_CACHE_SIZE);

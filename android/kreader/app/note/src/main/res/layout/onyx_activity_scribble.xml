@@ -33,7 +33,7 @@
                     android:maxEms="@integer/onyx_scribble_activity_title_max_ems"
                     android:singleLine="true"
                     android:text="@string/finish"
-                    android:textSize="20sp" />
+                    android:textSize="@dimen/onyx_scribble_activity_text_size" />
             </RelativeLayout>
 
             <LinearLayout
@@ -103,33 +103,33 @@
             android:layout_width="@dimen/onyx_note_style_width"
             android:layout_height="match_parent" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/page_count_control"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:gravity="right"
-            android:layout_toRightOf="@+id/function_content_view"
             android:layout_toLeftOf="@+id/page_indicator"
+            android:layout_toRightOf="@+id/function_content_view"
             android:orientation="horizontal">
 
             <com.onyx.android.sdk.ui.view.CustomIconView
                 android:id="@+id/button_delete_page"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/onyx_main_note_menu_height"
                 android:layout_height="@dimen/onyx_main_note_menu_height"
-                android:layout_weight="1"
+                android:layout_alignParentRight="true"
                 android:src="@drawable/ic_delete"
                 app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
 
             <com.onyx.android.sdk.ui.view.CustomIconView
                 android:id="@+id/button_add_page"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/onyx_main_note_menu_height"
                 android:layout_height="@dimen/onyx_main_note_menu_height"
-                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/button_delete_page"
                 android:src="@drawable/ic_add"
                 app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/page_indicator"
@@ -155,7 +155,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="@string/paged_init_text"
-                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large"/>
+                android:textSize="@dimen/onyx_scribble_activity_text_size" />
 
             <com.onyx.android.sdk.ui.view.CustomIconView
                 android:id="@+id/button_next_page"
