@@ -90,7 +90,7 @@ public class DialogNoteNameInput extends OnyxAlertDialog {
                         }
                     }
                 });
-        if (NoteAppConfig.sharedInstance(getActivity()).useMXStyleDialog()) {
+        if (NoteAppConfig.sharedInstance(getActivity()).useMXUIStyle()) {
             params.setCustomLayoutResID(R.layout.mx_custom_alert_dialog);
         }
         setParams(params);

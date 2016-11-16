@@ -8,5 +8,6 @@ include ':libraries:cropimage',
         ':libraries:libedu',
         ':app:note',
         ':app:kreader',
+        ':app:eschool',
         ':app-edu'
 project(':app-edu').projectDir = new File('app/edu')

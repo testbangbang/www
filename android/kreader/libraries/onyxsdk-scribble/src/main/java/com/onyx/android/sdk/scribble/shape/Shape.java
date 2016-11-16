@@ -62,6 +62,8 @@ public interface Shape {
 
     void setStrokeWidth(final float width);
 
+    void setDisplayStrokeWidth(final float width);
+
     RectF getBoundingRect();
 
     void updateBoundingRect();

@@ -268,10 +268,10 @@ public class ReaderPainter {
         }
         final PageInfo pageInfo = viewInfo.getFirstVisiblePage();
         final Matrix renderMatrix = new Matrix();
-        RenderContext renderContext = RenderContext.create(canvas, paint, renderMatrix);
         renderMatrix.reset();
         renderMatrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
         renderMatrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
+        RenderContext renderContext = RenderContext.create(canvas, paint, renderMatrix);
         if (!CollectionUtils.isNullOrEmpty(noteManager.getShapeStash())) {
             for (Shape shape : noteManager.getShapeStash()) {
                 shape.render(renderContext);

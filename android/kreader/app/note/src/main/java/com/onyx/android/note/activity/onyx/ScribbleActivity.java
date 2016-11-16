@@ -88,7 +88,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 });
             }
         });
-        functionContentView.setupContent(1, 4, getFunctionAdapter(), 0);
+        functionContentView.setupContent(1,
+                getResources().getInteger(R.integer.onyx_scribble_main_function_cols), getFunctionAdapter(), 0);
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
