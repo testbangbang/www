@@ -190,7 +190,7 @@ public class AlReaderWrapper {
     }
 
     public boolean gotoPage(int page) {
-        int ret = bookEng.gotoPage(page);
+        int ret = bookEng.gotoPage(page + 1);
         return ret == TAL_RESULT.OK;
     }
 
