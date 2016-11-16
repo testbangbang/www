@@ -291,6 +291,16 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return getPluginImpl().pageCount();
     }
 
+    @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
     /**
      * Navigate to next screen.
      */
@@ -330,12 +340,22 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
     /**
      * Navigate to first page.
      * @return
      */
     public String firstPage() {
         return PagePositionUtils.fromPageNumber(0);
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return false;
     }
 
     /**

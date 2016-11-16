@@ -4,13 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
-import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDRMCallback;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
@@ -38,10 +36,8 @@ import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -273,8 +269,17 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return 1 based total page number.
      */
     public int getTotalPage() {
-        int total = getPluginImpl().getTotalPage();
-        return 100;
+        return getPluginImpl().getTotalPage();
+    }
+
+    @Override
+    public int getCurrentPageNumber() {
+        return getPluginImpl().getCurrentPage();
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return PagePositionUtils.fromPosition(getPluginImpl().getCurrentPosition());
     }
 
     /**
@@ -299,11 +304,12 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (!getPluginImpl().nextPage()) {
             return null;
         }
-        int pn = PagePositionUtils.getPageNumber(position);
-        if (pn + 1 < getTotalPage()) {
-            return PagePositionUtils.fromPageNumber(pn + 1);
-        }
-        return null;
+        return PagePositionUtils.fromPageNumber(getPluginImpl().getCurrentPage());
+//        int pn = PagePositionUtils.getPageNumber(position);
+//        if (pn + 1 < getTotalPage()) {
+//            return PagePositionUtils.fromPageNumber(pn + 1);
+//        }
+//        return null;
     }
 
     /**
@@ -322,12 +328,22 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return getPluginImpl().isFirstPage();
+    }
+
     /**
      * Navigate to first page.
      * @return
      */
     public String firstPage() {
         return PagePositionUtils.fromPageNumber(0);
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return getPluginImpl().isLastPage();
     }
 
     /**

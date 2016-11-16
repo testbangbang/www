@@ -10,6 +10,7 @@ import android.graphics.RectF;
 public class PageInfo {
 
     private String name;
+    private String position;
 
     private int pageOrientation;      // degree 0, 90, 180, 270.
     private int pageDisplayOrientation = 0;
@@ -26,8 +27,13 @@ public class PageInfo {
     private float actualScale = 1.0f;
     private int specialScale = PageConstants.SCALE_INVALID;
 
-    public PageInfo(final String string, final float nw, final float nh) {
-        name = string;
+    public PageInfo(final String name, final float nw, final float nh) {
+        this(name, name, nw, nh);
+    }
+
+    public PageInfo(final String name, final String position, final float nw, final float nh) {
+        this.name = name;
+        this.position = position;
         originWidth = nw;
         originHeight = nh;
         positionRect.set(0, 0, nw, nh);
@@ -136,6 +142,14 @@ public class PageInfo {
 
     public final String getName() {
         return name;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     /**

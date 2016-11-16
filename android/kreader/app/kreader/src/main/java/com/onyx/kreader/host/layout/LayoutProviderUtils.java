@@ -41,6 +41,14 @@ public class LayoutProviderUtils {
                                         final ReaderLayoutManager layoutManager,
                                         final ReaderDrawContext drawContext,
                                         final ReaderViewInfo readerViewInfo) throws ReaderException {
+        drawVisiblePages(reader, layoutManager, drawContext, readerViewInfo, true);
+    }
+
+    static public void drawVisiblePages(final Reader reader,
+                                        final ReaderLayoutManager layoutManager,
+                                        final ReaderDrawContext drawContext,
+                                        final ReaderViewInfo readerViewInfo,
+                                        final boolean enableCache) throws ReaderException {
         // step1: prepare.
         final ReaderRenderer renderer = reader.getRenderer();
         final BitmapSoftLruCache cache = reader.getBitmapCache();
@@ -49,7 +57,7 @@ public class LayoutProviderUtils {
         // step2: check cache.
         final String key = PositionSnapshot.cacheKey(visiblePages);
         boolean hitCache = false;
-        if (ENABLE_CACHE && checkCache(cache, key, drawContext)) {
+        if (ENABLE_CACHE && enableCache && checkCache(cache, key, drawContext)) {
             hitCache = true;
         }
         if (!hitCache) {
@@ -63,7 +71,7 @@ public class LayoutProviderUtils {
         drawVisiblePagesImpl(renderer, layoutManager, drawContext.renderingBitmap, visiblePages, hitCache);
 
         // step4: update cache
-        if (!hitCache && ENABLE_CACHE && StringUtils.isNotBlank(key)) {
+        if (!hitCache && ENABLE_CACHE && enableCache && StringUtils.isNotBlank(key)) {
             addToCache(cache, key, drawContext.renderingBitmap);
         }
 
@@ -177,12 +185,16 @@ public class LayoutProviderUtils {
         layoutManager.getPageManager().clear();
     }
 
-    static public void addPage(final ReaderLayoutManager layoutManager, final String location) {
-        PageInfo pageInfo = layoutManager.getPageManager().getPageInfo(location);
+    static public void addPage(final ReaderLayoutManager layoutManager, final String name) {
+        addPage(layoutManager, name, name);
+    }
+
+    static public void addPage(final ReaderLayoutManager layoutManager, final String name, final String position) {
+        PageInfo pageInfo = layoutManager.getPageManager().getPageInfo(position);
         if (pageInfo == null) {
-            RectF size = layoutManager.getReaderDocument().getPageOriginSize(location);
-            pageInfo = new PageInfo(location, size.width(), size.height());
-            pageInfo.setIsTextPage(layoutManager.getReaderDocument().isTextPage(location));
+            RectF size = layoutManager.getReaderDocument().getPageOriginSize(position);
+            pageInfo = new PageInfo(name, position, size.width(), size.height());
+            pageInfo.setIsTextPage(layoutManager.getReaderDocument().isTextPage(position));
         }
         layoutManager.getPageManager().add(pageInfo);
     }
@@ -197,9 +209,13 @@ public class LayoutProviderUtils {
         LayoutProviderUtils.updatePageBoundingRect(layoutManager);
     }
 
-    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String position) {
+    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name) {
+        addSinglePage(layoutManager, name, name);
+    }
+
+    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name, final String position) {
         LayoutProviderUtils.clear(layoutManager);
-        LayoutProviderUtils.addPage(layoutManager, position);
+        LayoutProviderUtils.addPage(layoutManager, name, position);
         LayoutProviderUtils.updatePageBoundingRect(layoutManager);
         LayoutProviderUtils.resetViewportPosition(layoutManager);
     }

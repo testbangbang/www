@@ -257,6 +257,16 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return getPluginImpl().getPageCount();
     }
 
+    @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
     /**
      * Navigate to next screen.
      *
@@ -307,6 +317,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
     /**
      * Navigate to first page.
      *
@@ -315,6 +330,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public String firstPage() {
         return PagePositionUtils.fromPageNumber(0);
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return false;
     }
 
     /**

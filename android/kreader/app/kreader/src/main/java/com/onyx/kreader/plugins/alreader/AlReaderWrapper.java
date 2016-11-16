@@ -135,7 +135,43 @@ public class AlReaderWrapper {
     }
 
     public int getTotalPage() {
-        return bookEng.getPageCount(new AlCurrentPosition());
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return -1;
+        }
+        return position.pageCount;
+    }
+
+    public int getCurrentPage() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return -1;
+        }
+        return position.pageCurrent;
+    }
+
+    public int getCurrentPosition() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return -1;
+        }
+        return position.readPositionStart;
+    }
+
+    public boolean isFirstPage() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return false;
+        }
+        return position.isFirstPage;
+    }
+
+    public boolean isLastPage() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return false;
+        }
+        return position.isLastPage;
     }
 
     public boolean nextPage() {
