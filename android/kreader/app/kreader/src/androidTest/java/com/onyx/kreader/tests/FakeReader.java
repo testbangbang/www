@@ -67,6 +67,11 @@ public class FakeReader implements ReaderDocument,
     }
 
     @Override
+    public boolean supportTextPage() {
+        return false;
+    }
+
+    @Override
     public boolean isTextPage(String position) {
         return false;
     }

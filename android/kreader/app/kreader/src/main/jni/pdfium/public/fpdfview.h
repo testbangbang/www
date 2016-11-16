@@ -440,6 +440,9 @@ DLLEXPORT void STDCALL FPDF_DeviceToPage(FPDF_PAGE page, int start_x, int start_
 DLLEXPORT void STDCALL FPDF_PageToDevice(FPDF_PAGE page, int start_x, int start_y, int size_x, int size_y,
                         int rotate, double page_x, double page_y, int* device_x, int* device_y);
 
+DLLEXPORT void STDCALL FPDF_PageToDeviceEx(FPDF_PAGE page, int start_x, int start_y, int size_x, int size_y,
+                        int rotate, double page_x, double page_y, double* device_x, double* device_y);
+
 // Function: FPDFBitmap_Create
 //          Create a Foxit Device Independent Bitmap (FXDIB).
 // Parameters:

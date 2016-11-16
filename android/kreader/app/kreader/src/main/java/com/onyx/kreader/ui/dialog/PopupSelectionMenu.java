@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.TextSize;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -133,7 +131,7 @@ public class PopupSelectionMenu extends LinearLayout {
             @Override
             public void onClick(View v) {
                 if (dictListView.getVisibility() == GONE) {
-                    showDictListView(dictNameText.getLeft());
+                    showDictListView(dictNameText);
                 }else {
                     hideDictListView();
                 }
@@ -160,7 +158,6 @@ public class PopupSelectionMenu extends LinearLayout {
 
         mWebView = (HTMLReaderWebView) findViewById(R.id.explain);
         mWebView.getSettings().setTextSize(TextSize.LARGER);
-        mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setPageTurnType(HTMLReaderWebView.PAGE_TURN_TYPE_VERTICAL);
         mWebView.setPageTurnThreshold(15);
         mWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
@@ -175,7 +172,6 @@ public class PopupSelectionMenu extends LinearLayout {
                 mPageIndicator.setText(curPage + "/" + totalPage);
             }
         });
-        EpdController.disableA2ForSpecificView(mWebView);
 
         LinearLayout imagebuttonCopy = (LinearLayout) findViewById(R.id.imagebutton_copy);
         imagebuttonCopy.setOnClickListener(new OnClickListener() {
@@ -242,7 +238,9 @@ public class PopupSelectionMenu extends LinearLayout {
         markerView.setImageResource(R.drawable.ic_dict_unfold);
     }
 
-    private void showDictListView(int marginLeft) {
+    private void showDictListView(TextView dictNameText) {
+        int maxWidth = (int) getContext().getResources().getDimension(R.dimen.dict_name_text_view_layout_width);
+        int marginLeft =  dictNameText.getLeft() - ((maxWidth - dictNameText.getMeasuredWidth())/2);
         markerView.setImageResource(R.drawable.ic_dict_pack_up);
         dictListView.setVisibility(VISIBLE);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -433,6 +431,7 @@ public class PopupSelectionMenu extends LinearLayout {
             }
             showExplanation(query);
         }else {
+            mWebView.setLoadCssStyle(false);
             mWebView.loadDataWithBaseURL(null, error, "text/html", "utf-8", "about:blank");
         }
     }
@@ -449,6 +448,7 @@ public class PopupSelectionMenu extends LinearLayout {
             markerView.setVisibility(VISIBLE);
         }
 
+        mWebView.setLoadCssStyle(dictionaryQuery.getState() == DictionaryQuery.DICT_STATE_QUERY_SUCCESSFUL);
         mWebView.loadDataWithBaseURL(url, dictionaryQuery.getExplanation(), "text/html", "utf-8", "about:blank");
     }
 
