@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.data.request.cloud;
 
-
 import com.onyx.android.sdk.data.CloudManager;
 
 /**
@@ -8,12 +7,13 @@ import com.onyx.android.sdk.data.CloudManager;
  */
 public class CloudFileDownloadRequest extends BaseCloudRequest {
 
+    private int taskId = 0;
     private String url;
     private String path;
-    private String tag;
+    private Object tag;
     private int state;
 
-    public CloudFileDownloadRequest(final String url, final String path, final String tag) {
+    public CloudFileDownloadRequest(final String url, final String path, final Object tag) {
         this.path = path;
         this.url = url;
         this.tag = tag;
@@ -35,11 +35,11 @@ public class CloudFileDownloadRequest extends BaseCloudRequest {
         this.path = path;
     }
 
-    public String getTag() {
+    public Object getTag() {
         return tag;
     }
 
-    public void setTag(String tag) {
+    public void setTag(Object tag) {
         this.tag = tag;
     }
 
@@ -51,7 +51,16 @@ public class CloudFileDownloadRequest extends BaseCloudRequest {
         this.state = state;
     }
 
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(int id) {
+        taskId = id;
+    }
+
     @Override
-    public void execute(final CloudManager parent) throws Exception {
+    public void execute(CloudManager parent) throws Exception {
+
     }
 }

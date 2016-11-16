@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.model.ProductSearch;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -44,7 +45,7 @@ public class ProductSearchRequest extends BaseCloudRequest {
         String param = JSON.toJSONString(searchCriteria);
         Call<ProductResult<Product>> call = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
                 .bookSearch(param);
-        Response<ProductResult<Product>> response = call.execute();
+        Response<ProductResult<Product>> response = executeCall(call);
         if (response.isSuccessful()) {
             searchResult = response.body();
         }

@@ -31,8 +31,8 @@ public class CommentListRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response<ProductResult<Comment>> response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
-                .getBookCommentList(bookId, JSON.toJSONString(query)).execute();
+        Response<ProductResult<Comment>> response = executeCall(ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
+                .getBookCommentList(bookId, JSON.toJSONString(query)));
         if (response.isSuccessful()) {
             productResult = response.body();
         }

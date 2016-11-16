@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.request.data;
 
 import android.graphics.Bitmap;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Thumbnail;
 
@@ -27,8 +28,8 @@ public class ThumbnailRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        thumbnail = dataManager.loadThumbnail(getContext(), path, sourceMD5, thumbnailKind);
-        resultBitmap = dataManager.loadThumbnailBitmap(getContext(), thumbnail);
+        thumbnail = DataManagerHelper.loadThumbnail(getContext(), path, sourceMD5, thumbnailKind);
+        resultBitmap = DataManagerHelper.loadThumbnailBitmap(getContext(), thumbnail);
     }
 
     public Bitmap getResultBitmap() {

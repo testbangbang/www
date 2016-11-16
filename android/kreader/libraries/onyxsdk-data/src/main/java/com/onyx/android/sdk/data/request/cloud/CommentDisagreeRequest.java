@@ -26,8 +26,8 @@ public class CommentDisagreeRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response<Comment> response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
-                .disagreeBookComment(bookId, commentId, getAccountSessionToken()).execute();
+        Response<Comment> response = executeCall(ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
+                .disagreeBookComment(bookId, commentId, getAccountSessionToken()));
         if (response.isSuccessful()) {
             comment = response.body();
         }

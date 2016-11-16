@@ -4,7 +4,6 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.OnyxAccount;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import org.json.JSONObject;
 
@@ -29,13 +28,10 @@ public class AccountInfoRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         Call<OnyxAccount> call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
                 .getAccountInfo(getAccountSessionToken());
-        Response<OnyxAccount> response = call.execute();
+        Response<OnyxAccount> response = executeCall(call);
         if (response.isSuccessful()) {
             account = response.body();
             account.sessionToken = getAccountSessionToken();
-        } else {
-            String errorCode = JSONObjectParseUtils.httpStatus(response.code(), new JSONObject(response.errorBody().string()));
-            throw new Exception(errorCode);
         }
     }
 }

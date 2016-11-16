@@ -25,8 +25,8 @@ public class CommentDeleteRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
-                .deleteBookComment(bookId, commentId, getAccountSessionToken()).execute();
+        Response response = executeCall(ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
+                .deleteBookComment(bookId, commentId, getAccountSessionToken()));
         isSuccess = response.isSuccessful();
     }
 }

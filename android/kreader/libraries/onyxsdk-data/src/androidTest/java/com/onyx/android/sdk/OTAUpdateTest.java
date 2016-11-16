@@ -35,20 +35,7 @@ public class OTAUpdateTest extends ApplicationTestCase<Application> {
 
     public void testGetReleaseFirmware() throws Exception {
         Firmware firmware = Firmware.currentFirmware();
-        Response<Firmware> response = getService().ReleaseFirmwareUpdate(JSON.toJSONString(firmware)).execute();
-        assertNotNull(response);
-        if (response.isSuccessful()) {
-            assertNotNull(response.body());
-            Firmware testFirmware = response.body();
-            assertEquals(firmware.fwType, testFirmware.fwType);
-            assertEquals(firmware.buildType, testFirmware.buildType);
-        }
-    }
-
-    public void testGetTestFirmware() throws Exception {
-        Firmware firmware = Firmware.currentFirmware();
-        firmware.updateTestingBuildParameters();
-        Response<Firmware> response = getService().testFirmwareUpdate(JSON.toJSONString(firmware)).execute();
+        Response<Firmware> response = getService().firmwareUpdate(JSON.toJSONString(firmware)).execute();
         assertNotNull(response);
         if (response.isSuccessful()) {
             assertNotNull(response.body());

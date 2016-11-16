@@ -24,6 +24,6 @@ public class AccountResetPwdRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         Call call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
                 .resetAccountPwd(map);
-        call.execute();
+        executeCall(call);
     }
 }

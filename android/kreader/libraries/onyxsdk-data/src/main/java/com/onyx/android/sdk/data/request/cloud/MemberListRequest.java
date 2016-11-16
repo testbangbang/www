@@ -26,8 +26,8 @@ public class MemberListRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response<List<Member>> response = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .getMemberList(id, getAccountSessionToken()).execute();
+        Response<List<Member>> response = executeCall(ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
+                .getMemberList(id, getAccountSessionToken()));
         if (response.isSuccessful()) {
             memberList = response.body();
         }
