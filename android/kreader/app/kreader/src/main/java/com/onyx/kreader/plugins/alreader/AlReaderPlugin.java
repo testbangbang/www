@@ -283,6 +283,15 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     /**
+     * Navigate to specified position.
+     * @return
+     */
+    public boolean gotoPosition(final String position) {
+        int pos = PagePositionUtils.getPosition(position);
+        return getPluginImpl().gotoPage(pos);
+    }
+
+    /**
      * Navigate to next screen.
      */
     public String nextScreen(final String position) {
@@ -352,15 +361,6 @@ public class AlReaderPlugin implements ReaderPlugin,
      */
     public String lastPage() {
         return PagePositionUtils.fromPageNumber(getTotalPage() - 1);
-    }
-
-    /**
-     * Navigate to specified position.
-     * @return
-     */
-    public boolean gotoPosition(final String position) {
-        int pos = PagePositionUtils.getPageNumber(position);
-        return getPluginImpl().gotoPage(pos);
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {

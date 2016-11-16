@@ -268,12 +268,12 @@ public class LayoutProviderUtils {
     }
 
     static public String nextPage(final ReaderLayoutManager layoutManager) {
-        String currentPagePosition = layoutManager.getCurrentPageName();
+        String currentPagePosition = layoutManager.getCurrentPagePosition();
         return layoutManager.getNavigator().nextPage(currentPagePosition);
     }
 
     static public String prevPage(final ReaderLayoutManager layoutManager) {
-        String currentPagePosition = layoutManager.getCurrentPageName();
+        String currentPagePosition = layoutManager.getCurrentPagePosition();
         return layoutManager.getNavigator().prevPage(currentPagePosition);
     }
 

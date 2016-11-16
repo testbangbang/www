@@ -256,6 +256,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public boolean gotoPosition(String position) {
+        return false;
+    }
+
     /**
      * Navigate to next screen.
      */

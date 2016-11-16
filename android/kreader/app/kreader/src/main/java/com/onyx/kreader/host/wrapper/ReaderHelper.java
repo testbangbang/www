@@ -367,7 +367,7 @@ public class ReaderHelper {
             getDocumentOptions().setLayoutType(getReaderLayoutManager().getCurrentLayoutType());
             getDocumentOptions().setSpecialScale(getReaderLayoutManager().getSpecialScale());
             getDocumentOptions().setActualScale(getReaderLayoutManager().getActualScale());
-            getDocumentOptions().setCurrentPage(getReaderLayoutManager().getCurrentPageName());
+            getDocumentOptions().setCurrentPage(getReaderLayoutManager().getCurrentPagePosition());
             getDocumentOptions().setTotalPage(getNavigator().getTotalPage());
             getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
             getDocumentOptions().setNavigationArgs(getReaderLayoutManager().getCurrentLayoutProvider().getNavigationArgs());

@@ -44,6 +44,14 @@ public interface ReaderNavigator {
     public String getCurrentPosition();
 
     /**
+     * goto position in document
+     *
+     * @param position
+     * @return
+     */
+    public boolean gotoPosition(final String position);
+
+    /**
      * Navigate to next screen.
      */
     public String nextScreen(final String position);

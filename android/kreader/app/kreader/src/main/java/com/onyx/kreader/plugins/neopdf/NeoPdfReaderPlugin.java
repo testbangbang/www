@@ -302,6 +302,14 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
     /**
+     * Navigate to specified position.
+     * @return
+     */
+    public boolean gotoPosition(final String position) {
+        return false;
+    }
+
+    /**
      * Navigate to next screen.
      */
     public String nextScreen(final String position) {
@@ -364,14 +372,6 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
      */
     public String lastPage() {
         return PagePositionUtils.fromPageNumber(getTotalPage() - 1);
-    }
-
-    /**
-     * Navigate to specified position.
-     * @return
-     */
-    public boolean gotoPosition(final String position) {
-        return false;
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {

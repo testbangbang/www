@@ -26,7 +26,7 @@ public class PageManager {
     private float rightMargin = 0;
     private float bottomMargin = 0;
     private float spacing;
-    private String firstVisiblePageName;
+    private String firstVisiblePagePosition;
     private int pageRepeat = 0;
 
     private ArrayList<RectF> manualBoundingRegionList = new ArrayList<>();
@@ -51,7 +51,7 @@ public class PageManager {
         visible.clear();
         pageInfoList.clear();
         pagesBoundingRect.set(0, 0, 0, 0);
-        firstVisiblePageName = null;
+        firstVisiblePagePosition = null;
     }
 
     public void setCropProvider(final PageCropProvider provider) {
@@ -125,7 +125,7 @@ public class PageManager {
         if (pageInfo == null) {
             return false;
         }
-        firstVisiblePageName = position;
+        firstVisiblePagePosition = position;
         if (updateForSpecialScale(pageInfo)) {
             return true;
         }
@@ -158,7 +158,7 @@ public class PageManager {
         if (!isSpecialScale()) {
             return false;
         }
-        setSpecialScale(pageInfo.getName(), specialScale);
+        setSpecialScale(pageInfo.getPosition(), specialScale);
         return true;
     }
 
@@ -179,7 +179,7 @@ public class PageManager {
         if (scale < 0) {
             return;
         }
-        firstVisiblePageName = pagePosition;
+        firstVisiblePagePosition = pagePosition;
         actualScale = scale;
         onScaleChanged();
         gotoPageImpl(getPageInfo(pagePosition));
@@ -384,14 +384,14 @@ public class PageManager {
     }
 
     public PageInfo getFirstVisiblePage() {
-        if (StringUtils.isNotBlank(firstVisiblePageName)) {
-            return pageInfoMap.get(firstVisiblePageName);
+        if (StringUtils.isNotBlank(firstVisiblePagePosition)) {
+            return pageInfoMap.get(firstVisiblePagePosition);
         }
         return null;
     }
 
-    public String getFirstVisiblePageName() {
-        return firstVisiblePageName;
+    public String getFirstVisiblePagePosition() {
+        return firstVisiblePagePosition;
     }
 
     public List<PageInfo> getVisiblePages() {

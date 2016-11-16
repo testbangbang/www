@@ -182,7 +182,7 @@ public class LayoutProvider {
     }
 
     public final String getCurrentPageName() {
-        return getLayoutManager().getCurrentPageName();
+        return getLayoutManager().getCurrentPagePosition();
     }
 
 }
