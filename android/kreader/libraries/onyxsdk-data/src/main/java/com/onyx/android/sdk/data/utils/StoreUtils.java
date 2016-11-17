@@ -6,7 +6,13 @@ import com.onyx.android.sdk.data.transaction.ProcessDeleteModel;
 import com.onyx.android.sdk.data.transaction.ProcessSaveModel;
 import com.onyx.android.sdk.data.transaction.ProcessUpdateModel;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.Condition;
+import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.raizlabs.android.dbflow.sql.language.SQLCondition;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
@@ -42,24 +48,39 @@ public class StoreUtils {
         return processModel;
     }
 
-    static public <T extends BaseData> void processOnAsync(final ProductResult<T> productResult, final int process,
-                                                           ProcessModelTransaction.OnModelProcessListener<T> processListener) {
-        ProcessModelTransaction.ProcessModel<T> processModel = getProcessModel(process);
-        ProcessModelTransaction<T> processModelTransaction = new ProcessModelTransaction
-                .Builder<>(processModel)
-                .processListener(processListener)
-                .addAll(productResult.list)
-                .build();
+    static public <T extends BaseData> void processOnAsync(final List<T> productResult, final int process,
+                                                             ProcessModelTransaction.OnModelProcessListener<T> processListener) {
+        ProcessModelTransaction<T> processModelTransaction =
+                new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<T>() {
+                    @Override
+                    public void processModel(T model) {
+                        if (process == PROCESS_SAVE) {
+                            model.save();
+                        } else if (process == PROCESS_DELETE) {
+                            model.delete();
+                        } else if (process == PROCESS_UPDATE) {
+                            model.update();
+                        }
+                    }
+                }).processListener(processListener).addAll(productResult).build();
         Transaction transaction = FlowManager.getDatabase(OnyxCloudDatabase.class)
                 .beginTransactionAsync(processModelTransaction).build();
         transaction.execute();
     }
 
     static public <T extends BaseData> void saveToLocal(final ProductResult<T> productResult, final Class<T> clazz,
-                                                        boolean clearBeforeSave) {
+                                                          boolean clearBeforeSave) {
         if (clearTable(productResult, clazz, clearBeforeSave)) {
-            processOnAsync(productResult, PROCESS_SAVE, null);
+            processOnAsync(productResult.list, PROCESS_SAVE, null);
         }
+    }
+
+    static public <T extends BaseData> void saveToLocal(final List<T> list, final Class<T> clazz,
+                                                          boolean clearBeforeSave) {
+        if (clearBeforeSave) {
+            clearTable(clazz);
+        }
+        processOnAsync(list, PROCESS_SAVE, null);
     }
 
     static public <T extends BaseData> void saveToLocalFast(final ProductResult<T> productResult, final Class<T> clazz,
@@ -124,5 +145,48 @@ public class StoreUtils {
 
     static public <T extends BaseModel> T queryDataSingle(final Class<T> clazz) {
         return SQLite.select().from(clazz).querySingle();
+    }
+
+    static public <T extends BaseModel> List<T> queryDataList(final Class<T> clazz, OrderBy... orderBys) {
+        Where<T> where = SQLite.select().from(clazz).where();
+        for (OrderBy orderBy : orderBys) {
+            where.orderBy(orderBy);
+        }
+        return where.queryList();
+    }
+
+    static public <T extends BaseModel> T queryDataSingle(final Class<T> clazz, SQLCondition... conditions) {
+        return SQLite.select().from(clazz).where().andAll(conditions).querySingle();
+    }
+
+    static public <T extends BaseModel> T queryDataSingle(final Class<T> clazz, OrderBy... orderBys) {
+        Where<T> where = SQLite.select().from(clazz).where();
+        for (OrderBy orderBy : orderBys) {
+            where.orderBy(orderBy);
+        }
+        return where.querySingle();
+    }
+
+    static public <T extends BaseModel> long queryDataCount(final Class<T> clazz) {
+        return new Select(Method.count()).from(clazz).count();
+    }
+
+    static public <T extends BaseModel> long queryDataCount(final Class<T> clazz, Condition... condition) {
+        Where where = new Select(Method.count()).from(clazz).where();
+        if (condition != null && condition.length > 0) {
+            where.andAll(condition);
+        }
+        return where.count();
+    }
+
+    static public <T extends BaseData> void saveAsyncSingle(final BaseData object){
+        object.async().save();
+    }
+
+    static public <T extends BaseData> boolean isEmpty(final ProductResult<T> productResult) {
+        if (productResult == null || productResult.list == null || productResult.list.size() <= 0) {
+            return true;
+        }
+        return false;
     }
 }

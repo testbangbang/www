@@ -35,7 +35,7 @@ public class ContainerListRequest extends BaseCloudRequest {
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         OnyxBookStoreService service = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase());
-        Response<List<Category>> response = service.bookContainerList().execute();
+        Response<List<Category>> response = executeCall(service.bookContainerList());
         if (response.isSuccessful()) {
             containerList = response.body();
             if (isSaveToLocal()) {

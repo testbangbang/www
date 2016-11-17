@@ -33,7 +33,7 @@ public class ContainerRequest extends BaseCloudRequest {
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         OnyxBookStoreService service = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase());
-        Response<Category> response = service.bookContainer(id).execute();
+        Response<Category> response = executeCall(service.bookContainer(id));
         if (response.isSuccessful()) {
             category = response.body();
         }

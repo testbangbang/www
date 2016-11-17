@@ -53,6 +53,10 @@ public class ServiceFactory {
         return getSpecifyService(OnyxGroupService.class, baseUrl);
     }
 
+    public static final OnyxPushService getPushService(final String baseUrl) {
+        return getSpecifyService(OnyxPushService.class, baseUrl);
+    }
+
     public static final <T> T getSpecifyService(final Class<T> service, final String baseUrl) {
         return getRetrofit(baseUrl).create(service);
     }

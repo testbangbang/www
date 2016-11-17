@@ -22,8 +22,8 @@ public class MemberDeleteRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response response = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .deleteGroupMember(id, accountId, getAccountSessionToken()).execute();
+        Response response = executeCall(ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
+                .deleteGroupMember(id, accountId, getAccountSessionToken()));
         isSuccess = response.isSuccessful();
     }
 }
