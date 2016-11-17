@@ -21,6 +21,6 @@ public class AddToLibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.addToLibrary(getContext(), library, addList);
+        dataManager.getDataManagerHelper().addToLibrary(getContext(), library, addList);
     }
 }

@@ -40,7 +40,7 @@ public class EPubBookReader implements BookReader {
 
     /**
      * read (OPF) epub spine.http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm#Section2.4.1
-     * 1. getById container.xml or content.opf path at first
+     * 1. getMetadataById container.xml or content.opf path at first
      * 2. parse the container.xml or content.opf retrieved at first step.
      * 3. parse ncx.
      */
@@ -61,7 +61,7 @@ public class EPubBookReader implements BookReader {
 
     /**
      * parse the file of META-INF/container.xml or OEBPS/content.opf
-     * to getById the package resource full path.
+     * to getMetadataById the package resource full path.
      */
     private void parsePackageResource() {
         final ZipFileEntry entry = getPackageResourceHref();

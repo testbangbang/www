@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 3/6/16.
- * add LayoutRun into the line to see if it's possible to layout it or not.
+ * addMetadataToLibrary LayoutRun into the line to see if it's possible to layout it or not.
  * hyphenation and consider the first run of next line.
  */
 public class LayoutRunLine {
@@ -31,12 +31,12 @@ public class LayoutRunLine {
         LAYOUT_BREAK,
 
         /**
-         * not enough width room to add layout to this line.
+         * not enough width room to addMetadataToLibrary layout to this line.
          */
         LAYOUT_WIDTH_FAIL,
 
         /**
-         * not enough height room to add layout to this line.
+         * not enough height room to addMetadataToLibrary layout to this line.
          */
         LAYOUT_HEIGHT_FAIL,
 

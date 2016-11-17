@@ -94,7 +94,7 @@ public class AccountTest extends ApplicationTestCase<Application> {
         OnyxAccount resultAccount = testSignUpAndSignIn();
         Response<OnyxAccount> response;
 
-        //test getById accountInfo
+        //test getMetadataById accountInfo
         OnyxAccount accountInfo;
         response = getService().getAccountInfo(resultAccount.sessionToken).execute();
         assertNotNull(response);
@@ -162,7 +162,7 @@ public class AccountTest extends ApplicationTestCase<Application> {
         Response<ResponseBody> removeResponse = getService().removeBoundDevice(Device.updateCurrentDeviceInfo(getContext()).deviceUniqueId, account.sessionToken).execute();
         assertNotNull(removeResponse);
 
-        // test add device
+        // test addMetadataToLibrary device
         Response<Device> response = getService().addDevice(Device.updateCurrentDeviceInfo(getContext()), account.sessionToken).execute();
         assertNotNull(response);
         assertNotNull(response.body());

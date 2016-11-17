@@ -20,7 +20,7 @@ public class MetadataRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        list.addAll(dataManager.getMetadataList(getContext(), queryArgs));
+        list.addAll(dataManager.getDataManagerHelper().getMetadataList(getContext(), queryArgs));
     }
 
     public final List<Metadata> getList() {

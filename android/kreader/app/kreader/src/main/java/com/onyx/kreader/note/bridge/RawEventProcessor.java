@@ -200,7 +200,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     /**
      * Use screen matrix to map from touch device to screen with correct orientation.
      * Use view matrix to map from screen to view.
-     * finally we getById points inside view. we may need the page matrix
+     * finally we getMetadataById points inside view. we may need the page matrix
      * to map points from view to page.
      * @param touchPoint
      * @return

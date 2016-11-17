@@ -7,6 +7,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 /**
  * Created by zhuzeng on 8/26/16.
+ * Library meta info
  */
 @Table(database = ContentDatabase.class)
 public class Library extends BaseData {

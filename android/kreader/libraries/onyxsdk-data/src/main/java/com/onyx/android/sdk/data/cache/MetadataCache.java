@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data;
+package com.onyx.android.sdk.data.cache;
 
 import com.onyx.android.sdk.data.model.Metadata;
 
@@ -14,8 +14,8 @@ public class MetadataCache {
     private HashMap<String, Metadata> idMap = new HashMap<>();
     private HashMap<String, Metadata> pathMap = new HashMap<>();
 
-    public void add(final String idString, final Metadata metadata) {
-        idMap.put(idString, metadata);
+    public void add(final Metadata metadata) {
+        idMap.put(metadata.getIdString(), metadata);
         pathMap.put(metadata.getNativeAbsolutePath(), metadata);
     }
 

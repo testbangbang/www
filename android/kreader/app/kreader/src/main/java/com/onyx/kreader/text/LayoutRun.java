@@ -112,7 +112,7 @@ public class LayoutRun {
     }
 
     /**
-     * getById real text without hyphenation symbol.
+     * getMetadataById real text without hyphenation symbol.
      * @return
      */
     public final String getRealText() {

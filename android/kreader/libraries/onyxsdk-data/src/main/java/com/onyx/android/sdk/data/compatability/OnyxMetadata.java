@@ -249,7 +249,7 @@ public class OnyxMetadata implements Parcelable
     }
     
     /**
-     * getById basic metadata with data relating to file (including MD5), return null if failed
+     * getMetadataById basic metadata with data relating to file (including MD5), return null if failed
      * 
      * @param file
      * @return

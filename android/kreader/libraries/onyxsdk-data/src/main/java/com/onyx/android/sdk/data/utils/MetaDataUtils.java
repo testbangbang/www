@@ -616,7 +616,7 @@ public class MetaDataUtils {
     }
 
     static public List<Metadata> verifyReadedStatus(List<Metadata> list, BookFilter filter) {
-        if (filter != BookFilter.READED) {
+        if (filter != BookFilter.READ) {
             return list;
         }
         List<Metadata> readList = new ArrayList<>();

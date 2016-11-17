@@ -18,7 +18,7 @@ public class LibraryCacheManager {
         this.dataProvider = dataProvider;
     }
 
-    public void clearLibraryCache(final String libraryId) {
+    public void clearLibrary(final String libraryId) {
         memoryCacheMap.get(libraryId).clear();
     }
 
@@ -26,7 +26,7 @@ public class LibraryCacheManager {
         memoryCacheMap.clear();
     }
 
-    public void putDataCache(String id, LibraryCache cache) {
+    public void add(final String id, final LibraryCache cache) {
         memoryCacheMap.put(id, cache);
     }
 

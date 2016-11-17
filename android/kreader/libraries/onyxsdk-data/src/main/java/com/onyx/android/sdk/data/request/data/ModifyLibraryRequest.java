@@ -17,6 +17,6 @@ public class ModifyLibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.modifyLibrary(getContext(), library, modifyCriteria);
+        dataManager.getDataManagerHelper().modifyLibrary(getContext(), library, modifyCriteria);
     }
 }

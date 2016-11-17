@@ -60,7 +60,7 @@ public class HistoryManager {
     }
 
     /**
-     * add to back list, so you can undo
+     * addMetadataToLibrary to back list, so you can undo
      * @param item
      * @param allowDuplicate allow duplicated item or not.
      * @return

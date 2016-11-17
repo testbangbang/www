@@ -117,7 +117,7 @@ public class ReaderHelper {
         }
         WindowManager window = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         if (window == null) {
-            Log.w(TAG, "getById display metrics failed: " + documentPath);
+            Log.w(TAG, "getMetadataById display metrics failed: " + documentPath);
             return;
         }
         DisplayMetrics display = new DisplayMetrics();

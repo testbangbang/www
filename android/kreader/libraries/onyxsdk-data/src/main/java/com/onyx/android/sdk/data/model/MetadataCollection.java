@@ -20,6 +20,14 @@ public class MetadataCollection extends BaseData {
     @Index
     String libraryUniqueId = null;
 
+    public MetadataCollection() {
+    }
+
+    public MetadataCollection(final String libId, final String docId) {
+        libraryUniqueId = libId;
+        documentUniqueId = docId;
+    }
+
     public String getDocumentUniqueId() {
         return documentUniqueId;
     }

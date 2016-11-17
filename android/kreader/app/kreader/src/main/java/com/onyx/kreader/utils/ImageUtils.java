@@ -60,7 +60,7 @@ public class ImageUtils {
      */
     public static boolean applyGammaCorrection(Bitmap bmp, float selection) {
         // selection range [minGammaLevel, maxGammaLevel], the bigger the darker.
-        // add mapping here. gamma range [0.5, 100]
+        // addMetadataToLibrary mapping here. gamma range [0.5, 100]
         // selection 200 ->  gamma 0.5
         // selection 1   ->  gamma 100
         float value = MAX_GAMMA - selection;

@@ -16,6 +16,6 @@ public class DeleteLibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.deleteLibrary(getContext(), library);
+        dataManager.getDataManagerHelper().deleteLibrary(getContext(), library);
     }
 }

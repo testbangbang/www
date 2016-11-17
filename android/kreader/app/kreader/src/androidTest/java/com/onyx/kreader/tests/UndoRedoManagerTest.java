@@ -17,7 +17,7 @@ public class UndoRedoManagerTest extends ActivityInstrumentationTestCase2<Reader
 //    public void testUndoRedo1() {
 //        UndoRedoManager undoRedoManager = new UndoRedoManager();
 //        final Shape shape = new NormalPencilShape();
-//        UndoRedoManager.Action<Shape> action = new UndoRedoManager.Action<>("add", shape);
+//        UndoRedoManager.Action<Shape> action = new UndoRedoManager.Action<>("addMetadataToLibrary", shape);
 //        undoRedoManager.addToHistory(action, false);
 //        final UndoRedoManager.Action undo = undoRedoManager.undo();
 //        assertNotNull(undo);

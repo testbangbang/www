@@ -8,7 +8,6 @@ import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -16,45 +15,45 @@ import java.util.List;
  */
 public class LibraryCache {
     private DataProviderBase dataProvider;
-    private List<String> md5List = new ArrayList<>();
+    private List<String> idList = new ArrayList<>();
 
     public LibraryCache(DataProviderBase dataProvider) {
         this.dataProvider = dataProvider;
     }
 
     public void clear() {
-        md5List.clear();
+        idList.clear();
     }
 
     public void addId(String id) {
-        if (!md5List.contains(id)) {
-            md5List.add(id);
+        if (!idList.contains(id)) {
+            idList.add(id);
         }
     }
 
     public void addId(List<String> list) {
-        if (!md5List.containsAll(list)) {
-            md5List.addAll(list);
+        if (!idList.containsAll(list)) {
+            idList.addAll(list);
         }
     }
 
     public void removeId(String id) {
-        md5List.remove(id);
+        idList.remove(id);
     }
 
     public void removeId(List<String> list) {
-        md5List.removeAll(list);
+        idList.removeAll(list);
     }
 
     public List<String> getIdList() {
-        return md5List;
+        return idList;
     }
 
     public List<Metadata> getList(Context context, QueryArgs args) {
         List<Metadata> list = dataProvider.findMetadata(context, args);
         if (!CollectionUtils.isNullOrEmpty(list)) {
             for (Metadata metadata : list) {
-                md5List.add(metadata.getIdString());
+                idList.add(metadata.getIdString());
             }
         }
         return list;

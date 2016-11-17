@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
  * <p>
  * Because FastJson is so flexible in the types it supports, this converter assumes that it can
  * handle all types. If you are mixing JSON serialization with something else (such as protocol
- * buffers), you must {@linkplain Retrofit.Builder#addConverterFactory(Converter.Factory) add
+ * buffers), you must {@linkplain Retrofit.Builder#addConverterFactory(Converter.Factory) addMetadataToLibrary
  * this instance} last to allow the other converters a chance to see their types.
  */
 public class FastJsonConverterFactory extends Converter.Factory {

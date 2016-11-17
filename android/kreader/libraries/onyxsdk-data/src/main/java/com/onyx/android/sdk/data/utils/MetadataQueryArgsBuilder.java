@@ -106,8 +106,8 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs finishReadQuery(SortBy sortBy, SortOrder sortOrder) {
-        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.READED);
-        args.libraryUniqueId = BookFilter.READED.toString();
+        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.READ);
+        args.libraryUniqueId = BookFilter.READ.toString();
         return generateQueryArgs(args);
     }
 
@@ -276,7 +276,7 @@ public class MetadataQueryArgsBuilder {
             case READING:
                 args.conditionGroup = recentReadingCondition();
                 break;
-            case READED:
+            case READ:
                 args.conditionGroup = finishReadCondition();
                 break;
             case TAG:

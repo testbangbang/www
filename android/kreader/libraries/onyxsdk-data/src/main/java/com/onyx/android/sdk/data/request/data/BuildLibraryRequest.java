@@ -21,8 +21,8 @@ public class BuildLibraryRequest extends BaseDataRequest {
     }
 
     @Override
-    public void execute(DataManager dataManager) throws Exception {
-        bookList = dataManager.buildLibrary(getContext(), library, criteria);
+    public void execute(final DataManager dataManager) throws Exception {
+        bookList = dataManager.getDataManagerHelper().buildLibrary(getContext(), library, criteria);
     }
 
     public List<Metadata> getBookList() {

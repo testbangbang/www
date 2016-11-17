@@ -33,7 +33,7 @@ public class OnyxDownloadManager {
     private OnyxDownloadManager(Context context) {
         FileDownloader.init(context);
         FileDownloader.getImpl().setMaxNetworkThreadCount(5);
-        // add here maybe will slow the init
+        // addMetadataToLibrary here maybe will slow the init
         getTaskList();
     }
 

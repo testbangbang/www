@@ -67,7 +67,7 @@ public class PageCropper extends PageManager.PageCropProvider {
         // to reduce rendering time. cropDisplay should be smaller than view size.
         final RectF cropDisplay;
 
-        // if crop display is too small, we may getById incorrect result, so we limit the size of scaled page
+        // if crop display is too small, we may getMetadataById incorrect result, so we limit the size of scaled page
         final int TARGET_CROP_PAGE_WIDTH = 300;
         final int TARGET_CROP_PAGE_HEIGHT = 400;
 

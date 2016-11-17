@@ -1,7 +1,6 @@
-package com.onyx.android.sdk.data;
+package com.onyx.android.sdk.data.cache;
 
-import com.onyx.android.sdk.data.cache.LibraryCache;
-import com.onyx.android.sdk.data.cache.LibraryCacheManager;
+import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.utils.MetaDataUtils;
@@ -27,39 +26,59 @@ public class DataCacheManager {
         return libraryCacheManager.getLibraryCache(libraryUniqueId);
     }
 
-    public void add(final String parentLibraryId, final Metadata metadata) {
+    public void addMetadataToLibrary(final String libraryId, final Metadata metadata) {
         if (metadata == null) {
             return;
         }
-        metadataCache.add(metadata.getIdString(), metadata);
-        addToLibrary(parentLibraryId, metadata);
+        addToMetadataCache(metadata);
+        addToLibrary(libraryId, metadata);
     }
 
-    public void addToLibrary(final String parentLibraryId, final Metadata metadata) {
-        final LibraryCache libraryCache = getLibraryCache(parentLibraryId);
+    public void addToMetadataCache(final Metadata metadata) {
+        metadataCache.add(metadata);
+    }
+
+    private void removeFromMetadataCache(Metadata metadata) {
+        metadataCache.remove(metadata);
+    }
+
+    public void addToLibrary(final String libraryId, final Metadata metadata) {
+        final LibraryCache libraryCache = getLibraryCache(libraryId);
         if (libraryCache != null) {
             libraryCache.addId(metadata.getIdString());
         }
     }
 
-    public void addAll(final String parentId, List<Metadata> list) {
+    public void addAllToLibrary(final String libraryId, final List<Metadata> list) {
         if (CollectionUtils.isNullOrEmpty(list)) {
             return;
         }
         for (Metadata metadata : list) {
-            add(parentId, metadata);
+            addMetadataToLibrary(libraryId, metadata);
         }
     }
 
-    private void removeFromCache(Metadata metadata) {
-        metadataCache.remove(metadata);
+    public void removeFromLibrary(final String libraryId, final String id) {
+        final LibraryCache libraryCache = getLibraryCache(libraryId);
+        if (libraryCache != null) {
+            libraryCache.removeId(id);
+        }
     }
 
-    public boolean remove(final String parentId, final String md5) {
-        Metadata metadata = metadataCache.getById(md5);
+    public List<Metadata> getMetadataList(final String libraryId) {
+        LibraryCache cache = getLibraryCache(libraryId);
+        List<Metadata> list = new ArrayList<>();
+        for (String id : cache.getIdList()) {
+            list.add(metadataCache.getById(id));
+        }
+        return list;
+    }
+
+    public boolean remove(final String libraryId, final String metadataId) {
+        Metadata metadata = metadataCache.getById(metadataId);
         if (metadata != null) {
-            removeFromCache(metadata);
-            getLibraryCache(parentId).removeId(md5);
+            removeFromMetadataCache(metadata);
+            removeFromLibrary(libraryId, metadataId);
             return true;
         }
         return false;
@@ -90,8 +109,8 @@ public class DataCacheManager {
         return metadataCache.isEmpty();
     }
 
-    public Metadata getById(final String md5) {
-        return metadataCache.getById(md5);
+    public Metadata getMetadataById(final String mid) {
+        return metadataCache.getById(mid);
     }
 
     public boolean containsId(final String md5) {
@@ -102,22 +121,13 @@ public class DataCacheManager {
         return metadataCache.list();
     }
 
-    public List<Metadata> getMetadataList(final String parentId) {
-        LibraryCache cache = getLibraryCache(parentId);
-        List<Metadata> list = new ArrayList<>();
-        for (String id : cache.getIdList()) {
-            list.add(metadataCache.getById(id));
-        }
-        return list;
-    }
-
     public List<Metadata> getMetadataList(final List<Metadata> originList, final QueryArgs args) {
         List<Metadata> list;
         switch (args.filter) {
             case ALL:
                 list = getAll(originList, args);
                 break;
-            case READED:
+            case READ:
                 list = getRead(originList, args);
                 break;
             case READING:

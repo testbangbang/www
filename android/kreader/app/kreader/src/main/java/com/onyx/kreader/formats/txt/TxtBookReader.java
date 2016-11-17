@@ -112,7 +112,7 @@ public class TxtBookReader implements BookReader {
 
     /**
      * flush data to current paragraph, called when it received end-of-line.
-     * add the paragraph to the model.
+     * addMetadataToLibrary the paragraph to the model.
      */
     private void onReceivedEndOfLine(final BookModel bookModel) {
         ensureCurrentParagraph(bookModel);
