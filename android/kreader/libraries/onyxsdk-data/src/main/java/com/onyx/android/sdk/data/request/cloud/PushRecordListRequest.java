@@ -120,10 +120,10 @@ public class PushRecordListRequest extends BaseCloudRequest {
         boolean result;
         for (PushProduct product : list) {
             result = false;
-            Metadata meta = DataProviderManager.getDataProvider().getMetadataByCloudReference(context, product.getGuid());
+            Metadata meta = DataProviderManager.getDataProvider().findMetadataByCloudReference(context, product.getGuid());
             if (meta == null) {
                 if (StringUtils.isNotBlank(product.getIdString())) {
-                    meta = DataProviderManager.getDataProvider().findMetadata(context, product.getIdString());
+                    meta = DataProviderManager.getDataProvider().findMetadataByMD5(context, product.getIdString());
                 }
             }
             if (meta != null) {

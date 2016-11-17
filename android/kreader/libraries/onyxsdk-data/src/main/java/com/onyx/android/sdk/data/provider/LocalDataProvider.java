@@ -62,6 +62,14 @@ public class LocalDataProvider implements DataProviderBase {
         return new ArrayList<>();
     }
 
+    public Metadata findMetadataByCloudReference(Context context, final String cloudReference) {
+        return new Select().from(Metadata.class).where(Metadata_Table.cloudId.eq(cloudReference)).querySingle();
+    }
+
+    public Metadata findMetadataByMD5(Context context, String md5) {
+        return new Select().from(Metadata.class).where(Metadata_Table.idString.eq(md5)).querySingle();
+    }
+
     public void saveMetadata(final Context context, final Metadata metadata) {
         metadata.save();
     }

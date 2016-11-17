@@ -26,6 +26,10 @@ public interface DataProviderBase {
 
     Metadata findMetadata(final Context context, final String path, String md5);
 
+    Metadata findMetadataByCloudReference(Context context, final String cloudReference);
+
+    Metadata findMetadataByMD5(Context context, String md5);
+
     Metadata loadMetadata(final Context context, final String path, String md5);
 
     List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs);
