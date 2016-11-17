@@ -3,6 +3,7 @@ package com.onyx.android.sdk.ui.data;
 import android.content.Context;
 import android.view.View;
 
+import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;

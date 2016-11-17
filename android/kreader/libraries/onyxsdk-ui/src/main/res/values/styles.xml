@@ -205,7 +205,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:minWidth">40dp</item>
-        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:background">@drawable/font_item_bg</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:layout_marginLeft">@dimen/font_size_item_margin</item>
         <item name="android:layout_marginRight">@dimen/font_size_button_margin</item>
@@ -213,6 +213,12 @@
         <item name="android:focusable">true</item>
         <item name="android:text">@string/font_size_example_text</item>
         <item name="lastLineDescent">12sp</item>
+    </style>
+
+    <style name="fontStyle_imageView_style">
+        <item name="android:padding">5dp</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:background">@drawable/font_item_bg</item>
     </style>
 
     <style name="CustomDialog" parent="@android:style/Theme.Dialog">

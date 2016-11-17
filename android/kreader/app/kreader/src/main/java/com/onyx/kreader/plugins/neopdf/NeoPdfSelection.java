@@ -3,6 +3,7 @@ package com.onyx.kreader.plugins.neopdf;
 import android.graphics.RectF;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.utils.PagePositionUtils;
 
@@ -127,6 +128,7 @@ public class NeoPdfSelection implements ReaderSelection, Cloneable {
 
     @SuppressWarnings("unused")
     public void addRectangle(float left, float top, float right, float bottom) {
+        Debug.d("addRectangle left %f, top %f, right %f, bottom %f", left, top, right, bottom);
         rectangles.add(new RectF(left, top, right, bottom));
     }
 

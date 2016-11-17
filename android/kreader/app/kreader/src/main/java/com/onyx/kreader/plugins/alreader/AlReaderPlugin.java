@@ -429,4 +429,8 @@ public class AlReaderPlugin implements ReaderPlugin,
         return true;
     }
 
+    @Override
+    public boolean supportTextPage() {
+        return true;
+    }
 }

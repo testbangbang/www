@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.data.ReaderMenu;
@@ -15,7 +17,9 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.ui.dialog.DialogFontChoose;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +31,7 @@ import java.util.List;
 public class ReaderLayerMenuViewFactory {
 
     public static int mainMenuContainerViewHeight = 0;
+    public static int maxFontFaceCountShow = 6;
 
     private static class MainMenuItemViewHolder extends RecyclerView.ViewHolder {
         private View view;
@@ -87,10 +92,6 @@ public class ReaderLayerMenuViewFactory {
             if (!item.isVisible()) {
                 continue;
             }
-            if (item.getItemType() == ReaderMenuItem.ItemType.Group &&
-                    collectVisibleItems(item.getChildren()).size() <= 0) {
-                continue;
-            }
             result.add(item);
         }
         return result;
@@ -121,74 +122,113 @@ public class ReaderLayerMenuViewFactory {
         return view;
     }
 
-    private static ReaderLayerMenuItem findItem(final List<ReaderLayerMenuItem> items, final ReaderMenuAction action) {
+    private static ReaderLayerMenuItem findItem(final List<ReaderLayerMenuItem> items, final ReaderMenuAction action, final int itemId) {
         for (ReaderLayerMenuItem item : items) {
-            if (item.getAction() == action) {
+            if (item.getAction() == action && item.getItemId() == itemId) {
                 return item;
             }
         }
         return null;
     }
 
-    private static final HashMap<Integer, ReaderMenuAction> fontSizeViewItemMap;
-    private static final HashMap<Integer, ReaderMenuAction> fontStyleViewItemMap;
+    private static void mapFontStyleViewMenuItemFunction(final Context context, final View fontStyleView, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+        for (final ReaderMenuItem fontMenuItem : items) {
+            final View view = fontStyleView.findViewById(fontMenuItem.getItemId());
+            final ReaderLayerMenuItem item = findItem(items, fontMenuItem.getAction(), fontMenuItem.getItemId());
+            if (view != null) {
+                view.setVisibility(item == null ? View.GONE : View.VISIBLE);
+            }
 
-    static {
-        fontSizeViewItemMap = new HashMap<>();
-        fontSizeViewItemMap.put(R.id.text_view_font_size_0, ReaderMenuAction.FONT_SET_FONT_SIZE);
-        fontSizeViewItemMap.put(R.id.text_view_font_size_1, ReaderMenuAction.FONT_SET_FONT_SIZE);
-        fontSizeViewItemMap.put(R.id.text_view_font_size_2, ReaderMenuAction.FONT_SET_FONT_SIZE);
-        fontSizeViewItemMap.put(R.id.text_view_font_size_3, ReaderMenuAction.FONT_SET_FONT_SIZE);
-        fontSizeViewItemMap.put(R.id.text_view_font_size_4, ReaderMenuAction.FONT_SET_FONT_SIZE);
-        fontSizeViewItemMap.put(R.id.text_view_font_size_5, ReaderMenuAction.FONT_SET_FONT_SIZE);
-        fontSizeViewItemMap.put(R.id.text_view_font_size_6, ReaderMenuAction.FONT_SET_FONT_SIZE);
-        fontSizeViewItemMap.put(R.id.text_view_font_size_7, ReaderMenuAction.FONT_SET_FONT_SIZE);
-
-        fontStyleViewItemMap = new HashMap<>();
-        fontStyleViewItemMap.putAll(fontSizeViewItemMap);
-        fontStyleViewItemMap.put(R.id.image_view_decrease_font_size, ReaderMenuAction.FONT_DECREASE_FONT_SIE);
-        fontStyleViewItemMap.put(R.id.image_view_increase_font_size, ReaderMenuAction.FONT_INCREASE_FONT_SIZE);
-        fontStyleViewItemMap.put(R.id.button_set_font_face, ReaderMenuAction.FONT_SET_FONT_FACE);
-        fontStyleViewItemMap.put(R.id.image_view_indent, ReaderMenuAction.FONT_SET_INTENT);
-        fontStyleViewItemMap.put(R.id.image_view_no_indent, ReaderMenuAction.FONT_SET_NO_INTENT);
-        fontStyleViewItemMap.put(R.id.image_view_small_line_spacing, ReaderMenuAction.FONT_SET_SMALL_LINE_SPACING);
-        fontStyleViewItemMap.put(R.id.image_view_middle_line_spacing, ReaderMenuAction.FONT_SET_MIDDLE_LINE_SPACING);
-        fontStyleViewItemMap.put(R.id.image_view_large_line_spacing, ReaderMenuAction.FONT_SET_LARGE_LINE_SPACING);
-        fontStyleViewItemMap.put(R.id.image_view_decrease_line_spacing, ReaderMenuAction.FONT_DECREASE_LINE_SPACING);
-        fontStyleViewItemMap.put(R.id.image_view_increase_line_spacing, ReaderMenuAction.FONT_INCREASE_LINE_SPACING);
-        fontStyleViewItemMap.put(R.id.image_view_small_page_margins, ReaderMenuAction.FONT_SET_SMALL_PAGE_MARGINS);
-        fontStyleViewItemMap.put(R.id.image_view_middle_page_margins, ReaderMenuAction.FONT_SET_MIDDLE_LINE_SPACING);
-        fontStyleViewItemMap.put(R.id.image_view_large_page_margins, ReaderMenuAction.FONT_SET_LARGE_LINE_SPACING);
-        fontStyleViewItemMap.put(R.id.image_view_decrease_page_margins, ReaderMenuAction.FONT_DECREASE_PAGE_MARGINS);
-        fontStyleViewItemMap.put(R.id.image_view_increase_page_margins, ReaderMenuAction.FONT_INCREASE_PAGE_MARGINS);
-    }
-
-    private static void mapFontStyleViewMenuItemFunction(final View fontStyleView, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        for (final HashMap.Entry<Integer, ReaderMenuAction> entry : fontStyleViewItemMap.entrySet()) {
-            final View view = fontStyleView.findViewById(entry.getKey());
-            final ReaderLayerMenuItem item = findItem(items, entry.getValue());
             if (view == null || item == null) {
-                assert false;
                 continue;
             }
+            view.setActivated(item.isSelected());
+
+            final ReaderMenuAction action = fontMenuItem.getAction();
+            if (action == ReaderMenuAction.FONT_SET_FONT_SIZE) {
+                TextView textView = (TextView) view;
+                Object value = fontMenuItem.getValue();
+                if (value != null) {
+                    textView.setTextSize((float) value);
+                }
+            }
+            if (action == ReaderMenuAction.FONT_SET_FONT_FACE) {
+                RadioGroup fontFace = (RadioGroup) view;
+                fillFontFaces(context, fontFace, state.getFontFaces());
+                fontFace.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        RadioButton radioButton = (RadioButton) group.findViewById(checkedId);
+                        callback.onMenuItemValueChanged(item, null, radioButton.getText());
+                    }
+                });
+                continue;
+            }
+            if (action == ReaderMenuAction.FONT_SET_MORE_FONT_FACE) {
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showMoreFontDialog(context, state.getFontFaces(), new DialogFontChoose.OnChooseListener() {
+                            @Override
+                            public void onFinishChoose(String fontFace) {
+                                callback.onMenuItemValueChanged(item, null, fontFace);
+                            }
+                        });
+                    }
+                });
+                continue;
+            }
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (fontSizeViewItemMap.containsKey(entry.getKey())) {
-                        // TODO pass back font size value
-                        callback.onMenuItemClicked(item);
-                    } else {
-                        callback.onMenuItemClicked(item);
-                    }
+                    clearMenuItemState(items, action);
+                    item.setSelected(true);
+                    updateFontStyleView(fontStyleView, items);
+                    callback.onMenuItemValueChanged(item, null, item.getValue());
                 }
             });
         }
     }
 
+    private static void clearMenuItemState(final List<ReaderLayerMenuItem> items, ReaderMenuAction action) {
+        for (ReaderLayerMenuItem item : items) {
+            if (item.getAction() == action) {
+                item.setSelected(false);
+            }
+        }
+    }
+
+    private static void updateFontStyleView(final View fontStyleView, final List<ReaderLayerMenuItem> items) {
+        for (final ReaderLayerMenuItem fontMenuItem : items) {
+            final View view = fontStyleView.findViewById(fontMenuItem.getItemId());
+            final ReaderLayerMenuItem item = findItem(items, fontMenuItem.getAction(), fontMenuItem.getItemId());
+            if (view != null && item != null) {
+                view.setActivated(item.isSelected());
+            }
+        }
+    }
+
     private static View createFontStyleView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         View view = LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_font_style_view, null);
-        mapFontStyleViewMenuItemFunction(view, items, state, callback);
+        mapFontStyleViewMenuItemFunction(context, view, items, state, callback);
         return view;
     }
 
+    private static void fillFontFaces(Context context, RadioGroup radioGroup, List<String> fontFaces) {
+        if (fontFaces == null) {
+            return;
+        }
+        for (int i = 0; i < maxFontFaceCountShow; i++) {
+            if (i < fontFaces.size()) {
+                OnyxRadioButton radioButton = OnyxRadioButton.Create(context, fontFaces.get(i));
+                radioGroup.addView(radioButton);
+            }
+        }
+    }
+
+    private static void showMoreFontDialog(final Context context, final List<String> fontFaces, final DialogFontChoose.OnChooseListener onChooseListener) {
+        DialogFontChoose fontChoose  = new DialogFontChoose(context, fontFaces, onChooseListener);
+        fontChoose.show();
+    }
 }

@@ -12,6 +12,8 @@ public abstract class ReaderMenuItem {
     private ItemType itemType;
     private ReaderMenuAction action;
     private ReaderMenuItem parent;
+    private int itemId;
+    private Object value;
     private List<ReaderMenuItem> children = new ArrayList<>();
 
     public ReaderMenuItem(ItemType itemType, ReaderMenuAction action, ReaderMenuItem parent) {
@@ -34,5 +36,21 @@ public abstract class ReaderMenuItem {
 
     public List<? extends ReaderMenuItem> getChildren() {
         return children;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
     }
 }
