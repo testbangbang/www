@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.PushProduct;
 import com.onyx.android.sdk.data.model.PushProduct_Table;
 import com.onyx.android.sdk.data.model.PushRecord;
+import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -119,10 +120,10 @@ public class PushRecordListRequest extends BaseCloudRequest {
         boolean result;
         for (PushProduct product : list) {
             result = false;
-            Metadata meta = null;//DataManagerHelper.getMetadataByCloudReference(context, product.getGuid());
+            Metadata meta = DataProviderManager.getDataProvider().getMetadataByCloudReference(context, product.getGuid());
             if (meta == null) {
                 if (StringUtils.isNotBlank(product.getIdString())) {
-                    meta = null;//DataManagerHelper.getMetadataByMD5(context, product.getIdString());
+                    meta = DataProviderManager.getDataProvider().findMetadata(context, product.getIdString());
                 }
             }
             if (meta != null) {

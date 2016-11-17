@@ -289,4 +289,5 @@ public class DataManagerHelper {
         }
         return thumbnailList;
     }
+
 }
