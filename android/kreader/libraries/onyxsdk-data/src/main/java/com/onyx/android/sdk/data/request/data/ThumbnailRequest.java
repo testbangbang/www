@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.request.data;
 
 import android.graphics.Bitmap;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Thumbnail;
 

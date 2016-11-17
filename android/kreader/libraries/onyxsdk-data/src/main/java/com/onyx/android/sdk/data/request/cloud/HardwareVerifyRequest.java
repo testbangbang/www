@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.Prohibit;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -21,7 +22,7 @@ public class HardwareVerifyRequest extends BaseCloudRequest {
     public void execute(final CloudManager parent) throws Exception {
         Call call = ServiceFactory.getHardwareService(parent.getCloudConf().getApiBase())
                 .hardwareVerify(JSON.toJSONString(prohibit));
-        Response response = call.execute();
+        Response response = executeCall(call);
         if (response.isSuccessful()) {
             prohibit.shouldStop = 0;
         }

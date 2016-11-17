@@ -27,7 +27,7 @@ public class GroupListRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         Call<List<OnyxGroup>> call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
                 .getGroupList(getAccountSessionToken());
-        Response<List<OnyxGroup>> response = call.execute();
+        Response<List<OnyxGroup>> response = executeCall(call);
         if (response.isSuccessful()) {
             list = response.body();
         }

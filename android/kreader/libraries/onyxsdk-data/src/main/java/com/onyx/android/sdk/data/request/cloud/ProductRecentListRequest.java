@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.utils.StoreUtils;
 
 import com.onyx.android.sdk.data.v1.OnyxBookStoreService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+
 import retrofit2.Response;
 
 /**
@@ -34,7 +35,7 @@ public class ProductRecentListRequest extends BaseCloudRequest {
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         OnyxBookStoreService service = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase());
-        Response<ProductResult<Product>> response = service.bookRecentList().execute();
+        Response<ProductResult<Product>> response = executeCall(service.bookRecentList());
         if (response.isSuccessful()) {
             productResult = response.body();
         }

@@ -29,7 +29,7 @@ public class GroupUpdateRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         Call<OnyxGroup> call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
                 .updateGroup(groupId, group, getAccountSessionToken());
-        Response<OnyxGroup> response = call.execute();
+        Response<OnyxGroup> response = executeCall(call);
         if (response.isSuccessful()) {
             resultGroup = response.body();
         }

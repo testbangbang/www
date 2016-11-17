@@ -140,10 +140,12 @@ public class NoteViewHelper {
         getNoteDocument().getCurrentPage(context).redo();
     }
 
-    public void close(final Context context, final String title) {
+    public void save(final Context context, final String title , boolean closeAfterSave) {
         getNoteDocument().save(context, title);
-        getNoteDocument().close(context);
-        renderBitmapWrapper.clear();
+        if (closeAfterSave) {
+            getNoteDocument().close(context);
+            renderBitmapWrapper.clear();
+        }
     }
 
     private void initRawResource(final Context context) {

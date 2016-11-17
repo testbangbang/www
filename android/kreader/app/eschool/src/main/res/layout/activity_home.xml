@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/home_layout_padding">
+
+    <include
+        android:id="@+id/home_account_info"
+        layout="@layout/home_account_info_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toTopOf="@+id/home_weather_notify"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/home_teaching_material_item"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="6" />
+
+    <include
+        android:id="@+id/home_weather_notify"
+        layout="@layout/home_daily_notify_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/home_item_divider"
+        app:layout_constraintBottom_toTopOf="@+id/home_note_item"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/home_account_info"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_info"
+        app:layout_constraintVertical_weight="5" />
+
+    <include
+        android:id="@+id/home_note_item"
+        layout="@layout/home_normal_land_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/home_item_divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/home_account_info"
+        app:layout_constraintTop_toBottomOf="@+id/home_weather_notify"
+        app:layout_constraintVertical_weight="5" />
+
+    <include
+        android:id="@+id/home_teaching_material_item"
+        layout="@layout/home_teaching_material_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/home_item_divider"
+        app:layout_constraintBottom_toTopOf="@+id/home_teaching_auxiliary_item"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintLeft_toRightOf="@+id/home_account_info"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="6" />
+
+    <include
+        android:id="@+id/home_teaching_auxiliary_item"
+        layout="@layout/home_teaching_auxiliary_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/home_item_divider"
+        android:layout_marginTop="@dimen/home_item_divider"
+        app:layout_constraintBottom_toTopOf="@+id/home_practice_item"
+        app:layout_constraintLeft_toRightOf="@+id/home_account_info"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_teaching_material_item"
+        app:layout_constraintVertical_weight="6" />
+
+    <include
+        android:id="@+id/home_practice_item"
+        layout="@layout/home_normal_land_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/home_item_divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/home_teaching_auxiliary_item"
+        app:layout_constraintRight_toLeftOf="@+id/home_exam_item"
+        app:layout_constraintTop_toBottomOf="@+id/home_teaching_auxiliary_item"
+        app:layout_constraintVertical_weight="4" />
+
+    <include
+        android:id="@+id/home_exam_item"
+        layout="@layout/home_normal_land_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/home_item_divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/home_practice_item"
+        app:layout_constraintRight_toRightOf="@+id/home_teaching_auxiliary_item"
+        app:layout_constraintTop_toTopOf="@+id/home_practice_item"
+        app:layout_constraintVertical_weight="4" />
+
+</android.support.constraint.ConstraintLayout>

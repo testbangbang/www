@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import com.onyx.android.sdk.data.RefValue;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.FileNotFoundException;
@@ -270,6 +271,45 @@ public class OnyxCmsCenter {
                 } catch (IOException e) {
                     Log.w(TAG, e);
                 }
+            }
+        }
+    }
+
+    public static OnyxMetadata getMetadataByCloudReference(Context context, final String cloudReference) {
+        Cursor c = null;
+        OnyxMetadata data = null;
+        try {
+            c = context.getContentResolver().query(OnyxMetadata.CONTENT_URI,
+                    null, OnyxMetadata.Columns.CLOUD_REFERENCE + "= ?", new String[]{cloudReference}, null);
+            if (c == null) {
+                return null;
+            }
+            if (c.moveToFirst()) {
+                data = OnyxMetadata.Columns.readColumnData(c);
+            }
+            return data;
+        } finally {
+            FileUtils.closeQuietly(c);
+        }
+    }
+
+    public static OnyxMetadata getMetadataByMD5(Context context, String md5) {
+        Cursor c = null;
+        OnyxMetadata data = null;
+        try {
+            c = context.getContentResolver().query(OnyxMetadata.CONTENT_URI,
+                    null, OnyxMetadata.Columns.MD5 + "= ?", new String[]{md5}, null);
+            if (c == null) {
+                Log.w(TAG, "getMetadatas, query database failed");
+                return null;
+            }
+            if (c.moveToFirst()) {
+                data = OnyxMetadata.Columns.readColumnData(c);
+            }
+            return data;
+        } finally {
+            if (c != null) {
+                c.close();
             }
         }
     }

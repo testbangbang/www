@@ -103,7 +103,7 @@ public class ReaderMetadataService extends Service {
     }
 
     private void extractMetadataAndThumbnail(final ReaderMetadataService service, final String documentPath, final RefValue<Boolean> result) {
-        OpenRequest openRequest = new OpenRequest(documentPath, new BaseOptions());
+        OpenRequest openRequest = new OpenRequest(documentPath, new BaseOptions(), false);
         openRequest.setRunInBackground(false);
         reader.submitRequest(service, openRequest, new BaseCallback() {
             @Override

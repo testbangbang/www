@@ -27,7 +27,7 @@ public class ConsumerRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         Call<Consumer> call = ServiceFactory.getConsumerService(parent.getCloudConf().getApiBase())
                 .getConsumer(consumerId, getAccountSessionToken());
-        Response<Consumer> response = call.execute();
+        Response<Consumer> response = executeCall(call);
         if (response.isSuccessful()) {
             consumer = response.body();
         }

@@ -23,8 +23,8 @@ public class DeviceRemoveRequest extends BaseCloudRequest {
     }
 
     public void execute(final CloudManager parent) throws Exception {
-        Response<ResponseBody> response = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
-                .removeBoundDevice(deviceId, getAccountSessionToken()).execute();
+        Response<ResponseBody> response = executeCall(ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
+                .removeBoundDevice(deviceId, getAccountSessionToken()));
         isSuccess = response.isSuccessful();
     }
 }
