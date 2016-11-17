@@ -12,23 +12,74 @@ public class ReaderStyle {
         ALIGNMENT_JUSTIFY
     }
 
-    static public int DEFAULT_LINE_SPACING = 150;
-    static public int LINE_SPACEING_STEP = 10;
-    static public int LARGE_LINE_SPACING = 180;
-    static public int NORMAL_LINE_SPACING = 150;
-    static public int SMALL_LINE_SPACING = 120;
-    static public int MIN_LINE_SPACING = 110;
-    static public int MAX_LINE_SPACING = 200;
+    public static class Percentage {
+        private int percent;
+
+        public Percentage(int percent) {
+            this.percent = percent;
+        }
+
+        public int getPercent() {
+            return percent;
+        }
+
+        public void setPercent(int percent) {
+            this.percent = percent;
+        }
+    }
+
+    public static class CharacterIndent {
+        private int indent;
+
+        public CharacterIndent(int indent) {
+            this.indent = indent;
+        }
+
+        public int getIndent() {
+            return indent;
+        }
+
+        public void setIndent(int indent) {
+            this.indent = indent;
+        }
+    }
+
+    /**
+     * Density-independent Pixels
+     */
+    public static class DPUnit {
+        private int value;
+
+        public DPUnit(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+    }
+
+    static public Percentage DEFAULT_LINE_SPACING = new Percentage(150);
+    static public Percentage LINE_SPACEING_STEP = new Percentage(10);
+    static public Percentage LARGE_LINE_SPACING = new Percentage(180);
+    static public Percentage NORMAL_LINE_SPACING = new Percentage(150);
+    static public Percentage SMALL_LINE_SPACING = new Percentage(120);
+    static public Percentage MIN_LINE_SPACING = new Percentage(110);
+    static public Percentage MAX_LINE_SPACING = new Percentage(200);
 
     private String fontFace = null;
     private float fontSize = 12.0f;
     private Alignment alignment = Alignment.ALIGNMENT_JUSTIFY;
-    private float indent = 2.0f;
-    private int lineSpacing = 150;
-    private float topMargin = 1;
-    private float leftMargin = 1;
-    private float rightMargin = 1;
-    private float bottomMargin = 1;
+    private CharacterIndent indent = new CharacterIndent(2);
+    private Percentage lineSpacing = new Percentage(150);
+    private DPUnit topMargin = new DPUnit(1);
+    private DPUnit leftMargin = new DPUnit(1);
+    private DPUnit rightMargin = new DPUnit(1);
+    private DPUnit bottomMargin = new DPUnit(1);
 
     public String getFontFace() {
         return fontFace;
@@ -54,51 +105,51 @@ public class ReaderStyle {
         this.alignment = alignment;
     }
 
-    public float getIndent() {
+    public CharacterIndent getIndent() {
         return indent;
     }
 
-    public void setIndent(float indent) {
+    public void setIndent(CharacterIndent indent) {
         this.indent = indent;
     }
 
-    public int getLineSpacing() {
+    public Percentage getLineSpacing() {
         return lineSpacing;
     }
 
-    public void setLineSpacing(int lineSpacing) {
+    public void setLineSpacing(Percentage lineSpacing) {
         this.lineSpacing = lineSpacing;
     }
 
-    public float getTopMargin() {
+    public DPUnit getTopMargin() {
         return topMargin;
     }
 
-    public void setTopMargin(float topMargin) {
+    public void setTopMargin(DPUnit topMargin) {
         this.topMargin = topMargin;
     }
 
-    public float getLeftMargin() {
+    public DPUnit getLeftMargin() {
         return leftMargin;
     }
 
-    public void setLeftMargin(float leftMargin) {
+    public void setLeftMargin(DPUnit leftMargin) {
         this.leftMargin = leftMargin;
     }
 
-    public float getRightMargin() {
+    public DPUnit getRightMargin() {
         return rightMargin;
     }
 
-    public void setRightMargin(float rightMargin) {
+    public void setRightMargin(DPUnit rightMargin) {
         this.rightMargin = rightMargin;
     }
 
-    public float getBottomMargin() {
+    public DPUnit getBottomMargin() {
         return bottomMargin;
     }
 
-    public void setBottomMargin(float bottomMargin) {
+    public void setBottomMargin(DPUnit bottomMargin) {
         this.bottomMargin = bottomMargin;
     }
 
