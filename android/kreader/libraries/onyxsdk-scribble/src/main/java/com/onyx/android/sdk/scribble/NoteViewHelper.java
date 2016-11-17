@@ -654,14 +654,14 @@ public class NoteViewHelper {
         int n = motionEvent.getHistorySize();
         for(int i = 0; i < n; ++i) {
             final TouchPoint normalized = fromHistorical(motionEvent, i);
-            final TouchPoint screen = touchPointFromNormalized(normalized);;
+            final TouchPoint screen = touchPointFromNormalized(normalized);
             currentShape.onMove(normalized, screen);
             if (callback != null) {
                 callback.onDrawingTouchMove(motionEvent, currentShape, false);
             }
         }
         final TouchPoint normalized = new TouchPoint(motionEvent);
-        final TouchPoint screen = touchPointFromNormalized(normalized);;
+        final TouchPoint screen = touchPointFromNormalized(normalized);
         currentShape.onMove(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape, true);

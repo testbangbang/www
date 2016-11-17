@@ -7,12 +7,14 @@ package com.onyx.kreader.ui.dialog;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.RectF;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings.TextSize;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,13 +22,17 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.DictionaryQueryRequest;
 import com.onyx.kreader.ui.actions.DictionaryQueryAction;
+import com.onyx.kreader.ui.data.DictionaryQuery;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.ui.view.HTMLReaderWebView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle.Highlight;
 
@@ -52,6 +58,8 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     private final Activity mActivity;
+    private List<String> dicts = new ArrayList<>();
+    private List<DictionaryQuery> dictionaryQueries = new ArrayList<>();
     private TextView mDictTitle;
     private HTMLReaderWebView mWebView;
     private TextView mPageIndicator;
@@ -60,10 +68,17 @@ public class PopupSelectionMenu extends LinearLayout {
     private View mDictPrevPage;
     private View webViewDividerLine;
     private View topDividerLine;
+    private View bottomDividerLine;
+    private View toolsPlateLeftDividerLine;
+    private View toolsPlateRightDividerLine;
     private ImageView highlightView;
     private TextView highLightText;
-    private int viewHeight;
-    private int viewWidth;
+    private TextView dictNameText;
+    private RecyclerView dictListView;
+    private LinearLayout dictLayout;
+    private ImageView markerView;
+    private int dictViewHeight;
+    private int dictViewWidth;
     private int dictionaryLoadCount;
     /**
      * eliminate compiler warning
@@ -85,8 +100,9 @@ public class PopupSelectionMenu extends LinearLayout {
         inflater.inflate(R.layout.popup_selection_menu, this, true);
         mMenuCallback = menuCallback;
 
-        viewWidth = (int) (readerDataHolder.getDisplayWidth() * 0.9);
-        viewHeight = (int) (readerDataHolder.getDisplayHeight() * 0.4);
+        int heightDenominator = getResources().getInteger(R.integer.dict_height_denominator_value);
+        dictViewWidth = layout.getMeasuredWidth();
+        dictViewHeight = (layout.getMeasuredHeight() / heightDenominator);
         layout.addView(this);
 
         highlightView = (ImageView) findViewById(R.id.imageview_highlight);
@@ -94,13 +110,30 @@ public class PopupSelectionMenu extends LinearLayout {
         mDictTitle = (TextView) findViewById(R.id.dict_title);
         webViewDividerLine = findViewById(R.id.webView_divider_line);
         topDividerLine = findViewById(R.id.top_divider_line);
+        bottomDividerLine = findViewById(R.id.bottom_divider_line);
+        toolsPlateLeftDividerLine = findViewById(R.id.tools_plate_left_divider_line);
+        toolsPlateRightDividerLine = findViewById(R.id.tools_plate_right_divider_line);
         mDictNextPage = findViewById(R.id.dict_next_page);
+        dictNameText = (TextView) findViewById(R.id.dict_name);
+        dictListView = (RecyclerView) findViewById(R.id.dict_list);
+        dictLayout = (LinearLayout) findViewById(R.id.layout_dict);
+        markerView = (ImageView) findViewById(R.id.marker_view);
         mDictNextPage.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 if (mWebView != null) {
                     mWebView.nextPage();
+                }
+            }
+        });
+        dictNameText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dictListView.getVisibility() == GONE) {
+                    showDictListView(dictNameText);
+                }else {
+                    hideDictListView();
                 }
             }
         });
@@ -125,7 +158,6 @@ public class PopupSelectionMenu extends LinearLayout {
 
         mWebView = (HTMLReaderWebView) findViewById(R.id.explain);
         mWebView.getSettings().setTextSize(TextSize.LARGER);
-        mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setPageTurnType(HTMLReaderWebView.PAGE_TURN_TYPE_VERTICAL);
         mWebView.setPageTurnThreshold(15);
         mWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
@@ -183,19 +215,81 @@ public class PopupSelectionMenu extends LinearLayout {
             }
         });
 
-        ImageView buttonCloseMenu = (ImageView) findViewById(R.id.button_close);
+        final ImageView buttonCloseMenu = (ImageView) findViewById(R.id.button_close);
         buttonCloseMenu.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMenuCallback.closeMenu();
             }
         });
+
+        dictLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideDictListView();
+            }
+        });
         setVisibility(View.GONE);
+        initDictList();
+    }
+
+    private void hideDictListView() {
+        dictListView.setVisibility(GONE);
+        markerView.setImageResource(R.drawable.ic_dict_unfold);
+    }
+
+    private void showDictListView(TextView dictNameText) {
+        int maxWidth = (int) getContext().getResources().getDimension(R.dimen.dict_name_text_view_layout_width);
+        int marginLeft =  dictNameText.getLeft() - ((maxWidth - dictNameText.getMeasuredWidth())/2);
+        markerView.setImageResource(R.drawable.ic_dict_pack_up);
+        dictListView.setVisibility(VISIBLE);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(marginLeft,0, 0,0);
+        dictListView.setLayoutParams(lp);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    private void initDictList() {
+        dicts.clear();
+        dictListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        dictListView.setAdapter(new RecyclerView.Adapter() {
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new DictViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.dict_list_item_view, parent, false));
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+                DictViewHolder dictViewHolder = (DictViewHolder) holder;
+                dictViewHolder.dictName.setText(dictionaryQueries.get(position).getDictName());
+                dictViewHolder.dictName.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showExplanation(dictionaryQueries.get(position));
+                        hideDictListView();
+                    }
+                });
+            }
+
+            @Override
+            public int getItemCount() {
+                return dictionaryQueries.size();
+            }
+        });
+    }
+
+    private class DictViewHolder extends RecyclerView.ViewHolder{
+
+        private TextView dictName;
+
+        public DictViewHolder(View itemView) {
+            super(itemView);
+            dictName = (TextView)itemView.findViewById(R.id.dict_name);
+        }
     }
 
     Activity getActivity() {
@@ -235,7 +329,7 @@ public class PopupSelectionMenu extends LinearLayout {
 
         HighlightCursor beginHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX);
         HighlightCursor endHighlightCursor = readerDataHolder.getSelectionManager().getHighlightCursor(HighlightCursor.END_CURSOR_INDEX);
-        if (beginHighlightCursor == null || endHighlightCursor == null){
+        if (beginHighlightCursor == null || endHighlightCursor == null) {
             return;
         }
         RectF beginCursorRectF = beginHighlightCursor.getDisplayRect();
@@ -256,12 +350,16 @@ public class PopupSelectionMenu extends LinearLayout {
 
         if (diffTop > diffBottom){
             float y = start.top - dividerHeight - measuredHeight;
-            y = isShowTranslation() ? dividerHeight : Math.max(y,0);
+            y = isShowTranslation() ? 0 : Math.max(y,0);
             setY(y);
+            topDividerLine.setVisibility(isShowTranslation() ? GONE : VISIBLE);
+            bottomDividerLine.setVisibility(isShowTranslation() ? VISIBLE : VISIBLE);
         }else {
             float y = end.bottom + dividerHeight;
-            y = isShowTranslation() ? screenHeight - viewHeight - dividerHeight : Math.min(y,screenHeight - measuredHeight);
+            y = isShowTranslation() ? screenHeight - dictViewHeight : Math.min(y,screenHeight - measuredHeight);
             setY(y);
+            topDividerLine.setVisibility(isShowTranslation() ? VISIBLE : VISIBLE);
+            bottomDividerLine.setVisibility(isShowTranslation() ? GONE : VISIBLE);
         }
     }
 
@@ -274,15 +372,19 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     public void hideTranslation() {
-        setLayoutParams(viewWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        setLayoutParams((int) (dictViewWidth * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT);
         this.webViewDividerLine.setVisibility(GONE);
-        this.findViewById(R.id.layout_dict).setVisibility(View.GONE);
+        dictLayout.setVisibility(View.GONE);
+        toolsPlateLeftDividerLine.setVisibility(VISIBLE);
+        toolsPlateRightDividerLine.setVisibility(VISIBLE);
     }
 
     public void showTranslation() {
-        setLayoutParams(viewWidth, viewHeight);
+        setLayoutParams(dictViewWidth, dictViewHeight);
         this.webViewDividerLine.setVisibility(VISIBLE);
-        this.findViewById(R.id.layout_dict).setVisibility(View.VISIBLE);
+        dictLayout.setVisibility(View.VISIBLE);
+        toolsPlateLeftDividerLine.setVisibility(GONE);
+        toolsPlateRightDividerLine.setVisibility(GONE);
     }
 
     public void setLayoutParams(int w, int h) {
@@ -301,29 +403,53 @@ public class PopupSelectionMenu extends LinearLayout {
         dictionaryQueryAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                int state = dictionaryQueryAction.getState();
-                String content = dictionaryQueryAction.getExpString();
-                if (state == DictionaryQueryRequest.DICT_STATE_LOADING) {
-                    if (dictionaryLoadCount < MAX_DICTIONARY_LOAD_COUNT) {
-                        dictionaryLoadCount++;
-                        PopupSelectionMenu.this.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dictionaryQuery(readerDataHolder, token);
-                            }
-                        }, DELAY_DICTIONARY_LOAD_TIME);
-                    } else {
-                        content = readerDataHolder.getContext().getString(R.string.load_fail);
-                    }
-                }
-
-                String dict = dictionaryQueryAction.getDictPath();
-                String url = "file:///";
-                if (dict != null) {
-                    url += dict.substring(0, dict.lastIndexOf("/"));
-                }
-                mWebView.loadDataWithBaseURL(url, content, "text/html", "utf-8", "about:blank");
+                dictionaryQueries = dictionaryQueryAction.getDictionaryQueries();
+                handleDictionaryQuery(readerDataHolder, dictionaryQueries, token, dictionaryQueryAction.getErrorInfo());
             }
         });
     }
+
+    private void handleDictionaryQuery(final ReaderDataHolder readerDataHolder, List<DictionaryQuery> dictionaryQueries, final String token, final String error) {
+        if (dictionaryQueries.size() > 0) {
+            DictionaryQuery query = dictionaryQueries.get(0);
+            int state = query.getState();
+            if (state == DictionaryQuery.DICT_STATE_LOADING) {
+                if (dictionaryLoadCount < MAX_DICTIONARY_LOAD_COUNT) {
+                    dictionaryLoadCount++;
+                    PopupSelectionMenu.this.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            dictionaryQuery(readerDataHolder, token);
+                        }
+                    }, DELAY_DICTIONARY_LOAD_TIME);
+                } else {
+                    String content = readerDataHolder.getContext().getString(R.string.load_fail);
+                    query.setExplanation(content);
+                }
+            }else {
+                dictListView.getAdapter().notifyDataSetChanged();
+            }
+            showExplanation(query);
+        }else {
+            mWebView.setLoadCssStyle(false);
+            mWebView.loadDataWithBaseURL(null, error, "text/html", "utf-8", "about:blank");
+        }
+    }
+
+    private void showExplanation(DictionaryQuery dictionaryQuery) {
+        String dict = dictionaryQuery.getDictPath();
+        String url = "file:///";
+        if (!StringUtils.isNullOrEmpty(dict)) {
+            url += dict.substring(0, dict.lastIndexOf("/"));
+        }
+        String dictName = dictionaryQuery.getDictName();
+        if (!StringUtils.isNullOrEmpty(dictName)) {
+            dictNameText.setText(dictName);
+            markerView.setVisibility(VISIBLE);
+        }
+
+        mWebView.setLoadCssStyle(dictionaryQuery.getState() == DictionaryQuery.DICT_STATE_QUERY_SUCCESSFUL);
+        mWebView.loadDataWithBaseURL(url, dictionaryQuery.getExplanation(), "text/html", "utf-8", "about:blank");
+    }
+
 }

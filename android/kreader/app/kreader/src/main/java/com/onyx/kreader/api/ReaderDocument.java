@@ -32,6 +32,8 @@ public interface ReaderDocument {
      */
     public RectF getPageOriginSize(final String position);
 
+    public boolean supportTextPage();
+
     public boolean isTextPage(final String position);
 
     /**

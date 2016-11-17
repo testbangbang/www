@@ -2,4 +2,5 @@
 <resources>
     <integer name="onyx_scribble_item_title_max_line_count">1</integer>
     <integer name="onyx_scribble_activity_title_max_ems">7</integer>
+    <integer name="onyx_scribble_main_function_cols">4</integer>
 </resources>

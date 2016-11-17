@@ -40,7 +40,7 @@ public class NoteAppConfig {
         return globalInstance;
     }
 
-    public final boolean useMXStyleDialog() {
+    public final boolean useMXUIStyle() {
         return backend.hasKey(USE_MX_UI_STYLE) && backend.getBoolean(USE_MX_UI_STYLE, false);
     }
 
@@ -161,6 +161,11 @@ public class NoteAppConfig {
 
     //TODO:key to config support Export or not,now just disable for no function.
     public boolean isEnableExport() {
+        return false;
+    }
+
+    //TODO:key to config support PressStress or not,now just disable for no function.
+    public boolean isEnablePressStressDetect(){
         return false;
     }
 }

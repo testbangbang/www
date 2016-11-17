@@ -55,7 +55,9 @@ import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.utils.DeviceConfig;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Joy on 2016/6/7.
@@ -68,7 +70,7 @@ public class ShowReaderMenuAction extends BaseAction {
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderLayerMenu readerMenu;
     private boolean disableScribbleBrush = true;
-    private static List<ReaderMenuAction> disableMenus = new ArrayList<>();
+    private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -111,6 +113,8 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void getDisableMenus(ReaderDataHolder readerDataHolder) {
+        disableMenus.clear();
+
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isDisableNoteFunc()) {
             disableMenus.add(ReaderMenuAction.NOTE);
         }
@@ -121,6 +125,9 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.FRONT_LIGHT);
         }
 
+        if (!readerDataHolder.supportTextPage()) {
+            disableMenus.add(ReaderMenuAction.TTS);
+        }
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }

@@ -39,7 +39,18 @@
   "kepler": [ { "orientation" : 270,  "tx" : 0, "ty" : 1072},
     { "orientation" : 0,  "tx" : 0, "ty" : 0},
     { "orientation" : 90,  "tx" : 1448, "ty" : 0},
-    { "orientation" : 180,  "tx" : 1448, "ty" : 1072}]
+    { "orientation" : 180,  "tx" : 1448, "ty" : 1072}],
 
+  "pl107": [{ "orientation" : 270,  "tx" : 0, "ty" : 960},
+    { "orientation" : 0,  "tx" : 0, "ty" : 0},
+    { "orientation" : 90,  "tx" : 1280, "ty" : 0},
+    { "orientation" : 180,  "tx" : 1280, "ty" : 960}],
+
+
+  "pl107_color": [
+    { "orientation" : 90,  "tx" : 640, "ty" : 0,  "epd": 270, "etx": 0, "ety": 640},
+    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 640, "ety": 480},
+    { "orientation" : 270,  "tx" : 0, "ty" : 480, "epd": 90, "etx": 480, "ety": 0},
+    { "orientation" : 180,  "tx" : 640, "ty" : 480,  "epd": 0, "etx": 0, "ety": 0}]
 
 }
