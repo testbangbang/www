@@ -26,9 +26,7 @@ public class NoteDocumentSaveRequest extends BaseNoteRequest {
                 parent.getRenderBitmap(),
                 512,
                 512);
-        if (close) {
-            parent.close(getContext(), title);
-        }
+        parent.save(getContext(), title, close);
     }
 
 }
