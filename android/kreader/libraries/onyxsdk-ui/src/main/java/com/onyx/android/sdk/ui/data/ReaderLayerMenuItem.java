@@ -13,7 +13,6 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
     private String title;
     private int drawableResourceId;
     private boolean visible = true;
-    private boolean selected = false;
 
     public ReaderLayerMenuItem(ItemType itemType, ReaderMenuAction action, ReaderLayerMenuItem parent, int titleResourceId, String title, int drawableResourceId) {
         super(itemType, action, parent);
@@ -22,13 +21,12 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
         this.drawableResourceId = drawableResourceId;
     }
 
-    public ReaderLayerMenuItem(ItemType itemType, ReaderMenuAction action, ReaderLayerMenuItem parent, int titleResourceId, String title, int drawableResourceId, int itemId, Object value) {
+    public ReaderLayerMenuItem(ItemType itemType, ReaderMenuAction action, ReaderLayerMenuItem parent, int titleResourceId, String title, int drawableResourceId, int itemId) {
         super(itemType, action, parent);
         this.titleResourceId = titleResourceId;
         this.title = title;
         this.drawableResourceId = drawableResourceId;
         setItemId(itemId);
-        setValue(value);
     }
 
     public ReaderLayerMenuItem(final ReaderLayerMenuItem menu) {
@@ -43,11 +41,7 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
     }
 
     public static ReaderLayerMenuItem createSimpleMenuItem(ReaderMenuAction action, int itemId) {
-        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, action, null, -1, null, -1, itemId, null);
-    }
-
-    public static ReaderLayerMenuItem createSimpleMenuItem(ReaderMenuAction action, int itemId, Object value) {
-        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, action, null, -1, null, -1, itemId, value);
+        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, action, null, -1, null, -1, itemId);
     }
 
     /**
@@ -93,11 +87,4 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
         this.visible = visible;
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
 }

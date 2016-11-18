@@ -5,13 +5,12 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
-    <CheckBox
+    <com.onyx.android.sdk.ui.view.OnyxRadioButton
+        android:textSize="@dimen/dialog_common_text_size"
         android:textColor="@android:color/black"
         android:id="@+id/btn_font"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:button="@null"
-        android:drawableRight="@android:drawable/btn_radio"/>
+        android:layout_height="wrap_content"/>
 
     <View
         android:background="@android:color/black"

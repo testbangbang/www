@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**

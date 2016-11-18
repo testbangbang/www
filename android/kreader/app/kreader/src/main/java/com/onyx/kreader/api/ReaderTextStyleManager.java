@@ -1,6 +1,6 @@
 package com.onyx.kreader.api;
 
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderStyle;
 
 /**
  * Created by zhuzeng on 10/3/15.

@@ -31,7 +31,7 @@ import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;

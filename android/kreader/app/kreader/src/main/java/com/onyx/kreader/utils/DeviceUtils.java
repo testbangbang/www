@@ -13,17 +13,20 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 
+import com.onyx.android.sdk.data.FontInfo;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -198,8 +201,8 @@ public class DeviceUtils {
                 path.toLowerCase(Locale.getDefault()).endsWith(".ttf");
     }
 
-    public static GAdapter buildFontItemAdapter(String currentFont, final List<String> preferredFonts) {
-        GAdapter adapter = new GAdapter();
+    public static List<FontInfo> buildFontItemAdapter(String currentFont, final List<String> preferredFonts) {
+        List<FontInfo> fontInfoList = new ArrayList<>();
         FilenameFilter fontFilter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String filename) {
@@ -213,7 +216,7 @@ public class DeviceUtils {
                 new File("/system/fonts")
         };
 
-        GObject object;
+
         TTFUtils utils = new TTFUtils();
         for (File folder : fontsFolderList) {
             File[] fonts = folder.listFiles(fontFilter);
@@ -222,7 +225,7 @@ public class DeviceUtils {
                     if (!f.isFile() || f.isHidden()) {
                         continue;
                     }
-                    object = new GObject();
+                    FontInfo fontInfo = new FontInfo();
                     try {
                         utils.parse(f.getAbsolutePath());
                     } catch (IOException e) {
@@ -230,23 +233,26 @@ public class DeviceUtils {
                     }
                     String fontName = utils.getFontName();
 
-                    object.putString(GAdapterUtil.TAG_TITLE_STRING, StringUtils.isNullOrEmpty(fontName)
+                    fontInfo.setName(StringUtils.isNullOrEmpty(fontName)
                             ? f.getName() : fontName);
-                    object.putObject(GAdapterUtil.TAG_UNIQUE_ID, f.getName());
-                    object.putObject(GAdapterUtil.TAG_TYPEFACE, createTypefaceFromFile(f));
+                    fontInfo.setId(f.getName());
+                    fontInfo.setTypeface(createTypefaceFromFile(f));
                     if (f.getName().equalsIgnoreCase(currentFont)) {
-                        object.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
+                        fontInfoList.add(0, fontInfo);
+                        continue;
                     }
-                    if (preferredFonts != null && (preferredFonts.contains(fontName) || preferredFonts.contains(f.getName()))) {
-                        adapter.addObject(0, object);
+                    boolean isAlphaWord =  ReaderTextSplitterImpl.isAlpha(fontInfo.getName().charAt(0));
+                    if ((preferredFonts != null && (preferredFonts.contains(fontName) || preferredFonts.contains(f.getName())))
+                            || !isAlphaWord) {
+                        fontInfoList.add(0, fontInfo);
                     } else {
-                        adapter.addObject(object);
+                        fontInfoList.add(fontInfo);
                     }
                 }
             }
         }
 
-        return adapter;
+        return fontInfoList;
     }
 
     public static Typeface createTypefaceFromFile(final File f) {

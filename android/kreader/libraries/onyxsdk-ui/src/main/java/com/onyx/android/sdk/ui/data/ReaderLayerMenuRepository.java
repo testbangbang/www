@@ -8,50 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository.FontSpacingLevel.decrease;
-import static com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository.FontSpacingLevel.increase;
-import static com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository.FontSpacingLevel.large;
-import static com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository.FontSpacingLevel.middle;
-import static com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository.FontSpacingLevel.small;
 
 /**
  * Created by joy on 8/25/16.
  */
 public class ReaderLayerMenuRepository {
 
-    public enum FontSpacingLevel {
-        small, middle, large, decrease, increase
-    }
-
     public static ReaderLayerMenuItem[] fixedPageMenuItems = new ReaderLayerMenuItem[]{
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.FONT, null, R.string.font_face, "", R.drawable.ic_dialog_reader_menu_font),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_FONT_FACE, R.id.font_face_group),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_MORE_FONT_FACE, R.id.more_font),
-
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_FONT_SIZE, R.id.text_view_font_size_0),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_FONT_SIZE, R.id.text_view_font_size_1),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_FONT_SIZE, R.id.text_view_font_size_2),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_FONT_SIZE, R.id.text_view_font_size_3),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_FONT_SIZE, R.id.text_view_font_size_4),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_FONT_SIZE, R.id.text_view_font_size_5),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_FONT_SIZE, R.id.text_view_font_size_6),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_FONT_SIZE, R.id.text_view_font_size_7),
-
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_DECREASE_FONT_SIE, R.id.image_view_decrease_font_size),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_INCREASE_FONT_SIZE, R.id.image_view_increase_font_size),
-
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_LINE_SPACING, R.id.image_view_small_line_spacing, small),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_LINE_SPACING, R.id.image_view_middle_line_spacing, middle),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_LINE_SPACING, R.id.image_view_large_line_spacing, large),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_LINE_SPACING, R.id.image_view_decrease_line_spacing, decrease),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_LINE_SPACING, R.id.image_view_increase_line_spacing, increase),
-
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_PAGE_MARGINS, R.id.image_view_small_page_margins, small),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_PAGE_MARGINS, R.id.image_view_middle_page_margins, middle),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_PAGE_MARGINS, R.id.image_view_large_page_margins, large),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_PAGE_MARGINS, R.id.image_view_decrease_page_margins, decrease),
-            ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FONT_SET_PAGE_MARGINS, R.id.image_view_increase_page_margins, increase),
-
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.ZOOM, null, R.string.reader_layer_menu_zoom, "", R.drawable.ic_dialog_reader_menu_scale),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ZOOM_IN, null, R.string.reader_layer_menu_zoom_in, "", R.drawable.ic_dialog_reader_menu_scale_magnify),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ZOOM_OUT, null, R.string.reader_layer_menu_zoom_out, "", R.drawable.ic_dialog_reader_menu_scale_shrink),
@@ -92,7 +56,7 @@ public class ReaderLayerMenuRepository {
                 currentGroup = group;
             } else {
                 (currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
-                        item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId(), item.getItemId(), item.getValue()));
+                        item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId(), item.getItemId()));
             }
         }
         return menuGroupList;
@@ -118,7 +82,7 @@ public class ReaderLayerMenuRepository {
                 currentGroup = group;
             } else {
                 (currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
-                        item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId(), item.getItemId(), item.getValue()));
+                        item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId(), item.getItemId()));
             }
         }
         return menuGroupList;

@@ -13,7 +13,6 @@ public abstract class ReaderMenuItem {
     private ReaderMenuAction action;
     private ReaderMenuItem parent;
     private int itemId;
-    private Object value;
     private List<ReaderMenuItem> children = new ArrayList<>();
 
     public ReaderMenuItem(ItemType itemType, ReaderMenuAction action, ReaderMenuItem parent) {
@@ -44,13 +43,5 @@ public abstract class ReaderMenuItem {
 
     public void setItemId(int itemId) {
         this.itemId = itemId;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
     }
 }

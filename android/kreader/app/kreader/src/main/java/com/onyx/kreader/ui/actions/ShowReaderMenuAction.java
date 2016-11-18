@@ -24,7 +24,6 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
-import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository.FontSpacingLevel;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
@@ -33,7 +32,9 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderStyle.DPUnit;
+import com.onyx.android.sdk.data.ReaderStyle.Percentage;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageCropRequest;
@@ -57,6 +58,7 @@ import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
+import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.DeviceUtils;
@@ -79,7 +81,6 @@ public class ShowReaderMenuAction extends BaseAction {
     private boolean disableScribbleBrush = true;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
     private static List<String> fontFaces = new ArrayList<>();
-    private static ReaderStyle readerStyle = new ReaderStyle();
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -150,17 +151,6 @@ public class ShowReaderMenuAction extends BaseAction {
         updateReaderMenuCallback(readerMenu, readerDataHolder);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
         readerMenu.fillItems(items);
-        buildFontFaces();
-    }
-
-    private void buildFontFaces() {
-        GAdapter gAdapter = DeviceUtils.buildFontItemAdapter("", null);
-        for (int i = 0; i < gAdapter.size(); i++) {
-            GObject object = gAdapter.get(i);
-            String name = object.getString(GAdapterUtil.TAG_TITLE_STRING);
-            Typeface typeface = (Typeface) object.getObject(GAdapterUtil.TAG_TYPEFACE);
-            fontFaces.add(name);
-        }
     }
 
     private void updateReaderMenuCallback(final ReaderMenu menu, final ReaderDataHolder readerDataHolder) {
@@ -174,6 +164,9 @@ public class ShowReaderMenuAction extends BaseAction {
             public void onMenuItemClicked(ReaderMenuItem menuItem) {
                 Log.d(TAG, "onMenuItemClicked: " + menuItem.getAction());
                 switch (menuItem.getAction()) {
+                    case FONT:
+                        showTextStyleDialog(readerDataHolder);
+                        break;
                     case ROTATION_ROTATE_0:
                         rotateScreen(readerDataHolder, 0);
                         break;
@@ -286,49 +279,20 @@ public class ShowReaderMenuAction extends BaseAction {
             public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
                 switch (menuItem.getAction()) {
-                    case FONT_SET_FONT_SIZE:
-                        break;
-                    case FONT_DECREASE_FONT_SIE:
-                        break;
-                    case FONT_INCREASE_FONT_SIZE:
-                        break;
-                    case FONT_SET_FONT_FACE:
-                        break;
-                    case FONT_SET_LINE_SPACING:
-                        setLineSpacing((FontSpacingLevel) newValue);
-                        break;
-                    case FONT_SET_PAGE_MARGINS:
-                        setPageMargins((FontSpacingLevel) newValue);
-                        break;
+                    case FONT_STYLE:
+                        setReaderStyle(readerDataHolder, newValue);
+                        updateReaderMenuState(readerDataHolder);
                 }
             }
         });
     }
 
-    private void setLineSpacing(FontSpacingLevel level) {
-        ReaderStyle.Percentage percentage = readerStyle.getLineSpacing();
-        switch (level) {
-            case small:
-                readerStyle.setLineSpacing(ReaderStyle.SMALL_LINE_SPACING);
-                break;
-            case middle:
-                readerStyle.setLineSpacing(ReaderStyle.NORMAL_LINE_SPACING);
-                break;
-            case large:
-                readerStyle.setLineSpacing(ReaderStyle.LARGE_LINE_SPACING);
-                break;
-            case increase:
-//                percentage.setPercent(Math.min(ReaderStyle.MAX_LINE_SPACING, percentage.getPercent()));
-                readerStyle.setLineSpacing(ReaderStyle.SMALL_LINE_SPACING);
-                break;
-            case decrease:
-                readerStyle.setLineSpacing(ReaderStyle.SMALL_LINE_SPACING);
-                break;
+    private void setReaderStyle(ReaderDataHolder readerDataHolder, Object value) {
+        if (value == null) {
+            return;
         }
-    }
-
-    private void setPageMargins(FontSpacingLevel level) {
-
+        ReaderStyle readerStyle = (ReaderStyle) value;
+        readerDataHolder.getReaderViewInfo().setReaderStyle(readerStyle);
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
@@ -492,6 +456,17 @@ public class ShowReaderMenuAction extends BaseAction {
             return false;
         }
         return true;
+    }
+
+    private void showTextStyleDialog(ReaderDataHolder readerDataHolder) {
+        final Dialog dialog = new DialogTextStyle(readerDataHolder, new DialogTextStyle.TextStyleCallback() {
+            @Override
+            public void onSaveReaderStyle(ReaderStyle readerStyle) {
+
+            }
+        });
+        dialog.show();
+        readerDataHolder.addActiveDialog(dialog);
     }
 
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
@@ -785,6 +760,11 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public List<String> getFontFaces() {
                 return fontFaces;
+            }
+
+            @Override
+            public ReaderStyle getReaderStyle() {
+                return readerDataHolder.getReaderViewInfo().getReaderStyle();
             }
         };
     }

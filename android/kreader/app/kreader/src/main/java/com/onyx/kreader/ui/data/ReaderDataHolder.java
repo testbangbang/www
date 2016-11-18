@@ -15,7 +15,6 @@ import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.ReaderUserDataInfo;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.request.CloseRequest;
 import com.onyx.kreader.host.request.PreRenderRequest;
 import com.onyx.kreader.host.request.RenderRequest;

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="10dp">
+
+
+    <LinearLayout
+        android:id="@+id/line_spacing_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            android:textSize="@dimen/dialog_common_text_size"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/reader_layer_menu_font_style_font_line_spacing"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_gravity="center">
+            <ImageView android:id="@+id/image_view_small_line_spacing"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_line_space_small"/>
+            <ImageView android:id="@+id/image_view_middle_line_spacing"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_line_space_mid"/>
+            <ImageView android:id="@+id/image_view_large_line_spacing"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_line_space_big"/>
+            <ImageView android:id="@+id/image_view_decrease_line_spacing"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_line_space_shrink"/>
+            <ImageView android:id="@+id/image_view_increase_line_spacing"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_line_space_expand"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/page_margin_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            android:textSize="@dimen/dialog_common_text_size"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/reader_layer_menu_font_style_page_margins"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_gravity="center">
+            <ImageView android:id="@+id/image_view_small_page_margins"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_margin_small"/>
+            <ImageView android:id="@+id/image_view_middle_page_margins"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_margin_mid"/>
+            <ImageView android:id="@+id/image_view_large_page_margins"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_margin_big"/>
+            <ImageView android:id="@+id/image_view_decrease_page_margins"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_margin_shrink"/>
+            <ImageView android:id="@+id/image_view_increase_page_margins"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       style="@style/fontStyle_imageView_style"
+                       android:src="@drawable/ic_dialog_reader_menu_font_margin_expand"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

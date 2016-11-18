@@ -17,4 +17,5 @@ public abstract class ReaderMenuState {
     public abstract boolean isShowingNotes();
 
     public abstract List<String> getFontFaces();
+    public abstract ReaderStyle getReaderStyle();
 }
