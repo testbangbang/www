@@ -13,11 +13,12 @@ import java.util.List;
  */
 public class DataCacheManager {
 
-    private MetadataCache metadataCache = new MetadataCache();
+    private MetadataCache metadataCache;
     private LibraryCacheManager libraryCacheManager;
     private boolean isLibraryCacheReady = false;
 
     public DataCacheManager() {
+        metadataCache = new MetadataCache();
         libraryCacheManager = new LibraryCacheManager();
     }
 

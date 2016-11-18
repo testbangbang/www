@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -29,18 +30,16 @@ public class LibraryCache {
         dataList.put(metadata.getIdString(), metadata);
     }
 
-    public void addList(final List<Metadata> list) {
-    }
-
     public void removeId(final String id) {
         dataList.remove(id);
     }
 
-    public void removeId(final List<String> list) {
-    }
-
     public List<Metadata> getValueList() {
         return new ArrayList<>(dataList.values());
+    }
+
+    public final LinkedHashMap<String, Metadata> getDataList() {
+        return dataList;
     }
 
 }
