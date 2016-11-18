@@ -50,6 +50,7 @@ public class PageManager {
     public void clear() {
         visible.clear();
         pageInfoList.clear();
+        pageInfoMap.clear();
         pagesBoundingRect.set(0, 0, 0, 0);
         firstVisiblePagePosition = null;
     }
