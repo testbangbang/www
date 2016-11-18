@@ -3,7 +3,6 @@ package com.onyx.kreader.plugins.alreader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -213,7 +212,9 @@ public class AlReaderPlugin implements ReaderPlugin,
      * set stream document style. ignore.
      * @param style
      */
-    public void setStyle(final ReaderStyle style) {}
+    public void setStyle(final ReaderStyle style) {
+        getPluginImpl().setStyle(style);
+    }
 
     /**
      * Retrieve reader hit test.
@@ -450,4 +451,8 @@ public class AlReaderPlugin implements ReaderPlugin,
         return true;
     }
 
+    @Override
+    public boolean supportTextPage() {
+        return true;
+    }
 }
