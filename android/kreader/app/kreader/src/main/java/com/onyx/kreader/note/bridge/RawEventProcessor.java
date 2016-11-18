@@ -74,7 +74,6 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     public void start() {
-        closeInputDevice();
         stop = false;
         reportData = true;
         clearInternalState();
