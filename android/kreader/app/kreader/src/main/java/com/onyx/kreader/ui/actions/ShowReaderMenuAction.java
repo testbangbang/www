@@ -5,10 +5,14 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.GAdapter;
+import com.onyx.android.sdk.data.GAdapterUtil;
+import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
@@ -28,6 +32,9 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderStyle.DPUnit;
+import com.onyx.android.sdk.data.ReaderStyle.Percentage;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageCropRequest;
@@ -51,8 +58,10 @@ import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
+import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.utils.DeviceConfig;
+import com.onyx.kreader.utils.DeviceUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -71,6 +80,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private static ReaderLayerMenu readerMenu;
     private boolean disableScribbleBrush = true;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
+    private static List<String> fontFaces = new ArrayList<>();
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -154,6 +164,9 @@ public class ShowReaderMenuAction extends BaseAction {
             public void onMenuItemClicked(ReaderMenuItem menuItem) {
                 Log.d(TAG, "onMenuItemClicked: " + menuItem.getAction());
                 switch (menuItem.getAction()) {
+                    case FONT:
+                        showTextStyleDialog(readerDataHolder);
+                        break;
                     case ROTATION_ROTATE_0:
                         rotateScreen(readerDataHolder, 0);
                         break;
@@ -265,8 +278,21 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
+                switch (menuItem.getAction()) {
+                    case FONT_STYLE:
+                        setReaderStyle(readerDataHolder, newValue);
+                        updateReaderMenuState(readerDataHolder);
+                }
             }
         });
+    }
+
+    private void setReaderStyle(ReaderDataHolder readerDataHolder, Object value) {
+        if (value == null) {
+            return;
+        }
+        ReaderStyle readerStyle = (ReaderStyle) value;
+        readerDataHolder.getReaderViewInfo().setReaderStyle(readerStyle);
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
@@ -430,6 +456,17 @@ public class ShowReaderMenuAction extends BaseAction {
             return false;
         }
         return true;
+    }
+
+    private void showTextStyleDialog(ReaderDataHolder readerDataHolder) {
+        final Dialog dialog = new DialogTextStyle(readerDataHolder, new DialogTextStyle.TextStyleCallback() {
+            @Override
+            public void onSaveReaderStyle(ReaderStyle readerStyle) {
+
+            }
+        });
+        dialog.show();
+        readerDataHolder.addActiveDialog(dialog);
     }
 
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
@@ -718,6 +755,16 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public boolean isShowingNotes() {
                 return SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
+            }
+
+            @Override
+            public List<String> getFontFaces() {
+                return fontFaces;
+            }
+
+            @Override
+            public ReaderStyle getReaderStyle() {
+                return readerDataHolder.getReaderViewInfo().getReaderStyle();
             }
         };
     }

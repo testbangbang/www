@@ -8,7 +8,7 @@ import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.kreader.plugins.images.ImagesWrapper;
 import com.onyx.kreader.utils.PagePositionUtils;
 
