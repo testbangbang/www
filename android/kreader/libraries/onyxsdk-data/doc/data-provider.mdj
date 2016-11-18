@@ -7526,10 +7526,10 @@
 							"containerExtending": false,
 							"left": 40,
 							"top": 568,
-							"width": 272,
-							"height": 152,
+							"width": 617,
+							"height": 185,
 							"autoResize": false,
-							"text": "pipe line\n\n* Create: list (DB) --> cache --> filter --> sort\n* Read:  list(DB) --> cache --> filter --> sort\n* Update : DB --> cache --> filter --> sort\n* Delete: DB --> cache --> filter --> sort\n\n* may need to update the global library list\n* library cache: linkedHashMap",
+							"text": "pipe line\n\n* Create: list (DB) --> cache --> filter --> sort\n* Read:  list(DB) --> cache --> filter --> sort\n* Update : DB --> cache --> filter --> sort\n* Delete: DB --> cache --> filter --> sort\n\n* may need to update the global library list\n* library cache: linkedHashMap\n* global is not needed\n* list query all and clear with certain filter, query all without filter, filter and sort in memory  ",
 							"wordWrap": true
 						}
 					]
