@@ -1,13 +1,12 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
-
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -156,6 +155,13 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return new RectF(0, 0,
                 getLayoutManager().getReaderViewOptions().getViewWidth(),
                 getLayoutManager().getReaderViewOptions().getViewHeight());
+    }
+
+    @Override
+    public void updateViewportRect(RectF rect) throws ReaderException {
+        super.updateViewportRect(rect);
+        getPageManager().clear();
+        gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public void scaleToPage() throws ReaderException {
