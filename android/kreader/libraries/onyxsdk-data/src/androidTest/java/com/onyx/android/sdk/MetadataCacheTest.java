@@ -90,9 +90,9 @@ public class MetadataCacheTest extends ApplicationTestCase<Application> {
 
         // test cache
         LibraryCache libraryCache = cacheManager.getLibraryCache(null);
-        assertEquals(libraryCache.getIdList().size(), list.size());
+        assertEquals(libraryCache.getValueList().size(), list.size());
         for (Metadata metadata : list) {
-            assertTrue(libraryCache.getIdList().contains(metadata.getIdString()));
+            assertTrue(libraryCache.getValueList().contains(metadata.getIdString()));
             assertEquals(cacheManager.getMetadataById(metadata.getIdString()), metadata);
         }
 
@@ -113,7 +113,7 @@ public class MetadataCacheTest extends ApplicationTestCase<Application> {
         list = dataManager.getDataManagerHelper().getLibraryMetadataList(getContext(), args);
         assertNotNull(list);
         assertTrue(list.size() == 3);
-        assertTrue(cacheManager.getLibraryCache(libraryUniqueId).getIdList().size() == 3);
+        assertTrue(cacheManager.getLibraryCache(libraryUniqueId).getValueList().size() == 3);
 
         //test newBook has libraryUniqueId
         args = MetadataQueryArgsBuilder.libraryNewBookListQuery(libraryUniqueId, SortBy.Name, SortOrder.Desc);
@@ -126,9 +126,9 @@ public class MetadataCacheTest extends ApplicationTestCase<Application> {
         list = dataManager.getDataManagerHelper().getLibraryMetadataList(getContext(), args);
         assertNotNull(list);
         assertTrue(list.size() == 1);
-        List<String> md5List = cacheManager.getLibraryCache(libraryUniqueId).getIdList();
-        assertTrue(md5List.contains(list.get(0).getIdString()));
-        assertNotNull(cacheManager.getMetadataById(md5List.get(0)));
+        List<Metadata> metadatas = cacheManager.getLibraryCache(libraryUniqueId).getValueList();
+        assertTrue(metadatas.contains(list.get(0).getIdString()));
+        assertNotNull(cacheManager.getMetadataById(metadatas.get(0).getIdString()));
     }
 
 }

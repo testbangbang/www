@@ -12,11 +12,9 @@ import java.util.Map;
 public class LibraryCacheManager {
 
     private Map<String, LibraryCache> memoryCacheMap = new LinkedHashMap<>();
-    private DataProviderBase dataProvider;
     public static final String ROOT_LIBRARY_TAG = "root";
 
-    public LibraryCacheManager(DataProviderBase dataProvider) {
-        this.dataProvider = dataProvider;
+    public LibraryCacheManager() {
     }
 
     public void clearLibrary(final String libraryId) {
@@ -34,7 +32,7 @@ public class LibraryCacheManager {
     public LibraryCache getLibraryCache(final String libraryId) {
         LibraryCache cache = memoryCacheMap.get(libraryId);
         if (cache == null) {
-            cache = new LibraryCache(dataProvider);
+            cache = new LibraryCache();
             memoryCacheMap.put(libraryId, cache);
         }
         return cache;

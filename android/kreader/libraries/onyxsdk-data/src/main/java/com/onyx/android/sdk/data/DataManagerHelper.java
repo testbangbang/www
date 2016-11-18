@@ -31,7 +31,7 @@ public class DataManagerHelper {
     private DataCacheManager dataCacheManager;
 
     public DataManagerHelper() {
-        dataCacheManager = new DataCacheManager(getDataProvider());
+        dataCacheManager = new DataCacheManager();
     }
 
     public final DataProviderManager getDataProviderManager() {
@@ -85,15 +85,14 @@ public class DataManagerHelper {
     public List<Metadata> getLibraryMetadataListOfAll(Context context, final QueryArgs args) {
         List<Metadata> list = new ArrayList<>();
         LibraryCache cache = dataCacheManager.getLibraryCache(args.libraryUniqueId);
-        if (CollectionUtils.isNullOrEmpty(cache.getIdList())) {
+        if (CollectionUtils.isNullOrEmpty(cache.getValueList())) {
             QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryAllBookQuery(args.libraryUniqueId, args.sortBy, args.order);
-            list = cache.getList(context, queryArgs);
+            list = cache.getValueList();
             dataCacheManager.addAllToLibrary(args.libraryUniqueId, list);
             return list;
         }
 
-        for (String id : cache.getIdList()) {
-            Metadata metadata = dataCacheManager.getMetadataById(id);
+        for (Metadata metadata : cache.getValueList()) {
             if (metadata == null) {
                 continue;
             }
@@ -122,14 +121,13 @@ public class DataManagerHelper {
 
         List<Metadata> list = new ArrayList<>();
         LibraryCache cache = dataCacheManager.getLibraryCache(queryArgs.libraryUniqueId);
-        if (CollectionUtils.isNullOrEmpty(cache.getIdList())) {
-            list = cache.getList(context, queryArgs);
+        if (CollectionUtils.isNullOrEmpty(cache.getValueList())) {
+            list = cache.getValueList();
             dataCacheManager.addAllToLibrary(queryArgs.libraryUniqueId, list);
             return list;
         }
 
-        for (String id : cache.getIdList()) {
-            Metadata metadata = dataCacheManager.getMetadataById(id);
+        for (Metadata metadata : cache.getValueList()) {
             if (metadata == null) {
                 continue;
             }
@@ -148,7 +146,7 @@ public class DataManagerHelper {
     public void addToLibrary(final Context context, final Library library, final List<Metadata> addList) {
         addMetadataCollections(context, library, addList);
         LibraryCache cache = dataCacheManager.getLibraryCache(library.getIdString());
-        if (CollectionUtils.isNullOrEmpty(cache.getIdList())) {
+        if (CollectionUtils.isNullOrEmpty(cache.getValueList())) {
             dataCacheManager.removeAll(library.getParentUniqueId(), addList);
             return;
         }

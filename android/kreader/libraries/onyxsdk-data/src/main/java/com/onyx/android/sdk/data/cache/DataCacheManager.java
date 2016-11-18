@@ -2,7 +2,6 @@ package com.onyx.android.sdk.data.cache;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.utils.MetaDataUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
@@ -18,8 +17,8 @@ public class DataCacheManager {
     private LibraryCacheManager libraryCacheManager;
     private boolean isLibraryCacheReady = false;
 
-    public DataCacheManager(DataProviderBase dataProvider) {
-        libraryCacheManager = new LibraryCacheManager(dataProvider);
+    public DataCacheManager() {
+        libraryCacheManager = new LibraryCacheManager();
     }
 
     public LibraryCache getLibraryCache(final String libraryUniqueId) {
@@ -45,7 +44,7 @@ public class DataCacheManager {
     public void addToLibrary(final String libraryId, final Metadata metadata) {
         final LibraryCache libraryCache = getLibraryCache(libraryId);
         if (libraryCache != null) {
-            libraryCache.addId(metadata.getIdString());
+            libraryCache.add(metadata);
         }
     }
 
@@ -67,11 +66,7 @@ public class DataCacheManager {
 
     public List<Metadata> getMetadataList(final String libraryId) {
         LibraryCache cache = getLibraryCache(libraryId);
-        List<Metadata> list = new ArrayList<>();
-        for (String id : cache.getIdList()) {
-            list.add(metadataCache.getById(id));
-        }
-        return list;
+        return cache.getValueList();
     }
 
     public boolean remove(final String libraryId, final String metadataId) {
