@@ -13,6 +13,7 @@ public class LibraryCacheManager {
 
     private Map<String, LibraryCache> memoryCacheMap = new LinkedHashMap<>();
     private DataProviderBase dataProvider;
+    public static final String ROOT_LIBRARY_TAG = "root";
 
     public LibraryCacheManager(DataProviderBase dataProvider) {
         this.dataProvider = dataProvider;
@@ -37,5 +38,9 @@ public class LibraryCacheManager {
             memoryCacheMap.put(libraryId, cache);
         }
         return cache;
+    }
+
+    public LibraryCache getRootLibrary() {
+        return getLibraryCache(ROOT_LIBRARY_TAG);
     }
 }
