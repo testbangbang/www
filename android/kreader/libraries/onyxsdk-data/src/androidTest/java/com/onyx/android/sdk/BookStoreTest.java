@@ -83,7 +83,7 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
         assertTrue(byteResponse.isSuccessful());
         assertTrue(byteResponse.body().bytes().length == link.size);
 
-        //test book comment list
+        //test book comment getValuesList
         Response<ProductResult<Comment>> commentListResponse = getService().getBookCommentList(uniqueId, null).execute();
         assertNotNull(commentListResponse.body());
         ProductResult<Comment> commentList = commentListResponse.body();
@@ -187,8 +187,8 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
         Response<ProductResult<Product>> response = object.execute();
         assertNotNull(response.body());
         assertTrue(response.body().count > 0);
-        assertNotNull(response.body().list);
-        assertTrue(response.body().list.size() <= 5);
+        assertNotNull(response.body().getValuesList);
+        assertTrue(response.body().getValuesList.size() <= 5);
     }*/
 
     public void testContainerList() throws Exception {

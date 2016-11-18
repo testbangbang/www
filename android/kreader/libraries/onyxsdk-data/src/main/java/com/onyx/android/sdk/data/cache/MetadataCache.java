@@ -45,7 +45,7 @@ public class MetadataCache {
         pathMap.clear();
     }
 
-    public List<Metadata> list() {
+    public List<Metadata> getValuesList() {
         return new ArrayList<>(idMap.values());
     }
 

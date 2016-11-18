@@ -8,8 +8,8 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 3/13/16.
- * Represents a block of layout. For text page it contains list of Layout Block.
- * The layout block contains a list of LayoutRunLine.
+ * Represents a block of layout. For text page it contains getValuesList of Layout Block.
+ * The layout block contains a getValuesList of LayoutRunLine.
  * TextPage
  *    |--LayoutBlock
  *           |--  List<LayoutRunLine>

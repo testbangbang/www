@@ -178,7 +178,7 @@ public class AccountTest extends ApplicationTestCase<Application> {
         assertEquals(device.accountId, specDevice.accountId);
         assertEquals(device.model, specDevice.model);
 
-        //test get bound device list
+        //test get bound device getValuesList
         Response<List<Device>> listResponse = getService().getBoundDeviceList(account.sessionToken).execute();
         assertNotNull(listResponse);
         assertNotNull(listResponse.body());

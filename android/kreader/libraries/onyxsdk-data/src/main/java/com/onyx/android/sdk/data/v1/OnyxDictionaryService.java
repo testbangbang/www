@@ -16,7 +16,7 @@ import retrofit2.http.Query;
  */
 public interface OnyxDictionaryService {
 
-    @GET("dictionary/list")
+    @GET("dictionary/getValuesList")
     Call<ProductResult<Dictionary>> dictionaryList(@Query(Constant.WHERE_TAG) final String param);
 
     @GET("dictionary/{id}")

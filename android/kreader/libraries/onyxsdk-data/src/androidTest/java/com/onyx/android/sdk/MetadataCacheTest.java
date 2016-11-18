@@ -3,6 +3,8 @@ package com.onyx.android.sdk;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
@@ -12,14 +14,20 @@ import com.onyx.android.sdk.data.cache.LibraryCache;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
+import com.onyx.android.sdk.data.provider.DataProviderManager;
+import com.onyx.android.sdk.data.request.data.MetadataRequest;
 import com.onyx.android.sdk.data.utils.MetaDataUtils;
 import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
+import static com.onyx.android.sdk.MetadataTestUtils.awaitCountDownLatch;
 import static com.onyx.android.sdk.MetadataTestUtils.getAscString;
 
 /**
@@ -130,5 +138,51 @@ public class MetadataCacheTest extends ApplicationTestCase<Application> {
         assertTrue(metadatas.contains(list.get(0).getIdString()));
         assertNotNull(cacheManager.getMetadataById(metadatas.get(0).getIdString()));
     }
+
+
+    public void testBookListRequest() {
+        MetadataTestUtils.init(getContext());
+
+        final int count = TestUtils.randInt(4, 10);
+        final DataProviderBase provider = DataProviderManager.getDataProvider();
+        provider.clearMetadata();
+        final HashMap<String, Metadata> originMetadataMap = new HashMap<>();
+        for (int i = 0; i < count; i++) {
+            final Metadata metadata = MetadataTestUtils.getRandomMetadata();
+            originMetadataMap.put(metadata.getIdString(), metadata);
+            metadata.save();
+            MetadataTestUtils.assertRandomMetadata(getContext(), provider, metadata);
+        }
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        QueryArgs queryArgs = MetadataQueryArgsBuilder.allBooksQuery(MetadataTestUtils.defaultContentTypes(),
+                OrderBy.fromProperty(Metadata_Table.createdAt).descending());
+        DataManager dataManager = new DataManager();
+        final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
+        dataManager.submit(getContext(), metadataRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                assertNull(e);
+                assertNotNull(metadataRequest.getList());
+                assertTrue(metadataRequest.getList().size() > 0);
+                assertTrue(metadataRequest.getList().size() == count);
+                for (Metadata metadata : metadataRequest.getList()) {
+                    assertTrue(originMetadataMap.containsKey(metadata.getIdString()));
+                }
+
+                List<Metadata> list = metadataRequest.getList();
+                Metadata tmp = list.get(0);
+                for (int i = 1; i < list.size(); i++) {
+                    assertTrue(tmp.getCreatedAt().getTime() >= list.get(i).getCreatedAt().getTime());
+                    tmp = list.get(i);
+                }
+                provider.clearMetadata();
+                countDownLatch.countDown();
+            }
+        });
+        awaitCountDownLatch(countDownLatch);
+    }
+
 
 }

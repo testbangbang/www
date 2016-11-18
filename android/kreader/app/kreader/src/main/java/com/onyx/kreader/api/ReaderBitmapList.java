@@ -101,7 +101,7 @@ public class ReaderBitmapList {
         current = 0;
         count = 0;
         if (bitmapList != null) {
-            // TODO why not recycle bitmaps in the list?
+            // TODO why not recycle bitmaps in the getValuesList?
             bitmapList.clear();
         }
     }

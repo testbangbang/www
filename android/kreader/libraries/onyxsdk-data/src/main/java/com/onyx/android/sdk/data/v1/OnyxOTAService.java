@@ -21,7 +21,7 @@ public interface OnyxOTAService {
     @GET("app")
     Call<ApplicationUpdate> getUpdateAppInfo(@Query(Constant.WHERE_TAG) final String param);
 
-    @GET("app/list")
+    @GET("app/getValuesList")
     Call<List<ApplicationUpdate>> getAllUpdateAppInfoList(@Query(Constant.WHERE_TAG) final String param);
 
     @GET("app/batchUpdate")

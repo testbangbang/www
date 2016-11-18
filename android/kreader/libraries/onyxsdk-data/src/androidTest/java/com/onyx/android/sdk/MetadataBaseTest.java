@@ -36,6 +36,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
+import static com.onyx.android.sdk.MetadataTestUtils.awaitCountDownLatch;
 import static com.onyx.android.sdk.MetadataTestUtils.getAscString;
 import static com.onyx.android.sdk.MetadataTestUtils.getRandomLibrary;
 
@@ -318,15 +319,6 @@ public class MetadataBaseTest extends ApplicationTestCase<Application> {
         });
         awaitCountDownLatch(countDownLatch);
     }
-
-    private void awaitCountDownLatch(CountDownLatch countDownLatch) {
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public DataProviderBase getProviderBase() {
         MetadataTestUtils.init(getContext());

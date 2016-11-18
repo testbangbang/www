@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 3/12/16.
- * Read data from model and generate LayoutRun list. After that the layout engine could use the LayoutRun list easily.
+ * Read data from model and generate LayoutRun getValuesList. After that the layout engine could use the LayoutRun getValuesList easily.
  * Maintain style in this class?
  */
 public class LayoutRunGenerator {
@@ -68,7 +68,7 @@ public class LayoutRunGenerator {
     }
 
     /**
-     * fetch data from model and generate LayoutRun list.
+     * fetch data from model and generate LayoutRun getValuesList.
      * @param list
      * @param textStyle
      * @param runsLimit how many runs we need.

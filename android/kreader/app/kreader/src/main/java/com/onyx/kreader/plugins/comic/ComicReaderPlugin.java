@@ -336,7 +336,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * Retrieve links of specified page.
      *
      * @param position
-     * @return link list.
+     * @return link getValuesList.
      */
     @Override
     public List<ReaderSelection> getLinks(String position) {

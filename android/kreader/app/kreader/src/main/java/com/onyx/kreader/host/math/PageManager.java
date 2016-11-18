@@ -421,7 +421,7 @@ public class PageManager {
     }
 
     /**
-     * collect visible page list in page list.
+     * collect visible page getValuesList in page getValuesList.
      */
     public List<PageInfo> collectVisiblePages() {
         visible.clear();

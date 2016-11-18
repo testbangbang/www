@@ -46,6 +46,22 @@ public class DataManagerHelper {
         return dataCacheManager;
     }
 
+    public boolean isMetadataCacheReady() {
+        return getDataCacheManager().isMetadataCacheReady();
+    }
+
+    public List<Metadata> getAllMetadata(final Context context) {
+        List<Metadata> list;
+        if (isMetadataCacheReady()) {
+            list = getDataCacheManager().getAllMetadataList();
+        } else {
+            list = getDataProvider().findMetadata(context, null);
+            getDataCacheManager().addAllToMetadataCache(list);
+            getDataCacheManager().setMetadataCacheReady(true);
+        }
+        return list;
+    }
+
     public void cacheUpdateMetaList(String oldUniqueId, String newUniqueId, List<Metadata> metadataList) {
         dataCacheManager.removeAll(oldUniqueId, metadataList);
         dataCacheManager.addAllToLibrary(newUniqueId, metadataList);
@@ -80,6 +96,14 @@ public class DataManagerHelper {
                 getDataProvider().addMetadataCollection(context, collection);
             }
         }
+    }
+
+    public List<Metadata> filter(final List<Metadata> list, final QueryArgs queryArgs) {
+        return null;
+    }
+
+    public List<Metadata> sortInPlace(final List<Metadata> list, final QueryArgs queryArgs) {
+        return list;
     }
 
     public List<Metadata> getLibraryMetadataListOfAll(Context context, final QueryArgs args) {

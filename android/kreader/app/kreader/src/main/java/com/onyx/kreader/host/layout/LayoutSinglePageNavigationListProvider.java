@@ -14,7 +14,7 @@ import com.onyx.kreader.host.wrapper.Reader;
 
 /**
  * Created by zhuzeng on 10/19/15.
- * Single hard page with sub screen navigation list support.
+ * Single hard page with sub screen navigation getValuesList support.
  */
 public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 

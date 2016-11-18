@@ -15,6 +15,7 @@ public class DataCacheManager {
 
     private MetadataCache metadataCache;
     private LibraryCacheManager libraryCacheManager;
+    private boolean isMetadataCacheReady = false;
     private boolean isLibraryCacheReady = false;
 
     public DataCacheManager() {
@@ -36,6 +37,12 @@ public class DataCacheManager {
 
     public void addToMetadataCache(final Metadata metadata) {
         metadataCache.add(metadata);
+    }
+
+    public void addAllToMetadataCache(final List<Metadata> list) {
+        for(Metadata metadata : list) {
+            metadataCache.add(metadata);
+        }
     }
 
     private void removeFromMetadataCache(Metadata metadata) {
@@ -91,6 +98,7 @@ public class DataCacheManager {
         metadataCache.clear();
         libraryCacheManager.clear();
         setLibraryCacheReady(false);
+        setMetadataCacheReady(false);
     }
 
     public void setLibraryCacheReady(boolean ready) {
@@ -99,6 +107,14 @@ public class DataCacheManager {
 
     public boolean isLibraryCacheReady() {
         return (isLibraryCacheReady && !isEmpty());
+    }
+
+    public boolean isMetadataCacheReady() {
+        return isMetadataCacheReady;
+    }
+
+    public void setMetadataCacheReady(boolean metadataCacheReady) {
+        isMetadataCacheReady = metadataCacheReady;
     }
 
     public boolean isEmpty() {
@@ -114,7 +130,7 @@ public class DataCacheManager {
     }
 
     public List<Metadata> getAllMetadataList() {
-        return metadataCache.list();
+        return metadataCache.getValuesList();
     }
 
     public List<Metadata> getMetadataList(final List<Metadata> originList, final QueryArgs args) {

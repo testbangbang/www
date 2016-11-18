@@ -23,7 +23,7 @@ public class PreRenderRequest extends BaseReaderRequest {
             return;
         }
 
-        // do not save position in history list.
+        // do not save position in history getValuesList.
         reader.getReaderLayoutManager().setSavePosition(false);
         final ReaderDrawContext drawContext = ReaderDrawContext.create(true);
         final PositionSnapshot snapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();

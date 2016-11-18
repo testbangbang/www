@@ -18,7 +18,7 @@ public class HistoryManager {
     private List<String> forward = new ArrayList<String>();
 
     /**
-     * move back, undo, move from back to forward list.
+     * move back, undo, move from back to forward getValuesList.
      * @return
      */
     public String undo() {
@@ -60,7 +60,7 @@ public class HistoryManager {
     }
 
     /**
-     * addMetadataToLibrary to back list, so you can undo
+     * addMetadataToLibrary to back getValuesList, so you can undo
      * @param item
      * @param allowDuplicate allow duplicated item or not.
      * @return

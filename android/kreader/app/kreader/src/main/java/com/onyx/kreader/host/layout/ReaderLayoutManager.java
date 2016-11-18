@@ -259,7 +259,7 @@ public class ReaderLayoutManager {
     }
 
     /**
-     * internal method to change layout type and position without adding to history list.
+     * internal method to change layout type and position without adding to history getValuesList.
      * @param snapshot
      * @return
      */

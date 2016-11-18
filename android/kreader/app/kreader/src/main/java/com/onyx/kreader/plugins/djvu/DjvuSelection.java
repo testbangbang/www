@@ -80,7 +80,7 @@ public class DjvuSelection implements ReaderSelection {
     }
 
     /**
-     * Retrieve selected rectangle list in page coordinates system.
+     * Retrieve selected rectangle getValuesList in page coordinates system.
      *
      * @return
      */

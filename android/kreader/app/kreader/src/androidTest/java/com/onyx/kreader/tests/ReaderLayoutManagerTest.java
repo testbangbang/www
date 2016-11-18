@@ -155,7 +155,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
     }
 
     /**
-     * test single navigation list.
+     * test single navigation getValuesList.
      * @throws Exception
      */
     public void testSinglePageSnapshot3() throws Exception  {

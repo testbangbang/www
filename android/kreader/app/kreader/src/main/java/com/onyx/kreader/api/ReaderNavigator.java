@@ -70,7 +70,7 @@ public interface ReaderNavigator {
 
     /**
      * Retrieve links of specified page.
-     * @return link list.
+     * @return link getValuesList.
      */
     public List<ReaderSelection> getLinks(final String position);
 

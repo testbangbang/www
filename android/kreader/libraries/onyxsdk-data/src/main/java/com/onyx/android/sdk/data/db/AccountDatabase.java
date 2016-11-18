@@ -23,7 +23,7 @@ public class AccountDatabase {
     private LinkedHashMap<String, OnyxAccount> accountMap = new LinkedHashMap(16,0.75F,true);
     private OnyxAccount currentAccount;
 
-    // always use the last one as current account, since it's added to end of list.
+    // always use the last one as current account, since it's added to end of getValuesList.
     public OnyxAccount getCurrentAccount() {
         if (currentAccount == null) {
             if (accountMap.size() > 0) {

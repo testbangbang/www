@@ -110,10 +110,10 @@ public class DictionaryTest extends ApplicationTestCase<Application> {
         int count = TestUtils.randInt(10, 15);
         List<Dictionary> list = getRandomDictionaryList(count);
 
-        //test save list
+        //test save getValuesList
         StoreUtils.saveToLocalFast(list, Dictionary.class);
 
-        //test query list
+        //test query getValuesList
         List<Dictionary> testList = StoreUtils.queryDataList(Dictionary.class);
         assertNotNull(testList);
         assertTrue(testList.size() == list.size());
@@ -164,7 +164,7 @@ public class DictionaryTest extends ApplicationTestCase<Application> {
         String sessionToken = account.sessionToken;
         assertNotNull(sessionToken);
 
-        //test all list
+        //test all getValuesList
         Response<ProductResult<Dictionary>> response = getService().dictionaryList(null).execute();
         assertTrue(response.isSuccessful());
         assertNotNull(response.body());

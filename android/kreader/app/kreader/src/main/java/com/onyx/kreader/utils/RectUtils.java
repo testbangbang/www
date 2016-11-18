@@ -80,7 +80,7 @@ public class RectUtils {
     static public List<RectF> mergeRectanglesByBaseLine(List<RectF> list) {
         List<RectF> baseList = new ArrayList<>();
         for (RectF rect : list) {
-            // force-brute iterating two list, since we will not have to much to compare
+            // force-brute iterating two getValuesList, since we will not have to much to compare
             boolean foundBaseLine = false;
             for (int i = 0; i < baseList.size(); i++) {
                 RectF baseRect = baseList.get(i);

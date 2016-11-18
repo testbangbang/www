@@ -25,7 +25,7 @@ import retrofit2.http.Query;
  */
 public interface OnyxBookStoreService {
 
-    @GET("book/list")
+    @GET("book/getValuesList")
     Call<ProductResult<Product>> bookList(@Query(Constant.WHERE_TAG) final String param);
 
     @GET("book/{id}")
@@ -46,10 +46,10 @@ public interface OnyxBookStoreService {
     @GET("book/{id}/links")
     Call<List<DownloadLink>> bookDownloadLink(@Path("id") final String uniqueId);
 
-    @GET("book/list/recommended")
+    @GET("book/getValuesList/recommended")
     Call<ProductResult<Product>> bookRecommendedList(@Query(Constant.WHERE_TAG) final String param);
 
-    @GET("book/list/recent")
+    @GET("book/getValuesList/recent")
     Call<ProductResult<Product>> bookRecentList();
 
     @GET("book/search")
@@ -70,7 +70,7 @@ public interface OnyxBookStoreService {
     Call<ResponseBody> getBookCover(@Path("id") final String uniqueId,
                                     @Path(Constant.TYPE_TAG) final String type);
 
-    @GET("book/{id}/comment/list")
+    @GET("book/{id}/comment/getValuesList")
     Call<ProductResult<Comment>> getBookCommentList(@Path("id") final String uniqueId,
                                                     @Query(Constant.WHERE_TAG) final String param);
 

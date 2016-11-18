@@ -22,14 +22,14 @@ public class ApplicationUpdateRequest extends BaseCloudRequest {
     private List<ApplicationUpdate> list;
 
     /**
-     * use this method as get all update app list based on query
+     * use this method as get all update app getValuesList based on query
      */
     public ApplicationUpdateRequest(ProductQuery query) {
         this.query = query;
     }
 
     /**
-     * use this method as get specification update app list
+     * use this method as get specification update app getValuesList
      */
     public ApplicationUpdateRequest(List<ApplicationUpdate> queryList) {
         this.queryList = queryList;
