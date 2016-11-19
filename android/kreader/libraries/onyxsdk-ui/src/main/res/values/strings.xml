@@ -6,6 +6,7 @@
     <string name="app_name">onyx.sdk.ui</string>
     <string name="dialog_reader_menu_back">Back</string>
     <string name="font_face">Font face</string>
+    <string name="text_style">Text Style</string>
     <string name="reader_layer_menu_zoom">Zoom</string>
     <string name="reader_layer_menu_font_reflow">Font Reflow</string>
     <string name="reader_layer_menu_zoom_in">Zoom In</string>
