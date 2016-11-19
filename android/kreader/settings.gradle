@@ -7,5 +7,4 @@ include ':libraries:cropimage',
         ':libraries:libedu',
         ':app:kreader',
         ':app:note',
-        ':app:eschool',
         ':app-edu'
