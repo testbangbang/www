@@ -13,6 +13,7 @@ import com.onyx.android.sdk.data.cache.DataCacheManager;
 import com.onyx.android.sdk.data.cache.LibraryCache;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.request.data.MetadataRequest;

@@ -40,6 +40,10 @@ public class QueryArgs {
     public QueryArgs() {
     }
 
+    public static QueryArgs queryAll() {
+        return new QueryArgs();
+    }
+
     public QueryArgs(SortBy sortBy, SortOrder order) {
         if (sortBy != null) {
             this.sortBy = sortBy;

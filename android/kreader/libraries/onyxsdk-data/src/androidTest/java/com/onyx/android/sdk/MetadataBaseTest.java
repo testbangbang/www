@@ -320,6 +320,30 @@ public class MetadataBaseTest extends ApplicationTestCase<Application> {
         awaitCountDownLatch(countDownLatch);
     }
 
+    public void testAllBookList() {
+        MetadataTestUtils.init(getContext());
+
+        final int count = TestUtils.randInt(4, 10);
+        final DataProviderBase provider = DataProviderManager.getDataProvider();
+        provider.clearMetadata();
+        final HashMap<String, Metadata> originMetadataMap = new HashMap<>();
+        for (int i = 0; i < count; i++) {
+            final Metadata metadata = MetadataTestUtils.getRandomMetadata();
+            originMetadataMap.put(metadata.getIdString(), metadata);
+            metadata.save();
+            MetadataTestUtils.assertRandomMetadata(getContext(), provider, metadata);
+        }
+
+        final List<Metadata> result = provider.findMetadata(getContext(), QueryArgs.queryAll());
+        assertTrue(result.size() > 0);
+        assertTrue(result.size() == count);
+        for (Metadata metadata : result) {
+            assertTrue(originMetadataMap.containsKey(metadata.getIdString()));
+        }
+
+        provider.clearMetadata();
+    }
+
     public DataProviderBase getProviderBase() {
         MetadataTestUtils.init(getContext());
         return DataProviderManager.getDataProvider();

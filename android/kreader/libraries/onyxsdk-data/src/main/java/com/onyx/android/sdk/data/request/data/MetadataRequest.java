@@ -20,18 +20,7 @@ public class MetadataRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        // 1. cache is ready or not
-        // 2. if cache is ready find library --> filter by queryArgs --> sort
-        // 3. if cache not ready, query data provider and cache the result, filter and sort
-        // into one function.
-        List<Metadata> list;
-        if (dataManager.getDataManagerHelper().isCacheReady()) {
-            list = dataManager.getDataManagerHelper().getDataCacheManager().getAllMetadataList();
-        } else {
-            list = dataManager.getDataManagerHelper().getDataProvider().findMetadata(getContext(), null);
-            saveToCache();
-            markCacheReady();
-        }
+        List<Metadata> list = dataManager.getDataManagerHelper().getAllMetadata(getContext());
         list = dataManager.getDataManagerHelper().filter(list, queryArgs);
         dataManager.getDataManagerHelper().sortInPlace(list, queryArgs);
     }

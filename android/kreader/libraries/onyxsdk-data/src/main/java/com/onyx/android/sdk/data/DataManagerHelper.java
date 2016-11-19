@@ -55,7 +55,7 @@ public class DataManagerHelper {
         if (isMetadataCacheReady()) {
             list = getDataCacheManager().getAllMetadataList();
         } else {
-            list = getDataProvider().findMetadata(context, null);
+            list = getDataProvider().findMetadata(context, QueryArgs.queryAll());
             getDataCacheManager().addAllToMetadataCache(list);
             getDataCacheManager().setMetadataCacheReady(true);
         }
