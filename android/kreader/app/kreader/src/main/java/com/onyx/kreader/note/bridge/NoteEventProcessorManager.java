@@ -76,7 +76,7 @@ public class NoteEventProcessorManager {
 
     private void detectTouchType() {
         useRawInput = getNoteManager().getNoteConfig().useRawInput();
-        singleTouch = DeviceUtils.detectTouchDeviceCount() <= 1;
+        singleTouch = DeviceUtils.detectTouchDeviceCount() <= 1 || getNoteManager().getNoteConfig().isSingleTouch();
         supportBigPen = getNoteManager().getNoteConfig().supportBigPen();
     }
 
