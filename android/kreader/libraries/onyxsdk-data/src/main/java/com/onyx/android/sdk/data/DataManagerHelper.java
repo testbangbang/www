@@ -50,14 +50,13 @@ public class DataManagerHelper {
         return getDataCacheManager().isMetadataCacheReady();
     }
 
-    public List<Metadata> getAllMetadata(final Context context) {
-        List<Metadata> list;
-        if (isMetadataCacheReady()) {
-            list = getDataCacheManager().getAllMetadataList();
-        } else {
-            list = getDataProvider().findMetadata(context, QueryArgs.queryAll());
-            getDataCacheManager().addAllToMetadataCache(list);
-            getDataCacheManager().setMetadataCacheReady(true);
+    public List<Metadata> getMetadataListByQueryArgs(final Context context, final QueryArgs queryArgs, boolean saveToCache) {
+        BookFilter filter = queryArgs.filter;
+        queryArgs.filter = BookFilter.ALL;
+        final List<Metadata> list = getDataProvider().findMetadata(context, queryArgs);
+        queryArgs.filter = filter;
+        if (saveToCache) {
+            getDataCacheManager().addAllToLibrary(queryArgs.libraryUniqueId, list);
         }
         return list;
     }

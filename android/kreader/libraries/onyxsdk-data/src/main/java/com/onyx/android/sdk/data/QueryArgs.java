@@ -40,6 +40,23 @@ public class QueryArgs {
     public QueryArgs() {
     }
 
+    public QueryArgs(final QueryArgs another) {
+        limit = another.limit;
+        offset = another.offset;
+        conditionGroup = another.conditionGroup;
+        orderByList = new ArrayList<>(another.orderByList);
+        libraryUniqueId = another.libraryUniqueId;
+        filter = another.filter;
+        sortBy = another.sortBy;
+        order = another.order;
+        fileType = new HashSet<>(another.fileType);
+        author = new HashSet<>(another.author);
+        title = new HashSet<>(another.title);
+        tags = new HashSet<>(another.tags);
+        series = new HashSet<>(another.series);
+        query = another.query;
+    }
+
     public static QueryArgs queryAll() {
         return new QueryArgs();
     }

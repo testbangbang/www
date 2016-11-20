@@ -1,7 +1,10 @@
 package com.onyx.android.sdk.data.request.data;
 
+import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.cache.LibraryCache;
 import com.onyx.android.sdk.data.model.Metadata;
 
 import java.util.ArrayList;
@@ -20,9 +23,15 @@ public class MetadataRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        List<Metadata> list = dataManager.getDataManagerHelper().getAllMetadata(getContext());
-        list = dataManager.getDataManagerHelper().filter(list, queryArgs);
-        dataManager.getDataManagerHelper().sortInPlace(list, queryArgs);
+        final DataManagerHelper helper = dataManager.getDataManagerHelper();
+        final LibraryCache libraryCache = helper.getDataCacheManager().getLibraryCache(queryArgs.libraryUniqueId);
+        if (libraryCache != null) {
+            list = libraryCache.getValueList();
+        } else {
+            list = helper.getMetadataListByQueryArgs(getContext(), queryArgs, true);
+        }
+        list = helper.filter(list, queryArgs);
+        helper.sortInPlace(list, queryArgs);
     }
 
     public final List<Metadata> getList() {
