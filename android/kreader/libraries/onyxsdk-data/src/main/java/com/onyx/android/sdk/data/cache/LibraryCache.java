@@ -30,8 +30,20 @@ public class LibraryCache {
         dataList.put(metadata.getIdString(), metadata);
     }
 
+    public void addAll(final List<Metadata> list) {
+        for(Metadata metadata : list) {
+            dataList.put(metadata.getIdString(), metadata);
+        }
+    }
+
     public void removeId(final String id) {
         dataList.remove(id);
+    }
+
+    public void removeAll(final List<Metadata> list) {
+        for(Metadata metadata : list) {
+            dataList.remove(metadata.getIdString());
+        }
     }
 
     public List<Metadata> getValueList() {
@@ -42,4 +54,11 @@ public class LibraryCache {
         return dataList;
     }
 
+    public int size() {
+        return dataList.size();
+    }
+
+    public boolean isEmpty() {
+        return dataList.isEmpty();
+    }
 }

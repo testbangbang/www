@@ -59,7 +59,7 @@ public class LocalDataProvider implements DataProviderBase {
             }
             return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
         }
-        return new ArrayList<Metadata>();
+        return new ArrayList<>();
     }
 
     public Metadata findMetadataByCloudReference(Context context, final String cloudReference) {

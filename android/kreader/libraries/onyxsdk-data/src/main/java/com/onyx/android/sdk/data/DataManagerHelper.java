@@ -28,10 +28,13 @@ import java.util.List;
 
 public class DataManagerHelper {
     private DataProviderManager dataProviderManager = new DataProviderManager();
-    private DataCacheManager dataCacheManager;
+    private DataCacheManager dataCacheManager = new DataCacheManager();
+    private MetadataHelper metadataHelper;
+    private LibraryHelper libraryHelper;
 
     public DataManagerHelper() {
-        dataCacheManager = new DataCacheManager();
+        metadataHelper = new MetadataHelper(this);
+        libraryHelper = new LibraryHelper(this);
     }
 
     public final DataProviderManager getDataProviderManager() {
@@ -46,16 +49,27 @@ public class DataManagerHelper {
         return dataCacheManager;
     }
 
+    public MetadataHelper getMetadataHelper() {
+        return metadataHelper;
+    }
+
+    public LibraryHelper getLibraryHelper() {
+        return libraryHelper;
+    }
+
     public boolean isMetadataCacheReady() {
         return getDataCacheManager().isMetadataCacheReady();
     }
 
-    public List<Metadata> getMetadataListByQueryArgs(final Context context, final QueryArgs queryArgs, boolean saveToCache) {
-        BookFilter filter = queryArgs.filter;
-        queryArgs.filter = BookFilter.ALL;
+    public Metadata getMetadata(final String mid) {
+        return getMetadataHelper().getMetadata(mid);
+    }
+
+    // without library cache yet.
+    public List<Metadata> getCompleteMetadataListByQueryArgs(final Context context, final QueryArgs queryArgs, boolean saveToCache) {
         final List<Metadata> list = getDataProvider().findMetadata(context, queryArgs);
-        queryArgs.filter = filter;
         if (saveToCache) {
+            getDataCacheManager().addAllToMetadataCache(list);
             getDataCacheManager().addAllToLibrary(queryArgs.libraryUniqueId, list);
         }
         return list;
@@ -64,15 +78,6 @@ public class DataManagerHelper {
     public void cacheUpdateMetaList(String oldUniqueId, String newUniqueId, List<Metadata> metadataList) {
         dataCacheManager.removeAll(oldUniqueId, metadataList);
         dataCacheManager.addAllToLibrary(newUniqueId, metadataList);
-    }
-
-    public void addMetadataCollections(Context context, Library library, List<Metadata> addList) {
-        DataProviderBase provider = getDataProvider();
-        for (Metadata metadata : addList) {
-            provider.deleteMetadataCollection(context, library.getParentUniqueId(), metadata.getIdString());
-            MetadataCollection collection = new MetadataCollection(library.getIdString(), metadata.getIdString());
-            provider.addMetadataCollection(context, collection);
-        }
     }
 
     public void updateCollections(Context context, String newLibraryUniqueId, String oldLibraryUniqueId) {
@@ -87,31 +92,13 @@ public class DataManagerHelper {
         }
     }
 
-    public void removeCollections(Context context, Library library, List<Metadata> removeList) {
-        for (Metadata metadata : removeList) {
-            getDataProvider().deleteMetadataCollection(context, library.getIdString(), metadata.getIdString());
-            if (library.getParentUniqueId() != null) {
-                MetadataCollection collection = new MetadataCollection(library.getParentUniqueId(), metadata.getIdString());
-                getDataProvider().addMetadataCollection(context, collection);
-            }
-        }
-    }
-
-    public List<Metadata> filter(final List<Metadata> list, final QueryArgs queryArgs) {
-        return null;
-    }
-
-    public List<Metadata> sortInPlace(final List<Metadata> list, final QueryArgs queryArgs) {
-        return list;
-    }
-
-    public List<Metadata> getLibraryMetadataListOfAll(Context context, final QueryArgs args) {
+    public List<Metadata> getLibraryMetadataListOfAll(Context context, final QueryArgs queryArgs) {
         List<Metadata> list = new ArrayList<>();
-        LibraryCache cache = dataCacheManager.getLibraryCache(args.libraryUniqueId);
+        final LibraryCache cache = dataCacheManager.getLibraryCache(queryArgs.libraryUniqueId);
         if (CollectionUtils.isNullOrEmpty(cache.getValueList())) {
-            QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryAllBookQuery(args.libraryUniqueId, args.sortBy, args.order);
+            QueryArgs args = MetadataQueryArgsBuilder.libraryAllBookQuery(queryArgs.libraryUniqueId, queryArgs.sortBy, queryArgs.order);
             list = cache.getValueList();
-            dataCacheManager.addAllToLibrary(args.libraryUniqueId, list);
+            dataCacheManager.addAllToLibrary(queryArgs.libraryUniqueId, list);
             return list;
         }
 
@@ -136,84 +123,25 @@ public class DataManagerHelper {
         return dataCacheManager.getMetadataList(list, queryArgs);
     }
 
-    public List<Metadata> getMetadataList(Context context, QueryArgs queryArgs) {
-        if (dataCacheManager.isLibraryCacheReady()) {
-            List<Metadata> allList = dataCacheManager.getAllMetadataList();
-            return dataCacheManager.getMetadataList(allList, queryArgs);
-        }
-
-        List<Metadata> list = new ArrayList<>();
-        LibraryCache cache = dataCacheManager.getLibraryCache(queryArgs.libraryUniqueId);
-        if (CollectionUtils.isNullOrEmpty(cache.getValueList())) {
-            list = cache.getValueList();
-            dataCacheManager.addAllToLibrary(queryArgs.libraryUniqueId, list);
-            return list;
-        }
-
-        for (Metadata metadata : cache.getValueList()) {
-            if (metadata == null) {
-                continue;
-            }
-            list.add(metadata);
-        }
-
-        if (!CollectionUtils.isNullOrEmpty(list)) {
-            if (queryArgs.filter == BookFilter.ALL && queryArgs.limit == Integer.MAX_VALUE &&
-                    queryArgs.offset == 0) {
-                dataCacheManager.setLibraryCacheReady(true);
-            }
+    public List<Metadata> getAllMetadataOfLibrary(final Context context, final String libraryUniqueId, boolean saveToCache) {
+        List<Metadata> list;
+        final LibraryCache libraryCache = getDataCacheManager().getLibraryCache(libraryUniqueId);
+        if (libraryCache != null) {
+            list = libraryCache.getValueList();
+        } else {
+            list = getCompleteMetadataListByQueryArgs(context, QueryArgs.queryAll(), saveToCache);
         }
         return list;
     }
 
-    public void addToLibrary(final Context context, final Library library, final List<Metadata> addList) {
-        addMetadataCollections(context, library, addList);
-        LibraryCache cache = dataCacheManager.getLibraryCache(library.getIdString());
-        if (CollectionUtils.isNullOrEmpty(cache.getValueList())) {
-            dataCacheManager.removeAll(library.getParentUniqueId(), addList);
-            return;
-        }
-        cacheUpdateMetaList(library.getParentUniqueId(), library.getIdString(), addList);
+    public List<Metadata> getMetadataList(Context context, final QueryArgs queryArgs, boolean saveToCache) {
+        List<Metadata> list = getAllMetadataOfLibrary(context, queryArgs.libraryUniqueId, saveToCache);
+        return list;
     }
 
-    public List<Metadata> buildLibrary(Context context, Library library, QueryArgs args) {
-        List<Metadata> bookList = new ArrayList<>();
-        boolean isCriteriaContentEmpty = true;
-        DataProviderBase provider = getDataProvider();
-        if (args != null && !args.isAllSetContentEmpty()) {
-            library.setQueryString(QueryArgs.toQueryString(args));
-            isCriteriaContentEmpty = false;
-        }
-
-        if (!isCriteriaContentEmpty) {
-            args.libraryUniqueId = library.getParentUniqueId();
-            bookList = getLibraryMetadataList(context, args);
-            addMetadataCollections(context, library, bookList);
-        }
-        provider.addLibrary(library);
-        return bookList;
-    }
-
-    public void clearLibrary(Context context, Library library) {
-        List<Metadata> resultList = getLibraryMetadataListOfAll(context, MetadataQueryArgsBuilder.libraryAllBookQuery(library.getIdString(), SortBy.Name, SortOrder.Desc));
-
-        if (resultList.size() <= 0) {
-            return;
-        }
-        dataCacheManager.addAllToLibrary(library.getParentUniqueId(), resultList);
-        updateCollections(context, library.getParentUniqueId(), library.getIdString());
-    }
-
-    public List<Library> loadAllLibrary(List<Library> list, String parentId) {
-        List<Library> tmpList = getDataProvider().loadAllLibrary(parentId);
-        if (tmpList.size() > 0) {
-            list.addAll(tmpList);
-        }
-        return tmpList;
-    }
 
     public void deepLoadAllLibrary(List<Library> list, String targetId) {
-        List<Library> tmpList = loadAllLibrary(list, targetId);
+        List<Library> tmpList = getLibraryHelper().loadAllLibrary(targetId);
         for (Library library : tmpList) {
             deepLoadAllLibrary(list, library.getIdString());
         }
@@ -242,40 +170,7 @@ public class DataManagerHelper {
         }
     }
 
-    public void saveLibrary(Library library) {
-        getDataProvider().addLibrary(library);
-    }
 
-    public void modifyLibrary(Context context, Library library, boolean modifyCriteria) {
-        saveLibrary(library);
-        if (modifyCriteria) {
-            DataProviderBase providerBase = getDataProvider();
-            List<Metadata> list = dataCacheManager.getMetadataList(library.getIdString());
-            if (CollectionUtils.isNullOrEmpty(list)) {
-                list.addAll(getLibraryMetadataListWithParentId(context, library.getIdString()));
-            }
-            if (!CollectionUtils.isNullOrEmpty(list)) {
-                dataCacheManager.removeAll(library.getIdString(), list);
-                dataCacheManager.addAllToLibrary(library.getParentUniqueId(), list);
-                removeCollections(context, library, list);
-            }
-            QueryArgs criteria = QueryArgs.fromQueryString(library.getQueryString());
-            criteria.libraryUniqueId = library.getParentUniqueId();
-            MetadataQueryArgsBuilder.generateQueryArgs(criteria);
-            MetadataQueryArgsBuilder.generateMetadataInQueryArgs(criteria);
-            list = providerBase.findMetadata(context, criteria);
-            if (!CollectionUtils.isNullOrEmpty(list)) {
-                dataCacheManager.addAllToLibrary(library.getIdString(), list);
-                dataCacheManager.removeAll(library.getParentUniqueId(), list);
-                addMetadataCollections(context, library, list);
-            }
-        }
-    }
-
-    public void removeFromLibrary(Context context, Library library, List<Metadata> removeList) {
-        removeCollections(context, library, removeList);
-        cacheUpdateMetaList(library.getIdString(), library.getParentUniqueId(), removeList);
-    }
 
     public Thumbnail loadThumbnail(Context context, String path, String md5, OnyxThumbnail.ThumbnailKind kind) {
         if (StringUtils.isNullOrEmpty(md5)) {

@@ -22,7 +22,7 @@ public class BuildLibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(final DataManager dataManager) throws Exception {
-        bookList = dataManager.getDataManagerHelper().buildLibrary(getContext(), library, criteria);
+        bookList = dataManager.getDataManagerHelper().getLibraryHelper().buildLibrary(getContext(), library, criteria);
     }
 
     public List<Metadata> getBookList() {

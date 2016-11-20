@@ -28,6 +28,8 @@ public class Library extends BaseData {
     @Index
     String parentUniqueId = null;
 
+    int cachedSubItemCount = 0;
+
     public String getParentUniqueId() {
         return parentUniqueId;
     }
@@ -68,4 +70,11 @@ public class Library extends BaseData {
         this.extraAttributes = extraAttributes;
     }
 
+    public int getCachedSubItemCount() {
+        return cachedSubItemCount;
+    }
+
+    public void setCachedSubItemCount(int cachedSubItemCount) {
+        this.cachedSubItemCount = cachedSubItemCount;
+    }
 }

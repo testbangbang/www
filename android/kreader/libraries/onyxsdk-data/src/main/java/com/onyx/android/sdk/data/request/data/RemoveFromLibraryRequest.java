@@ -21,6 +21,6 @@ public class RemoveFromLibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.getDataManagerHelper().removeFromLibrary(getContext(), library, removeList);
+        dataManager.getDataManagerHelper().getLibraryHelper().removeFromLibrary(getContext(), library, removeList);
     }
 }

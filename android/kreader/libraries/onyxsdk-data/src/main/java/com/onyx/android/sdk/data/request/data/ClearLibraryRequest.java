@@ -15,6 +15,6 @@ public class ClearLibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.getDataManagerHelper().clearLibrary(getContext(), library);
+        dataManager.getDataManagerHelper().getLibraryHelper().clearLibrary(getContext(), library);
     }
 }

@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.MetaDataUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class DataCacheManager {
     }
 
     public void addAllToLibrary(final String libraryId, final List<Metadata> list) {
-        if (CollectionUtils.isNullOrEmpty(list)) {
+        if (StringUtils.isNullOrEmpty(libraryId) || CollectionUtils.isNullOrEmpty(list)) {
             return;
         }
         for (Metadata metadata : list) {

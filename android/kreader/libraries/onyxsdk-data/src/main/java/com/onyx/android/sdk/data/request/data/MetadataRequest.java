@@ -24,14 +24,7 @@ public class MetadataRequest extends BaseDataRequest {
     @Override
     public void execute(DataManager dataManager) throws Exception {
         final DataManagerHelper helper = dataManager.getDataManagerHelper();
-        final LibraryCache libraryCache = helper.getDataCacheManager().getLibraryCache(queryArgs.libraryUniqueId);
-        if (libraryCache != null) {
-            list = libraryCache.getValueList();
-        } else {
-            list = helper.getMetadataListByQueryArgs(getContext(), queryArgs, true);
-        }
-        list = helper.filter(list, queryArgs);
-        helper.sortInPlace(list, queryArgs);
+        list = helper.getMetadataList(getContext(), queryArgs, true);
     }
 
     public final List<Metadata> getList() {

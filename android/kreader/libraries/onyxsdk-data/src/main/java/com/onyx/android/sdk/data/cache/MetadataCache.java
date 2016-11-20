@@ -15,6 +15,9 @@ public class MetadataCache {
     private HashMap<String, Metadata> pathMap = new HashMap<>();
 
     public void add(final Metadata metadata) {
+        if (metadata == null) {
+            return;
+        }
         idMap.put(metadata.getIdString(), metadata);
         pathMap.put(metadata.getNativeAbsolutePath(), metadata);
     }
