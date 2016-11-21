@@ -1085,8 +1085,8 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": -32,
-									"top": -88,
+									"left": 8,
+									"top": 0,
 									"width": 10,
 									"height": 10,
 									"autoResize": false
@@ -1109,8 +1109,8 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": -32,
-									"top": -88,
+									"left": 8,
+									"top": 0,
 									"width": 10,
 									"height": 10,
 									"autoResize": false
@@ -8191,8 +8191,8 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 96,
-									"top": -56,
+									"left": 104,
+									"top": -40,
 									"width": 10,
 									"height": 10,
 									"autoResize": false
@@ -8215,8 +8215,8 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 96,
-									"top": -56,
+									"left": 104,
+									"top": -40,
 									"width": 10,
 									"height": 10,
 									"autoResize": false
