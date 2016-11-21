@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.request.data;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.LibraryHelper;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 
@@ -21,6 +22,7 @@ public class RemoveFromLibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.getDataManagerHelper().getLibraryHelper().removeFromLibrary(getContext(), library, removeList);
+        dataManager.getDataManagerHelper().getLibraryHelper().moveToLibrary(getContext(), library,
+                null, removeList);
     }
 }

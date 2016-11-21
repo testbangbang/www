@@ -61,11 +61,10 @@ public class DataManagerHelper {
         return getDataCacheManager().isMetadataCacheReady();
     }
 
-    public Metadata getMetadata(final String mid) {
-        return getMetadataHelper().getMetadata(mid);
+    public Metadata getMetadata(final Context context, final String mid) {
+        return getMetadataHelper().getMetadata(context, mid);
     }
 
-    // without library cache yet.
     public List<Metadata> getCompleteMetadataListByQueryArgs(final Context context, final QueryArgs queryArgs, boolean saveToCache) {
         final List<Metadata> list = getDataProvider().findMetadata(context, queryArgs);
         if (saveToCache) {

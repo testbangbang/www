@@ -22,12 +22,12 @@ public class MetadataHelper {
         return parent;
     }
 
-    public Metadata getMetadata(final String mid) {
+    public Metadata getMetadata(final Context context, final String mid) {
         Metadata metadata = getParent().getDataCacheManager().getMetadataById(mid);
         if (metadata != null) {
             return metadata;
         }
-        metadata = getParent().getDataProvider().findMetadataByMD5(null, mid);
+        metadata = getParent().getDataProvider().findMetadataByMD5(context, mid);
         getParent().getDataCacheManager().addToMetadataCache(metadata);
         return metadata;
     }

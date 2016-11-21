@@ -8,9 +8,12 @@ import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by suicheng on 2016/9/15.
@@ -18,6 +21,7 @@ import java.util.List;
 public class LibraryCache {
 
     private LinkedHashMap<String, Metadata> dataList = new LinkedHashMap<>();
+    private boolean isDirty;
 
     public LibraryCache() {
     }
@@ -61,4 +65,31 @@ public class LibraryCache {
     public boolean isEmpty() {
         return dataList.isEmpty();
     }
+
+    public boolean isDirty() {
+        return isDirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        isDirty = dirty;
+    }
+
+    public List<File> diffList(final HashMap<String, Long> newMap) {
+        List<File> diff = new ArrayList<File>();
+        if (dataList != null && newMap != null) {
+            for(Map.Entry<String, Long> entry : newMap.entrySet()) {
+                final String key = entry.getKey();
+                if (!dataList.containsKey(key) || dataList.get(key).getLastModified().getTime() != entry.getValue().longValue()) {
+                    diff.add(new File(key));
+                }
+            }
+        } else if (dataList == null && newMap != null) {
+            for(Map.Entry<String, Long> entry : newMap.entrySet()) {
+                final String key = entry.getKey();
+                diff.add(new File(key));
+            }
+        }
+        return diff;
+    }
+
 }

@@ -12,13 +12,15 @@ import java.util.List;
  */
 public class MoveToLibraryRequest extends BaseDataRequest {
 
-    private Library previousLibrary;
-    private Library newLibrary;
+    private String previousLibrary;
+    private String newLibrary;
     private List<Metadata> list = new ArrayList<>();
 
-    public MoveToLibraryRequest(final Library prev, final Library library, List<Metadata> l) {
-        previousLibrary = prev;
-        newLibrary = library;
+    public MoveToLibraryRequest(final String prevLibraryUniqueId,
+                                final String newLibraryUniqueId,
+                                List<Metadata> l) {
+        previousLibrary = prevLibraryUniqueId;
+        newLibrary = newLibraryUniqueId;
         list.addAll(l);
     }
 
