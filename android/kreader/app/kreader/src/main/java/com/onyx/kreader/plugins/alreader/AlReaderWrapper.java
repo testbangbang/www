@@ -15,10 +15,11 @@ import com.neverland.engbook.forpublic.AlPublicProfileOptions;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
+import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.kreader.common.Debug;
 
 import java.util.List;
 
@@ -75,7 +76,7 @@ public class AlReaderWrapper {
 
     public void setStyle(final ReaderStyle style) {
         updateFontFace(style.getFontFace());
-        updateFontSize(style.getFontSize());
+        updateFontSize(style.getFontSize().getValue());
         updateLineSpacing(style.getLineSpacing());
         updatePageMargins(style.getLeftMargin(), style.getTopMargin(),
                 style.getRightMargin(), style.getBottomMargin());
@@ -155,6 +156,7 @@ public class AlReaderWrapper {
 
     public void draw(final Bitmap bitmap, final int width, final int height) {
         AlBitmap bmp = bookEng.getPageBitmap(EngBookMyType.TAL_PAGE_INDEX.CURR, width, height);
+        Debug.e(getClass(), "draw bitmap: %d, %d, %s", bmp.bmp.getWidth(), bmp.bmp.getHeight(), bmp.bmp);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawBitmap(bmp.bmp, 0, 0, new Paint());
     }

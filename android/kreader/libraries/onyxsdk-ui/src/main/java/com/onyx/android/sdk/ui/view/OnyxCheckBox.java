@@ -21,5 +21,4 @@ public class OnyxCheckBox extends AppCompatCheckBox {
     public OnyxCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
 }
