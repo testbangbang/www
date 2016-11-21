@@ -498,7 +498,7 @@ public class ShowReaderMenuAction extends BaseAction {
         hideReaderMenu();
         boolean isShowScribble = !SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
         SingletonSharedPreference.setIsShowNote(readerDataHolder.getContext(), isShowScribble);
-        new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
+        new GotoPositionAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
     }
 
     public static void updateReaderMenuState(final ReaderDataHolder readerDataHolder) {

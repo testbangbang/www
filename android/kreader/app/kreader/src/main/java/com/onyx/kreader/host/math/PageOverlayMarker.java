@@ -13,7 +13,7 @@ public class PageOverlayMarker {
     private static RectF lastViewport;
 
     public static void saveCurrentPageAndViewport(final Reader reader) {
-        lastPage = reader.getReaderLayoutManager().getCurrentPageName();
+        lastPage = reader.getReaderLayoutManager().getCurrentPagePosition();
         lastViewport = new RectF(reader.getReaderLayoutManager().getPageManager().getViewportRect());
     }
 
@@ -21,7 +21,7 @@ public class PageOverlayMarker {
         if (reader.getReaderLayoutManager().getPageManager().getVisiblePages().size() > 1) {
             return;
         }
-        String page = reader.getReaderLayoutManager().getCurrentPageName();
+        String page = reader.getReaderLayoutManager().getCurrentPagePosition();
         if (lastPage.compareTo(page) != 0) {
             return;
         }

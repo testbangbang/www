@@ -296,6 +296,29 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return getPluginImpl().pageCount();
     }
 
+    @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
+    /**
+     * Navigate to specified position.
+     * @return
+     */
+    public boolean gotoPosition(final String position) {
+        return false;
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
     /**
      * Navigate to next screen.
      */
@@ -335,6 +358,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
     /**
      * Navigate to first page.
      * @return
@@ -343,20 +371,17 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return PagePositionUtils.fromPageNumber(0);
     }
 
+    @Override
+    public boolean isLastPage() {
+        return false;
+    }
+
     /**
      * Navigate to last page.
      * @return
      */
     public String lastPage() {
         return PagePositionUtils.fromPageNumber(getTotalPage() - 1);
-    }
-
-    /**
-     * Navigate to specified position.
-     * @return
-     */
-    public boolean gotoPosition(final String position) {
-        return false;
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {

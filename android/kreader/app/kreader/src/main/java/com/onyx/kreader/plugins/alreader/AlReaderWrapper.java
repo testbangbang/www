@@ -4,9 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
 import com.neverland.engbook.bookobj.AlBookEng;
-import com.neverland.engbook.bookobj.AlUtilFunc;
 import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlCurrentPosition;
@@ -17,11 +15,11 @@ import com.neverland.engbook.forpublic.AlPublicProfileOptions;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
-import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
-import com.onyx.kreader.api.ReaderSearchOptions;
+import com.onyx.kreader.common.Debug;
 
 import java.util.List;
 
@@ -41,10 +39,7 @@ public class AlReaderWrapper {
 
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
-    private AlPublicProfileOptions profileCurrent = null;
-    private AlPublicProfileOptions profileDay = new AlPublicProfileOptions();
-    private AlPublicProfileOptions profileNight = new AlPublicProfileOptions();
-
+    private AlPublicProfileOptions profile = new AlPublicProfileOptions();
 
     public AlReaderWrapper(final Context context, final ReaderPluginOptions pluginOptions) {
         bookEng = new AlBookEng();
@@ -79,6 +74,15 @@ public class AlReaderWrapper {
         return StringUtils.utf16le(data).trim();
     }
 
+    public void setStyle(final ReaderStyle style) {
+        updateFontFace(style.getFontFace());
+        updateFontSize(style.getFontSize().getValue());
+        updateLineSpacing(style.getLineSpacing());
+        updatePageMargins(style.getLeftMargin(), style.getTopMargin(),
+                style.getRightMargin(), style.getBottomMargin());
+        bookEng.setNewProfileParameters(profile);
+    }
+
     private AlEngineOptions createEngineOptions(final Context context, final ReaderPluginOptions pluginOptions) {
         engineOptions = new AlEngineOptions();
         engineOptions.appInstance = context;
@@ -109,33 +113,92 @@ public class AlReaderWrapper {
     }
 
     private AlPublicProfileOptions getProfileDay(final ReaderPluginOptions pluginOptions) {
-        profileDay.background = null;
-        profileDay.backgroundMode = AlPublicProfileOptions.BACK_TILE_NONE;
-        profileDay.bold = false;
-        profileDay.font_name = "XZ";
-        profileDay.font_monospace = "Monospace";
-        profileDay.font_size = 36;
-        profileDay.setMargins(5); // in percent
-        profileDay.twoColumn = false;
-        profileDay.colorText = 0x000000;
-        profileDay.colorTitle = 0x9c27b0;
-        profileDay.colorBack = 0xf0f0f0;
-        profileDay.interline = 0;
-        profileDay.specialModeRoll = false;
-        profileDay.sectionNewScreen = true;
-        profileDay.justify = true;
-        profileDay.notesOnPage = true;
-        return profileDay;
+        profile.background = null;
+        profile.backgroundMode = AlPublicProfileOptions.BACK_TILE_NONE;
+        profile.bold = false;
+        profile.font_name = "XZ";
+        profile.font_monospace = "Monospace";
+        profile.font_size = 36;
+        profile.setMargins(5); // in percent
+        profile.twoColumn = false;
+        profile.colorText = 0x000000;
+        profile.colorTitle = 0x9c27b0;
+        profile.colorBack = 0xf0f0f0;
+        profile.interline = 0;
+        profile.specialModeRoll = false;
+        profile.sectionNewScreen = true;
+        profile.justify = true;
+        profile.notesOnPage = true;
+        return profile;
+    }
+
+    private void updateFontFace(final String fontface) {
+        profile.font_name = fontface;
+    }
+
+    public void updateFontSize(final float fontSize) {
+        profile.font_size = (int)fontSize;
+    }
+
+    public void updateLineSpacing(final ReaderStyle.Percentage lineSpacing) {
+        profile.interline = (int)(20 * (lineSpacing.getPercent() - 100) / (float)100);
+    }
+
+    public void updatePageMargins(final ReaderStyle.DPUnit left,
+                                  final ReaderStyle.DPUnit top,
+                                  final ReaderStyle.DPUnit right,
+                                  final ReaderStyle.DPUnit bottom) {
+        profile.setMarginLeft(left.getValue());
+        profile.setMarginTop(top.getValue());
+        profile.setMarginRight(right.getValue());
+        profile.setMarginBottom(bottom.getValue());
     }
 
     public void draw(final Bitmap bitmap, final int width, final int height) {
         AlBitmap bmp = bookEng.getPageBitmap(EngBookMyType.TAL_PAGE_INDEX.CURR, width, height);
+        Debug.e(getClass(), "draw bitmap: %d, %d, %s", bmp.bmp.getWidth(), bmp.bmp.getHeight(), bmp.bmp);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawBitmap(bmp.bmp, 0, 0, new Paint());
     }
 
     public int getTotalPage() {
-        return bookEng.getPageCount(new AlCurrentPosition());
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return -1;
+        }
+        return position.pageCount;
+    }
+
+    public int getCurrentPage() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return -1;
+        }
+        return position.pageCurrent;
+    }
+
+    public int getCurrentPosition() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return -1;
+        }
+        return position.readPositionStart;
+    }
+
+    public boolean isFirstPage() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return false;
+        }
+        return position.isFirstPage;
+    }
+
+    public boolean isLastPage() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return false;
+        }
+        return position.isLastPage;
     }
 
     public boolean nextPage() {
@@ -148,8 +211,13 @@ public class AlReaderWrapper {
         return ret == TAL_RESULT.OK;
     }
 
-    public boolean gotoPage(int pos) {
+    public boolean gotoPosition(int pos) {
         int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.POSITION, pos);
+        return ret == TAL_RESULT.OK;
+    }
+
+    public boolean gotoPage(int page) {
+        int ret = bookEng.gotoPage(page + 1);
         return ret == TAL_RESULT.OK;
     }
 

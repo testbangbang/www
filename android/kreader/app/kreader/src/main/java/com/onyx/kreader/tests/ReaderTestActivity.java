@@ -339,7 +339,7 @@ public class ReaderTestActivity extends Activity {
     }
 
     public void testReaderGoto() {
-        final BaseReaderRequest gotoPosition = new GotoLocationRequest(pn);
+        final BaseReaderRequest gotoPosition = new GotoPositionRequest(pn);
         reader.submitRequest(this, gotoPosition, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

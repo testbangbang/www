@@ -35,21 +35,21 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         String position = reader.getInitPosition();
         assertNotNull(position);
         assertTrue(layoutManager.gotoPosition(position));
-        assertTrue(layoutManager.getCurrentPageName().equalsIgnoreCase(position));
+        assertTrue(layoutManager.getCurrentPagePosition().equalsIgnoreCase(position));
 
         position = reader.getNavigator().nextPage(position);
         assertTrue(layoutManager.gotoPosition(position));
-        assertTrue(layoutManager.getCurrentPageName().equalsIgnoreCase(position));
+        assertTrue(layoutManager.getCurrentPagePosition().equalsIgnoreCase(position));
 
         position = reader.getNavigator().prevPage(position);
         assertTrue(layoutManager.gotoPosition(position));
-        assertTrue(layoutManager.getCurrentPageName().equalsIgnoreCase(position));
+        assertTrue(layoutManager.getCurrentPagePosition().equalsIgnoreCase(position));
 
         int total = reader.getTotalPage();
         position = reader.getNavigator().getPositionByPageNumber(total / 2);
         assertNotNull(position);
         assertTrue(layoutManager.gotoPosition(position));
-        assertTrue(layoutManager.getCurrentPageName().equalsIgnoreCase(position));
+        assertTrue(layoutManager.getCurrentPagePosition().equalsIgnoreCase(position));
     }
 
     /**
@@ -73,7 +73,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         String position = reader.getInitPosition();
         assertNotNull(position);
         assertTrue(layoutManager.gotoPosition(position));
-        assertTrue(layoutManager.getCurrentPageName().equalsIgnoreCase(position));
+        assertTrue(layoutManager.getCurrentPagePosition().equalsIgnoreCase(position));
         assertFalse(layoutManager.canGoBack());
         final PageInfo before = layoutManager.getCurrentPageInfo();
         assertNotNull(before);
@@ -81,14 +81,14 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         // goto new position. goto page 1, page 0 is stored in history, current is 1
         String nextPage = reader.getNavigator().nextPage(position);
         assertTrue(layoutManager.gotoPosition(nextPage));
-        assertTrue(layoutManager.getCurrentPageName().equalsIgnoreCase(nextPage));
+        assertTrue(layoutManager.getCurrentPagePosition().equalsIgnoreCase(nextPage));
         final PageInfo newBefore = layoutManager.getCurrentPageInfo();
 
         // go back to before. goto page 0, page 1 is stored in history, current is 0
         assertTrue(layoutManager.canGoBack());
         assertTrue(layoutManager.goBack());
         final PageInfo after = layoutManager.getCurrentPageInfo();
-        String newPosition = layoutManager.getCurrentPageName();
+        String newPosition = layoutManager.getCurrentPagePosition();
         assertTrue(newPosition.equalsIgnoreCase(position));
         assertTrue(JSON.toJSONString(before).equalsIgnoreCase(JSON.toJSONString(after)));
 
@@ -96,7 +96,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         assertTrue(layoutManager.canGoForward());
         assertTrue(layoutManager.goForward());
         final PageInfo newAfter = layoutManager.getCurrentPageInfo();
-        String newNextPosition = layoutManager.getCurrentPageName();
+        String newNextPosition = layoutManager.getCurrentPagePosition();
         assertTrue(newNextPosition.equalsIgnoreCase(nextPage));
         assertTrue(JSON.toJSONString(newBefore).equalsIgnoreCase(JSON.toJSONString(newAfter)));
 
@@ -126,7 +126,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         float x = TestUtils.randInt(10, 50);
         float y = TestUtils.randInt(10, 50);
         layoutManager.setScale(position, scale, x, y);
-        assertTrue(layoutManager.getCurrentPageName().equalsIgnoreCase(position));
+        assertTrue(layoutManager.getCurrentPagePosition().equalsIgnoreCase(position));
         assertFalse(layoutManager.canGoBack());
         final PageInfo before = layoutManager.getCurrentPageInfo();
         assertNotNull(before);
@@ -134,14 +134,14 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         // goto new position. goto page 1, page 0 is stored in history, current is 1
         String nextPage = reader.getNavigator().nextPage(position);
         assertTrue(layoutManager.gotoPosition(nextPage));
-        assertTrue(layoutManager.getCurrentPageName().equalsIgnoreCase(nextPage));
+        assertTrue(layoutManager.getCurrentPagePosition().equalsIgnoreCase(nextPage));
         final PageInfo newBefore = layoutManager.getCurrentPageInfo();
 
         // go back to before. goto page 0, page 1 is stored in history, current is 0
         assertTrue(layoutManager.canGoBack());
         assertTrue(layoutManager.goBack());
         final PageInfo after = layoutManager.getCurrentPageInfo();
-        String newPosition = layoutManager.getCurrentPageName();
+        String newPosition = layoutManager.getCurrentPagePosition();
         assertTrue(newPosition.equalsIgnoreCase(position));
         assertTrue(JSON.toJSONString(before).equalsIgnoreCase(JSON.toJSONString(after)));
 
@@ -149,7 +149,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         assertTrue(layoutManager.canGoForward());
         assertTrue(layoutManager.goForward());
         final PageInfo newAfter = layoutManager.getCurrentPageInfo();
-        String newNextPosition = layoutManager.getCurrentPageName();
+        String newNextPosition = layoutManager.getCurrentPagePosition();
         assertTrue(newNextPosition.equalsIgnoreCase(nextPage));
         assertTrue(JSON.toJSONString(newBefore).equalsIgnoreCase(JSON.toJSONString(newAfter)));
     }

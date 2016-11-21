@@ -3,8 +3,8 @@ package com.onyx.kreader.plugins.alreader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-
 import com.neverland.engbook.forpublic.AlOneSearchResult;
+import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -32,7 +32,6 @@ import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
-import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -213,7 +212,9 @@ public class AlReaderPlugin implements ReaderPlugin,
      * set stream document style. ignore.
      * @param style
      */
-    public void setStyle(final ReaderStyle style) {}
+    public void setStyle(final ReaderStyle style) {
+        getPluginImpl().setStyle(style);
+    }
 
     /**
      * Retrieve reader hit test.
@@ -269,8 +270,31 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return 1 based total page number.
      */
     public int getTotalPage() {
-        int total = getPluginImpl().getTotalPage();
-        return 100;
+        return getPluginImpl().getTotalPage();
+    }
+
+    @Override
+    public int getCurrentPageNumber() {
+        return getPluginImpl().getCurrentPage();
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return PagePositionUtils.fromPosition(getPluginImpl().getCurrentPosition());
+    }
+
+    /**
+     * Navigate to specified position.
+     * @return
+     */
+    public boolean gotoPosition(final String position) {
+        int pos = PagePositionUtils.getPosition(position);
+        return getPluginImpl().gotoPosition(pos);
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return getPluginImpl().gotoPage(page);
     }
 
     /**
@@ -295,11 +319,12 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (!getPluginImpl().nextPage()) {
             return null;
         }
-        int pn = PagePositionUtils.getPageNumber(position);
-        if (pn + 1 < getTotalPage()) {
-            return PagePositionUtils.fromPageNumber(pn + 1);
-        }
-        return null;
+        return PagePositionUtils.fromPageNumber(getPluginImpl().getCurrentPage());
+//        int pn = PagePositionUtils.getPageNumber(position);
+//        if (pn + 1 < getTotalPage()) {
+//            return PagePositionUtils.fromPageNumber(pn + 1);
+//        }
+//        return null;
     }
 
     /**
@@ -318,6 +343,11 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return getPluginImpl().isFirstPage();
+    }
+
     /**
      * Navigate to first page.
      * @return
@@ -326,21 +356,17 @@ public class AlReaderPlugin implements ReaderPlugin,
         return PagePositionUtils.fromPageNumber(0);
     }
 
+    @Override
+    public boolean isLastPage() {
+        return getPluginImpl().isLastPage();
+    }
+
     /**
      * Navigate to last page.
      * @return
      */
     public String lastPage() {
         return PagePositionUtils.fromPageNumber(getTotalPage() - 1);
-    }
-
-    /**
-     * Navigate to specified position.
-     * @return
-     */
-    public boolean gotoPosition(final String position) {
-        int pos = PagePositionUtils.getPageNumber(position);
-        return getPluginImpl().gotoPage(pos);
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {

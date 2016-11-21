@@ -22,14 +22,14 @@ public class GotoPageDialogAction extends BaseAction {
             DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
                 @Override
                 public void valueChange(int newValue) {
-                    final GotoPageAction action = new GotoPageAction(String.valueOf(newValue - 1));
+                    final GotoPageAction action = new GotoPageAction(newValue - 1);
                     action.execute(readerDataHolder);
                 }
 
                 @Override
                 public void done(boolean isValueChange, int oldValue, int newValue) {
                     if (!isValueChange) {
-                        final GotoPageAction action = new GotoPageAction(String.valueOf(oldValue - 1));
+                        final GotoPageAction action = new GotoPageAction(oldValue - 1);
                         action.execute(readerDataHolder);
                     }
                     dismissGotoDialog();

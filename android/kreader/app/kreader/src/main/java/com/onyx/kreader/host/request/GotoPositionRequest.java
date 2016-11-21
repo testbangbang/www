@@ -8,17 +8,17 @@ import com.onyx.kreader.host.wrapper.Reader;
 /**
  * Created by zhuzeng on 10/5/15.
  */
-public class GotoLocationRequest extends BaseReaderRequest {
+public class GotoPositionRequest extends BaseReaderRequest {
 
     private int page;
     private String persistentPosition;
 
-    public GotoLocationRequest(int p) {
+    public GotoPositionRequest(int p) {
         super();
         page = p;
     }
 
-    public GotoLocationRequest(final String p) {
+    public GotoPositionRequest(final String p) {
         persistentPosition = p;
     }
 

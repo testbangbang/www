@@ -1,15 +1,15 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
-
+import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -37,7 +37,7 @@ public class LayoutTextReflowProvider extends LayoutProvider {
 
     @Override
     public boolean canPrevScreen() throws ReaderException {
-        return getPageManager().canPrevViewport() || !atFirstPage();
+        return !getLayoutManager().getNavigator().isFirstPage();
     }
 
     public boolean prevScreen() throws ReaderException {
@@ -46,7 +46,7 @@ public class LayoutTextReflowProvider extends LayoutProvider {
 
     @Override
     public boolean canNextScreen() throws ReaderException {
-        return getPageManager().canNextViewport() || !atLastPage();
+        return !getLayoutManager().getNavigator().isLastPage();
     }
 
     public boolean nextScreen() throws ReaderException {
@@ -54,23 +54,27 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     }
 
     public boolean prevPage() throws ReaderException {
-        return gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
+        LayoutProviderUtils.prevPage(getLayoutManager());
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public boolean nextPage() throws ReaderException {
-        return gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()));
+        LayoutProviderUtils.nextPage(getLayoutManager());
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public boolean firstPage() throws ReaderException {
-        return gotoPosition(LayoutProviderUtils.firstPage(getLayoutManager()));
+        LayoutProviderUtils.firstPage(getLayoutManager());
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public boolean lastPage() throws ReaderException {
-        return gotoPosition(LayoutProviderUtils.lastPage(getLayoutManager()));
+        LayoutProviderUtils.lastPage(getLayoutManager());
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo, false);
         return true;
     }
 
@@ -86,14 +90,27 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean gotoPosition(final String location) throws ReaderException {
-        if (StringUtils.isNullOrEmpty(location)) {
+    @Override
+    public boolean gotoPage(int page) throws ReaderException {
+        if (!getLayoutManager().getNavigator().gotoPage(page)) {
+            return false;
+        }
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+    }
+
+    public boolean gotoPosition(final String position) throws ReaderException {
+        if (StringUtils.isNullOrEmpty(position)) {
             return false;
         }
 
+        if (!getLayoutManager().getNavigator().gotoPosition(position)) {
+            return false;
+        }
+
+        String page = PagePositionUtils.fromPageNumber(getLayoutManager().getNavigator().getCurrentPageNumber());
         final RectF viewportBeforeChange = new RectF(getPageManager().getViewportRect());
-        LayoutProviderUtils.addSinglePage(getLayoutManager(), location);
-        if (!getPageManager().gotoPage(location)) {
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), page, position);
+        if (!getPageManager().gotoPage(position)) {
             return false;
         }
 
@@ -106,7 +123,7 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     }
 
     public boolean supportPreRender() throws ReaderException {
-        return true;
+        return false;
     }
 
     @Override
@@ -138,6 +155,13 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return new RectF(0, 0,
                 getLayoutManager().getReaderViewOptions().getViewWidth(),
                 getLayoutManager().getReaderViewOptions().getViewHeight());
+    }
+
+    @Override
+    public void updateViewportRect(RectF rect) throws ReaderException {
+        super.updateViewportRect(rect);
+        getPageManager().clear();
+        gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public void scaleToPage() throws ReaderException {

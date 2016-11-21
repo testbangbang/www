@@ -202,6 +202,26 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
+    @Override
+    public boolean gotoPosition(String position) {
+        return false;
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
+    @Override
     public String nextScreen(String position) {
         return nextPage(position);
     }
@@ -230,8 +250,18 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
+    @Override
     public String firstPage() {
         return PagePositionUtils.fromPageNumber(0);
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return false;
     }
 
     @Override

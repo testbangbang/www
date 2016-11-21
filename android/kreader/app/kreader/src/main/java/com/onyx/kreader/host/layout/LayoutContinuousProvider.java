@@ -99,11 +99,11 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean gotoPosition(final String location) throws ReaderException {
-        if (StringUtils.isNullOrEmpty(location)) {
+    public boolean gotoPosition(final String position) throws ReaderException {
+        if (StringUtils.isNullOrEmpty(position)) {
             return false;
         }
-        return getPageManager().gotoPage(location);
+        return getPageManager().gotoPage(position);
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
