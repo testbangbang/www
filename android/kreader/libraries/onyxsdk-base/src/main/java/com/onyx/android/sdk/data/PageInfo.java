@@ -41,6 +41,7 @@ public class PageInfo {
 
     public PageInfo(final PageInfo pageInfo) {
         name = pageInfo.getName();
+        position = pageInfo.getPosition();
         originWidth = pageInfo.getOriginWidth();
         originHeight = pageInfo.getOriginHeight();
         positionRect.set(pageInfo.positionRect);
