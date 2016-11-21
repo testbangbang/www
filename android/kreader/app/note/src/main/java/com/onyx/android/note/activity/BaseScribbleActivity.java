@@ -63,7 +63,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected int currentVisualPageIndex;
     protected int totalPageCount;
 
-    private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY};
+    private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY}
     private ActivityState activityState;
 
     @Override
