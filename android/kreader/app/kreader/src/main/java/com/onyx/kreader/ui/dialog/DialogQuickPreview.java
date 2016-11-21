@@ -197,6 +197,7 @@ public class DialogQuickPreview extends Dialog {
 
     private ReaderDataHolder readerDataHolder;
     private int currentPage;
+    private String currentPagePosition;
     private Callback callback;
     private List<Integer> tocChapterNodeList;
 
@@ -207,6 +208,7 @@ public class DialogQuickPreview extends Dialog {
         this.readerDataHolder = readerDataHolder;
         this.callback = callback;
         currentPage = readerDataHolder.getCurrentPage();
+        currentPagePosition = readerDataHolder.getCurrentPagePosition();
 
         fitDialogToWindow();
         initGridType();
@@ -295,6 +297,7 @@ public class DialogQuickPreview extends Dialog {
                     callback.abort();
                 }
                 readerDataHolder.removeActiveDialog(DialogQuickPreview.this);
+                new GotoPositionAction(currentPagePosition, true).execute(readerDataHolder);
             }
         });
 

@@ -4,20 +4,29 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.request.GotoPositionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
  * Created by zhuzeng on 5/18/16.
  */
 public class GotoPositionAction extends BaseAction {
-    private String pageName;
+    private String pagePosition;
     private boolean abortPendingTasks;
 
-    public GotoPositionAction(final String name) {
-        this(name, false);
+    public GotoPositionAction(final int position) {
+        this(PagePositionUtils.fromPosition(position));
     }
 
-    public GotoPositionAction(final String name, final boolean abortPendingTasks) {
-        pageName = name;
+    public GotoPositionAction(final String position) {
+        this(position, false);
+    }
+
+    public GotoPositionAction(final int position, final boolean abortPendingTasks) {
+        this(PagePositionUtils.fromPosition(position), abortPendingTasks);
+    }
+
+    public GotoPositionAction(final String position, final boolean abortPendingTasks) {
+        pagePosition = position;
         this.abortPendingTasks = abortPendingTasks;
     }
 
@@ -27,7 +36,7 @@ public class GotoPositionAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
-        BaseReaderRequest gotoPosition = new GotoPositionRequest(pageName);
+        BaseReaderRequest gotoPosition = new GotoPositionRequest(pagePosition);
         gotoPosition.setAbortPendingTasks(abortPendingTasks);
         readerDataHolder.submitRenderRequest(gotoPosition, baseCallback);
     }
