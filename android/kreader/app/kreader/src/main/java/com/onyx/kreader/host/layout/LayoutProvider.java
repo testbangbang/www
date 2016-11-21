@@ -8,7 +8,7 @@ import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.PagePositionUtils;
 
@@ -161,7 +161,7 @@ public class LayoutProvider {
         return false;
     }
 
-    public boolean setStyle(final ReaderStyle style) throws ReaderException {
+    public boolean setStyle(final ReaderTextStyle style) throws ReaderException {
         return false;
     }
 

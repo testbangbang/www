@@ -3,7 +3,7 @@ package com.onyx.android.sdk.data;
 /**
  * Created by zhuzeng on 11/6/15.
  */
-public class ReaderStyle {
+public class ReaderTextStyle {
 
     public enum Alignment {
         ALIGNMENT_NONE,
@@ -213,10 +213,6 @@ public class ReaderStyle {
     private Alignment alignment = Alignment.ALIGNMENT_JUSTIFY;
     private CharacterIndent indent = new CharacterIndent(2);
     private Percentage lineSpacing = new Percentage(150);
-    private DPUnit topMargin = new DPUnit(1);
-    private DPUnit leftMargin = new DPUnit(1);
-    private DPUnit rightMargin = new DPUnit(1);
-    private DPUnit bottomMargin = new DPUnit(1);
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
 
     public String getFontFace() {
@@ -257,38 +253,6 @@ public class ReaderStyle {
 
     public void setLineSpacing(Percentage lineSpacing) {
         this.lineSpacing = lineSpacing;
-    }
-
-    public DPUnit getTopMargin() {
-        return topMargin;
-    }
-
-    public void setTopMargin(DPUnit topMargin) {
-        this.topMargin = topMargin;
-    }
-
-    public DPUnit getLeftMargin() {
-        return leftMargin;
-    }
-
-    public void setLeftMargin(DPUnit leftMargin) {
-        this.leftMargin = leftMargin;
-    }
-
-    public DPUnit getRightMargin() {
-        return rightMargin;
-    }
-
-    public void setRightMargin(DPUnit rightMargin) {
-        this.rightMargin = rightMargin;
-    }
-
-    public DPUnit getBottomMargin() {
-        return bottomMargin;
-    }
-
-    public void setBottomMargin(DPUnit bottomMargin) {
-        this.bottomMargin = bottomMargin;
     }
 
     public PageMargin getPageMargin() {

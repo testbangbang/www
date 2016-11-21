@@ -10,7 +10,7 @@ import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.reflow.ImageReflowManager;
 
@@ -186,7 +186,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean setStyle(final ReaderStyle style) throws ReaderException {
+    public boolean setStyle(final ReaderTextStyle style) throws ReaderException {
         return false;
     }
 

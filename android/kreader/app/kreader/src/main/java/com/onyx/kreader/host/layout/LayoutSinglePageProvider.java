@@ -8,7 +8,7 @@ import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 
 
@@ -180,7 +180,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean setStyle(final ReaderStyle style) throws ReaderException {
+    public boolean setStyle(final ReaderTextStyle style) throws ReaderException {
         return false;
     }
 

@@ -15,7 +15,7 @@ import com.neverland.engbook.forpublic.AlPublicProfileOptions;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
-import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -74,12 +74,14 @@ public class AlReaderWrapper {
         return StringUtils.utf16le(data).trim();
     }
 
-    public void setStyle(final ReaderStyle style) {
+    public void setStyle(final ReaderTextStyle style) {
         updateFontFace(style.getFontFace());
         updateFontSize(style.getFontSize().getValue());
         updateLineSpacing(style.getLineSpacing());
-        updatePageMargins(style.getLeftMargin(), style.getTopMargin(),
-                style.getRightMargin(), style.getBottomMargin());
+        updatePageMargins(style.getPageMargin().getLeftMargin(),
+                style.getPageMargin().getTopMargin(),
+                style.getPageMargin().getRightMargin(),
+                style.getPageMargin().getBottomMargin());
         bookEng.setNewProfileParameters(profile);
     }
 
@@ -140,14 +142,14 @@ public class AlReaderWrapper {
         profile.font_size = (int)fontSize;
     }
 
-    public void updateLineSpacing(final ReaderStyle.Percentage lineSpacing) {
+    public void updateLineSpacing(final ReaderTextStyle.Percentage lineSpacing) {
         profile.interline = (int)(20 * (lineSpacing.getPercent() - 100) / (float)100);
     }
 
-    public void updatePageMargins(final ReaderStyle.DPUnit left,
-                                  final ReaderStyle.DPUnit top,
-                                  final ReaderStyle.DPUnit right,
-                                  final ReaderStyle.DPUnit bottom) {
+    public void updatePageMargins(final ReaderTextStyle.DPUnit left,
+                                  final ReaderTextStyle.DPUnit top,
+                                  final ReaderTextStyle.DPUnit right,
+                                  final ReaderTextStyle.DPUnit bottom) {
         profile.setMarginLeft(left.getValue());
         profile.setMarginTop(top.getValue());
         profile.setMarginRight(right.getValue());

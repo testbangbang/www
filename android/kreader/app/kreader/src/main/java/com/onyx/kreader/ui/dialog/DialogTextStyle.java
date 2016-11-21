@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.FontInfo;
-import com.onyx.android.sdk.data.ReaderStyle;
-import com.onyx.android.sdk.data.ReaderStyle.Percentage;
-import com.onyx.android.sdk.data.ReaderStyle.PageMargin;
+import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle.Percentage;
+import com.onyx.android.sdk.data.ReaderTextStyle.PageMargin;
 import com.onyx.android.sdk.ui.view.AlignTextView;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
@@ -47,7 +47,7 @@ public class DialogTextStyle extends DialogBase {
     }
 
     public interface TextStyleCallback {
-        void onSaveReaderStyle(ReaderStyle readerStyle);
+        void onSaveReaderStyle(ReaderTextStyle readerTextStyle);
     }
 
     private View fontFaceLine;
@@ -183,8 +183,8 @@ public class DialogTextStyle extends DialogBase {
         return view;
     }
 
-    private ReaderStyle getReaderStyle() {
-        return readerDataHolder.getReaderViewInfo().getReaderStyle();
+    private ReaderTextStyle getReaderStyle() {
+        return readerDataHolder.getReaderViewInfo().getReaderTextStyle();
     }
 
     private void initPageView() {
@@ -267,110 +267,110 @@ public class DialogTextStyle extends DialogBase {
         pageSizeIndicator.setText(page);
     }
 
-    private void updateFontSizeTextView(final List<AlignTextView> fontSizeTexts, final ReaderStyle readerStyle) {
+    private void updateFontSizeTextView(final List<AlignTextView> fontSizeTexts, final ReaderTextStyle readerTextStyle) {
         for (int i = 0; i < fontSizeTexts.size(); i++) {
             AlignTextView fontSizeText = fontSizeTexts.get(i);
-            final ReaderStyle.SPUnit size = readerStyle.FONT_SIZE_LIST[i];
-            boolean isSelected = size.equals(readerStyle.getFontSize());
+            final ReaderTextStyle.SPUnit size = readerTextStyle.FONT_SIZE_LIST[i];
+            boolean isSelected = size.equals(readerTextStyle.getFontSize());
             fontSizeText.setTextSize(size.getValue());
             fontSizeText.setActivated(isSelected);
             fontSizeText.setTextColor(isSelected ? getContext().getResources().getColor(android.R.color.white) : getContext().getResources().getColor(android.R.color.black));
             fontSizeText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    readerStyle.setFontSize(size);
-                    updateFontSizeTextView(fontSizeTexts, readerStyle);
+                    readerTextStyle.setFontSize(size);
+                    updateFontSizeTextView(fontSizeTexts, readerTextStyle);
                 }
             });
         }
     }
 
-    private void updateFontSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderStyle readerStyle) {
-        final Percentage percentage = readerStyle.getLineSpacing();
+    private void updateFontSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderTextStyle readerTextStyle) {
+        final Percentage percentage = readerTextStyle.getLineSpacing();
         for (final FontLevel fontLevel : spacingViewMap.keySet()) {
             ImageView spacingView = spacingViewMap.get(fontLevel);
-            spacingView.setActivated(isSelectCurrentPercentage(readerStyle, fontLevel));
+            spacingView.setActivated(isSelectCurrentPercentage(readerTextStyle, fontLevel));
             spacingView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     switch (fontLevel) {
                         case SMALL:
-                            percentage.setPercent(ReaderStyle.SMALL_LINE_SPACING.getPercent());
+                            percentage.setPercent(ReaderTextStyle.SMALL_LINE_SPACING.getPercent());
                             break;
                         case NORMAL:
-                            percentage.setPercent(ReaderStyle.NORMAL_LINE_SPACING.getPercent());
+                            percentage.setPercent(ReaderTextStyle.NORMAL_LINE_SPACING.getPercent());
                             break;
                         case LARGE:
-                            percentage.setPercent(ReaderStyle.LARGE_LINE_SPACING.getPercent());
+                            percentage.setPercent(ReaderTextStyle.LARGE_LINE_SPACING.getPercent());
                             break;
                         case INCREASE:
-                            percentage.setPercent(Math.min(ReaderStyle.MAX_LINE_SPACING.getPercent(), percentage.getPercent() + ReaderStyle.LINE_SPACING_STEP.getPercent()));
+                            percentage.setPercent(Math.min(ReaderTextStyle.MAX_LINE_SPACING.getPercent(), percentage.getPercent() + ReaderTextStyle.LINE_SPACING_STEP.getPercent()));
                             break;
                         case DECREASE:
-                            percentage.setPercent(Math.max(ReaderStyle.MIN_LINE_SPACING.getPercent(), percentage.getPercent() - ReaderStyle.LINE_SPACING_STEP.getPercent()));
+                            percentage.setPercent(Math.max(ReaderTextStyle.MIN_LINE_SPACING.getPercent(), percentage.getPercent() - ReaderTextStyle.LINE_SPACING_STEP.getPercent()));
                             break;
                     }
-                    readerStyle.setLineSpacing(percentage);
-                    updateFontSpacingView(spacingViewMap, readerStyle);
+                    readerTextStyle.setLineSpacing(percentage);
+                    updateFontSpacingView(spacingViewMap, readerTextStyle);
                 }
             });
         }
     }
 
-    private static boolean isSelectCurrentPercentage(ReaderStyle readerStyle, FontLevel level) {
+    private static boolean isSelectCurrentPercentage(ReaderTextStyle readerTextStyle, FontLevel level) {
         switch (level) {
             case SMALL:
-                return ReaderStyle.SMALL_LINE_SPACING.equals(readerStyle.getLineSpacing());
+                return ReaderTextStyle.SMALL_LINE_SPACING.equals(readerTextStyle.getLineSpacing());
             case NORMAL:
-                return ReaderStyle.NORMAL_LINE_SPACING.equals(readerStyle.getLineSpacing());
+                return ReaderTextStyle.NORMAL_LINE_SPACING.equals(readerTextStyle.getLineSpacing());
             case LARGE:
-                return ReaderStyle.LARGE_LINE_SPACING.equals(readerStyle.getLineSpacing());
+                return ReaderTextStyle.LARGE_LINE_SPACING.equals(readerTextStyle.getLineSpacing());
             default:
                 return false;
         }
     }
 
-    private void updateFontMarginView(final Map<FontLevel, ImageView> marginViewMap, final ReaderStyle readerStyle) {
+    private void updateFontMarginView(final Map<FontLevel, ImageView> marginViewMap, final ReaderTextStyle readerTextStyle) {
         for (final FontLevel fontLevel : marginViewMap.keySet()) {
             ImageView spacingView = marginViewMap.get(fontLevel);
-            spacingView.setActivated(isSelectCurrentMargin(readerStyle, fontLevel));
+            spacingView.setActivated(isSelectCurrentMargin(readerTextStyle, fontLevel));
             spacingView.setOnClickListener(new View.OnClickListener() {
-                PageMargin currentPageMargin = PageMargin.copy(readerStyle.getPageMargin());
+                PageMargin currentPageMargin = PageMargin.copy(readerTextStyle.getPageMargin());
 
                 @Override
                 public void onClick(View v) {
                     switch (fontLevel) {
                         case SMALL:
-                            currentPageMargin = ReaderStyle.SMALL_PAGE_MARGIN;
+                            currentPageMargin = ReaderTextStyle.SMALL_PAGE_MARGIN;
                             break;
                         case NORMAL:
-                            currentPageMargin = ReaderStyle.NORMAL_PAGE_MARGIN;
+                            currentPageMargin = ReaderTextStyle.NORMAL_PAGE_MARGIN;
                             break;
                         case LARGE:
-                            currentPageMargin = ReaderStyle.LARGE_PAGE_MARGIN;
+                            currentPageMargin = ReaderTextStyle.LARGE_PAGE_MARGIN;
                             break;
                         case INCREASE:
-                            currentPageMargin.increasePageMargin(ReaderStyle.PAGE_MARGIN_STEP);
+                            currentPageMargin.increasePageMargin(ReaderTextStyle.PAGE_MARGIN_STEP);
                             break;
                         case DECREASE:
-                            currentPageMargin.decreasePageMargin(ReaderStyle.PAGE_MARGIN_STEP);
+                            currentPageMargin.decreasePageMargin(ReaderTextStyle.PAGE_MARGIN_STEP);
                             break;
                     }
-                    readerStyle.setPageMargin(currentPageMargin);
-                    updateFontMarginView(marginViewMap, readerStyle);
+                    readerTextStyle.setPageMargin(currentPageMargin);
+                    updateFontMarginView(marginViewMap, readerTextStyle);
                 }
             });
         }
     }
 
-    private static boolean isSelectCurrentMargin(ReaderStyle readerStyle, FontLevel level) {
+    private static boolean isSelectCurrentMargin(ReaderTextStyle readerTextStyle, FontLevel level) {
         switch (level) {
             case SMALL:
-                return ReaderStyle.SMALL_PAGE_MARGIN.equals(readerStyle.getPageMargin());
+                return ReaderTextStyle.SMALL_PAGE_MARGIN.equals(readerTextStyle.getPageMargin());
             case NORMAL:
-                return ReaderStyle.NORMAL_PAGE_MARGIN.equals(readerStyle.getPageMargin());
+                return ReaderTextStyle.NORMAL_PAGE_MARGIN.equals(readerTextStyle.getPageMargin());
             case LARGE:
-                return ReaderStyle.LARGE_PAGE_MARGIN.equals(readerStyle.getPageMargin());
+                return ReaderTextStyle.LARGE_PAGE_MARGIN.equals(readerTextStyle.getPageMargin());
             default:
                 return false;
         }

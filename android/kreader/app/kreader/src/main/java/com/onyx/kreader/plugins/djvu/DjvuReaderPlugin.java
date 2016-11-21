@@ -30,7 +30,7 @@ import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
 import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.List;
@@ -361,7 +361,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public void setStyle(ReaderStyle style) {
+    public void setStyle(ReaderTextStyle style) {
 
     }
 
