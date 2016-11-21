@@ -125,7 +125,7 @@ public class ReaderStyle {
             this.topMargin = topMargin;
         }
 
-        public static PageMargin Copy(PageMargin pageMargin) {
+        public static PageMargin copy(PageMargin pageMargin) {
             return new PageMargin(new DPUnit(pageMargin.getLeftMargin().getValue()),
                     new DPUnit(pageMargin.getBottomMargin().getValue()),
                     new DPUnit(pageMargin.getRightMargin().getValue()),
@@ -192,7 +192,7 @@ public class ReaderStyle {
     }
 
     static public Percentage DEFAULT_LINE_SPACING = new Percentage(150);
-    static public Percentage LINE_SPACEING_STEP = new Percentage(10);
+    static public Percentage LINE_SPACING_STEP = new Percentage(10);
     static public Percentage LARGE_LINE_SPACING = new Percentage(180);
     static public Percentage NORMAL_LINE_SPACING = new Percentage(150);
     static public Percentage SMALL_LINE_SPACING = new Percentage(120);
@@ -205,6 +205,9 @@ public class ReaderStyle {
     static public PageMargin NORMAL_PAGE_MARGIN = new PageMargin(DPUnit.create(20), DPUnit.create(20), DPUnit.create(20), DPUnit.create(20));
     static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(DPUnit.create(10), DPUnit.create(10), DPUnit.create(10), DPUnit.create(10));
 
+    static public SPUnit[] FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
+            SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
+
     private String fontFace = null;
     private SPUnit fontSize = SPUnit.create(32.0f);
     private Alignment alignment = Alignment.ALIGNMENT_JUSTIFY;
@@ -215,8 +218,6 @@ public class ReaderStyle {
     private DPUnit rightMargin = new DPUnit(1);
     private DPUnit bottomMargin = new DPUnit(1);
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
-    private SPUnit[] fontSizes = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
-            SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
 
     public String getFontFace() {
         return fontFace;
@@ -288,10 +289,6 @@ public class ReaderStyle {
 
     public void setBottomMargin(DPUnit bottomMargin) {
         this.bottomMargin = bottomMargin;
-    }
-
-    public SPUnit[] getFontSizes() {
-        return fontSizes;
     }
 
     public PageMargin getPageMargin() {

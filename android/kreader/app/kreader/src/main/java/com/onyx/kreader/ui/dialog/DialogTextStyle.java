@@ -1,15 +1,11 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,11 +13,9 @@ import android.widget.TextView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.FontInfo;
-import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderStyle;
 import com.onyx.android.sdk.data.ReaderStyle.Percentage;
 import com.onyx.android.sdk.data.ReaderStyle.PageMargin;
-import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.view.AlignTextView;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
@@ -276,7 +270,7 @@ public class DialogTextStyle extends DialogBase {
     private void updateFontSizeTextView(final List<AlignTextView> fontSizeTexts, final ReaderStyle readerStyle) {
         for (int i = 0; i < fontSizeTexts.size(); i++) {
             AlignTextView fontSizeText = fontSizeTexts.get(i);
-            final ReaderStyle.SPUnit size = readerStyle.getFontSizes()[i];
+            final ReaderStyle.SPUnit size = readerStyle.FONT_SIZE_LIST[i];
             boolean isSelected = size.equals(readerStyle.getFontSize());
             fontSizeText.setTextSize(size.getValue());
             fontSizeText.setActivated(isSelected);
@@ -310,10 +304,10 @@ public class DialogTextStyle extends DialogBase {
                             percentage.setPercent(ReaderStyle.LARGE_LINE_SPACING.getPercent());
                             break;
                         case INCREASE:
-                            percentage.setPercent(Math.min(ReaderStyle.MAX_LINE_SPACING.getPercent(), percentage.getPercent() + ReaderStyle.LINE_SPACEING_STEP.getPercent()));
+                            percentage.setPercent(Math.min(ReaderStyle.MAX_LINE_SPACING.getPercent(), percentage.getPercent() + ReaderStyle.LINE_SPACING_STEP.getPercent()));
                             break;
                         case DECREASE:
-                            percentage.setPercent(Math.max(ReaderStyle.MIN_LINE_SPACING.getPercent(), percentage.getPercent() - ReaderStyle.LINE_SPACEING_STEP.getPercent()));
+                            percentage.setPercent(Math.max(ReaderStyle.MIN_LINE_SPACING.getPercent(), percentage.getPercent() - ReaderStyle.LINE_SPACING_STEP.getPercent()));
                             break;
                     }
                     readerStyle.setLineSpacing(percentage);
@@ -341,7 +335,7 @@ public class DialogTextStyle extends DialogBase {
             ImageView spacingView = marginViewMap.get(fontLevel);
             spacingView.setActivated(isSelectCurrentMargin(readerStyle, fontLevel));
             spacingView.setOnClickListener(new View.OnClickListener() {
-                PageMargin currentPageMargin = PageMargin.Copy(readerStyle.getPageMargin());
+                PageMargin currentPageMargin = PageMargin.copy(readerStyle.getPageMargin());
 
                 @Override
                 public void onClick(View v) {
