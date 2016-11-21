@@ -85,6 +85,14 @@ public class LibraryHelper {
         addCollections(context, newLibraryUniqueId, list);
     }
 
+    public void moveToLibrary(final Context context,
+                              final String prevLibraryUniqueId,
+                              final String newLibraryUniqueId) {
+        final LibraryCache prevLibCache = getParent().getDataCacheManager().getLibraryCache(prevLibraryUniqueId);
+        final List<Metadata> list = prevLibCache.getValueList();
+        moveToLibrary(context, prevLibraryUniqueId, newLibraryUniqueId, list);
+    }
+
     public List<Metadata> buildLibrary(Context context, Library library, QueryArgs args) {
         List<Metadata> bookList = new ArrayList<>();
         boolean isCriteriaContentEmpty = true;

@@ -7,14 +7,17 @@ import com.onyx.android.sdk.data.model.Library;
  * Created by suicheng on 2016/9/10.
  */
 public class ClearLibraryRequest extends BaseDataRequest {
-    private Library library;
 
-    public ClearLibraryRequest(Library library) {
-        this.library = library;
+    private String libraryToClear;
+    private String libraryToAdopt;
+
+    public ClearLibraryRequest(final String toClear, final String toAdopt) {
+        libraryToClear = toClear;
+        libraryToAdopt = toAdopt;
     }
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.getDataManagerHelper().getLibraryHelper().clearLibrary(getContext(), library);
+        dataManager.getDataManagerHelper().getLibraryHelper().moveToLibrary(getContext(), libraryToClear, libraryToAdopt);
     }
 }

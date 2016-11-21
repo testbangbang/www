@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.model.Metadata;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,6 +52,15 @@ public class MetadataHelper {
         return list;
     }
 
+    public List<Metadata> saveList(final DataManager dataManager, final Context context, final List<File> list) {
+        final List<Metadata> metadataList = new ArrayList<>();
+        for(File file : list) {
+            final Metadata metadata = Metadata.createFromFile(file);
+            dataManager.getDataManagerHelper().getDataProvider().saveMetadata(context, metadata);
+            metadataList.add(metadata);
+        }
+        return metadataList;
+    }
 
     public List<Metadata> filter(final List<Metadata> list, final QueryArgs queryArgs) {
         return null;

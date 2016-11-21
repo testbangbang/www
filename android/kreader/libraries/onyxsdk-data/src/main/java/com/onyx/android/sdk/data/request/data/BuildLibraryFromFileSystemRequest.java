@@ -4,12 +4,9 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.FileSystemHelper;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.cache.LibraryCache;
-import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -29,21 +26,21 @@ public class BuildLibraryFromFileSystemRequest extends BaseDataRequest {
 
     public BuildLibraryFromFileSystemRequest(final String lid,
                                              final List<String> pathList,
-                                             final Set<String> extension,
                                              final Set<String> ignore,
+                                             final Set<String> extension,
                                              final QueryArgs queryCriteria) {
         libraryUniqueId = lid;
         targetPathList = pathList;
         extensionFilters = extension;
         ignoreList = ignore;
-        this.criteria = queryCriteria;
+        criteria = queryCriteria;
     }
 
     @Override
     public void execute(final DataManager dataManager) throws Exception {
         final List<File> list = collectFiles(dataManager);
-        add(list);
-        bookList = dataManager.getDataManagerHelper().getLibraryHelper().buildLibrary(getContext(), libraryUniqueId, criteria);
+        bookList = dataManager.getDataManagerHelper().getMetadataHelper().saveList(dataManager, getContext(), list);
+        dataManager.getDataManagerHelper().getLibraryHelper().addCollections(getContext(), libraryUniqueId, bookList);
     }
 
     public List<Metadata> getBookList() {
@@ -59,7 +56,4 @@ public class BuildLibraryFromFileSystemRequest extends BaseDataRequest {
         return libraryCache.diffList(hashMap);
     }
 
-    private void add(final List<File> list) {
-
-    }
 }
