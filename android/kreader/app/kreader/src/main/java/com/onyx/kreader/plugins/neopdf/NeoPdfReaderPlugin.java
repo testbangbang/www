@@ -255,9 +255,9 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         benchmark.restart();
-        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page),
+        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(pagePosition),
                 (int)displayRect.left,
                 (int)displayRect.top,
                 (int)displayRect.width(),

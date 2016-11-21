@@ -198,8 +198,8 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
-        final String path = getImagePath(page);
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+        final String path = getImagePath(pagePosition);
         if (StringUtils.isNullOrEmpty(path)) {
             return false;
         }
