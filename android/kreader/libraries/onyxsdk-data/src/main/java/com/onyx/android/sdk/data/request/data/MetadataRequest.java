@@ -24,7 +24,7 @@ public class MetadataRequest extends BaseDataRequest {
     @Override
     public void execute(DataManager dataManager) throws Exception {
         final DataManagerHelper helper = dataManager.getDataManagerHelper();
-        list = helper.getMetadataList(getContext(), queryArgs, true);
+        list = helper.getMetadataListByQueryArgs(getContext(), queryArgs, true);
     }
 
     public final List<Metadata> getList() {

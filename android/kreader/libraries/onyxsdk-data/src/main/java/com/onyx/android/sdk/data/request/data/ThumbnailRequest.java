@@ -28,8 +28,8 @@ public class ThumbnailRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        thumbnail = dataManager.getDataManagerHelper().loadThumbnail(getContext(), path, sourceMD5, thumbnailKind);
-        resultBitmap = dataManager.getDataManagerHelper().loadThumbnailBitmap(getContext(), thumbnail);
+        thumbnail = dataManager.getDataManagerHelper().getThumbnailHelper().loadThumbnail(getContext(), path, sourceMD5, thumbnailKind);
+        resultBitmap = dataManager.getDataManagerHelper().getThumbnailHelper().loadThumbnailBitmap(getContext(), thumbnail);
     }
 
     public Bitmap getResultBitmap() {

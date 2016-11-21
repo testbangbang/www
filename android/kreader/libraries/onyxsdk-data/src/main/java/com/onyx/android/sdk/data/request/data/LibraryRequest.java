@@ -32,7 +32,7 @@ public class LibraryRequest extends BaseDataRequest {
     public void execute(DataManager dataManager) throws Exception {
         libraryList.addAll(dataManager.getDataManagerHelper().getLibraryHelper().loadAllLibrary(queryArgs.libraryUniqueId));
         if (loadMetadata) {
-            bookList = dataManager.getDataManagerHelper().getMetadataList(getContext(), queryArgs, true);
+            bookList = dataManager.getDataManagerHelper().getMetadataListByLibraryId(getContext(), queryArgs.libraryUniqueId, true);
         }
     }
 

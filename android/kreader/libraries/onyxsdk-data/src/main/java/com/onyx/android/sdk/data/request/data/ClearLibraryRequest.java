@@ -10,14 +10,17 @@ public class ClearLibraryRequest extends BaseDataRequest {
 
     private String libraryToClear;
     private String libraryToAdopt;
+    private volatile boolean deleteLibrary;
 
-    public ClearLibraryRequest(final String toClear, final String toAdopt) {
+    public ClearLibraryRequest(final String toClear, final String toAdopt, boolean del) {
         libraryToClear = toClear;
         libraryToAdopt = toAdopt;
+        deleteLibrary = del;
     }
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
         dataManager.getDataManagerHelper().getLibraryHelper().moveToLibrary(getContext(), libraryToClear, libraryToAdopt);
+        dataManager.getDataManagerHelper().getDataProvider().deleteLibrary(libraryToClear);
     }
 }

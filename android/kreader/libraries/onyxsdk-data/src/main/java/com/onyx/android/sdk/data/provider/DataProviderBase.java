@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.List;
@@ -68,6 +69,8 @@ public interface DataProviderBase {
 
     void deleteLibrary(Library library);
 
+    void deleteLibrary(final String lid);
+
     void clearLibrary();
 
     void clearThumbnail();
@@ -91,6 +94,8 @@ public interface DataProviderBase {
     void addMetadataCollection(Context context, MetadataCollection collection);
 
     void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
+
+    void clearMetadataCollection(Context context, String libraryUniqueId);
 
     void updateMetadataCollection(MetadataCollection collection);
 

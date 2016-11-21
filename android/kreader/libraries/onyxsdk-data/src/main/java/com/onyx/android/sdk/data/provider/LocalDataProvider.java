@@ -185,6 +185,12 @@ public class LocalDataProvider implements DataProviderBase {
         library.delete();
     }
 
+    public void deleteLibrary(final String lid) {
+        Where<Library> where = SQLite.delete(Library.class)
+                .where(Library_Table.idString.eq(lid));
+        where.execute();
+    }
+
     @Override
     public void clearLibrary() {
         Delete.table(Library.class);
@@ -257,6 +263,12 @@ public class LocalDataProvider implements DataProviderBase {
         if (StringUtils.isNotBlank(metadataMD5)) {
             where.and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
         }
+        where.execute();
+    }
+
+    public void clearMetadataCollection(final Context context, final String lid) {
+        Where<MetadataCollection> where = SQLite.delete(MetadataCollection.class)
+                .where(MetadataCollection_Table.libraryUniqueId.eq(lid));
         where.execute();
     }
 
