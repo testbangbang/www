@@ -215,6 +215,17 @@ public class ReaderTextStyle {
     private Percentage lineSpacing = new Percentage(150);
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
 
+    public static ReaderTextStyle copy(ReaderTextStyle style) {
+        ReaderTextStyle copy = new ReaderTextStyle();
+        copy.fontFace = style.fontFace;
+        copy.fontSize = style.fontSize;
+        copy.alignment = style.alignment;
+        copy.indent = style.indent;
+        copy.lineSpacing = style.lineSpacing;
+        copy.pageMargin = style.pageMargin;
+        return copy;
+    }
+
     public String getFontFace() {
         return fontFace;
     }

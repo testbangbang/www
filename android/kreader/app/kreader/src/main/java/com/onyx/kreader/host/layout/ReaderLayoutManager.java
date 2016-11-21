@@ -35,6 +35,7 @@ public class ReaderLayoutManager {
     private ReaderDocument readerDocument;
     private ReaderNavigator readerNavigator;
     private ReaderRendererFeatures readerRendererFeatures;
+    private ReaderTextStyleManager textStyleManager;
     private ReaderViewOptions readerViewOptions;
     private HistoryManager historyManager;
     private PageManager pageManager;
@@ -48,11 +49,13 @@ public class ReaderLayoutManager {
                                final ReaderDocument document,
                                final ReaderNavigator navigator,
                                final ReaderRendererFeatures features,
+                               final ReaderTextStyleManager styleManager,
                                final ReaderViewOptions viewOptions) {
         readerHelper = helper;
         readerDocument = document;
         readerNavigator = navigator;
         readerRendererFeatures = features;
+        textStyleManager = styleManager;
         readerViewOptions = viewOptions;
     }
 
@@ -66,6 +69,10 @@ public class ReaderLayoutManager {
 
     public ReaderRendererFeatures getReaderRendererFeatures() {
         return readerRendererFeatures;
+    }
+
+    public ReaderTextStyleManager getTextStyleManager() {
+        return textStyleManager;
     }
 
     public ReaderViewOptions getReaderViewOptions() {

@@ -22,6 +22,7 @@ import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.kreader.ui.actions.ChangeStyleAction;
 import com.onyx.kreader.ui.actions.GetFontsAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -187,6 +188,14 @@ public class DialogTextStyle extends DialogBase {
         return readerDataHolder.getReaderViewInfo().getReaderTextStyle();
     }
 
+    private void updateReaderStyle(final ReaderTextStyle style) {
+        new ChangeStyleAction(style).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+            }
+        });
+    }
+
     private void initPageView() {
         fontPageView.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
@@ -226,6 +235,7 @@ public class DialogTextStyle extends DialogBase {
                         selectIndex = position;
                         fontPageView.getPageAdapter().notifyItemChanged(selectIndex);
                         getReaderStyle().setFontFace(fonts.get(position).getId());
+                        updateReaderStyle(getReaderStyle());
                     }
                 });
             }
@@ -279,6 +289,7 @@ public class DialogTextStyle extends DialogBase {
                 @Override
                 public void onClick(View v) {
                     readerTextStyle.setFontSize(size);
+                    updateReaderStyle(readerTextStyle);
                     updateFontSizeTextView(fontSizeTexts, readerTextStyle);
                 }
             });
@@ -311,6 +322,7 @@ public class DialogTextStyle extends DialogBase {
                             break;
                     }
                     readerTextStyle.setLineSpacing(percentage);
+                    updateReaderStyle(readerTextStyle);
                     updateFontSpacingView(spacingViewMap, readerTextStyle);
                 }
             });
@@ -357,6 +369,7 @@ public class DialogTextStyle extends DialogBase {
                             break;
                     }
                     readerTextStyle.setPageMargin(currentPageMargin);
+                    updateReaderStyle(readerTextStyle);
                     updateFontMarginView(marginViewMap, readerTextStyle);
                 }
             });

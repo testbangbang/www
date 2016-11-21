@@ -136,7 +136,8 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     }
 
     public boolean setStyle(final ReaderTextStyle style) throws ReaderException {
-        return false;
+        getLayoutManager().getTextStyleManager().setStyle(style);
+        return true;
     }
 
     public RectF getPageRectOnViewport(final String position) throws ReaderException {
