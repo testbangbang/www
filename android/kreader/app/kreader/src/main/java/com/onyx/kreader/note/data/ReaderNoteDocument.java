@@ -216,7 +216,9 @@ public class ReaderNoteDocument {
             return null;
         }
         notePage.clear(true);
-        notePage.savePage(context);
+        if (notePage.savePage(context) && list.size() == 1) {
+            getPageIndex().remove(pageName);
+        }
         return subPageUniqueId;
     }
 
