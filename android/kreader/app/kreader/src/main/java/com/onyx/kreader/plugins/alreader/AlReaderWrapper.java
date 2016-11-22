@@ -15,12 +15,15 @@ import com.neverland.engbook.forpublic.AlPublicProfileOptions;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
+import com.neverland.engbook.util.TTFInfo;
+import com.neverland.engbook.util.TTFScan;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.Debug;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -135,7 +138,8 @@ public class AlReaderWrapper {
     }
 
     private void updateFontFace(final String fontface) {
-        profile.font_name = fontface;
+        TTFInfo ttf = TTFScan.getTTFInfo(new File(fontface), false);
+        profile.font_name = ttf.Name;
     }
 
     public void updateFontSize(final float fontSize) {
