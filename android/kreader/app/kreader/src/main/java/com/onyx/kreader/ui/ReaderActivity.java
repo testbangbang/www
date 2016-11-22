@@ -149,7 +149,6 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                onSurfaceViewSizeChanged();
                 if (!getReaderDataHolder().isDocumentOpened()) {
                     handleActivityIntent();
                 }
@@ -267,6 +266,7 @@ public class ReaderActivity extends ActionBarActivity {
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 clearCanvas(holder);
                 if (!getReaderDataHolder().isDocumentOpened()) {
+                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                     return;
                 }
                 if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
@@ -312,7 +312,6 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                onSurfaceViewSizeChanged();
                 handleActivityIntent();
             }
         });
