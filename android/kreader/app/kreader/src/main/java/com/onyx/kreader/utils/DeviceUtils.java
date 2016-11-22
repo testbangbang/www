@@ -235,7 +235,7 @@ public class DeviceUtils {
 
                     fontInfo.setName(StringUtils.isNullOrEmpty(fontName)
                             ? f.getName() : fontName);
-                    fontInfo.setId(f.getName());
+                    fontInfo.setId(f.getAbsolutePath());
                     fontInfo.setTypeface(createTypefaceFromFile(f));
                     if (f.getName().equalsIgnoreCase(currentFont)) {
                         fontInfoList.add(0, fontInfo);
