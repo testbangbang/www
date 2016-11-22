@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.dialog;
 
+import android.content.DialogInterface;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -73,10 +74,13 @@ public class DialogTextStyle extends DialogBase {
     List<AlignTextView> fontSizeTexts = new ArrayList<>();
     private TextStyleCallback callback;
 
+    private ReaderTextStyle originalStyle;
+
     public DialogTextStyle(ReaderDataHolder readerDataHolder, TextStyleCallback callback) {
         super(readerDataHolder.getContext());
         this.readerDataHolder = readerDataHolder;
         this.callback = callback;
+        this.originalStyle = ReaderTextStyle.copy(readerDataHolder.getReaderViewInfo().getReaderTextStyle());
         setContentView(R.layout.dialog_text_style_view);
         init();
     }
@@ -117,8 +121,8 @@ public class DialogTextStyle extends DialogBase {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismiss();
                 if (callback != null) {
-                    dismiss();
                     callback.onSaveReaderStyle(getReaderStyle());
                 }
             }
@@ -126,9 +130,17 @@ public class DialogTextStyle extends DialogBase {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                cancel();
             }
         });
+
+        setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                updateReaderStyle(originalStyle);
+            }
+        });
+
         viewPager.setPagingEnabled(false);
     }
 
