@@ -138,8 +138,16 @@ public class AlReaderWrapper {
     }
 
     private void updateFontFace(final String fontface) {
-        TTFInfo ttf = TTFScan.getTTFInfo(new File(fontface), false);
-        profile.font_name = ttf.Name;
+        if (StringUtils.isNullOrEmpty(fontface)) {
+            return;
+        }
+        File file = new File(fontface);
+        if (file.exists() && file.isFile()) {
+            TTFInfo ttf = TTFScan.getTTFInfo(new File(fontface), false);
+            if (ttf != null) {
+                profile.font_name = ttf.Name;
+            }
+        }
     }
 
     public void updateFontSize(final float fontSize) {
