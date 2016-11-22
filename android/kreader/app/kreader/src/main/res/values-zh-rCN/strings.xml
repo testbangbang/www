@@ -218,4 +218,5 @@
   <string name="normal">正常</string>
   <string name="slower">较慢</string>
   <string name="slow">慢 </string>
+  <string name="get_page_text_failed">获取页面文字失败!</string>
 </resources>
