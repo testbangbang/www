@@ -272,6 +272,8 @@ public class ReaderActivity extends ActionBarActivity {
                 if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
                     surfaceView.getHeight() == getReaderDataHolder().getDisplayHeight()) {
                     getReaderDataHolder().redrawPage();
+                } else {
+                    onSurfaceViewSizeChanged();
                 }
             }
 
