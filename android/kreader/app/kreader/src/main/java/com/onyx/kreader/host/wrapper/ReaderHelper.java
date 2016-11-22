@@ -18,6 +18,7 @@ import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.api.ReaderRendererFeatures;
 import com.onyx.kreader.api.ReaderSearchManager;
+import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.cache.BitmapSoftLruCache;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
@@ -59,6 +60,7 @@ public class ReaderHelper {
     private ReaderNavigator navigator;
     private ReaderRenderer renderer;
     private ReaderRendererFeatures rendererFeatures;
+    private ReaderTextStyleManager textStyleManager;
     private ReaderSearchManager searchManager;
     // to be used by UI thread
     private ReaderBitmapImpl viewportBitmap;
@@ -145,6 +147,7 @@ public class ReaderHelper {
         renderer = view.getRenderer();
         navigator = view.getNavigator();
         rendererFeatures = renderer.getRendererFeatures();
+        textStyleManager = view.getTextStyleManager();
         hitTestManager = view.getReaderHitTestManager();
         searchManager = view.getSearchManager();
     }
@@ -207,6 +210,7 @@ public class ReaderHelper {
                     getDocument(),
                     getNavigator(),
                     getRendererFeatures(),
+                    getTextStyleManager(),
                     getViewOptions());
         }
         return readerLayoutManager;
@@ -326,6 +330,10 @@ public class ReaderHelper {
 
     public ReaderRendererFeatures getRendererFeatures() {
         return rendererFeatures;
+    }
+
+    public ReaderTextStyleManager getTextStyleManager() {
+        return textStyleManager;
     }
 
     public ReaderSearchManager getSearchManager() {

@@ -1,7 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -9,14 +9,14 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class ChangeStyleRequest extends BaseReaderRequest {
 
-    private ReaderStyle readerStyle;
+    private ReaderTextStyle readerTextStyle;
 
-    public ChangeStyleRequest(final ReaderStyle style) {
-        readerStyle = style;
+    public ChangeStyleRequest(final ReaderTextStyle style) {
+        readerTextStyle = style;
     }
 
     public void execute(final Reader reader) throws Exception {
-        reader.getReaderLayoutManager().setStyle(readerStyle);
+        reader.getReaderLayoutManager().setStyle(readerTextStyle);
         drawVisiblePages(reader);
     }
 }

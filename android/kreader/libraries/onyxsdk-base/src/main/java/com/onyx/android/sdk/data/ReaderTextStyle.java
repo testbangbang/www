@@ -3,7 +3,7 @@ package com.onyx.android.sdk.data;
 /**
  * Created by zhuzeng on 11/6/15.
  */
-public class ReaderStyle {
+public class ReaderTextStyle {
 
     public enum Alignment {
         ALIGNMENT_NONE,
@@ -125,7 +125,7 @@ public class ReaderStyle {
             this.topMargin = topMargin;
         }
 
-        public static PageMargin Copy(PageMargin pageMargin) {
+        public static PageMargin copy(PageMargin pageMargin) {
             return new PageMargin(new DPUnit(pageMargin.getLeftMargin().getValue()),
                     new DPUnit(pageMargin.getBottomMargin().getValue()),
                     new DPUnit(pageMargin.getRightMargin().getValue()),
@@ -192,7 +192,7 @@ public class ReaderStyle {
     }
 
     static public Percentage DEFAULT_LINE_SPACING = new Percentage(150);
-    static public Percentage LINE_SPACEING_STEP = new Percentage(10);
+    static public Percentage LINE_SPACING_STEP = new Percentage(10);
     static public Percentage LARGE_LINE_SPACING = new Percentage(180);
     static public Percentage NORMAL_LINE_SPACING = new Percentage(150);
     static public Percentage SMALL_LINE_SPACING = new Percentage(120);
@@ -205,18 +205,26 @@ public class ReaderStyle {
     static public PageMargin NORMAL_PAGE_MARGIN = new PageMargin(DPUnit.create(20), DPUnit.create(20), DPUnit.create(20), DPUnit.create(20));
     static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(DPUnit.create(10), DPUnit.create(10), DPUnit.create(10), DPUnit.create(10));
 
+    static public SPUnit[] FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
+            SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
+
     private String fontFace = null;
     private SPUnit fontSize = SPUnit.create(32.0f);
     private Alignment alignment = Alignment.ALIGNMENT_JUSTIFY;
     private CharacterIndent indent = new CharacterIndent(2);
     private Percentage lineSpacing = new Percentage(150);
-    private DPUnit topMargin = new DPUnit(1);
-    private DPUnit leftMargin = new DPUnit(1);
-    private DPUnit rightMargin = new DPUnit(1);
-    private DPUnit bottomMargin = new DPUnit(1);
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
-    private SPUnit[] fontSizes = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
-            SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
+
+    public static ReaderTextStyle copy(ReaderTextStyle style) {
+        ReaderTextStyle copy = new ReaderTextStyle();
+        copy.fontFace = style.fontFace;
+        copy.fontSize = style.fontSize;
+        copy.alignment = style.alignment;
+        copy.indent = style.indent;
+        copy.lineSpacing = style.lineSpacing;
+        copy.pageMargin = style.pageMargin;
+        return copy;
+    }
 
     public String getFontFace() {
         return fontFace;
@@ -256,42 +264,6 @@ public class ReaderStyle {
 
     public void setLineSpacing(Percentage lineSpacing) {
         this.lineSpacing = lineSpacing;
-    }
-
-    public DPUnit getTopMargin() {
-        return topMargin;
-    }
-
-    public void setTopMargin(DPUnit topMargin) {
-        this.topMargin = topMargin;
-    }
-
-    public DPUnit getLeftMargin() {
-        return leftMargin;
-    }
-
-    public void setLeftMargin(DPUnit leftMargin) {
-        this.leftMargin = leftMargin;
-    }
-
-    public DPUnit getRightMargin() {
-        return rightMargin;
-    }
-
-    public void setRightMargin(DPUnit rightMargin) {
-        this.rightMargin = rightMargin;
-    }
-
-    public DPUnit getBottomMargin() {
-        return bottomMargin;
-    }
-
-    public void setBottomMargin(DPUnit bottomMargin) {
-        this.bottomMargin = bottomMargin;
-    }
-
-    public SPUnit[] getFontSizes() {
-        return fontSizes;
     }
 
     public PageMargin getPageMargin() {

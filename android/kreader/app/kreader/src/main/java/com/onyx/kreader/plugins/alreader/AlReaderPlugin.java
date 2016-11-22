@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
-import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -212,7 +212,7 @@ public class AlReaderPlugin implements ReaderPlugin,
      * set stream document style. ignore.
      * @param style
      */
-    public void setStyle(final ReaderStyle style) {
+    public void setStyle(final ReaderTextStyle style) {
         getPluginImpl().setStyle(style);
     }
 
@@ -239,7 +239,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         getPluginImpl().draw(bitmap, (int)displayRect.width(), (int)displayRect.height());
         return true;
     }

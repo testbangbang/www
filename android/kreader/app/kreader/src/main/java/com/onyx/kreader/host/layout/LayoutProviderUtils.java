@@ -130,6 +130,14 @@ public class LayoutProviderUtils {
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
     }
 
+    static public PageInfo drawReflowablePage(final PageInfo pageInfo, final ReaderBitmap bitmap, final ReaderRenderer readerRenderer) {
+        final RectF viewport = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
+        if (!readerRenderer.draw(pageInfo.getPosition(), 1.0f, 0, bitmap.getBitmap(), viewport, viewport, viewport)) {
+            return null;
+        }
+        return pageInfo;
+    }
+
     /**
      * draw page with scale to page on specified bitmap.
      * @param pageInfo
@@ -143,13 +151,13 @@ public class LayoutProviderUtils {
         final PageManager internalPageManager = new PageManager();
         internalPageManager.add(pageInfo);
         internalPageManager.setViewportRect(viewport);
-        internalPageManager.scaleToPage(pageInfo.getName());
+        internalPageManager.scaleToPage(pageInfo.getPosition());
         final PageInfo visiblePage = internalPageManager.getFirstVisiblePage();
         final RectF visibleRect = new RectF(visiblePage.getPositionRect());
         visibleRect.intersect(viewport);
 
         BitmapUtils.clear(bitmap.getBitmap());
-        readerRenderer.draw(pageInfo.getName(),
+        readerRenderer.draw(pageInfo.getPosition(),
                 scale,
                 pageInfo.getPageDisplayOrientation(),
                 bitmap.getBitmap(),

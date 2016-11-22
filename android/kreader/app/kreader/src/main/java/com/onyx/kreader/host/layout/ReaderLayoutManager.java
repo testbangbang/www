@@ -10,7 +10,7 @@ import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderHelper;
 import com.onyx.kreader.reflow.ImageReflowManager;
@@ -35,6 +35,7 @@ public class ReaderLayoutManager {
     private ReaderDocument readerDocument;
     private ReaderNavigator readerNavigator;
     private ReaderRendererFeatures readerRendererFeatures;
+    private ReaderTextStyleManager textStyleManager;
     private ReaderViewOptions readerViewOptions;
     private HistoryManager historyManager;
     private PageManager pageManager;
@@ -48,11 +49,13 @@ public class ReaderLayoutManager {
                                final ReaderDocument document,
                                final ReaderNavigator navigator,
                                final ReaderRendererFeatures features,
+                               final ReaderTextStyleManager styleManager,
                                final ReaderViewOptions viewOptions) {
         readerHelper = helper;
         readerDocument = document;
         readerNavigator = navigator;
         readerRendererFeatures = features;
+        textStyleManager = styleManager;
         readerViewOptions = viewOptions;
     }
 
@@ -66,6 +69,10 @@ public class ReaderLayoutManager {
 
     public ReaderRendererFeatures getReaderRendererFeatures() {
         return readerRendererFeatures;
+    }
+
+    public ReaderTextStyleManager getTextStyleManager() {
+        return textStyleManager;
     }
 
     public ReaderViewOptions getReaderViewOptions() {
@@ -387,7 +394,7 @@ public class ReaderLayoutManager {
         return getCurrentLayoutProvider().setNavigationArgs(args);
     }
 
-    public void setStyle(final ReaderStyle style) throws ReaderException {
+    public void setStyle(final ReaderTextStyle style) throws ReaderException {
         getCurrentLayoutProvider().setStyle(style);
     }
 

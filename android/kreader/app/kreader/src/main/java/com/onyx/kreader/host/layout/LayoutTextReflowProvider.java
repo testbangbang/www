@@ -2,7 +2,7 @@ package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.android.sdk.data.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderDrawContext;
@@ -135,8 +135,9 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean setStyle(final ReaderStyle style) throws ReaderException {
-        return false;
+    public boolean setStyle(final ReaderTextStyle style) throws ReaderException {
+        getLayoutManager().getTextStyleManager().setStyle(style);
+        return true;
     }
 
     public RectF getPageRectOnViewport(final String position) throws ReaderException {
