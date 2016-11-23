@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+
 import retrofit2.Response;
 
 /**
@@ -55,9 +56,8 @@ public class ProductListRequest extends BaseCloudRequest {
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         String param = JSON.toJSONString(productQuery);
-        Response<ProductResult<Product>> response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
-                .bookList(param).execute();
-        CloudUtils.dumpResponseMessage(TAG, response, true);
+        Response<ProductResult<Product>> response = executeCall(ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
+                .bookList(param));
         if (response.isSuccessful()) {
             productResult = response.body();
             if (isSaveToLocal()) {

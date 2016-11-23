@@ -34,13 +34,10 @@ public class AccountUpdateRequest extends BaseCloudRequest {
 
         Call<OnyxAccount> call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
                 .updateAccountInfo(updateAccount, getAccountSessionToken());
-        Response<OnyxAccount> response = call.execute();
+        Response<OnyxAccount> response = executeCall(call);
         if (response.isSuccessful()) {
             updateAccount = response.body();
             updateAccount.sessionToken = getAccountSessionToken();
-        } else {
-            String errorCode = JSONObjectParseUtils.httpStatus(response.code(), new JSONObject(response.errorBody().string()));
-            throw new Exception(errorCode);
         }
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <corners android:radius="5dp" />
+    <solid android:color="@android:color/transparent" />
+    <stroke
+        android:width="@dimen/home_item_background_select_stroke_width"
+        android:color="@color/home_item_view_action_select_stoke_color" />
+
+</shape>

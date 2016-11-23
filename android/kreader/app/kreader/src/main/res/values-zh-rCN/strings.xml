@@ -76,8 +76,7 @@
   <string name="direction">方向</string>
   <string name="six">6</string>
   <string name="nine">9</string>
-  <string name="two">左右</string>
-  <string name="four">四边</string>
+  <string name="four">自动</string>
   <string name="single_page">单页</string>
   <string name="double_page">双页</string>
   <string name="nothing">无</string>
@@ -219,4 +218,5 @@
   <string name="normal">正常</string>
   <string name="slower">较慢</string>
   <string name="slow">慢 </string>
+  <string name="get_page_text_failed">获取页面文字失败!</string>
 </resources>

@@ -19,6 +19,9 @@ import retrofit2.http.*;
  */
 public interface OnyxAccountService {
 
+    @GET("oauth/token")
+    Call<OnyxAccount> getOAuthAccount(@Query("code") final String code);
+
     @POST("account/signup")
     Call<OnyxAccount> signup(@Body final OnyxAccount account);
 
