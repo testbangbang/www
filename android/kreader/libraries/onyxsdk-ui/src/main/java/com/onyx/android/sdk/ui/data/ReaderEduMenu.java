@@ -76,8 +76,7 @@ public class ReaderEduMenu extends ReaderMenu {
 
     @Override
     public void fillItems(List<? extends ReaderMenuItem> items) {
-        menuItems.add((ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FRONT_LIGHT, R.drawable.ic_dialog_reader_menu_frontlight));
-        menuItems.add((ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_dialog_reader_menu_dic));
+        menuItems = (List<ReaderLayerMenuItem>)items;
     }
 
     private View createMainMenuContainerView(List<ReaderLayerMenuItem> items, ReaderMenuState state) {
@@ -85,11 +84,7 @@ public class ReaderEduMenu extends ReaderMenu {
     }
 
     private void handleMenuItemClicked(ReaderMenuItem item) {
-        if (item.getItemType() == ReaderMenuItem.ItemType.Group) {
-            currentParentMenuItem = (ReaderLayerMenuItem)item;
-        } else {
-            notifyMenuItemClicked(item);
-        }
+        notifyMenuItemClicked(item);
     }
 
     private DialogReaderEduMenu getDialog() {

@@ -33,7 +33,7 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
     }
 
     public static ReaderMenuItem createSimpleMenuItem(ReaderMenuAction action, int drawableResourceId) {
-        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, action, null, -1, null, drawableResourceId);
+        return new ReaderLayerMenuItem(ItemType.Group, action, null, -1, null, drawableResourceId);
     }
 
     /**

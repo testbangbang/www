@@ -138,13 +138,16 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
+        ReaderLayerMenuItem[] menuItems;
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isUseColorMenu()) {
+            menuItems = ReaderLayerMenuRepository.colorMenuItems;
             readerMenu = new ReaderEduMenu(readerDataHolder.getContext());
         }else {
+            menuItems = ReaderLayerMenuRepository.fixedPageMenuItems;
             readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());
         }
         updateReaderMenuCallback(readerMenu, readerDataHolder);
-        List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
+        List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder, menuItems);
         readerMenu.fillItems(items);
     }
 
@@ -274,8 +277,8 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems, disableMenus);
+    private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder, ReaderLayerMenuItem[] menuItems) {
+        return ReaderLayerMenuRepository.createFromArray(menuItems, disableMenus);
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {

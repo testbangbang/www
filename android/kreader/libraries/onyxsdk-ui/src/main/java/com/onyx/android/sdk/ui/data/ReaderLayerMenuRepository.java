@@ -45,6 +45,11 @@ public class ReaderLayerMenuRepository {
         new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SETTINGS, null, R.string.reader_layer_menu_settings, "", R.drawable.ic_dialog_reader_menu_setting),
     };
 
+    public static ReaderLayerMenuItem[] colorMenuItems = new ReaderLayerMenuItem[]{
+            (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_dialog_reader_menu_topic),
+            (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_SCRIBBLE, R.drawable.ic_dialog_reader_menu_browse_write)
+    };
+
     public static List<ReaderLayerMenuItem> createFromArray(ReaderLayerMenuItem[] flattenArray) {
         ArrayList<ReaderLayerMenuItem> menuGroupList = new ArrayList<>();
         ReaderLayerMenuItem currentGroup = null;

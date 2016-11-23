@@ -11,7 +11,12 @@
         android:layout_height="0dp"
         android:background="@android:color/transparent"/>
 
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"/>
+
     <LinearLayout
+        android:background="@android:color/white"
         android:id="@+id/goto_position_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -29,23 +34,25 @@
                 android:thumb="@drawable/color_seekbar_thumb"
                 android:id="@+id/seek_bar_page"
                 android:layout_width="match_parent"
-                android:layout_height="10dp"
+                android:layout_height="15dp"
                 android:progressDrawable="@drawable/color_seekbar_progress"
                 android:max="20"/>
 
-
             <TextView
+                android:layout_gravity="center_vertical"
+                android:textColor="@android:color/black"
                 android:id="@+id/position_text"
                 android:text="1791"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:layout_gravity="center_vertical"
+                android:textColor="@android:color/black"
                 android:id="@+id/total_text"
                 android:text="/2461"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
 
         </LinearLayout>
 
@@ -55,6 +62,8 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:layout_marginLeft="15dp"
+                android:textColor="@android:color/black"
                 android:id="@+id/book_name"
                 android:text="三体.epud"
                 android:layout_width="wrap_content"
@@ -66,8 +75,8 @@
                 android:layout_height="1dp"/>
 
             <ImageView
-                android:id="@+id/refresh_view"
-                android:src="@drawable/ic_dialog_close"
+                android:id="@+id/undo_view"
+                android:src="@drawable/ic_dialog_reader_menu_undo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
@@ -77,8 +86,7 @@
 
     <View
         style="@style/single_line_X_axis_View"
-        android:layout_height="2dp"/>
-
+        android:layout_height="1dp"/>
 
     <LinearLayout
         android:orientation="vertical"
