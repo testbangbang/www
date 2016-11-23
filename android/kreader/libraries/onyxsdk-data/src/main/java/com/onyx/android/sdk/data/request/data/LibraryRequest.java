@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.data.request.data;
 
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -30,7 +29,7 @@ public class LibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        libraryList.addAll(dataManager.getDataManagerHelper().getLibraryHelper().loadAllLibrary(queryArgs.libraryUniqueId));
+        libraryList.addAll(dataManager.getDataManagerHelper().getLibraryHelper().loadSubLibraryList(queryArgs.libraryUniqueId));
         if (loadMetadata) {
             bookList = dataManager.getDataManagerHelper().getMetadataListByLibraryId(getContext(), queryArgs.libraryUniqueId, true);
         }

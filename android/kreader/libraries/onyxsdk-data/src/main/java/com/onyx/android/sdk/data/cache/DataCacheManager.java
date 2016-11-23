@@ -40,7 +40,7 @@ public class DataCacheManager {
         metadataCache.add(metadata);
     }
 
-    public void addAllToMetadataCache(final List<Metadata> list) {
+    public void addToMetadataCache(final List<Metadata> list) {
         for(Metadata metadata : list) {
             metadataCache.add(metadata);
         }
@@ -57,7 +57,7 @@ public class DataCacheManager {
         }
     }
 
-    public void addAllToLibrary(final String libraryId, final List<Metadata> list) {
+    public void addToLibrary(final String libraryId, final List<Metadata> list) {
         if (StringUtils.isNullOrEmpty(libraryId) || CollectionUtils.isNullOrEmpty(list)) {
             return;
         }

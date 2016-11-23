@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.cache.DataCacheManager;
 import com.onyx.android.sdk.data.cache.LibraryCache;
-import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
@@ -59,8 +58,8 @@ public class DataManagerHelper {
     public List<Metadata> getMetadataListByQueryArgs(final Context context, final QueryArgs queryArgs, boolean saveToCache) {
         final List<Metadata> list = getDataProvider().findMetadata(context, queryArgs);
         if (saveToCache) {
-            getDataCacheManager().addAllToMetadataCache(list);
-            getDataCacheManager().addAllToLibrary(queryArgs.libraryUniqueId, list);
+            getDataCacheManager().addToMetadataCache(list);
+            getDataCacheManager().addToLibrary(queryArgs.libraryUniqueId, list);
         }
         return list;
     }

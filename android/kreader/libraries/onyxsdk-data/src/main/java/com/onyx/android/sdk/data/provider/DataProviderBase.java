@@ -61,7 +61,7 @@ public interface DataProviderBase {
 
     Library loadLibrary(String uniqueId);
 
-    List<Library> loadAllLibrary(String parentId);
+    List<Library> loadSubLibraryList(String parentId);
 
     void addLibrary(Library library);
 

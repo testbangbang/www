@@ -38,22 +38,27 @@ public class BuildLibraryFromFileSystemRequest extends BaseDataRequest {
 
     @Override
     public void execute(final DataManager dataManager) throws Exception {
-        final List<File> list = collectFiles(dataManager);
+        final List<File> list = collectDiffFiles(dataManager);
         bookList = dataManager.getDataManagerHelper().getMetadataHelper().saveList(dataManager, getContext(), list);
         dataManager.getDataManagerHelper().getLibraryHelper().addCollections(getContext(), libraryUniqueId, bookList);
+        addToLibraryCache(dataManager, bookList);
     }
 
     public List<Metadata> getBookList() {
         return bookList;
     }
 
-    private List<File> collectFiles(final DataManager dataManager) {
+    private List<File> collectDiffFiles(final DataManager dataManager) {
         HashMap<String, Long> hashMap = new HashMap<>();
         for(String path : targetPathList) {
             FileSystemHelper.collectFiles(path, null, hashMap, this, sizeLimit, ignoreList, extensionFilters);
         }
         final LibraryCache libraryCache = dataManager.getDataManagerHelper().getDataCacheManager().getLibraryCache(libraryUniqueId);
         return libraryCache.diffList(hashMap);
+    }
+
+    private void addToLibraryCache(final DataManager dataManager, final List<Metadata> bookList) {
+        dataManager.getDataManagerHelper().getDataCacheManager().addToLibrary(libraryUniqueId, bookList);
     }
 
 }

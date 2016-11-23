@@ -117,8 +117,8 @@ public class LibraryHelper {
         return list;
     }
 
-    public List<Library> loadAllLibrary(final String parentId) {
-        return getDataProvider().loadAllLibrary(parentId);
+    public List<Library> loadSubLibraryList(final String parentId) {
+        return getDataProvider().loadSubLibraryList(parentId);
     }
 
     public void saveLibrary(Library library) {

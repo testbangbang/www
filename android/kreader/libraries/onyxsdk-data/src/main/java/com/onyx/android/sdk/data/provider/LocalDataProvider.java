@@ -165,7 +165,7 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Library> loadAllLibrary(String parentId) {
+    public List<Library> loadSubLibraryList(String parentId) {
         Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
         return new Select().from(Library.class).where(condition).queryList();
     }

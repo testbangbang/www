@@ -93,13 +93,13 @@ public class LibraryTest extends ApplicationTestCase<Application> {
             librarySet[i] = getRandomLibrary();
             providerBase.addLibrary(librarySet[i]);
         }
-        libraryList = providerBase.loadAllLibrary(null);
+        libraryList = providerBase.loadSubLibraryList(null);
         assertNotNull(libraryList);
         assertTrue(libraryList.size() >= count);
 
         librarySet[0].setParentUniqueId(MetadataTestUtils.generateRandomUUID());
         providerBase.updateLibrary(librarySet[0]);
-        libraryList = providerBase.loadAllLibrary(librarySet[0].getParentUniqueId());
+        libraryList = providerBase.loadSubLibraryList(librarySet[0].getParentUniqueId());
         assertNotNull(libraryList);
         assertTrue(libraryList.size() == 1);
     }

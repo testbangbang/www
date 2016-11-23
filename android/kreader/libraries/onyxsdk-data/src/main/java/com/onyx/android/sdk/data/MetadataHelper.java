@@ -37,8 +37,8 @@ public class MetadataHelper {
     public List<Metadata> getAllMetadataListByQueryArgs(final Context context, final QueryArgs queryArgs, boolean saveToCache) {
         final List<Metadata> list = getParent().getDataProvider().findMetadata(context, queryArgs);
         if (saveToCache) {
-            getParent().getDataCacheManager().addAllToMetadataCache(list);
-            getParent().getDataCacheManager().addAllToLibrary(queryArgs.libraryUniqueId, list);
+            getParent().getDataCacheManager().addToMetadataCache(list);
+            getParent().getDataCacheManager().addToLibrary(queryArgs.libraryUniqueId, list);
         }
         return list;
     }
@@ -46,8 +46,8 @@ public class MetadataHelper {
     public List<Metadata> collectMetadataListByQueryArgs(final Context context, final QueryArgs queryArgs, boolean saveToCache) {
         final List<Metadata> list = getParent().getDataProvider().findMetadata(context, queryArgs);
         if (saveToCache) {
-            getParent().getDataCacheManager().addAllToMetadataCache(list);
-            getParent().getDataCacheManager().addAllToLibrary(queryArgs.libraryUniqueId, list);
+            getParent().getDataCacheManager().addToMetadataCache(list);
+            getParent().getDataCacheManager().addToLibrary(queryArgs.libraryUniqueId, list);
         }
         return list;
     }
