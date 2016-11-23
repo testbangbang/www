@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
+import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 
@@ -21,6 +23,7 @@ public class DialogReaderEduMenu extends Dialog {
 
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;
+    private LinearLayout menuView;
 
     public DialogReaderEduMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -35,13 +38,7 @@ public class DialogReaderEduMenu extends Dialog {
     }
 
     private void initDialogContent() {
-        findViewById(R.id.button_toc).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                readerMenuCallback.onHideMenu();
-                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC));
-            }
-        });
+        menuView = (LinearLayout) findViewById(R.id.menu_view);
     }
 
     private void fitDialogToWindow() {
@@ -52,5 +49,14 @@ public class DialogReaderEduMenu extends Dialog {
         mWindow.setAttributes(mParams);
         //force use all space in the screen.
         mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    public void show(ReaderMenuState state) {
+        show();
+    }
+
+    public void updateMenuView(View view) {
+        menuView.removeAllViews();
+        menuView.addView(view);
     }
 }

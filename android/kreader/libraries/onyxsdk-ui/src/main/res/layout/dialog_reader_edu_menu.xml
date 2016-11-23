@@ -4,64 +4,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <LinearLayout
-        android:background="@android:color/holo_red_light"
-        android:id="@+id/reader_function_bar"
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible">
-
-        <LinearLayout
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:id="@+id/layout_back_area"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:background="@drawable/imagebtn_bg">
-
-            <ImageView
-                android:id="@+id/imageView_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:src="@drawable/ic_dialog_reader_menu_arrow"/>
-
-        </LinearLayout>
-
-        <View
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <TextView
-            android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:text="11:36"
-            android:layout_marginRight="10dp"
-            android:id="@+id/time_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <ImageButton
-            android:id="@+id/button_toc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
-            android:background="@drawable/imagebtn_bg"
-            android:nextFocusLeft="@id/layout_back_area"
-            android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_dialog_reader_menu_topic"/>
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/reader_function_bar_divider"
-        style="@style/single_line_X_axis_View"
-        android:layout_height="2dp"/>
-
     <View
         android:layout_weight="1"
         android:id="@+id/dismiss_zone"
@@ -137,58 +79,12 @@
         style="@style/single_line_X_axis_View"
         android:layout_height="2dp"/>
 
+
     <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/menu_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:padding="10dp"
-            android:src="@drawable/ic_dialog_reader_menu_font"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:layerType="software"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/green_dash_line"
-            android:layout_width="2dp"
-            android:layout_height="15dp"/>
-
-        <ImageView
-            android:padding="10dp"
-            android:src="@drawable/ic_dialog_reader_menu_font"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:layerType="software"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/green_dash_line"
-            android:layout_width="2dp"
-            android:layout_height="15dp"/>
-
-        <ImageView
-            android:padding="10dp"
-            android:src="@drawable/ic_dialog_reader_menu_font"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:layerType="software"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/green_dash_line"
-            android:layout_width="2dp"
-            android:layout_height="15dp"/>
-
-        <ImageView
-            android:padding="10dp"
-            android:src="@drawable/ic_dialog_reader_menu_font"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
     </LinearLayout>
-
 </LinearLayout>

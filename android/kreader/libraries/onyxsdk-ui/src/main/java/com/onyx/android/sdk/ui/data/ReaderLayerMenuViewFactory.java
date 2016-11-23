@@ -87,10 +87,10 @@ public class ReaderLayerMenuViewFactory {
             if (!item.isVisible()) {
                 continue;
             }
-            if (item.getItemType() == ReaderMenuItem.ItemType.Group &&
-                    collectVisibleItems(item.getChildren()).size() <= 0) {
-                continue;
-            }
+//            if (item.getItemType() == ReaderMenuItem.ItemType.Group &&
+//                    collectVisibleItems(item.getChildren()).size() <= 0) {
+//                continue;
+//            }
             result.add(item);
         }
         return result;

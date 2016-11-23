@@ -4,11 +4,14 @@ import android.content.Context;
 import android.view.View;
 
 import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.dialog.DialogReaderEduMenu;
 import com.onyx.android.sdk.ui.dialog.DialogReaderMenu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +23,7 @@ public class ReaderEduMenu extends ReaderMenu {
     private Context context;
     private DialogReaderEduMenu dialog;
     private ReaderMenuState state;
-    private List<ReaderLayerMenuItem> menuItems;
+    private List<ReaderLayerMenuItem> menuItems = new ArrayList<>();
     private ReaderLayerMenuItem currentParentMenuItem;
     private View mainMenuContainerView;
     private View subMenuContainerView;
@@ -41,6 +44,10 @@ public class ReaderEduMenu extends ReaderMenu {
         }
     };
 
+    public ReaderEduMenu(Context context) {
+        this.context = context;
+    }
+
     private void handleHideMenu() {
         hide();
     }
@@ -52,7 +59,9 @@ public class ReaderEduMenu extends ReaderMenu {
 
     @Override
     public void show(ReaderMenuState state) {
-
+        this.state = state;
+        updateMenuContent();
+        getDialog().show(state);
     }
 
     @Override
@@ -67,7 +76,12 @@ public class ReaderEduMenu extends ReaderMenu {
 
     @Override
     public void fillItems(List<? extends ReaderMenuItem> items) {
+        menuItems.add((ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.FRONT_LIGHT, R.drawable.ic_dialog_reader_menu_frontlight));
+        menuItems.add((ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_dialog_reader_menu_dic));
+    }
 
+    private View createMainMenuContainerView(List<ReaderLayerMenuItem> items, ReaderMenuState state) {
+        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback);
     }
 
     private void handleMenuItemClicked(ReaderMenuItem item) {
@@ -83,5 +97,15 @@ public class ReaderEduMenu extends ReaderMenu {
             dialog = new DialogReaderEduMenu(context, readerMenuCallback);
         }
         return dialog;
+    }
+
+    private void updateMenuContent() {
+        mainMenuContainerView = createMainMenuContainerView(menuItems, state);
+        getDialog().updateMenuView(mainMenuContainerView);
+    }
+
+    private boolean isColorMenus(ReaderMenuItem item) {
+        return item.getAction() == ReaderMenuAction.DIRECTORY_TOC ||
+                item.getAction() == ReaderMenuAction.FRONT_LIGHT;
     }
 }

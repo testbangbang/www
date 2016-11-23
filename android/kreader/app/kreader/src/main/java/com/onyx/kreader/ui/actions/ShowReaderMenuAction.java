@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.data.ReaderEduMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
@@ -68,7 +69,7 @@ public class ShowReaderMenuAction extends BaseAction {
     ReaderActivity readerActivity;
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
-    private static ReaderLayerMenu readerMenu;
+    private static ReaderMenu readerMenu;
     private boolean disableScribbleBrush = true;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
 
@@ -137,7 +138,11 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
-        readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isUseColorMenu()) {
+            readerMenu = new ReaderEduMenu(readerDataHolder.getContext());
+        }else {
+            readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());
+        }
         updateReaderMenuCallback(readerMenu, readerDataHolder);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
         readerMenu.fillItems(items);
