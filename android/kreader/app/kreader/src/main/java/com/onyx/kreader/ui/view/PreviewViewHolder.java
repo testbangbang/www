@@ -19,10 +19,12 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
     private TextView pageText;
     private RelativeLayout container;
     private Bitmap bitmap;
+    private ImageView closeView;
 
     public PreviewViewHolder(View itemView) {
         super(itemView);
         imageView = (ImageView) itemView.findViewById(R.id.image_view);
+        closeView = (ImageView) itemView.findViewById(R.id.close_view);
         pageTextView = (TextView) itemView.findViewById(R.id.text_view_page);
         pageText = (TextView) itemView.findViewById(R.id.btn_page);
         container = (RelativeLayout) itemView.findViewById(R.id.item_container);
@@ -53,5 +55,9 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
 
     public ImageView getImageView() {
         return imageView;
+    }
+
+    public ImageView getCloseView() {
+        return closeView;
     }
 }
