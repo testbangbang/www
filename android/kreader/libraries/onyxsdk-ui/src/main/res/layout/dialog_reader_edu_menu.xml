@@ -57,7 +57,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -89,6 +91,7 @@
         android:layout_height="1dp"/>
 
     <LinearLayout
+        android:background="@android:color/white"
         android:orientation="vertical"
         android:id="@+id/menu_view"
         android:layout_width="match_parent"

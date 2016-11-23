@@ -55,7 +55,6 @@ import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.utils.DeviceConfig;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -134,6 +133,10 @@ public class ShowReaderMenuAction extends BaseAction {
         }
         if (disableScribbleBrush) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
+        }
+
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isUseColorMenu()) {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
         }
     }
 
@@ -273,6 +276,11 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
+                switch (menuItem.getAction()) {
+                    case JUMP_PAGE:
+                        gotoPage(readerDataHolder, newValue);
+                        break;
+                }
             }
         });
     }
@@ -395,6 +403,14 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void forward(final ReaderDataHolder readerDataHolder) {
         new ForwardAction().execute(readerDataHolder, null);
+    }
+
+    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o) {
+        if (o == null) {
+            return;
+        }
+        int page = (int) o;
+        new GotoPageAction(String.valueOf(page)).execute(readerDataHolder);
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {

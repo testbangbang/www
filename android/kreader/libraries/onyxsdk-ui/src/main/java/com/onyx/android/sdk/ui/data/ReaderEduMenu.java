@@ -24,18 +24,17 @@ public class ReaderEduMenu extends ReaderMenu {
     private DialogReaderEduMenu dialog;
     private ReaderMenuState state;
     private List<ReaderLayerMenuItem> menuItems = new ArrayList<>();
-    private ReaderLayerMenuItem currentParentMenuItem;
     private View mainMenuContainerView;
-    private View subMenuContainerView;
 
     private ReaderMenuCallback readerMenuCallback = new ReaderMenuCallback() {
         @Override
         public void onMenuItemClicked(ReaderMenuItem menuItem) {
-            handleMenuItemClicked(menuItem);
+            notifyMenuItemClicked(menuItem);
         }
 
         @Override
         public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
+            notifyMenuItemValueChanged(menuItem, oldValue, newValue);
         }
 
         @Override
@@ -54,7 +53,7 @@ public class ReaderEduMenu extends ReaderMenu {
 
     @Override
     public boolean isShown() {
-        return false;
+        return getDialog().isShowing();
     }
 
     @Override
@@ -83,10 +82,6 @@ public class ReaderEduMenu extends ReaderMenu {
         return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback);
     }
 
-    private void handleMenuItemClicked(ReaderMenuItem item) {
-        notifyMenuItemClicked(item);
-    }
-
     private DialogReaderEduMenu getDialog() {
         if (dialog == null) {
             dialog = new DialogReaderEduMenu(context, readerMenuCallback);
@@ -97,10 +92,5 @@ public class ReaderEduMenu extends ReaderMenu {
     private void updateMenuContent() {
         mainMenuContainerView = createMainMenuContainerView(menuItems, state);
         getDialog().updateMenuView(mainMenuContainerView);
-    }
-
-    private boolean isColorMenus(ReaderMenuItem item) {
-        return item.getAction() == ReaderMenuAction.DIRECTORY_TOC ||
-                item.getAction() == ReaderMenuAction.FRONT_LIGHT;
     }
 }
