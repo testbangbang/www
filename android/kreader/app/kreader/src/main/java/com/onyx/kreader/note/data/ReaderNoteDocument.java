@@ -216,7 +216,22 @@ public class ReaderNoteDocument {
             return null;
         }
         notePage.clear(true);
-        if (notePage.savePage(context) && list.size() == 1) {
+        notePage.savePage(context);
+        return subPageUniqueId;
+    }
+
+    public String removePage(final Context context, final String pageName, final int subPageIndex) {
+        final List<String> list = getPageIndex().getPageList(pageName, false);
+        if (CollectionUtils.isEmpty(list)) {
+            return null;
+        }
+        if (subPageIndex < 0 || subPageIndex >= list.size()) {
+            return null;
+        }
+        final String subPageUniqueId = list.get(subPageIndex);
+        getPageMap().remove(subPageUniqueId);
+        getPageIndex().remove(pageName, subPageUniqueId);
+        if (list == null || list.size() == 0) {
             getPageIndex().remove(pageName);
         }
         return subPageUniqueId;

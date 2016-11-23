@@ -67,8 +67,8 @@
 
     <ImageView
         android:background="@drawable/imagebtn_bg"
-        android:visibility="gone"
         android:id="@+id/close_view"
+        android:visibility="gone"
         android:src="@drawable/ic_dialog_close"
         android:layout_margin="5dp"
         android:layout_alignParentRight="true"
