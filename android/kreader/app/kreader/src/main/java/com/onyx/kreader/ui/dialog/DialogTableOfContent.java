@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
@@ -44,6 +45,7 @@ import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.host.request.DeleteAnnotationRequest;
 import com.onyx.kreader.host.request.DeleteBookmarkRequest;
+import com.onyx.kreader.note.actions.ClearPageAction;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ExportNotesActionChain;
@@ -90,6 +92,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private List<Bookmark> bookmarkList = new ArrayList<>();
     private List<Annotation> annotationList = new ArrayList<>();
     private SparseArray<Bitmap> scribblePreviewMap = new SparseArray<>();
+    private SparseArray<PageInfo> pageInfoMap = new SparseArray<>();
     private PageRecyclerView scribblePageView;
     private GetScribbleBitmapAction getScribbleBitmapAction;
     List<String> requestPages;
@@ -594,7 +597,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             scribblePreviewMap.put(Integer.valueOf(page), null);
         }
         scribblePageView = new PageRecyclerView(viewPager.getContext());
-        int padding = DimenUtils.dip2px(getContext(), 10);
+        final int padding = DimenUtils.dip2px(getContext(), 10);
         scribblePageView.setPadding(padding, padding, padding, padding);
         scribblePageView.setDefaultPageKeyBinding();
         scribblePageView.setLayoutManager(new DisableScrollGridManager(getContext()));
@@ -628,14 +631,29 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                         });
                     }
                 });
+                previewViewHolder.getCloseView().setVisibility(View.VISIBLE);
                 return previewViewHolder;
             }
 
             @Override
-            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
                 final PreviewViewHolder previewViewHolder = (PreviewViewHolder) holder;
                 final int page = scribblePreviewMap.keyAt(position);
                 Bitmap scribbleBitmap = scribblePreviewMap.get(page);
+                previewViewHolder.getCloseView().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PageInfo pageInfo = pageInfoMap.get(page);
+                        if (pageInfo != null) {
+                            new ClearPageAction(pageInfo).execute(readerDataHolder, new BaseCallback() {
+                                @Override
+                                public void done(BaseRequest request, Throwable e) {
+                                    getPageAdapter(currentTab).notifyItemRemoved(position);
+                                }
+                            });
+                        }
+                    }
+                });
                 previewViewHolder.bindPreview(scribbleBitmap, page);
             }
 
@@ -675,9 +693,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         getScribbleBitmapAction = new GetScribbleBitmapAction(requestPages, 300, 400);
         getScribbleBitmapAction.execute(readerDataHolder, new GetScribbleBitmapAction.Callback() {
             @Override
-            public void onNext(String page, Bitmap bitmap) {
+            public void onNext(String page, Bitmap bitmap, PageInfo pageInfo) {
                 int pageNumber = Integer.valueOf(page);
                 scribblePreviewMap.put(pageNumber, bitmap);
+                pageInfoMap.put(pageNumber, pageInfo);
                 scribblePageView.getPageAdapter().notifyItemChanged(scribblePreviewMap.indexOfKey(pageNumber));
             }
         });
