@@ -128,7 +128,7 @@ public class AlReaderWrapper {
         profile.twoColumn = false;
         profile.colorText = 0x000000;
         profile.colorTitle = 0x9c27b0;
-        profile.colorBack = 0xf0f0f0;
+        profile.colorBack = 0xffffff;
         profile.interline = 0;
         profile.specialModeRoll = false;
         profile.sectionNewScreen = true;
