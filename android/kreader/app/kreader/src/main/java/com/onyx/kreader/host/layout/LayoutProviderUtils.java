@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
@@ -127,7 +128,7 @@ public class LayoutProviderUtils {
         readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());
         readerViewInfo.pagesBoundingRect.set(layoutManager.getPageBoundingRect());
         readerViewInfo.scale = layoutManager.getSpecialScale();
-        readerViewInfo.readerTextStyle = layoutManager.getTextStyleManager().getStyle();
+        readerViewInfo.readerTextStyle = ReaderTextStyle.copy(layoutManager.getTextStyleManager().getStyle());
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
     }
 
