@@ -34,6 +34,31 @@ public interface ReaderNavigator {
      */
     public int getTotalPage();
 
+    public int getCurrentPageNumber();
+
+    /**
+     * current position in document
+     *
+     * @return
+     */
+    public String getCurrentPosition();
+
+    /**
+     * goto position in document
+     *
+     * @param position
+     * @return
+     */
+    public boolean gotoPosition(final String position);
+
+    /**
+     * goto specified page
+     *
+     * @param page
+     * @return
+     */
+    public boolean gotoPage(final int page);
+
     /**
      * Navigate to next screen.
      */
@@ -57,10 +82,24 @@ public interface ReaderNavigator {
     public String prevPage(final String position);
 
     /**
+     * at document beginning
+     *
+     * @return
+     */
+    public boolean isFirstPage();
+
+    /**
      * Navigate to first page.
      * @return
      */
     public String firstPage();
+
+    /**
+     * at document end
+     *
+     * @return
+     */
+    public boolean isLastPage();
 
     /**
      * Navigate to last page.

@@ -154,6 +154,26 @@ public class FakeReader implements ReaderDocument,
         return pageInfoList.size();
     }
 
+    @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
+    @Override
+    public boolean gotoPosition(String position) {
+        return false;
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
     public String nextScreen(final String position) {
         return nextPage(position);
     }
@@ -178,8 +198,18 @@ public class FakeReader implements ReaderDocument,
         return null;
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
     public String firstPage() {
         return PagePositionUtils.fromPageNumber(0);
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return false;
     }
 
     public String lastPage() {

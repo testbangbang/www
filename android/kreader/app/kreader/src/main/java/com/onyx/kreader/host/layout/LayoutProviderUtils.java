@@ -41,6 +41,14 @@ public class LayoutProviderUtils {
                                         final ReaderLayoutManager layoutManager,
                                         final ReaderDrawContext drawContext,
                                         final ReaderViewInfo readerViewInfo) throws ReaderException {
+        drawVisiblePages(reader, layoutManager, drawContext, readerViewInfo, true);
+    }
+
+    static public void drawVisiblePages(final Reader reader,
+                                        final ReaderLayoutManager layoutManager,
+                                        final ReaderDrawContext drawContext,
+                                        final ReaderViewInfo readerViewInfo,
+                                        final boolean enableCache) throws ReaderException {
         // step1: prepare.
         final ReaderRenderer renderer = reader.getRenderer();
         final BitmapSoftLruCache cache = reader.getBitmapCache();
@@ -49,7 +57,7 @@ public class LayoutProviderUtils {
         // step2: check cache.
         final String key = PositionSnapshot.cacheKey(visiblePages);
         boolean hitCache = false;
-        if (ENABLE_CACHE && checkCache(cache, key, drawContext)) {
+        if (ENABLE_CACHE && enableCache && checkCache(cache, key, drawContext)) {
             hitCache = true;
         }
         if (!hitCache) {
@@ -63,7 +71,7 @@ public class LayoutProviderUtils {
         drawVisiblePagesImpl(renderer, layoutManager, drawContext.renderingBitmap, visiblePages, hitCache);
 
         // step4: update cache
-        if (!hitCache && ENABLE_CACHE && StringUtils.isNotBlank(key)) {
+        if (!hitCache && ENABLE_CACHE && enableCache && StringUtils.isNotBlank(key)) {
             addToCache(cache, key, drawContext.renderingBitmap);
         }
 
@@ -122,6 +130,14 @@ public class LayoutProviderUtils {
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
     }
 
+    static public PageInfo drawReflowablePage(final PageInfo pageInfo, final ReaderBitmap bitmap, final ReaderRenderer readerRenderer) {
+        final RectF viewport = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
+        if (!readerRenderer.draw(pageInfo.getPosition(), 1.0f, 0, bitmap.getBitmap(), viewport, viewport, viewport)) {
+            return null;
+        }
+        return pageInfo;
+    }
+
     /**
      * draw page with scale to page on specified bitmap.
      * @param pageInfo
@@ -135,13 +151,13 @@ public class LayoutProviderUtils {
         final PageManager internalPageManager = new PageManager();
         internalPageManager.add(pageInfo);
         internalPageManager.setViewportRect(viewport);
-        internalPageManager.scaleToPage(pageInfo.getName());
+        internalPageManager.scaleToPage(pageInfo.getPosition());
         final PageInfo visiblePage = internalPageManager.getFirstVisiblePage();
         final RectF visibleRect = new RectF(visiblePage.getPositionRect());
         visibleRect.intersect(viewport);
 
         BitmapUtils.clear(bitmap.getBitmap());
-        readerRenderer.draw(pageInfo.getName(),
+        readerRenderer.draw(pageInfo.getPosition(),
                 scale,
                 pageInfo.getPageDisplayOrientation(),
                 bitmap.getBitmap(),
@@ -178,12 +194,16 @@ public class LayoutProviderUtils {
         layoutManager.getPageManager().clear();
     }
 
-    static public void addPage(final ReaderLayoutManager layoutManager, final String location) {
-        PageInfo pageInfo = layoutManager.getPageManager().getPageInfo(location);
+    static public void addPage(final ReaderLayoutManager layoutManager, final String name) {
+        addPage(layoutManager, name, name);
+    }
+
+    static public void addPage(final ReaderLayoutManager layoutManager, final String name, final String position) {
+        PageInfo pageInfo = layoutManager.getPageManager().getPageInfo(position);
         if (pageInfo == null) {
-            RectF size = layoutManager.getReaderDocument().getPageOriginSize(location);
-            pageInfo = new PageInfo(location, size.width(), size.height());
-            pageInfo.setIsTextPage(layoutManager.getReaderDocument().isTextPage(location));
+            RectF size = layoutManager.getReaderDocument().getPageOriginSize(position);
+            pageInfo = new PageInfo(name, position, size.width(), size.height());
+            pageInfo.setIsTextPage(layoutManager.getReaderDocument().isTextPage(position));
         }
         layoutManager.getPageManager().add(pageInfo);
     }
@@ -198,9 +218,13 @@ public class LayoutProviderUtils {
         LayoutProviderUtils.updatePageBoundingRect(layoutManager);
     }
 
-    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String position) {
+    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name) {
+        addSinglePage(layoutManager, name, name);
+    }
+
+    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name, final String position) {
         LayoutProviderUtils.clear(layoutManager);
-        LayoutProviderUtils.addPage(layoutManager, position);
+        LayoutProviderUtils.addPage(layoutManager, name, position);
         LayoutProviderUtils.updatePageBoundingRect(layoutManager);
         LayoutProviderUtils.resetViewportPosition(layoutManager);
     }
@@ -253,12 +277,12 @@ public class LayoutProviderUtils {
     }
 
     static public String nextPage(final ReaderLayoutManager layoutManager) {
-        String currentPagePosition = layoutManager.getCurrentPageName();
+        String currentPagePosition = layoutManager.getCurrentPagePosition();
         return layoutManager.getNavigator().nextPage(currentPagePosition);
     }
 
     static public String prevPage(final ReaderLayoutManager layoutManager) {
-        String currentPagePosition = layoutManager.getCurrentPageName();
+        String currentPagePosition = layoutManager.getCurrentPagePosition();
         return layoutManager.getNavigator().prevPage(currentPagePosition);
     }
 

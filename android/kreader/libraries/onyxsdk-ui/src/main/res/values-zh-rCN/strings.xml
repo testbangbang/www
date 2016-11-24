@@ -5,6 +5,7 @@
     <string name="delete">删除</string>
     <string name="dialog_reader_menu_back">退出</string>
     <string name="font_face">字体</string>
+    <string name="text_style">间距样式</string>
     <string name="reader_layer_menu_zoom">缩放选项</string>
     <string name="reader_layer_menu_font_reflow">扫描重排</string>
     <string name="reader_layer_menu_zoom_in">放大</string>
@@ -53,4 +54,5 @@
     <string name="gamma_correction">对比度</string>
     <string name="outOfRangRerror">超出区域</string>
     <string name="illegalInput">无效输入</string>
+    <string name="save">保存</string>
 </resources>

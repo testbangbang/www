@@ -33,8 +33,10 @@ public class ReaderLayerMenuLayout extends LinearLayout {
         }
         removeAllViewsInLayout();
 
-        addView(subMenu);
-        addView(menuDivider);
+        if (subMenu != null) {
+            addView(subMenu);
+            addView(menuDivider);
+        }
         addView(mainMenu);
         this.subMenu = subMenu;
     }

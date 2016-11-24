@@ -5,6 +5,7 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class ReaderViewInfo {
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();
     public PointF lastViewportOverlayPosition = null;
+    private ReaderTextStyle readerTextStyle = new ReaderTextStyle();
     public boolean layoutChanged = false;
 
     public final List<PageInfo> getVisiblePages() {
@@ -88,4 +90,11 @@ public class ReaderViewInfo {
         return true;
     }
 
+    public ReaderTextStyle getReaderTextStyle() {
+        return readerTextStyle;
+    }
+
+    public void setReaderTextStyle(ReaderTextStyle readerTextStyle) {
+        this.readerTextStyle = readerTextStyle;
+    }
 }

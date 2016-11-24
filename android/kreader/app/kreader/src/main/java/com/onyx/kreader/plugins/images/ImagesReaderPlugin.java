@@ -198,8 +198,8 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
-        final String path = getImagePath(page);
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+        final String path = getImagePath(pagePosition);
         if (StringUtils.isNullOrEmpty(path)) {
             return false;
         }
@@ -251,6 +251,26 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return pageList.size();
     }
 
+    @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
+    @Override
+    public boolean gotoPosition(String position) {
+        return false;
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
     /**
      * Navigate to next screen.
      */
@@ -290,12 +310,22 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
     /**
      * Navigate to first page.
      * @return
      */
     public String firstPage() {
         return PagePositionUtils.fromPageNumber(0);
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return false;
     }
 
     /**

@@ -82,4 +82,9 @@ public class ChooseExerciseActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

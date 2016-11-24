@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data;
 
+import java.util.List;
+
 /**
  * Created by joy on 6/28/16.
  */
@@ -14,4 +16,6 @@ public abstract class ReaderMenuState {
     public abstract boolean isFixedPagingMode();
     public abstract boolean isShowingNotes();
 
+    public abstract List<String> getFontFaces();
+    public abstract ReaderTextStyle getReaderStyle();
 }

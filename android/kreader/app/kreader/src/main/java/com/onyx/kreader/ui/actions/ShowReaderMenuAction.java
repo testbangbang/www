@@ -29,6 +29,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageCropRequest;
@@ -52,9 +53,11 @@ import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
+import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.utils.DeviceConfig;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,6 +75,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private boolean disableScribbleBrush = true;
     private static boolean isScribbleMenuVisible = false;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
+    private static List<String> fontFaces = new ArrayList<>();
 
 
     @Override
@@ -133,6 +137,14 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
+        if (!readerDataHolder.supportScalable()) {
+            disableMenus.add(ReaderMenuAction.ZOOM);
+            disableMenus.add(ReaderMenuAction.IMAGE_REFLOW);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_COMIC_MODE);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
+        }
         if (disableScribbleBrush) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
@@ -167,6 +179,9 @@ public class ShowReaderMenuAction extends BaseAction {
             public void onMenuItemClicked(ReaderMenuItem menuItem) {
                 Log.d(TAG, "onMenuItemClicked: " + menuItem.getAction());
                 switch (menuItem.getAction()) {
+                    case FONT:
+                        showTextStyleDialog(readerDataHolder);
+                        break;
                     case ROTATION_ROTATE_0:
                         rotateScreen(readerDataHolder, 0);
                         break;
@@ -279,12 +294,24 @@ public class ShowReaderMenuAction extends BaseAction {
             public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
                 switch (menuItem.getAction()) {
+                    case FONT_STYLE:
+                        setReaderStyle(readerDataHolder, newValue);
+                        updateReaderMenuState(readerDataHolder);
+                        break;
                     case JUMP_PAGE:
                         gotoPage(readerDataHolder, newValue);
                         break;
                 }
             }
         });
+    }
+
+    private void setReaderStyle(ReaderDataHolder readerDataHolder, Object value) {
+        if (value == null) {
+            return;
+        }
+        ReaderTextStyle readerTextStyle = (ReaderTextStyle) value;
+        readerDataHolder.getReaderViewInfo().setReaderTextStyle(readerTextStyle);
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder, ReaderLayerMenuItem[] menuItems) {
@@ -412,7 +439,7 @@ public class ShowReaderMenuAction extends BaseAction {
             return;
         }
         int page = (int) o;
-        new GotoPageAction(String.valueOf(page)).execute(readerDataHolder);
+        new GotoPageAction(page).execute(readerDataHolder);
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
@@ -458,6 +485,18 @@ public class ShowReaderMenuAction extends BaseAction {
         return true;
     }
 
+    private void showTextStyleDialog(ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        final Dialog dialog = new DialogTextStyle(readerDataHolder, new DialogTextStyle.TextStyleCallback() {
+            @Override
+            public void onSaveReaderStyle(ReaderTextStyle readerStyle) {
+
+            }
+        });
+        dialog.show();
+        readerDataHolder.addActiveDialog(dialog);
+    }
+
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
         Dialog dlg = new DialogSearch(readerDataHolder);
         dlg.show();
@@ -479,7 +518,7 @@ public class ShowReaderMenuAction extends BaseAction {
         hideReaderMenu();
         boolean isShowScribble = !SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
         SingletonSharedPreference.setIsShowNote(readerDataHolder.getContext(), isShowScribble);
-        new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
+        new GotoPositionAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
     }
 
     public static void updateReaderMenuState(final ReaderDataHolder readerDataHolder) {
@@ -754,6 +793,16 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public boolean isShowingNotes() {
                 return SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
+            }
+
+            @Override
+            public List<String> getFontFaces() {
+                return fontFaces;
+            }
+
+            @Override
+            public ReaderTextStyle getReaderStyle() {
+                return readerDataHolder.getReaderViewInfo().getReaderTextStyle();
             }
         };
     }

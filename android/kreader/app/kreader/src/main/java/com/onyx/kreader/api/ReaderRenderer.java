@@ -19,7 +19,7 @@ public interface ReaderRenderer {
      * host coordinates system, the viewportInPage is specified in host coordinates system
      * the bitmapx, bitmapy, width and height can be regarded as viewportInPage coordinates system, whereas viewportInPage is the
      * origin point(0, 0)
-     * @param page the page position.
+     * @param pagePosition the page position.
      * @param scale the actual scale used to render page.
      * @param rotation the rotation.
      * @param bitmap the target bitmap to draw content. Caller may use this method to draw part of content.
@@ -41,6 +41,6 @@ public interface ReaderRenderer {
      *
      * @return
      */
-    public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect);
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect);
 
 }

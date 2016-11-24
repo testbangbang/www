@@ -7,6 +7,7 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
+import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -32,7 +33,10 @@ public class OpenRequest extends BaseReaderRequest {
         }
 
         final ReaderDocumentOptionsImpl documentOptions = srcOptions.documentOptions();
-        final ReaderPluginOptions pluginOptions = srcOptions.pluginOptions();
+        ReaderPluginOptions pluginOptions = srcOptions.pluginOptions();
+        if (pluginOptions == null) {
+            pluginOptions = ReaderPluginOptionsImpl.create(getContext());
+        }
 
         if (!reader.getReaderHelper().selectPlugin(getContext(), documentPath, pluginOptions)) {
             return;

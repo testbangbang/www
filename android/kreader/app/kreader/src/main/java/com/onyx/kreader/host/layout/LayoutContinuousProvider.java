@@ -7,7 +7,7 @@ import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.host.wrapper.Reader;
 
 /**
@@ -99,11 +99,11 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean gotoPosition(final String location) throws ReaderException {
-        if (StringUtils.isNullOrEmpty(location)) {
+    public boolean gotoPosition(final String position) throws ReaderException {
+        if (StringUtils.isNullOrEmpty(position)) {
             return false;
         }
-        return getPageManager().gotoPage(location);
+        return getPageManager().gotoPage(position);
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
@@ -124,7 +124,7 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean setStyle(final ReaderStyle style) throws ReaderException {
+    public boolean setStyle(final ReaderTextStyle style) throws ReaderException {
         return false;
     }
 

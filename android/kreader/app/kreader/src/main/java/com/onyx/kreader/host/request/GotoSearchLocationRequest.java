@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by zhuzeng on 10/5/15.
  */
-public class GotoSearchLocationRequest extends GotoLocationRequest {
+public class GotoSearchLocationRequest extends GotoPositionRequest {
 
     private List<ReaderSelection> searchResults;
     private ReaderDataHolder readerDataHolder;

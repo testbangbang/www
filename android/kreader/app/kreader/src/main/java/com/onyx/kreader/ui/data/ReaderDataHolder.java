@@ -143,16 +143,20 @@ public class ReaderDataHolder {
         return noteManager != null && getNoteManager().isNoteDirty();
     }
 
+    public int getPageCount() {
+        return reader.getNavigator().getTotalPage();
+    }
+
     public String getCurrentPageName() {
         return getReaderViewInfo().getFirstVisiblePage().getName();
     }
 
     public int getCurrentPage() {
-        return PagePositionUtils.getPosition(getCurrentPageName());
+        return PagePositionUtils.getPageNumber(getCurrentPageName());
     }
 
-    public int getPageCount() {
-        return reader.getNavigator().getTotalPage();
+    public String getCurrentPagePosition() {
+        return getReaderViewInfo().getFirstVisiblePage().getPosition();
     }
 
     public final PageInfo getFirstPageInfo() {
