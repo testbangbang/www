@@ -249,6 +249,9 @@ public class ReaderTextStyle {
     }
 
     public static ReaderTextStyle copy(ReaderTextStyle style) {
+        if (style == null) {
+            return null;
+        }
         ReaderTextStyle copy = new ReaderTextStyle();
         copy.fontFace = style.fontFace;
         copy.fontSize = style.fontSize;
