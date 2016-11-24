@@ -127,6 +127,7 @@ public class LayoutProviderUtils {
         readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());
         readerViewInfo.pagesBoundingRect.set(layoutManager.getPageBoundingRect());
         readerViewInfo.scale = layoutManager.getSpecialScale();
+        readerViewInfo.readerTextStyle = layoutManager.getTextStyleManager().getStyle();
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
     }
 

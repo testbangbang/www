@@ -191,29 +191,40 @@ public class ReaderTextStyle {
         }
     }
 
-    static public Percentage DEFAULT_LINE_SPACING = new Percentage(150);
     static public Percentage LINE_SPACING_STEP = new Percentage(10);
     static public Percentage LARGE_LINE_SPACING = new Percentage(180);
     static public Percentage NORMAL_LINE_SPACING = new Percentage(150);
     static public Percentage SMALL_LINE_SPACING = new Percentage(120);
-    static public Percentage MIN_LINE_SPACING = new Percentage(110);
+    static public Percentage MIN_LINE_SPACING = new Percentage(100);
     static public Percentage MAX_LINE_SPACING = new Percentage(200);
+    static public Percentage DEFAULT_LINE_SPACING = NORMAL_LINE_SPACING;
 
-    static public PageMargin DEFAULT_PAGE_MARGIN = new PageMargin(DPUnit.create(20), DPUnit.create(20), DPUnit.create(20), DPUnit.create(20));
-    static public PageMargin PAGE_MARGIN_STEP = new PageMargin(DPUnit.create(5), DPUnit.create(5), DPUnit.create(5), DPUnit.create(5));
-    static public PageMargin LARGE_PAGE_MARGIN = new PageMargin(DPUnit.create(30), DPUnit.create(30), DPUnit.create(30), DPUnit.create(30));
-    static public PageMargin NORMAL_PAGE_MARGIN = new PageMargin(DPUnit.create(20), DPUnit.create(20), DPUnit.create(20), DPUnit.create(20));
-    static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(DPUnit.create(10), DPUnit.create(10), DPUnit.create(10), DPUnit.create(10));
+    static private int SMALL_MARGIN = 5;
+    static private int NORMAL_MARGIN = 10;
+    static private int LARGE_MARGIN = 15;
+
+    static public PageMargin PAGE_MARGIN_STEP = new PageMargin(DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN));
+    static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN));
+    static public PageMargin NORMAL_PAGE_MARGIN = new PageMargin(DPUnit.create(NORMAL_MARGIN), DPUnit.create(NORMAL_MARGIN), DPUnit.create(NORMAL_MARGIN), DPUnit.create(NORMAL_MARGIN));
+    static public PageMargin LARGE_PAGE_MARGIN = new PageMargin(DPUnit.create(LARGE_MARGIN), DPUnit.create(LARGE_MARGIN), DPUnit.create(LARGE_MARGIN), DPUnit.create(LARGE_MARGIN));
+    static public PageMargin DEFAULT_PAGE_MARGIN = NORMAL_PAGE_MARGIN;
 
     static public SPUnit[] FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
             SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
 
     private String fontFace = null;
-    private SPUnit fontSize = SPUnit.create(32.0f);
+    private SPUnit fontSize = SPUnit.create(36.0f);
     private Alignment alignment = Alignment.ALIGNMENT_JUSTIFY;
     private CharacterIndent indent = new CharacterIndent(2);
-    private Percentage lineSpacing = new Percentage(150);
+    private Percentage lineSpacing = DEFAULT_LINE_SPACING;
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
+
+    private ReaderTextStyle() {
+    }
+
+    public static ReaderTextStyle defaultStyle() {
+        return new ReaderTextStyle();
+    }
 
     public static ReaderTextStyle copy(ReaderTextStyle style) {
         ReaderTextStyle copy = new ReaderTextStyle();

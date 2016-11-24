@@ -3,6 +3,8 @@ package com.onyx.kreader.tests;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -20,6 +22,7 @@ public class FakeReader implements ReaderDocument,
         ReaderView,
         ReaderRendererFeatures,
         ReaderNavigator,
+        ReaderTextStyleManager,
         ReaderViewOptions {
 
     private Rect viewport;
@@ -218,6 +221,16 @@ public class FakeReader implements ReaderDocument,
 
     public List<ReaderSelection> getLinks(final String position) {
         return null;
+    }
+
+    @Override
+    public ReaderTextStyle getStyle() {
+        return null;
+    }
+
+    @Override
+    public void setStyle(ReaderTextStyle style) {
+
     }
 
     public int getViewWidth() {

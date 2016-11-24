@@ -26,7 +26,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         FakeReader reader = new FakeReader();
         reader.open();
         ReaderLayoutManager layoutManager = new ReaderLayoutManager(new ReaderHelper(),
-                reader, reader, reader, new ReaderViewOptionsImpl());
+                reader, reader, reader, reader, new ReaderViewOptionsImpl());
         layoutManager.init();
         layoutManager.updateViewportSize();
         assertTrue(layoutManager.setCurrentLayout(PageConstants.SINGLE_PAGE, navigationArgs));
@@ -60,7 +60,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         FakeReader reader = new FakeReader();
         reader.open();
         ReaderLayoutManager layoutManager = new ReaderLayoutManager(new ReaderHelper(),
-                reader, reader, reader, new ReaderViewOptionsImpl());
+                reader, reader, reader, reader, new ReaderViewOptionsImpl());
 
         layoutManager.init();
         layoutManager.updateViewportSize();
@@ -110,7 +110,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         FakeReader reader = new FakeReader();
         reader.open();
         ReaderLayoutManager layoutManager = new ReaderLayoutManager(new ReaderHelper(),
-                reader, reader, reader, new ReaderViewOptionsImpl());
+                reader, reader, reader, reader, new ReaderViewOptionsImpl());
 
         layoutManager.init();
         layoutManager.updateViewportSize();
@@ -162,7 +162,7 @@ public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<Re
         FakeReader reader = new FakeReader();
         reader.open();
         ReaderLayoutManager layoutManager = new ReaderLayoutManager(new ReaderHelper(),
-                reader, reader, reader, new ReaderViewOptionsImpl());
+                reader, reader, reader, reader, new ReaderViewOptionsImpl());
 
         layoutManager.init();
         layoutManager.updateViewportSize();

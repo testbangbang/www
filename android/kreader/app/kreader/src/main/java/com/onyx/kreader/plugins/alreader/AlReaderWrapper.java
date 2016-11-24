@@ -43,12 +43,14 @@ public class AlReaderWrapper {
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
     private AlPublicProfileOptions profile = new AlPublicProfileOptions();
+    private ReaderTextStyle textStyle = null;
 
     public AlReaderWrapper(final Context context, final ReaderPluginOptions pluginOptions) {
         bookEng = new AlBookEng();
         bookEng.initializeBookEngine(createEngineOptions(context, pluginOptions));
         bookEng.initializeOwner(getEngineNotifyForUI());
         bookEng.setNewProfileParameters(getProfileDay(pluginOptions));
+        setStyle(ReaderTextStyle.defaultStyle());
     }
 
     public void setViewSize(int width, int height) {
@@ -77,6 +79,10 @@ public class AlReaderWrapper {
         return StringUtils.utf16le(data).trim();
     }
 
+    public ReaderTextStyle getStyle() {
+        return textStyle;
+    }
+
     public void setStyle(final ReaderTextStyle style) {
         updateFontFace(style.getFontFace());
         updateFontSize(style.getFontSize().getValue());
@@ -86,6 +92,7 @@ public class AlReaderWrapper {
                 style.getPageMargin().getRightMargin(),
                 style.getPageMargin().getBottomMargin());
         bookEng.setNewProfileParameters(profile);
+        textStyle = style;
     }
 
     private AlEngineOptions createEngineOptions(final Context context, final ReaderPluginOptions pluginOptions) {
@@ -155,7 +162,7 @@ public class AlReaderWrapper {
     }
 
     public void updateLineSpacing(final ReaderTextStyle.Percentage lineSpacing) {
-        profile.interline = (int)(20 * (lineSpacing.getPercent() - 100) / (float)100);
+        profile.interline = (int)(50 * (lineSpacing.getPercent() - 100) / (float)100);
     }
 
     public void updatePageMargins(final ReaderTextStyle.DPUnit left,
