@@ -162,7 +162,7 @@ public class AlReaderWrapper {
     }
 
     public void updateLineSpacing(final ReaderTextStyle.Percentage lineSpacing) {
-        profile.interline = (int)(50 * (lineSpacing.getPercent() - 100) / (float)100);
+        profile.interline = (int)(100 * (lineSpacing.getPercent() - 100) / (float)100);
     }
 
     public void updatePageMargins(final ReaderTextStyle.DPUnit left,

@@ -192,16 +192,16 @@ public class ReaderTextStyle {
     }
 
     static public Percentage LINE_SPACING_STEP = new Percentage(10);
-    static public Percentage LARGE_LINE_SPACING = new Percentage(180);
-    static public Percentage NORMAL_LINE_SPACING = new Percentage(150);
-    static public Percentage SMALL_LINE_SPACING = new Percentage(120);
-    static public Percentage MIN_LINE_SPACING = new Percentage(100);
+    static public Percentage LARGE_LINE_SPACING = new Percentage(150);
+    static public Percentage NORMAL_LINE_SPACING = new Percentage(120);
+    static public Percentage SMALL_LINE_SPACING = new Percentage(90);
+    static public Percentage MIN_LINE_SPACING = new Percentage(50);
     static public Percentage MAX_LINE_SPACING = new Percentage(200);
     static public Percentage DEFAULT_LINE_SPACING = NORMAL_LINE_SPACING;
 
-    static private int SMALL_MARGIN = 5;
-    static private int NORMAL_MARGIN = 10;
-    static private int LARGE_MARGIN = 15;
+    static private int SMALL_MARGIN = 1;
+    static private int NORMAL_MARGIN = 3;
+    static private int LARGE_MARGIN = 7;
 
     static public PageMargin PAGE_MARGIN_STEP = new PageMargin(DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN));
     static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN));
@@ -213,7 +213,7 @@ public class ReaderTextStyle {
             SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
 
     private String fontFace = null;
-    private SPUnit fontSize = SPUnit.create(36.0f);
+    private SPUnit fontSize = SPUnit.create(40.0f);
     private Alignment alignment = Alignment.ALIGNMENT_JUSTIFY;
     private CharacterIndent indent = new CharacterIndent(2);
     private Percentage lineSpacing = DEFAULT_LINE_SPACING;
