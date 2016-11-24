@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
+
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocument;
@@ -380,16 +382,24 @@ public class ReaderHelper {
             getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
             getDocumentOptions().setNavigationArgs(getReaderLayoutManager().getCurrentLayoutProvider().getNavigationArgs());
             getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
-            getDocumentOptions().setFontFace(getReaderLayoutManager().getTextStyleManager().getStyle().getFontFace());
-            getDocumentOptions().setFontSize(getReaderLayoutManager().getTextStyleManager().getStyle().getFontSize().getValue());
-            getDocumentOptions().setFontFace(getReaderLayoutManager().getTextStyleManager().getStyle().getFontFace());
-            getDocumentOptions().setLineSpacing(getReaderLayoutManager().getTextStyleManager().getStyle().getLineSpacing().getPercent());
-            getDocumentOptions().setLeftMargin(getReaderLayoutManager().getTextStyleManager().getStyle().getPageMargin().getLeftMargin().getPercent());
-            getDocumentOptions().setTopMargin(getReaderLayoutManager().getTextStyleManager().getStyle().getPageMargin().getTopMargin().getPercent());
-            getDocumentOptions().setRightMargin(getReaderLayoutManager().getTextStyleManager().getStyle().getPageMargin().getRightMargin().getPercent());
-            getDocumentOptions().setBottomMargin(getReaderLayoutManager().getTextStyleManager().getStyle().getPageMargin().getBottomMargin().getPercent());
+
+            ReaderTextStyle style = getReaderLayoutManager().getTextStyleManager().getStyle();
+            if (style != null) {
+                saveReaderTextStyle(style);
+            }
         } catch (Exception e) {
 
         }
+    }
+
+    private void saveReaderTextStyle(ReaderTextStyle style) {
+        getDocumentOptions().setFontFace(style.getFontFace());
+        getDocumentOptions().setFontSize(style.getFontSize().getValue());
+        getDocumentOptions().setFontFace(style.getFontFace());
+        getDocumentOptions().setLineSpacing(style.getLineSpacing().getPercent());
+        getDocumentOptions().setLeftMargin(style.getPageMargin().getLeftMargin().getPercent());
+        getDocumentOptions().setTopMargin(style.getPageMargin().getTopMargin().getPercent());
+        getDocumentOptions().setRightMargin(style.getPageMargin().getRightMargin().getPercent());
+        getDocumentOptions().setBottomMargin(style.getPageMargin().getBottomMargin().getPercent());
     }
 }
