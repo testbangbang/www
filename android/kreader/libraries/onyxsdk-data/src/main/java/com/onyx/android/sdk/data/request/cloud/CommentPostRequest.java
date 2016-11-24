@@ -26,8 +26,8 @@ public class CommentPostRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response<Comment> response = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
-                .postBookComment(bookId, comment, getAccountSessionToken()).execute();
+        Response<Comment> response = executeCall(ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase())
+                .postBookComment(bookId, comment, getAccountSessionToken()));
         if (response.isSuccessful()) {
             resultComment = response.body();
         }

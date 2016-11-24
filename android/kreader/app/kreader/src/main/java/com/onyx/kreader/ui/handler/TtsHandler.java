@@ -159,7 +159,8 @@ public class TtsHandler extends BaseHandler {
                 }
                 currentSentence = sentenceRequest.getSentenceResult();
                 if (currentSentence == null) {
-                    Log.w(TAG, "getById sentence failed");
+                    Toast.makeText(readerDataHolder.getContext(), R.string.get_page_text_failed, Toast.LENGTH_LONG).show();
+                    Log.w(TAG, "get sentence failed");
                     return;
                 }
                 dumpCurrentSentence();

@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.model.OnyxAccount;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+
 import org.json.JSONObject;
 
 import retrofit2.Call;
@@ -29,12 +30,9 @@ public class AccountSignUpRequest extends BaseCloudRequest {
     public void execute(final CloudManager parent) throws Exception {
         Call<OnyxAccount> call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
                 .signup(account);
-        Response<OnyxAccount> response = call.execute();
+        Response<OnyxAccount> response = executeCall(call);
         if (response.isSuccessful()) {
             accountSignUp = response.body();
-        } else {
-            String errorCode = JSONObjectParseUtils.httpStatus(response.code(), new JSONObject(response.errorBody().string()));
-            throw new Exception(errorCode);
         }
     }
 

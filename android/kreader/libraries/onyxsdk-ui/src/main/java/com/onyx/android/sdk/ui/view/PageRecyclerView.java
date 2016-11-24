@@ -328,9 +328,9 @@ public class PageRecyclerView extends RecyclerView {
         resize(pageAdapter.getRowCount(), pageAdapter.getColumnCount(), getPageAdapter().getDataCount());
         if (gotoPage > getPaginator().lastPage()) {
             gotoPage(getPaginator().lastPage());
-        }else {
-            pageAdapter.notifyDataSetChanged();
         }
+
+        pageAdapter.notifyDataSetChanged();
     }
 
     private void managerScrollToPosition(int position) {

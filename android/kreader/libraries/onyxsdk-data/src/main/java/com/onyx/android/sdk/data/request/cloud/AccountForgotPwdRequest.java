@@ -25,6 +25,6 @@ public class AccountForgotPwdRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         Call call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
                 .forgotAccountPwd(account);
-        call.execute();
+        executeCall(call);
     }
 }

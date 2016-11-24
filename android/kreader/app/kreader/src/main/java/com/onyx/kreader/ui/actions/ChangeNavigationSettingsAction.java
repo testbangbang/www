@@ -58,6 +58,10 @@ public class ChangeNavigationSettingsAction extends BaseAction {
         readerDataHolder.submitRenderRequest(scaleRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (cropArgs.getCropPageMode() == ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE &&
+                        cropArgs.getNavigationMode() == ReaderCropArgs.NavigationMode.SINGLE_PAGE_MODE) {
+                    return;
+                }
                 int page = PagePositionUtils.getPageNumber(scaleRequest.getReaderViewInfo().getFirstVisiblePage().getName());
                 cropAndSplitPage(readerDataHolder, scaleRequest, page);
             }

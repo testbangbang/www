@@ -24,8 +24,8 @@ public class DeviceListRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response<List<Device>> response = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
-                .getBoundDeviceList(getAccountSessionToken()).execute();
+        Response<List<Device>> response = executeCall(ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
+                .getBoundDeviceList(getAccountSessionToken()));
         if (response.isSuccessful()) {
             deviceList = response.body();
         }

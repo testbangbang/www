@@ -26,7 +26,7 @@ public class GroupDeleteRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         Call call = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
                 .deleteGroup(id, getAccountSessionToken());
-        Response response = call.execute();
+        Response response = executeCall(call);
         isSuccess = response.isSuccessful();
     }
 }

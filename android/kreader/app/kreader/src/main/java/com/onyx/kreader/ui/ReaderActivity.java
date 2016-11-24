@@ -149,7 +149,6 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                onSurfaceViewSizeChanged();
                 if (!getReaderDataHolder().isDocumentOpened()) {
                     handleActivityIntent();
                 }
@@ -267,11 +266,14 @@ public class ReaderActivity extends ActionBarActivity {
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 clearCanvas(holder);
                 if (!getReaderDataHolder().isDocumentOpened()) {
+                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                     return;
                 }
                 if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
                     surfaceView.getHeight() == getReaderDataHolder().getDisplayHeight()) {
                     getReaderDataHolder().redrawPage();
+                } else {
+                    onSurfaceViewSizeChanged();
                 }
             }
 
@@ -310,7 +312,6 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                onSurfaceViewSizeChanged();
                 handleActivityIntent();
             }
         });
@@ -327,7 +328,6 @@ public class ReaderActivity extends ActionBarActivity {
         syncReaderPainter();
         syncSystemStatusBar();
         reconfigStatusBar();
-        checkSurfaceViewSize();
         checkNoteDrawing();
     }
 
@@ -345,23 +345,6 @@ public class ReaderActivity extends ActionBarActivity {
         }
         final StartNoteRequest request = new StartNoteRequest(getReaderDataHolder().getVisiblePages());
         getReaderDataHolder().getNoteManager().submit(this, request, null);
-    }
-
-    private void checkSurfaceViewSize() {
-        if (!getReaderDataHolder().isDocumentOpened()) {
-            return;
-        }
-
-        surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                if (surfaceView.getWidth() != getReaderDataHolder().getDisplayWidth() ||
-                    surfaceView.getHeight() != getReaderDataHolder().getDisplayHeight()) {
-                    onSurfaceViewSizeChanged();
-                }
-            }
-        });
     }
 
     @Subscribe

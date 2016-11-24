@@ -21,6 +21,6 @@ public class AccountPostActivateRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         Call call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
                 .postActivateAccount(token);
-        call.execute();
+        executeCall(call);
     }
 }

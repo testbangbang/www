@@ -256,7 +256,7 @@ public class ReaderTestActivity extends Activity {
 
     public void testReaderOpen() {
         reader = ReaderManager.getReader(path);
-        BaseReaderRequest open = new OpenRequest(path, getDocumentOptions());
+        BaseReaderRequest open = new OpenRequest(path, getDocumentOptions(), false);
         reader.submitRequest(this, open, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

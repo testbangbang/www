@@ -24,8 +24,8 @@ public class DeviceRequest extends BaseCloudRequest {
     }
 
     public void execute(final CloudManager parent) throws Exception {
-        Response<Device> response = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
-                .getBoundDevice(deviceId, getAccountSessionToken()).execute();
+        Response<Device> response = executeCall(ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
+                .getBoundDevice(deviceId, getAccountSessionToken()));
         if (response.isSuccessful()) {
             boundDevice = response.body();
         }

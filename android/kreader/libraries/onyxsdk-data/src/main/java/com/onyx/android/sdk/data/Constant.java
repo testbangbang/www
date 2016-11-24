@@ -28,6 +28,7 @@ public class Constant {
     static public final String TOKEN_TAG = "token";
     static public final String PASSWORD_TAG = "password";
     static public final String AVATAR_TAG = "avatar";
+    static public final String ID_TAG = "id";
 
     public static final String COVER_TYPE_SMALL = "small";
     public static final String COVER_TYPE_NORMAL = "normal";

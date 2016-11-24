@@ -1,8 +1,8 @@
 package com.onyx.android.sdk.data.utils;
 
 import android.app.PendingIntent;
-import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.liulishuo.filedownloader.notification.BaseNotificationItem;
 import com.liulishuo.filedownloader.util.FileDownloadHelper;
@@ -13,16 +13,16 @@ import com.liulishuo.filedownloader.util.FileDownloadHelper;
 public class NotificationItem extends BaseNotificationItem {
 
     private PendingIntent pendingIntent;
-    private Intent errorIntent;
+    private PendingIntent errorIntent;
     private NotificationCompat.Builder builder;
 
     public static class NotificationBean {
         public int id;
         public int icon;
         public String title;
-        public String desc;
+        public String desc = "download";
         public PendingIntent pendingIntent;
-        public Intent errorIntent;
+        public PendingIntent errorIntent;
     }
 
     public NotificationItem(NotificationBean bean) {
@@ -31,11 +31,11 @@ public class NotificationItem extends BaseNotificationItem {
         builder = new NotificationCompat.
                 Builder(FileDownloadHelper.getAppContext());
 
-        builder.setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
+        builder.setPriority(NotificationCompat.PRIORITY_MIN)
                 .setContentTitle(getTitle())
                 .setContentText(bean.desc)
-                .setSmallIcon(bean.icon);
+                .setSmallIcon(bean.icon)
+                .setAutoCancel(true);
 
         pendingIntent = bean.pendingIntent;
         errorIntent = bean.errorIntent;
@@ -45,6 +45,7 @@ public class NotificationItem extends BaseNotificationItem {
     public void show(boolean statusChanged, int status, boolean isShowProgress) {
 
         String desc = getDesc();
+        int soFar = getSofar();
         switch (status) {
             case FileDownloadStatus.pending:
                 desc += " pending";
@@ -61,7 +62,7 @@ public class NotificationItem extends BaseNotificationItem {
             case FileDownloadStatus.error:
                 desc += " error";
                 if (errorIntent != null) {
-                    FileDownloadHelper.getAppContext().sendBroadcast(errorIntent);
+                    builder.setContentIntent(errorIntent);
                 }
                 break;
             case FileDownloadStatus.paused:
@@ -69,6 +70,7 @@ public class NotificationItem extends BaseNotificationItem {
                 break;
             case FileDownloadStatus.completed:
                 desc += " completed";
+                soFar = getTotal();
                 if (pendingIntent != null) {
                     builder.setContentIntent(pendingIntent);
                 }
@@ -78,14 +80,13 @@ public class NotificationItem extends BaseNotificationItem {
                 break;
         }
 
-        builder.setContentTitle(getTitle())
-                .setContentText(desc);
+        builder.setContentTitle(getTitle()).setContentText(desc);
 
         if (statusChanged) {
             builder.setTicker(desc);
         }
 
-        builder.setProgress(getTotal(), getSofar(), !isShowProgress);
+        builder.setProgress(getTotal(), soFar, false);
         getManager().notify(getId(), builder.build());
     }
 
