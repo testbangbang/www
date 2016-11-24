@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.request.ExportAnnotationRequest;
@@ -40,7 +41,7 @@ public class ExportScribbleAction extends BaseAction {
         getScribbleBitmapAction = new GetScribbleBitmapAction(requestPages, width, height);
         getScribbleBitmapAction.execute(readerDataHolder, new GetScribbleBitmapAction.Callback() {
             @Override
-            public void onNext(final String page, final Bitmap bitmap) {
+            public void onNext(final String page, final Bitmap bitmap, PageInfo pageInfo) {
                 final ExportScribbleRequest request = new ExportScribbleRequest(bitmap, page);
                 readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
                     @Override

@@ -40,8 +40,8 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
         return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, action, null, -1, null, -1);
     }
 
-    public static ReaderLayerMenuItem createSimpleMenuItem(ReaderMenuAction action, int itemId) {
-        return new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, action, null, -1, null, -1, itemId);
+    public static ReaderMenuItem createSimpleMenuItem(ReaderMenuAction action, int drawableResourceId) {
+        return new ReaderLayerMenuItem(ItemType.Group, action, null, -1, null, drawableResourceId);
     }
 
     /**

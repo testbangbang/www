@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <View
+        android:layout_weight="1"
+        android:id="@+id/dismiss_zone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"/>
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"/>
+
+    <LinearLayout
+        android:background="@android:color/white"
+        android:id="@+id/goto_position_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <SeekBar
+                android:layout_weight="1"
+                android:layout_marginTop="5dp"
+                android:thumb="@drawable/color_seekbar_thumb"
+                android:id="@+id/seek_bar_page"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:progressDrawable="@drawable/color_seekbar_progress"
+                android:max="20"/>
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:id="@+id/position_text"
+                android:text="1791"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:id="@+id/total_text"
+                android:text="/2461"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginLeft="15dp"
+                android:textColor="@android:color/black"
+                android:id="@+id/book_name"
+                android:text="三体.epud"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"/>
+
+            <ImageView
+                android:id="@+id/undo_view"
+                android:src="@drawable/ic_dialog_reader_menu_undo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"/>
+
+    <LinearLayout
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:id="@+id/menu_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+</LinearLayout>
