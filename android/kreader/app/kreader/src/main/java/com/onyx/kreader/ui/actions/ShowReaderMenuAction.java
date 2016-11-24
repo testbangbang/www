@@ -484,6 +484,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showTextStyleDialog(ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         final Dialog dialog = new DialogTextStyle(readerDataHolder, new DialogTextStyle.TextStyleCallback() {
             @Override
             public void onSaveReaderStyle(ReaderTextStyle readerStyle) {
