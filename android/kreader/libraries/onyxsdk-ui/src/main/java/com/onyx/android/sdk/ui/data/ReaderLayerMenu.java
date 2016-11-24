@@ -88,11 +88,11 @@ public class ReaderLayerMenu extends ReaderMenu {
     }
 
     private View createMainMenuContainerView(List<ReaderLayerMenuItem> items, ReaderMenuState state) {
-        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback);
+        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback, true);
     }
 
     private View createSubMenuContainerView(ReaderLayerMenuItem parent, List<ReaderLayerMenuItem> items, ReaderMenuState state) {
-        return ReaderLayerMenuViewFactory.createSubMenuContainerView(context, parent, items, state, readerMenuCallback);
+        return ReaderLayerMenuViewFactory.createSubMenuContainerView(context, parent, items, state, true, readerMenuCallback);
     }
 
     private void handleMenuItemClicked(ReaderMenuItem item) {
