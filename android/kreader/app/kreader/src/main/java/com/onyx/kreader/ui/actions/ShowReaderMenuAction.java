@@ -144,7 +144,10 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
+        }else {
+            disableMenus.add(ReaderMenuAction.FONT);
         }
+
         if (disableScribbleBrush) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
