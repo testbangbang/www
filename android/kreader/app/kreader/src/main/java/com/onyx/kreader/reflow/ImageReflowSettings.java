@@ -74,6 +74,15 @@ public class ImageReflowSettings {
      * darkest: 0.2
      */
     public double contrast = 1.0;
+    /**
+     * left to right: 1
+     * right to left: 0
+     */
+    public int src_left_to_right = 1;
+    /**
+     *
+     */
+    public int src_rot = 0;
 
     static public ImageReflowSettings createSettings() {
         ImageReflowSettings settings = new ImageReflowSettings();
@@ -129,6 +138,8 @@ public class ImageReflowSettings {
         quality = newSettings.quality;
         contrast = newSettings.contrast;
         rotate = newSettings.rotate;
+        src_left_to_right = newSettings.src_left_to_right;
+        src_rot = newSettings.src_rot;
     }
 
 }
