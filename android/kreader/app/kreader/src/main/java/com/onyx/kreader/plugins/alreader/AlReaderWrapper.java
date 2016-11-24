@@ -165,14 +165,14 @@ public class AlReaderWrapper {
         profile.interline = (int)(100 * (lineSpacing.getPercent() - 100) / (float)100);
     }
 
-    public void updatePageMargins(final ReaderTextStyle.DPUnit left,
-                                  final ReaderTextStyle.DPUnit top,
-                                  final ReaderTextStyle.DPUnit right,
-                                  final ReaderTextStyle.DPUnit bottom) {
-        profile.setMarginLeft(left.getValue());
-        profile.setMarginTop(top.getValue());
-        profile.setMarginRight(right.getValue());
-        profile.setMarginBottom(bottom.getValue());
+    public void updatePageMargins(final ReaderTextStyle.Percentage left,
+                                  final ReaderTextStyle.Percentage top,
+                                  final ReaderTextStyle.Percentage right,
+                                  final ReaderTextStyle.Percentage bottom) {
+        profile.setMarginLeft(left.getPercent());
+        profile.setMarginTop(top.getPercent());
+        profile.setMarginRight(right.getPercent());
+        profile.setMarginBottom(bottom.getPercent());
     }
 
     public void draw(final Bitmap bitmap, final int width, final int height) {
