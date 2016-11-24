@@ -208,6 +208,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public ReaderTextStyle getStyle() {
+        return getPluginImpl().getStyle();
+    }
+
     /**
      * set stream document style. ignore.
      * @param style

@@ -294,24 +294,12 @@ public class ShowReaderMenuAction extends BaseAction {
             public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
                 switch (menuItem.getAction()) {
-                    case FONT_STYLE:
-                        setReaderStyle(readerDataHolder, newValue);
-                        updateReaderMenuState(readerDataHolder);
-                        break;
                     case JUMP_PAGE:
                         gotoPage(readerDataHolder, newValue);
                         break;
                 }
             }
         });
-    }
-
-    private void setReaderStyle(ReaderDataHolder readerDataHolder, Object value) {
-        if (value == null) {
-            return;
-        }
-        ReaderTextStyle readerTextStyle = (ReaderTextStyle) value;
-        readerDataHolder.getReaderViewInfo().setReaderTextStyle(readerTextStyle);
     }
 
     private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder, ReaderLayerMenuItem[] menuItems) {

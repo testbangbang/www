@@ -535,6 +535,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public ReaderTextStyle getStyle() {
+        return null;
+    }
+
+    @Override
     public void setStyle(ReaderTextStyle style) {
 
     }

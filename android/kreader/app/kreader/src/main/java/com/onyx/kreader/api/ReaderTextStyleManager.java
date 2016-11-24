@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
  */
 public interface ReaderTextStyleManager {
 
+    public ReaderTextStyle getStyle();
     public void setStyle(final ReaderTextStyle style);
 
 

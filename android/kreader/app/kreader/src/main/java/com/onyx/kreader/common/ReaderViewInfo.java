@@ -28,7 +28,7 @@ public class ReaderViewInfo {
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();
     public PointF lastViewportOverlayPosition = null;
-    private ReaderTextStyle readerTextStyle = new ReaderTextStyle();
+    public ReaderTextStyle readerTextStyle = null;
     public boolean layoutChanged = false;
 
     public final List<PageInfo> getVisiblePages() {
@@ -92,9 +92,5 @@ public class ReaderViewInfo {
 
     public ReaderTextStyle getReaderTextStyle() {
         return readerTextStyle;
-    }
-
-    public void setReaderTextStyle(ReaderTextStyle readerTextStyle) {
-        this.readerTextStyle = readerTextStyle;
     }
 }

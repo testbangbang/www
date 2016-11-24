@@ -213,6 +213,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public ReaderTextStyle getStyle() {
+        return null;
+    }
+
     /**
      * set stream document style. ignore.
      * @param style
