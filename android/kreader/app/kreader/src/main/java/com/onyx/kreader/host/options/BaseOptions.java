@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -303,14 +304,14 @@ public class BaseOptions {
 
     public int getLineSpacing() {
         if (!backend.hasKey(LINE_SPACING_TAG)) {
-            return PageConstants.DEFAULT_LINE_SPACING;
+            return ReaderTextStyle.DEFAULT_LINE_SPACING.getPercent();
         }
         return backend.getInt(LINE_SPACING_TAG);
     }
 
     public float getParagraphIndent() {
         if (!backend.hasKey(PARAGRAPH_INDENT_TAG)) {
-            return PageConstants.DEFAULT_PARAGRAPH_INDENT;
+            return ReaderTextStyle.DEFAULT_CHARACTER_INDENT.getIndent();
         }
         return backend.getFloat(PARAGRAPH_INDENT_TAG);
     }
@@ -457,7 +458,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_LEFT_MARGIN)) {
             return backend.getInt(PAGE_LEFT_MARGIN);
         }
-        return getDefaultMargin();
+        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getLeftMargin().getPercent();
     }
 
     public void setLeftMargin(int value) {
@@ -468,7 +469,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_TOP_MARGIN)) {
             return backend.getInt(PAGE_TOP_MARGIN);
         }
-        return getDefaultMargin();
+        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getTopMargin().getPercent();
     }
 
     public void setTopMargin(int value) {
@@ -479,7 +480,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_RIGHT_MARGIN)) {
             return backend.getInt(PAGE_RIGHT_MARGIN);
         }
-        return getDefaultMargin();
+        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getRightMargin().getPercent();
     }
 
     public void setRightMargin(int value) {
@@ -490,15 +491,11 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_BOTTOM_MARGIN)) {
             return backend.getInt(PAGE_BOTTOM_MARGIN);
         }
-        return getDefaultMargin();
+        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getBottomMargin().getPercent();
     }
 
     public void setBottomMargin(int value) {
         backend.putInt(PAGE_BOTTOM_MARGIN, value);
-    }
-
-    static public int getDefaultMargin() {
-        return 10;
     }
 
     public void setReflowOptions(final String settings) {

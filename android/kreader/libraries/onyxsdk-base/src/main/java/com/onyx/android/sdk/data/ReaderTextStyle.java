@@ -195,6 +195,9 @@ public class ReaderTextStyle {
         }
     }
 
+    static public Alignment DEFAULT_ALIGNMENT = Alignment.ALIGNMENT_JUSTIFY;
+    static public CharacterIndent DEFAULT_CHARACTER_INDENT = new CharacterIndent(2);
+
     static public Percentage LINE_SPACING_STEP = new Percentage(10);
     static public Percentage LARGE_LINE_SPACING = new Percentage(150);
     static public Percentage NORMAL_LINE_SPACING = new Percentage(120);
@@ -215,11 +218,12 @@ public class ReaderTextStyle {
 
     static public SPUnit[] FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
             SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
+    static public SPUnit DEFAULT_FONT_SIZE = SPUnit.create(40.0f);
 
     private String fontFace = null;
-    private SPUnit fontSize = SPUnit.create(40.0f);
-    private Alignment alignment = Alignment.ALIGNMENT_JUSTIFY;
-    private CharacterIndent indent = new CharacterIndent(2);
+    private SPUnit fontSize = DEFAULT_FONT_SIZE;
+    private Alignment alignment = DEFAULT_ALIGNMENT;
+    private CharacterIndent indent = DEFAULT_CHARACTER_INDENT;
     private Percentage lineSpacing = DEFAULT_LINE_SPACING;
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
 
