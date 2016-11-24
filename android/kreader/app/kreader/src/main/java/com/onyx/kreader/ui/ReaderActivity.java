@@ -15,6 +15,7 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -68,6 +69,7 @@ import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
+import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.HomeClickEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
@@ -349,6 +351,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onLayoutChanged(final LayoutChangeEvent event) {
+        updateNoteHostView();
         getReaderDataHolder().updateNoteManager();
     }
 
@@ -571,14 +574,24 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void onSurfaceViewSizeChanged() {
+        updateNoteHostView();
+        if (getReaderDataHolder().isDocumentOpened()) {
+            new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
+        }
+    }
+
+    private void updateNoteHostView() {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
         getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new Rect(), rotation);
-        if (getReaderDataHolder().isDocumentOpened()) {
-            new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
-        }
+    }
+
+    @Subscribe
+    public void onDocumentInitRendered(final DocumentInitRenderedEvent event) {
+        updateNoteHostView();
+        getReaderDataHolder().updateNoteManager();
     }
 
     @Subscribe
@@ -626,17 +639,18 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
-        if (getReaderDataHolder().isEnableShortcutErasing()) {
+        if (!getReaderDataHolder().inNoteWritingProvider()) {
             getReaderDataHolder().getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         }
     }
 
     public void onShortcutErasingEvent(final ShortcutErasingEvent event) {
+
     }
 
     @Subscribe
     public void onShortcutErasingFinish(final ShortcutErasingFinishEvent event) {
-        if (getReaderDataHolder().isEnableShortcutErasing()) {
+        if (!ShowReaderMenuAction.isScribbleMenuVisible()) {
             ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
         }
     }
