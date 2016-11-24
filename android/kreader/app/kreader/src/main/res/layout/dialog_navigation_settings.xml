@@ -125,7 +125,7 @@
             <com.onyx.android.sdk.ui.view.ContentView
                 android:id="@+id/subscreen_contentView"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_navigation_settings_navigation_subscreen_content_view_height"/>
+                android:layout_height="@dimen/dialog_navigation_settings_mode_icon_contentView_height"/>
         </LinearLayout>
 
         <View
