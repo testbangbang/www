@@ -377,16 +377,17 @@ public class ReaderHelper {
             return;
         }
         try {
-            getDocumentOptions().setLayoutType(getReaderLayoutManager().getCurrentLayoutType());
-            getDocumentOptions().setSpecialScale(getReaderLayoutManager().getSpecialScale());
-            getDocumentOptions().setActualScale(getReaderLayoutManager().getActualScale());
-            getDocumentOptions().setCurrentPage(getReaderLayoutManager().getCurrentPagePosition());
+            final ReaderLayoutManager layoutManager = getReaderLayoutManager();
+            getDocumentOptions().setLayoutType(layoutManager.getCurrentLayoutType());
+            getDocumentOptions().setSpecialScale(layoutManager.getSpecialScale());
+            getDocumentOptions().setActualScale(layoutManager.getActualScale());
+            getDocumentOptions().setCurrentPage(layoutManager.getCurrentPagePosition());
             getDocumentOptions().setTotalPage(getNavigator().getTotalPage());
-            getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
-            getDocumentOptions().setNavigationArgs(getReaderLayoutManager().getCurrentLayoutProvider().getNavigationArgs());
+            getDocumentOptions().setViewport(layoutManager.getViewportRect());
+            getDocumentOptions().setNavigationArgs(layoutManager.getCurrentLayoutProvider().getNavigationArgs());
             getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
 
-            ReaderTextStyle style = getReaderLayoutManager().getTextStyleManager().getStyle();
+            final ReaderTextStyle style = layoutManager.getTextStyleManager().getStyle();
             if (style != null) {
                 saveReaderTextStyle(style);
             }
@@ -395,7 +396,7 @@ public class ReaderHelper {
         }
     }
 
-    private void saveReaderTextStyle(ReaderTextStyle style) {
+    private void saveReaderTextStyle(final ReaderTextStyle style) {
         getDocumentOptions().setFontFace(style.getFontFace());
         getDocumentOptions().setFontSize(style.getFontSize().getValue());
         getDocumentOptions().setFontFace(style.getFontFace());
