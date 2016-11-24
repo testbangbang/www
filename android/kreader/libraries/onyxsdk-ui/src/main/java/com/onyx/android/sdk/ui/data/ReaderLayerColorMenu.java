@@ -4,12 +4,9 @@ import android.content.Context;
 import android.view.View;
 
 import com.onyx.android.sdk.data.ReaderMenu;
-import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
-import com.onyx.android.sdk.ui.R;
-import com.onyx.android.sdk.ui.dialog.DialogReaderEduMenu;
-import com.onyx.android.sdk.ui.dialog.DialogReaderMenu;
+import com.onyx.android.sdk.ui.dialog.DialogReaderColorMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +15,10 @@ import java.util.List;
  * Created by ming on 2016/11/21.
  */
 
-public class ReaderEduMenu extends ReaderMenu {
+public class ReaderLayerColorMenu extends ReaderMenu {
 
     private Context context;
-    private DialogReaderEduMenu dialog;
+    private DialogReaderColorMenu dialog;
     private ReaderMenuState state;
     private List<ReaderLayerMenuItem> menuItems = new ArrayList<>();
     private View mainMenuContainerView;
@@ -43,7 +40,7 @@ public class ReaderEduMenu extends ReaderMenu {
         }
     };
 
-    public ReaderEduMenu(Context context) {
+    public ReaderLayerColorMenu(Context context) {
         this.context = context;
     }
 
@@ -79,12 +76,12 @@ public class ReaderEduMenu extends ReaderMenu {
     }
 
     private View createMainMenuContainerView(List<ReaderLayerMenuItem> items, ReaderMenuState state) {
-        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback);
+        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback, true);
     }
 
-    private DialogReaderEduMenu getDialog() {
+    private DialogReaderColorMenu getDialog() {
         if (dialog == null) {
-            dialog = new DialogReaderEduMenu(context, readerMenuCallback);
+            dialog = new DialogReaderColorMenu(context, readerMenuCallback);
         }
         return dialog;
     }

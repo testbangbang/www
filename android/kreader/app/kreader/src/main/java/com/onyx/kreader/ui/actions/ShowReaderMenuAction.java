@@ -17,7 +17,7 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.ui.data.ReaderEduMenu;
+import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
@@ -144,7 +144,7 @@ public class ShowReaderMenuAction extends BaseAction {
         ReaderLayerMenuItem[] menuItems;
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isUseColorMenu()) {
             menuItems = ReaderLayerMenuRepository.colorMenuItems;
-            readerMenu = new ReaderEduMenu(readerDataHolder.getContext());
+            readerMenu = new ReaderLayerColorMenu(readerDataHolder.getContext());
         }else {
             menuItems = ReaderLayerMenuRepository.fixedPageMenuItems;
             readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());

@@ -25,7 +25,7 @@ import java.util.List;
  * Created by ming on 2016/11/21.
  */
 
-public class DialogReaderEduMenu extends Dialog {
+public class DialogReaderColorMenu extends Dialog {
 
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;
@@ -41,7 +41,7 @@ public class DialogReaderEduMenu extends Dialog {
     private List<Integer> jumpPages = new ArrayList<>();
     private int currentPage = 0;
 
-    public DialogReaderEduMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
+    public DialogReaderColorMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         this.context = context;
         readerMenuCallback = menuCallback;

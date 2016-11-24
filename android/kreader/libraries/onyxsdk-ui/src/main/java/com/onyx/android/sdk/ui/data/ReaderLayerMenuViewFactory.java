@@ -56,8 +56,8 @@ public class ReaderLayerMenuViewFactory {
         }
     }
 
-    public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items);
+    public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback, final boolean ignoreChildrenMenu) {
+        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreChildrenMenu);
         final View view = createSimpleButtonContainerView(context, visibleItems, state, callback);
         view.post(new Runnable() {
             @Override
@@ -68,12 +68,12 @@ public class ReaderLayerMenuViewFactory {
         return view;
     }
 
-    public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+    public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final boolean ignoreChildrenMenu, final ReaderMenu.ReaderMenuCallback callback) {
         if (parent.getAction() == ReaderMenuAction.FONT) {
             return createFontStyleView(context, items, state, callback);
         }
 
-        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items);
+        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreChildrenMenu);
         View subView = createSimpleButtonContainerView(context, visibleItems, state, callback);
         if (mainMenuContainerViewHeight > 0) {
             subView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mainMenuContainerViewHeight));
@@ -81,16 +81,17 @@ public class ReaderLayerMenuViewFactory {
         return subView;
     }
 
-    private static List<ReaderLayerMenuItem> collectVisibleItems(final List<? extends ReaderLayerMenuItem> items) {
+    private static List<ReaderLayerMenuItem> collectVisibleItems(final List<? extends ReaderLayerMenuItem> items, final boolean ignoreChildrenMenu) {
         List<ReaderLayerMenuItem> result = new ArrayList<>();
         for (ReaderLayerMenuItem item : items) {
             if (!item.isVisible()) {
                 continue;
             }
-//            if (item.getItemType() == ReaderMenuItem.ItemType.Group &&
-//                    collectVisibleItems(item.getChildren()).size() <= 0) {
-//                continue;
-//            }
+            if (!ignoreChildrenMenu &&
+                    (item.getItemType() == ReaderMenuItem.ItemType.Group &&
+                    collectVisibleItems(item.getChildren(), ignoreChildrenMenu).size() <= 0)) {
+                continue;
+            }
             result.add(item);
         }
         return result;
