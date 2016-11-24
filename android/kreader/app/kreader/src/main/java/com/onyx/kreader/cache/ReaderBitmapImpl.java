@@ -13,6 +13,7 @@ public class ReaderBitmapImpl implements ReaderBitmap {
     private String key;
     private Bitmap bitmap;
     private float gammaCorrection;
+    private int emboldenLevel;
 
     public static ReaderBitmapImpl create(int width, int height, Bitmap.Config config) {
         ReaderBitmapImpl readerBitmap = new ReaderBitmapImpl(width, height, config);
@@ -64,6 +65,14 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     public float gammaCorrection() {
         return gammaCorrection;
+    }
+
+    public int getEmboldenLevel() {
+        return emboldenLevel;
+    }
+
+    public void setEmboldenLevel(int emboldenLevel) {
+        this.emboldenLevel = emboldenLevel;
     }
 
     public boolean attachWith(String key, final Bitmap src) {

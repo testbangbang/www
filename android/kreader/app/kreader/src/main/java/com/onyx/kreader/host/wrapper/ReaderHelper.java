@@ -349,8 +349,11 @@ public class ReaderHelper {
                 bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
             }
         }
-        if (getDocumentOptions().isEmboldenLevelEnabled()) {
-            ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel());
+        if (getDocumentOptions().isEmboldenLevelEnabled() &&
+                bitmap.getEmboldenLevel() != getDocumentOptions().getEmboldenLevel()) {
+            if (ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel())) {
+                bitmap.setEmboldenLevel(getDocumentOptions().getEmboldenLevel());
+            }
         }
     }
 
