@@ -50,6 +50,9 @@ typedef struct KOPTContext {
     int read_max_width;
     int read_max_height;
 
+    int src_left_to_right;
+    int src_rot;
+
     double zoom;
     double margin;
     double quality;

@@ -40,7 +40,7 @@ public class ProductRecommendedListRequest extends BaseCloudRequest {
 
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         OnyxBookStoreService service = ServiceFactory.getBookStoreService(parent.getCloudConf().getApiBase());
-        Response<ProductResult<Product>> response = service.bookRecommendedList(JSON.toJSONString(productQuery)).execute();
+        Response<ProductResult<Product>> response = executeCall(service.bookRecommendedList(JSON.toJSONString(productQuery)));
         if (response.isSuccessful()) {
             productResult = response.body();
         }

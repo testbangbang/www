@@ -140,10 +140,12 @@ public class NoteViewHelper {
         getNoteDocument().getCurrentPage(context).redo();
     }
 
-    public void close(final Context context, final String title) {
+    public void save(final Context context, final String title , boolean closeAfterSave) {
         getNoteDocument().save(context, title);
-        getNoteDocument().close(context);
-        renderBitmapWrapper.clear();
+        if (closeAfterSave) {
+            getNoteDocument().close(context);
+            renderBitmapWrapper.clear();
+        }
     }
 
     private void initRawResource(final Context context) {
@@ -238,11 +240,14 @@ public class NoteViewHelper {
     }
 
     private void updateLimitRect() {
+
+        limitRect = new Rect();
+
         if (!useRawInput()) {
+            surfaceView.getLocalVisibleRect(limitRect);
             return;
         }
 
-        limitRect = new Rect();
         surfaceView.getGlobalVisibleRect(limitRect);
         limitRect.offsetTo(0, 0);
         rawInputProcessor.setLimitRect(limitRect);
@@ -641,6 +646,9 @@ public class NoteViewHelper {
         dirtyStash.add(currentShape);
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
+        if (!checkTouchPoint(normalized)) {
+            return;
+        }
         currentShape.onDown(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchDown(motionEvent, currentShape);
@@ -655,13 +663,20 @@ public class NoteViewHelper {
         for(int i = 0; i < n; ++i) {
             final TouchPoint normalized = fromHistorical(motionEvent, i);
             final TouchPoint screen = touchPointFromNormalized(normalized);
+            if (!checkTouchPoint(normalized)) {
+                continue;
+            }
             currentShape.onMove(normalized, screen);
             if (callback != null) {
                 callback.onDrawingTouchMove(motionEvent, currentShape, false);
             }
         }
+
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
+        if (!checkTouchPoint(normalized)) {
+            return;
+        }
         currentShape.onMove(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape, true);
@@ -674,6 +689,9 @@ public class NoteViewHelper {
         }
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
+        if (!checkTouchPoint(normalized)) {
+            return;
+        }
         currentShape.onUp(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);
@@ -694,4 +712,8 @@ public class NoteViewHelper {
         return normalized;
     }
 
+
+    private boolean checkTouchPoint(final TouchPoint touchPoint) {
+        return limitRect.contains((int) touchPoint.x, (int) touchPoint.y);
+    }
 }

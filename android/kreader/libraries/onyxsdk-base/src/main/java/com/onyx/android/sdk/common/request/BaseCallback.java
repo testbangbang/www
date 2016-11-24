@@ -25,6 +25,11 @@ public abstract class BaseCallback {
         }
     }
 
+    public static void invokeStart(final BaseCallback callback, final BaseRequest request) {
+        if (callback != null) {
+            callback.start(request);
+        }
+    }
 
     public static void invoke(final BaseCallback callback, final BaseRequest request, final Throwable e) {
         if (callback != null) {

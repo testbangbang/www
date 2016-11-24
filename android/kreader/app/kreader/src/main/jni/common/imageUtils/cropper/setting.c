@@ -66,6 +66,9 @@ void k2pdfopt_settings_init_from_koptcontext(K2PDFOPT_SETTINGS *k2settings, KOPT
 
     k2settings->word_spacing = kctx->word_spacing;
 
+    k2settings->src_left_to_right = kctx->src_left_to_right;
+    k2settings->src_rot = kctx->src_rot;
+
     if (kctx->trim == 0) {
         k2settings->srccropmargins.box[0] = 0;
         k2settings->srccropmargins.box[1] = 0;

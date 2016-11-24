@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -57,7 +58,7 @@ public class DictionaryListRequest extends BaseCloudRequest {
     public void fetchFromCloud(final CloudManager parent) throws Exception {
         Call<ProductResult<Dictionary>> call = ServiceFactory.getDictionaryService(parent.getCloudConf().getApiBase())
                 .dictionaryList(JSON.toJSONString(dictionaryQuery));
-        Response<ProductResult<Dictionary>> response = call.execute();
+        Response<ProductResult<Dictionary>> response = executeCall(call);
         if (response.isSuccessful()) {
             productResult = response.body();
             if (isSaveToLocal()) {

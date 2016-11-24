@@ -1,5 +1,7 @@
 package com.onyx.kreader.host.request;
 
+import android.os.Build;
+
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -16,14 +18,20 @@ public class OpenRequest extends BaseReaderRequest {
 
     private String documentPath;
     private BaseOptions srcOptions;
+    private volatile boolean verifyDevice;
 
-    public OpenRequest(final String path, final BaseOptions documentOptions) {
+    public OpenRequest(final String path, final BaseOptions documentOptions, boolean verify) {
         super();
         documentPath = path;
         srcOptions = documentOptions;
+        verifyDevice = verify;
     }
 
     public void execute(final Reader reader) throws Exception {
+        if (!checkDevice()) {
+            throw new ReaderException(ReaderException.ACTIVATION_FAILED, "");
+        }
+
         final ReaderDocumentOptionsImpl documentOptions = srcOptions.documentOptions();
         ReaderPluginOptions pluginOptions = srcOptions.pluginOptions();
         if (pluginOptions == null) {
@@ -42,6 +50,23 @@ public class OpenRequest extends BaseReaderRequest {
         } catch (ReaderException readerException) {
             throw readerException;
         }
+    }
+
+    private boolean checkDevice() {
+        if (!verifyDevice) {
+            return true;
+        }
+        final String TAG = "onyx";
+        if (Build.MANUFACTURER.toLowerCase().contains(TAG)) {
+            return true;
+        }
+        if (Build.BRAND.toLowerCase().contains(TAG)) {
+            return true;
+        }
+        if (Build.FINGERPRINT.toLowerCase().contains(TAG)) {
+            return true;
+        }
+        return false;
     }
 
 }

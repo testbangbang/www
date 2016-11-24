@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--dimens value to override appcompat text appearance large/medium/small text size-->
+    <dimen name="abc_text_size_large_material" tools:override="true">15sp</dimen>
+    <dimen name="abc_text_size_medium_material" tools:override="true">12sp</dimen>
+
+    <dimen name="global_activities_function_icon_size">32dp</dimen>
+</resources>

@@ -77,12 +77,11 @@
     <string name="crop">Crop</string>
     <string name="column">Column</string>
     <string name="direction">Direction</string>
-    <string name="two">two\nsides</string>
-    <string name="four">four\nsides</string>
+    <string name="four">Auto</string>
     <string name="six">Six</string>
     <string name="nine">Nine</string>
-    <string name="single_page">single\npage</string>
-    <string name="double_page">double\npage</string>
+    <string name="single_page">Single\npage</string>
+    <string name="double_page">Double\npage</string>
     <string name="nothing">no\ncrop</string>
     <string name="search">Search</string>
     <string name="total_page" formatted="false">Total: %d </string>
@@ -282,4 +281,6 @@
     <string name="normal">normal</string>
     <string name="slower">slower</string>
     <string name="slow">slow</string>
+    <string name="get_page_text_failed">Get page text failed!</string>
+    <string name="dialog_reflow_settings_text_direction">Text direction</string>
 </resources>

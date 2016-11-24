@@ -8,18 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
+import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -57,8 +55,8 @@ public class ReaderLayerMenuViewFactory {
         }
     }
 
-    public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items);
+    public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback, final boolean ignoreEmptyChildMenu) {
+        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreEmptyChildMenu);
         final View view = createSimpleButtonContainerView(context, visibleItems, state, callback);
         view.post(new Runnable() {
             @Override
@@ -69,12 +67,12 @@ public class ReaderLayerMenuViewFactory {
         return view;
     }
 
-    public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+    public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final boolean ignoreEmptyChildMenu, final ReaderMenu.ReaderMenuCallback callback) {
         if (parent.getAction() == ReaderMenuAction.FONT) {
             return null;
         }
 
-        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items);
+        List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreEmptyChildMenu);
         View subView = createSimpleButtonContainerView(context, visibleItems, state, callback);
         if (mainMenuContainerViewHeight > 0) {
             subView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mainMenuContainerViewHeight));
@@ -82,10 +80,15 @@ public class ReaderLayerMenuViewFactory {
         return subView;
     }
 
-    private static List<ReaderLayerMenuItem> collectVisibleItems(final List<? extends ReaderLayerMenuItem> items) {
+    private static List<ReaderLayerMenuItem> collectVisibleItems(final List<? extends ReaderLayerMenuItem> items, final boolean ignoreEmptyChildMenu) {
         List<ReaderLayerMenuItem> result = new ArrayList<>();
         for (ReaderLayerMenuItem item : items) {
             if (!item.isVisible()) {
+                continue;
+            }
+            if (!ignoreEmptyChildMenu &&
+                    (item.getItemType() == ReaderMenuItem.ItemType.Group &&
+                    collectVisibleItems(item.getChildren(), ignoreEmptyChildMenu).size() <= 0)) {
                 continue;
             }
             result.add(item);

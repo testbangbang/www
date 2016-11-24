@@ -41,6 +41,7 @@ public class DeviceConfig {
     private boolean disableNavigation = false;
     private boolean hideSelectionModeUiOption = false;
     private boolean hideControlSettings = false;
+    private boolean useColorMenu = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -335,6 +336,14 @@ public class DeviceConfig {
 
     public void setDefaultAnnotationHighlightStyle(String defaultAnnotationHighlightStyle) {
         this.defaultAnnotationHighlightStyle = defaultAnnotationHighlightStyle;
+    }
+
+    public boolean isUseColorMenu() {
+        return useColorMenu;
+    }
+
+    public void setUseColorMenu(boolean useColorMenu) {
+        this.useColorMenu = useColorMenu;
     }
 
     public SingletonSharedPreference.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {

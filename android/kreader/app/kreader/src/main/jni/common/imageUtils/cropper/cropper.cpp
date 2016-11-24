@@ -429,6 +429,16 @@ bool convertToKoptContext(JNIEnv *env, jobject jSettings, KOPTContext *context) 
         LOGE("GetFieldID contrast failed");
         return false;
     }
+    jfieldID fid_src_left_to_right = env->GetFieldID(clz_settings, "src_left_to_right", "I");
+    if (fid_src_left_to_right == 0) {
+        LOGE("GetFieldID src_left_to_right failed");
+        return false;
+    }
+    jfieldID fid_src_rot = env->GetFieldID(clz_settings, "src_rot", "I");
+    if (fid_src_rot == 0) {
+        LOGE("GetFieldID src_rot failed");
+        return false;
+    }
 
     int dev_dpi = env->GetIntField(jSettings, fid_dev_dpi);
     int dev_width = env->GetIntField(jSettings, fid_dev_width);
@@ -448,11 +458,13 @@ bool convertToKoptContext(JNIEnv *env, jobject jSettings, KOPTContext *context) 
     double margin = env->GetDoubleField(jSettings, fid_margin);
     double quality = env->GetDoubleField(jSettings, fid_quality);
     double contrast = env->GetDoubleField(jSettings, fid_contrast);
+    int src_left_to_right = env->GetIntField(jSettings, fid_src_left_to_right);
+    int src_rot = env->GetIntField(jSettings, fid_src_rot);
 
     LOGI("dev_dpi: %d, dev_width: %d, dev_height: %d, page_width: %d, page_height: %d, trim: %d, wrap: %d, columns: %d, indent: %d, "
-         "straighten: %d, rotate: %d, justification: %d, word_spacing: %f, defect_size: %f, line_spacing: %f, margin: %f, quality: %f, contrast: %f",
+         "straighten: %d, rotate: %d, justification: %d, word_spacing: %f, defect_size: %f, line_spacing: %f, margin: %f, quality: %f, contrast: %f, src_left_to_right: %d, src_rot: %d",
          dev_dpi, dev_width, dev_height, page_width, page_height, trim, wrap, columns, indent, straighten, rotate, justification,
-         word_spacing, defect_size, line_spacing, margin, quality, contrast);
+         word_spacing, defect_size, line_spacing, margin, quality, contrast, src_left_to_right, src_rot);
 
     context->dev_dpi = dev_dpi;
     context->dev_width = dev_width;
@@ -474,6 +486,9 @@ bool convertToKoptContext(JNIEnv *env, jobject jSettings, KOPTContext *context) 
     context->margin = margin;
     context->quality = quality;
     context->contrast = contrast;
+
+    context->src_left_to_right = src_left_to_right;
+    context->src_rot = src_rot;
 
     return true;
 }

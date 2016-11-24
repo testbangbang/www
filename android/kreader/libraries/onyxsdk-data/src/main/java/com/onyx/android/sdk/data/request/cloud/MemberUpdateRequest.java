@@ -27,8 +27,8 @@ public class MemberUpdateRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response<Member> response = ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
-                .updateGroupMember(id, accountId, member, getAccountSessionToken()).execute();
+        Response<Member> response = executeCall(ServiceFactory.getGroupService(parent.getCloudConf().getApiBase())
+                .updateGroupMember(id, accountId, member, getAccountSessionToken()));
         if (response.isSuccessful()) {
             resultMember = response.body();
         }

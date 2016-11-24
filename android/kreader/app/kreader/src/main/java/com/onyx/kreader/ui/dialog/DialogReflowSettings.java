@@ -59,6 +59,8 @@ public class DialogReflowSettings extends DialogBase {
     TextView columnsText;
     @Bind(R.id.columns_layout)
     DynamicMultiRadioGroupView columnsLayout;
+    @Bind(R.id.direction_recycler)
+    PageRecyclerView directionRecycler;
 
     static public abstract class ReflowCallback {
         abstract public void onFinished(boolean confirm, final ImageReflowSettings settings);
@@ -76,11 +78,14 @@ public class DialogReflowSettings extends DialogBase {
     private final String[] upgradeSizes = {"0", "5", "10",};
     private final String[] columnsSize = {"1", "2", "3"};
 
+    private int[][] directionValues = { {1, 0}, {0, 0}, {1, 90} };
+
     private int fontSizeDefaultIndex = 0;
     private int autoStraightenDefaultIndex = 0;
     private int justificationDefaultIndex = 1;
     private int formatDefaultIndex = 0;
     private int columnDefaultIndex = 1;
+    private int directionDefaultIndex = 0;
 
     public DialogReflowSettings(ReaderDataHolder readerDataHolder, ImageReflowSettings settings, ReflowCallback callback) {
         super(readerDataHolder.getContext());
@@ -112,12 +117,18 @@ public class DialogReflowSettings extends DialogBase {
         ReflowPageAdapter alignAdapter = new ReflowPageAdapter(1, 3, alignResIds);
         alignRecycler.setAdapter(alignAdapter);
 
+        int[] orientationResIds = {R.drawable.ic_dialog_reader_reset_direction_vertical_left, R.drawable.ic_dialog_reader_reset_direction_vertical_right, R.drawable.ic_dialog_reader_reset_direction_across};
+        directionRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
+        ReflowPageAdapter orientationAdapter = new ReflowPageAdapter(1, 3, orientationResIds);
+        directionRecycler.setAdapter(orientationAdapter);
+
         setupListeners();
         updateFontSize(settings);
         updateColumns(settings);
         updateAutoStraighten(settings);
         updateJustification(settings);
         updateFormat(settings);
+        updateDirection(settings);
     }
 
     private void updateFontSize(ImageReflowSettings s) {
@@ -177,6 +188,18 @@ public class DialogReflowSettings extends DialogBase {
         formatRecycler.setCurrentFocusedPosition(index);
     }
 
+    private void updateDirection(ImageReflowSettings s) {
+        int index = directionDefaultIndex;
+        for (int i = 0; i < directionValues.length; i++) {
+            if (directionValues[i][0] == s.src_left_to_right
+                    && directionValues[i][1] == s.src_rot) {
+                index = i;
+                break;
+            }
+        }
+        directionRecycler.setCurrentFocusedPosition(index);
+    }
+
     private void syncAutoStraighten(ImageReflowSettings s, int checkIndex) {
         if (checkIndex < autoStraightenValues.length) {
             s.straighten = autoStraightenValues[checkIndex];
@@ -209,12 +232,20 @@ public class DialogReflowSettings extends DialogBase {
         }
     }
 
+    private void syncDirection(ImageReflowSettings s, int focusPosition) {
+        if (focusPosition < directionValues.length) {
+            s.src_left_to_right = directionValues[focusPosition][0];
+            s.src_rot = directionValues[focusPosition][1];
+        }
+    }
+
     private void syncSettings(ImageReflowSettings settings) {
         syncAutoStraighten(settings, getCheckedButtonIndex(upgradeLayout.getCompoundButtonList()));
         syncFontSize(settings, getCheckedButtonIndex(fontSizeLayout.getCompoundButtonList()));
         syncJustification(settings, alignRecycler.getCurrentFocusedPosition());
         syncFormat(settings, formatRecycler.getCurrentFocusedPosition());
         syncColumns(settings, getCheckedButtonIndex(columnsLayout.getCompoundButtonList()));
+        syncDirection(settings, directionRecycler.getCurrentFocusedPosition());
     }
 
     private void resetSettings(ImageReflowSettings settings) {

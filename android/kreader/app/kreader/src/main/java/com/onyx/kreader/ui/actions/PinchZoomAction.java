@@ -53,6 +53,7 @@ public class PinchZoomAction extends BaseAction {
         scaleMatrix.reset();
         initScale = readerDataHolder.getReaderViewInfo().getFirstVisiblePage().getActualScale();
         ReaderDeviceManager.enterAnimationUpdate(true);
+        fastRedrawScalingBitmap(readerDataHolder);
     }
 
     static public void scaling(final ReaderDataHolder readerDataHolder, final ScaleGestureDetector detector) {

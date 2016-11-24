@@ -38,7 +38,7 @@ public class AccountAvatarUploadRequest extends BaseCloudRequest {
         MultipartBody.Part partBody = MultipartBody.Part.createFormData(Constant.AVATAR_TAG, avatarFile.getName(), requestFile);
         Call<OnyxAccount> call = ServiceFactory.getAccountService(parent.getCloudConf().getApiBase())
                 .uploadAvatar(partBody, getAccountSessionToken());
-        Response<OnyxAccount> response = call.execute();
+        Response<OnyxAccount> response = executeCall(call);
         if (response.isSuccessful()) {
             avatarUrl = response.body().avatarUrl;
         }

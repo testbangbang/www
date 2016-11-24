@@ -5,4 +5,55 @@
 
     <dimen name="question_padding">30dp</dimen>
     <dimen name="my_tests_view_paddingBottom">50dp</dimen>
+
+    <dimen name="home_item_divider">8dp</dimen>
+    <dimen name="home_layout_padding">8dp</dimen>
+    <dimen name="home_account_info_user_image_size">108dp</dimen>
+    <dimen name="home_account_info_user_image_margin_top">10dp</dimen>
+    <dimen name="home_account_info_user_image_padding">1dp</dimen>
+    <dimen name="home_account_info_user_name_text_size">18sp</dimen>
+    <dimen name="home_account_info_user_name_margin_top">7dp</dimen>
+    <dimen name="home_account_info_user_class_text_size">13sp</dimen>
+    <dimen name="home_account_info_user_class_margin_top">2dp</dimen>
+    <dimen name="home_account_info_user_study_process_text_size">17sp</dimen>
+    <dimen name="home_account_info_user_study_process_margin_top">7dp</dimen>
+    <dimen name="home_account_info_user_study_process_padding">2dp</dimen>
+    <dimen name="home_weather_notify_location_text_size">11sp</dimen>
+    <dimen name="home_weather_notify_location_text_margin">5dp</dimen>
+    <dimen name="home_weather_notify_date_text_size">11sp</dimen>
+    <dimen name="home_weather_notify_date_text_margin">5dp</dimen>
+    <dimen name="home_weather_notify_weather_image_size">54dp</dimen>
+    <dimen name="home_weather_notify_weather_image_margin_left">14dp</dimen>
+    <dimen name="home_weather_notify_weather_image_margin_top">12dp</dimen>
+    <dimen name="home_weather_notify_weather_text_size">13sp</dimen>
+    <dimen name="home_weather_notify_weather_text_margin_left">3dp</dimen>
+    <dimen name="home_weather_notify_time_text_size">24sp</dimen>
+    <dimen name="home_weather_notify_time_text_margin_left">12dp</dimen>
+    <dimen name="home_weather_notify_text_margin">@dimen/home_item_background_normal_stroke_width</dimen>
+    <dimen name="home_weather_notify_text_margin_top">12dp</dimen>
+    <dimen name="home_weather_notify_text_padding">4dp</dimen>
+    <dimen name="home_weather_notify_text_size">12sp</dimen>
+    <dimen name="home_normal_item_category_image_size">76dp</dimen>
+    <dimen name="home_normal_item_category_text_size">17sp</dimen>
+    <dimen name="home_normal_item_category_margin">6dp</dimen>
+    <dimen name="home_teaching_material_layout_margin_bottom">60dp</dimen>
+    <dimen name="home_teaching_material_layout_margin">@dimen/home_item_background_normal_stroke_width</dimen>
+    <dimen name="home_teaching_category_image_size">100dp</dimen>
+    <dimen name="home_teaching_category_image_margin_top">8dp</dimen>
+    <dimen name="home_teaching_decoration_image_size">72dp</dimen>
+    <dimen name="home_teaching_decoration_image_margin_left_right">28dp</dimen>
+    <dimen name="home_teaching_record_text_size">14sp</dimen>
+    <dimen name="home_teaching_record_image_size">24dp</dimen>
+    <dimen name="home_teaching_record_image_margin_bottom">8dp</dimen>
+    <dimen name="home_teaching_record_image_margin_left">10dp</dimen>
+    <dimen name="home_teaching_material_title_size">13sp</dimen>
+    <dimen name="home_teaching_material_title_margin_top">2dp</dimen>
+    <dimen name="home_teaching_material_title_margin_left">20dp</dimen>
+    <dimen name="home_teaching_material_title_margin_right">4dp</dimen>
+    <dimen name="home_teaching_auxiliary_title_text_size">17sp</dimen>
+    <dimen name="home_teaching_auxiliary_title_margin_left">10dp</dimen>
+    <dimen name="home_teaching_auxiliary_title_margin_right">8dp</dimen>
+    <dimen name="home_item_background_normal_stroke_width">2dp</dimen>
+    <dimen name="home_item_background_select_stroke_width">3dp</dimen>
+
 </resources>
