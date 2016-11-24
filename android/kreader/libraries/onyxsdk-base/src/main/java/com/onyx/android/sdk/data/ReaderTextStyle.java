@@ -19,6 +19,10 @@ public class ReaderTextStyle {
             this.percent = percent;
         }
 
+        public static Percentage create(int percent) {
+            return new Percentage(percent);
+        }
+
         public int getPercent() {
             return percent;
         }
@@ -113,12 +117,12 @@ public class ReaderTextStyle {
     }
 
     public static class PageMargin {
-        private DPUnit topMargin;
-        private DPUnit leftMargin;
-        private DPUnit rightMargin;
-        private DPUnit bottomMargin;
+        private Percentage topMargin;
+        private Percentage leftMargin;
+        private Percentage rightMargin;
+        private Percentage bottomMargin;
 
-        public PageMargin(DPUnit leftMargin, DPUnit bottomMargin, DPUnit rightMargin, DPUnit topMargin) {
+        public PageMargin(Percentage leftMargin, Percentage bottomMargin, Percentage rightMargin, Percentage topMargin) {
             this.bottomMargin = bottomMargin;
             this.leftMargin = leftMargin;
             this.rightMargin = rightMargin;
@@ -126,55 +130,55 @@ public class ReaderTextStyle {
         }
 
         public static PageMargin copy(PageMargin pageMargin) {
-            return new PageMargin(new DPUnit(pageMargin.getLeftMargin().getValue()),
-                    new DPUnit(pageMargin.getBottomMargin().getValue()),
-                    new DPUnit(pageMargin.getRightMargin().getValue()),
-                    new DPUnit(pageMargin.getTopMargin().getValue()));
+            return new PageMargin(Percentage.create(pageMargin.getLeftMargin().getPercent()),
+                    Percentage.create(pageMargin.getBottomMargin().getPercent()),
+                    Percentage.create(pageMargin.getRightMargin().getPercent()),
+                    Percentage.create(pageMargin.getTopMargin().getPercent()));
         }
 
         public void increasePageMargin(PageMargin pageMargin) {
-            topMargin.setValue(topMargin.getValue() + pageMargin.getTopMargin().getValue());
-            leftMargin.setValue(leftMargin.getValue() + pageMargin.getLeftMargin().getValue());
-            rightMargin.setValue(rightMargin.getValue() + pageMargin.getRightMargin().getValue());
-            bottomMargin.setValue(bottomMargin.getValue() + pageMargin.getBottomMargin().getValue());
+            topMargin.setPercent(topMargin.getPercent() + pageMargin.getTopMargin().getPercent());
+            leftMargin.setPercent(leftMargin.getPercent() + pageMargin.getLeftMargin().getPercent());
+            rightMargin.setPercent(rightMargin.getPercent() + pageMargin.getRightMargin().getPercent());
+            bottomMargin.setPercent(bottomMargin.getPercent() + pageMargin.getBottomMargin().getPercent());
         }
 
         public void decreasePageMargin(PageMargin pageMargin) {
-            topMargin.setValue(topMargin.getValue() - pageMargin.getTopMargin().getValue());
-            leftMargin.setValue(leftMargin.getValue() - pageMargin.getLeftMargin().getValue());
-            rightMargin.setValue(rightMargin.getValue() - pageMargin.getRightMargin().getValue());
-            bottomMargin.setValue(bottomMargin.getValue() - pageMargin.getBottomMargin().getValue());
+            topMargin.setPercent(topMargin.getPercent() - pageMargin.getTopMargin().getPercent());
+            leftMargin.setPercent(leftMargin.getPercent() - pageMargin.getLeftMargin().getPercent());
+            rightMargin.setPercent(rightMargin.getPercent() - pageMargin.getRightMargin().getPercent());
+            bottomMargin.setPercent(bottomMargin.getPercent() - pageMargin.getBottomMargin().getPercent());
         }
 
-        public DPUnit getBottomMargin() {
+        public Percentage getBottomMargin() {
             return bottomMargin;
         }
 
-        public void setBottomMargin(DPUnit bottomMargin) {
+        public void setBottomMargin(Percentage bottomMargin) {
             this.bottomMargin = bottomMargin;
         }
 
-        public DPUnit getLeftMargin() {
+        public Percentage getLeftMargin() {
             return leftMargin;
         }
 
-        public void setLeftMargin(DPUnit leftMargin) {
+        public void setLeftMargin(Percentage leftMargin) {
             this.leftMargin = leftMargin;
         }
 
-        public DPUnit getRightMargin() {
+        public Percentage getRightMargin() {
             return rightMargin;
         }
 
-        public void setRightMargin(DPUnit rightMargin) {
+        public void setRightMargin(Percentage rightMargin) {
             this.rightMargin = rightMargin;
         }
 
-        public DPUnit getTopMargin() {
+        public Percentage getTopMargin() {
             return topMargin;
         }
 
-        public void setTopMargin(DPUnit topMargin) {
+        public void setTopMargin(Percentage topMargin) {
             this.topMargin = topMargin;
         }
 
@@ -191,31 +195,35 @@ public class ReaderTextStyle {
         }
     }
 
+    static public Alignment DEFAULT_ALIGNMENT = Alignment.ALIGNMENT_JUSTIFY;
+    static public CharacterIndent DEFAULT_CHARACTER_INDENT = new CharacterIndent(2);
+
     static public Percentage LINE_SPACING_STEP = new Percentage(10);
-    static public Percentage LARGE_LINE_SPACING = new Percentage(180);
-    static public Percentage NORMAL_LINE_SPACING = new Percentage(150);
-    static public Percentage SMALL_LINE_SPACING = new Percentage(120);
-    static public Percentage MIN_LINE_SPACING = new Percentage(100);
+    static public Percentage LARGE_LINE_SPACING = new Percentage(150);
+    static public Percentage NORMAL_LINE_SPACING = new Percentage(120);
+    static public Percentage SMALL_LINE_SPACING = new Percentage(90);
+    static public Percentage MIN_LINE_SPACING = new Percentage(50);
     static public Percentage MAX_LINE_SPACING = new Percentage(200);
     static public Percentage DEFAULT_LINE_SPACING = NORMAL_LINE_SPACING;
 
-    static private int SMALL_MARGIN = 5;
-    static private int NORMAL_MARGIN = 10;
-    static private int LARGE_MARGIN = 15;
+    static private int SMALL_MARGIN = 1;
+    static private int NORMAL_MARGIN = 3;
+    static private int LARGE_MARGIN = 7;
 
-    static public PageMargin PAGE_MARGIN_STEP = new PageMargin(DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN));
-    static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN), DPUnit.create(SMALL_MARGIN));
-    static public PageMargin NORMAL_PAGE_MARGIN = new PageMargin(DPUnit.create(NORMAL_MARGIN), DPUnit.create(NORMAL_MARGIN), DPUnit.create(NORMAL_MARGIN), DPUnit.create(NORMAL_MARGIN));
-    static public PageMargin LARGE_PAGE_MARGIN = new PageMargin(DPUnit.create(LARGE_MARGIN), DPUnit.create(LARGE_MARGIN), DPUnit.create(LARGE_MARGIN), DPUnit.create(LARGE_MARGIN));
+    static public PageMargin PAGE_MARGIN_STEP = new PageMargin(Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN));
+    static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN));
+    static public PageMargin NORMAL_PAGE_MARGIN = new PageMargin(Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN));
+    static public PageMargin LARGE_PAGE_MARGIN = new PageMargin(Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN));
     static public PageMargin DEFAULT_PAGE_MARGIN = NORMAL_PAGE_MARGIN;
 
     static public SPUnit[] FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
             SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
+    static public SPUnit DEFAULT_FONT_SIZE = SPUnit.create(40.0f);
 
     private String fontFace = null;
-    private SPUnit fontSize = SPUnit.create(36.0f);
-    private Alignment alignment = Alignment.ALIGNMENT_JUSTIFY;
-    private CharacterIndent indent = new CharacterIndent(2);
+    private SPUnit fontSize = DEFAULT_FONT_SIZE;
+    private Alignment alignment = DEFAULT_ALIGNMENT;
+    private CharacterIndent indent = DEFAULT_CHARACTER_INDENT;
     private Percentage lineSpacing = DEFAULT_LINE_SPACING;
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
 
@@ -224,6 +232,20 @@ public class ReaderTextStyle {
 
     public static ReaderTextStyle defaultStyle() {
         return new ReaderTextStyle();
+    }
+
+    public static ReaderTextStyle create(String fontface, SPUnit fontSize, Percentage lineSpacing,
+                                         Percentage leftMargin, Percentage topMargin,
+                                         Percentage rightMargin, Percentage bottomMargin) {
+        ReaderTextStyle style = new ReaderTextStyle();
+        style.fontFace = fontface;
+        style.fontSize = fontSize;
+        style.lineSpacing = lineSpacing;
+        style.pageMargin.setLeftMargin(leftMargin);
+        style.pageMargin.setTopMargin(topMargin);
+        style.pageMargin.setRightMargin(rightMargin);
+        style.pageMargin.setBottomMargin(bottomMargin);
+        return style;
     }
 
     public static ReaderTextStyle copy(ReaderTextStyle style) {

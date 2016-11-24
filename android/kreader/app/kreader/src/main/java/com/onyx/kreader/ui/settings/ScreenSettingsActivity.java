@@ -69,25 +69,6 @@ public class ScreenSettingsActivity extends PreferenceActivity implements Shared
         }
     }
 
-    private void initMarginOptionListPreferenceData(int res){
-        ListPreference marginPreference = (ListPreference) findPreference(
-                getString(res));
-        marginPreference.setEntries(R.array.settings_margins);
-        marginPreference.setEntryValues(R.array.settings_margins);
-        CharSequence sequence = marginPreference.getEntry();
-        if (sequence == null || sequence.length() <= 0) {
-            sequence = String.valueOf(BaseOptions.getDefaultMargin());
-        }
-        marginPreference.setSummary(sequence);
-    }
-
-    private void initMargins(){
-        initMarginOptionListPreferenceData(R.string.settings_left_margin_key);
-        initMarginOptionListPreferenceData(R.string.settings_top_margin_key);
-        initMarginOptionListPreferenceData(R.string.settings_right_margin_key);
-        initMarginOptionListPreferenceData(R.string.settings_bottom_margin_key);
-    }
-
 
     @Override
     public void finish() {
