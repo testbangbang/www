@@ -24,7 +24,7 @@ public class AdjustContrastAction extends BaseAction {
             DialogSetValue.DialogCallback callback = new DialogSetValue.DialogCallback() {
                 @Override
                 public void valueChange(int newValue) {
-                    final GammaCorrectionRequest request = new GammaCorrectionRequest(newValue);
+                    final GammaCorrectionRequest request = new GammaCorrectionRequest(newValue, 0);
                     request.setAbortPendingTasks(true);
                     readerDataHolder.submitRenderRequest(request);
                 }
@@ -32,7 +32,7 @@ public class AdjustContrastAction extends BaseAction {
                 @Override
                 public void done(boolean isValueChange, int oldValue, int newValue) {
                     if (!isValueChange) {
-                        GammaCorrectionRequest request = new GammaCorrectionRequest(oldValue);
+                        GammaCorrectionRequest request = new GammaCorrectionRequest(oldValue, 0);
                         readerDataHolder.submitRenderRequest(request);
                     }
                     hideContrastDialog(readerDataHolder);
