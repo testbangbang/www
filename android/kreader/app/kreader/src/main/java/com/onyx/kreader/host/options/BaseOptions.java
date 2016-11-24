@@ -61,8 +61,8 @@ public class BaseOptions {
     transient static public final String ORIENTATION = "orientation";
     transient static public final String MD5 = "md5";
 
-    private static final double fallbackFontSize = 8.0;
-    public static double defaultFontSize = fallbackFontSize;
+    private static final float fallbackFontSize = 36.0f;
+    public static float defaultFontSize = fallbackFontSize;
 
     static public int GAMMA_LOWER_LIMIT = 100;
     static public int DEFAULT_GAMMA = 150;
@@ -244,7 +244,7 @@ public class BaseOptions {
         return 1.0;
     }
 
-    public static double getDefaultStreamDocFontSize() {
+    public static float getDefaultStreamDocFontSize() {
         return defaultFontSize;
     }
 
@@ -252,7 +252,7 @@ public class BaseOptions {
         return 1.1;
     }
 
-    public static void setDefaultStreamDocFontSize(double fontSize) {
+    public static void setDefaultStreamDocFontSize(float fontSize) {
         defaultFontSize = fontSize;
     }
 
@@ -279,18 +279,18 @@ public class BaseOptions {
         return (pixelSize / 6) - 1;
     }
 
-    public double getFontSize() {
+    public float getFontSize() {
         if (!backend.hasKey(FONT_SIZE_TAG)) {
             return getDefaultStreamDocFontSize();
         }
-        double size = backend.getDouble(FONT_SIZE_TAG);
+        float size = backend.getFloat(FONT_SIZE_TAG);
         if (size <= 0) {
             return getDefaultStreamDocFontSize();
         }
         return size;
     }
 
-    public void setFontSize(double size) {
+    public void setFontSize(float size) {
         backend.putDouble(FONT_SIZE_TAG, size);
     }
 

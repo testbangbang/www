@@ -230,6 +230,20 @@ public class ReaderTextStyle {
         return new ReaderTextStyle();
     }
 
+    public static ReaderTextStyle create(String fontface, SPUnit fontSize, Percentage lineSpacing,
+                                         Percentage leftMargin, Percentage topMargin,
+                                         Percentage rightMargin, Percentage bottomMargin) {
+        ReaderTextStyle style = new ReaderTextStyle();
+        style.fontFace = fontface;
+        style.fontSize = fontSize;
+        style.lineSpacing = lineSpacing;
+        style.pageMargin.setLeftMargin(leftMargin);
+        style.pageMargin.setTopMargin(topMargin);
+        style.pageMargin.setRightMargin(rightMargin);
+        style.pageMargin.setBottomMargin(bottomMargin);
+        return style;
+    }
+
     public static ReaderTextStyle copy(ReaderTextStyle style) {
         ReaderTextStyle copy = new ReaderTextStyle();
         copy.fontFace = style.fontFace;

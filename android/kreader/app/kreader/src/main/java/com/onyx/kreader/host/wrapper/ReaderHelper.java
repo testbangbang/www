@@ -380,6 +380,14 @@ public class ReaderHelper {
             getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
             getDocumentOptions().setNavigationArgs(getReaderLayoutManager().getCurrentLayoutProvider().getNavigationArgs());
             getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
+            getDocumentOptions().setFontFace(getReaderLayoutManager().getTextStyleManager().getStyle().getFontFace());
+            getDocumentOptions().setFontSize(getReaderLayoutManager().getTextStyleManager().getStyle().getFontSize().getValue());
+            getDocumentOptions().setFontFace(getReaderLayoutManager().getTextStyleManager().getStyle().getFontFace());
+            getDocumentOptions().setLineSpacing(getReaderLayoutManager().getTextStyleManager().getStyle().getLineSpacing().getPercent());
+            getDocumentOptions().setLeftMargin(getReaderLayoutManager().getTextStyleManager().getStyle().getPageMargin().getLeftMargin().getPercent());
+            getDocumentOptions().setTopMargin(getReaderLayoutManager().getTextStyleManager().getStyle().getPageMargin().getTopMargin().getPercent());
+            getDocumentOptions().setRightMargin(getReaderLayoutManager().getTextStyleManager().getStyle().getPageMargin().getRightMargin().getPercent());
+            getDocumentOptions().setBottomMargin(getReaderLayoutManager().getTextStyleManager().getStyle().getPageMargin().getBottomMargin().getPercent());
         } catch (Exception e) {
 
         }
