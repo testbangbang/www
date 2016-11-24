@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:padding="10dp"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="推荐试题"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/more"
+                android:layout_alignParentRight="true"
+                android:text="更多"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/exercise_list"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.onyx.android.sdk.ui.view.PageRecyclerView>
+
+        <Button
+            android:id="@+id/btn_goto"
+            android:layout_margin="10dp"
+            android:text="开始考试"
+            android:background="@drawable/button_bg"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/subject_group_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView
+            android:layout_margin="10dp"
+            android:background="@drawable/blue_square_bg"
+            android:padding="10dp"
+            android:id="@+id/subject_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView>
+    </LinearLayout>
+
+</FrameLayout>

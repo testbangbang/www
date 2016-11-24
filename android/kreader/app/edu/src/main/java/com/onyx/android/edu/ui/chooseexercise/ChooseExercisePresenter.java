@@ -1,6 +1,7 @@
 package com.onyx.android.edu.ui.chooseexercise;
 
 import com.onyx.android.edu.EduApp;
+import com.onyx.android.edu.base.Config;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.libedu.EduCloudManager;
@@ -19,6 +20,7 @@ import com.onyx.libedu.request.cloud.GetSubjectRequest;
 import com.onyx.libedu.request.cloud.GetTextBooksRequest;
 import com.onyx.libedu.request.cloud.GetVersionsRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,6 +50,18 @@ public class ChooseExercisePresenter implements ChooseExerciseContract.ChooseExe
 
     @Override
     public void loadSubjects(Stage stage) {
+        if (Config.useLocalData) {
+            List<Subject> subjects = new ArrayList<>();
+            subjects.add(Subject.create("语文"));
+            subjects.add(Subject.create("数学"));
+            subjects.add(Subject.create("应用"));
+            subjects.add(Subject.create("劳工技术"));
+            subjects.add(Subject.create("自然"));
+            subjects.add(Subject.create("社会"));
+            chooseExerciseView.showSubjects(subjects);
+            return;
+        }
+
         chooseQuestionVariable.setStage(stage);
         final GetSubjectRequest subjectRequest = new GetSubjectRequest(stage.getId());
         eduCloudManager.submitRequest(EduApp.instance(), subjectRequest, new BaseCallback() {
@@ -57,6 +71,8 @@ public class ChooseExercisePresenter implements ChooseExerciseContract.ChooseExe
                 chooseExerciseView.showSubjects(subjects);
             }
         });
+
+
     }
 
     @Override
@@ -141,5 +157,9 @@ public class ChooseExercisePresenter implements ChooseExerciseContract.ChooseExe
     @Override
     public void chooseDifficult(Difficult difficult) {
         chooseQuestionVariable.setDifficult(difficult);
+    }
+
+    public ChooseExerciseContract.ChooseExerciseView getChooseExerciseView() {
+        return chooseExerciseView;
     }
 }
