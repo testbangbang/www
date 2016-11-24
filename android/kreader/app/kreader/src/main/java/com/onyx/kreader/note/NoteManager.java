@@ -65,6 +65,8 @@ public class NoteManager {
     private RectF visibleDrawRectF;
     private volatile boolean enableRawEventProcessor = false;
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
+    private volatile boolean enableShortcutDrawing = false;
+    private volatile boolean enableShortcutErasing = false;
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -102,6 +104,8 @@ public class NoteManager {
         view = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
+        enableShortcutDrawing = noteConfig.isShortcutDrawingEnabled();
+        enableShortcutErasing = noteConfig.isShortcutErasingEnabled();
         getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
     }
 
@@ -191,11 +195,11 @@ public class NoteManager {
             }
 
             public boolean enableShortcutDrawing() {
-                return false;
+                return enableShortcutDrawing;
             }
 
             public boolean enableShortcutErasing() {
-                return false;
+                return enableShortcutErasing;
             }
 
             public boolean enableRawEventProcessor() {

@@ -36,6 +36,9 @@ public class DeviceConfig {
     static public final String FINGER_ERASING = "finger_erasing";
     static public final String DISABLE_BIG_PEN = "no_big_pen";
 
+    static public final String SHORTCUT_DRAWING = "shortcut_drawing";
+    static public final String SHORTCUT_ERASING = "shortcut_erasing";
+
     static public boolean useDebugConfig = false;
 
 
@@ -108,6 +111,14 @@ public class DeviceConfig {
             return 1.0f;
         }
         return backend.getFloat(TOUCH_HEIGHT);
+    }
+
+    public boolean isShortcutDrawingEnabled() {
+        return backend.hasKey(SHORTCUT_DRAWING) && backend.getBoolean(SHORTCUT_DRAWING);
+    }
+
+    public boolean isShortcutErasingEnabled() {
+        return backend.hasKey(SHORTCUT_ERASING) && backend.getBoolean(SHORTCUT_ERASING);
     }
 
     public boolean useRawInput() {
