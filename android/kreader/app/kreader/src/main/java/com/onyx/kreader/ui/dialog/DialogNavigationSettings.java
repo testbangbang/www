@@ -92,8 +92,8 @@ public class DialogNavigationSettings extends DialogBase {
         int subScreenColumns = 6;
         if (getContext().getResources().getConfiguration().orientation == 2) {
             // TODO hard coding now
-            int landscapeRows = 2;
-            int landscapeColumns = 2;
+            int landscapeRows = 1;
+            int landscapeColumns = 6;
             if (landscapeRows > 0 && landscapeColumns > 0) {
                 double heightRatio = landscapeRows / (double)subScreenRows;
                 subScreenRows = landscapeRows;
