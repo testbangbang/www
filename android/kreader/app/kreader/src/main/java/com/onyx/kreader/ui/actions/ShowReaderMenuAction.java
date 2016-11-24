@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
@@ -54,7 +55,6 @@ import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.utils.DeviceConfig;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,7 +68,7 @@ public class ShowReaderMenuAction extends BaseAction {
     ReaderActivity readerActivity;
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
-    private static ReaderLayerMenu readerMenu;
+    private static ReaderMenu readerMenu;
     private boolean disableScribbleBrush = true;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
 
@@ -134,12 +134,23 @@ public class ShowReaderMenuAction extends BaseAction {
         if (disableScribbleBrush) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
+
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isUseColorMenu()) {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
+        }
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
-        readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());
+        ReaderLayerMenuItem[] menuItems;
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isUseColorMenu()) {
+            menuItems = ReaderLayerMenuRepository.colorMenuItems;
+            readerMenu = new ReaderLayerColorMenu(readerDataHolder.getContext());
+        }else {
+            menuItems = ReaderLayerMenuRepository.fixedPageMenuItems;
+            readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());
+        }
         updateReaderMenuCallback(readerMenu, readerDataHolder);
-        List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
+        List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder, menuItems);
         readerMenu.fillItems(items);
     }
 
@@ -265,12 +276,17 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
+                switch (menuItem.getAction()) {
+                    case JUMP_PAGE:
+                        gotoPage(readerDataHolder, newValue);
+                        break;
+                }
             }
         });
     }
 
-    private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems, disableMenus);
+    private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder, ReaderLayerMenuItem[] menuItems) {
+        return ReaderLayerMenuRepository.createFromArray(menuItems, disableMenus);
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
@@ -387,6 +403,14 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void forward(final ReaderDataHolder readerDataHolder) {
         new ForwardAction().execute(readerDataHolder, null);
+    }
+
+    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o) {
+        if (o == null) {
+            return;
+        }
+        int page = (int) o;
+        new GotoPageAction(String.valueOf(page)).execute(readerDataHolder);
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {

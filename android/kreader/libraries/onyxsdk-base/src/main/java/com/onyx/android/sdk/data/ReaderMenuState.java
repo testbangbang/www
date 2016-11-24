@@ -13,4 +13,5 @@ public abstract class ReaderMenuState {
 
     public abstract boolean isFixedPagingMode();
     public abstract boolean isShowingNotes();
+
 }
