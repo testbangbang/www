@@ -88,12 +88,11 @@ public class DialogNavigationSettings extends DialogBase {
         });
 
         mSubScreenContentView = (ContentView) findViewById(R.id.subscreen_contentView);
-        int subScreenRows = 1;
-        int subScreenColumns = 6;
+        int subScreenRows = getContext().getResources().getInteger(R.integer.dialog_navigation_setting_sub_screen_rows);
+        int subScreenColumns = getContext().getResources().getInteger(R.integer.dialog_navigation_setting_sub_screen_columns);
         if (getContext().getResources().getConfiguration().orientation == 2) {
-            // TODO hard coding now
-            int landscapeRows = 1;
-            int landscapeColumns = 6;
+            int landscapeRows = getContext().getResources().getInteger(R.integer.dialog_navigation_setting_landscape_sub_screen_rows);
+            int landscapeColumns = getContext().getResources().getInteger(R.integer.dialog_navigation_setting_landscape_sub_screen_columns);
             if (landscapeRows > 0 && landscapeColumns > 0) {
                 double heightRatio = landscapeRows / (double)subScreenRows;
                 subScreenRows = landscapeRows;
