@@ -23,7 +23,7 @@ import java.util.List;
 public class GetScribbleBitmapAction {
 
     public interface Callback{
-        void onNext(String page, Bitmap bitmap);
+        void onNext(String page, Bitmap bitmap, PageInfo pageInfo);
     }
 
     private List<String> requestPages;
@@ -69,7 +69,8 @@ public class GetScribbleBitmapAction {
             public void done(BaseRequest request, Throwable e) {
                 final NoteManager noteManager = readerDataHolder.getNoteManager();
                 List<PageInfo> pageInfoList = new ArrayList<>();
-                pageInfoList.add(thumbnailRequest.getPageInfo());
+                final PageInfo pageInfo = thumbnailRequest.getPageInfo();
+                pageInfoList.add(pageInfo);
                 final ReaderNoteRenderRequest noteRequest = new ReaderNoteRenderRequest(
                         readerDataHolder.getReader().getDocumentMd5(),
                         pageInfoList,
@@ -81,7 +82,7 @@ public class GetScribbleBitmapAction {
                     public void done(BaseRequest request, Throwable e) {
                         scribbleBitmap = noteManager.getViewBitmap();
                         drawScribbleBitmap(contentBitmap.getBitmap());
-                        callback.onNext(currentPage, contentBitmap.getBitmap());
+                        callback.onNext(currentPage, contentBitmap.getBitmap(), pageInfo);
                         requestPreviewBySequence(readerDataHolder, callback);
                     }
                 });

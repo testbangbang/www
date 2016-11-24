@@ -6,9 +6,14 @@ package com.onyx.kreader.api;
  */
 public interface ReaderDocumentOptions {
 
-    public String getDocumentPassword();
+    String getDocumentPassword();
 
-    public String getCompressedPassword();
+    String getCompressedPassword();
 
+    String getLanguage();
+
+    String getAutoCodePage();
+
+    String getCodePageFallback();
 
 }

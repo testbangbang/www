@@ -21,6 +21,14 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
         this.drawableResourceId = drawableResourceId;
     }
 
+    public ReaderLayerMenuItem(ItemType itemType, ReaderMenuAction action, ReaderLayerMenuItem parent, int titleResourceId, String title, int drawableResourceId, int itemId) {
+        super(itemType, action, parent);
+        this.titleResourceId = titleResourceId;
+        this.title = title;
+        this.drawableResourceId = drawableResourceId;
+        setItemId(itemId);
+    }
+
     public ReaderLayerMenuItem(final ReaderLayerMenuItem menu) {
         super(menu.getItemType(), menu.getAction(), menu.getParent());
         titleResourceId = menu.getTitleResourceId();
@@ -78,4 +86,5 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
+
 }

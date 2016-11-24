@@ -2,7 +2,9 @@ package com.onyx.kreader.host.request;
 
 import android.util.Log;
 
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -31,6 +33,7 @@ public class RestoreRequest extends BaseReaderRequest {
         restoreViewport(reader);
         restoreReflowSettings(reader);
         restoreContrast(reader);
+        restoreReaderTextStyle(reader);
         drawVisiblePages(reader);
     }
 
@@ -90,6 +93,24 @@ public class RestoreRequest extends BaseReaderRequest {
             reader.getDocumentOptions().setGamma(value);
         }
         reader.getDocumentOptions().setEmboldenLevel(baseOptions.getEmboldenLevel());
+    }
+
+    private void restoreReaderTextStyle(final Reader reader) throws ReaderException {
+        String fontface = baseOptions.getFontFace();
+        float fontSize = baseOptions.getFontSize();
+        int lineSpacing = baseOptions.getLineSpacing();
+        int leftMargin = baseOptions.getLeftMargin();
+        int topMargin = baseOptions.getTopMargin();
+        int rightMargin = baseOptions.getRightMargin();
+        int bottomMargin = baseOptions.getBottomMargin();
+        ReaderTextStyle style = ReaderTextStyle.create(fontface,
+                ReaderTextStyle.SPUnit.create(fontSize),
+                ReaderTextStyle.Percentage.create(lineSpacing),
+                ReaderTextStyle.Percentage.create(leftMargin),
+                ReaderTextStyle.Percentage.create(topMargin),
+                ReaderTextStyle.Percentage.create(rightMargin),
+                ReaderTextStyle.Percentage.create(bottomMargin));
+        reader.getReaderLayoutManager().setStyle(style);
     }
 
     private void setSpecialScale(final Reader reader, final BaseOptions baseOptions, final String position) throws Exception {

@@ -96,4 +96,10 @@ public class ChooseExerciseActivity extends BaseActivity {
         }
         return super.onMenuOpened(featureId, menu);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

@@ -1,6 +1,6 @@
 package com.onyx.kreader.api;
 
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 
 /**
  * Created by zhuzeng on 10/3/15.
@@ -8,7 +8,8 @@ import com.onyx.kreader.host.options.ReaderStyle;
  */
 public interface ReaderTextStyleManager {
 
-    public void setStyle(final ReaderStyle style);
+    public ReaderTextStyle getStyle();
+    public void setStyle(final ReaderTextStyle style);
 
 
 }

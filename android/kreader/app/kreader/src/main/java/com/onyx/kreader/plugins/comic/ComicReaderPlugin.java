@@ -8,7 +8,7 @@ import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.api.*;
 import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.plugins.images.ImagesWrapper;
 import com.onyx.kreader.utils.PagePositionUtils;
 
@@ -262,6 +262,26 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return getPluginImpl().getPageCount();
     }
 
+    @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
+    @Override
+    public boolean gotoPosition(String position) {
+        return false;
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
     /**
      * Navigate to next screen.
      *
@@ -312,6 +332,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
     /**
      * Navigate to first page.
      *
@@ -320,6 +345,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public String firstPage() {
         return PagePositionUtils.fromPageNumber(0);
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return false;
     }
 
     /**
@@ -427,7 +457,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * the bitmapx, bitmapy, width and height can be regarded as viewportInPage coordinates system, whereas viewportInPage is the
      * origin point(0, 0)
      *
-     * @param page        the page position.
+     * @param pagePosition        the page position.
      * @param scale       the actual scale used to render page.
      * @param rotation    the rotation.
      * @param bitmap      the target bitmap to draw content. Caller may use this method to draw part of content.
@@ -449,8 +479,8 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * @return
      */
     @Override
-    public boolean draw(String page, float scale, int rotation, Bitmap bitmap, RectF displayRect, RectF pageRect, RectF visibleRect) {
-        final int pn = PagePositionUtils.getPageNumber(page);
+    public boolean draw(String pagePosition, float scale, int rotation, Bitmap bitmap, RectF displayRect, RectF pageRect, RectF visibleRect) {
+        final int pn = PagePositionUtils.getPageNumber(pagePosition);
         return getPluginImpl().drawPage(pn, scale, rotation, displayRect, pageRect, visibleRect, bitmap);
     }
 
@@ -505,7 +535,12 @@ public class ComicReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public void setStyle(ReaderStyle style) {
+    public ReaderTextStyle getStyle() {
+        return null;
+    }
+
+    @Override
+    public void setStyle(ReaderTextStyle style) {
 
     }
 

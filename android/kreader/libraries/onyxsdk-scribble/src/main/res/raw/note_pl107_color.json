@@ -14,6 +14,9 @@
   "touch_height": 7422,
 
   "use_raw_input" : 1,
-  "single_touch" : 1
+  "single_touch" : 1,
+  "shortcut_drawing": 1,
+  "shortcut_erasing": 1
+
 
 }

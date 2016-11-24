@@ -1,13 +1,15 @@
 package com.onyx.kreader.host.layout;
 
 import android.graphics.RectF;
+import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.kreader.host.options.ReaderStyle;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 /**
  * Created by zhuzeng on 10/7/15.
@@ -21,10 +23,12 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     }
 
     public String getProviderName() {
-        return PageConstants.IMAGE_REFLOW_PAGE;
+        return PageConstants.TEXT_REFLOW_PAGE;
     }
 
     public void activate() {
+        getPageManager().setPageRepeat(0);
+        getPageManager().scaleToPage(null);
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
@@ -33,40 +37,44 @@ public class LayoutTextReflowProvider extends LayoutProvider {
 
     @Override
     public boolean canPrevScreen() throws ReaderException {
-        return false;
+        return !getLayoutManager().getNavigator().isFirstPage();
     }
 
     public boolean prevScreen() throws ReaderException {
-        return false;
+        return prevPage();
     }
 
     @Override
     public boolean canNextScreen() throws ReaderException {
-        return false;
+        return !getLayoutManager().getNavigator().isLastPage();
     }
 
     public boolean nextScreen() throws ReaderException {
-        return false;
+        return nextPage();
     }
 
     public boolean prevPage() throws ReaderException {
-        return false;
+        LayoutProviderUtils.prevPage(getLayoutManager());
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public boolean nextPage() throws ReaderException {
-        return false;
+        LayoutProviderUtils.nextPage(getLayoutManager());
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public boolean firstPage() throws ReaderException {
-        return false;
+        LayoutProviderUtils.firstPage(getLayoutManager());
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public boolean lastPage() throws ReaderException {
-        return false;
+        LayoutProviderUtils.lastPage(getLayoutManager());
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo, false);
         return true;
     }
 
@@ -82,8 +90,32 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return false;
     }
 
+    @Override
+    public boolean gotoPage(int page) throws ReaderException {
+        if (!getLayoutManager().getNavigator().gotoPage(page)) {
+            return false;
+        }
+        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+    }
+
     public boolean gotoPosition(final String position) throws ReaderException {
-        return false;
+        if (StringUtils.isNullOrEmpty(position)) {
+            return false;
+        }
+
+        if (!getLayoutManager().getNavigator().gotoPosition(position)) {
+            return false;
+        }
+
+        String page = PagePositionUtils.fromPageNumber(getLayoutManager().getNavigator().getCurrentPageNumber());
+        final RectF viewportBeforeChange = new RectF(getPageManager().getViewportRect());
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), page, position);
+        if (!getPageManager().gotoPage(position)) {
+            return false;
+        }
+
+        onPageChanged(viewportBeforeChange);
+        return true;
     }
 
     public boolean pan(int dx, int dy) throws ReaderException {
@@ -103,8 +135,9 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         return false;
     }
 
-    public boolean setStyle(final ReaderStyle style) throws ReaderException {
-        return false;
+    public boolean setStyle(final ReaderTextStyle style) throws ReaderException {
+        getLayoutManager().getTextStyleManager().setStyle(style);
+        return true;
     }
 
     public RectF getPageRectOnViewport(final String position) throws ReaderException {
@@ -125,6 +158,13 @@ public class LayoutTextReflowProvider extends LayoutProvider {
                 getLayoutManager().getReaderViewOptions().getViewHeight());
     }
 
+    @Override
+    public void updateViewportRect(RectF rect) throws ReaderException {
+        super.updateViewportRect(rect);
+        getPageManager().clear();
+        gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+    }
+
     public void scaleToPage() throws ReaderException {
 
     }
@@ -137,5 +177,12 @@ public class LayoutTextReflowProvider extends LayoutProvider {
 
     }
 
+    private void onPageChanged(final RectF viewportBeforeChange) {
+        if (PageConstants.isSpecialScale(getLayoutManager().getSpecialScale())) {
+            return;
+        }
+        getPageManager().setAbsoluteViewportPosition(viewportBeforeChange.left,
+                getPageManager().getViewportRect().top);
+    }
 
 }

@@ -2,8 +2,8 @@ package com.onyx.kreader.ui.handler;
 
 import android.util.Log;
 import android.view.KeyEvent;
-
 import android.widget.Toast;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -12,15 +12,12 @@ import com.onyx.kreader.api.ReaderSentence;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.request.GetSentenceRequest;
 import com.onyx.kreader.host.request.RenderRequest;
-import com.onyx.kreader.tts.ReaderTtsManager;
-import com.onyx.kreader.ui.actions.GotoPageAction;
+import com.onyx.kreader.ui.actions.GotoPositionAction;
+import com.onyx.kreader.ui.actions.NextScreenAction;
+import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.ui.events.ChangeOrientationEvent;
-import com.onyx.kreader.ui.events.TtsErrorEvent;
-import com.onyx.kreader.ui.events.TtsRequestSentenceEvent;
 import com.onyx.kreader.utils.PagePositionUtils;
-import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by joy on 7/29/16.
@@ -41,20 +38,19 @@ public class TtsHandler extends BaseHandler {
 
     @Override
     public boolean onKeyUp(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
-        final int page = readerDataHolder.getCurrentPage();
         switch (keyCode) {
             case KeyEvent.KEYCODE_PAGE_UP:
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (page > 0) {
+                if (readerDataHolder.getReaderViewInfo().canPrevScreen) {
                     ttsStop();
-                    gotoPage(readerDataHolder, page -1);
+                    prevScreen(readerDataHolder);
                 }
                 return true;
             case KeyEvent.KEYCODE_PAGE_DOWN:
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (page < readerDataHolder.getPageCount() - 1) {
+                if (readerDataHolder.getReaderViewInfo().canNextScreen) {
                     ttsStop();
-                    gotoPage(readerDataHolder, page + 1);
+                    nextScreen(readerDataHolder);
                 }
                 return true;
             default:
@@ -98,8 +94,27 @@ public class TtsHandler extends BaseHandler {
         return SingletonSharedPreference.getTtsSpeechRate(readerDataHolder.getContext());
     }
 
+    public void prevScreen(final ReaderDataHolder readerDataHolder) {
+        new PreviousScreenAction().execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ttsPlay();
+            }
+        });
+    }
+
+    @Override
+    public void nextScreen(ReaderDataHolder readerDataHolder) {
+        new NextScreenAction().execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ttsPlay();
+            }
+        });
+    }
+
     private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {
-        new GotoPageAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder, new BaseCallback() {
+        new GotoPositionAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 ttsPlay();
@@ -118,7 +133,7 @@ public class TtsHandler extends BaseHandler {
                 Debug.d(TAG, "end of page");
                 currentSentence = null;
                 String next = PagePositionUtils.fromPageNumber(readerDataHolder.getCurrentPage() + 1);
-                new GotoPageAction(next).execute(readerDataHolder, new BaseCallback() {
+                new GotoPositionAction(next).execute(readerDataHolder, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (e != null) {

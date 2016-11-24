@@ -12,7 +12,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
-import com.onyx.kreader.host.request.GotoLocationRequest;
+import com.onyx.kreader.host.request.GotoPositionRequest;
 import com.onyx.kreader.host.request.ScaleToPageCropRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.data.ReaderCropArgs;
@@ -166,7 +166,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
         } else {
             nextPage = currentPage + 1;
         }
-        BaseReaderRequest request = new GotoLocationRequest(PagePositionUtils.fromPageNumber(nextPage));
+        BaseReaderRequest request = new GotoPositionRequest(PagePositionUtils.fromPageNumber(nextPage));
         readerDataHolder.submitRenderRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
