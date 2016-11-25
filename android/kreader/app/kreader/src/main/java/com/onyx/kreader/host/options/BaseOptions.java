@@ -66,7 +66,7 @@ public class BaseOptions {
     public static float defaultFontSize = fallbackFontSize;
 
     static public int GAMMA_LOWER_LIMIT = 100;
-    static public int DEFAULT_GAMMA = 150;
+    static public int DEFAULT_GAMMA = 100;
 
     private GObject backend;
 
