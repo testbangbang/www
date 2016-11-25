@@ -820,9 +820,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private TreeRecyclerView.TreeNode buildTreeNode(TreeRecyclerView.TreeNode parent, ReaderDocumentTableOfContentEntry entry) {
-        int page = PagePositionUtils.getPageNumber(entry.getPosition());
-        String pos = page < 0 ? "" : String.valueOf(page + 1);
-        TreeRecyclerView.TreeNode node = new TreeRecyclerView.TreeNode(parent, entry.getTitle(), pos, entry);
+        String pageName = PagePositionUtils.getPageNumberForDisplay(entry.getPageName());
+        TreeRecyclerView.TreeNode node = new TreeRecyclerView.TreeNode(parent, entry.getTitle(), pageName, entry);
         if (entry.getChildren() != null) {
             for (ReaderDocumentTableOfContentEntry child : entry.getChildren()) {
                 node.addChild(buildTreeNode(node, child));
@@ -835,7 +834,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     public void dismiss() {
         clearRequestPages();
         if (loadedScribble) {
-            new GotoPageAction(PagePositionUtils.getPageNumber(readerDataHolder.getCurrentPageName())).execute(readerDataHolder);
+            new GotoPageAction(PagePositionUtils.getPageNumber(readerDataHolder.getCurrentPagePosition())).execute(readerDataHolder);
         }
         super.dismiss();
     }
