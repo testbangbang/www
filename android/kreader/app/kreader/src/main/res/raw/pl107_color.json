@@ -2,7 +2,7 @@
   "ttsEnabled" : true,
   "hasFrontLight" : false,
   "disableNoteFunc" : false,
-  "useColorMenu" : true,
+  "supportColor" : true,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},

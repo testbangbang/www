@@ -152,14 +152,16 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
 
-        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isUseColorMenu()) {
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
+        }else {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_COLOR);
         }
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
         ReaderLayerMenuItem[] menuItems;
-        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isUseColorMenu()) {
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
             menuItems = ReaderLayerMenuRepository.colorMenuItems;
             readerMenu = new ReaderLayerColorMenu(readerDataHolder.getContext());
         }else {

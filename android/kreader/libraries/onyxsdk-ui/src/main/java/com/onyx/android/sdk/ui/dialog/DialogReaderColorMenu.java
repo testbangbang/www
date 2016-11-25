@@ -125,10 +125,8 @@ public class DialogReaderColorMenu extends Dialog {
                     return;
                 }
                 int page = progress - 1;
-                jumpPages.add(page);
                 currentPage = page;
                 updatePageProgress(page);
-                readerMenuCallback.onMenuItemValueChanged(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.JUMP_PAGE), null, page);
             }
 
             @Override
@@ -138,7 +136,8 @@ public class DialogReaderColorMenu extends Dialog {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                jumpPages.add(currentPage);
+                readerMenuCallback.onMenuItemValueChanged(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.JUMP_PAGE), null, currentPage);
             }
         });
     }
