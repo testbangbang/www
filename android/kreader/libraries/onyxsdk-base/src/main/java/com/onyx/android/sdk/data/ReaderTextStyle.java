@@ -206,8 +206,8 @@ public class ReaderTextStyle {
 
     static private int MARGIN_STEP = 1;
     static private int SMALL_MARGIN = 1;
-    static private int NORMAL_MARGIN = 5;
-    static private int LARGE_MARGIN = 10;
+    static private int NORMAL_MARGIN = 10;
+    static private int LARGE_MARGIN = 20;
 
     static public PageMargin PAGE_MARGIN_STEP = new PageMargin(Percentage.create(MARGIN_STEP), Percentage.create(MARGIN_STEP), Percentage.create(MARGIN_STEP), Percentage.create(MARGIN_STEP));
     static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN));
