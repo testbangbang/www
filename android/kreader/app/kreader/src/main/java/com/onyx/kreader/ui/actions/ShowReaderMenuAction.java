@@ -132,17 +132,6 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
 
-        if (!readerDataHolder.supportScalable()) {
-            disableMenus.add(ReaderMenuAction.ZOOM);
-            disableMenus.add(ReaderMenuAction.IMAGE_REFLOW);
-            disableMenus.add(ReaderMenuAction.NAVIGATION_COMIC_MODE);
-            disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
-            disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
-            disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
-        }else {
-            disableMenus.add(ReaderMenuAction.FONT);
-        }
-
         if (disableScribbleBrush) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
