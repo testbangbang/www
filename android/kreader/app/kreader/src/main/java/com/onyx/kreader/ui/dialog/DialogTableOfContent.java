@@ -54,6 +54,7 @@ import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.view.PreviewViewHolder;
+import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.sql.Date;
@@ -281,6 +282,10 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         showExportLayout(currentTab);
         setViewListener();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+
+        if (DeviceConfig.sharedInstance(getContext()).isDisableNoteFunc()) {
+            btnScribble.setVisibility(View.GONE);
+        }
     }
 
     @Override
