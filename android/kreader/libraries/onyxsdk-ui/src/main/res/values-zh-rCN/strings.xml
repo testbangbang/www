@@ -57,4 +57,5 @@
     <string name="save">保存</string>
     <string name="custom_line_width">自定义线宽</string>
     <string name="line_width_preview">线宽预览</string>
+    <string name="custom_value">自定义值</string>
 </resources>

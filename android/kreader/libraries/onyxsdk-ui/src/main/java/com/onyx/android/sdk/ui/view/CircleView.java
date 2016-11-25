@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -15,43 +16,51 @@ import android.view.ViewTreeObserver;
 
 public class CircleView extends View {
 
-    private int color;
-    private final Paint drawPaint;
-    private float size;
+    private int color = Color.BLACK;
+    private Paint drawPaint;
+    private float size = 1;
+
+    private int viewWidth, viewHeight;
 
     public CircleView(Context context, int color, final float size) {
         super(context);
         this.color = color;
         this.size = size;
+        init();
+    }
+
+    public CircleView(Context context) {
+        super(context);
+        init();
+    }
+
+    public CircleView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public CircleView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
         drawPaint = new Paint();
         drawPaint.setColor(this.color);
-        setOnMeasureCallback();
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        viewWidth = w;
+        viewHeight = h;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawCircle(size, size, size, drawPaint);
-    }
-
-    private void setOnMeasureCallback() {
-        ViewTreeObserver vto = getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                removeOnGlobalLayoutListener(this);
-                size = getMeasuredWidth() / 2;
-            }
-        });
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void removeOnGlobalLayoutListener(ViewTreeObserver.OnGlobalLayoutListener listener) {
-        if (Build.VERSION.SDK_INT < 16) {
-            getViewTreeObserver().removeGlobalOnLayoutListener(listener);
-        } else {
-            getViewTreeObserver().removeOnGlobalLayoutListener(listener);
-        }
+        float y = size + viewHeight/2 - size;
+        canvas.drawCircle(size, y, size, drawPaint);
     }
 
     public void setColor(int color) {

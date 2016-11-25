@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.util.AttributeSet;
 import android.view.View;
 
 /**
@@ -13,25 +14,71 @@ import android.view.View;
 
 public class BesselCurveView extends View {
 
-    private final Paint drawPaint;
-    private int color;
+    private Paint drawPaint;
+    private int color = Color.BLACK;
+    private float size = 1;
     private Path path;
+
+    private int viewWidth, viewHeight;
 
     public BesselCurveView(Context context) {
         super(context);
+        init();
+    }
+
+    public BesselCurveView(Context context, int color, int size) {
+        super(context);
+        init();
+        this.color = color;
+        this.size = size;
+    }
+
+    public BesselCurveView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public BesselCurveView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
         drawPaint = new Paint();
-        drawPaint.setColor(color);
-        drawPaint.setStyle(Paint.Style.STROKE);
         path = new Path();
+        drawPaint.setAntiAlias(true);
+        drawPaint.setStyle(Paint.Style.STROKE);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        viewWidth = w;
+        viewHeight = h;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        drawPaint.setStrokeWidth(size);
+        drawPaint.setColor(color);
 
-        drawPaint.reset();
-        path.moveTo(100, 320);//设置Path的起点
-        path.quadTo(150, 310, 170, 400); //设置贝塞尔曲线的控制点坐标和终点坐标
-        canvas.drawPath(path, drawPaint);//画出贝塞尔曲线
+        canvas.translate(viewWidth / 2, viewHeight / 2);
+        path.moveTo(-viewWidth / 2, 0);
+        path.rQuadTo(viewWidth / 4, -viewHeight / 2, viewWidth / 2, 0);
+        path.rQuadTo(viewWidth * 3 / 4, viewHeight, viewWidth, -viewHeight * 2);
+        canvas.drawPath(path, drawPaint);
+        path.rewind();
+    }
+
+
+    public void setColor(int color) {
+        this.color = color;
+        invalidate();
+    }
+
+    public void setSize(float size) {
+        this.size = size;
+        invalidate();
     }
 }

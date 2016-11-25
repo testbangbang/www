@@ -360,7 +360,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private void showCustomLineWidthDialog() {
-        DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(), 10, Color.BLACK);
+        DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(), 10, 20, Color.BLACK, new DialogCustomLineWidth.Callback() {
+            @Override
+            public void done(int lineWidth) {
+
+            }
+        });
         customLineWidth.show();
     }
 

@@ -45,4 +45,5 @@
     <dimen name="dialog_title_text_size">25sp</dimen>
     <dimen name="global_activities_function_icon_size">40dp</dimen>
     <dimen name="dialog_set_value_image_size">50dp</dimen>
+    <dimen name="dialog_main_view_padding">10dp</dimen>
 </resources>
