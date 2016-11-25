@@ -283,4 +283,8 @@
     <string name="slow">slow</string>
     <string name="get_page_text_failed">Get page text failed!</string>
     <string name="dialog_reflow_settings_text_direction">Text direction</string>
+    <string name="already_at_maximum_line_spacing">Already at maximum line spacing!</string>
+    <string name="already_at_minimum_line_spacing">Already at minimum line spacing!</string>
+    <string name="already_at_maximum_page_margins">Already at maximum page margins!</string>
+    <string name="already_at_minimum_page_margins">Already at minimum page margins!</string>
 </resources>
