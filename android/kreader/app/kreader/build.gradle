@@ -53,7 +53,8 @@ android {
             signingConfig signingConfigs.release
             manifestPlaceholders = [channel_value: releaseChannel(),
                                     type_value: releaseType(),
-                                    platform_value: releasePlatform()]
+                                    platform_value: releasePlatform(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
         }
 
         debug {
@@ -61,7 +62,8 @@ android {
             jniDebuggable true
             manifestPlaceholders = [channel_value: releaseChannel(),
                                     type_value: releaseType(),
-                                    platform_value: releasePlatform()]
+                                    platform_value: releasePlatform(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
         }
     }
 
