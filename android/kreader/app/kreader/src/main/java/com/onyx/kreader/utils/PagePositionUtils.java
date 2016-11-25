@@ -1,6 +1,7 @@
 package com.onyx.kreader.utils;
 
 
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -25,8 +26,7 @@ public class PagePositionUtils {
     }
 
     public static boolean isValidPosition(final String position) {
-        int page = getPageNumber(position);
-        return page >= 0;
+        return !StringUtils.isNullOrEmpty(position);
     }
 
 }
