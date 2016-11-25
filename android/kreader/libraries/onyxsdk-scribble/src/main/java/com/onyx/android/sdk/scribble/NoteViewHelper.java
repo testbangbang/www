@@ -716,4 +716,8 @@ public class NoteViewHelper {
     private boolean checkTouchPoint(final TouchPoint touchPoint) {
         return limitRect.contains((int) touchPoint.x, (int) touchPoint.y);
     }
+
+    public boolean supportColor(Context context){
+        return DeviceConfig.sharedInstance(context, "note").supportColor();
+    }
 }

@@ -11,10 +11,10 @@ public class PenColorChangeRequest extends BaseNoteRequest {
 
     private volatile int penColor;
 
-    public PenColorChangeRequest(int color) {
+    public PenColorChangeRequest(int color, boolean resume) {
         penColor = color;
         setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
+        setResumeInputProcessor(resume);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
