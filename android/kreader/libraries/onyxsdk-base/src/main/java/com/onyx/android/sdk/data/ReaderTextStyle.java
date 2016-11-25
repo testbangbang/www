@@ -200,10 +200,10 @@ public class ReaderTextStyle {
 
     static public Percentage LINE_SPACING_STEP = new Percentage(10);
     static public Percentage LARGE_LINE_SPACING = new Percentage(150);
-    static public Percentage NORMAL_LINE_SPACING = new Percentage(120);
-    static public Percentage SMALL_LINE_SPACING = new Percentage(90);
+    static public Percentage NORMAL_LINE_SPACING = new Percentage(100);
+    static public Percentage SMALL_LINE_SPACING = new Percentage(50);
     static public Percentage MIN_LINE_SPACING = new Percentage(50);
-    static public Percentage MAX_LINE_SPACING = new Percentage(200);
+    static public Percentage MAX_LINE_SPACING = new Percentage(150);
     static public Percentage DEFAULT_LINE_SPACING = NORMAL_LINE_SPACING;
 
     static private int SMALL_MARGIN = 1;
