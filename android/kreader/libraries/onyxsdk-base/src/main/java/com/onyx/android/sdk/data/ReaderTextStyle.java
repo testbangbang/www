@@ -199,18 +199,17 @@ public class ReaderTextStyle {
     static public CharacterIndent DEFAULT_CHARACTER_INDENT = new CharacterIndent(2);
 
     static public Percentage LINE_SPACING_STEP = new Percentage(10);
-    static public Percentage LARGE_LINE_SPACING = new Percentage(150);
-    static public Percentage NORMAL_LINE_SPACING = new Percentage(100);
     static public Percentage SMALL_LINE_SPACING = new Percentage(50);
-    static public Percentage MIN_LINE_SPACING = new Percentage(50);
-    static public Percentage MAX_LINE_SPACING = new Percentage(150);
+    static public Percentage NORMAL_LINE_SPACING = new Percentage(100);
+    static public Percentage LARGE_LINE_SPACING = new Percentage(150);
     static public Percentage DEFAULT_LINE_SPACING = NORMAL_LINE_SPACING;
 
+    static private int MARGIN_STEP = 1;
     static private int SMALL_MARGIN = 1;
-    static private int NORMAL_MARGIN = 3;
-    static private int LARGE_MARGIN = 7;
+    static private int NORMAL_MARGIN = 5;
+    static private int LARGE_MARGIN = 10;
 
-    static public PageMargin PAGE_MARGIN_STEP = new PageMargin(Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN));
+    static public PageMargin PAGE_MARGIN_STEP = new PageMargin(Percentage.create(MARGIN_STEP), Percentage.create(MARGIN_STEP), Percentage.create(MARGIN_STEP), Percentage.create(MARGIN_STEP));
     static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN));
     static public PageMargin NORMAL_PAGE_MARGIN = new PageMargin(Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN));
     static public PageMargin LARGE_PAGE_MARGIN = new PageMargin(Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN));
