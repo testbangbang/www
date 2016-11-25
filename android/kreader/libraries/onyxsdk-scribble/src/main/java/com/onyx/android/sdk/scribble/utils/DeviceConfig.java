@@ -39,6 +39,8 @@ public class DeviceConfig {
     static public final String SHORTCUT_DRAWING = "shortcut_drawing";
     static public final String SHORTCUT_ERASING = "shortcut_erasing";
 
+    static public final String SUPPORT_COLOR = "support_color";
+
     static public boolean useDebugConfig = false;
 
 
@@ -136,6 +138,10 @@ public class DeviceConfig {
     public boolean supportBigPen() {
         boolean disable = backend.hasKey(DISABLE_BIG_PEN) && backend.getBoolean(DISABLE_BIG_PEN);
         return !disable;
+    }
+
+    public boolean supportColor(){
+        return backend.hasKey(SUPPORT_COLOR) && backend.getBoolean(SUPPORT_COLOR, false);
     }
 
     static public DeviceConfig sharedInstance(Context context) {

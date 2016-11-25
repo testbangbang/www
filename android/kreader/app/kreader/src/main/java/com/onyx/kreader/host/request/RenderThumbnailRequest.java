@@ -1,16 +1,15 @@
 package com.onyx.kreader.host.request;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+
 import com.onyx.android.sdk.api.ReaderBitmap;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.utils.PagePositionUtils;
 

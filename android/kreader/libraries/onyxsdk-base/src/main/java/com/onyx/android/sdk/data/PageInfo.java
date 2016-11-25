@@ -3,6 +3,8 @@ package com.onyx.android.sdk.data;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.utils.StringUtils;
+
 /**
  * Created by zhuzeng on 10/8/15.
  * Represent each page, could be scalable and reflowable.
@@ -143,6 +145,13 @@ public class PageInfo {
 
     public final String getName() {
         return name;
+    }
+
+    public String getPositionSafely() {
+        if (StringUtils.isNullOrEmpty(position)) {
+            return name;
+        }
+        return position;
     }
 
     public String getPosition() {

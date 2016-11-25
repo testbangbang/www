@@ -12,13 +12,19 @@ import com.onyx.kreader.host.wrapper.Reader;
 public class GammaCorrectionRequest extends BaseReaderRequest {
 
     private int gamma = BaseOptions.DEFAULT_GAMMA;
-    public GammaCorrectionRequest(int value) {
-        gamma = value;
+    private int emboldenLevel = 0;
+
+    public GammaCorrectionRequest(final int gamma, final int emboldenLevel) {
+        this.gamma = gamma;
+        this.emboldenLevel = emboldenLevel;
     }
 
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
         reader.getDocumentOptions().setGamma(gamma);
+        if (emboldenLevel > 0) {
+            reader.getDocumentOptions().setEmboldenLevel(emboldenLevel);
+        }
         drawVisiblePages(reader);
     }
 

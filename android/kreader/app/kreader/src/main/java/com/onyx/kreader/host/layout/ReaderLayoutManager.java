@@ -310,6 +310,7 @@ public class ReaderLayoutManager {
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo viewInfo) throws ReaderException {
         drawContext.targetGammaCorrection = reader.getDocumentOptions().getGammaLevel();
+        drawContext.targetEmboldenLevel = reader.getDocumentOptions().getEmboldenLevel();
         if (!getCurrentLayoutProvider().drawVisiblePages(reader, drawContext, viewInfo)) {
             return false;
         }

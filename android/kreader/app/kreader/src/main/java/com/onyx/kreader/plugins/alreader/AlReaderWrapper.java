@@ -7,9 +7,11 @@ import android.graphics.Paint;
 import com.neverland.engbook.bookobj.AlBookEng;
 import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlBookOptions;
+import com.neverland.engbook.forpublic.AlBookProperties;
 import com.neverland.engbook.forpublic.AlCurrentPosition;
 import com.neverland.engbook.forpublic.AlEngineNotifyForUI;
 import com.neverland.engbook.forpublic.AlEngineOptions;
+import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.neverland.engbook.forpublic.AlPublicProfileOptions;
 import com.neverland.engbook.forpublic.EngBookMyType;
@@ -20,8 +22,11 @@ import com.neverland.engbook.util.TTFScan;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocumentOptions;
+import com.onyx.kreader.api.ReaderDocumentTableOfContent;
+import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.io.File;
 import java.util.List;
@@ -245,6 +250,21 @@ public class AlReaderWrapper {
     public List<AlOneSearchResult> search(final String text) {
         bookEng.findText(text);
         return bookEng.getFindTextResult();
+    }
+
+    public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
+        AlBookProperties properties = bookEng.getBookProperties(true);
+        if (properties.content == null) {
+            return false;
+        }
+        for (AlOneContent content : properties.content) {
+            if (content.isBookmark) {
+                continue;
+            }
+             ReaderDocumentTableOfContentEntry.addEntry(toc.getRootEntry(), content.name,
+                     content.pageNum, PagePositionUtils.fromPosition(content.positionS));
+        }
+        return true;
     }
 
 }
