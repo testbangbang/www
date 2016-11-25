@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -327,9 +328,17 @@ public class DialogTextStyle extends DialogBase {
                             percentage.setPercent(ReaderTextStyle.LARGE_LINE_SPACING.getPercent());
                             break;
                         case INCREASE:
+                            if (percentage.getPercent() >= ReaderTextStyle.MAX_LINE_SPACING.getPercent()) {
+                                Toast.makeText(getContext(), R.string.already_at_maximum_line_spacing, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             percentage.setPercent(Math.min(ReaderTextStyle.MAX_LINE_SPACING.getPercent(), percentage.getPercent() + ReaderTextStyle.LINE_SPACING_STEP.getPercent()));
                             break;
                         case DECREASE:
+                            if (percentage.getPercent() <= ReaderTextStyle.MIN_LINE_SPACING.getPercent()) {
+                                Toast.makeText(getContext(), R.string.already_at_minimum_line_spacing, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             percentage.setPercent(Math.max(ReaderTextStyle.MIN_LINE_SPACING.getPercent(), percentage.getPercent() - ReaderTextStyle.LINE_SPACING_STEP.getPercent()));
                             break;
                     }
