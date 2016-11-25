@@ -815,8 +815,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private TreeRecyclerView.TreeNode buildTreeNode(TreeRecyclerView.TreeNode parent, ReaderDocumentTableOfContentEntry entry) {
-        int page = PagePositionUtils.getPageNumber(entry.getPageName());
-        String pageName = page < 0 ? "" : String.valueOf(page + 1);
+        String pageName = PagePositionUtils.getPageNumberForDisplay(entry.getPageName());
         TreeRecyclerView.TreeNode node = new TreeRecyclerView.TreeNode(parent, entry.getTitle(), pageName, entry);
         if (entry.getChildren() != null) {
             for (ReaderDocumentTableOfContentEntry child : entry.getChildren()) {

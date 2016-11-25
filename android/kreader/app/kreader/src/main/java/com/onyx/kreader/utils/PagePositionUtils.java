@@ -8,9 +8,18 @@ import com.onyx.android.sdk.utils.StringUtils;
  */
 public class PagePositionUtils {
 
+    public static int getPageNumber(final String pageName) {
+        return Integer.parseInt(pageName);
+    }
 
-    public static int getPageNumber(final String position) {
-        return Integer.parseInt(position);
+    /**
+     * increase page number with 1 for display
+     * @param pageName
+     * @return
+     */
+    public static String getPageNumberForDisplay(final String pageName) {
+        int page = getPageNumber(pageName);
+        return page < 0 ? "" : String.valueOf(page + 1);
     }
 
     public static String fromPageNumber(int pageNumber) {
@@ -26,7 +35,7 @@ public class PagePositionUtils {
     }
 
     public static boolean isValidPosition(final String position) {
-        return !StringUtils.isNullOrEmpty(position);
+        return StringUtils.isNotBlank(position);
     }
 
 }
