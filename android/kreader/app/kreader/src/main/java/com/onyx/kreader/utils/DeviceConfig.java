@@ -42,6 +42,7 @@ public class DeviceConfig {
     private boolean hideSelectionModeUiOption = false;
     private boolean hideControlSettings = false;
     private boolean useColorMenu = false;
+    private boolean askForClose = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -344,6 +345,14 @@ public class DeviceConfig {
 
     public void setUseColorMenu(boolean useColorMenu) {
         this.useColorMenu = useColorMenu;
+    }
+
+    public boolean isAskForClose() {
+        return askForClose;
+    }
+
+    public void setAskForClose(boolean askForClose) {
+        this.askForClose = askForClose;
     }
 
     public SingletonSharedPreference.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {
