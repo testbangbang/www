@@ -131,6 +131,7 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
+
         if (disableScribbleBrush) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
