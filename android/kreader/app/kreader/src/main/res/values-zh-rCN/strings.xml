@@ -222,4 +222,6 @@
   <string name="dialog_reflow_settings_text_direction">文字方向</string>
   <string name="already_at_maximum_line_spacing">已经是最大行间距了!</string>
   <string name="already_at_minimum_line_spacing">已经是最小行间距了!</string>
+  <string name="already_at_maximum_page_margins">已经是最大页面边距!</string>
+  <string name="already_at_minimum_page_margins">已经是最小页面边距!</string>
 </resources>

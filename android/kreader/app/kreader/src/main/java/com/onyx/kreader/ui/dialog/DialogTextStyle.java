@@ -328,18 +328,18 @@ public class DialogTextStyle extends DialogBase {
                             percentage.setPercent(ReaderTextStyle.LARGE_LINE_SPACING.getPercent());
                             break;
                         case INCREASE:
-                            if (percentage.getPercent() >= ReaderTextStyle.MAX_LINE_SPACING.getPercent()) {
+                            if (percentage.getPercent() >= ReaderTextStyle.LARGE_LINE_SPACING.getPercent()) {
                                 Toast.makeText(getContext(), R.string.already_at_maximum_line_spacing, Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            percentage.setPercent(Math.min(ReaderTextStyle.MAX_LINE_SPACING.getPercent(), percentage.getPercent() + ReaderTextStyle.LINE_SPACING_STEP.getPercent()));
+                            percentage.setPercent(Math.min(ReaderTextStyle.LARGE_LINE_SPACING.getPercent(), percentage.getPercent() + ReaderTextStyle.LINE_SPACING_STEP.getPercent()));
                             break;
                         case DECREASE:
-                            if (percentage.getPercent() <= ReaderTextStyle.MIN_LINE_SPACING.getPercent()) {
+                            if (percentage.getPercent() <= ReaderTextStyle.SMALL_LINE_SPACING.getPercent()) {
                                 Toast.makeText(getContext(), R.string.already_at_minimum_line_spacing, Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            percentage.setPercent(Math.max(ReaderTextStyle.MIN_LINE_SPACING.getPercent(), percentage.getPercent() - ReaderTextStyle.LINE_SPACING_STEP.getPercent()));
+                            percentage.setPercent(Math.max(ReaderTextStyle.SMALL_LINE_SPACING.getPercent(), percentage.getPercent() - ReaderTextStyle.LINE_SPACING_STEP.getPercent()));
                             break;
                     }
                     readerTextStyle.setLineSpacing(percentage);
@@ -383,9 +383,19 @@ public class DialogTextStyle extends DialogBase {
                             currentPageMargin = ReaderTextStyle.LARGE_PAGE_MARGIN;
                             break;
                         case INCREASE:
+                            if (currentPageMargin.getLeftMargin().getPercent() >=
+                                    ReaderTextStyle.LARGE_PAGE_MARGIN.getLeftMargin().getPercent()) {
+                                Toast.makeText(getContext(), R.string.already_at_maximum_page_margins, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             currentPageMargin.increasePageMargin(ReaderTextStyle.PAGE_MARGIN_STEP);
                             break;
                         case DECREASE:
+                            if (currentPageMargin.getLeftMargin().getPercent() <=
+                                    ReaderTextStyle.SMALL_PAGE_MARGIN.getLeftMargin().getPercent()) {
+                                Toast.makeText(getContext(), R.string.already_at_minimum_page_margins, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             currentPageMargin.decreasePageMargin(ReaderTextStyle.PAGE_MARGIN_STEP);
                             break;
                     }
