@@ -134,7 +134,7 @@ public class LayoutProviderUtils {
 
     static public PageInfo drawReflowablePage(final PageInfo pageInfo, final ReaderBitmap bitmap, final ReaderRenderer readerRenderer) {
         final RectF viewport = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
-        if (!readerRenderer.draw(pageInfo.getPosition(), 1.0f, 0, bitmap.getBitmap(), viewport, viewport, viewport)) {
+        if (!readerRenderer.draw(pageInfo.getPositionSafely(), 1.0f, 0, bitmap.getBitmap(), viewport, viewport, viewport)) {
             return null;
         }
         return pageInfo;
@@ -153,13 +153,13 @@ public class LayoutProviderUtils {
         final PageManager internalPageManager = new PageManager();
         internalPageManager.add(pageInfo);
         internalPageManager.setViewportRect(viewport);
-        internalPageManager.scaleToPage(pageInfo.getPosition());
+        internalPageManager.scaleToPage(pageInfo.getPositionSafely());
         final PageInfo visiblePage = internalPageManager.getFirstVisiblePage();
         final RectF visibleRect = new RectF(visiblePage.getPositionRect());
         visibleRect.intersect(viewport);
 
         BitmapUtils.clear(bitmap.getBitmap());
-        readerRenderer.draw(pageInfo.getPosition(),
+        readerRenderer.draw(pageInfo.getPositionSafely(),
                 scale,
                 pageInfo.getPageDisplayOrientation(),
                 bitmap.getBitmap(),
