@@ -1,6 +1,7 @@
 package com.onyx.android.note.activity.onyx;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
 import com.onyx.android.note.actions.scribble.GotoTargetPageAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
+import com.onyx.android.note.actions.scribble.PenColorChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.UndoAction;
 import com.onyx.android.note.activity.BaseScribbleActivity;
@@ -311,6 +313,30 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 setBackgroundType(NoteBackgroundType.ENGLISH);
                 onBackgroundChanged();
                 break;
+            case ScribbleSubMenuID.PEN_COLOR_BLACK:
+                setStrokeColor(Color.BLACK);
+                onPenColoChanged();
+                break;
+            case ScribbleSubMenuID.PEN_COLOR_BLUE:
+                setStrokeColor(Color.BLUE);
+                onPenColoChanged();
+                break;
+            case ScribbleSubMenuID.PEN_COLOR_GREEN:
+                setStrokeColor(Color.GREEN);
+                onPenColoChanged();
+                break;
+            case ScribbleSubMenuID.PEN_COLOR_YELLOW:
+                setStrokeColor(Color.YELLOW);
+                onPenColoChanged();
+                break;
+            case ScribbleSubMenuID.PEN_COLOR_RED:
+                setStrokeColor(Color.RED);
+                onPenColoChanged();
+                break;
+            case ScribbleSubMenuID.PEN_COLOR_MAGENTA:
+                setStrokeColor(Color.MAGENTA);
+                onPenColoChanged();
+                break;
         }
     }
 
@@ -318,6 +344,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
         final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
                 new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing());
         changeBGAction.execute(ScribbleActivity.this, null);
+    }
+
+    private void onPenColoChanged(){
+        final PenColorChangeAction<ScribbleActivity> penColorChangeAction =
+                new PenColorChangeAction<>(getCurrentShapeColor(), !getNoteViewHelper().inUserErasing());
+        penColorChangeAction.execute(ScribbleActivity.this, null);
     }
 
     private HashMap<String, Integer> getItemViewDataMap() {
@@ -333,6 +365,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
             adapter.addObject(createFunctionItem(R.drawable.ic_eraser, ScribbleMenuCategory.ERASER));
             adapter.addObject(createFunctionItem(R.drawable.ic_width, ScribbleMenuCategory.PEN_WIDTH));
             adapter.addObject(createFunctionItem(R.drawable.ic_template, ScribbleMenuCategory.BG));
+            if (getNoteViewHelper().supportColor(this)){
+                adapter.addObject(createFunctionItem(R.drawable.ic_color, ScribbleMenuCategory.COLOR));
+            }
         }
         return adapter;
     }

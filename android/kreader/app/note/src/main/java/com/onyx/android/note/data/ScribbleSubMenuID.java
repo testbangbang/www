@@ -29,6 +29,12 @@ public class ScribbleSubMenuID {
     public static final int BG_MATS = 16;
     public static final int BG_ENGLISH = 17;
     public static final int BG_MUSIC = 18;
+    public static final int PEN_COLOR_BLACK = 19;
+    public static final int PEN_COLOR_RED = 20;
+    public static final int PEN_COLOR_YELLOW = 21;
+    public static final int PEN_COLOR_BLUE = 22;
+    public static final int PEN_COLOR_GREEN = 23;
+    public static final int PEN_COLOR_MAGENTA = 24;
 
     // ... type definitions
     // Describes when the annotation will be discarded
@@ -36,7 +42,8 @@ public class ScribbleSubMenuID {
     // Enumerate valid values for this interface
     @IntDef({THICKNESS_ULTRA_LIGHT, THICKNESS_LIGHT, THICKNESS_NORMAL, THICKNESS_BOLD,
             THICKNESS_ULTRA_BOLD, NORMAL_PEN_STYLE, BRUSH_PEN_STYLE, LINE_STYLE, TRIANGLE_STYLE,
-            CIRCLE_STYLE, RECT_STYLE, ERASE_PARTIALLY, ERASE_TOTALLY, BG_EMPTY, BG_GRID, BG_LINE, BG_MATS, BG_ENGLISH, BG_MUSIC})
+            CIRCLE_STYLE, RECT_STYLE, ERASE_PARTIALLY, ERASE_TOTALLY, BG_EMPTY, BG_GRID, BG_LINE, BG_MATS, BG_ENGLISH, BG_MUSIC,
+            PEN_COLOR_BLACK, PEN_COLOR_RED, PEN_COLOR_YELLOW, PEN_COLOR_BLUE, PEN_COLOR_GREEN, PEN_COLOR_MAGENTA})
     // Create an interface for validating int types
     public @interface ScribbleSubMenuIDDef {
     }
