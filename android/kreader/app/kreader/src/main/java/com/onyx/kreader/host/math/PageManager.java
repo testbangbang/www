@@ -82,9 +82,9 @@ public class PageManager {
     }
 
     public void add(final PageInfo pageInfo) {
-        PageInfo page = pageInfoMap.get(pageInfo.getPosition());
+        PageInfo page = pageInfoMap.get(pageInfo.getPositionSafely());
         if (page == null) {
-            pageInfoMap.put(pageInfo.getPosition(), pageInfo);
+            pageInfoMap.put(pageInfo.getPositionSafely(), pageInfo);
             page = pageInfo;
         }
         pageInfoList.add(page);
@@ -159,7 +159,7 @@ public class PageManager {
         if (!isSpecialScale()) {
             return false;
         }
-        setSpecialScale(pageInfo.getPosition(), specialScale);
+        setSpecialScale(pageInfo.getPositionSafely(), specialScale);
         return true;
     }
 

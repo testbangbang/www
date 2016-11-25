@@ -156,7 +156,7 @@ public class ReaderDataHolder {
     }
 
     public String getCurrentPagePosition() {
-        return getReaderViewInfo().getFirstVisiblePage().getPosition();
+        return getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
     }
 
     public final PageInfo getFirstPageInfo() {
