@@ -138,7 +138,7 @@ public class ScribbleSubMenu extends RelativeLayout {
                 break;
             case ScribbleMenuCategory.COLOR:
                 mMenuContentView.setAdapter(mColoAdapter,0);
-
+                break;
         }
         updateSubMenuIndicatorByCurrentStatus(category);
         setFocusable(true);
