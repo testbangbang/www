@@ -159,7 +159,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
-        return false;
+        return getPluginImpl().readTableOfContent(toc);
     }
 
     @Override
