@@ -57,4 +57,6 @@
     <string name="outOfRangRerror">Out of Range</string>
     <string name="illegalInput">Illegal Input</string>
     <string name="save">Save</string>
+    <string name="custom_line_width">Custom Line Width</string>
+    <string name="line_width_preview">Line width to preview</string>
 </resources>

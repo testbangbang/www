@@ -39,4 +39,5 @@
     <dimen name="menu_back_text_size">30sp</dimen>
     <dimen name="dialog_reader_menu_text_view_padding">6dp</dimen>
     <dimen name="global_activities_function_icon_size">48dp</dimen>
+    <dimen name="dialog_set_value_image_size">70dp</dimen>
 </resources>

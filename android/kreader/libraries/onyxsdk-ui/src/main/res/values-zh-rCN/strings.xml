@@ -55,4 +55,6 @@
     <string name="outOfRangRerror">超出区域</string>
     <string name="illegalInput">无效输入</string>
     <string name="save">保存</string>
+    <string name="custom_line_width">自定义线宽</string>
+    <string name="line_width_preview">线宽预览</string>
 </resources>
