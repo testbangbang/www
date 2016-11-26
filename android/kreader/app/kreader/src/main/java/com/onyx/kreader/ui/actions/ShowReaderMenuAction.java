@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.Toast;
@@ -558,7 +559,8 @@ public class ShowReaderMenuAction extends BaseAction {
     public static boolean isGroupAction(final ReaderMenuAction action) {
         return (action == ReaderMenuAction.SCRIBBLE_ERASER ||
                 action == ReaderMenuAction.SCRIBBLE_WIDTH ||
-                action == ReaderMenuAction.SCRIBBLE_SHAPE);
+                action == ReaderMenuAction.SCRIBBLE_SHAPE ||
+                action == ReaderMenuAction.SCRIBBLE_COLOR);
     }
 
     public static boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
@@ -608,6 +610,24 @@ public class ShowReaderMenuAction extends BaseAction {
             case SCRIBBLE_TEXT:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_ANNOTATION);
                 break;
+            case SCRIBBLE_BLACK:
+                useColor(readerDataHolder, Color.BLACK);
+                break;
+            case SCRIBBLE_BLUE:
+                useColor(readerDataHolder, Color.BLUE);
+                break;
+            case SCRIBBLE_GREEN:
+                useColor(readerDataHolder, Color.GREEN);
+                break;
+            case SCRIBBLE_MAGENTA:
+                useColor(readerDataHolder, Color.MAGENTA);
+                break;
+            case SCRIBBLE_RED:
+                useColor(readerDataHolder, Color.RED);
+                break;
+            case SCRIBBLE_YELLOW:
+                useColor(readerDataHolder, Color.YELLOW);
+                break;
             case SCRIBBLE_ERASER_PART:
                 startErasing(readerDataHolder);
                 break;
@@ -654,6 +674,14 @@ public class ShowReaderMenuAction extends BaseAction {
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new ChangeNoteShapeAction(type));
+        actionChain.execute(readerDataHolder, null);
+    }
+
+    private static void useColor(final ReaderDataHolder readerDataHolder, int color) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
+        actionChain.addAction(new ChangeNoteColorAction(color));
         actionChain.execute(readerDataHolder, null);
     }
 

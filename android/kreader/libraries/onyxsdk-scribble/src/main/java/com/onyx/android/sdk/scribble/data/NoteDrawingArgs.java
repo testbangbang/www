@@ -55,4 +55,12 @@ public class NoteDrawingArgs {
         }
         return currentShapeType;
     }
+
+    public int getStrokeColor() {
+        return strokeColor;
+    }
+
+    public void setStrokeColor(int strokeColor) {
+        this.strokeColor = strokeColor;
+    }
 }
