@@ -92,6 +92,7 @@ import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
+import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
 
@@ -628,8 +629,11 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onDocumentOpened(final DocumentOpenEvent event) {
-        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this,
-                DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
+        int value = DeviceConfig.sharedInstance(this).getGcInterval();
+        if (value <= 0) {
+            value = DialogScreenRefresh.DEFAULT_INTERVAL_COUNT;
+        }
+        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this, value));
     }
 
     @Subscribe
