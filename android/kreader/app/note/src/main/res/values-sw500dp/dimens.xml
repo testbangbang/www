@@ -22,6 +22,6 @@
     <dimen name="pen_color_popup_width">60dp</dimen>
     <dimen name="pen_color_popup_height">125dp</dimen>
     <dimen name="onyx_note_style_width">340dp</dimen>
-    <!--Use  -2 dp will translate as wrap_content in actual layout-->
-    <dimen name="onyx_scribble_btn_page_progress_width">-2dp</dimen>
+
+    <dimen name="onyx_scribble_btn_page_progress_width">@dimen/wrap_content</dimen>
 </resources>

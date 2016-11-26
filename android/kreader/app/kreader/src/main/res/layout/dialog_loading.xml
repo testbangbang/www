@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/dialog_loading_height"
     android:gravity="center"
     android:background="@drawable/dialog_border">
 
@@ -16,8 +16,8 @@
         android:id="@+id/textview_message"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
+        android:paddingLeft="@dimen/dialog_loading_msg_X_axis_padding"
+        android:paddingRight="@dimen/dialog_loading_msg_X_axis_padding"
         android:textColor="@android:color/black"
         android:gravity="center"
         android:textSize="@dimen/dialog_loading_text_size" />

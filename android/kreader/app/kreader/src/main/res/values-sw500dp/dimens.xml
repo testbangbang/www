@@ -40,4 +40,7 @@
     <dimen name="reflow_checkbox_big_width">100dp</dimen>
     <dimen name="dialog_reflow_checkbox_layout_width">300dp</dimen>
     <dimen name="dialog_reflow_text_view_width">120dp</dimen>
+
+    <dimen name="dialog_loading_height">@dimen/wrap_content</dimen>
+    <dimen name="dialog_loading_msg_X_axis_padding">15dp</dimen>
 </resources>
