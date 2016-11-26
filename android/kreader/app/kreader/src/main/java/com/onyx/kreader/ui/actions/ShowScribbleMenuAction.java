@@ -1,23 +1,24 @@
 package com.onyx.kreader.ui.actions;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
+import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
@@ -391,10 +392,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private void showCustomLineWidthDialog() {
-        DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(), 10, 20, Color.BLACK, new DialogCustomLineWidth.Callback() {
+        DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(),
+                (int) readerDataHolder.getNoteManager().getNoteDrawingArgs().strokeWidth,
+                20, Color.BLACK, new DialogCustomLineWidth.Callback() {
             @Override
             public void done(int lineWidth) {
-
+                useStrokeWidth(readerDataHolder, lineWidth);
             }
         });
         customLineWidth.show();
@@ -439,5 +442,13 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             excludeRect = new Rect(fullToolbar.getLeft(), fullToolbar.getTop(), fullToolbar.getRight(), fullToolbar.getBottom());
         }
         readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar, excludeRect));
+    }
+
+    private static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
+        actionChain.addAction(new ChangeStrokeWidthAction(width, true));
+        actionChain.execute(readerDataHolder, null);
     }
 }

@@ -52,4 +52,10 @@
 
     <dimen name="wrap_content">-2dp</dimen>
     <dimen name="match_parent">-1dp</dimen>
+    <dimen name="dialog_custom_width_preview_height">100dp</dimen>
+    <dimen name="bessel_curve_view_width">300dp</dimen>
+    <dimen name="bessel_curve_view_height">50dp</dimen>
+    <dimen name="current_value_tittle_text_size">20sp</dimen>
+    <dimen name="current_value_tittle_margin">10dp</dimen>
+    <dimen name="dialog_custom_line_width_tittle_margin">8dp</dimen>
 </resources>
