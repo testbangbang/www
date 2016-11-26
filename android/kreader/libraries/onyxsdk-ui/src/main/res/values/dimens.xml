@@ -46,4 +46,10 @@
     <dimen name="global_activities_function_icon_size">40dp</dimen>
     <dimen name="dialog_set_value_image_size">50dp</dimen>
     <dimen name="dialog_main_view_padding">10dp</dimen>
+
+    <!--Use  -2 dp will translate as wrap_content in actual layout-->
+    <!--Use  -1 dp will translate as match_parent in actual layout-->
+
+    <dimen name="wrap_content">-2dp</dimen>
+    <dimen name="match_parent">-1dp</dimen>
 </resources>
