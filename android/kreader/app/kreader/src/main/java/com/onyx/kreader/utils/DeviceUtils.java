@@ -7,17 +7,21 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.v7.app.ActionBar;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.onyx.android.sdk.data.FontInfo;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.device.EnvironmentUtil;
+import com.onyx.android.sdk.scribble.data.UndoRedoManager;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
@@ -151,12 +155,7 @@ public class DeviceUtils {
     public static void setFullScreen(Activity activity, boolean fullScreen) {
         if (Build.VERSION.SDK_INT >= 19) {
             if (fullScreen) {
-                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+                setFullScreenForAPIAbove19(activity);
             } else {
 
             }
@@ -170,6 +169,13 @@ public class DeviceUtils {
             intent = new Intent(SHOW_STATUS_BAR_ACTION);
         }
         activity.sendBroadcast(intent);
+    }
+
+    public static void setFullScreenForAPIAbove19(final Activity activity) {
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        View decorView = activity.getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     public static int detectTouchDeviceCount() {
