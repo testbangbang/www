@@ -41,4 +41,6 @@
     <string name="about">关于</string>
     <string name="versionName">当前版本</string>
     <string name="action_settings">设置</string>
+    <string name="clear">清除</string>
+    <string name="clear_confirm">确定要清空本页内容?</string>
 </resources>

@@ -38,6 +38,7 @@ import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
@@ -133,10 +134,30 @@ public class ScribbleActivity extends BaseScribbleActivity {
         clearPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncWithCallback(true, true, new BaseCallback() {
+                syncWithCallback(true, false, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        onEraseClicked(false);
+                        final OnyxAlertDialog confirmDialog = new OnyxAlertDialog();
+                        confirmDialog.setParams(new OnyxAlertDialog.Params()
+                                .setCanceledOnTouchOutside(false)
+                                .setTittleString(getString(R.string.clear))
+                                .setAlertMsgString(getString(R.string.clear_confirm))
+                                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
+                                .setPositiveAction(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        confirmDialog.dismiss();
+                                        onEraseClicked(false);
+                                    }
+                                })
+                                .setNegativeAction(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        confirmDialog.dismiss();
+                                        syncWithCallback(true, true, null);
+                                    }
+                                }));
+                        confirmDialog.show(getFragmentManager(), "confirmDialog");
                     }
                 });
             }
