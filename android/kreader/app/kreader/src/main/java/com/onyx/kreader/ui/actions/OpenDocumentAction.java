@@ -56,10 +56,10 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup();
                     return;
                 }
-                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocument())) {
+                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
                     return;
                 }
-                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocument());
+                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
     }

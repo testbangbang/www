@@ -183,11 +183,7 @@ public class LayoutProviderUtils {
 
     static public boolean checkCache(final BitmapSoftLruCache cache, final String key, final ReaderDrawContext context) {
         ReaderBitmapImpl result = cache.get(key);
-        if (result == null ||
-                // 1.0 means not gamma correction yet, so we can reuse the bitmap
-                (Float.compare(result.gammaCorrection(), 1.0f) != 0 && Float.compare(context.targetGammaCorrection, result.gammaCorrection()) != 0) ||
-                // 0 means no embolden
-                (result.getEmboldenLevel() != 0 && context.targetEmboldenLevel != result.getEmboldenLevel())) {
+        if (result == null || !result.isGammaApplied(context.targetGammaCorrection) || !result.isEmboldenApplied(context.targetEmboldenLevel)) {
             return false;
         }
 

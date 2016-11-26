@@ -1,7 +1,6 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.wrapper.Reader;
 
@@ -11,7 +10,7 @@ import com.onyx.kreader.host.wrapper.Reader;
  */
 public class GammaCorrectionRequest extends BaseReaderRequest {
 
-    private int gamma = BaseOptions.DEFAULT_GAMMA;
+    private int gamma = BaseOptions.getGlobalDefaultGamma();
     private int emboldenLevel = 0;
 
     public GammaCorrectionRequest(final int gamma, final int emboldenLevel) {

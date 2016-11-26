@@ -4,6 +4,7 @@
   "disableNoteFunc" : false,
   "askForClose" : true,
   "supportColor" : true,
+  "defaultGamma": 100,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},

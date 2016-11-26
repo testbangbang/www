@@ -65,8 +65,8 @@ public class BaseOptions {
     private static final float fallbackFontSize = 36.0f;
     public static float defaultFontSize = fallbackFontSize;
 
-    static public int GAMMA_LOWER_LIMIT = 100;
-    static public int DEFAULT_GAMMA = 100;
+    transient private static int lowerGammaLimit = 100;
+    transient private static int globalDefaultGamma = 100;
 
     private GObject backend;
 
@@ -153,13 +153,25 @@ public class BaseOptions {
         return 0.01;
     }
 
+    public static int getLowerGammaLimit() {
+        return lowerGammaLimit;
+    }
+
+    public static int getGlobalDefaultGamma() {
+        return globalDefaultGamma;
+    }
+
+    public static void setGlobalDefaultGamma(int globalDefaultGamma) {
+        BaseOptions.globalDefaultGamma = globalDefaultGamma;
+    }
+
     public boolean isGamaCorrectionEnabled() {
-        return getGammaLevel() > GAMMA_LOWER_LIMIT;
+        return getGammaLevel() > lowerGammaLimit;
     }
 
     public float getGammaLevel() {
         if (!backend.hasKey(GAMMA_LEVEL)) {
-            return DEFAULT_GAMMA;
+            return getGlobalDefaultGamma();
         }
         return backend.getFloat(GAMMA_LEVEL);
     }

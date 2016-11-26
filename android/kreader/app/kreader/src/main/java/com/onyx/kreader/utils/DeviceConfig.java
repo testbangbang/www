@@ -43,6 +43,7 @@ public class DeviceConfig {
     private boolean hideControlSettings = false;
     private boolean askForClose = false;
     private boolean supportColor = false;
+    private int defaultGamma = 150;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -353,6 +354,14 @@ public class DeviceConfig {
 
     public void setAskForClose(boolean askForClose) {
         this.askForClose = askForClose;
+    }
+
+    public int getDefaultGamma() {
+        return defaultGamma;
+    }
+
+    public void setDefaultGamma(int defaultGamma) {
+        this.defaultGamma = defaultGamma;
     }
 
     public SingletonSharedPreference.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {
