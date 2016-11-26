@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.BesselCurveView;
-import com.onyx.android.sdk.ui.view.CircleView;
 import com.onyx.android.sdk.utils.DimenUtils;
 
 
@@ -32,10 +32,10 @@ public class DialogCustomLineWidth extends Dialog {
     private Button btnCancel;
     private Button btnOk;
     private LinearLayout previewLayout;
-    private CircleView circleView;
     private BesselCurveView besselCurveView;
     private TextView startText;
     private TextView endText;
+    private EditText currentValueIndicator;
 
     private int currentLineWidth;
     private int maxLineWidth;
@@ -60,8 +60,8 @@ public class DialogCustomLineWidth extends Dialog {
         imageViewAddButton = (ImageView) findViewById(R.id.imageView_AddButton);
         btnCancel = (Button) findViewById(R.id.btn_cancel);
         btnOk = (Button) findViewById(R.id.btn_ok);
+        currentValueIndicator = (EditText)findViewById(R.id.current_value_indicator);
         besselCurveView = (BesselCurveView) findViewById(R.id.bessel_view);
-        circleView = (CircleView) findViewById(R.id.circle_view);
         previewLayout = (LinearLayout) findViewById(R.id.preview_layout);
         startText = (TextView) findViewById(R.id.start_text);
         endText = (TextView) findViewById(R.id.end_text);
@@ -137,7 +137,8 @@ public class DialogCustomLineWidth extends Dialog {
     }
 
     private void updatePreview() {
-        circleView.setSize(currentLineWidth);
         besselCurveView.setSize(currentLineWidth);
+        currentValueIndicator.setText(
+                String.format(getContext().getResources().getConfiguration().locale, "%d", currentLineWidth));
     }
 }
