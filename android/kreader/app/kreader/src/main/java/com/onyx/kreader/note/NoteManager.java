@@ -312,7 +312,6 @@ public class NoteManager {
 
     public void setCurrentShapeColor(int color) {
         getNoteDrawingArgs().setStrokeColor(color);
-        EPDRenderer.setStrokeColor(color);
     }
 
     public void restoreCurrentShapeType() {

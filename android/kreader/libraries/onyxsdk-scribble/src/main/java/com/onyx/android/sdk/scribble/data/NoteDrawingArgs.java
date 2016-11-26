@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.Color;
+
+import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
@@ -17,7 +19,7 @@ public class NoteDrawingArgs {
     }
 
     public volatile float strokeWidth = NoteModel.getDefaultStrokeWidth();
-    public volatile int strokeColor = Color.BLACK;
+    public volatile int strokeColor = defaultColor();
     public volatile int style;
     private volatile int lastShapeType = ShapeFactory.SHAPE_INVALID;
     private volatile int currentShapeType = defaultShape();
@@ -37,6 +39,10 @@ public class NoteDrawingArgs {
 
     public static int defaultShape() {
         return ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
+    }
+
+    public static int defaultColor() {
+        return Color.BLACK;
     }
 
     public void setCurrentShapeType(int newShape) {
@@ -62,5 +68,6 @@ public class NoteDrawingArgs {
 
     public void setStrokeColor(int strokeColor) {
         this.strokeColor = strokeColor;
+        EPDRenderer.setStrokeColor(strokeColor);
     }
 }
