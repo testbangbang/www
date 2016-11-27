@@ -173,23 +173,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         Object targetPattern = null;
         switch (category) {
             case ScribbleMenuCategory.PEN_WIDTH:
-                switch ((int) curShapeDataInfo.getStrokeWidth()){
-                    case 3:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_ULTRA_LIGHT;
-                        break;
-                    case 5:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_LIGHT;
-                        break;
-                    case 7:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_NORMAL;
-                        break;
-                    case 9:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_BOLD;
-                        break;
-                    case 11:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_ULTRA_BOLD;
-                        break;
-                }
+                targetPattern = ScribbleSubMenuID.menuIdFromStrokeWidth(curShapeDataInfo.getStrokeWidth());
                 break;
             case ScribbleMenuCategory.PEN_STYLE:
                 switch (curShapeDataInfo.getCurrentShapeType()) {

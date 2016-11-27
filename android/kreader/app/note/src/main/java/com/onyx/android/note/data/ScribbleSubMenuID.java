@@ -2,8 +2,12 @@ package com.onyx.android.note.data;
 
 import android.support.annotation.IntDef;
 
+import com.onyx.android.sdk.scribble.data.NoteModel;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by solskjaer49 on 16/8/4 15:44.
@@ -36,6 +40,8 @@ public class ScribbleSubMenuID {
     public static final int PEN_COLOR_GREEN = 23;
     public static final int PEN_COLOR_MAGENTA = 24;
 
+    private static Map<Float, Integer> strokeMapping;
+
     // ... type definitions
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
@@ -52,5 +58,35 @@ public class ScribbleSubMenuID {
     @ScribbleSubMenuIDDef
     static int translate(int val) {
         return val;
+    }
+
+    public static Map<Float, Integer> getStrokeMapping() {
+        if (strokeMapping == null) {
+            strokeMapping = new HashMap<>();
+            strokeMapping.put(NoteModel.getDefaultStrokeWidth(), ScribbleSubMenuID.THICKNESS_ULTRA_LIGHT);
+            strokeMapping.put(5.0f, ScribbleSubMenuID.THICKNESS_LIGHT);
+            strokeMapping.put(7.0f, ScribbleSubMenuID.THICKNESS_NORMAL);
+            strokeMapping.put(9.0f, ScribbleSubMenuID.THICKNESS_BOLD);
+            strokeMapping.put(11.0f, ScribbleSubMenuID.THICKNESS_ULTRA_BOLD);
+        }
+        return strokeMapping;
+    }
+
+    public static float strokeWidthFromMenuId(final int menuId) {
+        final Map<Float, Integer> map = getStrokeMapping();
+        for(Map.Entry<Float, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == menuId) {
+                return entry.getKey();
+            }
+        }
+        return NoteModel.getDefaultStrokeWidth();
+    }
+
+    public static Integer menuIdFromStrokeWidth(final float width) {
+        final Map<Float, Integer> map = getStrokeMapping();
+        if (map.containsKey(width)) {
+            return map.get(width);
+        }
+        return ScribbleSubMenuID.THICKNESS_ULTRA_LIGHT;
     }
 }

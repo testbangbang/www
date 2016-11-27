@@ -249,21 +249,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void invokeSubMenuItem(@ScribbleSubMenuID.ScribbleSubMenuIDDef int item) {
         switch (item) {
-            //TODO:stroke width need confirm.
             case ScribbleSubMenuID.THICKNESS_ULTRA_LIGHT:
-                onStrokeWidthChanged(3.0f, null);
-                break;
             case ScribbleSubMenuID.THICKNESS_LIGHT:
-                onStrokeWidthChanged(5.0f, null);
-                break;
             case ScribbleSubMenuID.THICKNESS_NORMAL:
-                onStrokeWidthChanged(7.0f, null);
-                break;
             case ScribbleSubMenuID.THICKNESS_BOLD:
-                onStrokeWidthChanged(9.0f, null);
-                break;
             case ScribbleSubMenuID.THICKNESS_ULTRA_BOLD:
-                onStrokeWidthChanged(11.0f, null);
+                float value = ScribbleSubMenuID.strokeWidthFromMenuId(item);
+                onStrokeWidthChanged(value, null);
                 break;
             case ScribbleSubMenuID.ERASE_PARTIALLY:
                 onEraseClicked(true);
