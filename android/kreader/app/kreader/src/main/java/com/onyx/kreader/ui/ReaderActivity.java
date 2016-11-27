@@ -128,6 +128,7 @@ public class ReaderActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
+        beforeSetContentView();
         setContentView(R.layout.activity_reader);
         initComponents();
     }
@@ -221,6 +222,11 @@ public class ReaderActivity extends ActionBarActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void beforeSetContentView() {
+        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this);
+        DeviceUtils.requestFullScreenFeature(this, fullScreen);
     }
 
     private void initComponents() {

@@ -178,6 +178,13 @@ public class DeviceUtils {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
+    public static void requestFullScreenFeature(final Activity activity, boolean fullScreen) {
+        if (fullScreen) {
+            activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+    }
+
     public static int detectTouchDeviceCount() {
         int count = 0;
         final int DEVICE_MAX = 3;
