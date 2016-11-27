@@ -15,7 +15,6 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -33,7 +32,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -42,7 +40,6 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
@@ -50,7 +47,6 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.note.request.StartNoteRequest;
-import com.onyx.kreader.ui.actions.ActionChain;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
@@ -334,8 +330,8 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void afterResume() {
-        syncReaderPainter();
         syncSystemStatusBar();
+        syncReaderPainter();
         reconfigStatusBar();
         checkNoteDrawing();
     }
@@ -526,7 +522,7 @@ public class ReaderActivity extends ActionBarActivity {
             } else if (action.equals(Intent.ACTION_MAIN)) {
                 quitApplication(null);
             } else if (action.equals(Intent.ACTION_VIEW)) {
-                checkExternalStoragePermissions();
+                handleViewActionIntent();
             }
             return true;
         } catch (java.lang.Exception e) {
@@ -535,7 +531,7 @@ public class ReaderActivity extends ActionBarActivity {
         return false;
     }
 
-    private void checkExternalStoragePermissions() {
+    private void handleViewActionIntent() {
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
@@ -762,6 +758,7 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().getEventBus().unregister(this);
                 releaseStartupWakeLock();
                 finish();
+                postFinish();
             }
         });
     }
@@ -774,6 +771,13 @@ public class ReaderActivity extends ActionBarActivity {
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
+    }
+
+    private void postFinish() {
+        boolean exit = DeviceConfig.sharedInstance(this).isExitAfterFinish();
+        if (exit) {
+            DeviceUtils.exit();
+        }
     }
 
     private boolean hasPopupWindow() {

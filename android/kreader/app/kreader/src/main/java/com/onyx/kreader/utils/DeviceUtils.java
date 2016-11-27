@@ -278,4 +278,9 @@ public class DeviceUtils {
             return typeface;
         }
     }
+
+    public static void exit() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
+    }
 }
