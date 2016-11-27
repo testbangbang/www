@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
@@ -59,8 +60,10 @@ import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.utils.DeviceConfig;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -77,6 +80,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private static boolean isScribbleMenuVisible = false;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
     private static List<String> fontFaces = new ArrayList<>();
+    private static Map<Float, ReaderMenuAction> strokeMapping;
 
 
     @Override
@@ -575,19 +579,12 @@ public class ShowReaderMenuAction extends BaseAction {
     public static void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         switch (action) {
             case SCRIBBLE_WIDTH1:
-                useStrokeWidth(readerDataHolder, 2.0f);
-                break;
             case SCRIBBLE_WIDTH2:
-                useStrokeWidth(readerDataHolder, 4.0f);
-                break;
             case SCRIBBLE_WIDTH3:
-                useStrokeWidth(readerDataHolder, 6.0f);
-                break;
             case SCRIBBLE_WIDTH4:
-                useStrokeWidth(readerDataHolder, 9.0f);
-                break;
             case SCRIBBLE_WIDTH5:
-                useStrokeWidth(readerDataHolder, 12.0f);
+                float value = strokeWidthFromMenuId(action);
+                useStrokeWidth(readerDataHolder, value);
                 break;
             case SCRIBBLE_PENCIL:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
@@ -826,6 +823,37 @@ public class ShowReaderMenuAction extends BaseAction {
                 return readerDataHolder.getReaderViewInfo().getReaderTextStyle();
             }
         };
+    }
+
+
+    public static Map<Float, ReaderMenuAction> getStrokeMapping() {
+        if (strokeMapping == null) {
+            strokeMapping = new HashMap<>();
+            strokeMapping.put(NoteModel.getDefaultStrokeWidth(), ReaderMenuAction.SCRIBBLE_WIDTH1);
+            strokeMapping.put(5.0f, ReaderMenuAction.SCRIBBLE_WIDTH2);
+            strokeMapping.put(7.0f, ReaderMenuAction.SCRIBBLE_WIDTH3);
+            strokeMapping.put(9.0f, ReaderMenuAction.SCRIBBLE_WIDTH4);
+            strokeMapping.put(11.0f, ReaderMenuAction.SCRIBBLE_WIDTH5);
+        }
+        return strokeMapping;
+    }
+
+    public static float strokeWidthFromMenuId(final ReaderMenuAction menuId) {
+        final Map<Float, ReaderMenuAction> map = getStrokeMapping();
+        for(Map.Entry<Float, ReaderMenuAction> entry : map.entrySet()) {
+            if (entry.getValue() == menuId) {
+                return entry.getKey();
+            }
+        }
+        return NoteModel.getDefaultStrokeWidth();
+    }
+
+    public static ReaderMenuAction menuIdFromStrokeWidth(final float width) {
+        final Map<Float, ReaderMenuAction> map = getStrokeMapping();
+        if (map.containsKey(width)) {
+            return map.get(width);
+        }
+        return ReaderMenuAction.SCRIBBLE_WIDTH1;
     }
 
 }
