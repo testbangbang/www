@@ -52,6 +52,7 @@ public class DeviceConfig {
     private int defaultFontSize = 0;
     private int selectionMoveDistanceThreshold = 8;
     private int gcInterval = 0;
+    private int frontLight = 0;
     private boolean exitAfterFinish = false;
 
     private String defaultAnnotationHighlightStyle = "Highlight";
@@ -371,6 +372,14 @@ public class DeviceConfig {
 
     public void setExitAfterFinish(boolean exitAfterFinish) {
         this.exitAfterFinish = exitAfterFinish;
+    }
+
+    public int getFrontLight() {
+        return frontLight;
+    }
+
+    public void setFrontLight(int frontLight) {
+        this.frontLight = frontLight;
     }
 
     public SingletonSharedPreference.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {

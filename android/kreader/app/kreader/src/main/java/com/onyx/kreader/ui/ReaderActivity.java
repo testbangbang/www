@@ -27,6 +27,7 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -631,11 +632,24 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onDocumentOpened(final DocumentOpenEvent event) {
+        prepareGCUpdateInterval();
+        prepareFrontLight();
+    }
+
+    private void prepareGCUpdateInterval() {
         int value = DeviceConfig.sharedInstance(this).getGcInterval();
         if (value <= 0) {
             value = DialogScreenRefresh.DEFAULT_INTERVAL_COUNT;
         }
         ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this, value));
+    }
+
+    private void prepareFrontLight() {
+        int value = DeviceConfig.sharedInstance(this).getFrontLight();
+        if (value <= 0) {
+            return;
+        }
+        FrontLightController.setBrightness(this, value);
     }
 
     @Subscribe
