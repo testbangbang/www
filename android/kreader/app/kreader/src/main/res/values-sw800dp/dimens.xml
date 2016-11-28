@@ -46,4 +46,8 @@
     <dimen name="dict_name_text_view_layout_width">300dp</dimen>
     <dimen name="dialog_text_style_view_page_width">600dp</dimen>
     <dimen name="dialog_text_style_view_page_height">500dp</dimen>
+    <dimen name="bold_checkbox_height">16dp</dimen>
+    <dimen name="bold_checkbox_width">80dp</dimen>
+    <dimen name="bold_checkbox_divider_width">2dp</dimen>
+    <dimen name="dialog_contrast_seek_bar_width">300dp</dimen>
 </resources>
