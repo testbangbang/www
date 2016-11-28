@@ -186,7 +186,7 @@ public class DialogSetValue extends DialogBase {
                     int editTextValue = Integer.parseInt(mValueControlEditText.getText().toString());
                     if (mValueControlSeekBar.getProgress() + mSeekBarMinValue ==
                             editTextValue) {
-                        mCallback.done(true, originalValue, mValueControlSeekBar.getProgress());
+                        mCallback.done(true, originalValue, editTextValue);
                         dismiss();
                     } else {
                         setSeekBarValue(editTextValue);
