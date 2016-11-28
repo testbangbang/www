@@ -25,8 +25,6 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
 
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
-        NoteModel.setDefaultEraserRadius(DeviceConfig.sharedInstance(getContext()).getEraserRadius());
-        noteManager.getNoteDocument().setEraserRadius(NoteModel.getDefaultEraserRadius());
         setVisiblePages(getVisiblePages());
         noteManager.startRawEventProcessor();
         noteManager.enableRawEventProcessor(true);
