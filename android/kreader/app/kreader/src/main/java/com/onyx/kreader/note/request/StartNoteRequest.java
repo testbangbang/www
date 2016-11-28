@@ -1,9 +1,12 @@
 package com.onyx.kreader.note.request;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.kreader.note.NoteManager;
 
 import java.util.List;
@@ -22,6 +25,8 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
 
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
+        NoteModel.setDefaultEraserRadius(DeviceConfig.sharedInstance(getContext()).getEraserRadius());
+        noteManager.getNoteDocument().setEraserRadius(NoteModel.getDefaultEraserRadius());
         setVisiblePages(getVisiblePages());
         noteManager.startRawEventProcessor();
         noteManager.enableRawEventProcessor(true);

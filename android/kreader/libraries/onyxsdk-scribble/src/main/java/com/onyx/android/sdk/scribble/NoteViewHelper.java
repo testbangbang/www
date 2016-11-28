@@ -128,6 +128,8 @@ public class NoteViewHelper {
 
     private void onDocumentOpened() {
         renderBitmapWrapper.clear();
+        NoteModel.setDefaultEraserRadius(deviceConfig.getEraserRadius());
+        getNoteDocument().getNoteDrawingArgs().setEraserRadius(deviceConfig.getEraserRadius());
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
         EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
     }

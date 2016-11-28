@@ -23,7 +23,7 @@ public class NoteDrawingArgs {
     public volatile int style;
     private volatile int lastShapeType = ShapeFactory.SHAPE_INVALID;
     private volatile int currentShapeType = defaultShape();
-    public volatile float eraserRadius = 15.0f;
+    public volatile float eraserRadius = NoteModel.getDefaultEraserRadius();
     public volatile int background;
     public volatile PenState penState;
 
@@ -69,5 +69,13 @@ public class NoteDrawingArgs {
     public void setStrokeColor(int strokeColor) {
         this.strokeColor = strokeColor;
         EPDRenderer.setStrokeColor(strokeColor);
+    }
+
+    public float getEraserRadius() {
+        return eraserRadius;
+    }
+
+    public void setEraserRadius(float eraserRadius) {
+        this.eraserRadius = eraserRadius;
     }
 }

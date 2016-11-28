@@ -14,6 +14,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
@@ -107,6 +108,7 @@ public class NoteManager {
         mappingConfig = MappingConfig.sharedInstance(context, "note");
         enableShortcutDrawing = noteConfig.isShortcutDrawingEnabled();
         enableShortcutErasing = noteConfig.isShortcutErasingEnabled();
+        NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
         getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
     }
 

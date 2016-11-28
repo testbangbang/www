@@ -17,7 +17,8 @@
   "single_touch" : 1,
   "shortcut_drawing": 1,
   "shortcut_erasing": 1,
-  "support_color": true
+  "support_color": true,
+  "eraser_radius" : 10
 
 
 }

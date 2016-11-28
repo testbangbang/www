@@ -40,6 +40,7 @@ public class DeviceConfig {
     static public final String SHORTCUT_ERASING = "shortcut_erasing";
 
     static public final String SUPPORT_COLOR = "support_color";
+    static public final String ERASER_RADIUS = "eraser_radius";
 
     static public boolean useDebugConfig = false;
 
@@ -142,6 +143,13 @@ public class DeviceConfig {
 
     public boolean supportColor(){
         return backend.hasKey(SUPPORT_COLOR) && backend.getBoolean(SUPPORT_COLOR, false);
+    }
+
+    public float getEraserRadius() {
+        if (backend.hasKey(ERASER_RADIUS)) {
+            return backend.getFloat(ERASER_RADIUS);
+        }
+        return 15.0f;
     }
 
     static public DeviceConfig sharedInstance(Context context) {
