@@ -66,6 +66,9 @@
     <dimen name="dialog_text_style_view_page_width">460dp</dimen>
     <dimen name="dialog_text_style_view_page_height">400dp</dimen>
     <dimen name="scribble_bottom_menu_margin">20dp</dimen>
+    <dimen name="scribble_bottom_expand_menu_padding_left_right">15dp</dimen>
+    <dimen name="scribble_bottom_expand_menu_padding_top_bottom">8dp</dimen>
+
 
     <dimen name="dialog_loading_height">@dimen/wrap_content</dimen>
     <dimen name="dialog_loading_msg_X_axis_padding">15dp</dimen>
