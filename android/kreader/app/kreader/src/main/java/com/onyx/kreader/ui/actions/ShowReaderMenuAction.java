@@ -50,6 +50,7 @@ import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.dialog.DialogContrast;
 import com.onyx.kreader.ui.dialog.DialogExport;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
@@ -398,8 +399,9 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void adjustContrast(final ReaderDataHolder readerDataHolder) {
-        final AdjustContrastAction action = new AdjustContrastAction();
-        action.execute(readerDataHolder, null);
+        Dialog dialogContrast = new DialogContrast(readerDataHolder);
+        dialogContrast.show();
+        readerDataHolder.addActiveDialog(dialogContrast);
     }
 
     private void adjustEmbolden(final ReaderDataHolder readerDataHolder) {

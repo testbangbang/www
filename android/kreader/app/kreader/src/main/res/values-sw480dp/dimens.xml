@@ -15,13 +15,13 @@
     <dimen name="reader_bookmark_lineto_y">20dp</dimen>
     <dimen name="dialog_annotation_title_size">22sp</dimen>
     <dimen name="control_panel_floating_tittle_text_size">22sp</dimen>
-    <dimen name="popup_selection_menu_button_text_size">22sp</dimen>
+    <dimen name="popup_selection_menu_button_text_size">18sp</dimen>
     <dimen name="popup_selection_menu_image_size">30dp</dimen>
     <dimen name="dialog_navigation_settings_mode_icon_contentView_height">150dp</dimen>
     <dimen name="dialog_navigation_settings_navigation_subscreen_content_view_height">200dp</dimen>
     <dimen name="toc_tree_padding_top">10dp</dimen>
     <dimen name="directory_tab_height">70dp</dimen>
-    <dimen name="directory_page_indicator_height">80dp</dimen>
+    <dimen name="directory_page_indicator_height">60dp</dimen>
     <dimen name="dialog_quick_preview_list_item_margin">5dp</dimen>
     <dimen name="dialog_quick_preview_seek_bar_height">25dp</dimen>
     <dimen name="dialog_quick_preview_seek_bar_margin_top">10dp</dimen>

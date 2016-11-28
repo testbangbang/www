@@ -287,4 +287,5 @@
     <string name="already_at_minimum_line_spacing">Already at minimum line spacing!</string>
     <string name="already_at_maximum_page_margins">Already at maximum page margins!</string>
     <string name="already_at_minimum_page_margins">Already at minimum page margins!</string>
+    <string name="make_text_bold">make text bold</string>
 </resources>

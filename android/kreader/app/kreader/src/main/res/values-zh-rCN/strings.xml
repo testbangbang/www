@@ -224,4 +224,5 @@
   <string name="already_at_minimum_line_spacing">已经是最小行间距了!</string>
   <string name="already_at_maximum_page_margins">已经是最大页面边距!</string>
   <string name="already_at_minimum_page_margins">已经是最小页面边距!</string>
+  <string name="make_text_bold">字体加粗</string>
 </resources>
