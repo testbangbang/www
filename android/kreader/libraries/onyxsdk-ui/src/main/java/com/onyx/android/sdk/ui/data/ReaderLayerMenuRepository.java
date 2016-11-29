@@ -43,6 +43,7 @@ public class ReaderLayerMenuRepository {
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.TTS, null, R.string.reader_layer_menu_tts, "", R.drawable.ic_dialog_reader_menu_tts),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.FRONT_LIGHT, null, R.string.reader_layer_menu_front_light, "", R.drawable.ic_dialog_reader_menu_frontlight),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.REFRESH, null, R.string.reader_layer_menu_refresh, "", R.drawable.ic_dialog_reader_menu_refresh_black),
+            new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SLIDESHOW, null, R.string.reader_layer_menu_slideshow, "", R.drawable.ic_dialog_reader_menu_slideshow),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SETTINGS, null, R.string.reader_layer_menu_settings, "", R.drawable.ic_dialog_reader_menu_setting),
     };
 

@@ -288,4 +288,10 @@
     <string name="already_at_maximum_page_margins">Already at maximum page margins!</string>
     <string name="already_at_minimum_page_margins">Already at minimum page margins!</string>
     <string name="make_text_bold">make text bold</string>
+    <string name="dialog_slideshow_title">Slideshow</string>
+    <string name="dialog_slideshow_intervals_title">Intervals (in seconds)</string>
+    <string name="dialog_slideshow_statistic_duration">Duration: </string>
+    <string name="dialog_slideshow_statistic_page_count">Page count: </string>
+    <string name="dialog_slideshow_statistic_start_battery">Start battery: </string>
+    <string name="dialog_slideshow_statistic_end_battery">End battery: </string>
 </resources>

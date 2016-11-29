@@ -58,6 +58,7 @@ import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
+import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.utils.DeviceConfig;
 
 import java.util.ArrayList;
@@ -271,6 +272,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case REFRESH:
                         showScreenRefreshDialog(readerDataHolder);
                         break;
+                    case SLIDESHOW:
+                        enterSlideshow(readerDataHolder);
+                        break;
                     case FRONT_LIGHT:
                         showBrightnessDialog(readerDataHolder);
                         break;
@@ -454,6 +458,11 @@ public class ShowReaderMenuAction extends BaseAction {
         });
         dlg.show(readerActivity.getFragmentManager());
         readerDataHolder.addActiveDialog(dlg);
+    }
+
+    private void enterSlideshow(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        new SlideshowAction().execute(readerDataHolder, null);
     }
 
     private void showBrightnessDialog(ReaderDataHolder readerDataHolder){

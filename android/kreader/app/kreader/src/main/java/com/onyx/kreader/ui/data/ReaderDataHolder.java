@@ -1,8 +1,12 @@
 package com.onyx.kreader.ui.data;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.graphics.Rect;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -35,6 +39,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static android.content.Context.ALARM_SERVICE;
+
 /**
  * Created by ming on 16/7/27.
  */
@@ -66,6 +72,9 @@ public class ReaderDataHolder {
      * can be either Dialog or DialogFragment, so we store it as basic Object
      */
     private Set<Object> activeDialogs = new HashSet<>();
+
+    private Set<BroadcastReceiver> registeredReceivers = new HashSet<>();
+    private Set<PendingIntent> registeredAlarms = new HashSet<>();
 
     public ReaderDataHolder(Context context) {
         this.context = context;
@@ -209,6 +218,25 @@ public class ReaderDataHolder {
 
     private void unregisterReceiver() {
         deviceReceiver.unregisterReceiver(getContext());
+    }
+
+    public void registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
+        context.registerReceiver(receiver, filter);
+        registeredReceivers.add(receiver);
+    }
+
+    public void unregisterReceiver(BroadcastReceiver receiver) {
+        if (registeredReceivers.contains(receiver)) {
+            context.unregisterReceiver(receiver);
+            registeredReceivers.remove(receiver);
+        }
+    }
+
+    private void clearReceivers() {
+        for (BroadcastReceiver receiver : registeredReceivers) {
+            context.unregisterReceiver(receiver);
+        }
+        registeredReceivers.clear();
     }
 
     public final HandlerManager getHandlerManager() {
@@ -424,9 +452,40 @@ public class ReaderDataHolder {
         activeDialogs.clear();
     }
 
+    public void registerRepeatingAlarm(int type, long triggerAtMillis,
+                                       long intervalMillis, PendingIntent operation) {
+        AlarmManager am = (AlarmManager)context.getSystemService(ALARM_SERVICE);
+        if (am != null) {
+            am.setRepeating(type, triggerAtMillis, intervalMillis, operation);
+            registeredAlarms.add(operation);
+        }
+    }
+
+    public void cancelAlarm(PendingIntent operation) {
+        AlarmManager am = (AlarmManager)context.getSystemService(ALARM_SERVICE);
+        if (am != null) {
+            if (registeredAlarms.contains(operation)) {
+                am.cancel(operation);
+                registeredAlarms.remove(operation);
+            }
+        }
+    }
+
+    private void clearAlarms() {
+        AlarmManager am = (AlarmManager)context.getSystemService(ALARM_SERVICE);
+        if (am != null) {
+            for (PendingIntent operation : registeredAlarms) {
+                am.cancel(operation);
+            }
+        }
+        registeredAlarms.clear();
+    }
+
     public void destroy(final BaseCallback callback) {
         unregisterReceiver();
         closeActiveDialogs();
+        clearReceivers();
+        clearAlarms();
         closeTts();
         closeNoteManager();
         closeDocument(callback);
