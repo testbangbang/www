@@ -52,5 +52,6 @@ dependencies {
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
     compile "com.liulishuo.filedownloader:library:$rootProject.filedownloaderVersion"
+    compile "com.squareup.okhttp:okhttp-urlconnection:$rootProject.okhttpurlconnectionVersion"
 
 }

@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+import com.onyx.android.sdk.data.converter.ListIntegerConverter;
+import com.onyx.android.sdk.data.converter.ListStringConverter;
+import com.onyx.android.sdk.data.converter.SetPeopleConverter;
+import com.onyx.android.sdk.data.converter.SetStringConverter;
+import com.onyx.android.sdk.data.converter.StorageConverter;
 import com.onyx.android.sdk.data.db.OnyxCloudDatabase;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
-
 
 /**
  * Created by zhuzeng on 11/19/15.
@@ -44,57 +46,37 @@ public class Product extends BaseData {
     @Column
     public String distributeChannel;
 
+    @Column(typeConverter = SetPeopleConverter.class)
     public Set<People> publishers = new HashSet<People>();
 
+    @Column(typeConverter = SetPeopleConverter.class)
     public Set<People> authors = new HashSet<People>();
 
-    @Column
-    public String authorString;
-
+    @Column(typeConverter = SetStringConverter.class)
     public Set<String> tags = new HashSet<String>();
 
+    @Column(typeConverter = ListIntegerConverter.class)
     public List<Integer> domains = new ArrayList<Integer>();
 
+    @Column(typeConverter = ListStringConverter.class)
     public List<String> category = new ArrayList<String>();
-    @Column
-    public String categoryString;
 
+    @Column(typeConverter = SetStringConverter.class)
     public Set<String> formats = new HashSet<String>();
 
+    @Column(typeConverter = StorageConverter.class)
     public Map<String, Map<String, Link>> storage = new HashMap<String, Map<String, Link>>();
-    @Column
-    public String storageString;
 
-    public String coverUrl;
-
+    @Column(typeConverter = StorageConverter.class)
     public Map<String, Map<String, Link>> covers = new HashMap<String, Map<String, Link>>();
     @Column
-    public String coversString;
-
-    @Column
-    public long consumer;
-
-    @Column
-    public long viewCount;
-
-    @Column
-    public long downloadCount;
-
-    @Column
-    public long commentsCount;
+    public String coverUrl;
 
     public Product() {
 
     }
 
-    private String toStorageString() {
-        if (storage == null) {
-            return null;
-        }
-        return JSON.toJSONString(storage);
-    }
-
-    private String toAuthorString() {
+    public String getAuthorString() {
         String string = "";
         if (authors == null || authors.size() <= 0) {
             return string;
@@ -105,63 +87,7 @@ public class Product extends BaseData {
             string += people.fullName;
             string += pattern;
         }
-
         return string.substring(0, string.length() - pattern.length());
-    }
-
-    private String toCategoryString() {
-        if (category == null) {
-            return "";
-        }
-        return JSON.toJSONString(category);
-    }
-
-    private String toCoversString() {
-        if (covers == null) {
-            return "";
-        }
-        return JSON.toJSONString(covers);
-    }
-
-    public final String getAuthorString() {
-        return authorString;
-    }
-
-    private final Map<String, Map<String, Link>> toStorageObject() {
-        if ((storage == null || storage.size() <= 0) && storageString != null) {
-            storage = JSON.parseObject(storageString, new TypeReference<Map<String, Map<String, Link>>>() {
-            });
-        }
-        return storage;
-    }
-
-    private final List<String> toCategoryObject() {
-        if ((category == null || category.size() <= 0) && categoryString != null) {
-            category = JSON.parseArray(categoryString, String.class);
-        }
-        return category;
-    }
-
-    private final Map<String, Map<String, Link>> toCoversObject() {
-        if ((covers == null || covers.size() <= 0) && coversString != null) {
-            covers = JSON.parseObject(coversString, new TypeReference<HashMap<String, Map<String, Link>>>() {
-            });
-        }
-        return covers;
-    }
-
-    public void beforeSave() {
-        authorString = toAuthorString();
-        storageString = toStorageString();
-        categoryString = toCategoryString();
-        coversString = toCoversString();
-
-    }
-
-    public void afterLoad() {
-        toStorageObject();
-        toCategoryObject();
-        toCoversObject();
     }
 
     /**
@@ -170,19 +96,7 @@ public class Product extends BaseData {
      */
     @Override
     public void save() {
-        beforeSave();
         super.save();
-    }
-
-    public Link getCoverLink(final String type, final String provider) {
-        if (CollectionUtils.isNullOrEmpty(covers)) {
-            return null;
-        }
-        Map<String, Link> map = covers.get(type);
-        if (CollectionUtils.isNullOrEmpty(map)) {
-            return null;
-        }
-        return map.get(provider);
     }
 
     public Link getDownloadLink(final String type, final String provider) {
