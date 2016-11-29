@@ -16,6 +16,10 @@ public class SchoolApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initConfig();
+    }
+
+    private void initConfig() {
         try {
             sInstance = this;
             StudentPreferenceManager.init(this);
