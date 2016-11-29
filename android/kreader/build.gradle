@@ -55,5 +55,6 @@ ext {
     constraintlayoutVersion = '1.0.0-beta3'
     okhttpurlconnectionVersion = '2.0.0'
     picassoVersion = '2.5.2'
+    multidexVersion = '1.0.1'
 }
 

@@ -68,7 +68,7 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
 
         // test covers and storage
         assertNotNull(product.covers);
-        Link link = product.getCoverLink(Constant.COVER_TYPE_NORMAL, Constant.DEFAULT_CLOUD_STORAGE);
+        Link link = product.getDownloadLink(Constant.COVER_TYPE_NORMAL, Constant.DEFAULT_CLOUD_STORAGE);
         assertNotNull(link);
         assertEquals(Constant.DEFAULT_CLOUD_STORAGE, link.provider);
 
