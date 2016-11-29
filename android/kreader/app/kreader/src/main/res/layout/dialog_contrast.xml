@@ -34,64 +34,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!--<LinearLayout-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content">-->
-
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_margin="@dimen/dialog_contrast_margin"-->
-                <!--android:text="@string/contrast_level"-->
-                <!--android:textSize="20sp"/>-->
-
-            <!--<TextView-->
-                <!--android:textStyle="bold"-->
-                <!--android:textSize="25sp"-->
-                <!--android:layout_marginLeft="20dp"-->
-                <!--android:gravity="left|center_vertical"-->
-                <!--android:id="@+id/editText_ValueInput"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textColor="@android:color/black"/>-->
-        <!--</LinearLayout>-->
-
-        <!--<LinearLayout-->
-            <!--android:orientation="horizontal"-->
-            <!--android:gravity="center"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" >-->
-
-            <!--<ImageView-->
-                <!--android:layout_width="@dimen/dialog_set_value_image_size"-->
-                <!--android:layout_height="@dimen/dialog_set_value_image_size"-->
-                <!--android:id="@+id/imageView_MinusButton"-->
-                <!--android:src="@drawable/ic_dialog_set_value_decrease"-->
-                <!--android:focusable="true"-->
-                <!--android:background="@drawable/image_button_bg"/>-->
-
-            <!--<SeekBar-->
-                <!--android:layout_weight="1"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:focusable="true"-->
-                <!--android:progressDrawable="@drawable/seekbar_progress"-->
-                <!--android:max="20"-->
-                <!--android:id="@+id/seekBar_valueControl" />-->
-
-            <!--<ImageView-->
-                <!--android:layout_width="@dimen/dialog_set_value_image_size"-->
-                <!--android:layout_height="@dimen/dialog_set_value_image_size"-->
-                <!--android:id="@+id/imageView_AddButton"-->
-                <!--android:src="@drawable/ic_dialog_set_value_increase"-->
-                <!--android:focusable="true"-->
-                <!--android:background="@drawable/image_button_bg"-->
-                <!--android:layout_alignParentRight="true" />-->
-
-
-        <!--</LinearLayout>-->
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
