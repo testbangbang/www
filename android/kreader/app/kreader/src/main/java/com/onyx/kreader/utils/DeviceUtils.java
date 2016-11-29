@@ -3,8 +3,10 @@ package com.onyx.kreader.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v7.app.ActionBar;
@@ -282,5 +284,16 @@ public class DeviceUtils {
     public static void exit() {
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(1);
+    }
+
+    public static int getBatteryPecentLevel(final Context context) {
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, ifilter);
+        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+        float batteryPercent = level / (float)scale;
+
+        return (int)(batteryPercent*100);
     }
 }
