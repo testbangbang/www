@@ -7,6 +7,8 @@ import android.content.Context;
 import android.text.format.DateFormat;
 
 
+import com.onyx.kreader.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -44,6 +46,17 @@ public class DateTimeUtil
         }
         return simpleDateFormat.format(date);
     }
-    
+
+
+    public static String formatDuration(Context context, long seconds) {
+        long h = seconds / (60 * 60);
+        long remainder = seconds % (60 * 60);
+        long m = remainder / 60;
+        long s = remainder % 60;
+        String strHour = h <= 0 ? "" : String.valueOf(h) + context.getString(R.string.hour_symbol);
+        String strMinute = m <= 0 ? "" : String.valueOf(m) + context.getString(R.string.minute_symbol);
+        String strSecond = s <= 0 ? "" : String.valueOf(s) + context.getString(R.string.second_symbol);
+        return strHour + strMinute + strSecond;
+    }
 
 }
