@@ -1,7 +1,6 @@
 package com.onyx.kreader.ui.view;
 
 import android.content.Context;
-import android.telecom.Call;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -16,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 
 /**
@@ -141,10 +139,19 @@ public class SeekBarWithEditTextView extends LinearLayout {
     }
 
     public void updateValue(String title, int initialValue, int minValue, int maxValue) {
+        titleTextView.setText(title);
+        updateValue(initialValue, minValue, maxValue);
+    }
+
+    public void updateValue(int stringResId, int initialValue, int minValue, int maxValue) {
+        titleTextView.setText(stringResId);
+        updateValue(initialValue, minValue, maxValue);
+    }
+
+    private void updateValue(int initialValue, int minValue, int maxValue) {
         this.initialValue = initialValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
-        titleTextView.setText(title);
         seekBar.setMax(maxValue - minValue);
         setSeekBarProgress(valueToProgress(initialValue));
     }
