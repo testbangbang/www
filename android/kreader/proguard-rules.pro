@@ -31,6 +31,7 @@
 -dontwarn org.objenesis.**
 -dontwarn okio.**
 -dontwarn retrofit2.**
+-dontwarn  com.github.junrar.**
 
 -keepnames class * {
     native <methods>;
