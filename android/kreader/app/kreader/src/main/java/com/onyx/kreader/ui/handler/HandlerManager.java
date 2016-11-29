@@ -167,6 +167,9 @@ public class HandlerManager {
         if (!isEnable()) {
             return false;
         }
+        if (getActiveProvider().onKeyDown(readerDataHolder, keyCode, event)) {
+            return true;
+        }
         return processKeyDownEvent(readerDataHolder, keyCode, event);
     }
 
