@@ -18,6 +18,7 @@ import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModel
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -188,5 +189,12 @@ public class StoreUtils {
             return true;
         }
         return false;
+    }
+
+    static public <T extends BaseData> List<T> getResultList(final ProductResult<T> productResult) {
+        if (isEmpty(productResult)) {
+            return new ArrayList<>();
+        }
+        return productResult.list;
     }
 }

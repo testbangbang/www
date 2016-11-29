@@ -20,13 +20,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
             signingConfig signingConfigs.release
             manifestPlaceholders = [channel_value: releaseChannel(),
-                                    type_value: releaseType()]
+                                    type_value: releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
         }
         debug {
             debuggable true
             jniDebuggable true
             manifestPlaceholders = [channel_value: releaseChannel(),
-                                    type_value: releaseType()]
+                                    type_value: releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
         }
     }
 
@@ -42,7 +44,9 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
+    compile "de.hdodenhof:circleimageview:$rootProject.circleimageviewVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile "com.squareup.picasso:picasso:$rootProject.picassoVersion"
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
     compile project(':libraries:libedu')

@@ -352,4 +352,33 @@ public class FileUtils {
             }
         }
     }
+
+    public static String fixNotAllowFileName(String fileName) {
+        if (StringUtils.isBlank(fileName)) {
+            return null;
+        }
+        int dotIndex = fileName.lastIndexOf(".");
+
+        if (dotIndex == -1) {
+            return null;
+        }
+
+        String replaceString = fileName;
+        String regularExpression = "([.*/^()?|<>\\]\\[])";
+
+        replaceString = replaceString.replaceAll(regularExpression, " ");
+        replaceString = replaceString.replace(replaceString.substring(dotIndex), fileName.substring(dotIndex));
+        replaceString = replaceString.replace(":", "：");
+        int index = 0;
+        while (replaceString.indexOf("\"") != -1) {
+            if (index == 0) {
+                replaceString = replaceString.replaceFirst("\"", "“");
+                index = 1;
+            } else {
+                replaceString = replaceString.replaceFirst("\"", "”");
+                index = 0;
+            }
+        }
+        return replaceString;
+    }
 }

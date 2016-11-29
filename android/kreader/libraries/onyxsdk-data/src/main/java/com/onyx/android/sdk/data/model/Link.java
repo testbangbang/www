@@ -8,8 +8,9 @@ public class Link extends BaseData {
     public String url;
     public long expires;
     public long size;
-    public String md5;
     public String key;
+    public String md5;
+    public String displayName;
 
     public Link() {
     }
