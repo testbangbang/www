@@ -35,7 +35,7 @@
     <string name="unfinished">未完成</string>
     <string name="finished">已完成</string>
     <string name="replied">已批复</string>
-    
+
     <string name="translate">翻译</string>
     <string name="open">开启</string>
     <string name="shutdown">关闭</string>
@@ -63,11 +63,34 @@
     <string name="home_item_teaching_materials_text">教材</string>
     <string name="home_item_teaching_auxiliary_text">教辅</string>
     <string name="home_item_note_text">笔记本</string>
+    <string name="home_item_dictionary_text">字典</string>
     <string name="home_item_practice_text">练习</string>
     <string name="home_item_exam_text">考试</string>
-    <string name="current_reading_location">当前位置</string>
+    <string name="study_preview_person">个人\n材料</string>
+    <string name="current_reading_location">阅读位置</string>
     <string name="home_time_date_format">yyyy年MM月dd日</string>
     <string name="home_learning_progress">学习进度</string>
     <string name="home_no_notification">暂无更新</string>
+
+    <string name="page">页码：</string>
+    <string name="no_more_items">没有更多内容了</string>
+    <string name="save">保存</string>
+    <string name="save_success">保存成功</string>
+    <string name="save_fail">保存失败</string>
+    <string name="name">姓名</string>
+    <string name="student_id">学号</string>
+    <string name="grade">年级</string>
+    <string name="name_colon">姓名：</string>
+    <string name="student_id_colon">学号：</string>
+    <string name="grade_colon">年级：</string>
+    <string name="publisher">出版社</string>
+    <string name="primary_school">小学</string>
+    <string name="secondary_school">初中</string>
+    <string name="high_school">高中</string>
+    <string name="college_school">大学</string>
+    <string name="school_grade_class">学校+年级+班级</string>
+    <string name="change_avatar">更换头像</string>
+    <string name="current_learning_progress">您当前的学习进度</string>
+    <string name="last_studying_time">上次学习时刻</string>
 
 </resources>

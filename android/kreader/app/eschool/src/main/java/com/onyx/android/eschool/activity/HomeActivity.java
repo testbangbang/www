@@ -1,28 +1,35 @@
 package com.onyx.android.eschool.activity;
 
+import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DigitalClock;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onyx.android.eschool.R;
-import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.eschool.model.StudentAccount;
+import com.onyx.android.eschool.utils.AvatarUtils;
+import com.onyx.android.sdk.utils.ActivityUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by suicheng on 2016/11/15.
  */
-public class HomeActivity extends OnyxAppCompatActivity {
+public class HomeActivity extends BaseActivity {
+    private static final String EDU_INTENT_CONTENT_TYPE = "contentType";
+    private static final String EDU_INTENT_CONTENT_TYPE_EXAM = "examination";
+    private static final String EDU_INTENT_CONTENT_TYPE_PRACTISE= "practice";
     private SimpleDateFormat dateFormat;
 
     // about userInfo
@@ -36,8 +43,6 @@ public class HomeActivity extends OnyxAppCompatActivity {
     // about notify panel
     @Bind(R.id.text_date)
     TextView date;
-    @Bind(R.id.text_time)
-    DigitalClock digitalClock;
     @Bind(R.id.textView_location)
     TextView location;
     @Bind(R.id.textView_weather_text)
@@ -56,26 +61,33 @@ public class HomeActivity extends OnyxAppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        ButterKnife.bind(this);
-
-        initConfig();
-        initViews();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        updateProfileInfo();
         updateNotifyPanel();
         loadTeachingData();
     }
 
-    private void initConfig() {
-        dateFormat = new SimpleDateFormat(getString(R.string.home_time_date_format));
+    @Override
+    protected Integer getLayoutId() {
+        return R.layout.activity_home;
     }
 
-    private void initViews() {
+    @Override
+    protected void initView() {
         initNormalItem();
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    protected void initConfig() {
+        dateFormat = new SimpleDateFormat(getString(R.string.home_time_date_format));
     }
 
     private void updateNotifyPanel() {
@@ -84,8 +96,16 @@ public class HomeActivity extends OnyxAppCompatActivity {
         loadNotifyMessage();
     }
 
+    private void updateProfileInfo() {
+        AvatarUtils.loadAvatar(this, userImage, StudentAccount.loadAvatarPath(this));
+        StudentAccount account = StudentAccount.loadAccount(this);
+        userName.setText(account.name);
+        userClass.setText(account.gradeClass);
+    }
+
     private void initNormalItem() {
         initNormalView(R.id.home_note_item, R.string.home_item_note_text, R.drawable.home_note);
+        initNormalView(R.id.home_dictionary_item, R.string.home_item_dictionary_text, R.drawable.home_dictionary);
         initNormalView(R.id.home_practice_item, R.string.home_item_practice_text, R.drawable.home_practice);
         initNormalView(R.id.home_exam_item, R.string.home_item_exam_text, R.drawable.home_exam);
     }
@@ -105,49 +125,65 @@ public class HomeActivity extends OnyxAppCompatActivity {
     }
 
     private void loadTeachingData() {
-
-    }
-
-    @OnClick(R.id.imageView_user_image)
-    void onProfileImageClick(View view) {
-        showToast("onProfileImageClick", Toast.LENGTH_SHORT);
     }
 
     @OnClick(R.id.textView_study_process)
-    void onStudyScheduleClick(View view) {
-        showToast("onStudyScheduleClick", Toast.LENGTH_SHORT);
+    void onStudyScheduleClick() {
+        ActivityUtil.startActivitySafely(this, new Intent(this, StudyPreviewActivity.class));
     }
 
     @OnClick(R.id.home_teaching_material_item)
     void onTeachingMaterialClick() {
-        showToast("onTeachingMaterialClick", Toast.LENGTH_SHORT);
+        ActivityUtil.startActivitySafely(this, new Intent(this, TeachingMaterialActivity.class));
     }
 
     @OnClick(R.id.home_teaching_auxiliary_item)
     void onTeachingAuxiliaryClick() {
-        showToast("onTeachingAuxiliaryClick", Toast.LENGTH_SHORT);
+        ActivityUtil.startActivitySafely(this, new Intent(this, TeachingAuxiliaryActivity.class));
     }
 
     @OnClick(R.id.home_note_item)
     void onNoteItemClick() {
-        showToast("onNoteItemClick", Toast.LENGTH_SHORT);
+        ActivityUtil.startActivitySafely(this, getPackageManager().getLaunchIntentForPackage("com.onyx.android.note"));
+    }
+
+    @OnClick(R.id.home_dictionary_item)
+    void onDictionaryItemClick() {
+        ActivityUtil.startActivitySafely(this, getPackageManager().getLaunchIntentForPackage("com.onyx.dict"));
+    }
+
+    private Intent getEduIntent() {
+        Intent intent = new Intent();
+        intent.setClassName("com.onyx.android.edu", "com.onyx.android.edu.ChooseExerciseActivity");
+        return intent;
+    }
+
+    private Intent getSettingIntent() {
+        Intent intent = new Intent();
+        intent.setClassName("com.onyx.android.libsetting", "con.onyx.android.libsetting.view.activity.DeviceMainSettingActivity");
+        return intent;
     }
 
     @OnClick(R.id.home_exam_item)
     void onExamItemClick() {
-        showToast("onExamItemClick", Toast.LENGTH_SHORT);
+        Intent intent = getEduIntent();
+        intent.putExtra(EDU_INTENT_CONTENT_TYPE, EDU_INTENT_CONTENT_TYPE_EXAM);
+        ActivityUtil.startActivitySafely(this, intent);
     }
 
     @OnClick(R.id.home_practice_item)
     void onPracticeItemClick() {
-        showToast("onPracticeItemClick", Toast.LENGTH_SHORT);
+        Intent intent = getEduIntent();
+        intent.putExtra(EDU_INTENT_CONTENT_TYPE, EDU_INTENT_CONTENT_TYPE_PRACTISE);
+        ActivityUtil.startActivitySafely(this, intent);
     }
 
-    private void showToast(int resId, int duration) {
-        showToast(getString(resId), duration);
-    }
-
-    private void showToast(String message, int duration) {
-        Toast.makeText(this, message, duration).show();
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            ActivityUtil.startActivitySafely(this, getSettingIntent());
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

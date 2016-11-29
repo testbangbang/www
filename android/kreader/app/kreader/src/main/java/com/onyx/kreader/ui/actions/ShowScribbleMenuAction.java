@@ -349,7 +349,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         actionCallback.onClicked(action);
         switch (action) {
             case SCRIBBLE_DRAG:
-                changeDragIcon();
+                switchDragFunc(false);
                 break;
             case SCRIBBLE_WIDTH:
                 break;
@@ -375,6 +375,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 break;
             case SCRIBBLE_ERASER_PART:
             case SCRIBBLE_ERASER_ALL:
+                switchDragFunc(true);
                 selectShapeAction = null;
                 break;
             case SCRIBBLE_PENCIL:
@@ -383,10 +384,18 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             case SCRIBBLE_TRIANGLE:
             case SCRIBBLE_CIRCLE:
             case SCRIBBLE_SQUARE:
+                switchDragFunc(true);
                 selectEraserAction = null;
                 break;
             case SCRIBBLE_CUSTOM_WIDTH:
                 showCustomLineWidthDialog();
+                break;
+            case SCRIBBLE_WIDTH1:
+            case SCRIBBLE_WIDTH2:
+            case SCRIBBLE_WIDTH3:
+            case SCRIBBLE_WIDTH4:
+            case SCRIBBLE_WIDTH5:
+                switchDragFunc(true);
                 break;
         }
     }
@@ -398,13 +407,14 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             @Override
             public void done(int lineWidth) {
                 useStrokeWidth(readerDataHolder, lineWidth);
+                switchDragFunc(true);
             }
         });
         customLineWidth.show();
     }
 
-    private void changeDragIcon(){
-        isDrag = !isDrag;
+    private void switchDragFunc(boolean alwaysDisable){
+        isDrag = !alwaysDisable && !isDrag;
         scribbleViewHolderMap.get(ReaderMenuAction.SCRIBBLE_DRAG).setImageResource(R.id.content_view,
                 isDrag ? R.drawable.ic_drag : R.drawable.ic_drag_forbid);
     }

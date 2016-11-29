@@ -30,7 +30,7 @@
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="alertDialogTheme">@style/OnyxAppCompat.AlertDialog</item>
-
+        <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
     </style>
 
     <style name="OnyxAppCompat.AlertDialog" parent="Theme.AppCompat.Light.Dialog">
@@ -40,6 +40,11 @@
     </style>
 
     <style name="OnyxAppCompat.EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.ButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/default_button_background</item>
         <item name="android:textColor">@color/primary_text_device_default_light</item>
     </style>
 
@@ -135,6 +140,14 @@
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:clickable">true</item>
         <item name="android:background">@drawable/imagebtn_bg</item>
+    </style>
+
+    <style name="global_activities_right_function_layout">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginRight">30dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentRight">true</item>
     </style>
 
     <style name="global_activities_back_btn_category_image">
@@ -250,6 +263,13 @@
         <item name="weight">1</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="dialog_progress" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 
 </resources>
