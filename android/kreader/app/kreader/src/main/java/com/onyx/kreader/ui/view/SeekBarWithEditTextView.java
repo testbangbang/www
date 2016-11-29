@@ -48,10 +48,10 @@ public class SeekBarWithEditTextView extends LinearLayout {
             }
             switch (mDirection) {
                 case ADD:
-                    setSeekBarProgress(seekBar.getProgress() + stepSize);
+                    setSeekBarProgress(Math.min(seekBar.getProgress() + stepSize, seekBar.getMax()));
                     break;
                 case MINUS:
-                    setSeekBarProgress(seekBar.getProgress() - stepSize);
+                    setSeekBarProgress(Math.max(seekBar.getProgress() - stepSize, 0));
                     break;
                 default:
                     break;
