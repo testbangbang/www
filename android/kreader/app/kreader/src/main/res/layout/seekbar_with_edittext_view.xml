@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:layout_margin="5dp">
+
+    <TextView
+        android:textStyle="bold"
+        android:textSize="@dimen/dialog_common_text_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/current_value"
+        android:id="@+id/textView_tittle"
+        android:layout_alignParentTop="true"
+        android:layout_alignBaseline="@+id/editText_ValueInput"
+        android:textColor="@android:color/black"
+        android:layout_alignParentLeft="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="3"
+        android:id="@+id/editText_ValueInput"
+        android:focusable="true"
+        android:text=""
+        android:textColor="@android:color/black"
+        android:layout_toRightOf="@+id/textView_tittle" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/textView_tittle"
+        android:layout_below="@id/editText_ValueInput" >
+
+        <ImageView
+            android:layout_width="@dimen/dialog_set_value_image_size"
+            android:layout_height="@dimen/dialog_set_value_image_size"
+            android:id="@+id/imageView_MinusButton"
+            android:src="@drawable/ic_dialog_set_value_decrease"
+            android:focusable="true"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/image_button_bg"/>
+
+        <ImageView
+            android:layout_width="@dimen/dialog_set_value_image_size"
+            android:layout_height="@dimen/dialog_set_value_image_size"
+            android:id="@+id/imageView_AddButton"
+            android:src="@drawable/ic_dialog_set_value_increase"
+            android:focusable="true"
+            android:background="@drawable/image_button_bg"
+            android:layout_alignParentRight="true" />
+
+        <SeekBar
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:focusable="true"
+            android:layout_toRightOf="@id/imageView_MinusButton"
+            android:layout_toLeftOf="@id/imageView_AddButton"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:max="20"
+            android:id="@+id/seekBar_valueControl" />
+    </RelativeLayout>
+</RelativeLayout>
