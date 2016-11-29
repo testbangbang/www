@@ -55,4 +55,7 @@
     <string name="gamma_correction">Contrast</string>
     <string name="outOfRangRerror">Out of Range</string>
     <string name="illegalInput">Illegal Input</string>
+
+    <string name="loading">Loading…</string>
+
 </resources>
