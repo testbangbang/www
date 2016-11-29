@@ -103,6 +103,7 @@ public class AlReaderWrapper {
     private AlEngineOptions createEngineOptions(final Context context, final ReaderPluginOptions pluginOptions) {
         engineOptions = new AlEngineOptions();
         engineOptions.appInstance = context;
+        engineOptions.runInOneThread = true;
         engineOptions.font_catalog = pluginOptions.getFontDirectories().get(0);
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
