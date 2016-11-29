@@ -429,7 +429,12 @@ public class ReaderDataHolder {
         closeActiveDialogs();
         closeTts();
         closeNoteManager();
+        resetHandlerManager();
         closeDocument(callback);
+    }
+
+    private void resetHandlerManager() {
+        getHandlerManager().resetToDefaultProvider();
     }
 
     private void closeDocument(final BaseCallback callback) {

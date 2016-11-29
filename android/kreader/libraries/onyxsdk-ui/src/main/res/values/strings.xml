@@ -63,5 +63,6 @@
     <string name="custom_line_width">Custom Line Width</string>
     <string name="line_width_preview">Line width to preview</string>
     <string name="current_value">Current value:</string>
-
+    <string name="custom_value">The custom value</string>
+    <string name="reader_layer_menu_slideshow">Slideshow</string>
 </resources>

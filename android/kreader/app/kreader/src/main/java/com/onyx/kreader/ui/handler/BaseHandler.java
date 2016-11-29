@@ -148,6 +148,12 @@ public abstract class BaseHandler {
         action.execute(readerDataHolder, null);
     }
 
+    public void nextScreen(ReaderDataHolder readerDataHolder, BaseCallback callback) {
+        readerDataHolder.setPreRenderNext(true);
+        final NextScreenAction action = new NextScreenAction();
+        action.execute(readerDataHolder, callback);
+    }
+
     public void prevScreen(ReaderDataHolder readerDataHolder) {
         readerDataHolder.setPreRenderNext(false);
         final PreviousScreenAction action = new PreviousScreenAction();

@@ -225,4 +225,11 @@
   <string name="already_at_maximum_page_margins">已经是最大页面边距!</string>
   <string name="already_at_minimum_page_margins">已经是最小页面边距!</string>
   <string name="make_text_bold">字体加粗</string>
+  <string name="dialog_slideshow_title">自动翻页</string>
+  <string name="dialog_slideshow_intervals_title">翻页间隔 (秒)</string>
+  <string name="dialog_slideshow_max_page_count_title">页数设置</string>
+  <string name="dialog_slideshow_statistic_duration">用时: </string>
+  <string name="dialog_slideshow_statistic_page_count">翻页: </string>
+  <string name="dialog_slideshow_statistic_start_battery">初始电量: </string>
+  <string name="dialog_slideshow_statistic_end_battery">当前电量: </string>
 </resources>
