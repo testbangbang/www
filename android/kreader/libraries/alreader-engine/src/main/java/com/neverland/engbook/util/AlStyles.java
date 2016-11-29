@@ -20,41 +20,19 @@ public final class AlStyles {
 
 	
 	// text style specific value
-	public static final int	PAR_STYLE_BOLD =						0x00000001;
-	public static final int	PAR_STYLE_ITALIC =						0x00000002;	
-	public static final int	PAR_STYLE_LINK =						0x00000004;
-	public static final int	PAR_STYLE_SUP =							0x00000008;
-	public static final int	PAR_STYLE_SUB =							0x00000010;
-	public static final int	PAR_STYLE_UNDER =						0x00000020;
-	public static final int	PAR_STYLE_STRIKE =						0x00000040;
-	public static final int	PAR_STYLE_CODE =						0x00000080;
-	public static final int	PAR_STYLE_RAZR =						0x00000100;
-	public static final int	PAR_STYLE_HIDDEN =						0x00000200;
-	public static final int PAR_STYLE_MASK = 						0x000003ff; // !!
-	public static final int PAR_STYLE_IMASK = 						0xfffffc00; // !!
-	public static final int PAR_STYLE_ICHARMASK =						0xfc00;
-	
-	/*public static final long	PAR_TEXT =					0x0000000000000000L;
-	public static final long	PAR_DATE = 					0x0000000100000000L; //!
-	public static final long	PAR_STANZA =				0x0000000200000000L;
-	public static final long	PAR_POEM = 					0x0000000400000000L;	//?
-	public static final long	PAR_TABLE =					0x0000000800000000L; //?
-	public static final long 	PAR_UL =					0x0000001000000000L;
-	public static final long 	PAR_V =						0x0000002000000000L;
-	public static final long 	PAR_COVER =					0x0000004000000000L;
-	//public static final long 	PAR_UL =					0x0000008000000000L;
-	public static final long 	PAR_NATIVEJUST =			0x0000010000000000L;
-	public static final long 	PAR_FIRSTP =				0x0000020000000000L;
-	public static final long	PAR_NOTE =					0x0000040000000000L;
-	public static final long	PAR_ANNOTATION =			0x0000080000000000L; //!
-	public static final long	PAR_EPIGRAPH = 				0x0000100000000000L; //!
-	public static final long	PAR_AUTHOR	=				0x0000200000000000L; //!	
-	public static final long	PAR_SKIPFIRSTLet =  		0x0000400000000000L; //!
-	public static final long	PAR_CITE =					0x0000800000000000L;
-	public static final long	PAR_PRE =					0x0001000000000000L;
-	public static final long	PAR_TITLE =					0x0002000000000000L; //!
-	public static final long	PAR_SUBTITLE =				0x0004000000000000L; //!
-	public static final long	PAR_CUSTOM = 				0x0008000000000000L;	//?*/
+	public static final int	STYLE_BOLD =						0x00000001;
+	public static final int	STYLE_ITALIC =						0x00000002;
+	public static final int	STYLE_LINK =						0x00000004;
+	public static final int	STYLE_SUP =							0x00000008;
+	public static final int	STYLE_SUB =							0x00000010;
+	public static final int	STYLE_UNDER =						0x00000020;
+	public static final int	STYLE_STRIKE =						0x00000040;
+	public static final int	STYLE_CODE =						0x00000080;
+	public static final int	STYLE_RAZR =						0x00000100;
+	public static final int	STYLE_HIDDEN =						0x00000200;
+	public static final int STYLE_MASK = 						0x000003ff; // !!
+	public static final int STYLE_IMASK = 						0xfffffc00; // !!
+	public static final int STYLE_ICHARMASK =						0xfc00;
 
 	public static final long	PAR_TEXT =					0x0000000000000000L;
 	//public static final long	 = 							0x0000000100000000L; //! value use with PAR_NATIVEJUST
@@ -91,21 +69,15 @@ public final class AlStyles {
 	public static final long	MASK_FOR_FLETTER = 			0x000fffff000003ffL - PAR_NOTE;
 	public static final long	MASK_FOR_REMAPTEXT = 		PAR_PARAGRAPH_MASK - PAR_FIRSTP - PAR_NOTE;
 	
-	// paragraph native style
-	//public static final int	PAR_CENTER =							0x00001000;
-	//public static final int	PAR_LEFT = 								0x00002000;
-	//public static final int	PAR_RIGHT =								0x00004000;
-	//public static final int	PAR_NATIVE_R1 =							0x00008000;	
-	//public static final int	PAR_NATIVE_MASK =						0x0000f000;
-	
 	public static final int	PAR_CSS_MASK0 =	    					0x0ff00000;
 	
 	//...
 	// format specific value								// fb2				// html
-	public static final int	PAR_DESCRIPTION1 =						0x10000000; // description 		// head
-	public static final int	PAR_DESCRIPTION2 =						0x20000000; // title-info		// 
-	public static final int	PAR_DESCRIPTION3 =						0x40000000; // document-info	//
+	public static final long	PAR_DESCRIPTION1 =						0x10000000L; // description 		// head
+	public static final long	PAR_DESCRIPTION2 =						0x20000000L; // title-info		//
+	public static final long	PAR_DESCRIPTION3 =						0x40000000L; // document-info	//
 	public static final long	PAR_DESCRIPTION4 =						0x80000000L; // publich-info		//
+	public static final long	PAR_DESCRIPTIONMASK =					0xf0000000L;
 	
 	public static final long	PAR_UL_BASE = 				0xf000000000000000L;
 	
@@ -129,67 +101,40 @@ public final class AlStyles {
 	public static final long	PAR_UL_MASK = 				0xfL;
 	public static final long	PAR_UL_SHIFT = 	60;
 
-	// new long styles
-	public static final int	STYLE_ITALIC =		PAR_STYLE_ITALIC;
-	public static final int	STYLE_BOLD =		PAR_STYLE_BOLD;
-	public static final int	STYLE_LINK =		PAR_STYLE_LINK;
-	public static final int	STYLE_SUP =			PAR_STYLE_SUP;
-	public static final int	STYLE_SUB =			PAR_STYLE_SUB;
-	public static final int	STYLE_UNDER =		PAR_STYLE_UNDER;
-	public static final int	STYLE_STRIKE =		PAR_STYLE_STRIKE;
-	public static final int	STYLE_CODE =		PAR_STYLE_CODE;
-	public static final int	STYLE_RAZR =		PAR_STYLE_RAZR;
-	public static final int	STYLE_HIDDEN =		PAR_STYLE_HIDDEN;
-	
-	public static final long	SL_ITALIC =		PAR_STYLE_ITALIC;
-	public static final long	SL_BOLD =		PAR_STYLE_BOLD;
-	public static final long	SL_LINK =		PAR_STYLE_LINK;
-	public static final long	SL_SUP =		PAR_STYLE_SUP;
-	public static final long	SL_SUB =		PAR_STYLE_SUB;
-	public static final long	SL_UNDER =		PAR_STYLE_UNDER;
-	public static final long	SL_STRIKE =		PAR_STYLE_STRIKE;
-	public static final long	SL_CODE =		PAR_STYLE_CODE;
-	public static final long	SL_RAZR =		PAR_STYLE_RAZR;
-	public static final long 	SL_HIDDEN =		PAR_STYLE_HIDDEN;
-	
-	public static final long	SL_MASKFORLINK =	SL_LINK | SL_UNDER | SL_SUP | SL_SUB;
+	public static final long	SL_MASKFORLINK =	STYLE_LINK | STYLE_UNDER | STYLE_SUP | STYLE_SUB;
 	
 	public static final int		STYLE_BASE0 = 		0xE400; // ! special
 	//public static final int		STYLE_BASE1 = 		0xE000; // ! special	
 	public static final int		STYLE_BASE_MASK =	0xFC00; // ! special
 	//
 	
-	//public static final long	SL_MARKNOTE =		0x0000000000000200L;
-	public static final long	SL_BREAK =		  	0x0000000000000400L;		
+	public static final long	SL_BREAK =		  	0x0000000000000400L;
 	public static final long	SL_IMAGE =		  	0x0000000000000800L;	
 	public static final long	SL_MARK =			0x0000000000001000L;
 	public static final long	SL_PREV_EMPTY_1 =	0x0000000000002000L;
-	//public static final long	SL_SELECT =			0x0000000000002000L;
 	public static final long	SL_PREV_EMPTY_0 =	0x0000000000004000L;
 	public static final long	SL_PAR = 			0x0000000000008000L;
 	// Real Styles Paragraph
 	
-	public static final long	SL_INTER0 =			0x0000000000000000L;
-	public static final long	SL_INTER1 =			0x0000000000010000L;
-	public static final long	SL_INTER2 =			0x0000000000020000L;
-	public static final long	SL_INTER3 =			0x0000000000030000L;
-	public static final long	SL_INTER4 =			0x0000000000040000L;
-	public static final long	SL_INTER5 =			0x0000000000050000L;
-	public static final long	SL_INTER6 =			0x0000000000060000L;
-	public static final long	SL_INTER7 =			0x0000000000070000L;	
-	public static final long	SL_INTER_MASK =		0x0000000000070000L;
-	public static final long	SL_INTER_SHIFT =	16L;
+	public static final long	SL_MARKCOLOR0 =		0x0000000000000000L;
+	public static final long	SL_MARKCOLOR1 =		0x0000000000010000L;
+	public static final long	SL_MARKCOLOR2 =		0x0000000000020000L;
+	public static final long	SL_MARKCOLOR3 =		0x0000000000030000L;
+	public static final long	SL_MARKCOLOR4 =		0x0000000000040000L;
+	public static final long	SL_MARKCOLOR5 =		0x0000000000050000L;
+	public static final long	SL_MARKCOLOR6 =		0x0000000000060000L;
+	public static final long	SL_MARKCOLOR7 =		0x0000000000070000L;
+	public static final long	SL_MARKCOLOR_MASK =	0x0000000000070000L;
+	public static final long	SL_MARKCOLOR_SHIFT =16L;
 	
 	public static final long	SL_SELECT =			0x0000000000080000L;
-	//public static final long	SL_PREV_EMPTY_1 =	0x0000000000080000L;
-	//public static final long	SL_MARKNOTE =		0x0000000000080000L;
-	
-	public static final long	SL_INTER_ADD100 = 	0x0000000000000000L;
-	public static final long	SL_INTER_ADDTEXT = 	0x0000000000100000L;
-	public static final long	SL_INTER_ADDNOTES =	0x0000000000200000L;
-	public static final long	SL_INTER_ADDFONT = 	0x0000000000300000L;
-	public static final long	SL_INTER_ADDMASK = 	0x0000000000300000L;
-	public static final long	SL_INTER_ADDSHIF = 	20L;
+
+	public static final long	SL_INTER_TEXT = 	0x0000000000000000L;
+	public static final long	SL_INTER_100 = 		0x0000000000100000L;
+	public static final long	SL_INTER_NOTES =	0x0000000000200000L;
+	public static final long	SL_INTER_FONT = 	0x0000000000300000L;
+	public static final long	SL_INTER_MASK = 	0x0000000000300000L;
+	public static final long	SL_INTER_SHIFT = 	20L;
 	
 	public static final long	SL_REDLINE =		0x0000000000400000L;
 	public static final long	SL_SHADOW =			0x0000000000800000L;
@@ -290,12 +235,7 @@ public final class AlStyles {
 	public static final long	SL_IMAGE_IMASK =  	0xffffffffff7fffffL;
 	
 	public static final long	SL_MARKNOTE0 = 		0x0000100000000000L;
-	//public static final long	SL_PREV_EMPTY_1 =	0x00001000000000000L;
-	//public static final long	SL_IMAGE_OK =	  	0x0000100000000000L;
-	//public static final long	SL_IMAGE_MASK =	  	0x0000100000000000L;
-	//public static final long	SL_IMAGE_IMASK =  	0xffffefffffffffffL;
-	
-	//public static final long	LMASK_SPECIALHYHP = 0xffffee0ffffff7ffL;
+
 	public static final long	LMASK_SPECIALHYHP = 0xfffffe0ffffff7ffL;
 	
 	public static final long	SL_MARKCOVER =      0x0000200000000000L; 
@@ -327,17 +267,17 @@ public final class AlStyles {
 	public static final long	SL_UL_MASK = 		0xf;
 	public static final long	SL_UL_SHIFT = 		60;
 	
-	public static final long 	LMASK_REAL_FONT = 	/*SL_CODE |*/ SL_ITALIC | SL_BOLD | SL_FONT_MASK;	
-	public static final long 	LMASK_PAINT_FONT = 	SL_SUP | SL_SUB | SL_RAZR | SL_SIZE_MASK | SL_STRIKE  | SL_IMAGE | SL_MARKFIRTSTLETTER;
-	public static final long 	LMASK_DRAW_FONT = 	SL_COLOR_MASK | SL_SHADOW | SL_STRIKE | SL_MARKFIRTSTLETTER;// | STYLE_SELECT | STYLE_MARK | STYLE_UNDER | STYLE_STRIKE | STYLE_LINK;
+	public static final long 	LMASK_REAL_FONT = 	/*SL_CODE |*/ STYLE_ITALIC | STYLE_BOLD | SL_FONT_MASK;
+	public static final long 	LMASK_PAINT_FONT = 	STYLE_SUP | STYLE_SUB | STYLE_RAZR | SL_SIZE_MASK | STYLE_STRIKE  | SL_IMAGE | SL_MARKFIRTSTLETTER;
+	public static final long 	LMASK_DRAW_FONT = 	SL_COLOR_MASK | SL_SHADOW | STYLE_STRIKE | SL_MARKFIRTSTLETTER;// | STYLE_SELECT | STYLE_MARK | STYLE_UNDER | STYLE_STRIKE | STYLE_LINK;
 		
 	public static final long 	LMASK_CALC_STYLE = 	LMASK_REAL_FONT | LMASK_PAINT_FONT | SL_MARKFIRTSTLETTER | SL_KONTUR_MASK | SL_SHADOW;
 	public static final long 	LMASK_DRAW_STYLE = 	LMASK_CALC_STYLE | LMASK_DRAW_FONT | SL_SELECT | SL_MARK | SL_MARKFIRTSTLETTER | 
-														SL_KONTUR_MASK | SL_UNDER | SL_LINK | SL_STRIKE | SL_CHINEZEADJUST;
+														SL_KONTUR_MASK | STYLE_UNDER | STYLE_LINK | STYLE_STRIKE | SL_CHINEZEADJUST;
 	
-	public static final long 	LMASK_DRAWSPACIAL_STYLE = 	SL_SELECT | SL_MARK | SL_LINK | SL_UNDER;// | S_SHADOW;
+	public static final long 	LMASK_DRAWSPACIAL_STYLE = 	SL_SELECT | SL_MARK | STYLE_LINK | STYLE_UNDER;// | S_SHADOW;
 	
-	public static final long 	LDEFAULT_PAR_STYLE = SL_REDLINE | SL_HYPH | SL_INTER_ADDTEXT;
+	public static final long 	LDEFAULT_PAR_STYLE = SL_REDLINE | SL_HYPH | SL_INTER_TEXT;
 	
 	
 	public static final int    REMAP_MASKF = 0x0c;
@@ -354,106 +294,5 @@ public final class AlStyles {
 	
 	public static final long SL_FLETTER_RESTORE = ~(SL_COLOR_MASK | SL_SHADOW | SL_MARKFIRTSTLETTER | 
 														SL_FONT_MASK | SL_SIZE_MASK | SL_KONTUR_MASK); 
-	
-	// old int style
-	/*
-	public static final int	STYLE_ITALIC =		PAR_STYLE_ITALIC;
-	public static final int	STYLE_BOLD =		PAR_STYLE_BOLD;
-	public static final int	STYLE_LINK =		PAR_STYLE_LINK;
-	public static final int	STYLE_SUP =			PAR_STYLE_SUP;
-	public static final int	STYLE_SUB =			PAR_STYLE_SUB;
-	public static final int	STYLE_UNDER =		PAR_STYLE_UNDER;
-	public static final int	STYLE_STRIKE =		PAR_STYLE_STRIKE;
-	public static final int	STYLE_CODE =		PAR_STYLE_CODE;
-	public static final int	STYLE_RAZR =		PAR_STYLE_RAZR;
-	
-	public static final int	STYLE_MASKFORLINK =	STYLE_LINK | STYLE_UNDER | STYLE_SUP | STYLE_SUB;
-	
-	
-	
-	
-	//public static final int	S_STYLE_IMAGE =		0x0200;
-	public static final int	S_STYLE_IMAGE =		0x0800;
-	//
-	public static final int	S_STYLE_IMAGE_OK =	    	0x10000000;
-	public static final int	S_STYLE_IMAGE_MASK =		0x10000000;
-	public static final int	S_STYLE_IMAGE_IMASK =		0xefffffff;	
-	//
-	public static final int	STYLE_BREAK =		0x0400;
-	//public static final int	STYLE_INVISIBLE =	0x0800;
-	public static final int	STYLE_MARKNOTE =	0x0200;
-	
-	public static final int	STYLE_MARKFIRTSTLETTER =	0x1000; // remap on later to long!!!
-	
-	public static final int	STYLE_MARK =		0x1000;
-	public static final int	STYLE_SELECT =		0x2000;
-	public static final int	STYLE_PREV_EMPTY =	0x4000;
-	public static final int	STYLE_PAR = 		0x8000;
 
-	// Real Styles Paragraph
-	
-	public static final int	S_FONT_TEXT =		0x00000000;
-	public static final int	S_FONT_TITLE =		0x00010000;
-	public static final int	S_FONT_CODE =		0x00020000;
-	public static final int	S_FONT_NOTE =		0x00030000;
-	public static final int	S_FONT_MASK	=		0x00030000;
-	public static final int	S_FONT_IMASK =		0xfffcffff;
-	public static final int	S_FONT_SHIFT =		16;
-	
-	public static final int S_JUST_NONE =		0x00000000;
-	public static final int	S_JUST_LEFT =		0x00040000;
-	public static final int	S_JUST_RIGHT =		0x00080000;
-	public static final int	S_JUST_CENTER =  	0x000c0000;
-	public static final int	S_JUST_MASK = 		0x000c0000;
-	public static final int	S_JUST_SHIFT = 		18;
-	
-	public static final int	S_SIZE_0 = 			0x00000000;//default
-	public static final int	S_SIZE_1 =			0x00100000;//-1
-	public static final int	S_SIZE_2 =			0x00200000;//-2
-	public static final int	S_SIZE_3 = 			0x00300000;//-3
-	public static final int	S_SIZE_4 =			0x00400000;//+1
-	public static final int	S_SIZE_5 =			0x00500000;//+2
-	public static final int	S_SIZE_6 = 			0x00600000;//+3
-	public static final int	S_SIZE_7 =			0x00700000;//+4
-	public static final int	S_SIZE_MASK = 		0x00700000;
-	public static final int	S_SIZE_IMASK = 		0xff8fffff;
-	public static final int	S_SIZE_SHIFT = 		20;
-	
-	public static final int	S_REDLINE =			0x00800000;
-	
-	public static final int	S_COLOR_0 =			0x00000000; // 
-	public static final int	S_COLOR_1 =			0x01000000; // 
-	public static final int	S_COLOR_2 =			0x02000000; // 
-	public static final int	S_COLOR_3 =			0x03000000; // 
-	public static final int	S_COLOR_4 =			0x04000000; // 
-	public static final int	S_COLOR_5 =			0x05000000; // 
-	public static final int	S_COLOR_6 =			0x06000000; // 
-	public static final int	S_COLOR_7 =			0x07000000; // 
-	public static final int	S_COLOR_8 =			0x08000000; // 
-	public static final int	S_COLOR_9 =			0x09000000; // 
-	public static final int	S_COLOR_A =			0x0a000000; // 
-	public static final int	S_COLOR_B =			0x0b000000; // 
-	public static final int	S_COLOR_C =			0x0c000000; // 
-	public static final int	S_COLOR_D =			0x0d000000; // 
-	public static final int	S_COLOR_E =			0x0e000000; // 
-	public static final int	S_COLOR_F =			0x0f000000; // 
-	public static final int	S_COLOR_MASK = 		0x0f000000; 
-	public static final int	S_COLOR_IMASK =		0xf0ffffff;
-	public static final int	S_COLOR_SHIFT = 	24;
-	
-	public static final int	S_SHADOW =			0x10000000;	
-	public static final int	S_HYPH =			0x20000000;
-	public static final int	S_MARGL =			0x40000000;
-	public static final int	S_MARGR =			0x80000000;
-	
-	public static final int MASK_REAL_FONT = 	STYLE_CODE | STYLE_ITALIC | STYLE_BOLD | S_FONT_MASK;	
-	public static final int MASK_PAINT_FONT = 	STYLE_SUP | STYLE_SUB  | STYLE_RAZR | S_SIZE_MASK | S_STYLE_IMAGE;
-	public static final int MASK_DRAW_FONT = 	S_COLOR_MASK | S_SHADOW | STYLE_STRIKE;// | STYLE_SELECT | STYLE_MARK | STYLE_UNDER | STYLE_STRIKE | STYLE_LINK;
-		
-	public static final int MASK_CALC_STYLE = 	MASK_REAL_FONT | MASK_PAINT_FONT;
-	public static final int MASK_DRAW_STYLE = 	MASK_CALC_STYLE | MASK_DRAW_FONT | STYLE_SELECT | STYLE_MARK;
-	
-	public static final int MASK_DRAWSPACIAL_STYLE = 	STYLE_SELECT | STYLE_MARK | STYLE_LINK | STYLE_UNDER;// | S_SHADOW;
-	
-	public static final int DEFAULT_PAR_STYLE = S_REDLINE | S_HYPH;*/
 }

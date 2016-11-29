@@ -1,7 +1,6 @@
 package com.neverland.engbook.forpublic;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 
 
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_HYPH_LANG;
@@ -44,8 +43,7 @@ public class AlEngineOptions {
 	/**
 	 *
 	 */
-    public Context							appInstance;
-
+	public Context								appInstance;
 	/**
 	 * некоторые ньюансы форматирования текста на странице - устанавливать в TRUE только если локаль устройства - китайская
 	 */
@@ -65,4 +63,7 @@ public class AlEngineOptions {
 	public EngBookMyType.TAL_TABLEMODE			tableMode = EngBookMyType.TAL_TABLEMODE.BOTH;
 
 
+	public boolean 								runInOneThread = false;
+
+	public EngSelectionCorrecter				selectCorrecter = null;
 }

@@ -102,7 +102,7 @@ class AlThreadData {
 		}
 	}
 	
-	public static void startThread(AlThreadData param, TAL_THREAD_TASK task) {
+	/*public static void startThread(AlThreadData param, TAL_THREAD_TASK task) {
 		while (param.getWork0()) ;			
 
 		stopThread(param);
@@ -113,10 +113,94 @@ class AlThreadData {
 		param.id = new AlThread(param, task);
 
 		while (!param.getWork1()) ;
+	}*/
+
+	public static void startThread(AlThreadData param, TAL_THREAD_TASK task, boolean oneThread) {
+		if (oneThread) {
+			param.clearWork1();
+			param.setWork0();
+			param.task = task;
+			param.realRun();
+		} else {
+			while (param.getWork0()) ;
+
+			stopThread(param);
+
+			param.clearWork1();
+
+			param.setWork0();
+			param.id = new AlThread(param, task);
+
+			while (!param.getWork1()) ;
+		}
 	}
 	
 	public static void stopThread(AlThreadData param) {
 		while (param.getWork0()) ;
 		param.id = null;		
+	}
+
+
+	protected void realRun() {
+		try {
+
+			TAL_NOTIFY_RESULT res = TAL_NOTIFY_RESULT.OK;
+			TAL_NOTIFY_ID id;
+
+			this.setWork1();
+
+			this.sendNotifyForUIThread(TAL_NOTIFY_ID.NEEDREDRAW, TAL_NOTIFY_RESULT.OK);
+			this.sendNotifyForUIThread(TAL_NOTIFY_ID.STARTTHREAD, TAL_NOTIFY_RESULT.OK);
+
+			id = TAL_NOTIFY_ID.NEEDREDRAW;
+			switch (this.task) {
+				case OPENBOOK:
+					id = TAL_NOTIFY_ID.OPENBOOK;
+					try {
+						res = this.book_object.openBookInThread(this.param_char1, this.param_void1);
+					} catch (Exception e) {
+						e.printStackTrace();
+						res = TAL_NOTIFY_RESULT.EXCEPT;
+					}
+					break;
+	    	/*case CLOSEBOOK:
+	    		id = TAL_NOTIFY_ID.CLOSEBOOK;
+	    		res = param.book_object.closeBookInThread();
+	    		break;*/
+				case CREATEDEBUG:
+					id = TAL_NOTIFY_ID.CREATEDEBUG;
+					try {
+						res = this.book_object.createDebugFileInThread(this.param_char1);
+					} catch (Exception e) {
+						e.printStackTrace();
+						res = TAL_NOTIFY_RESULT.EXCEPT;
+					}
+					break;
+				case FIND:
+					id = TAL_NOTIFY_ID.FIND;
+					try {
+						res = this.book_object.findTextInThread(this.param_char1);
+					} catch (Exception e) {
+						e.printStackTrace();
+						res = TAL_NOTIFY_RESULT.EXCEPT;
+					}
+					break;
+				case NEWCALCPAGES:
+					id = TAL_NOTIFY_ID.NEWCALCPAGES;
+					try {
+						res = this.book_object.calcPagesInThread();
+					} catch (Exception e) {
+						e.printStackTrace();
+						res = TAL_NOTIFY_RESULT.EXCEPT;
+					}
+					break;
+			}
+			this.sendNotifyForUIThread(TAL_NOTIFY_ID.STOPTHREAD, TAL_NOTIFY_RESULT.OK);
+			this.clearWork0();
+			this.sendNotifyForUIThread(id, res);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

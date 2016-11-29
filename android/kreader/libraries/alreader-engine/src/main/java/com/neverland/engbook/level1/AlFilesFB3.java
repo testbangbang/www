@@ -19,6 +19,7 @@ public class AlFilesFB3 extends AlFilesZIPRecord {
 
         size = 0;
         addFilesToRecord(LEVEL1_FB3_FILE_FORCOVER, AlOneZIPRecord.SPECIAL_CONTENT);
+        addFilesToRecord(LEVEL1_FB3_FILE_CONTENTTYPES, AlOneZIPRecord.SPECIAL_CONTENT);
         addFilesToRecord(LEVEL1_FB3_FILE_RELS, AlOneZIPRecord.SPECIAL_FIRST);
         addFilesToRecord(LEVEL1_ZIP_DESCRIPTION_FB3, AlOneZIPRecord.SPECIAL_CONTENT);
         addFilesToRecord(LEVEL1_ZIP_FIRSTNAME_FB3, AlOneZIPRecord.SPECIAL_NONE);

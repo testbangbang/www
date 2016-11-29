@@ -2,15 +2,24 @@ package com.neverland.engbook.util;
 
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
+import android.graphics.Picture;
+import android.graphics.PorterDuff;
+import android.graphics.RectF;
 
+
+import com.larvalabs.svgandroid.SVG;
+import com.larvalabs.svgandroid.SVGParser;
 import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level2.AlFormat;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 public class AlImage {
 
-	private int			storeIndex = 0;
+	private int					storeIndex = 0;
 	private final String[]		storeImage = {null, null};
 	private final AlBitmap[]	storeBitmap = {new AlBitmap(), new AlBitmap()};
 	private final int[]			storeScale = {0, 0};
@@ -36,7 +45,6 @@ public class AlImage {
 	
 	private final BitmapFactory.Options opts = new BitmapFactory.Options();
 
-	
 	public AlBitmap getImage(AlOneImage ai, int scale) {
 		if (storeImage[storeIndex] != null &&
 				storeImage[storeIndex].contentEquals(ai.name) &&
@@ -64,30 +72,59 @@ public class AlImage {
 			if (!usePrevBitmap) {
 				storeBitmap[storeIndex].bmp.recycle();
 				storeBitmap[storeIndex].bmp = null;
+				storeBitmap[storeIndex].canvas = null;
 				System.gc();
 			}
 		}
-		
-		storeImage[storeIndex] = null;
-				
-		opts.inJustDecodeBounds = false;
-		opts.inSampleSize = (scale - 1 > 0) ? 1 << (scale - 1) : 1;//(scale != 0) ? 1 << scale : 1;
-		opts.inBitmap = usePrevBitmap ? storeBitmap[storeIndex].bmp : null;
-		
-		if (ai.data != null) {
-			storeBitmap[storeIndex].bmp = BitmapFactory.decodeByteArray(ai.data, 0, ai.data.length, opts);
-			storeBitmap[storeIndex].height = opts.outHeight; 
-			storeBitmap[storeIndex].width = opts.outWidth;
-			storeImage[storeIndex] = ai.name;
-			storeScale[storeIndex] = scale;
-		}
+
+		if (ai.otherRender != null) {
+
+			if (ai.otherRender instanceof SVG) {
+				EngBitmap.reCreateBookBitmap(storeBitmap[storeIndex], ai.width, ai.height, null);
+
+				storeBitmap[storeIndex].canvas.drawColor(0xffffffff, PorterDuff.Mode.CLEAR );
+
+				try {
+					((SVG) ai.otherRender).getPicture().draw(storeBitmap[storeIndex].canvas);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				storeBitmap[storeIndex].height = ai.width;
+				storeBitmap[storeIndex].width = ai.height;
+				storeImage[storeIndex] = ai.name;
+				storeScale[storeIndex] = scale;
+			}
+
+        } else
+		{
+            storeImage[storeIndex] = null;
+
+            opts.inJustDecodeBounds = false;
+            opts.inSampleSize = (scale - 1 > 0) ? 1 << (scale - 1) : 1;//(scale != 0) ? 1 << scale : 1;
+            opts.inBitmap = usePrevBitmap ? storeBitmap[storeIndex].bmp : null;
+
+			if (ai.lowQuality) {
+				opts.inPreferredConfig = Bitmap.Config.RGB_565;
+			} else {
+				opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+			}
+
+            if (ai.data != null) {
+                storeBitmap[storeIndex].bmp = BitmapFactory.decodeByteArray(ai.data, 0, ai.data.length, opts);
+                storeBitmap[storeIndex].height = opts.outHeight;
+                storeBitmap[storeIndex].width = opts.outWidth;
+                storeImage[storeIndex] = ai.name;
+                storeScale[storeIndex] = scale;
+            }
+        }
 		
 		if (storeBitmap[storeIndex].bmp != null)					
 			return storeBitmap[storeIndex];
 		
 		return null;
 	}
-	
+
 	public boolean scanImage(AlOneImage ai) {
 		
 		opts.inJustDecodeBounds = true;
@@ -95,13 +132,39 @@ public class AlImage {
 		opts.inBitmap = null;
 		
 		if (ai.data != null) {
-			BitmapFactory.decodeByteArray(ai.data, 0, ai.data.length, opts);
-			if (opts.outHeight != -1 && opts.outWidth != -1) {
-				ai.height = opts.outHeight;
-				ai.width = opts.outWidth;
-				if (opts.outMimeType.contentEquals(""))
-				return true;
-			}
+
+            if (ai.data.length > 4 && ai.data[0] == '<' && ai.data[1] == '?' && ai.data[2] == 'x' && ai.data[3] == 'm' && ai.data[4] == 'l') {
+				try {
+					SVG svg = SVGParser.getSVGFromInputStream(new ByteArrayInputStream(ai.data));
+					if (svg != null) {
+						Picture pict = svg.getPicture();
+						if (pict != null) {
+							ai.width = pict.getWidth();
+							ai.height = pict.getHeight();
+
+							if (ai.width > 0 && ai.height > 0) {
+								ai.otherRender = svg;
+								return true;
+							}
+
+							ai.width = ai.height = -1;
+
+							return false;
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+            } else
+			{
+                BitmapFactory.decodeByteArray(ai.data, 0, ai.data.length, opts);
+                if (opts.outHeight != -1 && opts.outWidth != -1) {
+                    ai.height = opts.outHeight;
+                    ai.width = opts.outWidth;
+                    if (opts.outMimeType.contentEquals(""))
+                        return true;
+                }
+            }
 		}
 		
 		return false;

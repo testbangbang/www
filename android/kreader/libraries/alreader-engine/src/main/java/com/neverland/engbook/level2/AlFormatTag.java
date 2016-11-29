@@ -10,7 +10,9 @@ public class AlFormatTag {
 	protected final static int TAG_FCHARSET = 			-1882897882;
 	protected final static int TAG_NUMFILES = 			-1882631503;	
 	protected final static int TAG_SUBJECT = 			-1867885268;
+	protected final static int TAG_CUSTOM_INFO =		-1824032374;
 	protected final static int TAG_TITLE_INFO =   		-1819862269;
+	protected final static int TAG_FB3_RELATIONS =		-1808160095;
 	protected final static int TAG_DESCRIPTION =  		-1724546052;
 	protected final static int TAG_FULL_PATH =			-1723292509;
 	protected final static int TAG_RDBLQUOTE = 			-1723054592;	
@@ -27,6 +29,7 @@ public class AlFormatTag {
 	
 	protected final static int TAG_EMDASH = 			-1299683270;		
 	protected final static int TAG_ENDASH = 			-1298759749;
+	protected final static int TAG_PREAMBLE = 			-1293062932;
 	protected final static int TAG_LINE_BREAK = 		-1291299354;
 	protected final static int TAG_LIST_ITEM = 			-1270571294;
 	protected final static int TAG_FOOTNOTEREFERENCE = 	-1269205525;
@@ -48,6 +51,7 @@ public class AlFormatTag {
 	protected final static int TAG_STRIKE = 			 -891985998;
 	protected final static int TAG_STRONG = 			 -891980137;
 	protected final static int TAG_TARGET = 			 -880905839;
+	protected final static int TAG_BINARYDATA =		 	 -879946965;
 	protected final static int TAG_IMAGEDATA = 			 -877694075;
 	protected final static int TAG_REALFILE = 			 -859615206;
 	protected final static int TAG_FILE_AS = 			 -855048669;
@@ -61,9 +65,11 @@ public class AlFormatTag {
 	protected final static int TAG_COLORTBL = 			 -628805253;
 	protected final static int TAG_NOSUPERSUB = 		 -578906714;
 	protected final static int TAG_METADATA = 			 -450004177;
+	protected final static int TAG_CONTENTTYPE =		 -388178125;
 	protected final static int TAG_RELATIONSHIP = 		 -261851592;	
 	protected final static int TAG_FIRST_NAME = 		 -207161464;
 	protected final static int TAG_ROOTFILE =		 	 -166316706;
+	protected final static int TAG_BINDATA =			 -108228303;
 	protected final static int TAG_FB3_BODY = 			  -41282888;
 	protected final static int TAG_RELATIONS = 			   -7649801;
 
@@ -104,6 +110,7 @@ public class AlFormatTag {
 	protected final static int TAG_QJ = 					   3609;
 	protected final static int TAG_QL = 					   3611;
 	protected final static int TAG_QR = 					   3617;
+    protected final static int TAG_TC =					       3695;
 	protected final static int TAG_TD = 					   3696;
 	protected final static int TAG_TH = 					   3700;
 	protected final static int TAG_TR = 					   3710;
@@ -127,13 +134,15 @@ public class AlFormatTag {
 	protected final static int TAG_SUB = 					 114240;
 	protected final static int TAG_SUP = 					 114254;	
 	protected final static int TAG_TAB = 					 114581;
+    protected final static int TAG_TBL =					 114622;
 	protected final static int TAG_TOC =					 115016;
 	protected final static int TAG_VAL = 					 116513;
 	protected final static int TAG_XML = 					 118807;
 
 	protected final static int TAG_ANSI = 					2999107;
 	protected final static int TAG_BLIP = 					3026673;
-	protected final static int TAG_BODY = 					3029410;	
+	protected final static int TAG_BODY = 					3029410;
+	protected final static int TAG_CELL = 					3049826;
 	protected final static int TAG_CITE = 					3053911;
 	protected final static int TAG_CODE = 					3059181;
 	protected final static int TAG_DATE = 					3076014;
@@ -154,6 +163,7 @@ public class AlFormatTag {
 	protected final static int TAG_NOTE = 					3387378;
 	protected final static int TAG_PAGE = 					3433103;
 	protected final static int TAG_PARD = 					3433443;
+	protected final static int TAG_PART =					3433459;
 	protected final static int TAG_PICT = 					3440682;	
 	protected final static int TAG_POEM = 					3446503;
 	protected final static int TAG_ROLE = 					3506294;
@@ -163,9 +173,11 @@ public class AlFormatTag {
 	protected final static int TAG_TYPE = 					3575610;
 	protected final static int TAG_YEAR = 					3704893;
 
+	protected final static int TAG_CATEGORY =			   50511102;
 	protected final static int TAG_NICKNAME = 			   70690926;
 	protected final static int TAG_ALIGN = 				   92903173;
 	protected final static int TAG_ASIDE = 				   93111608;
+	protected final static int TAG_FB3_CLASSIFICATION =	   93464956;
 	protected final static int TAG_CLASS = 				   94742904;
 	protected final static int TAG_EMBED = 				   96620249;
 	protected final static int TAG_EVENT = 				   96891546;
@@ -184,12 +196,14 @@ public class AlFormatTag {
 	protected final static int TAG_VALUE = 				  111972721;
 	protected final static int TAG_STYLESHEET = 		  158213710;
 
+    protected final static int TAG_GRIDSPAN =			  318992272;
 	protected final static int TAG_SUBSCRIPTION = 		  341203229;
 	protected final static int TAG_MIDDLE_NAME = 		  374896579;
 	protected final static int TAG_CLASSIFICATION =	  	  382350310;
 	protected final static int TAG_PERIODICAL = 		  384952326;
 	protected final static int TAG_BOOKMARKSTART = 		  388493548;
 	protected final static int TAG_FOOTNOTE = 			  395040096;
+	protected final static int TAG_OVERRIDE =			   529996748;
 	protected final static int TAG_LDBLQUOTE = 			  531737594;
 	protected final static int TAG_CHARSET = 			  739074380;
 	protected final static int TAG_HYPERLINK = 			  751294566;
@@ -200,6 +214,7 @@ public class AlFormatTag {
 	
 	protected final static int TAG_CREATOR = 			 1028554796;
 protected final static int TAG_TABLE_OF_CONTENT_SOURCE = 1110150758;
+	protected final static int TAG_PARTNAME =			 1188998398;
 	protected final static int TAG_EMPHASIS = 			 1189352828;
 	protected final static int TAG_BOOK_TITLE = 		 1208278644;
 	protected final static int TAG_PROGRAM_USED = 		 1227120998;

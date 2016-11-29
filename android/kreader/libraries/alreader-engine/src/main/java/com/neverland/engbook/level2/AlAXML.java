@@ -19,11 +19,11 @@ import java.util.HashMap;
 
 public abstract class AlAXML extends AlFormat {
 
-	protected static final int UNKNOWN_FILE_SOURCE_NUM = 0x7fff;
+	protected static final int UNKNOWN_FILE_SOURCE_NUM = 0x0fff;
 
 	protected static final int LEVEL2_XML_PARAMETER_VALUE_LEN =	4096;
 
-	private static final int STATE_XML_TEXT =  				0x0000;
+	protected static final int STATE_XML_TEXT =  				0x0000;
 	private static final int STATE_XML_STAG =  				0x0001;
 	private static final int STATE_XML_TAG =  					0x0002;
 	private static final int STATE_XML_TAG_ERROR =  			0x0003;
@@ -74,6 +74,7 @@ public abstract class AlAXML extends AlFormat {
 			case AlFormatTag.TAG_SRC:
 			case AlFormatTag.TAG_ENCODING:
 			case AlFormatTag.TAG_CHARSET:
+			case AlFormatTag.TAG_ALIGN:
 			case AlFormatTag.TAG_CONTENT:
 				return true;
 		}
@@ -188,7 +189,7 @@ public abstract class AlAXML extends AlFormat {
 							newParagraph();
 					}
 				} else {
-					if (ch == 0x20 && (paragraph & (AlStyles.PAR_PRE | AlStyles.PAR_STYLE_CODE)) == 0) {
+					if (ch == 0x20 && (paragraph & (AlStyles.PAR_PRE | AlStyles.STYLE_CODE)) == 0) {
 						
 					} else {		
 						parPositionS = allState.start_position_par;
@@ -210,7 +211,7 @@ public abstract class AlAXML extends AlFormat {
 				if (allState.text_present) {					
 					stored_par.data[stored_par.cpos++] = ch;
 				} else {
-					if (ch == 0x20 && ((paragraph & (AlStyles.PAR_PRE | AlStyles.PAR_STYLE_CODE)) == 0)) {
+					if (ch == 0x20 && ((paragraph & (AlStyles.PAR_PRE | AlStyles.STYLE_CODE)) == 0)) {
 						
 					} else {
 						if (ch == 0x20)
@@ -230,12 +231,17 @@ public abstract class AlAXML extends AlFormat {
             case AlFormatTag.TAG_TR:
             case AlFormatTag.TAG_TH:
             case AlFormatTag.TAG_TD:
+			case AlFormatTag.TAG_TBL:
+			case AlFormatTag.TAG_TC:
+			case AlFormatTag.TAG_GRIDSPAN:
+
                 newParagraph();
             }
             return true;
         }
 
 		switch (tag.tag) {
+			case AlFormatTag.TAG_TBL:
 			case AlFormatTag.TAG_TABLE:
 				if (allState.isOpened && currentTable.counter == 0)
 					newParagraph();
@@ -345,9 +351,9 @@ public abstract class AlAXML extends AlFormat {
 								s1.append((char)AlStyles.CHAR_LINK_E);
 								addTextFromTag(s1, false);
 
-								setTextStyle(AlStyles.PAR_STYLE_LINK);
+								setTextStyle(AlStyles.STYLE_LINK);
 								addTextFromTag(currentTable.title, false);
-								clearTextStyle(AlStyles.PAR_STYLE_LINK);
+								clearTextStyle(AlStyles.STYLE_LINK);
 							}
 
 							clearParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_MASK);
@@ -365,10 +371,10 @@ public abstract class AlAXML extends AlFormat {
                             currentTable = new AlOneTable();
                             currentTable.counter = cnt;
 						}
-					} else
+					}/* else
 					if (currentTable.counter == 2) {
 						allState.state_skipped_flag = false;
-					}
+					}*/
 
 					currentTable.counter--;
 				} else
@@ -387,20 +393,41 @@ public abstract class AlAXML extends AlFormat {
 							currentTable.start = allState.start_position_par;
 							setParagraphStyle(AlStyles.PAR_TABLE);
 						}
-					} else {
+					} /*else {
 						allState.state_skipped_flag = true;
-					}
+					}*/
 
 					currentTable.counter++;
 				} else {
 
 				}
 				return true;
+
+            case AlFormatTag.TAG_GRIDSPAN:
+                if (tag.closed) {
+
+                } else
+                if (!tag.ended) {
+
+                } else {
+                    StringBuilder s;
+                    s = tag.getATTRValue(AlFormatTag.TAG_VAL);
+                    if (s != null) {
+                        currentCell.colspan = InternalFunc.str2int(s, 10);
+                        if (currentCell.colspan < 1)
+                            currentCell.colspan = 1;
+                    }
+                }
+                return true;
+
+            case AlFormatTag.TAG_TC:
 			case AlFormatTag.TAG_TH:
 			case AlFormatTag.TAG_TD:
 				if (allState.isOpened && currentTable.counter == 1) {
 
 					if (tag.closed) {
+						clearParagraphStyle(AlStyles.SL_JUST_MASK);
+
 						currentCell.stop = size;
 						currentRow.cells.add(currentCell);
 						newParagraph();
@@ -422,7 +449,24 @@ public abstract class AlAXML extends AlFormat {
 						}
 
 						if (!tag.ended) {
-
+							if (tag.tag == AlFormatTag.TAG_TH) {
+								setParagraphStyle(AlStyles.SL_JUST_CENTER);
+							}
+							if (tag.tag != AlFormatTag.TAG_TC) {
+								s = tag.getATTRValue(AlFormatTag.TAG_ALIGN);
+								if (s != null) {
+									String ss = s.toString().toLowerCase();
+									if (ss.contentEquals("center")) {
+										setParagraphStyle(AlStyles.SL_JUST_CENTER);
+									} else
+									if (ss.contentEquals("left")) {
+										setParagraphStyle(AlStyles.SL_JUST_LEFT);
+									} else
+									if (ss.contentEquals("right")) {
+										setParagraphStyle(AlStyles.SL_JUST_RIGHT);
+									}
+								}
+							}
 						} else {
 							currentCell.stop = size;
 							currentRow.cells.add(currentCell);

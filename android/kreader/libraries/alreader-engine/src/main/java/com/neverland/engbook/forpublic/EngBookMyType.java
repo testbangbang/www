@@ -43,6 +43,27 @@ public class EngBookMyType {
 		NONE,
 	}
 
+	public enum TAL_BOOKMARK_TYPE {
+		MARK,
+		BOOKMARK,
+		CITE,
+	}
+
+	public enum TAL_BOOKMARK_COLOR{
+		NONE(0),
+		RED(2),
+		YELLOW(3),
+		BLUE(4),
+		GREEN(5),
+		PURPLE(6),
+		UNDERLINE(7);
+
+		public int numVal;
+		TAL_BOOKMARK_COLOR(int numVal) {
+			this.numVal = numVal;
+		}
+	}
+
 	/**
 	 * Используется в методе @see gotoPosition для определения необходмого способа перемещения позиции чтения в
 	 текущей книге
@@ -52,7 +73,8 @@ public class EngBookMyType {
 		PREVPAGE(2),
 		LASTPAGE(3),
 		FIRSTPAGE(4),
-		POSITION(5);
+		POSITION(5),
+		POSITION_WITH_CORRECT(6);
 		
 		private int numVal;
 		TAL_GOTOCOMMAND(int numVal) {
@@ -210,6 +232,9 @@ public class EngBookMyType {
 		DOCX,
 		ODT,
 		FB3,
+		CBZ,
+		RAR,
+		RARUnk,
 	}
 	
 }

@@ -4,8 +4,10 @@ import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
+import com.neverland.engbook.level1.AlFilesDocx;
 import com.neverland.engbook.level1.AlOneZIPRecord;
 import com.neverland.engbook.unicode.AlUnicode;
+import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.AlStylesOptions;
@@ -18,11 +20,49 @@ public class AlFormatDOCX extends AlAXML {
     protected int active_file = UNKNOWN_FILE_SOURCE_NUM;
     protected int active_type = 0x00;
 
+    private static final int DOCX_TEST_BUF_LENGTH = 1024;
+    private static final String DOCX_TEST_STR_1 = "<?mso-application progid=\"word.document\"?>";
+    private static final String DOCX_TEST_STR_2 = "<?xml";
+    private static final String DOCX_TEST_STR_3 = "<pkg:package";
+
+    private static final int DOCX_XML_STANDART	= 0;
+    private static final int DOCX_XML_WITH_PART	= 1;
+    private static final int DOCX_XML_WO_PART	= 2;
+
     public static boolean isDOCX(AlFiles a) {
-        //noinspection RedundantIfStatement
         if (a.getIdentStr().contentEquals("docx"))
             return true;
         return false;
+    }
+
+    public static int isDOCX_XML(AlFiles a) {
+
+        char[] buf_uc = new char[DOCX_TEST_BUF_LENGTH];
+        String s;
+
+        if (getTestBuffer(a, TAL_CODE_PAGES.CP1251, buf_uc, DOCX_TEST_BUF_LENGTH, true)) {
+            s = String.copyValueOf(buf_uc);
+
+            if (s.contains(DOCX_TEST_STR_1) && s.contains(DOCX_TEST_STR_2)) {
+
+                if (s.contains(DOCX_TEST_STR_3))
+                    return DOCX_XML_WITH_PART;
+                return DOCX_XML_WO_PART;
+            }
+        }
+
+        return 0;
+    }
+
+    private int			docx_type;
+    private int			image_start;
+    private int			image_stop;
+    private String		image_name = null;
+
+    public AlFormatDOCX() {
+        image_start = -1;
+        image_stop = -1;
+        image_name = null;
     }
 
     @Override
@@ -34,6 +74,8 @@ public class AlFormatDOCX extends AlAXML {
 
         aFiles = myParent;
 
+        docx_type = isDOCX_XML(aFiles);
+
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             aFiles.needUnpackData();
 
@@ -41,6 +83,8 @@ public class AlFormatDOCX extends AlAXML {
         styles = stl;
 
         size = 0;
+        active_file = UNKNOWN_FILE_SOURCE_NUM;
+        active_type = AlOneZIPRecord.SPECIAL_UNKNOWN;
 
         autoCodePage = false;
         setCP(TAL_CODE_PAGES.CP65001);
@@ -85,7 +129,7 @@ public class AlFormatDOCX extends AlAXML {
         paragraph = iType;
         allState.state_parser = 0;
         active_type = addon & 0xffff;
-        active_file = (addon >> 16) & 0xfff;
+        active_file = (addon >> 16) & 0x0fff;
         paragraph_level = (int) (level & LEVEL2_MASK_FOR_LEVEL);
         paragraph_tag = (int) ((level >> 31) & 0xffffffff);
         allState.state_skipped_flag = (addon & LEVEL2_FRM_ADDON_SKIPPEDTEXT) != 0;
@@ -97,7 +141,7 @@ public class AlFormatDOCX extends AlAXML {
     void formatAddonInt() {
         pariType = paragraph;
         parAddon = active_type & 0xffff;
-        parAddon += (active_file & 0xfff) << 16;
+        parAddon += (active_file & 0x0fff) << 16;
 
         parLevel = paragraph_level | (((long)paragraph_tag) << 31);
 
@@ -109,9 +153,9 @@ public class AlFormatDOCX extends AlAXML {
 			parAddon += LEVEL2_FRM_ADDON_SPECIALTEXT;*/
     }
 
-    static final int ALLSTYLES = AlStyles.PAR_STYLE_BOLD | AlStyles.PAR_STYLE_ITALIC |
-            AlStyles.PAR_STYLE_UNDER | AlStyles.PAR_STYLE_STRIKE |
-            AlStyles.PAR_STYLE_SUP | AlStyles.PAR_STYLE_SUB;
+    static final int ALLSTYLES = AlStyles.STYLE_BOLD | AlStyles.STYLE_ITALIC |
+            AlStyles.STYLE_UNDER | AlStyles.STYLE_STRIKE |
+            AlStyles.STYLE_SUP | AlStyles.STYLE_SUB;
 
 
     protected void clearStyles() {
@@ -246,17 +290,38 @@ public class AlFormatDOCX extends AlAXML {
         return false;
     }
 
+    private void addtestImage() {
+        if (allState.isOpened) {
+            if (image_start > 0) {
+                image_stop = tag.start_pos;
+                im.add(AlOneImage.add(image_name, image_start, image_stop, AlOneImage.IMG_BASE64));
+            }
+        }
+        image_start = -1;
+    }
+
+    private void testImage() {
+        image_start = -1;
+        if (allState.isOpened) {
+            StringBuilder s1 = tag.getATTRValue(AlFormatTag.TAG_ID);
+            if (s1 != null) {
+                image_name = s1.toString();
+            }
+            image_start = allState.start_position;
+        }
+    }
+
     protected  boolean addFootNotes() {
         StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_ID);
 
         if (s != null) {
             addTextFromTag((char)AlStyles.CHAR_LINK_S + "footnotes" + s + (char)AlStyles.CHAR_LINK_E, false);
 
-            setTextStyle(AlStyles.PAR_STYLE_LINK);
+            setTextStyle(AlStyles.STYLE_LINK);
             addTextFromTag("{", false);
             addTextFromTag(s, false);
             addTextFromTag("}", false);
-            clearTextStyle(AlStyles.PAR_STYLE_LINK);
+            clearTextStyle(AlStyles.STYLE_LINK);
 
             return true;
         }
@@ -270,9 +335,9 @@ public class AlFormatDOCX extends AlAXML {
         if (s != null) {
             addTextFromTag((char)AlStyles.CHAR_LINK_S + "endnotes" + s + (char)AlStyles.CHAR_LINK_E, false);
 
-            setTextStyle(AlStyles.PAR_STYLE_LINK);
+            setTextStyle(AlStyles.STYLE_LINK);
             addTextFromTag("(" + (char)0x2022 + ")", false);
-            clearTextStyle(AlStyles.PAR_STYLE_LINK);
+            clearTextStyle(AlStyles.STYLE_LINK);
 
             return true;
         }
@@ -304,12 +369,14 @@ public class AlFormatDOCX extends AlAXML {
                             newParagraph();
                     }
                 } else {
-                    if (ch == 0x20 && (paragraph & (AlStyles.PAR_PRE | AlStyles.PAR_STYLE_CODE)) == 0) {
+                    if (ch == 0x20 && (paragraph & (AlStyles.PAR_PRE | AlStyles.STYLE_CODE)) == 0) {
 
                     } else {
                         parPositionS = allState.start_position_par;
                         formatAddonInt();
                         parStart = size;
+                        parTableStart = currentTable.start;
+                        parTableCounter = currentTable.counter;
                         allState.text_present = true;
                         allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20);
                         size++;
@@ -324,7 +391,7 @@ public class AlFormatDOCX extends AlAXML {
                 if (allState.text_present) {
                     stored_par.data[stored_par.cpos++] = ch;
                 } else {
-                    if (ch == 0x20 && ((paragraph & (AlStyles.PAR_PRE | AlStyles.PAR_STYLE_CODE)) == 0)) {
+                    if (ch == 0x20 && ((paragraph & (AlStyles.PAR_PRE | AlStyles.STYLE_CODE)) == 0)) {
 
                     } else {
                         if (ch == 0x20)
@@ -361,7 +428,7 @@ public class AlFormatDOCX extends AlAXML {
 
 
     public boolean addImages() {
-        if (active_file != 0xfff) {
+        if (active_file != UNKNOWN_FILE_SOURCE_NUM) {
             StringBuilder sId = tag.getATTRValue(AlFormatTag.TAG_ID);
 
             if (sId == null)
@@ -397,11 +464,11 @@ public class AlFormatDOCX extends AlAXML {
                 return true;
             case AlFormatTag.TAG_HYPERLINK:
                 if (tag.closed) {
-                    if ((paragraph & AlStyles.PAR_STYLE_LINK) != 0)
-                        clearTextStyle(AlStyles.PAR_STYLE_LINK);
+                    if ((paragraph & AlStyles.STYLE_LINK) != 0)
+                        clearTextStyle(AlStyles.STYLE_LINK);
                 } else if (!tag.ended) {
                     if (addNotes())
-                        setTextStyle(AlStyles.PAR_STYLE_LINK);
+                        setTextStyle(AlStyles.STYLE_LINK);
                 } else {
 
                 }
@@ -417,10 +484,80 @@ public class AlFormatDOCX extends AlAXML {
 
                 }
                 return true;
+
+            case AlFormatTag.TAG_BINARYDATA:
+            case AlFormatTag.TAG_BINDATA:
+                if (tag.closed) {
+                    addtestImage();
+                } else
+                if (!tag.ended) {
+                    allState.state_parser = STATE_XML_SKIP;
+                    testImage();
+                } else {
+
+                }
+                return true;
+
+            case AlFormatTag.TAG_PART:
+                if (tag.closed) {
+                    closeOpenNotes();
+                    active_file = UNKNOWN_FILE_SOURCE_NUM;
+                    active_type = AlOneZIPRecord.SPECIAL_UNKNOWN;
+                    clearParagraphStyle(AlStyles.PAR_NOTE);
+                    newParagraph();
+                    setParagraphStyle(AlStyles.PAR_BREAKPAGE);
+                } else if (!tag.ended) {
+                    param = tag.getATTRValue(AlFormatTag.TAG_NAME);
+                    if (param != null) {
+
+                        StringBuilder param1 = new StringBuilder();
+                        if (param.charAt(0) != EngBookMyType.AL_ROOT_RIGHTPATH && param.charAt(0) != EngBookMyType.AL_ROOT_WRONGPATH)
+                            param1.append(EngBookMyType.AL_ROOT_RIGHTPATH);
+                        for (int i = 0; i < param.length(); i++)
+                            if (param.charAt(i) == EngBookMyType.AL_ROOT_WRONGPATH) param1.append(EngBookMyType.AL_ROOT_RIGHTPATH); else param1.append(param.charAt(i));
+
+                        String param0 = param1.toString();
+                        active_file = 1;
+                        if (param0.contentEquals(AlFilesDocx.FILE_RELS)) {
+                            active_type = AlOneZIPRecord.SPECIAL_FIRST;
+                        } else
+                        if (param0.contentEquals(AlFilesDocx.FILE_STYLES0)) {
+                            active_type = AlOneZIPRecord.SPECIAL_FIRST;
+                        } else
+                        if (param0.contentEquals(AlFilesDocx.FILE_STYLES1)) {
+                            active_type = AlOneZIPRecord.SPECIAL_FIRST;
+                        } else
+                        if (param0.contentEquals(AlFilesDocx.LEVEL1_ZIP_FIRSTNAME_DOCX)) {
+                            active_type = AlOneZIPRecord.SPECIAL_FIRST;
+                        } else
+                        if (param0.contentEquals(AlFilesDocx.FILE_FOOTNOTES)) {
+                            active_type = AlOneZIPRecord.SPECIAL_FIRST;
+                            if (allState.isOpened)
+                                setParagraphStyle(AlStyles.PAR_NOTE);
+                        } else
+                        if (param0.contentEquals(AlFilesDocx.FILE_ENDNOTES)) {
+                            active_type = AlOneZIPRecord.SPECIAL_FIRST;
+                            if (allState.isOpened)
+                                setParagraphStyle(AlStyles.PAR_NOTE);
+                        } else {
+                            image_name = param.toString();
+                            active_type = AlOneZIPRecord.SPECIAL_UNKNOWN;
+                            active_file = UNKNOWN_FILE_SOURCE_NUM;
+                        }
+
+                    } else {
+                        active_file = UNKNOWN_FILE_SOURCE_NUM;
+                        active_type = AlOneZIPRecord.SPECIAL_UNKNOWN;
+                    }
+                } else {
+
+                }
+                return true;
+
             case AlFormatTag.TAG_EXTFILE:
                 if (tag.closed) {
                     closeOpenNotes();
-                    active_file = 0xfff;
+                    active_file = UNKNOWN_FILE_SOURCE_NUM;
                     clearParagraphStyle(AlStyles.PAR_NOTE);
                     newParagraph();
                     setParagraphStyle(AlStyles.PAR_BREAKPAGE);
@@ -455,11 +592,11 @@ public class AlFormatDOCX extends AlAXML {
                         if (param != null) {
                             active_file = InternalFunc.str2int(param, 10);
                         } else {
-                            active_file = 0xfff;
+                            active_file = UNKNOWN_FILE_SOURCE_NUM;
                             active_type = AlOneZIPRecord.SPECIAL_NONE;
                         }
                     } else {
-                        active_file = 0xfff;
+                        active_file = UNKNOWN_FILE_SOURCE_NUM;
                         active_type = AlOneZIPRecord.SPECIAL_NONE;
                     }
                 } else {
@@ -501,7 +638,7 @@ public class AlFormatDOCX extends AlAXML {
                 } else /*if (!tag.ended) {
                     verifyStyleStart(AlStyles.PAR_STYLE_BOLD);
                 } else */{
-                    verifyStyleStart(AlStyles.PAR_STYLE_BOLD);
+                    verifyStyleStart(AlStyles.STYLE_BOLD);
                 }
                 return true;
             case AlFormatTag.TAG_I:
@@ -510,7 +647,7 @@ public class AlFormatDOCX extends AlAXML {
                 } else /*if (!tag.ended) {
                     verifyStyleStart(AlStyles.PAR_STYLE_ITALIC);
                 } else */{
-                    verifyStyleStart(AlStyles.PAR_STYLE_ITALIC);
+                    verifyStyleStart(AlStyles.STYLE_ITALIC);
                 }
                 return true;
             case AlFormatTag.TAG_U:
@@ -519,7 +656,7 @@ public class AlFormatDOCX extends AlAXML {
                 } else /*if (!tag.ended) {
                     verifyStyleUnder(AlStyles.PAR_STYLE_UNDER);
                 } else */{
-                    verifyStyleUnder(AlStyles.PAR_STYLE_UNDER);
+                    verifyStyleUnder(AlStyles.STYLE_UNDER);
                 }
                 return true;
             case AlFormatTag.TAG_STRIKE:
@@ -528,7 +665,7 @@ public class AlFormatDOCX extends AlAXML {
                 } else /*if (!tag.ended) {
                     verifyStyleStart(AlStyles.PAR_STYLE_STRIKE);
                 } else */{
-                    verifyStyleStart(AlStyles.PAR_STYLE_STRIKE);
+                    verifyStyleStart(AlStyles.STYLE_STRIKE);
                 }
                 return true;
             case AlFormatTag.TAG_BR:
@@ -544,7 +681,7 @@ public class AlFormatDOCX extends AlAXML {
             case AlFormatTag.TAG_FOOTNOTE:
                 if (tag.closed) {
                     if (preference.onlyPopupFootnote)
-                        clearTextStyle(AlStyles.PAR_STYLE_HIDDEN);
+                        clearTextStyle(AlStyles.STYLE_HIDDEN);
                 } else if (!tag.ended) {
                     param = tag.getATTRValue(AlFormatTag.TAG_TYPE);
                     if (param == null) {
@@ -552,19 +689,19 @@ public class AlFormatDOCX extends AlAXML {
                         addTestFootLink(0);
 
                         if (preference.onlyPopupFootnote)
-                            setTextStyle(AlStyles.PAR_STYLE_HIDDEN);
+                            setTextStyle(AlStyles.STYLE_HIDDEN);
 
                         param = tag.getATTRValue(AlFormatTag.TAG_ID);
-                        boolean setSUP = !((paragraph & AlStyles.PAR_STYLE_SUP) != 0);
+                        boolean setSUP = !((paragraph & AlStyles.STYLE_SUP) != 0);
                         if (setSUP)
-                            setTextStyle(AlStyles.PAR_STYLE_SUP);
+                            setTextStyle(AlStyles.STYLE_SUP);
                         if (param != null) {
                             addTextFromTag(param, false);
                         } else {
                             addTextFromTag("*", false);
                         }
                         if (setSUP)
-                            clearTextStyle(AlStyles.PAR_STYLE_SUP);
+                            clearTextStyle(AlStyles.STYLE_SUP);
                     }
 
                 } else {
@@ -653,10 +790,10 @@ public class AlFormatDOCX extends AlAXML {
                     param = tag.getATTRValue(AlFormatTag.TAG_VAL);
                     if (param != null) {
                         if ("superscript".contentEquals(param)) {
-                            setTextStyle(AlStyles.PAR_STYLE_SUP);
+                            setTextStyle(AlStyles.STYLE_SUP);
                         } else
                         if ("subscript".contentEquals(param)) {
-                            setTextStyle(AlStyles.PAR_STYLE_SUB);
+                            setTextStyle(AlStyles.STYLE_SUB);
                         }
                     }
                 }
@@ -697,251 +834,13 @@ public class AlFormatDOCX extends AlAXML {
                     doTextChar('-', false);
                 }
                 return true;
+            case AlFormatTag.TAG_TBL:
+            case AlFormatTag.TAG_TC:
+            case AlFormatTag.TAG_TR:
+            case AlFormatTag.TAG_GRIDSPAN:
+                return prepareTable();
         }
-
-
-
-
-        /*if (tag.closed) {
-            switch (tag.tag) {
-                case AlFormatTag.TAG_T:
-                    allState.state_skipped_flag = true;
-                    return true;
-
-                case AlFormatTag.TAG_HYPERLINK:
-                    if ((paragraph & AlStyles.PAR_STYLE_LINK) != 0)
-                        clearTextStyle(AlStyles.PAR_STYLE_LINK);
-                    return true;
-
-                case AlFormatTag.TAG_BODY:
-                    clearParagraphStyle(AlStyles.PAR_NOTE);
-                    newParagraph();
-                    setParagraphStyle(AlStyles.PAR_BREAKPAGE);
-                    return true;
-
-                case AlFormatTag.TAG_P:
-                    //newParagraph();
-                    return true;
-
-                case AlFormatTag.TAG_EXTFILE:
-                    closeOpenNotes();
-                    active_file = 0xfff;
-                    clearParagraphStyle(AlStyles.PAR_NOTE);
-                    newParagraph();
-                    setParagraphStyle(AlStyles.PAR_BREAKPAGE);
-                    return true;
-            }
-        } else {
-            if (!tag.ended) {
-                switch (tag.tag) {
-                    case AlFormatTag.TAG_T:
-                        allState.state_skipped_flag = false;
-                        return true;
-
-                    case AlFormatTag.TAG_R:
-                        clearStyles();
-                        return true;
-
-                    case AlFormatTag.TAG_LI:
-                        newParagraph();
-                        addTextFromTag("1", true);
-                        return true;
-
-                    case AlFormatTag.TAG_HYPERLINK:
-                        if (addNotes())
-                            setTextStyle(AlStyles.PAR_STYLE_LINK);
-                        return true;
-
-                    case AlFormatTag.TAG_BODY:
-                        newParagraph();
-                        return true;
-
-                    case AlFormatTag.TAG_P:
-                        newParagraph();
-                        return true;
-
-                    case AlFormatTag.TAG_B:
-                        verifyStyleStart(AlStyles.PAR_STYLE_BOLD);
-                        return true;
-                    case AlFormatTag.TAG_I:
-                        verifyStyleStart(AlStyles.PAR_STYLE_ITALIC);
-                        return true;
-                    case AlFormatTag.TAG_U:
-                        verifyStyleUnder(AlStyles.PAR_STYLE_UNDER);
-                        return true;
-                    case AlFormatTag.TAG_STRIKE:
-                        verifyStyleStart(AlStyles.PAR_STYLE_STRIKE);
-                        return true;
-
-                    case AlFormatTag.TAG_BR:
-                        newParagraph();
-                        newEmptyTextParagraph();
-                        return true;
-
-                    case AlFormatTag.TAG_FOOTNOTE:
-                        param = tag.getATTRValue(AlFormatTag.TAG_TYPE);
-                        if (param == null) {
-                            newParagraph();
-                            addTestFootLink(0);
-                            addTextFromTag("*", false);
-                        }
-                    return true;
-                    case AlFormatTag.TAG_ENDNOTE:
-                        param = tag.getATTRValue(AlFormatTag.TAG_TYPE);
-                        if (param == null) {
-                            newParagraph();
-                            addTestFootLink(1);
-                            addTextFromTag("" + (char)0x2022, false);
-                        }
-                    return true;
-
-                    case AlFormatTag.TAG_EXTFILE:
-                        param = tag.getATTRValue(AlFormatTag.TAG_IDREF);
-                        if (param != null) {
-                            switch (InternalFunc.str2int(param, 10)) {
-                                case AlOneZIPRecord.SPECIAL_FIRST:
-                                    active_type = AlOneZIPRecord.SPECIAL_FIRST;
-                                    break;
-                                case AlOneZIPRecord.SPECIAL_STYLE:
-                                    active_type = AlOneZIPRecord.SPECIAL_FIRST;
-                                    break;
-                                case AlOneZIPRecord.SPECIAL_FOOTNOTE:
-                                    active_type = AlOneZIPRecord.SPECIAL_FIRST;
-                                    if (allState.isOpened)
-                                        setParagraphStyle(AlStyles.PAR_NOTE);
-                                    addTextFromTag("Footnotes", false);
-                                    break;
-                                case AlOneZIPRecord.SPECIAL_ENDNOTE:
-                                    active_type = AlOneZIPRecord.SPECIAL_FIRST;
-                                    if (allState.isOpened)
-                                        setParagraphStyle(AlStyles.PAR_NOTE);
-                                    addTextFromTag("Endnotes", false);
-                                    break;
-                                default:
-                                    active_type = AlOneZIPRecord.SPECIAL_NONE;
-                                    break;
-                            }
-
-                            param = tag.getATTRValue(AlFormatTag.TAG_NUMFILES);
-                            if (param != null) {
-                                active_file = InternalFunc.str2int(param, 10);
-                            } else {
-                                active_file = 0xfff;
-                                active_type = AlOneZIPRecord.SPECIAL_NONE;
-                            }
-                        } else {
-                            active_file = 0xfff;
-                            active_type = AlOneZIPRecord.SPECIAL_NONE;
-                        }
-
-                        return true;
-                    case AlFormatTag.TAG_RELATIONSHIP:
-                        addRelationShip();
-                        return true;
-
-                    case AlFormatTag.TAG_BLIP:
-                    case AlFormatTag.TAG_IMAGEDATA:
-                        addImages();
-                        return true;
-
-                    case AlFormatTag.TAG_BOOKMARKSTART:
-                        if (allState.isOpened) {
-                            addTestLink(0);
-                        }
-                        return true;
-                    case AlFormatTag.TAG_TAB:
-                        doTextChar(' ', false);
-                        return true;
-                }
-            } else {
-                switch (tag.tag) {
-                    case AlFormatTag.TAG_TAB:
-                        doTextChar(' ', false);
-                        return true;
-
-                    case AlFormatTag.TAG_BLIP:
-                    case AlFormatTag.TAG_IMAGEDATA:
-                        addImages();
-                        return true;
-
-                    case AlFormatTag.TAG_BOOKMARKSTART:
-                        if (allState.isOpened) {
-                            addTestLink(0);
-                        }
-                        return true;
-
-                    case AlFormatTag.TAG_FOOTNOTEREFERENCE:
-                        addFootNotes();
-                        return true;
-
-                    case AlFormatTag.TAG_ENDNOTEREFERENCE:
-                        addEndNotes();
-                        return true;
-
-                    case AlFormatTag.TAG_VERTALIGN:
-                        param = tag.getATTRValue(AlFormatTag.TAG_VAL);
-                        if (param != null) {
-                            if ("superscript".contentEquals(param)) {
-                                setTextStyle(AlStyles.PAR_STYLE_SUP);
-                            } else
-                            if ("subscript".contentEquals(param)) {
-                                setTextStyle(AlStyles.PAR_STYLE_SUB);
-                            }
-                        }
-                        return true;
-
-                    case AlFormatTag.TAG_ILVL:
-                        if (!allState.text_present) {
-                            if (allState.isOpened) {
-                                param = tag.getATTRValue(AlFormatTag.TAG_VAL);
-                                if (param != null) {
-                                    try {
-                                        long i = Long.parseLong(param.toString());
-                                        i++;
-                                        if (i > 0 && i <= 15) {
-                                            setParagraphStyle(AlStyles.PAR_UL);
-                                            i <<= AlStyles.PAR_UL_SHIFT;
-                                            paragraph &= ~AlStyles.PAR_UL_BASE;
-                                            paragraph |= i;
-                                        }
-                                    } catch (Exception e) {
-
-                                    }
-                                }
-                            }
-                        }
-                        break;
-
-                    case AlFormatTag.TAG_P:
-                        newParagraph();
-                        newEmptyTextParagraph();
-                        return true;
-
-                    case AlFormatTag.TAG_B:
-                        verifyStyleStart(AlStyles.PAR_STYLE_BOLD);
-                        return true;
-                    case AlFormatTag.TAG_I:
-                        verifyStyleStart(AlStyles.PAR_STYLE_ITALIC);
-                        return true;
-                    case AlFormatTag.TAG_U:
-                        verifyStyleUnder(AlStyles.PAR_STYLE_UNDER);
-                        return true;
-                    case AlFormatTag.TAG_STRIKE:
-                        verifyStyleStart(AlStyles.PAR_STYLE_STRIKE);
-                        return true;
-
-                    case AlFormatTag.TAG_RELATIONSHIP:
-                        addRelationShip();
-                        return true;
-
-                    case AlFormatTag.TAG_NOBREAKHYPHEN:
-                        doTextChar('-', false);
-                        return true;
-                }
-            }
-        }
-*/        return false;
-
+       return false;
     }
 
 }

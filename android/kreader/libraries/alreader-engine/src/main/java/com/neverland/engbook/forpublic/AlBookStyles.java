@@ -7,8 +7,8 @@ public class AlBookStyles {
     public static final long FONT_TITLE = AlStyles.SL_FONT_TITLE;
     public static final long FONT_CODE = AlStyles.SL_FONT_CODE;
 
-    public static final long FONT_ITALIC = AlStyles.SL_ITALIC;
-    public static final long FONT_BOLD = AlStyles.SL_BOLD;
+    public static final long FONT_ITALIC = AlStyles.STYLE_ITALIC;
+    public static final long FONT_BOLD = AlStyles.STYLE_BOLD;
 
     public static final long FONT_SIZE_TEXT = AlStyles.SL_SIZE_0;
     public static final long FONT_SIZE_TEXT_MINUS7 = AlStyles.SL_SIZE_M7;
@@ -51,6 +51,15 @@ public class AlBookStyles {
 
     public static final long SHADOW = AlStyles.SL_SHADOW;
 
+    public static final int DEFAULT_COLOR_SELECT = 0x3f51b5;
+    public static final int DEFAULT_COLOR_MARKFIND = 0x009688;
+    public static final int DEFAULT_COLOR_MARKRED = 0xCD5C5C;
+    public static final int DEFAULT_COLOR_MARKYELLOW = 0xFFD700;
+    public static final int DEFAULT_COLOR_MARKBLUE = 0x1E90FF;
+    public static final int DEFAULT_COLOR_MARKGREEN = 0x00FA9A;
+    public static final int DEFAULT_COLOR_MARKPURPLE = 0xEE82EE;
+    public static final int DEFAULT_COLOR_MARKAQUA = 0x00FFFF;
+
     /////////////////////////////////////////
 
     public long  styleTitle = FONT_TEXT | FONT_SIZE_TEXT_PLUS2 | COLOR_TEXT | SHADOW | JUST_CENTER | MARGINS_LEFT_1 | MARGINS_RIGHT_1;
@@ -65,4 +74,12 @@ public class AlBookStyles {
     public long  styleCode = FONT_TEXT | FONT_SIZE_TEXT | COLOR_TEXT;
 
 
+    public int   colorSelect = DEFAULT_COLOR_SELECT;
+    public int	 colorMarkFind = DEFAULT_COLOR_MARKFIND;
+    public int	 colorMarkRed = DEFAULT_COLOR_MARKRED;
+    public int	 colorMarkYellow = DEFAULT_COLOR_MARKYELLOW;
+    public int	 colorMarkBlue = DEFAULT_COLOR_MARKBLUE;
+    public int	 colorMarkGreen = DEFAULT_COLOR_MARKGREEN;
+    public int	 colorMarkPurple = DEFAULT_COLOR_MARKPURPLE;
+    public int	 colorMarkAqua = DEFAULT_COLOR_MARKAQUA;
 }

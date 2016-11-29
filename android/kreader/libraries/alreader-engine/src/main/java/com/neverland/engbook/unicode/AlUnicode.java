@@ -304,6 +304,62 @@ public class AlUnicode {
 		return -1;
 	}
 
+	public static String getStringForAlphabeticSort(String name, int lenNumeric) {
+		if (name == null)
+			return null;
+
+		StringBuilder sb_new = new StringBuilder();
+		sb_new.setLength(0);
+
+		StringBuilder sb_num = new StringBuilder();
+		sb_num.setLength(0);
+
+		int state = -1;
+		char ch;
+		for (int i = 0; i < name.length(); i++) {
+			ch = name.charAt(i);
+
+			switch (state) {
+				case -1:
+				case 0:
+					if (ch == '0' || (ch >= '1' && ch <= '9')) {
+						state = 1;
+						sb_num.append(ch);
+					} else {
+						sb_new.append(ch);
+					}
+					break;
+				case 1:
+					if (ch == '0' || (ch >= '1' && ch <= '9')) {
+						sb_num.append(ch);
+
+						break;
+					}
+
+					while (sb_num.length() < lenNumeric)
+						sb_num.insert(0, '0');
+					sb_new.append(sb_num);
+					sb_num.setLength(0);
+
+					sb_new.append(ch);
+					state = 0;
+					break;
+			}
+		}
+
+		if (sb_num.length() > 0) {
+			while (sb_num.length() < lenNumeric)
+				sb_num.insert(0, '0');
+			sb_new.append(sb_num);
+			sb_num.setLength(0);
+		}
+
+		if (state == -1)
+			return name;
+		return sb_new.toString();
+	}
+
+
 	public static String URLDecode(String src) {
 
 		int len = src.length(), pos_utf8 = 0;

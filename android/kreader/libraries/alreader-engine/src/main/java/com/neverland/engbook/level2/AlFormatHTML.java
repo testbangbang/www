@@ -232,8 +232,8 @@ public class AlFormatHTML extends AlAXML {
                 return true;
             case AlFormatTag.TAG_A:
                 if (tag.closed) {
-                    if ((paragraph & AlStyles.PAR_STYLE_LINK) != 0)
-                        clearTextStyle(AlStyles.PAR_STYLE_LINK);
+                    if ((paragraph & AlStyles.STYLE_LINK) != 0)
+                        clearTextStyle(AlStyles.STYLE_LINK);
                 } else if (!tag.ended) {
                     if (allState.isOpened) {
                         param = tag.getATTRValue(AlFormatTag.TAG_NAME);
@@ -242,7 +242,7 @@ public class AlFormatHTML extends AlAXML {
                         }
                     }
                     if (addNotes())
-                        setTextStyle(AlStyles.PAR_STYLE_LINK);
+                        setTextStyle(AlStyles.STYLE_LINK);
                 } else {
 
                 }
@@ -360,27 +360,27 @@ public class AlFormatHTML extends AlAXML {
                 return true;
             case AlFormatTag.TAG_TT:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_CODE);
+                    clearTextStyle(AlStyles.STYLE_CODE);
                 } else if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_CODE);
+                    setTextStyle(AlStyles.STYLE_CODE);
                 } else {
 
                 }
                 return true;
             case AlFormatTag.TAG_SUP:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_SUP);
+                    clearTextStyle(AlStyles.STYLE_SUP);
                 } else if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_SUP);
+                    setTextStyle(AlStyles.STYLE_SUP);
                 } else {
 
                 }
                 return true;
             case AlFormatTag.TAG_SUB:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_SUB);
+                    clearTextStyle(AlStyles.STYLE_SUB);
                 } else if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_SUB);
+                    setTextStyle(AlStyles.STYLE_SUB);
                 } else {
 
                 }
@@ -388,9 +388,9 @@ public class AlFormatHTML extends AlAXML {
             case AlFormatTag.TAG_B:
             case AlFormatTag.TAG_STRONG:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_BOLD);
+                    clearTextStyle(AlStyles.STYLE_BOLD);
                 } else if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_BOLD);
+                    setTextStyle(AlStyles.STYLE_BOLD);
                 } else {
 
                 }
@@ -399,9 +399,9 @@ public class AlFormatHTML extends AlAXML {
             case AlFormatTag.TAG_EM:
             case AlFormatTag.TAG_DFM:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_ITALIC);
+                    clearTextStyle(AlStyles.STYLE_ITALIC);
                 } else if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_ITALIC);
+                    setTextStyle(AlStyles.STYLE_ITALIC);
                 } else {
 
                 }
@@ -410,9 +410,9 @@ public class AlFormatHTML extends AlAXML {
             case AlFormatTag.TAG_S:
             case AlFormatTag.TAG_INS:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_UNDER);
+                    clearTextStyle(AlStyles.STYLE_UNDER);
                 } else if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_UNDER);
+                    setTextStyle(AlStyles.STYLE_UNDER);
                 } else {
 
                 }
@@ -420,9 +420,9 @@ public class AlFormatHTML extends AlAXML {
             case AlFormatTag.TAG_STRIKE:
             case AlFormatTag.TAG_DEL:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_STRIKE);
+                    clearTextStyle(AlStyles.STYLE_STRIKE);
                 } else if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_STRIKE);
+                    setTextStyle(AlStyles.STYLE_STRIKE);
                 } else {
 
                 }

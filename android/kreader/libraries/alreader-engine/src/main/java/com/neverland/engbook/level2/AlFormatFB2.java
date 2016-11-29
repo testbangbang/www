@@ -368,10 +368,10 @@ public class AlFormatFB2 extends AlAXML {
             case AlFormatTag.TAG_B:
             case AlFormatTag.TAG_STRONG:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_BOLD);
+                    clearTextStyle(AlStyles.STYLE_BOLD);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_BOLD);
+                    setTextStyle(AlStyles.STYLE_BOLD);
                 } else {
 
                 }
@@ -380,30 +380,30 @@ public class AlFormatFB2 extends AlAXML {
             case AlFormatTag.TAG_EM:
             case AlFormatTag.TAG_EMPHASIS:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_ITALIC);
+                    clearTextStyle(AlStyles.STYLE_ITALIC);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_ITALIC);
+                    setTextStyle(AlStyles.STYLE_ITALIC);
                 } else {
 
                 }
                 return true;
             case AlFormatTag.TAG_SUP:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_SUP);
+                    clearTextStyle(AlStyles.STYLE_SUP);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_SUP);
+                    setTextStyle(AlStyles.STYLE_SUP);
                 } else {
 
                 }
                 return true;
             case AlFormatTag.TAG_SUB:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_SUB);
+                    clearTextStyle(AlStyles.STYLE_SUB);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_SUB);
+                    setTextStyle(AlStyles.STYLE_SUB);
                 } else {
 
                 }
@@ -422,10 +422,10 @@ public class AlFormatFB2 extends AlAXML {
             case AlFormatTag.TAG_DEL:
             case AlFormatTag.TAG_STRIKETHROUGH:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_STRIKE);
+                    clearTextStyle(AlStyles.STYLE_STRIKE);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_STRIKE);
+                    setTextStyle(AlStyles.STYLE_STRIKE);
                 } else {
 
                 }
@@ -435,32 +435,32 @@ public class AlFormatFB2 extends AlAXML {
             case AlFormatTag.TAG_U:
             case AlFormatTag.TAG_UNDERLINE:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_UNDER);
+                    clearTextStyle(AlStyles.STYLE_UNDER);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_UNDER);
+                    setTextStyle(AlStyles.STYLE_UNDER);
                 } else {
 
                 }
                 return true;
             case AlFormatTag.TAG_SPACING:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_RAZR);
+                    clearTextStyle(AlStyles.STYLE_RAZR);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_RAZR);
+                    setTextStyle(AlStyles.STYLE_RAZR);
                 } else {
 
                 }
                 return true;
             case AlFormatTag.TAG_A:
                 if (tag.closed) {
-                    if ((paragraph & AlStyles.PAR_STYLE_LINK) != 0)
-                        clearTextStyle(AlStyles.PAR_STYLE_LINK);
+                    if ((paragraph & AlStyles.STYLE_LINK) != 0)
+                        clearTextStyle(AlStyles.STYLE_LINK);
                 } else
                 if (!tag.ended) {
                     if (addNotes())
-                        setTextStyle(AlStyles.PAR_STYLE_LINK);
+                        setTextStyle(AlStyles.STYLE_LINK);
                 } else {
 
                 }
@@ -610,10 +610,10 @@ public class AlFormatFB2 extends AlAXML {
                 return true;
             case AlFormatTag.TAG_CODE:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_CODE);
+                    clearTextStyle(AlStyles.STYLE_CODE);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_CODE);
+                    setTextStyle(AlStyles.STYLE_CODE);
                 } else {
 
                 }

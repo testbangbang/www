@@ -169,6 +169,8 @@ public class AlFilesZIP extends AlFiles {
 					res = TAL_FILE_TYPE.DOCX;
 				if ((ext == null || ext.equalsIgnoreCase(".epub")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB))
 					res = TAL_FILE_TYPE.EPUB;
+				if ((ext == null || ext.equalsIgnoreCase(".fb3")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
+					res = TAL_FILE_TYPE.FB3;
 
 				fList.add(of);
 				

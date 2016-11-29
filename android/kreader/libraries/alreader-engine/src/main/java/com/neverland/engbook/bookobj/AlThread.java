@@ -6,21 +6,17 @@ import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 
 class AlThread  implements Runnable {
 	
-	private volatile AlThreadData param;
-	private boolean useThread = false;
+	private volatile AlThreadData param;	
 
 	public AlThread(AlThreadData p, TAL_THREAD_TASK t) {
 		param = p;
 		param.task = t;
-		if (useThread) {
-			new Thread(this).start();
-		} else {
-			run();
-		}
+		new Thread(this).start();
 	}
 
     public void run() {
-        try {
+		param.realRun();
+        /*try {
 
         	TAL_NOTIFY_RESULT	res = TAL_NOTIFY_RESULT.OK;
 	    	TAL_NOTIFY_ID		id;
@@ -41,10 +37,10 @@ class AlThread  implements Runnable {
 					res = TAL_NOTIFY_RESULT.EXCEPT;
 				}
 	    		break;
-	    	/*case CLOSEBOOK:
+	    	*//*case CLOSEBOOK:
 	    		id = TAL_NOTIFY_ID.CLOSEBOOK;
 	    		res = param.book_object.closeBookInThread();
-	    		break;*/
+	    		break;*//*
 	    	case CREATEDEBUG:
 	    		id = TAL_NOTIFY_ID.CREATEDEBUG;
 				try {
@@ -79,6 +75,6 @@ class AlThread  implements Runnable {
         
         } catch(Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }	
 }
