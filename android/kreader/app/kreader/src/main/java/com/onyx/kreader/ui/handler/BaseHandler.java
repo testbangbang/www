@@ -14,7 +14,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.R;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.PageAnnotation;
-import com.onyx.kreader.ui.actions.GotoPageAction;
+import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
 import com.onyx.kreader.ui.actions.PinchZoomAction;
@@ -332,7 +332,7 @@ public abstract class BaseHandler {
             for (ReaderSelection link : links) {
                 for (RectF rect : link.getRectangles()) {
                     if (rect.contains(x, y)) {
-                        new GotoPageAction(link.getPagePosition()).execute(readerDataHolder);
+                        new GotoPositionAction(link.getPagePosition()).execute(readerDataHolder);
                         return true;
                     }
                 }

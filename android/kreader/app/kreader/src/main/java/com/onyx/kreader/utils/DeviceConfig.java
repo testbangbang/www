@@ -41,6 +41,9 @@ public class DeviceConfig {
     private boolean disableNavigation = false;
     private boolean hideSelectionModeUiOption = false;
     private boolean hideControlSettings = false;
+    private boolean askForClose = false;
+    private boolean supportColor = false;
+    private int defaultGamma = 150;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -49,6 +52,8 @@ public class DeviceConfig {
     private int defaultFontSize = 0;
     private int selectionMoveDistanceThreshold = 8;
     private int gcInterval = 0;
+    private int frontLight = 0;
+    private boolean exitAfterFinish = false;
 
     private String defaultAnnotationHighlightStyle = "Highlight";
 
@@ -335,6 +340,46 @@ public class DeviceConfig {
 
     public void setDefaultAnnotationHighlightStyle(String defaultAnnotationHighlightStyle) {
         this.defaultAnnotationHighlightStyle = defaultAnnotationHighlightStyle;
+    }
+
+    public boolean isSupportColor() {
+        return supportColor;
+    }
+
+    public void setSupportColor(boolean supportColor) {
+        this.supportColor = supportColor;
+    }
+
+    public boolean isAskForClose() {
+        return askForClose;
+    }
+
+    public void setAskForClose(boolean askForClose) {
+        this.askForClose = askForClose;
+    }
+
+    public int getDefaultGamma() {
+        return defaultGamma;
+    }
+
+    public void setDefaultGamma(int defaultGamma) {
+        this.defaultGamma = defaultGamma;
+    }
+
+    public boolean isExitAfterFinish() {
+        return exitAfterFinish;
+    }
+
+    public void setExitAfterFinish(boolean exitAfterFinish) {
+        this.exitAfterFinish = exitAfterFinish;
+    }
+
+    public int getFrontLight() {
+        return frontLight;
+    }
+
+    public void setFrontLight(int frontLight) {
+        this.frontLight = frontLight;
     }
 
     public SingletonSharedPreference.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {

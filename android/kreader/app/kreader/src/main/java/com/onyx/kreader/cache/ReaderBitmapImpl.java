@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.kreader.host.options.BaseOptions;
 
 /**
  * Created by joy on 8/9/16.
@@ -12,7 +13,8 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     private String key;
     private Bitmap bitmap;
-    private float gammaCorrection;
+    private float gammaCorrection = BaseOptions.getLowerGammaLimit();
+    private int emboldenLevel;
 
     public static ReaderBitmapImpl create(int width, int height, Bitmap.Config config) {
         ReaderBitmapImpl readerBitmap = new ReaderBitmapImpl(width, height, config);
@@ -64,6 +66,22 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     public float gammaCorrection() {
         return gammaCorrection;
+    }
+
+    public boolean isGammaApplied(final float targetGammaCorrection) {
+        return (Float.compare(gammaCorrection, targetGammaCorrection) == 0);
+    }
+
+    public boolean isEmboldenApplied(final float targetEmboldenLevel) {
+        return emboldenLevel == targetEmboldenLevel;
+    }
+
+    public int getEmboldenLevel() {
+        return emboldenLevel;
+    }
+
+    public void setEmboldenLevel(int emboldenLevel) {
+        this.emboldenLevel = emboldenLevel;
     }
 
     public boolean attachWith(String key, final Bitmap src) {

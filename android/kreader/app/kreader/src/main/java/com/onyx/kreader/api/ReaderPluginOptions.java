@@ -1,5 +1,9 @@
 package com.onyx.kreader.api;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
+
 import java.util.List;
 
 /**
@@ -7,8 +11,13 @@ import java.util.List;
  */
 public interface ReaderPluginOptions {
 
-    public List<String> getFontDirectories();
+    AssetManager getAssetManager();
 
+    Resources getResources();
+
+    List<String> getFontDirectories();
+
+    float getScreenDensity();
 
 
 }

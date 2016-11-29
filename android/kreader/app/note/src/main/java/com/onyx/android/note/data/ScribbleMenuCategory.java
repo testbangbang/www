@@ -14,7 +14,7 @@ public class ScribbleMenuCategory {
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({PEN_WIDTH, PEN_STYLE, ERASER, BG})
+    @IntDef({PEN_WIDTH, PEN_STYLE, ERASER, BG, COLOR})
     // Create an interface for validating int types
     public @interface ScribbleMenuCategoryDef {
     }
@@ -23,6 +23,8 @@ public class ScribbleMenuCategory {
     public static final int PEN_STYLE = 1;
     public static final int ERASER = 2;
     public static final int BG = 3;
+    public static final int COLOR = 4;
+
 
     public
     @ScribbleMenuCategoryDef

@@ -7,6 +7,7 @@ import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.host.options.BaseOptions;
+import com.onyx.kreader.utils.DeviceConfig;
 
 import java.io.File;
 
@@ -25,6 +26,7 @@ public class LoadDocumentOptionsRequest extends BaseDataRequest {
     }
 
     public void execute(final DataManager dataManager) throws Exception {
+        initBaseOptions();
         if (StringUtils.isNullOrEmpty(md5)) {
             md5 = FileUtils.computeMD5(new File(documentPath));
         }
@@ -32,8 +34,11 @@ public class LoadDocumentOptionsRequest extends BaseDataRequest {
         document.setIdString(md5);
     }
 
+    private void initBaseOptions() {
+        BaseOptions.setGlobalDefaultGamma(DeviceConfig.sharedInstance(getContext()).getDefaultGamma());
+    }
 
-    public final BaseOptions getDocument() {
+    public final BaseOptions getDocumentOptions() {
         final BaseOptions baseOptions = BaseOptions.optionsFromJSONString(document.getExtraAttributes());
         baseOptions.setMd5(md5);
         return baseOptions;

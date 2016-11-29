@@ -4,8 +4,10 @@ include ':libraries:cropimage',
         ':libraries:onyxsdk-data',
         ':libraries:onyxsdk-scribble',
         ':libraries:chinese-analyzer',
+        ':libraries:alreader-engine',
         ':libraries:libedu',
-        ':app:kreader',
         ':app:note',
+        ':app:kreader',
         ':app:eschool',
         ':app-edu'
+project(':app-edu').projectDir = new File('app/edu')

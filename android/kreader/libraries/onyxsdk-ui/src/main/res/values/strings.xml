@@ -6,6 +6,7 @@
     <string name="app_name">onyx.sdk.ui</string>
     <string name="dialog_reader_menu_back">Back</string>
     <string name="font_face">Font face</string>
+    <string name="text_style">Text Style</string>
     <string name="reader_layer_menu_zoom">Zoom</string>
     <string name="reader_layer_menu_font_reflow">Font Reflow</string>
     <string name="reader_layer_menu_zoom_in">Zoom In</string>
@@ -57,5 +58,10 @@
     <string name="illegalInput">Illegal Input</string>
 
     <string name="loading">Loading…</string>
+
+    <string name="save">Save</string>
+    <string name="custom_line_width">Custom Line Width</string>
+    <string name="line_width_preview">Line width to preview</string>
+    <string name="current_value">Current value:</string>
 
 </resources>

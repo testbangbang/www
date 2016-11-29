@@ -36,6 +36,12 @@ public class DeviceConfig {
     static public final String FINGER_ERASING = "finger_erasing";
     static public final String DISABLE_BIG_PEN = "no_big_pen";
 
+    static public final String SHORTCUT_DRAWING = "shortcut_drawing";
+    static public final String SHORTCUT_ERASING = "shortcut_erasing";
+
+    static public final String SUPPORT_COLOR = "support_color";
+    static public final String ERASER_RADIUS = "eraser_radius";
+
     static public boolean useDebugConfig = false;
 
 
@@ -110,6 +116,14 @@ public class DeviceConfig {
         return backend.getFloat(TOUCH_HEIGHT);
     }
 
+    public boolean isShortcutDrawingEnabled() {
+        return backend.hasKey(SHORTCUT_DRAWING) && backend.getBoolean(SHORTCUT_DRAWING);
+    }
+
+    public boolean isShortcutErasingEnabled() {
+        return backend.hasKey(SHORTCUT_ERASING) && backend.getBoolean(SHORTCUT_ERASING);
+    }
+
     public boolean useRawInput() {
         return backend.hasKey(USE_RAW_INPUT) && backend.getBoolean(USE_RAW_INPUT);
     }
@@ -125,6 +139,17 @@ public class DeviceConfig {
     public boolean supportBigPen() {
         boolean disable = backend.hasKey(DISABLE_BIG_PEN) && backend.getBoolean(DISABLE_BIG_PEN);
         return !disable;
+    }
+
+    public boolean supportColor(){
+        return backend.hasKey(SUPPORT_COLOR) && backend.getBoolean(SUPPORT_COLOR, false);
+    }
+
+    public float getEraserRadius() {
+        if (backend.hasKey(ERASER_RADIUS)) {
+            return backend.getFloat(ERASER_RADIUS);
+        }
+        return 15.0f;
     }
 
     static public DeviceConfig sharedInstance(Context context) {

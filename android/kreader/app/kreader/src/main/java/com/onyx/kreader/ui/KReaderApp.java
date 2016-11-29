@@ -23,7 +23,7 @@ public class KReaderApp extends Application {
         super.onCreate();
         DataManager.init(this, databaseHolderList());
         SingletonSharedPreference.init(this);
-        LeakCanary.install(this);
+//        LeakCanary.install(this);
         instance = this;
     }
 

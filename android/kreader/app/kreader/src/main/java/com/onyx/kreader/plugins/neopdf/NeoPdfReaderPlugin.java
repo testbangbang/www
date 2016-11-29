@@ -31,7 +31,7 @@ import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
 import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -213,11 +213,16 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public ReaderTextStyle getStyle() {
+        return null;
+    }
+
     /**
      * set stream document style. ignore.
      * @param style
      */
-    public void setStyle(final ReaderStyle style) {}
+    public void setStyle(final ReaderTextStyle style) {}
 
     /**
      * Retrieve reader hit test.
@@ -255,9 +260,9 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String page, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         benchmark.restart();
-        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(page),
+        boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(pagePosition),
                 (int)displayRect.left,
                 (int)displayRect.top,
                 (int)displayRect.width(),
@@ -294,6 +299,29 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
      */
     public int getTotalPage() {
         return getPluginImpl().pageCount();
+    }
+
+    @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
+    /**
+     * Navigate to specified position.
+     * @return
+     */
+    public boolean gotoPosition(final String position) {
+        return false;
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
     }
 
     /**
@@ -335,6 +363,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
     /**
      * Navigate to first page.
      * @return
@@ -343,20 +376,17 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return PagePositionUtils.fromPageNumber(0);
     }
 
+    @Override
+    public boolean isLastPage() {
+        return false;
+    }
+
     /**
      * Navigate to last page.
      * @return
      */
     public String lastPage() {
         return PagePositionUtils.fromPageNumber(getTotalPage() - 1);
-    }
-
-    /**
-     * Navigate to specified position.
-     * @return
-     */
-    public boolean gotoPosition(final String position) {
-        return false;
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {
@@ -460,10 +490,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportTypefaceAdjustment() {
-        if (StringUtils.isNullOrEmpty(documentPath)) {
-            return false;
-        }
-        return documentPath.toLowerCase().endsWith("epub");
+        return false;
     }
 
 

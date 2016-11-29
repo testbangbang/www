@@ -27,12 +27,12 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -41,7 +41,6 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
@@ -49,7 +48,6 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.note.request.StartNoteRequest;
-import com.onyx.kreader.ui.actions.ActionChain;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
@@ -68,6 +66,7 @@ import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
+import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.HomeClickEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
@@ -90,6 +89,7 @@ import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
+import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
 
@@ -125,6 +125,7 @@ public class ReaderActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
+        beforeSetContentView();
         setContentView(R.layout.activity_reader);
         initComponents();
     }
@@ -149,7 +150,6 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                onSurfaceViewSizeChanged();
                 if (!getReaderDataHolder().isDocumentOpened()) {
                     handleActivityIntent();
                 }
@@ -221,6 +221,11 @@ public class ReaderActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void beforeSetContentView() {
+        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this);
+        DeviceUtils.requestFullScreenFeature(this, fullScreen);
+    }
+
     private void initComponents() {
         initStatusBar();
         initReaderDataHolder();
@@ -267,11 +272,14 @@ public class ReaderActivity extends ActionBarActivity {
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 clearCanvas(holder);
                 if (!getReaderDataHolder().isDocumentOpened()) {
+                    getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
                     return;
                 }
                 if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
                     surfaceView.getHeight() == getReaderDataHolder().getDisplayHeight()) {
                     getReaderDataHolder().redrawPage();
+                } else {
+                    onSurfaceViewSizeChanged();
                 }
             }
 
@@ -310,7 +318,6 @@ public class ReaderActivity extends ActionBarActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                onSurfaceViewSizeChanged();
                 handleActivityIntent();
             }
         });
@@ -324,10 +331,9 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void afterResume() {
-        syncReaderPainter();
         syncSystemStatusBar();
+        syncReaderPainter();
         reconfigStatusBar();
-        checkSurfaceViewSize();
         checkNoteDrawing();
     }
 
@@ -347,25 +353,9 @@ public class ReaderActivity extends ActionBarActivity {
         getReaderDataHolder().getNoteManager().submit(this, request, null);
     }
 
-    private void checkSurfaceViewSize() {
-        if (!getReaderDataHolder().isDocumentOpened()) {
-            return;
-        }
-
-        surfaceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                if (surfaceView.getWidth() != getReaderDataHolder().getDisplayWidth() ||
-                    surfaceView.getHeight() != getReaderDataHolder().getDisplayHeight()) {
-                    onSurfaceViewSizeChanged();
-                }
-            }
-        });
-    }
-
     @Subscribe
     public void onLayoutChanged(final LayoutChangeEvent event) {
+        updateNoteHostView();
         getReaderDataHolder().updateNoteManager();
     }
 
@@ -533,7 +523,7 @@ public class ReaderActivity extends ActionBarActivity {
             } else if (action.equals(Intent.ACTION_MAIN)) {
                 quitApplication(null);
             } else if (action.equals(Intent.ACTION_VIEW)) {
-                checkExternalStoragePermissions();
+                handleViewActionIntent();
             }
             return true;
         } catch (java.lang.Exception e) {
@@ -542,7 +532,7 @@ public class ReaderActivity extends ActionBarActivity {
         return false;
     }
 
-    private void checkExternalStoragePermissions() {
+    private void handleViewActionIntent() {
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
@@ -588,14 +578,24 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void onSurfaceViewSizeChanged() {
+        updateNoteHostView();
+        if (getReaderDataHolder().isDocumentOpened()) {
+            new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
+        }
+    }
+
+    private void updateNoteHostView() {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
         getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new Rect(), rotation);
-        if (getReaderDataHolder().isDocumentOpened()) {
-            new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
-        }
+    }
+
+    @Subscribe
+    public void onDocumentInitRendered(final DocumentInitRenderedEvent event) {
+        updateNoteHostView();
+        getReaderDataHolder().updateNoteManager();
     }
 
     @Subscribe
@@ -632,8 +632,24 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onDocumentOpened(final DocumentOpenEvent event) {
-        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this,
-                DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
+        prepareGCUpdateInterval();
+        prepareFrontLight();
+    }
+
+    private void prepareGCUpdateInterval() {
+        int value = DeviceConfig.sharedInstance(this).getGcInterval();
+        if (value <= 0) {
+            value = DialogScreenRefresh.DEFAULT_INTERVAL_COUNT;
+        }
+        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this, value));
+    }
+
+    private void prepareFrontLight() {
+        int value = DeviceConfig.sharedInstance(this).getFrontLight();
+        if (value <= 0) {
+            return;
+        }
+        FrontLightController.setBrightness(this, value);
     }
 
     @Subscribe
@@ -643,17 +659,18 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
-        if (getReaderDataHolder().isEnableShortcutErasing()) {
+        if (!getReaderDataHolder().inNoteWritingProvider()) {
             getReaderDataHolder().getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         }
     }
 
     public void onShortcutErasingEvent(final ShortcutErasingEvent event) {
+
     }
 
     @Subscribe
     public void onShortcutErasingFinish(final ShortcutErasingFinishEvent event) {
-        if (getReaderDataHolder().isEnableShortcutErasing()) {
+        if (!ShowReaderMenuAction.isScribbleMenuVisible()) {
             ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
         }
     }
@@ -755,6 +772,7 @@ public class ReaderActivity extends ActionBarActivity {
                 getReaderDataHolder().getEventBus().unregister(this);
                 releaseStartupWakeLock();
                 finish();
+                postFinish();
             }
         });
     }
@@ -767,6 +785,13 @@ public class ReaderActivity extends ActionBarActivity {
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
+    }
+
+    private void postFinish() {
+        boolean exit = DeviceConfig.sharedInstance(this).isExitAfterFinish();
+        if (exit) {
+            DeviceUtils.exit();
+        }
     }
 
     private boolean hasPopupWindow() {

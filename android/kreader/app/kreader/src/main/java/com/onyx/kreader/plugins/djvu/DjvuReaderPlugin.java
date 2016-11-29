@@ -30,7 +30,7 @@ import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
 import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.options.ReaderStyle;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.List;
@@ -202,6 +202,26 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
+    @Override
+    public boolean gotoPosition(String position) {
+        return false;
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
+    @Override
     public String nextScreen(String position) {
         return nextPage(position);
     }
@@ -230,8 +250,18 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
+    @Override
     public String firstPage() {
         return PagePositionUtils.fromPageNumber(0);
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return false;
     }
 
     @Override
@@ -283,10 +313,10 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean draw(String page, float scale, int rotation, Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(String pagePosition, float scale, int rotation, Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         benchmark.restart();
         try {
-            final int pn = PagePositionUtils.getPageNumber(page);
+            final int pn = PagePositionUtils.getPageNumber(pagePosition);
             return getPluginImpl().drawPage(pn, bitmap,
                     scale, bitmap.getWidth(), bitmap.getHeight(),
                     -(int)displayRect.left, -(int)displayRect.top, (int)displayRect.width(), (int)displayRect.height());
@@ -331,7 +361,12 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public void setStyle(ReaderStyle style) {
+    public ReaderTextStyle getStyle() {
+        return null;
+    }
+
+    @Override
+    public void setStyle(ReaderTextStyle style) {
 
     }
 

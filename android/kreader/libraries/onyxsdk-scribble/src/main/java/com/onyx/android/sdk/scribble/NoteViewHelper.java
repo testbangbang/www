@@ -75,7 +75,7 @@ public class NoteViewHelper {
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
-    private Rect limitRect = null;
+    private Rect softwareLimitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private List<Shape> dirtyStash = new ArrayList<>();
@@ -128,6 +128,8 @@ public class NoteViewHelper {
 
     private void onDocumentOpened() {
         renderBitmapWrapper.clear();
+        NoteModel.setDefaultEraserRadius(deviceConfig.getEraserRadius());
+        getNoteDocument().getNoteDrawingArgs().setEraserRadius(deviceConfig.getEraserRadius());
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
         EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
     }
@@ -240,26 +242,29 @@ public class NoteViewHelper {
     }
 
     private void updateLimitRect() {
-        if (!useRawInput()) {
-            return;
-        }
 
-        limitRect = new Rect();
-        surfaceView.getGlobalVisibleRect(limitRect);
-        limitRect.offsetTo(0, 0);
-        rawInputProcessor.setLimitRect(limitRect);
+        Rect dfbLimitRect = new Rect();
+        softwareLimitRect = new Rect();
+
+        //for software render limit rect
+        surfaceView.getLocalVisibleRect(softwareLimitRect);
+
+        //for dfb render limit rect
+        surfaceView.getGlobalVisibleRect(dfbLimitRect);
+        dfbLimitRect.offsetTo(0, 0);
+        rawInputProcessor.setLimitRect(dfbLimitRect);
 
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
-        limitRect.offsetTo(viewPosition[0], viewPosition[1]);
+        dfbLimitRect.offsetTo(viewPosition[0], viewPosition[1]);
 
         final OnyxMatrix matrix = matrixFromViewToEpd();
-        matrix.mapInPlace(limitRect);
+        matrix.mapInPlace(dfbLimitRect);
         EpdController.setScreenHandWritingRegionLimit(surfaceView,
-                Math.min(limitRect.left, limitRect.right),
-                Math.min(limitRect.top, limitRect.bottom),
-                Math.max(limitRect.left, limitRect.right),
-                Math.max(limitRect.top, limitRect.bottom));
+                Math.min(dfbLimitRect.left, dfbLimitRect.right),
+                Math.min(dfbLimitRect.top, dfbLimitRect.bottom),
+                Math.max(dfbLimitRect.left, dfbLimitRect.right),
+                Math.max(dfbLimitRect.top, dfbLimitRect.bottom));
     }
 
     private void startDrawing() {
@@ -551,10 +556,7 @@ public class NoteViewHelper {
     }
 
     private boolean useRawInput() {
-        if (deviceConfig == null) {
-            return false;
-        }
-        return deviceConfig.useRawInput();
+        return deviceConfig != null && deviceConfig.useRawInput();
     }
 
     private boolean renderByFramework() {
@@ -562,17 +564,11 @@ public class NoteViewHelper {
     }
 
     private boolean isSingleTouch() {
-        if (deviceConfig == null) {
-            return false;
-        }
-        return deviceConfig.isSingleTouch();
+        return deviceConfig != null && deviceConfig.isSingleTouch();
     }
 
     private boolean isEnableFingerErasing() {
-        if (deviceConfig == null) {
-            return false;
-        }
-        return deviceConfig.isEnableFingerErasing();
+        return deviceConfig != null && deviceConfig.isEnableFingerErasing();
     }
 
     public boolean useDFBForCurrentState() {
@@ -643,6 +639,9 @@ public class NoteViewHelper {
         dirtyStash.add(currentShape);
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
+        if (!checkTouchPoint(normalized)) {
+            return;
+        }
         currentShape.onDown(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchDown(motionEvent, currentShape);
@@ -657,13 +656,20 @@ public class NoteViewHelper {
         for(int i = 0; i < n; ++i) {
             final TouchPoint normalized = fromHistorical(motionEvent, i);
             final TouchPoint screen = touchPointFromNormalized(normalized);
+            if (!checkTouchPoint(normalized)) {
+                continue;
+            }
             currentShape.onMove(normalized, screen);
             if (callback != null) {
                 callback.onDrawingTouchMove(motionEvent, currentShape, false);
             }
         }
+
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
+        if (!checkTouchPoint(normalized)) {
+            return;
+        }
         currentShape.onMove(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape, true);
@@ -676,6 +682,9 @@ public class NoteViewHelper {
         }
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
+        if (!checkTouchPoint(normalized)) {
+            return;
+        }
         currentShape.onUp(normalized, screen);
         if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);
@@ -683,17 +692,23 @@ public class NoteViewHelper {
     }
 
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {
-        final TouchPoint screen = viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
-        return screen;
+        return viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
     }
 
     private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
-        final TouchPoint normalized = new TouchPoint(motionEvent.getHistoricalX(i),
+        return new TouchPoint(motionEvent.getHistoricalX(i),
                 motionEvent.getHistoricalY(i),
                 motionEvent.getHistoricalPressure(i),
                 motionEvent.getHistoricalSize(i),
                 motionEvent.getHistoricalEventTime(i));
-        return normalized;
     }
 
+
+    private boolean checkTouchPoint(final TouchPoint touchPoint) {
+        return softwareLimitRect.contains((int) touchPoint.x, (int) touchPoint.y);
+    }
+
+    public boolean supportColor(Context context){
+        return DeviceConfig.sharedInstance(context, "note").supportColor();
+    }
 }

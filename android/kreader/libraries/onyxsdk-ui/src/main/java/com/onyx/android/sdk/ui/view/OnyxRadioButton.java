@@ -21,4 +21,10 @@ public class OnyxRadioButton extends AppCompatRadioButton {
     public OnyxRadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
+    public static OnyxRadioButton Create(Context context, String text) {
+        OnyxRadioButton radioButton = new OnyxRadioButton(context);
+        radioButton.setText(text);
+        return radioButton;
+    }
 }

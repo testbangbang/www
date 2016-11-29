@@ -49,7 +49,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     private final MenuCallback mMenuCallback;
-    GAdapter mThicknessAdapter, mBGAdapter, mEraseAdapter, mPenStyleAdapter = new GAdapter();
+    GAdapter mThicknessAdapter, mBGAdapter, mEraseAdapter, mPenStyleAdapter, mColoAdapter = new GAdapter();
     private ContentView mMenuContentView;
     static HashMap<String, Integer> mapping = null;
     private int mPositionID;
@@ -136,7 +136,9 @@ public class ScribbleSubMenu extends RelativeLayout {
             case ScribbleMenuCategory.BG:
                 mMenuContentView.setAdapter(mBGAdapter, 0);
                 break;
-
+            case ScribbleMenuCategory.COLOR:
+                mMenuContentView.setAdapter(mColoAdapter,0);
+                break;
         }
         updateSubMenuIndicatorByCurrentStatus(category);
         setFocusable(true);
@@ -171,23 +173,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         Object targetPattern = null;
         switch (category) {
             case ScribbleMenuCategory.PEN_WIDTH:
-                switch ((int) curShapeDataInfo.getStrokeWidth()){
-                    case 3:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_ULTRA_LIGHT;
-                        break;
-                    case 5:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_LIGHT;
-                        break;
-                    case 7:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_NORMAL;
-                        break;
-                    case 9:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_BOLD;
-                        break;
-                    case 11:
-                        targetPattern = ScribbleSubMenuID.THICKNESS_ULTRA_BOLD;
-                        break;
-                }
+                targetPattern = ScribbleSubMenuID.menuIdFromStrokeWidth(curShapeDataInfo.getStrokeWidth());
                 break;
             case ScribbleMenuCategory.PEN_STYLE:
                 switch (curShapeDataInfo.getCurrentShapeType()) {
@@ -243,6 +229,28 @@ public class ScribbleSubMenu extends RelativeLayout {
                         break;
                 }
                 break;
+            case ScribbleMenuCategory.COLOR:
+                switch (curShapeDataInfo.getStrokeColor()) {
+                    case Color.BLACK:
+                        targetPattern = ScribbleSubMenuID.PEN_COLOR_BLACK;
+                        break;
+                    case Color.YELLOW:
+                        targetPattern = ScribbleSubMenuID.PEN_COLOR_YELLOW;
+                        break;
+                    case Color.RED:
+                        targetPattern = ScribbleSubMenuID.PEN_COLOR_RED;
+                        break;
+                    case Color.BLUE:
+                        targetPattern = ScribbleSubMenuID.PEN_COLOR_BLUE;
+                        break;
+                    case Color.GREEN:
+                        targetPattern = ScribbleSubMenuID.PEN_COLOR_GREEN;
+                        break;
+                    case Color.MAGENTA:
+                        targetPattern = ScribbleSubMenuID.PEN_COLOR_MAGENTA;
+                        break;
+                }
+                break;
             default:
                 return;
         }
@@ -264,6 +272,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         mEraseAdapter = createEraseAdapter();
         mPenStyleAdapter = createPenStyleAdapter();
         mBGAdapter = createBGAdapter();
+        mColoAdapter = createPenColorAdapter();
     }
 
     public boolean isShow() {
@@ -323,6 +332,17 @@ public class ScribbleSubMenu extends RelativeLayout {
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_music, ScribbleSubMenuID.BG_MUSIC, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_english, ScribbleSubMenuID.BG_ENGLISH, true));
         return bgMenus;
+    }
+
+    private GAdapter createPenColorAdapter() {
+        GAdapter penColorMenus = new GAdapter();
+        penColorMenus.addObject(createImageButtonMenu(R.drawable.ic_color_black, ScribbleSubMenuID.PEN_COLOR_BLACK, true));
+        penColorMenus.addObject(createImageButtonMenu(R.drawable.ic_color_red, ScribbleSubMenuID.PEN_COLOR_RED, true));
+        penColorMenus.addObject(createImageButtonMenu(R.drawable.ic_color_yellow, ScribbleSubMenuID.PEN_COLOR_YELLOW, true));
+        penColorMenus.addObject(createImageButtonMenu(R.drawable.ic_color_blue, ScribbleSubMenuID.PEN_COLOR_BLUE, true));
+        penColorMenus.addObject(createImageButtonMenu(R.drawable.ic_color_green, ScribbleSubMenuID.PEN_COLOR_GREEN, true));
+        penColorMenus.addObject(createImageButtonMenu(R.drawable.ic_color_magenta, ScribbleSubMenuID.PEN_COLOR_MAGENTA, true));
+        return penColorMenus;
     }
 
     public void rePositionAfterNewConfiguration(boolean isShowStatusBar) {

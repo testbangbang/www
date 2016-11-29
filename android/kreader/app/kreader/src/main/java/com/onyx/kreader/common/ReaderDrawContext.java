@@ -10,6 +10,7 @@ public class ReaderDrawContext {
     public boolean asyncDraw;
     public ReaderBitmapImpl renderingBitmap;
     public float targetGammaCorrection;
+    public float targetEmboldenLevel;
 
     private ReaderDrawContext() {
         asyncDraw = true;
@@ -26,6 +27,7 @@ public class ReaderDrawContext {
         copy.asyncDraw = context.asyncDraw;
         copy.renderingBitmap = context.renderingBitmap;
         copy.targetGammaCorrection = context.targetGammaCorrection;
+        copy.targetEmboldenLevel = context.targetEmboldenLevel;
         return copy;
     }
 

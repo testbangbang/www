@@ -12,7 +12,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.navigation.NavigationArgs;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
-import com.onyx.kreader.host.request.GotoLocationRequest;
+import com.onyx.kreader.host.request.GotoPositionRequest;
 import com.onyx.kreader.host.request.ScaleToPageCropRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.data.ReaderCropArgs;
@@ -58,6 +58,10 @@ public class ChangeNavigationSettingsAction extends BaseAction {
         readerDataHolder.submitRenderRequest(scaleRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (cropArgs.getCropPageMode() == ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE &&
+                        cropArgs.getNavigationMode() == ReaderCropArgs.NavigationMode.SINGLE_PAGE_MODE) {
+                    return;
+                }
                 int page = PagePositionUtils.getPageNumber(scaleRequest.getReaderViewInfo().getFirstVisiblePage().getName());
                 cropAndSplitPage(readerDataHolder, scaleRequest, page);
             }
@@ -162,7 +166,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
         } else {
             nextPage = currentPage + 1;
         }
-        BaseReaderRequest request = new GotoLocationRequest(PagePositionUtils.fromPageNumber(nextPage));
+        BaseReaderRequest request = new GotoPositionRequest(PagePositionUtils.fromPageNumber(nextPage));
         readerDataHolder.submitRenderRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

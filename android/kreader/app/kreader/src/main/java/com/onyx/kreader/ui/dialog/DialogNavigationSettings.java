@@ -88,12 +88,11 @@ public class DialogNavigationSettings extends DialogBase {
         });
 
         mSubScreenContentView = (ContentView) findViewById(R.id.subscreen_contentView);
-        int subScreenRows = 1;
-        int subScreenColumns = 6;
+        int subScreenRows = getContext().getResources().getInteger(R.integer.dialog_navigation_setting_sub_screen_rows);
+        int subScreenColumns = getContext().getResources().getInteger(R.integer.dialog_navigation_setting_sub_screen_columns);
         if (getContext().getResources().getConfiguration().orientation == 2) {
-            // TODO hard coding now
-            int landscapeRows = 2;
-            int landscapeColumns = 2;
+            int landscapeRows = getContext().getResources().getInteger(R.integer.dialog_navigation_setting_landscape_sub_screen_rows);
+            int landscapeColumns = getContext().getResources().getInteger(R.integer.dialog_navigation_setting_landscape_sub_screen_columns);
             if (landscapeRows > 0 && landscapeColumns > 0) {
                 double heightRatio = landscapeRows / (double)subScreenRows;
                 subScreenRows = landscapeRows;
@@ -220,7 +219,6 @@ public class DialogNavigationSettings extends DialogBase {
 
     private GAdapter buildCropModeAdapter() {
         mCropAdapter = new GAdapter();
-        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_tow,getContext().getString(R.string.two), ReaderCropArgs.CropPageMode.TWO_CROP_PAGE));
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_four,getContext().getString(R.string.four), ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE));
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_single,getContext().getString(R.string.single_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE));
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_double,getContext().getString(R.string.double_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE_BY_ODD_AND_EVEN));

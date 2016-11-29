@@ -16,6 +16,8 @@ import java.io.InputStream;
 public class BitmapUtils {
     private static final String TAG = BitmapUtils.class.getSimpleName();
 
+    private static Paint paint = new Paint();
+
     static public Bitmap loadBitmapFromFile(final String path) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -35,6 +37,13 @@ public class BitmapUtils {
             e.printStackTrace();
         }
         return true;
+    }
+
+    static public void scaleBitmap(final Bitmap src, final Rect srcRegion,
+                                   final Bitmap dst, final Rect dstRegion) {
+        Canvas canvas = new Canvas(dst);
+        paint.setFilterBitmap(true);
+        canvas.drawBitmap(src, srcRegion, dstRegion, paint);
     }
 
     /**

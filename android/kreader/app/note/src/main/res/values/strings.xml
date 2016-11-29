@@ -44,4 +44,6 @@
     <string name="about">About</string>
     <string name="setting_version_key" translatable="false">setting_version_key</string>
     <string name="versionName">Version Code</string>
+    <string name="clear">Clear</string>
+    <string name="clear_confirm">Are you sure to clear whole page?</string>
 </resources>

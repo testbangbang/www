@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,7 +17,9 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
@@ -28,6 +31,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.host.request.ChangeLayoutRequest;
 import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageCropRequest;
@@ -46,17 +50,21 @@ import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.dialog.DialogContrast;
 import com.onyx.kreader.ui.dialog.DialogExport;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
+import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.utils.DeviceConfig;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -68,9 +76,13 @@ public class ShowReaderMenuAction extends BaseAction {
     ReaderActivity readerActivity;
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
-    private static ReaderLayerMenu readerMenu;
+    private static ReaderMenu readerMenu;
     private boolean disableScribbleBrush = true;
+    private static boolean isScribbleMenuVisible = false;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
+    private static List<String> fontFaces = new ArrayList<>();
+    private static Map<Float, ReaderMenuAction> strokeMapping;
+
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -131,15 +143,39 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
+        if (!readerDataHolder.supportScalable()) {
+            disableMenus.add(ReaderMenuAction.ZOOM);
+            disableMenus.add(ReaderMenuAction.IMAGE_REFLOW);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_COMIC_MODE);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
+        }else {
+            disableMenus.add(ReaderMenuAction.FONT);
+        }
+
         if (disableScribbleBrush) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
+        }
+
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
+        }else {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_COLOR);
         }
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
-        readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());
+        ReaderLayerMenuItem[] menuItems;
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
+            menuItems = ReaderLayerMenuRepository.colorMenuItems;
+            readerMenu = new ReaderLayerColorMenu(readerDataHolder.getContext());
+        }else {
+            menuItems = ReaderLayerMenuRepository.fixedPageMenuItems;
+            readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());
+        }
         updateReaderMenuCallback(readerMenu, readerDataHolder);
-        List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder);
+        List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder, menuItems);
         readerMenu.fillItems(items);
     }
 
@@ -154,6 +190,9 @@ public class ShowReaderMenuAction extends BaseAction {
             public void onMenuItemClicked(ReaderMenuItem menuItem) {
                 Log.d(TAG, "onMenuItemClicked: " + menuItem.getAction());
                 switch (menuItem.getAction()) {
+                    case FONT:
+                        showTextStyleDialog(readerDataHolder);
+                        break;
                     case ROTATION_ROTATE_0:
                         rotateScreen(readerDataHolder, 0);
                         break;
@@ -265,12 +304,17 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onMenuItemValueChanged(ReaderMenuItem menuItem, Object oldValue, Object newValue) {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
+                switch (menuItem.getAction()) {
+                    case JUMP_PAGE:
+                        gotoPage(readerDataHolder, newValue);
+                        break;
+                }
             }
         });
     }
 
-    private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder) {
-        return ReaderLayerMenuRepository.createFromArray(ReaderLayerMenuRepository.fixedPageMenuItems, disableMenus);
+    private List<ReaderLayerMenuItem> createReaderSideMenuItems(final ReaderDataHolder readerDataHolder, ReaderLayerMenuItem[] menuItems) {
+        return ReaderLayerMenuRepository.createFromArray(menuItems, disableMenus);
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
@@ -355,8 +399,9 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void adjustContrast(final ReaderDataHolder readerDataHolder) {
-        final AdjustContrastAction action = new AdjustContrastAction();
-        action.execute(readerDataHolder, null);
+        Dialog dialogContrast = new DialogContrast(readerDataHolder);
+        dialogContrast.show();
+        readerDataHolder.addActiveDialog(dialogContrast);
     }
 
     private void adjustEmbolden(final ReaderDataHolder readerDataHolder) {
@@ -387,6 +432,14 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void forward(final ReaderDataHolder readerDataHolder) {
         new ForwardAction().execute(readerDataHolder, null);
+    }
+
+    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o) {
+        if (o == null) {
+            return;
+        }
+        int page = (int) o;
+        new GotoPageAction(page).execute(readerDataHolder);
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
@@ -432,6 +485,18 @@ public class ShowReaderMenuAction extends BaseAction {
         return true;
     }
 
+    private void showTextStyleDialog(ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        final Dialog dialog = new DialogTextStyle(readerDataHolder, new DialogTextStyle.TextStyleCallback() {
+            @Override
+            public void onSaveReaderStyle(ReaderTextStyle readerStyle) {
+
+            }
+        });
+        dialog.show();
+        readerDataHolder.addActiveDialog(dialog);
+    }
+
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
         Dialog dlg = new DialogSearch(readerDataHolder);
         dlg.show();
@@ -453,7 +518,7 @@ public class ShowReaderMenuAction extends BaseAction {
         hideReaderMenu();
         boolean isShowScribble = !SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
         SingletonSharedPreference.setIsShowNote(readerDataHolder.getContext(), isShowScribble);
-        new GotoPageAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
+        new GotoPositionAction(readerDataHolder.getCurrentPageName()).execute(readerDataHolder);
     }
 
     public static void updateReaderMenuState(final ReaderDataHolder readerDataHolder) {
@@ -462,16 +527,26 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         hideReaderMenu();
+        setIsScribbleMenuVisible(true);
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus);
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                setIsScribbleMenuVisible(false);
                 StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false, false, true);
                 stopNoteActionChain.execute(readerDataHolder, null);
             }
         });
+    }
+
+    public static boolean isScribbleMenuVisible() {
+        return isScribbleMenuVisible;
+    }
+
+    public static void setIsScribbleMenuVisible(boolean isScribbleMenuVisible) {
+        ShowReaderMenuAction.isScribbleMenuVisible = isScribbleMenuVisible;
     }
 
     public static ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
@@ -490,7 +565,8 @@ public class ShowReaderMenuAction extends BaseAction {
     public static boolean isGroupAction(final ReaderMenuAction action) {
         return (action == ReaderMenuAction.SCRIBBLE_ERASER ||
                 action == ReaderMenuAction.SCRIBBLE_WIDTH ||
-                action == ReaderMenuAction.SCRIBBLE_SHAPE);
+                action == ReaderMenuAction.SCRIBBLE_SHAPE ||
+                action == ReaderMenuAction.SCRIBBLE_COLOR);
     }
 
     public static boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
@@ -505,19 +581,12 @@ public class ShowReaderMenuAction extends BaseAction {
     public static void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         switch (action) {
             case SCRIBBLE_WIDTH1:
-                useStrokeWidth(readerDataHolder, 2.0f);
-                break;
             case SCRIBBLE_WIDTH2:
-                useStrokeWidth(readerDataHolder, 4.0f);
-                break;
             case SCRIBBLE_WIDTH3:
-                useStrokeWidth(readerDataHolder, 6.0f);
-                break;
             case SCRIBBLE_WIDTH4:
-                useStrokeWidth(readerDataHolder, 9.0f);
-                break;
             case SCRIBBLE_WIDTH5:
-                useStrokeWidth(readerDataHolder, 12.0f);
+                float value = strokeWidthFromMenuId(action);
+                useStrokeWidth(readerDataHolder, value);
                 break;
             case SCRIBBLE_PENCIL:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
@@ -539,6 +608,24 @@ public class ShowReaderMenuAction extends BaseAction {
                 break;
             case SCRIBBLE_TEXT:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_ANNOTATION);
+                break;
+            case SCRIBBLE_BLACK:
+                useColor(readerDataHolder, Color.BLACK);
+                break;
+            case SCRIBBLE_BLUE:
+                useColor(readerDataHolder, Color.BLUE);
+                break;
+            case SCRIBBLE_GREEN:
+                useColor(readerDataHolder, Color.GREEN);
+                break;
+            case SCRIBBLE_MAGENTA:
+                useColor(readerDataHolder, Color.MAGENTA);
+                break;
+            case SCRIBBLE_RED:
+                useColor(readerDataHolder, Color.RED);
+                break;
+            case SCRIBBLE_YELLOW:
+                useColor(readerDataHolder, Color.YELLOW);
                 break;
             case SCRIBBLE_ERASER_PART:
                 startErasing(readerDataHolder);
@@ -586,6 +673,14 @@ public class ShowReaderMenuAction extends BaseAction {
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new ChangeNoteShapeAction(type));
+        actionChain.execute(readerDataHolder, null);
+    }
+
+    private static void useColor(final ReaderDataHolder readerDataHolder, int color) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
+        actionChain.addAction(new ChangeNoteColorAction(color));
         actionChain.execute(readerDataHolder, null);
     }
 
@@ -719,7 +814,48 @@ public class ShowReaderMenuAction extends BaseAction {
             public boolean isShowingNotes() {
                 return SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
             }
+
+            @Override
+            public List<String> getFontFaces() {
+                return fontFaces;
+            }
+
+            @Override
+            public ReaderTextStyle getReaderStyle() {
+                return readerDataHolder.getReaderViewInfo().getReaderTextStyle();
+            }
         };
+    }
+
+
+    public static Map<Float, ReaderMenuAction> getStrokeMapping() {
+        if (strokeMapping == null) {
+            strokeMapping = new HashMap<>();
+            strokeMapping.put(NoteModel.getDefaultStrokeWidth(), ReaderMenuAction.SCRIBBLE_WIDTH1);
+            strokeMapping.put(5.0f, ReaderMenuAction.SCRIBBLE_WIDTH2);
+            strokeMapping.put(7.0f, ReaderMenuAction.SCRIBBLE_WIDTH3);
+            strokeMapping.put(9.0f, ReaderMenuAction.SCRIBBLE_WIDTH4);
+            strokeMapping.put(11.0f, ReaderMenuAction.SCRIBBLE_WIDTH5);
+        }
+        return strokeMapping;
+    }
+
+    public static float strokeWidthFromMenuId(final ReaderMenuAction menuId) {
+        final Map<Float, ReaderMenuAction> map = getStrokeMapping();
+        for(Map.Entry<Float, ReaderMenuAction> entry : map.entrySet()) {
+            if (entry.getValue() == menuId) {
+                return entry.getKey();
+            }
+        }
+        return NoteModel.getDefaultStrokeWidth();
+    }
+
+    public static ReaderMenuAction menuIdFromStrokeWidth(final float width) {
+        final Map<Float, ReaderMenuAction> map = getStrokeMapping();
+        if (map.containsKey(width)) {
+            return map.get(width);
+        }
+        return ReaderMenuAction.SCRIBBLE_WIDTH1;
     }
 
 }

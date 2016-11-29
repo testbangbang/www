@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.ui.view;
 
+import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.util.SparseArray;
 import android.view.View;
@@ -10,15 +11,13 @@ import android.widget.TextView;
 /**
  * Created by ming on 16/9/22.
  */
-public class CommonViewHolder {
+public class CommonViewHolder extends RecyclerView.ViewHolder{
 
     public final View itemView;
     private SparseArray<View> views;
 
     public CommonViewHolder(View itemView) {
-        if (itemView == null) {
-            throw new IllegalArgumentException("itemView may not be null");
-        }
+        super(itemView);
         this.itemView = itemView;
         views = new SparseArray<>();
     }

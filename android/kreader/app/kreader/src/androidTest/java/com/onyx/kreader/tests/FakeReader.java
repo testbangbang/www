@@ -3,6 +3,8 @@ package com.onyx.kreader.tests;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -20,6 +22,7 @@ public class FakeReader implements ReaderDocument,
         ReaderView,
         ReaderRendererFeatures,
         ReaderNavigator,
+        ReaderTextStyleManager,
         ReaderViewOptions {
 
     private Rect viewport;
@@ -154,6 +157,26 @@ public class FakeReader implements ReaderDocument,
         return pageInfoList.size();
     }
 
+    @Override
+    public int getCurrentPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getCurrentPosition() {
+        return null;
+    }
+
+    @Override
+    public boolean gotoPosition(String position) {
+        return false;
+    }
+
+    @Override
+    public boolean gotoPage(int page) {
+        return false;
+    }
+
     public String nextScreen(final String position) {
         return nextPage(position);
     }
@@ -178,8 +201,18 @@ public class FakeReader implements ReaderDocument,
         return null;
     }
 
+    @Override
+    public boolean isFirstPage() {
+        return false;
+    }
+
     public String firstPage() {
         return PagePositionUtils.fromPageNumber(0);
+    }
+
+    @Override
+    public boolean isLastPage() {
+        return false;
     }
 
     public String lastPage() {
@@ -188,6 +221,16 @@ public class FakeReader implements ReaderDocument,
 
     public List<ReaderSelection> getLinks(final String position) {
         return null;
+    }
+
+    @Override
+    public ReaderTextStyle getStyle() {
+        return null;
+    }
+
+    @Override
+    public void setStyle(ReaderTextStyle style) {
+
     }
 
     public int getViewWidth() {

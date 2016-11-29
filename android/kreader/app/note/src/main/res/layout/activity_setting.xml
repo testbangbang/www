@@ -26,7 +26,7 @@
                     android:id="@+id/imageView_main_title"
                     style="@style/global_activities_back_btn_category_image"
                     android:layout_toRightOf="@+id/back_icon"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/app_logo" />
 
                 <TextView
                     android:id="@+id/textView_main_title"

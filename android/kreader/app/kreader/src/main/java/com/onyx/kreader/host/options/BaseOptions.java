@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -61,11 +62,11 @@ public class BaseOptions {
     transient static public final String ORIENTATION = "orientation";
     transient static public final String MD5 = "md5";
 
-    private static final double fallbackFontSize = 8.0;
-    public static double defaultFontSize = fallbackFontSize;
+    private static final float fallbackFontSize = 36.0f;
+    public static float defaultFontSize = fallbackFontSize;
 
-    static public int GAMMA_LOWER_LIMIT = 100;
-    static public int DEFAULT_GAMMA = 150;
+    transient private static int lowerGammaLimit = 100;
+    transient private static int globalDefaultGamma = 100;
 
     private GObject backend;
 
@@ -152,13 +153,25 @@ public class BaseOptions {
         return 0.01;
     }
 
+    public static int getLowerGammaLimit() {
+        return lowerGammaLimit;
+    }
+
+    public static int getGlobalDefaultGamma() {
+        return globalDefaultGamma;
+    }
+
+    public static void setGlobalDefaultGamma(int globalDefaultGamma) {
+        BaseOptions.globalDefaultGamma = globalDefaultGamma;
+    }
+
     public boolean isGamaCorrectionEnabled() {
-        return getGammaLevel() > GAMMA_LOWER_LIMIT;
+        return getGammaLevel() > lowerGammaLimit;
     }
 
     public float getGammaLevel() {
         if (!backend.hasKey(GAMMA_LEVEL)) {
-            return DEFAULT_GAMMA;
+            return getGlobalDefaultGamma();
         }
         return backend.getFloat(GAMMA_LEVEL);
     }
@@ -244,7 +257,7 @@ public class BaseOptions {
         return 1.0;
     }
 
-    public static double getDefaultStreamDocFontSize() {
+    public static float getDefaultStreamDocFontSize() {
         return defaultFontSize;
     }
 
@@ -252,7 +265,7 @@ public class BaseOptions {
         return 1.1;
     }
 
-    public static void setDefaultStreamDocFontSize(double fontSize) {
+    public static void setDefaultStreamDocFontSize(float fontSize) {
         defaultFontSize = fontSize;
     }
 
@@ -279,18 +292,18 @@ public class BaseOptions {
         return (pixelSize / 6) - 1;
     }
 
-    public double getFontSize() {
+    public float getFontSize() {
         if (!backend.hasKey(FONT_SIZE_TAG)) {
             return getDefaultStreamDocFontSize();
         }
-        double size = backend.getDouble(FONT_SIZE_TAG);
+        float size = backend.getFloat(FONT_SIZE_TAG);
         if (size <= 0) {
             return getDefaultStreamDocFontSize();
         }
         return size;
     }
 
-    public void setFontSize(double size) {
+    public void setFontSize(float size) {
         backend.putDouble(FONT_SIZE_TAG, size);
     }
 
@@ -303,14 +316,14 @@ public class BaseOptions {
 
     public int getLineSpacing() {
         if (!backend.hasKey(LINE_SPACING_TAG)) {
-            return PageConstants.DEFAULT_LINE_SPACING;
+            return ReaderTextStyle.DEFAULT_LINE_SPACING.getPercent();
         }
         return backend.getInt(LINE_SPACING_TAG);
     }
 
     public float getParagraphIndent() {
         if (!backend.hasKey(PARAGRAPH_INDENT_TAG)) {
-            return PageConstants.DEFAULT_PARAGRAPH_INDENT;
+            return ReaderTextStyle.DEFAULT_CHARACTER_INDENT.getIndent();
         }
         return backend.getFloat(PARAGRAPH_INDENT_TAG);
     }
@@ -457,7 +470,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_LEFT_MARGIN)) {
             return backend.getInt(PAGE_LEFT_MARGIN);
         }
-        return getDefaultMargin();
+        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getLeftMargin().getPercent();
     }
 
     public void setLeftMargin(int value) {
@@ -468,7 +481,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_TOP_MARGIN)) {
             return backend.getInt(PAGE_TOP_MARGIN);
         }
-        return getDefaultMargin();
+        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getTopMargin().getPercent();
     }
 
     public void setTopMargin(int value) {
@@ -479,7 +492,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_RIGHT_MARGIN)) {
             return backend.getInt(PAGE_RIGHT_MARGIN);
         }
-        return getDefaultMargin();
+        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getRightMargin().getPercent();
     }
 
     public void setRightMargin(int value) {
@@ -490,15 +503,11 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_BOTTOM_MARGIN)) {
             return backend.getInt(PAGE_BOTTOM_MARGIN);
         }
-        return getDefaultMargin();
+        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getBottomMargin().getPercent();
     }
 
     public void setBottomMargin(int value) {
         backend.putInt(PAGE_BOTTOM_MARGIN, value);
-    }
-
-    static public int getDefaultMargin() {
-        return 10;
     }
 
     public void setReflowOptions(final String settings) {

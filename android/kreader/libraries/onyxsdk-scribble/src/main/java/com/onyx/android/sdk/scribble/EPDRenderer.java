@@ -18,5 +18,8 @@ public class EPDRenderer {
         EpdController.quadTo(x, y, updateMode);
     }
 
+    public static void setStrokeColor(int color) {
+        EpdController.setStrokeColor(color);
+    }
 
 }

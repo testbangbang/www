@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--dimens value to override appcompat text appearance large/medium/small text size-->
+    <dimen name="abc_text_size_large_material" tools:override="true">15sp</dimen>
+    <dimen name="abc_text_size_medium_material" tools:override="true">12sp</dimen>
+
+    <dimen name="global_activities_function_icon_size">32dp</dimen>
+    <dimen name="dialog_set_value_image_size">50dp</dimen>
+
+    <dimen name="common_dialog_width">300dp</dimen>
+    <dimen name="dialog_custom_width_preview_height">80dp</dimen>
+    <dimen name="bessel_curve_view_width">150dp</dimen>
+    <dimen name="bessel_curve_view_height">30dp</dimen>
+    <dimen name="current_value_tittle_text_size">17sp</dimen>
+    <dimen name="current_value_tittle_margin">3dp</dimen>
+    <dimen name="dialog_custom_line_width_tittle_margin">3dp</dimen>
+</resources>

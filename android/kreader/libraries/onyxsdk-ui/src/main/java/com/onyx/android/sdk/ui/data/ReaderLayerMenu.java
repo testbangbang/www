@@ -3,6 +3,7 @@ package com.onyx.android.sdk.ui.data;
 import android.content.Context;
 import android.view.View;
 
+import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
@@ -88,15 +89,15 @@ public class ReaderLayerMenu extends ReaderMenu {
     }
 
     private View createMainMenuContainerView(List<ReaderLayerMenuItem> items, ReaderMenuState state) {
-        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback);
+        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback, true);
     }
 
     private View createSubMenuContainerView(ReaderLayerMenuItem parent, List<ReaderLayerMenuItem> items, ReaderMenuState state) {
-        return ReaderLayerMenuViewFactory.createSubMenuContainerView(context, parent, items, state, readerMenuCallback);
+        return ReaderLayerMenuViewFactory.createSubMenuContainerView(context, parent, items, state, true, readerMenuCallback);
     }
 
     private void handleMenuItemClicked(ReaderMenuItem item) {
-        if (item.getItemType() == ReaderMenuItem.ItemType.Group) {
+        if (item.getItemType() == ReaderMenuItem.ItemType.Group && item.getAction() != ReaderMenuAction.FONT) {
             currentParentMenuItem = (ReaderLayerMenuItem)item;
             updateMenuContent();
         } else {
@@ -124,6 +125,7 @@ public class ReaderLayerMenu extends ReaderMenu {
             public void run(ReaderLayerMenuItem value) {
                 updateShowNoteMenuItem(value, state);
                 updateScribbleMenuItems(value, state);
+                updateFontMenuItems(value);
             }
         });
     }
@@ -153,6 +155,13 @@ public class ReaderLayerMenu extends ReaderMenu {
             return;
         }
         item.setVisible(state.isFixedPagingMode());
+    }
+
+    private void updateFontMenuItems(final ReaderLayerMenuItem item) {
+        if (item.getAction() != ReaderMenuAction.FONT_STYLE) {
+            return;
+        }
+        updateMenuContent();
     }
 
     public List<ReaderLayerMenuItem> getMenuItems() {

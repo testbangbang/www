@@ -71,7 +71,8 @@ public class NoteModel extends BaseModel {
 
     Bitmap thumbnail;
 
-    private static final float DEFAULT_STROKE_WIDTH = 3.0f;
+    private static final float DEFAULT_STROKE_WIDTH = 2.0f;
+    private static float DEFAULT_ERASER_RADIUS = 15.0f;
 
     public NoteModel() {
     }
@@ -226,6 +227,14 @@ public class NoteModel extends BaseModel {
 
     public static float getDefaultStrokeWidth() {
         return DEFAULT_STROKE_WIDTH;
+    }
+
+    public static float getDefaultEraserRadius() {
+        return DEFAULT_ERASER_RADIUS;
+    }
+
+    public static void setDefaultEraserRadius(float defaultEraserRadius) {
+        DEFAULT_ERASER_RADIUS = defaultEraserRadius;
     }
 
     public static int getDefaultStrokeColor() {

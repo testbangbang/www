@@ -10,7 +10,8 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     private String documentPath;
     private String documentPassword;
     private String archivePassword;
-    private String encoding;
+    private String autoCodePage;
+    private String codePageFallback;
     private String language;
 
 
@@ -43,4 +44,30 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
         archivePassword = password;
     }
 
+    @Override
+    public String getAutoCodePage() {
+        return autoCodePage;
+    }
+
+    public void setAutoCodePage(String autoCodePage) {
+        this.autoCodePage = autoCodePage;
+    }
+
+    @Override
+    public String getCodePageFallback() {
+        return codePageFallback;
+    }
+
+    public void setCodePageFallback(String codePageFallback) {
+        this.codePageFallback = codePageFallback;
+    }
+
+    @Override
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 }

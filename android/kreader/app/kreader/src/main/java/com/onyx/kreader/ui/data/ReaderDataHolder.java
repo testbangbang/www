@@ -56,7 +56,6 @@ public class ReaderDataHolder {
     private boolean preRender = true;
     private boolean preRenderNext = true;
     private boolean documentOpened = false;
-    private boolean enableShortcutErasing = false;
 
     private int displayWidth;
     private int displayHeight;
@@ -130,7 +129,6 @@ public class ReaderDataHolder {
 
     public void onDocumentInitRendered() {
         getEventBus().post(new DocumentInitRenderedEvent());
-        updateNoteManager();
     }
 
     public boolean isDocumentOpened() {
@@ -145,16 +143,20 @@ public class ReaderDataHolder {
         return noteManager != null && getNoteManager().isNoteDirty();
     }
 
+    public int getPageCount() {
+        return reader.getNavigator().getTotalPage();
+    }
+
     public String getCurrentPageName() {
         return getReaderViewInfo().getFirstVisiblePage().getName();
     }
 
     public int getCurrentPage() {
-        return PagePositionUtils.getPosition(getCurrentPageName());
+        return PagePositionUtils.getPageNumber(getCurrentPageName());
     }
 
-    public int getPageCount() {
-        return reader.getNavigator().getTotalPage();
+    public String getCurrentPagePosition() {
+        return getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
     }
 
     public final PageInfo getFirstPageInfo() {
@@ -460,10 +462,6 @@ public class ReaderDataHolder {
         }
         getNoteManager().enableRawEventProcessor(false);
         getNoteManager().stopRawEventProcessor();
-    }
-
-    public boolean isEnableShortcutErasing() {
-        return enableShortcutErasing;
     }
 
     public int getLastRequestSequence() {

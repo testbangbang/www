@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="button_minHeight">40dp</dimen>
     <dimen name="contentView_button_X_axis_margin">30dp</dimen>
     <dimen name="contentView_button_progress_minWidth">100dp</dimen>
@@ -36,4 +36,15 @@
     <dimen name="navigatorWidth">30dp</dimen>
     <dimen name="dialog_reader_menu_top_bar_function_icon_margin">2dp</dimen>
     <dimen name="global_activities_function_icon_size">40dp</dimen>
+    <dimen name="common_dialog_width">440dp</dimen>
+
+    <!--dimens value to override appcompat text appearance large/medium/small text size-->
+    <dimen name="abc_text_size_large_material" tools:override="true">22sp</dimen>
+    <dimen name="abc_text_size_medium_material" tools:override="true">18sp</dimen>
+    <dimen name="dialog_custom_width_preview_height">100dp</dimen>
+    <dimen name="bessel_curve_view_width">300dp</dimen>
+    <dimen name="bessel_curve_view_height">50dp</dimen>
+    <dimen name="current_value_tittle_text_size">20sp</dimen>
+    <dimen name="current_value_tittle_margin">10dp</dimen>
+    <dimen name="dialog_custom_line_width_tittle_margin">8dp</dimen>
 </resources>

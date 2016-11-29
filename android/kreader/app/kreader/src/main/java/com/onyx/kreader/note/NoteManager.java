@@ -12,7 +12,9 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
@@ -65,6 +67,8 @@ public class NoteManager {
     private RectF visibleDrawRectF;
     private volatile boolean enableRawEventProcessor = false;
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
+    private volatile boolean enableShortcutDrawing = false;
+    private volatile boolean enableShortcutErasing = false;
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -102,6 +106,9 @@ public class NoteManager {
         view = sv;
         noteConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
+        enableShortcutDrawing = noteConfig.isShortcutDrawingEnabled();
+        enableShortcutErasing = noteConfig.isShortcutErasingEnabled();
+        NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
         getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
     }
 
@@ -191,11 +198,11 @@ public class NoteManager {
             }
 
             public boolean enableShortcutDrawing() {
-                return false;
+                return enableShortcutDrawing;
             }
 
             public boolean enableShortcutErasing() {
-                return false;
+                return enableShortcutErasing;
             }
 
             public boolean enableRawEventProcessor() {
@@ -303,6 +310,10 @@ public class NoteManager {
 
     public void setCurrentShapeType(int type) {
         getNoteDrawingArgs().setCurrentShapeType(type);
+    }
+
+    public void setCurrentShapeColor(int color) {
+        getNoteDrawingArgs().setStrokeColor(color);
     }
 
     public void restoreCurrentShapeType() {

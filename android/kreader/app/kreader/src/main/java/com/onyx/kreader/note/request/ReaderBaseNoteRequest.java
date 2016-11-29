@@ -8,7 +8,9 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.note.NoteManager;
@@ -311,7 +313,14 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             parent.getNoteDocument().open(getContext(),
                     getDocUniqueId(),
                     getParentLibraryId());
+            initWithDeviceConfig(parent);
         }
+    }
+
+    private void initWithDeviceConfig(final NoteManager parent) {
+        NoteModel.setDefaultEraserRadius(DeviceConfig.sharedInstance(getContext()).getEraserRadius());
+        parent.getNoteDocument().setEraserRadius(NoteModel.getDefaultEraserRadius());
+        parent.getNoteDrawingArgs().setEraserRadius(NoteModel.getDefaultEraserRadius());
     }
 
     public void syncDrawingArgs(final NoteDrawingArgs args) {

@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
+
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocument;
@@ -18,6 +20,7 @@ import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderRenderer;
 import com.onyx.kreader.api.ReaderRendererFeatures;
 import com.onyx.kreader.api.ReaderSearchManager;
+import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.cache.BitmapSoftLruCache;
 import com.onyx.kreader.cache.ReaderBitmapImpl;
@@ -27,6 +30,7 @@ import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.kreader.host.layout.ReaderLayoutManager;
 import com.onyx.kreader.host.options.BaseOptions;
+import com.onyx.kreader.plugins.alreader.AlReaderPlugin;
 import com.onyx.kreader.plugins.comic.ComicReaderPlugin;
 import com.onyx.kreader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.kreader.plugins.images.ImagesReaderPlugin;
@@ -58,6 +62,7 @@ public class ReaderHelper {
     private ReaderNavigator navigator;
     private ReaderRenderer renderer;
     private ReaderRendererFeatures rendererFeatures;
+    private ReaderTextStyleManager textStyleManager;
     private ReaderSearchManager searchManager;
     // to be used by UI thread
     private ReaderBitmapImpl viewportBitmap;
@@ -80,6 +85,8 @@ public class ReaderHelper {
             plugin = new DjvuReaderPlugin(context, pluginOptions);
         } else if (ComicReaderPlugin.accept(path)) {
             plugin = new ComicReaderPlugin(context, pluginOptions);
+        } else if (AlReaderPlugin.accept(path)) {
+            plugin = new AlReaderPlugin(context, pluginOptions);
         }
         return (plugin != null);
     }
@@ -142,6 +149,7 @@ public class ReaderHelper {
         renderer = view.getRenderer();
         navigator = view.getNavigator();
         rendererFeatures = renderer.getRendererFeatures();
+        textStyleManager = view.getTextStyleManager();
         hitTestManager = view.getReaderHitTestManager();
         searchManager = view.getSearchManager();
     }
@@ -204,6 +212,7 @@ public class ReaderHelper {
                     getDocument(),
                     getNavigator(),
                     getRendererFeatures(),
+                    getTextStyleManager(),
                     getViewOptions());
         }
         return readerLayoutManager;
@@ -325,6 +334,10 @@ public class ReaderHelper {
         return rendererFeatures;
     }
 
+    public ReaderTextStyleManager getTextStyleManager() {
+        return textStyleManager;
+    }
+
     public ReaderSearchManager getSearchManager() {
         return searchManager;
     }
@@ -336,8 +349,11 @@ public class ReaderHelper {
                 bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
             }
         }
-        if (getDocumentOptions().isEmboldenLevelEnabled()) {
-            ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel());
+        if (getDocumentOptions().isEmboldenLevelEnabled() &&
+                bitmap.getEmboldenLevel() != getDocumentOptions().getEmboldenLevel()) {
+            if (ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel())) {
+                bitmap.setEmboldenLevel(getDocumentOptions().getEmboldenLevel());
+            }
         }
     }
 
@@ -361,16 +377,33 @@ public class ReaderHelper {
             return;
         }
         try {
-            getDocumentOptions().setLayoutType(getReaderLayoutManager().getCurrentLayoutType());
-            getDocumentOptions().setSpecialScale(getReaderLayoutManager().getSpecialScale());
-            getDocumentOptions().setActualScale(getReaderLayoutManager().getActualScale());
-            getDocumentOptions().setCurrentPage(getReaderLayoutManager().getCurrentPageName());
+            final ReaderLayoutManager layoutManager = getReaderLayoutManager();
+            getDocumentOptions().setLayoutType(layoutManager.getCurrentLayoutType());
+            getDocumentOptions().setSpecialScale(layoutManager.getSpecialScale());
+            getDocumentOptions().setActualScale(layoutManager.getActualScale());
+            getDocumentOptions().setCurrentPage(layoutManager.getCurrentPagePosition());
             getDocumentOptions().setTotalPage(getNavigator().getTotalPage());
-            getDocumentOptions().setViewport(getReaderLayoutManager().getViewportRect());
-            getDocumentOptions().setNavigationArgs(getReaderLayoutManager().getCurrentLayoutProvider().getNavigationArgs());
+            getDocumentOptions().setViewport(layoutManager.getViewportRect());
+            getDocumentOptions().setNavigationArgs(layoutManager.getCurrentLayoutProvider().getNavigationArgs());
             getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
+
+            final ReaderTextStyle style = layoutManager.getTextStyleManager().getStyle();
+            if (style != null) {
+                saveReaderTextStyle(style);
+            }
         } catch (Exception e) {
 
         }
+    }
+
+    private void saveReaderTextStyle(final ReaderTextStyle style) {
+        getDocumentOptions().setFontFace(style.getFontFace());
+        getDocumentOptions().setFontSize(style.getFontSize().getValue());
+        getDocumentOptions().setFontFace(style.getFontFace());
+        getDocumentOptions().setLineSpacing(style.getLineSpacing().getPercent());
+        getDocumentOptions().setLeftMargin(style.getPageMargin().getLeftMargin().getPercent());
+        getDocumentOptions().setTopMargin(style.getPageMargin().getTopMargin().getPercent());
+        getDocumentOptions().setRightMargin(style.getPageMargin().getRightMargin().getPercent());
+        getDocumentOptions().setBottomMargin(style.getPageMargin().getBottomMargin().getPercent());
     }
 }

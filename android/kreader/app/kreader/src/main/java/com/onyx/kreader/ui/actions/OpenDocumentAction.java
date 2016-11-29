@@ -53,13 +53,13 @@ public class OpenDocumentAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    cleanup();
+                    cleanup(readerDataHolder);
                     return;
                 }
-                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocument())) {
+                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
                     return;
                 }
-                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocument());
+                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
     }
@@ -80,7 +80,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
-        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options);
+        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, true);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -101,7 +101,7 @@ public class OpenDocumentAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    cleanup();
+                    cleanup(readerDataHolder);
                     return;
                 }
                 restoreWithOptions(readerDataHolder, options);
@@ -117,7 +117,7 @@ public class OpenDocumentAction extends BaseAction {
             public void onPasswordEntered(boolean success, String password) {
                 dlg.dismiss();
                 if (!success) {
-                    postQuitEvent(readerDataHolder);
+                    cleanup(readerDataHolder);
                 } else {
                     options.setPassword(password);
                     openWithOptions(readerDataHolder, options);
@@ -133,19 +133,15 @@ public class OpenDocumentAction extends BaseAction {
         dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                postQuitEvent(holder);
+                cleanup(holder);
             }
         });
         dlg.show();
     }
 
-    private void postQuitEvent(final ReaderDataHolder holder) {
-        cleanup();
-        holder.getEventBus().post(new QuitEvent());
-    }
-
-    private void cleanup() {
+    private void cleanup(final ReaderDataHolder holder) {
         hideLoadingDialog();
+        holder.getEventBus().post(new QuitEvent());
     }
 
     private void restoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
@@ -162,7 +158,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void processOpenException(final ReaderDataHolder holder, final BaseOptions options, final Throwable e) {
         if (!(e instanceof ReaderException)) {
-            postQuitEvent(holder);
+            cleanup(holder);
             return;
         }
         final ReaderException readerException = (ReaderException)e;
