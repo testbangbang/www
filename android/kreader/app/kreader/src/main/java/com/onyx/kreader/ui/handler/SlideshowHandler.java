@@ -21,6 +21,8 @@ import com.onyx.kreader.utils.DeviceUtils;
 
 import java.util.Calendar;
 
+import static android.content.Context.ALARM_SERVICE;
+
 /**
  * Created by joy on 7/29/16.
  */
@@ -28,6 +30,7 @@ public class SlideshowHandler extends BaseHandler {
 
     private static Intent intent = new Intent(SlideshowHandler.class.getCanonicalName());
 
+    private boolean activated;
     private ReaderDataHolder readerDataHolder;
     private int maxPageCount;
     private int pageCount;
@@ -48,7 +51,11 @@ public class SlideshowHandler extends BaseHandler {
         @Override
         public void onReceive(Context context, Intent intent) {
             Debug.d(getClass(), "onReceive: " + intent.getAction());
+            if (!activated) {
+                return;
+            }
             loopNextScreen();
+            setAlarm();
         }
     };
     private PendingIntent pendingIntent;
@@ -61,13 +68,18 @@ public class SlideshowHandler extends BaseHandler {
 
     @Override
     public void onActivate(ReaderDataHolder readerDataHolder) {
-        readerDataHolder.registerReceiver(broadcastReceiver, new IntentFilter(intent.getAction()));
+        activated = true;
+        readerDataHolder.getContext().registerReceiver(broadcastReceiver, new IntentFilter(intent.getAction()));
     }
 
     @Override
     public void onDeactivate(ReaderDataHolder readerDataHolder) {
-        readerDataHolder.unregisterReceiver(broadcastReceiver);
-        readerDataHolder.cancelAlarm(pendingIntent);
+        activated = false;
+        readerDataHolder.getContext().unregisterReceiver(broadcastReceiver);
+        AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
+        if (am != null) {
+            am.cancel(pendingIntent);
+        }
     }
 
     @Override
@@ -157,8 +169,15 @@ public class SlideshowHandler extends BaseHandler {
         pageCount = 0;
         startBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
         startTime = Calendar.getInstance();
-        readerDataHolder.registerRepeatingAlarm(AlarmManager.RTC_WAKEUP,
-                startTime.getTimeInMillis() + interval, interval, pendingIntent);
+        setAlarm();
+    }
+
+    private void setAlarm() {
+        AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
+        if (am != null) {
+            am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + interval,
+                    pendingIntent);
+        }
     }
 
     private void loopNextScreen() {
