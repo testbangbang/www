@@ -434,7 +434,7 @@ public class ReaderDataHolder {
     }
 
     private void resetHandlerManager() {
-        getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
+        getHandlerManager().resetToDefaultProvider();
     }
 
     private void closeDocument(final BaseCallback callback) {
