@@ -144,7 +144,6 @@ public class CloudUtils {
         if (product == null) {
             return null;
         }
-        product.afterLoad();
 
         GObject object = new GObject();
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, product.getIdString());
@@ -167,7 +166,6 @@ public class CloudUtils {
         if (dictionary == null) {
             return null;
         }
-        dictionary.afterLoad();
 
         GObject object = new GObject();
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, dictionary.getIdString());

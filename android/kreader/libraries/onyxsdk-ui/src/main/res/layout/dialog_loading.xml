@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_with_background">
+      
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="@drawable/imagebtn_bg"
+        android:id="@+id/button_confirm" />
+    
+    <View
+        android:id="@+id/divider_lineL"
+        style="@style/single_line_Y_axis_View"
+        android:layout_width="1dp" 
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dialog_loading_text_area_minHeight"
+        android:minWidth="@dimen/dialog_loading_min_width"
+        android:orientation="vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1">
+
+        <com.onyx.android.sdk.ui.view.EllipsizingTextView
+            android:id="@+id/textView_toast_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:ellipsize="middle"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:textSize="@dimen/dialog_loading_text_size" />
+
+        <com.onyx.android.sdk.ui.view.EllipsizingTextView
+            android:id="@+id/textView_progress_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:maxLines="1"
+            android:ellipsize="middle"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:textSize="@dimen/dialog_loading_text_size" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_line"
+        style="@style/single_line_Y_axis_View"
+        android:layout_width="1dp" />
+          
+	<ImageView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="5dp"
+		android:layout_marginRight="5dp"
+		android:layout_gravity="center"
+		android:src="@drawable/close_button"
+		android:background="@drawable/imagebtn_bg"
+		android:id="@+id/button_cancel" />
+  
+</LinearLayout>

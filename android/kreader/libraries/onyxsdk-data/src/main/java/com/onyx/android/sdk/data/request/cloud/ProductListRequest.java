@@ -6,7 +6,6 @@ import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.model.Product;
 import com.onyx.android.sdk.data.model.ProductQuery;
 import com.onyx.android.sdk.data.model.ProductResult;
-import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 
 import com.onyx.android.sdk.data.v1.ServiceFactory;
@@ -20,7 +19,7 @@ public class ProductListRequest extends BaseCloudRequest {
     static private final String TAG = ProductListRequest.class.getSimpleName();
     private ProductQuery productQuery;
     private ProductResult<Product> productResult;
-    private GAdapter adapter;
+
     private volatile boolean clearCache;
     private volatile boolean cloudOnly;
 
@@ -34,9 +33,6 @@ public class ProductListRequest extends BaseCloudRequest {
         return productResult;
     }
 
-    public final GAdapter getAdapter() {
-        return adapter;
-    }
 
     @Override
     public void execute(final CloudManager parent) throws Exception {
@@ -45,7 +41,6 @@ public class ProductListRequest extends BaseCloudRequest {
         } else if (!cloudOnly) {
             fetchFromLocalCache(parent);
         }
-        adapter = CloudUtils.adapterFromProductResult(getContext(), productResult, productQuery.coverLimit, parent.getCloudConf());
     }
 
     public void fetchFromLocalCache(final CloudManager parent) throws Exception {

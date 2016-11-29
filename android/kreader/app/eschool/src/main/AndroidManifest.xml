@@ -2,9 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.onyx.android.eschool">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
     <application
         android:name=".SchoolApp"
@@ -12,7 +16,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/OnyxAppCompat">
 
         <meta-data
             android:name="channel"
@@ -20,11 +24,13 @@
         <meta-data
             android:name="type"
             android:value="${type_value}" />
+        <meta-data
+            android:name="timestamp"
+            android:value="${timestamp_value}" />
 
         <activity
             android:name=".activity.HomeActivity"
             android:launchMode="singleTask"
-            android:theme="@style/OnyxAppCompat"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,6 +40,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.TeachingMaterialActivity" />
+
+        <activity
+            android:name=".activity.TeachingAuxiliaryActivity" />
+
+        <activity
+            android:name=".activity.StudyPreviewActivity" />
+
+        <activity
+            android:name=".activity.AvatarSelectActivity" />
+
+        <activity
+            android:name=".activity.StudentInfoSettingActivity"
+            android:windowSoftInputMode="adjustPan"/>
 
     </application>
 
