@@ -116,6 +116,7 @@ dependencies {
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     compile "net.lingala.zip4j:zip4j:$rootProject.zip4jVersion"
+    compile "com.android.support:multidex:$multidexVersion"
 
     compile "com.jakewharton:disklrucache:$rootProject.disklrucacheVersion"
     compile "org.apache.lucene:lucene-core:$rootProject.lucenecoreVersion"

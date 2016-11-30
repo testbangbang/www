@@ -15,6 +15,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.GammaCorrectionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.view.SeekBarWithEditTextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,14 +28,6 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
 
     private static final String TAG = "DialogContrast";
 
-    @Bind(R.id.editText_ValueInput)
-    TextView editTextValueInput;
-    @Bind(R.id.imageView_MinusButton)
-    ImageView imageViewMinusButton;
-    @Bind(R.id.seekBar_valueControl)
-    SeekBar seekBarValueControl;
-    @Bind(R.id.imageView_AddButton)
-    ImageView imageViewAddButton;
     @Bind(R.id.btn_zero)
     CheckBox btnZero;
     @Bind(R.id.btn_one)
@@ -63,11 +56,14 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
     Button btnOk;
     @Bind(R.id.text_bold_layout)
     RadioGroup textBoldLayout;
+    @Bind(R.id.seekbar_view)
+    SeekBarWithEditTextView seekbarView;
 
     private TextView[] numberTexts;
     private CheckBox[] checkBoxes;
     private int boldSize = BaseOptions.minEmboldenLevel();
     private ReaderDataHolder readerDataHolder;
+    private int gamma;
 
     public DialogContrast(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
@@ -102,7 +98,7 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
                     TextView view = numberTexts[i];
                     if (i < checkBoxes.length) {
                         view.setX(checkBoxes[i].getX());
-                    }else {
+                    } else {
                         CheckBox leftBox = checkBoxes[i - 1];
                         view.setX(leftBox.getX() + leftBox.getMeasuredWidth());
                     }
@@ -124,53 +120,27 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
             }
         });
 
-        imageViewMinusButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int value = Math.max(1, seekBarValueControl.getProgress() - 1);
-                seekBarValueControl.setProgress(value);
-                submitGammaLevel();
-            }
-        });
-
-        imageViewAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int value = Math.min(seekBarValueControl.getMax(), seekBarValueControl.getProgress() + 1);
-                seekBarValueControl.setProgress(value);
-                submitGammaLevel();
-            }
-        });
 
         initSeekbar();
     }
 
     private void initData() {
-        int current = (int) readerDataHolder.getReader().getDocumentOptions().getGammaLevel() - BaseOptions.minGammaLevel();
-        seekBarValueControl.setMax(BaseOptions.maxGammaLevel() - BaseOptions.minGammaLevel());
-        seekBarValueControl.setProgress(current);
-        updateGammaText();
-        int emboldenLevel = readerDataHolder.getReader().getDocumentOptions().getEmboldenLevel();
-        int index = Math.max(0, emboldenLevel - 1);
+        boldSize = readerDataHolder.getReader().getDocumentOptions().getEmboldenLevel();
+        gamma = (int) readerDataHolder.getReader().getDocumentOptions().getGammaLevel();
+        int index = Math.max(0, boldSize - 1);
         clearCheckbox();
         if (index < checkBoxes.length) {
             checkBoxes[index].setChecked(true);
             updateCheckBox(checkBoxes[index], true, true);
         }
-        editTextValueInput.setText(String.valueOf(current));
+        seekbarView.updateValue(R.string.contrast_level, gamma, BaseOptions.minGammaLevel(), BaseOptions.maxGammaLevel());
     }
 
     private void submitGammaLevel() {
-        updateGammaText();
-        int value = seekBarValueControl.getProgress() + BaseOptions.minGammaLevel();
         boldSize = Math.max(1, boldSize);
-        Debug.d(TAG, "gamma %d emboldenLevel %d", value, boldSize);
-        GammaCorrectionRequest request = new GammaCorrectionRequest(value, boldSize);
+        Debug.d(TAG, "gamma %d emboldenLevel %d", gamma, boldSize);
+        GammaCorrectionRequest request = new GammaCorrectionRequest(gamma, boldSize);
         readerDataHolder.submitRenderRequest(request);
-    }
-
-    private void updateGammaText() {
-        editTextValueInput.setText(String.valueOf(seekBarValueControl.getProgress()));
     }
 
     @Override
@@ -192,7 +162,7 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
                     break;
                 }
             }
-        }else {
+        } else {
             for (int i = 0; i < checkBoxes.length; i++) {
                 CheckBox checkBox = checkBoxes[i];
                 if (checkBox.equals(buttonView)) {
@@ -212,23 +182,11 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
     }
 
     private void initSeekbar() {
-        seekBarValueControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekbarView.setCallback(new SeekBarWithEditTextView.Callback() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (!fromUser) {
-                    return;
-                }
+            public void valueChange(int newValue) {
+                gamma = newValue;
                 submitGammaLevel();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
     }
