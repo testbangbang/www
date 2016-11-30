@@ -12,7 +12,7 @@ public class AnnotationShape extends BaseShape {
         return ShapeFactory.SHAPE_ANNOTATION;
     }
 
-    public boolean addMovePoint() {
+    public boolean isAddMovePoint() {
         return false;
     }
 
