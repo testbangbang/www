@@ -79,7 +79,6 @@ public class BrushScribbleShape extends EPDShape  {
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         if (isPenMove()) {
             addUpPoint(normalizedPoint, screenPoint);
-            EPDRenderer.moveTo(lastX, lastY, Math.min(getLastStrokeWidth(), getDisplayStrokeWidth() / 2.0f));
             EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
         }
         setPenNull();
