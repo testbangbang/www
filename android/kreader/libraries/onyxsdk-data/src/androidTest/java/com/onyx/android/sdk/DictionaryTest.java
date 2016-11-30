@@ -84,7 +84,6 @@ public class DictionaryTest extends ApplicationTestCase<Application> {
         dictionary.targetLanguage = generateRandomUUID();
         dictionary.title = TestUtils.randomEmail();
         dictionary.officialComment = TestUtils.randString();
-        dictionary.viewCount = TestUtils.randInt(10, 100);
         dictionary.category = generateRandomStringList();
         return dictionary;
     }
