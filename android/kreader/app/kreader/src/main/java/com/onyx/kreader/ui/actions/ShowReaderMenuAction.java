@@ -78,7 +78,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderMenu readerMenu;
-    private boolean disableScribbleBrush = true;
+    private boolean disableScribbleBrush = false;
     private static boolean isScribbleMenuVisible = false;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
     private static List<String> fontFaces = new ArrayList<>();
