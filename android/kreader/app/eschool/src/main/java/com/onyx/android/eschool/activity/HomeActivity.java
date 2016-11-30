@@ -154,7 +154,7 @@ public class HomeActivity extends BaseActivity {
 
     private Intent getEduIntent() {
         Intent intent = new Intent();
-        intent.setClassName("com.onyx.android.edu", "com.onyx.android.edu.ChooseExerciseActivity");
+        intent.setClassName("com.onyx.android.edu", "com.onyx.android.edu.ui.chooseexercise.ChooseExerciseActivity");
         return intent;
     }
 

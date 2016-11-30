@@ -1,7 +1,9 @@
 package com.onyx.android.edu.ui.chooseexercise;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.onyx.android.edu.R;
 import com.onyx.android.edu.base.BaseActivity;
 import com.onyx.android.edu.utils.ActivityUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import butterknife.Bind;
 
@@ -21,6 +24,9 @@ import butterknife.Bind;
 public class ChooseExerciseActivity extends BaseActivity {
 
     private static final String TAG = "ChooseExerciseActivity";
+    private static final String EDU_INTENT_CONTENT_TYPE = "contentType";
+    private static final String EDU_INTENT_CONTENT_TYPE_EXAM = "examination";
+    private static final String EDU_INTENT_CONTENT_TYPE_PRACTISE= "practice";
     
     @Bind(R.id.left_title)
     TextView mLeftTitle;
@@ -80,8 +86,12 @@ public class ChooseExerciseActivity extends BaseActivity {
             }
 
             presenter = new ChooseExercisePresenter(chooseExerciseColorFragment);
-        }
 
+            Intent intent = getIntent();
+            String contentType = intent.getStringExtra(EDU_INTENT_CONTENT_TYPE);
+            boolean isPractice = !StringUtils.isNullOrEmpty(contentType) && contentType.equals(EDU_INTENT_CONTENT_TYPE_PRACTISE);
+            presenter.setPractice(isPractice);
+        }
     }
 
     @Override
@@ -90,11 +100,16 @@ public class ChooseExerciseActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        if (chooseExerciseColorFragment != null) {
-            chooseExerciseColorFragment.changeSubjectView();
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU:
+                if (chooseExerciseColorFragment != null) {
+                    chooseExerciseColorFragment.changeSubjectView();
+                }
+                return true;
         }
-        return super.onMenuOpened(featureId, menu);
+
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
