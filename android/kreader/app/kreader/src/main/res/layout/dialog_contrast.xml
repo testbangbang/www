@@ -29,7 +29,7 @@
         android:paddingLeft="@dimen/dialog_main_view_padding"
         android:paddingRight="@dimen/dialog_main_view_padding">
 
-        <com.onyx.kreader.ui.view.SeekBarWithEditTextView
+        <com.onyx.android.sdk.ui.view.SeekBarWithEditTextView
             android:id="@+id/seekbar_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

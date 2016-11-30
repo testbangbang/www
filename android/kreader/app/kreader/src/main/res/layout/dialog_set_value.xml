@@ -36,9 +36,9 @@
         style="@style/single_line_X_axis_View"
         android:layout_height="2dp" />
 
-    <com.onyx.kreader.ui.view.SeekBarWithEditTextView android:id="@+id/seekbar_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <com.onyx.android.sdk.ui.view.SeekBarWithEditTextView android:id="@+id/seekbar_view"
+                                                          android:layout_width="match_parent"
+                                                          android:layout_height="wrap_content" />
 
     <!--Use LinearLayout here just for better space consuming.If there will
     be more complicated situation,use RelativeLayout-->
