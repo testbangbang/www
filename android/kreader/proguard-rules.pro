@@ -48,3 +48,4 @@
 -keep class * extends com.raizlabs.android.dbflow.converter.TypeConverter { *; }
 -keep class * extends com.raizlabs.android.dbflow.structure.BaseModel { *; }
 
+-dontwarn com.onyx.android.sdk.ui.dialog.DialogLoading
