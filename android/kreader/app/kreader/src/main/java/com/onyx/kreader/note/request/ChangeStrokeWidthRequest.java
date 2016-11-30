@@ -22,7 +22,7 @@ public class ChangeStrokeWidthRequest extends ReaderBaseNoteRequest {
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
         noteManager.setCurrentStrokeWidth(newWidth);
-        if (switchToDrawing) {
+        if (switchToDrawing && noteManager.isEraser()) {
             noteManager.setCurrentShapeType(NoteDrawingArgs.defaultShape());
         }
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
