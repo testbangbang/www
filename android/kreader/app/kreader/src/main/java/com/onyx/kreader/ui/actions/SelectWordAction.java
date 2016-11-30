@@ -15,25 +15,25 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class SelectWordAction{
 
     public static void selectWord(final ReaderDataHolder readerDataHolder,
-                                  final String pageName,
+                                  final String pagePosition,
                                   final PointF startPoint,
                                   final PointF endPoint,
                                   final PointF touchPoint,
                                   final BaseCallback baseCallback) {
-        execute(readerDataHolder, pageName, startPoint, endPoint, touchPoint, ReaderHitTestOptionsImpl.create(true), baseCallback);
+        execute(readerDataHolder, pagePosition, startPoint, endPoint, touchPoint, ReaderHitTestOptionsImpl.create(true), baseCallback);
     }
 
     public static void selectText(final ReaderDataHolder readerDataHolder,
-                                  final String pageName,
+                                  final String pagePosition,
                                   final PointF startPoint,
                                   final PointF endPoint,
                                   final PointF touchPoint,
                                   final BaseCallback baseCallback){
-        execute(readerDataHolder, pageName, startPoint, endPoint, touchPoint, ReaderHitTestOptionsImpl.create(false), baseCallback);
+        execute(readerDataHolder, pagePosition, startPoint, endPoint, touchPoint, ReaderHitTestOptionsImpl.create(false), baseCallback);
     }
 
-    private static void execute(final ReaderDataHolder readerDataHolder, final String pageName, final PointF startPoint, final PointF endPoint, final PointF touchPoint, final ReaderHitTestOptions hitTestOptions, final BaseCallback baseCallback){
-        final SelectWordRequest selectWordRequest = new SelectWordRequest(pageName, startPoint, endPoint, touchPoint, hitTestOptions);
+    private static void execute(final ReaderDataHolder readerDataHolder, final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint, final ReaderHitTestOptions hitTestOptions, final BaseCallback baseCallback){
+        final SelectWordRequest selectWordRequest = new SelectWordRequest(pagePosition, startPoint, endPoint, touchPoint, hitTestOptions);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), selectWordRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

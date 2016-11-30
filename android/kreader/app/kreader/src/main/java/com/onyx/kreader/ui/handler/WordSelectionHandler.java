@@ -247,7 +247,7 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void selectWord(final ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
-        SelectWordAction.selectWord(readerDataHolder, readerDataHolder.getCurrentPageName(), new PointF(x1, y1), new PointF(x2, y2), new PointF(x2, y2),new BaseCallback() {
+        SelectWordAction.selectWord(readerDataHolder, readerDataHolder.getCurrentPagePosition(), new PointF(x1, y1), new PointF(x2, y2), new PointF(x2, y2),new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 onSelectWordFinished(readerDataHolder, (SelectWordRequest) request, e);
@@ -264,7 +264,7 @@ public class WordSelectionHandler extends BaseHandler{
             highLightEndBottom = new PointF(x2, y2 - getMovePointOffsetHeight(readerDataHolder));
         }
 
-        SelectWordAction.selectText(readerDataHolder, readerDataHolder.getCurrentPageName(), highLightBeginTop, highLightEndBottom, touchPoint, new BaseCallback() {
+        SelectWordAction.selectText(readerDataHolder, readerDataHolder.getCurrentPagePosition(), highLightBeginTop, highLightEndBottom, touchPoint, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 onSelectWordFinished(readerDataHolder, (SelectWordRequest)request, e);
