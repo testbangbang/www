@@ -1,63 +1,251 @@
 {
-  "i86": {"mappingList": [{"orientation": 270, "tx": 0, "ty": 1200},
-            {"orientation": 180, "tx": 1600, "ty": 1200},
-            {"orientation": 90, "tx": 1600, "ty": 0},
-            {"orientation": 0, "tx": 0, "ty": 0}]
+  "i86": {"mappingList": [
+      {"orientation": 270, "tx": 0, "ty": 1200},
+      {"orientation": 180, "tx": 1600, "ty": 1200},
+      {"orientation": 90, "tx": 1600, "ty": 0},
+      {"orientation": 0, "tx": 0, "ty": 0}],
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
   },
 
 
-  "n96": {"mappingList":  [ { "orientation" : 270,  "tx" : 0, "ty" : 825, "epd": 90, "etx": 825, "ety": 0},
-           { "orientation" : 180,  "tx" : 1200, "ty" : 825,  "epd": 0, "etx": 0, "ety": 0},
-           { "orientation" : 90,  "tx" : 1200, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1200},
-           { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1200, "ety": 825}] },
+  "n96": {"mappingList":  [
+      { "orientation" : 270,  "tx" : 0, "ty" : 825, "epd": 90, "etx": 825, "ety": 0},
+      { "orientation" : 180,  "tx" : 1200, "ty" : 825,  "epd": 0, "etx": 0, "ety": 0},
+      { "orientation" : 90,  "tx" : 1200, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1200},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1200, "ety": 825}] ,
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
+  },
 
 
-  "m96": {"mappingList": [ { "orientation" : 270,  "tx" : 0, "ty" : 825, "epd": 90, "etx": 825, "ety": 0},
-    { "orientation" : 180,  "tx" : 1200, "ty" : 825,  "epd": 0, "etx": 0, "ety": 0},
-    { "orientation" : 90,  "tx" : 1200, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1200},
-    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1200, "ety": 825}]},
+  "m96": {"mappingList": [
+      { "orientation" : 270,  "tx" : 0, "ty" : 825, "epd": 90, "etx": 825, "ety": 0},
+      { "orientation" : 180,  "tx" : 1200, "ty" : 825,  "epd": 0, "etx": 0, "ety": 0},
+      { "orientation" : 90,  "tx" : 1200, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1200},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1200, "ety": 825}],
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
+  },
 
 
-  "max": {"mappingList": [ { "orientation" : 270,  "tx" : 0, "ty" : 1200, "epd": 90, "etx": 1200, "ety": 0},
-    { "orientation" : 180,  "tx" : 1600, "ty" : 1200,  "epd": 0, "etx": 0, "ety": 0},
-    { "orientation" : 90,  "tx" : 1600, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1600},
-    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1600, "ety": 1200}]},
+  "max": {"mappingList": [
+      { "orientation" : 270,  "tx" : 0, "ty" : 1200, "epd": 90, "etx": 1200, "ety": 0},
+      { "orientation" : 180,  "tx" : 1600, "ty" : 1200,  "epd": 0, "etx": 0, "ety": 0},
+      { "orientation" : 90,  "tx" : 1600, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1600},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1600, "ety": 1200}],
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
+  },
 
 
-  "maxcarta": {"mappingList":  [ { "orientation" : 270,  "tx" : 0, "ty" : 1650, "epd": 90, "etx": 1650, "ety": 0},
-    { "orientation" : 180,  "tx" : 2200, "ty" : 1650,  "epd": 0, "etx": 0, "ety": 0},
-    { "orientation" : 90,  "tx" : 2200, "ty" : 0,  "epd": 270, "etx": 0, "ety": 2200},
-    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 2200, "ety": 1650}]},
+  "maxcarta": {"mappingList":  [
+      { "orientation" : 270,  "tx" : 0, "ty" : 1650, "epd": 90, "etx": 1650, "ety": 0},
+      { "orientation" : 180,  "tx" : 2200, "ty" : 1650,  "epd": 0, "etx": 0, "ety": 0},
+      { "orientation" : 90,  "tx" : 2200, "ty" : 0,  "epd": 270, "etx": 0, "ety": 2200},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 2200, "ety": 1650}],
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
+  },
 
 
-  "t68": {"mappingList":  [ { "orientation" : 90,  "tx" : 1440, "ty" : 0},
-    { "orientation" : 0,  "tx" : 0, "ty" : 0},
-    { "orientation" : 270,  "tx" : 0, "ty" : 1080},
-    { "orientation" : 180,  "tx" : 1440, "ty" : 1080}]},
+  "t68": {"mappingList":  [
+      { "orientation" : 90,  "tx" : 1440, "ty" : 0},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0},
+      { "orientation" : 270,  "tx" : 0, "ty" : 1080},
+      { "orientation" : 180,  "tx" : 1440, "ty" : 1080}],
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
+  },
 
 
-  "t76": {"mappingList": [ { "orientation" : 90,  "tx" : 1440, "ty" : 0},
-    { "orientation" : 0,  "tx" : 0, "ty" : 0},
-    { "orientation" : 270,  "tx" : 0, "ty" : 1080},
-    { "orientation" : 180,  "tx" : 1440, "ty" : 1080}]},
+  "t76": {"mappingList": [
+      { "orientation" : 90,  "tx" : 1440, "ty" : 0},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0},
+      { "orientation" : 270,  "tx" : 0, "ty" : 1080},
+      { "orientation" : 180,  "tx" : 1440, "ty" : 1080}],
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
+  },
 
 
-  "kepler": {"mappingList": [ { "orientation" : 270,  "tx" : 0, "ty" : 1072},
-    { "orientation" : 0,  "tx" : 0, "ty" : 0},
-    { "orientation" : 90,  "tx" : 1448, "ty" : 0},
-    { "orientation" : 180,  "tx" : 1448, "ty" : 1072}]},
+  "kepler": {"mappingList": [
+      { "orientation" : 270,  "tx" : 0, "ty" : 1072},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0},
+      { "orientation" : 90,  "tx" : 1448, "ty" : 0},
+      { "orientation" : 180,  "tx" : 1448, "ty" : 1072}],
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
+  },
 
 
-  "pl107": {"mappingList":  [{ "orientation" : 270,  "tx" : 0, "ty" : 960},
-    { "orientation" : 0,  "tx" : 0, "ty" : 0},
-    { "orientation" : 90,  "tx" : 1280, "ty" : 0},
-    { "orientation" : 180,  "tx" : 1280, "ty" : 960}]},
+  "pl107": {"mappingList":  [
+      { "orientation" : 270,  "tx" : 0, "ty" : 960},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0},
+      { "orientation" : 90,  "tx" : 1280, "ty" : 0},
+      { "orientation" : 180,  "tx" : 1280, "ty" : 960}],
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
+  },
 
 
   "pl107_color": {"mappingList":  [
-    { "orientation" : 90,  "tx" : 640, "ty" : 0,  "epd": 270, "etx": 0, "ety": 640},
-    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 640, "ety": 480},
-    { "orientation" : 270,  "tx" : 0, "ty" : 480, "epd": 90, "etx": 480, "ety": 0},
-    { "orientation" : 180,  "tx" : 640, "ty" : 480,  "epd": 0, "etx": 0, "ety": 0}]}
+      { "orientation" : 90,  "tx" : 640, "ty" : 0,  "epd": 270, "etx": 0, "ety": 640},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 640, "ety": 480},
+      { "orientation" : 270,  "tx" : 0, "ty" : 480, "epd": 90, "etx": 480, "ety": 0},
+      { "orientation" : 180,  "tx" : 640, "ty" : 480,  "epd": 0, "etx": 0, "ety": 0}],
+
+    "pressureList" : [
+      {"pressure": 10, "ratio": 0.30},
+      {"pressure": 30, "ratio": 0.35},
+      {"pressure": 40, "ratio": 0.40},
+      {"pressure": 45, "ratio": 0.45},
+      {"pressure": 50, "ratio": 0.50},
+      {"pressure": 60, "ratio": 0.55},
+      {"pressure": 65, "ratio": 0.60},
+      {"pressure": 70, "ratio": 0.65},
+      {"pressure": 75, "ratio": 0.70},
+      {"pressure": 80, "ratio": 0.75},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 90, "ratio": 0.92},
+      {"pressure": 85, "ratio": 0.83},
+      {"pressure": 95, "ratio": 0.9},
+      {"pressure": 100, "ratio": 1}]
+  }
 
 }

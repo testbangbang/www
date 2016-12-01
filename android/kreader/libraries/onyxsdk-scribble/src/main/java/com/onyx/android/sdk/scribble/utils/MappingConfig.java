@@ -39,8 +39,8 @@ public class MappingConfig {
     }
 
     public static class NoteMapping {
-        List<PressureEntry> pressureList;
-        List<MappingEntry> mappingList;
+        public List<PressureEntry> pressureList;
+        public List<MappingEntry> mappingList;
     }
 
     private Map<String, NoteMapping> noteMapping;
