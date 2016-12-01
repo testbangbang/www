@@ -414,8 +414,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private void switchDragFunc(boolean alwaysDisable){
+        CommonViewHolder dragViewHolder = scribbleViewHolderMap.get(ReaderMenuAction.SCRIBBLE_DRAG);
+        if (dragViewHolder == null) {
+            return;
+        }
         isDrag = !alwaysDisable && !isDrag;
-        scribbleViewHolderMap.get(ReaderMenuAction.SCRIBBLE_DRAG).setImageResource(R.id.content_view,
+        dragViewHolder.setImageResource(R.id.content_view,
                 isDrag ? R.drawable.ic_drag : R.drawable.ic_drag_forbid);
     }
 
