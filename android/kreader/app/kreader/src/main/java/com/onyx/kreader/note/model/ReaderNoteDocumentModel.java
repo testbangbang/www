@@ -222,10 +222,6 @@ public class ReaderNoteDocumentModel extends BaseModel {
         return DEFAULT_STROKE_WIDTH;
     }
 
-    public static int getDefaultShapeType() {
-        return ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
-    }
-
     public static int getDefaultStrokeColor() {
         return Color.BLACK;
     }

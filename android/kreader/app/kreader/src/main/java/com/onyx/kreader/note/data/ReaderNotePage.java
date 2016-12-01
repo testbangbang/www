@@ -2,7 +2,6 @@ package com.onyx.kreader.note.data;
 
 import android.content.Context;
 import android.graphics.Matrix;
-import android.util.Log;
 
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.shape.RenderContext;

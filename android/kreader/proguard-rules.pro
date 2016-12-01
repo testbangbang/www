@@ -31,6 +31,8 @@
 -dontwarn org.objenesis.**
 -dontwarn okio.**
 -dontwarn retrofit2.**
+-dontwarn com.github.junrar.**
+-dontwarn com.squareup.**
 
 -keepnames class * {
     native <methods>;
@@ -46,3 +48,4 @@
 -keep class * extends com.raizlabs.android.dbflow.converter.TypeConverter { *; }
 -keep class * extends com.raizlabs.android.dbflow.structure.BaseModel { *; }
 
+-dontwarn com.onyx.android.sdk.ui.dialog.DialogLoading
