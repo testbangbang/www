@@ -222,7 +222,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void beforeSetContentView() {
-        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this);
+        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
         DeviceUtils.requestFullScreenFeature(this, fullScreen);
     }
 
