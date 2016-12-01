@@ -69,8 +69,9 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
     <style name="dialog_contrast_checkbox">
-        <item name="android:button">@drawable/bold_size_select</item>
-        <item name="android:gravity">left</item>
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawableTop">@drawable/bold_size_select</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
