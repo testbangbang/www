@@ -44,6 +44,7 @@ public class DeviceConfig {
     private boolean askForClose = false;
     private boolean supportColor = false;
     private int defaultGamma = 150;
+    private int fixedGamma = 0;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -364,6 +365,14 @@ public class DeviceConfig {
 
     public void setDefaultGamma(int defaultGamma) {
         this.defaultGamma = defaultGamma;
+    }
+
+    public int getFixedGamma() {
+        return fixedGamma;
+    }
+
+    public void setFixedGamma(int fixedGamma) {
+        this.fixedGamma = fixedGamma;
     }
 
     public boolean isExitAfterFinish() {
