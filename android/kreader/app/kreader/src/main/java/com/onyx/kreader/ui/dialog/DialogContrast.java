@@ -5,9 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.onyx.kreader.R;
@@ -15,7 +13,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.GammaCorrectionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.view.SeekBarWithEditTextView;
+import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

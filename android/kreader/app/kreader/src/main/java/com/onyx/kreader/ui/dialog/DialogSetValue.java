@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.kreader.R;
-import com.onyx.kreader.ui.view.SeekBarWithEditTextView;
+import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
 
 
 /**

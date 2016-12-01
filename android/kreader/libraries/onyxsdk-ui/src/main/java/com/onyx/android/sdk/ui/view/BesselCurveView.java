@@ -66,7 +66,7 @@ public class BesselCurveView extends View {
         canvas.translate(viewWidth / 2, viewHeight / 2);
         path.moveTo(-viewWidth / 2, 0);
         path.rQuadTo(viewWidth / 4, -viewHeight / 2, viewWidth / 2, 0);
-        path.rQuadTo(viewWidth * 3 / 4, viewHeight, viewWidth, -viewHeight * 2);
+        path.rQuadTo(viewWidth * 3 / 4, viewHeight * 3 /2, viewWidth, -viewHeight * 3);
         canvas.drawPath(path, drawPaint);
         path.rewind();
     }
