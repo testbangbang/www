@@ -8,12 +8,12 @@ import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.request.GammaCorrectionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -36,18 +36,6 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
     CheckBox btnThree;
     @Bind(R.id.btn_four)
     CheckBox btnFour;
-    @Bind(R.id.text_zero)
-    TextView textZero;
-    @Bind(R.id.text_one)
-    TextView textOne;
-    @Bind(R.id.text_two)
-    TextView textTwo;
-    @Bind(R.id.text_three)
-    TextView textThree;
-    @Bind(R.id.text_four)
-    TextView textFour;
-    @Bind(R.id.text_five)
-    TextView textFive;
     @Bind(R.id.btn_cancel)
     Button btnCancel;
     @Bind(R.id.btn_ok)
@@ -56,8 +44,9 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
     RadioGroup textBoldLayout;
     @Bind(R.id.seekbar_view)
     SeekBarWithEditTextView seekbarView;
+    @Bind(R.id.btn_five)
+    CheckBox btnFive;
 
-    private TextView[] numberTexts;
     private CheckBox[] checkBoxes;
     private int boldSize = BaseOptions.minEmboldenLevel();
     private ReaderDataHolder readerDataHolder;
@@ -68,41 +57,19 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
         this.readerDataHolder = readerDataHolder;
         setContentView(R.layout.dialog_contrast);
         ButterKnife.bind(this);
-        numberTexts = new TextView[]{textZero, textOne, textTwo, textThree, textFour, textFive};
-        checkBoxes = new CheckBox[]{btnZero, btnOne, btnTwo, btnThree, btnFour};
+        checkBoxes = new CheckBox[]{btnZero, btnOne, btnTwo, btnThree, btnFour, btnFive};
         initView();
         initData();
+        initSeekbar();
     }
 
     private void initView() {
-        btnZero.setChecked(true);
-        btnZero.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearCheckbox();
-                btnZero.setChecked(true);
-                updateCheckBox(btnZero, true, true);
-            }
-        });
+        btnZero.setOnCheckedChangeListener(this);
         btnOne.setOnCheckedChangeListener(this);
         btnTwo.setOnCheckedChangeListener(this);
         btnThree.setOnCheckedChangeListener(this);
         btnFour.setOnCheckedChangeListener(this);
-
-        textBoldLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < numberTexts.length; i++) {
-                    TextView view = numberTexts[i];
-                    if (i < checkBoxes.length) {
-                        view.setX(checkBoxes[i].getX());
-                    } else {
-                        CheckBox leftBox = checkBoxes[i - 1];
-                        view.setX(leftBox.getX() + leftBox.getMeasuredWidth());
-                    }
-                }
-            }
-        });
+        btnFive.setOnCheckedChangeListener(this);
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,32 +77,25 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
                 dismiss();
             }
         });
-
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
-
-
-        initSeekbar();
     }
 
     private void initData() {
         boldSize = readerDataHolder.getReader().getDocumentOptions().getEmboldenLevel();
         gamma = (int) readerDataHolder.getReader().getDocumentOptions().getGammaLevel();
-        int index = Math.max(0, boldSize - 1);
         clearCheckbox();
-        if (index < checkBoxes.length) {
-            checkBoxes[index].setChecked(true);
-            updateCheckBox(checkBoxes[index], true, true);
+        for (int i = 0; i <= boldSize; i++) {
+            checkBoxes[i].setChecked(true);
         }
         seekbarView.updateValue(R.string.contrast_level, gamma, BaseOptions.minGammaLevel(), BaseOptions.maxGammaLevel());
     }
 
     private void submitGammaLevel() {
-        boldSize = Math.max(1, boldSize);
         Debug.d(TAG, "gamma %d emboldenLevel %d", gamma, boldSize);
         GammaCorrectionRequest request = new GammaCorrectionRequest(gamma, boldSize);
         readerDataHolder.submitRenderRequest(request);
@@ -151,12 +111,13 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
             return;
         }
         clearCheckbox();
+
         if (isChecked) {
             for (int i = 0; i < checkBoxes.length; i++) {
                 CheckBox checkBox = checkBoxes[i];
                 checkBox.setChecked(true);
                 if (checkBox.equals(buttonView)) {
-                    boldSize = i + 1;
+                    boldSize = i;
                     break;
                 }
             }
@@ -164,11 +125,17 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
             for (int i = 0; i < checkBoxes.length; i++) {
                 CheckBox checkBox = checkBoxes[i];
                 if (checkBox.equals(buttonView)) {
-                    boldSize = i;
+                    boldSize = i - 1;
+                    checkBox.setChecked(false);
                     break;
                 }
                 checkBox.setChecked(true);
             }
+        }
+
+        if (buttonView.equals(btnZero)) {
+            buttonView.setChecked(true);
+            boldSize = 0;
         }
         submitGammaLevel();
     }
@@ -183,8 +150,10 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
         seekbarView.setCallback(new SeekBarWithEditTextView.Callback() {
             @Override
             public void valueChange(int newValue) {
-                gamma = newValue;
-                submitGammaLevel();
+                if (gamma != newValue) {
+                    gamma = newValue;
+                    submitGammaLevel();
+                }
             }
         });
     }

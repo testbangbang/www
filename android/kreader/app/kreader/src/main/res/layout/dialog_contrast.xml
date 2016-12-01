@@ -58,67 +58,32 @@
             android:layout_height="wrap_content">
 
             <CheckBox
+                android:text="0"
                 android:id="@+id/btn_zero"
                 style="@style/dialog_contrast_checkbox"/>
             <CheckBox
+                android:text="1"
                 android:id="@+id/btn_one"
                 style="@style/dialog_contrast_checkbox"/>
             <CheckBox
+                android:text="2"
                 android:id="@+id/btn_two"
                 style="@style/dialog_contrast_checkbox"/>
             <CheckBox
+                android:text="3"
                 android:id="@+id/btn_three"
                 style="@style/dialog_contrast_checkbox"/>
             <CheckBox
+                android:text="4"
                 android:id="@+id/btn_four"
                 style="@style/dialog_contrast_checkbox"/>
-
+            <CheckBox
+                android:text="5"
+                android:id="@+id/btn_five"
+                style="@style/dialog_contrast_checkbox"/>
 
         </RadioGroup>
 
-        <LinearLayout
-            android:layout_marginLeft="@dimen/dialog_contrast_margin"
-            android:layout_marginRight="@dimen/dialog_contrast_margin"
-            android:layout_marginBottom="@dimen/dialog_contrast_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/text_zero"
-                android:text="0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/text_one"
-                android:text="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/text_two"
-                android:text="2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/text_three"
-                android:text="3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/text_four"
-                android:text="4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/text_five"
-                android:text="5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
