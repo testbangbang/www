@@ -376,7 +376,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
         boolean update = (event != null && event.isApplyGCIntervalUpdate());
         if (update) {
-            ReaderDeviceManager.applyWithGCIntervalWithoutRegal(surfaceView);
+            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
         }
         if (event != null && !event.isWaitForShapeData()) {
             beforeDrawPage();
