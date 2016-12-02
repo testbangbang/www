@@ -1,42 +1,78 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
 import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+
+import java.util.List;
 
 /**
  * Created by zhuzeng on 4/21/16.
  */
 public class BrushScribbleShape extends EPDShape  {
 
+    private float lastStrokeWidth;
+    private float lastX, lastY;
+    private List<InkUtils.PathEntry> pathList;
+
+    public float getLastStrokeWidth() {
+        return lastStrokeWidth;
+    }
+
+    public void setLastStrokeWidth(float lastStrokeWidth) {
+        this.lastStrokeWidth = lastStrokeWidth;
+    }
+
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
-        super.onDown(normalizedPoint, screenPoint);
-        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getStrokeWidth());
+        setPenDown();
+        addDownPoint(normalizedPoint, screenPoint);
+        float strokeWidth = InkUtils.strokeWidth(normalizedPoint,
+                getDisplayStrokeWidth(),
+                getDisplayStrokeWidth());
+        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, strokeWidth);
+        setLastStrokeWidth(strokeWidth);
+        lastX = screenPoint.getX();
+        lastY = screenPoint.getY();
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
-        super.onMove(normalizedPoint, screenPoint);
-        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+        if (isPenNull()) {
+            onDown(normalizedPoint, screenPoint);
+        }
+        setPenMove();
+        addMovePoint(normalizedPoint, screenPoint);
+        float newStrokeWidth = InkUtils.strokeWidth(normalizedPoint, getDisplayStrokeWidth(), getLastStrokeWidth());
+        if (InkUtils.inRange(getLastStrokeWidth(), newStrokeWidth)) {
+            EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+        } else {
+            EPDRenderer.moveTo(lastX, lastY, newStrokeWidth);
+            EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+            setLastStrokeWidth(newStrokeWidth);
+        }
+        lastX = screenPoint.getX();
+        lastY = screenPoint.getY();
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
-        super.onUp(normalizedPoint, screenPoint);
-        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+        if (isPenMove()) {
+            addUpPoint(normalizedPoint, screenPoint);
+            EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+        }
+        setPenNull();
     }
 
     // render path with width list and generate path list.
     public void render(final RenderContext renderContext) {
         applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
-        Path path = getOriginDisplayPath();
-        if (path == null) {
-            path = ShapeUtils.renderShape(renderContext, getNormalizedPoints());
-            setOriginDisplayPath(path);
+        if (pathList == null) {
+            pathList = InkUtils.generate(renderContext, this);
         }
-        renderContext.canvas.drawPath(path, renderContext.paint);
+        for(InkUtils.PathEntry entry : pathList) {
+            renderContext.paint.setStrokeWidth(entry.pathWidth);
+            renderContext.canvas.drawPath(entry.path, renderContext.paint);
+        }
     }
 
 }

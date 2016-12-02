@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.BesselCurveView;
+import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
 import com.onyx.android.sdk.utils.DimenUtils;
 
 
@@ -26,17 +27,10 @@ public class DialogCustomLineWidth extends Dialog {
         void done(int lineWidth);
     }
 
-    private ImageView imageViewMinusButton;
-    private SeekBar seekBarValueControl;
-    private ImageView imageViewAddButton;
     private Button btnCancel;
     private Button btnOk;
-    private LinearLayout previewLayout;
     private BesselCurveView besselCurveView;
-    private TextView startText;
-    private TextView endText;
-    private EditText currentValueIndicator;
-
+    private SeekBarWithEditTextView seekBarView;
     private int currentLineWidth;
     private int maxLineWidth;
     private int color;
@@ -55,20 +49,10 @@ public class DialogCustomLineWidth extends Dialog {
     }
 
     private void initView() {
-        imageViewMinusButton = (ImageView) findViewById(R.id.imageView_MinusButton);
-        seekBarValueControl = (SeekBar) findViewById(R.id.seekBar_valueControl);
-        imageViewAddButton = (ImageView) findViewById(R.id.imageView_AddButton);
         btnCancel = (Button) findViewById(R.id.btn_cancel);
         btnOk = (Button) findViewById(R.id.btn_ok);
-        currentValueIndicator = (EditText)findViewById(R.id.current_value_indicator);
         besselCurveView = (BesselCurveView) findViewById(R.id.bessel_view);
-        previewLayout = (LinearLayout) findViewById(R.id.preview_layout);
-        startText = (TextView) findViewById(R.id.start_text);
-        endText = (TextView) findViewById(R.id.end_text);
-
-        endText.setText(String.valueOf(maxLineWidth));
-        seekBarValueControl.setProgress(currentLineWidth);
-        updatePreview();
+        seekBarView = (SeekBarWithEditTextView) findViewById(R.id.seek_bar_view);
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,60 +69,19 @@ public class DialogCustomLineWidth extends Dialog {
                 dismiss();
             }
         });
-        imageViewAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentLineWidth = Math.min(20, currentLineWidth + 1);
-                seekBarValueControl.setProgress(currentLineWidth);
-                updatePreview();
-            }
-        });
-        imageViewMinusButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentLineWidth = Math.max(1, currentLineWidth - 1);
-                seekBarValueControl.setProgress(currentLineWidth);
-                updatePreview();
-            }
-        });
         initSeerProgress();
+        besselCurveView.setSize(currentLineWidth);
 
-        seekBarValueControl.post(new Runnable() {
-            @Override
-            public void run() {
-                startText.setX(seekBarValueControl.getLeft() + DimenUtils.dip2px(getContext(), 10));
-                endText.setX(seekBarValueControl.getRight() - DimenUtils.dip2px(getContext(), 10) - endText.getMeasuredWidth() /2);
-            }
-        });
     }
 
     private void initSeerProgress() {
-        seekBarValueControl.setMax(maxLineWidth);
-        seekBarValueControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBarView.updateValue(R.string.current_value, currentLineWidth, 1, maxLineWidth);
+        seekBarView.setCallback(new SeekBarWithEditTextView.Callback() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (!fromUser) {
-                    return;
-                }
-                currentLineWidth = progress;
-                updatePreview();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public void valueChange(int newValue) {
+                currentLineWidth = newValue;
+                besselCurveView.setSize(currentLineWidth);
             }
         });
-    }
-
-    private void updatePreview() {
-        besselCurveView.setSize(currentLineWidth);
-        currentValueIndicator.setText(
-                String.format(getContext().getResources().getConfiguration().locale, "%d", currentLineWidth));
     }
 }

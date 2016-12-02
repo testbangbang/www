@@ -6,6 +6,8 @@ import com.onyx.android.edu.base.BaseView;
 import com.onyx.libedu.model.BookNode;
 import com.onyx.libedu.model.ChooseQuestionVariable;
 import com.onyx.libedu.model.Difficult;
+import com.onyx.libedu.model.Document;
+import com.onyx.libedu.model.DocumentType;
 import com.onyx.libedu.model.KnowledgePoint;
 import com.onyx.libedu.model.QuestionType;
 import com.onyx.libedu.model.Stage;
@@ -27,6 +29,7 @@ public interface ChooseExerciseContract {
         void showBookNodes(List<BookNode> bookNodes);
         void showKnowledgePoints(List<KnowledgePoint> knowledgePoints);
         void showQuestionType(List<QuestionType> questionTypes);
+        void showDocuments(List<Document> documents);
     }
 
     interface ChooseExercisePresenter extends BasePresenter {
@@ -36,11 +39,14 @@ public interface ChooseExerciseContract {
         void loadTextbooks(Version version);
         void loadBookNodes();
         void loadKnowledgePoints();
+        void loadDocuments();
 
         void chooseTextbook(Textbook textbook);
         void chooseQuestionType(QuestionType questionType);
         void chooseDifficult(Difficult difficult);
+        void chooseDocumentType(DocumentType type);
         ChooseQuestionVariable getChooseQuestionVariable();
+        boolean isPractice();
     }
 
 }

@@ -83,6 +83,7 @@ public class ReaderPainter {
         if (bitmap == null) {
             return;
         }
+        paint.setDither(true);
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 

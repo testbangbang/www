@@ -1,4 +1,4 @@
-package com.onyx.kreader.ui.view;
+package com.onyx.android.sdk.ui.view;
 
 import android.content.Context;
 import android.text.Editable;
@@ -15,7 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.onyx.kreader.R;
+import com.onyx.android.sdk.ui.R;
+
 
 /**
  * Created by joy on 11/28/16.

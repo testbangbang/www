@@ -35,14 +35,13 @@ public class DialogReaderColorMenu extends Dialog {
     private ImageView undoView;
     private TextView positionView;
     private TextView totalView;
-    private View dimissView;
 
     private ReaderMenuState readerMenuState;
     private List<Integer> jumpPages = new ArrayList<>();
     private int currentPage = 0;
 
     public DialogReaderColorMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
-        super(context, android.R.style.Theme_Translucent_NoTitleBar);
+        super(context, R.style.CustomDialog);
         this.context = context;
         readerMenuCallback = menuCallback;
 
@@ -60,14 +59,6 @@ public class DialogReaderColorMenu extends Dialog {
         undoView = (ImageView) findViewById(R.id.undo_view);
         positionView = (TextView) findViewById(R.id.position_text);
         totalView = (TextView) findViewById(R.id.total_text);
-        dimissView = findViewById(R.id.dismiss_zone);
-
-        dimissView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                readerMenuCallback.onHideMenu();
-            }
-        });
         undoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +91,7 @@ public class DialogReaderColorMenu extends Dialog {
         mParams.gravity = Gravity.BOTTOM;
         mWindow.setAttributes(mParams);
         //force use all space in the screen.
-        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     public void show(ReaderMenuState state) {

@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.BuildConfig;
+import com.onyx.android.sdk.scribble.math.ScribbleInk;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -33,7 +34,17 @@ public class MappingConfig {
         public int ety;
     }
 
-    private Map<String, List<MappingEntry>> modelMapping;
+    public static class PressureEntry {
+        public int pressure;
+        public float ratio;
+    }
+
+    public static class NoteMapping {
+        public List<PressureEntry> pressureList;
+        public List<MappingEntry> mappingList;
+    }
+
+    private Map<String, NoteMapping> noteMapping;
 
     public static MappingConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -51,13 +62,27 @@ public class MappingConfig {
 
     public MappingEntry getEntry(int offset) {
         final String model = Build.MODEL.toLowerCase();
-        if (modelMapping.containsKey(model)) {
-            List<MappingEntry> list = modelMapping.get(model);
+        if (noteMapping.containsKey(model)) {
+            List<MappingEntry> list = noteMapping.get(model).mappingList;
             return getEntry(list, offset);
         }
-        for(Map.Entry<String, List<MappingEntry>> entry : modelMapping.entrySet()) {
+        for(Map.Entry<String, NoteMapping> entry : noteMapping.entrySet()) {
             if (model.startsWith(entry.getKey())) {
-                return getEntry(entry.getValue(), offset);
+                return getEntry(entry.getValue().mappingList, offset);
+            }
+        }
+        return null;
+    }
+
+    public List<PressureEntry> getPressureList() {
+        final String model = Build.MODEL.toLowerCase();
+        if (noteMapping.containsKey(model)) {
+            List<PressureEntry> list = noteMapping.get(model).pressureList;
+            return list;
+        }
+        for(Map.Entry<String, NoteMapping> entry : noteMapping.entrySet()) {
+            if (model.startsWith(entry.getKey())) {
+                return entry.getValue().pressureList;
             }
         }
         return null;
@@ -68,15 +93,15 @@ public class MappingConfig {
     }
 
     private MappingConfig(Context context, final String prefix) {
-        modelMapping = objectFromRawResource(context, prefix + "_" + "mapping");
+        noteMapping = objectFromRawResource(context, prefix + "_" + "mapping");
     }
 
-    private Map<String, List<MappingEntry>> objectFromRawResource(Context context, final String name) {
-        Map<String, List<MappingEntry>> object = null;
+    private Map<String, NoteMapping> objectFromRawResource(Context context, final String name) {
+        Map<String, NoteMapping> object = null;
         try {
             int res = context.getResources().getIdentifier(name.toLowerCase(), "raw", context.getPackageName());
             final String value = RawResourceUtil.contentOfRawResource(context, res);
-            object = JSON.parseObject(value, new TypeReference<Map<String, List<MappingEntry>>>(){});
+            object = JSON.parseObject(value, new TypeReference<Map<String, NoteMapping>>(){});
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
