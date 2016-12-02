@@ -5958,6 +5958,10 @@ public class AlBookEng{
 						continue;
 					}
 				} else {
+					if (oi.text[i] > 0x3000 || (word_text.length() == 1 && word_text.charAt(0) > 0x3000)) {
+						textOnScreen.add(word_text, word_rect, word_pos);
+					}
+
 					if (word_text.length() == 0) {
 						word_rect.x0 = word_rect.x1 = x;
 						word_rect.y0 = y - oi.base_line_up;
