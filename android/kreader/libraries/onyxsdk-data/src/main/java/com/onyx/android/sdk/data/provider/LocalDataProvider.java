@@ -121,10 +121,10 @@ public class LocalDataProvider implements DataProviderBase {
         annotation.delete();
     }
 
-    public final Bookmark loadBookmark(final String application, final String md5, final String position) {
+    public final Bookmark loadBookmark(final String application, final String md5, final int pageNumber) {
         return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(md5))
                 .and(Bookmark_Table.application.eq(application))
-                .and(Bookmark_Table.position.eq(position))
+                .and(Bookmark_Table.pageNumber.eq(pageNumber))
                 .querySingle();
     }
 

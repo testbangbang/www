@@ -45,7 +45,7 @@ public interface DataProviderBase {
     void deleteAnnotation(final Annotation annotation);
 
 
-    Bookmark loadBookmark(final String application, final String md5, final String position);
+    Bookmark loadBookmark(final String application, final String md5, final int pageNumber);
 
     List<Bookmark> loadBookmarks(final String application, final String md5, final OrderBy orderBy);
 
