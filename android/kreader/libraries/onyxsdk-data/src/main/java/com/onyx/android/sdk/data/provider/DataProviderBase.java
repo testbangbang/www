@@ -34,8 +34,7 @@ public interface DataProviderBase {
 
     boolean saveDocumentOptions(final Context context, final String path, String md5, final String json);
 
-
-    List<Annotation> loadAnnotations(final String application, final String md5, final String position, final OrderBy orderBy);
+    List<Annotation> loadAnnotations(final String application, final String md5, final int pageNumber, final OrderBy orderBy);
 
     List<Annotation> loadAnnotations(final String application, final String md5, final OrderBy orderBy);
 

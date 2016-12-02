@@ -94,10 +94,10 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
 
-    public final List<Annotation> loadAnnotations(final String application, final String md5, final String position, final OrderBy orderBy) {
+    public final List<Annotation> loadAnnotations(final String application, final String md5, final int pageNumber, final OrderBy orderBy) {
         return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(md5))
                 .and(Annotation_Table.application.eq(application))
-                .and(Annotation_Table.position.eq(position))
+                .and(Annotation_Table.pageNumber.eq(pageNumber))
                 .orderBy(orderBy)
                 .queryList();
     }
