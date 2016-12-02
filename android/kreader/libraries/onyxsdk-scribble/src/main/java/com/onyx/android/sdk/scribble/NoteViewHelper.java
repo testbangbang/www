@@ -242,7 +242,6 @@ public class NoteViewHelper {
     }
 
     private void updateLimitRect() {
-
         Rect dfbLimitRect = new Rect();
         softwareLimitRect = new Rect();
 

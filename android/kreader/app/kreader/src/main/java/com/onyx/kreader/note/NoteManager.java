@@ -21,6 +21,7 @@ import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
@@ -110,6 +111,7 @@ public class NoteManager {
         enableShortcutErasing = noteConfig.isShortcutErasingEnabled();
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
         getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
+        InkUtils.setPressureEntries(mappingConfig.getPressureList());
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {

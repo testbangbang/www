@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.BuildConfig;
+import com.onyx.android.sdk.scribble.math.ScribbleInk;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -68,6 +69,20 @@ public class MappingConfig {
         for(Map.Entry<String, NoteMapping> entry : noteMapping.entrySet()) {
             if (model.startsWith(entry.getKey())) {
                 return getEntry(entry.getValue().mappingList, offset);
+            }
+        }
+        return null;
+    }
+
+    public List<PressureEntry> getPressureList() {
+        final String model = Build.MODEL.toLowerCase();
+        if (noteMapping.containsKey(model)) {
+            List<PressureEntry> list = noteMapping.get(model).pressureList;
+            return list;
+        }
+        for(Map.Entry<String, NoteMapping> entry : noteMapping.entrySet()) {
+            if (model.startsWith(entry.getKey())) {
+                return entry.getValue().pressureList;
             }
         }
         return null;
