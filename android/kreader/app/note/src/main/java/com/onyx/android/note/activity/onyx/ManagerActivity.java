@@ -15,6 +15,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
+import com.onyx.android.note.actions.manager.ImportScribbleAction;
 import com.onyx.android.note.actions.manager.LoadNoteListAction;
 import com.onyx.android.note.actions.manager.ManageLoadPageAction;
 import com.onyx.android.note.actions.manager.NoteMoveAction;
@@ -36,6 +37,7 @@ import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.SortBy;
+import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -268,6 +270,9 @@ public class ManagerActivity extends BaseManagerActivity {
                 break;
             case R.id.export:
                 break;
+            case R.id.import_scribble:
+                importScribbleData();
+                break;
             case R.id.move:
                 onItemMove();
                 break;
@@ -280,6 +285,19 @@ public class ManagerActivity extends BaseManagerActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void importScribbleData() {
+        final ImportScribbleAction<ManagerActivity> scribbleAction = new ImportScribbleAction();
+        scribbleAction.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    loadNoteList();
+                    NotePreference.setBooleanValue(NotePreference.KEY_IMPORT_MENU_VISIBLE, false);
+                }
+            }
+        });
     }
 
     private void onSettings() {
@@ -318,6 +336,7 @@ public class ManagerActivity extends BaseManagerActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.export).setVisible(NoteAppConfig.sharedInstance(this).isEnableExport());
+        menu.findItem(R.id.import_scribble).setVisible(NotePreference.getBooleanValue(this, NotePreference.KEY_IMPORT_MENU_VISIBLE, true));
         if (chosenItemsList.size() <= 0 ||
                 (Utils.getItemType((chosenItemsList.get(0))) == DataItemType.TYPE_CREATE)) {
             menu.findItem(R.id.delete).setEnabled(false);
