@@ -99,6 +99,10 @@ public class ReaderDataHolder {
         return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
     }
 
+    public boolean supportSearchByPage() {
+        return supportScalable();
+    }
+
     public final List<PageInfo> getVisiblePages() {
         return getReaderViewInfo().getVisiblePages();
     }

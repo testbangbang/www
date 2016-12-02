@@ -65,7 +65,11 @@ public class SearchContentAction extends BaseAction {
                     currentCount += selections.size();
                 }
                 int next = page + 1;
-                requestSearchBySequence(readerDataHolder,next,query);
+                if (!readerDataHolder.supportSearchByPage()) {
+                    onSearchContentCallBack.OnFinishedSearch(page);
+                } else {
+                    requestSearchBySequence(readerDataHolder, next, query);
+                }
             }
         });
     }
