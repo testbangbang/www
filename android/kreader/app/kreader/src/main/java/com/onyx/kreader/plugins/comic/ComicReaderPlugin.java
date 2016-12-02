@@ -220,6 +220,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+        return null;
+    }
+
     /**
      * Retrieve the default start position.
      *

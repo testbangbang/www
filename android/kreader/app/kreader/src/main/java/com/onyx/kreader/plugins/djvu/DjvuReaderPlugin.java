@@ -182,6 +182,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+        return null;
+    }
+
+    @Override
     public String getInitPosition() {
         return firstPage();
     }

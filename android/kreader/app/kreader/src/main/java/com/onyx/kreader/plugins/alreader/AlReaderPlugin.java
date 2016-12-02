@@ -444,6 +444,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+        return null;
+    }
+
     public boolean supportScale() {
         return false;
     }

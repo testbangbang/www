@@ -28,5 +28,7 @@ public interface ReaderHitTestManager {
      */
     public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, final ReaderHitTestOptions hitTestOptions);
 
+    public ReaderSelection select(String pagePosition, final String startPosition, final String endPosition);
+
 
 }
