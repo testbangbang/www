@@ -30,6 +30,11 @@ public class DjvuSelection implements ReaderSelection {
     }
 
     @Override
+    public String getPageName() {
+        return null;
+    }
+
+    @Override
     public String getPagePosition() {
         return null;
     }

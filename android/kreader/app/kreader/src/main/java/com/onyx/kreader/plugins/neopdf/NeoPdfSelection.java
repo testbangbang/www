@@ -69,6 +69,11 @@ public class NeoPdfSelection implements ReaderSelection, Cloneable {
         return selection;
     }
 
+    @Override
+    public String getPageName() {
+        return getPagePosition();
+    }
+
     public String getPagePosition() {
         return pagePosition;
     }

@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class ReaderSelectionImpl implements ReaderSelection {
 
+    private String pageName;
+    private String pagePosition;
     private String startPosition;
     private String endPosition;
     private String text;
@@ -25,8 +27,21 @@ public class ReaderSelectionImpl implements ReaderSelection {
         return object;
     }
 
+    @Override
+    public String getPageName() {
+        return pageName;
+    }
+
+    public void setPageName(String pageName) {
+        this.pageName = pageName;
+    }
+
     public String getPagePosition() {
-        return null;
+        return pagePosition;
+    }
+
+    public void setPagePosition(String pagePosition) {
+        this.pagePosition = pagePosition;
     }
 
     public final String getStartPosition() {
