@@ -5925,7 +5925,7 @@ public class AlBookEng{
         return true;
     }
 
-	private void fillTextOnScreen(boolean s, int ps, boolean e, int pe) {
+	public AlTextOnScreen fillTextOnScreen(boolean s, int ps, boolean e, int pe) {
 		textOnScreen.clear();
 
 		s = textOnScreen.verifyStart(s, ps);
@@ -5937,13 +5937,14 @@ public class AlBookEng{
 			e = false;
 
 		if (!s && !e)
-			return;
+			return null;
 
 		fillTextOnScreenOnePage(mpage[0][0], screen_parameters.marginL);
 		if (profiles.twoColumnUsed)
 			fillTextOnScreenOnePage(mpage[0][1], (screenWidth >> 1) + screen_parameters.marginR);
 
 		textOnScreen.prepareBeforeCorrect0(s, ps, e, pe);
+		return textOnScreen;
 	}
 
 	private void fillTextOnScreenOnePage(AlOnePage page, int margLeft) {

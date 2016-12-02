@@ -39,6 +39,7 @@ public class AlTextOnScreen {
         numWordWithStartSelection = numWordWithEndSelection = -1;
         needCorrectStart = needCorrectEnd = false;
         regionList.clear();
+        lastStart = lastEnd = -1;
     }
 
     public void add(StringBuilder word, AlRect rect, ArrayList<Integer> pos) {
@@ -98,7 +99,7 @@ public class AlTextOnScreen {
     private int lastStart = -1;
     private int lastEnd = -1;
 
-    private int findWordByPos(int pos) {
+    public int findWordByPos(int pos) {
 
         int s, e;
 
