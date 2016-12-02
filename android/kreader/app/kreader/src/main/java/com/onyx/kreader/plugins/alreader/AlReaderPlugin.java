@@ -145,7 +145,7 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     @Override
     public String getPageText(String position) {
-        return null;
+        return "";
     }
 
     @Override
